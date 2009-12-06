@@ -275,4 +275,8 @@ class QgsVectorDataProvider : QgsDataProvider
        */
       void enableGeometrylessFeatures(bool fetch);
 
+      /** Returns true if the provider is strict about the type of inserted features
+          (e.g. no multipolygon in a polygon layer)
+          @note: added in version 1.4*/
+      bool doesStrictFeatureTypeCheck() const;
 };

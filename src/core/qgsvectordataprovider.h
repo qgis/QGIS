@@ -71,7 +71,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
       /** DEPRECATED - do not use */
       RandomSelectGeometryAtId =     1 << 10,
       /** DEPRECATED - do not use */
-      SequentialSelectGeometryAtId = 1 << 11
+      SequentialSelectGeometryAtId = 1 << 11,
     };
 
     /** bitmask of all provider's editing capabilities */
@@ -342,6 +342,11 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
      * @note deprecated
      */
     const QMap<QString, QVariant::Type> &supportedNativeTypes() const;
+
+    /** Returns true if the provider is strict about the type of inserted features
+          (e.g. no multipolygon in a polygon layer)
+          @note: added in version 1.4*/
+    virtual bool doesStrictFeatureTypeCheck() const { return true;}
 
   protected:
     QVariant convertValue( QVariant::Type type, QString value );

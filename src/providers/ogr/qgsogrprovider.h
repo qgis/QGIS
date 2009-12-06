@@ -233,6 +233,11 @@ class QgsOgrProvider : public QgsVectorDataProvider
      */
     QString description() const;
 
+    /** Returns true if the provider is strict about the type of inserted features
+          (e.g. no multipolygon in a polygon layer)
+          @note: added in version 1.4*/
+    virtual bool doesStrictFeatureTypeCheck() const { return false;}
+
   protected:
     /** loads fields from input file to member attributeFields */
     void loadFields();

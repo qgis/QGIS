@@ -4332,6 +4332,13 @@ void QgisApp::mergeSelectedFeatures()
     return;
   }
 
+  QgsVectorDataProvider* dp = vl->dataProvider();
+  bool providerChecksTypeStrictly = true;
+  if ( dp )
+  {
+    providerChecksTypeStrictly = dp->doesStrictFeatureTypeCheck();
+  }
+
   //get selected feature ids (as a QSet<int> )
   const QgsFeatureIds& featureIdSet = vl->selectedFeaturesIds();
   if ( featureIdSet.size() < 2 )
@@ -4351,7 +4358,7 @@ void QgisApp::mergeSelectedFeatures()
   //make a first geometry union and notify the user straight away if the union geometry type does not match the layer one
   QGis::WkbType originalType = vl->wkbType();
   QGis::WkbType newType = unionGeom->wkbType();
-  if ( unionGeom->wkbType() != vl->wkbType() )
+  if ( providerChecksTypeStrictly && unionGeom->wkbType() != vl->wkbType() )
   {
     QMessageBox::critical( 0, "Union operation canceled", tr( "The union operation would result in a geometry type that is not compatible with the current layer and therefore is canceled" ) );
     delete unionGeom;
@@ -4387,7 +4394,7 @@ void QgisApp::mergeSelectedFeatures()
 
     originalType = vl->wkbType();
     newType = unionGeom->wkbType();
-    if ( unionGeom->wkbType() != vl->wkbType() )
+    if ( providerChecksTypeStrictly && unionGeom->wkbType() != vl->wkbType() )
     {
       QMessageBox::critical( 0, "Union operation canceled", tr( "The union operation would result in a geometry type that is not compatible with the current layer and therefore is canceled" ) );
       delete unionGeom;
