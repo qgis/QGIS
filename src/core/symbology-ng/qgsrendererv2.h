@@ -3,7 +3,6 @@
 #define QGSRENDERERV2_H
 
 #include "qgis.h"
-#include "qgsfield.h" // for QgsFieldMap
 
 #include <QList>
 #include <QString>
@@ -17,6 +16,7 @@ class QDomElement;
 class QgsSymbolV2;
 class QgsRenderContext;
 class QgsFeature;
+class QgsVectorLayer;
 
 typedef QList<QgsSymbolV2*> QgsSymbolV2List;
 typedef QMap<QString, QgsSymbolV2* > QgsSymbolV2Map;
@@ -62,7 +62,7 @@ class CORE_EXPORT QgsFeatureRendererV2
     // to be overridden
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature ) = 0;
 
-    virtual void startRender( QgsRenderContext& context, const QgsFieldMap& fields ) = 0;
+    virtual void startRender( QgsRenderContext& context, const QgsVectorLayer *vlayer ) = 0;
 
     virtual void stopRender( QgsRenderContext& context ) = 0;
 
@@ -91,12 +91,6 @@ class CORE_EXPORT QgsFeatureRendererV2
 
     //! return a list of symbology items for the legend
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
-
-    /** Returns the index of a field name or -1 if the field does not exist
-      * copied from QgsVectorDataProvider... d'oh... probably should be elsewhere
-      */
-    static int fieldNameIndex( const QgsFieldMap& fields, const QString& fieldName );
-
 
   protected:
     QgsFeatureRendererV2( QString type );
