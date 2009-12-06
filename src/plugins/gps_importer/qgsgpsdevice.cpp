@@ -58,9 +58,9 @@ QStringList QgsGPSDevice::importCommand( const QString& babel,
     else if ( *iter == "%type" )
       copy.append( type );
     else if ( *iter == "%in" )
-      copy.append( in );
+      copy.append( QString( "\"%1\"").arg( in ) );
     else if ( *iter == "%out" )
-      copy.append( out );
+      copy.append( QString( "\"%1\"").arg( out ) );
     else
       copy.append( *iter );
   }
@@ -90,9 +90,9 @@ QStringList QgsGPSDevice::exportCommand( const QString& babel,
     else if ( *iter == "%type" )
       copy.append( type );
     else if ( *iter == "%in" )
-      copy.append( in );
+      copy.append( QString("\"%1\"").arg( in ) );
     else if ( *iter == "%out" )
-      copy.append( out );
+      copy.append( QString("\"%1\"").arg( out ) );
     else
       copy.append( *iter );
   }
