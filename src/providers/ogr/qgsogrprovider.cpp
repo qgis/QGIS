@@ -19,9 +19,6 @@ email                : sherman at mrcc.com
 #include "qgsogrprovider.h"
 #include "qgslogger.h"
 
-#include <iostream>
-#include <cassert>
-
 #define CPL_SUPRESS_CPLUSPLUS
 #include <gdal.h>         // to collect version information
 #include <ogr_api.h>
@@ -81,7 +78,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
   // If there is no & in the uri, then the uri is just the filename. The loaded
   // layer will be layer 0.
   //this is not true for geojson
-  if ( ! uri.contains( '|', Qt::CaseSensitive ) )
+  if ( !uri.contains( '|', Qt::CaseSensitive ) )
   {
     mFilePath = uri;
     mLayerIndex = 0;
@@ -89,35 +86,33 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
   }
   else
   {
-    // If we get here, there are some options added to the filename. We must parse
-    // the different parts separated by &, and among each option, the name and the
-    // value around the =.
-    // A valid uri is of the form: filename&option1=value1&option2=value2,...
-
     QStringList theURIParts = uri.split( "|" );
     mFilePath = theURIParts.at( 0 );
 
     for ( int i = 1 ; i < theURIParts.size(); i++ )
     {
-      QStringList theInstruction = theURIParts.at( i ).split( "=" );
-      if ( theInstruction.at( 0 ) == QString( "layerid" ) )
+      QString part = theURIParts.at( i );
+      int pos = part.indexOf( "=" );
+      QString field = part.left( pos );
+      QString value = part.mid( pos + 1 );
+
+      if ( field == "layerid" )
       {
         bool ok;
-        mLayerIndex = theInstruction.at( 1 ).toInt( &ok );
+        mLayerIndex = value.toInt( &ok );
         if ( ! ok )
         {
           mLayerIndex = -1;
         }
       }
-
-      if ( theInstruction.at( 0 ) == QString( "layername" ) )
+      else if ( field == "layername" )
       {
-        mLayerName = theInstruction.at( 1 );
+        mLayerName = value;
       }
 
-      if ( theInstruction.at( 0 ) == QString( "subset" ) )
+      if ( field == "subset" )
       {
-        mSubsetString = theInstruction.at( 1 );
+        mSubsetString = value;
       }
     }
   }
@@ -126,7 +121,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
   QgsDebugMsg( "mLayerIndex: " + QString::number( mLayerIndex ) );
   QgsDebugMsg( "mLayerName: " + mLayerName );
   QgsDebugMsg( "mSubsetString: " + mSubsetString );
-  CPLSetConfigOption("OGR_ORGANIZE_POLYGONS", "SKIP");
+  CPLSetConfigOption( "OGR_ORGANIZE_POLYGONS", "SKIP" );
   CPLPushErrorHandler( CPLQuietErrorHandler );
   ogrDataSource = OGROpen( QFile::encodeName( mFilePath ).constData(), TRUE, &ogrDriver );
   CPLPopErrorHandler();
@@ -245,6 +240,7 @@ bool QgsOgrProvider::setSubsetString( QString theSQL )
   {
     uri += QString( "|subset=%1" ).arg( mSubsetString );
   }
+
   setDataSourceUri( uri );
 
   OGR_L_ResetReading( ogrLayer );
