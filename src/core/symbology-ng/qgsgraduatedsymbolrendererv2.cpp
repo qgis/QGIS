@@ -267,7 +267,7 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
 {
   QgsVectorDataProvider* provider = vlayer->dataProvider();
 
-  int attrNum = fieldNameIndex( vlayer->pendingFields(), attrName );
+  int attrNum = vlayer->fieldNameIndex( attrName );
 
   double minimum = provider->minimumValue( attrNum ).toDouble();
   double maximum = provider->maximumValue( attrNum ).toDouble();

@@ -329,7 +329,7 @@ void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
     {
       foreach( QString attrName, mRendererV2->usedAttributes() )
       {
-        int attrNum = QgsFeatureRendererV2::fieldNameIndex( pendingFields(), attrName );
+        int attrNum = fieldNameIndex( attrName );
         attributes.append( attrNum );
       }
       // make sure the renderer is ready for classification ("symbolForFeature")
@@ -831,7 +831,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     QgsAttributeList attributes;
     foreach( QString attrName, mRendererV2->usedAttributes() )
     {
-      int attrNum = QgsFeatureRendererV2::fieldNameIndex( pendingFields(), attrName );
+      int attrNum = fieldNameIndex( attrName );
       attributes.append( attrNum );
       QgsDebugMsg( "attrs: " + attrName + " - " + QString::number( attrNum ) );
     }
@@ -4467,4 +4467,18 @@ QPair<QString, QString> QgsVectorLayer::checkedState( int idx )
     return mCheckedStates[ fields[idx].name()];
   else
     return QPair<QString, QString>( "1", "0" );
+}
+
+int QgsVectorLayer::fieldNameIndex( const QString& fieldName ) const
+{
+  const QgsFieldMap &theFields = pendingFields();
+
+  for ( QgsFieldMap::const_iterator it = theFields.constBegin(); it != theFields.constEnd(); ++it )
+  {
+    if ( it->name() == fieldName )
+    {
+      return it.key();
+    }
+  }
+  return -1;
 }

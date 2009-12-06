@@ -242,7 +242,7 @@ static void _createCategories( QgsCategoryList& cats, QList<QVariant>& values, Q
 void QgsCategorizedSymbolRendererV2Widget::addCategories()
 {
   QString attrName = cboCategorizedColumn->currentText();
-  int idx = QgsFeatureRendererV2::fieldNameIndex( mLayer->pendingFields(), attrName );
+  int idx = mLayer->fieldNameIndex( attrName );
   QList<QVariant> unique_vals;
   mLayer->dataProvider()->uniqueValues( idx, unique_vals );
 

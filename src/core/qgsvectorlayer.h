@@ -528,6 +528,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Execute redo operation. To be called only from QgsVectorLayerUndoCommand. */
     void redoEditCommand( QgsUndoCommand* cmd );
 
+    /** Returns the index of a field name or -1 if the field does not exist
+      @note this method was added in version 1.4
+     */
+    int fieldNameIndex( const QString& fieldName ) const;
+
   public slots:
     /** Select feature by its ID, optionally emit signal selectionChanged() */
     void select( int featureId, bool emitSignal = TRUE );
