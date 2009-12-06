@@ -6,6 +6,7 @@
 #include <QHash>
 
 class QgsVectorColorRampV2;
+class QgsVectorLayer;
 
 class CORE_EXPORT QgsRendererCategoryV2
 {
@@ -47,7 +48,7 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
 
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature );
 
-    virtual void startRender( QgsRenderContext& context, const QgsFieldMap& fields );
+    virtual void startRender( QgsRenderContext& context, const QgsVectorLayer *vlayer );
 
     virtual void stopRender( QgsRenderContext& context );
 

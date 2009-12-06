@@ -23,7 +23,7 @@ QgsSymbolV2* QgsSingleSymbolRendererV2::symbolForFeature( QgsFeature& feature )
   return mSymbol;
 }
 
-void QgsSingleSymbolRendererV2::startRender( QgsRenderContext& context, const QgsFieldMap& fields )
+void QgsSingleSymbolRendererV2::startRender( QgsRenderContext& context, const QgsVectorLayer *vlayer )
 {
   mSymbol->startRender( context );
 }

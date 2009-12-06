@@ -6,6 +6,7 @@
 #include "qgsvectorcolorrampv2.h"
 
 #include "qgsfeature.h"
+#include "qgsvectorlayer.h"
 #include "qgslogger.h"
 
 #include <QDomDocument>
@@ -123,10 +124,10 @@ QgsSymbolV2* QgsGraduatedSymbolRendererV2::symbolForFeature( QgsFeature& feature
 
 }
 
-void QgsGraduatedSymbolRendererV2::startRender( QgsRenderContext& context, const QgsFieldMap& fields )
+void QgsGraduatedSymbolRendererV2::startRender( QgsRenderContext& context, const QgsVectorLayer *vlayer )
 {
   // find out classification attribute index from name
-  mAttrNum = fieldNameIndex( fields, mAttrName );
+  mAttrNum = vlayer ? vlayer->fieldNameIndex( mAttrName ) : -1;
 
   QgsRangeList::iterator it = mRanges.begin();
   for ( ; it != mRanges.end(); ++it )

@@ -333,7 +333,7 @@ void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
         attributes.append( attrNum );
       }
       // make sure the renderer is ready for classification ("symbolForFeature")
-      mRendererV2->startRender( rendererContext, pendingFields() );
+      mRendererV2->startRender( rendererContext, this );
     }
 
     // Add fields required for labels
@@ -686,14 +686,14 @@ unsigned char *QgsVectorLayer::drawPolygon( unsigned char *feature, QgsRenderCon
 
 void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool labeling )
 {
-  mRendererV2->startRender( rendererContext, pendingFields() );
+  mRendererV2->startRender( rendererContext, this );
 
   QgsSingleSymbolRendererV2* selRenderer = NULL;
   if ( !mSelectedFeatureIds.isEmpty() )
   {
     selRenderer = new QgsSingleSymbolRendererV2( QgsSymbolV2::defaultSymbol( geometryType() ) );
     selRenderer->symbol()->setColor( QgsRenderer::selectionColor() );
-    selRenderer->startRender( rendererContext, pendingFields() );
+    selRenderer->startRender( rendererContext, this );
   }
 
   QgsFeature fet;
@@ -728,14 +728,14 @@ void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bo
   QHash< QgsSymbolV2*, QList<QgsFeature> > features; // key = symbol, value = array of features
 
   // startRender must be called before symbolForFeature() calls to make sure renderer is ready
-  mRendererV2->startRender( rendererContext, pendingFields() );
+  mRendererV2->startRender( rendererContext, this );
 
   QgsSingleSymbolRendererV2* selRenderer = NULL;
   if ( !mSelectedFeatureIds.isEmpty() )
   {
     selRenderer = new QgsSingleSymbolRendererV2( QgsSymbolV2::defaultSymbol( geometryType() ) );
     selRenderer->symbol()->setColor( QgsRenderer::selectionColor() );
-    selRenderer->startRender( rendererContext, pendingFields() );
+    selRenderer->startRender( rendererContext, this );
   }
 
   // 1. fetch features

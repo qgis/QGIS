@@ -304,14 +304,3 @@ QgsLegendSymbologyList QgsFeatureRendererV2::legendSymbologyItems( QSize iconSiz
   // empty list by default
   return QgsLegendSymbologyList();
 }
-
-
-int QgsFeatureRendererV2::fieldNameIndex( const QgsFieldMap& fields, const QString& fieldName )
-{
-  for ( QgsFieldMap::const_iterator it = fields.constBegin(); it != fields.constEnd(); ++it )
-  {
-    if ( it->name() == fieldName )
-      return it.key();
-  }
-  return -1;
-}

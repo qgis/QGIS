@@ -6,6 +6,7 @@
 #include "qgsvectorcolorrampv2.h"
 
 #include "qgsfeature.h"
+#include "qgsvectorlayer.h"
 #include "qgslogger.h"
 
 #include <QDomDocument>
@@ -172,13 +173,13 @@ void QgsCategorizedSymbolRendererV2::deleteAllCategories()
   mCategories.clear();
 }
 
-void QgsCategorizedSymbolRendererV2::startRender( QgsRenderContext& context, const QgsFieldMap& fields )
+void QgsCategorizedSymbolRendererV2::startRender( QgsRenderContext& context, const QgsVectorLayer *vlayer )
 {
   // make sure that the hash table is up to date
   rebuildHash();
 
   // find out classification attribute index from name
-  mAttrNum = fieldNameIndex( fields, mAttrName );
+  mAttrNum = vlayer ? vlayer->fieldNameIndex( mAttrName ) : -1;
 
   QgsCategoryList::iterator it = mCategories.begin();
   for ( ; it != mCategories.end(); ++it )
