@@ -116,11 +116,15 @@ void QgsLegend::handleCurrentItemChanged( QTreeWidgetItem* current, QTreeWidgetI
   emit currentLayerChanged( layer );
 }
 
-void QgsLegend::addGroup()
+int QgsLegend::addGroup( QString name, bool expand )
 {
-  QgsLegendGroup* group = new QgsLegendGroup( this, tr( "group" ) );
+  if ( name.isEmpty() )
+    name = tr( "group" ); // some default name if none specified
+  QgsLegendGroup* group = new QgsLegendGroup( this, name );
   group->setData( 0, Qt::UserRole, Qt::Checked );
-  setExpanded( indexFromItem( group ), true );
+  QModelIndex groupIndex = indexFromItem( group );
+  setExpanded( groupIndex, expand );
+  return groupIndex.row();
 }
 
 void QgsLegend::removeAll()
@@ -157,6 +161,15 @@ void QgsLegend::selectAll( bool select )
 
   // Turn on rendering (if it was on previously)
   mMapCanvas->setRenderFlag( renderFlagState );
+}
+
+void QgsLegend::removeGroup( int groupIndex )
+{
+  QgsLegendGroup * lg = dynamic_cast<QgsLegendGroup *>( topLevelItem( groupIndex ) );
+  if ( lg )
+  {
+    removeGroup( lg );
+  }
 }
 
 void QgsLegend::removeLayer( QString layer_key )
@@ -351,6 +364,7 @@ void QgsLegend::mouseReleaseEvent( QMouseEvent * e )
 
   QgsLegendItem* origin = dynamic_cast<QgsLegendItem *>( mItemBeingMoved );
   mItemBeingMoved = NULL;
+  QModelIndex oldIndex = indexFromItem( origin );
 
   QgsLegendItem* dest = dynamic_cast<QgsLegendItem *>( destItem );
 
@@ -371,6 +385,7 @@ void QgsLegend::mouseReleaseEvent( QMouseEvent * e )
       {
         moveItem( origin, dest );
         setCurrentItem( origin );
+        emit itemMoved( oldIndex, indexFromItem( origin ) );
       }
     }
     else if ( mDropAction == BEFORE )// below center of item
@@ -381,6 +396,7 @@ void QgsLegend::mouseReleaseEvent( QMouseEvent * e )
         moveItem( origin, dest ); // Insert after, as above...
         moveItem( dest, origin ); // ... and then switch places!
         setCurrentItem( origin );
+        emit itemMoved( oldIndex, indexFromItem( origin ) );
       }
     }
     else if ( mDropAction == INTO_GROUP )
@@ -390,6 +406,7 @@ void QgsLegend::mouseReleaseEvent( QMouseEvent * e )
       {
         insertItem( origin, dest );
         setCurrentItem( origin );
+        emit itemMoved( oldIndex, indexFromItem( origin ) );
       }
     }
     else//no action
@@ -585,17 +602,27 @@ void QgsLegend::legendGroupRemove()
   QgsLegendGroup* lg = dynamic_cast<QgsLegendGroup *>( currentItem() );
   if ( lg )
   {
-    //delete the legend layers first
-    QTreeWidgetItem * child = lg->child( 0 );
-    while ( child )
-    {
-      setCurrentItem( child );
-      removeCurrentLayer();
-      child = lg->child( 0 );
-    }
-    delete lg;
-    adjustIconSize();
+    removeGroup( lg );
   }
+}
+
+void QgsLegend::removeGroup( QgsLegendGroup * lg )
+{
+  if ( !mMapCanvas || mMapCanvas->isDrawing() )
+  {
+    return;
+  }
+
+  //delete the legend layers first
+  QTreeWidgetItem * child = lg->child( 0 );
+  while ( child )
+  {
+    setCurrentItem( child );
+    removeCurrentLayer();
+    child = lg->child( 0 );
+  }
+  delete lg;
+  adjustIconSize();
 }
 
 void QgsLegend::removeCurrentLayer()
@@ -668,7 +695,15 @@ bool QgsLegend::removeLayer( QgsMapLayer* ml, bool askCancelOnEditable )
   return true;
 }
 
-
+void QgsLegend::moveLayer( QgsMapLayer * ml, int groupIndex )
+{
+  QgsLegendLayer *layer = findLegendLayer( ml->getLayerID() );
+  QgsLegendGroup *group = dynamic_cast<QgsLegendGroup*>( topLevelItem( groupIndex ) );
+  if ( layer && group )
+  {
+    insertItem( layer, group );
+  }
+}
 
 void QgsLegend::legendLayerShowProperties()
 {
@@ -1197,6 +1232,30 @@ bool QgsLegend::yCoordAboveCenter( QgsLegendItem* it, int ycoord )
   {
     return true;
   }
+}
+
+bool QgsLegend::isLegendGroup( const QModelIndex &index )
+{
+  return dynamic_cast<QgsLegendGroup *>( itemFromIndex( index ) );
+}
+
+QStringList QgsLegend::groups()
+{
+  QStringList groupList;
+  QTreeWidgetItem *current = firstItem();
+
+  while ( current )
+  {
+    QgsLegendGroup *group = dynamic_cast<QgsLegendGroup *>( current );
+    if ( group )
+    {
+      groupList.append( group->text( 0 ) );
+    }
+
+    current = nextItem( current );
+  }
+
+  return groupList;
 }
 
 /**Returns the first item in the hierarchy*/

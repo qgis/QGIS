@@ -19,6 +19,7 @@ symbology-ng/qgsvectorcolorbrewercolorrampv2dialog.cpp
 
 qgisgui.cpp
 qgisinterface.cpp
+qgslegendinterface.cpp
 qgscolorbutton.cpp
 qgscomposerview.cpp
 qgscursors.cpp
@@ -65,6 +66,7 @@ symbology-ng/qgsvectorcolorbrewercolorrampv2dialog.h
 qgscomposerview.h
 qgsdetaileditemdelegate.h
 qgsdetaileditemwidget.h
+qgslegendinterface.h
 qgisinterface.h
 qgsencodingfiledialog.h
 qgsgenericprojectionselector.h

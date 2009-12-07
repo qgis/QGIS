@@ -31,7 +31,8 @@
 #include "qgsshortcutsmanager.h"
 
 QgisAppInterface::QgisAppInterface( QgisApp * _qgis )
-    : qgis( _qgis )
+    : qgis( _qgis ),
+    legendIface( _qgis->legend() )
 {
   // connect signals
   connect( qgis->legend(), SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
@@ -43,6 +44,11 @@ QgisAppInterface::QgisAppInterface( QgisApp * _qgis )
 
 QgisAppInterface::~QgisAppInterface()
 {
+}
+
+QgsLegendInterface* QgisAppInterface::legendInterface()
+{
+  return &legendIface;
 }
 
 void QgisAppInterface::zoomFull()

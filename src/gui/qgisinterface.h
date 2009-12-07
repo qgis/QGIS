@@ -37,6 +37,7 @@ class QgsMapLayer;
 class QgsMapCanvas;
 class QgsRasterLayer;
 class QgsVectorLayer;
+class QgsLegendInterface;
 
 /** \ingroup gui
  * QgisInterface
@@ -61,6 +62,11 @@ class GUI_EXPORT QgisInterface : public QObject
 
     /** Virtual destructor */
     virtual ~QgisInterface();
+
+    /** Get pointer to legend interface
+      \note added in 1.4
+     */
+    virtual QgsLegendInterface* legendInterface() = 0;
 
 
   public slots: // TODO: do these functions really need to be slots?
