@@ -68,6 +68,9 @@ class QgisAppInterface : public QgisInterface
     //! Get pointer to the active layer (layer selected in the legend)
     QgsMapLayer *activeLayer();
 
+    //! set the active layer (layer selected in the legend)
+    bool setActiveLayer( QgsMapLayer *layer );
+
     //! Add an icon to the plugins toolbar
     int addToolBarIcon( QAction *qAction );
     //! Remove an icon (action) from the plugin toolbar

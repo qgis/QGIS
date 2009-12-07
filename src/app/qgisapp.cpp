@@ -4567,7 +4567,13 @@ void QgisApp::openURL( QString url, bool useQgisDocDirectory )
 /** Get a pointer to the currently selected map layer */
 QgsMapLayer *QgisApp::activeLayer()
 {
-  return ( mMapLegend->currentLayer() );
+  return mMapLegend->currentLayer();
+}
+
+/** set the current layer */
+bool QgisApp::setActiveLayer( QgsMapLayer *layer )
+{
+  return mMapLegend->setCurrentLayer( layer );
 }
 
 /** Add a vector layer directly without prompting user for location

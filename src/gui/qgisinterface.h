@@ -95,6 +95,11 @@ class GUI_EXPORT QgisInterface : public QObject
     //! Get pointer to the active layer (layer selected in the legend)
     virtual QgsMapLayer *activeLayer() = 0;
 
+    //! Set the active layer (layer gets selected in the legend)
+    //! returns true if the layer exists, false otherwise
+    //! added in 1.4
+    virtual bool setActiveLayer( QgsMapLayer * ) = 0;
+
     //! Add an icon to the plugins toolbar
     virtual int addToolBarIcon( QAction *qAction ) = 0;
 

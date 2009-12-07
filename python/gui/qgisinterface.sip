@@ -52,6 +52,10 @@ class QgisInterface : QObject
     //! Get pointer to the active layer (layer selected in the legend)
     virtual QgsMapLayer *activeLayer()=0;
 
+    //! Get pointer to the active layer (layer selected in the legend)
+    //! added in 1.4
+    virtual bool setActiveLayer( QgsMapLayer * )=0;
+
     //! Add an icon to the plugins toolbar
     virtual int addToolBarIcon(QAction *qAction) =0;
     //! Remove an action (icon) from the plugin toolbar

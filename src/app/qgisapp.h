@@ -474,6 +474,8 @@ class QgisApp : public QMainWindow
     */
     //! Return pointer to the active layer
     QgsMapLayer *activeLayer();
+    //! set the active layer
+    bool setActiveLayer( QgsMapLayer * );
     //! Open the help contents in a browser
     void helpContents();
     //! Open the QGIS homepage in users browser

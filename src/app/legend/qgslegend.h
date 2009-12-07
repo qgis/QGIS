@@ -103,6 +103,10 @@ class QgsLegend : public QTreeWidget
     Else, 0 is returned.*/
     QgsMapLayer* currentLayer();
 
+    /*!set the current layer
+    returns true if the layer exists, false otherwise*/
+    bool setCurrentLayer( QgsMapLayer *layer );
+
     /**Writes the content of the legend to a project file*/
     bool writeXML( QDomNode & layer_node, QDomDocument & document );
 
@@ -285,8 +289,11 @@ class QgsLegend : public QTreeWidget
     /**Moves an item back to the position where storeInitialPosition has been called*/
     void resetToInitialPosition( QTreeWidgetItem* li );
 
-    /**Returns the legend layer to which a map layer gelongs*/
+    /**Returns the legend layer to which a map layer belongs to*/
     QgsLegendLayer* findLegendLayer( const QString& layerKey );
+
+    /**Returns the legend layer to which a map layer belongs to*/
+    QgsLegendLayer* findLegendLayer( const QgsMapLayer *layer );
 
     /**Checks mPixmapWidthValues and mPixmapHeightValues and sets a new icon size if necessary*/
     void adjustIconSize();
