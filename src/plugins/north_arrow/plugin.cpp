@@ -325,7 +325,7 @@ bool QgsNorthArrowPlugin::calculateNorthDirection()
         p1 = transform.transform( p1 );
         p2 = transform.transform( p2 );
       }
-      catch ( QgsException &e )
+      catch ( QgsCsException &e )
       {
         Q_UNUSED( e );
         // just give up

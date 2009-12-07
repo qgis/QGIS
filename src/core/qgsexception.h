@@ -56,26 +56,6 @@ class CORE_EXPORT QgsException : public std::exception
 }; // class QgsException
 
 
-/** for Qgis I/O related exceptions
-
-  @note usually thrown for opening file's that don't exist, and the like.
-
-*/
-class QgsIOException : public QgsException
-{
-  public:
-
-    QgsIOException( std::string const & what )
-        : QgsException( what )
-    {}
-
-    QgsIOException( QString const & what )
-        : QgsException( what )
-    {}
-
-}; // class QgsIOException
-
-
 
 /** for files missing from layers while reading project files
 
