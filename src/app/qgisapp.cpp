@@ -3370,6 +3370,9 @@ void QgisApp::fileOpen()
     {
       if ( ! QgsProject::instance()->read() )
       {
+        QMessageBox::critical( this,
+                               tr( "QGIS Project Read Error" ),
+                               QgsProject::instance()->error() );
         mMapCanvas->freeze( false );
         mMapCanvas->refresh();
         return;
@@ -3388,16 +3391,6 @@ void QgisApp::fileOpen()
 
       // Tell the legend to update the ordering
       mMapLegend->readProject( e.document() );
-    }
-    catch ( std::exception & e )
-    {
-      QMessageBox::critical( this,
-                             tr( "QGIS Project Read Error" ),
-                             QString::fromLocal8Bit( e.what() ) );
-      QgsDebugMsg( "BAD QgsMapLayer::LayerType FOUND" );
-      mMapCanvas->freeze( false );
-      mMapCanvas->refresh();
-      return;
     }
 
     setTitleBarText_( *this );
@@ -3436,6 +3429,12 @@ bool QgisApp::addProject( QString projectFile )
   {
     if ( ! QgsProject::instance()->read( projectFile ) )
     {
+      QMessageBox::critical( this,
+                             tr( "Unable to open project" ),
+                             QgsProject::instance()->error() );
+
+      QApplication::restoreOverrideCursor();
+
       mMapCanvas->freeze( false );
       mMapCanvas->refresh();
       return false;
@@ -3467,20 +3466,6 @@ bool QgisApp::addProject( QString projectFile )
     }
     // Continue after last catch statement
 
-  }
-  catch ( std::exception & e )
-  {
-    QgsDebugMsg( "BAD QgsMapLayer::LayerType FOUND" );
-
-    QMessageBox::critical( this,
-                           tr( "Unable to open project" ),
-                           QString::fromLocal8Bit( e.what() ) );
-
-    QApplication::restoreOverrideCursor();
-
-    mMapCanvas->freeze( false );
-    mMapCanvas->refresh();
-    return false;
   }
 
   // Continue, now with layers found (hopefully)
@@ -3569,33 +3554,23 @@ bool QgisApp::fileSave()
     QgsProject::instance()->setFileName( fullPath.filePath() );
   }
 
-  try
+  if ( QgsProject::instance()->write() )
   {
-    if ( QgsProject::instance()->write() )
-    {
-      setTitleBarText_( *this ); // update title bar
-      statusBar()->showMessage( tr( "Saved project to: %1" ).arg( QgsProject::instance()->fileName() ) );
+    setTitleBarText_( *this ); // update title bar
+    statusBar()->showMessage( tr( "Saved project to: %1" ).arg( QgsProject::instance()->fileName() ) );
 
-      if ( isNewProject )
-      {
-        // add this to the list of recently used project files
-        QSettings settings;
-        saveRecentProjectPath( fullPath.filePath(), settings );
-      }
-    }
-    else
+    if ( isNewProject )
     {
-      QMessageBox::critical( this,
-                             tr( "Unable to save project" ),
-                             tr( "Unable to save project to %1" ).arg( QgsProject::instance()->fileName() ) );
-      return false;
+      // add this to the list of recently used project files
+      QSettings settings;
+      saveRecentProjectPath( fullPath.filePath(), settings );
     }
   }
-  catch ( std::exception & e )
+  else
   {
     QMessageBox::critical( this,
                            tr( "Unable to save project %1" ).arg( QgsProject::instance()->fileName() ),
-                           QString::fromLocal8Bit( e.what() ) );
+                           QgsProject::instance()->error() );
     return false;
   }
   return true;
@@ -3628,29 +3603,20 @@ void QgisApp::fileSaveAs()
     saveFilePath = myFI.filePath() + ".qgs";
   }
 
-  try
-  {
-    QgsProject::instance()->setFileName( saveFilePath );
+  QgsProject::instance()->setFileName( saveFilePath );
 
-    if ( QgsProject::instance()->write() )
-    {
-      setTitleBarText_( *this ); // update title bar
-      statusBar()->showMessage( tr( "Saved project to: %1" ).arg( QgsProject::instance()->fileName() ) );
-      // add this to the list of recently used project files
-      saveRecentProjectPath( saveFilePath, settings );
-    }
-    else
-    {
-      QMessageBox::critical( this,
-                             tr( "Unable to save project" ),
-                             tr( "Unable to save project to %1" ).arg( QgsProject::instance()->fileName() ) );
-    }
-  }
-  catch ( std::exception & e )
+  if ( QgsProject::instance()->write() )
   {
-    QMessageBox::critical( 0x0,
+    setTitleBarText_( *this ); // update title bar
+    statusBar()->showMessage( tr( "Saved project to: %1" ).arg( QgsProject::instance()->fileName() ) );
+    // add this to the list of recently used project files
+    saveRecentProjectPath( saveFilePath, settings );
+  }
+  else
+  {
+    QMessageBox::critical( this,
                            tr( "Unable to save project %1" ).arg( QgsProject::instance()->fileName() ),
-                           QString::fromLocal8Bit( e.what() ),
+                           QgsProject::instance()->error(),
                            QMessageBox::Ok,
                            Qt::NoButton );
   }
@@ -3693,20 +3659,8 @@ void QgisApp::openProject( const QString & fileName )
   // possibly save any pending work before opening a different project
   if ( saveDirty() )
   {
-    try
-    {
-      if ( ! addProject( fileName ) )
-      {
-        QgsDebugMsg( "unable to load project " + fileName );
-      }
-    }
-    catch ( QgsIOException & io_exception )
-    {
-      Q_UNUSED( io_exception );
-      QMessageBox::critical( this,
-                             tr( "QGIS: Unable to load project" ),
-                             tr( "Unable to load project %1" ).arg( fileName ) );
-    }
+    // error handling and reporting is in addProject() function
+    addProject( fileName );
   }
   return ;
 }

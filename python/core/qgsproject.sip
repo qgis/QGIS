@@ -231,6 +231,20 @@ public:
       @note added in 1.3 */
     QString readPath( QString filename ) const;
 
+    /** Return error message from previous read/write
+      @note added in 1.4 */
+    QString error() const;
+
+  protected:
+
+    /** Set error message from read/write operation
+      @note added in 1.4 */
+    void setError( QString errorMessage );
+
+    /** Clear error message
+      @note added in 1.4 */
+    void clearError();
+
   signals:
     
     //! emitted when project is being read
