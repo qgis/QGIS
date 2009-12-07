@@ -98,7 +98,7 @@ QgsGPXProvider::QgsGPXProvider( QString uri ) :
   mSelectionRectangle = 0;
 
   // parse the file
-  data = GPSData::getData( mFileName );
+  data = QgsGPSData::getData( mFileName );
   if ( data == 0 )
   {
     return;
@@ -110,7 +110,7 @@ QgsGPXProvider::QgsGPXProvider( QString uri ) :
 
 QgsGPXProvider::~QgsGPXProvider()
 {
-  GPSData::releaseData( mFileName );
+  QgsGPSData::releaseData( mFileName );
   delete mSelectionRectangle;
 }
 
@@ -140,7 +140,7 @@ bool QgsGPXProvider::nextFeature( QgsFeature& feature )
     // the bounds rectangle
     for ( ; mWptIter != data->waypointsEnd(); ++mWptIter )
     {
-      const Waypoint* wpt;
+      const QgsWaypoint* wpt;
       wpt = &( *mWptIter );
       if ( boundsCheck( wpt->lon, wpt->lat ) )
       {
@@ -205,7 +205,7 @@ bool QgsGPXProvider::nextFeature( QgsFeature& feature )
     // rectangle
     for ( ; mRteIter != data->routesEnd(); ++mRteIter )
     {
-      const Route* rte;
+      const QgsRoute* rte;
       rte = &( *mRteIter );
 
       if ( rte->points.size() == 0 )
@@ -298,7 +298,7 @@ bool QgsGPXProvider::nextFeature( QgsFeature& feature )
     // rectangle
     for ( ; mTrkIter != data->tracksEnd(); ++mTrkIter )
     {
-      const Track* trk;
+      const QgsTrack* trk;
       trk = &( *mTrkIter );
 
       QgsLogger::debug( "GPX feature track segments: ", trk->segments.size(), __FILE__, __FUNCTION__, __LINE__ );
@@ -307,7 +307,7 @@ bool QgsGPXProvider::nextFeature( QgsFeature& feature )
 
       // A track consists of several segments. Add all those segments into one.
       int totalPoints = 0;;
-      for ( std::vector<TrackSegment>::size_type i = 0; i < trk->segments.size(); i ++ )
+      for ( std::vector<QgsTrackSegment>::size_type i = 0; i < trk->segments.size(); i ++ )
       {
         totalPoints += trk->segments[i].points.size();
       }
@@ -331,7 +331,7 @@ bool QgsGPXProvider::nextFeature( QgsFeature& feature )
         std::memcpy( geo + 5, &totalPoints, 4 );
 
         int thisPoint = 0;
-        for ( std::vector<TrackSegment>::size_type k = 0; k < trk->segments.size(); k++ )
+        for ( std::vector<QgsTrackSegment>::size_type k = 0; k < trk->segments.size(); k++ )
         {
           int nPoints = trk->segments[k].points.size();
           for ( int i = 0; i < nPoints; ++i )
@@ -530,7 +530,7 @@ bool QgsGPXProvider::addFeature( QgsFeature& f )
   unsigned char* geo = f.geometry()->asWkb();
   QGis::WkbType wkbType = f.geometry()->wkbType();
   bool success = false;
-  GPSObject* obj = NULL;
+  QgsGPSObject* obj = NULL;
   const QgsAttributeMap& attrs( f.attributeMap() );
   QgsAttributeMap::const_iterator it;
 
@@ -539,7 +539,7 @@ bool QgsGPXProvider::addFeature( QgsFeature& f )
   {
 
     // add geometry
-    Waypoint wpt;
+    QgsWaypoint wpt;
     std::memcpy( &wpt.lon, geo + 5, sizeof( double ) );
     std::memcpy( &wpt.lat, geo + 13, sizeof( double ) );
 
@@ -559,7 +559,7 @@ bool QgsGPXProvider::addFeature( QgsFeature& f )
       }
     }
 
-    GPSData::WaypointIterator iter = data->addWaypoint( wpt );
+    QgsGPSData::WaypointIterator iter = data->addWaypoint( wpt );
     success = true;
     obj = &( *iter );
   }
@@ -568,7 +568,7 @@ bool QgsGPXProvider::addFeature( QgsFeature& f )
   if ( mFeatureType == RouteType && geo != NULL && wkbType == QGis::WKBLineString )
   {
 
-    Route rte;
+    QgsRoute rte;
 
     // reset bounds
     rte.xMin = std::numeric_limits<double>::max();
@@ -584,7 +584,7 @@ bool QgsGPXProvider::addFeature( QgsFeature& f )
       double lat, lon;
       std::memcpy( &lon, geo + 9 + 16 * i, sizeof( double ) );
       std::memcpy( &lat, geo + 9 + 16 * i + 8, sizeof( double ) );
-      Routepoint rtept;
+      QgsRoutepoint rtept;
       rtept.lat = lat;
       rtept.lon = lon;
       rte.points.push_back( rtept );
@@ -606,7 +606,7 @@ bool QgsGPXProvider::addFeature( QgsFeature& f )
       }
     }
 
-    GPSData::RouteIterator iter = data->addRoute( rte );
+    QgsGPSData::RouteIterator iter = data->addRoute( rte );
     success = true;
     obj = &( *iter );
   }
@@ -615,8 +615,8 @@ bool QgsGPXProvider::addFeature( QgsFeature& f )
   if ( mFeatureType == TrackType && geo != NULL && wkbType == QGis::WKBLineString )
   {
 
-    Track trk;
-    TrackSegment trkseg;
+    QgsTrack trk;
+    QgsTrackSegment trkseg;
 
     // reset bounds
     trk.xMin = std::numeric_limits<double>::max();
@@ -632,7 +632,7 @@ bool QgsGPXProvider::addFeature( QgsFeature& f )
       double lat, lon;
       std::memcpy( &lon, geo + 9 + 16 * i, sizeof( double ) );
       std::memcpy( &lat, geo + 9 + 16 * i + 8, sizeof( double ) );
-      Trackpoint trkpt;
+      QgsTrackpoint trkpt;
       trkpt.lat = lat;
       trkpt.lon = lon;
       trkseg.points.push_back( trkpt );
@@ -655,7 +655,7 @@ bool QgsGPXProvider::addFeature( QgsFeature& f )
     }
 
     trk.segments.push_back( trkseg );
-    GPSData::TrackIterator iter = data->addTrack( trk );
+    QgsGPSData::TrackIterator iter = data->addTrack( trk );
     success = true;
     obj = &( *iter );
   }
@@ -721,7 +721,7 @@ bool QgsGPXProvider::changeAttributeValues( const QgsChangedAttributesMap & attr
   QgsChangedAttributesMap::const_iterator aIter = attr_map.begin();
   if ( mFeatureType == WaypointType )
   {
-    GPSData::WaypointIterator wIter = data->waypointsBegin();
+    QgsGPSData::WaypointIterator wIter = data->waypointsBegin();
     for ( ; wIter != data->waypointsEnd() && aIter != attr_map.end(); ++wIter )
     {
       if ( wIter->id == aIter.key() )
@@ -733,7 +733,7 @@ bool QgsGPXProvider::changeAttributeValues( const QgsChangedAttributesMap & attr
   }
   else if ( mFeatureType == RouteType )
   {
-    GPSData::RouteIterator rIter = data->routesBegin();
+    QgsGPSData::RouteIterator rIter = data->routesBegin();
     for ( ; rIter != data->routesEnd() && aIter != attr_map.end(); ++rIter )
     {
       if ( rIter->id == aIter.key() )
@@ -745,7 +745,7 @@ bool QgsGPXProvider::changeAttributeValues( const QgsChangedAttributesMap & attr
   }
   if ( mFeatureType == TrackType )
   {
-    GPSData::TrackIterator tIter = data->tracksBegin();
+    QgsGPSData::TrackIterator tIter = data->tracksBegin();
     for ( ; tIter != data->tracksEnd() && aIter != attr_map.end(); ++tIter )
     {
       if ( tIter->id == aIter.key() )
@@ -766,7 +766,7 @@ bool QgsGPXProvider::changeAttributeValues( const QgsChangedAttributesMap & attr
 }
 
 
-void QgsGPXProvider::changeAttributeValues( GPSObject& obj, const QgsAttributeMap& attrs )
+void QgsGPXProvider::changeAttributeValues( QgsGPSObject& obj, const QgsAttributeMap& attrs )
 {
   QgsAttributeMap::const_iterator aIter;
 
@@ -785,7 +785,7 @@ void QgsGPXProvider::changeAttributeValues( GPSObject& obj, const QgsAttributeMa
     obj.urlname = attrs[URLNameAttr].toString();
 
   // waypoint-specific attributes
-  Waypoint* wpt = dynamic_cast<Waypoint*>( &obj );
+  QgsWaypoint* wpt = dynamic_cast<QgsWaypoint*>( &obj );
   if ( wpt != NULL )
   {
     if ( attrs.contains( SymAttr ) )
@@ -800,7 +800,7 @@ void QgsGPXProvider::changeAttributeValues( GPSObject& obj, const QgsAttributeMa
   }
 
   // route- and track-specific attributes
-  GPSExtended* ext = dynamic_cast<GPSExtended*>( &obj );
+  QgsGPSExtended* ext = dynamic_cast<QgsGPSExtended*>( &obj );
   if ( ext != NULL )
   {
     if ( attrs.contains( NumAttr ) )

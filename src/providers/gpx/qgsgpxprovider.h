@@ -26,7 +26,7 @@ class QgsFeature;
 class QgsField;
 class QFile;
 class QDomDocument;
-class GPSData;
+class QgsGPSData;
 
 
 /**
@@ -144,7 +144,7 @@ class QgsGPXProvider : public QgsVectorDataProvider
 
     /* new functions */
 
-    void changeAttributeValues( GPSObject& obj,
+    void changeAttributeValues( QgsGPSObject& obj,
                                 const QgsAttributeMap& attrs );
 
     /** Adds one feature (used by addFeatures()) */
@@ -162,7 +162,7 @@ class QgsGPXProvider : public QgsVectorDataProvider
 
   private:
 
-    GPSData* data;
+    QgsGPSData* data;
 
     //! Fields
     QgsFieldMap attributeFields;
@@ -180,11 +180,11 @@ class QgsGPXProvider : public QgsVectorDataProvider
     long mNumberFeatures;
 
     //! Current waypoint iterator
-    GPSData::WaypointIterator mWptIter;
+    QgsGPSData::WaypointIterator mWptIter;
     //! Current route iterator
-    GPSData::RouteIterator mRteIter;
+    QgsGPSData::RouteIterator mRteIter;
     //! Current track iterator
-    GPSData::TrackIterator mTrkIter;
+    QgsGPSData::TrackIterator mTrkIter;
 
     struct wkbPoint
     {
