@@ -41,17 +41,17 @@ public:
 
   QString type() const;
 
-	virtual QgsSymbolV2* symbolForFeature(QgsFeature& feature)=0;
-	
-  virtual void startRender(QgsRenderContext& context, const QMap<int, QgsField>& fields)=0;
-	
-	virtual void stopRender(QgsRenderContext& context)=0;
-	
+  virtual QgsSymbolV2* symbolForFeature(QgsFeature& feature)=0;
+
+  virtual void startRender(QgsRenderContext& context, const QgsVectorLayer * )=0;
+
+  virtual void stopRender(QgsRenderContext& context)=0;
+
   virtual QList<QString> usedAttributes()=0;
-	
-	virtual ~QgsFeatureRendererV2();
-	
-	virtual QString dump();
+
+  virtual ~QgsFeatureRendererV2();
+
+  virtual QString dump();
 
   virtual QgsFeatureRendererV2* clone()=0 /Factory/;
 
@@ -85,17 +85,17 @@ class QgsSingleSymbolRendererV2 : QgsFeatureRendererV2
 %End
 
 public:
-	
-	QgsSingleSymbolRendererV2(QgsSymbolV2* symbol /Transfer/);
-	
-	virtual ~QgsSingleSymbolRendererV2();
-	
-	virtual QgsSymbolV2* symbolForFeature(QgsFeature& feature);
-	
-  virtual void startRender(QgsRenderContext& context, const QMap<int, QgsField>& fields);
-	
-	virtual void stopRender(QgsRenderContext& context);
-	
+
+  QgsSingleSymbolRendererV2(QgsSymbolV2* symbol /Transfer/);
+
+  virtual ~QgsSingleSymbolRendererV2();
+
+  virtual QgsSymbolV2* symbolForFeature(QgsFeature& feature);
+
+  virtual void startRender(QgsRenderContext& context, const QgsVectorLayer * );
+
+  virtual void stopRender(QgsRenderContext& context);
+
   virtual QList<QString> usedAttributes();
 
   QgsSymbolV2* symbol() const;
@@ -125,21 +125,21 @@ class QgsRendererCategoryV2
 %End
 
 public:
-  
+
   //! takes ownership of symbol
   QgsRendererCategoryV2(QVariant value, QgsSymbolV2* symbol /Transfer/, QString label);
-  
+
   QgsRendererCategoryV2(const QgsRendererCategoryV2& cat);
-  
+
   ~QgsRendererCategoryV2();
-  
+
   QVariant value() const;
   QgsSymbolV2* symbol();
   QString label() const;
-  
+
   void setSymbol(QgsSymbolV2* s /Transfer/);
   void setLabel(QString label);
-  
+
   QString dump();
 };
 
@@ -152,34 +152,34 @@ class QgsCategorizedSymbolRendererV2 : QgsFeatureRendererV2
 %End
 
 public:
-	
+
   QgsCategorizedSymbolRendererV2(QString attrName = QString(), QgsCategoryList categories = QgsCategoryList());
-	
-	virtual ~QgsCategorizedSymbolRendererV2();
-	
-	virtual QgsSymbolV2* symbolForFeature(QgsFeature& feature);
-	
-  virtual void startRender(QgsRenderContext& context, const QMap<int, QgsField>& fields);
-	
-	virtual void stopRender(QgsRenderContext& context);
-	
+
+  virtual ~QgsCategorizedSymbolRendererV2();
+
+  virtual QgsSymbolV2* symbolForFeature(QgsFeature& feature);
+
+  virtual void startRender(QgsRenderContext& context, const QgsVectorLayer * );
+
+  virtual void stopRender(QgsRenderContext& context);
+
   virtual QList<QString> usedAttributes();
-  
+
   virtual QString dump();
 
   virtual QgsFeatureRendererV2* clone() /Factory/;
 
   const QgsCategoryList& categories();
-  
+
   //! return index of category with specified value (-1 if not found)
   int categoryIndexForValue(QVariant val);
-  
+
   bool updateCategorySymbol(int catIndex, QgsSymbolV2* symbol /Transfer/);
   bool updateCategoryLabel(int catIndex, QString label);
-  
+
   bool deleteCategory(int catIndex);
   void deleteAllCategories();
-  
+
   //! create a renderer from XML element
   static QgsFeatureRendererV2* load(QDomElement& symbologyElem) /Factory/;
 
@@ -199,7 +199,7 @@ public:
   void setSourceColorRamp(QgsVectorColorRampV2* ramp /Transfer/);
 
 protected:
-  
+
   QgsSymbolV2* symbolForValue(QVariant value);
 };
 
@@ -244,7 +244,7 @@ public:
 
   virtual QgsSymbolV2* symbolForFeature(QgsFeature& feature);
 
-  virtual void startRender(QgsRenderContext& context, const QMap<int, QgsField>& fields);
+  virtual void startRender(QgsRenderContext& context, const QgsVectorLayer * );
 
   virtual void stopRender(QgsRenderContext& context);
 
@@ -319,30 +319,30 @@ class QgsSymbolLayerV2
 
 
 public:
-	
-	virtual void setColor(const QColor& color);
-	virtual QColor color() const;
-	
-	virtual ~QgsSymbolLayerV2();
-  
-	virtual QString layerType() const = 0;
-	
-	virtual void startRender(QgsRenderContext& context) = 0;
-	virtual void stopRender(QgsRenderContext& context) = 0;
-	
-	virtual QgsSymbolLayerV2* clone() const = 0 /Factory/;
-	
-	virtual QgsStringMap properties() const = 0;
-	
-	virtual void drawPreviewIcon(QPainter* painter, QSize size) = 0;
-	
-	virtual QgsSymbolV2* subSymbol();
-	virtual bool setSubSymbol(QgsSymbolV2* symbol /Transfer/);
-	
+
+  virtual void setColor(const QColor& color);
+  virtual QColor color() const;
+
+  virtual ~QgsSymbolLayerV2();
+
+  virtual QString layerType() const = 0;
+
+  virtual void startRender(QgsRenderContext& context) = 0;
+  virtual void stopRender(QgsRenderContext& context) = 0;
+
+  virtual QgsSymbolLayerV2* clone() const = 0 /Factory/;
+
+  virtual QgsStringMap properties() const = 0;
+
+  virtual void drawPreviewIcon(QPainter* painter, QSize size) = 0;
+
+  virtual QgsSymbolV2* subSymbol();
+  virtual bool setSubSymbol(QgsSymbolV2* symbol /Transfer/);
+
   QgsSymbolV2::SymbolType type() const;
-	
+
   void setLocked(bool locked);
-	bool isLocked() const;
+  bool isLocked() const;
 
   // used only with rending with symbol levels is turned on (0 = first pass, 1 = second, ...)
   void setRenderingPass(int renderingPass);
@@ -350,7 +350,7 @@ public:
 
 protected:
   QgsSymbolLayerV2(QgsSymbolV2::SymbolType type, bool locked = false);
-	
+
 };
 
 ///////////////
@@ -363,18 +363,18 @@ class QgsMarkerSymbolLayerV2 : QgsSymbolLayerV2
 
 public:
   virtual void renderPoint(const QPointF& point, QgsRenderContext& context) = 0;
-	
-	void drawPreviewIcon(QPainter* painter, QSize size);
+
+  void drawPreviewIcon(QPainter* painter, QSize size);
 
   void setAngle(double angle);
   double angle() const;
-	
+
   void setSize(double size);
   double size() const;
-	
+
 protected:
   QgsMarkerSymbolLayerV2(bool locked = false);
-  
+
 };
 
 class QgsLineSymbolLayerV2 : QgsSymbolLayerV2
@@ -385,12 +385,12 @@ class QgsLineSymbolLayerV2 : QgsSymbolLayerV2
 
 public:
   virtual void renderPolyline(const QPolygonF& points, QgsRenderContext& context) = 0;
-	
+
   void setWidth(double width);
   double width() const;
-		
+  	
   void drawPreviewIcon(QPainter* painter, QSize size);
-  
+
 protected:
   QgsLineSymbolLayerV2(bool locked = false);
 
@@ -404,9 +404,9 @@ class QgsFillSymbolLayerV2 : QgsSymbolLayerV2
 
 public:
   virtual void renderPolygon(const QPolygonF& points, QList<QPolygonF>* rings, QgsRenderContext& context) = 0;
-	
-	void drawPreviewIcon(QPainter* painter, QSize size);
-  
+
+  void drawPreviewIcon(QPainter* painter, QSize size);
+
 protected:
   QgsFillSymbolLayerV2(bool locked = false);
 };
@@ -434,60 +434,60 @@ class QgsSymbolV2
 %End
 
 public:
-	
-	enum SymbolType
-	{
-		Marker,
-		Line,
-		Fill
-	};
-  
+
+  enum SymbolType
+  {
+  	Marker,
+  	Line,
+  	Fill
+  };
+
   virtual ~QgsSymbolV2();
-  
+
   //! return new default symbol for specified geometry type
   static QgsSymbolV2* defaultSymbol(QGis::GeometryType geomType) /Factory/;
 
   SymbolType type() const;
-  
+
   // symbol layers handling
-  
+
   QgsSymbolLayerV2* symbolLayer(int layer);
-  
+
   int symbolLayerCount();
-  
+
   //! insert symbol layer to specified index
   bool insertSymbolLayer(int index, QgsSymbolLayerV2* layer /Transfer/);
-  
+
   //! append symbol layer at the end of the list
   bool appendSymbolLayer(QgsSymbolLayerV2* layer /Transfer/);
-  
+
   //! delete symbol layer at specified index
   bool deleteSymbolLayer(int index);
-  
+
   //! remove symbol layer from the list and return pointer to it
   QgsSymbolLayerV2* takeSymbolLayer(int index) /TransferBack/;
-  
+
   //! delete layer at specified index and set a new one
   bool changeSymbolLayer(int index, QgsSymbolLayerV2* layer /Transfer/);
-  
-	
-	void startRender(QgsRenderContext& context);
-	void stopRender(QgsRenderContext& context);
-	
-	void setColor(const QColor& color);
-	QColor color();
-	
-	void drawPreviewIcon(QPainter* painter, QSize size);
-  
+
+
+  void startRender(QgsRenderContext& context);
+  void stopRender(QgsRenderContext& context);
+
+  void setColor(const QColor& color);
+  QColor color();
+
+  void drawPreviewIcon(QPainter* painter, QSize size);
+
   QImage bigSymbolPreviewImage();
-	
-	QString dump();
-  
+
+  QString dump();
+
   virtual QgsSymbolV2* clone() const = 0 /Factory/;
-	
+
 protected:
   QgsSymbolV2(SymbolType type, QgsSymbolLayerV2List layers /Transfer/); // can't be instantiated
-  
+
 };
 
 //////////
@@ -500,14 +500,14 @@ class QgsMarkerSymbolV2 : QgsSymbolV2
 %End
 
 public:
-	QgsMarkerSymbolV2(QgsSymbolLayerV2List layers /Transfer/ = QgsSymbolLayerV2List());
-	
-	void setAngle(double angle);
-	double angle();
-	
-	void setSize(double size);
-	double size();
-	
+  QgsMarkerSymbolV2(QgsSymbolLayerV2List layers /Transfer/ = QgsSymbolLayerV2List());
+
+  void setAngle(double angle);
+  double angle();
+
+  void setSize(double size);
+  double size();
+
   void renderPoint(const QPointF& point, QgsRenderContext& context, int layer = -1);
 
   virtual QgsSymbolV2* clone() const /Factory/;
@@ -522,13 +522,13 @@ class QgsLineSymbolV2 : QgsSymbolV2
 %End
 
 public:
-	QgsLineSymbolV2(QgsSymbolLayerV2List layers /Transfer/ = QgsSymbolLayerV2List());
-	
+  QgsLineSymbolV2(QgsSymbolLayerV2List layers /Transfer/ = QgsSymbolLayerV2List());
+
   void setWidth(double width);
   double width();
-	
+
   void renderPolyline(const QPolygonF& points, QgsRenderContext& context, int layer = -1);
-	
+
   virtual QgsSymbolV2* clone() const /Factory/;
 };
 
@@ -541,8 +541,8 @@ class QgsFillSymbolV2 : QgsSymbolV2
 %End
 
 public:
-	QgsFillSymbolV2(QgsSymbolLayerV2List layers /Transfer/ = QgsSymbolLayerV2List());
-	
+  QgsFillSymbolV2(QgsSymbolLayerV2List layers /Transfer/ = QgsSymbolLayerV2List());
+
   void renderPolygon(const QPolygonF& points, QList<QPolygonF>* rings, QgsRenderContext& context, int layer = -1);
 
   virtual QgsSymbolV2* clone() const /Factory/;
@@ -561,20 +561,20 @@ class QgsSymbolLayerV2Metadata
 %End
 
 public:
-	/** construct invalid metadata */
-	QgsSymbolLayerV2Metadata();
-	
-	/** construct metadata */
-	// TODO
-	//QgsSymbolLayerV2Metadata(QString name, QgsSymbolV2::SymbolType type,
+  /** construct invalid metadata */
+  QgsSymbolLayerV2Metadata();
+
+  /** construct metadata */
+  // TODO
+  //QgsSymbolLayerV2Metadata(QString name, QgsSymbolV2::SymbolType type,
   //                         QgsSymbolLayerV2CreateFunc pfCreate,
   //                         QgsSymbolLayerV2WidgetFunc pfWidget);
-	
-	QString name() const;
-	QgsSymbolV2::SymbolType type();
-	// TODO QgsSymbolLayerV2CreateFunc createFunction() const { return mCreateFunc; }
-	// TODO QgsSymbolLayerV2WidgetFunc widgetFunction() const { return mWidgetFunc; }
-	
+
+  QString name() const;
+  QgsSymbolV2::SymbolType type();
+  // TODO QgsSymbolLayerV2CreateFunc createFunction() const { return mCreateFunc; }
+  // TODO QgsSymbolLayerV2WidgetFunc widgetFunction() const { return mWidgetFunc; }
+
 };
 
 //////////
@@ -586,28 +586,28 @@ class QgsSymbolLayerV2Registry
 %End
 
 public:
-	
+
   //! return the single instance of this class (instantiate it if not exists)
-	static QgsSymbolLayerV2Registry* instance();
-	
+  static QgsSymbolLayerV2Registry* instance();
+
   //! return metadata for specified symbol layer
-	QgsSymbolLayerV2Metadata symbolLayerMetadata(QString name) const;
-	
+  QgsSymbolLayerV2Metadata symbolLayerMetadata(QString name) const;
+
   //! register a new symbol layer type
-	void addSymbolLayerType(const QgsSymbolLayerV2Metadata& metadata);
-	
+  void addSymbolLayerType(const QgsSymbolLayerV2Metadata& metadata);
+
   //! create a new instance of symbol layer given symbol layer name and properties
-	QgsSymbolLayerV2* createSymbolLayer(QString name, const QgsStringMap& properties) const /Factory/;
-  
+  QgsSymbolLayerV2* createSymbolLayer(QString name, const QgsStringMap& properties) const /Factory/;
+
   //! return a list of available symbol layers for a specified symbol type
   QStringList symbolLayersForType(QgsSymbolV2::SymbolType type);
-	
+
   //! create a new instance of symbol layer for specified symbol type with default settings
-	static QgsSymbolLayerV2* defaultSymbolLayer(QgsSymbolV2::SymbolType type) /Factory/;
-	
+  static QgsSymbolLayerV2* defaultSymbolLayer(QgsSymbolV2::SymbolType type) /Factory/;
+
 protected:
-	QgsSymbolLayerV2Registry();
-	
+  QgsSymbolLayerV2Registry();
+
 };
 
 //////////
@@ -619,60 +619,60 @@ class QgsStyleV2
 %End
 
 public:
-  
+
   QgsStyleV2();
   ~QgsStyleV2();
-  
+
   //! return default application-wide style
   static QgsStyleV2* defaultStyle();
 
   //! remove all contents of the style
   void clear();
-  
+
   //! add symbol to style. takes symbol's ownership
   bool addSymbol(QString name, QgsSymbolV2* symbol);
-  
+
   //! remove symbol from style (and delete it)
   bool removeSymbol(QString name);
-  
+
   //! return a NEW copy of symbol
   QgsSymbolV2* symbol(QString name);
-  
+
   //! return a const pointer to a symbol (doesn't create new instance)
   const QgsSymbolV2* symbolRef(QString name) const;
-  
+
   //! return count of symbols in style
   int symbolCount();
-  
+
   //! return a list of names of symbols
   QStringList symbolNames();
-  
-  
+
+
   //! add color ramp to style. takes ramp's ownership
   bool addColorRamp(QString name, QgsVectorColorRampV2* colorRamp);
-  
+
   //! remove color ramp from style (and delete it)
   bool removeColorRamp(QString name);
-  
+
   //! return a NEW copy of color ramp
   QgsVectorColorRampV2* colorRamp(QString name);
-  
+
   //! return a const pointer to a symbol (doesn't create new instance)
   const QgsVectorColorRampV2* colorRampRef(QString name) const;
-  
+
   //! return count of color ramps
   int colorRampCount();
-  
+
   //! return a list of names of color ramps
   QStringList colorRampNames();
-  
-  
+
+
   //! load a file into the style
   bool load(QString filename);
-  
+
   //! save style into a file (will use current filename if empty string is passed)
   bool save(QString filename = QString());
-  
+
   //! return last error from load/save operation
   QString errorString();
 
@@ -691,13 +691,13 @@ class QgsVectorColorRampV2
 
 public:
   virtual ~QgsVectorColorRampV2();
-  
+
   virtual QColor color(double value) const = 0;
-  
+
   virtual QString type() const = 0;
-  
+
   virtual QgsVectorColorRampV2* clone() const = 0;
-  
+
   virtual QgsStringMap properties() const = 0;
-  
+
 };
