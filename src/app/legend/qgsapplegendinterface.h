@@ -20,7 +20,8 @@
 
 #include "qgslegendinterface.h"
 
-class QModelIndex;
+#include <QModelIndex>
+
 class QgsLegend;
 class QgsMapLayer;
 
@@ -55,7 +56,7 @@ class QgsAppLegendInterface : public QgsLegendInterface
     void moveLayer( QgsMapLayer * ml, int groupIndex );
 
     //! Update an index
-    void updateIndex( const QModelIndex &oldIndex, const QModelIndex &newIndex );
+    void updateIndex( QModelIndex oldIndex, QModelIndex newIndex );
 
   private:
 

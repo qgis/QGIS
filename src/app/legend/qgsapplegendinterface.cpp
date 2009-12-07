@@ -23,6 +23,7 @@
 QgsAppLegendInterface::QgsAppLegendInterface( QgsLegend * legend )
     : mLegend( legend )
 {
+  connect( legend, SIGNAL( itemMoved( QModelIndex, QModelIndex ) ), this, SLOT( updateIndex( QModelIndex, QModelIndex ) ) );
 }
 
 QgsAppLegendInterface::~QgsAppLegendInterface()
@@ -44,7 +45,7 @@ void QgsAppLegendInterface::moveLayer( QgsMapLayer * ml, int groupIndex )
   mLegend->moveLayer( ml, groupIndex );
 }
 
-void QgsAppLegendInterface::updateIndex( const QModelIndex &oldIndex, const QModelIndex& newIndex)
+void QgsAppLegendInterface::updateIndex( QModelIndex oldIndex, QModelIndex newIndex )
 {
   if ( mLegend->isLegendGroup( newIndex ) )
   {
