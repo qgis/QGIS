@@ -34,6 +34,19 @@ class QgsFeatureRendererV2
 #include <qgsrendererv2.h>
 %End
 
+
+%ConvertToSubClassCode
+  if (sipCpp->type() == "singleSymbol")
+    sipClass = sipClass_QgsSingleSymbolRendererV2;
+  else if (sipCpp->type() == "categorizedSymbol")
+    sipClass = sipClass_QgsCategorizedSymbolRendererV2;
+  else if (sipCpp->type() == "graduatedSymbol")
+    sipClass = sipClass_QgsGraduatedSymbolRendererV2;
+  else
+    sipClass = 0;
+%End
+
+
 public:
 
   //! return a new renderer - used by default in vector layers
