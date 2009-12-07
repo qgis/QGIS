@@ -75,9 +75,9 @@ namespace QgisGui
     @note added in 1.4
   */
 
-  bool openFilesRememberingFilter( QString const &filterName,
-                                   QString const &filters, QStringList & selectedFiles, QString& enc, QString &title,
-                                   bool cancelAll = false );
+  bool GUI_EXPORT openFilesRememberingFilter( QString const &filterName,
+      QString const &filters, QStringList & selectedFiles, QString& enc, QString &title,
+      bool cancelAll = false );
 
 }
 

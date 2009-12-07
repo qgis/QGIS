@@ -21,9 +21,9 @@
 namespace QgisGui
 {
 
-  bool openFilesRememberingFilter( QString const &filterName,
-                                   QString const &filters, QStringList & selectedFiles, QString& enc, QString &title,
-                                   bool cancelAll )
+  bool GUI_EXPORT openFilesRememberingFilter( QString const &filterName,
+      QString const &filters, QStringList & selectedFiles, QString& enc, QString &title,
+      bool cancelAll )
   {
 
     bool haveLastUsedFilter = false; // by default, there is no last
