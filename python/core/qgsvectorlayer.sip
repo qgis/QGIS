@@ -498,6 +498,11 @@ public slots:
    */
   virtual void updateExtents();
 
+  /** Returns the index of a field name or -1 if the field does not exist
+    @note this method was added in version 1.4
+   */
+  int fieldNameIndex( const QString& fieldName ) const;
+
 signals:
 
   /** This signal is emited when selection was changed */
