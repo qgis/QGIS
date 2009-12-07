@@ -52,9 +52,7 @@ class QgsLegendItem : public QTreeWidgetItem, public QObject
       LEGEND_SYMBOL_GROUP,
       LEGEND_SYMBOL_ITEM,
       LEGEND_VECTOR_SYMBOL_ITEM,
-      LEGEND_LAYER_FILE_GROUP,
-      LEGEND_LAYER_FILE
-    } ;
+    };
 
     /**Describes the action that will be done if the mouse button will be released after a drag*/
     enum DRAG_ACTION

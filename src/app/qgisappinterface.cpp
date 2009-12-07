@@ -17,7 +17,6 @@
  ***************************************************************************/
 /* $Id$ */
 
-#include <iostream>
 #include <QFileInfo>
 #include <QString>
 #include <QMenu>
@@ -106,6 +105,11 @@ void QgisAppInterface::newProject( bool thePromptToSaveFlag )
 QgsMapLayer *QgisAppInterface::activeLayer()
 {
   return qgis->activeLayer();
+}
+
+bool QgisAppInterface::setActiveLayer( QgsMapLayer *layer )
+{
+  return qgis->setActiveLayer( layer );
 }
 
 void QgisAppInterface::addPluginToMenu( QString name, QAction* action )
