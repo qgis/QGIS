@@ -45,10 +45,10 @@ typedef QSet<int> QgsFeatureIds;
 /** This is the parent class for all GPS data classes (except tracksegment).
     It contains the variables that all GPS objects can have.
 */
-class GPSObject
+class QgsGPSObject
 {
   public:
-    virtual ~GPSObject() {};
+    virtual ~QgsGPSObject() {};
     QString xmlify( const QString& str );
     virtual void writeXML( QTextStream& stream );
     QString name, cmt, desc, src, url, urlname;
@@ -58,10 +58,10 @@ class GPSObject
 /** This is the parent class for all GPS point classes. It contains common data
     members and common initialization code for all point classes.
 */
-class GPSPoint : public GPSObject
+class QgsGPSPoint : public QgsGPSObject
 {
   public:
-    GPSPoint();
+    QgsGPSPoint();
     virtual void writeXML( QTextStream& stream );
     double lat, lon, ele;
     QString sym;
@@ -71,10 +71,10 @@ class GPSPoint : public GPSObject
 /** This is the parent class for all GPS object types that can have a nonempty
     bounding box (Route, Track). It contains common data members for all
     those classes. */
-class GPSExtended : public GPSObject
+class QgsGPSExtended : public QgsGPSObject
 {
   public:
-    GPSExtended();
+    QgsGPSExtended();
     virtual void writeXML( QTextStream& stream );
     double xMin, xMax, yMin, yMax;
     int number;
@@ -82,12 +82,12 @@ class GPSExtended : public GPSObject
 
 
 // they both have the same data members in GPX, so...
-typedef GPSPoint Routepoint;
-typedef GPSPoint Trackpoint;
+typedef QgsGPSPoint QgsRoutepoint;
+typedef QgsGPSPoint QgsTrackpoint;
 
 
 /** This is the waypoint class. It is a GPSPoint with an ID. */
-class Waypoint : public GPSPoint
+class QgsWaypoint : public QgsGPSPoint
 {
   public:
     virtual void writeXML( QTextStream& stream );
@@ -97,11 +97,11 @@ class Waypoint : public GPSPoint
 
 /** This class represents a GPS route.
  */
-class Route : public GPSExtended
+class QgsRoute : public QgsGPSExtended
 {
   public:
     virtual void writeXML( QTextStream& stream );
-    std::vector<Routepoint> points;
+    std::vector<QgsRoutepoint> points;
     int id;
 };
 
@@ -109,42 +109,42 @@ class Route : public GPSExtended
 /** This class represents a GPS track segment, which is a contiguous part of
     a track. See the GPX specification for a better explanation.
 */
-class TrackSegment
+class QgsTrackSegment
 {
   public:
-    std::vector<Trackpoint> points;
+    std::vector<QgsTrackpoint> points;
 };
 
 
 /** This class represents a GPS tracklog. It consists of 0 or more track
     segments.
 */
-class Track : public GPSExtended
+class QgsTrack : public QgsGPSExtended
 {
   public:
     virtual void writeXML( QTextStream& stream );
-    std::vector<TrackSegment> segments;
+    std::vector<QgsTrackSegment> segments;
     int id;
 };
 
 
 /** This class represents a set of GPS data, for example a GPS layer in QGIS.
  */
-class GPSData
+class QgsGPSData
 {
   public:
 
     /** This iterator type is used to iterate over waypoints. */
-    typedef std::list<Waypoint>::iterator WaypointIterator;
+    typedef std::list<QgsWaypoint>::iterator WaypointIterator;
     /** This iterator type is used to iterate over routes. */
-    typedef std::list<Route>::iterator RouteIterator;
+    typedef std::list<QgsRoute>::iterator RouteIterator;
     /** This iterator type is used to iterate over tracks. */
-    typedef std::list<Track>::iterator TrackIterator;
+    typedef std::list<QgsTrack>::iterator TrackIterator;
 
 
     /** This constructor initializes the extent to a nonsense value. Don't try
         to use a GPSData object in QGIS without parsing a datafile into it. */
-    GPSData();
+    QgsGPSData();
 
     /** This function returns a pointer to a dynamically allocated QgsRectangle
         which is the bounding box for this dataset. You'll have to deallocate it
@@ -190,19 +190,19 @@ class GPSData
     WaypointIterator addWaypoint( double lat, double lon, QString name = "",
                                   double ele = -std::numeric_limits<double>::max() );
 
-    WaypointIterator addWaypoint( const Waypoint& wpt );
+    WaypointIterator addWaypoint( const QgsWaypoint& wpt );
 
     /** This function tries to add a new route. It returns an iterator to the
         new route. */
     RouteIterator addRoute( QString name = "" );
 
-    RouteIterator addRoute( const Route& rte );
+    RouteIterator addRoute( const QgsRoute& rte );
 
     /** This function tries to add a new track. An iterator to the new track
         will be returned. */
     TrackIterator addTrack( QString name = "" );
 
-    TrackIterator addTrack( const Track& trk );
+    TrackIterator addTrack( const QgsTrack& trk );
 
     /** This function removes the waypoints whose IDs are in the list. */
     void removeWaypoints( const QgsFeatureIds & ids );
@@ -226,7 +226,7 @@ class GPSData
         function you should also call releaseData() with the same @c file name
         when you're done with the GPSData pointer, otherwise the data will stay
         in memory forever and you will get an ugly memory leak. */
-    static GPSData* getData( const QString& fileName );
+    static QgsGPSData* getData( const QString& fileName );
 
     /** Call this function when you're done with a GPSData pointer that you
         got earlier using getData(). Do NOT call this function if you haven't
@@ -240,15 +240,15 @@ class GPSData
 
   protected:
 
-    std::list<Waypoint> waypoints;
-    std::list<Route> routes;
-    std::list<Track> tracks;
+    std::list<QgsWaypoint> waypoints;
+    std::list<QgsRoute> routes;
+    std::list<QgsTrack> tracks;
     int nextWaypoint, nextRoute, nextTrack;
 
     double xMin, xMax, yMin, yMax;
 
     /** This is used internally to store GPS data objects (one per file). */
-    typedef std::map<QString, std::pair<GPSData*, unsigned> > DataMap;
+    typedef std::map<QString, std::pair<QgsGPSData*, unsigned> > DataMap;
 
     /** This is the static container that maps file names to GPSData objects and
         does reference counting, so several providers can use the same GPSData
@@ -259,11 +259,11 @@ class GPSData
 
 
 
-class GPXHandler
+class QgsGPXHandler
 {
   public:
 
-    GPXHandler( GPSData& data ) : mData( data ) { }
+    QgsGPXHandler( QgsGPSData& data ) : mData( data ) { }
 
     /** This function is called when expat encounters a new start element in
         the XML stream. */
@@ -281,15 +281,15 @@ class GPXHandler
     // it does not know about member functions)
     static void start( void* data, const XML_Char* el, const XML_Char** attr )
     {
-      static_cast<GPXHandler*>( data )->startElement( el, attr );
+      static_cast<QgsGPXHandler*>( data )->startElement( el, attr );
     }
     static void end( void* data, const XML_Char* el )
     {
-      static_cast<GPXHandler*>( data )->endElement( el );
+      static_cast<QgsGPXHandler*>( data )->endElement( el );
     }
     static void chars( void* data, const XML_Char* chars, int len )
     {
-      static_cast<GPXHandler*>( data )->characters( chars, len );
+      static_cast<QgsGPXHandler*>( data )->characters( chars, len );
     }
 
   private:
@@ -312,14 +312,14 @@ class GPXHandler
     /** This is used to keep track of what kind of data we are parsing. */
     std::stack<ParseMode> parseModes;
 
-    GPSData& mData;
-    Waypoint mWpt;
-    Route mRte;
-    Track mTrk;
-    Routepoint mRtept;
-    TrackSegment mTrkseg;
-    Trackpoint mTrkpt;
-    GPSObject* mObj;
+    QgsGPSData& mData;
+    QgsWaypoint mWpt;
+    QgsRoute mRte;
+    QgsTrack mTrk;
+    QgsRoutepoint mRtept;
+    QgsTrackSegment mTrkseg;
+    QgsTrackpoint mTrkpt;
+    QgsGPSObject* mObj;
     QString* mString;
     double* mDouble;
     int* mInt;
