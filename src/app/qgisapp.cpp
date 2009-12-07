@@ -4523,6 +4523,8 @@ void QgisApp::options()
     double zoomFactor = mySettings.value( "/qgis/zoom_factor", 2 ).toDouble();
     mMapCanvas->setWheelAction(( QgsMapCanvas::WheelAction ) action, zoomFactor );
   }
+
+  delete optionsDialog;
 }
 
 void QgisApp::helpContents()

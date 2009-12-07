@@ -294,15 +294,38 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   mOverlayAlgorithmComboBox->insertItem( 4, tr( "Popmusic chain (very slow)" ) );
 
   QString overlayAlgorithmString = settings.value( "qgis/overlayPlacementAlgorithm", "Central point" ).toString();
-  if ( overlayAlgorithmString == "Chain" ) {mOverlayAlgorithmComboBox->setCurrentIndex( 1 );}
-  else if ( overlayAlgorithmString == "Popmusic tabu chain" ) {mOverlayAlgorithmComboBox->setCurrentIndex( 2 );}
-  else if ( overlayAlgorithmString == "Popmusic tabu" ) {mOverlayAlgorithmComboBox->setCurrentIndex( 3 );}
-  else if ( overlayAlgorithmString == "Popmusic chain" ) {mOverlayAlgorithmComboBox->setCurrentIndex( 4 );}
-  else {mOverlayAlgorithmComboBox->setCurrentIndex( 0 );} //default is central point
+  if ( overlayAlgorithmString == "Chain" )
+  {
+    mOverlayAlgorithmComboBox->setCurrentIndex( 1 );
+  }
+  else if ( overlayAlgorithmString == "Popmusic tabu chain" )
+  {
+    mOverlayAlgorithmComboBox->setCurrentIndex( 2 );
+  }
+  else if ( overlayAlgorithmString == "Popmusic tabu" )
+  {
+    mOverlayAlgorithmComboBox->setCurrentIndex( 3 );
+  }
+  else if ( overlayAlgorithmString == "Popmusic chain" )
+  {
+    mOverlayAlgorithmComboBox->setCurrentIndex( 4 );
+  }
+  else
+  {
+    mOverlayAlgorithmComboBox->setCurrentIndex( 0 );
+  } //default is central point
+
+  restoreGeometry( settings.value( "/Windows/Options/geometry" ).toByteArray() );
+  listWidget->setCurrentRow( settings.value( "/Windows/Options/row" ).toInt() );
 }
 
 //! Destructor
-QgsOptions::~QgsOptions() {}
+QgsOptions::~QgsOptions()
+{
+  QSettings settings;
+  settings.setValue( "/Windows/Options/geometry", saveGeometry() );
+  settings.setValue( "/Windows/Options/row", listWidget->currentRow() );
+}
 
 void QgsOptions::on_pbnSelectionColour_clicked()
 {
