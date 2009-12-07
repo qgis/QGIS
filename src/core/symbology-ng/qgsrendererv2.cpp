@@ -290,7 +290,11 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::load( QDomElement& element )
   if ( pfCreate == NULL )
     return NULL;
 
-  return pfCreate( element );
+  QgsFeatureRendererV2* r = pfCreate( element );
+  if ( r )
+    r->setUsingSymbolLevels( element.attribute( "symbollevels", "0" ).toInt() );
+
+  return r;
 }
 
 QDomElement QgsFeatureRendererV2::save( QDomDocument& doc )

@@ -400,6 +400,7 @@ QDomElement QgsGraduatedSymbolRendererV2::save( QDomDocument& doc )
 {
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( "type", "graduatedSymbol" );
+  rendererElem.setAttribute( "symbollevels", ( mUsingSymbolLevels ? "1" : "0" ) );
   rendererElem.setAttribute( "attr", mAttrName );
 
   // ranges

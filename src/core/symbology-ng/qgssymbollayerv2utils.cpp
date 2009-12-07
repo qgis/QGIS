@@ -356,6 +356,7 @@ QgsSymbolLayerV2* QgsSymbolLayerV2Utils::loadSymbolLayer( QDomElement& element )
 {
   QString layerClass = element.attribute( "class" );
   bool locked = element.attribute( "locked" ).toInt();
+  int pass = element.attribute( "pass" ).toInt();
 
   // parse properties
   QgsStringMap props = parseProperties( element );
@@ -365,6 +366,7 @@ QgsSymbolLayerV2* QgsSymbolLayerV2Utils::loadSymbolLayer( QDomElement& element )
   if ( layer )
   {
     layer->setLocked( locked );
+    layer->setRenderingPass( pass );
     return layer;
   }
   else
@@ -399,6 +401,7 @@ QDomElement QgsSymbolLayerV2Utils::saveSymbol( QString name, QgsSymbolV2* symbol
     QDomElement layerEl = doc.createElement( "layer" );
     layerEl.setAttribute( "class", layer->layerType() );
     layerEl.setAttribute( "locked", layer->isLocked() );
+    layerEl.setAttribute( "pass", layer->renderingPass() );
 
     if ( subSymbols != NULL && layer->subSymbol() != NULL )
     {
