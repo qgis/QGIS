@@ -340,7 +340,7 @@ struct QgsProject::Imp
 
 
 QgsProject::QgsProject()
-    : imp_( new QgsProject::Imp )
+    : imp_( new QgsProject::Imp ), mBadLayerHandler( new QgsProjectBadLayerDefaultHandler() )
 {
   // Set some default project properties
   // XXX THESE SHOULD BE MOVED TO STATUSBAR RELATED SOURCE
@@ -355,6 +355,8 @@ QgsProject::QgsProject()
 
 QgsProject::~QgsProject()
 {
+  delete mBadLayerHandler;
+
   // note that std::auto_ptr automatically deletes imp_ when it's destroyed
 } // QgsProject dtor
 
@@ -642,7 +644,7 @@ static QgsProjectVersion _getVersion( QDomDocument const &doc )
    </maplayer>
 
 */
-std::pair< bool, std::list<QDomNode> > QgsProject::_getMapLayers( QDomDocument const &doc )
+QPair< bool, QList<QDomNode> > QgsProject::_getMapLayers( QDomDocument const &doc )
 {
   // Layer order is set by the restoring the legend settings from project file.
   // This is done on the 'readProject( ... ) signal
@@ -653,7 +655,7 @@ std::pair< bool, std::list<QDomNode> > QgsProject::_getMapLayers( QDomDocument c
 
   QString wk;
 
-  std::list<QDomNode> brokenNodes; // a list of Dom nodes corresponding to layers
+  QList<QDomNode> brokenNodes; // a list of Dom nodes corresponding to layers
   // that we were unable to load; this could be
   // because the layers were removed or
   // re-located after the project was last saved
@@ -662,7 +664,7 @@ std::pair< bool, std::list<QDomNode> > QgsProject::_getMapLayers( QDomDocument c
 
   if ( 0 == nl.count() )      // if we have no layers to process, bail
   {
-    return make_pair( true, brokenNodes ); // Decided to return "true" since it's
+    return qMakePair( true, brokenNodes ); // Decided to return "true" since it's
     // possible for there to be a project with no
     // layers; but also, more imporantly, this
     // would cause the tests/qgsproject to fail
@@ -700,7 +702,7 @@ std::pair< bool, std::list<QDomNode> > QgsProject::_getMapLayers( QDomDocument c
     {
       QgsDebugMsg( "Unable to create layer" );
 
-      return make_pair( false, brokenNodes );
+      return qMakePair( false, brokenNodes );
     }
 
     // have the layer restore state that is stored in Dom node
@@ -722,7 +724,7 @@ std::pair< bool, std::list<QDomNode> > QgsProject::_getMapLayers( QDomDocument c
     emit layerLoaded( i + 1, nl.count() );
   }
 
-  return make_pair( returnStatus, brokenNodes );
+  return qMakePair( returnStatus, brokenNodes );
 
 } // _getMapLayers
 
@@ -835,7 +837,7 @@ bool QgsProject::read()
 
 
   // get the map layers
-  std::pair< bool, std::list<QDomNode> > getMapLayersResults =  _getMapLayers( *doc );
+  QPair< bool, QList<QDomNode> > getMapLayersResults =  _getMapLayers( *doc );
 
   // review the integrity of the retrieved map layers
 
@@ -843,18 +845,14 @@ bool QgsProject::read()
   {
     QgsDebugMsg( "Unable to get map layers from project file." );
 
-    if ( ! getMapLayersResults.second.empty() )
+    if ( ! getMapLayersResults.second.isEmpty() )
     {
       QgsDebugMsg( "there are " + QString::number( getMapLayersResults.second.size() ) + " broken layers" );
     }
 
-    // Since we could be executing this from the test harness which
-    // doesn't *have* layers -- nor a GUI for that matter -- we'll just
-    // leave in the whining and boldly stomp on.
-    emit readProject( *doc );
-    throw QgsProjectBadLayerException( getMapLayersResults.second, *doc );
-
-//         return false;
+    // we let a custom handler to decide what to do with missing layers
+    // (default implementation ignores them, there's also a GUI handler that lets user choose correct path)
+    mBadLayerHandler->handleBadLayers( getMapLayersResults.second, *doc );
   }
 
   // read the project: used by map canvas and legend
@@ -1479,4 +1477,15 @@ QString QgsProject::error() const
 void QgsProject::clearError()
 {
   setError( QString() );
+}
+
+void QgsProject::setBadLayerHandler( QgsProjectBadLayerHandler* handler )
+{
+  delete mBadLayerHandler;
+  mBadLayerHandler = handler;
+}
+
+void QgsProjectBadLayerDefaultHandler::handleBadLayers( QList<QDomNode> /*layers*/, QDomDocument /*projectDom*/ )
+{
+  // just ignore any bad layers
 }

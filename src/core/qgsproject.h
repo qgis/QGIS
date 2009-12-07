@@ -25,6 +25,8 @@
 #include <memory>
 #include "qgsprojectversion.h"
 #include <QObject>
+#include <QList>
+#include <QPair>
 
 //#include <QDomDocument>
 
@@ -32,6 +34,7 @@ class QFileInfo;
 class QDomDocument;
 class QDomNode;
 
+class QgsProjectBadLayerHandler;
 
 /** \ingroup core
  * Reads and writes project states.
@@ -268,6 +271,11 @@ class CORE_EXPORT QgsProject : public QObject
       @note added in 1.4 */
     QString error() const;
 
+    /** Change handler for missing layers.
+      Deletes old handler and takes ownership of the new one.
+      @note added in 1.4 */
+    void setBadLayerHandler( QgsProjectBadLayerHandler* handler );
+
   protected:
 
     /** Set error message from read/write operation
@@ -307,10 +315,32 @@ class CORE_EXPORT QgsProject : public QObject
 
     static QgsProject * theProject_;
 
-    std::pair< bool, std::list<QDomNode> > _getMapLayers( QDomDocument const &doc );
+    QPair< bool, QList<QDomNode> > _getMapLayers( QDomDocument const &doc );
 
     QString mErrorMessage;
 
+    QgsProjectBadLayerHandler* mBadLayerHandler;
+
 }; // QgsProject
+
+
+/** Interface for classes that handle missing layer files when reading project file.
+  @note added in 1.4 */
+class CORE_EXPORT QgsProjectBadLayerHandler
+{
+  public:
+    virtual void handleBadLayers( QList<QDomNode> layers, QDomDocument projectDom ) = 0;
+    virtual ~QgsProjectBadLayerHandler() {}
+};
+
+
+/** Default bad layer handler which ignores any missing layers.
+  @note added in 1.4 */
+class CORE_EXPORT QgsProjectBadLayerDefaultHandler : public QgsProjectBadLayerHandler
+{
+  public:
+    virtual void handleBadLayers( QList<QDomNode> layers, QDomDocument projectDom );
+
+};
 
 #endif

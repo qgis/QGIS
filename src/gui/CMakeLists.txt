@@ -39,6 +39,7 @@ qgsmaptoolemitpoint.cpp
 qgsmaptoolpan.cpp
 qgsmaptoolzoom.cpp
 qgsmessageviewer.cpp
+qgsprojectbadlayerguihandler.cpp
 qgsprojectionselector.cpp
 qgsquickprint.cpp
 qgsrubberband.cpp

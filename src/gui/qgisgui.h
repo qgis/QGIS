@@ -18,9 +18,11 @@
 
 #include <Qt>
 
+class QStringList;
+
 /** \ingroup gui
  * /namespace QgisGui
- * The QgisGui namespace contains constants used throughout the QGIS GUI.
+ * The QgisGui namespace contains constants and helper functions used throughout the QGIS GUI.
  */
 namespace QgisGui
 {
@@ -48,6 +50,34 @@ namespace QgisGui
 #else
     0;
 #endif
+
+  /**
+    Open files, preferring to have the default file selector be the
+    last one used, if any; also, prefer to start in the last directory
+    associated with filterName.
+
+    @param filterName the name of the filter; used for persistent store key
+    @param filters    the file filters used for QFileDialog
+    @param selectedFiles string list of selected files; will be empty if none selected
+    @param enc        encoding?
+    @param title      the title for the dialog
+    @note
+
+    Stores persistent settings under /UI/.  The sub-keys will be
+    filterName and filterName + "Dir".
+
+    Opens dialog on last directory associated with the filter name, or
+    the current working directory if this is the first time invoked
+    with the current filter name.
+
+    This method returns true if cancel all was clicked, otherwise false
+
+    @note added in 1.4
+  */
+
+  bool openFilesRememberingFilter( QString const &filterName,
+                                   QString const &filters, QStringList & selectedFiles, QString& enc, QString &title,
+                                   bool cancelAll = false );
 
 }
 

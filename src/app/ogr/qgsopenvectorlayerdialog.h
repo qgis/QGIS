@@ -46,9 +46,6 @@ class QgsOpenVectorLayerDialog : public QDialog, private Ui::QgsOpenVectorLayerD
     //! Returns the connection type
     QString dataSourceType();
   private:
-    //! Shows a dialog remembering the last directory and filter selected */
-    void openFilesRememberingFilter( QString const &filterName,
-                                     QString const &filters, QStringList & selectedFiles, QString &title );
     //! Stores the file vector filters */
     QString mVectorFileFilter;
     //! Stores the selected datasources */

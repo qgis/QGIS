@@ -126,6 +126,7 @@
 #include "qgspluginregistry.h"
 #include "qgspoint.h"
 #include "qgsproject.h"
+#include "qgsprojectbadlayerguihandler.h"
 #include "qgsprojectproperties.h"
 #include "qgsproviderregistry.h"
 #include "qgsrasterlayer.h"
@@ -210,12 +211,6 @@ class QTreeWidgetItem;
 const int BEFORE_RECENT_PATHS = 123;
 const int AFTER_RECENT_PATHS = 321;
 
-
-/// build the vector file filter string for a QFileDialog
-/*
-   called in ctor for initializing mVectorFileFilter
-   */
-static void buildSupportedVectorFileFilter_( QString & fileFilters );
 
 
 /** set the application title bar text
@@ -426,10 +421,13 @@ QgisApp::QgisApp( QSplashScreen *splash, QWidget * parent, Qt::WFlags fl )
   mSplash->showMessage( tr( "Initializing file filters" ), Qt::AlignHCenter | Qt::AlignBottom );
   qApp->processEvents();
   // now build vector file filter
-  buildSupportedVectorFileFilter_( mVectorFileFilter );
-
+  mVectorFileFilter = QgsProviderRegistry::instance()->fileVectorFilters();
   // now build raster file filter
   QgsRasterLayer::buildSupportedRasterFileFilter( mRasterFileFilter );
+
+  // set handler for missing layers (will be owned by QgsProject)
+  QgsProject::instance()->setBadLayerHandler( new QgsProjectBadLayerGuiHandler() );
+
 #if 0
   // Set the background colour for toolbox and overview as they default to
   // white instead of the window color
@@ -2203,236 +2201,6 @@ static QString createFileFilter_( QString const &longName, QString const &glob )
 
 
 
-/**
-  Builds the list of file filter strings to later be used by
-  QgisApp::addVectorLayer()
-
-  We query OGR for a list of supported vector formats; we then build a list
-  of file filter strings from that list.  We return a string that contains
-  this list that is suitable for use in a a QFileDialog::getOpenFileNames()
-  call.
-
-  XXX Most of the file name filters need to be filled in; however we
-  XXX may want to wait until we've tested each format before committing
-  XXX them permanently instead of blindly relying on OGR to properly
-  XXX supply all needed spatial data.
-
-*/
-static void buildSupportedVectorFileFilter_( QString & fileFilters )
-{
-
-#ifdef DEPRECATED
-  static QString myFileFilters;
-
-  // if we've already built the supported vector string, just return what
-  // we've already built
-  if ( !( myFileFilters.isEmpty() || myFileFilters.isNull() ) )
-  {
-    fileFilters = myFileFilters;
-
-    return;
-  }
-
-  // then iterate through all of the supported drivers, adding the
-  // corresponding file filter
-
-  OGRSFDriverH driver;          // current driver
-
-  QString driverName;           // current driver name
-
-  // Grind through all the drivers and their respective metadata.
-  // We'll add a file filter for those drivers that have a file
-  // extension defined for them; the others, welll, even though
-  // theoreticaly we can open those files because there exists a
-  // driver for them, the user will have to use the "All Files" to
-  // open datasets with no explicitly defined file name extension.
-  QgsDebugMsg( "Driver count: " + QString::number( driverRegistrar->GetDriverCount() ) );
-
-  for ( int i = 0; i < OGRGetDriverCount(); ++i )
-  {
-    driver = OGRGetDriver( i );
-
-    Q_CHECK_PTR( driver );
-
-    if ( !driver )
-    {
-      QgsDebugMsg( QString( "unable to get driver %1" ).arg( i ) );
-      continue;
-    }
-
-    driverName = OGR_Dr_GetName( driver );
-
-    if ( driverName.startsWith( "ESRI" ) )
-    {
-      myFileFilters += createFileFilter_( "ESRI Shapefiles", "*.shp" );
-    }
-    else if ( driverName.startsWith( "UK" ) )
-    {
-      // XXX needs file filter extension
-    }
-    else if ( driverName.startsWith( "SDTS" ) )
-    {
-      myFileFilters += createFileFilter_( "Spatial Data Transfer Standard",
-                                          "*catd.ddf" );
-    }
-    else if ( driverName.startsWith( "TIGER" ) )
-    {
-      // XXX needs file filter extension
-    }
-    else if ( driverName.startsWith( "S57" ) )
-    {
-      // XXX needs file filter extension
-    }
-    else if ( driverName.startsWith( "MapInfo" ) )
-    {
-      myFileFilters += createFileFilter_( "MapInfo", "*.mif *.tab" );
-      // XXX needs file filter extension
-    }
-    else if ( driverName.startsWith( "DGN" ) )
-    {
-      // XXX needs file filter extension
-    }
-    else if ( driverName.startsWith( "VRT" ) )
-    {
-      // XXX needs file filter extension
-    }
-    else if ( driverName.startsWith( "AVCBin" ) )
-    {
-      // XXX needs file filter extension
-    }
-    else if ( driverName.startsWith( "REC" ) )
-    {
-      // XXX needs file filter extension
-    }
-    else if ( driverName.startsWith( "Memory" ) )
-    {
-      // XXX needs file filter extension
-    }
-    else if ( driverName.startsWith( "Jis" ) )
-    {
-      // XXX needs file filter extension
-    }
-    else if ( driverName.startsWith( "GML" ) )
-    {
-      // XXX not yet supported; post 0.1 release task
-      myFileFilters += createFileFilter_( "Geography Markup Language",
-                                          "*.gml" );
-    }
-    else
-    {
-      // NOP, we don't know anything about the current driver
-      // with regards to a proper file filter string
-      QgsDebugMsg( "unknown driver " + driverName );
-    }
-
-  }                           // each loaded GDAL driver
-
-  QgsDebugMsg( myFileFilters );
-
-  // can't forget the default case
-
-  myFileFilters += "All files (*.*)";
-  fileFilters = myFileFilters;
-
-#endif // DEPRECATED
-
-  fileFilters = QgsProviderRegistry::instance()->fileVectorFilters();
-  //QgsDebugMsg("Vector file filters: " + fileFilters);
-
-}                               // buildSupportedVectorFileFilter_()
-
-
-
-
-/**
-  Open files, preferring to have the default file selector be the
-  last one used, if any; also, prefer to start in the last directory
-  associated with filterName.
-
-  @param filterName the name of the filter; used for persistent store
-  key
-  @param filters    the file filters used for QFileDialog
-
-  @param selectedFiles string list of selected files; will be empty
-  if none selected
-  @param enc        encoding?
-  @param title      the title for the dialog
-  @note
-
-  Stores persistent settings under /UI/.  The sub-keys will be
-  filterName and filterName + "Dir".
-
-  Opens dialog on last directory associated with the filter name, or
-  the current working directory if this is the first time invoked
-  with the current filter name.
-
-  This method returns true if cancel all was clicked, otherwise false
-
-*/
-
-static bool openFilesRememberingFilter_( QString const &filterName,
-    QString const &filters, QStringList & selectedFiles, QString& enc, QString &title,
-    bool cancelAll = false )
-{
-
-  bool haveLastUsedFilter = false; // by default, there is no last
-  // used filter
-
-  QSettings settings;         // where we keep last used filter in
-  // persistant state
-
-  haveLastUsedFilter = settings.contains( "/UI/" + filterName );
-  QString lastUsedFilter = settings.value( "/UI/" + filterName,
-                           QVariant( QString::null ) ).toString();
-
-  QString lastUsedDir = settings.value( "/UI/" + filterName + "Dir", "." ).toString();
-
-  QgsDebugMsg( "Opening file dialog with filters: " + filters );
-  if ( !cancelAll )
-  {
-    selectedFiles = QFileDialog::getOpenFileNames( 0, title, lastUsedDir, filters, &lastUsedFilter );
-  }
-  else //we have to use non-native dialog to add cancel all button
-  {
-    QgsEncodingFileDialog* openFileDialog = new QgsEncodingFileDialog( 0, title, lastUsedDir, filters, QString( "" ) );
-    // allow for selection of more than one file
-    openFileDialog->setFileMode( QFileDialog::ExistingFiles );
-    if ( haveLastUsedFilter )     // set the filter to the last one used
-    {
-      openFileDialog->selectFilter( lastUsedFilter );
-    }
-    openFileDialog->addCancelAll();
-    if ( openFileDialog->exec() == QDialog::Accepted )
-    {
-      selectedFiles = openFileDialog->selectedFiles();
-    }
-    else
-    {
-      //cancel or cancel all?
-      if ( openFileDialog->cancelAll() )
-      {
-        return true;
-      }
-    }
-  }
-
-  if ( !selectedFiles.isEmpty() )
-  {
-    // Fix by Tim - getting the dirPath from the dialog
-    // directly truncates the last node in the dir path.
-    // This is a workaround for that
-    QString myFirstFileName = selectedFiles.first();
-    QFileInfo myFI( myFirstFileName );
-    QString myPath = myFI.path();
-
-    QgsDebugMsg( "Writing last used dir: " + myPath );
-
-    settings.setValue( "/UI/" + filterName, lastUsedFilter );
-    settings.setValue( "/UI/" + filterName + "Dir", myPath );
-  }
-  return false;
-}   // openFilesRememberingFilter_
-
 
 /**
   This method prompts the user for a list of vector file names  with a dialog.
@@ -2819,300 +2587,6 @@ void QgisApp::addWmsLayer()
 
 
 
-/// file data representation
-enum dataType { IS_VECTOR, IS_RASTER, IS_BOGUS };
-
-
-
-/** returns data type associated with the given QgsProject file Dom node
-
-  The Dom node should represent the state associated with a specific layer.
-  */
-static
-dataType
-dataType_( QDomNode & layerNode )
-{
-  QString type = layerNode.toElement().attribute( "type" );
-
-  if ( QString::null == type )
-  {
-    QgsDebugMsg( "cannot find ``type'' attribute" );
-
-    return IS_BOGUS;
-  }
-
-  if ( "raster" == type )
-  {
-    QgsDebugMsg( "is a raster" );
-
-    return IS_RASTER;
-  }
-  else if ( "vector" == type )
-  {
-    QgsDebugMsg( "is a vector" );
-
-    return IS_VECTOR;
-  }
-
-  QgsDebugMsg( "is unknown type " + type );
-
-  return IS_BOGUS;
-} // dataType_( QDomNode & layerNode )
-
-
-/** return the data source for the given layer
-
-  The QDomNode is a QgsProject Dom node corresponding to a map layer state.
-
-  Essentially dumps <datasource> tag.
-
-*/
-static
-QString
-dataSource_( QDomNode & layerNode )
-{
-  QDomNode dataSourceNode = layerNode.namedItem( "datasource" );
-
-  if ( dataSourceNode.isNull() )
-  {
-    QgsDebugMsg( "cannot find datasource node" );
-
-    return QString::null;
-  }
-
-  return dataSourceNode.toElement().text();
-
-} // dataSource_( QDomNode & layerNode )
-
-
-
-/// the three flavors for data
-typedef enum { IS_FILE, IS_DATABASE, IS_URL, IS_Unknown } providerType;
-
-
-/** return the physical storage type associated with the given layer
-
-  The QDomNode is a QgsProject Dom node corresponding to a map layer state.
-
-  If the <provider> is "ogr", then it's a file type.
-
-  However, if the layer is a raster, then there won't be a <provider> tag.  It
-  will always have an associated file.
-
-  If the layer doesn't fall into either of the previous two categories, then
-  it's either a database or URL.  If the <datasource> tag has "url=", then
-  it's URL based.  If the <datasource> tag has "dbname=">, then the layer data
-  is in a database.
-
-*/
-static
-providerType
-providerType_( QDomNode & layerNode )
-{
-  // XXX but what about rasters that can be URLs?  _Can_ they be URLs?
-
-  switch ( dataType_( layerNode ) )
-  {
-    case IS_VECTOR:
-    {
-      QString dataSource = dataSource_( layerNode );
-
-      QgsDebugMsg( "datasource is " + dataSource );
-
-      if ( dataSource.contains( "host=" ) )
-      {
-        return IS_URL;
-      }
-#ifdef HAVE_POSTGRESQL
-      else if ( dataSource.contains( "dbname=" ) )
-      {
-        return IS_DATABASE;
-      }
-#endif
-      // be default, then, this should be a file based layer data source
-      // XXX is this a reasonable assumption?
-
-      return IS_FILE;
-    }
-
-    case IS_RASTER:         // rasters are currently only accessed as
-      // physical files
-      return IS_FILE;
-
-    default:
-      QgsDebugMsg( "unknown ``type'' attribute" );
-  }
-
-  return IS_Unknown;
-
-} // providerType_
-
-
-
-/** set the <datasource> to the new value
-*/
-static
-void
-setDataSource_( QDomNode & layerNode, QString const & dataSource )
-{
-  QDomNode dataSourceNode = layerNode.namedItem( "datasource" );
-  QDomElement dataSourceElement = dataSourceNode.toElement();
-  QDomText dataSourceText = dataSourceElement.firstChild().toText();
-
-  QgsDebugMsg( "datasource changed from " + dataSourceText.data() );
-
-  dataSourceText.setData( dataSource );
-
-  QgsDebugMsg( "to " + dataSourceText.data() );
-} // setDataSource_
-
-
-
-
-/** this is used to locate files that have moved or otherwise are missing
-
-*/
-static
-bool
-findMissingFile_( QString const & fileFilters, QDomNode & layerNode )
-{
-  // Prepend that file name to the valid file format filter list since it
-  // makes it easier for the user to not only find the original file, but to
-  // perhaps find a similar file.
-
-  QFileInfo originalDataSource( dataSource_( layerNode ) );
-
-  QString memoryQualifier;    // to differentiate between last raster and
-  // vector directories
-
-  switch ( dataType_( layerNode ) )
-  {
-    case IS_VECTOR:
-    {
-      memoryQualifier = "lastVectorFileFilter";
-
-      break;
-    }
-    case IS_RASTER:
-    {
-      memoryQualifier = "lastRasterFileFilter";
-
-      break;
-    }
-    default:
-      QgsDebugMsg( "unable to determine data type" );
-      return false;
-  }
-
-  // Prepend the original data source base name to make it easier to pick it
-  // out from a list of other files; however the appropriate filter strings
-  // for the file type will also be added in case the file name itself has
-  // changed, too.
-
-  QString myFileFilters = originalDataSource.fileName() + ";;" + fileFilters;
-
-  QStringList selectedFiles;
-  QString enc;
-  QString title = QObject::tr( "Where is '%1' (original location: %2)?" )
-                  .arg( originalDataSource.fileName() )
-                  .arg( originalDataSource.absoluteFilePath() );
-
-  bool retVal = openFilesRememberingFilter_( memoryQualifier,
-                myFileFilters,
-                selectedFiles,
-                enc,
-                title,
-                true );
-
-  if ( selectedFiles.isEmpty() )
-  {
-    return retVal;
-  }
-  else
-  {
-    setDataSource_( layerNode, selectedFiles.first() );
-    if ( ! QgsProject::instance()->read( layerNode ) )
-    {
-      QgsDebugMsg( "unable to re-read layer" );
-    }
-  }
-  return retVal;
-} // findMissingFile_
-
-
-
-
-/** find relocated data source for the given layer
-
-  This QDom object represents a QgsProject node that maps to a specific layer.
-
-  @param layerNode QDom node containing layer project information
-
-  @todo
-
-  XXX Only implemented for file based layers.  It will need to be extended for
-  XXX other data source types such as databases.
-
-*/
-static
-bool
-findLayer_( QString const & fileFilters, QDomNode const & constLayerNode )
-{
-  // XXX actually we could possibly get away with a copy of the node
-  QDomNode & layerNode = const_cast<QDomNode&>( constLayerNode );
-
-  bool retVal = false;
-
-  switch ( providerType_( layerNode ) )
-  {
-    case IS_FILE:
-      QgsDebugMsg( "layer is file based" );
-      retVal = findMissingFile_( fileFilters, layerNode );
-      break;
-
-    case IS_DATABASE:
-      QgsDebugMsg( "layer is database based" );
-      break;
-
-    case IS_URL:
-      QgsDebugMsg( "layer is URL based" );
-      break;
-
-    case IS_Unknown:
-      QgsDebugMsg( "layer has an unkown type" );
-      break;
-  }
-  return retVal;
-} // findLayer_
-
-
-
-
-/** find relocated data sources for given layers
-
-  These QDom objects represent QgsProject nodes that map to specific layers.
-
-*/
-static
-void
-findLayers_( QString const & fileFilters, std::list<QDomNode> const & layerNodes )
-{
-
-  for ( std::list<QDomNode>::const_iterator i = layerNodes.begin();
-        i != layerNodes.end();
-        ++i )
-  {
-    if ( findLayer_( fileFilters, *i ) )
-    {
-      // If findLayer returns true, the user hit Cancel All button
-      break;
-    }
-  }
-
-} // findLayers_
-
-
-
 void QgisApp::fileExit()
 {
   if ( mMapCanvas && mMapCanvas->isDrawing() )
@@ -3366,31 +2840,14 @@ void QgisApp::fileOpen()
 
     QgsProject::instance()->setFileName( fullPath );
 
-    try
-    {
-      if ( ! QgsProject::instance()->read() )
-      {
-        QMessageBox::critical( this,
-                               tr( "QGIS Project Read Error" ),
-                               QgsProject::instance()->error() );
-        mMapCanvas->freeze( false );
-        mMapCanvas->refresh();
-        return;
-      }
-    }
-    catch ( QgsProjectBadLayerException & e )
+    if ( ! QgsProject::instance()->read() )
     {
       QMessageBox::critical( this,
                              tr( "QGIS Project Read Error" ),
-                             QString::fromLocal8Bit( e.what() ) );
-      QgsDebugMsg( QString( "%1 bad layers found" ).arg( e.layers().size() ) );
-
-      // attempt to find the new locations for missing layers
-      // XXX vector file hard-coded -- but what if it's raster?
-      findLayers_( mVectorFileFilter, e.layers() );
-
-      // Tell the legend to update the ordering
-      mMapLegend->readProject( e.document() );
+                             QgsProject::instance()->error() );
+      mMapCanvas->freeze( false );
+      mMapCanvas->refresh();
+      return;
     }
 
     setTitleBarText_( *this );
@@ -3425,50 +2882,18 @@ bool QgisApp::addProject( QString projectFile )
   // clear the map canvas
   removeAllLayers();
 
-  try
+  if ( ! QgsProject::instance()->read( projectFile ) )
   {
-    if ( ! QgsProject::instance()->read( projectFile ) )
-    {
-      QMessageBox::critical( this,
-                             tr( "Unable to open project" ),
-                             QgsProject::instance()->error() );
+    QMessageBox::critical( this,
+                           tr( "Unable to open project" ),
+                           QgsProject::instance()->error() );
 
-      QApplication::restoreOverrideCursor();
+    QApplication::restoreOverrideCursor();
 
-      mMapCanvas->freeze( false );
-      mMapCanvas->refresh();
-      return false;
-    }
-    // Continue after last catch statement
-
+    mMapCanvas->freeze( false );
+    mMapCanvas->refresh();
+    return false;
   }
-  catch ( QgsProjectBadLayerException & e )
-  {
-    QgsDebugMsg( QString( "%1 bad layers found" ).arg( e.layers().size() ) );
-
-    if ( QMessageBox::Ok == QMessageBox::critical( this,
-         tr( "QGIS Project Read Error" ),
-         tr( "%1\nTry to find missing layers?" ).arg( QString::fromLocal8Bit( e.what() ) ),
-         QMessageBox::Ok | QMessageBox::Cancel ) )
-    {
-      QgsDebugMsg( "want to find missing layers is true" );
-
-      // attempt to find the new locations for missing layers
-      // XXX vector file hard-coded -- but what if it's raster?
-      QApplication::restoreOverrideCursor();
-
-      findLayers_( mVectorFileFilter, e.layers() );
-
-      QApplication::setOverrideCursor( Qt::WaitCursor );
-
-      // Tell the legend to update the ordering
-      mMapLegend->readProject( e.document() );
-    }
-    // Continue after last catch statement
-
-  }
-
-  // Continue, now with layers found (hopefully)
 
   setTitleBarText_( *this );
   int  myRedInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorRedPart", 255 );
@@ -5973,8 +5398,8 @@ void QgisApp::addRasterLayer()
   QStringList selectedFiles;
   QString e;//only for parameter correctness
   QString title = tr( "Open a GDAL Supported Raster Data Source" );
-  openFilesRememberingFilter_( "lastRasterFileFilter", mRasterFileFilter, selectedFiles, e,
-                               title );
+  QgisGui::openFilesRememberingFilter( "lastRasterFileFilter", mRasterFileFilter, selectedFiles, e,
+                                       title );
 
   if ( selectedFiles.isEmpty() )
   {

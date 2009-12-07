@@ -29,7 +29,6 @@ SET(QGIS_CORE_SRCS
   qgscoordinatetransform.cpp
   qgsdatasourceuri.cpp
   qgsdistancearea.cpp
-  qgsexception.cpp
   qgsfeature.cpp
   qgsfield.cpp
   qgsgeometry.cpp

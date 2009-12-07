@@ -56,49 +56,4 @@ class CORE_EXPORT QgsException : public std::exception
 }; // class QgsException
 
 
-
-/** for files missing from layers while reading project files
-
-*/
-class QgsProjectBadLayerException : public QgsException
-{
-  public:
-
-    QgsProjectBadLayerException( std::list<QDomNode> const & layers, QDomDocument const & doc = QDomDocument() )
-        : QgsException( std::string( msg_ ) ),
-        mBrokenLayers( layers ),
-        mProjectDom( doc )
-    {}
-
-    ~QgsProjectBadLayerException() throw()
-    {}
-
-    std::list<QDomNode> const & layers() const
-    {
-      return mBrokenLayers;
-    }
-
-    QDomDocument const & document() const
-    {
-      return mProjectDom;
-    }
-  private:
-
-    /** QDomNodes representing the state of a layer that couldn't be loaded
-
-    The layer data was either relocated or deleted.  The Dom node also
-    contains ancillary data such as line widths and the like.
-
-     */
-    std::list<QDomNode> mBrokenLayers;
-
-    // A default empty document does not contain any extra information
-    QDomDocument mProjectDom;
-
-    static const char * msg_;
-
-}; // class QgsProjectBadLayerException
-
-
-
 #endif
