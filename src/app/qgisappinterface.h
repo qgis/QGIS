@@ -20,6 +20,7 @@
 #define QGISIFACE_H
 
 #include "qgisinterface.h"
+#include "qgsapplegendinterface.h"
 
 class QgisApp;
 
@@ -41,6 +42,8 @@ class QgisAppInterface : public QgisInterface
      */
     QgisAppInterface( QgisApp *qgisapp );
     ~QgisAppInterface();
+
+    QgsLegendInterface* legendInterface();
 
     /* Exposed functions */
     //! Zoom map to full extent
@@ -261,6 +264,9 @@ class QgisAppInterface : public QgisInterface
 
     //! Pointer to the QgisApp object
     QgisApp *qgis;
+
+    //! Pointer to the LegendInterface object
+    QgsAppLegendInterface legendIface;
 };
 
 

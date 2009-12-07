@@ -88,6 +88,7 @@ SET(QGIS_APP_SRCS
 
   legend/qgslegendgroup.cpp
   legend/qgslegend.cpp
+  legend/qgsapplegendinterface.cpp
   legend/qgslegenditem.cpp
   legend/qgslegendlayer.cpp
   legend/qgslegendpropertygroup.cpp
@@ -185,6 +186,7 @@ SET (QGIS_APP_MOC_HDRS
   composer/qgsitempositiondialog.h
 
   legend/qgslegend.h
+  legend/qgsapplegendinterface.h
   legend/qgslegendlayer.h
   
   ogr/qgsopenvectorlayerdialog.h
