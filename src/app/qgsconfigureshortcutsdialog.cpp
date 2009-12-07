@@ -78,6 +78,12 @@ void QgsConfigureShortcutsDialog::saveShortcuts()
   if ( fileName.isEmpty() )
     return;
 
+  // ensure the user never omitted the extension from the file name
+  if ( !fileName.toLower().endsWith( ".xml" ) )
+  {
+    fileName += ".xml";
+  }
+
   QFile file( fileName );
   if ( !file.open( QIODevice::WriteOnly | QIODevice::Text ) )
   {
