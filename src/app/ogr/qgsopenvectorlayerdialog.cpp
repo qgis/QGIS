@@ -97,11 +97,11 @@ QStringList QgsOpenVectorLayerDialog::openFile()
 
   QStringList selectedFiles;
   QgsDebugMsg( "Vector file filters: " + mVectorFileFilter );
-  QString enc;
+  QString enc = encoding();
   QString title = tr( "Open an OGR Supported Vector Layer" );
-  openFilesRememberingFilter( "lastVectorFileFilter", mVectorFileFilter, selectedFiles,
-                              title );
-  mEnc = enc;
+  QgisGui::openFilesRememberingFilter( "lastVectorFileFilter", mVectorFileFilter, selectedFiles, enc,
+                                       title );
+
   return selectedFiles;
 }
 
@@ -305,68 +305,6 @@ void QgsOpenVectorLayerDialog::on_buttonSelectSrc_clicked()
 
 
 }
-
-/**
-  Open files, preferring to have the default file selector be the
-  last one used, if any; also, prefer to start in the last directory
-  associated with filterName.
-
-  @param filterName the name of the filter; used for persistent store
-  key
-  @param filters    the file filters used for QFileDialog
-
-  @param selectedFiles string list of selected files; will be empty
-  if none selected
-  @param title      the title for the dialog
-  @note
-
-  Stores persistent settings under /UI/.  The sub-keys will be
-  filterName and filterName + "Dir".
-
-  Opens dialog on last directory associated with the filter name, or
-  the current working directory if this is the first time invoked
-  with the current filter name.
-
-*/
-void QgsOpenVectorLayerDialog::openFilesRememberingFilter( QString const &filterName,
-    QString const &filters, QStringList & selectedFiles, QString &title )
-{
-
-  bool haveLastUsedFilter = false; // by default, there is no last
-  // used filter
-
-  QSettings settings;         // where we keep last used filter in
-
-  // persistant state
-
-  haveLastUsedFilter = settings.contains( "/UI/" + filterName );
-  QString lastUsedFilter = settings.value( "/UI/" + filterName,
-                           QVariant( QString::null ) ).toString();
-
-  QString lastUsedDir = settings.value( "/UI/" + filterName + "Dir", "." ).toString();
-  QgsDebugMsg( "Opening file dialog with filters: " + filters );
-
-  if ( haveLastUsedFilter )
-  {
-    selectedFiles = QFileDialog::getOpenFileNames( 0, title, lastUsedDir, filters, &lastUsedFilter );
-  }
-  else
-  {
-    selectedFiles = QFileDialog::getOpenFileNames( 0, title, lastUsedDir, filters );
-  }
-
-  if ( !selectedFiles.isEmpty() )
-  {
-    QString myFirstFileName = selectedFiles.first();
-    QFileInfo myFI( myFirstFileName );
-    QString myPath = myFI.path();
-
-    QgsDebugMsg( "Writing last used dir: " + myPath );
-
-    settings.setValue( "/UI/" + filterName, lastUsedFilter );
-    settings.setValue( "/UI/" + filterName + "Dir", myPath );
-  }
-}   // openFilesRememberingFilter_
 
 
 

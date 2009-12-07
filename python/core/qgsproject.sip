@@ -235,6 +235,11 @@ public:
       @note added in 1.4 */
     QString error() const;
 
+    /** Change handler for missing layers.
+      Deletes old handler and takes ownership of the new one.
+      @note added in 1.4 */
+    void setBadLayerHandler( QgsProjectBadLayerHandler* handler );
+
   protected:
 
     /** Set error message from read/write operation
@@ -259,3 +264,30 @@ public:
 
 }; // QgsProject
 
+
+/** Interface for classes that handle missing layer files when reading project file.
+  @note added in 1.4 */
+class QgsProjectBadLayerHandler
+{
+%TypeHeaderCode
+#include <qgsproject.h>
+%End
+
+public:
+  virtual void handleBadLayers( QList<QDomNode> layers, QDomDocument projectDom ) = 0;
+  virtual ~QgsProjectBadLayerHandler();
+};
+
+
+/** Default bad layer handler which ignores any missing layers.
+  @note added in 1.4 */
+class QgsProjectBadLayerDefaultHandler : QgsProjectBadLayerHandler
+{
+%TypeHeaderCode
+#include <qgsproject.h>
+%End
+
+public:
+  virtual void handleBadLayers( QList<QDomNode> layers, QDomDocument projectDom );
+
+};
