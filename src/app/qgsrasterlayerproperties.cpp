@@ -318,11 +318,18 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QWidget *p
 
   // update based on lyr's current state
   sync();
+
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/RasterLayerProperties/geometry" ).toByteArray() );
+  listWidget->setCurrentRow( settings.value( "/Windows/RasterLayerProperties/row" ).toInt() );
 } // QgsRasterLayerProperties ctor
 
 
 QgsRasterLayerProperties::~QgsRasterLayerProperties()
 {
+  QSettings settings;
+  settings.setValue( "/Windows/RasterLayerProperties/geometry", saveGeometry() );
+  settings.setValue( "/Windows/RasterLayerProperties/row", listWidget->currentRow() );
 }
 
 /*

@@ -153,6 +153,10 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   }
 
   stackedWidget->setCurrentIndex( 0 );
+
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/VectorLayerProperties/geometry" ).toByteArray() );
+  listWidget->setCurrentRow( settings.value( "/Windows/VectorLayerProperties/row" ).toInt() );
 } // QgsVectorLayerProperties ctor
 
 void QgsVectorLayerProperties::loadRows()
@@ -201,12 +205,15 @@ void QgsVectorLayerProperties::setRow( int row, int idx, const QgsField &field )
 
   //set the alias for the attribute
   tblAttributes->setItem( row, attrAliasCol, new QTableWidgetItem( layer->attributeAlias( idx ) ) );
-
 }
 
 QgsVectorLayerProperties::~QgsVectorLayerProperties()
 {
   disconnect( labelDialog, SIGNAL( labelSourceSet() ), this, SLOT( setLabelCheckBox() ) );
+
+  QSettings settings;
+  settings.setValue( "/Windows/VectorLayerProperties/geometry", saveGeometry() );
+  settings.setValue( "/Windows/VectorLayerProperties/row", listWidget->currentRow() );
 }
 
 void QgsVectorLayerProperties::attributeTypeDialog( )
@@ -1119,8 +1126,8 @@ void QgsVectorLayerProperties::setUsingNewSymbology( bool useNewSymbology )
 void QgsVectorLayerProperties::useNewSymbology()
 {
   int res = QMessageBox::question( this, tr( "Symbology" ),
-      tr( "Do you wish to use the new symbology implementation for this layer?" ),
-      QMessageBox::Yes | QMessageBox::No );
+                                   tr( "Do you wish to use the new symbology implementation for this layer?" ),
+                                   QMessageBox::Yes | QMessageBox::No );
 
   if ( res != QMessageBox::Yes )
     return;
