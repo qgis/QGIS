@@ -159,8 +159,8 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
   if ( mCurrentSchema == mSchemaName )
   {
     mUri.clearSchema();
-    setDataSourceUri( mUri.uri() );
   }
+
   if ( mSchemaName == "" )
     mSchemaName = mCurrentSchema;
 
@@ -249,6 +249,11 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
   if ( primaryKey.isEmpty() )
   {
     valid = false;
+  }
+  else
+  {
+    mUri.setKeyColumn( primaryKey );
+    setDataSourceUri( mUri.uri() );
   }
 
   // Close the database connection if the layer isn't going to be loaded.
@@ -1097,9 +1102,6 @@ QString QgsPostgresProvider::getPrimaryKey()
         // From the view columns, choose one for which the underlying
         // column is suitable for use as a key into the view.
         primaryKey = chooseViewColumn( cols );
-
-        mUri.setKeyColumn( primaryKey );
-        setDataSourceUri( mUri.uri() );
       }
     }
     else
@@ -3158,9 +3160,6 @@ QString  QgsPostgresProvider::description() const
 {
   return POSTGRES_DESCRIPTION;
 } //  QgsPostgresProvider::description()
-
-
-
 
 /**
  * Class factory to return a pointer to a newly created
