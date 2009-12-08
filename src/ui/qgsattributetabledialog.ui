@@ -21,6 +21,57 @@
      </property>
     </widget>
    </item>
+   <item row="2" column="0">
+    <layout class="QHBoxLayout">
+     <item>
+      <widget class="QCheckBox" name="cbxShowSelectedOnly">
+       <property name="text">
+        <string>Show selected records only</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="cbxSearchSelectedOnly">
+       <property name="text">
+        <string>Search selected records only</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Advanced search</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mAdvancedSearchButton">
+       <property name="text">
+        <string>...</string>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>12</width>
+         <height>12</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
    <item row="1" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
@@ -171,6 +222,17 @@
       </widget>
      </item>
      <item>
+      <widget class="QToolButton" name="mDeleteSelectedButton">
+       <property name="text">
+        <string>...</string>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>../../images/themes/default/mActionDeleteSelected.png</normaloff>../../images/themes/default/mActionDeleteSelected.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QToolButton" name="mAddAttribute">
        <property name="toolTip">
         <string>New column</string>
@@ -254,57 +316,6 @@
       <widget class="QPushButton" name="searchButton">
        <property name="text">
         <string>&amp;Search</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="2" column="0">
-    <layout class="QHBoxLayout">
-     <item>
-      <widget class="QCheckBox" name="cbxShowSelectedOnly">
-       <property name="text">
-        <string>Show selected records only</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="cbxSearchSelectedOnly">
-       <property name="text">
-        <string>Search selected records only</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Advanced search</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="mAdvancedSearchButton">
-       <property name="text">
-        <string>...</string>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>12</width>
-         <height>12</height>
-        </size>
        </property>
       </widget>
      </item>

@@ -89,18 +89,21 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mZoomMapToSelectedRowsButton->setIcon( getThemeIcon( "/mActionZoomToSelected.png" ) );
   mInvertSelectionButton->setIcon( getThemeIcon( "/mActionInvertSelection.png" ) );
   mToggleEditingButton->setIcon( getThemeIcon( "/mActionToggleEditing.png" ) );
+  mDeleteSelectedButton->setIcon( getThemeIcon( "/mActionDeleteSelected.png" ) );
   mOpenFieldCalculator->setIcon( getThemeIcon( "/mActionCalculateField.png" ) );
   mAddAttribute->setIcon( getThemeIcon( "/mActionNewAttribute.png" ) );
   mRemoveAttribute->setIcon( getThemeIcon( "/mActionDeleteAttribute.png" ) );
 
   // toggle editing
   bool canChangeAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
+  bool canDeleteFeatures = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteFeatures;
   bool canAddAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::AddAttributes;
   bool canDeleteAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteAttributes;
   mToggleEditingButton->setCheckable( true );
   mToggleEditingButton->setChecked( mLayer->isEditable() );
   mToggleEditingButton->setEnabled( canChangeAttributes );
   mOpenFieldCalculator->setEnabled( canChangeAttributes && mLayer->isEditable() );
+  mDeleteSelectedButton->setEnabled( canDeleteFeatures && mLayer->isEditable() );
   mAddAttribute->setEnabled( canAddAttributes && mLayer->isEditable() );
   mRemoveAttribute->setEnabled( canDeleteAttributes && mLayer->isEditable() );
 
@@ -228,6 +231,11 @@ void QgsAttributeTableDialog::on_mInvertSelectionButton_clicked()
 void QgsAttributeTableDialog::on_mRemoveSelectionButton_clicked()
 {
   mLayer->removeSelection();
+}
+
+void QgsAttributeTableDialog::on_mDeleteSelectedButton_clicked()
+{
+  mLayer->deleteSelectedFeatures();
 }
 
 void QgsAttributeTableDialog::on_cbxShowSelectedOnly_toggled( bool theFlag )
@@ -615,9 +623,11 @@ void QgsAttributeTableDialog::editingToggled()
   mToggleEditingButton->blockSignals( false );
 
   bool canChangeAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
+  bool canDeleteFeatures = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteFeatures;
   bool canAddAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::AddAttributes;
   bool canDeleteAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteAttributes;
   mOpenFieldCalculator->setEnabled( canChangeAttributes && mLayer->isEditable() );
+  mDeleteSelectedButton->setEnabled( canDeleteFeatures && mLayer->isEditable() );
   mAddAttribute->setEnabled( canAddAttributes && mLayer->isEditable() );
   mRemoveAttribute->setEnabled( canDeleteAttributes && mLayer->isEditable() );
 
