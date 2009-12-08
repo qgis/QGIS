@@ -56,7 +56,7 @@ getWarpOptions( QgsImageWarper::ResamplingMethod& resampling,
 }
 
 
-void QgsGeorefWarpOptionsDialog::on_pbnOK_clicked()
+void QgsGeorefWarpOptionsDialog::on_buttonBox_accepted()
 {
   QgsImageWarper::ResamplingMethod methods[] =
   {
@@ -66,5 +66,10 @@ void QgsGeorefWarpOptionsDialog::on_pbnOK_clicked()
   };
   resampling = methods[cmbResampling->currentIndex()];
   useZeroAsTransparency = cbxZeroAsTrans->isChecked();
+  close();
+}
+
+void QgsGeorefWarpOptionsDialog::on_buttonBox_rejected()
+{
   close();
 }
