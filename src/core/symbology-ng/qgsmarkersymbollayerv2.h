@@ -62,7 +62,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 
 //////////
 
-#define DEFAULT_SVGMARKER_NAME         "symbol/Star1.svg"
+#define DEFAULT_SVGMARKER_NAME         "/symbol/Star1.svg"
 #define DEFAULT_SVGMARKER_SIZE         9
 #define DEFAULT_SVGMARKER_ANGLE        0
 
@@ -76,6 +76,15 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     // static stuff
 
     static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
+
+    //! Return a list of all available svg files
+    static QStringList listSvgFiles();
+
+    //! Get symbol's path from its name
+    static QString symbolNameToPath( QString name );
+
+    //! Get symbols's name from its path
+    static QString symbolPathToName( QString path );
 
     // implemented from base classes
 
@@ -91,14 +100,14 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 
     QgsSymbolLayerV2* clone() const;
 
-    QString name() const { return mName; }
-    void setName( QString name ) { mName = name; }
+    QString path() const { return mPath; }
+    void setPath( QString path ) { mPath = path; }
 
   protected:
 
     void loadSvg();
 
-    QString mName;
+    QString mPath;
     QPicture mPicture;
 };
 

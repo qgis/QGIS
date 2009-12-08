@@ -5,9 +5,12 @@
 #include "qgsrendercontext.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgsproject.h"
 
 #include <QPainter>
 #include <QSvgRenderer>
+#include <QFileInfo>
+#include <QDir>
 
 #include <cmath>
 
@@ -105,11 +108,11 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsRenderContext& context )
     << QPointF( -half, -sixth )
     << QPointF( -sixth, 0 )
     << QPointF( -half, half )
-    << QPointF( 0, +sixth )
+    << QPointF( 0, + sixth )
     << QPointF( half, half )
-    << QPointF( +sixth, 0 )
+    << QPointF( + sixth, 0 )
     << QPointF( half, -sixth )
-    << QPointF( +sixth, -sixth );
+    << QPointF( + sixth, -sixth );
   }
   else if ( mName == "regular_star" )
   {
@@ -248,7 +251,7 @@ void QgsSimpleMarkerSymbolLayerV2::drawMarker( QPainter* p )
 
 QgsSvgMarkerSymbolLayerV2::QgsSvgMarkerSymbolLayerV2( QString name, double size, double angle )
 {
-  mName = name;
+  mPath = symbolNameToPath( name );
   mSize = size;
   mAngle = angle;
   mOffset = QPointF( 0, 0 );
@@ -282,11 +285,8 @@ QString QgsSvgMarkerSymbolLayerV2::layerType() const
 
 void QgsSvgMarkerSymbolLayerV2::startRender( QgsRenderContext& context )
 {
-  QString svgPath = QgsApplication::svgPath();
-  QString file = svgPath + "/" + mName;
-
   QRectF rect( QPointF( -mSize / 2.0, -mSize / 2.0 ), QSizeF( mSize, mSize ) );
-  QSvgRenderer renderer( file );
+  QSvgRenderer renderer( mPath );
   QPainter painter( &mPicture );
   renderer.render( &painter, rect );
 }
@@ -317,7 +317,7 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsRenderCont
 QgsStringMap QgsSvgMarkerSymbolLayerV2::properties() const
 {
   QgsStringMap map;
-  map["name"] = mName;
+  map["name"] = symbolPathToName( mPath );
   map["size"] = QString::number( mSize );
   map["angle"] = QString::number( mAngle );
   map["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
@@ -326,7 +326,105 @@ QgsStringMap QgsSvgMarkerSymbolLayerV2::properties() const
 
 QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::clone() const
 {
-  QgsSvgMarkerSymbolLayerV2* m = new QgsSvgMarkerSymbolLayerV2( mName, mSize, mAngle );
+  QgsSvgMarkerSymbolLayerV2* m = new QgsSvgMarkerSymbolLayerV2( mPath, mSize, mAngle );
   m->setOffset( mOffset );
   return m;
+}
+
+
+QStringList QgsSvgMarkerSymbolLayerV2::listSvgFiles()
+{
+  // copied from QgsMarkerCatalogue - TODO: unify
+  QStringList list;
+  QStringList svgPaths = QgsApplication::svgPaths();
+
+  for ( int i = 0; i < svgPaths.size(); i++ )
+  {
+    QDir dir( svgPaths[i] );
+    foreach( QString item, dir.entryList( QDir::Dirs | QDir::NoDotAndDotDot ) )
+    {
+      svgPaths.insert( i + 1, dir.path() + "/" + item );
+    }
+
+    foreach( QString item, dir.entryList( QStringList( "*.svg" ), QDir::Files ) )
+    {
+      // TODO test if it is correct SVG
+      list.append( dir.path() + "/" + item );
+    }
+  }
+  return list;
+}
+
+QString QgsSvgMarkerSymbolLayerV2::symbolNameToPath( QString name )
+{
+  // copied from QgsSymbol::setNamedPointSymbol - TODO: unify
+
+  // we might have a full path...
+  if ( QFile( name ).exists() )
+    return QFileInfo( name ).canonicalFilePath();
+
+  // SVG symbol not found - probably a relative path was used
+
+  QStringList svgPaths = QgsApplication::svgPaths();
+  for ( int i = 0; i < svgPaths.size(); i++ )
+  {
+    QgsDebugMsg( "SvgPath: " + svgPaths[i] );
+    QFileInfo myInfo( name );
+    QString myFileName = myInfo.fileName(); // foo.svg
+    QString myLowestDir = myInfo.dir().dirName();
+    QString myLocalPath = svgPaths[i] + "/" + myLowestDir + "/" + myFileName;
+
+    QgsDebugMsg( "Alternative svg path: " + myLocalPath );
+    if ( QFile( myLocalPath ).exists() )
+    {
+      QgsDebugMsg( "Svg found in alternative path" );
+      return QFileInfo( myLocalPath ).canonicalFilePath();
+    }
+    else if ( myInfo.isRelative() )
+    {
+      QFileInfo pfi( QgsProject::instance()->fileName() );
+      QString alternatePath = pfi.canonicalPath() + QDir::separator() + name;
+      if ( pfi.exists() && QFile( alternatePath ).exists() )
+      {
+        QgsDebugMsg( "Svg found in alternative path" );
+        return QFileInfo( alternatePath ).canonicalFilePath();
+      }
+      else
+      {
+        QgsDebugMsg( "Svg not found in project path" );
+      }
+    }
+    else
+    {
+      //couldnt find the file, no happy ending :-(
+      QgsDebugMsg( "Computed alternate path but no svg there either" );
+    }
+  }
+  return QString();
+}
+
+QString QgsSvgMarkerSymbolLayerV2::symbolPathToName( QString path )
+{
+  // copied from QgsSymbol::writeXML
+
+  QFileInfo fi( path );
+  if ( !fi.exists() )
+    return path;
+
+  path = fi.canonicalFilePath();
+
+  QStringList svgPaths = QgsApplication::svgPaths();
+
+  for ( int i = 0; i < svgPaths.size(); i++ )
+  {
+    QString dir = QFileInfo( svgPaths[i] ).canonicalFilePath();
+
+    if ( !dir.isEmpty() && path.startsWith( dir ) )
+    {
+      path = path.mid( dir.size() );
+      break;
+    }
+  }
+
+  return path;
 }

@@ -372,42 +372,28 @@ void QgsSvgMarkerSymbolLayerV2Widget::populateList()
   QStandardItemModel* m = new QStandardItemModel( viewImages );
   viewImages->setModel( m );
 
-  QString svgPath = QgsApplication::svgPath();
   QSvgRenderer renderer;
   QPainter painter;
 
-  QDir dir( svgPath );
-
-  QStringList dl = dir.entryList( QDir::Dirs );
-
-  for ( QStringList::iterator it = dl.begin(); it != dl.end(); ++it )
+  foreach( QString entry, QgsSvgMarkerSymbolLayerV2::listSvgFiles() )
   {
-    if ( *it == "." || *it == ".." ) continue;
+    // render SVG file
+    renderer.load( entry );
+    QPixmap pixmap( renderer.defaultSize() );
+    pixmap.fill();
+    painter.begin( &pixmap );
+    renderer.render( &painter );
+    painter.end();
 
-    QDir dir2( svgPath + *it );
-
-    QStringList dl2 = dir2.entryList( QStringList( "*.svg" ), QDir::Files );
-
-    for ( QStringList::iterator it2 = dl2.begin(); it2 != dl2.end(); ++it2 )
-    {
-      // TODO test if it is correct SVG
-      QString entry = *it2;
-
-      // render SVG file
-      renderer.load( dir2.filePath( *it2 ) );
-      QPixmap pixmap( renderer.defaultSize() );
-      pixmap.fill();
-      painter.begin( &pixmap );
-      renderer.render( &painter );
-      painter.end();
-
-      // add item
-      QStandardItem* item = new QStandardItem( QIcon( pixmap ), *it + "/" + entry );
-      m->appendRow( item );
-    }
+    // add item
+    QStandardItem* item = new QStandardItem( QIcon( pixmap ), QString() );
+    item->setData( entry, Qt::UserRole );
+    item->setToolTip( entry );
+    m->appendRow( item );
   }
 
 }
+
 
 void QgsSvgMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
 {
@@ -420,12 +406,17 @@ void QgsSvgMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   // set values
 
   QStandardItemModel* m = static_cast<QStandardItemModel*>( viewImages->model() );
-  QList<QStandardItem*> items = m->findItems( mLayer->name() );
-  if ( items.count() > 0 )
+  for ( int i = 0; i < m->rowCount(); i++ )
   {
-    QModelIndex idx = items[0]->index();
-    viewImages->selectionModel()->select( idx, QItemSelectionModel::SelectCurrent );
+    QStandardItem* item = m->item( i, 0 );
+    if ( item->data( Qt::UserRole ).toString() == mLayer->path() )
+    {
+      viewImages->selectionModel()->select( item->index(), QItemSelectionModel::SelectCurrent );
+      viewImages->selectionModel()->setCurrentIndex( item->index(), QItemSelectionModel::SelectCurrent );
+      break;
+    }
   }
+
 
   spinSize->setValue( mLayer->size() );
   spinAngle->setValue( mLayer->angle() );
@@ -446,9 +437,8 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2Widget::symbolLayer()
 
 void QgsSvgMarkerSymbolLayerV2Widget::setName( const QModelIndex& idx )
 {
-  mLayer->setName( idx.data().toString() );
+  mLayer->setPath( idx.data( Qt::UserRole ).toString() );
 
-  //mLayer->setName(lstNames->currentItem()->data(Qt::UserRole).toString());
   emit changed();
 }
 
