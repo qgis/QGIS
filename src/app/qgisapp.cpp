@@ -3633,11 +3633,13 @@ QgsComposer* QgisApp::createNewComposer()
   //and place action into print composers menu
   mPrintComposersMenu->addAction( newComposerObject->windowAction() );
   newComposerObject->open();
+  emit composerAdded(newComposerObject->view());
   return newComposerObject;
 }
 
 void QgisApp::deleteComposer( QgsComposer* c )
 {
+  emit composerWillBeRemoved(c->view());
   mPrintComposers.remove( c );
   mPrintComposersMenu->removeAction( c->windowAction() );
   delete c;
