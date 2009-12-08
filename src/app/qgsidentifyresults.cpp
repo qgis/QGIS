@@ -124,7 +124,8 @@ QgsIdentifyResults::QgsIdentifyResults( QgsMapCanvas *canvas, QWidget *parent, Q
 QgsIdentifyResults::~QgsIdentifyResults()
 {
   clearRubberbands();
-  delete mActionPopup;
+  if ( mActionPopup )
+    delete mActionPopup;
 }
 
 QTreeWidgetItem *QgsIdentifyResults::layerItem( QObject *layer )
@@ -290,6 +291,10 @@ void QgsIdentifyResults::show()
 // (saves the current window size/position)
 void QgsIdentifyResults::close()
 {
+  clearRubberbands();
+  delete mActionPopup;
+  mActionPopup = 0;
+
   saveWindowLocation();
   done( 0 );
 }
@@ -327,12 +332,12 @@ void QgsIdentifyResults::contextMenuEvent( QContextMenuEvent* event )
   if ( !item )
     return;
 
-  if ( mActionPopup )
-    delete mActionPopup;
-
   QgsVectorLayer *vlayer = vectorLayer( item );
   if ( vlayer == 0 )
     return;
+
+  if ( mActionPopup )
+    delete mActionPopup;
 
   mActionPopup = new QMenu();
 
