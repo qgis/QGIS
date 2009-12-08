@@ -109,12 +109,6 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsPgSourceSelectBase
     QgsPgSourceSelect( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
     //! Destructor
     ~QgsPgSourceSelect();
-    //! Opens the create connection dialog to build a new connection
-    void addNewConnection();
-    //! Opens a dialog to edit an existing connection
-    void editConnection();
-    //! Deletes the selected connection
-    void deleteConnection();
     //! Populate the connection list combo box
     void populateConnectionList();
     //! Determines the tables the user selected and closes the dialog
@@ -123,8 +117,6 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsPgSourceSelectBase
     QStringList selectedTables();
     //! Connection info (database, host, user, password)
     QString connectionInfo();
-    // Store the selected database
-    void dbChanged();
 
   public slots:
     void addClicked();
@@ -133,15 +125,19 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsPgSourceSelectBase
     * Once connected, available layers are displayed.
     */
     void on_btnConnect_clicked();
+    //! Opens the create connection dialog to build a new connection
     void on_btnNew_clicked();
+    //! Opens a dialog to edit an existing connection
     void on_btnEdit_clicked();
     void on_btnBuildQuery_clicked();
+    //! Deletes the selected connection
     void on_btnDelete_clicked();
     void on_mSearchOptionsButton_clicked();
     void on_mSearchTableEdit_textChanged( const QString & text );
     void on_mSearchColumnComboBox_currentIndexChanged( const QString & text );
     void on_mSearchModeComboBox_currentIndexChanged( const QString & text );
     void setSql( const QModelIndex& index );
+    //! Store the selected database
     void on_cmbConnections_activated( int );
     void setLayerType( QString schema, QString table, QString column,
                        QString type );
@@ -191,7 +187,7 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsPgSourceSelectBase
     QgsDbFilterProxyModel mProxyModel;
 
     QString layerURI( const QModelIndex &index );
-    QPushButton * mAddButton;
+    QPushButton *mAddButton;
 };
 
 
