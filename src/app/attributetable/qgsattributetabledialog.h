@@ -145,6 +145,11 @@ class QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDia
      */
     void on_mOpenFieldCalculator_clicked();
 
+    /**
+     * deletes the selected features
+     */
+    void on_mDeleteSelectedButton_clicked();
+
   signals:
     /**
      * Informs that editing mode ha been toggled
