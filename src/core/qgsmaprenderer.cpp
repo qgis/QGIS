@@ -581,6 +581,10 @@ void QgsMapRenderer::render( QPainter* painter )
 
   if ( mLabelingEngine )
   {
+    // set correct extent
+    mRenderContext.setExtent( mExtent );
+    mRenderContext.setCoordinateTransform(NULL);
+
     mLabelingEngine->drawLabeling( mRenderContext );
     mLabelingEngine->exit();
   }
