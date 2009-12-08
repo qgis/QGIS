@@ -84,17 +84,44 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WFlags fl )
   //for Qt < 4.3.2, passing -1 to include all model columns
   //in search does not seem to work
   mSearchColumnComboBox->setCurrentIndex( 2 );
+
+  restoreGeometry( settings.value( "/Windows/PgSourceSelect/geometry" ).toByteArray() );
 }
 /** Autoconnected SLOTS **/
 // Slot for adding a new connection
 void QgsPgSourceSelect::on_btnNew_clicked()
 {
-  addNewConnection();
+  QgsNewConnection *nc = new QgsNewConnection( this );
+
+  if ( nc->exec() )
+  {
+    populateConnectionList();
+  }
 }
 // Slot for deleting an existing connection
 void QgsPgSourceSelect::on_btnDelete_clicked()
 {
-  deleteConnection();
+  QSettings settings;
+  QString key = "/Postgresql/connections/" + cmbConnections->currentText();
+  QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
+                .arg( cmbConnections->currentText() );
+  QMessageBox::StandardButton result = QMessageBox::information( this, tr( "Confirm Delete" ), msg, QMessageBox::Ok | QMessageBox::Cancel );
+  if ( result == QMessageBox::Ok )
+  {
+    settings.remove( key + "/host" );
+    settings.remove( key + "/database" );
+    settings.remove( key + "/username" );
+    settings.remove( key + "/password" );
+    settings.remove( key + "/port" );
+    settings.remove( key + "/sslmode" );
+    settings.remove( key + "/save" );
+    settings.remove( key );
+    //if(!success){
+    //  QMessageBox::information(this,"Unable to Remove","Unable to remove the connection " + cmbConnections->currentText());
+    //}
+    cmbConnections->removeItem( cmbConnections->currentIndex() );  // populateConnectionList();
+    setConnectionListPosition();
+  }
 }
 // Slot for performing action when the Add button is clicked
 void QgsPgSourceSelect::addClicked()
@@ -105,7 +132,13 @@ void QgsPgSourceSelect::addClicked()
 // Slot for editing a connection
 void QgsPgSourceSelect::on_btnEdit_clicked()
 {
-  editConnection();
+  QgsNewConnection *nc = new QgsNewConnection( this, cmbConnections->currentText() );
+
+  if ( nc->exec() )
+  {
+    nc->saveConnection();
+  }
+  populateConnectionList();
 }
 
 /** End Autoconnected SLOTS **/
@@ -113,7 +146,9 @@ void QgsPgSourceSelect::on_btnEdit_clicked()
 // Remember which database is selected
 void QgsPgSourceSelect::on_cmbConnections_activated( int )
 {
-  dbChanged();
+  // Remember which database was selected.
+  QSettings settings;
+  settings.setValue( "/PostgreSQL/connections/selected", cmbConnections->currentText() );
 }
 
 void QgsPgSourceSelect::on_btnBuildQuery_clicked()
@@ -220,6 +255,9 @@ QgsPgSourceSelect::~QgsPgSourceSelect()
     delete mColumnTypeThread;
     mColumnTypeThread = NULL;
   }
+
+  QSettings settings;
+  settings.setValue( "/Windows/PgSourceSelect/geometry", saveGeometry() );
 }
 
 void QgsPgSourceSelect::populateConnectionList()
@@ -236,52 +274,6 @@ void QgsPgSourceSelect::populateConnectionList()
   }
   settings.endGroup();
   setConnectionListPosition();
-}
-
-void QgsPgSourceSelect::addNewConnection()
-{
-  QgsNewConnection *nc = new QgsNewConnection( this );
-
-  if ( nc->exec() )
-  {
-    populateConnectionList();
-  }
-}
-
-void QgsPgSourceSelect::editConnection()
-{
-  QgsNewConnection *nc = new QgsNewConnection( this, cmbConnections->currentText() );
-
-  if ( nc->exec() )
-  {
-    nc->saveConnection();
-  }
-  populateConnectionList();
-}
-
-void QgsPgSourceSelect::deleteConnection()
-{
-  QSettings settings;
-  QString key = "/Postgresql/connections/" + cmbConnections->currentText();
-  QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
-                .arg( cmbConnections->currentText() );
-  QMessageBox::StandardButton result = QMessageBox::information( this, tr( "Confirm Delete" ), msg, QMessageBox::Ok | QMessageBox::Cancel );
-  if ( result == QMessageBox::Ok )
-  {
-    settings.remove( key + "/host" );
-    settings.remove( key + "/database" );
-    settings.remove( key + "/username" );
-    settings.remove( key + "/password" );
-    settings.remove( key + "/port" );
-    settings.remove( key + "/sslmode" );
-    settings.remove( key + "/save" );
-    settings.remove( key );
-    //if(!success){
-    //  QMessageBox::information(this,"Unable to Remove","Unable to remove the connection " + cmbConnections->currentText());
-    //}
-    cmbConnections->removeItem( cmbConnections->currentIndex() );  // populateConnectionList();
-    setConnectionListPosition();
-  }
 }
 
 QString QgsPgSourceSelect::layerURI( const QModelIndex &index )
@@ -733,14 +725,6 @@ QString QgsPgSourceSelect::fullDescription( QString schema, QString table,
     full_desc = '"' + schema + "\".\"";
   full_desc += table + "\" (" + column + ") " + type;
   return full_desc;
-}
-
-void QgsPgSourceSelect::dbChanged()
-{
-  // Remember which database was selected.
-  QSettings settings;
-  settings.setValue( "/PostgreSQL/connections/selected",
-                     cmbConnections->currentText() );
 }
 
 void QgsPgSourceSelect::setConnectionListPosition()
