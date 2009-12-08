@@ -208,7 +208,6 @@
 		7209F1E40F39EA3E003DC336 /* qgssearchstring.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6CB0F39E57A003DC336 /* qgssearchstring.cpp */; };
 		7209F1E50F39EA3E003DC336 /* qgsapplication.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6830F39E57A003DC336 /* qgsapplication.cpp */; };
 		7209F1E60F39EA3E003DC336 /* qgsrasterdataprovider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6C10F39E57A003DC336 /* qgsrasterdataprovider.cpp */; };
-		7209F1E70F39EA3E003DC336 /* qgsexception.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6950F39E57A003DC336 /* qgsexception.cpp */; };
 		7209F1E80F39EA3E003DC336 /* qgsvectorlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6D70F39E57A003DC336 /* qgsvectorlayer.cpp */; };
 		7209F1E90F39EA3E003DC336 /* qgsrectangle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6C30F39E57A003DC336 /* qgsrectangle.cpp */; };
 		7209F1EA0F39EA3E003DC336 /* qgsdatasourceuri.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6910F39E57A003DC336 /* qgsdatasourceuri.cpp */; };
@@ -1087,6 +1086,11 @@
 		72A2394B0F74A64400AFC35B /* qgsattributetableview.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72A239470F74A62200AFC35B /* qgsattributetableview.cpp */; };
 		72A2394C0F74A66400AFC35B /* qgsattributetabledialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72A239440F74A62200AFC35B /* qgsattributetabledialog.h */; };
 		72A2394D0F74A66400AFC35B /* qgsattributetablemodel.h in Sources */ = {isa = PBXBuildFile; fileRef = 72A239460F74A62200AFC35B /* qgsattributetablemodel.h */; };
+		72A51A4C10CE05C100E202D7 /* qgsprojectbadlayerguihandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72A51A4A10CE05B000E202D7 /* qgsprojectbadlayerguihandler.cpp */; };
+		72A51A5210CE065B00E202D7 /* qgslegendinterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72A51A5010CE063E00E202D7 /* qgslegendinterface.cpp */; };
+		72A51A5310CE065B00E202D7 /* qgslegendinterface.h in Sources */ = {isa = PBXBuildFile; fileRef = 72A51A5110CE063E00E202D7 /* qgslegendinterface.h */; };
+		72A51A5610CE06D800E202D7 /* qgsapplegendinterface.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72A51A5410CE06C800E202D7 /* qgsapplegendinterface.cpp */; };
+		72A51A5710CE06D800E202D7 /* qgsapplegendinterface.h in Sources */ = {isa = PBXBuildFile; fileRef = 72A51A5510CE06C800E202D7 /* qgsapplegendinterface.h */; };
 		72A56B2D0F3C810600BA32A1 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		72A56B470F3C822800BA32A1 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		72A56B520F3C823800BA32A1 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
@@ -3342,7 +3346,6 @@
 		7209E6920F39E57A003DC336 /* qgsdatasourceuri.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsdatasourceuri.h; path = ../../src/core/qgsdatasourceuri.h; sourceTree = SOURCE_ROOT; };
 		7209E6930F39E57A003DC336 /* qgsdistancearea.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsdistancearea.cpp; path = ../../src/core/qgsdistancearea.cpp; sourceTree = SOURCE_ROOT; };
 		7209E6940F39E57A003DC336 /* qgsdistancearea.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsdistancearea.h; path = ../../src/core/qgsdistancearea.h; sourceTree = SOURCE_ROOT; };
-		7209E6950F39E57A003DC336 /* qgsexception.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsexception.cpp; path = ../../src/core/qgsexception.cpp; sourceTree = SOURCE_ROOT; };
 		7209E6960F39E57A003DC336 /* qgsexception.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsexception.h; path = ../../src/core/qgsexception.h; sourceTree = SOURCE_ROOT; };
 		7209E6970F39E57A003DC336 /* qgsfeature.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsfeature.cpp; path = ../../src/core/qgsfeature.cpp; sourceTree = SOURCE_ROOT; };
 		7209E6980F39E57A003DC336 /* qgsfeature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsfeature.h; path = ../../src/core/qgsfeature.h; sourceTree = SOURCE_ROOT; };
@@ -6183,6 +6186,14 @@
 		72A239470F74A62200AFC35B /* qgsattributetableview.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsattributetableview.cpp; path = ../../src/app/attributetable/qgsattributetableview.cpp; sourceTree = SOURCE_ROOT; };
 		72A239480F74A62200AFC35B /* qgsattributetableview.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsattributetableview.h; path = ../../src/app/attributetable/qgsattributetableview.h; sourceTree = SOURCE_ROOT; };
 		72A2395B0F74A69300AFC35B /* qgsattributetabledialog.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsattributetabledialog.ui; path = ../../src/ui/qgsattributetabledialog.ui; sourceTree = SOURCE_ROOT; };
+		72A51A4A10CE05B000E202D7 /* qgsprojectbadlayerguihandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsprojectbadlayerguihandler.cpp; path = ../../src/gui/qgsprojectbadlayerguihandler.cpp; sourceTree = SOURCE_ROOT; };
+		72A51A4B10CE05B000E202D7 /* qgsprojectbadlayerguihandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsprojectbadlayerguihandler.h; path = ../../src/gui/qgsprojectbadlayerguihandler.h; sourceTree = SOURCE_ROOT; };
+		72A51A4E10CE05F100E202D7 /* qgsprojectbadlayerguihandler.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsprojectbadlayerguihandler.sip; path = ../../python/gui/qgsprojectbadlayerguihandler.sip; sourceTree = SOURCE_ROOT; };
+		72A51A4F10CE060F00E202D7 /* qgslegendinterface.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgslegendinterface.sip; path = ../../python/gui/qgslegendinterface.sip; sourceTree = SOURCE_ROOT; };
+		72A51A5010CE063E00E202D7 /* qgslegendinterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgslegendinterface.cpp; path = ../../src/gui/qgslegendinterface.cpp; sourceTree = SOURCE_ROOT; };
+		72A51A5110CE063E00E202D7 /* qgslegendinterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgslegendinterface.h; path = ../../src/gui/qgslegendinterface.h; sourceTree = SOURCE_ROOT; };
+		72A51A5410CE06C800E202D7 /* qgsapplegendinterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsapplegendinterface.cpp; path = ../../src/app/legend/qgsapplegendinterface.cpp; sourceTree = SOURCE_ROOT; };
+		72A51A5510CE06C800E202D7 /* qgsapplegendinterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsapplegendinterface.h; path = ../../src/app/legend/qgsapplegendinterface.h; sourceTree = SOURCE_ROOT; };
 		72A56B310F3C810600BA32A1 /* libdelimitedtextplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libdelimitedtextplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		72A56B4B0F3C822800BA32A1 /* libgeorefplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libgeorefplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		72A56B560F3C823800BA32A1 /* libgpsimporterplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libgpsimporterplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -7426,6 +7437,8 @@
 		7209E5D00F39E57A003DC336 /* legend */ = {
 			isa = PBXGroup;
 			children = (
+				72A51A5410CE06C800E202D7 /* qgsapplegendinterface.cpp */,
+				72A51A5510CE06C800E202D7 /* qgsapplegendinterface.h */,
 				7209E5D20F39E57A003DC336 /* qgslegend.cpp */,
 				7209E5D30F39E57A003DC336 /* qgslegend.h */,
 				7209E5D40F39E57A003DC336 /* qgslegendgroup.cpp */,
@@ -7473,7 +7486,6 @@
 				7209E6920F39E57A003DC336 /* qgsdatasourceuri.h */,
 				7209E6930F39E57A003DC336 /* qgsdistancearea.cpp */,
 				7209E6940F39E57A003DC336 /* qgsdistancearea.h */,
-				7209E6950F39E57A003DC336 /* qgsexception.cpp */,
 				7209E6960F39E57A003DC336 /* qgsexception.h */,
 				7209E6970F39E57A003DC336 /* qgsfeature.cpp */,
 				7209E6980F39E57A003DC336 /* qgsfeature.h */,
@@ -7820,6 +7832,8 @@
 				7209E7550F39E57A003DC336 /* qgsfiledropedit.h */,
 				7209E7560F39E57A003DC336 /* qgsgenericprojectionselector.cpp */,
 				7209E7570F39E57A003DC336 /* qgsgenericprojectionselector.h */,
+				72A51A5010CE063E00E202D7 /* qgslegendinterface.cpp */,
+				72A51A5110CE063E00E202D7 /* qgslegendinterface.h */,
 				72EB30FE10B99969002A971B /* qgsludialog.cpp */,
 				72EB30FF10B99969002A971B /* qgsludialog.h */,
 				7209E7580F39E57A003DC336 /* qgsmapcanvas.cpp */,
@@ -7844,6 +7858,8 @@
 				7209E76B0F39E57A003DC336 /* qgsmaptoolzoom.h */,
 				7209E76C0F39E57A003DC336 /* qgsmessageviewer.cpp */,
 				7209E76D0F39E57A003DC336 /* qgsmessageviewer.h */,
+				72A51A4A10CE05B000E202D7 /* qgsprojectbadlayerguihandler.cpp */,
+				72A51A4B10CE05B000E202D7 /* qgsprojectbadlayerguihandler.h */,
 				7209E76E0F39E57A003DC336 /* qgsprojectionselector.cpp */,
 				7209E76F0F39E57A003DC336 /* qgsprojectionselector.h */,
 				7209E7700F39E57A003DC336 /* qgsquickprint.cpp */,
@@ -9167,6 +9183,7 @@
 				72E9A3B50F5AE5BD00E78E3C /* qgscomposerview.sip */,
 				7209EDC00F39E5D9003DC336 /* qgsencodingfiledialog.sip */,
 				7209EDC10F39E5D9003DC336 /* qgsgenericprojectionselector.sip */,
+				72A51A4F10CE060F00E202D7 /* qgslegendinterface.sip */,
 				7209EDC20F39E5D9003DC336 /* qgsmapcanvas.sip */,
 				7209EDC30F39E5D9003DC336 /* qgsmapcanvasitem.sip */,
 				7209EDC40F39E5D9003DC336 /* qgsmapcanvasmap.sip */,
@@ -9178,6 +9195,7 @@
 				7209EDC90F39E5D9003DC336 /* qgsmaptoolpan.sip */,
 				7209EDCA0F39E5D9003DC336 /* qgsmaptoolzoom.sip */,
 				7209EDCB0F39E5D9003DC336 /* qgsmessageviewer.sip */,
+				72A51A4E10CE05F100E202D7 /* qgsprojectbadlayerguihandler.sip */,
 				7209EDCC0F39E5D9003DC336 /* qgsprojectionselector.sip */,
 				7209EDCD0F39E5D9003DC336 /* qgsquickprint.sip */,
 				7209EDCE0F39E5D9003DC336 /* qgsrubberband.sip */,
@@ -13618,7 +13636,6 @@
 				7209F1E40F39EA3E003DC336 /* qgssearchstring.cpp in Sources */,
 				7209F1E50F39EA3E003DC336 /* qgsapplication.cpp in Sources */,
 				7209F1E60F39EA3E003DC336 /* qgsrasterdataprovider.cpp in Sources */,
-				7209F1E70F39EA3E003DC336 /* qgsexception.cpp in Sources */,
 				7209F1E80F39EA3E003DC336 /* qgsvectorlayer.cpp in Sources */,
 				7209F1E90F39EA3E003DC336 /* qgsrectangle.cpp in Sources */,
 				7209F1EA0F39EA3E003DC336 /* qgsdatasourceuri.cpp in Sources */,
@@ -13787,6 +13804,7 @@
 				7209F3A20F3A2FC3003DC336 /* qgsmaptoolpan.cpp in Sources */,
 				7209F3A30F3A2FC3003DC336 /* qgsmaptoolzoom.cpp in Sources */,
 				7209F3A40F3A2FC3003DC336 /* qgsmessageviewer.cpp in Sources */,
+				72A51A4C10CE05C100E202D7 /* qgsprojectbadlayerguihandler.cpp in Sources */,
 				7209F3A50F3A2FC3003DC336 /* qgsprojectionselector.cpp in Sources */,
 				7209F3A60F3A2FC3003DC336 /* qgsquickprint.cpp in Sources */,
 				7209F3A70F3A2FC3003DC336 /* qgsrubberband.cpp in Sources */,
@@ -13832,6 +13850,8 @@
 				7225EFCB10B22D2000D23EA2 /* qgsvectorrandomcolorrampv2dialog.h in Sources */,
 				72EB310010B9997A002A971B /* qgsludialog.cpp in Sources */,
 				72EB310110B9997A002A971B /* qgsludialog.h in Sources */,
+				72A51A5210CE065B00E202D7 /* qgslegendinterface.cpp in Sources */,
+				72A51A5310CE065B00E202D7 /* qgslegendinterface.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -14520,6 +14540,8 @@
 				72442AEC1095DD4C00B54796 /* qgsavoidintersectionsdialog.h in Sources */,
 				72F4862210AB755200E7BFEE /* qgscomposermanager.cpp in Sources */,
 				72F4862310AB755200E7BFEE /* qgscomposermanager.h in Sources */,
+				72A51A5610CE06D800E202D7 /* qgsapplegendinterface.cpp in Sources */,
+				72A51A5710CE06D800E202D7 /* qgsapplegendinterface.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -17600,7 +17622,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 12290;
+				QGIS_VERSION_BUILD = 12370;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -17611,7 +17633,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 12290;
+				QGIS_VERSION_BUILD = 12370;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
