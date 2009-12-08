@@ -21597,9 +21597,9 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
         <location filename="../src/core/qgsvectorlayer.cpp" line="3299"/>
         <source>ERROR: %n feature(s) not added.</source>
         <comment>not added features count</comment>
-        <translation>
-            <numerusform>ERFOLG: Ein Objekt nicht hinzugefügt.</numerusform>
-            <numerusform>ERFOLG: %n Objekte nicht hinzugefügt.</numerusform>
+        <translation type="unfinished">
+            <numerusform>FEHLER: Ein Objekt nicht hinzugefügt.</numerusform>
+            <numerusform>FEHLER: %n Objekte nicht hinzugefügt.</numerusform>
         </translation>
     </message>
     <message numerus="yes">
