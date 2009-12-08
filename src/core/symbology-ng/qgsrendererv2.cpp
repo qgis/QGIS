@@ -160,6 +160,7 @@ void QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext&
   switch ( geom->wkbType() )
   {
     case QGis::WKBPoint:
+    case QGis::WKBPoint25D:
     {
       if ( symbolType != QgsSymbolV2::Marker )
       {
@@ -173,6 +174,7 @@ void QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext&
     break;
 
     case QGis::WKBLineString:
+    case QGis::WKBLineString25D:
     {
       if ( symbolType != QgsSymbolV2::Line )
       {
@@ -186,6 +188,7 @@ void QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext&
     break;
 
     case QGis::WKBPolygon:
+    case QGis::WKBPolygon25D:
     {
       if ( symbolType != QgsSymbolV2::Fill )
       {
@@ -200,6 +203,7 @@ void QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext&
     break;
 
     case QGis::WKBMultiPoint:
+    case QGis::WKBMultiPoint25D:
     {
       if ( symbolType != QgsSymbolV2::Marker )
       {
@@ -221,6 +225,7 @@ void QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext&
     break;
 
     case QGis::WKBMultiLineString:
+    case QGis::WKBMultiLineString25D:
     {
       if ( symbolType != QgsSymbolV2::Line )
       {
@@ -242,6 +247,7 @@ void QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext&
     break;
 
     case QGis::WKBMultiPolygon:
+    case QGis::WKBMultiPolygon25D:
     {
       if ( symbolType != QgsSymbolV2::Fill )
       {
