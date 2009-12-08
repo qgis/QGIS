@@ -246,5 +246,13 @@ class QgisInterface : QObject
      */
     void currentLayerChanged ( QgsMapLayer * layer );
 
+    /**This signal is emitted when a new composer instance has been created
+       @note added in version 1.4*/
+    void composerAdded( QgsComposerView* v );
+
+    /**This signal is emitted before a new composer instance is going to be removed
+       @note added in version 1.4*/
+    void composerWillBeRemoved( QgsComposerView* v );
+
 };
 

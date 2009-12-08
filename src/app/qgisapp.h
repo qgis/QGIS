@@ -41,6 +41,7 @@ class QValidator;
 class QgisAppInterface;
 class QgsClipboard;
 class QgsComposer;
+class QgsComposerView;
 class QgsGeometry;
 class QgsHelpViewer;
 class QgsFeature;
@@ -668,6 +669,15 @@ class QgisApp : public QMainWindow
      * @note This was added in QGIS 1.1
      */
     void currentThemeChanged( QString );
+
+    /**This signal is emitted when a new composer instance has been created
+       @note added in version 1.4*/
+    void composerAdded( QgsComposerView* v );
+
+     /**This signal is emitted before a new composer instance is going to be removed
+       @note added in version 1.4*/
+    void composerWillBeRemoved( QgsComposerView* v );
+
 
   private:
     /** This method will open a dialog so the user can select the sublayers
