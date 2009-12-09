@@ -351,9 +351,18 @@
         </widget>
        </item>
        <item row="10" column="0">
-        <widget class="QGroupBox" name="groupBox_4">
+        <widget class="QGroupBox" name="chkUseBuffer">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
          <property name="title">
-          <string>Buffer size units</string>
+          <string>Buffer labels</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_9">
           <item row="1" column="0">
@@ -418,16 +427,6 @@
             </property>
             <property name="value">
              <number>0</number>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QCheckBox" name="chkUseBuffer">
-            <property name="text">
-             <string>Buffer labels?</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
             </property>
            </widget>
           </item>
@@ -923,102 +922,5 @@
   <tabstop>cboYOffsetField</tabstop>
  </tabstops>
  <resources/>
- <connections>
-  <connection>
-   <sender>chkUseBuffer</sender>
-   <signal>clicked(bool)</signal>
-   <receiver>spinBufferTransparency</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>320</x>
-     <y>55</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>506</x>
-     <y>107</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>chkUseBuffer</sender>
-   <signal>clicked(bool)</signal>
-   <receiver>textLabel4_3_2_2</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>320</x>
-     <y>55</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>320</x>
-     <y>81</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>chkUseBuffer</sender>
-   <signal>clicked(bool)</signal>
-   <receiver>spinBufferSize</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>320</x>
-     <y>55</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>506</x>
-     <y>81</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>chkUseBuffer</sender>
-   <signal>clicked(bool)</signal>
-   <receiver>textLabel5_2_2_3</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>320</x>
-     <y>55</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>320</x>
-     <y>107</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>chkUseBuffer</sender>
-   <signal>clicked(bool)</signal>
-   <receiver>pbnDefaultBufferColor_2</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>320</x>
-     <y>55</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>320</x>
-     <y>137</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>chkUseBuffer</sender>
-   <signal>clicked(bool)</signal>
-   <receiver>groupBox_4</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>320</x>
-     <y>55</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>320</x>
-     <y>173</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
