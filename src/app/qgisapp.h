@@ -379,6 +379,9 @@ class QgisApp : public QMainWindow
 
     void loadOGRSublayers( QString layertype, QString uri, QStringList list );
 
+    /**Deletes the selected attributes for the currently selected vector layer*/
+    void deleteSelected( QgsMapLayer *layer = 0 );
+
   protected:
 
     //! Handle state changes (WindowTitleChange)
@@ -512,8 +515,6 @@ class QgisApp : public QMainWindow
     void captureLine();
     //! activates the capture polygon tool
     void capturePolygon();
-    /**Deletes the selected attributes for the currently selected vector layer*/
-    void deleteSelected();
     //! activates the move feature tool
     void moveFeature();
     //! activates the reshape features tool
@@ -674,8 +675,8 @@ class QgisApp : public QMainWindow
        @note added in version 1.4*/
     void composerAdded( QgsComposerView* v );
 
-     /**This signal is emitted before a new composer instance is going to be removed
-       @note added in version 1.4*/
+    /**This signal is emitted before a new composer instance is going to be removed
+      @note added in version 1.4*/
     void composerWillBeRemoved( QgsComposerView* v );
 
 
