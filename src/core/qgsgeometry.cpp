@@ -5172,7 +5172,7 @@ GEOSGeometry* QgsGeometry::reshapeLine( const GEOSGeometry* line, const GEOSGeom
     return 0;
   }
 
-  //make sure there are at least two instersction between line and reshape geometry
+  //make sure there are at least two intersection between line and reshape geometry
   GEOSGeometry* intersectGeom = GEOSIntersection( line, reshapeLineGeos );
   bool atLeastTwoIntersections = ( GEOSGeomTypeId( intersectGeom ) == GEOS_MULTIPOINT && GEOSGetNumGeometries( intersectGeom ) > 1 );
   GEOSGeom_destroy( intersectGeom );
@@ -5334,7 +5334,7 @@ GEOSGeometry* QgsGeometry::reshapeLine( const GEOSGeometry* line, const GEOSGeom
   }
 
   //add the longest segment from the probable list for rings (only used for polygon rings)
-  if ( isRing )
+  if ( isRing && probableParts.size() > 0 )
   {
     GEOSGeometry* maxGeom = 0; //the longest geometry in the probabla list
     GEOSGeometry* currentGeom = 0;
