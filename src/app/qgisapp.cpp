@@ -3496,9 +3496,13 @@ void QgisApp::layerProperties()
   mMapLegend->legendLayerShowProperties();
 }
 
-void QgisApp::deleteSelected()
+void QgisApp::deleteSelected( QgsMapLayer *layer )
 {
-  QgsMapLayer *layer = mMapLegend->currentLayer();
+  if ( !layer )
+  {
+    layer = mMapLegend->currentLayer();
+  }
+
   if ( !layer )
   {
     QMessageBox::information( this, tr( "No Layer Selected" ),
@@ -3633,13 +3637,13 @@ QgsComposer* QgisApp::createNewComposer()
   //and place action into print composers menu
   mPrintComposersMenu->addAction( newComposerObject->windowAction() );
   newComposerObject->open();
-  emit composerAdded(newComposerObject->view());
+  emit composerAdded( newComposerObject->view() );
   return newComposerObject;
 }
 
 void QgisApp::deleteComposer( QgsComposer* c )
 {
-  emit composerWillBeRemoved(c->view());
+  emit composerWillBeRemoved( c->view() );
   mPrintComposers.remove( c );
   mPrintComposersMenu->removeAction( c->windowAction() );
   delete c;
