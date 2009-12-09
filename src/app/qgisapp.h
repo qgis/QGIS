@@ -690,10 +690,10 @@ class QgisApp : public QMainWindow
      */
     bool addRasterLayer( QgsRasterLayer * theRasterLayer );
     //@todo We should move these next two into vector layer class
-    /** This helper checks to see whether the file name appears to be a valid vector file name */
-    bool isValidVectorFileName( QString theFileNameQString );
+    /** This helper checks to see whether the file name appears to be a valid shape file name */
+    bool isValidShapeFileName( QString theFileNameQString );
     /** Overloaded version of the above function provided for convenience that takes a qstring pointer */
-    bool isValidVectorFileName( QString * theFileNameQString );
+    bool isValidShapeFileName( QString * theFileNameQString );
     /** add this file to the recently opened/saved projects list
      *  pass settings by reference since creating more than one
      * instance simultaneously results in data loss.

@@ -150,20 +150,19 @@ QString QgsOpenVectorLayerDialog::dataSourceType()
 void QgsOpenVectorLayerDialog::addNewConnection()
 {
   QgsNewOgrConnection *nc = new QgsNewOgrConnection( this );
-  if ( nc->exec() )
-  {
-    populateConnectionList();
-  }
+  nc->exec();
+  delete nc;
+
+  populateConnectionList();
 }
 
 void QgsOpenVectorLayerDialog::editConnection()
 {
   QgsNewOgrConnection *nc = new QgsNewOgrConnection( this, cmbDatabaseTypes->currentText(), cmbConnections->currentText() );
+  nc->exec();
+  delete nc;
 
-  if ( nc->exec() )
-  {
-    nc->saveConnection();
-  }
+  populateConnectionList();
 }
 
 void QgsOpenVectorLayerDialog::deleteConnection()
@@ -309,12 +308,22 @@ void QgsOpenVectorLayerDialog::on_buttonSelectSrc_clicked()
 
 
 //********************auto connected slots *****************/
-void QgsOpenVectorLayerDialog::on_buttonBox_accepted()
+void QgsOpenVectorLayerDialog::accept()
 {
   QSettings settings;
   QgsDebugMsg( "dialog button accepted" );
   if ( radioSrcDatabase->isChecked() )
   {
+    if ( !settings.contains( "/" + cmbDatabaseTypes->currentText()
+                             + "/connections/" + cmbConnections->currentText()
+                             + "/host" ) )
+    {
+      QMessageBox::information( this,
+                                tr( "Add vector layer" ),
+                                tr( "No database selected." ) );
+      return;
+    }
+
     mDataSources.clear();
     QString baseKey = "/" + cmbDatabaseTypes->currentText() + "/connections/";
     baseKey += cmbConnections->currentText();
@@ -340,16 +349,39 @@ void QgsOpenVectorLayerDialog::on_buttonBox_accepted()
   }
   else if ( radioSrcProtocol->isChecked() )
   {
+    if ( protocolURI->text().isEmpty() )
+    {
+      QMessageBox::information( this,
+                                tr( "Add vector layer" ),
+                                tr( "No protocol URI entered." ) );
+      return;
+    }
+
     mDataSources.clear();
     mDataSources.append( createProtocolURI(
                            cmbProtocolTypes->currentText(),
                            protocolURI->text()
                          ) );
   }
+  else if ( radioSrcFile->isChecked() && inputSrcDataset->text().isEmpty() )
+  {
+    QMessageBox::information( this,
+                              tr( "Add vector layer" ),
+                              tr( "No layers selected." ) );
+    return;
+  }
+  else if ( radioSrcDirectory->isChecked() && inputSrcDataset->text().isEmpty() )
+  {
+    QMessageBox::information( this,
+                              tr( "Add vector layer" ),
+                              tr( "No directory selected." ) );
+    return;
+  }
+
   // Save the used encoding
   settings.setValue( "/UI/encoding", encoding() );
 
-  accept();
+  QDialog::accept();
 }
 
 void QgsOpenVectorLayerDialog::on_radioSrcFile_toggled( bool checked )
