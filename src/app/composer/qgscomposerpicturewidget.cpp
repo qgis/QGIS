@@ -462,6 +462,13 @@ void QgsComposerPictureWidget::addStandardDirectoriesToPreview()
 
 bool QgsComposerPictureWidget::testSvgFile( const QString& filename ) const
 {
+  //QSvgRenderer crashes with some (non-svg) xml documents.
+  //So at least we try to sort out the ones with different suffixes
+  if(!filename.endsWith(".svg"))
+  {
+    return false;
+  }
+
   QSvgRenderer svgRenderer( filename );
   if ( svgRenderer.isValid() )
   {
