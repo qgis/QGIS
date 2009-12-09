@@ -184,22 +184,22 @@ bool QgsGrassEdit::isEditable( QgsMapLayer *layer )
 {
   if ( !layer ) return false;
 
-  QgsDebugMsg( "layer name: " + layer->name() );
+  QgsDebugMsgLevel( "layer name: " + layer->name(), 3 );
 
   if ( layer->type() != QgsMapLayer::VectorLayer )
   {
-    QgsDebugMsg( "The selected layer is not vector." );
+    QgsDebugMsgLevel( "The selected layer is not vector.", 3 );
     return false;
   }
 
   //TODO dynamic_cast ?
   QgsVectorLayer *vector = ( QgsVectorLayer* )layer;
 
-  QgsDebugMsg( "Vector layer type: " + vector->providerType() );
+  QgsDebugMsgLevel( "Vector layer type: " + vector->providerType(), 3 );
 
   if ( vector->providerType() != "grass" )
   {
-    QgsDebugMsg( "The selected layer is not GRASS." );
+    QgsDebugMsgLevel( "The selected layer is not GRASS.", 3 );
     return false;
   }
 

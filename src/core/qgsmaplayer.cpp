@@ -111,7 +111,7 @@ void QgsMapLayer::setLayerName( const QString & _newVal )
 /** Read property of QString layerName. */
 QString const & QgsMapLayer::name() const
 {
-  QgsDebugMsg( "returning name '" + mLayerName + "'" );
+  QgsDebugMsgLevel( "returning name '" + mLayerName + "'", 3 );
   return mLayerName;
 }
 
@@ -376,7 +376,7 @@ QString QgsMapLayer::lastError()
 
 void QgsMapLayer::connectNotify( const char * signal )
 {
-  QgsDebugMsg( "QgsMapLayer connected to " + QString( signal ) );
+  QgsDebugMsgLevel( "QgsMapLayer connected to " + QString( signal ), 3 );
 } //  QgsMapLayer::connectNotify
 
 
