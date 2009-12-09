@@ -34,8 +34,6 @@ class QgsNewConnection : public QDialog, private Ui::QgsNewConnectionBase
     ~QgsNewConnection();
     //! Tests the connection using the parameters supplied
     void testConnection();
-    //! Saves the connection to ~/.qt/qgisrc
-    void saveConnection();
   public slots:
     void accept();
     void on_btnConnect_clicked();

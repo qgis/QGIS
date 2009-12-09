@@ -79,7 +79,39 @@ QgsNewConnection::QgsNewConnection( QWidget *parent, const QString& connName, Qt
 /** Autoconnected SLOTS **/
 void QgsNewConnection::accept()
 {
-  saveConnection();
+  QSettings settings;
+  QString baseKey = "/PostgreSQL/connections/";
+  settings.setValue( baseKey + "selected", txtName->text() );
+
+  // warn if entry was renamed to an existing connection
+  if (( mOriginalConnName.isNull() || mOriginalConnName != txtName->text() ) &&
+      settings.contains( baseKey + txtName->text() + "/host" ) &&
+      QMessageBox::question( this,
+                             tr( "Save connection" ),
+                             tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
+                             QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  {
+    return;
+  }
+
+  // on rename delete the original entry first
+  if ( !mOriginalConnName.isNull() && mOriginalConnName != txtName->text() )
+  {
+
+    settings.remove( baseKey + mOriginalConnName );
+  }
+
+  baseKey += txtName->text();
+  settings.setValue( baseKey + "/host", txtHost->text() );
+  settings.setValue( baseKey + "/database", txtDatabase->text() );
+  settings.setValue( baseKey + "/port", txtPort->text() );
+  settings.setValue( baseKey + "/username", txtUsername->text() );
+  settings.setValue( baseKey + "/password", chkStorePassword->isChecked() ? txtPassword->text() : "" );
+  settings.setValue( baseKey + "/publicOnly", cb_publicSchemaOnly->isChecked() );
+  settings.setValue( baseKey + "/geometryColumnsOnly", cb_geometryColumnsOnly->isChecked() );
+  settings.setValue( baseKey + "/save", chkStorePassword->isChecked() ? "true" : "false" );
+  settings.setValue( baseKey + "/sslmode", cbxSSLmode->currentIndex() );
+
   QDialog::accept();
 }
 
@@ -122,40 +154,3 @@ void QgsNewConnection::testConnection()
   // free pg connection resources
   PQfinish( pd );
 }
-
-void QgsNewConnection::saveConnection()
-{
-  QSettings settings;
-  QString baseKey = "/PostgreSQL/connections/";
-  settings.setValue( baseKey + "selected", txtName->text() );
-  //delete original entry first
-  if ( !mOriginalConnName.isNull() && mOriginalConnName != txtName->text() )
-  {
-    settings.remove( baseKey + mOriginalConnName );
-  }
-  baseKey += txtName->text();
-  settings.setValue( baseKey + "/host", txtHost->text() );
-  settings.setValue( baseKey + "/database", txtDatabase->text() );
-  settings.setValue( baseKey + "/port", txtPort->text() );
-  settings.setValue( baseKey + "/username", txtUsername->text() );
-  settings.setValue( baseKey + "/password", chkStorePassword->isChecked() ? txtPassword->text() : "" );
-  settings.setValue( baseKey + "/publicOnly", cb_publicSchemaOnly->isChecked() );
-  settings.setValue( baseKey + "/geometryColumnsOnly", cb_geometryColumnsOnly->isChecked() );
-  settings.setValue( baseKey + "/save", chkStorePassword->isChecked() ? "true" : "false" );
-  settings.setValue( baseKey + "/sslmode", cbxSSLmode->currentIndex() );
-}
-
-#if 0
-void QgsNewConnection::saveConnection()
-{
-  QSettings settings;
-  QString baseKey = "/PostgreSQL/connections/";
-  baseKey += txtName->text();
-  settings.setValue( baseKey + "/host", txtHost->text() );
-  settings.setValue( baseKey + "/database", txtDatabase->text() );
-
-  settings.setValue( baseKey + "/username", txtUsername->text() );
-  settings.setValue( baseKey + "/password", chkStorePassword->isChecked() ? txtPassword->text() : "" );
-  accept();
-}
-#endif

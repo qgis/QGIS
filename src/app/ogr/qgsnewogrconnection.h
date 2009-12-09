@@ -37,12 +37,13 @@ class QgsNewOgrConnection : public QDialog, private Ui::QgsNewOgrConnectionBase
     ~QgsNewOgrConnection();
     //! Tests the connection using the parameters supplied
     void testConnection();
-    //! Saves the connection to ~/.qt/qgisrc
-    void saveConnection();
   public slots:
     void accept();
     void on_btnConnect_clicked();
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+
+  private:
+    QString mOriginalConnName;
 };
 
 #endif //  QGSNEWOGRCONNECTIONBASE_H

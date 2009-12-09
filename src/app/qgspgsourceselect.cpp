@@ -93,10 +93,9 @@ void QgsPgSourceSelect::on_btnNew_clicked()
 {
   QgsNewConnection *nc = new QgsNewConnection( this );
 
-  if ( nc->exec() )
-  {
-    populateConnectionList();
-  }
+  nc->exec();
+
+  populateConnectionList();
 }
 // Slot for deleting an existing connection
 void QgsPgSourceSelect::on_btnDelete_clicked()
@@ -134,10 +133,8 @@ void QgsPgSourceSelect::on_btnEdit_clicked()
 {
   QgsNewConnection *nc = new QgsNewConnection( this, cmbConnections->currentText() );
 
-  if ( nc->exec() )
-  {
-    nc->saveConnection();
-  }
+  nc->exec();
+
   populateConnectionList();
 }
 

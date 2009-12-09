@@ -2106,19 +2106,17 @@ void QgisApp::about()
                             .arg( QGis::QGIS_VERSION )
                             .arg( QGis::QGIS_SVN_VERSION );
 #ifdef HAVE_POSTGRESQL
-
     versionString += tr( " This copy of QGIS has been built with PostgreSQL support." );
 #else
-
     versionString += tr( " This copy of QGIS has been built without PostgreSQL support." );
 #endif
-#ifdef HAVE_SPATIALITE
 
+#ifdef HAVE_SPATIALITE
     versionString += tr( "\nThis copy of QGIS has been built with SpatiaLite support." );
 #else
-
     versionString += tr( "\nThis copy of QGIS has been built without SpatiaLite support." );
 #endif
+
     versionString += tr( "\nThis binary was compiled against Qt %1,"
                          "and is currently running against Qt %2" )
                      .arg( QT_VERSION_STR )
@@ -2399,16 +2397,16 @@ void QgisApp::loadOGRSublayers( QString layertype, QString uri, QStringList list
 }
 
 /** This helper checks to see whether the file name appears to be a valid vector file name */
-bool QgisApp::isValidVectorFileName( QString theFileNameQString )
+bool QgisApp::isValidShapeFileName( QString theFileNameQString )
 {
-  return ( theFileNameQString.toLower().endsWith( ".shp" ) );
+  return theFileNameQString.endsWith( ".shp", Qt::CaseInsensitive );
 }
 
 /** Overloaded of the above function provided for convenience that takes a qstring pointer */
-bool QgisApp::isValidVectorFileName( QString * theFileNameQString )
+bool QgisApp::isValidShapeFileName( QString * theFileNameQString )
 {
   //dereference and delegate
-  return isValidVectorFileName( *theFileNameQString );
+  return isValidShapeFileName( *theFileNameQString );
 }
 
 #ifndef HAVE_POSTGRESQL
@@ -2524,7 +2522,6 @@ void QgisApp::addSpatiaLiteLayer()
     QStringList::Iterator it = tables.begin();
     while ( it != tables.end() )
     {
-
       // normalizing the layer name
       QString layername = *it;
       layername = layername.mid( 1 );
@@ -2736,13 +2733,28 @@ void QgisApp::newVectorLayer()
     openFileDialog->selectFilter( lastUsedFilter );
   }
 
-  if ( openFileDialog->exec() != QDialog::Accepted )
+  int res;
+  while (( res = openFileDialog->exec() ) == QDialog::Accepted )
+  {
+    fileName = openFileDialog->selectedFiles().first();
+
+    if ( fileformat == "ESRI Shapefile" && !isValidShapeFileName( fileName ) )
+    {
+      QMessageBox::information( this,
+                                tr( "New Shapefile" ),
+                                tr( "Shapefiles must end on .shp" ) );
+      continue;
+    }
+
+    break;
+  }
+
+  if ( res == QDialog::Rejected )
   {
     delete openFileDialog;
     return;
   }
 
-  fileName = openFileDialog->selectedFiles().first();
   enc = openFileDialog->encoding();
 
   // If the file exists, delete it otherwise we'll end up loading that
@@ -2751,9 +2763,6 @@ void QgisApp::newVectorLayer()
   // with a linestring file).
   if ( fileformat == "ESRI Shapefile" )
   {
-    if ( !fileName.endsWith( ".shp", Qt::CaseInsensitive ) )
-      fileName += ".shp";
-
     QgsVectorFileWriter::deleteShapeFile( fileName );
   }
   else
@@ -3505,7 +3514,8 @@ void QgisApp::deleteSelected( QgsMapLayer *layer )
 
   if ( !layer )
   {
-    QMessageBox::information( this, tr( "No Layer Selected" ),
+    QMessageBox::information( this,
+                              tr( "No Layer Selected" ),
                               tr( "To delete features, you must select a vector layer in the legend" ) );
     return;
   }
@@ -3513,7 +3523,8 @@ void QgisApp::deleteSelected( QgsMapLayer *layer )
   QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer )
   {
-    QMessageBox::information( this, tr( "No Vector Layer Selected" ),
+    QMessageBox::information( this,
+                              tr( "No Vector Layer Selected" ),
                               tr( "Deleting features only works on vector layers" ) );
     return;
   }
@@ -3957,7 +3968,7 @@ void QgisApp::editCut( QgsMapLayer * layerContainingSelection )
     if ( selectionVectorLayer != 0 )
     {
       QgsFeatureList features = selectionVectorLayer->selectedFeatures();
-      clipboard()->replaceWithCopyOf( selectionVectorLayer->dataProvider()->fields(), features );
+      clipboard()->replaceWithCopyOf( selectionVectorLayer->pendingFields(), features );
       clipboard()->setCRS( selectionVectorLayer->srs() );
       selectionVectorLayer->beginEditCommand( tr( "Features cut" ) );
       selectionVectorLayer->deleteSelectedFeatures();
@@ -3986,14 +3997,14 @@ void QgisApp::editCopy( QgsMapLayer * layerContainingSelection )
     if ( selectionVectorLayer != 0 )
     {
       QgsFeatureList features = selectionVectorLayer->selectedFeatures();
-      clipboard()->replaceWithCopyOf( selectionVectorLayer->dataProvider()->fields(), features );
+      clipboard()->replaceWithCopyOf( selectionVectorLayer->pendingFields(), features );
       clipboard()->setCRS( selectionVectorLayer->srs() );
     }
   }
 }
 
 
-void QgisApp::editPaste( QgsMapLayer * destinationLayer )
+void QgisApp::editPaste( QgsMapLayer *destinationLayer )
 {
   if ( mMapCanvas && mMapCanvas->isDrawing() )
   {

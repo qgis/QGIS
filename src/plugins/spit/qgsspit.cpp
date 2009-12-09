@@ -120,21 +120,15 @@ void QgsSpit::populateConnectionList()
 void QgsSpit::newConnection()
 {
   QgsNewConnection *nc = new QgsNewConnection( this );
-
-  if ( nc->exec() )
-  {
-    populateConnectionList();
-  }
+  nc->exec();
+  delete nc;
 }
 
 void QgsSpit::editConnection()
 {
   QgsNewConnection *nc = new QgsNewConnection( this, cmbConnections->currentText() );
-
-  if ( nc->exec() )
-  {
-    nc->saveConnection();
-  }
+  nc->exec();
+  delete nc;
 }
 
 void QgsSpit::removeConnection()

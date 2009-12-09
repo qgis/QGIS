@@ -73,7 +73,8 @@ class QgsOpenVectorLayerDialog : public QDialog, private Ui::QgsOpenVectorLayerD
     //! Sets the selected connection
     void setSelectedConnection();
 
-    void on_buttonBox_accepted();
+    void accept();
+
     void on_buttonSelectSrc_clicked();
     void on_radioSrcFile_toggled( bool checked );
     void on_radioSrcDirectory_toggled( bool checked );

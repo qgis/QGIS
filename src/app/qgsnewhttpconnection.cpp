@@ -18,6 +18,7 @@
 #include "qgsnewhttpconnection.h"
 #include "qgscontexthelp.h"
 #include <QSettings>
+#include <QMessageBox>
 
 QgsNewHttpConnection::QgsNewHttpConnection(
   QWidget *parent, const QString& baseKey, const QString& connName, Qt::WFlags fl ):
@@ -54,12 +55,24 @@ void QgsNewHttpConnection::accept()
   QString key = mBaseKey + txtName->text();
   QString credentialsKey = "/Qgis/WMS/" + txtName->text();
 
-  //delete original entry first
+  // warn if entry was renamed to an existing connection
+  if (( mOriginalConnName.isNull() || mOriginalConnName != txtName->text() ) &&
+      settings.contains( key + "/url" ) &&
+      QMessageBox::question( this,
+                             tr( "Save connection" ),
+                             tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
+                             QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  {
+    return;
+  }
+
+  // on rename delete original entry first
   if ( !mOriginalConnName.isNull() && mOriginalConnName != key )
   {
     settings.remove( mBaseKey + mOriginalConnName );
     settings.remove( "/Qgis/WMS/" + mOriginalConnName );
   }
+
   settings.setValue( key + "/url", txtUrl->text().trimmed() );
   settings.setValue( credentialsKey + "/username", txtUserName->text() );
   settings.setValue( credentialsKey + "/password", txtPassword->text() );
