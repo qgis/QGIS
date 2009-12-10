@@ -40,6 +40,14 @@ QgsSearchQueryBuilder::QgsSearchQueryBuilder( QgsVectorLayer* layer,
 
   setWindowTitle( tr( "Search query builder" ) );
 
+  QPushButton *pbn = new QPushButton( tr( "&Test" ) );
+  buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
+  connect( pbn, SIGNAL( clicked() ), this, SLOT( on_btnTest_clicked() ) );
+
+  pbn = new QPushButton( tr( "&Clear" ) );
+  buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
+  connect( pbn, SIGNAL( clicked() ), this, SLOT( on_btnClear_clicked() ) );
+
   // disable unsupported operators
   btnIn->setEnabled( false );
   btnNotIn->setEnabled( false );
