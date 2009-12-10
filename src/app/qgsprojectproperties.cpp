@@ -232,7 +232,9 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
     twi->setData( Qt::UserRole, it.key() );
     twIdentifyLayers->setVerticalHeaderItem( i, twi );
 
-    twIdentifyLayers->setItem( i, 0, new QTableWidgetItem( currentLayer->name() ) );
+    twi = new QTableWidgetItem( currentLayer->name() );
+    twi->setFlags( twi->flags() & ~Qt::ItemIsEditable );
+    twIdentifyLayers->setItem( i, 0, twi );
 
     QString type;
     if ( currentLayer->type() == QgsMapLayer::VectorLayer )
@@ -253,7 +255,9 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
       }
     }
 
-    twIdentifyLayers->setItem( i, 1, new QTableWidgetItem( type ) );
+    twi = new QTableWidgetItem( type );
+    twi->setFlags( twi->flags() & ~Qt::ItemIsEditable );
+    twIdentifyLayers->setItem( i, 1, twi );
 
     QCheckBox *cb = new QCheckBox();
     cb->setChecked( !noIdentifyLayerIdList.contains( currentLayer->getLayerID() ) );
