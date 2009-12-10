@@ -19613,7 +19613,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1998"/>
         <source>Out of range OK?</source>
-        <translation>Dopuszczać z poza zakresu?</translation>
+        <translation>Dopuszczać spoza zakresu?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2005"/>
