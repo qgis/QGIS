@@ -78,6 +78,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
     mDock = new QgsAttributeTableDock( tr( "Attribute table - %1" ).arg( mLayer->name() ), QgisApp::instance() );
     mDock->setAllowedAreas( Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea );
     mDock->setWidget( this );
+    connect( this, SIGNAL( destroyed() ), mDock, SLOT( close() ) );
     QgisApp::instance()->addDockWidget( Qt::BottomDockWidgetArea, mDock );
   }
 
@@ -505,6 +506,10 @@ void QgsAttributeTableDialog::updateSelectionFromLayer()
 {
   QgsDebugMsg( "updateFromLayer" );
   mSelectedFeatures = mLayer->selectedFeaturesIds();
+
+  if ( cbxShowSelectedOnly->isChecked() )
+    mFilterModel->invalidate();
+
   updateSelection();
 }
 

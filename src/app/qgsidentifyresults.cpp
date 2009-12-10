@@ -297,6 +297,8 @@ void QgsIdentifyResults::close()
 
   saveWindowLocation();
   done( 0 );
+  if ( mDock )
+    mDock->close();
 }
 
 // Save the current window size/position before closing
@@ -622,8 +624,8 @@ void QgsIdentifyResults::disconnectLayer( QObject *layer )
   {
     disconnect( vlayer, SIGNAL( layerDeleted() ), this, SLOT( layerDestroyed() ) );
     disconnect( vlayer, SIGNAL( featureDeleted( int ) ), this, SLOT( featureDeleted( int ) ) );
-    disconnect( vlayer, SIGNAL( editingStarted() ), this, SLOT( changeEditAction() ) );
-    disconnect( vlayer, SIGNAL( editingStopped() ), this, SLOT( changeEditAction() ) );
+    disconnect( vlayer, SIGNAL( editingStarted() ), this, SLOT( editingToggled() ) );
+    disconnect( vlayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
   }
   else
   {
