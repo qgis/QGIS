@@ -86,6 +86,11 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WFlags fl )
   mSearchColumnComboBox->setCurrentIndex( 2 );
 
   restoreGeometry( settings.value( "/Windows/PgSourceSelect/geometry" ).toByteArray() );
+
+  for ( int i = 0; i < mTableModel.columnCount(); i++ )
+  {
+    mTablesTreeView->setColumnWidth( i, settings.value( QString( "/Windows/PgSourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) ).toInt() );
+  }
 }
 /** Autoconnected SLOTS **/
 // Slot for adding a new connection
@@ -255,6 +260,11 @@ QgsPgSourceSelect::~QgsPgSourceSelect()
 
   QSettings settings;
   settings.setValue( "/Windows/PgSourceSelect/geometry", saveGeometry() );
+
+  for ( int i = 0; i < mTableModel.columnCount(); i++ )
+  {
+    settings.setValue( QString( "/Windows/PgSourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) );
+  }
 }
 
 void QgsPgSourceSelect::populateConnectionList()
