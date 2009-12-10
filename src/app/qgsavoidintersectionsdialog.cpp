@@ -1,37 +1,32 @@
 #include "qgsavoidintersectionsdialog.h"
-#include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
+#include "qgsmaplayerregistry.h"
 
-QgsAvoidIntersectionsDialog::QgsAvoidIntersectionsDialog( QgsMapCanvas* canvas, const QSet<QString>& enabledLayers, QWidget * parent, Qt::WindowFlags f ): \
+QgsAvoidIntersectionsDialog::QgsAvoidIntersectionsDialog( QgsMapCanvas* canvas, const QSet<QString>& enabledLayers, QWidget * parent, Qt::WindowFlags f ):
     QDialog( parent, f ), mMapCanvas( canvas )
 {
   setupUi( this );
 
-  int nLayers = mMapCanvas->layerCount();
-  QgsVectorLayer* currentLayer = 0;
-  QListWidgetItem* newItem = 0;
+  const QMap<QString, QgsMapLayer*> &mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
 
-  for ( int i = 0; i < nLayers; ++i )
+  int i = 0;
+  for ( QMap<QString, QgsMapLayer*>::const_iterator it = mapLayers.constBegin(); it != mapLayers.constEnd(); it++, i++ )
   {
-    currentLayer = dynamic_cast<QgsVectorLayer*>( mMapCanvas->layer( i ) );
-    if ( currentLayer )
+    QgsVectorLayer* currentLayer = dynamic_cast<QgsVectorLayer*>( it.value() );
+    if ( !currentLayer || currentLayer->geometryType() != QGis::Polygon )
+      continue;
+
+    QListWidgetItem *newItem = new QListWidgetItem( mLayersListWidget );
+    newItem->setText( currentLayer->name() );
+    newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
+    newItem->setData( Qt::UserRole, currentLayer->getLayerID() );
+    if ( enabledLayers.contains( currentLayer->getLayerID() ) )
     {
-      //only consider polygon or multipolygon layers
-      if ( currentLayer->geometryType() == QGis::Polygon )
-      {
-        newItem = new QListWidgetItem( mLayersListWidget );
-        newItem->setText( currentLayer->name() );
-        newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsUserCheckable );
-        newItem->setData( Qt::UserRole, currentLayer->getLayerID() );
-        if ( enabledLayers.contains( currentLayer->getLayerID() ) )
-        {
-          newItem->setCheckState( Qt::Checked );
-        }
-        else
-        {
-          newItem->setCheckState( Qt::Unchecked );
-        }
-      }
+      newItem->setCheckState( Qt::Checked );
+    }
+    else
+    {
+      newItem->setCheckState( Qt::Unchecked );
     }
   }
 }
@@ -45,16 +40,12 @@ void QgsAvoidIntersectionsDialog::enabledLayers( QSet<QString>& enabledLayers )
 {
   enabledLayers.clear();
 
-  int itemCount = mLayersListWidget->count();
-  QListWidgetItem* currentItem = 0;
-
-  for ( int i = 0; i < itemCount; ++i )
+  for ( int i = 0; i < mLayersListWidget->count(); ++i )
   {
-    currentItem = mLayersListWidget->item( i );
+    QListWidgetItem *currentItem = mLayersListWidget->item( i );
     if ( currentItem->checkState() == Qt::Checked )
     {
       enabledLayers.insert( currentItem->data( Qt::UserRole ).toString() );
     }
   }
 }
-
