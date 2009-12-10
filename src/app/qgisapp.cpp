@@ -4107,7 +4107,7 @@ void QgisApp::toggleEditing( QgsMapLayer *layer )
   {
     // commit or roll back?
     QMessageBox::StandardButton commit =
-      QMessageBox::information( this,
+      QMessageBox::information( 0,
                                 tr( "Stop editing" ),
                                 tr( "Do you want to save the changes to layer %1?" ).arg( vlayer->name() ),
                                 QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel );
@@ -4116,7 +4116,7 @@ void QgisApp::toggleEditing( QgsMapLayer *layer )
     {
       if ( !vlayer->commitChanges() )
       {
-        QMessageBox::information( this,
+        QMessageBox::information( 0,
                                   tr( "Error" ),
                                   tr( "Could not commit changes to layer %1\n\nErrors: %2\n" )
                                   .arg( vlayer->name() )
