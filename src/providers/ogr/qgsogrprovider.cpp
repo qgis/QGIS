@@ -207,7 +207,7 @@ bool QgsOgrProvider::setSubsetString( QString theSQL )
     QString sql = QString( "SELECT * FROM %1 WHERE %2" )
                   .arg( quotedIdentifier( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) ) ) )
                   .arg( mSubsetString );
-    ogrLayer = OGR_DS_ExecuteSQL( ogrDataSource, sql.toUtf8().data(), NULL, NULL );
+    ogrLayer = OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).constData(), NULL, NULL );
 
     if ( !ogrLayer )
     {
