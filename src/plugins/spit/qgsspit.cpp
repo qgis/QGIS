@@ -122,6 +122,8 @@ void QgsSpit::newConnection()
   QgsNewConnection *nc = new QgsNewConnection( this );
   nc->exec();
   delete nc;
+
+  populateConnectionList();
 }
 
 void QgsSpit::editConnection()
@@ -129,6 +131,8 @@ void QgsSpit::editConnection()
   QgsNewConnection *nc = new QgsNewConnection( this, cmbConnections->currentText() );
   nc->exec();
   delete nc;
+
+  populateConnectionList();
 }
 
 void QgsSpit::removeConnection()

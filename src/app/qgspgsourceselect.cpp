@@ -92,8 +92,8 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WFlags fl )
 void QgsPgSourceSelect::on_btnNew_clicked()
 {
   QgsNewConnection *nc = new QgsNewConnection( this );
-
   nc->exec();
+  delete nc;
 
   populateConnectionList();
 }
@@ -132,8 +132,8 @@ void QgsPgSourceSelect::addClicked()
 void QgsPgSourceSelect::on_btnEdit_clicked()
 {
   QgsNewConnection *nc = new QgsNewConnection( this, cmbConnections->currentText() );
-
   nc->exec();
+  delete nc;
 
   populateConnectionList();
 }
