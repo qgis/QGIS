@@ -238,7 +238,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Raise, unminimize and activate this window
     void activate();
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_mButtonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
   private:
 
