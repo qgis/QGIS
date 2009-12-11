@@ -159,6 +159,7 @@ void QgsIdentifyResults::addFeature( QgsMapLayer *layer, int fid,
     if ( vlayer )
     {
       connect( vlayer, SIGNAL( layerDeleted() ), this, SLOT( layerDestroyed() ) );
+      connect( vlayer, SIGNAL( layerCrsChanged() ), this, SLOT( layerDestroyed() ) );
       connect( vlayer, SIGNAL( featureDeleted( int ) ), this, SLOT( featureDeleted( int ) ) );
       connect( vlayer, SIGNAL( editingStarted() ), this, SLOT( editingToggled() ) );
       connect( vlayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
@@ -166,6 +167,7 @@ void QgsIdentifyResults::addFeature( QgsMapLayer *layer, int fid,
     else
     {
       connect( layer, SIGNAL( destroyed() ), this, SLOT( layerDestroyed() ) );
+      connect( layer, SIGNAL( layerCrsChanged() ), this, SLOT( layerDestroyed() ) );
     }
   }
 
