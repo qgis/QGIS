@@ -225,7 +225,7 @@ bool QgsSpatiaLiteProvider::featureAtId( int featureId, QgsFeature & feature, bo
     const QString & fieldname = fld.name();
     sql += ", \"";
     sql += fieldname;
-	sql += "\"";
+    sql += "\"";
   }
   if ( fetchGeometry )
   {
@@ -526,7 +526,7 @@ void QgsSpatiaLiteProvider::select( QgsAttributeList fetchAttributes, QgsRectang
     const QString & fieldname = fld.name();
     sql += ", \"";
     sql += fieldname;
-	sql += "\"";
+    sql += "\"";
   }
   if ( fetchGeometry )
   {
@@ -872,14 +872,12 @@ void QgsSpatiaLiteProvider::uniqueValues( int index, QList < QVariant > &uniqueV
           uniqueValues.append( QString( "%1" ).arg( sqlite3_column_double( stmt, 0 ) ) );
           break;
         case SQLITE_TEXT:
-          txt = ( const char * ) sqlite3_column_text( stmt, 0 );
-          uniqueValues.append( txt );
+          uniqueValues.append( QString::fromUtf8(( const char * ) sqlite3_column_text( stmt, 0 ) ) );
           break;
         default:
-          txt = "";
-          uniqueValues.append( txt );
+          uniqueValues.append( "" );
           break;
-      };
+      }
     }
     else
     {
@@ -952,7 +950,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
 
     sql += ", \"";
     sql += fieldname;
-	sql += "\"";
+    sql += "\"";
     values += ", ?";
   }
 
@@ -1033,7 +1031,7 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
     // performing actual row insert
     ret = sqlite3_step( stmt );
 
-	if ( ret == SQLITE_DONE || ret == SQLITE_ROW )
+    if ( ret == SQLITE_DONE || ret == SQLITE_ROW )
     {
       numberFeatures++;
     }
@@ -1254,29 +1252,29 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
         sql += ",";
       else
         first = false;
-	
-	  QVariant::Type type = siter->type();
-	  if ( siter->toString().isEmpty() )
-	  {
-	  // assuming to be a NULL value
-		type = QVariant::Invalid;
-	  }
 
-	  if ( type == QVariant::Invalid )
-	  {
-	  // binding a NULL value
-		sql += QString( "\"%1\"=NULL" ).arg( fieldName );
-	  }
-	  else if ( type == QVariant::Int || type == QVariant::Double )
-	  {
-	  // binding a NUMERIC value
-		sql += QString( "\"%1\"=%2" ).arg( fieldName ).arg( siter->toString() );
-	  }
-	  else
-	  {
-	  // binding a TEXT value
-		sql += QString( "\"%1\"=%2" ).arg( fieldName ).arg( quotedValue( siter->toString() ) );
-	  }
+      QVariant::Type type = siter->type();
+      if ( siter->toString().isEmpty() )
+      {
+        // assuming to be a NULL value
+        type = QVariant::Invalid;
+      }
+
+      if ( type == QVariant::Invalid )
+      {
+        // binding a NULL value
+        sql += QString( "\"%1\"=NULL" ).arg( fieldName );
+      }
+      else if ( type == QVariant::Int || type == QVariant::Double )
+      {
+        // binding a NUMERIC value
+        sql += QString( "\"%1\"=%2" ).arg( fieldName ).arg( siter->toString() );
+      }
+      else
+      {
+        // binding a TEXT value
+        sql += QString( "\"%1\"=%2" ).arg( fieldName ).arg( quotedValue( siter->toString() ) );
+      }
     }
     sql += QString( " WHERE ROWID=%1" ).arg( fid );
 
