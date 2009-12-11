@@ -40,14 +40,16 @@ void QgsMapToolAddIsland::canvasReleaseEvent( QMouseEvent * e )
 
   if ( !vlayer )
   {
-    QMessageBox::information( 0, tr( "Not a vector layer" ),
+    QMessageBox::information( 0,
+                              tr( "Not a vector layer" ),
                               tr( "The current layer is not a vector layer" ) );
     return;
   }
 
   if ( !vlayer->isEditable() )
   {
-    QMessageBox::information( 0, tr( "Layer not editable" ),
+    QMessageBox::information( 0,
+                              tr( "Layer not editable" ),
                               tr( "Cannot edit the vector layer. To make it editable, go to the file item "
                                   "of the layer, right click and check 'Allow Editing'." ) );
     return;
@@ -58,11 +60,11 @@ void QgsMapToolAddIsland::canvasReleaseEvent( QMouseEvent * e )
   QString selectionErrorMsg;
   if ( nSelectedFeatures < 1 )
   {
-    selectionErrorMsg = "No feature selected. Please select a feature with the selection tool or in the attribute table";
+    selectionErrorMsg = tr( "No feature selected. Please select a feature with the selection tool or in the attribute table" );
   }
   else if ( nSelectedFeatures > 1 )
   {
-    selectionErrorMsg = "Several features are selected. Please select only one feature to which an island should be added.";
+    selectionErrorMsg = tr( "Several features are selected. Please select only one feature to which an island should be added." );
   }
 
   if ( !selectionErrorMsg.isEmpty() )
@@ -84,7 +86,8 @@ void QgsMapToolAddIsland::canvasReleaseEvent( QMouseEvent * e )
   else if ( error == 2 )
   {
     //problem with coordinate transformation
-    QMessageBox::information( 0, tr( "Coordinate transform error" ),
+    QMessageBox::information( 0,
+                              tr( "Coordinate transform error" ),
                               tr( "Cannot transform the point to the layers coordinate system" ) );
     return;
   }
@@ -110,27 +113,27 @@ void QgsMapToolAddIsland::canvasReleaseEvent( QMouseEvent * e )
     {
       if ( errorCode == 1 )
       {
-        errorMessage = "Selected feature is not a multipolygon";
+        errorMessage = tr( "Selected feature is not a multipolygon" );
       }
       else if ( errorCode == 2 )
       {
-        errorMessage = "New ring is not a valid geometry";
+        errorMessage = tr( "New ring is not a valid geometry" );
       }
       else if ( errorCode == 3 )
       {
-        errorMessage = "New polygon ring not disjoint with existing polygons";
+        errorMessage = tr( "New polygon ring not disjoint with existing polygons" );
       }
       else if ( errorCode == 4 )
       {
-        errorMessage = "No feature selected. Please select a feature with the selection tool or in the attribute table";
+        errorMessage = tr( "No feature selected. Please select a feature with the selection tool or in the attribute table" );
       }
       else if ( errorCode == 5 )
       {
-        errorMessage = "Several features are selected. Please select only one feature to which an island should be added.";
+        errorMessage = tr( "Several features are selected. Please select only one feature to which an island should be added." );
       }
       else if ( errorCode == 6 )
       {
-        errorMessage = "Selected geometry could not be found";
+        errorMessage = tr( "Selected geometry could not be found" );
       }
       QMessageBox::critical( 0, tr( "Error, could not add island" ), errorMessage );
     }
