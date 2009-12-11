@@ -440,9 +440,11 @@ const QgsCoordinateReferenceSystem& QgsMapLayer::srs()
   return *mCRS;
 }
 
-void QgsMapLayer::setCrs( const QgsCoordinateReferenceSystem& srs )
+void QgsMapLayer::setCrs( const QgsCoordinateReferenceSystem& srs, bool emitSignal )
 {
   *mCRS = srs;
+  if ( emitSignal )
+    emit layerCrsChanged();
 }
 
 unsigned int QgsMapLayer::getTransparency()
