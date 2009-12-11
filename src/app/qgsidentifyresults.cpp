@@ -612,7 +612,7 @@ void QgsIdentifyResults::layerDestroyed()
 
   if ( lstResults->topLevelItemCount() == 0 )
   {
-    hide();
+    close();
   }
 }
 
@@ -649,6 +649,7 @@ void QgsIdentifyResults::featureDeleted( int fid )
     if ( featItem && featItem->data( 0, Qt::UserRole ).toInt() == fid )
     {
       delete mRubberBands.take( featItem );
+      delete featItem;
       break;
     }
   }
@@ -660,7 +661,7 @@ void QgsIdentifyResults::featureDeleted( int fid )
 
   if ( lstResults->topLevelItemCount() == 0 )
   {
-    hide();
+    close();
   }
 }
 
