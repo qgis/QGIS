@@ -294,7 +294,7 @@ void QgsRasterLayer::buildSupportedRasterFileFilter( QString & theFileFiltersStr
 
   // Grind through all the drivers and their respective metadata.
   // We'll add a file filter for those drivers that have a file
-  // extension defined for them; the others, welll, even though
+  // extension defined for them; the others, well, even though
   // theoreticaly we can open those files because there exists a
   // driver for them, the user will have to use the "All Files" to
   // open datasets with no explicitly defined file name extension.
@@ -319,7 +319,7 @@ void QgsRasterLayer::buildSupportedRasterFileFilter( QString & theFileFiltersStr
 
     myGdalDriverDescription = GDALGetDescription( myGdalDriver );
 
-// QgsDebugMsg(QString("got driver string %1").arg(myGdalDriverDescription));
+    // QgsDebugMsg(QString("got driver string %1").arg(myGdalDriverDescription));
 
     myGdalDriverMetadata = GDALGetMetadata( myGdalDriver, NULL );
 
@@ -328,7 +328,7 @@ void QgsRasterLayer::buildSupportedRasterFileFilter( QString & theFileFiltersStr
     while ( myGdalDriverMetadata && '\0' != myGdalDriverMetadata[0] )
     {
       metadataTokens = QString( *myGdalDriverMetadata ).split( "=", QString::SkipEmptyParts );
-// QgsDebugMsg(QString("\t%1").arg(*myGdalDriverMetadata));
+      // QgsDebugMsg(QString("\t%1").arg(*myGdalDriverMetadata));
 
       // XXX add check for malformed metadataTokens
 
@@ -365,13 +365,21 @@ void QgsRasterLayer::buildSupportedRasterFileFilter( QString & theFileFiltersStr
         if ( myGdalDriverDescription == "JPEG2000" ||
              myGdalDriverDescription.startsWith( "JP2" ) ) // JP2ECW, JP2KAK, JP2MrSID
         {
-          if ( !jp2Driver )
-          {
-            jp2Driver = myGdalDriver;   // first JP2 driver found
-            glob += " *.j2k";           // add alternate extension
-          }
-          else break;               // skip if already found a JP2 driver
+          if ( jp2Driver )
+            break; // skip if already found a JP2 driver
+
+          jp2Driver = myGdalDriver;   // first JP2 driver found
+          glob += " *.j2k";           // add alternate extension
         }
+        else if ( myGdalDriverDescription == "GTiff" )
+        {
+          glob += " *.tiff";
+        }
+        else if ( myGdalDriverDescription == "JPEG" )
+        {
+          glob += " *.jpeg";
+        }
+
         theFileFiltersString += myGdalDriverLongName + " (" + glob.toLower() + " " + glob.toUpper() + ");;";
 
         break;            // ... to next driver, if any.
