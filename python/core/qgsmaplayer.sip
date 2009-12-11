@@ -211,8 +211,9 @@ public:
     */
     const QgsCoordinateReferenceSystem& srs();
     
-    /** Sets layer's spatial reference system */
-    void setCrs(const QgsCoordinateReferenceSystem& srs);
+    /** Sets layer's spatial reference system
+    @note emitSignal added in 1.4 */
+    void setCrs( const QgsCoordinateReferenceSystem& srs, bool emitSignal = true );
 
     /** A convenience function to capitalise the layer name */
     static QString capitaliseLayerName(const QString name);
@@ -304,8 +305,13 @@ signals:
     /** Emit a signal with status (e.g. to be caught by QgiAapp and display a msg on status bar) */
     void setStatus(QString theStatusQString);
 
-    /** Emit a signal that layer name has been changed */
+    /** Emit a signal that the layer name has been changed */
     void layerNameChanged();
+
+    /** Emit a signal that layer's CRS has been reset
+     added in 1.4
+     */
+    void layerCrsChanged();
 
     /** This signal should be connected with the slot QgsMapCanvas::refresh()
      * @TODO: to be removed - GUI dependency
