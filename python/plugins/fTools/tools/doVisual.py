@@ -16,6 +16,8 @@ class VisualDialog( QDialog, Ui_Dialog ):
     self.manageGui()
     self.cancel_close = self.buttonBox_2.button( QDialogButtonBox.Close )
     self.progressBar.setValue( 0 )
+    self.partProgressBar.setValue( 0 )
+    self.partProgressBar.setEnabled( False )
     
   def keyPressEvent( self, e ):
     '''
@@ -111,6 +113,8 @@ class VisualDialog( QDialog, Ui_Dialog ):
     QObject.connect( self.testThread, SIGNAL( "runFinished(PyQt_PyObject)" ), self.runFinishedFromThread )
     QObject.connect( self.testThread, SIGNAL( "runStatus(PyQt_PyObject)" ), self.runStatusFromThread )
     QObject.connect( self.testThread, SIGNAL( "runRange(PyQt_PyObject)" ), self.runRangeFromThread )
+    QObject.connect( self.testThread, SIGNAL( "runPartRange(PyQt_PyObject)" ), self.runPartRangeFromThread )
+    QObject.connect( self.testThread, SIGNAL( "runPartStatus(PyQt_PyObject)" ), self.runPartStatusFromThread )
     self.cancel_close.setText( "Cancel" )
     QObject.connect( self.cancel_close, SIGNAL( "clicked()" ), self.cancelThread )
     self.testThread.start()
@@ -154,6 +158,16 @@ class VisualDialog( QDialog, Ui_Dialog ):
         
   def runRangeFromThread( self, range_vals ):
     self.progressBar.setRange( range_vals[ 0 ], range_vals[ 1 ] )
+
+  def runPartStatusFromThread( self, status ):
+    self.partProgressBar.setValue( status )
+    if status >= self.part_max:
+      self.partProgressBar.setEnabled( False )
+        
+  def runPartRangeFromThread( self, range_vals ):
+    self.part_max = range_vals[ 1 ]
+    self.partProgressBar.setEnabled( True )
+    self.partProgressBar.setRange( range_vals[ 0 ], range_vals[ 1 ] )
     
 class visualThread( QThread ):
   def __init__( self, parentThread, parentObject, function, vlayer, myField, mySelection ):
@@ -431,6 +445,7 @@ class visualThread( QThread ):
         if not self.isCorrectOrientation( geom ):
           lstErrors.append( self.tr( "Feature %1 has incorrect node ordering" ).arg( unicode( feat.id() ) ) )
           count += 1
+    self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nFeat )
     return ( lstErrors, count )
 
   def isHoleNested( self, polygon ):
@@ -459,16 +474,29 @@ class visualThread( QThread ):
     return True
 
   def isSelfIntersecting( self, polygon ):
+    cPart = 0
     for h in polygon:
-      count = 0
-      size = range( 0, len (h )- 1 )
-      for i in size:
+      cPart += len(h)
+
+    self.emit( SIGNAL( "runPartRange(PyQt_PyObject)" ), ( 0, cPart ) )
+
+    nPart = 0
+    for h in polygon:
+      for i in range( 0, len(h)-1 ):
+        self.emit( SIGNAL( "runPartStatus(PyQt_PyObject)" ), nPart )
+
         count = 0
-        for j in size:
+        for j in range( i+1, len(h)-1 ):
           if QgsGeometry().fromPolyline( [ h[ i ], h[ i + 1 ] ] ).intersects( QgsGeometry().fromPolyline( [ h[ j ], h[ j + 1 ] ] ) ):
             count += 1
-        if count > 3:
+        if count > 2:
+          self.emit( SIGNAL( "runPartStatus(PyQt_PyObject)" ), cPart )
           return True
+
+        nPart += 1
+
+    self.emit( SIGNAL( "runPartStatus(PyQt_PyObject)" ), cPart )
+
     return False
 
   def isCorrectOrientation( self, polygon ):
