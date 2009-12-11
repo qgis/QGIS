@@ -136,7 +136,7 @@
     <item row="1" column="0">
      <widget class="QDialogButtonBox" name="mButtonBox">
       <property name="standardButtons">
-       <set>QDialogButtonBox::Close</set>
+       <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
       </property>
      </widget>
     </item>
