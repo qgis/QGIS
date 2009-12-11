@@ -110,8 +110,7 @@ QString QgsOpenVectorLayerDialog::openDirectory()
   QSettings settings;
 
   bool haveLastUsedDir = settings.contains( "/UI/LastUsedDirectory" );
-  QString lastUsedDir = settings.value( "/UI/LastUsedDirectory",
-                                        QVariant( QString::null ) ).toString();
+  QString lastUsedDir = settings.value( "/UI/LastUsedDirectory", QVariant() ).toString();
   if ( !haveLastUsedDir )
     lastUsedDir = "";
 
@@ -267,42 +266,18 @@ void QgsOpenVectorLayerDialog::setSelectedConnection()
 
 void QgsOpenVectorLayerDialog::on_buttonSelectSrc_clicked()
 {
-  QSettings settings;
-  QString filepath;
-
-  mDataSources.clear();
-
   if ( radioSrcFile->isChecked() )
   {
-    //file
-
-    //mType="file";
-    mDataSources = openFile();
-    filepath = "";
-    for ( int i = 0; i < mDataSources.count(); i++ )
-      filepath += mDataSources.at( i ) + ";";
-    inputSrcDataset->setText( filepath );
+    inputSrcDataset->setText( openFile().join( ";" ) );
   }
   else if ( radioSrcDirectory->isChecked() )
   {
-
-    filepath = openDirectory();
-    mDataSources.append( filepath );
-    inputSrcDataset->setText( filepath );
-    //mType="directory";
+    inputSrcDataset->setText( openDirectory() );
   }
-  else if ( radioSrcDatabase->isChecked() )
-  {
-    //mType="database";
-    //src = inputSrcDataset->text();
-  }
-  else
+  else if ( !radioSrcDatabase->isChecked() )
   {
     Q_ASSERT( !"SHOULD NEVER GET HERE" );
   }
-
-
-
 }
 
 
@@ -312,6 +287,9 @@ void QgsOpenVectorLayerDialog::accept()
 {
   QSettings settings;
   QgsDebugMsg( "dialog button accepted" );
+
+  mDataSources.clear();
+
   if ( radioSrcDatabase->isChecked() )
   {
     if ( !settings.contains( "/" + cmbDatabaseTypes->currentText()
@@ -324,7 +302,6 @@ void QgsOpenVectorLayerDialog::accept()
       return;
     }
 
-    mDataSources.clear();
     QString baseKey = "/" + cmbDatabaseTypes->currentText() + "/connections/";
     baseKey += cmbConnections->currentText();
     QString host = settings.value( baseKey + "/host" ).toString();
@@ -332,20 +309,28 @@ void QgsOpenVectorLayerDialog::accept()
     QString port = settings.value( baseKey + "/port" ).toString();
     QString user = settings.value( baseKey + "/username" ).toString();
     QString pass = settings.value( baseKey + "/password" ).toString();
+
     bool makeConnection = false;
     if ( pass.isEmpty() )
-      pass = QInputDialog::getText( this, tr( "Password for " ) + user,
+    {
+      pass = QInputDialog::getText( this,
+                                    tr( "Password for " ) + user,
                                     tr( "Please enter your password:" ),
-                                    QLineEdit::Password, QString::null, &makeConnection );
-    if ( makeConnection || ( !pass.isEmpty() ) )
-      mDataSources.append( createDatabaseURI(
-                             cmbDatabaseTypes->currentText(),
-                             host,
-                             database,
-                             port,
-                             user,
-                             pass
-                           ) );
+                                    QLineEdit::Password, QString::null,
+                                    &makeConnection );
+    }
+
+    if ( makeConnection || !pass.isEmpty() )
+    {
+      mDataSources << createDatabaseURI(
+        cmbDatabaseTypes->currentText(),
+        host,
+        database,
+        port,
+        user,
+        pass
+      );
+    }
   }
   else if ( radioSrcProtocol->isChecked() )
   {
@@ -357,25 +342,31 @@ void QgsOpenVectorLayerDialog::accept()
       return;
     }
 
-    mDataSources.clear();
-    mDataSources.append( createProtocolURI(
-                           cmbProtocolTypes->currentText(),
-                           protocolURI->text()
-                         ) );
+    mDataSources << createProtocolURI( cmbProtocolTypes->currentText(), protocolURI->text() );
   }
-  else if ( radioSrcFile->isChecked() && inputSrcDataset->text().isEmpty() )
+  else if ( radioSrcFile->isChecked() )
   {
-    QMessageBox::information( this,
-                              tr( "Add vector layer" ),
-                              tr( "No layers selected." ) );
-    return;
+    if ( inputSrcDataset->text().isEmpty() )
+    {
+      QMessageBox::information( this,
+                                tr( "Add vector layer" ),
+                                tr( "No layers selected." ) );
+      return;
+    }
+
+    mDataSources << inputSrcDataset->text().split( ";" );
   }
-  else if ( radioSrcDirectory->isChecked() && inputSrcDataset->text().isEmpty() )
+  else if ( radioSrcDirectory->isChecked() )
   {
-    QMessageBox::information( this,
-                              tr( "Add vector layer" ),
-                              tr( "No directory selected." ) );
-    return;
+    if ( inputSrcDataset->text().isEmpty() )
+    {
+      QMessageBox::information( this,
+                                tr( "Add vector layer" ),
+                                tr( "No directory selected." ) );
+      return;
+    }
+
+    mDataSources << inputSrcDataset->text();
   }
 
   // Save the used encoding
