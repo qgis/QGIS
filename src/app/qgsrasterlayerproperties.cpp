@@ -281,14 +281,14 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QWidget *p
       if (( *myRasterPyramidIterator ).exists == true )
       {
         lbxPyramidResolutions->addItem( new QListWidgetItem( myPyramidPixmap,
-                                        QString::number(( *myRasterPyramidIterator ).xDim ) + QString( " x " ) +
-                                        QString::number(( *myRasterPyramidIterator ).yDim ) ) );
+                                        QString::number( myRasterPyramidIterator->xDim ) + QString( " x " ) +
+                                        QString::number( myRasterPyramidIterator->yDim ) ) );
       }
       else
       {
         lbxPyramidResolutions->addItem( new QListWidgetItem( myNoPyramidPixmap,
-                                        QString::number(( *myRasterPyramidIterator ).xDim ) + QString( " x " ) +
-                                        QString::number(( *myRasterPyramidIterator ).yDim ) ) );
+                                        QString::number( myRasterPyramidIterator->xDim ) + QString( " x " ) +
+                                        QString::number( myRasterPyramidIterator->yDim ) ) );
       }
     }
   }
@@ -557,14 +557,28 @@ void QgsRasterLayerProperties::sync()
 
   if ( mRasterLayerIsWms )
   {
-    tabBar->setCurrentWidget( tabPageMetadata );
-    tabBar->removeWidget( tabPageColormap );
+    QListWidgetItem *symbologyItem = listWidget->item( 0 );
+    QListWidgetItem *colormapItem = listWidget->item( 2 );
+    QListWidgetItem *metadataItem = listWidget->item( 4 );
+    QListWidgetItem *pyramidItem = listWidget->item( 5 );
+    QListWidgetItem *histogramItem = listWidget->item( 6 );
+
+    delete symbologyItem;
+    delete colormapItem;
+    delete pyramidItem;
+    delete histogramItem;
+
     tabBar->removeWidget( tabPageSymbology );
+    tabBar->removeWidget( tabPageColormap );
+    tabBar->removeWidget( tabPagePyramids );
+    tabBar->removeWidget( tabPageHistogram );
+
     gboxNoDataValue->setEnabled( false );
     gboxCustomTransparency->setEnabled( false );
-    tabBar->removeWidget( tabPageHistogram );
-    tabBar->removeWidget( tabPagePyramids );
+
+    listWidget->setCurrentItem( metadataItem );
   }
+
 #if 0
   if ( mRasterLayer->rasterType() == QgsRasterLayer::Multiband )
   {
@@ -1607,14 +1621,14 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
     if (( *myRasterPyramidIterator ).exists == true )
     {
       lbxPyramidResolutions->addItem( new QListWidgetItem( myPyramidPixmap,
-                                      QString::number(( *myRasterPyramidIterator ).xDim ) + QString( " x " ) +
-                                      QString::number(( *myRasterPyramidIterator ).yDim ) ) );
+                                      QString::number( myRasterPyramidIterator->xDim ) + QString( " x " ) +
+                                      QString::number( myRasterPyramidIterator->yDim ) ) );
     }
     else
     {
       lbxPyramidResolutions->addItem( new QListWidgetItem( myNoPyramidPixmap,
-                                      QString::number(( *myRasterPyramidIterator ).xDim ) + QString( " x " ) +
-                                      QString::number(( *myRasterPyramidIterator ).yDim ) ) );
+                                      QString::number( myRasterPyramidIterator->xDim ) + QString( " x " ) +
+                                      QString::number( myRasterPyramidIterator->yDim ) ) );
     }
   }
   //update the legend pixmap
