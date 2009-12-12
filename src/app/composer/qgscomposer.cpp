@@ -433,10 +433,24 @@ void QgsComposer::on_mActionZoomOut_triggered()
 
 void QgsComposer::on_mActionRefreshView_triggered()
 {
-  if ( mComposition )
+  if ( !mComposition )
   {
-    mComposition->update();
+    return;
   }
+
+  //refresh preview of all composer maps
+  QMap<QgsComposerItem*, QWidget*>::iterator it = mItemWidgetMap.begin();
+  for(; it != mItemWidgetMap.end(); ++it)
+  {
+    QgsComposerMap* map = dynamic_cast<QgsComposerMap*>(it.key());
+    if(map && !map->isDrawing())
+    {
+      map->cache();
+      map->update();
+    }
+  }
+
+  mComposition->update();
 }
 
 void QgsComposer::on_mActionExportAsPDF_triggered()
