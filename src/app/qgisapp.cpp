@@ -84,7 +84,6 @@
 //
 // QGIS Specific Includes
 //
-#include "../../images/themes/default/qgis.xpm"
 #include "qgisapp.h"
 #include "qgisappinterface.h"
 #include "qgis.h"
@@ -376,9 +375,6 @@ QgisApp::QgisApp( QSplashScreen *splash, QWidget * parent, Qt::WFlags fl )
   mUndoWidget = new QgsUndoWidget( NULL, mMapCanvas );
   addDockWidget( Qt::LeftDockWidgetArea, mUndoWidget );
   mUndoWidget->hide();
-
-  // set application's icon
-  setWindowIcon( QPixmap( qgis_xpm ) );
 
 #ifdef Q_WS_MAC
   // action for Window menu (create before generating WindowTitleChange event))
