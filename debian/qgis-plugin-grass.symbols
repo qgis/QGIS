@@ -2467,6 +2467,7 @@ libqgisgrass.so.1.4.0 qgis-plugin-grass #MINVER#
  _ZNK16QgsGrassProvider12geometryTypeEv@Base 1.4.0
  _ZNK16QgsGrassProvider4nameEv@Base 1.4.0
  _ZNK16QgsGrassProvider6fieldsEv@Base 1.4.0
+ _ZNK21QgsVectorDataProvider26doesStrictFeatureTypeCheckEv@Base 1.4.0
  _ZNSt6vectorI4GMAPSaIS0_EE13_M_insert_auxEN9__gnu_cxx17__normal_iteratorIPS0_S2_EERKS0_@Base 1.4.0
  _ZNSt6vectorI4GMAPSaIS0_EED1Ev@Base 1.4.0
  _ZNSt6vectorI6GLAYERSaIS0_EE13_M_insert_auxEN9__gnu_cxx17__normal_iteratorIPS0_S2_EERKS0_@Base 1.4.0
