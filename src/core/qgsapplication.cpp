@@ -23,14 +23,15 @@
 #include <QPalette>
 #include <QSettings>
 
-#include "qgsconfig.h"
-
-// for htonl
-#ifdef WIN32
-#include <winsock.h>
-#else
+#ifndef Q_WS_WIN    // (if Windows, use icon from resource)
+#include "../../images/themes/default/qgis.xpm" // Linux/Mac
+#include <QIcon>
 #include <netinet/in.h>
+#else
+#include <winsock.h>
 #endif
+
+#include "qgsconfig.h"
 
 #include <ogr_api.h>
 
@@ -62,6 +63,11 @@ QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled )
   myDir.cdUp();
   QString myPrefix = myDir.absolutePath();
   setPrefixPath( myPrefix, true );
+#endif
+
+  // set application's icon
+#ifndef Q_WS_WIN       // (if Windows, use icon from resource)
+  setWindowIcon( QPixmap( qgis_xpm ) );        // Linux/Mac
 #endif
 }
 
