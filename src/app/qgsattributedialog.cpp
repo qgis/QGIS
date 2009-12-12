@@ -263,7 +263,7 @@ int QgsAttributeDialog::exec()
   else
   {
     QgsDebugMsg( "No dialog" );
-    return QDialog::Rejected;
+    return QDialog::Accepted;
   }
 }
 
