@@ -82,9 +82,6 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
     QGridLayout *gridLayout;
     QFrame *mFrame;
 
-    if ( mDialog->objectName().isEmpty() )
-      mDialog->setObjectName( QString::fromUtf8( "QgsAttributeDialogBase" ) );
-
     mDialog->resize( 447, 343 );
     gridLayout = new QGridLayout( mDialog );
     gridLayout->setSpacing( 6 );
@@ -179,6 +176,15 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
       mpIndizes << it.key();
       mpWidgets << myWidget;
     }
+  }
+
+  if ( mDialog )
+  {
+    if ( mDialog->objectName().isEmpty() )
+      mDialog->setObjectName( "QgsAttributeDialogBase" );
+
+    if ( mDialog->windowTitle().isEmpty() )
+      mDialog->setWindowTitle( tr( "Attributes - %1" ).arg( vl->name() ) );
   }
 
   if ( buttonBox )
