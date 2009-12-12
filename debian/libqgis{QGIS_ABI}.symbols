@@ -505,6 +505,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN10QgsFeatureD1Ev@Base 1.4.0
  _ZN10QgsFeatureD2Ev@Base 1.4.0
  _ZN10QgsFeatureaSERKS_@Base 1.4.0
+ _ZN10QgsProject10clearErrorEv@Base 1.4.0
  _ZN10QgsProject10writeEntryERK7QStringS2_RK11QStringList@Base 1.4.0
  _ZN10QgsProject10writeEntryERK7QStringS2_S2_@Base 1.4.0
  _ZN10QgsProject10writeEntryERK7QStringS2_b@Base 1.4.0
@@ -521,6 +522,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN10QgsProject13_getMapLayersERK12QDomDocument@Base 1.4.0
  _ZN10QgsProject15clearPropertiesEv@Base 1.4.0
  _ZN10QgsProject16staticMetaObjectE@Base 1.4.0
+ _ZN10QgsProject18setBadLayerHandlerEP25QgsProjectBadLayerHandler@Base 1.4.0
  _ZN10QgsProject24oldProjectVersionWarningE7QString@Base 1.4.0
  _ZN10QgsProject3Imp5clearEv@Base 1.4.0
  _ZN10QgsProject4readER8QDomNode@Base 1.4.0
@@ -531,6 +533,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN10QgsProject5writeERK9QFileInfo@Base 1.4.0
  _ZN10QgsProject5writeEv@Base 1.4.0
  _ZN10QgsProject8instanceEv@Base 1.4.0
+ _ZN10QgsProject8setErrorE7QString@Base 1.4.0
  _ZN10QgsProjectC1Ev@Base 1.4.0
  _ZN10QgsProjectC2Ev@Base 1.4.0
  _ZN10QgsProjectD0Ev@Base 1.4.0
@@ -668,6 +671,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN11QgsMapLayer14saveNamedStyleE7QStringRb@Base 1.4.0
  _ZN11QgsMapLayer15drawingProgressEii@Base 1.4.0
  _ZN11QgsMapLayer15getTransparencyEv@Base 1.4.0
+ _ZN11QgsMapLayer15layerCrsChangedEv@Base 1.4.0
  _ZN11QgsMapLayer15setMaximumScaleEf@Base 1.4.0
  _ZN11QgsMapLayer15setMinimumScaleEf@Base 1.4.0
  _ZN11QgsMapLayer15setTransparencyEj@Base 1.4.0
@@ -693,6 +697,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN11QgsMapLayer3srsEv@Base 1.4.0
  _ZN11QgsMapLayer4drawER16QgsRenderContext@Base 1.4.0
  _ZN11QgsMapLayer6setCrsERK28QgsCoordinateReferenceSystem@Base 1.4.0
+ _ZN11QgsMapLayer6setCrsERK28QgsCoordinateReferenceSystemb@Base 1.4.0
  _ZN11QgsMapLayer7isValidEv@Base 1.4.0
  _ZN11QgsMapLayer7readXMLER8QDomNode@Base 1.4.0
  _ZN11QgsMapLayer7readXmlER8QDomNode@Base 1.4.0
@@ -2246,6 +2251,8 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN25QgsDoubleBoxScaleBarStyleD0Ev@Base 1.4.0
  _ZN25QgsDoubleBoxScaleBarStyleD1Ev@Base 1.4.0
  _ZN25QgsDoubleBoxScaleBarStyleD2Ev@Base 1.4.0
+ _ZN25QgsProjectBadLayerHandlerD0Ev@Base 1.4.0
+ _ZN25QgsProjectBadLayerHandlerD1Ev@Base 1.4.0
  _ZN25QgsProviderCountCalcEventC1El@Base 1.4.0
  _ZN25QgsProviderCountCalcEventC2El@Base 1.4.0
  _ZN25QgsProviderCountCalcEventD0Ev@Base 1.4.0
@@ -2258,6 +2265,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN25QgsSingleBoxScaleBarStyleD1Ev@Base 1.4.0
  _ZN25QgsSingleBoxScaleBarStyleD2Ev@Base 1.4.0
  _ZN25QgsSingleSymbolRendererV210stopRenderER16QgsRenderContext@Base 1.4.0
+ _ZN25QgsSingleSymbolRendererV211startRenderER16QgsRenderContextPK14QgsVectorLayer@Base 1.4.0
  _ZN25QgsSingleSymbolRendererV211startRenderER16QgsRenderContextRK4QMapIi8QgsFieldE@Base 1.4.0
  _ZN25QgsSingleSymbolRendererV214usedAttributesEv@Base 1.4.0
  _ZN25QgsSingleSymbolRendererV216symbolForFeatureER10QgsFeature@Base 1.4.0
@@ -2276,6 +2284,9 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN25QgsSvgMarkerSymbolLayerV210stopRenderER16QgsRenderContext@Base 1.4.0
  _ZN25QgsSvgMarkerSymbolLayerV211renderPointERK7QPointFR16QgsRenderContext@Base 1.4.0
  _ZN25QgsSvgMarkerSymbolLayerV211startRenderER16QgsRenderContext@Base 1.4.0
+ _ZN25QgsSvgMarkerSymbolLayerV212listSvgFilesEv@Base 1.4.0
+ _ZN25QgsSvgMarkerSymbolLayerV216symbolNameToPathE7QString@Base 1.4.0
+ _ZN25QgsSvgMarkerSymbolLayerV216symbolPathToNameE7QString@Base 1.4.0
  _ZN25QgsSvgMarkerSymbolLayerV26createERK4QMapI7QStringS1_E@Base 1.4.0
  _ZN25QgsSvgMarkerSymbolLayerV2C1E7QStringdd@Base 1.4.0
  _ZN25QgsSvgMarkerSymbolLayerV2C2E7QStringdd@Base 1.4.0
@@ -2421,6 +2432,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN28QgsCoordinateReferenceSystemneERKS_@Base 1.4.0
  _ZN28QgsGraduatedSymbolRendererV210stopRenderER16QgsRenderContext@Base 1.4.0
  _ZN28QgsGraduatedSymbolRendererV211deleteClassEi@Base 1.4.0
+ _ZN28QgsGraduatedSymbolRendererV211startRenderER16QgsRenderContextPK14QgsVectorLayer@Base 1.4.0
  _ZN28QgsGraduatedSymbolRendererV211startRenderER16QgsRenderContextRK4QMapIi8QgsFieldE@Base 1.4.0
  _ZN28QgsGraduatedSymbolRendererV212sourceSymbolEv@Base 1.4.0
  _ZN28QgsGraduatedSymbolRendererV214createRendererEP14QgsVectorLayer7QStringiNS_4ModeEP11QgsSymbolV2P20QgsVectorColorRampV2@Base 1.4.0
@@ -2462,6 +2474,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN28QgsVectorGradientColorRampV2D1Ev@Base 1.4.0
  _ZN30QgsCategorizedSymbolRendererV210stopRenderER16QgsRenderContext@Base 1.4.0
  _ZN30QgsCategorizedSymbolRendererV211rebuildHashEv@Base 1.4.0
+ _ZN30QgsCategorizedSymbolRendererV211startRenderER16QgsRenderContextPK14QgsVectorLayer@Base 1.4.0
  _ZN30QgsCategorizedSymbolRendererV211startRenderER16QgsRenderContextRK4QMapIi8QgsFieldE@Base 1.4.0
  _ZN30QgsCategorizedSymbolRendererV212sourceSymbolEv@Base 1.4.0
  _ZN30QgsCategorizedSymbolRendererV214deleteCategoryEi@Base 1.4.0
@@ -2521,6 +2534,9 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN31QgsVectorColorBrewerColorRampV2C2E7QStringi@Base 1.4.0
  _ZN31QgsVectorColorBrewerColorRampV2D0Ev@Base 1.4.0
  _ZN31QgsVectorColorBrewerColorRampV2D1Ev@Base 1.4.0
+ _ZN32QgsProjectBadLayerDefaultHandler15handleBadLayersE5QListI8QDomNodeE12QDomDocument@Base 1.4.0
+ _ZN32QgsProjectBadLayerDefaultHandlerD0Ev@Base 1.4.0
+ _ZN32QgsProjectBadLayerDefaultHandlerD1Ev@Base 1.4.0
  _ZN34QgsLinearMinMaxEnhancementWithClip25isValueInDisplayableRangeEd@Base 1.4.0
  _ZN34QgsLinearMinMaxEnhancementWithClip7enhanceEd@Base 1.4.0
  _ZN34QgsLinearMinMaxEnhancementWithClipC1EN22QgsContrastEnhancement17QgsRasterDataTypeEdd@Base 1.4.0
@@ -3175,6 +3191,9 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN5QListI7QStringED1Ev@Base 1.4.0
  _ZN5QListI7QStringEixEi@Base 1.4.0
  _ZN5QListI7QStringEpLERKS1_@Base 1.4.0
+ _ZN5QListI8QDomNodeE13detach_helperEv@Base 1.4.0
+ _ZN5QListI8QDomNodeE4freeEPN9QListData4DataE@Base 1.4.0
+ _ZN5QListI8QDomNodeED1Ev@Base 1.4.0
  _ZN5QListI8QVariantE13detach_helperEv@Base 1.4.0
  _ZN5QListI8QVariantE4freeEPN9QListData4DataE@Base 1.4.0
  _ZN5QListI8QVariantE5clearEv@Base 1.4.0
@@ -3589,6 +3608,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZNK10QgsProject13readListEntryERK7QStringS2_Pb@Base 1.4.0
  _ZNK10QgsProject14dumpPropertiesEv@Base 1.4.0
  _ZNK10QgsProject15readDoubleEntryERK7QStringS2_dPb@Base 1.4.0
+ _ZNK10QgsProject5errorEv@Base 1.4.0
  _ZNK10QgsProject5titleEv@Base 1.4.0
  _ZNK10QgsProject7isDirtyEv@Base 1.4.0
  _ZNK10QgsProject8fileNameEv@Base 1.4.0
@@ -3728,6 +3748,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZNK14QgsVectorLayer12providerTypeEv@Base 1.4.0
  _ZNK14QgsVectorLayer13pendingFieldsEv@Base 1.4.0
  _ZNK14QgsVectorLayer14attributeAliasEi@Base 1.4.0
+ _ZNK14QgsVectorLayer14fieldNameIndexERK7QString@Base 1.4.0
  _ZNK14QgsVectorLayer14snapToGeometryERK8QgsPointiP11QgsGeometrydR9QMultiMapId17QgsSnappingResultEN10QgsSnapper12SnappingTypeE@Base 1.4.0
  _ZNK14QgsVectorLayer14writeSymbologyER8QDomNodeR12QDomDocumentR7QString@Base 1.4.0
  _ZNK14QgsVectorLayer16hasLabelsEnabledEv@Base 1.4.0
@@ -3909,6 +3930,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZNK21QgsVectorDataProvider14fieldNameIndexERK7QString@Base 1.4.0
  _ZNK21QgsVectorDataProvider18capabilitiesStringEv@Base 1.4.0
  _ZNK21QgsVectorDataProvider20supportedNativeTypesEv@Base 1.4.0
+ _ZNK21QgsVectorDataProvider26doesStrictFeatureTypeCheckEv@Base 1.4.0
  _ZNK21QgsVectorDataProvider8encodingEv@Base 1.4.0
  _ZNK22QgsCoordinateTransform10metaObjectEv@Base 1.4.0
  _ZNK22QgsCoordinateTransform15transformCoordsERKiPdS2_S2_NS_18TransformDirectionE@Base 1.4.0
@@ -4319,6 +4341,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTI23QgsRasterShaderFunction@Base 1.4.0
  _ZTI23QgsSingleSymbolRenderer@Base 1.4.0
  _ZTI25QgsDoubleBoxScaleBarStyle@Base 1.4.0
+ _ZTI25QgsProjectBadLayerHandler@Base 1.4.0
  _ZTI25QgsProviderCountCalcEvent@Base 1.4.0
  _ZTI25QgsSingleBoxScaleBarStyle@Base 1.4.0
  _ZTI25QgsSingleSymbolRendererV2@Base 1.4.0
@@ -4343,6 +4366,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTI30QgsLineDecorationSymbolLayerV2@Base 1.4.0
  _ZTI31QgsOverlayObjectPositionManager@Base 1.4.0
  _ZTI31QgsVectorColorBrewerColorRampV2@Base 1.4.0
+ _ZTI32QgsProjectBadLayerDefaultHandler@Base 1.4.0
  _ZTI34QgsLinearMinMaxEnhancementWithClip@Base 1.4.0
  _ZTI6CPLErr@Base 1.4.0
  _ZTI9QgsSymbol@Base 1.4.0
@@ -4480,6 +4504,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTS23QgsRasterShaderFunction@Base 1.4.0
  _ZTS23QgsSingleSymbolRenderer@Base 1.4.0
  _ZTS25QgsDoubleBoxScaleBarStyle@Base 1.4.0
+ _ZTS25QgsProjectBadLayerHandler@Base 1.4.0
  _ZTS25QgsProviderCountCalcEvent@Base 1.4.0
  _ZTS25QgsSingleBoxScaleBarStyle@Base 1.4.0
  _ZTS25QgsSingleSymbolRendererV2@Base 1.4.0
@@ -4504,6 +4529,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTS30QgsLineDecorationSymbolLayerV2@Base 1.4.0
  _ZTS31QgsOverlayObjectPositionManager@Base 1.4.0
  _ZTS31QgsVectorColorBrewerColorRampV2@Base 1.4.0
+ _ZTS32QgsProjectBadLayerDefaultHandler@Base 1.4.0
  _ZTS34QgsLinearMinMaxEnhancementWithClip@Base 1.4.0
  _ZTS6CPLErr@Base 1.4.0
  _ZTS9QgsSymbol@Base 1.4.0
@@ -4644,6 +4670,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTV23QgsRasterShaderFunction@Base 1.4.0
  _ZTV23QgsSingleSymbolRenderer@Base 1.4.0
  _ZTV25QgsDoubleBoxScaleBarStyle@Base 1.4.0
+ _ZTV25QgsProjectBadLayerHandler@Base 1.4.0
  _ZTV25QgsProviderCountCalcEvent@Base 1.4.0
  _ZTV25QgsSingleBoxScaleBarStyle@Base 1.4.0
  _ZTV25QgsSingleSymbolRendererV2@Base 1.4.0
@@ -4668,6 +4695,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTV30QgsLineDecorationSymbolLayerV2@Base 1.4.0
  _ZTV31QgsOverlayObjectPositionManager@Base 1.4.0
  _ZTV31QgsVectorColorBrewerColorRampV2@Base 1.4.0
+ _ZTV32QgsProjectBadLayerDefaultHandler@Base 1.4.0
  _ZTV34QgsLinearMinMaxEnhancementWithClip@Base 1.4.0
  _ZTV9QgsSymbol@Base 1.4.0
  _ZTVN12SpatialIndex11IDataStreamE@Base 1.4.0
@@ -5529,8 +5557,10 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN13QListIteratorI7QStringED1Ev@Base 1.4.0
  _ZN13QgisInterface11qt_metacallEN11QMetaObject4CallEiPPv@Base 1.4.0
  _ZN13QgisInterface11qt_metacastEPKc@Base 1.4.0
+ _ZN13QgisInterface13composerAddedEP15QgsComposerView@Base 1.4.0
  _ZN13QgisInterface16staticMetaObjectE@Base 1.4.0
  _ZN13QgisInterface19currentLayerChangedEP11QgsMapLayer@Base 1.4.0
+ _ZN13QgisInterface21composerWillBeRemovedEP15QgsComposerView@Base 1.4.0
  _ZN13QgisInterfaceC1Ev@Base 1.4.0
  _ZN13QgisInterfaceC2Ev@Base 1.4.0
  _ZN13QgisInterfaceD0Ev@Base 1.4.0
@@ -5716,6 +5746,15 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN16QgsPanningWidget11resizeEventEP12QResizeEvent@Base 1.4.0
  _ZN16QgsPanningWidgetD0Ev@Base 1.4.0
  _ZN16QgsPanningWidgetD1Ev@Base 1.4.0
+ _ZN18QgsLegendInterface11qt_metacallEN11QMetaObject4CallEiPPv@Base 1.4.0
+ _ZN18QgsLegendInterface11qt_metacastEPKc@Base 1.4.0
+ _ZN18QgsLegendInterface16staticMetaObjectE@Base 1.4.0
+ _ZN18QgsLegendInterface17groupIndexChangedEii@Base 1.4.0
+ _ZN18QgsLegendInterfaceC1Ev@Base 1.4.0
+ _ZN18QgsLegendInterfaceC2Ev@Base 1.4.0
+ _ZN18QgsLegendInterfaceD0Ev@Base 1.4.0
+ _ZN18QgsLegendInterfaceD1Ev@Base 1.4.0
+ _ZN18QgsLegendInterfaceD2Ev@Base 1.4.0
  _ZN18Ui_QgsLUDialogBase7setupUiEP7QDialog@Base 1.4.0
  _ZN18Ui_WidgetSvgMarker7setupUiEP7QWidget@Base 1.4.0
  _ZN19QgsDetailedItemData10setCheckedEb@Base 1.4.0
@@ -5925,6 +5964,8 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN23Ui_WidgetLineDecoration7setupUiEP7QWidget@Base 1.4.0
  _ZN24Ui_DlgSymbolV2Properties13retranslateUiEP7QDialog@Base 1.4.0
  _ZN24Ui_DlgSymbolV2Properties7setupUiEP7QDialog@Base 1.4.0
+ _ZN25QgsProjectBadLayerHandlerD0Ev@Base 1.4.0
+ _ZN25QgsProjectBadLayerHandlerD1Ev@Base 1.4.0
  _ZN25QgsSymbolV2SelectorDialog11qt_metacallEN11QMetaObject4CallEiPPv@Base 1.4.0
  _ZN25QgsSymbolV2SelectorDialog11qt_metacastEPKc@Base 1.4.0
  _ZN25QgsSymbolV2SelectorDialog12setLineWidthEd@Base 1.4.0
@@ -5989,6 +6030,18 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN28QgsGenericProjectionSelectorD0Ev@Base 1.4.0
  _ZN28QgsGenericProjectionSelectorD1Ev@Base 1.4.0
  _ZN28QgsGenericProjectionSelectorD2Ev@Base 1.4.0
+ _ZN28QgsProjectBadLayerGuiHandler10dataSourceER8QDomNode@Base 1.4.0
+ _ZN28QgsProjectBadLayerGuiHandler10findLayersERK7QStringRK5QListI8QDomNodeE@Base 1.4.0
+ _ZN28QgsProjectBadLayerGuiHandler12providerTypeER8QDomNode@Base 1.4.0
+ _ZN28QgsProjectBadLayerGuiHandler13setDataSourceER8QDomNodeRK7QString@Base 1.4.0
+ _ZN28QgsProjectBadLayerGuiHandler15findMissingFileERK7QStringR8QDomNode@Base 1.4.0
+ _ZN28QgsProjectBadLayerGuiHandler15handleBadLayersE5QListI8QDomNodeE12QDomDocument@Base 1.4.0
+ _ZN28QgsProjectBadLayerGuiHandler8dataTypeER8QDomNode@Base 1.4.0
+ _ZN28QgsProjectBadLayerGuiHandler9findLayerERK7QStringRK8QDomNode@Base 1.4.0
+ _ZN28QgsProjectBadLayerGuiHandlerC1Ev@Base 1.4.0
+ _ZN28QgsProjectBadLayerGuiHandlerC2Ev@Base 1.4.0
+ _ZN28QgsProjectBadLayerGuiHandlerD0Ev@Base 1.4.0
+ _ZN28QgsProjectBadLayerGuiHandlerD1Ev@Base 1.4.0
  _ZN28Ui_QgsDetailedItemWidgetBase7setupUiEP7QWidget@Base 1.4.0
  _ZN28Ui_QgsProjectionSelectorBase13retranslateUiEP7QWidget@Base 1.4.0
  _ZN28Ui_QgsProjectionSelectorBase7setupUiEP7QWidget@Base 1.4.0
@@ -6276,6 +6329,7 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN7QVectorIS_I8QgsPointEEixEi@Base 1.4.0
  _ZN7QVectorIS_IS_I8QgsPointEEE4freeEP16QVectorTypedDataIS2_E@Base 1.4.0
  _ZN7QVectorIS_IS_I8QgsPointEEE7reallocEii@Base 1.4.0
+ _ZN7QgisGui26openFilesRememberingFilterERK7QStringS2_R11QStringListRS0_S5_b@Base 1.4.0
  _ZN9QComboBox7addItemERK7QStringRK8QVariant@Base 1.4.0
  _ZN9QgsMapTip10showMapTipEP11QgsMapLayerR8QgsPointR6QPointP12QgsMapCanvas@Base 1.4.0
  _ZN9QgsMapTip12fetchFeatureEP11QgsMapLayerR8QgsPointP12QgsMapCanvas@Base 1.4.0
@@ -6315,6 +6369,7 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZNK16QgsMapCanvasItem12boundingRectEv@Base 1.4.0
  _ZNK16QgsMapCanvasItem4rectEv@Base 1.4.0
  _ZNK16QgsMessageViewer10metaObjectEv@Base 1.4.0
+ _ZNK18QgsLegendInterface10metaObjectEv@Base 1.4.0
  _ZNK19QgsDetailedItemData11isCheckableEv@Base 1.4.0
  _ZNK19QgsDetailedItemData18isRenderedAsWidgetEv@Base 1.4.0
  _ZNK19QgsDetailedItemData4iconEv@Base 1.4.0
@@ -6388,6 +6443,7 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTI16QgsMapCanvasItem@Base 1.4.0
  _ZTI16QgsMessageViewer@Base 1.4.0
  _ZTI16QgsPanningWidget@Base 1.4.0
+ _ZTI18QgsLegendInterface@Base 1.4.0
  _ZTI18Ui_QgsLUDialogBase@Base 1.4.0
  _ZTI18Ui_WidgetSvgMarker@Base 1.4.0
  _ZTI19QgsMapToolEmitPoint@Base 1.4.0
@@ -6411,9 +6467,11 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTI23QgsSymbolLevelsV2Dialog@Base 1.4.0
  _ZTI23Ui_WidgetLineDecoration@Base 1.4.0
  _ZTI24Ui_DlgSymbolV2Properties@Base 1.4.0
+ _ZTI25QgsProjectBadLayerHandler@Base 1.4.0
  _ZTI25QgsSymbolV2SelectorDialog@Base 1.4.0
  _ZTI27QgsSymbolV2PropertiesDialog@Base 1.4.0
  _ZTI28QgsGenericProjectionSelector@Base 1.4.0
+ _ZTI28QgsProjectBadLayerGuiHandler@Base 1.4.0
  _ZTI28Ui_QgsDetailedItemWidgetBase@Base 1.4.0
  _ZTI28Ui_QgsProjectionSelectorBase@Base 1.4.0
  _ZTI29QgsRendererV2PropertiesDialog@Base 1.4.0
@@ -6480,6 +6538,7 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTS16QgsMapCanvasItem@Base 1.4.0
  _ZTS16QgsMessageViewer@Base 1.4.0
  _ZTS16QgsPanningWidget@Base 1.4.0
+ _ZTS18QgsLegendInterface@Base 1.4.0
  _ZTS18Ui_QgsLUDialogBase@Base 1.4.0
  _ZTS18Ui_WidgetSvgMarker@Base 1.4.0
  _ZTS19QgsMapToolEmitPoint@Base 1.4.0
@@ -6503,9 +6562,11 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTS23QgsSymbolLevelsV2Dialog@Base 1.4.0
  _ZTS23Ui_WidgetLineDecoration@Base 1.4.0
  _ZTS24Ui_DlgSymbolV2Properties@Base 1.4.0
+ _ZTS25QgsProjectBadLayerHandler@Base 1.4.0
  _ZTS25QgsSymbolV2SelectorDialog@Base 1.4.0
  _ZTS27QgsSymbolV2PropertiesDialog@Base 1.4.0
  _ZTS28QgsGenericProjectionSelector@Base 1.4.0
+ _ZTS28QgsProjectBadLayerGuiHandler@Base 1.4.0
  _ZTS28Ui_QgsDetailedItemWidgetBase@Base 1.4.0
  _ZTS28Ui_QgsProjectionSelectorBase@Base 1.4.0
  _ZTS29QgsRendererV2PropertiesDialog@Base 1.4.0
@@ -6572,6 +6633,7 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTV16QgsMapCanvasItem@Base 1.4.0
  _ZTV16QgsMessageViewer@Base 1.4.0
  _ZTV16QgsPanningWidget@Base 1.4.0
+ _ZTV18QgsLegendInterface@Base 1.4.0
  _ZTV19QgsMapToolEmitPoint@Base 1.4.0
  _ZTV19QgsPenStyleComboBox@Base 1.4.0
  _ZTV19QgsRendererV2Widget@Base 1.4.0
@@ -6586,9 +6648,11 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZTV23QgsPenJoinStyleComboBox@Base 1.4.0
  _ZTV23QgsStyleV2ManagerDialog@Base 1.4.0
  _ZTV23QgsSymbolLevelsV2Dialog@Base 1.4.0
+ _ZTV25QgsProjectBadLayerHandler@Base 1.4.0
  _ZTV25QgsSymbolV2SelectorDialog@Base 1.4.0
  _ZTV27QgsSymbolV2PropertiesDialog@Base 1.4.0
  _ZTV28QgsGenericProjectionSelector@Base 1.4.0
+ _ZTV28QgsProjectBadLayerGuiHandler@Base 1.4.0
  _ZTV29QgsRendererV2PropertiesDialog@Base 1.4.0
  _ZTV31QgsSingleSymbolRendererV2Widget@Base 1.4.0
  _ZTV31QgsSvgMarkerSymbolLayerV2Widget@Base 1.4.0
@@ -6650,6 +6714,9 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZThn16_N27QgsSymbolV2PropertiesDialogD1Ev@Base 1.4.0
  _ZThn16_N28QgsGenericProjectionSelectorD0Ev@Base 1.4.0
  _ZThn16_N28QgsGenericProjectionSelectorD1Ev@Base 1.4.0
+ _ZThn16_N28QgsProjectBadLayerGuiHandler15handleBadLayersE5QListI8QDomNodeE12QDomDocument@Base 1.4.0
+ _ZThn16_N28QgsProjectBadLayerGuiHandlerD0Ev@Base 1.4.0
+ _ZThn16_N28QgsProjectBadLayerGuiHandlerD1Ev@Base 1.4.0
  _ZThn16_N29QgsRendererV2PropertiesDialogD0Ev@Base 1.4.0
  _ZThn16_N29QgsRendererV2PropertiesDialogD1Ev@Base 1.4.0
  _ZThn16_N31QgsSingleSymbolRendererV2WidgetD0Ev@Base 1.4.0
