@@ -10,7 +10,7 @@ Pour créer un Signet Géospatial:
 </li>
 <li>Entrer un nom pour le nouveau signet (maximum 255 caractères)
 </li>
-<li>Appuyer sur <label>OK</label> pour créer le Signet Géospatial ou <i>Annuler</i>
+<li>Appuyer sur <label>OK</label> pour créer le Signet Géospatial ou <label>Annuler</label>
 pour fermer la boîte de dialogue sans créer de Signet
 </li>
 </ol>
@@ -18,7 +18,7 @@ Notez que rien n'empêche d'avoir plusieurs Signets Géospatiaux avec le
 même nom.
 <h4>Travailler avec les Signets Géospatiaux</h4>
 Pour utiliser ou organiser les Signets Géospatiaux, appuyer sur le
-bouton <label>Montrer les signets</label> ou choisir <i>Montrer les signets</i>
+bouton <label>Montrer les signets</label> ou choisir <label>Montrer les signets</label>
 depuis le menu <label>Vue</label>. La fenêtre des Signets Géospatiaux permet
 d'effacer ou de zoomer sur un signet. En revanche, il n'est pas
 possible de modifier le nom ou les coordonnées d'un signet existant.
