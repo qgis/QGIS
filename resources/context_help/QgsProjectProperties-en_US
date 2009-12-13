@@ -10,24 +10,13 @@ This dialog allows you to set a number of properties related to the <label>Proje
 <h4>General Tab</h4>
 </a>
 <table border=1>
-<tr>
-<td><label>Project title</label></td><td>A descriptive title for the project. This title will be displayed in the title bar of the QGIS window</td>
-</tr>
-<tr><td><label>Selection color</label></td><td>Selected features are displayed on the map using this color.</td>
-</tr>
-<tr><td><label>Background color</label></td><td>The color of the map canvas.</td>
-<tr><td><label>Save paths</label></td><td>Ability to save the paths as absolute or relative.</td>
-
-</tr>
-<tr>
-<td><label>Layer units</label></td><td>Choose the units appropriate for the layers in the project.</td>
-</tr>
-<tr>
-<td><label>Precision</label></td><td>Use the manual setting to set the precision of the display in the status bar. As the mouse is moved over the map canvas, the coordinates are updated and displayed in the status bar using the precision you choose. Automatic (the default) results in a default precision based on the map units.</td>
-</tr>
-<tr>
-<td><label>Digitizing</label></td><td>This allows you to set the snapping tolerance in pixels, the line width used when digitising and the color for digitised lines.</td>
-</tr>
+<tr><td><label>Project title</label></td><td>A descriptive title for the project. This title will be displayed in the title bar of the QGIS window</td></tr>
+<tr><td><label>Selection color</label></td><td>Selected features are displayed on the map using this color.</td></tr>
+<tr><td><label>Background color</label></td><td>The color of the map canvas.</td></tr>
+<tr><td><label>Save paths</label></td><td>Ability to save the paths as absolute or relative.</td></tr>
+<tr><td><label>Layer units</label></td><td>Choose the units appropriate for the layers in the project.</td></tr>
+<tr><td><label>Precision</label></td><td>Use the manual setting to set the precision of the display in the status bar. As the mouse is moved over the map canvas, the coordinates are updated and displayed in the status bar using the precision you choose. Automatic (the default) results in a default precision based on the map units.</td></tr>
+<tr><td><label>Digitizing</label></td><td>This allows you to set the snapping tolerance in pixels, the line width used when digitising and the color for digitised lines.</td></tr>
 
 </table>
 <a name="crs">
@@ -44,4 +33,4 @@ The 4 last used coordinate systems will be available as buttons on the bottom fo
 <a name="layers">
 <h4>Identifiable layers Tab</h4>
 </a>
-On this tab you can choose the identify mode for the layers.
+On this tab you can choose on which layers the identify tool will work.
