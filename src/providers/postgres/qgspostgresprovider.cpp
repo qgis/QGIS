@@ -1645,6 +1645,12 @@ void QgsPostgresProvider::findColumns( tableCols& cols )
              "view_schema=%1 AND view_name=%2" )
     .arg( quotedValue( mSchemaName ) )
     .arg( quotedValue( mTableName ) );
+
+  if ( !primaryKey.isEmpty() )
+  {
+    viewColumnSql += QString( " AND column_name=%1" ).arg( quotedValue( primaryKey ) );
+  }
+
   Result viewColumnResult = connectionRO->PQexec( viewColumnSql );
 
   //find out view definition
