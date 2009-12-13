@@ -10,9 +10,9 @@ Na vytvorenie nového spojenia PostGIS je potrebné vedieť adresu hostiteľské
 </ul>
 <h4>Voľby</h4>
 <ol>
-<li><i>Uložiť heslo</i> - vaše heslo sa uloží takže ho zakaždým nebudete musieť zadávať. Heslo je ukladane ako čistý text v nastaveniach QGISu.
-<li><i>Prezerať len tabuľku geometry_columns</i> - zvyčajne QGIS preveruje každú tabuľku v databáze a zisťuje, či má stĺpec s geometriou. V prípade že je táto podmienka splnená pridá tabuľku do zoznamu vrstiev. Zaškrtnutím tohoto políčka QGIS zobrazí len zoznam tých tabuliek ktoré boli "zaregistrované" t.j. majú svoj záznam v tabuľke geometry_columns.
-<li><i>Prezerať len schému 'public'</i> - obmedzí vyhľadávanie vrstiev len na schému public
+<li><label>Uložiť heslo</label> - vaše heslo sa uloží takže ho zakaždým nebudete musieť zadávať. Heslo je ukladane ako čistý text v nastaveniach QGISu.
+<li><label>Prezerať len tabuľku geometry_columns</label> - zvyčajne QGIS preveruje každú tabuľku v databáze a zisťuje, či má stĺpec s geometriou. V prípade že je táto podmienka splnená pridá tabuľku do zoznamu vrstiev. Zaškrtnutím tohoto políčka QGIS zobrazí len zoznam tých tabuliek ktoré boli "zaregistrované" t.j. majú svoj záznam v tabuľke geometry_columns.
+<li><label>Prezerať len schému 'public'</label> - obmedzí vyhľadávanie vrstiev len na schému public
 </ol>
 <h4>Skúška spojenia</h4>
-Kliknutím na tlačidlo <i>Vyskúšať spojenie</i> sa inicializuje spojenie attempt to the database using the parameters you specified. Toto je dobrý spôsob akpo vyskúšať parametre spojenia predtým než bude spojenie uložené.
+Kliknutím na tlačidlo <label>Vyskúšať spojenie</label> sa inicializuje spojenie attempt to the database using the parameters you specified. Toto je dobrý spôsob akpo vyskúšať parametre spojenia predtým než bude spojenie uložené.

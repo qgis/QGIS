@@ -8,9 +8,9 @@ QGIS verwendet werden.  Nur die Eingaben für <b>Kartendatei</b> und
 <h4>Dateieingaben</h4> 
 <dl> 
   <dt>Map file</dt> 
-  <dd>Geben Sie den Namen der zu erzeugenden Kartendatei an.  Sie können auch <i>Durchsuchen</i> wählen, um das Verzeichnis festzulegen in dem die Datei erzeugt werden soll.</dd> 
+  <dd>Geben Sie den Namen der zu erzeugenden Kartendatei an.  Sie können auch <label>Durchsuchen</label> wählen, um das Verzeichnis festzulegen in dem die Datei erzeugt werden soll.</dd> 
   <dt>QGIS-Projektdatei</dt> 
-  <dd>Geben Sie den vollständigen Pfad der QGIS-Projektdatei (.qgs) an, das Sie exportieren möchten. Sie können auch <i>Durchsuchen</i> wählen, um die QGIS-Projektdatei auszuwählen.</dd> 
+  <dd>Geben Sie den vollständigen Pfad der QGIS-Projektdatei (.qgs) an, das Sie exportieren möchten. Sie können auch <label>Durchsuchen</label> wählen, um die QGIS-Projektdatei auszuwählen.</dd> 
 </dl> 
 <h4>Kartenparameter</h4> 
 Diese Werte werden in die entsprechenden Stellen der Kartendatei eingetragen, um Dinge wie Ausgabegröße, Einheiten oder Bildtyp 

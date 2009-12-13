@@ -1,5 +1,5 @@
 <h3>Vlastnosti projektu</h3>
-Toto dialógové okno vám umožní nastaviť množstvo vlastností viažúcich sa na <i>Projekt</i>. Projekt je množina vrstiev a ich nastavení ako aj ďalšie informácie potrebné k tomu aby bolo možné načítať projekt z disku.<p>
+Toto dialógové okno vám umožní nastaviť množstvo vlastností viažúcich sa na <label>Projekt</label>. Projekt je množina vrstiev a ich nastavení ako aj ďalšie informácie potrebné k tomu aby bolo možné načítať projekt z disku.<p>
 
 <h4>Záložka Všeobecné</h4>
 <table border=1>
@@ -20,7 +20,7 @@ Toto dialógové okno vám umožní nastaviť množstvo vlastností viažúcich 
 </table>
 <a anchor="projections"></a><h4>Záložka Mapové zobrazenia</h4>
 Záložka Mapové zobrazovania umožňuje nastaviť mapové zobrazenie aktuálneho projektu a zapnúť priame prevody medzi zobrazeniami (OTF). Na nastavenie a zapnutie prevodu medzi zobrazeniami nie je potrebné uložiť projekt.<p>
-Na zapnutie priemeho prevodu medzi mapovými zobrazeniami, kliknite na zaškrtávacie políčko <i>Zapnúť priame prevody medzi zobrazeniami</i>. Potom vyberte zo zoznamu zmepisných alebo mapových súradnicových systémov mapové zobrazenie zodpovedajúce projektu (na mapovom plátne) .
+Na zapnutie priemeho prevodu medzi mapovými zobrazeniami, kliknite na zaškrtávacie políčko <label>Zapnúť priame prevody medzi zobrazeniami</label>. Potom vyberte zo zoznamu zmepisných alebo mapových súradnicových systémov mapové zobrazenie zodpovedajúce projektu (na mapovom plátne) .
 <p>
-Príslušný súradnicový systém možno nájsť aj zadaním jeho PostGIS SRID, EPSG kódu, alebo QGIS SRSRID a následným kliknutím na tlačidlo <i>Nájsť</i>.
+Príslušný súradnicový systém možno nájsť aj zadaním jeho PostGIS SRID, EPSG kódu, alebo QGIS SRSRID a následným kliknutím na tlačidlo <label>Nájsť</label>.
  

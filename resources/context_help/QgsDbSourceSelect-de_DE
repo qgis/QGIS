@@ -2,18 +2,18 @@
 In diesem Dialog können Sie PostGIS-Layern (Tabellen mit Geometriespaten) zur Karte hinzufügen.
 <h4>Verbindungen</h4>
 <ul>
-<li>Wählen Sie eine Verbindung aus der Liste und klicken Sie auf <i>Verbinden</i>
-<li>Wenn es keine Verbindung gibt, klicken Sie auf <i>Neu</i>, um eine Verbindung anzulegen.
-<li>Um eine Verbindung zu verändern, klicken Sie auf <i>Ändern</i>
+<li>Wählen Sie eine Verbindung aus der Liste und klicken Sie auf <label>Verbinden</label>
+<li>Wenn es keine Verbindung gibt, klicken Sie auf <label>Neu</label>, um eine Verbindung anzulegen.
+<li>Um eine Verbindung zu verändern, klicken Sie auf <label>Ändern</label>
 </ul>
 <h4>Layer hinzufügen</h4>
 Um einen Layer hinzuzufügen:
 <ol>
 <li>Wählen Sie die gewünschte Verbindung aus der Liste,
-<li>klicken Sie auf <i>Verbinden</i>,
+<li>klicken Sie auf <label>Verbinden</label>,
 <li>suchen Sie den Layer, den Sie der Liste hinzufügen wollen und klicken Sie ihn an um ihn auszuwählen,
 <li>Sie können zusätzliche Layer wählen indem Sie die Ctrl-Taste gedrückt halten,
-<li>klicken Sie auf <i>Hinzufügen</i> um den/die Layer der Karte hinzuzufügen.
+<li>klicken Sie auf <label>Hinzufügen</label> um den/die Layer der Karte hinzuzufügen.
 </ol>
 <h4>Layer filtern</h4>
 Um Layer vor dem Hinzufügen zu Filtern klicken Sie doppelt auf deren Namen.

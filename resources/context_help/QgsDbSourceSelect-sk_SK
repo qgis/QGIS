@@ -2,18 +2,18 @@
 Toto dialógové okno slúži na pridanie vrstiev PostGIS (tabuliek so stĺpcom obsahujúcim geometriu) na mapové plátno QGISu.
 <h4>Spojenia</h4>
 <ul>
-<li>Z rozbaľovacieho menu vyberte spojenie, ktoré chcete použiť a kliknite na tlačidlo <i>Pripojiť</i> 
-<li>Pokiaľ nie sú na výber žiadne spojenia, použite tlačidlo <i>Nové</i> na vytvorenie nového spojenia
-<li>Kliknutím na tlačidlo <i>Upraviť</i> môžete upraviť nastavenie spojenia
+<li>Z rozbaľovacieho menu vyberte spojenie, ktoré chcete použiť a kliknite na tlačidlo <label>Pripojiť</label> 
+<li>Pokiaľ nie sú na výber žiadne spojenia, použite tlačidlo <label>Nové</label> na vytvorenie nového spojenia
+<li>Kliknutím na tlačidlo <label>Upraviť</label> môžete upraviť nastavenie spojenia
 </ul>
 <h4>Pridávanie vrstiev</h4>
 Postup na pridanie vrstvy:
 <ol>
 <li>V rozbaľovacom menu vyberte požadované spojenie
-<li>Kliknite na tlačidlo <i>Pripojiť</i>
+<li>Kliknite na tlačidlo <label>Pripojiť</label>
 <li>Nájdite v zozname vrstvu, ktorú chcete pridať klikním ju označte
 <li>Klikaním so stlačenou klávesou Ctrl môžete označiť naraz viacero vrstiev 
-<li>Kliknutím na tlačidlo <i>Pridať</i> sa ozančené vrstva/vrstvy pridajú do mapy
+<li>Kliknutím na tlačidlo <label>Pridať</label> sa ozančené vrstva/vrstvy pridajú do mapy
 </ol>
 <h4>Filtrovanie vrstiev</h4>
 Obsah vrstvy možno pred pridaním do mapy filtrovať. Dvojklikom na názov vrstvy sa otvorí nástroj na tvorbu dopytov, ktorý umožňuje vytvoriť SQL dopyt, ktorý sa použije ako filter záznamov.

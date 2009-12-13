@@ -10,9 +10,9 @@ Um eine PostGIS-Verbindung anzulegen, müssen Sie den Host, Port und Ihren Benut
 </ul> 
 <h4>Optionen</h4> 
 <ol> 
-<li><i>Paßwort spreichern</i>  - speichern Sie Ihr Paßwort, damit sie es nicht jedesmal wieder eingeben müssen. Das Paßwort wird im Klartext in Ihren QGIS-Einstellungen gespeichert. 
-<li><i>Nur in die geometry_columns-Tabelle gucken</i> - normalerweise durchsucht QGIS alle Tabellen nach Geometriespalten und fügt sie dann der Layerliste hinzu. Ein Haken hier sorgt dafür, dass QGIS nur "registrierte" Tabellen mit einem Eintrag in der geometry_columns-Tabelle anzeigt. 
-<li><i>Nur im 'public'-Schema</i> - diese begrenzt die Suche auf Layer im public-Schema 
+<li><label>Paßwort spreichern</label>  - speichern Sie Ihr Paßwort, damit sie es nicht jedesmal wieder eingeben müssen. Das Paßwort wird im Klartext in Ihren QGIS-Einstellungen gespeichert. 
+<li><label>Nur in die geometry_columns-Tabelle gucken</label> - normalerweise durchsucht QGIS alle Tabellen nach Geometriespalten und fügt sie dann der Layerliste hinzu. Ein Haken hier sorgt dafür, dass QGIS nur "registrierte" Tabellen mit einem Eintrag in der geometry_columns-Tabelle anzeigt. 
+<li><label>Nur im 'public'-Schema</label> - diese begrenzt die Suche auf Layer im public-Schema 
 </ol> 
 <h4>Verbindung testen</h4> 
-Klicken Sie auf <i>Verbindung testen</i> um einen Verbindungsversuch mit diesen Parameters auszulösen. Hiermit können Sie die Verbindungsparameter vor dem Speichern gut prüfen. 
+Klicken Sie auf <label>Verbindung testen</label> um einen Verbindungsversuch mit diesen Parameters auszulösen. Hiermit können Sie die Verbindungsparameter vor dem Speichern gut prüfen. 

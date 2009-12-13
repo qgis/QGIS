@@ -9,27 +9,27 @@ vectorielle, il existe trois possibilités:
 </p>
 <ul>
 <li>Sur la barre d'outils contrôle des couches de QGIS, appuyer sur
-le bouton <i>Nouvelle couche vectorielle</i>;
+le bouton <label>Nouvelle couche vectorielle</label>;
 </li>
-<li>ou dans le menu <i>Couche</i>, sélectionner la fonction <i>Nouvelle
-couche vectorielle...</i>;
+<li>ou dans le menu <label>Couche</label>, sélectionner la fonction <i>Nouvelle
+couche vectorielle...</label>;
 </li>
-<li>ou taper directement le raccourci clavier (<i>Shift+Ctrl+N</i>
+<li>ou taper directement le raccourci clavier (<label>Shift+Ctrl+N</label>
 sous Mac OSX).
 </li>
 </ul>
 <h4>Configuration de la couche vectorielle</h4>
 <h5><u>Étape 1 : Choix du type</u></h5>
-Dans la boîte de dialogue <i>Nouvelle couche vecteur</i>, sélectionner
+Dans la boîte de dialogue <label>Nouvelle couche vecteur</label>, sélectionner
 le type de couche à créer en cochant le bouton souhaité:
 <ul>
-<li><i>Point</i> pour créer une couche contenant des objets de type
+<li><label>Point</label> pour créer une couche contenant des objets de type
 ponctuels;
 </li>
-<li><i>Ligne</i> pour créer une couche contenant des objets de type
+<li><label>Ligne</label> pour créer une couche contenant des objets de type
 linéaires;
 </li>
-<li><i>Polygone</i> pour créer une couche contenant des objets de
+<li><label>Polygone</label> pour créer une couche contenant des objets de
 type surfaciques.
 </li>
 </ul>
@@ -37,9 +37,9 @@ type surfaciques.
 Quel que soit le type de couche choisi, la configuration des attributs
 de la couche se fait toujours de la même manière:
 <ol>
-<li>Entrer un nom pour l'attribut dans la case <i>Nom</i>;
+<li>Entrer un nom pour l'attribut dans la case <label>Nom</label>;
 </li>
-<li>Choisir le type d'attribut à l'aide du menu déroulant <i>Type</i>
+<li>Choisir le type d'attribut à l'aide du menu déroulant <label>Type</label>
 : <br>
 <ul>
 <li><tab>Ligne (string) pour un attribut de type chaîne de
@@ -49,13 +49,13 @@ caractère</tab></li>
 </ul>
 </li>
 <li>Spécifier la largeur de l'attribut (nombre de caractères maximum)
-en entrant une valeur dans la case <i>Largeur</i> (facultatif);
+en entrant une valeur dans la case <label>Largeur</label> (facultatif);
 </li>
 <li>Pour les attributs de type réel uniquement, entrer la précision
-(nombre de chiffres après la virgule) dans la case <i>Précision</i>;
+(nombre de chiffres après la virgule) dans la case <label>Précision</label>;
 </li>
-<li>Créer l'attribut de couche en appuyant sur le bouton <i>Ajouter
-l'attribut</i>.
+<li>Créer l'attribut de couche en appuyant sur le bouton <label>Ajouter
+l'attribut</label>.
 </li>
 </ol>
 L'attribut créé apparaît alors dans la liste de la boîte de dialogue.<br>
@@ -63,22 +63,22 @@ Pour créer les attributs suivants, recommencer les opérations
 ci-dessus.
 <h5><u>Étape 3 optionnelle : Effacer un attribut de couche</u></h5>
 En cas d'erreur, il est possible d'effacer un attribut créé. Pour cela,
-sélectionner l'attribut dans la liste et appuyer sur le bouton <i>Effacer
-l'attribut sélectionné</i>.
+sélectionner l'attribut dans la liste et appuyer sur le bouton <label>Effacer
+l'attribut sélectionné</label>.
 <h5><u>Étape 4: Valider et créer la couche vectorielle</u></h5>
 Une fois les étapes 1 et 2 réalisées, valider la création de la couche
-en appuyant sur le bouton <i>OK</i> pour créer la couche ou sur le
-bouton <i>Annuler</i> pour fermer la boîte de dialogue sans créer la
+en appuyant sur le bouton <label>OK</label> pour créer la couche ou sur le
+bouton <label>Annuler</label> pour fermer la boîte de dialogue sans créer la
 couche.
 <p>QGIS propose alors de choisir le nom et l'emplacement physique de
 stockage des fichiers shape dans l'arborescence de l'ordinateur :
-choisir un nom et un emplacement pour la couche puis appuyer sur <i>OK</i>
-pour valider le choix, ou sur <i>Annuler</i> pour quitter sans
+choisir un nom et un emplacement pour la couche puis appuyer sur <label>OK</label>
+pour valider le choix, ou sur <label>Annuler</label> pour quitter sans
 enregistrer.</p>
 <p>Une fois cette action réalisée, la couche est chargée dans le projet
 QGIS en cours.</p>
 <p><u>Important : </u> une nouvelle couche créée est forcément vide,
 il est donc normal qu'une couche nouvellement créée apparaisse dans la
-barre d'outils <i>Couches</i>, mais qu'aucune donnée n'apparaisse sur
+barre d'outils <label>Couches</label>, mais qu'aucune donnée n'apparaisse sur
 la carte du projet. Pour entrer des données dans la couche il est
-nécessaire de passer par la fonction <i>Basculer en mode édition</i>.</p>
+nécessaire de passer par la fonction <label>Basculer en mode édition</label>.</p>
