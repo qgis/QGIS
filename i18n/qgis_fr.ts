@@ -7883,23 +7883,23 @@ Erreurs : %2
         <location filename="../src/app/qgisapp.cpp" line="2115"/>
         <source>
 This copy of QGIS has been built with SpatiaLite support.</source>
-        <translation>Cette copie de QGIS a été compilé avec le support de Spatialite</translation>
+        <translation>Cette copie de QGIS a été compilé avec le support de Spatialite.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2117"/>
         <source>
 This copy of QGIS has been built without SpatiaLite support.</source>
-        <translation>Cette copie de QGIS a été compilé sans le support de Spatialite</translation>
+        <translation>Cette copie de QGIS a été compilé sans le support de Spatialite.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2744"/>
         <source>New Shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouveau Shapefile</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2745"/>
         <source>Shapefiles must end on .shp</source>
-        <translation type="unfinished"></translation>
+        <translation>Un fichier Shapefile doit se terminer par .shp</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3548"/>
@@ -9987,12 +9987,12 @@ L&apos;erreur est : %2</translation>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="45"/>
         <source>Outline width </source>
-        <translation>Largeur de bordure</translation>
+        <translation>Largeur de bordure </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="52"/>
         <source>Arrow head width </source>
-        <translation>Largeur de la tête</translation>
+        <translation>Largeur de la tête </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="59"/>
@@ -10529,22 +10529,22 @@ L&apos;erreur est : %2</translation>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="81"/>
         <source>Title Font...</source>
-        <translation>Pocile du tite</translation>
+        <translation>Police du tite...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="88"/>
         <source>Layer Font...</source>
-        <translation>Police de la couche</translation>
+        <translation>Police de la couche...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="95"/>
         <source>Item Font...</source>
-        <translation>Police de l&apos;objet</translation>
+        <translation>Police de l&apos;objet...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="102"/>
         <source>Symbol width </source>
-        <translation>Largeur du symbole</translation>
+        <translation>Largeur du symbole </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="105"/>
@@ -10559,27 +10559,27 @@ L&apos;erreur est : %2</translation>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="112"/>
         <source>Symbol height </source>
-        <translation>Hauteur du symbole</translation>
+        <translation>Hauteur du symbole </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="122"/>
         <source>Layer space </source>
-        <translation>Espace entre les couches</translation>
+        <translation>Espace entre les couches </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="132"/>
         <source>Symbol space </source>
-        <translation>Espace entre les symboles</translation>
+        <translation>Espace entre les symboles </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="142"/>
         <source>Icon label space </source>
-        <translation>Espace des étiquettes</translation>
+        <translation>Espace des étiquettes </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="152"/>
         <source>Box space </source>
-        <translation>Taille de la boite</translation>
+        <translation>Taille de la boite </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="203"/>
@@ -11501,12 +11501,12 @@ L&apos;erreur est : %2</translation>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="90"/>
         <source> Right segments</source>
-        <translation>segments de droite</translation>
+        <translation> segments de droite</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="97"/>
         <source> Left segments</source>
-        <translation>segments de gauche</translation>
+        <translation> segments de gauche</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="149"/>
@@ -11519,22 +11519,22 @@ L&apos;erreur est : %2</translation>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="152"/>
         <source>Height </source>
-        <translation>Hauteur</translation>
+        <translation>Hauteur </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="165"/>
         <source>Line width </source>
-        <translation>Largeur de ligne</translation>
+        <translation>Largeur de ligne </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="184"/>
         <source>Label space </source>
-        <translation>Emplacement des étiquettes</translation>
+        <translation>Emplacement des étiquettes </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="194"/>
         <source>Box space </source>
-        <translation>Taille de la boite</translation>
+        <translation>Taille de la boite </translation>
     </message>
     <message>
         <source>Number of segments</source>
@@ -12141,37 +12141,37 @@ L&apos;erreur est : %2</translation>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="156"/>
         <source>Quality </source>
-        <translation>Qualité</translation>
+        <translation>Qualité </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="166"/>
         <source>Width </source>
-        <translation>Largeur</translation>
+        <translation>Largeur </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="179"/>
         <source>Height </source>
-        <translation>Hauteur</translation>
+        <translation>Hauteur </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="208"/>
         <source>Spacing </source>
-        <translation>Espacement</translation>
+        <translation>Espacement </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="221"/>
         <source>X offset </source>
-        <translation>Décalage X</translation>
+        <translation>Décalage X </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="231"/>
         <source>Y offset </source>
-        <translation>Décalage Y</translation>
+        <translation>Décalage Y </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="238"/>
         <source>Pen width </source>
-        <translation>Largeur du crayon</translation>
+        <translation>Largeur du crayon </translation>
     </message>
     <message>
         <source>Print quality (dpi)</source>
@@ -19516,7 +19516,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="359"/>
         <source>Buffer labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Étiquettes tampons</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="497"/>
@@ -20366,13 +20366,13 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="63"/>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="128"/>
         <source>No feature selected. Please select a feature with the selection tool or in the attribute table</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas d&apos;entité sélectionnée. Veuillez en sélectionner une avec l&apos;outil de sélection ou via la table attributaire</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="67"/>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="132"/>
         <source>Several features are selected. Please select only one feature to which an island should be added.</source>
-        <translation type="unfinished"></translation>
+        <translation>Plusieurs entités sont sélectionnées. Veulliez n&apos;en sélectionner qu&apos;une seule pour laquelle l&apos;île sera ajoutée.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="72"/>
@@ -20398,22 +20398,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="116"/>
         <source>Selected feature is not a multipolygon</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;entité sélectionnée n&apos;est pas un polygone multi-parts</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="120"/>
         <source>New ring is not a valid geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>Le nouvel anneau n&apos;est pas une géométrie valide</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="124"/>
         <source>New polygon ring not disjoint with existing polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Le nouvel anneau n&apos;est pas disjoint des polygones existants</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="136"/>
         <source>Selected geometry could not be found</source>
-        <translation type="unfinished"></translation>
+        <translation>La géométrie sélectionnée n&apos;a pas pu être trouvée</translation>
     </message>
 </context>
 <context>
@@ -21691,12 +21691,12 @@ Complément d&apos;information sur l&apos;erreur :
     <message>
         <location filename="../src/app/qgsnewconnection.cpp" line="90"/>
         <source>Save connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Sauvegarder la connexion</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewconnection.cpp" line="91"/>
         <source>Should the existing connection %1 be overwritten?</source>
-        <translation type="unfinished"></translation>
+        <translation>La connexion existante %1 doit-elle être écrasée ?</translation>
     </message>
 </context>
 <context>
@@ -21822,12 +21822,12 @@ Complément d&apos;information sur l&apos;erreur :
     <message>
         <location filename="../src/app/qgsnewhttpconnection.cpp" line="62"/>
         <source>Save connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Sauvegarder la connexion</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewhttpconnection.cpp" line="63"/>
         <source>Should the existing connection %1 be overwritten?</source>
-        <translation type="unfinished"></translation>
+        <translation>La connexion existante %1 doit-elle être écrasée ?</translation>
     </message>
 </context>
 <context>
@@ -21965,12 +21965,12 @@ Complément d&apos;information sur l&apos;erreur :
     <message>
         <location filename="../src/app/ogr/qgsnewogrconnection.cpp" line="109"/>
         <source>Save connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Sauvegarder la connexion</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsnewogrconnection.cpp" line="110"/>
         <source>Should the existing connection %1 be overwritten?</source>
-        <translation type="unfinished"></translation>
+        <translation>La connexion existante %1 doit-elle être écrasée ?</translation>
     </message>
 </context>
 <context>
@@ -22461,12 +22461,12 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="352"/>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="364"/>
         <source>Add vector layer</source>
-        <translation type="unfinished">Ajouter une couche vecteur</translation>
+        <translation>Ajouter une couche vecteur</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="301"/>
         <source>No database selected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas de bases de données sélectionnées.</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="317"/>
@@ -22481,17 +22481,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="341"/>
         <source>No protocol URI entered.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucune adresse saisie.</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="353"/>
         <source>No layers selected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucune couche sélectionnée.</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="365"/>
         <source>No directory selected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucun répertoire sélectionné.</translation>
     </message>
 </context>
 <context>
@@ -26396,13 +26396,14 @@ Veuillez installer PostGIS avec le support GEOS (http://geos.refractions.net)</t
     <message>
         <location filename="../src/gui/qgsprojectbadlayerguihandler.cpp" line="26"/>
         <source>QGIS Project Read Error</source>
-        <translation type="unfinished">Erreur de lecture du Projet QGIS </translation>
+        <translation>Erreur de lecture du Projet QGIS </translation>
     </message>
     <message>
         <location filename="../src/gui/qgsprojectbadlayerguihandler.cpp" line="27"/>
         <source>Unable to open one or more project layers
 Try to find missing layers?</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;ouvrir une ou plusieurs couches du projet.
+Essayer de trouver les couches manquantes ?</translation>
     </message>
 </context>
 <context>
@@ -29448,12 +29449,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="43"/>
         <source>&amp;Test</source>
-        <translation type="unfinished">&amp;Tester</translation>
+        <translation>&amp;Tester</translation>
     </message>
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="47"/>
         <source>&amp;Clear</source>
-        <translation type="unfinished">&amp;Effacer</translation>
+        <translation>&amp;Effacer</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="178"/>
