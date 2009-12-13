@@ -59,6 +59,9 @@
      </item>
      <item>
       <widget class="QToolButton" name="mAdvancedSearchButton">
+       <property name="toolTip">
+        <string>Opens the search query builder</string>
+       </property>
        <property name="text">
         <string>...</string>
        </property>
@@ -149,7 +152,7 @@
         <string>Copy selected rows to clipboard (Ctrl+C)</string>
        </property>
        <property name="whatsThis">
-        <string>Copies the selected rows to the clipboard</string>
+        <string/>
        </property>
        <property name="text">
         <string/>
@@ -175,7 +178,7 @@
         <string>Zoom map to the selected rows (Ctrl-J)</string>
        </property>
        <property name="whatsThis">
-        <string>Zoom map to the selected rows</string>
+        <string/>
        </property>
        <property name="text">
         <string/>
@@ -201,7 +204,7 @@
         <string>Toggle editing mode</string>
        </property>
        <property name="whatsThis">
-        <string>Click to toggle table editing</string>
+        <string/>
        </property>
        <property name="text">
         <string/>
@@ -223,6 +226,9 @@
      </item>
      <item>
       <widget class="QToolButton" name="mDeleteSelectedButton">
+       <property name="toolTip">
+        <string>Delete selected features</string>
+       </property>
        <property name="text">
         <string>...</string>
        </property>
@@ -320,6 +326,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="searchButton">
+       <property name="toolTip">
+        <string>Looks for the given value in the given attribute column</string>
+       </property>
        <property name="text">
         <string>&amp;Search</string>
        </property>
