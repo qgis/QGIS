@@ -376,7 +376,7 @@ QgsGPSData* QgsGPSData::getData( const QString& fileName )
       return 0;
     }
     QgsGPSData* data = new QgsGPSData;
-    QgsLogger::debug( "Loading file " + fileName );
+    QgsDebugMsg( "Loading file " + fileName );
     QgsGPXHandler handler( *data );
     bool failed = false;
 
@@ -412,7 +412,7 @@ QgsGPSData* QgsGPSData::getData( const QString& fileName )
     dataObjects[fileName] = std::pair<QgsGPSData*, unsigned>( data, 0 );
   }
   else
-    QgsLogger::debug( fileName + " is already loaded" );
+    QgsDebugMsg( fileName + " is already loaded" );
 
   // return a pointer and increase the reference count for that file name
   DataMap::iterator iter = dataObjects.find( fileName );
@@ -429,10 +429,10 @@ void QgsGPSData::releaseData( const QString& fileName )
   DataMap::iterator iter = dataObjects.find( fileName );
   if ( iter != dataObjects.end() )
   {
-    QgsLogger::debug( "unrefing " + fileName );
+    QgsDebugMsg( "unrefing " + fileName );
     if ( --( iter->second.second ) == 0 )
     {
-      QgsLogger::debug( "No one's using " + fileName + ", I'll erase it" );
+      QgsDebugMsg( "No one's using " + fileName + ", I'll erase it" );
       delete iter->second.first;
       dataObjects.erase( iter );
     }

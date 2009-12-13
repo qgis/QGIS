@@ -359,7 +359,7 @@ bool QgsMapLayer::isValid()
 
 void QgsMapLayer::invalidTransformInput()
 {
-  QgsLogger::warning( "QgsMapLayer::invalidTransformInput() called" );
+  QgsDebugMsg( "called" );
   // TODO: emit a signal - it will be used to update legend
 }
 

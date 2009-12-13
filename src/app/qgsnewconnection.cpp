@@ -139,7 +139,7 @@ void QgsNewConnection::testConnection()
   QgsDataSourceURI uri;
   uri.setConnection( txtHost->text(), txtPort->text(), txtDatabase->text(), txtUsername->text(), txtPassword->text(), ( QgsDataSourceURI::SSLmode ) cbxSSLmode->currentIndex() );
 
-  QgsLogger::debug( "PQconnectdb(" + uri.connectionInfo() + ");" );
+  QgsDebugMsg( "PQconnectdb(" + uri.connectionInfo() + ");" );
 
   PGconn *pd = PQconnectdb( uri.connectionInfo().toLocal8Bit().data() );
   if ( PQstatus( pd ) == CONNECTION_OK )
