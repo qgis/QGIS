@@ -11,7 +11,7 @@ vectorielle, il existe trois possibilités:
 <li>Sur la barre d'outils contrôle des couches de QGIS, appuyer sur
 le bouton <label>Nouvelle couche vectorielle</label>;
 </li>
-<li>ou dans le menu <label>Couche</label>, sélectionner la fonction <i>Nouvelle
+<li>ou dans le menu <label>Couche</label>, sélectionner la fonction <label>Nouvelle
 couche vectorielle...</label>;
 </li>
 <li>ou taper directement le raccourci clavier (<label>Shift+Ctrl+N</label>
