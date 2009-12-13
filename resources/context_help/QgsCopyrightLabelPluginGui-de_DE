@@ -1,1 +1,31 @@
-<h3>Plugin für Urhebersrechtshinweise</h3>
+<h3>Copyright Label-Erweiterung</h3>
+Zeichnet einen Urheberrechtshinweis mit Informationen.<br/>
+Sie können der Karte beliebigen Text hinzufügen nicht nur einen Urheberrechtshinweis.
+<p>
+<a href="#howto">Wie's geht?</a><br/>
+<a href="#text">Textformatierung</a><br/>
+
+<a name="howto">
+<h4>Wie's geht?</h4>
+</a>
+<ol>
+<li>Stellen Sie sicher, dass die Erweiterung geladen ist.
+<li>Klicken Sie auf <label>Plugins > Decorations > Copyright Label</label> oder benutzen Sie den Knopf <label>Copyright Label</label> aus der Werkzeugleiste.
+<li>Geben Sie den Text ein, den Sie auf die Karte setzen wollen. Sie können HTML verwenden.
+<li>Wählen Sie die Plazierung der Beschriftung aus der Liste unten rechts.
+<li>Vergewissern Sie sich, dass das Kontrollkästchen <label>Urheberrechtshinweise aktivieren</label> angehakt ist..
+<li>Klicken Sie auf <label>OK</label>.
+</ol>
+<a name="text">
+<h4>Textformatierung</h4>
+</a>
+Diese Erweiterung unterstützt grundlegende HTML-Hervorhebungstags zur Textformatierung. Zum Beispiel:
+
+<ul>
+<li>&lt;B&gt;<b> Fett </b>&lt;/B&gt;
+</li>
+<li>&lt;I&gt;<i> Kursiv </i>&lt;/I&gt;
+</li>
+<li>&lt;U&gt;<u> Unterstrichen </u>&lt;/U&gt;
+</li>
+</ul>

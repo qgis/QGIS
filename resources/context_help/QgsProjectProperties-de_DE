@@ -1,26 +1,32 @@
-<h3>Projekteigenschaften</h3> 
-In diesem Dialog können Sie die Eigenschaften des <i>Projekts</i> einstellen.   In einem Projekt werden eine Menge von Layern mit Ihren Einstellungen sowie andere Information, die zur Wiederherstellung des Projekts beim Laden von Festplatte benötigt werden, gespeichert.</p> 
- 
-<h4>Reiter Allgemein</h4> 
-<table border=1> 
-<tr> 
-<td>Projekttitel</td><td>Ein beschreibender Titel für das Projekt. Dieser Titel wird in der Titelzeile des QGIS-Fenster angezeigt.</td> 
-</tr> 
-<tr> 
-<td>Karteneinheiten</td><td>Wählen Sie die Karteneinheiten der Layer des Projekts</td> 
-</tr> 
-<tr> 
-<td>Cursor-Anzeigegenauigkeit</td><td>Benutzen Sie die manuelle Einstellungen der Anzeigegenauigkeit in der Statuszeile. Während die Maus über die Karte bewegt wird, werden die Koordinaten ständig mit der gewählten Genauigkeit in der Statuszeile angezeigt. Automatisch (die Voreinstellung) führt zu einer von den Karteneinheiten abhängigen Voreinstellung.</td> 
-</tr> 
-<tr> 
-<td>Digitalisierungseinstellungen</td><td>Dies erlaubt Ihnen eine Fangtoleranz in Pixeln, die Linienstärke und -farbe während des Digitalisieren festzulegen</td> 
-</tr> 
-<tr><td>Auswahlfarbe</td><td>Ausgewählte Objekte werden in der Karte in dieser Farbe angezeigt.</td> 
-</tr> 
-</table> 
-<a anchor="projections"></a><h4>Reiter Projektion</h4> 
-Der Reiter Projektion erlaubt Ihnen die Einstellung der Projektion des aktuellen Projekte und das aktivieren der Projektion zur Laufzeit. Sie brauchen das Projekt nicht zu speichern, um die Projekt zur Laufzeit einzustellen oder zu aktivieren.<p> 
-Um die Projektion zur Laufzeit zu benutzen klicken Sie auf <i>Projektion zur Laufzeit einschalten</i>, dann wählen Sie die Projektion des Projekts aus der Liste der geographischen oder projizierte Koordinatensysteme. 
-<p> 
-Sie können ein Koordinatensystem suchen indem Sie die PostGIS SRID, den EPSG code oder den QGIS SRSRID eingeben und auf <i>Suchen</i> klicken. 
- 
+<h3>Projekteigenschaften</h3>
+In diesem Dialog können Sie die Eigenschaften des <label>Projekts</label> einstellen.   In einem Projekt werden eine Menge von Layern mit Ihren Einstellungen sowie andere Information, die zur Wiederherstellung des Projekts beim Laden von Festplatte benötigt werden, gespeichert.</p>
+
+<a href="#general">Reiter allgemein</a><br/>
+<a href="#crs">Reiter Koordinatenbezugssystem (KBS)</a><br/>
+<a href="#layers">Reiter abfragbare Layer</a><br/>
+
+<a name="general">
+<h4>Reiter Allgemein</h4>
+</a>
+<table border=1>
+<tr><td><label>Projekttitel</label></td><td>Ein beschreibender Titel für das Projekt. Dieser Titel wird in der Titelzeile des QGIS-Fenster angezeigt.</td></tr>
+<tr><td><label>Auswahlfarbe</label></td><td>Ausgewählte Objekte werden in der Karte in dieser Farbe angezeigt.</td></tr>
+<tr><td><label>Hintergrundfarbe</label></td><td>Die Farbe des Kartenhintergrunds.</td></tr>
+<tr><td><label>Pfade speichern</label></td><td>Möglichkeit Pfade absolut oder relativ zu speichern.</td><tr>
+<tr><td><label>Layereinheiten</label></td><td>Wählen Sie die Einheiten der Layer des Projekts</td></tr>
+<tr><td><label>Genauigkeit</label></td><td>Benutzen Sie die manuelle Einstellungen der Anzeigegenauigkeit in der Statuszeile. Während die Maus über die Karte bewegt wird, werden die Koordinaten ständig mit der gewählten Genauigkeit in der Statuszeile angezeigt. Automatisch (die Voreinstellung) führt zu einer von den Karteneinheiten abhängigen Voreinstellung.</td></tr>
+<tr><td><label>Digitalisierung</label></td><td>Dies erlaubt Ihnen eine Fangtoleranz in Pixeln, die Linienstärke und -farbe während des Digitalisieren festzulegen</td></tr>
+</table>
+<a name="crs">
+<h4>Reiter Koordinatenbezugssystem (KBS)</h4>
+</a>
+Der Reiter Koordinatenbezugssystem (KBS) erlaubt Ihnen die Einstellung der Projektion des aktuellen Projekte und das aktivieren der Projektion zur Laufzeit. Sie brauchen das Projekt nicht zu speichern, um die 'On-The-Fly'-Transformation einzustellen oder zu aktivieren.<p>
+Um die Transformation zu benutzen klicken Sie auf <label>'On-The-Fly'-KBS-Transformation aktivieren</label>, dann wählen Sie die Projektion des Projekts (Karte) aus der Liste der geographischen oder projizierte Koordinatensysteme.
+<p>
+Sie können ein Koordinatensystem suchen indem Sie die PostGIS SRID, den EPSG-Code oder den QGIS ID eingeben und auf <label>Suchen</label> klicken.
+
+<a name="layers">
+<h4>Abfragbare Layer</h4>
+</a>
+
+Auf diesem Reiter können Sie einstellen welche Layern das Abfragewerkzeug berücksichtigt.
