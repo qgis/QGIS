@@ -108,8 +108,9 @@ void QgsCopyrightLabelPlugin::projectRead()
   now = QDate::currentDate();
   defString = "&copy; QGIS " + now.toString( "yyyy" );
 
-  mQFont.setFamily( QgsProject::instance()->readEntry( "CopyrightLabel", "/FontName", "Sans Serif" ) );
-  mQFont.setPointSize( QgsProject::instance()->readNumEntry( "CopyrightLabel", "/FontSize", 9 ) );
+  // there is no font setting in the UI, so just use the Qt/QGIS default font (what mQFont gets when created)
+  //  mQFont.setFamily( QgsProject::instance()->readEntry( "CopyrightLabel", "/FontName", "Sans Serif" ) );
+  //  mQFont.setPointSize( QgsProject::instance()->readNumEntry( "CopyrightLabel", "/FontSize", 9 ) );
   mLabelQString = QgsProject::instance()->readEntry( "CopyrightLabel", "/Label", defString );
   mPlacementIndex = QgsProject::instance()->readNumEntry( "CopyrightLabel", "/Placement", 3 );
   mEnable = QgsProject::instance()->readBoolEntry( "CopyrightLabel", "/Enabled", true );
@@ -171,7 +172,7 @@ void QgsCopyrightLabelPlugin::renderLabel( QPainter * theQPainter )
     {
       case 0: // Bottom Left
         //Define bottom left hand corner start point
-        myYOffset = myHeight - size.height() + 5;
+        myYOffset = myHeight - ( size.height() + 5 );
         myXOffset = 5;
         break;
       case 1: // Top left
@@ -186,7 +187,7 @@ void QgsCopyrightLabelPlugin::renderLabel( QPainter * theQPainter )
         break;
       case 3: // Bottom Right
         //Define bottom right hand corner start point
-        myYOffset = myHeight - size.height() + 5;
+        myYOffset = myHeight - ( size.height() + 5 );
         myXOffset = myWidth - ( size.width() + 5 );
         break;
       default:
