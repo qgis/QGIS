@@ -301,7 +301,7 @@ bool QgsGPXProvider::nextFeature( QgsFeature& feature )
       const QgsTrack* trk;
       trk = &( *mTrkIter );
 
-      QgsLogger::debug( "GPX feature track segments: ", trk->segments.size(), __FILE__, __FUNCTION__, __LINE__ );
+      QgsDebugMsg( QString("GPX feature track segments: %1").arg( trk->segments.size() ) );
       if ( trk->segments.size() == 0 )
         continue;
 

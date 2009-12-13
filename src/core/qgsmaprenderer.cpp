@@ -180,16 +180,10 @@ void QgsMapRenderer::adjustExtentToSize()
     dymax = mExtent.yMaximum() + whitespace;
   }
 
-#ifdef QGISDEBUG
-  QString myMessage = "+-------------------MapRenderer--------------------------------+\n";
-  myMessage += QString( "Map units per pixel (x,y) : %1, %2\n" ).arg( mapUnitsPerPixelX ).arg( mapUnitsPerPixelY );
-  myMessage += QString( "Pixmap dimensions (x,y) : %1, %2\n" ).arg( myWidth ).arg( myHeight );
-  myMessage += QString( "Extent dimensions (x,y) : %1, %2\n" ).arg( mExtent.width() ).arg( mExtent.height() );
-  myMessage += mExtent.toString();
-  std::cout << myMessage.toLocal8Bit().constData() << std::endl; // OK
-
-#endif
-
+  QgsDebugMsg( QString("Map units per pixel (x,y) : %1, %2\n" ).arg( mapUnitsPerPixelX ).arg( mapUnitsPerPixelY ) );
+  QgsDebugMsg( QString("Pixmap dimensions (x,y) : %1, %2\n" ).arg( myWidth ).arg( myHeight ) );
+  QgsDebugMsg( QString("Extent dimensions (x,y) : %1, %2\n" ).arg( mExtent.width() ).arg( mExtent.height() ) );
+  QgsDebugMsg( mExtent.toString() );
 
   // update extent
   mExtent.setXMinimum( dxmin );
@@ -200,9 +194,7 @@ void QgsMapRenderer::adjustExtentToSize()
   // update the scale
   updateScale();
 
-#ifdef QGISDEBUG
-  QgsLogger::debug( "Scale (assuming meters as map units) = 1", mScale, 1, __FILE__, __FUNCTION__, __LINE__ );
-#endif
+  QgsDebugMsg( QString("Scale (assuming meters as map units) = 1:%1").arg( mScale ) );
 
   newCoordXForm.setParameters( mMapUnitsPerPixel, dxmin, dymin, myHeight );
   mRenderContext.setMapToPixel( newCoordXForm );
@@ -221,7 +213,7 @@ void QgsMapRenderer::render( QPainter* painter )
 
   if ( mExtent.isEmpty() )
   {
-    QgsLogger::debug( "empty extent... not rendering" );
+    QgsDebugMsg( "empty extent... not rendering" );
     return;
   }
 
@@ -343,7 +335,7 @@ void QgsMapRenderer::render( QPainter* painter )
 
     if ( !ml )
     {
-      QgsLogger::warning( "Layer not found in registry!" );
+      QgsDebugMsg( "Layer not found in registry!" );
       continue;
     }
 
@@ -472,8 +464,9 @@ void QgsMapRenderer::render( QPainter* painter )
       }
       else
       {
-        QgsDebugMsg( "\n\n\nLayer rendered without issues\n\n\n" );
+        QgsDebugMsg( "Layer rendered without issues" );
       }
+
       if ( split )
       {
         mRenderContext.setExtent( r2 );
@@ -708,7 +701,7 @@ bool QgsMapRenderer::splitLayersExtent( QgsMapLayer* layer, QgsRectangle& extent
     catch ( QgsCsException &cse )
     {
       Q_UNUSED( cse );
-      QgsLogger::warning( "Transform error caught in " + QString( __FILE__ ) + ", line " + QString::number( __LINE__ ) );
+      QgsDebugMsg( "Transform error caught" );
       extent = QgsRectangle( -DBL_MAX, -DBL_MAX, DBL_MAX, DBL_MAX );
       r2     = QgsRectangle( -DBL_MAX, -DBL_MAX, DBL_MAX, DBL_MAX );
     }
@@ -752,7 +745,7 @@ QgsPoint QgsMapRenderer::layerToMapCoordinates( QgsMapLayer* theLayer, QgsPoint 
     catch ( QgsCsException &cse )
     {
       Q_UNUSED( cse );
-      QgsDebugMsg( QString( "Transform error caught:%s" ).arg( cse.what() ) );
+      QgsDebugMsg( QString( "Transform error caught: %1" ).arg( cse.what() ) );
     }
   }
   else
@@ -773,7 +766,7 @@ QgsPoint QgsMapRenderer::mapToLayerCoordinates( QgsMapLayer* theLayer, QgsPoint 
     }
     catch ( QgsCsException &cse )
     {
-      QgsDebugMsg( QString( "Transform error caught: %s" ).arg( cse.what() ) );
+      QgsDebugMsg( QString( "Transform error caught: %1" ).arg( cse.what() ) );
       throw cse; //let client classes know there was a transformation error
     }
   }
@@ -820,7 +813,7 @@ void QgsMapRenderer::updateFullExtent()
     QgsMapLayer * lyr = registry->mapLayer( *it );
     if ( lyr == NULL )
     {
-      QgsLogger::warning( "WARNING: layer '" + ( *it ) + "' not found in map layer registry!" );
+      QgsDebugMsg( QString("WARNING: layer '%1' not found in map layer registry!").arg( *it ) );
     }
     else
     {

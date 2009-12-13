@@ -1325,7 +1325,7 @@ QString createFilters( QString type )
       {
         // NOP, we don't know anything about the current driver
         // with regards to a proper file filter string
-        QgsLogger::debug( "fileVectorFilters, unknown driver: " + driverName );
+        QgsDebugMsg( "fileVectorFilters, unknown driver: " + driverName );
       }
 
     }                           // each loaded GDAL driver
@@ -1534,8 +1534,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
       break;
     default:
     {
-      QgsLogger::debug( "Unknown vector type of: ", ( int )( vectortype ), 1,
-                        __FILE__, __FUNCTION__, __LINE__ );
+      QgsDebugMsg( QString("Unknown vector type of: %1").arg( ( int )( vectortype ) ) );
       return false;
       break;
     }
