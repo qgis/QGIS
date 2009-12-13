@@ -129,8 +129,7 @@ void QgsHelpViewer::loadContext( const QString &contextId )
       // translate this for us message
       if ( !lang.contains( "en_" ) )
       {
-        helpContents = "<i>This help file is not available in your language."
-                       " If you would like to translate it, please contact the QGIS  development team.</i><hr>";
+        helpContents = "<i>" + tr( "This help file is not available in your language. If you would like to translate it, please contact the QGIS  development team." ) + "</i><hr />";
       }
     }
     if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
