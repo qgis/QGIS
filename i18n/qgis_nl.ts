@@ -4766,7 +4766,7 @@ Dubbelklik op een laag in de legenda om de verschijning of andere eigenschappen 
     </message>
     <message>
         <source>QGIS: Unable to load project</source>
-        <translation>QGIS: Fout bij laden van project</translation>
+        <translation type="obsolete">QGIS: Fout bij laden van project</translation>
     </message>
     <message>
         <source>QGIS Version Information</source>
@@ -5030,7 +5030,7 @@ Dubbelklik op een laag in de legenda om de verschijning of andere eigenschappen 
     </message>
     <message>
         <source>Unable to save project</source>
-        <translation>Opslaan van project mislukt</translation>
+        <translation type="obsolete">Opslaan van project mislukt</translation>
     </message>
     <message>
         <source>Unable to save project </source>
@@ -5825,7 +5825,7 @@ Fouten:  %2
     <message>
         <source>%1
 Try to find missing layers?</source>
-        <translation>%1
+        <translation type="obsolete">%1
 Missende lagen proberen te vinden?</translation>
     </message>
     <message>
@@ -5834,7 +5834,7 @@ Missende lagen proberen te vinden?</translation>
     </message>
     <message>
         <source>Unable to save project to %1</source>
-        <translation>Fout bij het opslaan van project naar %1</translation>
+        <translation type="obsolete">Fout bij het opslaan van project naar %1</translation>
     </message>
     <message>
         <source>Unable to save project %1</source>
@@ -5842,7 +5842,7 @@ Missende lagen proberen te vinden?</translation>
     </message>
     <message>
         <source>Unable to load project %1</source>
-        <translation>Fout bij het laden van project %1</translation>
+        <translation type="obsolete">Fout bij het laden van project %1</translation>
     </message>
     <message>
         <source>Enter id string for composer</source>
@@ -6152,6 +6152,14 @@ Deze kopie van QGIS heeft geen SpatialLite ondersteuning.</translation>
     <message>
         <source>Deselect features from all layers</source>
         <translation>Deselecteer objecten van alle lagen</translation>
+    </message>
+    <message>
+        <source>New Shapefile</source>
+        <translation>Nieuw shape-bestand</translation>
+    </message>
+    <message>
+        <source>Shapefiles must end on .shp</source>
+        <translation>Shape-bestanden moeten op .shp eindigen</translation>
     </message>
 </context>
 <context>
@@ -6614,6 +6622,10 @@ p, li { white-space: pre-wrap; }
         <source>Select a file</source>
         <translation type="obsolete">Selecteer een bestand</translation>
     </message>
+    <message>
+        <source>Attributes - %1</source>
+        <translation>Attributen - %1</translation>
+    </message>
 </context>
 <context>
     <name>QgsAttributeDialogBase</name>
@@ -6917,7 +6929,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Copies the selected rows to the clipboard</source>
-        <translation>Kopieert de geselecteerde rijen naar het klembord</translation>
+        <translation type="obsolete">Kopieert de geselecteerde rijen naar het klembord</translation>
     </message>
     <message>
         <source>Ctrl+C</source>
@@ -6929,7 +6941,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Zoom map to the selected rows</source>
-        <translation>Zoom naar de geselecteerde rijen</translation>
+        <translation type="obsolete">Zoom naar de geselecteerde rijen</translation>
     </message>
     <message>
         <source>Ctrl+J</source>
@@ -6941,7 +6953,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Click to toggle table editing</source>
-        <translation>Attributentabel-aanpassen aan/uit zetten</translation>
+        <translation type="obsolete">Attributentabel-aanpassen aan/uit zetten</translation>
     </message>
     <message>
         <source>New column</source>
@@ -6982,6 +6994,18 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Search selected records only</source>
         <translation>Alleen geselecteerde records doorzoeken</translation>
+    </message>
+    <message>
+        <source>Opens the search query builder</source>
+        <translation>Opent de zoekquery-bouwer</translation>
+    </message>
+    <message>
+        <source>Delete selected features</source>
+        <translation>Geselecteerde objecten verwijderen</translation>
+    </message>
+    <message>
+        <source>Looks for the given value in the given attribute column</source>
+        <translation>Zoekt de gegeven waarde op in de gegeven attribuut-kolom</translation>
     </message>
 </context>
 <context>
@@ -7942,7 +7966,7 @@ Foutmelding: %2</translation>
     </message>
     <message>
         <source>Select/Move item</source>
-        <translation>Selecteer/Veplaats onderdeel</translation>
+        <translation>Selecteer/Verplaats onderdeel</translation>
     </message>
     <message>
         <source>Zoom All</source>
@@ -9279,7 +9303,6 @@ Foutmelding: %2</translation>
     <message>
         <source>Rotation </source>
         <comment>Rotation</comment>
-        <extracomment>Rotation</extracomment>
         <translation>Draaiing</translation>
     </message>
 </context>
@@ -9665,7 +9688,7 @@ Foutmelding: %2</translation>
     </message>
     <message>
         <source> dpi</source>
-        <translation>.dpi</translation>
+        <translation> dpi</translation>
     </message>
     <message>
         <source>Quality </source>
@@ -10112,7 +10135,7 @@ p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;© QGIS 2009&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -14752,6 +14775,10 @@ p, li { white-space: pre-wrap; }(new line)
         <translation>Problemen bij het ophalen van de helpteksten uit de database:
 %1</translation>
     </message>
+    <message>
+        <source>This help file is not available in your language. If you would like to translate it, please contact the QGIS  development team.</source>
+        <translation>Dit helpbestand bestaat niet in uw taal. Als u wilt helpen met aanmaken, neem dan contact op met het QGIS ontwikkelteam.</translation>
+    </message>
 </context>
 <context>
     <name>QgsHelpViewerBase</name>
@@ -15315,7 +15342,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Buffer size units</source>
-        <translation>Buffergrootte eenheden</translation>
+        <translation type="obsolete">Buffergrootte eenheden</translation>
     </message>
     <message>
         <source>Font</source>
@@ -15423,7 +15450,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Buffer labels?</source>
-        <translation>Labels met buffer?</translation>
+        <translation type="obsolete">Labels met buffer?</translation>
     </message>
     <message>
         <source>Buffer size</source>
@@ -15505,7 +15532,7 @@ p, li { white-space: pre-wrap; }
         <source>Maximum scale at which this layer will be displayed. </source>
         <translation>Maximale schaal bij welke deze laag nog getoond zal worden. </translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>°</source>
         <translation>°</translation>
     </message>
@@ -15524,6 +15551,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Data defined properties</source>
         <translation>Data-bepaalde eigenschappen</translation>
+    </message>
+    <message>
+        <source>Buffer labels</source>
+        <translation>Labels met buffer</translation>
     </message>
 </context>
 <context>
@@ -16140,6 +16171,30 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Island added</source>
         <translation>Eiland toegevoegd</translation>
+    </message>
+    <message>
+        <source>No feature selected. Please select a feature with the selection tool or in the attribute table</source>
+        <translation>Geen object geselecteerd. Selecteer een object met het selectie-gereedschap of via de attribuut-tabel</translation>
+    </message>
+    <message>
+        <source>Several features are selected. Please select only one feature to which an island should be added.</source>
+        <translation>Meerdere kaartobjecten zijn geselecteerd. Selecteer a.u.b. 1 object aan welk een eiland moet worden toegevoegd.</translation>
+    </message>
+    <message>
+        <source>Selected feature is not a multipolygon</source>
+        <translation>Geselecteerd object is geen multipolygoon</translation>
+    </message>
+    <message>
+        <source>New ring is not a valid geometry</source>
+        <translation>Nieuwe ring is geen geldige geometrie</translation>
+    </message>
+    <message>
+        <source>New polygon ring not disjoint with existing polygons</source>
+        <translation>Nieuwe polygoonring is niet &apos;disjoint&apos; met bestaande polygonen</translation>
+    </message>
+    <message>
+        <source>Selected geometry could not be found</source>
+        <translation>Geselecteerde geometrie kan niet worden gevonden</translation>
     </message>
 </context>
 <context>
@@ -16891,7 +16946,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>LAYER information only</source>
-        <translation>Alleen LAYER-formatie</translation>
+        <translation>Alleen LAYER-informatie</translation>
     </message>
     <message>
         <source>Rendering</source>
@@ -17184,6 +17239,14 @@ Uitgebreide foutinformatie:
         <source>disable</source>
         <translation>uitschakelen</translation>
     </message>
+    <message>
+        <source>Save connection</source>
+        <translation>Verbinding opslaan</translation>
+    </message>
+    <message>
+        <source>Should the existing connection %1 be overwritten?</source>
+        <translation>Bestaande verbinding %1 overschrijven?</translation>
+    </message>
 </context>
 <context>
     <name>QgsNewConnectionBase</name>
@@ -17282,6 +17345,17 @@ Uitgebreide foutinformatie:
     <message>
         <source>SSL mode</source>
         <translation>SSL modus</translation>
+    </message>
+</context>
+<context>
+    <name>QgsNewHttpConnection</name>
+    <message>
+        <source>Save connection</source>
+        <translation>Verbinding opslaan</translation>
+    </message>
+    <message>
+        <source>Should the existing connection %1 be overwritten?</source>
+        <translation>Bestaande verbinding %1 overschrijven?</translation>
     </message>
 </context>
 <context>
@@ -17402,6 +17476,14 @@ Uitgebreide foutinformatie:
     <message>
         <source>Connection to %1 was successful</source>
         <translation>Verbinding met %1 is geslaagd</translation>
+    </message>
+    <message>
+        <source>Save connection</source>
+        <translation>Verbinding opslaan</translation>
+    </message>
+    <message>
+        <source>Should the existing connection %1 be overwritten?</source>
+        <translation>Bestaande verbinding %1 overschrijven?</translation>
     </message>
 </context>
 <context>
@@ -17785,6 +17867,26 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Please enter your password:</source>
         <translation>Voer wachtwoord in:</translation>
+    </message>
+    <message>
+        <source>Add vector layer</source>
+        <translation>Vectorlaag toevoegen</translation>
+    </message>
+    <message>
+        <source>No database selected.</source>
+        <translation>Geen database geselecteerd.</translation>
+    </message>
+    <message>
+        <source>No protocol URI entered.</source>
+        <translation>Geen protocol-URI ingegegeven.</translation>
+    </message>
+    <message>
+        <source>No layers selected.</source>
+        <translation>Geen lagen geselecteerd.</translation>
+    </message>
+    <message>
+        <source>No directory selected.</source>
+        <translation>Geen map geselecteerd.</translation>
     </message>
 </context>
 <context>
@@ -20915,6 +21017,19 @@ Installeer PostGIS met GEOS-ondersteuning (http://geos.refractions.net)</transla
     </message>
 </context>
 <context>
+    <name>QgsProjectBadLayerGuiHandler</name>
+    <message>
+        <source>QGIS Project Read Error</source>
+        <translation>QGIS-projectbestand inleesfout</translation>
+    </message>
+    <message>
+        <source>Unable to open one or more project layers
+Try to find missing layers?</source>
+        <translation>Problemen bij het openen van een van de lagen in dit project.
+Missende lagen proberen te vinden?</translation>
+    </message>
+</context>
+<context>
     <name>QgsProjectProperties</name>
     <message>
         <source>Layer</source>
@@ -23152,6 +23267,14 @@ p, li { white-space: pre-wrap; }
             <numerusform>%n passende objecten gevonden.</numerusform>
         </translation>
     </message>
+    <message>
+        <source>&amp;Test</source>
+        <translation>&amp;Test</translation>
+    </message>
+    <message>
+        <source>&amp;Clear</source>
+        <translation>&amp;Leegmaken</translation>
+    </message>
 </context>
 <context>
     <name>QgsServerSourceSelect</name>
@@ -24437,7 +24560,7 @@ Wilt u de relatie [%2] overschrijven?</translation>
         <source>Rotation</source>
         <translation>Draaiing</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>°</source>
         <translation>°</translation>
     </message>
@@ -27058,7 +27181,7 @@ p, li { white-space: pre-wrap; }
         <source>Database Host</source>
         <translation>Database Host</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Enter the database host. If the database resides on your desktop you should enter ¨localhost¨. If you selected ¨MSAccess¨ as the database type this option will not be available. </source>
         <translation>Voer de hostnaam van de database in. Als de database zich op uw desktop bevindt, gebruik dan &quot;localhost&quot;. Als u &quot;MSAccess&quot; als database-type heeft gekozen zal deze optie niet beschikbaar zijn. </translation>
     </message>
@@ -27277,7 +27400,7 @@ p, li { white-space: pre-wrap; }
         <source>Next</source>
         <translation>Volgende</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>All of the attribute information for the point associated with the photo being viewed is displayed here. If the file type being referenced in the displayed record is not an image but is of a file type defined in the “Configure External Applications” tab then when you double-click on the value of the field containing the path to the file the application to open the file will be launched to view or hear the contents of the file. If the file extension is recognized the attribute data will be displayed in green.</source>
         <translation>Alle attribuutinformatie voor het punt van de foto wordt hier getoond. Als het gerefereerde bestandstype in het record geen afbeelding is, maar als type zoals gedefinieerd onder de tab &quot;Externe Toepassingen Configureren&quot;, dan zal bij het dubbelklikken van de waarde de bijbehorende toepassing worden geopend om de inhoud van het bestand te bekijken of beluisteren. Als de extensie van het bestand wordt herkend zal de attribuutinformatie groen worden weergegeven.</translation>
     </message>
@@ -27316,7 +27439,7 @@ p, li { white-space: pre-wrap; }
         <source>If checked the path to the image will be defined appending the attribute in the field selected from the “Attribute Containing Path to Image” drop-down list to the “Base Path” defined below.  </source>
         <translation type="obsolete">Indien aangevinkt zal het pad naar de afbeelding worden opgebouwd uit de attribuutwaarde in het veld uit de &quot;Attribuut voor Pad naar Afbeelding&quot;-lijst en het &quot;Basispad&quot; zoals hieronder aangegeven.  </translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>If checked the path to the image will be defined appending the attribute in the field selected from the “Attribute Containing Path to Image” drop-down list to the “Base Path” defined below.</source>
         <translation>Indien aangevinkt zal het pad naar de afbeelding worden opgebouwd uit de attribuutwaarde in het veld uit de &apos;Attribuut voor Pad naar Afbeelding&apos;-lijst en het &apos;Basispad&apos; zoals hieronder aangegeven.</translation>
     </message>
@@ -27428,7 +27551,7 @@ p, li { white-space: pre-wrap; }
         <source>Relative paths</source>
         <translation>Relatieve paden</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>The base path or url from which images and documents can be “relative”</source>
         <translation>Het basispad of url vanwaar afbeeldingen worden geladen kan relatief zijn</translation>
     </message>
@@ -27436,7 +27559,7 @@ p, li { white-space: pre-wrap; }
         <source>Base Path</source>
         <translation>Basispad</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Enters the default “Base Path” which is the path to the directory of the vector layer containing the image information.</source>
         <translation>Geeft het &apos;standaard&apos; Basispad wat het pad is naar de directory van de vectorlaag met de afbeeldingsinformatie.</translation>
     </message>
@@ -27486,7 +27609,7 @@ door de gebruiker gedefinieerd Basispad (b.v. gebruik alleen de bestandsnaam van
         <source>Apply Path to Image rules when loading docs in external applications</source>
         <translation>Gebruik &apos;Pad naar Afbeeldings&apos;-regels bij het laden van bestanden in externe programma&apos;s</translation>
     </message>
-    <message utf8="true">
+    <message>
         <source>Clicking on Save will save the settings without closing the Options pane. Clicking on Restore Defaults will reset all of the fields to their default settings. It has the same effect as clicking all of the “Reset to default” buttons. </source>
         <translation>Klikken op &apos;Opslaan&apos; zal de instellingen bewaren zonder het &apos;Opties&apos;-scherm te sluiten. Klokken op &apos;Terug naar Standaardinstellingen&apos; zal alle velden terug zetten naar de standaardwaarden. Het heeft hetzelfde effect als klikken op de &apos;Terug naar standaard&apos;-knoppen.</translation>
     </message>
