@@ -9,9 +9,9 @@ Läd und stell Textdatei in CSV-Format, die x- und y-Koordinaten haben, dar.
 <a name="re">
 <h4>Anforderungen</h4>
 </a>
-Um eine Textdatei als Layer anzuzuzeigen muß sie folgende enthalten:
+Um eine Textdatei als Layer anzuzeigen, muß sie folgende Daten enthalten:
 <ol>
-<li>Einen Titelzeile mit den Namen der Fehler. Dies muß die erste Zeile der Textdatei sein.</li>
+<li>Eine Titelzeile mit den Namen der Fehler. Dies muß die erste Zeile der Textdatei sein.</li>
 <li>Die Titelzeile muss ein X und ein Y-Feld enthalten. Diese Fehler können beliebige Namen haben.</li>
 <li>Die <B>x</B> and <B>y</B> Koordinaten müssen als Zahl angegeben sein. Das Koordinatensystem ist unwichtig.</li>
 </ol>
@@ -29,7 +29,7 @@ X;Y;HOEHE<br/>
 <ol>
 <li>Der Beispieltext nutzt <b>;</b> als Trennzeichen. Jedes andere Zeichen kann als Trennzeichen benutzt werden.</li>
 <li>Die erste Zeile ist die Titelzeile. Es enthält die Fehler X, Y und HOEHE.</li>
-<li>Es werden keine Anführungszeichen (") benutzt um die Textfelder zu trennen.</li>
+<li>Es werden keine Anführungszeichen (") benutzt, um die Textfelder zu trennen.</li>
 <li>Die X-Koordinaten sind im Feld X.</li>
 <li>Die Y-Koordinaten sind im Feld Y.</li>
 </ol>
