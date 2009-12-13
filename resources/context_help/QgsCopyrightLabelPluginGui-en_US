@@ -26,6 +26,6 @@ This plugin supports basic HTML markup tags for formatting text. For example:
 </li>
 <li>&lt;I&gt;<i>Italicss</i>&lt;/I&gt;
 </li>
-<li>&lt;U&gt;<u> Underlined text</u>&lt;/U&gt;
+<li>&lt;U&gt;<u> Underlined text </u>&lt;/U&gt;
 </li>
 </ul>
