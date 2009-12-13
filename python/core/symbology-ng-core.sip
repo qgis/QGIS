@@ -324,8 +324,8 @@ class QgsSymbolLayerV2
   switch (sipCpp->type())
   {
     case QgsSymbolV2::Marker: sipClass = sipClass_QgsMarkerSymbolLayerV2; break;
-    case QgsSymbolV2::Line: sipClass = sipClass_QgsMarkerSymbolLayerV2; break;
-    case QgsSymbolV2::Fill: sipClass = sipClass_QgsMarkerSymbolLayerV2; break;
+    case QgsSymbolV2::Line: sipClass = sipClass_QgsLineSymbolLayerV2; break;
+    case QgsSymbolV2::Fill: sipClass = sipClass_QgsFillSymbolLayerV2; break;
     default: sipClass = 0; break;
   }
 %End
@@ -440,8 +440,8 @@ class QgsSymbolV2
   switch (sipCpp->type())
   {
     case QgsSymbolV2::Marker: sipClass = sipClass_QgsMarkerSymbolV2; break;
-    case QgsSymbolV2::Line: sipClass = sipClass_QgsMarkerSymbolV2; break;
-    case QgsSymbolV2::Fill: sipClass = sipClass_QgsMarkerSymbolV2; break;
+    case QgsSymbolV2::Line: sipClass = sipClass_QgsLineSymbolV2; break;
+    case QgsSymbolV2::Fill: sipClass = sipClass_QgsFillSymbolV2; break;
     default: sipClass = 0; break;
   }
 %End
