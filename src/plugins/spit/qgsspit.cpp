@@ -115,6 +115,12 @@ void QgsSpit::populateConnectionList()
     ++it;
   }
   settings.endGroup();
+
+  btnConnect->setDisabled( cmbConnections->count() == 0 );
+  btnEdit->setDisabled( cmbConnections->count() == 0 );
+  btnRemove->setDisabled( cmbConnections->count() == 0 );
+
+  cmbConnections->setDisabled( cmbConnections->count() == 0 );
 }
 
 void QgsSpit::newConnection()
@@ -141,19 +147,21 @@ void QgsSpit::removeConnection()
   QString key = "/PostgreSQL/connections/" + cmbConnections->currentText();
   QString msg = tr( "Are you sure you want to remove the [%1] connection and all associated settings?" ).arg( cmbConnections->currentText() );
   QMessageBox::StandardButton result = QMessageBox::information( this, tr( "Confirm Delete" ), msg, QMessageBox::Ok | QMessageBox::Cancel );
-  if ( result == QMessageBox::Ok )
-  {
-    settings.remove( key + "/host" );
-    settings.remove( key + "/database" );
-    settings.remove( key + "/port" );
-    settings.remove( key + "/username" );
-    settings.remove( key + "/password" );
-    settings.remove( key + "/sslmode" );
-    settings.remove( key + "/save" );
-    settings.remove( key );
+  if ( result != QMessageBox::Ok )
+    return;
 
-    cmbConnections->removeItem( cmbConnections->currentIndex() );
-  }
+  settings.remove( key + "/host" );
+  settings.remove( key + "/database" );
+  settings.remove( key + "/port" );
+  settings.remove( key + "/username" );
+  settings.remove( key + "/password" );
+  settings.remove( key + "/sslmode" );
+  settings.remove( key + "/publicOnly" );
+  settings.remove( key + "/geometryColumnsOnly" );
+  settings.remove( key + "/save" );
+  settings.remove( key );
+
+  populateConnectionList();
 }
 
 void QgsSpit::addFile()

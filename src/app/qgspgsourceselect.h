@@ -111,15 +111,14 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsPgSourceSelectBase
     ~QgsPgSourceSelect();
     //! Populate the connection list combo box
     void populateConnectionList();
-    //! Determines the tables the user selected and closes the dialog
-    void addTables();
     //! String list containing the selected tables
     QStringList selectedTables();
     //! Connection info (database, host, user, password)
     QString connectionInfo();
 
   public slots:
-    void addClicked();
+    //! Determines the tables the user selected and closes the dialog
+    void addTables();
 
     /*! Connects to the database using the stored connection parameters.
     * Once connected, available layers are displayed.

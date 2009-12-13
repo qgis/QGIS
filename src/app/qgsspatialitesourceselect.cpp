@@ -71,19 +71,6 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QgisApp * app, Qt::WFlags 
   mSearchColumnComboBox->setCurrentIndex( 1 );
 }
 
-/** Autoconnected SLOTS **/
-// Slot for adding a new connection
-void QgsSpatiaLiteSourceSelect::on_btnNew_clicked()
-{
-  addNewConnection();
-}
-
-// Slot for deleting an existing connection
-void QgsSpatiaLiteSourceSelect::on_btnDelete_clicked()
-{
-  deleteConnection();
-}
-
 // Slot for performing action when the Add button is clicked
 void QgsSpatiaLiteSourceSelect::addClicked()
 {
@@ -297,9 +284,14 @@ void QgsSpatiaLiteSourceSelect::populateConnectionList()
   }
   settings.endGroup();
   setConnectionListPosition();
+
+  btnConnect->setDisabled( cmbConnections->count() == 0 );
+  btnDelete->setDisabled( cmbConnections->count() == 0 );
+
+  cmbConnections->setDisabled( cmbConnections->count() == 0 );
 }
 
-void QgsSpatiaLiteSourceSelect::addNewConnection()
+void QgsSpatiaLiteSourceSelect::on_btnNew_clicked()
 {
 // Retrieve last used project dir from persistent settings
   sqlite3 *handle;
@@ -335,7 +327,8 @@ void QgsSpatiaLiteSourceSelect::addNewConnection()
   populateConnectionList();
 }
 
-void QgsSpatiaLiteSourceSelect::deleteConnection()
+// Slot for deleting an existing connection
+void QgsSpatiaLiteSourceSelect::on_btnDelete_clicked()
 {
   QSettings settings;
   QString subKey = cmbConnections->currentText();
@@ -347,16 +340,13 @@ void QgsSpatiaLiteSourceSelect::deleteConnection()
   QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" ).arg( subKey );
   QMessageBox::StandardButton result =
     QMessageBox::information( this, tr( "Confirm Delete" ), msg, QMessageBox::Ok | QMessageBox::Cancel );
-  if ( result == QMessageBox::Ok )
-  {
-    settings.remove( key + "/sqlitepath" );
-    settings.remove( key );
-    //if(!success){
-    //  QMessageBox::information(this,"Unable to Remove","Unable to remove the connection " + cmbConnections->currentText());
-    //}
-    cmbConnections->removeItem( cmbConnections->currentIndex() ); // populateConnectionList();
-    setConnectionListPosition();
-  }
+  if ( result != QMessageBox::Ok )
+    return;
+
+  settings.remove( key + "/sqlitepath" );
+  settings.remove( key );
+
+  populateConnectionList();
 }
 
 void QgsSpatiaLiteSourceSelect::addTables()

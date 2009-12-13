@@ -60,14 +60,7 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsSpatiaLiteSource
     //! Constructor
     QgsSpatiaLiteSourceSelect( QgisApp * app, Qt::WFlags fl = QgisGui::ModalDialogFlags );
     //! Destructor
-    ~QgsSpatiaLiteSourceSelect()
-    {
-      ;
-    }
-    //! Opens the create connection dialog to build a new connection
-    void addNewConnection();
-    //! Deletes the selected connection
-    void deleteConnection();
+    ~QgsSpatiaLiteSourceSelect() {}
     //! Populate the connection list combo box
     void populateConnectionList();
     //! Determines the tables the user selected and closes the dialog
@@ -85,7 +78,9 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsSpatiaLiteSource
      */
     void on_btnConnect_clicked();
     void addClicked();
+    //! Opens the create connection dialog to build a new connection
     void on_btnNew_clicked();
+    //! Deletes the selected connection
     void on_btnDelete_clicked();
     void on_mSearchOptionsButton_clicked();
     void on_mSearchTableEdit_textChanged( const QString & text );

@@ -46,7 +46,7 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WFlags fl )
 
   mAddButton = new QPushButton( tr( "&Add" ) );
   buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
-  connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addClicked() ) );
+  connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addTables() ) );
 
   mAddButton->setEnabled( false );
   populateConnectionList();
@@ -110,27 +110,20 @@ void QgsPgSourceSelect::on_btnDelete_clicked()
   QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
                 .arg( cmbConnections->currentText() );
   QMessageBox::StandardButton result = QMessageBox::information( this, tr( "Confirm Delete" ), msg, QMessageBox::Ok | QMessageBox::Cancel );
-  if ( result == QMessageBox::Ok )
-  {
-    settings.remove( key + "/host" );
-    settings.remove( key + "/database" );
-    settings.remove( key + "/username" );
-    settings.remove( key + "/password" );
-    settings.remove( key + "/port" );
-    settings.remove( key + "/sslmode" );
-    settings.remove( key + "/save" );
-    settings.remove( key );
-    //if(!success){
-    //  QMessageBox::information(this,"Unable to Remove","Unable to remove the connection " + cmbConnections->currentText());
-    //}
-    cmbConnections->removeItem( cmbConnections->currentIndex() );  // populateConnectionList();
-    setConnectionListPosition();
-  }
-}
-// Slot for performing action when the Add button is clicked
-void QgsPgSourceSelect::addClicked()
-{
-  addTables();
+  if ( result != QMessageBox::Ok )
+    return;
+
+  settings.remove( key + "/host" );
+  settings.remove( key + "/database" );
+  settings.remove( key + "/username" );
+  settings.remove( key + "/password" );
+  settings.remove( key + "/port" );
+  settings.remove( key + "/sslmode" );
+  settings.remove( key + "/publicOnly" );
+  settings.remove( key + "/geometryColumnsOnly" );
+  settings.remove( key + "/save" );
+
+  populateConnectionList();
 }
 
 // Slot for editing a connection
@@ -280,7 +273,13 @@ void QgsPgSourceSelect::populateConnectionList()
     ++it;
   }
   settings.endGroup();
+
   setConnectionListPosition();
+
+  btnEdit->setDisabled( cmbConnections->count() == 0 );
+  btnDelete->setDisabled( cmbConnections->count() == 0 );
+  btnConnect->setDisabled( cmbConnections->count() == 0 );
+  cmbConnections->setDisabled( cmbConnections->count() == 0 );
 }
 
 QString QgsPgSourceSelect::layerURI( const QModelIndex &index )
@@ -337,6 +336,7 @@ QString QgsPgSourceSelect::layerURI( const QModelIndex &index )
   return uri;
 }
 
+// Slot for performing action when the Add button is clicked
 void QgsPgSourceSelect::addTables()
 {
   m_selectedTables.clear();
