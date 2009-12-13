@@ -6,11 +6,11 @@ Pour créer un Signet Géospatial:
 <ol>
 <li>Afficher ou faire un zoom sur la zone d'intérêt
 </li>
-<li>Appuyer sur <i>Nouveau signet</i> ou faire la combinaison Ctrl-B
+<li>Appuyer sur <label>Nouveau signet</label> ou faire la combinaison Ctrl-B
 </li>
 <li>Entrer un nom pour le nouveau signet (maximum 255 caractères)
 </li>
-<li>Appuyer sur <i>OK</i> pour créer le Signet Géospatial ou <i>Annuler</i>
+<li>Appuyer sur <label>OK</label> pour créer le Signet Géospatial ou <i>Annuler</i>
 pour fermer la boîte de dialogue sans créer de Signet
 </li>
 </ol>
@@ -18,19 +18,19 @@ Notez que rien n'empêche d'avoir plusieurs Signets Géospatiaux avec le
 même nom.
 <h4>Travailler avec les Signets Géospatiaux</h4>
 Pour utiliser ou organiser les Signets Géospatiaux, appuyer sur le
-bouton <i>Montrer les signets</i> ou choisir <i>Montrer les signets</i>
-depuis le menu <i>Vue</i>. La fenêtre des Signets Géospatiaux permet
+bouton <label>Montrer les signets</label> ou choisir <i>Montrer les signets</i>
+depuis le menu <label>Vue</label>. La fenêtre des Signets Géospatiaux permet
 d'effacer ou de zoomer sur un signet. En revanche, il n'est pas
 possible de modifier le nom ou les coordonnées d'un signet existant.
 <h5>Zoomer sur un Signet Géospatial</h5>
 Depuis la fenêtre des Signets Géospatiaux, sélectionner le Signet voulu
-en cliquant une fois dessus, puis appuyer sur le bouton <i>Zoomer sur</i>.
+en cliquant une fois dessus, puis appuyer sur le bouton <label>Zoomer sur</label>.
 <p>
 Il est également possible de zoomer sur Signet Géospatial en
 double-cliquant dessus.
 </p>
 <h5>Effacer un Signet Géospatial</h5>
 Pour effacer un Signet depuis la fenêtre des Signets Géospatiaux, le
-sélectionner en cliquant une fois dessus puis appuyer sur le bouton <i>Effacer</i>.
-Confirmer l'effacement en appuyant sur <i>Oui</i> ou annuler
-l'effacement en appuyant sur <i>Non</i>.
+sélectionner en cliquant une fois dessus puis appuyer sur le bouton <label>Effacer</label>.
+Confirmer l'effacement en appuyant sur <label>Oui</label> ou annuler
+l'effacement en appuyant sur <label>Non</label>.

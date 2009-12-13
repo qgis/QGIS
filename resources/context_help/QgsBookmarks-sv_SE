@@ -5,18 +5,18 @@ Georumsliga bokmärken ger dig möjlighet att sätta bokmärke vid en geografisk
 För att skapa ett bokmärke:
 <ol>
 <li>Zooma eller panorera till vald plats
-<li>Klicka på <i>Nytt bokmärke</i> eller använd Ctrl-B
+<li>Klicka på <label>Nytt bokmärke</label> eller använd Ctrl-B
 <li>Skriv in beskrivningen på bokmärket (max 255 tecken)
-<li>Klicka <i>OK</i> för att lägga till bokmärket, eller <i>Cancel</i> för att avsluta utan att lägga till det.
+<li>Klicka <label>OK</label> för att lägga till bokmärket, eller <i>Cancel</i> för att avsluta utan att lägga till det.
 </ol>
 Notera: Du kan ha flera bokmärken med samma namn.
 <h4>Använda bokmärken</h4>
-För att använda eller hantera bokmärken, klicka på knappen <i>Visa bokmärken</i> eller välj <i>Visa bokmärkens</i> i menyn <i>Visa</i>. Dialogrutan gör det möjligt att zooma till eller att ta bort bokmärken. Du kan inte redigera bokmärkets namn eller dess koordinater.
+För att använda eller hantera bokmärken, klicka på knappen <label>Visa bokmärken</label> eller välj <i>Visa bokmärkens</i> i menyn <i>Visa</i>. Dialogrutan gör det möjligt att zooma till eller att ta bort bokmärken. Du kan inte redigera bokmärkets namn eller dess koordinater.
 <h5>Zooma till ett bokmärke</h5>
-Från dialogrutan för bokmärke, välj önskat bokmärke genom att klicka på det. Klicka sedan på knappen <i>Zooma till</i> button.
+Från dialogrutan för bokmärke, välj önskat bokmärke genom att klicka på det. Klicka sedan på knappen <label>Zooma till</label> button.
 <p>
 Du kan också zooma till ett bokmärke genom att dubbelklicka på det.
 
 <h5>Ta bort bokmärke</h5>
-Ta bort ett bokmärke från dialogrutan, genom att klicka på det och sedan klicka på knappen <i>Radera</i>. Bekräfta ditt val genom att klicka <i>Ja</i> eller ångra genom att klicka <i>Nej</i>.
+Ta bort ett bokmärke från dialogrutan, genom att klicka på det och sedan klicka på knappen <label>Radera</label>. Bekräfta ditt val genom att klicka <i>Ja</i> eller ångra genom att klicka <i>Nej</i>.
 

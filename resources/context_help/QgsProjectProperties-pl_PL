@@ -1,5 +1,5 @@
 <h3>Właściwości projektu</h3>
-To okno umożliwia zdefiniowanie wielu parametrów związanych z <i>Projektem</i>. Projekt to lista warstw wraz z ich ustawieniami zapisana na dysku jako plik. W projekcie nie są zapisywane same warstwy, a jedynie sposób ich wyświetlenia.<p>
+To okno umożliwia zdefiniowanie wielu parametrów związanych z <label>Projektem</label>. Projekt to lista warstw wraz z ich ustawieniami zapisana na dysku jako plik. W projekcie nie są zapisywane same warstwy, a jedynie sposób ich wyświetlenia.<p>
 
 <h4>Zakładka Ogólne</h4>
 <table border=1>
@@ -20,6 +20,6 @@ To okno umożliwia zdefiniowanie wielu parametrów związanych z <i>Projektem</i
 </table>
 <a anchor="projections"></a><h4>Zakładka Układ współrzędnych (CRS)</h4>
 Ta zakładka umożliwia zdefiniowanie układu współrzędnych dla bieżącego projektu oraz transformację układu w locie. Nie musisz zapisywać projektu, aby określić i włączyć transformację w locie.<p>
-Aby użyć transformacji w locie, kliknij na <i>Transformuj układ współrzędnych w locie</i>. Następnie wybierz układ współrzędnych projektu (obszaru mapy) z listy układów współrzędnych.
+Aby użyć transformacji w locie, kliknij na <label>Transformuj układ współrzędnych w locie</label>. Następnie wybierz układ współrzędnych projektu (obszaru mapy) z listy układów współrzędnych.
 <p>
-Możesz odszukać układ współrzędnych podając jego kod PostGIS SRID, EPSG lub QGIS SRSRID i klikając na klawisz <i>Znajdź</i>.
+Możesz odszukać układ współrzędnych podając jego kod PostGIS SRID, EPSG lub QGIS SRSRID i klikając na klawisz <label>Znajdź</label>.

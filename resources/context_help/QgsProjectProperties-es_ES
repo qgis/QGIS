@@ -1,5 +1,5 @@
 <h3>Propiedades del proyecto</h3>
-Este diálogo permite establecer algunas propiedades relacionadas con el <i>Proyecto</i>. Un proyecto es un conjunto guardado de capas y su configuración, así como otra información necesaria para restaurar el proyecto desde el disco.<p>
+Este diálogo permite establecer algunas propiedades relacionadas con el <label>Proyecto</label>. Un proyecto es un conjunto guardado de capas y su configuración, así como otra información necesaria para restaurar el proyecto desde el disco.<p>
 
 <h4>Pestaña general</h4>
 <table border=1>
@@ -20,7 +20,7 @@ Este diálogo permite establecer algunas propiedades relacionadas con el <i>Proy
 </table>
 <a anchor="projections"></a><h4>Pestaña proyección</h4>
 La pestaña proyección permite establecer la proyección para el proyecto actual y activar la proyección al vuelo. No es necesario tener guardado el proyecto para configurar y activar la proyección al vuelo.<p>
-Para usar la proyección al vuelo, haga clic en la casilla de verificación <i>Activar proyección al vuelo</i>. Elija luego la proyección para el proyecto (Vista del mapa) de la lista de sistemas de coordenadas geográficas o proyectadas.
+Para usar la proyección al vuelo, haga clic en la casilla de verificación <label>Activar proyección al vuelo</label>. Elija luego la proyección para el proyecto (Vista del mapa) de la lista de sistemas de coordenadas geográficas o proyectadas.
 <p>
-Puede encontrar un sistema de coordenadas introduciendo su PostGIS SRID, código EPSG o el QGIS SRSRID y haciendo clic en el botón <i>Encontrar</i>.
+Puede encontrar un sistema de coordenadas introduciendo su PostGIS SRID, código EPSG o el QGIS SRSRID y haciendo clic en el botón <label>Encontrar</label>.
  

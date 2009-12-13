@@ -15,22 +15,22 @@ För att skapa en ny PostGIS-uppkoppling behvöer du veta värddator, port
 <h4>Alternativ</h4>
 <ol>
 
-<li><i>Spara lösenord</i> - spara ditt lösenord så du inte behöver 
+<li><label>Spara lösenord</label> - spara ditt lösenord så du inte behöver 
     skriva in det varje gång. Lösenordet sparas i klartext tillsammans med 
     dina QGIS-inställningar.
 
-<li><i>Leta bara i tabellen över 'geometry_columns'</i> - normalt 
+<li><label>Leta bara i tabellen över 'geometry_columns'</label> - normalt 
     undersöker QGIS varje tabell i databasen för att se om den har en 
     geometrikolumn och i så fall läggs den till listan över lager. Genom 
     att markera denna ruta, så visar QGIS bara lager som har 
     "registrerats" i tabellen 'geometry_columns'.
 
 
-<li><i>Leta bara i 'public' schema</i> - detta begränsar sökningen av 
+<li><label>Leta bara i 'public' schema</label> - detta begränsar sökningen av 
     lager till 'public' schema.
 
 </ol>
 
-<h4>Testa Uppkopppling</h4>Klicka på <i>Testa Uppkoppling</i> för att
+<h4>Testa Uppkopppling</h4>Klicka på <label>Testa Uppkoppling</label> för att
     försöka kontakta databasen med de paramaetrar du har valt. Detta är
     ett bra sätt att test parametrarna innan du sparar uppkopplingen.

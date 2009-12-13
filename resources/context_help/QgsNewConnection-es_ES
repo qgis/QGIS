@@ -10,9 +10,9 @@ Para crear una nueva conexión PostGIS, necesita saber el servidor, el puerto y 
 </ul>
 <h4>Opciones</h4>
 <ol>
-<li><i>Guardar contraseña</i> - guarda su contraseña de forma que no tenga que introducirla cada vez. La contraseña se guarda en texto plano con sus preferencias de QGIS.
-<li><i>Buscar sólo en la tabla de columnas de geometría</i> - normalmente QGIS examina cada tabla en la base de datos para ver si tiene una columna de geometría y si es así, la añade a la lista de capas. Marcando esta casilla le dice a QGIS que sólo muestre capas que han sido "registradas" y tienen una entrada en la tabla de columnas de geometría.
-<li><i>Buscar sólo en el esquema "público"</i> - esto limita la búsqueda de capas al esquema público.
+<li><label>Guardar contraseña</label> - guarda su contraseña de forma que no tenga que introducirla cada vez. La contraseña se guarda en texto plano con sus preferencias de QGIS.
+<li><label>Buscar sólo en la tabla de columnas de geometría</label> - normalmente QGIS examina cada tabla en la base de datos para ver si tiene una columna de geometría y si es así, la añade a la lista de capas. Marcando esta casilla le dice a QGIS que sólo muestre capas que han sido "registradas" y tienen una entrada en la tabla de columnas de geometría.
+<li><label>Buscar sólo en el esquema "público"</label> - esto limita la búsqueda de capas al esquema público.
 </ol>
 <h4>Probar la conexión</h4>
-Haciendo clic en el botón <i>Probar conexión</i> inicia un intento de conexión a la base de datos usando los parámetros que ha especificado. Esta es una buena forma de comprobar los parámetros de conexión antes de guardar la conexión.
+Haciendo clic en el botón <label>Probar conexión</label> inicia un intento de conexión a la base de datos usando los parámetros que ha especificado. Esta es una buena forma de comprobar los parámetros de conexión antes de guardar la conexión.

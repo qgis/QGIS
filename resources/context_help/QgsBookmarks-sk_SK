@@ -5,18 +5,18 @@ Geopriestorové záložky vám dovolia zaznačiť si pohľad (polohu) určitej l
 Postup na vytvorenie záložky:
 <ol>
 <li>Nastavte pohľad (približovaním, oddaľovaním posúvaním mapy) tak aby obsahoval záujmovú oblasť
-<li>Kliknite na ikonu <i>Vytvoriť novú geopriestorovú záložku</i> alebo použite klávesovú skratku Ctrl-B
+<li>Kliknite na ikonu <label>Vytvoriť novú geopriestorovú záložku</label> alebo použite klávesovú skratku Ctrl-B
 <li>Vložte popisný názov záložky (do 255 znakov)
-<li>Kliknutím na tlačidlo <i>OK</i> vytvoríte geopriestorovú záložku; kliknutím na <i>Zrušiť</i> opustíte dialógové okno bez toho aby bola záložka vytvorená
+<li>Kliknutím na tlačidlo <label>OK</label> vytvoríte geopriestorovú záložku; kliknutím na <i>Zrušiť</i> opustíte dialógové okno bez toho aby bola záložka vytvorená
 </ol>
 Poznámka: Je možné mať viacero záložiek s tým istým názvom.
 <h4>Práca so záložkami</h4>
-So záložkami možno narábať kliknutím na tlačidlo <i>Ukázať geopriestorové záložky</i> alebo vybratím položky <i>Geopriestorové záložky</i> z menu <i>Pohľad</i>. Dialógové okno so záložkami vám dovolí zmeniť pohľad podľa záložky alebo vymazať nektorú záložku. Nie je možné upraviť názov záložky, alebo súradnice..
+So záložkami možno narábať kliknutím na tlačidlo <label>Ukázať geopriestorové záložky</label> alebo vybratím položky <i>Geopriestorové záložky</i> z menu <i>Pohľad</i>. Dialógové okno so záložkami vám dovolí zmeniť pohľad podľa záložky alebo vymazať nektorú záložku. Nie je možné upraviť názov záložky, alebo súradnice..
 <h5>Zmena mapového pohľadu podľa záložky</h5>
-V dialógovom okne Záložky vyberte kliknutím požadovanú záložku a následným kliknutím na tlačidlo <i>Pohľad na</i> sa zmeníte mapový pohľad tak, aby zodpovedal danej záložke.
+V dialógovom okne Záložky vyberte kliknutím požadovanú záložku a následným kliknutím na tlačidlo <label>Pohľad na</label> sa zmeníte mapový pohľad tak, aby zodpovedal danej záložke.
 <p>
 Zmeniť pohľad možno aj priamo dvojklikom na danú záložku.
 
 <h5>Vymazanie záložky</h5>
-Na vymazanie záložky zo zoznamu záložiek v kliknite najskôr na záložku ktorú chcete vymazať a následne na tlačidlo <i>Vymazať</i>. Svoje rozhodnutie povrďte kliknutím na <i>Áno</i>, prípadne môžete váš zámer zmeniť a kliknutím na <i>Nie</i> zrušiť operáciu vymazania záložky.
+Na vymazanie záložky zo zoznamu záložiek v kliknite najskôr na záložku ktorú chcete vymazať a následne na tlačidlo <label>Vymazať</label>. Svoje rozhodnutie povrďte kliknutím na <i>Áno</i>, prípadne môžete váš zámer zmeniť a kliknutím na <i>Nie</i> zrušiť operáciu vymazania záložky.
 

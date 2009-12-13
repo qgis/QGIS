@@ -10,9 +10,9 @@ To create a new PostGIS Connection, you need to know the host, port, and your us
 </ul>
 <h4>Options</h4>
 <ol>
-<li><i>Save Password</i> - save your password so you don't have to enter each time. The password is stored in clear text with your QGIS preferences.
-<li><i>Only look in the geometry_columns table</i> - normally QGIS examines every table in the database to see if it has a geometry column and if so, adds it to the list of layers. Checking this box tells QGIS to only list layer that have been "registered" and have an entry in the geometry_columns table.
-<li><i>Only look in the 'public' schema</i> - this limits the search for layers to the public schema
+<li><label>Save Password</label> - save your password so you don't have to enter each time. The password is stored in clear text with your QGIS preferences.
+<li><label>Only look in the geometry_columns table</label> - normally QGIS examines every table in the database to see if it has a geometry column and if so, adds it to the list of layers. Checking this box tells QGIS to only list layer that have been "registered" and have an entry in the geometry_columns table.
+<li><label>Only look in the 'public' schema</label> - this limits the search for layers to the public schema
 </ol>
 <h4>Testing the Connection</h4>
-Clicking on the <i>Test Connection</i> button initiates a connect attempt to the database using the parameters you specified. This is a good way to check the connection parameters prior to saving the connection.
+Clicking on the <label>Test Connection</label> button initiates a connect attempt to the database using the parameters you specified. This is a good way to check the connection parameters prior to saving the connection.
