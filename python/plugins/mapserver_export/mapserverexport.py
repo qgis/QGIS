@@ -84,6 +84,7 @@ class MapServerExport:
     QObject.connect(self.dlg.ui.btnChooseHeaderFile, SIGNAL("clicked()"), self.setHeaderFile)
     QObject.connect(self.dlg.ui.btnChooseTemplateFile, SIGNAL("clicked()"), self.setTemplateFile)
     QObject.connect(self.dlg.ui.buttonBox, SIGNAL("accepted()"), self.ok_clicked)
+    QObject.connect(self.dlg.ui.buttonBox, SIGNAL("helpRequested()"), self.helpRequested)
     # qgs-project defaults to current instance
     project = QgsProject.instance()
     self.dlg.ui.txtQgisFilePath.setText(project.fileName())
@@ -115,6 +116,9 @@ class MapServerExport:
     # QGIS: Meters, Feet, Degrees, UnknownUnit since 1.4 also: DecimalDegrees, DegreesMinutesSeconds, DegreesDecimalMinutes 	
     # Mapserver: UNITS [feet|inches|kilometers|meters|miles|dd]
     self.dlg.show()
+
+  def helpRequested(self):
+    QgsContextHelp.run( "MapServerExport" )
 
   def ok_clicked(self):
     # check if current project is saved or dirty

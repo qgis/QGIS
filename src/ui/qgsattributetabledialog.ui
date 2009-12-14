@@ -51,25 +51,25 @@
       </spacer>
      </item>
      <item>
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Advanced search</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="mAdvancedSearchButton">
+      <widget class="QPushButton" name="mAdvancedSearchButton">
        <property name="toolTip">
         <string>Opens the search query builder</string>
        </property>
        <property name="text">
-        <string>...</string>
+        <string>Advanced search</string>
        </property>
        <property name="iconSize">
         <size>
          <width>12</width>
          <height>12</height>
         </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mHelpButton">
+       <property name="text">
+        <string>Help</string>
        </property>
       </widget>
      </item>
