@@ -1,0 +1,31 @@
+<h3>Add PostGIS Tables</h3>
+This dialog allows you to add PostGIS layers (tables with a geometry column) to the QGIS map canvas.
+<p>
+<a href="#connect">Connections</a><br/>
+<a href="#add">Adding Layers</a><br/>
+<a href="#filter">Filtering a Layer</a><br/>
+
+<a name="connect">
+<h4>Connections</h4>
+</a>
+<ul>
+<li>Choose the connection to use from the drop-down box and click <label>Connect</label>.
+<li>If there are no connections, use the <label>New</label> button to create a connection.
+<li>To modify a connection, click the <label>Edit</label> button.
+</ul>
+<a name="add">
+<h4>Adding Layers</h4>
+</a>
+To add a layer:
+<ol>
+<li>Choose the desired connection from the drop-down box.
+<li>Click <label>Connect</label>.
+<li>Find the layer you want to add in the list and click on it to select it.
+<li>You can select additional layers by holding down the Ctrl key and clicking.
+<li>Click <label>Add</label> to add the layer(s) to the map.
+</ol>
+<a name="filter">
+<h4>Filtering a Layer</h4>
+</a>
+To filter a layer before adding it to the map, double click on its name. This will open the Query Builder, allowing you to build up a SQL statement to use in filtering the records.
+
