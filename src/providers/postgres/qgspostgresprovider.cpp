@@ -55,7 +55,8 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
     : QgsVectorDataProvider( uri ),
     mFetching( false ),
     geomType( QGis::WKBUnknown ),
-    mFeatureQueueSize( 200 )
+    mFeatureQueueSize( 200 ),
+    mPrimaryKeyDefault( QString::null )
 {
   // assume this is a valid layer until we determine otherwise
   valid = true;
@@ -1064,13 +1065,13 @@ QString QgsPostgresProvider::getPrimaryKey()
       }
       else
       {
-        primaryKeyDefault = defaultValue( primaryKey ).toString();
-        if ( primaryKeyDefault.isNull() )
+        mPrimaryKeyDefault = defaultValue( primaryKey ).toString();
+        if ( mPrimaryKeyDefault.isNull() )
         {
-          primaryKeyDefault = QString( "max(%1)+1 from %2.%3" )
-                              .arg( quotedIdentifier( primaryKey ) )
-                              .arg( quotedIdentifier( mSchemaName ) )
-                              .arg( quotedIdentifier( mTableName ) );
+          mPrimaryKeyDefault = QString( "max(%1)+1 from %2.%3" )
+                               .arg( quotedIdentifier( primaryKey ) )
+                               .arg( quotedIdentifier( mSchemaName ) )
+                               .arg( quotedIdentifier( mTableName ) );
         }
       }
     }
@@ -1093,6 +1094,8 @@ QString QgsPostgresProvider::getPrimaryKey()
           type = PQgetvalue( result, 0, 0 );
         }
 
+        // mPrimaryKeyDefault stays null and is retrieved later on demand
+
         if (( type != "int4" && type != "oid" ) ||
             !uniqueData( mSchemaName, mTableName, primaryKey ) )
         {
@@ -1100,32 +1103,9 @@ QString QgsPostgresProvider::getPrimaryKey()
         }
       }
 
-      // Have a poke around the view to see if any of the columns
-      // could be used as the primary key.
-      tableCols cols;
-
-      // Given a schema.view, populate the cols variable with the
-      // schema.table.column's that underly the view columns.
-      findColumns( cols );
-
       if ( primaryKey.isEmpty() )
       {
-        // From the view columns, choose one for which the underlying
-        // column is suitable for use as a key into the view.
-        primaryKey = chooseViewColumn( cols );
-      }
-
-      tableCols::const_iterator it = cols.find( primaryKey );
-      if ( it != cols.end() )
-      {
-        primaryKeyDefault = defaultValue( it->second.column, it->second.relation, it->second.schema ).toString();
-        if ( primaryKeyDefault.isNull() )
-        {
-          primaryKeyDefault = QString( "max(%1)+1 from %2.%3" )
-                              .arg( quotedIdentifier( it->second.column ) )
-                              .arg( quotedIdentifier( it->second.schema ) )
-                              .arg( quotedIdentifier( it->second.relation ) );
-        }
+        parseView();
       }
     }
     else
@@ -1227,13 +1207,13 @@ QString QgsPostgresProvider::getPrimaryKey()
     }
     else
     {
-      primaryKeyDefault = defaultValue( primaryKey ).toString();
-      if ( primaryKeyDefault.isNull() )
+      mPrimaryKeyDefault = defaultValue( primaryKey ).toString();
+      if ( mPrimaryKeyDefault.isNull() )
       {
-        primaryKeyDefault = QString( "max(%1)+1 from %2.%3" )
-                            .arg( quotedIdentifier( primaryKey ) )
-                            .arg( quotedIdentifier( mSchemaName ) )
-                            .arg( quotedIdentifier( mTableName ) );
+        mPrimaryKeyDefault = QString( "max(%1)+1 from %2.%3" )
+                             .arg( quotedIdentifier( primaryKey ) )
+                             .arg( quotedIdentifier( mSchemaName ) )
+                             .arg( quotedIdentifier( mTableName ) );
       }
     }
   }
@@ -1250,11 +1230,58 @@ QString QgsPostgresProvider::getPrimaryKey()
   return primaryKey;
 }
 
+void QgsPostgresProvider::parseView()
+{
+  // Have a poke around the view to see if any of the columns
+  // could be used as the primary key.
+  tableCols cols;
+
+  // Given a schema.view, populate the cols variable with the
+  // schema.table.column's that underly the view columns.
+  findColumns( cols );
+
+  // pick the primary key, if we don't have one yet
+  if ( primaryKey.isEmpty() )
+  {
+    // From the view columns, choose one for which the underlying
+    // column is suitable for use as a key into the view.
+    primaryKey = chooseViewColumn( cols );
+  }
+
+  tableCols::const_iterator it = cols.find( primaryKey );
+  if ( it != cols.end() )
+  {
+    mPrimaryKeyDefault = defaultValue( it->second.column, it->second.relation, it->second.schema ).toString();
+    if ( mPrimaryKeyDefault.isNull() )
+    {
+      mPrimaryKeyDefault = QString( "max(%1)+1 from %2.%3" )
+                           .arg( quotedIdentifier( it->second.column ) )
+                           .arg( quotedIdentifier( it->second.schema ) )
+                           .arg( quotedIdentifier( it->second.relation ) );
+    }
+  }
+  else
+  {
+    mPrimaryKeyDefault = QString( "max(%1)+1 from %2.%3" )
+                         .arg( quotedIdentifier( primaryKey ) )
+                         .arg( quotedIdentifier( mSchemaName ) )
+                         .arg( quotedIdentifier( mTableName ) );
+  }
+}
+
+QString QgsPostgresProvider::primaryKeyDefault()
+{
+  if ( mPrimaryKeyDefault.isNull() )
+    parseView();
+
+  return mPrimaryKeyDefault;
+}
+
 // Given the table and column that each column in the view refers to,
 // choose one. Prefers column with an index on them, but will
 // otherwise choose something suitable.
 
-QString QgsPostgresProvider::chooseViewColumn( const tableCols& cols )
+QString QgsPostgresProvider::chooseViewColumn( const tableCols &cols )
 {
   // For each relation name and column name need to see if it
   // has unique constraints on it, or is a primary key (if not,
@@ -2206,7 +2233,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
 
       if ( primaryKeyType != "tid" )
       {
-        int id = paramValue( primaryKeyDefault, primaryKeyDefault ).toInt();
+        int id = paramValue( primaryKeyDefault(), primaryKeyDefault() ).toInt();
         params << QString::number( id );
         newIds << id;
       }
