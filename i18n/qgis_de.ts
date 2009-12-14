@@ -3260,7 +3260,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>Rasterdaten über GDAL Projektionsinformationen hinzufügen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="311"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="303"/>
         <source>SQLite DB (*.sqlite);;All files (*.*)</source>
         <translation>SQLite DB (*.sqlite);;Alle Dateien (*.*)</translation>
     </message>
@@ -4394,7 +4394,7 @@ This binary was compiled against Qt %1,and is currently running against Qt %2</s
 Please contact the developers.
 </source>
         <translation>Mehrere Instanzen der Quantum GIS-Applikation wurden festgestellt.
-Bitte kontaktieren Sie die Entwickler.</translation>
+Bitte nehmen Sie Kontakt zu den Entwicklern auf.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="585"/>
@@ -8165,7 +8165,7 @@ Fehler war:%2</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/plugin.cpp" line="94"/>
-        <location filename="../src/plugins/copyright_label/plugin.cpp" line="208"/>
+        <location filename="../src/plugins/copyright_label/plugin.cpp" line="209"/>
         <source>&amp;Decorations</source>
         <translation>&amp;Dekorationen</translation>
     </message>
@@ -12320,33 +12320,38 @@ in Zeile %2, Spalte %3</translation>
 <context>
     <name>QgsHelpViewer</name>
     <message>
-        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="190"/>
-        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="215"/>
+        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="189"/>
+        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="214"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="216"/>
+        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="215"/>
         <source>The QGIS help database is not installed</source>
         <translation>Die QGIS Hilfedatenbank ist nicht installiert</translation>
     </message>
     <message>
-        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="157"/>
+        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="156"/>
         <source>Quantum GIS Help</source>
         <translation>Quantum GIS Hilfe</translation>
     </message>
     <message>
-        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="138"/>
-        <source>This help file does not exist for your language:&lt;p&gt;&lt;b&gt;%1&lt;/b&gt;&lt;p&gt;If you would like to create it, contact the QGIS development team</source>
-        <translation>Die Hilfedatei für Ihre Sprache existiert nicht:&lt;p&gt;&lt;b&gt;%1&lt;/b&gt;&lt;p&gt;Wenn Sie sie erzeugen wollen, kontaktieren Sie das QGIS-Entwicklerteam</translation>
+        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="132"/>
+        <source>This help file is not available in your language. If you would like to translate it, please contact the QGIS  development team.</source>
+	<translation>Diese Hilfedatei gibt es in Ihrer Sprache nicht. Wenn Sie sie übersetzen wollen, kontaktieren Sie bitte das QGIS-Entwicklungsteam.</translation>
     </message>
     <message>
-        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="185"/>
+        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="137"/>
+        <source>This help file does not exist for your language:&lt;p&gt;&lt;b&gt;%1&lt;/b&gt;&lt;p&gt;If you would like to create it, contact the QGIS development team</source>
+        <translation>Diese Hilfedatei gibt es in Ihrer Sprache &lt;p&gt;&lt;b&gt;%1&lt;/b&gt;&lt;p&gt; nicht. Wenn Sie sie erstellen wollen, kontaktieren Sie das QGIS-Entwicklerteam</translation>
+    </message>
+    <message>
+        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="184"/>
         <source>Quantum GIS Help - %1</source>
         <translation>Quantum GIS Hilfe - %1</translation>
     </message>
     <message>
-        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="191"/>
+        <location filename="../src/helpviewer/qgshelpviewer.cpp" line="190"/>
         <source>Failed to get the help text from the database:
   %1</source>
         <translation>Konnte Hilfetext nicht aus der Datenbank holen:
@@ -13573,19 +13578,19 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="63"/>
-        <location filename="../src/app/qgsmaptooladdisland.cpp" line="128"/>
+        <location filename="../src/app/qgsmaptooladdisland.cpp" line="127"/>
         <source>No feature selected. Please select a feature with the selection tool or in the attribute table</source>
         <translation>Kein Objekt gewählt. Bitte wählen Sie ein Objekt mit dem Auswahlwerkzeug oder in der Attributetabelle</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="67"/>
-        <location filename="../src/app/qgsmaptooladdisland.cpp" line="132"/>
+        <location filename="../src/app/qgsmaptooladdisland.cpp" line="131"/>
         <source>Several features are selected. Please select only one feature to which an island should be added.</source>
         <translation>Mehrere Objekte gewählt. Bitte wählen Sie nur das Objekt aus, dem die Insel hinzugefügt werden soll.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="72"/>
-        <location filename="../src/app/qgsmaptooladdisland.cpp" line="138"/>
+        <location filename="../src/app/qgsmaptooladdisland.cpp" line="137"/>
         <source>Error, could not add island</source>
         <translation>Fehler beim Hinzufügen des Insel-Polygons</translation>
     </message>
@@ -13601,26 +13606,26 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="107"/>
-        <source>Island added</source>
-        <translation>Insel hinzugefügt</translation>
+        <source>Part added</source>
+        <translation>Teil hinzugefügt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdisland.cpp" line="116"/>
+        <location filename="../src/app/qgsmaptooladdisland.cpp" line="115"/>
         <source>Selected feature is not a multipolygon</source>
         <translation>Das gewählte Objekt ist kein Multipolygon</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdisland.cpp" line="120"/>
+        <location filename="../src/app/qgsmaptooladdisland.cpp" line="119"/>
         <source>New ring is not a valid geometry</source>
         <translation>Der neue Ring hat ungültige Geometrie</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdisland.cpp" line="124"/>
+        <location filename="../src/app/qgsmaptooladdisland.cpp" line="123"/>
         <source>New polygon ring not disjoint with existing polygons</source>
         <translation>Der neue Polygonring muss außerhalb der vorhandenen Polygone liegen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdisland.cpp" line="136"/>
+        <location filename="../src/app/qgsmaptooladdisland.cpp" line="135"/>
         <source>Selected geometry could not be found</source>
         <translation>Die gewählte Geometrie wurde nicht gefunden</translation>
     </message>
@@ -13663,37 +13668,37 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
         <translation>Ring hinzugefügt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdring.cpp" line="93"/>
+        <location filename="../src/app/qgsmaptooladdring.cpp" line="92"/>
         <source>A problem with geometry type occured</source>
         <translation>Es ist ein Problem mit dem Geometrietyp aufgetreten</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdring.cpp" line="97"/>
+        <location filename="../src/app/qgsmaptooladdring.cpp" line="96"/>
         <source>The inserted Ring is not closed</source>
         <translation>Der eingefügte Ring ist nicht geschlossen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdring.cpp" line="101"/>
+        <location filename="../src/app/qgsmaptooladdring.cpp" line="100"/>
         <source>The inserted Ring is not a valid geometry</source>
         <translation>Der eingefügte Ring hat keine gültige Geometrie</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdring.cpp" line="105"/>
+        <location filename="../src/app/qgsmaptooladdring.cpp" line="104"/>
         <source>The inserted Ring crosses existing rings</source>
         <translation>Der eingefügte Ring überschneidet sich mit vorhandenen Ringen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdring.cpp" line="109"/>
+        <location filename="../src/app/qgsmaptooladdring.cpp" line="108"/>
         <source>The inserted Ring is not contained in a feature</source>
         <translation>Der eingefügte Ring befindet sich nicht innerhalb des Objekts</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdring.cpp" line="113"/>
+        <location filename="../src/app/qgsmaptooladdring.cpp" line="112"/>
         <source>An unknown error occured</source>
         <translation>Ein unbekannter Fehler trat auf</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooladdring.cpp" line="115"/>
+        <location filename="../src/app/qgsmaptooladdring.cpp" line="114"/>
         <source>Error, could not add ring</source>
         <translation>Es ist ein Fehler beim Einfügen des Rings aufgetreten</translation>
     </message>
@@ -16313,55 +16318,55 @@ Geodatenverarbeitungsfunktionen sind nur für PostgreSQL/PostGIS-Layer vorgesehe
     </message>
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="54"/>
-        <location filename="../src/app/qgspgsourceselect.cpp" line="193"/>
+        <location filename="../src/app/qgspgsourceselect.cpp" line="186"/>
         <source>Wildcard</source>
         <translation>Platzhalter</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="55"/>
-        <location filename="../src/app/qgspgsourceselect.cpp" line="197"/>
+        <location filename="../src/app/qgspgsourceselect.cpp" line="190"/>
         <source>RegExp</source>
         <translation>RegAusdr</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="57"/>
-        <location filename="../src/app/qgspgsourceselect.cpp" line="205"/>
+        <location filename="../src/app/qgspgsourceselect.cpp" line="198"/>
         <source>All</source>
         <translation>Alle</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="58"/>
-        <location filename="../src/app/qgspgsourceselect.cpp" line="209"/>
+        <location filename="../src/app/qgspgsourceselect.cpp" line="202"/>
         <source>Schema</source>
         <translation>Schema</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="59"/>
-        <location filename="../src/app/qgspgsourceselect.cpp" line="213"/>
+        <location filename="../src/app/qgspgsourceselect.cpp" line="206"/>
         <source>Table</source>
         <translation>Tabelle</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="60"/>
-        <location filename="../src/app/qgspgsourceselect.cpp" line="217"/>
+        <location filename="../src/app/qgspgsourceselect.cpp" line="210"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="61"/>
-        <location filename="../src/app/qgspgsourceselect.cpp" line="221"/>
+        <location filename="../src/app/qgspgsourceselect.cpp" line="214"/>
         <source>Geometry column</source>
         <translation>Geometriespalte</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="62"/>
-        <location filename="../src/app/qgspgsourceselect.cpp" line="225"/>
+        <location filename="../src/app/qgspgsourceselect.cpp" line="218"/>
         <source>Primary key column</source>
         <translation>Primärschlüsselspalte</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="63"/>
-        <location filename="../src/app/qgspgsourceselect.cpp" line="229"/>
+        <location filename="../src/app/qgspgsourceselect.cpp" line="222"/>
         <source>Sql</source>
         <translation>Sql</translation>
     </message>
@@ -16689,7 +16694,7 @@ mit PostGIS-Geometrie haben.</translation>
     </message>
     <message>
         <source>Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!</source>
-        <translation>Sind Sie sicher, dass sie eine früherer Version der Erweiterung installieren wollen?  Die installierte ist aktueller!</translation>
+        <translation>Sind Sie sicher, dass sie eine frühere Version der Erweiterung installieren wollen?  Die installierte ist aktueller!</translation>
     </message>
     <message>
         <source>Plugin installation failed</source>
@@ -17565,7 +17570,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="403"/>
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="424"/>
         <source>&lt;p&gt;A Polynomial transform requires changing the raster layer.&lt;/p&gt;&lt;p&gt;The changed raster will be saved in a new file and a world file will be generated for this new file instead.&lt;/p&gt;&lt;p&gt;Are you sure that this is what you want?&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Eine Polynominal-Transformation ändert den Rasterlayer.&lt;/p&gt;&lt;p&gt;Das geänderte Raster wird in einer neuen Datei gespeichert und ein World-File wird stattdessen für diese Datei erzeugt.&lt;/p&gt;&lt;p&gt;Sind Sie sicher, dass Sie das möchten?&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;Eine Polynominal-Transformation ändert den Rasterlayer.&lt;/p&gt;&lt;p&gt;Das geänderte Raster wird in einer neuen Datei gespeichert und ein World-File wird stattdessen für diese Datei erzeugt.&lt;/p&gt;&lt;p&gt;Sind Sie sicher, dass Sie das wollen?&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="373"/>
@@ -17714,13 +17719,13 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsPostgresProvider</name>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="104"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="124"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="105"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="125"/>
         <source>Unable to access relation</source>
         <translation>Auf die Relation kann nicht zugegriffen werden</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="105"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="106"/>
         <source>Unable to access the %1 relation.
 The error message from the database was:
 %2.
@@ -17731,7 +17736,7 @@ Der Error den die Datenbank lieferte war:
 SQL: %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="125"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="126"/>
         <source>Unable to determine table access privileges for the %1 relation.
 The error message from the database was:
 %2.
@@ -17742,154 +17747,154 @@ Der Fehler der Datenbank war:
 SQL: %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="231"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="232"/>
         <source>Whole number (smallint - 16bit)</source>
         <translation>Kleine Ganzzahl (16bit)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="234"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="235"/>
         <source>Decimal number (numeric)</source>
         <translation>Dezimalzahl (numeric)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="235"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="236"/>
         <source>Decimal number (decimal)</source>
         <translation>Dezimalzahl (decimal)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="238"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="239"/>
         <source>Decimal number (real)</source>
         <translation>Dezimalzahl (real)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="239"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="240"/>
         <source>Decimal number (double)</source>
         <translation>Dezimalzahl (double)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="242"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="243"/>
         <source>Text, fixed length (char)</source>
         <translation>Text, feste Länge (char)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1058"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1059"/>
         <source>No suitable key column in table</source>
         <translation>Keine passende Schlüsselspalte in der Tabelle</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1177"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1157"/>
         <source>and </source>
         <translation>und </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1226"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1206"/>
         <source>Unable to find a key column</source>
         <translation>Kann die Schlüsselspalte nicht finden</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1320"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1347"/>
         <source>and is suitable.</source>
         <translation>und ist geeignet.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1326"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1353"/>
         <source> and has a suitable constraint)</source>
         <translation> und hat einen geeigneten Constraint)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1328"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1355"/>
         <source> and does not have a suitable constraint)</source>
         <translation> und hat keinen geeigneten Constraint)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1431"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1458"/>
         <source>No suitable key column in view</source>
         <translation>Keine geeignete Schlüsselspalte im View</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2931"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2964"/>
         <source>Unknown geometry type</source>
         <translation>Unbekannter Geometrietyp</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2939"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2972"/>
         <source>Qgis was unable to determine the type and srid of column %1 in %2. The database communication log was:
 %3</source>
         <translation>QGIS konnte den Typ und die SRID der Spalte %1 in %2 nicht bestimmen. Das Datenbankkommunikationsprotokoll war:
 %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2943"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2976"/>
         <source>Unable to get feature type and srid</source>
         <translation>Kann den Objekttyp und die SRID nicht ermitteln</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2228"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2261"/>
         <source>Error while adding features</source>
         <translation>Fehler beim Hinzufügen von Objekten</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2268"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2301"/>
         <source>Error while deleting features</source>
         <translation>Fehler beim Löschen von Objekten</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2328"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2361"/>
         <source>Error while adding attributes</source>
         <translation>Fehler beim Hinzufügen von Attributen</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2373"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2406"/>
         <source>Error while deleting attributes</source>
         <translation>Fehler beim Löschen von Attributen</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2441"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2474"/>
         <source>Error while changing attributes</source>
         <translation>Fehler beim Ändern von Attributen</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2527"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2560"/>
         <source>Error while changing geometry values</source>
         <translation>Fehler beim Ändern von Geometrien</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.h" line="514"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.h" line="510"/>
         <source>unexpected PostgreSQL error</source>
         <translation>Nicht erwarteter PostgeSQL-Fehler</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1155"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1135"/>
         <source>The unique index on column &apos;%1&apos; is unsuitable because Qgis does not currently support non-int4 type columns as a key into the table.
 </source>
         <translation>Der eindeutige Index auf Spalte &apos;%1&apos; ist ungeeignet, weil QGIS zur Zeit nur Spalten vom Typ int4 als Tabellenschlüssel unterstützt.
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1183"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1163"/>
         <source>The unique index based on columns %1 is unsuitable because Qgis does not currently support multiple columns as a key into the table.
 </source>
         <translation>Der eindeutige Index auf den Spalten &apos;%1&apos; ist ungeeignet, weil QGIS zur Zeit nur einzelne Spalten als Tabellenschlüssel unterstützt.
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1316"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1343"/>
         <source>&apos;%1&apos; derives from &apos;%2.%3.%4&apos; </source>
         <translation>&apos;%1&apos; ist von &apos;%2.%3.%4&apos; abgeleitet </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1324"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1351"/>
         <source>and is not suitable (type is %1)</source>
         <translation>und ist ungeeignet (Typ ist %1)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1412"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1439"/>
         <source>Note: &apos;%1&apos; initially appeared suitable but does not contain unique data, so is not suitable.
 </source>
         <translation>Bemerkung: &apos;%1&apos; schien anfänglich geeignet, ist es allerdings nicht, da sie keine eindeutigen Daten enthält.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1423"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1450"/>
         <source>The view &apos;%1.%2&apos; has no column suitable for use as a unique key.
 Qgis requires that the view has a column that can be used as a unique key. Such a column should be derived from a table column of type int4 and be a primary key, have a unique constraint on it, or be a PostgreSQL oid column. To improve performance the column should also be indexed.
 The view you selected has the following columns, none of which satisfy the above conditions:</source>
@@ -17898,32 +17903,32 @@ QGIS erwartet jedoch eine solche Spalte. Sie sollte von einer Tabellespalte des 
 Der ausgewählte View hat folgende Spalten von denen keine die obigen Bedingungen erfüllt:</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2932"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2965"/>
         <source>Column %1 in %2 has a geometry type of %3, which Qgis does not currently support.</source>
         <translation>Spalte %1 in %2 hat den Geometrietyp %3, den QGIS zur Zeit nicht unterstützt.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="232"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="233"/>
         <source>Whole number (integer - 32bit)</source>
         <translation>Ganzzahl (32bit)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="233"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="234"/>
         <source>Whole number (integer - 64bit)</source>
         <translation>Ganzzahl (64bit)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="243"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="244"/>
         <source>Text, limited variable length (varchar)</source>
         <translation>Text, begrenzte variable Länge (varchar)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="244"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="245"/>
         <source>Text, unlimited length (text)</source>
         <translation>Text, unbegrenzte Länge (text)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1059"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1060"/>
         <source>The table has no column suitable for use as a key.
 
 Qgis requires that the table either has a column of type
@@ -17942,12 +17947,12 @@ mit einer 16bit-Blocknummer hat.</translation>
 <context>
     <name>QgsPostgresProvider::Conn</name>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="352"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="353"/>
         <source>No GEOS Support!</source>
         <translation>Keine GEOS Unterstützung!</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="353"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="354"/>
         <source>Your PostGIS installation has no GEOS support.
 Feature selection and identification will not work properly.
 Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
@@ -17956,12 +17961,12 @@ Objektauswahl und -identifizierung kann nicht sauber funktionieren.
 Bitte PostGIS mit GEOSunterstützung installieren (http://geos.refractions.net)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="337"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="338"/>
         <source>No PostGIS Support!</source>
         <translation>Keine PostGIS-Unterstützung!</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="338"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="339"/>
         <source>Your database has no working PostGIS support.
 </source>
         <translation>Ihre Datenbank hat keine funktionsfähige PostGIS-Unterstützung.</translation>
@@ -20656,51 +20661,51 @@ SQL: %2</translation>
     </message>
     <message>
         <location filename="../src/app/qgsspatialitesourceselect.cpp" line="51"/>
-        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="115"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="102"/>
         <source>Wildcard</source>
         <translation>Platzhalter</translation>
     </message>
     <message>
         <location filename="../src/app/qgsspatialitesourceselect.cpp" line="52"/>
-        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="119"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="106"/>
         <source>RegExp</source>
         <translation>RegAusdr</translation>
     </message>
     <message>
         <location filename="../src/app/qgsspatialitesourceselect.cpp" line="54"/>
-        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="127"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="114"/>
         <source>All</source>
         <translation>Alle</translation>
     </message>
     <message>
         <location filename="../src/app/qgsspatialitesourceselect.cpp" line="55"/>
-        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="131"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="118"/>
         <source>Table</source>
         <translation>Tabelle</translation>
     </message>
     <message>
         <location filename="../src/app/qgsspatialitesourceselect.cpp" line="56"/>
-        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="135"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="122"/>
         <source>Type</source>
         <translation>Typ</translation>
     </message>
     <message>
         <location filename="../src/app/qgsspatialitesourceselect.cpp" line="57"/>
-        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="139"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="126"/>
         <source>Geometry column</source>
         <translation>Geometriespalte</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="189"/>
-        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="257"/>
-        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="271"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="176"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="244"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="258"/>
         <source>SpatiaLite DB Open Error</source>
         <translation>SpatiaLite-DB-Fehler beim Öffnen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="190"/>
-        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="258"/>
-        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="272"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="177"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="245"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="259"/>
         <source>Failure while connecting to: %1
 
 %2</source>
@@ -20709,56 +20714,56 @@ SQL: %2</translation>
 %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="256"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="243"/>
         <source>seems to be a valid SQLite DB, but not a SpatiaLite&apos;s one ...</source>
         <translation>scheint eine gültige SQLite-DB zu sein, jedoch ohne SpatiaLite ...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="265"/>
-        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="592"/>
-        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="750"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="252"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="582"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="740"/>
         <source>unknown error cause</source>
         <translation>unbekannte Fehlerursache</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="293"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="280"/>
         <source>@</source>
         <translation>@</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="310"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="302"/>
         <source>Choose a SpatiaLite/SQLite DB to open</source>
         <translation>Zu öffnende SpatiaLite/SQLite-DB wählen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="347"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="340"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
         <translation>Sind Sie sicher, dass Sie die Verbindung %1 und alle zugehörigen Einstellungen löschen wollen?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="349"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="342"/>
         <source>Confirm Delete</source>
         <translation>Löschen bestätigen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="421"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="411"/>
         <source>Select Table</source>
         <translation>Tabelle wählen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="421"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="411"/>
         <source>You must select a table in order to add a Layer.</source>
         <translation>Zum Hinzufügen eines Layers müssen Sie eine Tabelle wählen.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="598"/>
-        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="756"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="588"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="746"/>
         <source>SpatiaLite getTableInfo Error</source>
         <translation>SpatiaLite-getTableInfo-Fehler</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="599"/>
-        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="757"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="589"/>
+        <location filename="../src/app/qgsspatialitesourceselect.cpp" line="747"/>
         <source>Failure exploring tables from: %1
 
 %2</source>
@@ -20891,27 +20896,27 @@ SQL: %2</translation>
         <translation>Schema</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="142"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="148"/>
         <source>Are you sure you want to remove the [%1] connection and all associated settings?</source>
         <translation>Sind Sie sicher, dass Sie die Verbindung [%1] und alle verbundenen Einstellung löschen wollen?</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="143"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="149"/>
         <source>Confirm Delete</source>
         <translation>Löschen bestätigen</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="168"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="176"/>
         <source>Add Shapefiles</source>
         <translation>Shapedateien hinzufügen</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="170"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="178"/>
         <source>Shapefiles (*.shp);;All files (*.*)</source>
         <translation>Shapedateien (*.shp);;Alle Dateien (*.*)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="264"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="272"/>
         <source>The following Shapefile(s) could not be loaded:
 
 </source>
@@ -20920,206 +20925,206 @@ SQL: %2</translation>
 </translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="268"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="276"/>
         <source>REASON: File cannot be opened</source>
         <translation>GRUND: Datei konnte nicht geöffnet werden</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="273"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="281"/>
         <source>REASON: One or both of the Shapefile files (*.dbf, *.shx) missing</source>
         <translation>GRUND: Eine oder beide Shapedateien fehlen (*.dbf, *.shx)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="350"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="358"/>
         <source>General Interface Help:</source>
         <translation>Allgemeine Schnittstellenhilfe:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="351"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="359"/>
         <source>PostgreSQL Connections:</source>
         <translation>PostgreSQL-Verbindungen:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="353"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="361"/>
         <source>[New ...] - create a new connection</source>
         <translation>[Neu...] - Verbindung erstellen</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="354"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="362"/>
         <source>[Edit ...] - edit the currently selected connection</source>
         <translation>[Bearbeiten ...] - die momentan gewählte Verbindung bearbeiten</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="355"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="363"/>
         <source>[Remove] - remove the currently selected connection</source>
         <translation>[Entfernen] - momentan gewählte Verbindung löschen</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="356"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="364"/>
         <source>-you need to select a connection that works (connects properly) in order to import files</source>
         <translation>- es muss eine Verbindung ausgewählt werden, die funktioniert (richtig verbindet) um Dateien zu importieren</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="357"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="365"/>
         <source>-when changing connections Global Schema also changes accordingly</source>
         <translation>- bei Änderungen an den Verbindungen ändern die globalen Schemas dementsprechend</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="358"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="366"/>
         <source>Shapefile List:</source>
         <translation>Shapedateienliste:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="360"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="368"/>
         <source>[Add ...] - open a File dialog and browse to the desired file(s) to import</source>
         <translation>[Hinzufügen ...] - Dateidialog öffnen und die gewünschten Importdateien auswählen</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="361"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="369"/>
         <source>[Remove] - remove the currently selected file(s) from the list</source>
         <translation>[Entfernen] - löscht die ausgewählten Dateien von der Liste</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="362"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="370"/>
         <source>[Remove All] - remove all the files in the list</source>
         <translation>[Alles entfernen]  - löscht alle Dateien in der Liste</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="363"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="371"/>
         <source>[SRID] - Reference ID for the shapefiles to be imported</source>
         <translation>[SRID] - Referenz-ID für die zu importierenden Shapedateien</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="364"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="372"/>
         <source>[Use Default (SRID)] - set SRID to -1</source>
         <translation>[Vorgabe (SRID) verwenden] - setzt SRID auf -1</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="365"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="373"/>
         <source>[Geometry Column Name] - name of the geometry column in the database</source>
         <translation>[Geometriespaltenname] - Name der Geometriespalte in der Datenbank</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="366"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="374"/>
         <source>[Use Default (Geometry Column Name)] - set column name to &apos;the_geom&apos;</source>
         <translation>[Vorgabe (Geometriespaltenname)] - setzt Spaltenname auf &apos;the_geom&apos;</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="367"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="375"/>
         <source>[Global Schema] - set the schema for all files to be imported into</source>
         <translation>[Globales Schema] setzt Schema für alle zu importierenden Dateien auf</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="369"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="377"/>
         <source>[Import] - import the current shapefiles in the list</source>
         <translation>[Importieren] - Shapedateien in der Liste importieren</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="370"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="378"/>
         <source>[Quit] - quit the program
 </source>
         <translation>[Schließen] - das Programm verlassen
 </translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="371"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="379"/>
         <source>[Help] - display this help dialog</source>
         <translation>[Hilfe] - zeigt den Hilfedialog an</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="389"/>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="424"/>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="508"/>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="533"/>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="543"/>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="568"/>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="589"/>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="609"/>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="628"/>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="651"/>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="689"/>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="728"/>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="745"/>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="774"/>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="801"/>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="807"/>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="823"/>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="828"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="397"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="432"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="516"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="541"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="551"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="576"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="597"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="617"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="636"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="659"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="697"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="736"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="753"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="782"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="809"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="815"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="831"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="836"/>
         <source>Import Shapefiles</source>
         <translation>Shapedateien importieren</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="389"/>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="828"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="397"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="836"/>
         <source>You need to specify a Connection first</source>
         <translation>Es müssen zuerst Shapedateien in die Liste eingefügt werden</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="403"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="411"/>
         <source>Password for %1</source>
         <translation>Paßwort für %1</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="404"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="412"/>
         <source>Please enter your password:</source>
         <translation>Bitte Passwort eingeben:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="424"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="432"/>
         <source>Connection failed - Check settings and try again</source>
         <translation>Verbindung fehlgeschlagen - Bitte Einstellungen überprüfen und erneut versuchen</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="464"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="472"/>
         <source>PostGIS not available</source>
         <translation>PostGIS nicht verfügbar</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="465"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="473"/>
         <source>&lt;p&gt;The chosen database does not have PostGIS installed, but this is required for storage of spatial data.&lt;/p&gt;</source>
         <translation>&lt;p&gt;In der gewählte Datenbank ist PostGIS nicht installiert. PostGIS wird jedoch zum Speichern von räumlichen Daten benötigt.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="509"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="517"/>
         <source>You need to add shapefiles to the list first</source>
         <translation>Es müssen zuerst Shapedateien in die Liste eingefügt werden</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="514"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="522"/>
         <source>Importing files</source>
         <translation>Importiere Dateien</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="514"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="522"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="518"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="526"/>
         <source>Progress</source>
         <translation>Fortschritt</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="527"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="535"/>
         <source>Problem inserting features from file:</source>
         <translation>Problem beim Einfügen von Objekten aus der Datei:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="534"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="542"/>
         <source>%1
 Invalid table name.</source>
         <translation>%1
 Ungültiger Tabellenname.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="544"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="552"/>
         <source>%1
 No fields detected.</source>
         <translation>%1
 Keine Spalten erkannt.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="569"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="577"/>
         <source>%1
 The following fields are duplicates:
 %2</source>
@@ -21128,34 +21133,34 @@ Die folgenden Spalten kommen doppelt vor:
 %2</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="577"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="585"/>
         <source>Importing files
 %1</source>
         <translation>Importiere Dateien
 %1</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="590"/>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="610"/>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="629"/>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="653"/>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="690"/>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="729"/>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="746"/>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="775"/>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="808"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="598"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="618"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="637"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="661"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="698"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="737"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="754"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="783"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="816"/>
         <source>%1
 &lt;p&gt;Error while executing the SQL:&lt;/p&gt;&lt;p&gt;%2&lt;/p&gt;&lt;p&gt;The database said:%3&lt;/p&gt;</source>
         <translation>%1
 &lt;p&gt;Fehler bei der SQL-Ausführung:&lt;/p&gt;&lt;p&gt;%2&lt;/p&gt;&lt;p&gt;Meldung der Datenbank:%3&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="668"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="676"/>
         <source>Import Shapefiles - Relation Exists</source>
         <translation>Shapedateien importieren - Relation vorhanden</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="669"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="677"/>
         <source>The Shapefile:
 %1
 will use [%2] relation for its data,
@@ -21175,7 +21180,7 @@ der Dateiliste im Hauptdialog.
 Wollen Sie die Relation [%2] überschreiben?</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspit.cpp" line="824"/>
+        <location filename="../src/plugins/spit/qgsspit.cpp" line="832"/>
         <source>%1 of %2 shapefiles could not be imported.</source>
         <translation>%1 von %2 Shapedateien konnten nicht importiert werden.</translation>
     </message>
@@ -21193,122 +21198,122 @@ Wollen Sie die Relation [%2] überschreiben?</translation>
         <translation>PostgreSQL-Verbindungen</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspitbase.ui" line="80"/>
-        <location filename="../src/plugins/spit/qgsspitbase.ui" line="83"/>
+        <location filename="../src/plugins/spit/qgsspitbase.ui" line="89"/>
+        <location filename="../src/plugins/spit/qgsspitbase.ui" line="92"/>
         <source>Edit the current PostGIS connection</source>
         <translation>Aktuelle PostGIS-Verbindung bearbeiten</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspitbase.ui" line="86"/>
+        <location filename="../src/plugins/spit/qgsspitbase.ui" line="95"/>
         <source>Edit</source>
         <translation>Bearbeiten</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspitbase.ui" line="93"/>
-        <location filename="../src/plugins/spit/qgsspitbase.ui" line="96"/>
+        <location filename="../src/plugins/spit/qgsspitbase.ui" line="102"/>
+        <location filename="../src/plugins/spit/qgsspitbase.ui" line="105"/>
         <source>Remove the current PostGIS connection</source>
         <translation>Aktuelle PostGIS-Verbindung löschen</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspitbase.ui" line="99"/>
-        <location filename="../src/plugins/spit/qgsspitbase.ui" line="290"/>
+        <location filename="../src/plugins/spit/qgsspitbase.ui" line="108"/>
+        <location filename="../src/plugins/spit/qgsspitbase.ui" line="275"/>
         <source>Remove</source>
         <translation>Entfernen</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspitbase.ui" line="106"/>
-        <location filename="../src/plugins/spit/qgsspitbase.ui" line="109"/>
+        <location filename="../src/plugins/spit/qgsspitbase.ui" line="76"/>
+        <location filename="../src/plugins/spit/qgsspitbase.ui" line="79"/>
         <source>Create a new PostGIS connection</source>
         <translation>Neue PostGIS-Verbindung erstellen</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspitbase.ui" line="112"/>
+        <location filename="../src/plugins/spit/qgsspitbase.ui" line="82"/>
         <source>New</source>
         <translation>Neu</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspitbase.ui" line="119"/>
-        <location filename="../src/plugins/spit/qgsspitbase.ui" line="122"/>
+        <location filename="../src/plugins/spit/qgsspitbase.ui" line="63"/>
+        <location filename="../src/plugins/spit/qgsspitbase.ui" line="66"/>
         <source>Connect to PostGIS</source>
         <translation>Zu PostGIS verbinden</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspitbase.ui" line="125"/>
+        <location filename="../src/plugins/spit/qgsspitbase.ui" line="69"/>
         <source>Connect</source>
         <translation>Verbinden</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspitbase.ui" line="135"/>
+        <location filename="../src/plugins/spit/qgsspitbase.ui" line="120"/>
         <source>Import options and shapefile list</source>
         <translation>Importoptionen und Shapedateiliste</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspitbase.ui" line="143"/>
+        <location filename="../src/plugins/spit/qgsspitbase.ui" line="128"/>
         <source>Geometry column name</source>
         <translation>Geometriespalte</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspitbase.ui" line="162"/>
+        <location filename="../src/plugins/spit/qgsspitbase.ui" line="147"/>
         <source>Use default geometry column name</source>
         <translation>Vorgabe für Geometriespaltenname nutzen oder hier angeben</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspitbase.ui" line="169"/>
+        <location filename="../src/plugins/spit/qgsspitbase.ui" line="154"/>
         <source>SRID</source>
         <translation>SRID</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspitbase.ui" line="198"/>
+        <location filename="../src/plugins/spit/qgsspitbase.ui" line="183"/>
         <source>Use default SRID</source>
         <translation>Benutze Standard SRID</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspitbase.ui" line="205"/>
+        <location filename="../src/plugins/spit/qgsspitbase.ui" line="190"/>
         <source>Primary key column name</source>
         <translation>Name der Primärschlüsselspalte</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspitbase.ui" line="218"/>
+        <location filename="../src/plugins/spit/qgsspitbase.ui" line="203"/>
         <source>Global schema</source>
         <translation>Globales Schema</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspitbase.ui" line="271"/>
-        <location filename="../src/plugins/spit/qgsspitbase.ui" line="274"/>
+        <location filename="../src/plugins/spit/qgsspitbase.ui" line="256"/>
+        <location filename="../src/plugins/spit/qgsspitbase.ui" line="259"/>
         <source>Add a shapefile to the list of files to be imported</source>
         <translation>Shapedatei zur Importliste hinzufügen</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspitbase.ui" line="277"/>
+        <location filename="../src/plugins/spit/qgsspitbase.ui" line="262"/>
         <source>Add</source>
         <translation>Hinzufügen</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspitbase.ui" line="284"/>
-        <location filename="../src/plugins/spit/qgsspitbase.ui" line="287"/>
+        <location filename="../src/plugins/spit/qgsspitbase.ui" line="269"/>
+        <location filename="../src/plugins/spit/qgsspitbase.ui" line="272"/>
         <source>Remove the selected shapefile from the import list</source>
         <translation>Gewählte Shapedatei aus der Importliste entfernen</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspitbase.ui" line="297"/>
-        <location filename="../src/plugins/spit/qgsspitbase.ui" line="300"/>
+        <location filename="../src/plugins/spit/qgsspitbase.ui" line="282"/>
+        <location filename="../src/plugins/spit/qgsspitbase.ui" line="285"/>
         <source>Remove all the shapefiles from the import list</source>
         <translation>Alle Shapedateien aus der Importliste entfernen</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspitbase.ui" line="303"/>
+        <location filename="../src/plugins/spit/qgsspitbase.ui" line="288"/>
         <source>Remove All</source>
         <translation>Alle entfernen</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspitbase.ui" line="192"/>
-        <location filename="../src/plugins/spit/qgsspitbase.ui" line="195"/>
+        <location filename="../src/plugins/spit/qgsspitbase.ui" line="177"/>
+        <location filename="../src/plugins/spit/qgsspitbase.ui" line="180"/>
         <source>Set the SRID to the default value</source>
         <translation>Vorgabewert für SRID festlegen</translation>
     </message>
     <message>
-        <location filename="../src/plugins/spit/qgsspitbase.ui" line="156"/>
-        <location filename="../src/plugins/spit/qgsspitbase.ui" line="159"/>
+        <location filename="../src/plugins/spit/qgsspitbase.ui" line="141"/>
+        <location filename="../src/plugins/spit/qgsspitbase.ui" line="144"/>
         <source>Set the geometry column name to the default value</source>
         <translation>Geometriespaltenname auf Vorgabewert setzen</translation>
     </message>
