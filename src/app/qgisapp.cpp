@@ -2126,44 +2126,76 @@ void QgisApp::about()
     abt->setVersion( versionString );
     QString whatsNew = "<html><body>" ;
     whatsNew += "<h2>" + tr( "Version" ) + " " + QString( QGis::QGIS_VERSION ) +  "</h2>";
-    whatsNew += "<h3>" + tr( "Whats new in Version 1.3.0?" ) + "</h3>"
+    whatsNew += "<h3>" + tr( "Whats new in Version 1.4.0?" ) + "</h3>"
                 +
                 "<p>"
                 + tr( "Please note that this is a release in our 'cutting edge' release series. As "
                       "such it contains new features and extends the programmatic interface over "
-                      "QGIS 1.0.x and QGIS 1.2.0. If an unchanging user interface, programmatic API "
+                      "QGIS 1.0.x and QGIS 1.3.0. If an unchanging user interface, programmatic API "
                       "and long term support is more important to you then cool new and untested "
                       "features, we recommend that you use a copy of QGIS from our Long Term Support "
-                      "(LTS)1.0.x release series." )
-                +
-                "</p><p>"
-                +
-                tr( "This release includes over 30 bug fixes and enhancements "
-                    "over the QGIS 1.2.0 release. In addition we have added "
-                    "the following new features:" )
-                + tr( "<p>OSM plugin &amp; provider updates:</p>\n"
-                      "<ul>\n"
-                      "  <li>new OSM style files.</li>\n"
-                      "  <li>new icons.</li>\n"
-                      "  <li>dialog text updated and completed.</li>\n"
-                      "  <li>Saving OSM into file functionality was improvements.</li>\n"
-                      "  <li>fixed some problems with encoding... ascii to utf-8.</li>\n"
-                      "  <li>all OSM layers are automatically removed after disabling OSM plugin in plugin manager.</li>\n"
-                      "  <li>other OSM related bugfixes.</li>\n"
-                      "</ul>\n"
-                      "<p>Other notable features and improvements in this release</p>\n"
-                      "<ul>\n"
-                      "  <li>Marker size is now configurable when editing a layer.</li>\n"
-                      "  <li>Incorporation of the analysis library into the mainstream release.</li>\n"
-                      "  <li>Identify features across multiple layers.</li>\n"
-                      "  <li>Added a new plugin for carrying out raster terrain analysis (computing slope aspect, steepness etc).</li>\n"
-                      "  <li>A reshape tool to apply to line/polygon geometries. The part of a geometry between the first and\n"
-                      "      last intersection of the reshape line will be replaced.</li>\n"
-                      "  <li>Added snapping to current layer in measure dialog.</li>\n"
-                      "  <li>Added ability to select the primary key for views.</li>\n"
-                      "  <li>Zoom to a coordinate by entering it in the status bar coordinate display.</li>\n"
-                      "</ul>" )
-
+                      "(LTS)1.0.x release series. In all other cases we recommend that you use this "
+                      "version." )
+                + "</p><p>" +
+                tr( "This release includes around 200 bug fixes, nearly 30 new "
+                    "features and has had a lot of love and attention poured in "
+                    "to it to take our favourite desktop GIS application another "
+                    "step on the road to GIS nirvana! So much has happened in "
+                    "the 3 months since our last release that it is impossible "
+                    "to document everything here. Instead we will just highlight "
+                    "a couple of important new features for you." )
+                + "</p><p>" +
+                tr("Probably the biggest new feature is the addition of the new "
+                   "vector symbology infrastructure. This is provided alongside the "
+                    "old implementation - you can switch using a button in the "
+                    "vector layer properties dialog. It does't replace the old "
+                    "symbology implementation completely yet because there are "
+                    "various isues that need to be resolved and a large amount "
+                    "of testinhen it is considered ready.")
+                + "</p><p>" +
+                tr("QGIS now has a field calculator, accessible via a button in "
+                    "the attribute section of the vector properties, and from "
+                    "the attribute table user interface. You can use feature "
+                    "length, feature area, string concatenation and type "
+                    "conversions in the field calculator, as well as field "
+                    "values.")
+                + "</p><p>" +
+                tr("The map composer has had a lot of attention. A grid can now "
+                    "be added to composer maps. Composer maps can now be rotated "
+                    "in the layout. The limitation of a single map layout "
+                    "per project has been removed. A new composer manager dialog "
+                    "has been added to manage the existing composer instances. "
+                    "The composer widget property sheets have been completely "
+                    "overhauled to use less screen space ")
+                + "</p><p>" +
+                tr("Various parts of the user interface have been overhauled "
+                    "with the goal of improving consistency and to improve "
+                    "support for netbooks and other smaller screen devices. "
+                    "Loading and saving of shortcuts. Position can now be "
+                    "displayed as Degrees, Minutes, Seconds in the status bar. "
+                    "The add, move and delete vertex buttons are now removed and "
+                    "the node tool is moved from the advanced editing toolbar to "
+                    "the standard editing toolbar. The identification tool has also "
+                    "undergone numerous improvements.")
+                + "</p><p>" +
+                tr("A render caching capability has been added to QGIS. This "
+                    "speeds up common operations such as layer re-ordering, "
+                    "changing symbology, WMS / WFS client, hiding / showing "
+                    "layers and opens the door for future enhancements such as "
+                    "threaded rendering and pre-compositing layer cache "
+                    "manipulation. Note that it is disabled by default, and "
+                    "can be enabled in the options dialog.")
+                + "</p><p>" +
+                tr("User defined SVG search paths are now added to the options "
+                    "dialog.")
+                + "</p><p>" +
+                tr("When creating a new shapefile, you can now specify its CRS. "
+                    "Also the avoid intersections option for polygons is now "
+                    "also possible with background layers.")
+                + "</p><p>" +
+                tr("For power users, you can now create customizable attribute "
+                    "forms using Qt Designer dialog UIs.")
+                + "</p>" +
                 + "</body></html>";
 
     abt->setWhatsNew( whatsNew );
