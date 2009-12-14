@@ -83,7 +83,6 @@ void QgsMapToolAddRing::canvasReleaseEvent( QMouseEvent * e )
 
     vlayer->beginEditCommand( tr( "Ring added" ) );
     int addRingReturnCode = vlayer->addRing( mCaptureList );
-    vlayer->endEditCommand();
     if ( addRingReturnCode != 0 )
     {
       QString errorMessage;
@@ -113,6 +112,11 @@ void QgsMapToolAddRing::canvasReleaseEvent( QMouseEvent * e )
         errorMessage = tr( "An unknown error occured" );
       }
       QMessageBox::critical( 0, tr( "Error, could not add ring" ), errorMessage );
+      vlayer->destroyEditCommand();
+    }
+    else
+    {
+      vlayer->endEditCommand();
     }
     mCaptureList.clear();
     mCanvas->refresh();
