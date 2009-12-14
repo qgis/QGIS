@@ -1,12 +1,13 @@
+<h3>Crear una nueva conexión a PostGIS</h3>
 Para crear una nueva conexión PostGIS, necesita saber el servidor, el puerto y su nombre de usuario y contraseña para el servidor de bases de datos.
 <h4>Parámetros requeridos</h4>
 <ul>
-<li>Nombre - un nombre descriptivo para la conexión.
-<li>Servidor - el nombre del servidor de la base de datos (ej. madison.qgis.org).
-<li>Base de datos - nombre de la base de datos a la que conectarse.
-<li>Puerto - puerto al que PostgreSQL. Por omisión este es el 5432. En caso de duda, compruebe con su administador de bases de datos.
-<li>Nombre de usuario - su nombre de usuario de la base de datos.
-<li>Contraseña - su contraseña de la base de datos.
+<li><label>Nombre</label> - un nombre descriptivo para la conexión.
+<li><label>Servidor</label> - el nombre del servidor de la base de datos (ej. madison.qgis.org).
+<li><label>Base de datos</label> - nombre de la base de datos a la que conectarse.
+<li><label>Puerto</label> - puerto al que PostgreSQL. Por omisión este es el 5432. En caso de duda, compruebe con su administador de bases de datos.
+<li><label>Nombre de usuario</label> - su nombre de usuario de la base de datos.
+<li><label>Contraseña</label> - su contraseña de la base de datos.
 </ul>
 <h4>Opciones</h4>
 <ol>

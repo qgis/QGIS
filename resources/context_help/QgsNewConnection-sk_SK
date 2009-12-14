@@ -1,12 +1,13 @@
+<h3>Nové spojenie PostGIS</h3>
 Na vytvorenie nového spojenia PostGIS je potrebné vedieť adresu hostiteľského počítača, port a prihlasovacie meno a heslo na databázový server.
 <h4>Požadované parametre</h4>
 <ul>
-<li>Meno - popisný názov pre toto spojenie
-<li>Hostiteľ - názov (adresa) hostiteľského počítača databázy (napr. madison.qgis.org)
-<li>Databáza - meno databázy na ktorú sa pripájame
-<li>Port - port na ktorom počúva databáza PostgreSQL. Štandardným portom je port 5432. Pokiaľ si nie ste istý v tomto nastavení, poraďte sa s vaším správcom databázy.
-<li>Meno užívateľa - prihlasovacie meno k vašej databáze
-<li>Heslo - vaše heslo do databázy
+<li><label>Meno</label> - popisný názov pre toto spojenie
+<li><label>Hostiteľ</label> - názov (adresa) hostiteľského počítača databázy (napr. madison.qgis.org)
+<li><label>Databáza</label> - meno databázy na ktorú sa pripájame
+<li><label>Port</label> - port na ktorom počúva databáza PostgreSQL. Štandardným portom je port 5432. Pokiaľ si nie ste istý v tomto nastavení, poraďte sa s vaším správcom databázy.
+<li><label>Meno užívateľa</label> - prihlasovacie meno k vašej databáze
+<li><label>Heslo</label> - vaše heslo do databázy
 </ul>
 <h4>Voľby</h4>
 <ol>
