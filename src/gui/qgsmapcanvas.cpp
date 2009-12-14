@@ -658,6 +658,11 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer* layer )
     return;
   }
 
+  if ( layer->selectedFeatureCount() == 0 )
+  {
+    return;
+  }
+
   QgsRectangle rect = mMapRenderer->layerExtentToOutputExtent( layer, layer->boundingBoxOfSelected() );
 
   // no selected features, only one selected point feature
