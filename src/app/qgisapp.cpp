@@ -2150,8 +2150,8 @@ void QgisApp::about()
                     "old implementation - you can switch using a button in the "
                     "vector layer properties dialog. It does't replace the old "
                     "symbology implementation completely yet because there are "
-                    "various isues that need to be resolved and a large amount "
-                    "of testinhen it is considered ready.")
+                    "various issues that need to be resolved and a large amount "
+                    "of testing before it is considered ready.")
                 + "</p><p>" +
                 tr("QGIS now has a field calculator, accessible via a button in "
                     "the attribute section of the vector properties, and from "
