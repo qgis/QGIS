@@ -21,6 +21,7 @@
     <file>themes/newgis/mActionDeleteRing.png</file>
     <file>themes/newgis/mActionDeleteSelected.png</file>
     <file>themes/newgis/mActionDeleteVertex.png</file>
+    <file>themes/newgis/mActionDeselectAll.png</file>
     <file>themes/newgis/mActionDraw.png</file>
     <file>themes/newgis/mActionEditCopy.png</file>
     <file>themes/newgis/mActionEditCut.png</file>
@@ -72,6 +73,10 @@
     <file>themes/newgis/mActionZoomOut.png</file>
     <file>themes/newgis/mActionZoomToLayer.png</file>
     <file>themes/newgis/mActionZoomToSelected.png</file>
+    <file>themes/newgis/mIconEditable.png</file>
+    <file>themes/newgis/mIconLineLayer.png</file>
+    <file>themes/newgis/mIconPointLayer.png</file>
+    <file>themes/newgis/mIconPolygonLayer.png</file>
     <file>themes/default/cap_flat.png</file>
     <file>themes/default/cap_round.png</file>
     <file>themes/default/cap_square.png</file>
