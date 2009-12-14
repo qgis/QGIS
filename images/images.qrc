@@ -328,5 +328,18 @@
     <file>themes/gis/mActionZoomOut.png</file>
     <file>themes/gis/mActionZoomToLayer.png</file>
     <file>themes/gis/mActionZoomToSelected.png</file>
+    <file>themes/gis/plugins/copyright_label.png</file>
+    <file>themes/gis/plugins/delimited_text.png</file>
+    <file>themes/gis/plugins/dxf2shp_converter.png</file>
+    <file>themes/gis/plugins/georeferencer.png</file>
+    <file>themes/gis/plugins/gps_importer.png</file>
+    <file>themes/gis/plugins/interpolation.png</file>
+    <file>themes/gis/plugins/north_arrow.png</file>
+    <file>themes/gis/plugins/ogr_converter.png</file>
+    <file>themes/gis/plugins/quick_print.png</file>
+    <file>themes/gis/plugins/scale_bar.png</file>
+    <file>themes/gis/plugins/spit.png</file>
+    <file>themes/gis/plugins/wfs.png</file>
+    <file>themes/gis/plugins/coordinate_capture/coordinate_capture.png</file>
   </qresource>
 </RCC>
