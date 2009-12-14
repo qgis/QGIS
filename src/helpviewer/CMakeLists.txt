@@ -19,6 +19,31 @@ SET (HELP_MOC_HDRS
 
 #SET (HELP_RCCS  qgsgps_plugin.qrc)
 
+IF (WIN32)
+  IF (MSVC)
+    SET (HELP_SRCS ${HELP_SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/../app/qgis_win32.rc)
+  ELSE(MSVC)
+
+    # Icon for windows MINGW
+    # Note: can't include .rc directly to source files
+    # as it's ignored when used MinGW
+
+    IF (NOT WINDRES)
+      FIND_PROGRAM(WINDRES windres)
+      IF (NOT WINDRES)
+        MESSAGE(FATAL_ERROR "windres not found - aborting")
+      ENDIF (NOT WINDRES)
+    ENDIF (NOT WINDRES)
+    #############################################################
+    # application icon
+    # resource compilation for MinGW
+    ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/icon.o
+      COMMAND ${WINDRES} -I${CMAKE_CURRENT_SOURCE_DIR} -i${CMAKE_CURRENT_SOURCE_DIR}/../app/qgis_win32.rc 
+      -o ${CMAKE_CURRENT_BINARY_DIR}/icon.o )
+    SET(QGIS_APP_SRCS ${QGIS_APP_SRCS} ${CMAKE_CURRENT_BINARY_DIR}/icon.o)
+  ENDIF (MSVC)
+ENDIF (WIN32)
+
 
 ########################################################
 # Build
@@ -54,12 +79,12 @@ IF (${QTVERSION} STRLESS "4.3.0")
     )
 ELSE (${QTVERSION} STRLESS "4.3.0")
   TARGET_LINK_LIBRARIES(qgis_help
-  ${QT_QTCORE_LIBRARY} 
-  ${QT_QTGUI_LIBRARY} 
-  ${QT_QTNETWORK_LIBRARY} 
-  ${QT_QTSVG_LIBRARY} 
-  ${QT_QTXML_LIBRARY} 
-  ${QT_QTWEBKIT_LIBRARY} 
+    ${QT_QTCORE_LIBRA} 
+    ${QT_QTGUI_LIBRARY} 
+    ${QT_QTNETWORK_LIBRARY} 
+    ${QT_QTSVG_LIBRARY} 
+    ${QT_QTXML_LIBRARY} 
+    ${QT_QTWEBKIT_LIBRARY} 
     )
 ENDIF (${QTVERSION} STRLESS "4.3.0")
 

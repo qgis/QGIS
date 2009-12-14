@@ -21,6 +21,7 @@
 
 #include "ui_qgsoptionsbase.h"
 #include "qgisgui.h"
+#include "qgscontexthelp.h"
 
 
 /**
@@ -99,6 +100,8 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
      * @note added in QGIS 1.4
      */
     void on_mBtnRemoveSVGPath_clicked();
+
+    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
   protected:
     //! Populates combo box with ellipsoids

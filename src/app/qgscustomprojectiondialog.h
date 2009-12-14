@@ -19,6 +19,8 @@
 #define QGSCUSTOMCRSDIALOG_H
 
 #include "ui_qgscustomprojectiondialogbase.h"
+#include "qgscontexthelp.h"
+
 class QDir;
 
 /**
@@ -48,8 +50,10 @@ class QgsCustomProjectionDialog : public QDialog, private Ui::QgsCustomProjectio
     void on_pbnNew_clicked();
     void on_pbnSave_clicked();
 
+    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+
     //
-    // Contol population
+    // Control population
     //
     /* These two methods will be deprecated
     void getProjList();
