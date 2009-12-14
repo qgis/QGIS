@@ -1,12 +1,13 @@
+<h3>Neue PostGIS-Verbindung erzeugen</h3>
 Um eine PostGIS-Verbindung anzulegen, müssen Sie den Host, Port und Ihren Benutzername/Paßwort für den Datenbankserver kennen. 
 <h4>Benötigte Parameter</h4> 
 <ul> 
-<li>Name - ein beschreibender Name für die Verbindung 
-<li>Host - der Name des Hosts des Dantenbankservers (z.B. madison.qgis.org) 
-<li>Datenbank - Name der zu verbindenden Datenbank 
-<li>Port - Port auf dem PostgreSQL horcht. Voreingestellt ist 5432. Im Zweifel fragen Sie Ihren Datenbankadministrator 
-<li>Benutzername - Ihre Datenbankbenutzername 
-<li>Paßwort - Ihr Datenbankpasswort 
+<li><label>Name</label> - ein beschreibender Name für die Verbindung 
+<li><label>Host</label> - der Name des Hosts des Dantenbankservers (z.B. madison.qgis.org) 
+<li><label>Datenbank</label> - Name der zu verbindenden Datenbank 
+<li><label>Port</label> - Port auf dem PostgreSQL horcht. Voreingestellt ist 5432. Im Zweifel fragen Sie Ihren Datenbankadministrator 
+<li><label>Benutzername</label> - Ihre Datenbankbenutzername 
+<li><label>Paßwort</label> - Ihr Datenbankpasswort 
 </ul> 
 <h4>Optionen</h4> 
 <ol> 

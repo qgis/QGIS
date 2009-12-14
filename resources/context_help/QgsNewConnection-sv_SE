@@ -1,16 +1,17 @@
+<h3>Skapa en ny PostGIS-anslutning</h3>
 För att skapa en ny PostGIS-uppkoppling behvöer du veta värddator, port
  och användarnamn/lösenord för databasens server.
 
 <h4>Nödvändiga parametrar</h4>
 <ul>
-<li>Namn - ett beskrivande namn för uppkopplingen
-<li>Dator - värddatorns namn för databasen (tex madison.qgis.org)
-<li>Databas - namnet på databasen du vill koppla upp dig mot
-<li>Port - värddatorns port som PostgreSQL lyssnar på.
+<li><label>Namn</label> - ett beskrivande namn för uppkopplingen
+<li><label>Dator</label> - värddatorns namn för databasen (tex madison.qgis.org)
+<li><label>Databas</label> - namnet på databasen du vill koppla upp dig mot
+<li><label>Port</label> - värddatorns port som PostgreSQL lyssnar på.
     Standardinställning är 5432. Om du är tveksam, kontrollera 
     detta med databasens ansvariga.
-<li>Användarnamn - ditt användarnamn för databasen
-<li>Lösenord - ditt lösenord för databasen
+<li><label>Användarnamn</label> - ditt användarnamn för databasen
+<li><label>Lösenord</label> - ditt lösenord för databasen
 </ul>
 <h4>Alternativ</h4>
 <ol>

@@ -1,12 +1,13 @@
+<h3>Nowe połączenie dla PostGIS</h3>
 Utworzenie nowego połączenia z bazą PostGIS wymaga posiadania pewnych informacji o serwerze, bazie danych i znajomości nazwy użytkownika oraz hasła logowania do bazy.
 <h4>Wymagane parametry</h4>
 <ul>
-<li>Nazwa - opisowa nazwa dla połączenia
-<li>Host - nazwa hosta serwera bazy danych (np. madison.qgis.org; jeśli baza PostGIS jest na tym samym komputerze, będzie to localhost)
-<li>Baza danych - nazwa bazy danych do której będzie utworzone połączenie
-<li>Port - port PostreSQL. Domyślny port to 5432. Jeśli nie masz pewności, skonsultuj się z administratorem bazy danych.
-<li>Użytkownik - twoja nazwa użytkownika bazy
-<li>Hasło - twoje hasło do bazy
+<li><label>Nazwa</label> - opisowa nazwa dla połączenia
+<li><label>Host</label> - nazwa hosta serwera bazy danych (np. madison.qgis.org; jeśli baza PostGIS jest na tym samym komputerze, będzie to localhost)
+<li><label>Baza danych</label> - nazwa bazy danych do której będzie utworzone połączenie
+<li><label>Port</label> - port PostreSQL. Domyślny port to 5432. Jeśli nie masz pewności, skonsultuj się z administratorem bazy danych.
+<li><label>Użytkownik</label> - twoja nazwa użytkownika bazy
+<li><label>Hasło</label> - twoje hasło do bazy
 </ul>
 <h4>Opcje</h4>
 <ol>
