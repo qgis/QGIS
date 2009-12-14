@@ -409,10 +409,6 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      */
     QString primaryKey;
     /**
-     * Default value for primary key
-     */
-    QString primaryKeyDefault;
-    /**
      * Data type for the primary key
      */
     QString primaryKeyType;
@@ -699,6 +695,14 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     void disconnectDb();
 
     static int providerIds;
+
+    QString primaryKeyDefault();
+    void parseView();
+
+    /**
+     * Default value for primary key
+     */
+    QString mPrimaryKeyDefault;
 };
 
 #endif
