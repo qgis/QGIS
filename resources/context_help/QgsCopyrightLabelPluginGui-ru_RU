@@ -1,1 +1,32 @@
 <h3>Знак авторского права</h3>
+<i>Данный файл справки недоступен на вашем языке. Если вы хотите создать его, свяжитесь с командой разработки QGIS.</i><hr>
+Draws a copyright label with information.<br/>
+You can add any random text to the map not only a copyright label.
+<p>
+<a href="#howto">How to</a><br/>
+<a href="#text">Text formatting</a><br/>
+
+<a name="howto">
+<h4>How to</h4>
+</a>
+<ol>
+<li>Make sure the plugin is loaded.
+<li>Click on <label>Plugins > Decorations > Copyright Label</label> or use the <label>Copyright Label</label> button from the Toolbar.
+<li>Enter the text you want to place on the map. You can use HTML.
+<li>Choose the placement of the label from the <label>Placement Bottom Right</label> drop-down box.
+<li>Make sure the <label>Enable Copyright Label checkbox</label> is checked.
+<li>Click <label>OK</label>.
+</ol>
+<a name="text">
+<h4> Text formatting </h4>
+</a>
+This plugin supports basic HTML markup tags for formatting text. For example:
+
+<ul>
+<li>&lt;B&gt;<b> Bold text </b>&lt;/B&gt;
+</li>
+<li>&lt;I&gt;<i> Italics </i>&lt;/I&gt;
+</li>
+<li>&lt;U&gt;<u> Underlined text</u>&lt;/U&gt;
+</li>
+</ul>
