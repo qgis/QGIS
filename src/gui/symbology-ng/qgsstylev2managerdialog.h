@@ -5,6 +5,7 @@
 #include <QDialog>
 
 #include "ui_qgsstylev2managerdialogbase.h"
+#include "qgscontexthelp.h"
 
 class QgsStyleV2;
 
@@ -24,6 +25,8 @@ class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV
 
     //! called when the dialog is going to be closed
     void onFinished();
+
+    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
   protected:
 
