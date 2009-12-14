@@ -32,6 +32,7 @@
 #include "evisdatabaseconnection.h"
 #include "evisdatabaselayerfieldselectiongui.h"
 #include "evisquerydefinition.h"
+#include "qgscontexthelp.h"
 
 #include <QTemporaryFile>
 #include <QDialog>
@@ -73,7 +74,7 @@ class eVisDatabaseConnectionGui : public QDialog, private Ui::eVisDatabaseConnec
     void drawNewVectorLayer( QString, QString, QString );
 
     void on_buttonBox_accepted( );
-    void on_buttonBox_helpRequested( ) { /* TODO: implement me */ };
+    void on_buttonBox_helpRequested( ) { QgsContextHelp::run( metaObject()->className() ); };
 
     void on_cboxDatabaseType_currentIndexChanged( int );
     void on_cboxPredefinedQueryList_currentIndexChanged( int );
