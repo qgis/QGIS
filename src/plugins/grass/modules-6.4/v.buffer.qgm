@@ -2,11 +2,7 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Vector buffer" module="v.buffer">
-	<flag key="s" answer="off" hidden="no" />
-	<flag key="c" answer="off" hidden="no" />
 	<option key="input" typeoption="type" layeroption="layer" />
 	<option key="distance"/>
-	<option key="minordistance"/>
-	<option key="angle"/>
 	<option key="output" />
 </qgisgrassmodule>

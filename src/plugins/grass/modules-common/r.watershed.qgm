@@ -6,7 +6,7 @@
 
 	<option key="elevation" />
 	<option key="threshold" />
-
+	<flag key="m" answer="off" hidden="no" />
 	<option key="accumulation" />
 	<option key="drainage" />
 	<option key="stream" />
