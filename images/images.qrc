@@ -17,6 +17,7 @@
     <file>themes/newgis/mActionCaptureLine.png</file>
     <file>themes/newgis/mActionCapturePoint.png</file>
     <file>themes/newgis/mActionCapturePolygon.png</file>
+    <file>themes/newgis/mActionComposerManager.png</file>
     <file>themes/newgis/mActionDeletePart.png</file>
     <file>themes/newgis/mActionDeleteRing.png</file>
     <file>themes/newgis/mActionDeleteSelected.png</file>
@@ -119,6 +120,7 @@
     <file>themes/default/mActionCapturePolygon.png</file>
     <file>themes/default/mActionCheckQgisVersion.png</file>
     <file>themes/default/mActionCollapseTree.png</file>
+    <file>themes/default/mActionComposerManager.png</file>
     <file>themes/default/mActionContextHelp.png</file>
     <file>themes/default/mActionCopySelected.png</file>
     <file>themes/default/mActionCustomProjection.png</file>
@@ -274,6 +276,7 @@
     <file>themes/gis/mActionCaptureLine.png</file>
     <file>themes/gis/mActionCapturePoint.png</file>
     <file>themes/gis/mActionCapturePolygon.png</file>
+    <file>themes/gis/mActionComposerManager.png</file>
     <file>themes/gis/mActionDeletePart.png</file>
     <file>themes/gis/mActionDeleteRing.png</file>
     <file>themes/gis/mActionDeleteSelected.png</file>

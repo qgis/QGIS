@@ -596,7 +596,7 @@ void QgisApp::createActions()
   mActionNewPrintComposer->setStatusTip( tr( "New Print Composer" ) );
   connect( mActionNewPrintComposer, SIGNAL( triggered() ), this, SLOT( newPrintComposer() ) );
 
-  mActionShowComposerManager = new QAction( getThemeIcon( "mActionFilePrint.png" ), tr( "Composer manager..." ), this );
+  mActionShowComposerManager = new QAction( getThemeIcon( "mActionComposerManager.png" ), tr( "Composer manager..." ), this );
   mActionShowComposerManager->setStatusTip( tr( "Composer manager" ) );
   connect( mActionShowComposerManager, SIGNAL( triggered() ), this, SLOT( showComposerManager() ) );
 
@@ -1672,7 +1672,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionSaveProject->setIcon( getThemeIcon( "/mActionFileSave.png" ) );
   mActionSaveProjectAs->setIcon( getThemeIcon( "/mActionFileSaveAs.png" ) );
   mActionNewPrintComposer->setIcon( getThemeIcon( "/mActionNewComposer.png" ) );
-  mActionShowComposerManager->setIcon( getThemeIcon( "/mActionFilePrint.png" ) );
+  mActionShowComposerManager->setIcon( getThemeIcon( "/mActionComposerManager.png" ) );
   mActionSaveMapAsImage->setIcon( getThemeIcon( "/mActionSaveMapAsImage.png" ) );
   mActionExit->setIcon( getThemeIcon( "/mActionFileExit.png" ) );
   mActionAddOgrLayer->setIcon( getThemeIcon( "/mActionAddOgrLayer.png" ) );
