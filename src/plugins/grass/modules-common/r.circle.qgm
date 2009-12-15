@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Create a map conteining concentrinc rings" module="r.circle">
+<qgisgrassmodule label="Create a map containing concentric rings" module="r.circle">
 	<option key="coordinate" />
 	<option key="min" answer="0" />
 	<option key="max" />

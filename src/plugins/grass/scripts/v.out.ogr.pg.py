@@ -103,6 +103,11 @@
 #% required : no
 #%end
 
+#%flag
+#% key: c
+#% description: to export features with category (labeled) only. Otherwise all features are exported
+#%end
+
 import sys
 import os
 import string
@@ -132,9 +137,10 @@ def main():
     if user: dsn += " user=" + user
     if password: dsn += " password=" + password
 
-    if grass.run_command('v.out.ogr', input=input, layer=layer, type=type, format="PostgreSQL", dsn=dsn, olayer=olayer ) != 0:
+    if grass.run_command('v.out.ogr', flags=flags_string, input=input, layer=layer, type=type, format="PostgreSQL", dsn=dsn, olayer=olayer ) != 0:
         grass.fatal("Cannot export vector to database.")
 	
 if __name__ == "__main__":
     options, flags = grass.parser()
+    flags_string = "".join([k for k in flags.keys() if flags[k] and k != 'r'])
     main()

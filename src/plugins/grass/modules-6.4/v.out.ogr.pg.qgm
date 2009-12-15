@@ -2,6 +2,7 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Export vector to PostGIS (PostgreSQL) database table." module="v.out.ogr.pg.py" manual="v.out.ogr">
+	<flag key="c" answer="off" hidden="no"/>
 	<option key="input" layeroption="layer" typeoption="type" />
 	<option key="olayer" />
 	<option key="database" />
