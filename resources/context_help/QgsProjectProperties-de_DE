@@ -15,7 +15,10 @@ In diesem Dialog können Sie die Eigenschaften des <label>Projekts</label> einst
 <tr><td><label>Pfade speichern</label></td><td>Möglichkeit Pfade absolut oder relativ zu speichern.</td><tr>
 <tr><td><label>Layereinheiten</label></td><td>Wählen Sie die Einheiten der Layer des Projekts</td></tr>
 <tr><td><label>Genauigkeit</label></td><td>Benutzen Sie die manuelle Einstellungen der Anzeigegenauigkeit in der Statuszeile. Während die Maus über die Karte bewegt wird, werden die Koordinaten ständig mit der gewählten Genauigkeit in der Statuszeile angezeigt. Automatisch (die Voreinstellung) führt zu einer von den Karteneinheiten abhängigen Voreinstellung.</td></tr>
-<tr><td><label>Digitalisierung</label></td><td>Dies erlaubt Ihnen eine Fangtoleranz in Pixeln, die Linienstärke und -farbe während des Digitalisieren festzulegen</td></tr>
+<tr><td><label>Digitalisierung</label></td><td>Die Option <label>Ermöglichte topologisches Editieren</label> gestattet bearbeiten und weiterführen von Polygonmosaiken. Das Verschieben des Stützpunkts einer gemeinsamer Grenze führt zur Änderung beider Grenzen.<p>
+Um die Digitalisierung aller gemeinsamen Punkte einer Grenze zu vermeiden dient die Option <label>Überschneidung von neuen Polygonen vermeiden...</label>. Im Dialogfenster sind die gewünschten Layer zu wählen an die das neue Polygon angepaßt werden soll.  Die Flächen der Polygone, die das neue Polygon überdeckt, 
+werden automatisch entfernt.<p>
+<label>Fangoptionen<label> erlaubt Ihnen eine Fangtoleranz in Pixeln oder Karteneinheiten und den Fangmodus einzustellen: <label>zum Stützpunkt</label>, <label>zu Segment</label> oder <label>zum Stützpunkt oder Segment</label> für jeden einzelnen Layer.</td></tr>
 </table>
 <a name="crs">
 <h4>Reiter Koordinatenbezugssystem (KBS)</h4>
