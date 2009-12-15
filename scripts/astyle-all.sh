@@ -8,8 +8,19 @@ export elcr="$(tput el)$(tput cr)"
 
 find src -type f -print | while read f; do
 	case "$f" in
+	src/core/spatialite/*)
+		continue
+		;;
+
+
         *.cpp|*.h|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H)
+                cmd=astyle.sh
                 ;;
+
+	*.ui|*.qgm|*.txt|*.t2t|*.py|*.sip|resources/context_help/*)
+		cmd="flip -ub"
+		;;
+
 
         *)
                 continue
@@ -26,23 +37,8 @@ find src -type f -print | while read f; do
                 touch -r "$f" "$f.astyle"
         fi
 
-  	echo -ne "Reformating $f$elcr"
-	astyle.sh "$f"
+  	echo -ne "Reformating $f $elcr"
+	$cmd "$f"
 done
 
 echo
-
-# convert CRLF to LF
-find .. -type f \
-  ! -path "*/.svn/*" \
-  ! -path "*/win_build/*" \
-  ! -name "*.def" \
-  ! -name "*.rc" \
-  ! -name "*.png" \
-  -exec file {} \; |
-  grep CRLF |
-  cut -d: -f1 |
-  while read f; do
-  	echo -ne "Flipping $f$elcr"
-	flip -ub "$f"
-  done
