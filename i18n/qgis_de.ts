@@ -7977,7 +7977,7 @@ Fehler war:%2</translation>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="195"/>
         <source>Snapping</source>
-        <translation>Snapping</translation>
+        <translation>Objektfang</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="201"/>
@@ -10355,7 +10355,7 @@ Bitte wählen Sie eine gültige Datei.</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="162"/>
         <source>Snapping in screen pixels</source>
-        <translation>Snappingtoleranz in Bildschirmpixel</translation>
+        <translation>Fangtoleranz in Bildschirmpixel</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="213"/>
@@ -14132,7 +14132,7 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
     <message>
         <location filename="../src/app/qgsmaptoolvertexedit.cpp" line="51"/>
         <source>Snap tolerance</source>
-        <translation>Snappingtoleranz</translation>
+        <translation>Fangtoleranz</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolvertexedit.cpp" line="52"/>
@@ -14147,7 +14147,7 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
     <message>
         <location filename="../src/app/qgsmaptoolvertexedit.cpp" line="58"/>
         <source>Have you set the tolerance in Settings &gt; Project Properties &gt; General?</source>
-        <translation>Haben Sie die Snappingtoleranz in Einstellungen &gt; Projekteinstellungen &gt; Allgemein eingestellt?</translation>
+        <translation>Haben Sie die Fangtoleranz in Einstellungen &gt; Projekteinstellungen &gt; Allgemein eingestellt?</translation>
     </message>
 </context>
 <context>
@@ -15772,7 +15772,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="703"/>
         <source>Snapping</source>
-        <translation>Snapping</translation>
+        <translation>Objektfang</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="302"/>
@@ -18255,7 +18255,7 @@ Soll versucht werden die fehlenden Layer zu finden?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="307"/>
         <source>Snapping options...</source>
-        <translation>Snapping-Optionen...</translation>
+        <translation>Fangoptionen...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="42"/>
@@ -20608,7 +20608,7 @@ Der Fehler war:
         <location filename="../src/app/qgssnappingdialog.cpp" line="65"/>
         <location filename="../src/app/qgssnappingdialog.cpp" line="95"/>
         <source>to vertex and segment</source>
-        <translation>zum Stützpunkt und Segment</translation>
+        <translation>zum Stützpunkt oder Segment</translation>
     </message>
     <message>
         <location filename="../src/app/qgssnappingdialog.cpp" line="76"/>
@@ -20629,7 +20629,7 @@ Der Fehler war:
     <message>
         <location filename="../src/ui/qgssnappingdialogbase.ui" line="13"/>
         <source>Snapping options</source>
-        <translation>Einrastoptionen</translation>
+        <translation>Fangoptionen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssnappingdialogbase.ui" line="38"/>
