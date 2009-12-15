@@ -6276,18 +6276,18 @@ Fehler war:%2</translation>
         <translation>Verbinden</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="263"/>
-        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="265"/>
+        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="264"/>
+        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="266"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="263"/>
+        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="264"/>
         <source>There are no available color ramps. You can add them in Style Manager.</source>
         <translation>Es sind keine Farbverläufe verfügbar. Sie können sie im Stilmanager ergänzen.</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="265"/>
+        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="266"/>
         <source>The selected color ramp is not available.</source>
         <translation>Der gewählte Farbverlauf ist nicht verfügbar.</translation>
     </message>
@@ -13413,14 +13413,14 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
 <context>
     <name>QgsMapCanvas</name>
     <message>
-        <location filename="../src/gui/qgsmapcanvas.cpp" line="1349"/>
+        <location filename="../src/gui/qgsmapcanvas.cpp" line="1354"/>
         <source>Could not draw %1 because:
 %2</source>
         <translation>Konnte %1 nicht zeichnen, weil:
 %2</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsmapcanvas.cpp" line="1343"/>
+        <location filename="../src/gui/qgsmapcanvas.cpp" line="1348"/>
         <source>Could not draw %1 because:
 %2</source>
         <comment>COMMENTED OUT</comment>
@@ -14017,29 +14017,21 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
 <context>
     <name>QgsMapToolSelect</name>
     <message>
-        <location filename="../src/app/qgsmaptooldeselect.cpp" line="71"/>
-        <location filename="../src/app/qgsmaptooldeselectall.cpp" line="71"/>
         <location filename="../src/app/qgsmaptoolselect.cpp" line="71"/>
         <source>No active layer</source>
         <translation>Kein aktiver Layer</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooldeselect.cpp" line="72"/>
-        <location filename="../src/app/qgsmaptooldeselectall.cpp" line="72"/>
         <location filename="../src/app/qgsmaptoolselect.cpp" line="72"/>
         <source>To select features, you must choose a vector layer by clicking on its name in the legend</source>
         <translation>Um Objekte zu wählen, müssen Sie einen Vektorlayer in der Legende durch Anklicken auswählen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooldeselect.cpp" line="140"/>
-        <location filename="../src/app/qgsmaptooldeselectall.cpp" line="140"/>
         <location filename="../src/app/qgsmaptoolselect.cpp" line="140"/>
         <source>CRS Exception</source>
         <translation>KBS-Ausnahme</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptooldeselect.cpp" line="141"/>
-        <location filename="../src/app/qgsmaptooldeselectall.cpp" line="141"/>
         <location filename="../src/app/qgsmaptoolselect.cpp" line="141"/>
         <source>Selection extends beyond layer&apos;s coordinate system.</source>
         <translation>Auswahl außerhalb des Koordinatensystems des Layers.</translation>
@@ -16891,225 +16883,230 @@ Sie müssen Quantum GIS neustartet, um es neuzuladen.</translation>
 <context>
     <name>QgsPluginInstallerDialogBase</name>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="14"/>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="20"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="15"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="22"/>
         <source>QGIS Python Plugin Installer</source>
         <translation>QGIS-Python-Erweiterungsinstallation</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="69"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="107"/>
         <source>Plugins</source>
         <translation>Erweiterungen</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="72"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="110"/>
         <source>List of available and installed plugins</source>
         <translation>Liste der verfügbaren und installierten Erweiterungen</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="83"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="121"/>
         <source>Filter:</source>
         <translation>Filter:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="93"/>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="96"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="134"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="137"/>
         <source>Display only plugins containing this word in their metadata</source>
         <translation>Nur Erweiterungen anzeigen deren Metadaten dieses Wort enthalten</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="112"/>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="118"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="153"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="159"/>
         <source>Display only plugins from given repository</source>
         <translation>Nur Erweiterungen des angegebenen Repository anzeigen</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="122"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="163"/>
         <source>all repositories</source>
         <translation>Alle Repositories</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="139"/>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="142"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="180"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="183"/>
         <source>Display only plugins with matching status</source>
         <translation>Nur passende Erweiterungen anzeigen</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="167"/>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="275"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="208"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="316"/>
         <source>Status</source>
         <translation>Status</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="172"/>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="280"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="213"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="321"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="177"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="218"/>
         <source>Version</source>
         <translation>Version</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="182"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="223"/>
         <source>Description</source>
         <translation>Beschreibung</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="187"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="228"/>
         <source>Author</source>
         <translation>Autor</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="192"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="233"/>
         <source>Repository</source>
         <translation>Repository</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="227"/>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="230"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="268"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="271"/>
         <source>Install, reinstall or upgrade the selected plugin</source>
         <translation>Gewählte Erweiterung installieren, neu installieren oder aktualisieren</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="233"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="274"/>
         <source>Install/upgrade plugin</source>
         <translation>Erweiterung installieren/aktualisieren</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="243"/>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="246"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="284"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="287"/>
         <source>Uninstall the selected plugin</source>
         <translation>Die gewählte Erweiterung deinstallieren</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="249"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="290"/>
         <source>Uninstall plugin</source>
         <translation>Gewählte Erweiterung deinstallieren</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="259"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="300"/>
         <source>Repositories</source>
         <translation>Repositorys</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="262"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="303"/>
         <source>List of plugin repositories</source>
         <translation>Liste der Erweiterungsrepositories</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="285"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="326"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="396"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="437"/>
         <source>Check for updates on startup</source>
         <translation>Beim Start nach Aktualisierungen suchen</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="312"/>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="315"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="353"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="356"/>
         <source>Add third party plugin repositories to the list</source>
         <translation>Erweiterungsrepositories dritter zur Liste hinzufügen</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="318"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="359"/>
         <source>Add 3rd party repositories</source>
         <translation>Erweiterungsrepositories hinzufügen</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="338"/>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="341"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="379"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="382"/>
         <source>Add a new plugin repository</source>
         <translation>Ein neues Erweiterungsrepository ergänzen</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="344"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="385"/>
         <source>Add...</source>
         <translation>Hinzufügen...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="351"/>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="354"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="392"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="395"/>
         <source>Edit the selected repository</source>
         <translation>Gewähltes Respository bearbeiten</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="357"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="398"/>
         <source>Edit...</source>
         <translation>Bearbeiten...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="364"/>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="367"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="405"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="408"/>
         <source>Remove the selected repository</source>
         <translation>Gewähltes Repository entfernen</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="370"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="411"/>
         <source>Delete</source>
         <translation>Löschen</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="31"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="56"/>
         <source>The plugins will be installed to ~/.qgis/python/plugins</source>
         <translation>Die Erweiterung wird nach ~/.qgis/python/plugins installiert</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="44"/>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="47"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="30"/>
+        <source>Help</source>
+        <translation type="unfinished">Hilfe</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="82"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="85"/>
         <source>Close the Installer window</source>
         <translation>Das Installationsfenster schließen</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="50"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="88"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="378"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="419"/>
         <source>Options</source>
         <translation>Optionen</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="381"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="422"/>
         <source>Configuration of the plugin installer</source>
         <translation>Konfiguration der Erweiterungsinstallation</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="409"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="450"/>
         <source>every time QGIS starts</source>
         <translation>bei jedem QGIS-Start</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="414"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="455"/>
         <source>once a day</source>
         <translation>einmal am Tag</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="419"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="460"/>
         <source>every 3 days</source>
         <translation>alle drei Tage</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="424"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="465"/>
         <source>every week</source>
         <translation>jede Woche</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="429"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="470"/>
         <source>every 2 weeks</source>
         <translation>alle zwei Wochen</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="434"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="475"/>
         <source>every month</source>
         <translation>jeden Monat</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="464"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="505"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
@@ -17122,27 +17119,27 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Hinweis:&lt;/span&gt; Wenn diese Funktion aktiv ist, wird Quantum GIS Sie immer informieren, wenn eine neue Erweiterung oder ein Erweiterungsupdate verfügbar ist. Anderenfalls erfolgt die Repository-Abfrage beim Öffnen des Erweiterungsinstallationsfensters.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="487"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="528"/>
         <source>Allowed plugins</source>
         <translation>Erlaubte Erweiterungen</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="496"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="537"/>
         <source>Only show plugins from the official repository</source>
         <translation>Nur Erweiterungen des offiziellen Repositories anzeigen</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="509"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="550"/>
         <source>Show all plugins except those marked as experimental</source>
         <translation>Alle Erweiterungen außer denen als experimentell markierten anzeigen</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="522"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="563"/>
         <source>Show all plugins, even those marked as experimental</source>
         <translation>Alle inklusive der als experimentell markierten Erweiterungen anzeigen</translation>
     </message>
     <message>
-        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="541"/>
+        <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="582"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
