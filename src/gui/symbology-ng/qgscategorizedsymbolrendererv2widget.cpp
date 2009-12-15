@@ -61,6 +61,7 @@ QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsV
   connect( btnAddCategories, SIGNAL( clicked() ), this, SLOT( addCategories() ) );
   connect( btnDeleteCategory, SIGNAL( clicked() ), this, SLOT( deleteCategory() ) );
   connect( btnDeleteAllCategories, SIGNAL( clicked() ), this, SLOT( deleteAllCategories() ) );
+  connect( m, SIGNAL( itemChanged( QStandardItem * ) ), this, SLOT( changeCurrentValue( QStandardItem * ) ) );
 
   // update GUI from renderer
   updateUiFromRenderer();
@@ -330,3 +331,12 @@ void QgsCategorizedSymbolRendererV2Widget::deleteAllCategories()
   populateCategories();
 }
 
+void QgsCategorizedSymbolRendererV2Widget::changeCurrentValue( QStandardItem * item )
+{
+  if ( item->column() == 1 )
+  {
+    QString label = item->text();
+    int idx = item->row();
+    mRenderer->updateCategoryLabel( idx, label );
+  }
+}

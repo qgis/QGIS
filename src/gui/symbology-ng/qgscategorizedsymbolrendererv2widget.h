@@ -2,6 +2,7 @@
 #define QGSCATEGORIZEDSYMBOLRENDERERV2WIDGET_H
 
 #include "qgsrendererv2widget.h"
+#include <QStandardItem>
 
 class QgsCategorizedSymbolRendererV2;
 
@@ -27,6 +28,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widg
     void addCategories();
     void deleteCategory();
     void deleteAllCategories();
+    void changeCurrentValue( QStandardItem * item );
 
   protected:
 
