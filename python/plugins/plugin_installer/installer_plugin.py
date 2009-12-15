@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Copyright (C) 2007-2008 Matthew Perry
 Copyright (C) 2008-2009 Borys Jurgiel

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Copyright (C) 2007-2008 Matthew Perry
 Copyright (C) 2008-2009 Borys Jurgiel
@@ -14,7 +15,7 @@ def name():
   return "Plugin Installer"
 
 def version():
-  return "Version 1.0.5"
+  return "Version 1.0.6"
 
 def description():
   return "Downloads and installs QGIS python plugins"

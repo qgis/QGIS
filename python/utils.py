@@ -159,6 +159,6 @@ def unloadPlugin(packageName):
     del plugins[packageName]
     return True
   except Exception, e:
-    errMsg = QCoreApplication.translate("Python", "Error while unloading plugin %1").arg(packageName)
+    msg = QCoreApplication.translate("Python", "Error while unloading plugin %1").arg(packageName)
     showException(sys.exc_type, sys.exc_value, sys.exc_traceback, msg)
     return False
