@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Import OGR vectors in a given data source combining them in a GRASS vector" module="v.in.ogr">
+<qgisgrassmodule label="Import loaded vector selecting some features" module="v.in.ogr"> 
 	<flag key="o" answer="on" hidden="yes" />
 	<flag key="z" answer="off" hidden="no" />
 	<flag key="e" answer="off" hidden="no" />
-	<file key="dsn" type="directory" label="Path to the OGR data source" />
-	<option key="output" />
+        <ogr key="dsn" layeroption="layer" whereoption="where" label="OGR vector layer" />
+	<option key="where" />
+        <option key="output" /> 
 	<option key="type" />
 </qgisgrassmodule>
