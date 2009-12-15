@@ -5,6 +5,8 @@
 	<option key="from" typemask="point" layeroption="from_layer"/>
 	<option key="to" typeoption="to_type" layeroption="to_layer"/>
 	<option key="upload"/>
+	<option key="dmax"/> 
+	<option key="dmin"/>
 	<field key="column" layer="from" type="integer,double" label="Attribute field" />
 	<option key="output"/>
 </qgisgrassmodule>
