@@ -57,9 +57,11 @@ try:
     QGIS_MAJOR_VER = 1
   else:
     QGIS_MAJOR_VER = 0
+  QGIS_14 = False
 except:
   QGIS_VER = QGis.QGIS_VERSION
   QGIS_MAJOR_VER = 1
+  QGIS_14 = (QGIS_VER[2] > 3)
 
 
 
