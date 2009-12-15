@@ -16,7 +16,9 @@ This dialog allows you to set a number of properties related to the <label>Proje
 <tr><td><label>Save paths</label></td><td>Ability to save the paths as absolute or relative.</td></tr>
 <tr><td><label>Layer units</label></td><td>Choose the units appropriate for the layers in the project.</td></tr>
 <tr><td><label>Precision</label></td><td>Use the manual setting to set the precision of the display in the status bar. As the mouse is moved over the map canvas, the coordinates are updated and displayed in the status bar using the precision you choose. Automatic (the default) results in a default precision based on the map units.</td></tr>
-<tr><td><label>Digitizing</label></td><td>This allows you to set the snapping tolerance in pixels, the line width used when digitising and the color for digitised lines.</td></tr>
+<tr><td><label>Digitizing</label></td><td>The option <label> Enable topological editing</label> enables editing and maintaining common boundaries in polygon mosaics. Editing a vertex in shared boundary will result in updating both boundaries.<p>
+To avoid digitizing all vertices of the common boundary select <label>Avoid intersections of new polygons</label>. In the dialog window tick appropriate layers to which the new polygon will be adjusted. Draw the new poligon in the way it overlap the existng one, it will be cut automatically. <p>
+<label>Snapping options</label> allows you to set the snapping tolerance in pixels or map units and the snapping mode: <label>to vertex</label>, <label>to segment</label>, <label>to vertex and segment</label> for every layer separately.</td></tr>
 
 </table>
 <a name="crs">
