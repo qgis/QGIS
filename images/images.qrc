@@ -260,6 +260,8 @@
     <file>themes/default/propertyicons/transparency.png</file>
     <file>icons/qgis-icon-16x16.png</file>
     <file>icons/qgis-icon-60x60.png</file>
+    <file>themes/gis/mActionAddArrow.png</file>
+    <file>themes/gis/mActionAddBasicShape.png</file>
     <file>themes/gis/mActionAddGPSLayer.png</file>
     <file>themes/gis/mActionAddImage.png</file>
     <file>themes/gis/mActionAddIsland.png</file>
@@ -273,14 +275,22 @@
     <file>themes/gis/mActionAddVertex.png</file>
     <file>themes/gis/mActionAddWfsLayer.png</file>
     <file>themes/gis/mActionAddWmsLayer.png</file>
+    <file>themes/gis/mActionAlignBottom.png</file>
+    <file>themes/gis/mActionAlignHCenter.png</file>
+    <file>themes/gis/mActionAlignLeft.png</file>
+    <file>themes/gis/mActionAlignRight.png</file>
+    <file>themes/gis/mActionAlignTop.png</file>
+    <file>themes/gis/mActionAlignVCenter.png</file>
     <file>themes/gis/mActionCaptureLine.png</file>
     <file>themes/gis/mActionCapturePoint.png</file>
     <file>themes/gis/mActionCapturePolygon.png</file>
     <file>themes/gis/mActionComposerManager.png</file>
+    <file>themes/gis/mActionCopySelected.png</file>
     <file>themes/gis/mActionDeletePart.png</file>
     <file>themes/gis/mActionDeleteRing.png</file>
     <file>themes/gis/mActionDeleteSelected.png</file>
     <file>themes/gis/mActionDeleteVertex.png</file>
+    <file>themes/gis/mActionDeselectAll.png</file>
     <file>themes/gis/mActionDraw.png</file>
     <file>themes/gis/mActionEditCopy.png</file>
     <file>themes/gis/mActionEditCut.png</file>
@@ -295,26 +305,35 @@
     <file>themes/gis/mActionHideAllLayers.png</file>
     <file>themes/gis/mActionIdentify.png</file>
     <file>themes/gis/mActionInOverview.png</file>
+    <file>themes/gis/mActionInvertSelection.png</file>
     <file>themes/gis/mActionLabel.png</file>
+    <file>themes/gis/mActionLowerItems.png</file>
     <file>themes/gis/mActionMapTips.png</file>
     <file>themes/gis/mActionMeasure.png</file>
     <file>themes/gis/mActionMeasureArea.png</file>
     <file>themes/gis/mActionMergeFeatures.png</file>
     <file>themes/gis/mActionMoveFeature.png</file>
     <file>themes/gis/mActionMoveItemContent.png</file>
+    <file>themes/gis/mActionMoveItemsToBottom.png</file>
+    <file>themes/gis/mActionMoveItemsToTop.png</file>
     <file>themes/gis/mActionMoveVertex.png</file>
     <file>themes/gis/mActionNewBookmark.png</file>
+    <file>themes/gis/mActionNewComposer.png</file>
     <file>themes/gis/mActionNewVectorLayer.png</file>
     <file>themes/gis/mActionNodeTool.png</file>
     <file>themes/gis/mActionOpenTable.png</file>
     <file>themes/gis/mActionPan.png</file>
+    <file>themes/gis/mActionPrintComposers.png</file>
+    <file>themes/gis/mActionRaiseItems.png</file>
     <file>themes/gis/mActionRedo.png</file>
     <file>themes/gis/mActionRemoveLayer.png</file>
+    <file>themes/gis/mActionReshape.png</file>
     <file>themes/gis/mActionSaveAsPDF.png</file>
     <file>themes/gis/mActionSaveAsSVG.png</file>
     <file>themes/gis/mActionSaveMapAsImage.png</file>
     <file>themes/gis/mActionScaleBar.png</file>
     <file>themes/gis/mActionSelect.png</file>
+    <file>themes/gis/mActionSelectedToTop.png</file>
     <file>themes/gis/mActionSelectPan.png</file>
     <file>themes/gis/mActionShowAllLayers.png</file>
     <file>themes/gis/mActionShowBookmarks.png</file>
