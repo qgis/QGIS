@@ -153,6 +153,8 @@ def startPlugin(packageName):
 def unloadPlugin(packageName):
   """ unload and delete plugin! """
   global plugins
+  
+  if not plugins.has_key(packageName): return False
 
   try:
     plugins[packageName].unload()
