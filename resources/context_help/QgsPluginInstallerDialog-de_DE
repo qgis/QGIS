@@ -1,5 +1,5 @@
-<h3>Python-Erweiterungsinstaller</h3>
-Läd und installiert Erweiterung aus entfernen Repositorys.
+<h3>Python-Erweiterungsinstallation</h3>
+Läd und installiert Erweiterungen aus entfernten Repositorys.
 <br/><br/>
 <a href="#pltab">Reiter Erweiterungen</a><br/>
 <a href="#retab">Reiter Repositorys</a><br/>
@@ -14,26 +14,25 @@ Unter Reiter <label>Erweiterungen</label> steht eine Liste aller lokal
 installieren als auch in entfernten Repositorys verfügbaren
 Python-Erweiterungen.  Jede Erweiterung kann folgendes sein:
 <ul>
-<li> nicht installiert - bedeutet, dass die Erweiterung im Repository
-verfügbar, aber noch nicht installiert ist.  Um es zu installieren, wählen Sie
-die ERweiterung aus der Liste und klicken Sie auf <label>Erweiterung
-installieren/aktualisieren</label> button.</li>
+<li> <em>nicht installiert</em> - die Erweiterung ist im Repository verfügbar,
+aber noch nicht installiert.  Um sie zu installieren, wählen Sie die
+Erweiterung aus der Liste und klicken Sie auf <label>Erweiterung
+installieren/aktualisieren</label>.</li>
 
-<li> neu - bedeutet, dass eine neuere Erweiterung im Repository verfügbar
-ist.</li>
+<li> <em>neu</em> - eine neuere Erweiterung ist im Repository verfügbar</li>
 
-<li> installiert - zeigt an, dass die Erweiterung bereits installiert ist. Wenn
-es auch in einem Repository verfügbar ist, wird der Knopf <label>Erweiterung
-erneut installieren</label> aktiviert. Wenn die verfügbare Version älter als
-die installierte Version ist, wird stattdessen der Knopf <label>Frührere
-Version der Erweiterung installieren</label> angezeigt.</li>
+<li> <em>installiert</em> - die Erweiterung ist bereits installiert. Wenn sie
+auch in einem Repository verfügbar ist, wird <label>Erweiterung  erneut
+installieren</label> angezeigt. Wenn die verfügbare Version älter als die
+installierte Version ist, wird stattdessen <label>Frühere Version der
+Erweiterung installieren</label> angezeigt.</li>
 
-<li> aktualisierbar - bedeutet, dass die Erweiterung installiert ist, aber eine
-neuere Version verfügbar ist. In diesem Fall wird der Knopf <label>Erweiterung
-aktualsieren</label> angezeigt.</li>
+<li> <em>aktualisierbar</em> - die Erweiterung ist installiert, aber eine
+neuere Version ist verfügbar. In diesem Fall wird <label>Erweiterung
+aktualisieren</label> angezeigt.</li>
 
-<li> ungültig - bedeutet, dass die Erweiterung installiert ist, aber nicht
-verfügbar oder defekt ist.  Der Grund dafür wird in der Erweitungsbeschreibung
+<li> <em>ungültig</em> - die Erweiterung zwar installiert, aber nicht verfügbar
+oder defekt.  Der Grund dafür wird in der Erweitungsbeschreibung
 ausgeführt.</li>
 
 </ul>
@@ -44,38 +43,37 @@ den Knopf <label>Erweiterung installieren</label>. Die Erweiterung wird in
 seinem eigenen Verzeichnis installiert:
 
 <table border=1>
-<tr><td>System</td><td>Systemerweiterungen</td><td>Benutzerinstalliert</td></tr>
-<tr><td>Linux und other Unixe</td><td>./share/qgis/python/plugins</td><td>$HOME/.qgis/python/plugins</td></tr>
-<tr><td>Mac OS X</td><td>./Contents/MacOS/share/qgis/python/plugins</td><td>$HOME/.qgis/python/plugins</td></tr>
-<tr><td>Windows</td><td>(QGIS directory)\python\plugins</td><td>%USERPROFILE%\.qgis\python\plugins</td></tr>
+<tr><th>System</th><th>Systemerweiterungen</th><th>Durch Benutzer installiert</th></tr>
+<tr><td>Linux und other Unixe</td><td>./share/qgis/python/plugins</td><td rowspan=2>$HOME/.qgis/python/plugins</td></tr>
+<tr><td>Mac OS X</td><td>./Contents/MacOS/share/qgis/python/plugins</td></tr>
+<tr><td>Windows</td><td>(QGIS-Verzeichnis)\python\plugins</td><td>%USERPROFILE%\.qgis\python\plugins</td></tr>
 </table>
 <br/>
 
 <p align='justify'>
 Wenn die Installation erfolgreich ist, wird eine Bestätigungsnachricht
-angezeigt.  Das Plugin ist benutzungsbereit.</p>
+angezeigt.  Die Erweiterung ist nun benutzbar.</p>
 
 <p align='justify'>
 Wenn die Installation scheitert, wird der Grund dafür in einem Warnungsdialog
 angezeigt.  Meistens liegt es an Verbindungsproblemen oder fehlenden
 Python-Modulen. Im ersten Fall müssen Sie etwas warten, bevor Sie es erneut
-versuchen.  Im letzteren Fall müssen Sie die fehlenden Modul entsprechende
-Ihrem Betriebssystem nachinstallieren, bevor Sie die Erweiterung benutzen
-können. Unter Linux sollten die meisten erforderlichen Module über den
+versuchen.  Im letzteren Fall müssen Sie die fehlenden Module Ihrem
+Betriebssystem entsprechend nachinstallieren, bevor Sie die Erweiterung
+benutzen können. Unter Linux sollten die meisten erforderlichen Module über den
 Paketmanager verfügbar sein.
 
-Für Windows-Installationsanweisung besuchen Sie bitte die Homepage des Modules.
-Wenn Sie einen Proxy benutzen müssen Sie ihn unter <label>Edit</label> >
-<label>Optionen</label> (Gnome, OSX) or <label>Einstellungen</label> >
-<label>Optionen</label> (KDE, Windows) auf dem Reiter <label>Netzwerk &amp;
-Proxy</label>.
-</p>
+Für Windows-Installationsanweisungen besuchen Sie bitte die Homepage des
+Moduls.  Wenn Sie einen Proxy benutzen, müssen Sie ihn unter
+<label>Bearbeiten</label> > <label>Optionen</label> (Gnome, OSX) oder
+<label>Einstellungen</label> > <label>Optionen</label> (KDE, Windows) auf dem
+Reiter <label>Netzwerk &amp; Proxy</label> angeben.</p>
 
 <p align='justify'>
-Der Knopf <label>Erweiterung deinstallieren</label> ist nur verfügbar, wenn die
-gewählte Erweiterung keine Kernerweiterung ist.  Bei Kernerweiterungen, die Sie
-aktualisiert haben, können Sie die Aktualisierung mit <label>Plugin
-deinstallieren</label> zurücknehmen und zur mit Quantum GIS installieren
+<label>Erweiterung deinstallieren</label> ist nur verfügbar, wenn die gewählte
+Erweiterung keine Kernerweiterung ist.  Bei Kernerweiterungen, die Sie
+aktualisiert haben, können Sie die Aktualisierung mit <label>Erweiterung
+deinstallieren</label> zurücknehmen  und zur mit Quantum GIS installieren
 Version zurückkehren.  Diese Version kann allerdings nicht deinstalliert
 werden.</p>
 
@@ -83,11 +81,11 @@ werden.</p>
 <h4>Reiter Repositorys</h4>
 </a>
 <p align='justify'>
-Der zweite Reiter <label>Repositorys</label> enthält eine Liste von für den
-Erweiterungsinstaller verfügbaren Repositorys. Zu Beginn ist nun das offizielle
-Repository aktiviert. Sie können mehrere von Benutzern beigetragene Repositorys
-einschließlich des zentralen Repositorys für von Benutzer beigetragene
-Erweiterungen und andere externe Repositorys über den Knopf
+Der zweite Reiter <label>Repositorys</label> enthält eine Liste von für die
+Erweiterungsinstallation verfügbaren Repositorys. Zu Beginn ist nun das offizielle
+Repository aktiviert. Sie können mehrere von Benutzern beigesteuerten Repositorys
+einschließlich des zentralen Repositorys für von Benutzer beigesteuerte
+Erweiterungen und andere externe Repositorys über
 <label>Erweiterungsrepositorys hinzufügen</label> hinzufügen.  Die
 hinzugefügten Repositorys enthalten eine große Zahl von nützlichen
 Erweiterungen, die nicht vom QGIS-Entwicklerteam betreut werden.  Als solche
@@ -100,7 +98,7 @@ abschalten.</p>
 <h4>Reiter Optionen</h4>
 </a>
 <p align='justify'>
-Unter dem Reiter <label>Optionen</label> können Sie den Erweiterungsinstaller
+Unter dem Reiter <label>Optionen</label> können Sie die Erweiterungsinstallation
 einstellen.  Das Kontrollkästchen <label>x Beim Start nach Aktualisierungen
 suchen</label> veranlaßt QGIS automatisch nach Erweiterungsaktualsierungen und
 Neuigkeiten zu suchen.  Normalerweise werden alle unter
@@ -110,7 +108,7 @@ Programmstart nach Aktualisierungen befragt.   Die Frequenz dieser Prüfung kann
 Wenn eine neue Erweiterung oder eine Aktualisierung einer installierten
 Erweiterung verfügbar ist, erscheint eine Benachrichtigung in der Statuszeile.
 Wenn das Kontrollkästchen nicht angehakt ist, wird die Prüfung nur ausgeführt,
-wenn der Erweiterungsinstaller manuell aus dem Menü gestartet wird.</p>
+wenn die Erweiterungsinstallation manuell aus dem Menü gestartet wird.</p>
 
 <p align='justify'>
 Einige Internetverbindung verursachen Problemen, wenn versucht wird automatisch
@@ -121,7 +119,7 @@ verursachen.  Dann stellen entfernen Sie den Haken bitte aus dem Kontrollkästch
 </p>
 
 Zusätzlich können Sie auch noch den Typ der Erweiterungen festlegen, die durch
-den Erweiterungsinstaller angezeigt werden sollen. Unter <i>Erlaubte
+der Erweiterungsinstallation angezeigt werden sollen. Unter <i>Erlaubte
 Erweiterungen</i> können Sie angeben, ob
 
 <ul>
