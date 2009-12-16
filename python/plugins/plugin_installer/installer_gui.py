@@ -599,11 +599,17 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
       plugin = plugins.all()[key]
       if not plugin["error"]:
         if previousStatus in ["not installed", "new"]:
-          if QGIS_14: infoString = (self.tr("Plugin installed successfully"), self.tr("Plugin installed successfully"))
+          if QGIS_14: 
+            infoString = (self.tr("Plugin installed successfully"), self.tr("Plugin installed successfully"))
+            settings = QSettings()
+            settings.setValue("/PythonPlugins/"+plugin["localdir"], QVariant(True))
           else: infoString = (self.tr("Plugin installed successfully"), self.tr("Python plugin installed.\nNow you need to enable it in Plugin Manager."))
         else:
           infoString = (self.tr("Plugin reinstalled successfully"), self.tr("Python plugin reinstalled.\nYou need to restart Quantum GIS in order to reload it."))
-        startPlugin(plugin["localdir"])
+        try:
+          startPlugin(plugin["localdir"])
+        except:
+          pass
       else:
         if plugin["error"] == "incompatible":
           message = self.tr("The plugin is designed for a newer version of Quantum GIS. The minimum required version is:")
