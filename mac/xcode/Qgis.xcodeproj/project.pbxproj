@@ -633,6 +633,7 @@
 		7238DB6810AA191E00963E09 /* qgstininterpolator.h in Headers */ = {isa = PBXBuildFile; fileRef = 721597D11052B2B0003D1610 /* qgstininterpolator.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7238DB6B10AA198C00963E09 /* qgsrasterviewport.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6F40F39E57A003DC336 /* qgsrasterviewport.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		723FD05F0FBCB87900EFA55D /* qgspalgeometry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 723FD05D0FBCB85D00EFA55D /* qgspalgeometry.cpp */; };
+		72411D4510D883CB00DA6DBB /* QgsPluginInstallerDialog-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72411D4410D883B900DA6DBB /* QgsPluginInstallerDialog-en_US */; };
 		72442AEB1095DD4C00B54796 /* qgsavoidintersectionsdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72442AE91095DCFC00B54796 /* qgsavoidintersectionsdialog.cpp */; };
 		72442AEC1095DD4C00B54796 /* qgsavoidintersectionsdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72442AEA1095DCFC00B54796 /* qgsavoidintersectionsdialog.h */; };
 		724D05C610A910F200F9680A /* north-arrow_10_with_map_layers.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 724D05BE10A910B400F9680A /* north-arrow_10_with_map_layers.svg */; };
@@ -2743,6 +2744,7 @@
 				729FA37A10D74974005E7C15 /* QgsNewOgrConnection-de_DE in Copy - context_help */,
 				729FA37C10D749C8005E7C15 /* QgsNorthArrowPluginGui-en_US in Copy - context_help */,
 				729FA37E10D74A9C005E7C15 /* QgsCopyrightLabelPluginGui-pl_PL in Copy - context_help */,
+				72411D4510D883CB00DA6DBB /* QgsPluginInstallerDialog-en_US in Copy - context_help */,
 			);
 			name = "Copy - context_help";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5050,6 +5052,34 @@
 		723FD05E0FBCB85D00EFA55D /* qgspalgeometry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgspalgeometry.h; path = ../../src/core/qgspalgeometry.h; sourceTree = SOURCE_ROOT; };
 		723FD0660FBCB94600EFA55D /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../src/plugins/grass/scripts/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
 		723FD0670FBCB94600EFA55D /* db.connect-login.pg.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = "db.connect-login.pg.py"; path = "../../src/plugins/grass/scripts/db.connect-login.pg.py"; sourceTree = SOURCE_ROOT; };
+		72411D4110D8835A00DA6DBB /* v.in.ogr.qgis.where.1.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.in.ogr.qgis.where.1.svg; path = "../../src/plugins/grass/modules-common/v.in.ogr.qgis.where.1.svg"; sourceTree = SOURCE_ROOT; };
+		72411D4210D8835A00DA6DBB /* v.in.ogr.qgis.where.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = v.in.ogr.qgis.where.2.png; path = "../../src/plugins/grass/modules-common/v.in.ogr.qgis.where.2.png"; sourceTree = SOURCE_ROOT; };
+		72411D4310D8835A00DA6DBB /* v.in.ogr.qgis.where.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.in.ogr.qgis.where.qgm; path = "../../src/plugins/grass/modules-common/v.in.ogr.qgis.where.qgm"; sourceTree = SOURCE_ROOT; };
+		72411D4410D883B900DA6DBB /* QgsPluginInstallerDialog-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsPluginInstallerDialog-en_US"; path = "../../resources/context_help/QgsPluginInstallerDialog-en_US"; sourceTree = SOURCE_ROOT; };
+		72411D4710D8841F00DA6DBB /* mActionComposerManager.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionComposerManager.png; path = ../../images/themes/default/mActionComposerManager.png; sourceTree = SOURCE_ROOT; };
+		72411D4810D8843300DA6DBB /* mActionComposerManager.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionComposerManager.png; path = ../../images/themes/gis/mActionComposerManager.png; sourceTree = SOURCE_ROOT; };
+		72411D4910D8844600DA6DBB /* mActionComposerManager.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionComposerManager.png; path = ../../images/themes/newgis/mActionComposerManager.png; sourceTree = SOURCE_ROOT; };
+		72411D4A10D884A400DA6DBB /* mActionAddArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionAddArrow.png; path = ../../images/themes/gis/mActionAddArrow.png; sourceTree = SOURCE_ROOT; };
+		72411D4B10D884A400DA6DBB /* mActionAddBasicShape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionAddBasicShape.png; path = ../../images/themes/gis/mActionAddBasicShape.png; sourceTree = SOURCE_ROOT; };
+		72411D4C10D884A400DA6DBB /* mActionAlignBottom.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionAlignBottom.png; path = ../../images/themes/gis/mActionAlignBottom.png; sourceTree = SOURCE_ROOT; };
+		72411D4D10D884A400DA6DBB /* mActionAlignHCenter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionAlignHCenter.png; path = ../../images/themes/gis/mActionAlignHCenter.png; sourceTree = SOURCE_ROOT; };
+		72411D4E10D884A400DA6DBB /* mActionAlignLeft.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionAlignLeft.png; path = ../../images/themes/gis/mActionAlignLeft.png; sourceTree = SOURCE_ROOT; };
+		72411D4F10D884A400DA6DBB /* mActionAlignRight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionAlignRight.png; path = ../../images/themes/gis/mActionAlignRight.png; sourceTree = SOURCE_ROOT; };
+		72411D5010D884A400DA6DBB /* mActionAlignTop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionAlignTop.png; path = ../../images/themes/gis/mActionAlignTop.png; sourceTree = SOURCE_ROOT; };
+		72411D5110D884A400DA6DBB /* mActionAlignVCenter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionAlignVCenter.png; path = ../../images/themes/gis/mActionAlignVCenter.png; sourceTree = SOURCE_ROOT; };
+		72411D5210D884A400DA6DBB /* mActionCopySelected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionCopySelected.png; path = ../../images/themes/gis/mActionCopySelected.png; sourceTree = SOURCE_ROOT; };
+		72411D5310D884A400DA6DBB /* mActionDeselectAll.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionDeselectAll.png; path = ../../images/themes/gis/mActionDeselectAll.png; sourceTree = SOURCE_ROOT; };
+		72411D5410D884A400DA6DBB /* mActionInvertSelection.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionInvertSelection.png; path = ../../images/themes/gis/mActionInvertSelection.png; sourceTree = SOURCE_ROOT; };
+		72411D5510D884A400DA6DBB /* mActionLowerItems.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionLowerItems.png; path = ../../images/themes/gis/mActionLowerItems.png; sourceTree = SOURCE_ROOT; };
+		72411D5610D884A400DA6DBB /* mActionMoveItemsToBottom.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionMoveItemsToBottom.png; path = ../../images/themes/gis/mActionMoveItemsToBottom.png; sourceTree = SOURCE_ROOT; };
+		72411D5710D884A400DA6DBB /* mActionMoveItemsToTop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionMoveItemsToTop.png; path = ../../images/themes/gis/mActionMoveItemsToTop.png; sourceTree = SOURCE_ROOT; };
+		72411D5810D884A400DA6DBB /* mActionNewComposer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionNewComposer.png; path = ../../images/themes/gis/mActionNewComposer.png; sourceTree = SOURCE_ROOT; };
+		72411D5910D884A400DA6DBB /* mActionPrintComposers.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionPrintComposers.png; path = ../../images/themes/gis/mActionPrintComposers.png; sourceTree = SOURCE_ROOT; };
+		72411D5A10D884A400DA6DBB /* mActionRaiseItems.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionRaiseItems.png; path = ../../images/themes/gis/mActionRaiseItems.png; sourceTree = SOURCE_ROOT; };
+		72411D5B10D884A400DA6DBB /* mActionReshape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionReshape.png; path = ../../images/themes/gis/mActionReshape.png; sourceTree = SOURCE_ROOT; };
+		72411D5C10D884A400DA6DBB /* mActionSelectedToTop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionSelectedToTop.png; path = ../../images/themes/gis/mActionSelectedToTop.png; sourceTree = SOURCE_ROOT; };
+		72411D5D10D884CB00DA6DBB /* mActionDeleteAttribute.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionDeleteAttribute.png; path = ../../images/themes/gis/mActionDeleteAttribute.png; sourceTree = SOURCE_ROOT; };
+		72411D5E10D884CB00DA6DBB /* mActionNewAttribute.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionNewAttribute.png; path = ../../images/themes/gis/mActionNewAttribute.png; sourceTree = SOURCE_ROOT; };
 		72442AE71095DCAF00B54796 /* testqgspoint.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = testqgspoint.cpp; path = ../../tests/src/core/testqgspoint.cpp; sourceTree = SOURCE_ROOT; };
 		72442AE81095DCD800B54796 /* qgsavoidintersectionsdialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsavoidintersectionsdialogbase.ui; path = ../../src/ui/qgsavoidintersectionsdialogbase.ui; sourceTree = SOURCE_ROOT; };
 		72442AE91095DCFC00B54796 /* qgsavoidintersectionsdialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsavoidintersectionsdialog.cpp; path = ../../src/app/qgsavoidintersectionsdialog.cpp; sourceTree = SOURCE_ROOT; };
@@ -9067,6 +9097,7 @@
 				724FFB5310B47263006E3698 /* QgsOpenVectorLayerDialog-en_US */,
 				729FA30110D746A4005E7C15 /* QgsOptions-en_US */,
 				724FFB2310B47263006E3698 /* QgsPgSourceSelect-en_US */,
+				72411D4410D883B900DA6DBB /* QgsPluginInstallerDialog-en_US */,
 				724FFB5610B47263006E3698 /* QgsProjectProperties-en_US */,
 				729FA30310D74737005E7C15 /* QgsScaleBarPluginGui-en_US */,
 				724FFB5D10B47263006E3698 /* QgsServerSourceSelect-en_US */,
@@ -9743,6 +9774,7 @@
 				7209EEFD0F39E5D9003DC336 /* mActionCapturePolygon.png */,
 				7209EEFE0F39E5D9003DC336 /* mActionCheckQgisVersion.png */,
 				7209EEFF0F39E5D9003DC336 /* mActionCollapseTree.png */,
+				72411D4710D8841F00DA6DBB /* mActionComposerManager.png */,
 				7209EF000F39E5D9003DC336 /* mActionContextHelp.png */,
 				7209EF010F39E5D9003DC336 /* mActionCopySelected.png */,
 				7209EF020F39E5D9003DC336 /* mActionCustomProjection.png */,
@@ -9902,6 +9934,7 @@
 				7209EF6F0F39E5D9003DC336 /* mActionCaptureLine.png */,
 				7209EF700F39E5D9003DC336 /* mActionCapturePoint.png */,
 				7209EF710F39E5D9003DC336 /* mActionCapturePolygon.png */,
+				72411D4810D8843300DA6DBB /* mActionComposerManager.png */,
 				7209EF720F39E5D9003DC336 /* mActionDeleteSelected.png */,
 				7209EF730F39E5D9003DC336 /* mActionDeleteVertex.png */,
 				7209EF740F39E5D9003DC336 /* mActionDraw.png */,
@@ -9958,6 +9991,27 @@
 				72C4242D103DE718005CD18E /* mActionRedo.png */,
 				72C4242E103DE718005CD18E /* mActionMergeFeatures.png */,
 				72C4242F103DE718005CD18E /* mActionAddImage.png */,
+				72411D4A10D884A400DA6DBB /* mActionAddArrow.png */,
+				72411D4B10D884A400DA6DBB /* mActionAddBasicShape.png */,
+				72411D4C10D884A400DA6DBB /* mActionAlignBottom.png */,
+				72411D4D10D884A400DA6DBB /* mActionAlignHCenter.png */,
+				72411D4E10D884A400DA6DBB /* mActionAlignLeft.png */,
+				72411D4F10D884A400DA6DBB /* mActionAlignRight.png */,
+				72411D5010D884A400DA6DBB /* mActionAlignTop.png */,
+				72411D5110D884A400DA6DBB /* mActionAlignVCenter.png */,
+				72411D5210D884A400DA6DBB /* mActionCopySelected.png */,
+				72411D5310D884A400DA6DBB /* mActionDeselectAll.png */,
+				72411D5410D884A400DA6DBB /* mActionInvertSelection.png */,
+				72411D5510D884A400DA6DBB /* mActionLowerItems.png */,
+				72411D5610D884A400DA6DBB /* mActionMoveItemsToBottom.png */,
+				72411D5710D884A400DA6DBB /* mActionMoveItemsToTop.png */,
+				72411D5810D884A400DA6DBB /* mActionNewComposer.png */,
+				72411D5910D884A400DA6DBB /* mActionPrintComposers.png */,
+				72411D5A10D884A400DA6DBB /* mActionRaiseItems.png */,
+				72411D5B10D884A400DA6DBB /* mActionReshape.png */,
+				72411D5C10D884A400DA6DBB /* mActionSelectedToTop.png */,
+				72411D5D10D884CB00DA6DBB /* mActionDeleteAttribute.png */,
+				72411D5E10D884CB00DA6DBB /* mActionNewAttribute.png */,
 				727459F40F770252007F4218 /* plugins */,
 			);
 			name = gis;
@@ -10517,6 +10571,7 @@
 				724D05FF10A9112D00F9680A /* mActionCaptureLine.png */,
 				724D060010A9112D00F9680A /* mActionCapturePoint.png */,
 				724D060110A9112D00F9680A /* mActionCapturePolygon.png */,
+				72411D4910D8844600DA6DBB /* mActionComposerManager.png */,
 				724D060210A9112D00F9680A /* mActionDeletePart.png */,
 				724D060310A9112D00F9680A /* mActionDeleteRing.png */,
 				724D060410A9112D00F9680A /* mActionDeleteSelected.png */,
@@ -11409,6 +11464,9 @@
 				72993BDB0FE3037800244D1A /* v.in.ogr.qgis.loc.2.png */,
 				72993BDC0FE3037800244D1A /* v.in.ogr.qgis.loc.qgm */,
 				72993BDD0FE3037800244D1A /* v.in.ogr.qgis.qgm */,
+				72411D4110D8835A00DA6DBB /* v.in.ogr.qgis.where.1.svg */,
+				72411D4210D8835A00DA6DBB /* v.in.ogr.qgis.where.2.png */,
+				72411D4310D8835A00DA6DBB /* v.in.ogr.qgis.where.qgm */,
 				72993BDE0FE3037800244D1A /* v.in.ogr.qgm */,
 				72993BDF0FE3037800244D1A /* v.in.region.1.svg */,
 				72993BE00FE3037800244D1A /* v.in.region.qgm */,
@@ -17690,7 +17748,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 12467;
+				QGIS_VERSION_BUILD = 12487;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -17701,7 +17759,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 12467;
+				QGIS_VERSION_BUILD = 12487;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
