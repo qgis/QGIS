@@ -693,7 +693,7 @@
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/frmAbout.ui" line="125"/>
@@ -768,12 +768,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="118"/>
         <source>Dissolve field</source>
-        <translation type="unfinished">Trường &apos;hoà tan&apos;</translation>
+        <translation>Trường &apos;hoà tan&apos;</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="166"/>
         <source>Dissolve buffer results</source>
-        <translation type="unfinished">&quot;Hoà tan&apos; các kết quả đệm</translation>
+        <translation>&quot;Hoà tan&apos; các kết quả đệm</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="190"/>
@@ -882,12 +882,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="41"/>
         <source>Weight field</source>
-        <translation type="unfinished">Trường trọng số</translation>
+        <translation>Trường trọng số</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="69"/>
         <source>Number of standard deviations</source>
-        <translation type="unfinished">Số lượng độ lệch chuẩn</translation>
+        <translation>Số lượng độ lệch chuẩn</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="76"/>
@@ -994,7 +994,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="75"/>
         <source>Unstratified Sampling Design (Entire layer)</source>
-        <translation type="unfinished">Thiết kế thu mẫu không phân loại (toàn bộ lớp)</translation>
+        <translation>Thiết kế Thu mẫu Không phân loại (toàn bộ lớp)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="84"/>
@@ -1006,7 +1006,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="116"/>
         <source>Stratified Sampling Design (Individual polygons)</source>
-        <translation type="unfinished">Thiết kế thu mẫu có phân loại (các vùng riêng lẻ)</translation>
+        <translation>Thiết kế thu mẫu có phân loại (các vùng riêng lẻ)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="149"/>
@@ -1127,22 +1127,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="101"/>
         <source>Grid Spacing</source>
-        <translation type="unfinished">Khoảng cách lưới</translation>
+        <translation>Khoảng cách lưới</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="109"/>
         <source>Use this point spacing</source>
-        <translation type="unfinished">Dùng khoảng cách điểm sau đây</translation>
+        <translation>Dùng khoảng cách điểm sau đây</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="158"/>
         <source>Apply random offset to point spacing</source>
-        <translation type="unfinished">Áp dụng căn lệch ngẫu nhiên cho cách quãng điểm</translation>
+        <translation>Áp dụng căn lệch ngẫu nhiên cho cách quãng điểm</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="178"/>
         <source>Initial inset from corner (LH side)</source>
-        <translation type="unfinished">Độ thụt ban đầu tính từ góc (cạnh LH)</translation>
+        <translation>Độ thụt ban đầu tính từ góc (phía LH)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="16"/>
@@ -1192,7 +1192,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="16"/>
         <source>Random Selection From Within Subsets</source>
-        <translation type="unfinished">Chọn ngẫu nhiên từ trong tập hợp con</translation>
+        <translation>Chọn ngẫu nhiên từ trong tập hợp con</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="41"/>
@@ -1299,23 +1299,23 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="250"/>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="122"/>
         <source>Use only selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>Chỉ dùng các đối tượng được chọn</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="unfinished">Chọn theo vị trí</translation>
+        <translation>Chọn theo vị trí</translation>
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation type="unfinished">Ma trận khoảng cách</translation>
+        <translation>Ma trận khoảng cách</translation>
     </message>
     <message>
         <source>Points in polygon</source>
-        <translation type="unfinished">Các điểm trong vùng</translation>
+        <translation>Các điểm trong vùng</translation>
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation type="unfinished">Tính tổng chiều dài đường</translation>
+        <translation>Tính tổng chiều dài đường</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="241"/>
@@ -1326,53 +1326,55 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="303"/>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="309"/>
         <source>OGR Layer Converter</source>
-        <translation type="unfinished"></translation>
+        <translation>Trình chuyển đổi lớp của OGR</translation>
     </message>
     <message>
         <source>Created output matrix:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Ma trận đầu ra được tạo thành:
+</translation>
     </message>
     <message>
         <source>Created output Shapefile:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Tập tin shape đầu ra được tạo thành:
+</translation>
     </message>
     <message>
         <source>Vector layer is not valid</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp vector không hợp lệ</translation>
     </message>
     <message>
         <source>creating new selection</source>
-        <translation type="unfinished"></translation>
+        <translation>đang tạo phép chọn mới</translation>
     </message>
     <message>
         <source>adding to current selection</source>
-        <translation type="unfinished"></translation>
+        <translation>thêm vào phép chọn hiện tại</translation>
     </message>
     <message>
         <source>removing from current selection</source>
-        <translation type="unfinished"></translation>
+        <translation>loại bỏ khỏi phép chọn hiện tại</translation>
     </message>
     <message>
         <source>Select features in:</source>
-        <translation type="unfinished"></translation>
+        <translation>Chọn các đối tượng trong:</translation>
     </message>
     <message>
         <source>that intersect features in:</source>
-        <translation type="unfinished"></translation>
+        <translation>nào cắt các đối tượng trong:</translation>
     </message>
     <message>
         <source>Modify current selection by:</source>
-        <translation type="unfinished"></translation>
+        <translation>Thay đổi phép chọn hiện tại bằng:</translation>
     </message>
     <message>
         <source>Please specify input layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Vui lòng chỉ định lớp đầu vào</translation>
     </message>
     <message>
         <source>Please specify select layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Vui lòng chỉ định lớp chọn</translation>
     </message>
 </context>
 <context>
@@ -1427,57 +1429,57 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="14"/>
         <source>Symbol properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Tính chất biểu tượng</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="20"/>
         <source>Symbol preview:</source>
-        <translation type="unfinished"></translation>
+        <translation>Xem trước biểu tượng:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="31"/>
         <source>Symbol layer type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kiểu lớp của biểu tượng:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="49"/>
         <source>Symbol layer properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Tính chất lớp biểu tượng</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="65"/>
         <source>This symbol layer doesn&apos;t have GUI for settings.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp biểu tượng này không có GUI để chỉnh thiết lập.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="100"/>
         <source>Symbol layers:</source>
-        <translation type="unfinished"></translation>
+        <translation>Các lớp biểu tượng:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="125"/>
         <source>Add symbol layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Thêm lớp biểu tượng</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="138"/>
         <source>Remove symbol layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Loại bỏ lớp biểu tượng</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="167"/>
         <source>Lock layer&apos;s color</source>
-        <translation type="unfinished"></translation>
+        <translation>Khoá màu của lớp</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="199"/>
         <source>Move up</source>
-        <translation type="unfinished">Di chuyển lên</translation>
+        <translation>Di chuyển lên</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="212"/>
         <source>Move down</source>
-        <translation type="unfinished">Di chuyển xuống</translation>
+        <translation>Di chuyển xuống</translation>
     </message>
 </context>
 <context>
@@ -1500,17 +1502,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/labeling/engineconfigdialog.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished">Hộp thoại</translation>
+        <translation>Hộp thoại</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/engineconfigdialog.ui" line="22"/>
         <source>Search method</source>
-        <translation type="unfinished"></translation>
+        <translation>Phương pháp tìm</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/engineconfigdialog.ui" line="30"/>
         <source>Chain (fast)</source>
-        <translation type="unfinished">Chuỗi (nhanh)</translation>
+        <translation>Chuỗi (nhanh)</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/engineconfigdialog.ui" line="35"/>
@@ -1530,60 +1532,60 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/labeling/engineconfigdialog.ui" line="50"/>
         <source>FALP (fastest)</source>
-        <translation type="unfinished"></translation>
+        <translation>FALP (nhanh nhất)</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/engineconfigdialog.ui" line="78"/>
         <source>Number of candidates</source>
-        <translation type="unfinished"></translation>
+        <translation>Số &apos;ứng cử viên&apos;</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/engineconfigdialog.ui" line="84"/>
         <source>Point</source>
-        <translation type="unfinished">Điểm</translation>
+        <translation>Điểm</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/engineconfigdialog.ui" line="104"/>
         <source>Line</source>
-        <translation type="unfinished">Đường</translation>
+        <translation>Đường</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/engineconfigdialog.ui" line="124"/>
         <source>Polygon</source>
-        <translation type="unfinished">Vùng</translation>
+        <translation>Vùng</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/engineconfigdialog.ui" line="178"/>
         <source>Show all labels (i.e. including colliding labels)</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiển thị tất cả nhãn (tức là đưa vào cả các nhãn đụng nhau)</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/engineconfigdialog.ui" line="185"/>
         <source>Show label candidates (for debugging)</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiển thị các &apos;ứng cử viên&apos; nhãn (để gỡ lỗi)</translation>
     </message>
 </context>
 <context>
     <name>GeometryDialog</name>
     <message>
         <source>Merge all</source>
-        <translation type="unfinished">Gộp tất cả</translation>
+        <translation>Gộp tất cả</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="unfinished">Vuii lòng chỉ định lớp vector đầu vào</translation>
+        <translation>Vuii lòng chỉ định lớp vector đầu vào</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="unfinished">Vui lòng chỉ định tập tin shape đầu ra</translation>
+        <translation>Vui lòng chỉ định tập tin shape đầu ra</translation>
     </message>
     <message>
         <source>Please specify valid tolerance value</source>
-        <translation type="unfinished">Vui lòng chỉ định giá trị dung sai hợp lệ</translation>
+        <translation>Vui lòng chỉ định giá trị dung sai hợp lệ</translation>
     </message>
     <message>
         <source>Please specify valid UID field</source>
-        <translation type="unfinished">Vui lòng chỉ định trường UID đúng</translation>
+        <translation>Vui lòng chỉ định trường UID đúng</translation>
     </message>
     <message>
         <source>Created output shapefile</source>
@@ -1591,59 +1593,59 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished">Bạn có muốn thêm lớp mới vào TOC?</translation>
+        <translation>Bạn có muốn thêm lớp mới vào TOC?</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
-        <translation type="unfinished">Đơn phần thành đa phần</translation>
+        <translation>Các đơn phần thành một đa phần</translation>
     </message>
     <message>
         <source>Output shapefile</source>
-        <translation type="unfinished">Tập tin shape đầu ra</translation>
+        <translation>Tập tin shape đầu ra</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
-        <translation type="unfinished">Đa phần thành đơn phần</translation>
+        <translation>Một đa phần thành nhiều đơn phần</translation>
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation type="unfinished">Trích xuất nốt</translation>
+        <translation>Trích xuất nốt</translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation type="unfinished">Vùng thành đường</translation>
+        <translation>Vùng thành đường</translation>
     </message>
     <message>
         <source>Input polygon vector layer</source>
-        <translation type="unfinished">Lớp vector kiểu vùng đầu vào</translation>
+        <translation>Lớp vector kiểu vùng đầu vào</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="unfinished">Xuất/Thêm cột hình học</translation>
+        <translation>Xuất/Thêm cột hình học</translation>
     </message>
     <message>
         <source>Input vector layer</source>
-        <translation type="unfinished">Lớp vector đầu vào</translation>
+        <translation>Lớp vector đầu vào</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation type="unfinished">Đơn giản hoá các đối tượng hình học</translation>
+        <translation>Đơn giản hoá các đối tượng hình học</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation type="unfinished">Trọng tâm của vùng</translation>
+        <translation>Trọng tâm của vùng</translation>
     </message>
     <message>
         <source>Output point shapefile</source>
-        <translation type="unfinished">Tập tin shape kiểu điểm đầu ra</translation>
+        <translation>Tập tin shape kiểu điểm đầu ra</translation>
     </message>
     <message>
         <source>Error processing specified tolerance!</source>
-        <translation type="unfinished">Lỗi khi xử lý dung sai đã chỉ định!</translation>
+        <translation>Lỗi khi xử lý dung sai đã chỉ định!</translation>
     </message>
     <message>
         <source>Please choose larger tolerance...</source>
-        <translation type="unfinished">Vui lòng chọn dung sai lớn hơn...</translation>
+        <translation>Vui lòng chọn dung sai lớn hơn...</translation>
     </message>
     <message>
         <source>Function not found</source>
@@ -1659,66 +1661,66 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Input point vector layer</source>
-        <translation type="unfinished">Lớp vector điểm đầu vào</translation>
+        <translation>Lớp vector điểm đầu vào</translation>
     </message>
     <message>
         <source>Delaunay triangulation</source>
-        <translation type="unfinished"></translation>
+        <translation>Phép tam giác Delaunay</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Vùng từ phạm vi của lớp</translation>
     </message>
     <message>
         <source>Input layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp đầu vào</translation>
     </message>
     <message>
         <source>Output polygon shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Tập tin shape kiểu vùng đầu ra</translation>
     </message>
     <message>
         <source>Unable to delete existing shapefile.</source>
-        <translation type="unfinished"></translation>
+        <translation>Không thể xoá tập tin shape hiện có.</translation>
     </message>
     <message>
         <source>Unable to delete incomplete shapefile.</source>
-        <translation type="unfinished"></translation>
+        <translation>Không thể xoá tập tin shape chưa hoàn chỉnh.</translation>
     </message>
     <message>
         <source>Created output shapefile:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tập tin shape đầu ra được tạo thành:</translation>
     </message>
     <message>
         <source>Error writing output shapefile.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lỗi khi ghi tập tin shape đầu ra.</translation>
     </message>
 </context>
 <context>
     <name>GeoprocessingDialog</name>
     <message>
         <source>Dissolve all</source>
-        <translation type="unfinished">&apos;Hoà tan&apos; tất cả</translation>
+        <translation>&apos;Hoà tan&apos; tất cả</translation>
     </message>
     <message>
         <source>Please specify an input layer</source>
-        <translation type="unfinished">Vui lòng chỉ định lớp đầu vào</translation>
+        <translation>Vui lòng chỉ định lớp đầu vào</translation>
     </message>
     <message>
         <source>Please specify a difference/intersect/union layer</source>
-        <translation type="unfinished">Vui lòng chỉ định một lớp sai biệt/giao nhau/hợp</translation>
+        <translation>Vui lòng chỉ định một lớp sai biệt/giao nhau/hợp</translation>
     </message>
     <message>
         <source>Please specify valid buffer value</source>
-        <translation type="unfinished">Vui lòng chỉ định giá trị đệm đúng</translation>
+        <translation>Vui lòng chỉ định giá trị đệm hợp lệ</translation>
     </message>
     <message>
         <source>Please specify dissolve field</source>
-        <translation type="unfinished">Vui lòng chỉ định trường &apos;hoà tan&apos;</translation>
+        <translation>Vui lòng chỉ định trường &apos;hoà tan&apos;</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="unfinished">Vui lòng chỉ định tập tin shape đầu ra</translation>
+        <translation>Vui lòng chỉ định tập tin shape đầu ra</translation>
     </message>
     <message>
         <source>Unable to create geoprocessing result.</source>
@@ -1734,23 +1736,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="unfinished">Đệm</translation>
+        <translation>Đệm</translation>
     </message>
     <message>
         <source>Create single minimum convex hull</source>
-        <translation type="unfinished">Tạo bao lồi tối thiểu duy nhất</translation>
+        <translation>Tạo bao lồi tối thiểu duy nhất</translation>
     </message>
     <message>
         <source>Create convex hulls based on input field</source>
-        <translation type="unfinished">Tạo các bao lồi dựa trên trường đầu vào</translation>
+        <translation>Tạo các bao lồi dựa trên trường đầu vào</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation type="unfinished">(Các) bao lồi</translation>
+        <translation>(Các) bao lồi</translation>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="unfinished">&apos;Hoà tan&apos;</translation>
+        <translation>&apos;Hoà tan&apos;</translation>
     </message>
     <message>
         <source>Erase layer</source>
@@ -1758,84 +1760,93 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Difference</source>
-        <translation type="unfinished">Sai biệt</translation>
+        <translation>Sai biệt</translation>
     </message>
     <message>
         <source>Intersect layer</source>
-        <translation type="unfinished">Lớp giao</translation>
+        <translation>Lớp giao</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation type="unfinished">Giao nhau</translation>
+        <translation>Giao nhau</translation>
     </message>
     <message>
         <source>Difference layer</source>
-        <translation type="unfinished">Lớp sai biệt</translation>
+        <translation>Lớp sai biệt</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="unfinished">Sai biệt đối xứng</translation>
+        <translation>Sai biệt đối xứng</translation>
     </message>
     <message>
         <source>Clip layer</source>
-        <translation type="unfinished">Lớp cắt</translation>
+        <translation>Cắt lớp</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="unfinished">Cắt</translation>
+        <translation>Cắt</translation>
     </message>
     <message>
         <source>Union layer</source>
-        <translation type="unfinished">Lớp hợp</translation>
+        <translation>Hợp lớp</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="unfinished">Hợp</translation>
+        <translation>Hợp</translation>
     </message>
     <message>
         <source>No features selected, please uncheck &apos;Use selected&apos; or make a selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Không có đối tượng được chọn, vui lòng khử đánh dấu mục &apos;Dùng phần được chọn&apos; hoặc thực hiện phép chọn trước</translation>
     </message>
     <message>
         <source>Unable to delete existing shapefile.</source>
-        <translation type="unfinished"></translation>
+        <translation>Không thể xoá tập tin shape hiện có.</translation>
     </message>
     <message>
         <source>
 Warnings:</source>
-        <translation type="unfinished"></translation>
+        <translation>
+(Các) cảnh báo:</translation>
     </message>
     <message>
         <source>
 Some output geometries may be missing or invalid.
 
 Would you like to add the new layer anyway?</source>
-        <translation type="unfinished"></translation>
+        <translation>
+Một số hình học đầu ra có thể bị mất hoặc không hợp lệ.
+
+Mặc dù vậy, bạn có muốn thêm lớp mới vào không?</translation>
     </message>
     <message>
         <source>
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation>
+
+Bạn có muốn thêm lớp mới vào Danh sách lớp không?</translation>
     </message>
     <message>
         <source>
 Input CRS error: Different input coordinate reference systems detected, results may not be as expected.</source>
-        <translation type="unfinished"></translation>
+        <translation>
+Lỗi HTĐ đầu vào: Phát hiện thấy sai biệt hệ toạ độ, kết quả có thể không như mong đợi.</translation>
     </message>
     <message>
         <source>
 Feature geometry error: One or more output features ignored due to invalid geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation>
+Lỗi hình học đối tượng: Một hoặc nhiều đối tượng đầu ra bị bỏ qua do hình học không hợp lệ.</translation>
     </message>
     <message>
         <source>
 GEOS geoprocessing error: One or more input features have invalid geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation>
+Lỗi xử lý địa lý GEOS: Một hoặc nhiều đối tượng đầu vào có hình học không hợp lệ.</translation>
     </message>
     <message>
         <source>Created output shapefile:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tập tin shape đầu ra được tạo thành:</translation>
     </message>
 </context>
 <context>
@@ -1883,42 +1894,42 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="65"/>
         <source>This is the class that provides the &apos;glue&apos; between your custom application logic and the QGIS application. You will see that a number of methods are already implemented for you - including some examples of how to add a raster or vector layer to the main application map canvas. This class is a concrete instance of the QgisPlugin interface which defines required behaviour for a plugin. In particular, a plugin has a number of static methods and members so that the QgsPluginManager and plugin loader logic can identify each plugin, create an appropriate menu entry for it etc. Note there is nothing stopping you creating multiple toolbar icons and menu entries for a single plugin. By default though a single menu entry and toolbar button is created and its pre-configured to call the run() method in this class when selected. This default implementation provided for you by the plugin builder is well documented, so please refer to the code for further advice.</source>
-        <translation type="unfinished">Đây là lớp cung cấp &apos;chất keo gắn&apos; giữa luân lý ứng dụng của bạn và ứng dụng QGIS. bạn sẽ thấy rằng một số phương pháp đã được áp dụng cho bạn - bao gồm cả các ví dụ làm thế nào để thêm một lớp raster hoặc vector vào khung bản đồ trong ứng dụng chính. Lớp này là một &quot;concrete instance&quot; của giao diện QgisPlugin dùng để định nghĩa &apos;tập tính&apos; cần có của một phần mở rộng. Đặc biệt, một phần mở rộng có một số phương pháp tính và các thành phần sao cho QgsPluginManager và luânn lý nạp phần mở rộng có thể nhận diện mỗi phần mở rộng, tạo ra một mục menu phù hợp cho nó...Lưu ý rằng không có gì ngăn bạn tạo ra các biểu tượng thanh công cụ và các mục menu cho một phần mở rộng. Mặc dù theo mặc định một mục menu đơn và nút lệnh trên thanh công cụ được tạo ra và được cấu hình trước để gọi phương pháp run() trong lớp này khi được chọn. Việc thực thi mặc định này được cung cấp cho bạn bởi trình xây dựng phần mở rộng và có tài liệu hướng dẫn chi tiết, vì thế hãy xem mã lệnh để biết thêm.</translation>
+        <translation>Đây là lớp cung cấp &apos;chất keo gắn&apos; giữa luân lý ứng dụng của bạn và ứng dụng QGIS. bạn sẽ thấy rằng một số phương pháp đã được áp dụng cho bạn - bao gồm cả các ví dụ làm thế nào để thêm một lớp raster hoặc vector vào khung bản đồ trong ứng dụng chính. Lớp này là một &quot;concrete instance&quot; của giao diện QgisPlugin dùng để định nghĩa &apos;tập tính&apos; cần có của một phần mở rộng. Đặc biệt, một phần mở rộng có một số phương pháp tính và các thành phần sao cho QgsPluginManager và luânn lý nạp phần mở rộng có thể nhận diện mỗi phần mở rộng, tạo ra một mục menu phù hợp cho nó...Lưu ý rằng không có gì ngăn bạn tạo ra các biểu tượng thanh công cụ và các mục menu cho một phần mở rộng. Mặc dù theo mặc định một mục menu đơn và nút lệnh trên thanh công cụ được tạo ra và được cấu hình trước để gọi phương pháp run() trong lớp này khi được chọn. Việc thực thi mặc định này được cung cấp cho bạn bởi trình xây dựng phần mở rộng và có tài liệu hướng dẫn chi tiết, vì thế hãy xem mã lệnh để biết thêm.</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="66"/>
         <source>This is a Qt designer &apos;ui&apos; file. It defines the look of the default plugin dialog without implementing any application logic. You can modify this form to suite your needs or completely remove it if your plugin does not need to display a user form (e.g. for custom MapTools).</source>
-        <translation type="unfinished">Đây là tập tin thiết kế &apos;ui&apos; Qt. Nó định nghĩa cái nhìn của hộp thoại phần mở rộng mặc định mà không thực thi bất kỳ luân lý ứng dụng nào. Bạn có thể thay đổi biểu mẫu này cho phù hợp nhu cầu của mình hoặc loại bỏ nó hoàn toàn nếu phần mở rộng của bạn kho6ng cần trình bày một mẫu cho người dùng (ví dụ như Các công cụ bản đồ tùy chọn).</translation>
+        <translation>Đây là tập tin thiết kế &apos;ui&apos; Qt. Nó định nghĩa cái nhìn của hộp thoại phần mở rộng mặc định mà không thực thi bất kỳ luân lý ứng dụng nào. Bạn có thể thay đổi biểu mẫu này cho phù hợp nhu cầu của mình hoặc loại bỏ nó hoàn toàn nếu phần mở rộng của bạn kho6ng cần trình bày một mẫu cho người dùng (ví dụ như Các công cụ bản đồ tùy chọn).</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="67"/>
         <source>This is the concrete class where application logic for the above mentioned dialog should go. The world is your oyster here really....</source>
-        <translation type="unfinished">Đây là lớp &apos;nền&apos;  nơi luân lý ứng dụng dùng cho hộp thoại nói trên. Bạn có toàn quyền trong phần này...</translation>
+        <translation>Đây là lớp &apos;nền&apos;  nơi luân lý ứng dụng dùng cho hộp thoại nói trên. Bạn có toàn quyền trong phần này...</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="68"/>
         <source>This is the Qt4 resources file for your plugin. The Makefile generated for your plugin is all set up to compile the resource file so all you need to do is add your additional icons etc using the simple xml file format. Note the namespace used for all your resources e.g. (&apos;:/Homann/&apos;). It is important to use this prefix for all your resources. We suggest you include any other images and run time data in this resurce file too.</source>
-        <translation type="unfinished">Đây là tập tin các tài nguyên Qt dùng cho phần mở rộng của bạn. Makefile được tạo ra cho phần mở rộng của bạn được thiết lập để biên dịch tập tin tài nguyên do vậy tất cả những gì bạn cần làm là thêm các biểu tượng bổ sung,...bằng cách dùng định dạng tập tin đơn giản xml. Lưu ý về các khoảng trắng tên (namespace) được dùng cho các tài nguyên của bạn, ví dụ như (&apos;:/Homann/&apos;). Điều quan trọng là dùng tiền tố này cho tất cả các tài nguyên của bạn. Chúng tôi đề xuất bạn đưa vào tập tin tài nguyên này cả các ảnh khác và dữ liệu liệu thời gian chạy (run time data).</translation>
+        <translation>Đây là tập tin các tài nguyên Qt dùng cho phần mở rộng của bạn. Makefile được tạo ra cho phần mở rộng của bạn được thiết lập để biên dịch tập tin tài nguyên do vậy tất cả những gì bạn cần làm là thêm các biểu tượng bổ sung,...bằng cách dùng định dạng tập tin đơn giản xml. Lưu ý về các khoảng trắng tên (namespace) được dùng cho các tài nguyên của bạn, ví dụ như (&apos;:/Homann/&apos;). Điều quan trọng là dùng tiền tố này cho tất cả các tài nguyên của bạn. Chúng tôi đề xuất bạn đưa vào tập tin tài nguyên này cả các ảnh khác và dữ liệu liệu thời gian chạy (run time data).</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="69"/>
         <source>This is the icon that will be used for your plugin menu entry and toolbar icon. Simply replace this icon with your own icon to make your plugin disctinctive from the rest.</source>
-        <translation type="unfinished">Đây là biểu tượng sẽ được dùng cho mục trình đơn cũng như biểu tượng trên thanh công cụ của phần mở rộng của bạn. Chỉ cần đơn giản thay thế biểu tượng này bằng biểu tượng của bạn để làm cho phần mở rộng của bạn phân biệt được với các phần mở rộng khác.</translation>
+        <translation>Đây là biểu tượng sẽ được dùng cho mục trình đơn cũng như biểu tượng trên thanh công cụ của phần mở rộng của bạn. Chỉ cần đơn giản thay thế biểu tượng này bằng biểu tượng của bạn để làm cho phần mở rộng của bạn phân biệt được với các phần mở rộng khác.</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="70"/>
         <source>This file contains the documentation you are reading now!</source>
-        <translation type="unfinished">Tập tin này chứa tài liệu mà bạn hiện đang đọc!</translation>
+        <translation>Tập tin này chứa tài liệu mà bạn hiện đang đọc!</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="71"/>
         <source>Getting developer help:</source>
-        <translation type="unfinished">Tìm trợ giúp từ nhà phát triển:</translation>
+        <translation>Tìm trợ giúp từ nhà phát triển:</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="72"/>
         <source>For Questions and Comments regarding the plugin builder template and creating your features in QGIS using the plugin interface please contact us via:</source>
-        <translation type="unfinished">Nếu có thắc mắc và nhận xét về mẫu xây dựng phần mở rộng và tạo các đối tượng của bạn trong QGIS bằng cách dùng giao diện phần mở rộng, vui lòng liên hệ với chúng tôi thông qua:</translation>
+        <translation>Nếu có thắc mắc và nhận xét về mẫu xây dựng phần mở rộng và tạo các đối tượng của bạn trong QGIS bằng cách dùng giao diện phần mở rộng, vui lòng liên hệ với chúng tôi thông qua:</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="73"/>
@@ -1948,17 +1959,17 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/labeling/labeling.cpp" line="111"/>
         <source>Labeling</source>
-        <translation type="unfinished"></translation>
+        <translation>Tạo nhãn</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labeling.cpp" line="113"/>
         <source>Replace this with a short description of what the plugin does</source>
-        <translation type="unfinished">Thay phần này bằng một mô tả ngắn về chức năng của phần mở rộng</translation>
+        <translation>Thay phần này bằng một mô tả ngắn về chức năng của phần mở rộng</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labeling.cpp" line="118"/>
         <source>&amp;Labeling</source>
-        <translation type="unfinished"></translation>
+        <translation>Tạo &amp;nhãn</translation>
     </message>
 </context>
 <context>
@@ -1966,166 +1977,166 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="14"/>
         <source>Layer labeling settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Thiết lập tạo nhãn cho lớp</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="25"/>
         <source>Label this layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Gắn nhãn cho lớp này</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="34"/>
         <source>Field with labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Trường chứa nhãn</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="62"/>
         <source>Placement</source>
-        <translation type="unfinished"></translation>
+        <translation>Vị trí đặt</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="87"/>
         <source>around point</source>
-        <translation type="unfinished"></translation>
+        <translation>quanh điểm</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="97"/>
         <source>over point</source>
-        <translation type="unfinished"></translation>
+        <translation>trên điểm</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="108"/>
         <source>parallel</source>
-        <translation type="unfinished"></translation>
+        <translation>song song</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="118"/>
         <source>curved</source>
-        <translation type="unfinished"></translation>
+        <translation>cong</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="125"/>
         <source>horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>ngang</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="136"/>
         <source>over centroid</source>
-        <translation type="unfinished"></translation>
+        <translation>trên tâm</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="146"/>
         <source>around centroid</source>
-        <translation type="unfinished"></translation>
+        <translation>quanh tâm</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="153"/>
         <source>horizontal (slow)</source>
-        <translation type="unfinished"></translation>
+        <translation>ngang (chậm)</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="160"/>
         <source>free (slow)</source>
-        <translation type="unfinished"></translation>
+        <translation>tự do (chậm)</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="167"/>
         <source>using perimeter</source>
-        <translation type="unfinished"></translation>
+        <translation>dùng chu vi</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="192"/>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="298"/>
         <source>Label distance</source>
-        <translation type="unfinished"></translation>
+        <translation>Khoảng cách nhãn</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="209"/>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="315"/>
         <source>pixels</source>
-        <translation type="unfinished">điểm ảnh</translation>
+        <translation>điểm ảnh</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="216"/>
         <source>Rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Góc xoay</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="233"/>
         <source>degrees</source>
-        <translation type="unfinished"></translation>
+        <translation>độ</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="244"/>
         <source>above line</source>
-        <translation type="unfinished"></translation>
+        <translation>trên đường</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="254"/>
         <source>on line</source>
-        <translation type="unfinished"></translation>
+        <translation>ngay giữa đường</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="261"/>
         <source>below line</source>
-        <translation type="unfinished"></translation>
+        <translation>dưới đường</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="270"/>
         <source>Orientation</source>
-        <translation type="unfinished"></translation>
+        <translation>Hướng</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="277"/>
         <source>map</source>
-        <translation type="unfinished"></translation>
+        <translation>ba3n đồ</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="287"/>
         <source>line</source>
-        <translation type="unfinished"></translation>
+        <translation>đường</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="334"/>
         <source>Text style</source>
-        <translation type="unfinished"></translation>
+        <translation>Kiểu chữ</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="346"/>
         <source>Font</source>
-        <translation type="unfinished">Phông chữ</translation>
+        <translation>Phông chữ</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="364"/>
         <source>TextLabel</source>
-        <translation type="unfinished">Nhãn văn bản</translation>
+        <translation>Nhãn_chữ</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="384"/>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="500"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="399"/>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="484"/>
         <source>Color</source>
-        <translation type="unfinished">Màu</translation>
+        <translation>Màu</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="442"/>
         <source>Buffer</source>
-        <translation type="unfinished">Đệm</translation>
+        <translation>Đệm</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="467"/>
         <source>Size</source>
-        <translation type="unfinished">Kích thước</translation>
+        <translation>Kích thước</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="515"/>
         <source>Sample</source>
-        <translation type="unfinished">Mẫu</translation>
+        <translation>Mẫu</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="531"/>
@@ -2135,57 +2146,57 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="551"/>
         <source>Priority</source>
-        <translation type="unfinished"></translation>
+        <translation>Ưu tiên</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="557"/>
         <source>Low</source>
-        <translation type="unfinished"></translation>
+        <translation>Thấp</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="583"/>
         <source>High</source>
-        <translation type="unfinished"></translation>
+        <translation>Cao</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="593"/>
         <source>Scale-based visibility</source>
-        <translation type="unfinished"></translation>
+        <translation>Khả năng nhìn theo tỷ lệ</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="599"/>
         <source>Enabled</source>
-        <translation type="unfinished">Kích hoạt</translation>
+        <translation>Kích hoạt</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="606"/>
         <source>Minimum</source>
-        <translation type="unfinished">Nhỏ nhất</translation>
+        <translation>Nhỏ nhất</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="626"/>
         <source>Maximum</source>
-        <translation type="unfinished">Lớn nhất</translation>
+        <translation>Lớn nhất</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="654"/>
         <source>label every part of multi-part features</source>
-        <translation type="unfinished"></translation>
+        <translation>Gán nhãn cho từng phần của các đối tượng đa phần</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="661"/>
         <source>merge connected lines to avoid duplicate labels</source>
-        <translation type="unfinished"></translation>
+        <translation>gộp các đường được nối lại để tránh các nhãn trùng nhau</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="673"/>
         <source>features don&apos;t act as obstacles for labels</source>
-        <translation type="unfinished"></translation>
+        <translation>đối tượng không tạo thành vật cản cho nhãn</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="696"/>
         <source>Engine settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Thiết lập &apos;cơ chế&apos;</translation>
     </message>
 </context>
 <context>
@@ -2224,12 +2235,12 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/georeferencer/mapcoordsdialogbase.ui" line="35"/>
         <source>X</source>
-        <translation type="unfinished">X</translation>
+        <translation>X</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/mapcoordsdialogbase.ui" line="71"/>
         <source>Y</source>
-        <translation type="unfinished">Y</translation>
+        <translation>Y</translation>
     </message>
 </context>
 <context>
@@ -2381,12 +2392,12 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="13"/>
         <source>Create OSM relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Tạo mối quan hệ OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="30"/>
         <source>Relation type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kiểu quan hệ:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="87"/>
@@ -2395,86 +2406,86 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="214"/>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="233"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="115"/>
         <source>Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Tính chất</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="185"/>
         <source>Members</source>
-        <translation type="unfinished"></translation>
+        <translation>Thành viên</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="305"/>
         <source>Create</source>
-        <translation type="unfinished">Tạo</translation>
+        <translation>Tạo</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="321"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Huỷ</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="78"/>
         <source>Show type description</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiển thị mô tả kiểu</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="81"/>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="84"/>
         <source>Shows brief description of selected relation type.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiển thị mô tả vắn tắt kiểu quan hệ được chọn.</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="135"/>
         <source>Generate tags</source>
-        <translation type="unfinished"></translation>
+        <translation>Tạo các thẻ</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="138"/>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="141"/>
         <source>Fills tag table with tags that are typical for relation of specified type.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lấp đầy bảng thẻ bằng các thẻ nào đặc thù cho mối quan hệ của kiểu được chỉ định.</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="151"/>
         <source>Remove all selected tags</source>
-        <translation type="unfinished"></translation>
+        <translation>Loại bỏ tất cả các thẻ được chọn</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="154"/>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="157"/>
         <source>Removes all selected tags.</source>
-        <translation type="unfinished"></translation>
+        <translation>Loại bỏ tất cả các thẻ được chọn.</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="205"/>
         <source>Select member on map</source>
-        <translation type="unfinished"></translation>
+        <translation>Chọn &apos;thành viên&apos; trên bản đồ</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="208"/>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="211"/>
         <source>Starts process of selecting next relation member on map.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bắt đầu tiến trình chọn &apos;thành viên&apos; tiếp theo trên bản đồ.</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="224"/>
         <source>Remove all selected members</source>
-        <translation type="unfinished"></translation>
+        <translation>Loại bỏ tất cả các &apos;thành viên&apos; được chọn</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="227"/>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="230"/>
         <source>Removes all selected members.</source>
-        <translation type="unfinished"></translation>
+        <translation>Loại bỏ tất cả các &apos;thành viên&apos; được chọn</translation>
     </message>
     <message>
         <source>OSM Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Thông tin OSM</translation>
     </message>
 </context>
 <context>
@@ -2505,123 +2516,123 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="19"/>
         <source>Download OSM data</source>
-        <translation type="unfinished"></translation>
+        <translation>Tải xuống dữ liệu OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="40"/>
         <source>Extent</source>
-        <translation type="unfinished">Phạm vi</translation>
+        <translation>Phạm vi</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="48"/>
         <source>Latitude:</source>
-        <translation type="unfinished"></translation>
+        <translation>Vĩ độ:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="55"/>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="96"/>
         <source>   From</source>
-        <translation type="unfinished"></translation>
+        <translation>  Từ</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="72"/>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="113"/>
         <source>To</source>
-        <translation type="unfinished"></translation>
+        <translation>Đến</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="89"/>
         <source>Longitude:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kinh độ</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="166"/>
         <source>&lt;nothing&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;không_có_gì&gt;</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="182"/>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="210"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="196"/>
         <source>Download to:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tải về:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="219"/>
         <source>Open data automatically after download</source>
-        <translation type="unfinished"></translation>
+        <translation>Tự độ mở dữ liệu sau khi tải xuống</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="247"/>
         <source>Replace current data (current layer will be removed)</source>
-        <translation type="unfinished"></translation>
+        <translation>Thay thế dữ liệu hiện tại (lớp hiện tại sẽ bị loại bỏ)</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="283"/>
         <source>Use custom renderer</source>
-        <translation type="unfinished"></translation>
+        <translation>Dùng trình kết xuất tuỳ biến</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="358"/>
         <source>Download</source>
-        <translation type="unfinished"></translation>
+        <translation>Tải xuống</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="365"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>Huỷ</translation>
     </message>
     <message>
         <source>OSM Download</source>
-        <translation type="unfinished"></translation>
+        <translation>Tải xuống OSM</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Không thể lưu tập tin %1: %2.</translation>
     </message>
     <message>
         <source>Waiting for OpenStreetMap server ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Đang đợi máy chủ OpenStreetMap ...</translation>
     </message>
     <message>
         <source>Download process failed. OpenStreetMap server response: %1 - %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Việc tải xuống thất bại. Máy chủ OSM phản hồi: %1 - %2</translation>
     </message>
     <message>
         <source>OSM Download Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Lỗi tải xuống OSM</translation>
     </message>
     <message>
         <source>Download failed: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tải xuống thất bại: %1.</translation>
     </message>
     <message>
         <source>Getting data</source>
-        <translation type="unfinished"></translation>
+        <translation>Đang lấy dữ liệu</translation>
     </message>
     <message>
         <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
-        <translation type="unfinished"></translation>
+        <translation>Máy chủ OpenStreetMap mà bạn đang tải xuống dữ liệu từ (~ api.openstreetmap.org) có giới hạn cố định lượng dữ liệu mà bạ có thể lấy. Như đã trình bày tại &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt;, phạm vi kinh và vĩ độ của vùng tải xuống không được lớp hơn 0,25 độ. Lưu ý rằng QGIS cho phép bạn chỉ định bất kỳ phạm vi nào bạn muốn, nhưng máy chủ OpenStreetMap sẽ từ chối những yêu cầu nào không thoả mãn giới hạn về việc tải xuống.</translation>
     </message>
     <message>
         <source>Both extents are too large!</source>
-        <translation type="unfinished"></translation>
+        <translation>Cả hai phạm vi đều quá lớn!</translation>
     </message>
     <message>
         <source>Latitude extent is too large!</source>
-        <translation type="unfinished"></translation>
+        <translation>Phạm vi vĩ độ quá lớn!</translation>
     </message>
     <message>
         <source>Longitude extent is too large!</source>
-        <translation type="unfinished"></translation>
+        <translation>Phạm vi kinh độ quá lớn!</translation>
     </message>
     <message>
         <source>OK! Area is probably acceptable to server.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ổn! Vùng được chọn có lẻ là được máy chủ đồng ý.</translation>
     </message>
 </context>
 <context>
@@ -2629,7 +2640,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="37"/>
         <source>OSM Feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Đối tượng OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="75"/>
@@ -2648,169 +2659,169 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="609"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="625"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="168"/>
         <source>Create point</source>
-        <translation type="unfinished"></translation>
+        <translation>Tạo điểm</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="190"/>
         <source>Create line</source>
-        <translation type="unfinished"></translation>
+        <translation>Tạo đường</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="218"/>
         <source>Create polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Tạo vùng</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="246"/>
         <source>Create relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Tạo quan hệ</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="265"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="268"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="271"/>
         <source>Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>Quay ngược lệnh</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="287"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="290"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="293"/>
         <source>Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>Lặp lại lệnh</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="309"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="312"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="315"/>
         <source>Show/Hide OSM Edit History</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiện/Ẩn Lịch sử Biên tập OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="345"/>
         <source>Feature:</source>
-        <translation type="unfinished"></translation>
+        <translation>Đối tượng:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="371"/>
         <source>TYPE, ID:</source>
-        <translation type="unfinished"></translation>
+        <translation>KIỂU, ID:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="378"/>
         <source>CREATED:</source>
-        <translation type="unfinished"></translation>
+        <translation>ĐƯỢC_TẠO_RA:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="385"/>
         <source>USER:</source>
-        <translation type="unfinished"></translation>
+        <translation>NGƯỜI_DÙNG:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="392"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="399"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="406"/>
         <source>unknown</source>
-        <translation type="unfinished">không rõ</translation>
+        <translation>không rõ</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="479"/>
         <source>Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Tính chất</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="525"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="528"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="531"/>
         <source>Remove selected tags</source>
-        <translation type="unfinished"></translation>
+        <translation>Loại bỏ các thẻ được chọn</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="552"/>
         <source>Relations</source>
-        <translation type="unfinished"></translation>
+        <translation>Các mối quan hệ</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="584"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="587"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="590"/>
         <source>Add relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Thêm quan hệ</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="600"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="603"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="606"/>
         <source>Edit relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Chỉnh sửa quan hệ</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="616"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="619"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="622"/>
         <source>Remove relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Loại bỏ quan hệ</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="652"/>
         <source>Relation tags:</source>
-        <translation type="unfinished"></translation>
+        <translation>Các thẻ quan hệ:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="699"/>
         <source>1</source>
-        <translation type="unfinished">1</translation>
+        <translation>1</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="707"/>
         <source>Relation members:</source>
-        <translation type="unfinished"></translation>
+        <translation>Các &apos;thành viên&apos; quan hệ:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="100"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="103"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="106"/>
         <source>Identify feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Nhận diện đối tượng</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="134"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="137"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="140"/>
         <source>Move feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Di chuyển đối tượng</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="419"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="422"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="425"/>
         <source>Remove this feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Loại bỏ đối tượng này</translation>
     </message>
     <message>
         <source>OSM Plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Phần mở rộng OSM</translation>
     </message>
     <message>
         <source>The &apos;Create OSM Relation&apos; dialog was closed automatically because current OSM database was changed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hộp thoại &apos;Tạo mối quan hệ OSM&apos; đã được tự động đóng lại bởi vì CSDL OSM hiện tại đã bị thay đổi.</translation>
     </message>
     <message>
         <source>OSM Feature Dock Widget</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Widget gắn đối tượng OSM</translation>
     </message>
     <message>
         <source>Choose OSM feature first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Chọn đối tượng OSM trước.</translation>
     </message>
     <message>
         <source>Choose relation for editing first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Chọn quan hệ cần chỉnh sửa trước.</translation>
     </message>
 </context>
 <context>
@@ -2818,22 +2829,22 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmImportDlg.ui" line="16"/>
         <source>Import data to OSM</source>
-        <translation type="unfinished"></translation>
+        <translation>Nhập dữ liệu vào OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmImportDlg.ui" line="25"/>
         <source>In this dialog you can import a layer loaded in QGIS into active OSM data.</source>
-        <translation type="unfinished"></translation>
+        <translation>Trong hộp thoại này bạn có thể nhập một lớp đã nạp trong QGIS vào dữ liệu OSM đang kích hoạt.</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmImportDlg.ui" line="50"/>
         <source>Layer</source>
-        <translation type="unfinished">Lớp</translation>
+        <translation>Lớp</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmImportDlg.ui" line="69"/>
         <source>Import only current selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Chỉ nhập phần đang chọn</translation>
     </message>
 </context>
 <context>
@@ -2841,32 +2852,32 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="16"/>
         <source>Load OSM</source>
-        <translation type="unfinished"></translation>
+        <translation>Nạp OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="33"/>
         <source>OpenStreetMap file to load:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tập tin OSM cần nạp:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="46"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="55"/>
         <source>Add columns for tags:</source>
-        <translation type="unfinished"></translation>
+        <translation>Thêm các cột dùng cho thẻ:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="78"/>
         <source>Use custom renderer</source>
-        <translation type="unfinished"></translation>
+        <translation>Dùng trình kết xuất tuỳ biến</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="128"/>
         <source>Replace current data (current layers will be removed)</source>
-        <translation type="unfinished"></translation>
+        <translation>Thay thể dữ liệu hiện tại (các lớp hiện tại sẽ bị loại bỏ)</translation>
     </message>
 </context>
 <context>
@@ -2874,75 +2885,75 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="16"/>
         <source>Save OSM</source>
-        <translation type="unfinished"></translation>
+        <translation>Lưu OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="33"/>
         <source>Where to save:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nơi lưu:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="52"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="61"/>
         <source>Features to save:</source>
-        <translation type="unfinished"></translation>
+        <translation>Các đối tượng cần lưu:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="81"/>
         <source>Points</source>
-        <translation type="unfinished"></translation>
+        <translation>Điểm</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="91"/>
         <source>Lines</source>
-        <translation type="unfinished">Đường</translation>
+        <translation>Đường</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="101"/>
         <source>Polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Vùng</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="115"/>
         <source>Relations</source>
-        <translation type="unfinished"></translation>
+        <translation>Quan hệ</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="125"/>
         <source>Tags</source>
-        <translation type="unfinished"></translation>
+        <translation>Thẻ</translation>
     </message>
     <message>
         <source>Save OSM to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Lưu OSM vào tập tin</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Không thể lưu tập tin %1: %2.</translation>
     </message>
     <message>
         <source>Initializing...</source>
-        <translation type="unfinished"></translation>
+        <translation>Đang khởi tạo...</translation>
     </message>
     <message>
         <source>Saving nodes...</source>
-        <translation type="unfinished"></translation>
+        <translation>Đang lưu các nốt...</translation>
     </message>
     <message>
         <source>Saving lines...</source>
-        <translation type="unfinished"></translation>
+        <translation>Đang lưu các đường...</translation>
     </message>
     <message>
         <source>Saving polygons...</source>
-        <translation type="unfinished"></translation>
+        <translation>Đang lưu các vùng...</translation>
     </message>
     <message>
         <source>Saving relations...</source>
-        <translation type="unfinished"></translation>
+        <translation>Đang lưu các quan hệ...</translation>
     </message>
 </context>
 <context>
@@ -2950,35 +2961,35 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="16"/>
         <source>OSM Edit History</source>
-        <translation type="unfinished"></translation>
+        <translation>Lịch sử Biên tập OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="25"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="28"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="31"/>
         <source>Clear all</source>
-        <translation type="unfinished"></translation>
+        <translation>Xoá tất cả</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="34"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="66"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="85"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="57"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="60"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="63"/>
         <source>Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>Quay ngược lệnh</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="76"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="79"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="82"/>
         <source>Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>Lặp lại lệnh</translation>
     </message>
 </context>
 <context>
@@ -2993,75 +3004,75 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="22"/>
         <source>Upload OSM data</source>
-        <translation type="unfinished"></translation>
+        <translation>Tải lên dữ liệu OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="37"/>
         <source>Ready for upload</source>
-        <translation type="unfinished"></translation>
+        <translation>Sẵn sàng để tải lên</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="80"/>
         <source>1</source>
-        <translation type="unfinished">1</translation>
+        <translation>1</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="85"/>
         <source>2</source>
-        <translation type="unfinished">2</translation>
+        <translation>2</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="90"/>
         <source>3</source>
-        <translation type="unfinished"></translation>
+        <translation>3</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="95"/>
         <source>4</source>
-        <translation type="unfinished"></translation>
+        <translation>4</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="100"/>
         <source>5</source>
-        <translation type="unfinished"></translation>
+        <translation>5</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="108"/>
         <source>Comment on your changes:</source>
-        <translation type="unfinished"></translation>
+        <translation>Chú thích về các thay đổi của bạn:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="134"/>
         <source>OSM account</source>
-        <translation type="unfinished"></translation>
+        <translation>Tài khoản OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="142"/>
         <source>Username:</source>
-        <translation type="unfinished"></translation>
+        <translation>Người dùng:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="162"/>
         <source>Password:</source>
-        <translation type="unfinished"></translation>
+        <translation>Mật mã:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="179"/>
         <source>Show password</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiện mật mã</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="186"/>
         <source>Save password</source>
-        <translation type="unfinished"></translation>
+        <translation>Lưu mật mã</translation>
     </message>
     <message>
         <source>Uploading data...</source>
-        <translation type="unfinished">Đang tải dữ liệu lên...</translation>
+        <translation>Đang tải dữ liệu lên...</translation>
     </message>
     <message>
         <source>OSM Upload</source>
-        <translation type="unfinished"></translation>
+        <translation>Tải lên OSM</translation>
     </message>
 </context>
 <context>
@@ -3647,39 +3658,39 @@ nicht installierz ist, wo es QGIS finden kann, funktioniert dieses Werkzeug nich
     <name>Python</name>
     <message>
         <source>An error has occured while executing Python code:</source>
-        <translation type="unfinished">Một lỗi đã xảy ra khi thực thi mã Python:</translation>
+        <translation>Một lỗi đã xảy ra khi thực thi mã Python:</translation>
     </message>
     <message>
         <source>Python version:</source>
-        <translation type="unfinished">Phiên bản Python:</translation>
+        <translation>Phiên bản Python:</translation>
     </message>
     <message>
         <source>Python path:</source>
-        <translation type="unfinished">Đường dẫn Python:</translation>
+        <translation>Đường dẫn Python:</translation>
     </message>
     <message>
         <source>Python error</source>
-        <translation type="unfinished">Lỗi Python</translation>
+        <translation>Lỗi Python</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin %1</source>
-        <translation type="unfinished">Không thể nạp phần mở rộng %1</translation>
+        <translation>Không thể nạp phần mở rộng %1</translation>
     </message>
     <message>
         <source>%1 due an error when calling its classFactory() method</source>
-        <translation type="unfinished">%1 do một lỗi khi gọi phương pháp classFactory() của nó</translation>
+        <translation>%1 do một lỗi khi gọi phương pháp classFactory() của nó</translation>
     </message>
     <message>
         <source>%1 due an error when calling its initGui() method</source>
-        <translation type="unfinished">%1 do một lỗi khi gọi phương pháp initGui() của nó</translation>
+        <translation>%1 do một lỗi khi gọi phương pháp initGui() của nó</translation>
     </message>
     <message>
         <source>Error while unloading plugin %1</source>
-        <translation type="unfinished">Lỗi khi gỡ phần mở rộng %1</translation>
+        <translation>Lỗi khi gỡ phần mở rộng %1</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin &apos;%1&apos; from [&apos;%2&apos;]</source>
-        <translation type="unfinished"></translation>
+        <translation>Không thể nạp phần mở rộng &apos;%1&apos; từ [&apos;%2&apos;]</translation>
     </message>
 </context>
 <context>
@@ -5027,7 +5038,7 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="21"/>
         <source>Oracle Spatial GeoRaster</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ảnh raster địa lý không gian của Oracle</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="22"/>
@@ -5037,32 +5048,32 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
     <message>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="943"/>
         <source>Deleted vertices</source>
-        <translation type="unfinished"></translation>
+        <translation>Xoá đỉnh</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1006"/>
         <source>Moved vertices</source>
-        <translation type="unfinished"></translation>
+        <translation>Di chuyển đỉnh</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="374"/>
         <source>&lt;b&gt;Region&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Vùng&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="380"/>
         <source>Cannot open region header</source>
-        <translation type="unfinished"></translation>
+        <translation>Không thể mở header của vùng</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="388"/>
         <source>XY</source>
-        <translation type="unfinished"></translation>
+        <translation>XY</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="391"/>
         <source>UTM</source>
-        <translation type="unfinished"></translation>
+        <translation>UTM</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="394"/>
@@ -5077,42 +5088,42 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="400"/>
         <source>Other</source>
-        <translation type="unfinished"></translation>
+        <translation>Khác</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="402"/>
         <source>Projection Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Kiểu phép chiếu</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="404"/>
         <source>Zone</source>
-        <translation type="unfinished"></translation>
+        <translation>Đới</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="415"/>
         <source>3D Cols</source>
-        <translation type="unfinished"></translation>
+        <translation>Cột 3D</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="416"/>
         <source>3D Rows</source>
-        <translation type="unfinished"></translation>
+        <translation>Hàng 3D</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="417"/>
         <source>Depths</source>
-        <translation type="unfinished"></translation>
+        <translation>Độ sâu</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="418"/>
         <source>E-W 3D resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>Độ phân giải Đ-T 3D</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="419"/>
         <source>N-S 3D resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>Độ phân giải B-N 3D</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="84"/>
@@ -5122,113 +5133,113 @@ Hỗ trợ Python sẽ bị bất hoạt.</translation>
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="85"/>
         <source>An event visualization tool - view images associated with vector features</source>
-        <translation type="unfinished"></translation>
+        <translation>Một công cụ xem sự kiện - xem ảnh liên quan đến các đối tượng vector</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="86"/>
         <source>Version 1.1.0</source>
-        <translation type="unfinished"></translation>
+        <translation>Phiên bản 1.1.0</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/idtool/eviseventidtool.cpp" line="76"/>
         <source>This tool only supports vector data</source>
-        <translation type="unfinished"></translation>
+        <translation>Công cụ này chỉ hỗ trợ dữ liệu vector</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/idtool/eviseventidtool.cpp" line="81"/>
         <source>No active layers found</source>
-        <translation type="unfinished"></translation>
+        <translation>Không thấy lớp đang được kích hoạt</translation>
     </message>
     <message>
         <location filename="../src/analysis/interpolation/qgstininterpolator.cpp" line="104"/>
         <source>Building triangulation...</source>
-        <translation type="unfinished"></translation>
+        <translation>Đang xây dựng phép tam giác</translation>
     </message>
     <message>
         <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1211"/>
         <source>Generated CRS</source>
         <comment>A CRS automatically generated from layer info get this prefix for description</comment>
-        <translation type="unfinished"></translation>
+        <translation>HTĐ được tạo</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="31"/>
         <source>Raster Terrain Analysis plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Phần mở rộng Phân tích Địa hình Raster</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="32"/>
         <source>A plugin for raster based terrain analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Một phần mở rộng dùng cho phân tích địa hình dựa trên raster</translation>
     </message>
     <message>
         <location filename="../src/core/qgspoint.cpp" line="60"/>
         <source>W</source>
-        <translation type="unfinished"></translation>
+        <translation>T</translation>
     </message>
     <message>
         <location filename="../src/core/qgspoint.cpp" line="60"/>
         <source>E</source>
-        <translation type="unfinished">Đ</translation>
+        <translation>Đ</translation>
     </message>
     <message>
         <location filename="../src/core/qgspoint.cpp" line="61"/>
         <source>S</source>
-        <translation type="unfinished"></translation>
+        <translation>N</translation>
     </message>
     <message>
         <location filename="../src/core/qgspoint.cpp" line="61"/>
         <source>N</source>
-        <translation type="unfinished"></translation>
+        <translation>B</translation>
     </message>
     <message>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="89"/>
         <source>Couldn&apos;t load QGIS utils.</source>
-        <translation type="unfinished"></translation>
+        <translation>Không thể nạp các tiện ích của QGIS.</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramoverlayplugin.cpp" line="34"/>
         <source>Diagram Overlay</source>
-        <translation type="unfinished"></translation>
+        <translation>Chồng biểu đồ</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramoverlayplugin.cpp" line="35"/>
         <source>A plugin for placing diagrams on vector layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Một phần mở rộng để đặt các biểu đồ lên các lớp vector</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramoverlayplugin.cpp" line="36"/>
         <source>Version 0.0.1</source>
-        <translation type="unfinished"></translation>
+        <translation>Phiên bản 0.0.1</translation>
     </message>
     <message>
         <location filename="../src/analysis/interpolation/qgstininterpolator.cpp" line="149"/>
         <source>Estimating normal derivatives...</source>
-        <translation type="unfinished"></translation>
+        <translation>Đang ước lượng các đạo hàm thường...</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgsrendererv2registry.cpp" line="15"/>
         <source>Single Symbol</source>
-        <translation type="unfinished">Biểu tượng đơn</translation>
+        <translation>Biểu tượng đơn</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgsrendererv2registry.cpp" line="19"/>
         <source>Categorized</source>
-        <translation type="unfinished"></translation>
+        <translation>Phân theo loại</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgsrendererv2registry.cpp" line="23"/>
         <source>Graduated</source>
-        <translation type="unfinished"></translation>
+        <translation>Phân theo cấp</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labeling.cpp" line="43"/>
         <source>Labeling</source>
-        <translation type="unfinished"></translation>
+        <translation>Gán nhãn</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labeling.cpp" line="44"/>
         <source>Smart labeling for vector layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Gán nhãn &apos;thông minh&apos; cho các lớp vector</translation>
     </message>
 </context>
 <context>
@@ -6943,7 +6954,7 @@ Bản nhị phân này được biên dịch theo Qt %1, và hiện đang chạy
         <source>Multiple instances of Quantum GIS application object detected.
 Please contact the developers.
 </source>
-        <translation type="unfinished">&apos;Đa bản thể&apos; của đối tượng ứng dụng Quantum GIS được phát hiện.
+        <translation type="unfinished">Phát hiện ra &apos;đa bản thể&apos; của đối tượng ứng dụng Quantum GIS.
 Vui lòng liên hệ với các nhà phát triển.
 </translation>
     </message>
@@ -7181,7 +7192,7 @@ Vui lòng liên hệ với các nhà phát triển.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1260"/>
         <source>Panels</source>
-        <translation type="unfinished">Các panen</translation>
+        <translation>Các panen</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1261"/>
@@ -7266,12 +7277,12 @@ Vui lòng liên hệ với các nhà phát triển.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2772"/>
         <source>New Shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Tập tin shape mới</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2773"/>
         <source>Shapefiles must end on .shp</source>
-        <translation type="unfinished"></translation>
+        <translation>Các tập tin shape phải có đuôi là .shp</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3053"/>
@@ -7450,12 +7461,12 @@ Bản QGIS này được xây dựng không có hỗ trợ cho SpatialLite.</tra
     <message>
         <location filename="../src/app/qgisapp.cpp" line="834"/>
         <source>Zoom Next</source>
-        <translation type="unfinished">Phóng Tiếp theo</translation>
+        <translation>Phóng Tiếp theo</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="836"/>
         <source>Zoom to Forward Extent</source>
-        <translation type="unfinished">Phóng đến phạm vi tới</translation>
+        <translation>Phóng đến phạm vi tới</translation>
     </message>
     <message>
         <source>Whats new in Version 1.1.0?</source>
@@ -7564,7 +7575,7 @@ Bản QGIS này được xây dựng không có hỗ trợ cho SpatialLite.</tra
     <message>
         <location filename="../src/app/qgisapp.cpp" line="634"/>
         <source>&amp;Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Lặp lại lệnh</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="635"/>
@@ -7574,117 +7585,117 @@ Bản QGIS này được xây dựng không có hỗ trợ cho SpatialLite.</tra
     <message>
         <location filename="../src/app/qgisapp.cpp" line="636"/>
         <source>Redo the last operation</source>
-        <translation type="unfinished"></translation>
+        <translation>Lặp lại lệnh sau cùng</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="733"/>
         <location filename="../src/app/qgisapp.cpp" line="735"/>
         <source>Simplify Feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Đơn giản hoá đối tượng</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="739"/>
         <source>Delete Ring</source>
-        <translation type="unfinished"></translation>
+        <translation>Xoá vòng</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="745"/>
         <source>Delete Part</source>
-        <translation type="unfinished"></translation>
+        <translation>Xoá phần</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="751"/>
         <location filename="../src/app/qgisapp.cpp" line="753"/>
         <source>Merge selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>Gộp các đối tượng được chọn</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="757"/>
         <location filename="../src/app/qgisapp.cpp" line="759"/>
         <source>Node Tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Công cụ Nốt</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1006"/>
         <source>Configure shortcuts...</source>
-        <translation type="unfinished"></translation>
+        <translation>Cấu hình các phím tắt...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1008"/>
         <source>Configure shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Cấu hình các phím tắt</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1450"/>
         <source>Advanced Digitizing</source>
-        <translation type="unfinished"></translation>
+        <translation>Số hoá nâng cao</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3581"/>
         <source>Features deleted</source>
-        <translation type="unfinished"></translation>
+        <translation>Các đối tượng bị xoá</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3627"/>
         <source>Merging features...</source>
-        <translation type="unfinished"></translation>
+        <translation>Đang gộp các đối tượng...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3627"/>
         <source>Abort</source>
-        <translation type="unfinished">Bỏ</translation>
+        <translation>Bỏ</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3744"/>
         <source>No active layer</source>
-        <translation type="unfinished">Không có lớp kích hoạt</translation>
+        <translation>Không có lớp kích hoạt</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3744"/>
         <source>No active layer found. Please select a layer in the layer list</source>
-        <translation type="unfinished"></translation>
+        <translation>Không tìm thấy lớp kích hoạt. Vui lòng cho một lớp trong danh sách lớp.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3750"/>
         <source>Active layer is not vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp kích hoạt không phải là vector</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3750"/>
         <source>The merge features tool only works on vector layers. Please select a vector layer from the layer list</source>
-        <translation type="unfinished"></translation>
+        <translation>Công cụ gộp đối tượng chỉ làm việc với các lớp vector. Vui lòng chọn một lớp vector từ danh sách lớp</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3755"/>
         <source>Merging features can only be done for layers in editing mode. To use the merge tool, go to  Layer-&gt;Toggle editing</source>
-        <translation type="unfinished"></translation>
+        <translation>Việc gộp các đối tượng chỉ có thể được thực hiện với các lớp ở chế độ chỉnh sửa. Để dùng công cụ gộp này, chọn Lớp -&gt; Bật chỉnh sửa</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3770"/>
         <location filename="../src/app/qgisapp.cpp" line="3804"/>
         <source>The merge tool requires at least two selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>Công cụ gộp đòi hỏi tối thiểu phải có hai đối tượng được chọn</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3787"/>
         <location filename="../src/app/qgisapp.cpp" line="3823"/>
         <source>The union operation would result in a geometry type that is not compatible with the current layer and therefore is canceled</source>
-        <translation type="unfinished"></translation>
+        <translation>Lệnh hợp sẽ tạo thành một kiểu hình học không tương thích với lớp hiện tại và do vậy lệnh bị huỷ</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3829"/>
         <source>Merged features</source>
-        <translation type="unfinished"></translation>
+        <translation>Các đối tượng được gộp</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4001"/>
         <source>Features cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Các đối tượng bị cắt</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4053"/>
         <source>Features pasted</source>
-        <translation type="unfinished"></translation>
+        <translation>Các đối tượng được dán</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="659"/>
@@ -7798,39 +7809,76 @@ Bản QGIS này được xây dựng không có hỗ trợ cho SpatialLite.</tra
         <location filename="../src/app/qgisapp.cpp" line="682"/>
         <location filename="../src/app/qgisapp.cpp" line="684"/>
         <source>Reshape Features</source>
-        <translation type="unfinished"></translation>
+        <translation>Chỉnh lại hình dạng đối tượng</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1549"/>
         <location filename="../src/app/qgisapp.cpp" line="4969"/>
         <source>Coordinate:</source>
-        <translation type="unfinished"></translation>
+        <translation>Toạ độ:</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1550"/>
         <source>Current map coordinate</source>
-        <translation type="unfinished"></translation>
+        <translation>Toạ độ bản đồ hiện tại</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1564"/>
         <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved. It also allows editing to set the canvas center to a given position.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiện toạ độ bản đồ tại vị trí con trỏ hiện tại. Phần trình bày được cập nhật liên tục khi chuột di chuyển. Nó cũng cho phép chế độ chỉnh sửa thiết lập tâm của khung bản đồ vào một vị trí cho trước.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1568"/>
         <source>Current map coordinate (formatted as x,y)</source>
-        <translation type="unfinished"></translation>
+        <translation>Toạ độ bản đồ hiện tại (định dạng x,y)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4982"/>
         <source>Extents:</source>
-        <translation type="unfinished">Phạm vi:</translation>
+        <translation>Phạm vi:</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="763"/>
         <location filename="../src/app/qgisapp.cpp" line="765"/>
         <source>Rotate Point Symbols</source>
-        <translation type="unfinished"></translation>
+        <translation>Xoay biểu tượng điểm</translation>
+    </message>
+    <message>
+        <source>Whats new in Version 1.3.0?</source>
+        <translation type="obsolete">Có gì mới trong phiên bản 1.3.0?</translation>
+    </message>
+    <message>
+        <source>Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.2.0. If an unchanging user interface, programmatic API and long term support is more important to you then cool new and untested features, we recommend that you use a copy of QGIS from our Long Term Support (LTS)1.0.x release series.</source>
+        <translation type="obsolete">Lưu ý rằng đây là bản phát hành trong chuỗi phát hành &apos;cutting edge&apos;. Vì thế nó chứa các tính chất mới và mở rộng giao diện lập trình so với QGIS 1.0.x và QGIS 1.2.0. Đối với bạn, nếu giao diện lập trình cũ, API lập trình và hỗ trợ dài hạn là những điều quan trọng hơn so với những tính chất mới và chưa được kiểm chứng, chúng tôi khuyến cáo bạn dùng phiên bản QGIS Hỗ trợ dài hạn (LTS) trong chuỗi phát hành 1.0.x.</translation>
+    </message>
+    <message>
+        <source>This release includes over 30 bug fixes and enhancements over the QGIS 1.2.0 release. In addition we have added the following new features:</source>
+        <translation type="obsolete">Bản phát hành này bao gồm hơn 30 lỗi được khắc phục cùng với các cải tiến so với bản QGIS 1.2.0. Ngoài ra chúng tôi đã thêm các tính chất mới sau:</translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;OSM plugin &amp;amp; provider updates:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;new OSM style files.&lt;/li&gt;
+  &lt;li&gt;new icons.&lt;/li&gt;
+  &lt;li&gt;dialog text updated and completed.&lt;/li&gt;
+  &lt;li&gt;Saving OSM into file functionality was improvements.&lt;/li&gt;
+  &lt;li&gt;fixed some problems with encoding... ascii to utf-8.&lt;/li&gt;
+  &lt;li&gt;all OSM layers are automatically removed after disabling OSM plugin in plugin manager.&lt;/li&gt;
+  &lt;li&gt;other OSM related bugfixes.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Other notable features and improvements in this release&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Marker size is now configurable when editing a layer.&lt;/li&gt;
+  &lt;li&gt;Incorporation of the analysis library into the mainstream release.&lt;/li&gt;
+  &lt;li&gt;Identify features across multiple layers.&lt;/li&gt;
+  &lt;li&gt;Added a new plugin for carrying out raster terrain analysis (computing slope aspect, steepness etc).&lt;/li&gt;
+  &lt;li&gt;A reshape tool to apply to line/polygon geometries. The part of a geometry between the first and
+      last intersection of the reshape line will be replaced.&lt;/li&gt;
+  &lt;li&gt;Added snapping to current layer in measure dialog.&lt;/li&gt;
+  &lt;li&gt;Added ability to select the primary key for views.&lt;/li&gt;
+  &lt;li&gt;Zoom to a coordinate by entering it in the status bar coordinate display.&lt;/li&gt;
+&lt;/ul&gt;</source>
+        <translation type="obsolete">&lt;p&gt;Phần mở rộng OSM &amp;amp; trình cung cấp cập nhật:&lt;/p&gt;&lt;ul&gt;  &lt;li&gt;các tập tin kiểu OSM mới.&lt;/li&gt;  &lt;li&gt;các biểu tượng mới.&lt;/li&gt;  &lt;li&gt;nội dung hộp thoại được cập nhật và hoàn chỉnh.&lt;/li&gt;  &lt;li&gt;Chức năng lưu OSM vào tập tin được cải thiện.&lt;/li&gt;  &lt;li&gt;khắc phụ một số lỗi với mã phông... ascii sang utf-8.&lt;/li&gt;  &lt;li&gt;tất cả các lớp OSM được tự động loại bỏ sau khi bất hoạt phần mở rộng OSM trong trình quản lý phần mở rộng.&lt;/li&gt;  &lt;li&gt;các khắc phục lỗi khác liên quan đến OSM.&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;Các tính chất và cải thiện đáng lưu ý khác trong bản phát hành này&lt;/p&gt;&lt;ul&gt;  &lt;li&gt;Kích thước đánh dấu bây giờ đã có thể cấu hình được khi chỉnh sửa một lớp.&lt;/li&gt;  &lt;li&gt;Tích hợp thư viện phân tích vào bản phát hành chính.&lt;/li&gt;  &lt;li&gt;Nhận diện đối tượng trên nhiều lớp.&lt;/li&gt;  &lt;li&gt;Thêm phần mở rộng mới thực hiện phân tích địa hình dựa trên raster (tính toán hướng, độ dốc...)..&lt;/li&gt;  &lt;li&gt;Một công cụ chỉnh hình dạng dùng cho các đối tượng hình học đường/vùng. Phần hình học giữa giao điểm đầu tiên và        cuối cùng của đường cần chỉnh hình dạng sẽ bị thay thế.&lt;/li&gt;  &lt;li&gt;Thêm tính năng bắt dính vào lớp hiện tại trong hộp thoại đo.&lt;/li&gt;  &lt;li&gt;Thêm tính năng chọn khoá chính cho phần xem.&lt;/li&gt;  &lt;li&gt;Phóng đến một toạ độ bằng cách nhập toạ độ vào thanh trạng thái phần trình bày toạ độ.&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="227"/>
@@ -7840,7 +7888,7 @@ Bản QGIS này được xây dựng không có hỗ trợ cho SpatialLite.</tra
     <message>
         <location filename="../src/app/qgisapp.cpp" line="594"/>
         <source>&amp;New Print Composer</source>
-        <translation type="unfinished"></translation>
+        <translation>Trình Biên tập &amp;In ấn Mới</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="595"/>
@@ -7851,64 +7899,64 @@ Bản QGIS này được xây dựng không có hỗ trợ cho SpatialLite.</tra
     <message>
         <location filename="../src/app/qgisapp.cpp" line="596"/>
         <source>New Print Composer</source>
-        <translation type="unfinished"></translation>
+        <translation>Trình Biên tập In ấn Mới</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1203"/>
         <source>Print Composers</source>
-        <translation type="unfinished"></translation>
+        <translation>Các Trình Biên tập In ấn Mới</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="727"/>
         <source>Add Part</source>
-        <translation type="unfinished"></translation>
+        <translation>Thêm phần</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="729"/>
         <source>Add part to multipolygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Thêm phần vào vùng đa phần</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="741"/>
         <source>Click a vertex of the ring to delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Nhắp chuột vào một đỉnh của vòng để xoá</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="747"/>
         <source>Click a vertex of the part to delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Nhắp chuột vào một đỉnh của phần để xoá</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="599"/>
         <source>Composer manager...</source>
-        <translation type="unfinished"></translation>
+        <translation>Trình quản lý Biên tập...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="600"/>
         <source>Composer manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Trình Quản lý Biên tập</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="792"/>
         <location filename="../src/app/qgisapp.cpp" line="794"/>
         <source>Deselect features from all layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Khử chọn các đối tượng khỏi tất cả các lớp</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1064"/>
         <source>Style manager...</source>
-        <translation type="unfinished"></translation>
+        <translation>Trình quản lý Kiểu...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1066"/>
         <source>Show style manager V2</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiện trình quản lý kiểu V2</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3673"/>
         <location filename="../src/app/qgisapp.cpp" line="3711"/>
         <source>Composer %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Trình Biên tập %1</translation>
     </message>
 </context>
 <context>
@@ -8682,7 +8730,7 @@ Bản QGIS này được xây dựng không có hỗ trợ cho SpatialLite.</tra
     <message>
         <location filename="../src/ui/qgsabout.ui" line="202"/>
         <source>Contributors</source>
-        <translation type="unfinished">Những người đóng góp</translation>
+        <translation>Những người đóng góp</translation>
     </message>
     <message>
         <source>Plugins</source>
@@ -8849,22 +8897,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsabout.cpp" line="128"/>
         <source>&lt;p&gt;QGIS sponsorship programme:contribute to QGIS development&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Chương trình tài trợ QGIS: đóng góp cho sự phát triển của QGIS&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="177"/>
         <source>&lt;p&gt;The following individuals and institutions have contributed money to fund QGIS development and other project costs&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Những người và các tổ chức sau đây đã đóng góp tài chính để hỗ trợ cho sự phát triển của QGIS cũng như các chi phí dự án khác&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="247"/>
         <source>Donors</source>
-        <translation type="unfinished"></translation>
+        <translation>Các nhà tài trợ</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="294"/>
         <source>Qt Image Plugin Search Paths	&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Các đường dẫn tìm kiếm phần mở rộng Ảnh Qt	&lt;br&gt;</translation>
     </message>
 </context>
 <context>
@@ -8893,28 +8941,28 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="72"/>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Rộng</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="85"/>
         <source>Precision</source>
-        <translation type="unfinished"></translation>
+        <translation>Độ chính xác</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="23"/>
         <source>N&amp;ame</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tên</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="36"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Ghi chú</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="49"/>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="62"/>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Kiểu</translation>
     </message>
 </context>
 <context>
@@ -8922,7 +8970,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/qgsapplication.cpp" line="89"/>
         <source>Exception</source>
-        <translation type="unfinished">Ngoại lệ</translation>
+        <translation>Ngoại lệ</translation>
     </message>
 </context>
 <context>
@@ -9139,23 +9187,23 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="159"/>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="177"/>
         <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will be replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if prefixed with a backslash</source>
-        <translation type="unfinished"></translation>
+        <translation>Nhập hành động ở đây. Hành động có thể là bất kỳ chương trình, tập lệnh hoặc lệnh nào có trên hệ thống của bạn. Khi hành được kích hoạt bất kỳ tập hợp ký tự nào bắt đầu bằng % và sau đó có tên của một trường sẽ được thay thế bằng giá trị của trường đó. Các ký tự đặc biệt %% sẽ được thay thế bằng giá trị của trường được chọn. Dấu nháy kép gộp nhóm các chữ thành đối số duy nhất cho chương trình, tập lệnh hoặc lệnh. Dấu nháy kép sẽ bị bỏ qua nếu tiền tố là một dấu xuyệc ngược</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="29"/>
         <source>Action list</source>
-        <translation type="unfinished"></translation>
+        <translation>Danh sách hành động</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="54"/>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="265"/>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Kiểu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="237"/>
         <source>Generic</source>
-        <translation type="unfinished"></translation>
+        <translation>Tổng quát</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="242"/>
@@ -9165,7 +9213,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="247"/>
         <source>Windows</source>
-        <translation type="unfinished"></translation>
+        <translation>Các cửa số</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="252"/>
@@ -9188,7 +9236,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsattributedialog.cpp" line="141"/>
         <source> (dbl)</source>
-        <translation type="unfinished">(thập.phân)</translation>
+        <translation type="unfinished">(double)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributedialog.cpp" line="146"/>
@@ -9249,12 +9297,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsattributeeditor.cpp" line="53"/>
         <source>Select a file</source>
-        <translation type="unfinished">Chọn một tập tin</translation>
+        <translation>Chọn một tập tin</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributeeditor.cpp" line="359"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -9262,34 +9310,34 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="14"/>
         <source>Load values from layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Nạp các giá trị từ lớp</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="45"/>
         <source>Layer</source>
-        <translation type="unfinished">Lớp</translation>
+        <translation>Lớp</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="52"/>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="68"/>
         <source>Description</source>
-        <translation type="unfinished">Mô tả</translation>
+        <translation>Mô tả</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="63"/>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="83"/>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Giá trị</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="76"/>
         <source>Select data from attributes in selected layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Chọn dữ liệu từ các thuộc tính trong lớp được chọn.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeloadfrommap.ui" line="93"/>
         <source>View All</source>
-        <translation type="unfinished"></translation>
+        <translation>Xem Tất cả</translation>
     </message>
 </context>
 <context>
@@ -9490,7 +9538,8 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="122"/>
         <source>Ctrl+T</source>
-        <translation type="unfinished">Ctrl+A</translation>
+        <translation type="unfinished">Ctrl+A
+</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="129"/>
@@ -9592,58 +9641,58 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="36"/>
         <source>Search selected records only</source>
-        <translation type="unfinished"></translation>
+        <translation>Chỉ tìm các bản ghi được chọn</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="83"/>
         <source>Unselect all</source>
-        <translation type="unfinished"></translation>
+        <translation>Khử chọn tất cả</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="106"/>
         <source>Move selection to top</source>
-        <translation type="unfinished"></translation>
+        <translation>Di chuyển phần chọn lên trên cùng</translation>
     </message>
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="676"/>
         <source>Attribute added</source>
-        <translation type="unfinished"></translation>
+        <translation>Thuộc tính được thêm vào</translation>
     </message>
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="683"/>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="724"/>
         <source>Attribute Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Lỗi thuộc tính</translation>
     </message>
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="683"/>
         <source>The attribute could not be added to the layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Thuộc tính không thể được thêm vào lớp</translation>
     </message>
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="707"/>
         <source>Deleted attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Thuộc tính bị xoá</translation>
     </message>
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="724"/>
         <source>The attribute(s) could not be deleted</source>
-        <translation type="unfinished"></translation>
+        <translation>(Các) thuộc tính không thể xoá được</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="250"/>
         <source>New column</source>
-        <translation type="unfinished">Cột mới</translation>
+        <translation>Cột mới</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="270"/>
         <source>Delete column</source>
-        <translation type="unfinished">Xóa cột</translation>
+        <translation>Xóa cột</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="290"/>
         <source>Open field calculator</source>
-        <translation type="unfinished"></translation>
+        <translation>Mở trình tính toán trường</translation>
     </message>
 </context>
 <context>
@@ -9762,7 +9811,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/attributetable/qgsattributetablemodel.cpp" line="483"/>
         <source>Attribute changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Thuộc tính bị thay đổi</translation>
     </message>
 </context>
 <context>
@@ -9771,210 +9820,211 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsattributetypedialog.cpp" line="314"/>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="335"/>
         <source>Current minimum for this value is %1 and current maximum is %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Trị nhỏ nhất cho giá trị này là %1 và trị lớn nhất là %2.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="340"/>
         <source>Attribute has no integer or real type, therefore range is not usable.</source>
-        <translation type="unfinished"></translation>
+        <translation>Thuộc tính không có kiểu số nguyên hoặc số thực, do vậy miền không dùng được.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="448"/>
         <source>Enumeration is not available for this attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Phép liệt kê không dùng được cho thuộc tính này</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="547"/>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="14"/>
         <source>Attribute Edit Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Hộp thoại Chỉnh sửa Thuộc tính</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="21"/>
         <source>Line edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Chỉnh sửa Đường</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="26"/>
         <source>Classification</source>
-        <translation type="unfinished"></translation>
+        <translation>Phép phân loại</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="31"/>
         <source>Range</source>
-        <translation type="unfinished">Ranh giới</translation>
+        <translation>Miền</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="36"/>
         <source>Unique values</source>
-        <translation type="unfinished"></translation>
+        <translation>Giá trị không trùng</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="41"/>
         <source>File name</source>
-        <translation type="unfinished"></translation>
+        <translation>Tên tập tin</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="46"/>
         <source>Value map</source>
-        <translation type="unfinished"></translation>
+        <translation>Bản đồ giá trị</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="51"/>
         <source>Enumeration</source>
-        <translation type="unfinished"></translation>
+        <translation>Phép liệt kê</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="56"/>
         <source>Immutable</source>
-        <translation type="unfinished"></translation>
+        <translation>Không thể thay đổi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="92"/>
         <source>Simple edit box. This is the default editation widget.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hộp chỉnh sửa đơn giản. Đây là widget chỉnh sửa mặc định.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="116"/>
         <source>Displays combo box containing values of attribute used for classification.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiển thị hộp tích hợp chứa các giá trị của thuộc tính được dùng cho phân loại.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="145"/>
         <source>Allows to set numeric values from a specified range. The edit widget can be either a slider or a spin box.</source>
-        <translation type="unfinished"></translation>
+        <translation>Cho phép thiết lập các giá trị số từ một miền chỉ định. Widget chỉnh sửa có thể là hộp thanh trượt hoặc xoay.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="157"/>
         <source>Minimum</source>
-        <translation type="unfinished">Nhỏ nhất</translation>
+        <translation>Nhỏ nhất</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="164"/>
         <source>Maximum</source>
-        <translation type="unfinished">Lớn nhất</translation>
+        <translation>Lớn nhất</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="171"/>
         <source>Step</source>
-        <translation type="unfinished"></translation>
+        <translation>Bước</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="249"/>
         <source>Slider</source>
-        <translation type="unfinished"></translation>
+        <translation>Thanh trượt</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="259"/>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="294"/>
         <source>Editable</source>
-        <translation type="unfinished"></translation>
+        <translation>Chỉnh sửa được</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="266"/>
         <source>Local minimum/maximum = 0/0</source>
-        <translation type="unfinished"></translation>
+        <translation>Trị nhỏ/lớn nhất cục bộ = 0/0</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="284"/>
         <source>The user can select one of the values already used in the attribute. If editable, a line edit is shown with autocompletion support, otherwise a combo box is used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Người dùng có thể chọn một trong các giá trị đã được dùng trong thuộc tính. Nếu có thể chỉnh sửa được, chỉnh sửa đường được hiển thị với chức năng hỗ trợ tự động hoàn tất, nếu không thì hộp tích hợp được dùng.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="320"/>
         <source>Simplifies file selection by adding a file chooser dialog.</source>
-        <translation type="unfinished"></translation>
+        <translation>Đơn giản hoá việc chọn tập tin bằng cách thêm vào hộp thoại chọn tập tin.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="347"/>
         <source>Combo box with predefined items. Value is stored in the attribute, description is shown in the combo box.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hộp tích hợp với các mục được định nghĩa trước. Giá trị được lưu trong thuộc tính, mô tả được hiển thị trong hộp tích hợp.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="357"/>
         <source>Load Data from layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Nạp dữ liệu từ lớp</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="378"/>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Giá trị</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="383"/>
         <source>Description</source>
-        <translation type="unfinished">Mô tả</translation>
+        <translation>Mô tả</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="391"/>
         <source>Remove Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Loại bỏ phần được chọn</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="422"/>
         <source>Combo box with values that can be used within the column&apos;s type. Must be supported by the provider.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hộp tích hợp với các giá trị có thể được dùng trong kiểu của cột. Phải được trình cung cấp hỗ trợ.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="124"/>
         <source>Select a file</source>
-        <translation type="unfinished">Chọn một tập tin</translation>
+        <translation>Chọn một tập tin</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="133"/>
         <source>Error</source>
-        <translation type="unfinished">Lỗi</translation>
+        <translation>Lỗi</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="134"/>
         <source>Could not open file %1
 Error was:%2</source>
-        <translation type="unfinished"></translation>
+        <translation>Không thể mở tập tin %1
+Lỗi là: %2</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="411"/>
         <source>Load Data from CSV file</source>
-        <translation type="unfinished"></translation>
+        <translation>Nạp Dữ liệu từ tập tin CSV</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="61"/>
         <source>Hidden</source>
-        <translation type="unfinished">Ẩn</translation>
+        <translation>Ẩn</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="456"/>
         <source>An immutable attribute is read-only - the user is not able to modify the contents.</source>
-        <translation type="unfinished"></translation>
+        <translation>Một thuộc tính không thể thay đổi được là kiểu chỉ-đọc - người dùng không thể thay đổi nội dung.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="483"/>
         <source>A hidden attribute will be invisible - the user is not able to see it&apos;s contents.</source>
-        <translation type="unfinished"></translation>
+        <translation>Một thuộc tính ẩn sẽ không nhìn thấy được - người dùng không thể thấy nội dung của nó.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="66"/>
         <source>Checkbox</source>
-        <translation type="unfinished"></translation>
+        <translation>Ô đánh dấu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="71"/>
         <source>Text edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Chỉnh sửa chữ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="521"/>
         <source>Representation for checked state</source>
-        <translation type="unfinished"></translation>
+        <translation>Biểu thị cho trạng thái được đánh dấu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="528"/>
         <source>Representation for unchecked state</source>
-        <translation type="unfinished"></translation>
+        <translation>Biểu thị cho trạng thái không được đánh dấu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="557"/>
         <source>A text edit field that accepts multiple lines will be used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Một trường chỉnh sửa chữ chấp nhận nhiều dòng sẽ được dùng.</translation>
     </message>
 </context>
 <context>
@@ -9982,7 +10032,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgsavoidintersectionsdialogbase.ui" line="13"/>
         <source>Remove intersections of new polygons with layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Loại bỏ các giao điểm của các vùng mới với các lớp</translation>
     </message>
 </context>
 <context>
@@ -10108,57 +10158,57 @@ Error was:%2</source>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="264"/>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="266"/>
         <source>Error</source>
-        <translation type="unfinished">Lỗi</translation>
+        <translation>Lỗi</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="264"/>
         <source>There are no available color ramps. You can add them in Style Manager.</source>
-        <translation type="unfinished"></translation>
+        <translation>Không có bảng biến đổi màu dùng được. Bạn có thể thêm chúng trong Trình Quản lý Kiểu.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="266"/>
         <source>The selected color ramp is not available.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bảng biến đổi màu đã chọn không dùng được.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="19"/>
         <source>Column:</source>
-        <translation type="unfinished"></translation>
+        <translation>Cột:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="56"/>
         <source>Symbol:</source>
-        <translation type="unfinished"></translation>
+        <translation>Biểu tượng:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="69"/>
         <source>change</source>
-        <translation type="unfinished"></translation>
+        <translation>thay đổi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="76"/>
         <source>Color ramp:</source>
-        <translation type="unfinished"></translation>
+        <translation>Biến đổi màu:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="113"/>
         <source>Classify</source>
-        <translation type="unfinished">Phân loại</translation>
+        <translation>Phân loại</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="120"/>
         <source>Delete</source>
-        <translation type="unfinished">Xóa</translation>
+        <translation>Xóa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="127"/>
         <source>Delete all</source>
-        <translation type="unfinished"></translation>
+        <translation>Xoá tất cả</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="150"/>
         <source>Join</source>
-        <translation type="unfinished"></translation>
+        <translation>Kết hợp</translation>
     </message>
 </context>
 <context>
@@ -10468,12 +10518,12 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="462"/>
         <source>PDF Format</source>
-        <translation type="unfinished"></translation>
+        <translation>Định dạng PDF</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1113"/>
         <source>Composer</source>
-        <translation type="unfinished"></translation>
+        <translation>Trình Biên tập</translation>
     </message>
 </context>
 <context>
@@ -10481,22 +10531,22 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/composer/qgscomposerarrowwidget.cpp" line="39"/>
         <source>General options</source>
-        <translation type="unfinished"></translation>
+        <translation>Các tuỳ chọn tổng quát</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerarrowwidget.cpp" line="79"/>
         <source>Arrow color</source>
-        <translation type="unfinished"></translation>
+        <translation>Màu mũi tên</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerarrowwidget.cpp" line="207"/>
         <source>Start marker svg file</source>
-        <translation type="unfinished"></translation>
+        <translation>Tập tin svg đánh dấu bắt đầu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerarrowwidget.cpp" line="217"/>
         <source>End marker svg file</source>
-        <translation type="unfinished"></translation>
+        <translation>Tập tin svg đánh dấu kết thúc</translation>
     </message>
 </context>
 <context>
@@ -10504,63 +10554,63 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Biểu mẫu</translation>
+        <translation>Biểu mẫu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="32"/>
         <source>Arrow</source>
-        <translation type="unfinished"></translation>
+        <translation>Mũi tên</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="38"/>
         <source>Arrow color...</source>
-        <translation type="unfinished"></translation>
+        <translation>Màu mũi tên...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="45"/>
         <source>Outline width </source>
-        <translation type="unfinished"></translation>
+        <translation>Chiều dày đường viền</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="52"/>
         <source>Arrow head width </source>
-        <translation type="unfinished"></translation>
+        <translation>Chiều dày đầu mũi tên</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="59"/>
         <source>Arrow markers</source>
-        <translation type="unfinished"></translation>
+        <translation>Các ký hiệu đánh dấu mũi tên</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="65"/>
         <source>Default marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Đánh dấu mặc định</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="72"/>
         <source>No marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Không đánh dấu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="79"/>
         <source>SVG markers</source>
-        <translation type="unfinished"></translation>
+        <translation>Các đánh dấu SVG</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="86"/>
         <source>Start marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Đánh dấu bắt đầu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="96"/>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="113"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="103"/>
         <source>End marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Đánh dấu kết thúc</translation>
     </message>
 </context>
 <context>
@@ -10582,7 +10632,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="116"/>
         <source>Item</source>
-        <translation type="unfinished">Mục</translation>
+        <translation>Mục</translation>
     </message>
     <message>
         <source>Toolbar_2</source>
@@ -10710,7 +10760,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="194"/>
         <source>Zoom Full</source>
-        <translation type="unfinished">Phóng toàn bản đồ</translation>
+        <translation>Phóng toàn bản đồ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="221"/>
@@ -10760,7 +10810,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="328"/>
         <source>Move item content</source>
-        <translation type="unfinished">Di chuyển nội dung của mục</translation>
+        <translation>Di chuyển nội dung của mục</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="333"/>
@@ -10770,7 +10820,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="336"/>
         <source>Group items</source>
-        <translation type="unfinished">Gộp nhóm các mục</translation>
+        <translation>Gộp nhóm các mục</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="341"/>
@@ -10780,7 +10830,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="344"/>
         <source>Ungroup items</source>
-        <translation type="unfinished">Khử nhóm các mục</translation>
+        <translation>Khử nhóm các mục</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="349"/>
@@ -10865,7 +10915,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="415"/>
         <source>Align top</source>
-        <translation type="unfinished">Canh trên</translation>
+        <translation>Canh thẳng phía trên</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="418"/>
@@ -10891,17 +10941,17 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="278"/>
         <source>Export as PDF...</source>
-        <translation type="unfinished"></translation>
+        <translation>Xuất ra dạng PDF...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="439"/>
         <source>&amp;Quit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Thoát</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="442"/>
         <source>Quit</source>
-        <translation type="unfinished">Beenden</translation>
+        <translation>Thoát</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="445"/>
@@ -10911,12 +10961,12 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="453"/>
         <source>Add Basic Shape</source>
-        <translation type="unfinished"></translation>
+        <translation>Thêm Dạng cơ bản</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="461"/>
         <source>Add arrow</source>
-        <translation type="unfinished"></translation>
+        <translation>Thêm mũi tên</translation>
     </message>
 </context>
 <context>
@@ -10966,27 +11016,27 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="34"/>
         <source>Opacity</source>
-        <translation type="unfinished"></translation>
+        <translation>Đô đục</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="57"/>
         <source>Outline width</source>
-        <translation type="unfinished">Chiều rộng đường viền</translation>
+        <translation>Chiều dày viền</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="80"/>
         <source>Show frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiện khung</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="20"/>
         <source>Frame color...</source>
-        <translation type="unfinished"></translation>
+        <translation>Màu khung...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="27"/>
         <source>Background color...</source>
-        <translation type="unfinished"></translation>
+        <translation>Màu nền...</translation>
     </message>
 </context>
 <context>
@@ -11009,7 +11059,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="31"/>
         <source>General options</source>
-        <translation type="unfinished"></translation>
+        <translation>Các tuỳ chọn tổng quát</translation>
     </message>
 </context>
 <context>
@@ -11031,17 +11081,17 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="71"/>
         <source>Margin (mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>Mép (mm)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="38"/>
         <source>Label</source>
-        <translation type="unfinished"></translation>
+        <translation>Nhãn</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="64"/>
         <source>Font color...</source>
-        <translation type="unfinished"></translation>
+        <translation>Màu phông...</translation>
     </message>
 </context>
 <context>
@@ -11066,7 +11116,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerlegenditemdialogbase.ui" line="19"/>
         <source>Item text</source>
-        <translation type="unfinished"></translation>
+        <translation>Mục kiểu chữ</translation>
     </message>
 </context>
 <context>
@@ -11074,7 +11124,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="30"/>
         <source>Item Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Các tuỳ chọn mục</translation>
     </message>
 </context>
 <context>
@@ -11177,32 +11227,32 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="231"/>
         <source>Update</source>
-        <translation type="unfinished">Cập nhật</translation>
+        <translation>Cập nhật</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="62"/>
         <source>&amp;Title</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tiêu đề</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="81"/>
         <source>Title Font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Phông chữ tiêu đề...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="88"/>
         <source>Layer Font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Phông chữ lớp...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="95"/>
         <source>Item Font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Phông chữ mục...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="102"/>
         <source>Symbol width </source>
-        <translation type="unfinished"></translation>
+        <translation>Chiều rộng biểu tượng</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="105"/>
@@ -11212,32 +11262,32 @@ Error was:%2</source>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="145"/>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="155"/>
         <source> mm</source>
-        <translation type="unfinished"> mm</translation>
+        <translation> mm</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="112"/>
         <source>Symbol height </source>
-        <translation type="unfinished"></translation>
+        <translation>Chiều cao biểu tượng</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="122"/>
         <source>Layer space </source>
-        <translation type="unfinished"></translation>
+        <translation>Khoảng cách lớp</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="132"/>
         <source>Symbol space </source>
-        <translation type="unfinished"></translation>
+        <translation>Khoảng cách biểu tượng</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="142"/>
         <source>Icon label space </source>
-        <translation type="unfinished"></translation>
+        <translation>Khoảng cách nhãn biểu tượng</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="152"/>
         <source>Box space </source>
-        <translation type="unfinished"></translation>
+        <translation>khoảng cách hộp</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="203"/>
@@ -11257,12 +11307,12 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="224"/>
         <source>Edit</source>
-        <translation type="unfinished">Chỉnh sửa</translation>
+        <translation>Chỉnh sửa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="238"/>
         <source>All</source>
-        <translation type="unfinished">Tất cả</translation>
+        <translation>Tất cả</translation>
     </message>
 </context>
 <context>
@@ -11270,22 +11320,22 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="83"/>
         <source>Remove composer</source>
-        <translation type="unfinished"></translation>
+        <translation>Loại bỏ trình biên tập</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="83"/>
         <source>Do you really want to remove the map composer &apos;%1&apos;?</source>
-        <translation type="unfinished"></translation>
+        <translation>Bạn có thực sự muốn loại bỏ trình biên tập bản đồ &apos;%1&apos;?</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="143"/>
         <source>Change title</source>
-        <translation type="unfinished"></translation>
+        <translation>Thay đổi tiêu đề</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="143"/>
         <source>Title</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiêu đề</translation>
     </message>
 </context>
 <context>
@@ -11293,27 +11343,27 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposermanagerbase.ui" line="14"/>
         <source>Composer manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Trình Quản lý trình Biên tập</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermanagerbase.ui" line="23"/>
         <source>Add</source>
-        <translation type="unfinished">Thêm</translation>
+        <translation>Thêm</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermanagerbase.ui" line="30"/>
         <source>Remove</source>
-        <translation type="unfinished">Loại bỏ</translation>
+        <translation>Loại bỏ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermanagerbase.ui" line="37"/>
         <source>Rename</source>
-        <translation type="unfinished"></translation>
+        <translation>Đặt lại tên</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermanagerbase.ui" line="44"/>
         <source>Show</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiển thị</translation>
     </message>
 </context>
 <context>
@@ -11432,7 +11482,7 @@ Error was:%2</source>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="120"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="261"/>
         <source>Cache</source>
-        <translation type="unfinished">Bộ đệm</translation>
+        <translation>Bộ đệm</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="46"/>
@@ -11446,65 +11496,65 @@ Error was:%2</source>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="125"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="265"/>
         <source>Render</source>
-        <translation type="unfinished">Vẽ lại</translation>
+        <translation>Kết xuất</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="48"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="318"/>
         <source>Solid</source>
-        <translation type="unfinished">Đặc</translation>
+        <translation>Đặc</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="49"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="314"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="560"/>
         <source>Cross</source>
-        <translation type="unfinished"></translation>
+        <translation>Chữ thập</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="51"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="326"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="622"/>
         <source>Inside frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Khung trong</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="52"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="330"/>
         <source>Outside frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Khung ngoài</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="54"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="347"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="660"/>
         <source>Horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>Ngang</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="55"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="351"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="664"/>
         <source>Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>Đứng</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="56"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="355"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="668"/>
         <source>Horizontal and Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>Ngang và đứng</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="57"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="359"/>
         <source>Boundary direction</source>
-        <translation type="unfinished"></translation>
+        <translation>Hướng ranh giới</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="31"/>
         <source>General options</source>
-        <translation type="unfinished"></translation>
+        <translation>Các tuỳ chọn tổng quát</translation>
     </message>
 </context>
 <context>
@@ -11575,12 +11625,12 @@ Error was:%2</source>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="41"/>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="73"/>
         <source>Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Bản đồ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="117"/>
         <source>Scale</source>
-        <translation type="unfinished">Tỷ lệ</translation>
+        <translation>Tỷ lệ</translation>
     </message>
     <message>
         <source>Rotation:</source>
@@ -11589,32 +11639,32 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="218"/>
         <source>X min</source>
-        <translation type="unfinished"></translation>
+        <translation>Trị X nhỏ nhất</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="250"/>
         <source>Y min</source>
-        <translation type="unfinished"></translation>
+        <translation>Trị Y nhỏ nhất</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="234"/>
         <source>X max</source>
-        <translation type="unfinished"></translation>
+        <translation>Trị X lớn nhất</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="266"/>
         <source>Y max</source>
-        <translation type="unfinished"></translation>
+        <translation>Trị Y lớn nhất</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="288"/>
         <source>Set to map canvas extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Thiết lập theo phạm vi khung bản đồ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="166"/>
         <source>Lock layers for map item</source>
-        <translation type="unfinished"></translation>
+        <translation>Khoá các lớp đối với mục bản đồ</translation>
     </message>
     <message>
         <source>Line width:</source>
@@ -11623,92 +11673,92 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="423"/>
         <source>Draw annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Vẽ ghi chú</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="491"/>
         <source>Font...</source>
-        <translation type="unfinished">Phông chữ...</translation>
+        <translation>Phông chữ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="514"/>
         <source>Coordinate precision</source>
-        <translation type="unfinished"></translation>
+        <translation>Độ chính xác toạ độ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="137"/>
         <source>Rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Xoay</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="326"/>
         <source>Show grid?</source>
-        <translation type="unfinished"></translation>
+        <translation>Hiển thị lưới?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="341"/>
         <source>Grid &amp;type</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kiểu lưới</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="357"/>
         <source>Interval X</source>
-        <translation type="unfinished"></translation>
+        <translation>Cách quãng X</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="380"/>
         <source>Offset X</source>
-        <translation type="unfinished"></translation>
+        <translation>Căn lệch X</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="403"/>
         <source>Line width</source>
-        <translation type="unfinished"></translation>
+        <translation>Chiều dày đường</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="430"/>
         <source>Annotation position</source>
-        <translation type="unfinished"></translation>
+        <translation>Vị trí ghi chú</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="449"/>
         <source>Annotation direction</source>
-        <translation type="unfinished"></translation>
+        <translation>Hướng ghi chú</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="465"/>
         <source>Line color</source>
-        <translation type="unfinished"></translation>
+        <translation>Màu đường</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="498"/>
         <source>Distance to map frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Khoảng cách đến khung bản đồ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="547"/>
         <source>Interval Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Cách quãng Y</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="570"/>
         <source>Offset Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Căn lệch Y</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="583"/>
         <source>Cross width</source>
-        <translation type="unfinished"></translation>
+        <translation>Chiều dày chữ thập</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="203"/>
         <source>Extents</source>
-        <translation type="unfinished"></translation>
+        <translation>Phạm vi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="320"/>
         <source>Grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Lưới</translation>
     </message>
 </context>
 <context>
@@ -11782,12 +11832,12 @@ Error was:%2</source>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="292"/>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="338"/>
         <source>Map %1</source>
-        <translation type="unfinished">Bản đồ %1</translation>
+        <translation>Bản đồ %1</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="38"/>
         <source>General options</source>
-        <translation type="unfinished"></translation>
+        <translation>Các tuỳ chọn tổng quát</translation>
     </message>
 </context>
 <context>
@@ -11836,42 +11886,42 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="157"/>
         <source>Load</source>
-        <translation type="unfinished">Nạp</translation>
+        <translation>Nạp</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="184"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="199"/>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Rộng</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="221"/>
         <source>Height</source>
-        <translation type="unfinished"></translation>
+        <translation>Cao</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="247"/>
         <source>Rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Xoay</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="151"/>
         <source>Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Tuỳ chọn</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="41"/>
         <source>Picture options</source>
-        <translation type="unfinished"></translation>
+        <translation>Tuỳ chọn Ảnh</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="263"/>
         <source>Sync from map</source>
-        <translation type="unfinished"></translation>
+        <translation>Đồng bộ hoá từ bản đồ</translation>
     </message>
 </context>
 <context>
@@ -11893,25 +11943,25 @@ Error was:%2</source>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="299"/>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="303"/>
         <source>Line Ticks Middle</source>
-        <translation type="unfinished">Đường nháy giữa</translation>
+        <translation>Đường nháy giữa</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="37"/>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="307"/>
         <source>Line Ticks Down</source>
-        <translation type="unfinished">Đường nháy xuống</translation>
+        <translation>Đường nháy xuống</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="38"/>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="311"/>
         <source>Line Ticks Up</source>
-        <translation type="unfinished">Đường nháy lên</translation>
+        <translation>Đường nháy lên</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="39"/>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="315"/>
         <source>Numeric</source>
-        <translation type="unfinished">Số</translation>
+        <translation>Số</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="66"/>
@@ -11922,7 +11972,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="31"/>
         <source>General options</source>
-        <translation type="unfinished"></translation>
+        <translation>Các tuỳ chọn tổng quát</translation>
     </message>
 </context>
 <context>
@@ -11989,12 +12039,12 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="47"/>
         <source>Segment size (map units)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kích thước đoạn (đơn vị bản đồ)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="70"/>
         <source>Map units per bar unit</source>
-        <translation type="unfinished"></translation>
+        <translation>Đơn vị bản đồ trên đơn vị cột</translation>
     </message>
     <message>
         <source>Number of segments</source>
@@ -12003,32 +12053,32 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="104"/>
         <source>Style</source>
-        <translation type="unfinished">Stil</translation>
+        <translation>Kiểu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="123"/>
         <source>Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Bản đồ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="204"/>
         <source>Unit label</source>
-        <translation type="unfinished">Nhãn đơn vị</translation>
+        <translation>Nhãn đơn vị</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="41"/>
         <source>Scale bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Thanh tỷ lệ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="90"/>
         <source> Right segments</source>
-        <translation type="unfinished"></translation>
+        <translation>Các đoạn phải</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="97"/>
         <source> Left segments</source>
-        <translation type="unfinished"></translation>
+        <translation>Các đoạn trái</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="149"/>
@@ -12036,27 +12086,27 @@ Error was:%2</source>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="187"/>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="197"/>
         <source> mm</source>
-        <translation type="unfinished"> mm</translation>
+        <translation> mm</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="152"/>
         <source>Height </source>
-        <translation type="unfinished"></translation>
+        <translation>Cao</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="165"/>
         <source>Line width </source>
-        <translation type="unfinished"></translation>
+        <translation>Chiều dày đường</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="184"/>
         <source>Label space </source>
-        <translation type="unfinished"></translation>
+        <translation>Khoảng cách nhãn</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="194"/>
         <source>Box space </source>
-        <translation type="unfinished"></translation>
+        <translation>Khoảng cách hộp</translation>
     </message>
 </context>
 <context>
@@ -12099,7 +12149,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="29"/>
         <source>General options</source>
-        <translation type="unfinished"></translation>
+        <translation>Các tuỳ chọn tổng quát</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="34"/>
@@ -12113,24 +12163,24 @@ Error was:%2</source>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="72"/>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="111"/>
         <source>Rectangle</source>
-        <translation type="unfinished">Hình chữ nhật</translation>
+        <translation>Hình chữ nhật</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="36"/>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="76"/>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="115"/>
         <source>Triangle</source>
-        <translation type="unfinished"></translation>
+        <translation>Hình tam giác</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="130"/>
         <source>Select outline color</source>
-        <translation type="unfinished"></translation>
+        <translation>Chọn màu viền</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="179"/>
         <source>Select fill color</source>
-        <translation type="unfinished"></translation>
+        <translation>Chọn màu tô</translation>
     </message>
 </context>
 <context>
@@ -12138,39 +12188,39 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Biểu mẫu</translation>
+        <translation>Biểu mẫu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="32"/>
         <source>Shape</source>
-        <translation type="unfinished"></translation>
+        <translation>Hình dạng</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="41"/>
         <source>Shape outline color...</source>
-        <translation type="unfinished"></translation>
+        <translation>Màu viền hình dạng</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="48"/>
         <source>Outline width </source>
-        <translation type="unfinished"></translation>
+        <translation>Chiều dày viền</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="55"/>
         <source>Transparent fill</source>
-        <translation type="unfinished"></translation>
+        <translation>Tô màu trong suốt</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="62"/>
         <source>Shape fill Color...</source>
-        <translation type="unfinished"></translation>
+        <translation>Màu tô hình dạng</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="69"/>
         <source>Rotation </source>
         <comment>Rotation</comment>
         <extracomment>Rotation</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>Xoay</translation>
     </message>
 </context>
 <context>
@@ -12444,29 +12494,29 @@ Tốt nhất là bạn khởi động lại QGIS rồi chạy trình biên tập
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="77"/>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="473"/>
         <source>Solid</source>
-        <translation type="unfinished">Đặc</translation>
+        <translation>Đặc</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="78"/>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="477"/>
         <source>Dots</source>
-        <translation type="unfinished">Chấm</translation>
+        <translation>Chấm</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="79"/>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="481"/>
         <source>Crosses</source>
-        <translation type="unfinished">Cắt chéo</translation>
+        <translation>Chữ thập</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="31"/>
         <source>mm</source>
-        <translation type="unfinished"></translation>
+        <translation>mm</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="32"/>
         <source>inch</source>
-        <translation type="unfinished"></translation>
+        <translation>phân Anh</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="128"/>
@@ -12529,7 +12579,7 @@ Tốt nhất là bạn khởi động lại QGIS rồi chạy trình biên tập
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="20"/>
         <source>Composition</source>
-        <translation type="unfinished">Tổ hợp</translation>
+        <translation>Tổ hợp</translation>
     </message>
     <message>
         <source>Paper</source>
@@ -12565,12 +12615,12 @@ Tốt nhất là bạn khởi động lại QGIS rồi chạy trình biên tập
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="195"/>
         <source>Snapping</source>
-        <translation type="unfinished">Bắt điểm</translation>
+        <translation>Bắt điểm</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="201"/>
         <source>Snap to grid</source>
-        <translation type="unfinished">Bắt vào lưới</translation>
+        <translation>Bắt vào lưới</translation>
     </message>
     <message>
         <source>Grid resolution:</source>
@@ -12604,17 +12654,17 @@ Tốt nhất là bạn khởi động lại QGIS rồi chạy trình biên tập
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="245"/>
         <source>Grid color</source>
-        <translation type="unfinished"></translation>
+        <translation>Màu lưới</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="271"/>
         <source>Grid style</source>
-        <translation type="unfinished"></translation>
+        <translation>Kiểu lưới</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="44"/>
         <source>Paper and quality</source>
-        <translation type="unfinished"></translation>
+        <translation>Giấy và chất lượng</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="153"/>
@@ -12624,37 +12674,37 @@ Tốt nhất là bạn khởi động lại QGIS rồi chạy trình biên tập
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="156"/>
         <source>Quality </source>
-        <translation type="unfinished"></translation>
+        <translation>Chất lượng</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="166"/>
         <source>Width </source>
-        <translation type="unfinished"></translation>
+        <translation>Rộng</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="179"/>
         <source>Height </source>
-        <translation type="unfinished"></translation>
+        <translation>Cao</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="208"/>
         <source>Spacing </source>
-        <translation type="unfinished"></translation>
+        <translation>Khoảng cách</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="221"/>
         <source>X offset </source>
-        <translation type="unfinished"></translation>
+        <translation>Căn lệch X</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="231"/>
         <source>Y offset </source>
-        <translation type="unfinished"></translation>
+        <translation>Căn lệch Y</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="238"/>
         <source>Pen width </source>
-        <translation type="unfinished"></translation>
+        <translation>Chiều dày bút vẽ</translation>
     </message>
 </context>
 <context>
@@ -12662,85 +12712,86 @@ Tốt nhất là bạn khởi động lại QGIS rồi chạy trình biên tập
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="248"/>
         <source>None</source>
-        <translation type="unfinished">Không có</translation>
+        <translation>Không có</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="249"/>
         <source>Set default (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Thiết lập mặc định (%1)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="342"/>
         <source>Input: </source>
-        <translation type="unfinished"></translation>
+        <translation>Đầu vào:</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="353"/>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="45"/>
         <source>Change</source>
-        <translation type="unfinished">Thay đổi</translation>
+        <translation>Thay đổi</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="373"/>
         <source>Shortcut conflict</source>
-        <translation type="unfinished"></translation>
+        <translation>Mâu thuẫn phím tắt</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="374"/>
         <source>This shortcut is already assigned to action %1. Reassign?</source>
-        <translation type="unfinished"></translation>
+        <translation>Phím tắt này đã được gán cho hành động %1. Gán lại không?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="14"/>
         <source>Configure shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Cấu hình phím tắt</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="27"/>
         <source>Action</source>
-        <translation type="unfinished"></translation>
+        <translation>Hành động</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="32"/>
         <source>Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>Phím tắt</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="58"/>
         <source>Set none</source>
-        <translation type="unfinished"></translation>
+        <translation>Không thiết lập</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="68"/>
         <source>Set default</source>
-        <translation type="unfinished"></translation>
+        <translation>Thiết lập mặc định</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="76"/>
         <source>Save shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Lưu các phím tắt</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="76"/>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="128"/>
         <source>XML file (*.xml);; All files (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tập tin XML (*.xml);; Tất cả các tập tin (*.*)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="90"/>
         <source>Saving shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Đang lưu các phím tắt</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="91"/>
         <source>Cannot write file %1:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Không thể ghi tập tin %1:
+%2.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="128"/>
         <source>Load shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Nạp các phím tắt</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="138"/>
@@ -12748,39 +12799,41 @@ Tốt nhất là bạn khởi động lại QGIS rồi chạy trình biên tập
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="163"/>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="183"/>
         <source>Loading shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Đang nạp các phím tắt</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="139"/>
         <source>Cannot read file %1:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Không thể đọc tập tin %1:
+%2.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="153"/>
         <source>Parse error at line %1, column %2:
 %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Lỗi phân tách tại dòng %1, cột %2:
+%3</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="164"/>
         <source>The file is not an shortcuts exchange file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tập tin này không phải là một tập tin trao đổi phím tắt.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="184"/>
         <source>The file contains shortcuts created with different locale, so you can&apos;t use it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tập tin này chứa các phím tắt được tạo ra với bản địa khác, vì thế bạn không thể dùng nó.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="82"/>
         <source>Load...</source>
-        <translation type="unfinished"></translation>
+        <translation>Nạp...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="92"/>
         <source>Save...</source>
-        <translation type="unfinished"></translation>
+        <translation>Lưu...</translation>
     </message>
 </context>
 <context>
@@ -12942,22 +12995,22 @@ Tốt nhất là bạn khởi động lại QGIS rồi chạy trình biên tập
     <message>
         <location filename="../src/ui/qgscontinuouscolordialogbase.ui" line="104"/>
         <source>Maximum value</source>
-        <translation type="unfinished">Giá trị tối đa</translation>
+        <translation>Giá trị lớn nhất</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscontinuouscolordialogbase.ui" line="130"/>
         <source>Outline width</source>
-        <translation type="unfinished">Chiều rộng đường viền</translation>
+        <translation>Chiều dày đường viền</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscontinuouscolordialogbase.ui" line="78"/>
         <source>Minimum value</source>
-        <translation type="unfinished">Giá trị tối thiểu</translation>
+        <translation>Giá trị nhỏ nhất</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscontinuouscolordialogbase.ui" line="39"/>
         <source>Classification field</source>
-        <translation type="unfinished">Trường phân loại</translation>
+        <translation>Trường phân loại</translation>
     </message>
 </context>
 <context>
@@ -13171,27 +13224,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="25"/>
         <source>Enable copyright label</source>
-        <translation type="unfinished"></translation>
+        <translation>Kích hoạt nhãn bản quyền</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="35"/>
         <source>&amp;Enter your copyright label here:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nhập nhãn bản quyền của bạn tại đây:</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="56"/>
         <source>&amp;Placement</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nơi đặt</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="90"/>
         <source>&amp;Orientation</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Hướng</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="114"/>
         <source>&amp;Color</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Màu</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="45"/>
@@ -13462,7 +13515,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="123"/>
         <source>*</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">*</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="134"/>
@@ -13858,7 +13911,7 @@ CSDL nói rằng:
     <message>
         <location filename="../src/app/qgsdbtablemodel.cpp" line="29"/>
         <source>Primary key column</source>
-        <translation type="unfinished"></translation>
+        <translation>Cột khoá sơ cấp</translation>
     </message>
 </context>
 <context>
@@ -14118,7 +14171,7 @@ CSDL nói rằng:
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="65"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="59"/>
@@ -14213,17 +14266,17 @@ CSDL nói rằng:
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="189"/>
         <source>Geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>Hình học</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="112"/>
         <source>Delimiter string</source>
-        <translation type="unfinished"></translation>
+        <translation>Chuỗi phân tách</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="150"/>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Kiểu</translation>
     </message>
 </context>
 <context>
@@ -14291,7 +14344,7 @@ CSDL nói rằng:
         <location filename="../src/plugins/diagram_overlay/qgsdiagramdialog.cpp" line="83"/>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramdialog.cpp" line="319"/>
         <source>linearly scaling</source>
-        <translation type="unfinished"></translation>
+        <translation>tỷ lệ tuyến tính</translation>
     </message>
 </context>
 <context>
@@ -14321,17 +14374,17 @@ CSDL nói rằng:
     <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramdialogbase.ui" line="35"/>
         <source>Diagram type</source>
-        <translation type="unfinished"></translation>
+        <translation>Kiểu biểu đồ</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramdialogbase.ui" line="70"/>
         <source>Classification attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Thuộc tính phân loại</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramdialogbase.ui" line="80"/>
         <source>Classification type</source>
-        <translation type="unfinished"></translation>
+        <translation>Kiểu phân loại</translation>
     </message>
 </context>
 <context>
@@ -14838,32 +14891,32 @@ CSDL nói rằng:
     <message>
         <location filename="../src/app/qgsfieldcalculator.cpp" line="73"/>
         <source>Syntax error</source>
-        <translation type="unfinished"></translation>
+        <translation>Lỗi cú pháp</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldcalculator.cpp" line="109"/>
         <source>Provider error</source>
-        <translation type="unfinished"></translation>
+        <translation>Lỗi trình cung cấp</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldcalculator.cpp" line="109"/>
         <source>Could not add the new field to the provider.</source>
-        <translation type="unfinished"></translation>
+        <translation>Không thể thêm trường mới vào trình cung cấp.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldcalculator.cpp" line="189"/>
         <source>Error</source>
-        <translation type="unfinished">Lỗi</translation>
+        <translation>Lỗi</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldcalculator.cpp" line="189"/>
         <source>An error occured while evaluating the calculation string.</source>
-        <translation type="unfinished"></translation>
+        <translation>Một lỗi đã xảy ra khi đang đánh giá chuỗi tính toán.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldcalculator.cpp" line="44"/>
         <source> (not supported by provider)</source>
-        <translation type="unfinished"></translation>
+        <translation>(không được trình cung cấp hỗ trợ)</translation>
     </message>
 </context>
 <context>
@@ -14871,62 +14924,62 @@ CSDL nói rằng:
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="14"/>
         <source>Field calculator</source>
-        <translation type="unfinished"></translation>
+        <translation>Bộ tính toán trường</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="20"/>
         <source>Update existing field</source>
-        <translation type="unfinished"></translation>
+        <translation>Cập nhật trường hiện có</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="30"/>
         <source>Only update selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>Chỉ cập nhật các đối tượng được chọn</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="37"/>
         <source>New field</source>
-        <translation type="unfinished"></translation>
+        <translation>Trường mới</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="98"/>
         <source>Fields</source>
-        <translation type="unfinished"></translation>
+        <translation>Các trường</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="110"/>
         <source>Values</source>
-        <translation type="unfinished">Giá trị</translation>
+        <translation>Giá trị</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="119"/>
         <source>Sample</source>
-        <translation type="unfinished">Mẫu</translation>
+        <translation>Mẫu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="126"/>
         <source>All</source>
-        <translation type="unfinished">Tất cả</translation>
+        <translation>Tất cả</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="136"/>
         <source>Operators</source>
-        <translation type="unfinished">Toán tử</translation>
+        <translation>Toán tử</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="142"/>
         <source>+</source>
-        <translation type="unfinished">+</translation>
+        <translation>+</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="149"/>
         <source>*</source>
-        <translation type="unfinished"></translation>
+        <translation>*</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="156"/>
         <source>sqrt</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">căn.bậc.2</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="163"/>
@@ -14987,52 +15040,52 @@ CSDL nói rằng:
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="43"/>
         <source>Output field name</source>
-        <translation type="unfinished"></translation>
+        <translation>Tên trường đầu ra</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="56"/>
         <source>Output field type</source>
-        <translation type="unfinished"></translation>
+        <translation>Kiểu trường đầu ra</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="69"/>
         <source>Output field width</source>
-        <translation type="unfinished"></translation>
+        <translation>Chiều rộng trường đầu ra</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="82"/>
         <source>Output field precision</source>
-        <translation type="unfinished"></translation>
+        <translation>Độ chính xác trường đầu ra</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="240"/>
         <source>to real</source>
-        <translation type="unfinished"></translation>
+        <translation>thành số thực</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="247"/>
         <source>to int</source>
-        <translation type="unfinished"></translation>
+        <translation>thành số nguyên</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="254"/>
         <source>to string</source>
-        <translation type="unfinished"></translation>
+        <translation>thành chuỗi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="261"/>
         <source>length</source>
-        <translation type="unfinished">chiều dài</translation>
+        <translation>chiều dài</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="268"/>
         <source>area</source>
-        <translation type="unfinished"></translation>
+        <translation>diện tích</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="278"/>
         <source>Field calculator expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Biểu thức tính toán trường</translation>
     </message>
 </context>
 <context>
@@ -15219,52 +15272,52 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsdevicedialogbase.ui" line="35"/>
         <source>Devices</source>
-        <translation type="unfinished"></translation>
+        <translation>Các thiết bị</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsdevicedialogbase.ui" line="47"/>
         <source>Delete</source>
-        <translation type="unfinished">Xóa</translation>
+        <translation>Xóa</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsdevicedialogbase.ui" line="60"/>
         <source>New</source>
-        <translation type="unfinished">Mới</translation>
+        <translation>Mới</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsdevicedialogbase.ui" line="73"/>
         <source>Update</source>
-        <translation type="unfinished">Cập nhật</translation>
+        <translation>Cập nhật</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsdevicedialogbase.ui" line="155"/>
         <source>Track download</source>
-        <translation type="unfinished"></translation>
+        <translation>Tải xuống đường đi</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsdevicedialogbase.ui" line="165"/>
         <source>Route upload</source>
-        <translation type="unfinished"></translation>
+        <translation>Tải lên lộ trình</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsdevicedialogbase.ui" line="175"/>
         <source>Waypoint download</source>
-        <translation type="unfinished"></translation>
+        <translation>Tải xuống điểm độ</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsdevicedialogbase.ui" line="192"/>
         <source>Route download</source>
-        <translation type="unfinished"></translation>
+        <translation>Tải xuống lộ trình</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsdevicedialogbase.ui" line="209"/>
         <source>Track upload</source>
-        <translation type="unfinished"></translation>
+        <translation>Tải lên đường đi</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsdevicedialogbase.ui" line="247"/>
         <source>Waypoint upload</source>
-        <translation type="unfinished"></translation>
+        <translation>Tải lên điểm toạ độ</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsdevicedialogbase.ui" line="272"/>
@@ -15273,7 +15326,7 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;In the download and upload commands there can be special words that will be replaced by QGIS when the commands are used. These words are:&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;%babel&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt; - the path to GPSBabel&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;%in&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt; - the GPX filename when uploading or the port when downloading&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;%out&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt; - the port when uploading or the GPX filename when downloading&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;Trong các lệnh tải xuống và tải lên có một số từ đặc biệt sẽ được QGIS thay thế khi các lệnh này được dùng. Những từ này là:&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;%babel&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt; - đường dẫn đến GPSBabel&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;%in&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt; - tên tập tin GPX khi tải lên hoặc cổng khi tải xuống &lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;%out&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt; - cổng khi tải lên hoặc tên tập tin GPX khi tải xuống&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -15874,68 +15927,68 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="37"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Tập tin</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="61"/>
         <source>Feature types</source>
-        <translation type="unfinished"></translation>
+        <translation>Các kiểu đối tượng</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="145"/>
         <source>File to import</source>
-        <translation type="unfinished"></translation>
+        <translation>Tập tin để nhập</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="169"/>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="315"/>
         <source>Feature type</source>
-        <translation type="unfinished"></translation>
+        <translation>Kiểu đối tượng</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="189"/>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="350"/>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="596"/>
         <source>Layer name</source>
-        <translation type="unfinished">Tên lớp</translation>
+        <translation>Tên lớp</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="202"/>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="583"/>
         <source>GPX output file</source>
-        <translation type="unfinished"></translation>
+        <translation>Tập tin GPX đầu ra</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="249"/>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="441"/>
         <source>GPS device</source>
-        <translation type="unfinished"></translation>
+        <translation>Thiết bị Máy định vị</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="282"/>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="480"/>
         <source>Port</source>
-        <translation type="unfinished"></translation>
+        <translation>Cổng</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="363"/>
         <source>Output file</source>
-        <translation type="unfinished"></translation>
+        <translation>Tập tin đầu ra</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="409"/>
         <source>Data layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp dữ liệu</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="539"/>
         <source>GPX input file</source>
-        <translation type="unfinished"></translation>
+        <translation>Tập tin GPX đầu vào</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="563"/>
         <source>Conversion</source>
-        <translation type="unfinished"></translation>
+        <translation>Chuyển đổi</translation>
     </message>
 </context>
 <context>
@@ -16249,12 +16302,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="20"/>
         <source>Resampling method</source>
-        <translation type="unfinished">Phương pháp lấy mẫu lại</translation>
+        <translation>Phương pháp lấy mẫu lại</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui" line="52"/>
         <source>Compression</source>
-        <translation type="unfinished"></translation>
+        <translation>Nén</translation>
     </message>
 </context>
 <context>
@@ -16443,72 +16496,72 @@ Muster</translation>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="171"/>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="173"/>
         <source>Error</source>
-        <translation type="unfinished">Lỗi</translation>
+        <translation>Lỗi</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="171"/>
         <source>There are no available color ramps. You can add them in Style Manager.</source>
-        <translation type="unfinished"></translation>
+        <translation>Không có bảng biến đổi màu dùng được. Bạn có thể thêm chúng trong Trình Quản lý Kiểu.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="173"/>
         <source>The selected color ramp is not available.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bảng biến đổi màu đã chọn không dùng được.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="19"/>
         <source>Column:</source>
-        <translation type="unfinished"></translation>
+        <translation>Cột:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="29"/>
         <source>Symbol:</source>
-        <translation type="unfinished"></translation>
+        <translation>Biểu tượng:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="42"/>
         <source>change</source>
-        <translation type="unfinished"></translation>
+        <translation>thay đổi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="49"/>
         <source>Classes:</source>
-        <translation type="unfinished"></translation>
+        <translation>Các lớp:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="72"/>
         <source>Color ramp:</source>
-        <translation type="unfinished"></translation>
+        <translation>Biến đổi màu:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="82"/>
         <source>Mode:</source>
-        <translation type="unfinished">Chế độ:</translation>
+        <translation>Chế độ:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="93"/>
         <source>Equal Interval</source>
-        <translation type="unfinished">Khoảng cách đều</translation>
+        <translation>Khoảng cách đều</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="98"/>
         <source>Quantile</source>
-        <translation type="unfinished"></translation>
+        <translation>Phân vị</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="130"/>
         <source>Classify</source>
-        <translation type="unfinished">Phân loại</translation>
+        <translation>Phân loại</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="137"/>
         <source>Add class</source>
-        <translation type="unfinished">Thêm lớp</translation>
+        <translation>Thêm lớp</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="144"/>
         <source>Delete class</source>
-        <translation type="unfinished"></translation>
+        <translation>Xóa lớp</translation>
     </message>
 </context>
 <context>
@@ -16703,19 +16756,19 @@ Muster</translation>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="269"/>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="342"/>
         <source>New name for layer &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Tên mới cho lớp &quot;%1&quot;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="385"/>
         <source>Question</source>
-        <translation type="unfinished"></translation>
+        <translation>Câu hỏi</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="386"/>
         <source>Are you sure you want to delete %n selected layer(s)?</source>
         <comment>number of layers to delete</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Bạn có chắc mình muốn xóa %n lớp được chọn không?</numerusform>
         </translation>
     </message>
 </context>
@@ -16937,7 +16990,7 @@ Muster</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="409"/>
         <source>Dynamic</source>
-        <translation type="unfinished">Động</translation>
+        <translation>Động</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="410"/>
@@ -18264,7 +18317,7 @@ tại dòng %2 cột %3</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2669"/>
         <source>Select a layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Chọn một lớp</translation>
     </message>
 </context>
 <context>
@@ -18334,12 +18387,12 @@ tại dòng %2 cột %3</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1957"/>
         <source>Input</source>
-        <translation type="unfinished">Đầu vào</translation>
+        <translation>Đầu vào</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2179"/>
         <source>Select a layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Chọn một lớp</translation>
     </message>
 </context>
 <context>
@@ -18363,7 +18416,7 @@ tại dòng %2 cột %3</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2932"/>
         <source>Selected categories</source>
-        <translation type="unfinished"></translation>
+        <translation>Các phạm trù được chọn</translation>
     </message>
 </context>
 <context>
@@ -19265,7 +19318,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/grass/qgsgrassprovider.cpp" line="1045"/>
         <source>GRASS vector map %1 does not have topology. Build topology?</source>
-        <translation type="unfinished"></translation>
+        <translation>Bản đồ vector GRASS %1 không có tô-pô. Có xây dựng tô-pô không?</translation>
     </message>
 </context>
 <context>
@@ -19506,13 +19559,13 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="51"/>
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="71"/>
         <source>Warning</source>
-        <translation type="unfinished">Cảnh báo</translation>
+        <translation>Cảnh báo</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="51"/>
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="71"/>
         <source>Cannot rename the lock file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Không thể đặt lại tên tập tin khoá %1</translation>
     </message>
 </context>
 <context>
@@ -19926,7 +19979,7 @@ tại dòng %2 cột %3</translation>
     <message>
         <location filename="../src/helpviewer/qgshelpviewerbase.ui" line="29"/>
         <source>about:blank</source>
-        <translation type="unfinished"></translation>
+        <translation>nói về:rỗng</translation>
     </message>
 </context>
 <context>
@@ -20037,7 +20090,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/interpolation/qgsidwinterpolatordialogbase.ui" line="28"/>
         <source>Distance coefficient P</source>
-        <translation type="unfinished"></translation>
+        <translation>Hệ số khoảng cách P</translation>
     </message>
 </context>
 <context>
@@ -20077,86 +20130,86 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="350"/>
         <source>Copy attribute value</source>
-        <translation type="unfinished"></translation>
+        <translation>Sao chép giá trị thuộc tính</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="351"/>
         <source>Copy feature attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Sao chép các thuộc tính của đối tượng</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="154"/>
         <source>Layer</source>
-        <translation type="unfinished">Lớp</translation>
+        <translation>Lớp</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="349"/>
         <source>Zoom to feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Phóng đến đối tượng</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="763"/>
         <source>Attribute changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Thuộc tính bị thay đổi</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="103"/>
         <source>Identify Results</source>
-        <translation type="unfinished">Nhận diện các kết quả</translation>
+        <translation>Nhận diện các kết quả</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="196"/>
         <source>(Actions)</source>
-        <translation type="unfinished"></translation>
+        <translation>(Hành động)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="358"/>
         <source>Expand all</source>
-        <translation type="unfinished"></translation>
+        <translation>Mở rộng tất cả</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="359"/>
         <source>Collapse all</source>
-        <translation type="unfinished"></translation>
+        <translation>Thu gọn tất cả</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="200"/>
         <location filename="../src/app/qgsidentifyresults.cpp" line="255"/>
         <location filename="../src/app/qgsidentifyresults.cpp" line="348"/>
         <source>Edit feature form</source>
-        <translation type="unfinished"></translation>
+        <translation>Chỉnh sửa hình dạng đối tượng</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="200"/>
         <location filename="../src/app/qgsidentifyresults.cpp" line="255"/>
         <location filename="../src/app/qgsidentifyresults.cpp" line="348"/>
         <source>View feature form</source>
-        <translation type="unfinished"></translation>
+        <translation>Xem dạng của đối tượng</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="770"/>
         <source>Run actions</source>
-        <translation type="unfinished"></translation>
+        <translation>Chạy các hành động</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="353"/>
         <source>Clear results</source>
-        <translation type="unfinished"></translation>
+        <translation>Xoá kết quả</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="354"/>
         <source>Clear highlights</source>
-        <translation type="unfinished"></translation>
+        <translation>Xoá phần làm nổi</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="355"/>
         <source>Highlight all</source>
-        <translation type="unfinished"></translation>
+        <translation>Làm nổi tất cả</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="356"/>
         <source>Highlight layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Làm nổi lớp</translation>
     </message>
 </context>
 <context>
@@ -20212,44 +20265,44 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="106"/>
         <source>No input data for interpolation</source>
-        <translation type="unfinished"></translation>
+        <translation>Không có dữ liệu đầu vào để nội suy</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="106"/>
         <source>Please add one or more input layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Vui lòng thêm một hay nhiều lớp đầu vào</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="115"/>
         <source>Output file name invalid</source>
-        <translation type="unfinished"></translation>
+        <translation>Tên tập tin đầu ra không hợp lệ</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="115"/>
         <source>Please enter a valid output file name</source>
-        <translation type="unfinished"></translation>
+        <translation>Vui lòng nhập một tên tập tin đầu ra hợp lệ</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="165"/>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="275"/>
         <source>Break lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Ngắt đường</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="169"/>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="274"/>
         <source>Structure lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Cấu trúc các đường</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="273"/>
         <source>Points</source>
-        <translation type="unfinished"></translation>
+        <translation>Điểm</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="303"/>
         <source>Save interpolated raster as...</source>
-        <translation type="unfinished"></translation>
+        <translation>Lưu raster được nội suy thành...</translation>
     </message>
 </context>
 <context>
@@ -20311,72 +20364,72 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="85"/>
         <source>Add</source>
-        <translation type="unfinished">Thêm</translation>
+        <translation>Thêm</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="92"/>
         <source>Remove</source>
-        <translation type="unfinished">Loại bỏ</translation>
+        <translation>Loại bỏ</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="100"/>
         <source>Vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp vector</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="105"/>
         <source>Attribute</source>
-        <translation type="unfinished">Thuộc tính</translation>
+        <translation>Thuộc tính</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="110"/>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Kiểu</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="285"/>
         <source>Set to current extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Thiết lập theo phạm vi hiện tại</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="38"/>
         <source>Vector layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Các lớp vector</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="58"/>
         <source>Interpolation attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Nội suy thuộc tính</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="191"/>
         <source>Cellsize X</source>
-        <translation type="unfinished"></translation>
+        <translation>Kích thước ô X</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="211"/>
         <source>Cellsize Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Kích thước ô Y</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="233"/>
         <source>X min</source>
-        <translation type="unfinished"></translation>
+        <translation>Trị X nhỏ nhất</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="246"/>
         <source>X max</source>
-        <translation type="unfinished"></translation>
+        <translation>Trị X lớn nhất</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="259"/>
         <source>Y min</source>
-        <translation type="unfinished"></translation>
+        <translation>Trị Y nhỏ nhất</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="272"/>
         <source>Y max</source>
-        <translation type="unfinished"></translation>
+        <translation>Trị Y lớn nhất</translation>
     </message>
 </context>
 <context>
@@ -20807,7 +20860,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="359"/>
         <source>Buffer labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Đệm cho các nhãn</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="550"/>
@@ -20891,27 +20944,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="690"/>
         <source>&amp;Color</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Màu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="105"/>
         <source>Font size</source>
-        <translation type="unfinished"></translation>
+        <translation>Cỡ phông chữ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="46"/>
         <source>Basic label options</source>
-        <translation type="unfinished"></translation>
+        <translation>Các tùy chọn cơ bản cho nhãn</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="497"/>
         <source>Data defined placement</source>
-        <translation type="unfinished"></translation>
+        <translation>Vị trí đặt định nghĩa theo dữ liệu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="538"/>
         <source>Data defined properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Tính chất định nghĩa theo dữ liệu</translation>
     </message>
 </context>
 <context>
@@ -21062,13 +21115,13 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/legend/qgslegend.cpp" line="662"/>
         <location filename="../src/app/legend/qgslegend.cpp" line="673"/>
         <source>Stop editing</source>
-        <translation type="unfinished">Ngừng chỉnh sửa</translation>
+        <translation>Ngừng chỉnh sửa</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="663"/>
         <location filename="../src/app/legend/qgslegend.cpp" line="674"/>
         <source>Do you want to save the changes to layer %1?</source>
-        <translation type="unfinished">Bạn có muốn lưu các thay đổi của lớp %1 không?</translation>
+        <translation>Bạn có muốn lưu các thay đổi của lớp %1 không?</translation>
     </message>
 </context>
 <context>
@@ -21147,64 +21200,64 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="514"/>
         <source>Save layer as...</source>
-        <translation type="unfinished">Lưu lớp thành...</translation>
+        <translation>Lưu lớp thành...</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="550"/>
         <source>Select the coordinate reference system for the saved shapefile. The data points will be transformed from the layer coordinate reference system.</source>
-        <translation type="unfinished">Chọn hệ toạ độ cho tập tin shape được lưu. Các điểm dữ liệu sẽ được chuyển đổi từ hệ toạ độ của lớp.</translation>
+        <translation>Chọn hệ toạ độ cho tập tin shape được lưu. Các điểm dữ liệu sẽ được chuyển đổi từ hệ toạ độ của lớp.</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="589"/>
         <source>Saving done</source>
-        <translation type="unfinished">Việc lưu hoàn tất</translation>
+        <translation>Việc lưu hoàn tất</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="589"/>
         <source>Export to Shapefile has been completed</source>
-        <translation type="unfinished">Việc xuất ra tập tin shape hoàn tất</translation>
+        <translation>Việc xuất ra tập tin shape hoàn tất</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="593"/>
         <source>Driver not found</source>
-        <translation type="unfinished">Không thấy trình điều khiển</translation>
+        <translation>Không thấy trình điều khiển</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="593"/>
         <source>ESRI Shapefile driver is not available</source>
-        <translation type="unfinished">Không có trình điều khiển tập tin shape ESRI</translation>
+        <translation>Không có trình điều khiển tập tin shape ESRI</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="597"/>
         <source>Error creating shapefile</source>
-        <translation type="unfinished">Lỗi khi tạo tập tin shape</translation>
+        <translation>Lỗi khi tạo tập tin shape</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="598"/>
         <source>The shapefile could not be created (%1)</source>
-        <translation type="unfinished">Không thể tạo ra tập tin shape (%1)</translation>
+        <translation>Không thể tạo ra tập tin shape (%1)</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="602"/>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="606"/>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="611"/>
         <source>Error</source>
-        <translation type="unfinished">Lỗi</translation>
+        <translation>Lỗi</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="602"/>
         <source>Layer creation failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Việc tạo lớp thất bại</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="607"/>
         <source>Layer attribute table contains unsupported datatype(s)</source>
-        <translation type="unfinished">Bảng thuộc tính của lớp chứa kiểu dữ liệu không được hỗ trợ</translation>
+        <translation>Bảng thuộc tính của lớp chứa (các) kiểu dữ liệu không được hỗ trợ</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="612"/>
         <source>Creation of an attribute failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Tạo thuộc tính thất bại</translation>
     </message>
 </context>
 <context>
@@ -21422,22 +21475,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/diagram_overlay/qgslinearlyscalingdialogbase.ui" line="35"/>
         <source>Find maximum value</source>
-        <translation type="unfinished"></translation>
+        <translation>Tìm giá trị nhỏ nhất</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgslinearlyscalingdialogbase.ui" line="45"/>
         <source>Size</source>
-        <translation type="unfinished">Kích thước</translation>
+        <translation>Kích thước</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgslinearlyscalingdialogbase.ui" line="59"/>
         <source>Size unit</source>
-        <translation type="unfinished"></translation>
+        <translation>Đơn vị kích thước</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgslinearlyscalingdialogbase.ui" line="23"/>
         <source>Scale linearly between 0 and the following attribute value / diagram size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Lấy tỷ lệ tuyến tính giữa 0 và giá trị thuộc tính/kích thước biểu đồ sau:</translation>
     </message>
 </context>
 <context>
@@ -21712,17 +21765,17 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="480"/>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="497"/>
         <source>Feature added</source>
-        <translation type="unfinished"></translation>
+        <translation>Đối tượng được thêm</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="454"/>
         <source>The feature could not be added because removing the polygon intersections would change the geometry type</source>
-        <translation type="unfinished"></translation>
+        <translation>Đối tượng không thể được thêm vào bởi vì loại bỏ các giao điểm của vùng sẽ thay đổi kiểu hình học</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="463"/>
         <source>An error was reported during intersection removal</source>
-        <translation type="unfinished"></translation>
+        <translation>Một lỗi được ghi nhận trong quá trình loại bỏ giao điểm</translation>
     </message>
 </context>
 <context>
@@ -21751,13 +21804,13 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="63"/>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="127"/>
         <source>No feature selected. Please select a feature with the selection tool or in the attribute table</source>
-        <translation type="unfinished"></translation>
+        <translation>Không có đối tượng nào được chọn. Vui lòng chọn một đối tượng bằng công cụ chọn hoặc chọn trong bảng thuộc tính</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="67"/>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="131"/>
         <source>Several features are selected. Please select only one feature to which an island should be added.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vài đối tượng được chọn. Vui lòng chỉ chọn một đối tượng cần được thêm đảo vào.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="72"/>
@@ -21781,24 +21834,28 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Island added</source>
+        <translation type="obsolete">Đảo được thêm vào</translation>
+    </message>
+    <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="115"/>
         <source>Selected feature is not a multipolygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Đối tượng được chọn không phải là vùng đa</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="119"/>
         <source>New ring is not a valid geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>Vòng mới không phải là một hình học hợp lệ</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="123"/>
         <source>New polygon ring not disjoint with existing polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Vòng của vùng mới không tách ra khỏi các vùng hiện có</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="135"/>
         <source>Selected geometry could not be found</source>
-        <translation type="unfinished"></translation>
+        <translation>Không tìm thấy hình học được chọn</translation>
     </message>
 </context>
 <context>
@@ -21871,7 +21928,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="84"/>
         <source>Ring added</source>
-        <translation type="unfinished"></translation>
+        <translation>Vòng được thêm vào</translation>
     </message>
 </context>
 <context>
@@ -21879,7 +21936,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptooladdvertex.cpp" line="125"/>
         <source>Added vertex</source>
-        <translation type="unfinished"></translation>
+        <translation>Đỉnh được thêm vào</translation>
     </message>
 </context>
 <context>
@@ -21888,22 +21945,22 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsmaptooldeletepart.cpp" line="101"/>
         <location filename="../src/app/qgsmaptooldeletepart.cpp" line="116"/>
         <source>Delete part</source>
-        <translation type="unfinished"></translation>
+        <translation>Xoá phần</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooldeletepart.cpp" line="101"/>
         <source>This isn&apos;t a multipart geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation>Đây không phải là hình học đa phần.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooldeletepart.cpp" line="109"/>
         <source>Part of multipart feature deleted</source>
-        <translation type="unfinished"></translation>
+        <translation>Một phần của đối tượng đa phần đã được xoá</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooldeletepart.cpp" line="116"/>
         <source>Couldn&apos;t remove the selected part.</source>
-        <translation type="unfinished"></translation>
+        <translation>Không thể loại bỏ phần được chọn.</translation>
     </message>
 </context>
 <context>
@@ -21911,7 +21968,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptooldeletering.cpp" line="114"/>
         <source>Ring deleted</source>
-        <translation type="unfinished"></translation>
+        <translation>Vòng bị xoá</translation>
     </message>
 </context>
 <context>
@@ -21919,7 +21976,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptooldeletevertex.cpp" line="83"/>
         <source>Vertex deleted</source>
-        <translation type="unfinished"></translation>
+        <translation>Đỉnh được xoá</translation>
     </message>
 </context>
 <context>
@@ -22017,53 +22074,53 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="299"/>
         <source>firstX</source>
         <comment>attributes get sorted; translation for lastX should be lexically larger than this one</comment>
-        <translation type="unfinished"></translation>
+        <translation>X.đầu.tiên</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="301"/>
         <source>firstY</source>
-        <translation type="unfinished"></translation>
+        <translation>Y.đầu.tiên</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="303"/>
         <source>lastX</source>
         <comment>attributes get sorted; translation for firstX should be lexically smaller than this one</comment>
-        <translation type="unfinished"></translation>
+        <translation>X.cuối.cùng</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="305"/>
         <source>lastY</source>
-        <translation type="unfinished"></translation>
+        <translation>Y.cuối.cùng</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="120"/>
         <source>Identifying on %1...</source>
-        <translation type="unfinished"></translation>
+        <translation>Đang nhận diện %1...</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="134"/>
         <source>Identifying done.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nhận diện xong.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="159"/>
         <source>Identify results</source>
-        <translation type="unfinished"></translation>
+        <translation>Nhận diện kết quả</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="159"/>
         <source>No features at this position found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Không tìm thấy đối tượng nào tại vị trí này.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="353"/>
         <source>WMS layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp WMS</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="373"/>
         <source>Feature info</source>
-        <translation type="unfinished"></translation>
+        <translation>Thông tin đối tượng</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="382"/>
@@ -22073,12 +22130,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="326"/>
         <source>feature id</source>
-        <translation type="unfinished"></translation>
+        <translation>id đối tượng</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="326"/>
         <source>new feature</source>
-        <translation type="unfinished"></translation>
+        <translation>đối tượng mới</translation>
     </message>
 </context>
 <context>
@@ -22096,7 +22153,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptoolmovefeature.cpp" line="140"/>
         <source>Feature moved</source>
-        <translation type="unfinished"></translation>
+        <translation>Đối tượng bị loại bỏ</translation>
     </message>
 </context>
 <context>
@@ -22104,7 +22161,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptoolmovevertex.cpp" line="167"/>
         <source>Vertex moved</source>
-        <translation type="unfinished"></translation>
+        <translation>Đỉnh được di chuyển</translation>
     </message>
 </context>
 <context>
@@ -22112,18 +22169,19 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="463"/>
         <source>Node tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Công cụ Nốt</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="464"/>
         <source>Feature was deleted on background.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Đối tượng đã được xoá trên nền.
+</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="817"/>
         <source>Inserted vertex</source>
-        <translation type="unfinished"></translation>
+        <translation>Đỉnh được chèn vào</translation>
     </message>
 </context>
 <context>
@@ -22131,37 +22189,37 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptoolreshape.cpp" line="42"/>
         <source>Not a vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Không phải một lớp vector</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolreshape.cpp" line="43"/>
         <source>The current layer is not a vector layer</source>
-        <translation type="unfinished">Lớp hiện tại không phải là một lớp vector</translation>
+        <translation>Lớp hiện tại không phải là một lớp vector</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolreshape.cpp" line="49"/>
         <source>Layer not editable</source>
-        <translation type="unfinished">Lớp không chỉnh sửa được</translation>
+        <translation>Lớp không chỉnh sửa được</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolreshape.cpp" line="50"/>
         <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation type="unfinished">Không thể chỉnh sửa lớp vector. Để chỉnh sửa được, vào mục tập tin của lớp, nhắp chuột phải và đánh dấu vào &apos;Cho phép Chỉnh sửa&apos;.</translation>
+        <translation>Không thể chỉnh sửa lớp vector. Để chỉnh sửa được, vào mục tập tin của lớp, nhắp chuột phải và đánh dấu vào &apos;Cho phép Chỉnh sửa&apos;.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolreshape.cpp" line="65"/>
         <source>Coordinate transform error</source>
-        <translation type="unfinished">Lỗi chuyển đổi tọa độ</translation>
+        <translation>Lỗi chuyển đổi tọa độ</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolreshape.cpp" line="66"/>
         <source>Cannot transform the point to the layers coordinate system</source>
-        <translation type="unfinished"></translation>
+        <translation>Không thể chuyển đổi điểm này thành hệ tọa độ của lớp</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolreshape.cpp" line="98"/>
         <source>Reshape</source>
-        <translation type="unfinished"></translation>
+        <translation>Chỉnh lại hình dạng</translation>
     </message>
 </context>
 <context>
@@ -22169,27 +22227,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="92"/>
         <source>No point feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Không có đối tượng điểm</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="92"/>
         <source>No point feature was detected at the clicked position. Please click closer to the feature or enhance the search tolerance under Settings-&gt;Options-&gt;Digitizing-&gt;Serch radius for vertex edits</source>
-        <translation type="unfinished"></translation>
+        <translation>Không có đối tượng điểm nào được phát hiện tại vị trí nhắp chuột. Vui lòng nhắp chuột gần hơn vào đối tượng hoặc tằng ngưỡng tìm kiếm trong phần Thiết lập -&gt; Tuỳ chọn -&gt; Số hoá -&gt; Bán kính tìm kiếm để chỉnh sửa đỉnh</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="106"/>
         <source>No rotation Attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Không có các Thuộc tính xoay</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="106"/>
         <source>The active point layer does not have a rotation attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp điểm kích hoạt không có thuộc tính xoay</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="185"/>
         <source>Rotate symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>Xoay biểu tượng</translation>
     </message>
 </context>
 <context>
@@ -22220,23 +22278,23 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptoolsimplify.cpp" line="115"/>
         <source>Geometry simplified</source>
-        <translation type="unfinished"></translation>
+        <translation>Hình học được đơn giản hoá</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsimplify.cpp" line="279"/>
         <location filename="../src/app/qgsmaptoolsimplify.cpp" line="300"/>
         <source>Unsupported operation</source>
-        <translation type="unfinished"></translation>
+        <translation>Lệnh không được hỗ trợ</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsimplify.cpp" line="279"/>
         <source>Multipart features are not supported for simplification.</source>
-        <translation type="unfinished"></translation>
+        <translation>Đối tượng đa phần không được hỗ trợ để đơn giản hoá.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsimplify.cpp" line="300"/>
         <source>This feature cannot be simplified. Check if feature has enough vertices to be simplified.</source>
-        <translation type="unfinished"></translation>
+        <translation>Đối tượng này không thể đơn giản hoá được. Kiểm tra xem đối tượng đó có đủ số đỉnh để có thể đơn giản hoá được.</translation>
     </message>
 </context>
 <context>
@@ -22294,7 +22352,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="82"/>
         <source>Features split</source>
-        <translation type="unfinished"></translation>
+        <translation>Cắt các Đối tượng</translation>
     </message>
 </context>
 <context>
@@ -22584,22 +22642,22 @@ Bạn có muốn ghi đè nó không?</translation>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="459"/>
         <source>Force</source>
-        <translation type="unfinished"></translation>
+        <translation>Bắt buộc</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="469"/>
         <source>Should text be antialiased? Note that this requires more available colors, decreases drawing performance, and results in slightly larger output images.</source>
-        <translation type="unfinished"></translation>
+        <translation>Chữ có cần được chống răng cưa không? Lưu ý rằng điều này đòi hỏi phải có nhiều màu hơn, làm giảm hiệu suất vẽ và tạo thành ảnh đầu ra có kích thước hơi lớn hơn.</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="472"/>
         <source>Anti-alias</source>
-        <translation type="unfinished"></translation>
+        <translation>Chống răng cưa</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="482"/>
         <source>Can text run off the edge of the map?</source>
-        <translation type="unfinished"></translation>
+        <translation>Chữ có thể chạy ra ngoài mép bản đồ được không?</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="485"/>
@@ -22614,42 +22672,42 @@ Bạn có muốn ghi đè nó không?</translation>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="230"/>
         <source>Paths</source>
-        <translation type="unfinished"></translation>
+        <translation>Đường dẫn</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="204"/>
         <source>MapServer url</source>
-        <translation type="unfinished"></translation>
+        <translation>URL MapServer</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="456"/>
         <source>Forces labels on, regardless of collisions. Available only for cached labels.</source>
-        <translation type="unfinished"></translation>
+        <translation>Buộc bật nhãn lên, bất kể có chồng nhau hay không. Chỉ áp dụng được cho các nhãn được đệm.</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="495"/>
         <source>Check to allow MapServer to return data in GML format. Useful when used with WMS GetFeatureInfo operations.</source>
-        <translation type="unfinished"></translation>
+        <translation>Đánh dấu để cho phép MapServer trả về dữ liệu ở định dạng GML. Hữu ích khi được dùng với các lệnh WMS GetFeatureInfo.</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="15"/>
         <source>MapServer Export: Save project to MapFile</source>
-        <translation type="unfinished"></translation>
+        <translation>Xuất ra MapServer: Lưu dự án thành MapFile</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="24"/>
         <source>Use current project</source>
-        <translation type="unfinished"></translation>
+        <translation>Dùng dự án hiện tại</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="87"/>
         <source>LAYER information only</source>
-        <translation type="unfinished"></translation>
+        <translation>Chỉ thông tin về LỚP</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="142"/>
         <source>Rendering</source>
-        <translation type="unfinished">Khi vẽ</translation>
+        <translation>Đang kết xuất</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="214"/>
@@ -22657,42 +22715,44 @@ Bạn có muốn ghi đè nó không?</translation>
 
 For example: 
 http://my.host.com/cgi-bin/mapserv.exe</source>
-        <translation type="unfinished"></translation>
+        <translation>URL đến tập tin chạy chương trình mapserver
+Ví dụ:
+http://my.host.com/cgi-bin/mapserv.exe</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="239"/>
         <source>Inline</source>
-        <translation type="unfinished"></translation>
+        <translation>Theo hàng</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="258"/>
         <source>Symbolset</source>
-        <translation type="unfinished"></translation>
+        <translation>Bộ biểu tượng</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="271"/>
         <source>Use templates</source>
-        <translation type="unfinished"></translation>
+        <translation>Dùng các mẫu</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="335"/>
         <source>The file name of the fonts file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tên tập tin của tập tin phông chữ.</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="354"/>
         <source>Fontset</source>
-        <translation type="unfinished"></translation>
+        <translation>Bộ phông</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="367"/>
         <source>The file name of the symbols file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tên tập tin của tập tin biểu tượng.</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="450"/>
         <source>Layer/label options</source>
-        <translation type="unfinished"></translation>
+        <translation>Tuỳ chọn Lớp/nhãn</translation>
     </message>
 </context>
 <context>
@@ -22768,7 +22828,7 @@ http://my.host.com/cgi-bin/mapserv.exe</source>
     <message>
         <location filename="../src/ui/qgsmeasurebase.ui" line="69"/>
         <source>Total</source>
-        <translation type="unfinished">Tổng cộng</translation>
+        <translation>Tổng cộng</translation>
     </message>
 </context>
 <context>
@@ -22796,7 +22856,7 @@ http://my.host.com/cgi-bin/mapserv.exe</source>
     <message>
         <location filename="../src/app/qgsmeasuredialog.cpp" line="39"/>
         <source>&amp;New</source>
-        <translation type="unfinished">&amp;Mới</translation>
+        <translation>&amp;Mới</translation>
     </message>
 </context>
 <context>
@@ -22817,49 +22877,49 @@ http://my.host.com/cgi-bin/mapserv.exe</source>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="87"/>
         <source>Id</source>
-        <translation type="unfinished">Id</translation>
+        <translation>Id</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="106"/>
         <source>Merge</source>
-        <translation type="unfinished"></translation>
+        <translation>Gộp</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="124"/>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="428"/>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="480"/>
         <source>feature %1</source>
-        <translation type="unfinished"></translation>
+        <translation>đối tượng %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="129"/>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="223"/>
         <source>Minimum</source>
-        <translation type="unfinished">Nhỏ nhất</translation>
+        <translation>Nhỏ nhất</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="130"/>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="227"/>
         <source>Maximum</source>
-        <translation type="unfinished">Lớn nhất</translation>
+        <translation>Lớn nhất</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="131"/>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="235"/>
         <source>Median</source>
-        <translation type="unfinished"></translation>
+        <translation>Giá trị giữa</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="135"/>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="239"/>
         <source>Concatenation</source>
-        <translation type="unfinished"></translation>
+        <translation>Cộng chuỗi</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="139"/>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="231"/>
         <source>Mean</source>
-        <translation type="unfinished">Trung bình</translation>
+        <translation>Trung bình</translation>
     </message>
 </context>
 <context>
@@ -22867,17 +22927,17 @@ http://my.host.com/cgi-bin/mapserv.exe</source>
     <message>
         <location filename="../src/ui/qgsmergeattributesdialogbase.ui" line="14"/>
         <source>Merge feature attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Gộp các thuộc tính đối tượng</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmergeattributesdialogbase.ui" line="38"/>
         <source>Take attributes from selected feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Lấy các thuộc tính từ đối tượng được chọn</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmergeattributesdialogbase.ui" line="72"/>
         <source>Remove feature from selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Loại bỏ đối tượng khỏi phép chọn</translation>
     </message>
 </context>
 <context>
@@ -23015,12 +23075,12 @@ Thông tin bổ sung về lỗi:
     <message>
         <location filename="../src/app/qgsnewconnection.cpp" line="37"/>
         <source>prefer</source>
-        <translation type="unfinished">ưa thích</translation>
+        <translation>ưa thích</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewconnection.cpp" line="38"/>
         <source>require</source>
-        <translation type="unfinished">phải có</translation>
+        <translation>phải có</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewconnection.cpp" line="39"/>
@@ -23035,12 +23095,12 @@ Thông tin bổ sung về lỗi:
     <message>
         <location filename="../src/app/qgsnewconnection.cpp" line="90"/>
         <source>Save connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Lưu kết nối</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewconnection.cpp" line="91"/>
         <source>Should the existing connection %1 be overwritten?</source>
-        <translation type="unfinished"></translation>
+        <translation>Có ghi đè kết nối hiện tại %1 không?</translation>
     </message>
 </context>
 <context>
@@ -23174,7 +23234,7 @@ Thông tin bổ sung về lỗi:
     <message>
         <location filename="../src/ui/qgsnewconnectionbase.ui" line="195"/>
         <source>&amp;Test Connect</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kiểm tra Kết nối</translation>
     </message>
 </context>
 <context>
@@ -23182,12 +23242,12 @@ Thông tin bổ sung về lỗi:
     <message>
         <location filename="../src/app/qgsnewhttpconnection.cpp" line="62"/>
         <source>Save connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Lưu kết nối</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewhttpconnection.cpp" line="63"/>
         <source>Should the existing connection %1 be overwritten?</source>
-        <translation type="unfinished"></translation>
+        <translation>Có ghi đè kết nối hiện tại %1 không?</translation>
     </message>
 </context>
 <context>
@@ -23281,17 +23341,17 @@ Thông tin bổ sung về lỗi:
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="84"/>
         <source>If the WMS requires basic authentication, enter a user name and optional password</source>
-        <translation type="unfinished"></translation>
+        <translation>Nếu WMS yêu cầu chứng thực cơ bản, nhập tên người dùng và mật mã tuỳ chọn</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="117"/>
         <source>Password</source>
-        <translation type="unfinished">Mật mã</translation>
+        <translation>Mật mã</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="97"/>
         <source>&amp;User name</source>
-        <translation type="unfinished"></translation>
+        <translation>Tên &amp;người dùng</translation>
     </message>
 </context>
 <context>
@@ -23321,12 +23381,12 @@ Thông tin bổ sung về lỗi:
     <message>
         <location filename="../src/app/ogr/qgsnewogrconnection.cpp" line="109"/>
         <source>Save connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Lưu kết nối</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsnewogrconnection.cpp" line="110"/>
         <source>Should the existing connection %1 be overwritten?</source>
-        <translation type="unfinished"></translation>
+        <translation>Có ghi đè kết nối hiện tại %1 không?</translation>
     </message>
 </context>
 <context>
@@ -23409,7 +23469,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="65"/>
         <source>&amp;Test Connect</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kiểm tra Kết nối</translation>
     </message>
 </context>
 <context>
@@ -23417,22 +23477,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsnewvectorlayerdialog.cpp" line="34"/>
         <source>Text data</source>
-        <translation type="unfinished"></translation>
+        <translation>Dữ liệu văn bản</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewvectorlayerdialog.cpp" line="35"/>
         <source>Whole number</source>
-        <translation type="unfinished"></translation>
+        <translation>Toàn bộ con số</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewvectorlayerdialog.cpp" line="36"/>
         <source>Decimal number</source>
-        <translation type="unfinished"></translation>
+        <translation>Số thập phân</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewvectorlayerdialog.cpp" line="42"/>
         <source>ESRI Shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Tập tin shape của ESRI</translation>
     </message>
 </context>
 <context>
@@ -23440,98 +23500,98 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="14"/>
         <source>New Vector Layer</source>
-        <translation type="unfinished">Lớp vector mới</translation>
+        <translation>Lớp vector mới</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="26"/>
         <source>File format</source>
-        <translation type="unfinished">Định dạng tập tin</translation>
+        <translation>Định dạng tập tin</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="43"/>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="92"/>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="168"/>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Kiểu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="49"/>
         <source>Point</source>
-        <translation type="unfinished">Điểm</translation>
+        <translation>Điểm</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="56"/>
         <source>Line</source>
-        <translation type="unfinished">Đường</translation>
+        <translation>Đường</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="63"/>
         <source>Polygon</source>
-        <translation type="unfinished">Vùng</translation>
+        <translation>Vùng</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="73"/>
         <source>New attribute</source>
-        <translation type="unfinished">Thuộc tính mới</translation>
+        <translation>Thuộc tính mới</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="79"/>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="163"/>
         <source>Name</source>
-        <translation type="unfinished">Tên</translation>
+        <translation>Tên</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="105"/>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="173"/>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Chiều rộng</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="118"/>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="178"/>
         <source>Precision</source>
-        <translation type="unfinished"></translation>
+        <translation>Độ chính xác</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="241"/>
         <source>Add attribute to list</source>
-        <translation type="unfinished"></translation>
+        <translation>Thêm thuộc tính vào danh sách</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="247"/>
         <source>Add to attributes list</source>
-        <translation type="unfinished"></translation>
+        <translation>Thêm vào danh sách các thuộc tính</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="141"/>
         <source>Attributes list</source>
-        <translation type="unfinished"></translation>
+        <translation>Danh sách các thuộc tính</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="205"/>
         <source>Delete selected attribute</source>
-        <translation type="unfinished">Xoá thuộc tính được chọn</translation>
+        <translation>Xoá thuộc tính được chọn</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="208"/>
         <source>Remove selected attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Loài bỏ thuộc tính được chọn</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="274"/>
         <source>CRS ID</source>
-        <translation type="unfinished"></translation>
+        <translation>Số hiệu HTĐ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="291"/>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="294"/>
         <source>Specify the coordinate reference system of the layer&apos;s geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation>Chỉ định hệ tham chiếu không gian của hình học của lớp.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="297"/>
         <source>Specify CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>Chỉ định HTĐ</translation>
     </message>
 </context>
 <context>
@@ -23724,7 +23784,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;The layer name is format dependent. Consult the OGR documentation or the documentation of your data format to determine the nature of the included information.&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Be advised: &lt;/span&gt;selecting an already opened layer will not generate an error message and the layer will end up loaded twice!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;Đây là danh sách của tất cả các lớp có trong nguồn dữ liệu của lớp kích hoạt. Các lớp sẽ được nạp khi bạn nhắp chuột vào &quot;Đồng ý&quot;.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;Tên lớp phụ thuộc vào định dạng. Xem tài liệu của OGR hoặc tài liệu về định dạng dữ liệu của bạn để xác định bản chất của thông tin đi kèm.&lt;/p&gt;&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;/p&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Lưu ý: &lt;/span&gt;chọn một lớp đã mở sẽ không sinh ra lỗi và lớp đó sẽ được nạp hai lần!&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -23732,7 +23792,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/osm/osmprovider.cpp" line="407"/>
         <source>Open Street Map format</source>
-        <translation type="unfinished"></translation>
+        <translation>Định dạng Open Street Map</translation>
     </message>
 </context>
 <context>
@@ -23752,17 +23812,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="172"/>
         <source>Whole number (integer)</source>
-        <translation type="unfinished"></translation>
+        <translation>Toàn bộ con số (số nguyên)</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="173"/>
         <source>Decimal number (real)</source>
-        <translation type="unfinished"></translation>
+        <translation>Số thập phân (số thực)</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="174"/>
         <source>Text (string)</source>
-        <translation type="unfinished"></translation>
+        <translation>Chữ (chuỗi)</translation>
     </message>
 </context>
 <context>
@@ -23793,12 +23853,12 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="352"/>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="364"/>
         <source>Add vector layer</source>
-        <translation type="unfinished">Thêm lớp vector</translation>
+        <translation>Thêm lớp vector</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="301"/>
         <source>No database selected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Không có CSDL nào được chọn.</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="317"/>
@@ -23813,17 +23873,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="341"/>
         <source>No protocol URI entered.</source>
-        <translation type="unfinished"></translation>
+        <translation>Giao thức URI không được nhập vào.</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="353"/>
         <source>No layers selected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Không có lớp nào được chọn.</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="365"/>
         <source>No directory selected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Không có thư mục nào được chọn.</translation>
     </message>
 </context>
 <context>
@@ -24217,37 +24277,37 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="51"/>
         <source>Current layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp hiện tại</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="52"/>
         <source>Top down, stop at first</source>
-        <translation type="unfinished"></translation>
+        <translation>Từ trên xuống, ngừng tại mục đầu tiên</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="53"/>
         <source>Top down</source>
-        <translation type="unfinished"></translation>
+        <translation>Từ trên xuống</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="234"/>
         <source>To vertex</source>
-        <translation type="unfinished"></translation>
+        <translation>Đến đỉnh</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="235"/>
         <source>To segment</source>
-        <translation type="unfinished"></translation>
+        <translation>Đến đoạn</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="236"/>
         <source>To vertex and segment</source>
-        <translation type="unfinished"></translation>
+        <translation>Đến đỉnh và đoạn</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="746"/>
         <source>Choose a directory</source>
-        <translation type="unfinished">Chọn thư mục</translation>
+        <translation>Chọn thư mục</translation>
     </message>
 </context>
 <context>
@@ -24608,7 +24668,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1314"/>
         <source>General</source>
-        <translation type="unfinished">Tổng quát</translation>
+        <translation>Tổng quát</translation>
     </message>
     <message>
         <source>Ask to save project changes when required</source>
@@ -24699,7 +24759,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="236"/>
         <source>Rendering behavior</source>
-        <translation type="unfinished">&apos;Tập tính vẽ lại&apos;</translation>
+        <translation>Tính chất kết xuất</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="249"/>
@@ -24922,7 +24982,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="611"/>
         <source>Placement algorithm:</source>
-        <translation type="unfinished">Thuật toán đặt chỗ:</translation>
+        <translation>Thuật toán đặt chỗ:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="806"/>
@@ -24939,132 +24999,132 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="842"/>
         <source>Show markers only for selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>Chỉ hiển thị đánh dấu cho các đối tượng được chọn</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="207"/>
         <source>Add PostGIS layers with double click and select in extended mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Thêm các lớp PostGIS bằng cách nhắp chuột đúp và chọn ở chế độ mở rộng</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="574"/>
         <source>Preferred measurements units</source>
-        <translation type="unfinished"></translation>
+        <translation>Đơn vị đo ưa thích</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="581"/>
         <source>Meters</source>
-        <translation type="unfinished">Mét</translation>
+        <translation>Mét</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="588"/>
         <source>Feet</source>
-        <translation type="unfinished">Bộ Anh</translation>
+        <translation>Bộ Anh</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="447"/>
         <source>Identify</source>
-        <translation type="unfinished">Nhận diện</translation>
+        <translation>Nhận diện</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="492"/>
         <source>Mode</source>
-        <translation type="unfinished">Chế độ</translation>
+        <translation>Chế độ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="986"/>
         <source>When a new layer is created, or when a layer is loaded that has no coordinate reference system (CRS)</source>
-        <translation type="unfinished"></translation>
+        <translation>Khi một lớp mới được tạo ra, hoặc là một lớp khi nạp không có hệ tham chiếu không gian (HTĐ)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="193"/>
         <source>Open identify results in a dock window (QGIS restart required)</source>
-        <translation type="unfinished"></translation>
+        <translation>Mở kết quả nhận diện trong một cửa sổ gắn (cần khởi động lại QGIS)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="892"/>
         <source>Marker size</source>
-        <translation type="unfinished">Kích thước ký hiệu đánh dấu</translation>
+        <translation>Kích thước ký hiệu đánh dấu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="739"/>
         <source>Default snapping tolerance</source>
-        <translation type="unfinished"></translation>
+        <translation>Ngưỡng bắt điểm mặc định</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="769"/>
         <source>Search radius for vertex edits</source>
-        <translation type="unfinished"></translation>
+        <translation>Bán kính tìm kiếm dùng cho chỉnh sửa đỉnh</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="14"/>
         <source>Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Tuỳ chọn</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="276"/>
         <source>Use render caching where possible to speed up redraws</source>
-        <translation type="unfinished"></translation>
+        <translation>Dùng bộ đệm kết xuất khi nào có thể để tăng tốc vẽ lại</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="315"/>
         <source>SVG paths</source>
-        <translation type="unfinished"></translation>
+        <translation>Đường dẫn SVG</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="321"/>
         <source>Path(s) to search for Scalable Vector Graphic (SVG) symbols</source>
-        <translation type="unfinished"></translation>
+        <translation>(Các) đường dẫn đến biểu tượng đồ hoạ vector phi tỷ lệ (SVG)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1097"/>
         <source>Timeout for network requests (ms):</source>
-        <translation type="unfinished"></translation>
+        <translation>Thời gian chờ đối với yêu cầu mạng (ms):</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1199"/>
         <source>Exclude URLs (starting with):</source>
-        <translation type="unfinished"></translation>
+        <translation>Loại bỏ các URL (bắt đầu bằng):</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="361"/>
         <source>Compatibility</source>
-        <translation type="unfinished"></translation>
+        <translation>Tính tương thích</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="367"/>
         <source>Use new generation symbology for rendering</source>
-        <translation type="unfinished"></translation>
+        <translation>Dùng bộ biểu tượng thế hệ mới để kết xuất</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="499"/>
         <source>Open feature form, if a single feature is identified</source>
-        <translation type="unfinished"></translation>
+        <translation>Mở mẫu đối tượng, nếu chỉ có một đối tượng duy nhất được nhận diện</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="977"/>
         <source>Default Coordinate Reference System</source>
-        <translation type="unfinished"></translation>
+        <translation>Hệ toạ độ mặc định</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1326"/>
         <source>Rendering &amp; SVG</source>
-        <translation type="unfinished"></translation>
+        <translation>Kết xuất và SVG</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1338"/>
         <source>Map tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Các công cụ bản đồ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1356"/>
         <source>Digitising</source>
-        <translation type="unfinished"></translation>
+        <translation>Số hoá</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1383"/>
         <source>Network &amp; Proxy</source>
-        <translation type="unfinished"></translation>
+        <translation>Mạng và Proxy</translation>
     </message>
 </context>
 <context>
@@ -25123,7 +25183,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgspastetransformations.cpp" line="37"/>
         <source>&amp;Add New Transfer</source>
-        <translation type="unfinished"></translation>
+        <translation>Thêm &amp;Chuyển đổi mới</translation>
     </message>
 </context>
 <context>
@@ -25193,17 +25253,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgspenstylecombobox.cpp" line="93"/>
         <source>Square</source>
-        <translation type="unfinished"></translation>
+        <translation>Vuông</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgspenstylecombobox.cpp" line="94"/>
         <source>Flat</source>
-        <translation type="unfinished"></translation>
+        <translation>Phẳng</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgspenstylecombobox.cpp" line="95"/>
         <source>Round</source>
-        <translation type="unfinished"></translation>
+        <translation>Tròn</translation>
     </message>
 </context>
 <context>
@@ -25211,17 +25271,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgspenstylecombobox.cpp" line="69"/>
         <source>Bevel</source>
-        <translation type="unfinished"></translation>
+        <translation>Gờ nổi</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgspenstylecombobox.cpp" line="70"/>
         <source>Miter</source>
-        <translation type="unfinished"></translation>
+        <translation>Vát góc</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgspenstylecombobox.cpp" line="71"/>
         <source>Round</source>
-        <translation type="unfinished"></translation>
+        <translation>Tròn</translation>
     </message>
 </context>
 <context>
@@ -25572,19 +25632,19 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgspgsourceselect.cpp" line="54"/>
         <location filename="../src/app/qgspgsourceselect.cpp" line="186"/>
         <source>Wildcard</source>
-        <translation type="unfinished">Ký tự bất kỳ</translation>
+        <translation>Ký tự bất kỳ</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="55"/>
         <location filename="../src/app/qgspgsourceselect.cpp" line="190"/>
         <source>RegExp</source>
-        <translation type="unfinished">Biểu thức chính tắc</translation>
+        <translation>Biểu thức chính tắc</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="57"/>
         <location filename="../src/app/qgspgsourceselect.cpp" line="198"/>
         <source>All</source>
-        <translation type="unfinished">Tất cả</translation>
+        <translation>Tất cả</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="58"/>
@@ -25596,25 +25656,25 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgspgsourceselect.cpp" line="59"/>
         <location filename="../src/app/qgspgsourceselect.cpp" line="206"/>
         <source>Table</source>
-        <translation type="unfinished">Bảng</translation>
+        <translation>Bảng</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="60"/>
         <location filename="../src/app/qgspgsourceselect.cpp" line="210"/>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Kiểu</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="61"/>
         <location filename="../src/app/qgspgsourceselect.cpp" line="214"/>
         <source>Geometry column</source>
-        <translation type="unfinished">Cột hình học</translation>
+        <translation>Cột hình học</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="62"/>
         <location filename="../src/app/qgspgsourceselect.cpp" line="218"/>
         <source>Primary key column</source>
-        <translation type="unfinished"></translation>
+        <translation>Cột khoá sơ cấp</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="63"/>
@@ -25625,37 +25685,37 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="110"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation>Có chắc là bạn muốn loại bỏ kết nối %1 và tất cả các thiết lập liên quan?</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="112"/>
         <source>Confirm Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Xác nhận xoá</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="360"/>
         <source>Select Table</source>
-        <translation type="unfinished">Chọn Bảng</translation>
+        <translation>Chọn Bảng</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="360"/>
         <source>You must select a table in order to add a layer.</source>
-        <translation type="unfinished">Bạn phải chọn một bảng để thêm một lớp.</translation>
+        <translation>Bạn phải chọn một bảng để thêm một lớp.</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="421"/>
         <source>Password for </source>
-        <translation type="unfinished">Mật mã cho</translation>
+        <translation>Mật mã cho</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="422"/>
         <source>Please enter your password:</source>
-        <translation type="unfinished">Vui lòng nhập mật mã của bạn:</translation>
+        <translation>Vui lòng nhập mật mã của bạn:</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="473"/>
         <source>Connection failed</source>
-        <translation type="unfinished">Kết nối thất bại</translation>
+        <translation>Kết nối thất bại</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="474"/>
@@ -25665,7 +25725,7 @@ Check your username and password and try again.
 
 The database said:
 %3</source>
-        <translation type="unfinished">Kết nối tới %1 trên %2 thất bại. Hoặc là CSDL bị hỏng hoặc là các thiết lập của  bạn không đúng.
+        <translation>Kết nối tới %1 trên %2 thất bại. Hoặc là CSDL bị hỏng hoặc là các thiết lập của  bạn không đúng.
 
 Hãy kiểm tra tên người dùng và mật khẩu và thử lại
 
@@ -25676,7 +25736,7 @@ CSDL nói rằng:
         <location filename="../src/app/qgspgsourceselect.cpp" line="604"/>
         <location filename="../src/app/qgspgsourceselect.cpp" line="682"/>
         <source>Accessible tables could not be determined</source>
-        <translation type="unfinished">Không thể xác định các bảng có thể truy cập được</translation>
+        <translation>Không thể xác định các bảng có thể truy cập được</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="605"/>
@@ -25686,7 +25746,7 @@ CSDL nói rằng:
 The error message from the database was:
 %1
 </source>
-        <translation type="unfinished">Kết nối với CSDL thành công, nhưng không thể xác định các bảng có thể truy cập được.
+        <translation>Kết nối với CSDL thành công, nhưng không thể xác định các bảng có thể truy cập được.
 
 Thông báo lỗi từ CSDL là:
 %1
@@ -25695,7 +25755,7 @@ Thông báo lỗi từ CSDL là:
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="718"/>
         <source>No accessible tables found</source>
-        <translation type="unfinished">Không tìm thấy các bảng có thể truy cập</translation>
+        <translation>Không tìm thấy các bảng có thể truy cập</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="719"/>
@@ -25703,7 +25763,7 @@ Thông báo lỗi từ CSDL là:
 
 Please verify that you have SELECT privilege on a table carrying PostGIS
 geometry.</source>
-        <translation type="unfinished">Kết nối với CSDL thành công, nhưng không tìm thấy các bảng có thể truy cập được.
+        <translation>Kết nối với CSDL thành công, nhưng không tìm thấy các bảng có thể truy cập được.
 
 Hãy kiểm tra lại xem bạn có quyền CHỌN đối với bảng mang dữ liệu 
 hình học PostGIS.</translation>
@@ -25711,7 +25771,7 @@ hình học PostGIS.</translation>
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="47"/>
         <source>&amp;Add</source>
-        <translation type="unfinished">&amp;Thêm</translation>
+        <translation>&amp;Thêm</translation>
     </message>
 </context>
 <context>
@@ -25719,32 +25779,32 @@ hình học PostGIS.</translation>
     <message>
         <location filename="../src/ui/qgspgsourceselectbase.ui" line="14"/>
         <source>Add PostGIS Table(s)</source>
-        <translation type="unfinished">Thêm (các) bảng PostGIS</translation>
+        <translation>Thêm (các) bảng PostGIS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgsourceselectbase.ui" line="31"/>
         <source>PostgreSQL Connections</source>
-        <translation type="unfinished">Các kết nối PostgreSQL</translation>
+        <translation>Các kết nối PostgreSQL</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgsourceselectbase.ui" line="43"/>
         <source>Delete</source>
-        <translation type="unfinished">Xóa</translation>
+        <translation>Xóa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgsourceselectbase.ui" line="50"/>
         <source>Edit</source>
-        <translation type="unfinished">Chỉnh sửa</translation>
+        <translation>Chỉnh sửa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgsourceselectbase.ui" line="57"/>
         <source>New</source>
-        <translation type="unfinished">Mới</translation>
+        <translation>Mới</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgsourceselectbase.ui" line="64"/>
         <source>Connect</source>
-        <translation type="unfinished">Kết nối</translation>
+        <translation>Kết nối</translation>
     </message>
     <message>
         <source>Add</source>
@@ -25753,34 +25813,34 @@ hình học PostGIS.</translation>
     <message>
         <location filename="../src/ui/qgspgsourceselectbase.ui" line="126"/>
         <source>Search:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tìm kiếm:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgsourceselectbase.ui" line="136"/>
         <source>Search mode:</source>
-        <translation type="unfinished"></translation>
+        <translation>Chế độ tìm:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgsourceselectbase.ui" line="149"/>
         <source>Search in columns:</source>
-        <translation type="unfinished">Tìm trong các cột:</translation>
+        <translation>Tìm trong các cột:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgsourceselectbase.ui" line="87"/>
         <source>Build query</source>
-        <translation type="unfinished"></translation>
+        <translation>Xây dựng truy vấn</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgsourceselectbase.ui" line="107"/>
         <source>Search options...</source>
-        <translation type="unfinished"></translation>
+        <translation>Các tuỳ chọn tìm...</translation>
     </message>
 </context>
 <context>
     <name>QgsPluginInstaller</name>
     <message>
         <source>Couldn&apos;t parse output from the repository</source>
-        <translation type="unfinished">Không thể phân tách đầu ra từ kho chứa (repository)</translation>
+        <translation>Không thể phân tách đầu ra từ kho chứa (repository)</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the system plugin directory</source>
@@ -25788,51 +25848,51 @@ hình học PostGIS.</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the local plugin directory</source>
-        <translation type="unfinished">Không thể mở thư mục phần mở rộng cục bộ</translation>
+        <translation>Không thể mở thư mục phần mở rộng cục bộ</translation>
     </message>
     <message>
         <source>Fetch Python Plugins...</source>
-        <translation type="unfinished">Lấy về các phần mở rộng Python...</translation>
+        <translation>Lấy về các phần mở rộng Python...</translation>
     </message>
     <message>
         <source>Install more plugins from remote repositories</source>
-        <translation type="unfinished">Cài đặt thêm các phần mở rộng từ các kho chứa từ xa</translation>
+        <translation>Cài đặt thêm các phần mở rộng từ các kho chứa từ xa</translation>
     </message>
     <message>
         <source>Looking for new plugins...</source>
-        <translation type="unfinished">Đang tìm các phần mở rộng mới...</translation>
+        <translation>Đang tìm các phần mở rộng mới...</translation>
     </message>
     <message>
         <source>There is a new plugin available</source>
-        <translation type="unfinished">Có một phần mở rộng mới</translation>
+        <translation>Có một phần mở rộng mới</translation>
     </message>
     <message>
         <source>There is a plugin update available</source>
-        <translation type="unfinished">Có một bản cập nhật của phần mở rộng</translation>
+        <translation>Có bản cập nhật của phần mở rộng</translation>
     </message>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="unfinished">Trình cài đặt phần mở rộng Python của QGIS</translation>
+        <translation>Trình cài đặt phần mở rộng Python của QGIS</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
-        <translation type="unfinished">Lỗi đọc kho chứa:</translation>
+        <translation>Lỗi đọc kho chứa:</translation>
     </message>
     <message>
         <source>Nothing to remove! Plugin directory doesn&apos;t exist:</source>
-        <translation type="unfinished">Không có gì bị loại bỏ! Thư mục phần mở rộng không tồn tại:</translation>
+        <translation>Không có gì bị loại bỏ! Thư mục phần mở rộng không tồn tại:</translation>
     </message>
     <message>
         <source>Failed to remove the directory:</source>
-        <translation type="unfinished">Thất bại trong việc loại bỏ thư mục:</translation>
+        <translation>Thất bại trong việc loại bỏ thư mục:</translation>
     </message>
     <message>
         <source>Check permissions or remove it manually</source>
-        <translation type="unfinished">Kiểm tra các quyên hoặc loại bỏ nó một cách thủ công</translation>
+        <translation>Kiểm tra các quyền hoặc loại bỏ nó một cách thủ công</translation>
     </message>
     <message>
         <source>QGIS Plugin Conflict:</source>
-        <translation type="unfinished">Mâu thuẫn phần mở rộng của QGIS:</translation>
+        <translation>Mâu thuẫn phần mở rộng của QGIS:</translation>
     </message>
     <message>
         <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. Probably it is a remainder of an older QGIS installation. Please use the Plugin Installer to remove it in order to unmask the instance shipped with this version of QGIS.</source>
@@ -25840,58 +25900,58 @@ hình học PostGIS.</translation>
     </message>
     <message>
         <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. This is likely due to files associated with a previous installation of QGIS. Please use the Plugin Installer to remove that older plugin in order to unmask the newer version shipped with this copy of QGIS.</source>
-        <translation type="unfinished"></translation>
+        <translation>Trình cài đặt Phần mở rộng đã phát hiện ra một phần mở rộng cũ che mất phiên bản mới được đóng gói chung với phiên bản của QGIS. Điều này có thể là cho các tập tin liên quan đến bản cài đặt trước của QGIS. Vui lòng dùng Trình cài đặt Phần mở rộng để loại bỏ phần mở rộng cũ để gỡ che phiên bản mới hơn đi kèm với phiên bản QGIS này.</translation>
     </message>
 </context>
 <context>
     <name>QgsPluginInstallerDialog</name>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="unfinished">Trình Cài đặt Phần mở rộng Python của QGIS</translation>
+        <translation>Trình Cài đặt Phần mở rộng Python của QGIS</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
-        <translation type="unfinished">Lỗi đọc kho chứa:</translation>
+        <translation>Lỗi đọc kho chứa:</translation>
     </message>
     <message>
         <source>all repositories</source>
-        <translation type="unfinished">tất cả các kho chứa</translation>
+        <translation>tất cả các kho chứa</translation>
     </message>
     <message>
         <source>connected</source>
-        <translation type="unfinished">đã kết nối</translation>
+        <translation>đã kết nối</translation>
     </message>
     <message>
         <source>This repository is connected</source>
-        <translation type="unfinished">Kho chứa này được kết nối</translation>
+        <translation>Kho chứa này được kết nối</translation>
     </message>
     <message>
         <source>unavailable</source>
-        <translation type="unfinished">không dùng được</translation>
+        <translation>không dùng được</translation>
     </message>
     <message>
         <source>This repository is enabled, but unavailable</source>
-        <translation type="unfinished">Kho chứa này được kích hoạt, nhưng không dùng được</translation>
+        <translation>Kho chứa này được kích hoạt, nhưng không dùng được</translation>
     </message>
     <message>
         <source>disabled</source>
-        <translation type="unfinished">bị bất hoạt</translation>
+        <translation>bị bất hoạt</translation>
     </message>
     <message>
         <source>This repository is disabled</source>
-        <translation type="unfinished">Kho chứa này bị bất hoạt</translation>
+        <translation>Kho chứa này bị bất hoạt</translation>
     </message>
     <message>
         <source>This repository is blocked due to incompatibility with your Quantum GIS version</source>
-        <translation type="unfinished">Kho chứa này bị khoá do không tương thích với phiên bản Quantum GIS của bạn</translation>
+        <translation>Kho chứa này bị khoá do không tương thích với phiên bản Quantum GIS của bạn</translation>
     </message>
     <message>
         <source>orphans</source>
-        <translation type="unfinished">các phần &apos;mồ côi&apos;</translation>
+        <translation>các phần &apos;mồ côi&apos;</translation>
     </message>
     <message>
         <source>any status</source>
-        <translation type="unfinished">bất kỳ trạng thái nào</translation>
+        <translation>bất kỳ trạng thái nào</translation>
     </message>
     <message>
         <source>not installed</source>
@@ -25905,31 +25965,31 @@ hình học PostGIS.</translation>
     </message>
     <message>
         <source>upgradeable and news</source>
-        <translation type="unfinished">có thể nâng cấp và mới</translation>
+        <translation>có thể nâng cấp và mới</translation>
     </message>
     <message>
         <source>This plugin is not installed</source>
-        <translation type="unfinished">Phần mở rộng này không được cài đặt</translation>
+        <translation>Phần mở rộng này không được cài đặt</translation>
     </message>
     <message>
         <source>This plugin is installed</source>
-        <translation type="unfinished">Phần mở rộng này được cài đặt</translation>
+        <translation>Phần mở rộng này được cài đặt</translation>
     </message>
     <message>
         <source>This plugin is installed, but there is an updated version available</source>
-        <translation type="unfinished">Phần mở rộng này được cài đặt, nhưng hiện có một phiên bản cập nhật</translation>
+        <translation>Phần mở rộng này được cài đặt, nhưng hiện có một phiên bản cập nhật</translation>
     </message>
     <message>
         <source>This plugin is installed, but I can&apos;t find it in any enabled repository</source>
-        <translation type="unfinished">Phần mở rộng này được cài đặt, nhưng tôi không thể tìm thấy nó trong bất kỳ kho chứa được kích hoạt nào</translation>
+        <translation>Phần mở rộng này được cài đặt, nhưng tôi không thể tìm thấy nó trong bất kỳ kho chứa được kích hoạt nào</translation>
     </message>
     <message>
         <source>This plugin is not installed and is seen for the first time</source>
-        <translation type="unfinished">Phần mở rộng này khong được cài đặt và được phát hiện lần đầu tiên</translation>
+        <translation>Phần mở rộng này không được cài đặt và được phát hiện lần đầu tiên</translation>
     </message>
     <message>
         <source>This plugin is installed and is newer than its version available in a repository</source>
-        <translation type="unfinished">Phần mở rộng này được cài đặt và mới hơn phiên bản của nó trong kho chứa</translation>
+        <translation>Phần mở rộng này được cài đặt và mới hơn phiên bản của nó trong kho chứa</translation>
     </message>
     <message>
         <source>not installed</source>
@@ -25958,183 +26018,183 @@ hình học PostGIS.</translation>
     </message>
     <message>
         <source>installed version</source>
-        <translation type="unfinished">phiên bản được cài đặt</translation>
+        <translation>phiên bản được cài đặt</translation>
     </message>
     <message>
         <source>available version</source>
-        <translation type="unfinished">phiên bản hiện có</translation>
+        <translation>phiên bản hiện có</translation>
     </message>
     <message>
         <source>That&apos;s the newest available version</source>
-        <translation type="unfinished">Đó là phiên bản mới nhất</translation>
+        <translation>Đó là phiên bản mới nhất</translation>
     </message>
     <message>
         <source>There is no version available for download</source>
-        <translation type="unfinished">Không có phiên bản nào để tải về</translation>
+        <translation>Không có phiên bản nào để tải về</translation>
     </message>
     <message>
         <source>only locally available</source>
-        <translation type="unfinished">chỉ khả dụng cục bộ</translation>
+        <translation>chỉ khả dụng cục bộ</translation>
     </message>
     <message>
         <source>Install plugin</source>
-        <translation type="unfinished">Cài đặt phần mở rộng</translation>
+        <translation>Cài đặt phần mở rộng</translation>
     </message>
     <message>
         <source>Reinstall plugin</source>
-        <translation type="unfinished">Cài đặt lại phần mở rộng</translation>
+        <translation>Cài đặt lại phần mở rộng</translation>
     </message>
     <message>
         <source>Upgrade plugin</source>
-        <translation type="unfinished">Nâng cấp phần mở rộng</translation>
+        <translation>Nâng cấp phần mở rộng</translation>
     </message>
     <message>
         <source>Install/upgrade plugin</source>
-        <translation type="unfinished">Cài đặt/Nâng cấp phần mở rộng</translation>
+        <translation>Cài đặt/Nâng cấp phần mở rộng</translation>
     </message>
     <message>
         <source>Downgrade plugin</source>
-        <translation type="unfinished">Hạ cấp phần mở rộng</translation>
+        <translation>Hạ cấp phần mở rộng</translation>
     </message>
     <message>
         <source>Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!</source>
-        <translation type="unfinished">Có chắc là bạn muốn hạ cấp phần mở rộng này xuống phiên bản sau cùng không? Bản đã cài đặt mới hơn!</translation>
+        <translation>Có chắc là bạn muốn hạ cấp phần mở rộng này xuống phiên bản sau cùng không? Bản đã cài đặt mới hơn!</translation>
     </message>
     <message>
         <source>Plugin installation failed</source>
-        <translation type="unfinished">Việc cài đặt phần mở rộng thất bại</translation>
+        <translation>Việc cài đặt phần mở rộng thất bại</translation>
     </message>
     <message>
         <source>Plugin has disappeared</source>
-        <translation type="unfinished">Phần mở rộng đã biến mất</translation>
+        <translation>Phần mở rộng đã biến mất</translation>
     </message>
     <message>
         <source>The plugin seems to have been installed but I don&apos;t know where. Probably the plugin package contained a wrong named directory.
 Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll find the plugin there, but I just can&apos;t determine which of them it is. It also means that I won&apos;t be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue.</source>
-        <translation type="unfinished">Phần mở rộng này có vẻ như đã được cài đặt nhưng tôi không biết nó ở đâu, có lẽ việc đóng gói phần mở rộng có một thư mục được đặt tên sai.
+        <translation>Phần mở rộng này có vẻ như đã được cài đặt nhưng tôi không biết nó ở đâu, có lẽ việc đóng gói phần mở rộng có một thư mục được đặt tên sai.
 Vui lòng tìm kiếm danh sách các phần mở rộng đã được cài đặt. Tôi gần như chắc chắn là bạn có thể tìm thấy nó, tuy nhiên tôi không thể xác định nó là cái nào. Điều này cũng có thể có nghĩa là tôi sẽ không thể xác định được rằng phần mở rộng này có được cài đặt hay không và thông báo cho bạn về các cập nhật dùng được. Tuy nhiên phần mở rộng này có thể chạy được. Vui lòng liên hệ với tác giả của phần mở rộng và báo cáo vấn đề này.</translation>
     </message>
     <message>
         <source>Plugin installed successfully</source>
-        <translation type="unfinished">Phần mở rộng được cài đặt thành công</translation>
+        <translation>Phần mở rộng được cài đặt thành công</translation>
     </message>
     <message>
         <source>Plugin uninstall failed</source>
-        <translation type="unfinished">Gỡ cài đặt phần mở rộng thất bại</translation>
+        <translation>Gỡ cài đặt phần mở rộng thất bại</translation>
     </message>
     <message>
         <source>Are you sure you want to uninstall the following plugin?</source>
-        <translation type="unfinished">Có chắc bạn muốn gỡ cài đặt phần mở rộng sau?</translation>
+        <translation>Có chắc bạn muốn gỡ cài đặt phần mở rộng sau?</translation>
     </message>
     <message>
         <source>Warning: this plugin isn&apos;t available in any accessible repository!</source>
-        <translation type="unfinished">Cảnh báo: phần mở rộng này không dùng được trong bất kỳ kho chứa có thể truy cập nào!</translation>
+        <translation>Cảnh báo: phần mở rộng này không có trong bất kỳ kho chứa có thể truy cập nào!</translation>
     </message>
     <message>
         <source>Plugin uninstalled successfully</source>
-        <translation type="unfinished">Phần mở rộng được gỡ cài đặt thành công</translation>
+        <translation>Phần mở rộng được gỡ cài đặt thành công</translation>
     </message>
     <message>
         <source>Unable to add another repository with the same URL!</source>
-        <translation type="unfinished">Không thể thêm kho chứa khác với cùng URL!</translation>
+        <translation>Không thể thêm kho chứa khác với cùng URL!</translation>
     </message>
     <message>
         <source>Are you sure you want to remove the following repository?</source>
-        <translation type="unfinished">Có chắc bạn muốn loại bỏ kho chứa sau?</translation>
+        <translation>Có chắc bạn muốn loại bỏ kho chứa sau?</translation>
     </message>
     <message>
         <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
-        <translation type="unfinished">Phần mở rộng này không tương thích với phiên bản Quantum GIS của bạn và có thể không chạy được.</translation>
+        <translation>Phần mở rộng này không tương thích với phiên bản Quantum GIS của bạn và có thể không chạy được.</translation>
     </message>
     <message>
         <source>This plugin seems to be broken.
 It has been installed but can&apos;t be loaded.
 Here is the error message:</source>
-        <translation type="unfinished">Phần mở rộng này có vẻ như đã bị hỏng.
-Nó đã được cài đặt nhưng không nạp được.
+        <translation>Phần mở rộng này có vẻ như đã hỏng.
+Nó được cài đặt nhưng không nạp được.
 Dưới đây là thông báo lỗi:</translation>
     </message>
     <message>
         <source>Note that it&apos;s an uninstallable core plugin</source>
-        <translation type="unfinished">Lưu ý rằng nó là phần mở rộng lõi không thể cài đặt được</translation>
+        <translation>Lưu ý rằng nó là phần mở rộng lõi không thể gỡ cài đặt được</translation>
     </message>
     <message>
         <source>This plugin is broken</source>
-        <translation type="unfinished">Phần mở rộng này đã bị hỏng</translation>
+        <translation>Phần mở rộng này đã bị hỏng</translation>
     </message>
     <message>
         <source>This plugin requires a newer version of Quantum GIS</source>
-        <translation type="unfinished">Phần mở rộng này yêu cầu phiên bản Quantum GIS mới hơn</translation>
+        <translation>Phần mở rộng này yêu cầu phiên bản Quantum GIS mới hơn</translation>
     </message>
     <message>
         <source>This plugin requires a missing module</source>
-        <translation type="unfinished">Phần mở rộng này cần một mô-đun bị thiếu</translation>
+        <translation>Phần mở rộng này cần một mô-đun bị thiếu</translation>
     </message>
     <message>
         <source>Plugin reinstalled successfully</source>
-        <translation type="unfinished">Phần mở rộng được cài đặt lại thành công</translation>
+        <translation>Phần mở rộng được cài đặt lại thành công</translation>
     </message>
     <message>
         <source>The plugin is designed for a newer version of Quantum GIS. The minimum required version is:</source>
-        <translation type="unfinished">Phần mở rộng này được thiết kế cho phiên bản Quantum GIS mới hơn. Phiên bản tối thiểu cần có là:</translation>
+        <translation>Phần mở rộng này được thiết kế cho phiên bản Quantum GIS mới hơn. Phiên bản tối thiểu cần có là:</translation>
     </message>
     <message>
         <source>The plugin depends on some components missing on your system. You need to install the following Python module in order to enable it:</source>
-        <translation type="unfinished">Phần mở rộng này phụ thuộc vào một số thành phần bị thiếu trên hệ thống của bạn. Bạn cần phải cài đặt mô-đun Python sau để kích hoạt được nó:</translation>
+        <translation>Phần mở rộng này phụ thuộc vào một số thành phần bị thiếu trên hệ thống của bạn. Bạn cần phải cài đặt mô-đun Python sau để kích hoạt được nó:</translation>
     </message>
     <message>
         <source>The plugin is broken. Python said:</source>
-        <translation type="unfinished">Phần mở rộng này bị hỏng. Python nói rằng:</translation>
+        <translation>Phần mở rộng này bị hỏng. Python nói rằng:</translation>
     </message>
     <message>
         <source>The required Python module is not installed.
 For more information, please visit its homepage and Quantum GIS wiki.</source>
-        <translation type="unfinished">Mô-đun Python cần thiết không được cài đặt.
-Để biết thêm thông tin, vui lòng thăm trang chủ của Quantum GIS wiki.</translation>
+        <translation>Mô-đun Python cần thiết không được cài đặt.
+Để biết thêm thông tin, vui lòng thăm trang chủ của nó và trang Quantum GIS wiki.</translation>
     </message>
     <message>
         <source>Python plugin installed.
 Now you need to enable it in Plugin Manager.</source>
-        <translation type="unfinished">Phần mở rộng Python được cài đặt.
-Bây giờ phải phải kích hoạt nó trong Trình quản lý Phần mở rộng.</translation>
+        <translation>Phần mở rộng Python được cài đặt.
+Bây giờ bạn phải kích hoạt nó trong Trình quản lý Phần mở rộng.</translation>
     </message>
     <message>
         <source>Python plugin reinstalled.
 You need to restart Quantum GIS in order to reload it.</source>
-        <translation type="unfinished">Phần mở rộng Python được cài đặt lại.
+        <translation>Phần mở rộng Python được cài đặt lại.
 Bạn cần phải khởi động lại Quantum GIS để nạp lại nó.</translation>
     </message>
     <message>
         <source>Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely.</source>
-        <translation type="unfinished">Phần mở rộng Python được gỡ cài đặt. Lưu ý rằng bạn cần phải khởi động lại Quantum GIS để loại bỏ nó hoàn toàn.</translation>
+        <translation>Phần mở rộng Python được gỡ cài đặt. Lưu ý rằng bạn cần phải khởi động lại Quantum GIS để loại bỏ nó hoàn toàn.</translation>
     </message>
     <message>
         <source>You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.</source>
-        <translation type="unfinished">Bạn đang chuẩn bị thêm một số kho chứa phần mở rộng không được kiểm chứng hoặc không được nhóm phát triển Quantum GIS hỗ trợ. Các tác giả của các phần mở rộng có những nỗ lực để đảm bảo rằng việc sử dụng chúng hữu ích và an toàn, tuy nhiên, chúng tôi không chịu trách nhiệm về chúng.</translation>
+        <translation>Bạn đang chuẩn bị thêm một số kho chứa phần mở rộng không được kiểm chứng hoặc không được nhóm phát triển Quantum GIS hỗ trợ. Các tác giả của các phần mở rộng có những nỗ lực để đảm bảo rằng việc sử dụng chúng hữu ích và an toàn, tuy nhiên, chúng tôi không chịu trách nhiệm về chúng.</translation>
     </message>
     <message>
         <source>not installed</source>
-        <translation type="unfinished">không được cài đặt</translation>
+        <translation>không được cài đặt</translation>
     </message>
     <message>
         <source>installed</source>
-        <translation type="unfinished">được cài đặt</translation>
+        <translation>được cài đặt</translation>
     </message>
     <message>
         <source>upgradeable</source>
-        <translation type="unfinished">có thể nâng cấp</translation>
+        <translation>có thể nâng cấp</translation>
     </message>
     <message>
         <source>new!</source>
-        <translation type="unfinished">mới!</translation>
+        <translation>mới!</translation>
     </message>
     <message>
         <source>invalid</source>
-        <translation type="unfinished">không hợp lệ</translation>
+        <translation>không hợp lệ</translation>
     </message>
     <message>
         <source>at least</source>
-        <translation type="unfinished"></translation>
+        <translation>tối thiểu</translation>
     </message>
 </context>
 <context>
@@ -26417,35 +26477,35 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerFetchingDialog</name>
     <message>
         <source>Success</source>
-        <translation type="unfinished">Thành công</translation>
+        <translation>Thành công</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="unfinished">Đang giải tên máy chủ...</translation>
+        <translation>Đang giải tên máy chủ...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="unfinished">Đang kết nối...</translation>
+        <translation>Đang kết nối...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="unfinished">Máy chủ được kết nối. Đang gửi yêu cầu...</translation>
+        <translation>Máy chủ được kết nối. Đang gửi yêu cầu...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation type="unfinished">Đang tải dữ liệu xuống...</translation>
+        <translation>Đang tải dữ liệu xuống...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="unfinished">Nghỉ</translation>
+        <translation>Nghỉ</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="unfinished">Đang đóng kết nối...</translation>
+        <translation>Đang đóng kết nối...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Lỗi</translation>
+        <translation>Lỗi</translation>
     </message>
 </context>
 <context>
@@ -26480,43 +26540,43 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerInstallingDialog</name>
     <message>
         <source>Installing...</source>
-        <translation type="unfinished">Đang cài đặt...</translation>
+        <translation>Đang cài đặt...</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="unfinished">Giải tên máy chủ...</translation>
+        <translation>Đang giải tên máy chủ...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="unfinished">Đang kết nối...</translation>
+        <translation>Đang kết nối...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="unfinished">Máy chủ kết nối. Đang gửi yêu cầu...</translation>
+        <translation>Máy chủ kết nối. Đang gửi yêu cầu...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation type="unfinished">Đang tải dữ liệu xuống...</translation>
+        <translation>Đang tải dữ liệu xuống...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="unfinished">Nghỉ</translation>
+        <translation>Nghỉ</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="unfinished">Đang đóng kết nối...</translation>
+        <translation>Đang đóng kết nối...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Lỗi</translation>
+        <translation>Lỗi</translation>
     </message>
     <message>
         <source>Failed to unzip the plugin package. Probably it&apos;s broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:</source>
-        <translation type="unfinished">Thất bại khi giải nén gói phần mở rộng. Có thể nó bị hỏng hoặc bị thiếu từ kho chứa. Bạn cũng có thể kiểm tra để đảm bảo mình có quyền ghi trong thư mục của phần mở rộng:</translation>
+        <translation>Thất bại khi giải nén gói phần mở rộng. Có thể nó bị hỏng hoặc bị thiếu từ kho chứa. Bạn cũng có thể kiểm tra để đảm bảo mình có quyền ghi trong thư mục của phần mở rộng:</translation>
     </message>
     <message>
         <source>Aborted by user</source>
-        <translation type="unfinished">Bị bỏ bởi người dùng</translation>
+        <translation>Bị bỏ bởi người dùng</translation>
     </message>
 </context>
 <context>
@@ -26541,7 +26601,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerPluginErrorDialog</name>
     <message>
         <source>no error message received</source>
-        <translation type="unfinished">không có thông báo lỗi nào</translation>
+        <translation>không có thông báo lỗi nào</translation>
     </message>
 </context>
 <context>
@@ -26956,7 +27016,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="358"/>
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="850"/>
         <source>Polynomial 1</source>
-        <translation type="unfinished">Đa thức bậc 1</translation>
+        <translation>Đa thức bậc 1</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="361"/>
@@ -26997,7 +27057,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="421"/>
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="853"/>
         <source>Thin plate spline (TPS)</source>
-        <translation type="unfinished">Đường spline dạng phiến mỏng (TPS)</translation>
+        <translation>Đường spline dạng phiến mỏng (TPS)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="512"/>
@@ -27148,22 +27208,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgspointdialogbase.ui" line="261"/>
         <source>Raster file</source>
-        <translation type="unfinished"></translation>
+        <translation>Tập tin raster</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgspointdialogbase.ui" line="294"/>
         <source>Transform type</source>
-        <translation type="unfinished"></translation>
+        <translation>Kiểu chuyển đổi</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgspointdialogbase.ui" line="307"/>
         <source>Modified raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Raster đã thay đổi</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgspointdialogbase.ui" line="327"/>
         <source>World file</source>
-        <translation type="unfinished"></translation>
+        <translation>Tập tin world</translation>
     </message>
 </context>
 <context>
@@ -27214,7 +27274,7 @@ Vui lòng cài đặt PostGIS có sự hỗ trợ của GEOS (http://geos.refrac
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1059"/>
         <source>No suitable key column in table</source>
-        <translation type="unfinished">Không có cột khoá thích hợp trong bảng</translation>
+        <translation>Không có cột khoá thích hợp trong bảng</translation>
     </message>
     <message>
         <source>The table has no column suitable for use as a key.
@@ -27257,7 +27317,7 @@ primary key) hoặc có một cột oid PostgreSQL.
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1206"/>
         <source>Unable to find a key column</source>
-        <translation type="unfinished">Không thể tìm thấy cột khóa</translation>
+        <translation>Không thể tìm thấy cột khóa</translation>
     </message>
     <message>
         <source> derives from </source>
@@ -27510,58 +27570,59 @@ có một cột oid PostgreSQL hoặc có một cột ctid với số block
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="232"/>
         <source>Whole number (smallint - 16bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Toàn bộ con số (số nguyên nhỏ - 16bit)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="235"/>
         <source>Decimal number (numeric)</source>
-        <translation type="unfinished"></translation>
+        <translation>Số thập phân (kiểu số)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="236"/>
         <source>Decimal number (decimal)</source>
-        <translation type="unfinished"></translation>
+        <translation>Số thập phân (kiểu thập phân)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="239"/>
         <source>Decimal number (real)</source>
-        <translation type="unfinished"></translation>
+        <translation>Số thập phân (kiểu số thực)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="240"/>
         <source>Decimal number (double)</source>
-        <translation type="unfinished"></translation>
+        <translation>Số thập phân (kiểu double)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="243"/>
         <source>Text, fixed length (char)</source>
-        <translation type="unfinished"></translation>
+        <translation>Chữ, chiều dài cố định (char)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="233"/>
         <source>Whole number (integer - 32bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Toàn bộ con số (số nguyên - 32 bit)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="234"/>
         <source>Whole number (integer - 64bit)</source>
-        <translation type="unfinished"></translation>
+        <translation>Toàn bộ con số (số nguyên - 64bit)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="244"/>
         <source>Text, limited variable length (varchar)</source>
-        <translation type="unfinished"></translation>
+        <translation>Chữ, chiều dài thay đổi có hạn chế (varchar)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="245"/>
         <source>Text, unlimited length (text)</source>
-        <translation type="unfinished"></translation>
+        <translation>Chữ, chiều dài không giới hạn (text)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2972"/>
         <source>Qgis was unable to determine the type and srid of column %1 in %2. The database communication log was:
 %3</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS không thể xác định được kiểu và số hiệu hệ toạ độ (srid)của cột %1 trong %2. Báo cáo thông tin CSDL là:
+%3</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="106"/>
@@ -27569,7 +27630,10 @@ có một cột oid PostgreSQL hoặc có một cột ctid với số block
 The error message from the database was:
 %2.
 SQL: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Không thể truy cập mối quan hệ %1.
+Thông báo lỗi từ CSDL là:
+%2
+SQL: %3</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="126"/>
@@ -27577,7 +27641,10 @@ SQL: %3</source>
 The error message from the database was:
 %2.
 SQL: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Không thể xác định quyền truy cập bảng của mối quan hệ %1.
+Thông báo lỗi từ CSDL là:
+%2
+SQL: %3</translation>
     </message>
 </context>
 <context>
@@ -27647,13 +27714,14 @@ Vui lòng cài đặt PostGIS có hỗ trợ GEOS (http://geos.refractions.net)<
     <message>
         <location filename="../src/gui/qgsprojectbadlayerguihandler.cpp" line="26"/>
         <source>QGIS Project Read Error</source>
-        <translation type="unfinished">Lỗi đọc tập tin dự án QGIS</translation>
+        <translation>Lỗi đọc tập tin dự án QGIS</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsprojectbadlayerguihandler.cpp" line="27"/>
         <source>Unable to open one or more project layers
 Try to find missing layers?</source>
-        <translation type="unfinished"></translation>
+        <translation>Không thể mở một hoặc nhiều lớp của dự án
+Cố gắng tìm các lớp bị thiếu?</translation>
     </message>
 </context>
 <context>
@@ -27661,17 +27729,17 @@ Try to find missing layers?</source>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="220"/>
         <source>Layer</source>
-        <translation type="unfinished">Lớp</translation>
+        <translation>Lớp</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="221"/>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Kiểu</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="222"/>
         <source>Identifiable</source>
-        <translation type="unfinished"></translation>
+        <translation>Có thể nhận diện được</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="242"/>
@@ -27907,57 +27975,57 @@ Try to find missing layers?</source>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="177"/>
         <source>Layer units (only used when CRS transformation is disabled)</source>
-        <translation type="unfinished"></translation>
+        <translation>Các đơn vị lớp (chỉ được dùng khi phép chuyển đổi HTĐ bất hoạt)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="36"/>
         <source>General settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Các thiết lập chung</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="347"/>
         <source>Identifiable layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Các lớp có thể nhận diện được</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="357"/>
         <source>Layer</source>
-        <translation type="unfinished">Lớp</translation>
+        <translation>Lớp</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="362"/>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Kiểu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="367"/>
         <source>Identifiable</source>
-        <translation type="unfinished"></translation>
+        <translation>Có thể nhận diện được</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="138"/>
         <source>absolute</source>
-        <translation type="unfinished"></translation>
+        <translation>tuyệt đối</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="143"/>
         <source>relative</source>
-        <translation type="unfinished"></translation>
+        <translation>tương đối</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="151"/>
         <source>Save paths</source>
-        <translation type="unfinished"></translation>
+        <translation>Lưu các đường dẫn</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="207"/>
         <source>Degrees, Minutes, Seconds</source>
-        <translation type="unfinished"></translation>
+        <translation>Độ, Phú, Giây</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="300"/>
         <source>Avoid intersections of new polygons...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tránh các giao điểm của các vùng mới...</translation>
     </message>
 </context>
 <context>
@@ -28102,12 +28170,12 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../src/ui/qgspythondialog.ui" line="40"/>
         <source>&amp;Previous</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Trước</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspythondialog.ui" line="64"/>
         <source>&amp;Next</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sau</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspythondialog.ui" line="26"/>
@@ -28116,17 +28184,17 @@ p, li { white-space: pre-wrap; }(new line)
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;To access Quantum GIS environment from this python console use qgis.utils.iface object which is an instance of QgisInterface class.&lt;br /&gt;Usage e.g.: qgis.utils.iface.zoomFull()&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Để truy cập vào môi trường của Quantum GIS từ dòng lệnh Python này, hãy dùng đối tượng qgis.utils.iface, nó là một &apos;instance&apos; của lớp QgisInterface.&lt;br /&gt;Ví dụ cách dùng: qgis.utils.iface.zoomFull()&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspythondialog.ui" line="50"/>
         <source>E&amp;xecute</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Thực thi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspythondialog.ui" line="57"/>
         <source>&amp;Eval</source>
-        <translation type="unfinished"></translation>
+        <translation>Đánh &amp;giá</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspythondialog.ui" line="93"/>
@@ -28143,65 +28211,65 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsquerybuilder.cpp" line="106"/>
         <source>Invalid Query</source>
-        <translation type="unfinished"></translation>
+        <translation>Truy vấn không hợp lệ</translation>
     </message>
     <message>
         <location filename="../src/app/qgsquerybuilder.cpp" line="106"/>
         <source>Setting the query failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Thiết lập truy vấn thất bại</translation>
     </message>
     <message>
         <location filename="../src/app/qgsquerybuilder.cpp" line="163"/>
         <source>No Query</source>
-        <translation type="unfinished">Không có Truy vấn</translation>
+        <translation>Không có Truy vấn</translation>
     </message>
     <message>
         <location filename="../src/app/qgsquerybuilder.cpp" line="164"/>
         <source>You must create a query before you can test it</source>
-        <translation type="unfinished">Bạn phải tạo một phép truy vấn trước khi có thể kiểm tra nó</translation>
+        <translation>Bạn phải tạo một phép truy vấn trước khi có thể kiểm tra nó</translation>
     </message>
     <message>
         <location filename="../src/app/qgsquerybuilder.cpp" line="169"/>
         <source>Query Result</source>
-        <translation type="unfinished">Kết quả Truy vấn</translation>
+        <translation>Kết quả Truy vấn</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgsquerybuilder.cpp" line="170"/>
         <source>The where clause returned %n row(s).</source>
         <comment>returned test rows</comment>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Mệnh đề where trả về %n hàng.</numerusform>
         </translation>
     </message>
     <message>
         <location filename="../src/app/qgsquerybuilder.cpp" line="175"/>
         <source>Query Failed</source>
-        <translation type="unfinished">Truy vấn thất bại</translation>
+        <translation>Truy vấn thất bại</translation>
     </message>
     <message>
         <location filename="../src/app/qgsquerybuilder.cpp" line="176"/>
         <source>An error occurred when executing the query</source>
-        <translation type="unfinished"></translation>
+        <translation>Một lỗi xảy ra khi thực thi truy vấn</translation>
     </message>
     <message>
         <location filename="../src/app/qgsquerybuilder.cpp" line="194"/>
         <source>Error in Query</source>
-        <translation type="unfinished">Lỗi trong phép truy vấn</translation>
+        <translation>Lỗi trong phép truy vấn</translation>
     </message>
     <message>
         <location filename="../src/app/qgsquerybuilder.cpp" line="194"/>
         <source>The subset string could not be set</source>
-        <translation type="unfinished"></translation>
+        <translation>Không thể thiết lập được chuỗi tập con</translation>
     </message>
     <message>
         <location filename="../src/app/qgsquerybuilder.cpp" line="40"/>
         <source>&amp;Test</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kiểm tra</translation>
     </message>
     <message>
         <location filename="../src/app/qgsquerybuilder.cpp" line="44"/>
         <source>&amp;Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Xoá</translation>
     </message>
 </context>
 <context>
@@ -28209,17 +28277,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="22"/>
         <source>Query Builder</source>
-        <translation type="unfinished">Trình tạo Truy vấn</translation>
+        <translation>Trình tạo Truy vấn</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="36"/>
         <source>Datasource</source>
-        <translation type="unfinished">Nguồn dữ liệu</translation>
+        <translation>Nguồn dữ liệu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="49"/>
         <source>Fields</source>
-        <translation type="unfinished"></translation>
+        <translation>Các trường</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="58"/>
@@ -28227,14 +28295,14 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;List of fields in this vector file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Danh sách các trường trong tập tin vector này&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="77"/>
         <source>Values</source>
-        <translation type="unfinished">Giá trị</translation>
+        <translation>Giá trị</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="86"/>
@@ -28242,7 +28310,7 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;List of values for the current field.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Danh sách các giá trị dùng cho trường hiện tại.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
@@ -28252,7 +28320,7 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Take a &lt;span style=&quot; font-weight:600;&quot;&gt;sample&lt;/span&gt; of records in the vector file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Lấy một&lt;span style=&quot; font-weight:600;&quot;&gt;mẫu&lt;/span&gt; của các bản ghi trong tập tin vector&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
@@ -28260,7 +28328,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="111"/>
         <source>Sample</source>
-        <translation type="unfinished">Mẫu</translation>
+        <translation>Mẫu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="118"/>
@@ -28268,7 +28336,7 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Retrieve &lt;span style=&quot; font-weight:600;&quot;&gt;all&lt;/span&gt; the record in the vector file (&lt;span style=&quot; font-style:italic;&quot;&gt;if the table is big, the operation can consume some time&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Lấy &lt;span style=&quot; font-weight:600;&quot;&gt;tất cả&lt;/span&gt; bản ghi trong tập tin vector (&lt;span style=&quot; font-style:italic;&quot;&gt;nếu bảng lớn, lệnh này có thể mất một thời gian&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
@@ -28276,22 +28344,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="124"/>
         <source>All</source>
-        <translation type="unfinished">Tất cả</translation>
+        <translation>Tất cả</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="134"/>
         <source>Operators</source>
-        <translation type="unfinished">Toán tử</translation>
+        <translation>Toán tử</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="143"/>
         <source>=</source>
-        <translation type="unfinished">=</translation>
+        <translation>=</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="150"/>
         <source>&lt;</source>
-        <translation type="unfinished">&lt;</translation>
+        <translation>&lt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="157"/>
@@ -28316,12 +28384,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="185"/>
         <source>IN</source>
-        <translation type="unfinished">IN</translation>
+        <translation type="unfinished">TRONG</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="192"/>
         <source>NOT IN</source>
-        <translation type="unfinished">NOT IN</translation>
+        <translation type="unfinished">KHÔNG CÓ TRONG</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="199"/>
@@ -28356,7 +28424,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="250"/>
         <source>SQL where clause</source>
-        <translation type="unfinished">Mệnh đề where trong câu lệnh SQL</translation>
+        <translation>Mệnh đề where trong câu lệnh SQL</translation>
     </message>
     <message>
         <source>Clear</source>
@@ -28764,17 +28832,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1577"/>
         <source>Retrieving %1 using %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Đang lấy %1 bằng cách dùng %2</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1664"/>
         <source>%1 retrieved using %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 được lấy bằng cách dùng %2</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="434"/>
         <source>All other files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tất cả các tập tin khác (*)</translation>
     </message>
 </context>
 <context>
@@ -28829,7 +28897,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1712"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2381"/>
         <source>Freak Out</source>
-        <translation type="unfinished">&apos;Lốm đốm&apos;</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Columns:</source>
@@ -28912,7 +28980,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2467"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2945"/>
         <source>No Stretch</source>
-        <translation type="unfinished">Không Dãn</translation>
+        <translation>Không Dãn</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="112"/>
@@ -28921,7 +28989,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1101"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2950"/>
         <source>Stretch To MinMax</source>
-        <translation type="unfinished">Dãn đến MinMax</translation>
+        <translation>Dãn theo Lớn.nhất_Nhỏ.nhất</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="113"/>
@@ -28930,7 +28998,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1105"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2955"/>
         <source>Stretch And Clip To MinMax</source>
-        <translation type="unfinished">Dãn và cắt đến MinMax</translation>
+        <translation>Dãn và cắt theo Lớn.nhất_Nhỏ.nhất</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="114"/>
@@ -28939,7 +29007,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1109"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2960"/>
         <source>Clip To MinMax</source>
-        <translation type="unfinished">Cắt đến MinMax</translation>
+        <translation>Cắt đến Lớn.nhất_Nhỏ.nhất</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="139"/>
@@ -29103,7 +29171,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2381"/>
         <source>Color Ramp</source>
-        <translation type="unfinished">Thang màu</translation>
+        <translation>Thang biến đổi màu</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3097"/>
@@ -29276,12 +29344,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1596"/>
         <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression and your current libtiff library.</source>
-        <translation type="unfinished"></translation>
+        <translation>Xây dựng các phép xem dạng tháp nội tại không được hỗ trợ với các lớp raster có nén JPEG và thư viện libtiff hiện tại của bạn.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="446"/>
         <source>Note: Minimum Maximum values are estimates, user defined, or calculated from the current extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Ghi chú: các giá trị Lớn.nhất Nhỏ.nhất là các ước lượng, do người dùng định nghĩa, oặc được tính toán theo phạm vi hiện tại</translation>
     </message>
 </context>
 <context>
@@ -30027,7 +30095,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1506"/>
         <source>Layer source</source>
-        <translation type="unfinished">Nguồn lớp</translation>
+        <translation>Nguồn lớp</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1496"/>
@@ -30162,17 +30230,17 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1627"/>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1630"/>
         <source>Specify the coordinate reference system of the layer&apos;s geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation>Chỉ định hệ tham chiếu không gian của hình học của lớp.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1633"/>
         <source>Specify...</source>
-        <translation type="unfinished"></translation>
+        <translation>Chỉ định...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="898"/>
         <source>Current extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Phạm vi hiện tại</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1824"/>
@@ -30189,27 +30257,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="31"/>
         <source>Slope</source>
-        <translation type="unfinished"></translation>
+        <translation>Độ dốc</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="32"/>
         <source>Aspect</source>
-        <translation type="unfinished"></translation>
+        <translation>Hướng</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="33"/>
         <source>Ruggedness index</source>
-        <translation type="unfinished"></translation>
+        <translation>Chỉ số &quot;gồ ghề&apos;</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="34"/>
         <source>Total curvature</source>
-        <translation type="unfinished"></translation>
+        <translation>Độ cong tổng</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="174"/>
         <source>Enter result file</source>
-        <translation type="unfinished"></translation>
+        <translation>Nhập tập tin kết quả</translation>
     </message>
 </context>
 <context>
@@ -30217,37 +30285,37 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="14"/>
         <source>Raster based terrain analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Phân tích địa hình dựa trên raster</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="78"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="98"/>
         <source>Add result to project</source>
-        <translation type="unfinished"></translation>
+        <translation>Thêm kết quả vào dự án</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="20"/>
         <source>Analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Phân tích</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="40"/>
         <source>Input layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp đầu vào</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="53"/>
         <source>Output layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớp đầu ra</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="85"/>
         <source>Output format</source>
-        <translation type="unfinished"></translation>
+        <translation>Định dạng đầu ra</translation>
     </message>
 </context>
 <context>
@@ -30257,37 +30325,37 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="53"/>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="61"/>
         <source>&amp;Raster based terrain analysis...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Phân tích địa hình dựa trên raster...</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="93"/>
         <source>Slope</source>
-        <translation type="unfinished"></translation>
+        <translation>Độ dốc</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="97"/>
         <source>Aspect</source>
-        <translation type="unfinished"></translation>
+        <translation>Hướng</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="101"/>
         <source>Ruggedness index</source>
-        <translation type="unfinished"></translation>
+        <translation>Chỉ số &quot;gồ ghề&apos;</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="105"/>
         <source>Total curvature</source>
-        <translation type="unfinished"></translation>
+        <translation>Độ cong tổng</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="112"/>
         <source>Calculating </source>
-        <translation type="unfinished"></translation>
+        <translation>Đang tính</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="112"/>
         <source>Abort...</source>
-        <translation type="unfinished"></translation>
+        <translation>Bỏ...</translation>
     </message>
 </context>
 <context>
@@ -30295,12 +30363,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2propertiesdialog.cpp" line="175"/>
         <source>Symbology</source>
-        <translation type="unfinished"></translation>
+        <translation>Kiểu Biểu tượng</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2propertiesdialog.cpp" line="176"/>
         <source>Do you wish to use the original symbology implementation for this layer?</source>
-        <translation type="unfinished"></translation>
+        <translation>Bạn có muốn dùng bộ biểu tượng gốc cho lớp này không?</translation>
     </message>
 </context>
 <context>
@@ -30308,27 +30376,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="14"/>
         <source>Renderer settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Các thiết lập của trình kết xuất</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="22"/>
         <source>Renderer:</source>
-        <translation type="unfinished"></translation>
+        <translation>Trình kết xuất:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="45"/>
         <source>Symbol levels</source>
-        <translation type="unfinished"></translation>
+        <translation>Các cấp biểu tượng</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="52"/>
         <source>Old symbology</source>
-        <translation type="unfinished"></translation>
+        <translation>Bộ biểu tượng cũ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="77"/>
         <source>This renderer doesn&apos;t implement a graphical interface.</source>
-        <translation type="unfinished"></translation>
+        <translation>Trình kết xuất này không thực thi giao diện đồ hoạ.</translation>
     </message>
 </context>
 <context>
@@ -30452,7 +30520,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/diagram_overlay/qgssvgdiagramfactorywidgetbase.ui" line="126"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -30700,22 +30768,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="31"/>
         <source>Placement</source>
-        <translation type="unfinished"></translation>
+        <translation>Nơi đặt</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="77"/>
         <source>Scale bar style</source>
-        <translation type="unfinished"></translation>
+        <translation>Kiểu của thước tỷ lệ</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="126"/>
         <source>Colour of bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Màu của thước</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="161"/>
         <source>Size of bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Kích cỡ của thước</translation>
     </message>
 </context>
 <context>
@@ -30772,12 +30840,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="43"/>
         <source>&amp;Test</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kiểm tra</translation>
     </message>
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="47"/>
         <source>&amp;Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Xoá</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="178"/>
@@ -31278,13 +31346,13 @@ Lỗi là:
     <message>
         <location filename="../src/app/qgssinglesymboldialog.cpp" line="63"/>
         <source>Refresh markers</source>
-        <translation type="unfinished"></translation>
+        <translation>Làm tươi lại các đánh dấu</translation>
     </message>
     <message>
         <location filename="../src/app/qgssinglesymboldialog.cpp" line="164"/>
         <location filename="../src/app/qgssinglesymboldialog.cpp" line="183"/>
         <source>None</source>
-        <translation type="unfinished">Không có</translation>
+        <translation>Không có</translation>
     </message>
 </context>
 <context>
@@ -31330,7 +31398,7 @@ Lỗi là:
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="382"/>
         <source>Symbol</source>
-        <translation type="unfinished">Biểu tượng</translation>
+        <translation>Biểu tượng</translation>
     </message>
     <message>
         <source>Label:</source>
@@ -31390,37 +31458,37 @@ Lỗi là:
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="116"/>
         <source>In map units</source>
-        <translation type="unfinished"></translation>
+        <translation>Theo đơn vị bản đồ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="350"/>
         <source>Drawing by field</source>
-        <translation type="unfinished"></translation>
+        <translation>Vẽ theo trường</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="356"/>
         <source>Rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Xoay</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="369"/>
         <source>Area scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Tỷ lệ theo diện tích</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="155"/>
         <source>Fill options</source>
-        <translation type="unfinished"></translation>
+        <translation>Tuỳ chọn tô màu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="243"/>
         <source>Outline options</source>
-        <translation type="unfinished"></translation>
+        <translation>Tuỳ chọn đường viền</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="299"/>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Chiều rộng</translation>
     </message>
 </context>
 <context>
@@ -31510,7 +31578,7 @@ SQL: %2</translation>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="118"/>
         <source>Text</source>
-        <translation type="unfinished"></translation>
+        <translation>Chữ</translation>
     </message>
     <message>
         <source>Integer</source>
@@ -31519,17 +31587,17 @@ SQL: %2</translation>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="117"/>
         <source>Binary object (BLOB)</source>
-        <translation type="unfinished"></translation>
+        <translation>Đối tượng nhị phân (BLOB)</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="119"/>
         <source>Decimal number (double)</source>
-        <translation type="unfinished"></translation>
+        <translation>Số thập phân (kiểu double)</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="120"/>
         <source>Whole number (integer)</source>
-        <translation type="unfinished"></translation>
+        <translation>Toàn bộ con số (số nguyên)</translation>
     </message>
 </context>
 <context>
@@ -31547,7 +31615,7 @@ SQL: %2</translation>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1482"/>
         <source>invalid metadata tables</source>
-        <translation type="unfinished"></translation>
+        <translation>các bảng mô tả dữ liệu (metadata) không hợp lệ</translation>
     </message>
 </context>
 <context>
@@ -31667,7 +31735,7 @@ SQL: %2</translation>
     <message>
         <location filename="../src/app/qgsspatialitesourceselect.cpp" line="44"/>
         <source>&amp;Add</source>
-        <translation type="unfinished">&amp;Thêm</translation>
+        <translation>&amp;Thêm</translation>
     </message>
 </context>
 <context>
@@ -31728,22 +31796,22 @@ SQL: %2</translation>
     <message>
         <location filename="../src/ui/qgsspatialitesourceselectbase.ui" line="57"/>
         <source>SpatiaLite Databases</source>
-        <translation type="unfinished"></translation>
+        <translation>Các CSDL spatiaLite</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsspatialitesourceselectbase.ui" line="108"/>
         <source>Search</source>
-        <translation type="unfinished">Tìm kiếm</translation>
+        <translation>Tìm kiếm</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsspatialitesourceselectbase.ui" line="118"/>
         <source>Search mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Chế độ tìm</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsspatialitesourceselectbase.ui" line="131"/>
         <source>Search in columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Tìm trong các cột</translation>
     </message>
 </context>
 <context>
@@ -32287,7 +32355,7 @@ Bạn có muốn ghi đè mối liên hệ [%2]</translation>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="154"/>
         <source>SRID</source>
-        <translation type="unfinished">SRID</translation>
+        <translation>Số hiệu HTĐ</translation>
     </message>
     <message>
         <source>Add ...</source>
@@ -32416,32 +32484,32 @@ Bạn có muốn ghi đè mối liên hệ [%2]</translation>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="45"/>
         <source>PostgreSQL connections</source>
-        <translation type="unfinished"></translation>
+        <translation>Các kết nối PostgreSQL</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="128"/>
         <source>Geometry column name</source>
-        <translation type="unfinished"></translation>
+        <translation>Tên cột hình học</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="147"/>
         <source>Use default geometry column name</source>
-        <translation type="unfinished"></translation>
+        <translation>Dùng tên cột hình học mặc định</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="183"/>
         <source>Use default SRID</source>
-        <translation type="unfinished"></translation>
+        <translation>Dùng số hiệu HTĐ (srid) mặc định</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="190"/>
         <source>Primary key column name</source>
-        <translation type="unfinished"></translation>
+        <translation>Tên cột khoá sơ cấp</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="203"/>
         <source>Global schema</source>
-        <translation type="unfinished"></translation>
+        <translation>Schema toàn cục</translation>
     </message>
 </context>
 <context>
@@ -32468,27 +32536,27 @@ Bạn có muốn ghi đè mối liên hệ [%2]</translation>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="14"/>
         <source>Style Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Trình Quản lý Kiểu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="20"/>
         <source>Style item type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Loại mục của kiểu:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="57"/>
         <source>Add item</source>
-        <translation type="unfinished"></translation>
+        <translation>Thêm mục</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="64"/>
         <source>Edit item</source>
-        <translation type="unfinished"></translation>
+        <translation>Chỉnh sửa mục</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="71"/>
         <source>Remove item</source>
-        <translation type="unfinished"></translation>
+        <translation>Loại bỏ mục</translation>
     </message>
 </context>
 <context>
@@ -32496,12 +32564,12 @@ Bạn có muốn ghi đè mối liên hệ [%2]</translation>
     <message>
         <location filename="../src/ui/qgssymbollevelsv2dialogbase.ui" line="14"/>
         <source>Symbol Levels</source>
-        <translation type="unfinished"></translation>
+        <translation>Các cấp của biểu tượng</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbollevelsv2dialogbase.ui" line="20"/>
         <source>Enable symbol levels</source>
-        <translation type="unfinished"></translation>
+        <translation>Kích hoạt các cấp của biểu tượng</translation>
     </message>
 </context>
 <context>
@@ -32509,31 +32577,31 @@ Bạn có muốn ghi đè mối liên hệ [%2]</translation>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="14"/>
         <source>Symbol selector</source>
-        <translation type="unfinished"></translation>
+        <translation>Trình chọn biểu tượng</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="57"/>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="115"/>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="150"/>
         <source>Color</source>
-        <translation type="unfinished">Màu</translation>
+        <translation>Màu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="64"/>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="122"/>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="157"/>
         <source>Change</source>
-        <translation type="unfinished">Thay đổi</translation>
+        <translation>Thay đổi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="71"/>
         <source>Size</source>
-        <translation type="unfinished">Kích thước</translation>
+        <translation>Kích thước</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="88"/>
         <source>Rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Xoay</translation>
     </message>
     <message utf8="true">
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="95"/>
@@ -32543,22 +32611,22 @@ Bạn có muốn ghi đè mối liên hệ [%2]</translation>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="129"/>
         <source>Width</source>
-        <translation type="unfinished"></translation>
+        <translation>Rộng</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="172"/>
         <source>Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Thuộc tính</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="192"/>
         <source>Add to style</source>
-        <translation type="unfinished"></translation>
+        <translation>Thêm vào kiểu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="201"/>
         <source>Symbols from style:</source>
-        <translation type="unfinished"></translation>
+        <translation>Biểu tượng từ kiểu:</translation>
     </message>
 </context>
 <context>
@@ -32570,12 +32638,12 @@ Bạn có muốn ghi đè mối liên hệ [%2]</translation>
     <message>
         <location filename="../src/plugins/interpolation/qgstininterpolatordialog.cpp" line="86"/>
         <source>Save triangulation to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Lưu phép tam giác vào tập tin</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgstininterpolatordialog.cpp" line="33"/>
         <source>Linear</source>
-        <translation type="unfinished">Tuyến tính</translation>
+        <translation>Tuyến tính</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgstininterpolatordialog.cpp" line="34"/>
@@ -32608,22 +32676,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/interpolation/qgstininterpolatordialogbase.ui" line="46"/>
         <source>Export triangulation to shapefile after interpolation</source>
-        <translation type="unfinished"></translation>
+        <translation>Xuất phép tam giác ra tập tin shape sau khi nội suy</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgstininterpolatordialogbase.ui" line="78"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgstininterpolatordialogbase.ui" line="26"/>
         <source>Interpolation method</source>
-        <translation type="unfinished">Phương pháp nội suy</translation>
+        <translation>Phương pháp nội suy</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgstininterpolatordialogbase.ui" line="59"/>
         <source>Output file</source>
-        <translation type="unfinished"></translation>
+        <translation>Tập tin đầu ra</translation>
     </message>
 </context>
 <context>
@@ -32673,7 +32741,7 @@ Có nên xoá các lớp hiện có trước khi phân loại?</translation>
     <message>
         <location filename="../src/app/qgsuniquevaluedialog.cpp" line="212"/>
         <source>default</source>
-        <translation type="unfinished"></translation>
+        <translation>mặc định</translation>
     </message>
 </context>
 <context>
@@ -32724,7 +32792,7 @@ Có nên xoá các lớp hiện có trước khi phân loại?</translation>
     <message>
         <location filename="../src/ui/qgsuniquevaluedialogbase.ui" line="153"/>
         <source>Restrict changes to common properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Giới hạn các thay đổi chỉ trong các thuộc tính chung</translation>
     </message>
 </context>
 <context>
@@ -32743,22 +32811,22 @@ Có nên xoá các lớp hiện có trước khi phân loại?</translation>
     <message>
         <location filename="../src/ui/qgsvectorcolorbrewercolorrampv2dialogbase.ui" line="14"/>
         <source>ColorBrewer ramp</source>
-        <translation type="unfinished"></translation>
+        <translation>Bộ biến đổi màu ColorBrewer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorcolorbrewercolorrampv2dialogbase.ui" line="22"/>
         <source>Scheme name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tên sắc thái:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorcolorbrewercolorrampv2dialogbase.ui" line="45"/>
         <source>Colors:</source>
-        <translation type="unfinished"></translation>
+        <translation>Màu:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorcolorbrewercolorrampv2dialogbase.ui" line="76"/>
         <source>Preview</source>
-        <translation type="unfinished">Xem trước</translation>
+        <translation>Xem trước</translation>
     </message>
 </context>
 <context>
@@ -32766,28 +32834,28 @@ Có nên xoá các lớp hiện có trước khi phân loại?</translation>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="14"/>
         <source>Gradient color ramp</source>
-        <translation type="unfinished"></translation>
+        <translation>Bộ biến đổi màu gradient</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="22"/>
         <source>Color 1:</source>
-        <translation type="unfinished"></translation>
+        <translation>Màu 1:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="29"/>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="59"/>
         <source>Change</source>
-        <translation type="unfinished">Thay đổi</translation>
+        <translation>Thay đổi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="52"/>
         <source>Color 2:</source>
-        <translation type="unfinished"></translation>
+        <translation>Màu 2:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="84"/>
         <source>Preview</source>
-        <translation type="unfinished">Xem trước</translation>
+        <translation>Xem trước</translation>
     </message>
 </context>
 <context>
@@ -32935,7 +33003,7 @@ Có nên xoá các lớp hiện có trước khi phân loại?</translation>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="2616"/>
         <source>No renderer object</source>
-        <translation type="unfinished">Không có đối tượng kết xuất</translation>
+        <translation>Không có đối tượng kết xuất</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="2620"/>
@@ -33041,7 +33109,7 @@ Có nên xoá các lớp hiện có trước khi phân loại?</translation>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="2610"/>
         <source>Unknown renderer</source>
-        <translation type="unfinished">Renderer không rõ</translation>
+        <translation>Trình kết xuất không rõ</translation>
     </message>
 </context>
 <context>
@@ -33248,7 +33316,7 @@ Có nên xoá các lớp hiện có trước khi phân loại?</translation>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="176"/>
         <source>edit widget</source>
-        <translation type="unfinished">chỉnh sửa widget</translation>
+        <translation>chỉnh sửa widget</translation>
     </message>
     <message>
         <source>values</source>
@@ -33370,107 +33438,107 @@ Có nên xoá các lớp hiện có trước khi phân loại?</translation>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="177"/>
         <source>alias</source>
-        <translation type="unfinished"></translation>
+        <translation>tên bí danh</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="338"/>
         <source>Added attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Thuộc tính được thêm vào</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="363"/>
         <source>Deleted attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Thuộc tính bị xoá</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="539"/>
         <source>Enumeration</source>
-        <translation type="unfinished"></translation>
+        <translation>Phép liệt kê</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="540"/>
         <source>Immutable</source>
-        <translation type="unfinished"></translation>
+        <translation>Không thể thay đổi</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="531"/>
         <source>Line edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Chỉnh sửa Đường</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="532"/>
         <source>Unique values</source>
-        <translation type="unfinished"></translation>
+        <translation>Giá trị không trùng</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="533"/>
         <source>Unique values editable</source>
-        <translation type="unfinished"></translation>
+        <translation>Giá trị không trùng sửa được</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="534"/>
         <source>Classification</source>
-        <translation type="unfinished"></translation>
+        <translation>Phép phân loại</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="535"/>
         <source>Value map</source>
-        <translation type="unfinished"></translation>
+        <translation>Bản đồ giá trị</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="536"/>
         <source>Edit range</source>
-        <translation type="unfinished"></translation>
+        <translation>Chỉnh sửa miền</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="537"/>
         <source>Slider range</source>
-        <translation type="unfinished"></translation>
+        <translation>Miền kiểu thanh trượt</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="538"/>
         <source>File name</source>
-        <translation type="unfinished"></translation>
+        <translation>Tên tập tin</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="541"/>
         <source>Hidden</source>
-        <translation type="unfinished">Ẩn</translation>
+        <translation>Ẩn</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="451"/>
         <source>This button opens the query builder and allows you to create a subset of features to display on the map canvas rather than displaying all features in the layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Nút lệnh này mở trình xây dựng phép truy vấn và cho phép bạn tạo một tập con các đối tượng để trình bày trên khung bản đồ chứ không phải trình bày tất cả các đối tượng của lớp</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="542"/>
         <source>Checkbox</source>
-        <translation type="unfinished"></translation>
+        <translation>Ô đánh dấu</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="543"/>
         <source>Text edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Chỉnh sửa chữ</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1072"/>
         <source>Select edit form</source>
-        <translation type="unfinished"></translation>
+        <translation>Chọn mẫu chỉnh sửa</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1072"/>
         <source>UI file (*.ui)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tập tin UI (*.ui)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1128"/>
         <source>Symbology</source>
-        <translation type="unfinished"></translation>
+        <translation>Kiểu biểu tượng</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1129"/>
         <source>Do you wish to use the new symbology implementation for this layer?</source>
-        <translation type="unfinished"></translation>
+        <translation>Bạn có muốn dùng bộ biểu tượng mới cho lớp này không?</translation>
     </message>
 </context>
 <context>
@@ -33714,37 +33782,37 @@ Có nên xoá các lớp hiện có trước khi phân loại?</translation>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="514"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="517"/>
         <source>Specify the coordinate reference system of the layer&apos;s geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation>Chỉ định hệ tham chiếu không gian cho hình học của lớp.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="520"/>
         <source>Specify CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>Chỉ định HTĐ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="355"/>
         <source>Field calculator</source>
-        <translation type="unfinished"></translation>
+        <translation>Trình tính toán trường</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="252"/>
         <source>New symbology</source>
-        <translation type="unfinished"></translation>
+        <translation>Bộ biểu tượng mới</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="476"/>
         <source>Edit UI</source>
-        <translation type="unfinished"></translation>
+        <translation>Chỉnh sửa UI</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="488"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="527"/>
         <source>Init function</source>
-        <translation type="unfinished"></translation>
+        <translation>Hàm khởi tạo</translation>
     </message>
 </context>
 <context>
@@ -33752,46 +33820,46 @@ Có nên xoá các lớp hiện có trước khi phân loại?</translation>
     <message>
         <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="14"/>
         <source>Random color ramp</source>
-        <translation type="unfinished"></translation>
+        <translation>Bộ biến đổi màu ngẫu nhiên</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="22"/>
         <source>Hue</source>
-        <translation type="unfinished"></translation>
+        <translation>Màu sắc</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="29"/>
         <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="67"/>
         <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="105"/>
         <source>from</source>
-        <translation type="unfinished"></translation>
+        <translation>từ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="43"/>
         <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="81"/>
         <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="119"/>
         <source>to</source>
-        <translation type="unfinished"></translation>
+        <translation>đến</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="60"/>
         <source>Saturation</source>
-        <translation type="unfinished"></translation>
+        <translation>Độ bão hoà</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="98"/>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Giá trị</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="140"/>
         <source>Classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Các lớp</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="194"/>
         <source>Preview</source>
-        <translation type="unfinished">Xem trước</translation>
+        <translation>Xem trước</translation>
     </message>
 </context>
 <context>
@@ -33892,22 +33960,22 @@ Có nên xoá các lớp hiện có trước khi phân loại?</translation>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="237"/>
         <source>Create a new WFS connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Tạo một kết nối WFS mới</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="248"/>
         <source>Modify WFS connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Thay đổi kết nối WFS</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="147"/>
         <source>Error</source>
-        <translation type="unfinished">Lỗi</translation>
+        <translation>Lỗi</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="147"/>
         <source>The capabilities document could not be retrieved from the server</source>
-        <translation type="unfinished"></translation>
+        <translation>Không thể lấy thông tin về khả năng từ máy chủ</translation>
     </message>
 </context>
 <context>
@@ -33980,12 +34048,12 @@ Có nên xoá các lớp hiện có trước khi phân loại?</translation>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="48"/>
         <source>Coordinate reference system</source>
-        <translation type="unfinished">Hệ tọa độ</translation>
+        <translation>Hệ tọa độ</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="96"/>
         <source>Server connections</source>
-        <translation type="unfinished"></translation>
+        <translation>Các kết nối đến máy chủ</translation>
     </message>
 </context>
 <context>
@@ -34016,17 +34084,17 @@ Có nên xoá các lớp hiện có trước khi phân loại?</translation>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgswkndiagramfactorywidgetbase.ui" line="31"/>
         <source>Attributes</source>
-        <translation type="unfinished">Các Thuộc tính</translation>
+        <translation>Thuộc tính</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgswkndiagramfactorywidgetbase.ui" line="50"/>
         <source>Add</source>
-        <translation type="unfinished">Thêm</translation>
+        <translation>Thêm</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgswkndiagramfactorywidgetbase.ui" line="57"/>
         <source>Remove</source>
-        <translation type="unfinished">Loại bỏ</translation>
+        <translation>Loại bỏ</translation>
     </message>
 </context>
 <context>
@@ -34034,53 +34102,53 @@ Có nên xoá các lớp hiện có trước khi phân loại?</translation>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="200"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation>Có chắc là bạn muốn loại bỏ kết nối %1 và tất cả các thiết lập liên quan?</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="202"/>
         <source>Confirm Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Xác nhận Xóa</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="388"/>
         <source>WMS Password for %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Mật mã WMS cho %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="423"/>
         <source>WMS Provider</source>
-        <translation type="unfinished">Trình cung cấp WMS</translation>
+        <translation>Trình cung cấp WMS</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="424"/>
         <source>Could not open the WMS Provider</source>
-        <translation type="unfinished">Không thể mở Trình cung cấp WMS</translation>
+        <translation>Không thể mở Trình cung cấp WMS</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="434"/>
         <source>Select Layer</source>
-        <translation type="unfinished">Chọn Lớp</translation>
+        <translation>Chọn Lớp</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="434"/>
         <source>You must select at least one leaf layer first.</source>
-        <translation type="unfinished">Bạn phải chọn ít nhất một lớp lá (leaf layer) trước.</translation>
+        <translation>Bạn phải chọn ít nhất một lớp lá (leaf layer) trước.</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="438"/>
         <source>Coordinate Reference System</source>
-        <translation type="unfinished">Hệ Tham chiếu Tọa độ</translation>
+        <translation>Hệ Tham chiếu Tọa độ</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="438"/>
         <source>There are no available coordinate reference system for the set of layers you&apos;ve selected.</source>
-        <translation type="unfinished">Không có hệ tham chiếu tọa độ nào dùng được cho tập hợp các lớp mà bạn đã chọn.</translation>
+        <translation>Không có hệ tham chiếu tọa độ nào dùng được cho tập hợp các lớp mà bạn đã chọn.</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgswmssourceselect.cpp" line="553"/>
         <source>Coordinate Reference System (%n available)</source>
         <comment>crs count</comment>
-        <translation type="unfinished">
+        <translation>
             <numerusform>Hệ tọa độ (dùng được %n)</numerusform>
         </translation>
     </message>
@@ -34089,40 +34157,40 @@ Có nên xoá các lớp hiện có trước khi phân loại?</translation>
         <source>Could not understand the response.  The %1 provider said:
 %2</source>
         <comment>COMMENTED OUT</comment>
-        <translation type="unfinished">Không hiểu đáp ứng. Trình cung cấp %1 nói rằng:
+        <translation>Không hiểu đáp ứng. Trình cung cấp %1 nói rằng:
 %2</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="725"/>
         <source>Could not understand the response.  The %1 provider said:
 %2</source>
-        <translation type="unfinished">Không hiểu đáp ứng. Trình cung cấp %1 nói rằng:
+        <translation>Không hiểu đáp ứng. Trình cung cấp %1 nói rằng:
 %2</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="776"/>
         <source>WMS proxies</source>
-        <translation type="unfinished">các proxy WMS</translation>
+        <translation>Các proxy WMS</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="776"/>
         <source>Several WMS servers have been added to the server list. Note that if you access the internet via a web proxy, you will need to set the proxy settings in the QGIS options dialog.</source>
-        <translation type="unfinished">Một số server WMS đã được thêm vào danh sách server. Lưu ý rằng nếu bạn truy cập vào internet tthông qua một proxy web, bạn cần phải thiết lập proxy trong hộp thoại tùy chọn của QGIS.</translation>
+        <translation>Một số server WMS đã được thêm vào danh sách server. Lưu ý rằng nếu bạn truy cập vào internet tthông qua một proxy web, bạn cần phải thiết lập proxy trong hộp thoại tùy chọn của QGIS.</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="916"/>
         <source>The %1 connection already exists. Do you want to overwrite it?</source>
-        <translation type="unfinished">Kết nối %1 đã có. Bạn có muốn ghi đè nó không?</translation>
+        <translation>Kết nối %1 đã có. Bạn có muốn ghi đè nó không?</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="917"/>
         <source>Confirm Overwrite</source>
-        <translation type="unfinished">Xác nhận ghi đè</translation>
+        <translation>Xác nhận ghi đè</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="60"/>
         <source>&amp;Add</source>
-        <translation type="unfinished">&amp;Thêm</translation>
+        <translation>&amp;Thêm</translation>
     </message>
 </context>
 <context>
@@ -34130,42 +34198,42 @@ Có nên xoá các lớp hiện có trước khi phân loại?</translation>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="14"/>
         <source>Add Layer(s) from a Server</source>
-        <translation type="unfinished">Thêm (các) lớp từ một Server</translation>
+        <translation>Thêm (các) lớp từ một máy chủ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="35"/>
         <source>Servers</source>
-        <translation type="unfinished">Các máy chủ</translation>
+        <translation>Các máy chủ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="47"/>
         <source>C&amp;onnect</source>
-        <translation type="unfinished">&amp;Kết nối</translation>
+        <translation>&amp;Kết nối</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="54"/>
         <source>&amp;New</source>
-        <translation type="unfinished">&amp;Mới</translation>
+        <translation>&amp;Mới</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="64"/>
         <source>Edit</source>
-        <translation type="unfinished">Chỉnh sửa</translation>
+        <translation>Chỉnh sửa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="74"/>
         <source>Delete</source>
-        <translation type="unfinished">Xóa</translation>
+        <translation>Xóa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="97"/>
         <source>Adds a few example WMS servers</source>
-        <translation type="unfinished">Thêm vài Server WMS mẫu</translation>
+        <translation>Thêm vài máy chủ WMS mẫu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="103"/>
         <source>Add default servers</source>
-        <translation type="unfinished">Thêm các Server mặc định</translation>
+        <translation>Thêm các máy chủ mặc định</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="123"/>
@@ -34175,43 +34243,43 @@ Có nên xoá các lớp hiện có trước khi phân loại?</translation>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="128"/>
         <source>Name</source>
-        <translation type="unfinished">Tên</translation>
+        <translation>Tên</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="133"/>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="227"/>
         <source>Title</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiêu đề</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="138"/>
         <source>Abstract</source>
-        <translation type="unfinished">Tóm tắt</translation>
+        <translation>Tóm tắt</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="147"/>
         <source>Layer Order</source>
-        <translation type="unfinished"></translation>
+        <translation>Thứ tự Lớp</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="184"/>
         <source>Layer</source>
-        <translation type="unfinished">Lớp</translation>
+        <translation>Lớp</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="189"/>
         <source>Style</source>
-        <translation type="unfinished">Stil</translation>
+        <translation>Kiểu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="198"/>
         <source>Server Search</source>
-        <translation type="unfinished">Tìm máy chủ</translation>
+        <translation>Tìm máy chủ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="207"/>
         <source>Search</source>
-        <translation type="unfinished">Tìm kiếm</translation>
+        <translation>Tìm</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="232"/>
@@ -34221,37 +34289,37 @@ Có nên xoá các lớp hiện có trước khi phân loại?</translation>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="237"/>
         <source>Description</source>
-        <translation type="unfinished">Mô tả</translation>
+        <translation>Mô tả</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="245"/>
         <source>Add selected row to WMS list</source>
-        <translation type="unfinished">Thêm hàng được chọn và danh sách WMS</translation>
+        <translation>Thêm hàng được chọn và danh sách WMS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="268"/>
         <source>Image encoding</source>
-        <translation type="unfinished">Mã hóa ảnh</translation>
+        <translation>Mã hóa ảnh</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="275"/>
         <source>Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Tuỳ chọn</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="281"/>
         <source>Layer name</source>
-        <translation type="unfinished">Tên lớp</translation>
+        <translation>Tên lớp</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="294"/>
         <source>Coordinate Reference System</source>
-        <translation type="unfinished">Hệ Tham chiếu Tọa độ</translation>
+        <translation>Hệ Tham chiếu Tọa độ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="307"/>
         <source>Change ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Thay đổi...</translation>
     </message>
     <message>
         <source>&amp;Add</source>
@@ -34272,7 +34340,7 @@ Có nên xoá các lớp hiện có trước khi phân loại?</translation>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="323"/>
         <source>Ready</source>
-        <translation type="unfinished">Sẵn sàng</translation>
+        <translation>Sẵn sàng</translation>
     </message>
 </context>
 <context>
@@ -34573,7 +34641,7 @@ Có nên xoá các lớp hiện có trước khi phân loại?</translation>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="802"/>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1557"/>
         <source>Dom Exception</source>
-        <translation type="unfinished">Ngoại lệ Dom</translation>
+        <translation>Ngoại lệ Dom</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="674"/>
@@ -34658,12 +34726,12 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/plugins/quick_print/quickprintguibase.ui" line="85"/>
         <source>Use last filename but incremented.</source>
-        <translation type="unfinished">Dùng tên tập tin sau cùng nhưng tăng số.</translation>
+        <translation>Dùng tên tập tin sau cùng nhưng tăng số.</translation>
     </message>
     <message>
         <location filename="../src/plugins/quick_print/quickprintguibase.ui" line="92"/>
         <source>last used filename but incremented will be shown here</source>
-        <translation type="unfinished">Tên tập tin sau cùng được dùng nhưng có tăng số sẽ được hiển thị ở đây</translation>
+        <translation>Tên tập tin sau cùng được dùng nhưng có tăng số sẽ được hiển thị ở đây</translation>
     </message>
     <message>
         <location filename="../src/plugins/quick_print/quickprintguibase.ui" line="102"/>
@@ -34694,17 +34762,17 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/plugins/quick_print/quickprintguibase.ui" line="24"/>
         <source>Map title</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiêu đề Bản đồ</translation>
     </message>
     <message>
         <location filename="../src/plugins/quick_print/quickprintguibase.ui" line="37"/>
         <source>Map name</source>
-        <translation type="unfinished">Tên bản đồ</translation>
+        <translation>Tên bản đồ</translation>
     </message>
     <message>
         <location filename="../src/plugins/quick_print/quickprintguibase.ui" line="60"/>
         <source>Page size</source>
-        <translation type="unfinished"></translation>
+        <translation>Kích cỡ trang</translation>
     </message>
 </context>
 <context>
@@ -34815,14 +34883,15 @@ Tried URL: %1</source>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="985"/>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1056"/>
         <source>Node tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Công cụ Nốt</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="986"/>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1057"/>
         <source>Result geometry is invalid. Reverting last changes.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Hình học tạo thành không hợp lệ. Đảo ngược lại các thay đổi sau cùng.
+</translation>
     </message>
 </context>
 <context>
@@ -34830,17 +34899,17 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/ui/qgssimplifytolerancedialog.ui" line="14"/>
         <source>Simplify line tolerance</source>
-        <translation type="unfinished"></translation>
+        <translation>Đơn giản hoá ngưỡng của đường</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssimplifytolerancedialog.ui" line="20"/>
         <source>Set tolerance</source>
-        <translation type="unfinished"></translation>
+        <translation>Thiết lập ngưỡng</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssimplifytolerancedialog.ui" line="34"/>
         <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation>Đồng ý</translation>
     </message>
 </context>
 <context>
@@ -34859,44 +34928,44 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/app/qgsundowidget.cpp" line="159"/>
         <source>Undo/Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>Quay ngược/Lặp lại lệnh</translation>
     </message>
     <message>
         <location filename="../src/app/qgsundowidget.cpp" line="160"/>
         <source>Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>Quay ngược lệnh</translation>
     </message>
     <message>
         <location filename="../src/app/qgsundowidget.cpp" line="161"/>
         <source>Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>Lặp lại lệnh</translation>
     </message>
 </context>
 <context>
     <name>VisualDialog</name>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="unfinished">Vui lòng chỉ định lớp vector đầu vào</translation>
+        <translation>Vui lòng chỉ định lớp vector đầu vào</translation>
     </message>
     <message>
         <source>Please specify input field</source>
-        <translation type="unfinished">Vui lòng chỉ định trường đầu vào</translation>
+        <translation>Vui lòng chỉ định trường đầu vào</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation type="unfinished">Kiểm tra tính đúng đắn về mặt hình học</translation>
+        <translation>Kiểm tra tính đúng đắn về mặt hình học</translation>
     </message>
     <message>
         <source>Geometry errors</source>
-        <translation type="unfinished">Các lỗi hình học</translation>
+        <translation>Các lỗi hình học</translation>
     </message>
     <message>
         <source>Total encountered errors</source>
-        <translation type="unfinished">Tổng số lỗi gặp</translation>
+        <translation>Tổng số lỗi gặp</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation type="unfinished">Liệt kê các giá trị không trùng</translation>
+        <translation>Liệt kê các giá trị không trùng</translation>
     </message>
     <message>
         <source>Unique values:</source>
@@ -34908,19 +34977,19 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>Basics statistics</source>
-        <translation type="unfinished">Thống kê cơ bản</translation>
+        <translation>Thống kê cơ bản</translation>
     </message>
     <message>
         <source>Statistics output</source>
-        <translation type="unfinished">Đầu ra thống kê</translation>
+        <translation>Đầu ra thống kê</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation type="unfinished">Phân tích lân cận gần nhất</translation>
+        <translation>Phân tích lân cận gần nhất</translation>
     </message>
     <message>
         <source>Nearest neighbour statistics</source>
-        <translation type="unfinished">Thống kê lân cận gần nhất</translation>
+        <translation>Thống kê lân cận gần nhất</translation>
     </message>
     <message>
         <source>Observed mean distance : </source>
@@ -34952,11 +35021,11 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>Unique values</source>
-        <translation type="unfinished"></translation>
+        <translation>Các giá trị không trùng</translation>
     </message>
     <message>
         <source>Total unique values</source>
-        <translation type="unfinished"></translation>
+        <translation>Tổng các giá trị không trùng</translation>
     </message>
 </context>
 <context>
@@ -34964,17 +35033,17 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_linedecoration.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Biểu mẫu</translation>
+        <translation>Biểu mẫu</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_linedecoration.ui" line="22"/>
         <source>Color:</source>
-        <translation type="unfinished">Màu:</translation>
+        <translation>Màu:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_linedecoration.ui" line="35"/>
         <source>Change</source>
-        <translation type="unfinished">Thay đổi</translation>
+        <translation>Thay đổi</translation>
     </message>
 </context>
 <context>
@@ -34982,32 +35051,32 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Biểu mẫu</translation>
+        <translation>Biểu mẫu</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="22"/>
         <source>Marker:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ký hiệu đánh dấu:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="29"/>
         <source>Change</source>
-        <translation type="unfinished">Thay đổi</translation>
+        <translation>Thay đổi</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="52"/>
         <source>Marker interval:</source>
-        <translation type="unfinished"></translation>
+        <translation>Khoảng cách giữa các đánh dấu:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="59"/>
         <source>Rotate marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Xoáy ký hiệu đánh dấu</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="66"/>
         <source>Line offset:</source>
-        <translation type="unfinished"></translation>
+        <translation>Căn lệch dòng:</translation>
     </message>
 </context>
 <context>
@@ -35015,38 +35084,38 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Biểu mẫu</translation>
+        <translation>Biểu mẫu</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="22"/>
         <source>Color:</source>
-        <translation type="unfinished">Màu:</translation>
+        <translation>Màu:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="29"/>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="59"/>
         <source>Change</source>
-        <translation type="unfinished">Thay đổi</translation>
+        <translation>Thay đổi</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="52"/>
         <source>Border color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Màu đường viền:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="69"/>
         <source>Fill style:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kiểu tô màu:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="76"/>
         <source>Border style:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kiểu đường viền:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="86"/>
         <source>Border width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Chiều rộng viền:</translation>
     </message>
 </context>
 <context>
@@ -35054,42 +35123,42 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Biểu mẫu</translation>
+        <translation>Biểu mẫu</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="22"/>
         <source>Color:</source>
-        <translation type="unfinished">Màu:</translation>
+        <translation>Màu:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="35"/>
         <source>Change</source>
-        <translation type="unfinished">Thay đổi</translation>
+        <translation>Thay đổi</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="58"/>
         <source>Pen width:</source>
-        <translation type="unfinished">Chiều rộng bút vẽ:</translation>
+        <translation>Chiều rộng bút vẽ:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="65"/>
         <source>Pen style:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kiểu bút vẽ:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="75"/>
         <source>Offset:</source>
-        <translation type="unfinished"></translation>
+        <translation>Căn lệch:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="131"/>
         <source>Join style:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kiểu kết hợp:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="157"/>
         <source>Cap style:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kiểu Cap:</translation>
     </message>
 </context>
 <context>
@@ -35097,38 +35166,38 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Biểu mẫu</translation>
+        <translation>Biểu mẫu</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="22"/>
         <source>Border color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Màu đường viền:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="29"/>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="59"/>
         <source>Change</source>
-        <translation type="unfinished">Thay đổi</translation>
+        <translation>Thay đổi</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="52"/>
         <source>Fill color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Màu tô:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="66"/>
         <source>Size:</source>
-        <translation type="unfinished">Kích thước:</translation>
+        <translation>Kích thước:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="73"/>
         <source>Angle:</source>
-        <translation type="unfinished"></translation>
+        <translation>Góc:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="93"/>
         <source>Offset X,Y:</source>
-        <translation type="unfinished"></translation>
+        <translation>Căn lệch X,Y:</translation>
     </message>
 </context>
 <context>
@@ -35136,27 +35205,27 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Biểu mẫu</translation>
+        <translation>Biểu mẫu</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="28"/>
         <source>Size:</source>
-        <translation type="unfinished">Kích thước:</translation>
+        <translation>Kích thước:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="48"/>
         <source>Angle:</source>
-        <translation type="unfinished"></translation>
+        <translation>Góc:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="92"/>
         <source>Offset X,Y:</source>
-        <translation type="unfinished"></translation>
+        <translation>Căn lệch X,Y:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="117"/>
         <source>SVG Image:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ảnh SVG:</translation>
     </message>
 </context>
 <context>
@@ -35445,12 +35514,12 @@ Cần hỗ trợ xin gửi thư điện tử đến scala@itc.cnr.it
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="37"/>
         <source>Input and output</source>
-        <translation type="unfinished"></translation>
+        <translation>Đầu vào và đầu ra</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="63"/>
         <source>Output file</source>
-        <translation type="unfinished"></translation>
+        <translation>Tập tin đầu ra</translation>
     </message>
 </context>
 <context>
@@ -35458,32 +35527,32 @@ Cần hỗ trợ xin gửi thư điện tử đến scala@itc.cnr.it
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="105"/>
         <source>eVis Database Connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Kết nối CSDL eVis</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="106"/>
         <source>eVis Event Id Tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Công cụ Nhận diện Sự kiện eVis</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="107"/>
         <source>eVis Event Browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Bộ duyệt Sự kiện eVis</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="110"/>
         <source>Create layer from a database query</source>
-        <translation type="unfinished"></translation>
+        <translation>Tạo lớp từ một phép truy vấn CSDL</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="111"/>
         <source>Open an Event Browers and display the selected feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Mở các bộ Duyệt Sự kiện và trình bày đối tượng được chọn</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="112"/>
         <source>Open an Event Browser to explore the current layer&apos;s features</source>
-        <translation type="unfinished"></translation>
+        <translation>Mở bộ Duyệt Sự kiện để khảo sát các đối tượng của lớp hiện tại</translation>
     </message>
 </context>
 <context>
@@ -35492,12 +35561,12 @@ Cần hỗ trợ xin gửi thư điện tử đến scala@itc.cnr.it
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="71"/>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="223"/>
         <source>Undefined</source>
-        <translation type="unfinished"></translation>
+        <translation>Không được định nghĩa</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="73"/>
         <source>No predefined queries loaded</source>
-        <translation type="unfinished"></translation>
+        <translation>Các truy vấn đã định nghĩa trước không được nạp</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="78"/>
@@ -35506,72 +35575,72 @@ Cần hỗ trợ xin gửi thư điện tử đến scala@itc.cnr.it
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="450"/>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="452"/>
         <source>Open File</source>
-        <translation type="unfinished"></translation>
+        <translation>Mở tập tin</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="220"/>
         <source>New Database connection requested...</source>
-        <translation type="unfinished"></translation>
+        <translation>Kết nối CSDL mới được yêu cầu...</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="225"/>
         <source>Error: You must select a database type</source>
-        <translation type="unfinished"></translation>
+        <translation>Lỗi: Bạn phải chọn một kiểu CSDL</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="233"/>
         <source>Error: No host name entered</source>
-        <translation type="unfinished"></translation>
+        <translation>Lỗi: tên máy chủ không được nhập vào</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="240"/>
         <source>Error: No database name entered</source>
-        <translation type="unfinished"></translation>
+        <translation>Lỗi: Tên CSDL không được nhập vào</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="283"/>
         <source>connected</source>
-        <translation type="unfinished">đã kết nối</translation>
+        <translation>đã kết nối</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="286"/>
         <source>Tables</source>
-        <translation type="unfinished">Tabellen</translation>
+        <translation>Bảng</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="409"/>
         <source>Error: Parse error at line %1, column %2: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Lỗi: Lỗi phân tách tại dòng %1, cột %2: %3</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="531"/>
         <source>Error: A database connection is not currently established</source>
-        <translation type="unfinished"></translation>
+        <translation>Lỗi: Kết nối CSDL hiện chưa được thiết lập</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="282"/>
         <source>Connection to [%1.%2] established</source>
-        <translation type="unfinished"></translation>
+        <translation>Kết nối đến [%1.%2] được thiết lập</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="295"/>
         <source>Connection to [%1.%2] failed: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Kết nối đến [%1.%2] thất bại: %3</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="414"/>
         <source>Error: Unabled to open file [%1]</source>
-        <translation type="unfinished"></translation>
+        <translation>Lỗi: Không thể mở tập tin [%1]</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="470"/>
         <source>Error: Query failed: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Lỗi: Truy vấn thất bại: %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="524"/>
         <source>Error: Could not create temporary file, process halted</source>
-        <translation type="unfinished"></translation>
+        <translation>Lỗi: Không thể tạo tập tin tạm, tiến trình bị ngưng</translation>
     </message>
 </context>
 <context>
@@ -35580,27 +35649,27 @@ Cần hỗ trợ xin gửi thư điện tử đến scala@itc.cnr.it
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="13"/>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="153"/>
         <source>Database Connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Kết nối CSDL</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="65"/>
         <source>Load predefined queries</source>
-        <translation type="unfinished"></translation>
+        <translation>Nạp các phép truy vấn đã định nghĩa trước</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="68"/>
         <source>Loads an XML file with predefined queries. Use the Open File window to locate the XML file that contains one or more predefined queries using the format described in the user guide.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nạp một tập tin XML với các truy vấn đã định nghĩa trước. Dùng cửa sổ Mở Tập tin để định vị tập tin XML chứa một hoặc nhiều phép truy vấn đã định nghĩa trước bằng cách dùng định dạng đã được mô tả trong hướng dẫn sử dụng.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="98"/>
         <source>The description of the selected query.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mô tả của truy vấn được chọn.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="165"/>
         <source>not connected</source>
-        <translation type="unfinished"></translation>
+        <translation>không kết nối</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="175"/>
@@ -35608,117 +35677,117 @@ Cần hỗ trợ xin gửi thư điện tử đến scala@itc.cnr.it
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Connection Status: &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Trạng thái Kết nối: &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="185"/>
         <source>Database Host</source>
-        <translation type="unfinished"></translation>
+        <translation>Máy chủ CSDL</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="192"/>
         <source>Enter the database host. If the database resides on your desktop you should enter ¨localhost¨. If you selected ¨MSAccess¨ as the database type this option will not be available. </source>
-        <translation type="unfinished"></translation>
+        <translation>Nhập máy chủ CSDL. Nếu CSDL ở trên máy tính của bạn, bạn nhập &quot;localhost&quot;. Nếu bạn chọn &quot;MSAccess&quot; làm kiểu CSDL thì tuỳ chọn này không dùng được.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="202"/>
         <source>Password to access the database.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mật mã truy cập CSDL.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="212"/>
         <source>Enter the name of the database.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nhập tên của CSDL.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="232"/>
         <source>Username</source>
-        <translation type="unfinished">Tên người dùng</translation>
+        <translation>Tên người dùng</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="239"/>
         <source>Enter the port through which the database must be accessed if a MYSQL database is used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nhập cổng truy cập CSDL nếu dùng CSDL MySQL.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="249"/>
         <source>Connect to the database using the parameters selected above. If the connection was successful a message will be displayed in the Output Console below saying the connection was established. </source>
-        <translation type="unfinished"></translation>
+        <translation>Kết nối đến CSDL bằng cách dùng các tham số đã chọn ở trên. Nếu kết nối thành công, một thông báo sẽ hiển thị trong Cửa sổ lệnh Đầu ra phía dưới cho biết rằng kết nối đã được thiết lập.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="252"/>
         <source>Connect</source>
-        <translation type="unfinished">Kết nối</translation>
+        <translation>Kết nối</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="262"/>
         <source>User name to access the database.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tên người dùng để truy cập CSDL.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="269"/>
         <source>Select the type of database from the list of supported databases in the drop-down menu.</source>
-        <translation type="unfinished"></translation>
+        <translation>Chọn kiểu CSDL từ danh sách các CSDL được hỗ trợ trong trình đơn thả xuống.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="289"/>
         <source>Database Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Tên CSDL</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="296"/>
         <source>Password</source>
-        <translation type="unfinished">Mật mã</translation>
+        <translation>Mật mã</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="303"/>
         <source>Database Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Kiểu CSDL</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="310"/>
         <source>Port</source>
-        <translation type="unfinished"></translation>
+        <translation>Cổng</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="350"/>
         <source>SQL Query</source>
-        <translation type="unfinished"></translation>
+        <translation>Truy vấn SQL</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="375"/>
         <source>Run the query entered above. The status of the query will be displayed in the Output  Console below.</source>
-        <translation type="unfinished"></translation>
+        <translation>Chạy truy vấn đã nhập ở trên. Trạng thái của phép truy vấn sẽ được hiển thị trong Cửa sổ Lệnh Đầu ra phía dưới.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="378"/>
         <source>Run Query</source>
-        <translation type="unfinished"></translation>
+        <translation>Chạy Truy vấn</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="388"/>
         <source>Enter the query you want to run in this window.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nhập truy vấn bạn muốn chạy trong cửa sổ này.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="435"/>
         <source>A window for status messages to be displayed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Một cửa sổ các thông báo trạng thái cần được hiển thị.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="458"/>
         <source>Output Console</source>
-        <translation type="unfinished"></translation>
+        <translation>Cửa sổ Lệnh Đầu ra</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="47"/>
         <source>Predefined Queries</source>
-        <translation type="unfinished"></translation>
+        <translation>Các truy vấn đã được định nghĩa trước</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="108"/>
         <source>Select the predefined query you want to use from the drop-down list containing queries identified from the file loaded using the Open File icon above. To run the query you need to click on the SQL Query tab. The query will be automatically entered in the query window.</source>
-        <translation type="unfinished"></translation>
+        <translation>Chọn phép truy vấn đã định nghĩa trước để dùng từ danh sách chứa các truy vấn nhận diện được từ tập tin đã nạp bằng cách dùng biểu tượng Mở Tập tin ở trên. Để chạy truy vấn bạn cần nhắp chuột vào thể Truy vấn SQL. Phép truy vấn sẽ tự động được nhập vào cửa sổ truy vấn.</translation>
     </message>
 </context>
 <context>
@@ -35726,37 +35795,37 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaselayerfieldselectionguibase.ui" line="16"/>
         <source>Database File Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Phép chọn tập tin CSDL</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaselayerfieldselectionguibase.ui" line="45"/>
         <source>The name of the field that contains the Y coordinate of the points.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tên của trường chứa toạ độ Y của các điểm.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaselayerfieldselectionguibase.ui" line="58"/>
         <source>The name of the field that contains the X coordinate of the points.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tên của trường chứa toạ độ X của các điểm.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaselayerfieldselectionguibase.ui" line="68"/>
         <source>Enter the name for the new layer that will be created and displayed in QGIS.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nhập tên của lớp mới sẽ được tạo ra và trình bày nó trong QGIS.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaselayerfieldselectionguibase.ui" line="75"/>
         <source>Y Coordinate</source>
-        <translation type="unfinished">Toạ độ Y</translation>
+        <translation>Toạ độ Y</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaselayerfieldselectionguibase.ui" line="82"/>
         <source>X Coordinate</source>
-        <translation type="unfinished">Toạ độ X</translation>
+        <translation>Toạ độ X</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaselayerfieldselectionguibase.ui" line="89"/>
         <source>Name of New Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Tên của lớp mới</translation>
     </message>
 </context>
 <context>
@@ -35764,17 +35833,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="135"/>
         <source>Generic Event Browser</source>
-        <translation type="unfinished"></translation>
+        <translation>Bộ duyệt Sự kiện Chung</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="159"/>
         <source>Field</source>
-        <translation type="unfinished"></translation>
+        <translation>Trường</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="159"/>
         <source>Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Giá trị</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="210"/>
@@ -35782,61 +35851,61 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="233"/>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="239"/>
         <source>Warning</source>
-        <translation type="unfinished">Cảnh báo</translation>
+        <translation>Cảnh báo</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="210"/>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="233"/>
         <source>This tool only supports vector data</source>
-        <translation type="unfinished"></translation>
+        <translation>Công cụ này chỉ hỗ trợ dữ liệu vector</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="216"/>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="239"/>
         <source>No active layers found</source>
-        <translation type="unfinished"></translation>
+        <translation>Không thấy lớp đang được kích hoạt</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="245"/>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="274"/>
         <source>Error</source>
-        <translation type="unfinished">Lỗi</translation>
+        <translation>Lỗi</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="245"/>
         <source>Unable to connect to either the map canvas or application interface</source>
-        <translation type="unfinished"></translation>
+        <translation>Không thể kết nối đến khung bản đồ hoặc giao diện ứng dụng</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="274"/>
         <source>An invalid feature was received during initialization</source>
-        <translation type="unfinished"></translation>
+        <translation>Nhận được một đối tượng không hợp lệ trong quá trình khởi tạo</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="793"/>
         <source>Attribute Contents</source>
-        <translation type="unfinished"></translation>
+        <translation>Các Nội dung Thuộc tính</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1091"/>
         <source>Select Application</source>
-        <translation type="unfinished"></translation>
+        <translation>Chọn Ứng dụng</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1091"/>
         <source>All ( * )</source>
-        <translation type="unfinished"></translation>
+        <translation>Tất cả ( * )</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="309"/>
         <source>Event Browser - Displaying records 01 of %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Bộ Duyệt Sự kiện - Đang trình bày bản ghi 01 của %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="996"/>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1018"/>
         <source>Event Browser - Displaying records %1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Bộ Duyệt Sự kiện - Đang trình bày bản ghi %1 của %2</translation>
     </message>
 </context>
 <context>
@@ -35844,62 +35913,62 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="41"/>
         <source>Display</source>
-        <translation type="unfinished">Trình bày</translation>
+        <translation>Trình bày</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="70"/>
         <source>Use the Previous button to display the previous photo when more than one photo is available for display.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dùng nút Trước để trình bày ảnh trước đó khi có nhiều hơn một ảnh có thể trình bày.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="73"/>
         <source>Previous</source>
-        <translation type="unfinished">Trước đó</translation>
+        <translation>Trước đó</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="89"/>
         <source>Use the Next button to display the next photo when more than one photo is available for display.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dùng nút Sau để trình bày ảnh tiếp theo khi có nhiều hơn một ảnh có thể trình bày.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="92"/>
         <source>Next</source>
-        <translation type="unfinished"></translation>
+        <translation>Sau</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="108"/>
         <source>All of the attribute information for the point associated with the photo being viewed is displayed here. If the file type being referenced in the displayed record is not an image but is of a file type defined in the “Configure External Applications” tab then when you double-click on the value of the field containing the path to the file the application to open the file will be launched to view or hear the contents of the file. If the file extension is recognized the attribute data will be displayed in green.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tất cả thông tin thuộc tính dùng cho điểm liên quan đến ảnh đang xem được trình bày ở đây. Nếu kiểu tập tin đang tham chiếu trong bản ghi được trình bày không phải là một ảnh mà là một kiểu tập tin được định nghĩa trong thẻ &quot;Cấu hình các Ứng dụng ngoài&quot; thì khi bạn nhắp chuột đúp vào giá trị của trường chứa đường dẫn đến tập tin, ứng dụng để mở tập tin sẽ được khởi động để xem hoặc nghe nội dung của tập tin. Nếu phần mở rộng của tập tin nhận diện được thì dữ liệu thuộc tính sẽ được trình bày ở màu lục.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="112"/>
         <source>1</source>
-        <translation type="unfinished">1</translation>
+        <translation>1</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="126"/>
         <source>Image display area</source>
-        <translation type="unfinished"></translation>
+        <translation>Vùng trình bày ảnh</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="129"/>
         <source>Display area for the image.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vùng trình bày dùng cho ảnh.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="147"/>
         <source>Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Tuỳ chọn</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="175"/>
         <source>Use the drop-down list to select the field containing a directory path to the image. This can be an absolute or relative path.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dùng danh sách thả xuống để chọn trường chứa đường dẫn thư mục đến ảnh. Đây có thể là đường dẫn tuyệt đối hoặc tương đối.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="198"/>
         <source>If checked, the relative path values will be saved for the next session.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nếu được đánh dấu, các giá trị đường dẫn tương đối sẽ được lưu để dùng cho phiên làm việc tiếp theo.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="230"/>
@@ -35909,197 +35978,198 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="631"/>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="694"/>
         <source>Reset to default</source>
-        <translation type="unfinished"></translation>
+        <translation>Thiết lập lại về mặc định</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="236"/>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="338"/>
         <source>Resets the values on this line to the default setting.</source>
-        <translation type="unfinished"></translation>
+        <translation>Thiết lập lại các giá trị tại dòng này về thiết lập mặc định.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="290"/>
         <source>If checked an arrow pointing in the direction defined by the attribute in the field selected from the drop-down list to the right will be displayed in the QGIS window on top of the point for this image.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nếu được đánh dấu, một mũi tên chỉ theo hướng đã được định nghĩa theo thuộc tính trong trường được chọn từ danh sách thả xuống ở bên phải sẽ được trình bày trong cửa sổ QGIS ở phía trên của điểm dùng cho ảnh này.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="280"/>
         <source>Use the drop-down list to select the field containing the compass bearing for the image. This bearing usually references the direction the camera was pointing when the image was acquired. </source>
-        <translation type="unfinished"></translation>
+        <translation>Dùng danh sách thả xuống để chọn trường chứa hướng la bàn dùng cho ảnh. Hướng này thường là hướng của máy ảnh khi ảnh được chụp.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="303"/>
         <source>If checked, the Display Compass Bearing values will be saved for the next session.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nếu được đánh dấu, các giá trị Trình bày Hướng La bàn sẽ được lưu cho phiên làm việc tiếp theo.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="388"/>
         <source>A value to be added to the compass bearing. This allows you to compensate for declination (adjust bearings collected using magnetic bearings to true north bearings). East declinations should be entered using positive values and west declinations should use negative values. </source>
-        <translation type="unfinished"></translation>
+        <translation>Giá trị cần được thêm vào hướng la bàn. Điều này cho phép bạn bù lại độ lẹch (điều chỉnh hướng thu được bằng cách dùng hướng từ so với hướng bắc thực). Các độ lệch đông được nhập vào với giá trị dương và độ lệch tây được dùng là giá trị âm.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="410"/>
         <source>Define the compass offset using a field from the vector layer attribute table.</source>
-        <translation type="unfinished"></translation>
+        <translation>Định nghĩa căn lệch la bàn bằng cách dùng một trường từ bảng thuộc tính của lớp vector.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="413"/>
         <source> From Attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Thuộc tính Từ</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="429"/>
         <source>Use the drop-down list to select the field containing the compass bearing offset. This allows you to compensate for declination (adjust bearings collected using magnetic bearings to true north bearings). East declinations should be entered using positive values and west declinations should use negative values. </source>
-        <translation type="unfinished"></translation>
+        <translation>Dùng danh sách thả xuống để chọn trường có chứa căn lệch hướng la bàn. Điều này cho phép bạn bù lại độ lệch (điều chỉnh hướng thu được bằng cách dùng hướng từ so với hướng bắc thực). Độ lệch đông được nhập vào là giá trị dương và độ lệch tây được nhập vào là giá trị âm.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="369"/>
         <source>Define the compass offset manually.</source>
-        <translation type="unfinished"></translation>
+        <translation>Định nghĩa căn lệch la bàn kiểu thủ công.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="372"/>
         <source>Manual</source>
-        <translation type="unfinished"></translation>
+        <translation>Thủ công</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="439"/>
         <source>If checked, the compass offset values will be saved for the next session.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nếu được đánh dấu, các giá trị căn lệch la bàn sẽ được lưu cho phiên làm việc tiếp theo.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="474"/>
         <source>Resets the compass offset values to the default settings.</source>
-        <translation type="unfinished"></translation>
+        <translation>Thiết lập lại các giá trị căn lệch la bàn về các thiết lập mặc định.</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="502"/>
         <source>The base path or url from which images and documents can be “relative”</source>
-        <translation type="unfinished"></translation>
+        <translation>Đường dẫn gốc hoặc url mà ảnh hoặc tài liệu ở vị trí &quot;tương đối&quot; so với nó</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="522"/>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="535"/>
         <source>Base Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Đường dẫn gốc</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="538"/>
         <source>The Base Path onto which the relative path defined above will be appended.</source>
-        <translation type="unfinished"></translation>
+        <translation>Đường dẫn gốc mà dựa vào đó đường dẫn tương đối đã định nghĩa ở trên sẽ được gắn thêm vào.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="548"/>
         <source>If checked, the Base Path will be saved for the next session.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nếu được đánh dấu, Đường dẫn Gốc sẽ được lưu cho phiên làm việc tiếp theo.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="598"/>
         <source>If checked, the Base Path will append only the file name instead of the entire relative path (defined above) to create the full directory path to the file. </source>
-        <translation type="unfinished"></translation>
+        <translation>Nếu được đánh dấu, Đường dẫn Gốc sẽ chỉ gắn thêm tên tập tin thay vì toàn bộ đường dẫn tương đối (đã định nghĩa ở trên) để tạo ra đường dẫn thư mục đầy đủ đến tập tin.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="601"/>
         <source>Replace entire path/url stored in image path attribute with user defined
 Base Path (i.e. keep only filename from attribute)</source>
-        <translation type="unfinished"></translation>
+        <translation>Thay thế toàn bộ đường dẫn/url lưu trữ trong thuộc tính đường dẫn đến ảnh bằng Đường dẫn Gốc
+do người dùng định nghĩa (tức là chỉ giữ lại tên tập tin từ thuộc tính)</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="612"/>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="675"/>
         <source>If checked, the  current check-box setting will be saved for the next session.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nếu được đánh dấu, thiết lập ô đánh dấu hiện tại sẽ được lưu cho phiên làm việc tiếp theo.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="634"/>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="697"/>
         <source>Clears the check-box on this line.</source>
-        <translation type="unfinished"></translation>
+        <translation>Xoá ô đánh dấu tại dòng này.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="665"/>
         <source>Apply Path to Image rules when loading docs in external applications</source>
-        <translation type="unfinished"></translation>
+        <translation>Áp dụng các quy tắc Đường dẫn đến Ảnh khi nạp các tài liệu trong những ứng dụng ngoài</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="729"/>
         <source>Clicking on Save will save the settings without closing the Options pane. Clicking on Restore Defaults will reset all of the fields to their default settings. It has the same effect as clicking all of the “Reset to default” buttons. </source>
-        <translation type="unfinished"></translation>
+        <translation>Nhắp chuột vào Lưu sẽ lưu các thiết lập mà không đóng bảng Tuỳ chọn. Nhắp chuột vào Phục hồi lại Giá trị Mặc định sẽ thiết lập lại toàn bộ các trường về các thiết lập mặc định của chúng. Nó có tác dụng tương tự như khi nhắp chuột vào các nút &quot;Thiết lập về Mặc định&quot;.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="740"/>
         <source>Configure External Applications</source>
-        <translation type="unfinished"></translation>
+        <translation>Cấu hình các Ứng dụng Ngoài</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="761"/>
         <source>File extension and external application in which to load a document of that type</source>
-        <translation type="unfinished"></translation>
+        <translation>Đuôi mở rộng tập tin và các ứng dụng ngoài dùng để mở tài liệu thuộc kiểu đó</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="786"/>
         <source>A table containing file types that can be opened using eVis. Each file type needs a file extension and the path to an application that can open that type of file. This provides the capability of opening a broad range of files such as movies, sound recording, and text documents instead of only images. </source>
-        <translation type="unfinished"></translation>
+        <translation>Một bảng chứa các kiểu tập tin có thể được mở bằng eVis. Mỗi kiểu tập tin cần một đuôi mở rộng tập tin và đường dẫn đến ứng dụng nào có thể mở được kiểu tập tin đó. Điều này cho phép khả năng mở rất nhiều kiểu tập tin, ví dụ như phim, bản ghi âm thanh và các tài liệu văn bản thay vì chỉ mở được các ảnh.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="790"/>
         <source>Extension</source>
-        <translation type="unfinished"></translation>
+        <translation>Đuôi mở rộng</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="795"/>
         <source>Application</source>
-        <translation type="unfinished"></translation>
+        <translation>Ứng dụng</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="805"/>
         <source>Add new file type</source>
-        <translation type="unfinished"></translation>
+        <translation>Thêm kiểu tập tin mới</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="808"/>
         <source>Add a new file type with a unique extension and the path for the application that can open the file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Thêm một kiểu tập tin mới với đuôi mở rộng không trùng và đường dẫn đến ứng dụng có thể mở được kiểu tập tin đó.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="821"/>
         <source>Delete current row</source>
-        <translation type="unfinished"></translation>
+        <translation>Xoá hàng hiện tại</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="824"/>
         <source>Delete the file type highlighted in the table and defined by a file extension and a path to an associated application.</source>
-        <translation type="unfinished"></translation>
+        <translation>Xoá kiểu tập tin được chọn trong bảng và được định nghĩa theo đuôi mở rộng của tập tin và đường dẫn đến ứng dụng liên quan.</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="185"/>
         <source>If checked the path to the image will be defined appending the attribute in the field selected from the “Attribute Containing Path to Image” drop-down list to the “Base Path” defined below.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nếu được đánh dấu, đường dẫn đến ảnh sẽ được định nghĩa gắn thuộc tính trong trường được chọn từ danh sách thả xuống &quot;Thuộc tính chứa Đường dẫn đến Ảnh&quot; vào &quot;Đường dẫn Gốc&quot; đã định nghĩa phía dưới.</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="570"/>
         <source>Enters the default “Base Path” which is the path to the directory of the vector layer containing the image information.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nhập trị mặc định &quot;Đường dẫn Gốc&quot;, là đường dẫn đến thư mục của lớp vector chứa thông tin ảnh.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="662"/>
         <source>If checked, the same path rules that are defined for images will be used for non-image documents such as movies, text documents, and sound files. If not checked the path rules will only apply to images and other documents will ignore the Base Path parameter.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nếu được đánh dấu, các quy tắc đường dẫn được định nghĩa cho ảnh sẽ được dùng cho các tài liệu không phải là ảnh như phim, tài liệu văn bản và các tập tin âm thanh. Nếu không đánh dấu, các quy tắc đường dẫn sẽ chỉ áp dụng cho ảnh và các tài liệu khác sẽ bỏ qua tham số Đường dẫn Gốc.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="153"/>
         <source>File path</source>
-        <translation type="unfinished"></translation>
+        <translation>Đường dẫn tập tin</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="159"/>
         <source>Attribute containing path to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Thuộc tính chứa đường dẫn đến tập tin</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="188"/>
         <source>Path is relative</source>
-        <translation type="unfinished"></translation>
+        <translation>Đường dẫn tương đối</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="204"/>
@@ -36109,7 +36179,7 @@ Base Path (i.e. keep only filename from attribute)</source>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="618"/>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="681"/>
         <source>Remember this</source>
-        <translation type="unfinished"></translation>
+        <translation>Cần nhớ rằng</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="239"/>
@@ -36119,32 +36189,32 @@ Base Path (i.e. keep only filename from attribute)</source>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="637"/>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="700"/>
         <source>Reset</source>
-        <translation type="unfinished"></translation>
+        <translation>Thiết lập lại</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="258"/>
         <source>Compass bearing</source>
-        <translation type="unfinished"></translation>
+        <translation>Hướng la bàn</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="264"/>
         <source>Attribute containing compass bearing</source>
-        <translation type="unfinished"></translation>
+        <translation>Thuộc tính chứa hướng la bàn</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="293"/>
         <source>Display compass bearing</source>
-        <translation type="unfinished"></translation>
+        <translation>Trình bày hướng la bàn</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="360"/>
         <source>Compass offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Căn lệch la bàn</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="496"/>
         <source>Relative paths</source>
-        <translation type="unfinished"></translation>
+        <translation>Các đường dẫn tương đối</translation>
     </message>
 </context>
 <context>
@@ -36152,39 +36222,39 @@ Base Path (i.e. keep only filename from attribute)</source>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="51"/>
         <source>Zoom in</source>
-        <translation type="unfinished">Phóng to</translation>
+        <translation>Phóng to</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="53"/>
         <source>Zoom out</source>
-        <translation type="unfinished">Thu nhỏ</translation>
+        <translation>Thu nhỏ</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="54"/>
         <source>Zoom out to see more area.</source>
-        <translation type="unfinished"></translation>
+        <translation>Thu nhỏ để thấy nhiều hơn</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="55"/>
         <source>Zoom to full extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Phóng đến toàn phạm vi</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="56"/>
         <source>Zoom to display the entire image.</source>
-        <translation type="unfinished"></translation>
+        <translation>Phóng để trình bày toàn bộ ảnh.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="52"/>
         <source>Zoom in to see more detail.</source>
-        <translation type="unfinished"></translation>
+        <translation>Phóng to để thấy thêm chi tiết.</translation>
     </message>
 </context>
 <context>
     <name>fTools</name>
     <message>
         <source>Quantum GIS version detected: </source>
-        <translation type="unfinished">Phiên bản Quantum GIS ghi nhận được:</translation>
+        <translation>Phiên bản Quantum GIS ghi nhận được:</translation>
     </message>
     <message>
         <source>This version of fTools requires at least QGIS version 1.0.0</source>
@@ -36200,39 +36270,39 @@ Base Path (i.e. keep only filename from attribute)</source>
     </message>
     <message>
         <source>&amp;Analysis Tools</source>
-        <translation type="unfinished">Các công cụ &amp;Phân tích</translation>
+        <translation>Các công cụ &amp;Phân tích</translation>
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation type="unfinished">Ma trận khoảng cách</translation>
+        <translation>Ma trận khoảng cách</translation>
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation type="unfinished">Tính tổng chiều dài đường</translation>
+        <translation>Tổng chiều dài đường</translation>
     </message>
     <message>
         <source>Points in polygon</source>
-        <translation type="unfinished">Các điểm trong vùng</translation>
+        <translation>Các điểm trong vùng</translation>
     </message>
     <message>
         <source>Basic statistics</source>
-        <translation type="unfinished">Thống kê căn bản</translation>
+        <translation>Thống kê cơ bản</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation type="unfinished">Liệt kê các giá trị không trùng</translation>
+        <translation>Liệt kê các giá trị không trùng</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation type="unfinished">Phân tích lân cận gần nhất</translation>
+        <translation>Phân tích lân cận gần nhất</translation>
     </message>
     <message>
         <source>Mean coordinate(s)</source>
-        <translation type="unfinished">Toạ độ trung bình</translation>
+        <translation>Toạ độ trung bình</translation>
     </message>
     <message>
         <source>Line intersections</source>
-        <translation type="unfinished">Các giao điểm của đường</translation>
+        <translation>Các giao điểm của đường</translation>
     </message>
     <message>
         <source>&amp;Sampling Tools</source>
@@ -36240,123 +36310,123 @@ Base Path (i.e. keep only filename from attribute)</source>
     </message>
     <message>
         <source>Random selection</source>
-        <translation type="unfinished">Phép chọn ngẫu nhiên</translation>
+        <translation>Phép chọn ngẫu nhiên</translation>
     </message>
     <message>
         <source>Random selection within subsets</source>
-        <translation type="unfinished">Phép chọn ngẫu nhiên trong các bộ mẫu con</translation>
+        <translation>Phép chọn ngẫu nhiên trong các bộ mẫu con</translation>
     </message>
     <message>
         <source>Random points</source>
-        <translation type="unfinished">Tạo ngẫu nhiên các điểm</translation>
+        <translation>Các điểm ngẫu nhiên</translation>
     </message>
     <message>
         <source>Regular points</source>
-        <translation type="unfinished">Tạo các điểm đều đặn</translation>
+        <translation>Các điểm đều đặn</translation>
     </message>
     <message>
         <source>Vector grid</source>
-        <translation type="unfinished">Lưới vector</translation>
+        <translation>Lưới vector</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="unfinished">Chọn theo vị trí</translation>
+        <translation>Chọn theo vị trí</translation>
     </message>
     <message>
         <source>&amp;Geoprocessing Tools</source>
-        <translation type="unfinished">Các công cụ &amp;Xử lý địa lý</translation>
+        <translation>Các công cụ &amp;Xử lý địa lý</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation type="unfinished">Bao lồi</translation>
+        <translation>Bao lồi</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="unfinished">Đệm</translation>
+        <translation>Đệm</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation type="unfinished">Giao</translation>
+        <translation>Giao</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="unfinished">Hợp</translation>
+        <translation>Hợp</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="unfinished">Sai biệt đối xứng</translation>
+        <translation>Sai biệt đối xứng</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="unfinished">Cắt</translation>
+        <translation>Cắt</translation>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="unfinished">&apos;Hoà tan&apos;</translation>
+        <translation>&apos;Hoà tan&apos;</translation>
     </message>
     <message>
         <source>Difference</source>
-        <translation type="unfinished">Sai biệt</translation>
+        <translation>Sai biệt</translation>
     </message>
     <message>
         <source>G&amp;eometry Tools</source>
-        <translation type="unfinished">Các công cụ &amp;Hình học</translation>
+        <translation>Các công cụ &amp;Hình học</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="unfinished">Xuất/thêm các cột hình học</translation>
+        <translation>Xuất/thêm các cột hình học</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation type="unfinished">Kiểm tra tính đúng đắn về mặt hình học</translation>
+        <translation>Kiểm tra tính đúng đắn về mặt hình học</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation type="unfinished">Lấy trọng tâm của vùng</translation>
+        <translation>Trọng tâm của vùng</translation>
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation type="unfinished">Trích các nốt</translation>
+        <translation>Trích ra các nốt</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation type="unfinished">Đơn giản hóa các hình học</translation>
+        <translation>Đơn giản hóa các hình học</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
-        <translation type="unfinished">Đa phần thành đơn phần</translation>
+        <translation>Một đa phần thành các đơn phần</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
-        <translation type="unfinished">Đơn phần thành đa phần</translation>
+        <translation>Các đơn phần thành một đa phần</translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation type="unfinished">Vùng thành đường</translation>
+        <translation>Vùng thành đường</translation>
     </message>
     <message>
         <source>&amp;Data Management Tools</source>
-        <translation type="unfinished">Các công cụ &amp;Quản lý dữ liệu</translation>
+        <translation>Các công cụ &amp;Quản lý dữ liệu</translation>
     </message>
     <message>
         <source>Export to new projection</source>
-        <translation type="unfinished">Xuất ra phép chiếu mới</translation>
+        <translation>Xuất thành phép chiếu mới</translation>
     </message>
     <message>
         <source>Define current projection</source>
-        <translation type="unfinished">Định nghĩa phép chiếu hiện tại</translation>
+        <translation>Định nghĩa phép chiếu hiện tại</translation>
     </message>
     <message>
         <source>Join attributes</source>
-        <translation type="unfinished">Liên kết các thuộc tính</translation>
+        <translation>Liên kết các thuộc tính</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
-        <translation type="unfinished">Liên kết các thuộc tính theo vị trí</translation>
+        <translation>Liên kết các thuộc tính theo vị trí</translation>
     </message>
     <message>
         <source>Split vector layer</source>
-        <translation type="unfinished">Cắt lớp vector</translation>
+        <translation>Cắt lớp vector</translation>
     </message>
     <message>
         <source>About fTools</source>
@@ -36365,7 +36435,8 @@ Base Path (i.e. keep only filename from attribute)</source>
     <message>
         <source>This version of fTools requires at least QGIS version 1.0.0
 Plugin will not be enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Phiên bản fTools này đòi hỏi QGIS phiên bản tối thiểu là 1.0.0
+Phần mở rộng này sẽ không được kích hoạt.</translation>
     </message>
     <message>
         <source>&amp;Vector</source>
@@ -36373,19 +36444,19 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>&amp;Research Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Các công cụ &amp;Nghiên cứu</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Vùng từ phạm vi của lớp</translation>
     </message>
     <message>
         <source>Delaunay triangulation</source>
-        <translation type="unfinished"></translation>
+        <translation>Phép tam giác Delaunay</translation>
     </message>
     <message>
         <source>fTools Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Thông tin về fTools</translation>
     </message>
 </context>
 <context>
@@ -36426,39 +36497,39 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Feature %1 contains an unnested hole</source>
-        <translation type="unfinished">Đối tượng %1 chứa một lỗ không lồng (unnested hole)</translation>
+        <translation>Đối tượng %1 chứa một lỗ không lồng (unnested hole)</translation>
     </message>
     <message>
         <source>Feature %1 is not closed</source>
-        <translation type="unfinished">Đối tượng %1 không khép kín</translation>
+        <translation>Đối tượng %1 không khép kín</translation>
     </message>
     <message>
         <source>Feature %1 is self intersecting</source>
-        <translation type="unfinished">Đối tượng %1 tự giao nhau</translation>
+        <translation>Đối tượng %1 tự giao nhau</translation>
     </message>
     <message>
         <source>Feature %1 has incorrect node ordering</source>
-        <translation type="unfinished">Đối tượng %1 có thứ tự nốt không đúng</translation>
+        <translation>Đối tượng %1 có thứ tự nốt không đúng</translation>
     </message>
     <message>
         <source>Max. len:</source>
-        <translation type="unfinished"></translation>
+        <translation>Chiều dài lớn nhất:</translation>
     </message>
     <message>
         <source>Min. len:</source>
-        <translation type="unfinished"></translation>
+        <translation>Chiều dài nhỏ nhất:</translation>
     </message>
     <message>
         <source>Mean. len:</source>
-        <translation type="unfinished"></translation>
+        <translation>Chiều dài tr.bình:</translation>
     </message>
     <message>
         <source>Filled:</source>
-        <translation type="unfinished"></translation>
+        <translation>Được lấp đầy:</translation>
     </message>
     <message>
         <source>Empty:</source>
-        <translation type="unfinished"></translation>
+        <translation>Rỗng:</translation>
     </message>
     <message>
         <source>N:</source>
@@ -36466,23 +36537,23 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Mean:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tr.bình:</translation>
     </message>
     <message>
         <source>StdDev:</source>
-        <translation type="unfinished"></translation>
+        <translation>Độ lệch chuẩn:</translation>
     </message>
     <message>
         <source>Sum:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tổng:</translation>
     </message>
     <message>
         <source>Min:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nhỏ.nhất:</translation>
     </message>
     <message>
         <source>Max:</source>
-        <translation type="unfinished"></translation>
+        <translation>Lớn.nhất:</translation>
     </message>
     <message>
         <source>CV:</source>
@@ -36490,27 +36561,27 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Number of unique values:</source>
-        <translation type="unfinished"></translation>
+        <translation>Số lượng giá trị không trùng:</translation>
     </message>
     <message>
         <source>Range:</source>
-        <translation type="unfinished"></translation>
+        <translation>Miền:</translation>
     </message>
     <message>
         <source>Median:</source>
-        <translation type="unfinished"></translation>
+        <translation>Giá trị giữa:</translation>
     </message>
     <message>
         <source>Observed mean distance:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kh.cách tr.bình quan sát được:</translation>
     </message>
     <message>
         <source>Expected mean distance:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kh.cách tr.bình mong đợi:</translation>
     </message>
     <message>
         <source>Nearest neighbour index:</source>
-        <translation type="unfinished"></translation>
+        <translation>Chỉ số lân cận gần nhất:</translation>
     </message>
     <message>
         <source>Z-Score:</source>
