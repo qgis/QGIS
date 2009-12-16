@@ -5065,63 +5065,6 @@ Fehler: %2
         <translation>Strg+Umschalt+W</translation>
     </message>
     <message>
-        <source>Whats new in Version 1.3.0?</source>
-        <translation type="obsolete">Was gibt es neues in Version 1.3.0?</translation>
-    </message>
-    <message>
-        <source>Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.2.0. If an unchanging user interface, programmatic API and long term support is more important to you then cool new and untested features, we recommend that you use a copy of QGIS from our Long Term Support (LTS)1.0.x release series.</source>
-        <translation type="obsolete">Bitte beachten Sie, dass dies eine Ausgabe unsere &apos;top-aktuellen&apos; Serie ist.  Als solche enthält sie neue Funktionen und erweitert die Programmierschnittstelle gegenüber den Versionen 1.0.x und 1.2.0. Wenn eine gleichbleibende Benutzeroberfläche, Programmierschnittstelle oder langfristige Unterstützung für Sie wichtiger sind als neue &apos;coole&apos; und ungetestete Funktionen, empfehlen wir Ihnen eine Ausgabe aus unserer QGIS 1.0.x-Serie mit langfristigem Support (LTS; vom engl. &apos;long term support) zu verwenden.</translation>
-    </message>
-    <message>
-        <source>This release includes over 30 bug fixes and enhancements over the QGIS 1.2.0 release. In addition we have added the following new features:</source>
-        <translation type="obsolete">Diese Ausgabe enthält über 30 Fehlerkorrekturen und Erweiterungen gegenüber der Version 1.2.0.  Zudem haben wir folgende neue Funktionen ergänzt:</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;OSM plugin &amp;amp; provider updates:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;new OSM style files.&lt;/li&gt;
-  &lt;li&gt;new icons.&lt;/li&gt;
-  &lt;li&gt;dialog text updated and completed.&lt;/li&gt;
-  &lt;li&gt;Saving OSM into file functionality was improvements.&lt;/li&gt;
-  &lt;li&gt;fixed some problems with encoding... ascii to utf-8.&lt;/li&gt;
-  &lt;li&gt;all OSM layers are automatically removed after disabling OSM plugin in plugin manager.&lt;/li&gt;
-  &lt;li&gt;other OSM related bugfixes.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Other notable features and improvements in this release&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;Marker size is now configurable when editing a layer.&lt;/li&gt;
-  &lt;li&gt;Incorporation of the analysis library into the mainstream release.&lt;/li&gt;
-  &lt;li&gt;Identify features across multiple layers.&lt;/li&gt;
-  &lt;li&gt;Added a new plugin for carrying out raster terrain analysis (computing slope aspect, steepness etc).&lt;/li&gt;
-  &lt;li&gt;A reshape tool to apply to line/polygon geometries. The part of a geometry between the first and
-      last intersection of the reshape line will be replaced.&lt;/li&gt;
-  &lt;li&gt;Added snapping to current layer in measure dialog.&lt;/li&gt;
-  &lt;li&gt;Added ability to select the primary key for views.&lt;/li&gt;
-  &lt;li&gt;Zoom to a coordinate by entering it in the status bar coordinate display.&lt;/li&gt;
-&lt;/ul&gt;</source>
-        <translation type="obsolete">&lt;p&gt;OSM-Erweiterung- &amp;amp; Datenliefererantenaktualisierungen:&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;Neue OSM-Stildateien.&lt;/li&gt;
-  &lt;li&gt;Neue Icons.&lt;/li&gt;
-  &lt;li&gt;Dialogtexte aktualisiert und vervollständigt.&lt;/li&gt;
-  &lt;li&gt;Verbesserung beim Speichern von OSM in Dateien.&lt;/li&gt;
-  &lt;li&gt;Einige Korrekturen bezüglich Kodierungen... ascii to utf-8.&lt;/li&gt;
-  &lt;li&gt;alle OSM-Layer werden nun automatisch entfernt, wenn die OSM-Erweiterung im Erweiterungsmanager entfernt wird.&lt;/li&gt;
-  &lt;li&gt;weiterer Fehlerkorrekturen.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;Andere erwähnenswerte Funktionen und Verbesserungen dieser Ausgabe&lt;/p&gt;
-&lt;ul&gt;
-  &lt;li&gt;Markergröße beim Editieren kann nun eingestellt werden.&lt;/li&gt;
-  &lt;li&gt;Analyse-Bibliothek wurde integriert.&lt;/li&gt;
-  &lt;li&gt;Abfrage über mehrere Layer.&lt;/li&gt;
-  &lt;li&gt;Erweiterung zur Rastergeländeanalyse wurde hinzugefügt (zur Berechnung von Böschungsverhältnissen und -neigungen usw.).&lt;/li&gt;
-  &lt;li&gt;Ein Bearbeitungswerkzeug für Linien und Polygone wurde ergänzt. Das Teil zwischen zwei Punkten einer Linie kann durch eine andere ersetzt werden.&lt;/li&gt;
-  &lt;li&gt;Punktfang im Meßwerkzeug.&lt;/li&gt;
-  &lt;li&gt;Primärschlüssel von View können nun gewählt werden.&lt;/li&gt;
-  &lt;li&gt;Zoom zu einer Koordinate durch Eingabe eine Koordinate in der Statuszeilenanzeige.&lt;/li&gt;
-&lt;/ul&gt;</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgisapp.cpp" line="2335"/>
         <source>%1 is not a valid or recognized data source</source>
         <translation>%1 ist keine gültige Datenquelle oder wird nicht erkannt</translation>
@@ -5854,10 +5797,6 @@ p, li { white-space: pre-wrap; }
         <translation>Gewählte Objekte löschen</translation>
     </message>
     <message>
-        <source>Copies the selected rows to the clipboard</source>
-        <translation type="obsolete">Kopiert die gewählten Zeilen in die Zwischenablage</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="171"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
@@ -5868,10 +5807,6 @@ p, li { white-space: pre-wrap; }
         <translation>Zu den gewählten Zeilen zoomen</translation>
     </message>
     <message>
-        <source>Zoom map to the selected rows</source>
-        <translation type="obsolete">Zoome Karte zu den ausgewählten Spalteneinträgen</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="197"/>
         <source>Ctrl+J</source>
         <translation>Ctrl+J</translation>
@@ -5880,10 +5815,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsattributetabledialog.ui" line="204"/>
         <source>Toggle editing mode</source>
         <translation>Bearbeitungsmodus umschalten</translation>
-    </message>
-    <message>
-        <source>Click to toggle table editing</source>
-        <translation type="obsolete">Anklicken um den Tabellenbearbeitungsmodus umzuschalten</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="250"/>
@@ -17052,7 +16983,7 @@ Sie müssen Quantum GIS neustartet, um es neuzuladen.</translation>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="30"/>
         <source>Help</source>
-        <translation type="unfinished">Hilfe</translation>
+        <translation>Hilfe</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="82"/>
