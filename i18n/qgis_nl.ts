@@ -1110,67 +1110,67 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>creating new selection</source>
-        <translation>nieuwe selectie maken</translation>
+        <translation type="obsolete">nieuwe selectie maken</translation>
     </message>
     <message>
         <source>adding to current selection</source>
-        <translation>toevoegen aan bestaande selectie</translation>
+        <translation type="obsolete">toevoegen aan bestaande selectie</translation>
     </message>
     <message>
         <source>removing from current selection</source>
-        <translation>verwijderen uit bestaande selectie</translation>
+        <translation type="obsolete">verwijderen uit bestaande selectie</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation>Selecteren op plaats</translation>
+        <translation type="obsolete">Selecteren op plaats</translation>
     </message>
     <message>
         <source>Select features in:</source>
-        <translation>Selecteer objecten in:</translation>
+        <translation type="obsolete">Selecteer objecten in:</translation>
     </message>
     <message>
         <source>that intersect features in:</source>
-        <translation>die objecten doorsnijden in:</translation>
+        <translation type="obsolete">die objecten doorsnijden in:</translation>
     </message>
     <message>
         <source>Modify current selection by:</source>
-        <translation>Bestaande selectie aanpassen door:</translation>
+        <translation type="obsolete">Bestaande selectie aanpassen door:</translation>
     </message>
     <message>
         <source>Please specify input layer</source>
-        <translation>Selecteer een laag als input</translation>
+        <translation type="obsolete">Selecteer een laag als input</translation>
     </message>
     <message>
         <source>Please specify select layer</source>
-        <translation>Selecteer een laag om te selecteren</translation>
+        <translation type="obsolete">Selecteer een laag om te selecteren</translation>
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation>Afstandsmatrix</translation>
+        <translation type="obsolete">Afstandsmatrix</translation>
     </message>
     <message>
         <source>Created output matrix:
 </source>
-        <translation>Aanmaken uitvoermatrix:
+        <translation type="obsolete">Aanmaken uitvoermatrix:
 </translation>
     </message>
     <message>
         <source>Points in polygon</source>
-        <translation>Punt in polygoon</translation>
+        <translation type="obsolete">Punt in polygoon</translation>
     </message>
     <message>
         <source>Created output Shapefile:
 </source>
-        <translation>Uitvoerbestand (shape) aangemaakt:
+        <translation type="obsolete">Uitvoerbestand (shape) aangemaakt:
 </translation>
     </message>
     <message>
         <source>Vector layer is not valid</source>
-        <translation>Vectorlaag is niet geldig</translation>
+        <translation type="obsolete">Vectorlaag is niet geldig</translation>
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation>Lijnlengtes sommeren</translation>
+        <translation type="obsolete">Lijnlengtes sommeren</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="241"/>
@@ -1412,23 +1412,23 @@ p, li { white-space: pre-wrap; }
     <name>GeometryDialog</name>
     <message>
         <source>Merge all</source>
-        <translation>Alles samenvoegen</translation>
+        <translation type="obsolete">Alles samenvoegen</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation>Selecteer een vectorlaag als input</translation>
+        <translation type="obsolete">Selecteer een vectorlaag als input</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation>Selecteer een vectorlaag voor uitvoer</translation>
+        <translation type="obsolete">Selecteer een vectorlaag voor uitvoer</translation>
     </message>
     <message>
         <source>Please specify valid tolerance value</source>
-        <translation>Specificeer een geldige tolerantie-waarde</translation>
+        <translation type="obsolete">Specificeer een geldige tolerantie-waarde</translation>
     </message>
     <message>
         <source>Please specify valid UID field</source>
-        <translation>Specificeer een geldig UID-veld</translation>
+        <translation type="obsolete">Specificeer een geldig UID-veld</translation>
     </message>
     <message>
         <source>Created output shapefile</source>
@@ -1436,79 +1436,79 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Would you like to add the new layer to the TOC?</source>
-        <translation>De nieuwe laag aan de TOC toevoegen?</translation>
+        <translation type="obsolete">De nieuwe laag aan de TOC toevoegen?</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
-        <translation>Enkelvoudige objecten naar meervoudige </translation>
+        <translation type="obsolete">Enkelvoudige objecten naar meervoudige </translation>
     </message>
     <message>
         <source>Output shapefile</source>
-        <translation>Uitvoerbestand (shape)</translation>
+        <translation type="obsolete">Uitvoerbestand (shape)</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
-        <translation>Meervoudige objecten naar enkelvoudige</translation>
+        <translation type="obsolete">Meervoudige objecten naar enkelvoudige</translation>
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation>Knooppunten extraheren</translation>
+        <translation type="obsolete">Knooppunten extraheren</translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation>Polygonen naar lijnen</translation>
+        <translation type="obsolete">Polygonen naar lijnen</translation>
     </message>
     <message>
         <source>Input polygon vector layer</source>
-        <translation>Invoer polygon-vectorlaag</translation>
+        <translation type="obsolete">Invoer polygon-vectorlaag</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation>Exporteer/Toevoegen geometrie-kolommen</translation>
+        <translation type="obsolete">Exporteer/Toevoegen geometrie-kolommen</translation>
     </message>
     <message>
         <source>Input vector layer</source>
-        <translation>Invoer vectorlaag</translation>
+        <translation type="obsolete">Invoer vectorlaag</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation>Geometrien vereenvoudigen</translation>
+        <translation type="obsolete">Geometrien vereenvoudigen</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation>Polygoon-centroiden</translation>
+        <translation type="obsolete">Polygoon-centroiden</translation>
     </message>
     <message>
         <source>Output point shapefile</source>
-        <translation>Uitvoerbestand (shape)</translation>
+        <translation type="obsolete">Uitvoerbestand (shape)</translation>
     </message>
     <message>
         <source>Delaunay triangulation</source>
-        <translation>Delaunay triangulation</translation>
+        <translation type="obsolete">Delaunay triangulation</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
-        <translation>Polygoon van laagextent</translation>
+        <translation type="obsolete">Polygoon van laagextent</translation>
     </message>
     <message>
         <source>Input layer</source>
-        <translation>Invoerlaag</translation>
+        <translation type="obsolete">Invoerlaag</translation>
     </message>
     <message>
         <source>Output polygon shapefile</source>
-        <translation>Uitvoerbestand (shape)</translation>
+        <translation type="obsolete">Uitvoerbestand (shape)</translation>
     </message>
     <message>
         <source>Unable to delete existing shapefile.</source>
-        <translation>Verwijderen van bestaand (shape-)bestand niet mogelijk.</translation>
+        <translation type="obsolete">Verwijderen van bestaand (shape-)bestand niet mogelijk.</translation>
     </message>
     <message>
         <source>Error processing specified tolerance!</source>
-        <translation>Fout bij toepassen van gespecificeerde tolerantie!</translation>
+        <translation type="obsolete">Fout bij toepassen van gespecificeerde tolerantie!</translation>
     </message>
     <message>
         <source>Please choose larger tolerance...</source>
-        <translation>Kies een hogere tolerantie...</translation>
+        <translation type="obsolete">Kies een hogere tolerantie...</translation>
     </message>
     <message>
         <source>Function not found</source>
@@ -1524,19 +1524,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Input point vector layer</source>
-        <translation>Invoer punt-vectorlaag</translation>
+        <translation type="obsolete">Invoer punt-vectorlaag</translation>
     </message>
     <message>
         <source>Unable to delete incomplete shapefile.</source>
-        <translation>Verwijderen van bestaande shape-bestand niet mogelijk.</translation>
+        <translation type="obsolete">Verwijderen van bestaande shape-bestand niet mogelijk.</translation>
     </message>
     <message>
         <source>Created output shapefile:</source>
-        <translation>Uitvoerbestand (shape) aangemaakt:</translation>
+        <translation type="obsolete">Uitvoerbestand (shape) aangemaakt:</translation>
     </message>
     <message>
         <source>Error writing output shapefile.</source>
-        <translation>Fout bij het maken van de shapefile.</translation>
+        <translation type="obsolete">Fout bij het maken van de shapefile.</translation>
     </message>
 </context>
 <context>
@@ -1622,27 +1622,27 @@ p, li { white-space: pre-wrap; }
     <name>GeoprocessingDialog</name>
     <message>
         <source>Dissolve all</source>
-        <translation>&apos;Dissolve&apos; alles</translation>
+        <translation type="obsolete">&apos;Dissolve&apos; alles</translation>
     </message>
     <message>
         <source>Please specify an input layer</source>
-        <translation>Selecteer een laag als input</translation>
+        <translation type="obsolete">Selecteer een laag als input</translation>
     </message>
     <message>
         <source>Please specify a difference/intersect/union layer</source>
-        <translation>Selecteer een laag als &apos;difference/intersectie/union&apos;-laag</translation>
+        <translation type="obsolete">Selecteer een laag als &apos;difference/intersectie/union&apos;-laag</translation>
     </message>
     <message>
         <source>Please specify valid buffer value</source>
-        <translation>Geef een geldige bufferwaarde</translation>
+        <translation type="obsolete">Geef een geldige bufferwaarde</translation>
     </message>
     <message>
         <source>Please specify dissolve field</source>
-        <translation>Selecteer het veld voor de &apos;dissolve&apos;-aktie</translation>
+        <translation type="obsolete">Selecteer het veld voor de &apos;dissolve&apos;-aktie</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation>Selecteer een vectorlaag voor uitvoer</translation>
+        <translation type="obsolete">Selecteer een vectorlaag voor uitvoer</translation>
     </message>
     <message>
         <source>Unable to create geoprocessing result.</source>
@@ -1658,23 +1658,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation>Buffer(s)</translation>
+        <translation type="obsolete">Buffer(s)</translation>
     </message>
     <message>
         <source>Create single minimum convex hull</source>
-        <translation>Aanmaken &apos;single minimum convex hull&apos;</translation>
+        <translation type="obsolete">Aanmaken &apos;single minimum convex hull&apos;</translation>
     </message>
     <message>
         <source>Create convex hulls based on input field</source>
-        <translation>Aanmaken &apos;convex hull&apos; op basis van een invoerveld</translation>
+        <translation type="obsolete">Aanmaken &apos;convex hull&apos; op basis van een invoerveld</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation>&apos;Convex hull(s)&apos;</translation>
+        <translation type="obsolete">&apos;Convex hull(s)&apos;</translation>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation>Dissolve</translation>
+        <translation type="obsolete">Dissolve</translation>
     </message>
     <message>
         <source>Erase layer</source>
@@ -1682,52 +1682,52 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Difference</source>
-        <translation>Difference</translation>
+        <translation type="obsolete">Difference</translation>
     </message>
     <message>
         <source>Intersect layer</source>
-        <translation>Intersectie van laag</translation>
+        <translation type="obsolete">Intersectie van laag</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation>Intersectie</translation>
+        <translation type="obsolete">Intersectie</translation>
     </message>
     <message>
         <source>Difference layer</source>
-        <translation>Difference laag</translation>
+        <translation type="obsolete">Difference laag</translation>
     </message>
     <message>
         <source>No features selected, please uncheck &apos;Use selected&apos; or make a selection</source>
-        <translation>Geen objecten geselecteerd, verwijder het vinkje &apos;Selectie gebruiken&apos; of maak een selectie</translation>
+        <translation type="obsolete">Geen objecten geselecteerd, verwijder het vinkje &apos;Selectie gebruiken&apos; of maak een selectie</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation>Symmetrische difference</translation>
+        <translation type="obsolete">Symmetrische difference</translation>
     </message>
     <message>
         <source>Clip layer</source>
-        <translation>&apos;Clip&apos; laag</translation>
+        <translation type="obsolete">&apos;Clip&apos; laag</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation>Clip</translation>
+        <translation type="obsolete">Clip</translation>
     </message>
     <message>
         <source>Union layer</source>
-        <translation>Union laag</translation>
+        <translation type="obsolete">Union laag</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation>Union</translation>
+        <translation type="obsolete">Union</translation>
     </message>
     <message>
         <source>Unable to delete existing shapefile.</source>
-        <translation>Verwijderen van bestaande shape-bestand niet mogelijk.</translation>
+        <translation type="obsolete">Verwijderen van bestaande shape-bestand niet mogelijk.</translation>
     </message>
     <message>
         <source>
 Warnings:</source>
-        <translation>
+        <translation type="obsolete">
 Waarschuwingen:</translation>
     </message>
     <message>
@@ -1735,7 +1735,7 @@ Waarschuwingen:</translation>
 Some output geometries may be missing or invalid.
 
 Would you like to add the new layer anyway?</source>
-        <translation>
+        <translation type="obsolete">
 Sommige resultaat-geometrie-objecten zijn ongeldig of missen.
 
 Wilt u de laag toch toevoegen?</translation>
@@ -1744,26 +1744,26 @@ Wilt u de laag toch toevoegen?</translation>
         <source>
 
 Would you like to add the new layer to the TOC?</source>
-        <translation>De nieuwe laag aan de TOC toevoegen?</translation>
+        <translation type="obsolete">De nieuwe laag aan de TOC toevoegen?</translation>
     </message>
     <message>
         <source>
 Input CRS error: Different input coordinate reference systems detected, results may not be as expected.</source>
-        <translation>Ruimtelijk Referentie Systeem (CSR) fout: verschillende CSR-systemen bij de invoer aangetroffen, onverwachte resultaten kunnen het gevolg zijn.</translation>
+        <translation type="obsolete">Ruimtelijk Referentie Systeem (CSR) fout: verschillende CSR-systemen bij de invoer aangetroffen, onverwachte resultaten kunnen het gevolg zijn.</translation>
     </message>
     <message>
         <source>
 Feature geometry error: One or more output features ignored due to invalid geometry.</source>
-        <translation>Object-geometrie fout: een of meer uitvoerobjecten vervallen door ongeldige geometrie.</translation>
+        <translation type="obsolete">Object-geometrie fout: een of meer uitvoerobjecten vervallen door ongeldige geometrie.</translation>
     </message>
     <message>
         <source>
 GEOS geoprocessing error: One or more input features have invalid geometry.</source>
-        <translation>GEOS fout: een of meer invoerobjecten hebben een ongeldige geometrie.</translation>
+        <translation type="obsolete">GEOS fout: een of meer invoerobjecten hebben een ongeldige geometrie.</translation>
     </message>
     <message>
         <source>Created output shapefile:</source>
-        <translation>Uitvoerbestand (shape) aangemaakt:</translation>
+        <translation type="obsolete">Uitvoerbestand (shape) aangemaakt:</translation>
     </message>
 </context>
 <context>
@@ -2423,7 +2423,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>OSM Information</source>
-        <translation>OSM Informatie</translation>
+        <translation type="obsolete">OSM Informatie</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="78"/>
@@ -2512,51 +2512,51 @@ p, li { white-space: pre-wrap; }
     <name>OsmDownloadDlg</name>
     <message>
         <source>OSM Download</source>
-        <translation>OSM Download</translation>
+        <translation type="obsolete">OSM Download</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation>Bestand opslaan niet mogelijk %1: %2.</translation>
+        <translation type="obsolete">Bestand opslaan niet mogelijk %1: %2.</translation>
     </message>
     <message>
         <source>Waiting for OpenStreetMap server ...</source>
-        <translation>Wachten op OpenStreetMap-server ...</translation>
+        <translation type="obsolete">Wachten op OpenStreetMap-server ...</translation>
     </message>
     <message>
         <source>Download process failed. OpenStreetMap server response: %1 - %2</source>
-        <translation>Download mislukt. Melding van OpenStreetMap-server: %1 - %2</translation>
+        <translation type="obsolete">Download mislukt. Melding van OpenStreetMap-server: %1 - %2</translation>
     </message>
     <message>
         <source>OSM Download Error</source>
-        <translation>OSM Download Fout</translation>
+        <translation type="obsolete">OSM Download Fout</translation>
     </message>
     <message>
         <source>Download failed: %1.</source>
-        <translation>Download mislukt: %1.</translation>
+        <translation type="obsolete">Download mislukt: %1.</translation>
     </message>
     <message>
         <source>Getting data</source>
-        <translation>Data ophalen</translation>
+        <translation type="obsolete">Data ophalen</translation>
     </message>
     <message>
         <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
-        <translation>De OpenStreetMap-server waar u OSM-data van wilt downloaden (~ api.openstreetmap.org) heeft een vaste begrenzing aan de hoeveelheid de downloaden data. Zoals beschreven in &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; kan zowel de longitude als de latitude extent niet groter zijn dan 0.25 graden. Quantum GIS laat u wel elke extent specificeren, maar de OpenStreetMap-server zal eenvoudig de verzoeken afslaan wanneer deze niet voldoen aan bovenstaande begrenzing.</translation>
+        <translation type="obsolete">De OpenStreetMap-server waar u OSM-data van wilt downloaden (~ api.openstreetmap.org) heeft een vaste begrenzing aan de hoeveelheid de downloaden data. Zoals beschreven in &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; kan zowel de longitude als de latitude extent niet groter zijn dan 0.25 graden. Quantum GIS laat u wel elke extent specificeren, maar de OpenStreetMap-server zal eenvoudig de verzoeken afslaan wanneer deze niet voldoen aan bovenstaande begrenzing.</translation>
     </message>
     <message>
         <source>Both extents are too large!</source>
-        <translation>Beide extents zijn te groot!</translation>
+        <translation type="obsolete">Beide extents zijn te groot!</translation>
     </message>
     <message>
         <source>Latitude extent is too large!</source>
-        <translation>Latitude lengte is te groot!</translation>
+        <translation type="obsolete">Latitude lengte is te groot!</translation>
     </message>
     <message>
         <source>Longitude extent is too large!</source>
-        <translation>Longitude lengte is te groot!</translation>
+        <translation type="obsolete">Longitude lengte is te groot!</translation>
     </message>
     <message>
         <source>OK! Area is probably acceptable to server.</source>
-        <translation>OK! Oppervlakte is waarschijnlijk acceptabel voor de server.</translation>
+        <translation type="obsolete">OK! Oppervlakte is waarschijnlijk acceptabel voor de server.</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="19"/>
@@ -2793,23 +2793,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>OSM Plugin</source>
-        <translation>OMS Plugin</translation>
+        <translation type="obsolete">OMS Plugin</translation>
     </message>
     <message>
         <source>The &apos;Create OSM Relation&apos; dialog was closed automatically because current OSM database was changed.</source>
-        <translation>De &apos;OSM Relatie Aanmaken&apos;-dialoog is automatisch gesloten omdat de huidige OSM-database is aangepast.</translation>
+        <translation type="obsolete">De &apos;OSM Relatie Aanmaken&apos;-dialoog is automatisch gesloten omdat de huidige OSM-database is aangepast.</translation>
     </message>
     <message>
         <source>OSM Feature Dock Widget</source>
-        <translation>OSM-Object &apos;Dock Widget&apos;</translation>
+        <translation type="obsolete">OSM-Object &apos;Dock Widget&apos;</translation>
     </message>
     <message>
         <source>Choose OSM feature first.</source>
-        <translation>Kies eerst een OSM-object.</translation>
+        <translation type="obsolete">Kies eerst een OSM-object.</translation>
     </message>
     <message>
         <source>Choose relation for editing first.</source>
-        <translation>Kies eerst een relatie om aan te passen.</translation>
+        <translation type="obsolete">Kies eerst een relatie om aan te passen.</translation>
     </message>
     <message>
         <source>Property &apos;%1&apos; cannot be added twice.</source>
@@ -2897,31 +2897,31 @@ p, li { white-space: pre-wrap; }
     <name>OsmSaveDlg</name>
     <message>
         <source>Save OSM to file</source>
-        <translation>OSM naar bestand opslaan</translation>
+        <translation type="obsolete">OSM naar bestand opslaan</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation>Bestand opslaan niet mogelijk %1: %2.</translation>
+        <translation type="obsolete">Bestand opslaan niet mogelijk %1: %2.</translation>
     </message>
     <message>
         <source>Initializing...</source>
-        <translation>Initialiseren...</translation>
+        <translation type="obsolete">Initialiseren...</translation>
     </message>
     <message>
         <source>Saving nodes...</source>
-        <translation>Nodes/knooppunten opslaan...</translation>
+        <translation type="obsolete">Nodes/knooppunten opslaan...</translation>
     </message>
     <message>
         <source>Saving lines...</source>
-        <translation>Lijnen opslaan...</translation>
+        <translation type="obsolete">Lijnen opslaan...</translation>
     </message>
     <message>
         <source>Saving polygons...</source>
-        <translation>Polygonen opslaan...</translation>
+        <translation type="obsolete">Polygonen opslaan...</translation>
     </message>
     <message>
         <source>Saving relations...</source>
-        <translation>Relaties opslaan...</translation>
+        <translation type="obsolete">Relaties opslaan...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="16"/>
@@ -3016,11 +3016,11 @@ p, li { white-space: pre-wrap; }
     <name>OsmUploadDlg</name>
     <message>
         <source>OSM Upload</source>
-        <translation>OSM Uploaden</translation>
+        <translation type="obsolete">OSM Uploaden</translation>
     </message>
     <message>
         <source>Uploading data...</source>
-        <translation>Data wordt geupload...</translation>
+        <translation type="obsolete">Data wordt geupload...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="22"/>
@@ -3092,39 +3092,39 @@ p, li { white-space: pre-wrap; }
     <name>Python</name>
     <message>
         <source>An error has occured while executing Python code:</source>
-        <translation>Er is een fout opgetreden bij het uitvoeren van Python code:</translation>
+        <translation type="obsolete">Er is een fout opgetreden bij het uitvoeren van Python code:</translation>
     </message>
     <message>
         <source>Python version:</source>
-        <translation>Python versie:</translation>
+        <translation type="obsolete">Python versie:</translation>
     </message>
     <message>
         <source>Python path:</source>
-        <translation>Python pad:</translation>
+        <translation type="obsolete">Python pad:</translation>
     </message>
     <message>
         <source>Python error</source>
-        <translation>Python fout</translation>
+        <translation type="obsolete">Python fout</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin &apos;%1&apos; from [&apos;%2&apos;]</source>
-        <translation>Kan plugin &apos;%1&apos; niet laden van [&apos;%2&apos;]</translation>
+        <translation type="obsolete">Kan plugin &apos;%1&apos; niet laden van [&apos;%2&apos;]</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin %1</source>
-        <translation>Kan deze plugin niet laden %1</translation>
+        <translation type="obsolete">Kan deze plugin niet laden %1</translation>
     </message>
     <message>
         <source>%1 due an error when calling its classFactory() method</source>
-        <translation>%1 door een fout bij het aanroepen van de classFactory()-methode</translation>
+        <translation type="obsolete">%1 door een fout bij het aanroepen van de classFactory()-methode</translation>
     </message>
     <message>
         <source>%1 due an error when calling its initGui() method</source>
-        <translation>%1 door een fout bij het aanroepen van de initGui()-methode</translation>
+        <translation type="obsolete">%1 door een fout bij het aanroepen van de initGui()-methode</translation>
     </message>
     <message>
         <source>Error while unloading plugin %1</source>
-        <translation>Fout bij het uitschakelen van plugin %1</translation>
+        <translation type="obsolete">Fout bij het uitschakelen van plugin %1</translation>
     </message>
 </context>
 <context>
@@ -22990,7 +22990,7 @@ geometrische objecten.</translation>
     <name>QgsPluginInstaller</name>
     <message>
         <source>Couldn&apos;t parse output from the repository</source>
-        <translation>Antwoord van de repository kan niet worden begrepen (geparseerd)</translation>
+        <translation type="obsolete">Antwoord van de repository kan niet worden begrepen (geparseerd)</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the system plugin directory</source>
@@ -22998,51 +22998,51 @@ geometrische objecten.</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the local plugin directory</source>
-        <translation>De lokale pluginmap kan niet worden geopend</translation>
+        <translation type="obsolete">De lokale pluginmap kan niet worden geopend</translation>
     </message>
     <message>
         <source>Fetch Python Plugins...</source>
-        <translation>Python Plugins Ophalen...</translation>
+        <translation type="obsolete">Python Plugins Ophalen...</translation>
     </message>
     <message>
         <source>Install more plugins from remote repositories</source>
-        <translation>Installeer meer plugins van decentrale repositories</translation>
+        <translation type="obsolete">Installeer meer plugins van decentrale repositories</translation>
     </message>
     <message>
         <source>Looking for new plugins...</source>
-        <translation>Zoeken naar nieuwe plugins...</translation>
+        <translation type="obsolete">Zoeken naar nieuwe plugins...</translation>
     </message>
     <message>
         <source>There is a new plugin available</source>
-        <translation>Er is een nieuwe plugin beschikbaar</translation>
+        <translation type="obsolete">Er is een nieuwe plugin beschikbaar</translation>
     </message>
     <message>
         <source>There is a plugin update available</source>
-        <translation>Er is een update voor een plugin beschikbaar</translation>
+        <translation type="obsolete">Er is een update voor een plugin beschikbaar</translation>
     </message>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation>QGIS Python Plugins Installeren</translation>
+        <translation type="obsolete">QGIS Python Plugins Installeren</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
-        <translation>Fout bij het lezen van repository:</translation>
+        <translation type="obsolete">Fout bij het lezen van repository:</translation>
     </message>
     <message>
         <source>Nothing to remove! Plugin directory doesn&apos;t exist:</source>
-        <translation>Niets te verwijderen! Pluginmap bestaat niet:</translation>
+        <translation type="obsolete">Niets te verwijderen! Pluginmap bestaat niet:</translation>
     </message>
     <message>
         <source>Failed to remove the directory:</source>
-        <translation>Fout bij het verwijderen van de map: </translation>
+        <translation type="obsolete">Fout bij het verwijderen van de map: </translation>
     </message>
     <message>
         <source>Check permissions or remove it manually</source>
-        <translation>Controleer bestandsrechten of verwijder handmatig</translation>
+        <translation type="obsolete">Controleer bestandsrechten of verwijder handmatig</translation>
     </message>
     <message>
         <source>QGIS Plugin Conflict:</source>
-        <translation>QGIS-plugin Conflict:</translation>
+        <translation type="obsolete">QGIS-plugin Conflict:</translation>
     </message>
     <message>
         <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. Probably it is a remainder of an older QGIS installation. Please use the Plugin Installer to remove it in order to unmask the instance shipped with this version of QGIS.</source>
@@ -23050,58 +23050,58 @@ geometrische objecten.</translation>
     </message>
     <message>
         <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. This is likely due to files associated with a previous installation of QGIS. Please use the Plugin Installer to remove that older plugin in order to unmask the newer version shipped with this copy of QGIS.</source>
-        <translation>Bij de plugininstallatie is er een niet meer ondersteunde/overbodige plugin gevonden die een nieuwere, met QGIS meegeleverde versie, maskeert. Waarschijnlijk is dit een overblijfsel van een ouder QGIS-installatie. Gebruik de &apos;Plugin-installer&apos;  om die oude plugin te verwijderen zodat de nieuwe versie kan worden gebruikt.</translation>
+        <translation type="obsolete">Bij de plugininstallatie is er een niet meer ondersteunde/overbodige plugin gevonden die een nieuwere, met QGIS meegeleverde versie, maskeert. Waarschijnlijk is dit een overblijfsel van een ouder QGIS-installatie. Gebruik de &apos;Plugin-installer&apos;  om die oude plugin te verwijderen zodat de nieuwe versie kan worden gebruikt.</translation>
     </message>
 </context>
 <context>
     <name>QgsPluginInstallerDialog</name>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation>QGIS Python Plugin Installeren</translation>
+        <translation type="obsolete">QGIS Python Plugin Installeren</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
-        <translation>Fout bij het lezen van repository:</translation>
+        <translation type="obsolete">Fout bij het lezen van repository:</translation>
     </message>
     <message>
         <source>all repositories</source>
-        <translation>alle repositories</translation>
+        <translation type="obsolete">alle repositories</translation>
     </message>
     <message>
         <source>connected</source>
-        <translation>verbonden</translation>
+        <translation type="obsolete">verbonden</translation>
     </message>
     <message>
         <source>This repository is connected</source>
-        <translation>Deze repository is verbonden</translation>
+        <translation type="obsolete">Deze repository is verbonden</translation>
     </message>
     <message>
         <source>unavailable</source>
-        <translation>niet beschikbaar</translation>
+        <translation type="obsolete">niet beschikbaar</translation>
     </message>
     <message>
         <source>This repository is enabled, but unavailable</source>
-        <translation>Deze repository is aangevinkt, maar niet beschikbaar</translation>
+        <translation type="obsolete">Deze repository is aangevinkt, maar niet beschikbaar</translation>
     </message>
     <message>
         <source>disabled</source>
-        <translation>uitgeschakeld</translation>
+        <translation type="obsolete">uitgeschakeld</translation>
     </message>
     <message>
         <source>This repository is disabled</source>
-        <translation>Deze repository is uitgeschakeld</translation>
+        <translation type="obsolete">Deze repository is uitgeschakeld</translation>
     </message>
     <message>
         <source>This repository is blocked due to incompatibility with your Quantum GIS version</source>
-        <translation>Deze repository is geblokkeerd vanwege incompatibiliteit met uw huidige Quantum GIS versie</translation>
+        <translation type="obsolete">Deze repository is geblokkeerd vanwege incompatibiliteit met uw huidige Quantum GIS versie</translation>
     </message>
     <message>
         <source>orphans</source>
-        <translation>wezen</translation>
+        <translation type="obsolete">wezen</translation>
     </message>
     <message>
         <source>any status</source>
-        <translation>elke status</translation>
+        <translation type="obsolete">elke status</translation>
     </message>
     <message>
         <source>not installed</source>
@@ -23115,31 +23115,31 @@ geometrische objecten.</translation>
     </message>
     <message>
         <source>upgradeable and news</source>
-        <translation>op te waarderen en nieuwe</translation>
+        <translation type="obsolete">op te waarderen en nieuwe</translation>
     </message>
     <message>
         <source>This plugin is not installed</source>
-        <translation>Deze plugin is niet geïnstalleerd</translation>
+        <translation type="obsolete">Deze plugin is niet geïnstalleerd</translation>
     </message>
     <message>
         <source>This plugin is installed</source>
-        <translation>Deze plugin is geïnstalleerd</translation>
+        <translation type="obsolete">Deze plugin is geïnstalleerd</translation>
     </message>
     <message>
         <source>This plugin is installed, but there is an updated version available</source>
-        <translation>Deze plugin is geïnstalleerd, maar er is een nieuwere versie beschikbaar</translation>
+        <translation type="obsolete">Deze plugin is geïnstalleerd, maar er is een nieuwere versie beschikbaar</translation>
     </message>
     <message>
         <source>This plugin is installed, but I can&apos;t find it in any enabled repository</source>
-        <translation>Deze plugin is geïnstalleerd, maar niet beschikbaar in een ingeschakelde repository</translation>
+        <translation type="obsolete">Deze plugin is geïnstalleerd, maar niet beschikbaar in een ingeschakelde repository</translation>
     </message>
     <message>
         <source>This plugin is not installed and is seen for the first time</source>
-        <translation>Deze plugin is niet geïnstalleerd en voor het eerst gezien</translation>
+        <translation type="obsolete">Deze plugin is niet geïnstalleerd en voor het eerst gezien</translation>
     </message>
     <message>
         <source>This plugin is installed and is newer than its version available in a repository</source>
-        <translation>Deze plugin is geïnstalleerd en is nieuwer dan de in de repository beschikbare</translation>
+        <translation type="obsolete">Deze plugin is geïnstalleerd en is nieuwer dan de in de repository beschikbare</translation>
     </message>
     <message>
         <source>not installed</source>
@@ -23168,81 +23168,81 @@ geometrische objecten.</translation>
     </message>
     <message>
         <source>installed version</source>
-        <translation>geïnstalleerde versie</translation>
+        <translation type="obsolete">geïnstalleerde versie</translation>
     </message>
     <message>
         <source>available version</source>
-        <translation>beschikbare versie</translation>
+        <translation type="obsolete">beschikbare versie</translation>
     </message>
     <message>
         <source>That&apos;s the newest available version</source>
-        <translation>Dat is de nieuwst beschikbare versie</translation>
+        <translation type="obsolete">Dat is de nieuwst beschikbare versie</translation>
     </message>
     <message>
         <source>There is no version available for download</source>
-        <translation>Er is geen versie beschikbaar om op te halen</translation>
+        <translation type="obsolete">Er is geen versie beschikbaar om op te halen</translation>
     </message>
     <message>
         <source>only locally available</source>
-        <translation>alleen lokaal beschikbaar</translation>
+        <translation type="obsolete">alleen lokaal beschikbaar</translation>
     </message>
     <message>
         <source>Install plugin</source>
-        <translation>Installeer plugin</translation>
+        <translation type="obsolete">Installeer plugin</translation>
     </message>
     <message>
         <source>Reinstall plugin</source>
-        <translation>Herinstalleer plugin</translation>
+        <translation type="obsolete">Herinstalleer plugin</translation>
     </message>
     <message>
         <source>Upgrade plugin</source>
-        <translation>Plugin opwaarderen</translation>
+        <translation type="obsolete">Plugin opwaarderen</translation>
     </message>
     <message>
         <source>Install/upgrade plugin</source>
-        <translation>Installeer/opwaarderen plugin</translation>
+        <translation type="obsolete">Installeer/opwaarderen plugin</translation>
     </message>
     <message>
         <source>Downgrade plugin</source>
-        <translation>Downgrade plugin</translation>
+        <translation type="obsolete">Downgrade plugin</translation>
     </message>
     <message>
         <source>Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!</source>
-        <translation>Weet u zeker dat u de plugin wilt terugzetten naar de laatst beschikbare versie? De geïnstalleerde is nieuwer!</translation>
+        <translation type="obsolete">Weet u zeker dat u de plugin wilt terugzetten naar de laatst beschikbare versie? De geïnstalleerde is nieuwer!</translation>
     </message>
     <message>
         <source>Plugin installation failed</source>
-        <translation>Installatie van plugin mislukt</translation>
+        <translation type="obsolete">Installatie van plugin mislukt</translation>
     </message>
     <message>
         <source>Plugin has disappeared</source>
-        <translation>Plugin is verdwenen</translation>
+        <translation type="obsolete">Plugin is verdwenen</translation>
     </message>
     <message>
         <source>The plugin seems to have been installed but I don&apos;t know where. Probably the plugin package contained a wrong named directory.
 Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll find the plugin there, but I just can&apos;t determine which of them it is. It also means that I won&apos;t be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue.</source>
-        <translation>De plugin lijkt geïnstalleerd, maar het is niet duidelijk waar. Waarschijnlijk bevatte het pluginpakket een verkeerde mapnaam.
+        <translation type="obsolete">De plugin lijkt geïnstalleerd, maar het is niet duidelijk waar. Waarschijnlijk bevatte het pluginpakket een verkeerde mapnaam.
 Zoek in de lijst van geïnstalleerde plugins. Het is waarschijnlijk dat de plugin er tussen staat, alleen kan het programma niet onderscheiden welk het precies is. Dit betekent ook dat u niet geïnformeerd kan worden over updates. De plugin werkt misschien wel. Neem contact op met de bouwer van de plugin en meld deze fout.</translation>
     </message>
     <message>
         <source>Plugin installed successfully</source>
-        <translation>Plugin succesvol geïnstalleerd</translation>
+        <translation type="obsolete">Plugin succesvol geïnstalleerd</translation>
     </message>
     <message>
         <source>Plugin uninstall failed</source>
-        <translation>Deïnstallatie plugin mislukt</translation>
+        <translation type="obsolete">Deïnstallatie plugin mislukt</translation>
     </message>
     <message>
         <source>Are you sure you want to uninstall the following plugin?</source>
-        <translation>Weet u zeker dat u deze plugin wilt deïnstalleren?</translation>
+        <translation type="obsolete">Weet u zeker dat u deze plugin wilt deïnstalleren?</translation>
     </message>
     <message>
         <source>Warning: this plugin isn&apos;t available in any accessible repository!</source>
-        <translation>Waarschuwing: deze plugin is niet beschikbaar in een benaderbare repository!</translation>
+        <translation type="obsolete">Waarschuwing: deze plugin is niet beschikbaar in een benaderbare repository!</translation>
     </message>
     <message>
         <source>Plugin uninstalled successfully</source>
-        <translation>Plugin succesvol gedeïnstalleerd</translation>
+        <translation type="obsolete">Plugin succesvol gedeïnstalleerd</translation>
     </message>
     <message>
         <source>You are going to add some plugin repositories neither authorized nor supported by the Quantum GIS team, however provided by folks associated with us. Plugin authors generally make efforts to make their works useful and safe, but we can&apos;t assume any responsibility for them. FEEL WARNED!</source>
@@ -23250,105 +23250,105 @@ Zoek in de lijst van geïnstalleerde plugins. Het is waarschijnlijk dat de plugi
     </message>
     <message>
         <source>Unable to add another repository with the same URL!</source>
-        <translation>Toevoegen van nog een repository met dezelfde URL is niet mogelijk!</translation>
+        <translation type="obsolete">Toevoegen van nog een repository met dezelfde URL is niet mogelijk!</translation>
     </message>
     <message>
         <source>Are you sure you want to remove the following repository?</source>
-        <translation>Weet u zeker dat u deze repository wilt verwijderen?</translation>
+        <translation type="obsolete">Weet u zeker dat u deze repository wilt verwijderen?</translation>
     </message>
     <message>
         <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
-        <translation>Deze plugin is incompatibel met uw huidige Quantum GIS versie en zal waarschijnlijk niet werken.</translation>
+        <translation type="obsolete">Deze plugin is incompatibel met uw huidige Quantum GIS versie en zal waarschijnlijk niet werken.</translation>
     </message>
     <message>
         <source>This plugin seems to be broken.
 It has been installed but can&apos;t be loaded.
 Here is the error message:</source>
-        <translation>Deze plugin lijkt niet te werken.
+        <translation type="obsolete">Deze plugin lijkt niet te werken.
 Het is geïnstalleerd maar kan niet worden geladen.
 Dit is de foutmelding:</translation>
     </message>
     <message>
         <source>Note that it&apos;s an uninstallable core plugin</source>
-        <translation>Merk op dat dit een niet te installeren systeemplugin is</translation>
+        <translation type="obsolete">Merk op dat dit een niet te installeren systeemplugin is</translation>
     </message>
     <message>
         <source>This plugin is broken</source>
-        <translation>Deze plugin werkt niet</translation>
+        <translation type="obsolete">Deze plugin werkt niet</translation>
     </message>
     <message>
         <source>This plugin requires a newer version of Quantum GIS</source>
-        <translation>Deze plugin vereist een nieuwere versie van Quantum GIS</translation>
+        <translation type="obsolete">Deze plugin vereist een nieuwere versie van Quantum GIS</translation>
     </message>
     <message>
         <source>This plugin requires a missing module</source>
-        <translation>Deze plugin vereist een niet aanwezige (python) module</translation>
+        <translation type="obsolete">Deze plugin vereist een niet aanwezige (python) module</translation>
     </message>
     <message>
         <source>Plugin reinstalled successfully</source>
-        <translation>Herinstallatie van plugin geslaagd</translation>
+        <translation type="obsolete">Herinstallatie van plugin geslaagd</translation>
     </message>
     <message>
         <source>The plugin is designed for a newer version of Quantum GIS. The minimum required version is:</source>
-        <translation>De plugin is gemaakt voor een nieuwere versie van Quantum GIS. De minimaal vereiste versie is:</translation>
+        <translation type="obsolete">De plugin is gemaakt voor een nieuwere versie van Quantum GIS. De minimaal vereiste versie is:</translation>
     </message>
     <message>
         <source>The plugin depends on some components missing on your system. You need to install the following Python module in order to enable it:</source>
-        <translation>De plugin is afhankelijk van componenten die missen op uw systeem. De volgende Pythonmodule is nodig om de plugin te gebruiken:</translation>
+        <translation type="obsolete">De plugin is afhankelijk van componenten die missen op uw systeem. De volgende Pythonmodule is nodig om de plugin te gebruiken:</translation>
     </message>
     <message>
         <source>The plugin is broken. Python said:</source>
-        <translation>De plugin werkt niet. Python meldt:</translation>
+        <translation type="obsolete">De plugin werkt niet. Python meldt:</translation>
     </message>
     <message>
         <source>The required Python module is not installed.
 For more information, please visit its homepage and Quantum GIS wiki.</source>
-        <translation>De vereiste Python-module is niet geïnstalleerd.
+        <translation type="obsolete">De vereiste Python-module is niet geïnstalleerd.
 Voor meer informatie, bezoek de homepage van de plugin en de Quantum GIS wiki.</translation>
     </message>
     <message>
         <source>Python plugin installed.
 Now you need to enable it in Plugin Manager.</source>
-        <translation>Python plugin geïnstalleerd.
+        <translation type="obsolete">Python plugin geïnstalleerd.
 Nu moet u het inschakelen in de Plugin Manager.</translation>
     </message>
     <message>
         <source>Python plugin reinstalled.
 You need to restart Quantum GIS in order to reload it.</source>
-        <translation>Python plugin geïnstalleerd.
+        <translation type="obsolete">Python plugin geïnstalleerd.
 U dient Quantum GIS te herstarten om de plugin te laden.</translation>
     </message>
     <message>
         <source>Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely.</source>
-        <translation>Python plugin gedeïnstalleerd. U dient Quantum GIS te herstarten om de plugin volledig te verwijderen.</translation>
+        <translation type="obsolete">Python plugin gedeïnstalleerd. U dient Quantum GIS te herstarten om de plugin volledig te verwijderen.</translation>
     </message>
     <message>
         <source>You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.</source>
-        <translation>U staat op het punt enkele plugin-repositories toe te voegen die niet geautoriseerd zijn of ondersteund worden door het QGIS-team. Pluginmakers doen hun best om hun werk goed en bruikbaar te maken, maar we zijn hier niet verantwoordelijk voor.</translation>
+        <translation type="obsolete">U staat op het punt enkele plugin-repositories toe te voegen die niet geautoriseerd zijn of ondersteund worden door het QGIS-team. Pluginmakers doen hun best om hun werk goed en bruikbaar te maken, maar we zijn hier niet verantwoordelijk voor.</translation>
     </message>
     <message>
         <source>installed</source>
-        <translation>geïnstalleerd</translation>
+        <translation type="obsolete">geïnstalleerd</translation>
     </message>
     <message>
         <source>upgradeable</source>
-        <translation>op te waarderen</translation>
+        <translation type="obsolete">op te waarderen</translation>
     </message>
     <message>
         <source>new!</source>
-        <translation>nieuw!</translation>
+        <translation type="obsolete">nieuw!</translation>
     </message>
     <message>
         <source>invalid</source>
-        <translation>ongeldig</translation>
+        <translation type="obsolete">ongeldig</translation>
     </message>
     <message>
         <source>not installed</source>
-        <translation>niet geïnstalleerd</translation>
+        <translation type="obsolete">niet geïnstalleerd</translation>
     </message>
     <message>
         <source>at least</source>
-        <translation>minstens</translation>
+        <translation type="obsolete">minstens</translation>
     </message>
 </context>
 <context>
@@ -23627,35 +23627,35 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerFetchingDialog</name>
     <message>
         <source>Success</source>
-        <translation>Succes</translation>
+        <translation type="obsolete">Succes</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation>Hostnaam wordt opgezocht...</translation>
+        <translation type="obsolete">Hostnaam wordt opgezocht...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation>Verbinden...</translation>
+        <translation type="obsolete">Verbinden...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation>Verbonden met host. Verzoek wordt verzonden...</translation>
+        <translation type="obsolete">Verbonden met host. Verzoek wordt verzonden...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation>Data wordt gedownload...</translation>
+        <translation type="obsolete">Data wordt gedownload...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation>In rust</translation>
+        <translation type="obsolete">In rust</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation>Verbinding wordt afgesloten...</translation>
+        <translation type="obsolete">Verbinding wordt afgesloten...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation>Fout</translation>
+        <translation type="obsolete">Fout</translation>
     </message>
 </context>
 <context>
@@ -23690,43 +23690,43 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerInstallingDialog</name>
     <message>
         <source>Installing...</source>
-        <translation>Bezig met ïnstalleren...</translation>
+        <translation type="obsolete">Bezig met ïnstalleren...</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation>Hostnaam wordt opgezocht...</translation>
+        <translation type="obsolete">Hostnaam wordt opgezocht...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation>Verbinden...</translation>
+        <translation type="obsolete">Verbinden...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation>Verbonden met host. Verzoek wordt verzonden...</translation>
+        <translation type="obsolete">Verbonden met host. Verzoek wordt verzonden...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation>Data wordt gedownload...</translation>
+        <translation type="obsolete">Data wordt gedownload...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation>In rust</translation>
+        <translation type="obsolete">In rust</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation>Verbinding wordt afgesloten...</translation>
+        <translation type="obsolete">Verbinding wordt afgesloten...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation>Fout</translation>
+        <translation type="obsolete">Fout</translation>
     </message>
     <message>
         <source>Failed to unzip the plugin package. Probably it&apos;s broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:</source>
-        <translation>Problemen bij het uitpakken van het zipbestand van de plugin. Waarschijnlijk is het niet compleet of niet beschikbaar in de repository. Controleer eventueel ook of u de juiste lees- en schrijfrechten heeft in de plugin map: </translation>
+        <translation type="obsolete">Problemen bij het uitpakken van het zipbestand van de plugin. Waarschijnlijk is het niet compleet of niet beschikbaar in de repository. Controleer eventueel ook of u de juiste lees- en schrijfrechten heeft in de plugin map: </translation>
     </message>
     <message>
         <source>Aborted by user</source>
-        <translation>Afgebroken door gebruiker</translation>
+        <translation type="obsolete">Afgebroken door gebruiker</translation>
     </message>
 </context>
 <context>
@@ -23751,7 +23751,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerPluginErrorDialog</name>
     <message>
         <source>no error message received</source>
-        <translation>geen foutmelding (terug)ontvangen</translation>
+        <translation type="obsolete">geen foutmelding (terug)ontvangen</translation>
     </message>
 </context>
 <context>
@@ -31556,27 +31556,27 @@ Tried URL: %1</source>
     <name>VisualDialog</name>
     <message>
         <source>Please specify input vector layer</source>
-        <translation>Selecteer een vectorlaag als input</translation>
+        <translation type="obsolete">Selecteer een vectorlaag als input</translation>
     </message>
     <message>
         <source>Please specify input field</source>
-        <translation>Selecteer een input-veld</translation>
+        <translation type="obsolete">Selecteer een input-veld</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation>Check geometrie op geldigheid</translation>
+        <translation type="obsolete">Check geometrie op geldigheid</translation>
     </message>
     <message>
         <source>Geometry errors</source>
-        <translation>Geometrie-fouten</translation>
+        <translation type="obsolete">Geometrie-fouten</translation>
     </message>
     <message>
         <source>Total encountered errors</source>
-        <translation>Totaal aantal gevonden fouten</translation>
+        <translation type="obsolete">Totaal aantal gevonden fouten</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation>Lijst unieke waarden</translation>
+        <translation type="obsolete">Lijst unieke waarden</translation>
     </message>
     <message>
         <source>Unique values:</source>
@@ -31588,19 +31588,19 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>Basics statistics</source>
-        <translation>Basisstatistieken</translation>
+        <translation type="obsolete">Basisstatistieken</translation>
     </message>
     <message>
         <source>Statistics output</source>
-        <translation>Uitvoer statistieken</translation>
+        <translation type="obsolete">Uitvoer statistieken</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation>&apos;Nearest neighbour&apos;-analyse</translation>
+        <translation type="obsolete">&apos;Nearest neighbour&apos;-analyse</translation>
     </message>
     <message>
         <source>Nearest neighbour statistics</source>
-        <translation>&apos;Nearest neighbour&apos;-statistieken</translation>
+        <translation type="obsolete">&apos;Nearest neighbour&apos;-statistieken</translation>
     </message>
     <message>
         <source>Observed mean distance : </source>
@@ -31632,11 +31632,11 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>Unique values</source>
-        <translation>Unieke waarden</translation>
+        <translation type="obsolete">Unieke waarden</translation>
     </message>
     <message>
         <source>Total unique values</source>
-        <translation>Totaal unieke waarden</translation>
+        <translation type="obsolete">Totaal unieke waarden</translation>
     </message>
 </context>
 <context>
@@ -32872,7 +32872,7 @@ door de gebruiker gedefinieerd Basispad (b.v. gebruik alleen de bestandsnaam van
     <name>fTools</name>
     <message>
         <source>Quantum GIS version detected: </source>
-        <translation>Quantum GIS versie gedetecteerd:</translation>
+        <translation type="obsolete">Quantum GIS versie gedetecteerd:</translation>
     </message>
     <message>
         <source>This version of fTools requires at least QGIS version 1.0.0</source>
@@ -32888,39 +32888,39 @@ door de gebruiker gedefinieerd Basispad (b.v. gebruik alleen de bestandsnaam van
     </message>
     <message>
         <source>&amp;Analysis Tools</source>
-        <translation>&amp;Analyse Gereedschappen</translation>
+        <translation type="obsolete">&amp;Analyse Gereedschappen</translation>
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation>Distance matrix</translation>
+        <translation type="obsolete">Distance matrix</translation>
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation>Lijnlengtes sommeren</translation>
+        <translation type="obsolete">Lijnlengtes sommeren</translation>
     </message>
     <message>
         <source>Points in polygon</source>
-        <translation>Punt in polygoon</translation>
+        <translation type="obsolete">Punt in polygoon</translation>
     </message>
     <message>
         <source>Basic statistics</source>
-        <translation>Basisstatistieken</translation>
+        <translation type="obsolete">Basisstatistieken</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation>Lijst unieke waarden</translation>
+        <translation type="obsolete">Lijst unieke waarden</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation>&apos;Nearest neighbour&apos;-analyse</translation>
+        <translation type="obsolete">&apos;Nearest neighbour&apos;-analyse</translation>
     </message>
     <message>
         <source>Mean coordinate(s)</source>
-        <translation>Gemiddelde coördinaten</translation>
+        <translation type="obsolete">Gemiddelde coördinaten</translation>
     </message>
     <message>
         <source>Line intersections</source>
-        <translation>Lijn-intersectie</translation>
+        <translation type="obsolete">Lijn-intersectie</translation>
     </message>
     <message>
         <source>&amp;Sampling Tools</source>
@@ -32929,148 +32929,148 @@ door de gebruiker gedefinieerd Basispad (b.v. gebruik alleen de bestandsnaam van
     <message>
         <source>This version of fTools requires at least QGIS version 1.0.0
 Plugin will not be enabled.</source>
-        <translation>Deze versie van fTools vereist ten minste versie 1.0.0 van QGIS
+        <translation type="obsolete">Deze versie van fTools vereist ten minste versie 1.0.0 van QGIS
 Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>&amp;Vector</source>
-        <translation>&amp;Vector</translation>
+        <translation type="obsolete">&amp;Vector</translation>
     </message>
     <message>
         <source>&amp;Research Tools</source>
-        <translation>&amp;Onderzoeksgereedschap</translation>
+        <translation type="obsolete">&amp;Onderzoeksgereedschap</translation>
     </message>
     <message>
         <source>Random selection</source>
-        <translation>Willekeurige Selectie</translation>
+        <translation type="obsolete">Willekeurige Selectie</translation>
     </message>
     <message>
         <source>Random selection within subsets</source>
-        <translation>Willekeurige selectie binnen subsets</translation>
+        <translation type="obsolete">Willekeurige selectie binnen subsets</translation>
     </message>
     <message>
         <source>Random points</source>
-        <translation>Willekeurige punten</translation>
+        <translation type="obsolete">Willekeurige punten</translation>
     </message>
     <message>
         <source>Regular points</source>
-        <translation>Regelmatige punten</translation>
+        <translation type="obsolete">Regelmatige punten</translation>
     </message>
     <message>
         <source>Vector grid</source>
-        <translation>Vectorgrid</translation>
+        <translation type="obsolete">Vectorgrid</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation>Selecteren op plaats</translation>
+        <translation type="obsolete">Selecteren op plaats</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
-        <translation>Polygoon van laagextent</translation>
+        <translation type="obsolete">Polygoon van laagextent</translation>
     </message>
     <message>
         <source>&amp;Geoprocessing Tools</source>
-        <translation>&amp;Geoprocessing Gereedschap</translation>
+        <translation type="obsolete">&amp;Geoprocessing Gereedschap</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation>&apos;Convex hull(s)&apos;</translation>
+        <translation type="obsolete">&apos;Convex hull(s)&apos;</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation>Buffer(s)</translation>
+        <translation type="obsolete">Buffer(s)</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation>Intersectie</translation>
+        <translation type="obsolete">Intersectie</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation>Union</translation>
+        <translation type="obsolete">Union</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation>Symmetrische difference</translation>
+        <translation type="obsolete">Symmetrische difference</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation>Clip</translation>
+        <translation type="obsolete">Clip</translation>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation>Dissolve</translation>
+        <translation type="obsolete">Dissolve</translation>
     </message>
     <message>
         <source>Difference</source>
-        <translation>Difference</translation>
+        <translation type="obsolete">Difference</translation>
     </message>
     <message>
         <source>G&amp;eometry Tools</source>
-        <translation>G&amp;eometrie gereedschappen</translation>
+        <translation type="obsolete">G&amp;eometrie gereedschappen</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation>Exporteer/Toevoegen geometrie-kolommen</translation>
+        <translation type="obsolete">Exporteer/Toevoegen geometrie-kolommen</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation>Check geometrie op geldigheid</translation>
+        <translation type="obsolete">Check geometrie op geldigheid</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation>Polygoon-centroide</translation>
+        <translation type="obsolete">Polygoon-centroide</translation>
     </message>
     <message>
         <source>Delaunay triangulation</source>
-        <translation>Delaunay triangulation</translation>
+        <translation type="obsolete">Delaunay triangulation</translation>
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation>Extraheer Knooppunten</translation>
+        <translation type="obsolete">Extraheer Knooppunten</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation>Geometrien vereenvoudigen</translation>
+        <translation type="obsolete">Geometrien vereenvoudigen</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
-        <translation>Meervoudige objecten naar enkelvoudige</translation>
+        <translation type="obsolete">Meervoudige objecten naar enkelvoudige</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
-        <translation>Enkelvoudige objecten naar meervoudige </translation>
+        <translation type="obsolete">Enkelvoudige objecten naar meervoudige </translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation>Polygonen naar lijnen</translation>
+        <translation type="obsolete">Polygonen naar lijnen</translation>
     </message>
     <message>
         <source>&amp;Data Management Tools</source>
-        <translation>&amp;Datamanagement Gereedschappen</translation>
+        <translation type="obsolete">&amp;Datamanagement Gereedschappen</translation>
     </message>
     <message>
         <source>Export to new projection</source>
-        <translation>Naar nieuwe projectie exporteren</translation>
+        <translation type="obsolete">Naar nieuwe projectie exporteren</translation>
     </message>
     <message>
         <source>Define current projection</source>
-        <translation>Definieer huidige projectie</translation>
+        <translation type="obsolete">Definieer huidige projectie</translation>
     </message>
     <message>
         <source>Join attributes</source>
-        <translation>Join attributen</translation>
+        <translation type="obsolete">Join attributen</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
-        <translation>Join attributen op basis van plaats</translation>
+        <translation type="obsolete">Join attributen op basis van plaats</translation>
     </message>
     <message>
         <source>Split vector layer</source>
-        <translation>Vector laag splitsen</translation>
+        <translation type="obsolete">Vector laag splitsen</translation>
     </message>
     <message>
         <source>fTools Information</source>
-        <translation>fTools Informatie</translation>
+        <translation type="obsolete">fTools Informatie</translation>
     </message>
     <message>
         <source>About fTools</source>
@@ -33145,95 +33145,95 @@ p, li { white-space: pre-wrap; }(new line)
     </message>
     <message>
         <source>Feature %1 contains an unnested hole</source>
-        <translation>Kaartobject %1 bevat een niet-genest gat</translation>
+        <translation type="obsolete">Kaartobject %1 bevat een niet-genest gat</translation>
     </message>
     <message>
         <source>Feature %1 is not closed</source>
-        <translation>Kaartobject %1 is niet gesloten</translation>
+        <translation type="obsolete">Kaartobject %1 is niet gesloten</translation>
     </message>
     <message>
         <source>Feature %1 is self intersecting</source>
-        <translation>Kaartobject %1 bevat en zelfdoorsnijding</translation>
+        <translation type="obsolete">Kaartobject %1 bevat en zelfdoorsnijding</translation>
     </message>
     <message>
         <source>Feature %1 has incorrect node ordering</source>
-        <translation>Kaartobject %1 heeft fouten in de hoekpunt volgorde</translation>
+        <translation type="obsolete">Kaartobject %1 heeft fouten in de hoekpunt volgorde</translation>
     </message>
     <message>
         <source>Max. len:</source>
-        <translation>Max. len:</translation>
+        <translation type="obsolete">Max. len:</translation>
     </message>
     <message>
         <source>Min. len:</source>
-        <translation>Min. len:</translation>
+        <translation type="obsolete">Min. len:</translation>
     </message>
     <message>
         <source>Mean. len:</source>
-        <translation>Gemidd. len:</translation>
+        <translation type="obsolete">Gemidd. len:</translation>
     </message>
     <message>
         <source>Filled:</source>
-        <translation>Vulling:</translation>
+        <translation type="obsolete">Vulling:</translation>
     </message>
     <message>
         <source>Empty:</source>
-        <translation>Leeg:</translation>
+        <translation type="obsolete">Leeg:</translation>
     </message>
     <message>
         <source>N:</source>
-        <translation>N:</translation>
+        <translation type="obsolete">N:</translation>
     </message>
     <message>
         <source>Mean:</source>
-        <translation>Gemiddeld:</translation>
+        <translation type="obsolete">Gemiddeld:</translation>
     </message>
     <message>
         <source>StdDev:</source>
-        <translation>StdAfw:</translation>
+        <translation type="obsolete">StdAfw:</translation>
     </message>
     <message>
         <source>Sum:</source>
-        <translation>Som:</translation>
+        <translation type="obsolete">Som:</translation>
     </message>
     <message>
         <source>Min:</source>
-        <translation>Min:</translation>
+        <translation type="obsolete">Min:</translation>
     </message>
     <message>
         <source>Max:</source>
-        <translation>Max:</translation>
+        <translation type="obsolete">Max:</translation>
     </message>
     <message>
         <source>CV:</source>
-        <translation>CV:</translation>
+        <translation type="obsolete">CV:</translation>
     </message>
     <message>
         <source>Number of unique values:</source>
-        <translation>Aantal unieke waarden:</translation>
+        <translation type="obsolete">Aantal unieke waarden:</translation>
     </message>
     <message>
         <source>Range:</source>
-        <translation>Range:</translation>
+        <translation type="obsolete">Range:</translation>
     </message>
     <message>
         <source>Median:</source>
-        <translation>Mediaan:</translation>
+        <translation type="obsolete">Mediaan:</translation>
     </message>
     <message>
         <source>Observed mean distance:</source>
-        <translation>Aangetroffen gemiddelde afstand:</translation>
+        <translation type="obsolete">Aangetroffen gemiddelde afstand:</translation>
     </message>
     <message>
         <source>Expected mean distance:</source>
-        <translation>Verwachtte gemiddelde afstand:</translation>
+        <translation type="obsolete">Verwachtte gemiddelde afstand:</translation>
     </message>
     <message>
         <source>Nearest neighbour index:</source>
-        <translation>&apos;Nearest neighbour&apos;-index:</translation>
+        <translation type="obsolete">&apos;Nearest neighbour&apos;-index:</translation>
     </message>
     <message>
         <source>Z-Score:</source>
-        <translation>Z-Score:</translation>
+        <translation type="obsolete">Z-Score:</translation>
     </message>
 </context>
 </TS>

@@ -883,30 +883,30 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Points in polygon</source>
-        <translation type="unfinished">Punkter i polygon</translation>
+        <translation type="obsolete">Punkter i polygon</translation>
     </message>
     <message>
         <source>Created output Shapefile:
 </source>
-        <translation type="unfinished">Skapade shape-fil:
+        <translation type="obsolete">Skapade shape-fil:
 </translation>
     </message>
     <message>
         <source>Vector layer is not valid</source>
-        <translation type="unfinished">Vektorlager är ogiltigt</translation>
+        <translation type="obsolete">Vektorlager är ogiltigt</translation>
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation type="unfinished">Summa linjelängd</translation>
+        <translation type="obsolete">Summa linjelängd</translation>
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation type="unfinished">Avståndsmatris</translation>
+        <translation type="obsolete">Avståndsmatris</translation>
     </message>
     <message>
         <source>Created output matrix:
 </source>
-        <translation type="unfinished">Skapade ,atris:</translation>
+        <translation type="obsolete">Skapade ,atris:</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="16"/>
@@ -1297,7 +1297,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="unfinished">Välj efter plats</translation>
+        <translation type="obsolete">Välj efter plats</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="16"/>
@@ -1404,38 +1404,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="309"/>
         <source>OGR Layer Converter</source>
         <translation type="unfinished">OGR lagerkonverterare</translation>
-    </message>
-    <message>
-        <source>creating new selection</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>adding to current selection</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>removing from current selection</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select features in:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>that intersect features in:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Modify current selection by:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Please specify input layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Please specify select layer</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1654,207 +1622,207 @@ p, li { white-space: pre-wrap; }
     <name>GeometryDialog</name>
     <message>
         <source>Merge all</source>
-        <translation type="unfinished">Slå ihop alla</translation>
+        <translation type="obsolete">Slå ihop alla</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="unfinished">Specificera vektorlager med indata</translation>
+        <translation type="obsolete">Specificera vektorlager med indata</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="unfinished">Specificera shape-fil för utdata</translation>
+        <translation type="obsolete">Specificera shape-fil för utdata</translation>
     </message>
     <message>
         <source>Please specify valid tolerance value</source>
-        <translation type="unfinished">Specificera giltig tolerans</translation>
+        <translation type="obsolete">Specificera giltig tolerans</translation>
     </message>
     <message>
         <source>Please specify valid UID field</source>
-        <translation type="unfinished">Specificera giltigt UID-fält</translation>
+        <translation type="obsolete">Specificera giltigt UID-fält</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
-        <translation type="unfinished">Singlepart till multipart</translation>
+        <translation type="obsolete">Singlepart till multipart</translation>
     </message>
     <message>
         <source>Output shapefile</source>
-        <translation type="unfinished">Shape-fil för utdata</translation>
+        <translation type="obsolete">Shape-fil för utdata</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
-        <translation type="unfinished">Multipart till singlepart</translation>
+        <translation type="obsolete">Multipart till singlepart</translation>
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation type="unfinished">Extrahera noder</translation>
+        <translation type="obsolete">Extrahera noder</translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation type="unfinished">Polygoner till linjer</translation>
+        <translation type="obsolete">Polygoner till linjer</translation>
     </message>
     <message>
         <source>Input polygon vector layer</source>
-        <translation type="unfinished">Polygonvektorlager med indata</translation>
+        <translation type="obsolete">Polygonvektorlager med indata</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="unfinished">Exportera/Lägg till geometrikolumner</translation>
+        <translation type="obsolete">Exportera/Lägg till geometrikolumner</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation type="unfinished">Förenkla geometrier</translation>
+        <translation type="obsolete">Förenkla geometrier</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation type="unfinished">Polygontyngdpunkt</translation>
+        <translation type="obsolete">Polygontyngdpunkt</translation>
     </message>
     <message>
         <source>Output point shapefile</source>
-        <translation type="unfinished">Udatatfil med punkter (shape-fil)</translation>
+        <translation type="obsolete">Udatatfil med punkter (shape-fil)</translation>
     </message>
     <message>
         <source>Delaunay triangulation</source>
-        <translation type="unfinished">Delaunay triangulering</translation>
+        <translation type="obsolete">Delaunay triangulering</translation>
     </message>
     <message>
         <source>Input point vector layer</source>
-        <translation type="unfinished">Punktvektorlager med indata</translation>
+        <translation type="obsolete">Punktvektorlager med indata</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
-        <translation type="unfinished">Polygon från lagrets utsträckning</translation>
+        <translation type="obsolete">Polygon från lagrets utsträckning</translation>
     </message>
     <message>
         <source>Input layer</source>
-        <translation type="unfinished">Inlager</translation>
+        <translation type="obsolete">Inlager</translation>
     </message>
     <message>
         <source>Output polygon shapefile</source>
-        <translation type="unfinished">Udatatfil med polygoner (shape-fil)</translation>
+        <translation type="obsolete">Udatatfil med polygoner (shape-fil)</translation>
     </message>
     <message>
         <source>Unable to delete existing shapefile.</source>
-        <translation type="unfinished">Kunde inte ta bort existerande shape-fil.</translation>
+        <translation type="obsolete">Kunde inte ta bort existerande shape-fil.</translation>
     </message>
     <message>
         <source>Error processing specified tolerance!</source>
-        <translation type="unfinished">Kunde inte hantera specificerad tolerans!</translation>
+        <translation type="obsolete">Kunde inte hantera specificerad tolerans!</translation>
     </message>
     <message>
         <source>Please choose larger tolerance...</source>
-        <translation type="unfinished">Välj en större tolerans...</translation>
+        <translation type="obsolete">Välj en större tolerans...</translation>
     </message>
     <message>
         <source>Unable to delete incomplete shapefile.</source>
-        <translation type="unfinished">Kunde inte ta bort icke-komplett shape-fil.</translation>
+        <translation type="obsolete">Kunde inte ta bort icke-komplett shape-fil.</translation>
     </message>
     <message>
         <source>Created output shapefile:</source>
-        <translation type="unfinished">Skapade shape-fil för utdata:</translation>
+        <translation type="obsolete">Skapade shape-fil för utdata:</translation>
     </message>
     <message>
         <source>Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished">Vill du lägga till det nya lagret till innehållsförteckningen?</translation>
+        <translation type="obsolete">Vill du lägga till det nya lagret till innehållsförteckningen?</translation>
     </message>
     <message>
         <source>Error writing output shapefile.</source>
-        <translation type="unfinished">Fel vid skrivning av shapefil.</translation>
+        <translation type="obsolete">Fel vid skrivning av shapefil.</translation>
     </message>
     <message>
         <source>Input vector layer</source>
-        <translation type="unfinished">Vektorlager med indata</translation>
+        <translation type="obsolete">Vektorlager med indata</translation>
     </message>
 </context>
 <context>
     <name>GeoprocessingDialog</name>
     <message>
         <source>Dissolve all</source>
-        <translation type="unfinished">Lös ut alla</translation>
+        <translation type="obsolete">Lös ut alla</translation>
     </message>
     <message>
         <source>Please specify an input layer</source>
-        <translation type="unfinished">Specificera lager med indata</translation>
+        <translation type="obsolete">Specificera lager med indata</translation>
     </message>
     <message>
         <source>Please specify a difference/intersect/union layer</source>
-        <translation type="unfinished">Specificera vektorlager för differens/skärning/union</translation>
+        <translation type="obsolete">Specificera vektorlager för differens/skärning/union</translation>
     </message>
     <message>
         <source>Please specify valid buffer value</source>
-        <translation type="unfinished">Specificera giltigt buffertvärde</translation>
+        <translation type="obsolete">Specificera giltigt buffertvärde</translation>
     </message>
     <message>
         <source>Please specify dissolve field</source>
-        <translation type="unfinished">Specifiera fält att lösa ut</translation>
+        <translation type="obsolete">Specifiera fält att lösa ut</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="unfinished">Specificera shape-fil för utdata</translation>
+        <translation type="obsolete">Specificera shape-fil för utdata</translation>
     </message>
     <message>
         <source>No features selected, please uncheck &apos;Use selected&apos; or make a selection</source>
-        <translation type="unfinished">Inga objekt valda, ta bort &apos;Använd valda&apos; eller välj objekt</translation>
+        <translation type="obsolete">Inga objekt valda, ta bort &apos;Använd valda&apos; eller välj objekt</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="unfinished">Buffert(ar)</translation>
+        <translation type="obsolete">Buffert(ar)</translation>
     </message>
     <message>
         <source>Create single minimum convex hull</source>
-        <translation type="unfinished">Skapa en minsta konvex</translation>
+        <translation type="obsolete">Skapa en minsta konvex</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation type="unfinished">Konvex</translation>
+        <translation type="obsolete">Konvex</translation>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="unfinished">Lös ut</translation>
+        <translation type="obsolete">Lös ut</translation>
     </message>
     <message>
         <source>Difference layer</source>
-        <translation type="unfinished">Differenslager</translation>
+        <translation type="obsolete">Differenslager</translation>
     </message>
     <message>
         <source>Difference</source>
-        <translation type="unfinished">Differens</translation>
+        <translation type="obsolete">Differens</translation>
     </message>
     <message>
         <source>Intersect layer</source>
-        <translation type="unfinished">Skärningslager</translation>
+        <translation type="obsolete">Skärningslager</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation type="unfinished">Skärning</translation>
+        <translation type="obsolete">Skärning</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="unfinished">Symetrisk differans</translation>
+        <translation type="obsolete">Symetrisk differans</translation>
     </message>
     <message>
         <source>Clip layer</source>
-        <translation type="unfinished">Klipplager</translation>
+        <translation type="obsolete">Klipplager</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="unfinished">Klipp</translation>
+        <translation type="obsolete">Klipp</translation>
     </message>
     <message>
         <source>Union layer</source>
-        <translation type="unfinished">Unionlager</translation>
+        <translation type="obsolete">Unionlager</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="unfinished">Union</translation>
+        <translation type="obsolete">Union</translation>
     </message>
     <message>
         <source>Unable to delete existing shapefile.</source>
-        <translation type="unfinished">Kunde inte ta bort existerande shape-fil.</translation>
+        <translation type="obsolete">Kunde inte ta bort existerande shape-fil.</translation>
     </message>
     <message>
         <source>
 Warnings:</source>
-        <translation type="unfinished">
+        <translation type="obsolete">
 Varningar:</translation>
     </message>
     <message>
@@ -1862,7 +1830,7 @@ Varningar:</translation>
 Some output geometries may be missing or invalid.
 
 Would you like to add the new layer anyway?</source>
-        <translation type="unfinished">
+        <translation type="obsolete">
 Några resulterande geometrier kan saknas eller vara ogiltiga.
 
 Vill du ändå lägga till det nya lagret?</translation>
@@ -1871,32 +1839,13 @@ Vill du ändå lägga till det nya lagret?</translation>
         <source>
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished">
+        <translation type="obsolete">
 
 Vill du lägga till det nya lagret till innehållsförteckningen?</translation>
     </message>
     <message>
         <source>Created output shapefile:</source>
-        <translation type="unfinished">Skapade shape-fil för utdata:</translation>
-    </message>
-    <message>
-        <source>Create convex hulls based on input field</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-Input CRS error: Different input coordinate reference systems detected, results may not be as expected.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-Feature geometry error: One or more output features ignored due to invalid geometry.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-GEOS geoprocessing error: One or more input features have invalid geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Skapade shape-fil för utdata:</translation>
     </message>
 </context>
 <context>
@@ -2538,10 +2487,6 @@ Y:</translation>
         <source>Removes all selected members.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>OSM Information</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>OsmDockWidget</name>
@@ -2652,54 +2597,6 @@ Y:</translation>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="365"/>
         <source>Cancel</source>
         <translation type="unfinished">Avbryt</translation>
-    </message>
-    <message>
-        <source>OSM Download</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unable to save the file %1: %2.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Waiting for OpenStreetMap server ...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Download process failed. OpenStreetMap server response: %1 - %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>OSM Download Error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Download failed: %1.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Getting data</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Both extents are too large!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Latitude extent is too large!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Longitude extent is too large!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>OK! Area is probably acceptable to server.</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2870,26 +2767,6 @@ Y:</translation>
         <source>Remove this feature</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>OSM Plugin</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The &apos;Create OSM Relation&apos; dialog was closed automatically because current OSM database was changed.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>OSM Feature Dock Widget</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Choose OSM feature first.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Choose relation for editing first.</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>OsmImportDlg</name>
@@ -2994,34 +2871,6 @@ Y:</translation>
         <source>Tags</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Save OSM to file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unable to save the file %1: %2.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Initializing...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Saving nodes...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Saving lines...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Saving polygons...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Saving relations...</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>OsmUndoRedoDW</name>
@@ -3078,7 +2927,7 @@ Y:</translation>
     <name>OsmUploadDlg</name>
     <message>
         <source>Uploading data...</source>
-        <translation type="unfinished">Skickar data...</translation>
+        <translation type="obsolete">Skickar data...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="22"/>
@@ -3143,10 +2992,6 @@ Y:</translation>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="186"/>
         <source>Save password</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>OSM Upload</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3783,39 +3628,35 @@ och spår, så en del objekttyper är inte tillgängliga för alla filformat.&lt
     <name>Python</name>
     <message>
         <source>An error has occured while executing Python code:</source>
-        <translation type="unfinished">Ett fel har inträffat vid Pythonexekvering:</translation>
+        <translation type="obsolete">Ett fel har inträffat vid Pythonexekvering:</translation>
     </message>
     <message>
         <source>Python version:</source>
-        <translation type="unfinished">Python version:</translation>
+        <translation type="obsolete">Python version:</translation>
     </message>
     <message>
         <source>Python path:</source>
-        <translation type="unfinished">Python sökväg:</translation>
+        <translation type="obsolete">Python sökväg:</translation>
     </message>
     <message>
         <source>Python error</source>
-        <translation type="unfinished">Pythonfel</translation>
+        <translation type="obsolete">Pythonfel</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin %1</source>
-        <translation type="unfinished">Kunde inte läsa in insticksprogram %1</translation>
+        <translation type="obsolete">Kunde inte läsa in insticksprogram %1</translation>
     </message>
     <message>
         <source>%1 due an error when calling its classFactory() method</source>
-        <translation type="unfinished">%1 på grund av fel med classFactory() metoden</translation>
+        <translation type="obsolete">%1 på grund av fel med classFactory() metoden</translation>
     </message>
     <message>
         <source>%1 due an error when calling its initGui() method</source>
-        <translation type="unfinished">%1 på grund av fel med initGui() metoden</translation>
+        <translation type="obsolete">%1 på grund av fel med initGui() metoden</translation>
     </message>
     <message>
         <source>Error while unloading plugin %1</source>
-        <translation type="unfinished">Fel med att ladda ur insticksprogram %1</translation>
-    </message>
-    <message>
-        <source>Couldn&apos;t load plugin &apos;%1&apos; from [&apos;%2&apos;]</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Fel med att ladda ur insticksprogram %1</translation>
     </message>
 </context>
 <context>
@@ -26849,312 +26690,22 @@ Kontrollera att du har rättigheter för att göra SELECT på en tabell med Post
     <name>QgsPluginInstaller</name>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="unfinished">QGIS Installerare för Python-insticksprogram</translation>
-    </message>
-    <message>
-        <source>Nothing to remove! Plugin directory doesn&apos;t exist:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Failed to remove the directory:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Check permissions or remove it manually</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Couldn&apos;t parse output from the repository</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Couldn&apos;t open the local plugin directory</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Fetch Python Plugins...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Install more plugins from remote repositories</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Looking for new plugins...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>QGIS Plugin Conflict:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. This is likely due to files associated with a previous installation of QGIS. Please use the Plugin Installer to remove that older plugin in order to unmask the newer version shipped with this copy of QGIS.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>There is a new plugin available</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>There is a plugin update available</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error reading repository:</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">QGIS Installerare för Python-insticksprogram</translation>
     </message>
 </context>
 <context>
     <name>QgsPluginInstallerDialog</name>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="unfinished">QGIS Installerare för Python-insticksprogram</translation>
+        <translation type="obsolete">QGIS Installerare för Python-insticksprogram</translation>
     </message>
     <message>
         <source>all repositories</source>
-        <translation type="unfinished">alla centralkataloger</translation>
+        <translation type="obsolete">alla centralkataloger</translation>
     </message>
     <message>
         <source>Install/upgrade plugin</source>
-        <translation type="unfinished">Installera/uppgradera insticksprogram</translation>
-    </message>
-    <message>
-        <source>Error reading repository:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>connected</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This repository is connected</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>unavailable</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This repository is enabled, but unavailable</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>disabled</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This repository is disabled</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This repository is blocked due to incompatibility with your Quantum GIS version</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>orphans</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>any status</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>not installed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>installed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>upgradeable and news</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This plugin is not installed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This plugin is installed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This plugin is installed, but there is an updated version available</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This plugin is installed, but I can&apos;t find it in any enabled repository</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This plugin is not installed and is seen for the first time</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This plugin is installed and is newer than its version available in a repository</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The required Python module is not installed.
-For more information, please visit its homepage and Quantum GIS wiki.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This plugin seems to be broken.
-It has been installed but can&apos;t be loaded.
-Here is the error message:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>upgradeable</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>new!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>invalid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Note that it&apos;s an uninstallable core plugin</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>installed version</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>available version</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>That&apos;s the newest available version</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>There is no version available for download</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This plugin is broken</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This plugin requires a newer version of Quantum GIS</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>at least</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This plugin requires a missing module</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>only locally available</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Install plugin</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Reinstall plugin</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Upgrade plugin</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Downgrade plugin</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Plugin installation failed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Plugin has disappeared</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The plugin seems to have been installed but I don&apos;t know where. Probably the plugin package contained a wrong named directory.
-Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll find the plugin there, but I just can&apos;t determine which of them it is. It also means that I won&apos;t be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Plugin installed successfully</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Python plugin installed.
-Now you need to enable it in Plugin Manager.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Plugin reinstalled successfully</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Python plugin reinstalled.
-You need to restart Quantum GIS in order to reload it.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The plugin is designed for a newer version of Quantum GIS. The minimum required version is:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The plugin depends on some components missing on your system. You need to install the following Python module in order to enable it:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The plugin is broken. Python said:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Plugin uninstall failed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Are you sure you want to uninstall the following plugin?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Warning: this plugin isn&apos;t available in any accessible repository!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Plugin uninstalled successfully</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unable to add another repository with the same URL!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Are you sure you want to remove the following repository?</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Installera/uppgradera insticksprogram</translation>
     </message>
 </context>
 <context>
@@ -27433,35 +26984,15 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerFetchingDialog</name>
     <message>
         <source>Connecting...</source>
-        <translation type="unfinished">Ansluter...</translation>
+        <translation type="obsolete">Ansluter...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation type="unfinished">Hämtar data...</translation>
+        <translation type="obsolete">Hämtar data...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Fel</translation>
-    </message>
-    <message>
-        <source>Success</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Resolving host name...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Host connected. Sending request...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Idle</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Closing connection...</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Fel</translation>
     </message>
 </context>
 <context>
@@ -27496,43 +27027,15 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerInstallingDialog</name>
     <message>
         <source>Connecting...</source>
-        <translation type="unfinished">Ansluter...</translation>
+        <translation type="obsolete">Ansluter...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation type="unfinished">Hämtar data...</translation>
+        <translation type="obsolete">Hämtar data...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Fel</translation>
-    </message>
-    <message>
-        <source>Installing...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Resolving host name...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Host connected. Sending request...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Idle</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Closing connection...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Failed to unzip the plugin package. Probably it&apos;s broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Aborted by user</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Fel</translation>
     </message>
 </context>
 <context>
@@ -27551,13 +27054,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerinstallingbase.ui" line="63"/>
         <source>Connecting...</source>
         <translation>Ansluter...</translation>
-    </message>
-</context>
-<context>
-    <name>QgsPluginInstallerPluginErrorDialog</name>
-    <message>
-        <source>no error message received</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -36608,51 +36104,51 @@ Försökte med URL: %1</translation>
     <name>VisualDialog</name>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="unfinished">Specificera vektorlager med indata</translation>
+        <translation type="obsolete">Specificera vektorlager med indata</translation>
     </message>
     <message>
         <source>Please specify input field</source>
-        <translation type="unfinished">Specificera fält med indata</translation>
+        <translation type="obsolete">Specificera fält med indata</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation type="unfinished">Kontrollera geometrins giltighet</translation>
+        <translation type="obsolete">Kontrollera geometrins giltighet</translation>
     </message>
     <message>
         <source>Geometry errors</source>
-        <translation type="unfinished">Geometrifel</translation>
+        <translation type="obsolete">Geometrifel</translation>
     </message>
     <message>
         <source>Total encountered errors</source>
-        <translation type="unfinished">Totalt påträffade fel</translation>
+        <translation type="obsolete">Totalt påträffade fel</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation type="unfinished">Visa unika värden</translation>
+        <translation type="obsolete">Visa unika värden</translation>
     </message>
     <message>
         <source>Unique values</source>
-        <translation type="unfinished">Unika värden</translation>
+        <translation type="obsolete">Unika värden</translation>
     </message>
     <message>
         <source>Total unique values</source>
-        <translation type="unfinished">Totala unika världen</translation>
+        <translation type="obsolete">Totala unika världen</translation>
     </message>
     <message>
         <source>Basics statistics</source>
-        <translation type="unfinished">Grundläggande statistik</translation>
+        <translation type="obsolete">Grundläggande statistik</translation>
     </message>
     <message>
         <source>Statistics output</source>
-        <translation type="unfinished">Statistik utdata</translation>
+        <translation type="obsolete">Statistik utdata</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation type="unfinished">Närmaste granne-analys</translation>
+        <translation type="obsolete">Närmaste granne-analys</translation>
     </message>
     <message>
         <source>Nearest neighbour statistics</source>
-        <translation type="unfinished">Närmaste granne-statistik</translation>
+        <translation type="obsolete">Närmaste granne-statistik</translation>
     </message>
 </context>
 <context>
@@ -37878,193 +37374,189 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>fTools</name>
     <message>
         <source>Quantum GIS version detected: </source>
-        <translation type="unfinished">Quantum GIS version:</translation>
+        <translation type="obsolete">Quantum GIS version:</translation>
     </message>
     <message>
         <source>This version of fTools requires at least QGIS version 1.0.0
 Plugin will not be enabled.</source>
-        <translation type="unfinished">Den här versionen av fTools kräver minst QGIS version 1.0.0
+        <translation type="obsolete">Den här versionen av fTools kräver minst QGIS version 1.0.0
 Insticksprogrammet stängs av.</translation>
     </message>
     <message>
         <source>&amp;Analysis Tools</source>
-        <translation type="unfinished">&amp;Analysverktyg</translation>
+        <translation type="obsolete">&amp;Analysverktyg</translation>
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation type="unfinished">Avståndsmatris</translation>
+        <translation type="obsolete">Avståndsmatris</translation>
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation type="unfinished">Summa linjelängd</translation>
+        <translation type="obsolete">Summa linjelängd</translation>
     </message>
     <message>
         <source>Points in polygon</source>
-        <translation type="unfinished">Punkter i polygon</translation>
+        <translation type="obsolete">Punkter i polygon</translation>
     </message>
     <message>
         <source>Basic statistics</source>
-        <translation type="unfinished">Grundläggande statistik</translation>
+        <translation type="obsolete">Grundläggande statistik</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation type="unfinished">Visa unika värden</translation>
+        <translation type="obsolete">Visa unika värden</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation type="unfinished">Närmaste granne-analys</translation>
+        <translation type="obsolete">Närmaste granne-analys</translation>
     </message>
     <message>
         <source>Mean coordinate(s)</source>
-        <translation type="unfinished">Medelvärdeskoordinater</translation>
+        <translation type="obsolete">Medelvärdeskoordinater</translation>
     </message>
     <message>
         <source>Line intersections</source>
-        <translation type="unfinished">Linjeskärning</translation>
+        <translation type="obsolete">Linjeskärning</translation>
     </message>
     <message>
         <source>&amp;Research Tools</source>
-        <translation type="unfinished">Fo&amp;rskningsverktyg</translation>
+        <translation type="obsolete">Fo&amp;rskningsverktyg</translation>
     </message>
     <message>
         <source>Random selection</source>
-        <translation type="unfinished">Slumpvis utvalt</translation>
+        <translation type="obsolete">Slumpvis utvalt</translation>
     </message>
     <message>
         <source>Random selection within subsets</source>
-        <translation type="unfinished">Slumpvis utvalt i delmängd</translation>
+        <translation type="obsolete">Slumpvis utvalt i delmängd</translation>
     </message>
     <message>
         <source>Random points</source>
-        <translation type="unfinished">Slumpvisa punkter</translation>
+        <translation type="obsolete">Slumpvisa punkter</translation>
     </message>
     <message>
         <source>Regular points</source>
-        <translation type="unfinished">Reguljära punkter</translation>
+        <translation type="obsolete">Reguljära punkter</translation>
     </message>
     <message>
         <source>Vector grid</source>
-        <translation type="unfinished">Vektorrutnät</translation>
+        <translation type="obsolete">Vektorrutnät</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="unfinished">Välj efter plats</translation>
+        <translation type="obsolete">Välj efter plats</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
-        <translation type="unfinished">Polygon från lagrets utsträckning</translation>
+        <translation type="obsolete">Polygon från lagrets utsträckning</translation>
     </message>
     <message>
         <source>&amp;Geoprocessing Tools</source>
-        <translation type="unfinished">&amp;Geobehandlingsverktyg</translation>
+        <translation type="obsolete">&amp;Geobehandlingsverktyg</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation type="unfinished">Konvex</translation>
+        <translation type="obsolete">Konvex</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="unfinished">Buffert(ar)</translation>
+        <translation type="obsolete">Buffert(ar)</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation type="unfinished">Skärning</translation>
+        <translation type="obsolete">Skärning</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="unfinished">Union</translation>
+        <translation type="obsolete">Union</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="unfinished">Symetrisk differans</translation>
+        <translation type="obsolete">Symetrisk differans</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="unfinished">Klipp</translation>
+        <translation type="obsolete">Klipp</translation>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="unfinished">Lös ut</translation>
+        <translation type="obsolete">Lös ut</translation>
     </message>
     <message>
         <source>Difference</source>
-        <translation type="unfinished">Differens</translation>
+        <translation type="obsolete">Differens</translation>
     </message>
     <message>
         <source>G&amp;eometry Tools</source>
-        <translation type="unfinished">G&amp;eometriverktyg</translation>
+        <translation type="obsolete">G&amp;eometriverktyg</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="unfinished">Exportera/Addera geometrikolumner</translation>
+        <translation type="obsolete">Exportera/Addera geometrikolumner</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation type="unfinished">Kontrollera geometrins giltighet</translation>
+        <translation type="obsolete">Kontrollera geometrins giltighet</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation type="unfinished">Polygontyngdpunkt</translation>
+        <translation type="obsolete">Polygontyngdpunkt</translation>
     </message>
     <message>
         <source>Delaunay triangulation</source>
-        <translation type="unfinished">Delaunay triangulering</translation>
+        <translation type="obsolete">Delaunay triangulering</translation>
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation type="unfinished">Extrahera noder</translation>
+        <translation type="obsolete">Extrahera noder</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation type="unfinished">Förenkla geometri</translation>
+        <translation type="obsolete">Förenkla geometri</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
-        <translation type="unfinished">Multipart till singlepart</translation>
+        <translation type="obsolete">Multipart till singlepart</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
-        <translation type="unfinished">Singlepart till multipart</translation>
+        <translation type="obsolete">Singlepart till multipart</translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation type="unfinished">Polygoner till linjer</translation>
+        <translation type="obsolete">Polygoner till linjer</translation>
     </message>
     <message>
         <source>&amp;Data Management Tools</source>
-        <translation type="unfinished">&amp;Datahanteringsverktyg</translation>
+        <translation type="obsolete">&amp;Datahanteringsverktyg</translation>
     </message>
     <message>
         <source>Export to new projection</source>
-        <translation type="unfinished">Exportera till ny projektion</translation>
+        <translation type="obsolete">Exportera till ny projektion</translation>
     </message>
     <message>
         <source>Define current projection</source>
-        <translation type="unfinished">Definiera nuvarande projektion</translation>
+        <translation type="obsolete">Definiera nuvarande projektion</translation>
     </message>
     <message>
         <source>Join attributes</source>
-        <translation type="unfinished">Slå ihop attribut</translation>
+        <translation type="obsolete">Slå ihop attribut</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
-        <translation type="unfinished">Slå ihop attribut efter placering</translation>
+        <translation type="obsolete">Slå ihop attribut efter placering</translation>
     </message>
     <message>
         <source>Split vector layer</source>
-        <translation type="unfinished">Dela vektyorlager</translation>
+        <translation type="obsolete">Dela vektyorlager</translation>
     </message>
     <message>
         <source>fTools Information</source>
-        <translation type="unfinished">fTools information</translation>
+        <translation type="obsolete">fTools information</translation>
     </message>
     <message>
         <source>&amp;Tools</source>
         <translation type="obsolete">&amp;Verktyg</translation>
-    </message>
-    <message>
-        <source>&amp;Vector</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -38147,95 +37639,19 @@ Insticksprogrammet stängs av.</translation>
     </message>
     <message>
         <source>Feature %1 contains an unnested hole</source>
-        <translation type="unfinished">Objekt %1 innehåller ett onästlat hål</translation>
+        <translation type="obsolete">Objekt %1 innehåller ett onästlat hål</translation>
     </message>
     <message>
         <source>Feature %1 is not closed</source>
-        <translation type="unfinished">Objekt %1 är ej stängt</translation>
+        <translation type="obsolete">Objekt %1 är ej stängt</translation>
     </message>
     <message>
         <source>Feature %1 is self intersecting</source>
-        <translation type="unfinished">Objekt %1 korsar sig självt</translation>
+        <translation type="obsolete">Objekt %1 korsar sig självt</translation>
     </message>
     <message>
         <source>Feature %1 has incorrect node ordering</source>
-        <translation type="unfinished">Objekt %1 har felaktig nodordning</translation>
-    </message>
-    <message>
-        <source>Max. len:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Min. len:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Mean. len:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Filled:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Empty:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>N:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Mean:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>StdDev:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sum:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Min:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Max:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>CV:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Number of unique values:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Range:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Median:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Observed mean distance:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Expected mean distance:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Nearest neighbour index:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Z-Score:</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Objekt %1 har felaktig nodordning</translation>
     </message>
 </context>
 </TS>

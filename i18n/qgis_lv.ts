@@ -1126,65 +1126,65 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>creating new selection</source>
-        <translation type="unfinished">veido jaunu izvēli</translation>
+        <translation type="obsolete">veido jaunu izvēli</translation>
     </message>
     <message>
         <source>adding to current selection</source>
-        <translation type="unfinished">pievieno esošajai izvēlei</translation>
+        <translation type="obsolete">pievieno esošajai izvēlei</translation>
     </message>
     <message>
         <source>removing from current selection</source>
-        <translation type="unfinished">noņem no esošās izvēles</translation>
+        <translation type="obsolete">noņem no esošās izvēles</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="unfinished">Izvēlēties pēc atrašanās vietas</translation>
+        <translation type="obsolete">Izvēlēties pēc atrašanās vietas</translation>
     </message>
     <message>
         <source>Select features in:</source>
-        <translation type="unfinished">Izvēlēties objektus no:</translation>
+        <translation type="obsolete">Izvēlēties objektus no:</translation>
     </message>
     <message>
         <source>that intersect features in:</source>
-        <translation type="unfinished">kas pārklājas ar objektiem iekš:</translation>
+        <translation type="obsolete">kas pārklājas ar objektiem iekš:</translation>
     </message>
     <message>
         <source>Modify current selection by:</source>
-        <translation type="unfinished">Mainīt pašreizējo izvēli pēc:</translation>
+        <translation type="obsolete">Mainīt pašreizējo izvēli pēc:</translation>
     </message>
     <message>
         <source>Please specify input layer</source>
-        <translation type="unfinished">Norādiet ievades slāni</translation>
+        <translation type="obsolete">Norādiet ievades slāni</translation>
     </message>
     <message>
         <source>Please specify select layer</source>
-        <translation type="unfinished">Norādiet izvēles slāni</translation>
+        <translation type="obsolete">Norādiet izvēles slāni</translation>
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation type="unfinished">Attāluma matrica</translation>
+        <translation type="obsolete">Attāluma matrica</translation>
     </message>
     <message>
         <source>Created output matrix:
 </source>
-        <translation type="unfinished">Izveidotā izvades matrica:</translation>
+        <translation type="obsolete">Izveidotā izvades matrica:</translation>
     </message>
     <message>
         <source>Points in polygon</source>
-        <translation type="unfinished">Punkti poligonā</translation>
+        <translation type="obsolete">Punkti poligonā</translation>
     </message>
     <message>
         <source>Created output Shapefile:
 </source>
-        <translation type="unfinished">Izveidotais izvades Shapefile:</translation>
+        <translation type="obsolete">Izveidotais izvades Shapefile:</translation>
     </message>
     <message>
         <source>Vector layer is not valid</source>
-        <translation type="unfinished">Vektoru slānis nav derīgs</translation>
+        <translation type="obsolete">Vektoru slānis nav derīgs</translation>
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation type="unfinished">Summē līniju garumus</translation>
+        <translation type="obsolete">Summē līniju garumus</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="241"/>
@@ -1665,23 +1665,23 @@ p, li { white-space: pre-wrap; }
     <name>GeometryDialog</name>
     <message>
         <source>Merge all</source>
-        <translation type="unfinished">Apvienot visu</translation>
+        <translation type="obsolete">Apvienot visu</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="unfinished">Lūdzu precizējiet ievades vektordatu slāni</translation>
+        <translation type="obsolete">Lūdzu precizējiet ievades vektordatu slāni</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="unfinished">Lūdzu precizējiet izvades Shapefile</translation>
+        <translation type="obsolete">Lūdzu precizējiet izvades Shapefile</translation>
     </message>
     <message>
         <source>Please specify valid tolerance value</source>
-        <translation type="unfinished">Lūdzu precizejiet derīgu pielaides vērtību</translation>
+        <translation type="obsolete">Lūdzu precizejiet derīgu pielaides vērtību</translation>
     </message>
     <message>
         <source>Please specify valid UID field</source>
-        <translation type="unfinished">Lūdzu precizējiet derīgu UID lauku</translation>
+        <translation type="obsolete">Lūdzu precizējiet derīgu UID lauku</translation>
     </message>
     <message>
         <source>Created output shapefile</source>
@@ -1689,67 +1689,67 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished">Vai vēlaties pievienot jauno slāni TOC?</translation>
+        <translation type="obsolete">Vai vēlaties pievienot jauno slāni TOC?</translation>
     </message>
     <message>
         <source>Output shapefile</source>
-        <translation type="unfinished">Izvades Shapefile</translation>
+        <translation type="obsolete">Izvades Shapefile</translation>
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation type="unfinished">Izvilkt mezglus</translation>
+        <translation type="obsolete">Izvilkt mezglus</translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation type="unfinished">Pārveidot poligonus līnijās</translation>
+        <translation type="obsolete">Pārveidot poligonus līnijās</translation>
     </message>
     <message>
         <source>Input polygon vector layer</source>
-        <translation type="unfinished">Ievades poligonu vektoru slānis</translation>
+        <translation type="obsolete">Ievades poligonu vektoru slānis</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="unfinished">Eksportēt/pievienot ģeometrijas kolonnas</translation>
+        <translation type="obsolete">Eksportēt/pievienot ģeometrijas kolonnas</translation>
     </message>
     <message>
         <source>Input vector layer</source>
-        <translation type="unfinished">Ievades vektordatu slānis</translation>
+        <translation type="obsolete">Ievades vektordatu slānis</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation type="unfinished">Vienkāršot ģeometriju</translation>
+        <translation type="obsolete">Vienkāršot ģeometriju</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation type="unfinished">Poligona centroīdi</translation>
+        <translation type="obsolete">Poligona centroīdi</translation>
     </message>
     <message>
         <source>Output point shapefile</source>
-        <translation type="unfinished">Punktu izvades Shapefile</translation>
+        <translation type="obsolete">Punktu izvades Shapefile</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
-        <translation type="unfinished">Izveidot poligonu no slāņa apjoma</translation>
+        <translation type="obsolete">Izveidot poligonu no slāņa apjoma</translation>
     </message>
     <message>
         <source>Input layer</source>
-        <translation type="unfinished">Ievades slānis</translation>
+        <translation type="obsolete">Ievades slānis</translation>
     </message>
     <message>
         <source>Output polygon shapefile</source>
-        <translation type="unfinished">Poligonu izvades Shapefile</translation>
+        <translation type="obsolete">Poligonu izvades Shapefile</translation>
     </message>
     <message>
         <source>Unable to delete existing shapefile.</source>
-        <translation type="unfinished">Nebija iespējams dzēst eksistējošo Shapefile.</translation>
+        <translation type="obsolete">Nebija iespējams dzēst eksistējošo Shapefile.</translation>
     </message>
     <message>
         <source>Error processing specified tolerance!</source>
-        <translation type="unfinished">Notika kļūda formējot noteikto pielaidi!</translation>
+        <translation type="obsolete">Notika kļūda formējot noteikto pielaidi!</translation>
     </message>
     <message>
         <source>Please choose larger tolerance...</source>
-        <translation type="unfinished">Lūdzu, izvēlieties lielāku pielaides vērtību</translation>
+        <translation type="obsolete">Lūdzu, izvēlieties lielāku pielaides vērtību</translation>
     </message>
     <message>
         <source>Function not found</source>
@@ -1765,90 +1765,78 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Input point vector layer</source>
-        <translation type="unfinished">Ievades punktu vektoru slānis</translation>
+        <translation type="obsolete">Ievades punktu vektoru slānis</translation>
     </message>
     <message>
         <source>Unable to delete incomplete shapefile.</source>
-        <translation type="unfinished">Nebija iespējams dzēst nepabeigtu Shapefile.</translation>
+        <translation type="obsolete">Nebija iespējams dzēst nepabeigtu Shapefile.</translation>
     </message>
     <message>
         <source>Created output shapefile:</source>
-        <translation type="unfinished">Izveidotais izvades Shapefile:</translation>
+        <translation type="obsolete">Izveidotais izvades Shapefile:</translation>
     </message>
     <message>
         <source>Error writing output shapefile.</source>
-        <translation type="unfinished">Kļūda rakstot izvades Shapefile.</translation>
-    </message>
-    <message>
-        <source>Singleparts to multipart</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Multipart to singleparts</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Delaunay triangulation</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Kļūda rakstot izvades Shapefile.</translation>
     </message>
 </context>
 <context>
     <name>GeoprocessingDialog</name>
     <message>
         <source>Unable to delete existing shapefile.</source>
-        <translation type="unfinished">Nebija iespējams dzēst esošo Shapefile.</translation>
+        <translation type="obsolete">Nebija iespējams dzēst esošo Shapefile.</translation>
     </message>
     <message>
         <source>
 Warnings:</source>
-        <translation type="unfinished">
+        <translation type="obsolete">
 Brīdinājumi:</translation>
     </message>
     <message>
         <source>
 Input CRS error: Different input coordinate reference systems detected, results may not be as expected.</source>
-        <translation type="unfinished">
+        <translation type="obsolete">
 Ievades CRS kļūda: Ir detektētas dažādas koordinātu sistēmas. Rezultāti var nebūt tādi, kādus jūs gaidījāt.</translation>
     </message>
     <message>
         <source>
 Feature geometry error: One or more output features ignored due to invalid geometry.</source>
-        <translation type="unfinished">
+        <translation type="obsolete">
 Objekta ģeometrijas kļūda: Viens vai vairāki objekti tika ignorēti, jo tiem bija nederīga ģeometrija.</translation>
     </message>
     <message>
         <source>
 GEOS geoprocessing error: One or more input features have invalid geometry.</source>
-        <translation type="unfinished">
+        <translation type="obsolete">
 GEOS ģeoprocesēšanas kļūda: Vienam vai vairākiem ievades objektiem ir nederīga ģeometrija.</translation>
     </message>
     <message>
         <source>Created output shapefile:</source>
-        <translation type="unfinished">Izveidotais Shapefile:</translation>
+        <translation type="obsolete">Izveidotais Shapefile:</translation>
     </message>
     <message>
         <source>Dissolve all</source>
-        <translation type="unfinished">Izšķīdināt visu</translation>
+        <translation type="obsolete">Izšķīdināt visu</translation>
     </message>
     <message>
         <source>Please specify an input layer</source>
-        <translation type="unfinished">Lūdzu norādiet ievades slāni</translation>
+        <translation type="obsolete">Lūdzu norādiet ievades slāni</translation>
     </message>
     <message>
         <source>Please specify a difference/intersect/union layer</source>
-        <translation type="unfinished">Lūdzu norādiet starpības/pārklājošo/apvienošanas slāni</translation>
+        <translation type="obsolete">Lūdzu norādiet starpības/pārklājošo/apvienošanas slāni</translation>
     </message>
     <message>
         <source>Please specify valid buffer value</source>
-        <translation type="unfinished">Lūdzu norādiet derīgu bufera vērtību</translation>
+        <translation type="obsolete">Lūdzu norādiet derīgu bufera vērtību</translation>
     </message>
     <message>
         <source>Please specify dissolve field</source>
-        <translation type="unfinished">Lūdzu norādiet izšķīdināšanas lauku</translation>
+        <translation type="obsolete">Lūdzu norādiet izšķīdināšanas lauku</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="unfinished">Lūdzu norādiet izvades Shapefile</translation>
+        <translation type="obsolete">Lūdzu norādiet izvades Shapefile</translation>
     </message>
     <message>
         <source>Unable to create geoprocessing result.</source>
@@ -1864,11 +1852,11 @@ GEOS ģeoprocesēšanas kļūda: Vienam vai vairākiem ievades objektiem ir nede
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="unfinished">Buferis</translation>
+        <translation type="obsolete">Buferis</translation>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="unfinished">Izšķīdināt</translation>
+        <translation type="obsolete">Izšķīdināt</translation>
     </message>
     <message>
         <source>Erase layer</source>
@@ -1876,68 +1864,43 @@ GEOS ģeoprocesēšanas kļūda: Vienam vai vairākiem ievades objektiem ir nede
     </message>
     <message>
         <source>Difference</source>
-        <translation type="unfinished">Starpība</translation>
+        <translation type="obsolete">Starpība</translation>
     </message>
     <message>
         <source>Intersect layer</source>
-        <translation type="unfinished">Pārklāt slāni</translation>
+        <translation type="obsolete">Pārklāt slāni</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation type="unfinished">Pārklāt</translation>
+        <translation type="obsolete">Pārklāt</translation>
     </message>
     <message>
         <source>Difference layer</source>
-        <translation type="unfinished">Starpības slānis</translation>
+        <translation type="obsolete">Starpības slānis</translation>
     </message>
     <message>
         <source>No features selected, please uncheck &apos;Use selected&apos; or make a selection</source>
-        <translation type="unfinished">Objekti nav izvēlēti. Noņemiet atzīmi no &quot;Lietot izvēli&quot; vai arī izvēlieties objektus</translation>
+        <translation type="obsolete">Objekti nav izvēlēti. Noņemiet atzīmi no &quot;Lietot izvēli&quot; vai arī izvēlieties objektus</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="unfinished">Simetriskā starpība</translation>
+        <translation type="obsolete">Simetriskā starpība</translation>
     </message>
     <message>
         <source>Clip layer</source>
-        <translation type="unfinished">Izgriešanas slānis</translation>
+        <translation type="obsolete">Izgriešanas slānis</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="unfinished">Izgriezt</translation>
+        <translation type="obsolete">Izgriezt</translation>
     </message>
     <message>
         <source>Union layer</source>
-        <translation type="unfinished">Apvienošanas slānis</translation>
+        <translation type="obsolete">Apvienošanas slānis</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="unfinished">Apvienot</translation>
-    </message>
-    <message>
-        <source>Create single minimum convex hull</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Create convex hulls based on input field</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Convex hull(s)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-Some output geometries may be missing or invalid.
-
-Would you like to add the new layer anyway?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>
-
-Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Apvienot</translation>
     </message>
 </context>
 <context>
@@ -2499,7 +2462,7 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>OSM Information</source>
-        <translation type="unfinished">OSM informācija</translation>
+        <translation type="obsolete">OSM informācija</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="78"/>
@@ -2672,43 +2635,43 @@ Would you like to add the new layer to the TOC?</source>
     <name>OsmDownloadDlg</name>
     <message>
         <source>OSM Download</source>
-        <translation type="unfinished">OSM lejupielāde</translation>
+        <translation type="obsolete">OSM lejupielāde</translation>
     </message>
     <message>
         <source>Waiting for OpenStreetMap server ...</source>
-        <translation type="unfinished">Gaida uz OpenStreetMap serveri...</translation>
+        <translation type="obsolete">Gaida uz OpenStreetMap serveri...</translation>
     </message>
     <message>
         <source>Download process failed. OpenStreetMap server response: %1 - %2</source>
-        <translation type="unfinished">Lejupielādes process bija nesekmīgs. OpenStreetMap servera atbilde: %1 - %2</translation>
+        <translation type="obsolete">Lejupielādes process bija nesekmīgs. OpenStreetMap servera atbilde: %1 - %2</translation>
     </message>
     <message>
         <source>OSM Download Error</source>
-        <translation type="unfinished">OSM lejupielādes kļūda</translation>
+        <translation type="obsolete">OSM lejupielādes kļūda</translation>
     </message>
     <message>
         <source>Download failed: %1.</source>
-        <translation type="unfinished">Lejupielāde neizdevās: %1.</translation>
+        <translation type="obsolete">Lejupielāde neizdevās: %1.</translation>
     </message>
     <message>
         <source>Getting data</source>
-        <translation type="unfinished">Saņem datus</translation>
+        <translation type="obsolete">Saņem datus</translation>
     </message>
     <message>
         <source>Both extents are too large!</source>
-        <translation type="unfinished">Abi apjomi ir par lielu!</translation>
+        <translation type="obsolete">Abi apjomi ir par lielu!</translation>
     </message>
     <message>
         <source>Latitude extent is too large!</source>
-        <translation type="unfinished">Platuma apjoms ir par lielu!</translation>
+        <translation type="obsolete">Platuma apjoms ir par lielu!</translation>
     </message>
     <message>
         <source>Longitude extent is too large!</source>
-        <translation type="unfinished">Garuma apjoms ir par lielu!</translation>
+        <translation type="obsolete">Garuma apjoms ir par lielu!</translation>
     </message>
     <message>
         <source>OK! Area is probably acceptable to server.</source>
-        <translation type="unfinished">Labi. Iespējams, ka šāda platība serverim derēs.</translation>
+        <translation type="obsolete">Labi. Iespējams, ka šāda platība serverim derēs.</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="19"/>
@@ -2782,14 +2745,6 @@ Would you like to add the new layer to the TOC?</source>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="365"/>
         <source>Cancel</source>
         <translation type="unfinished">Atcelt</translation>
-    </message>
-    <message>
-        <source>Unable to save the file %1: %2.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2949,19 +2904,19 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>OSM Plugin</source>
-        <translation type="unfinished">OSM spraudnis</translation>
+        <translation type="obsolete">OSM spraudnis</translation>
     </message>
     <message>
         <source>The &apos;Create OSM Relation&apos; dialog was closed automatically because current OSM database was changed.</source>
-        <translation type="unfinished">&apos;Izveidot OSM relāciju&apos; dialogs tika aizvērts automātiski, jo OSM datubāze ir mainījusies.</translation>
+        <translation type="obsolete">&apos;Izveidot OSM relāciju&apos; dialogs tika aizvērts automātiski, jo OSM datubāze ir mainījusies.</translation>
     </message>
     <message>
         <source>Choose OSM feature first.</source>
-        <translation type="unfinished">Vispirms izvēlieties OSM objektu.</translation>
+        <translation type="obsolete">Vispirms izvēlieties OSM objektu.</translation>
     </message>
     <message>
         <source>Choose relation for editing first.</source>
-        <translation type="unfinished">Vispirms izvēlieties rediģējamo relāciju.</translation>
+        <translation type="obsolete">Vispirms izvēlieties rediģējamo relāciju.</translation>
     </message>
     <message>
         <source>Property &apos;%1&apos; cannot be added twice.</source>
@@ -2986,10 +2941,6 @@ Would you like to add the new layer to the TOC?</source>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="422"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="425"/>
         <source>Remove this feature</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>OSM Feature Dock Widget</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3053,27 +3004,27 @@ Would you like to add the new layer to the TOC?</source>
     <name>OsmSaveDlg</name>
     <message>
         <source>Save OSM to file</source>
-        <translation type="unfinished">Saglabāt OSM failā</translation>
+        <translation type="obsolete">Saglabāt OSM failā</translation>
     </message>
     <message>
         <source>Initializing...</source>
-        <translation type="unfinished">Inicializē...</translation>
+        <translation type="obsolete">Inicializē...</translation>
     </message>
     <message>
         <source>Saving nodes...</source>
-        <translation type="unfinished">Saglabā mezglus...</translation>
+        <translation type="obsolete">Saglabā mezglus...</translation>
     </message>
     <message>
         <source>Saving lines...</source>
-        <translation type="unfinished">Saglabā līnijas...</translation>
+        <translation type="obsolete">Saglabā līnijas...</translation>
     </message>
     <message>
         <source>Saving polygons...</source>
-        <translation type="unfinished">Saglabā poligonus...</translation>
+        <translation type="obsolete">Saglabā poligonus...</translation>
     </message>
     <message>
         <source>Saving relations...</source>
-        <translation type="unfinished">Saglabā relācijas...</translation>
+        <translation type="obsolete">Saglabā relācijas...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="16"/>
@@ -3119,10 +3070,6 @@ Would you like to add the new layer to the TOC?</source>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="125"/>
         <source>Tags</source>
         <translation type="unfinished">Tagi</translation>
-    </message>
-    <message>
-        <source>Unable to save the file %1: %2.</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3253,50 +3200,42 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>OSM Upload</source>
-        <translation type="unfinished">OSM augšupielāde</translation>
-    </message>
-    <message>
-        <source>Uploading data...</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">OSM augšupielāde</translation>
     </message>
 </context>
 <context>
     <name>Python</name>
     <message>
         <source>An error has occured while executing Python code:</source>
-        <translation type="unfinished">Darbinot Python kodu konstatēta kļūda:</translation>
+        <translation type="obsolete">Darbinot Python kodu konstatēta kļūda:</translation>
     </message>
     <message>
         <source>Python version:</source>
-        <translation type="unfinished">Python versija:</translation>
+        <translation type="obsolete">Python versija:</translation>
     </message>
     <message>
         <source>Python path:</source>
-        <translation type="unfinished">Python atrašanās:</translation>
+        <translation type="obsolete">Python atrašanās:</translation>
     </message>
     <message>
         <source>Python error</source>
-        <translation type="unfinished">Python kļūda</translation>
+        <translation type="obsolete">Python kļūda</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin %1</source>
-        <translation type="unfinished">Nevar pievienot spraudni %1</translation>
+        <translation type="obsolete">Nevar pievienot spraudni %1</translation>
     </message>
     <message>
         <source>%1 due an error when calling its classFactory() method</source>
-        <translation type="unfinished"> %1 dēļ kļūdas izsaucot tā classFactory() metodi</translation>
+        <translation type="obsolete"> %1 dēļ kļūdas izsaucot tā classFactory() metodi</translation>
     </message>
     <message>
         <source>%1 due an error when calling its initGui() method</source>
-        <translation type="unfinished">%1 dēļ kļūdas izsaucot tā initGui() metodi</translation>
+        <translation type="obsolete">%1 dēļ kļūdas izsaucot tā initGui() metodi</translation>
     </message>
     <message>
         <source>Error while unloading plugin %1</source>
-        <translation type="unfinished">Kļūda sparudņa atslēgšanā %1</translation>
-    </message>
-    <message>
-        <source>Couldn&apos;t load plugin &apos;%1&apos; from [&apos;%2&apos;]</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Kļūda sparudņa atslēgšanā %1</translation>
     </message>
 </context>
 <context>
@@ -22428,317 +22367,308 @@ Pārliecinieties, ka jums ir SELECT tiesības tai tabulai, kas satur PostGIS ģe
     <name>QgsPluginInstaller</name>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="unfinished">QGIS Python spraudņu instalators</translation>
+        <translation type="obsolete">QGIS Python spraudņu instalators</translation>
     </message>
     <message>
         <source>Nothing to remove! Plugin directory doesn&apos;t exist:</source>
-        <translation type="unfinished">Nav ko noņemt. Spraudņu mape neeksistē:</translation>
+        <translation type="obsolete">Nav ko noņemt. Spraudņu mape neeksistē:</translation>
     </message>
     <message>
         <source>Failed to remove the directory:</source>
-        <translation type="unfinished">Neizdevās aizvākt mapi:</translation>
+        <translation type="obsolete">Neizdevās aizvākt mapi:</translation>
     </message>
     <message>
         <source>Check permissions or remove it manually</source>
-        <translation type="unfinished">Pārbaudiet tiesības vai aizvāciet manuāli</translation>
+        <translation type="obsolete">Pārbaudiet tiesības vai aizvāciet manuāli</translation>
     </message>
     <message>
         <source>Couldn&apos;t parse output from the repository</source>
-        <translation type="unfinished">Nebija iespējams parsēt repozitorija izvadi</translation>
+        <translation type="obsolete">Nebija iespējams parsēt repozitorija izvadi</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the local plugin directory</source>
-        <translation type="unfinished">Nebija iespējams atvērt lokālo spraudņu mapi</translation>
+        <translation type="obsolete">Nebija iespējams atvērt lokālo spraudņu mapi</translation>
     </message>
     <message>
         <source>Fetch Python Plugins...</source>
-        <translation type="unfinished">Saņemt Python spraudņus...</translation>
+        <translation type="obsolete">Saņemt Python spraudņus...</translation>
     </message>
     <message>
         <source>Install more plugins from remote repositories</source>
-        <translation type="unfinished">Instalēt papildus spraudņus no attālinātajiem repozitorijiem</translation>
+        <translation type="obsolete">Instalēt papildus spraudņus no attālinātajiem repozitorijiem</translation>
     </message>
     <message>
         <source>Looking for new plugins...</source>
-        <translation type="unfinished">Meklē jaunus spraudņus...</translation>
+        <translation type="obsolete">Meklē jaunus spraudņus...</translation>
     </message>
     <message>
         <source>QGIS Plugin Conflict:</source>
-        <translation type="unfinished">QGIS spraudņu konflikts:</translation>
+        <translation type="obsolete">QGIS spraudņu konflikts:</translation>
     </message>
     <message>
         <source>There is a new plugin available</source>
-        <translation type="unfinished">Ir pieejams jauns spraudnis</translation>
+        <translation type="obsolete">Ir pieejams jauns spraudnis</translation>
     </message>
     <message>
         <source>There is a plugin update available</source>
-        <translation type="unfinished">Ir pieejams spraudņa atjauninājums</translation>
+        <translation type="obsolete">Ir pieejams spraudņa atjauninājums</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
-        <translation type="unfinished">Kļūda nolasot repozitoriju:</translation>
-    </message>
-    <message>
-        <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. This is likely due to files associated with a previous installation of QGIS. Please use the Plugin Installer to remove that older plugin in order to unmask the newer version shipped with this copy of QGIS.</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Kļūda nolasot repozitoriju:</translation>
     </message>
 </context>
 <context>
     <name>QgsPluginInstallerDialog</name>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="unfinished">QGIS Python spraudņu instalators</translation>
+        <translation type="obsolete">QGIS Python spraudņu instalators</translation>
     </message>
     <message>
         <source>all repositories</source>
-        <translation type="unfinished">visi repozitoriji</translation>
+        <translation type="obsolete">visi repozitoriji</translation>
     </message>
     <message>
         <source>Install/upgrade plugin</source>
-        <translation type="unfinished">Instalēt/atjaunot spraudni</translation>
+        <translation type="obsolete">Instalēt/atjaunot spraudni</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
-        <translation type="unfinished">Kļūda nolasot repozitoriju:</translation>
+        <translation type="obsolete">Kļūda nolasot repozitoriju:</translation>
     </message>
     <message>
         <source>connected</source>
-        <translation type="unfinished">pieslēgts</translation>
+        <translation type="obsolete">pieslēgts</translation>
     </message>
     <message>
         <source>This repository is connected</source>
-        <translation type="unfinished">Šis repozitorijs ir pieslēgts</translation>
+        <translation type="obsolete">Šis repozitorijs ir pieslēgts</translation>
     </message>
     <message>
         <source>unavailable</source>
-        <translation type="unfinished">nepieejams</translation>
+        <translation type="obsolete">nepieejams</translation>
     </message>
     <message>
         <source>This repository is enabled, but unavailable</source>
-        <translation type="unfinished">Šis repozitorijs ir aktivizēts, taču tas nav pieejams</translation>
+        <translation type="obsolete">Šis repozitorijs ir aktivizēts, taču tas nav pieejams</translation>
     </message>
     <message>
         <source>disabled</source>
-        <translation type="unfinished">atslēgts</translation>
+        <translation type="obsolete">atslēgts</translation>
     </message>
     <message>
         <source>This repository is disabled</source>
-        <translation type="unfinished">Šis repozitorijs ir atslēgts</translation>
+        <translation type="obsolete">Šis repozitorijs ir atslēgts</translation>
     </message>
     <message>
         <source>This repository is blocked due to incompatibility with your Quantum GIS version</source>
-        <translation type="unfinished">Šis repozitorijs ir atslēgts, jo tas nav savietojams ar jūsu izmantoto Quantum GIS versiju</translation>
+        <translation type="obsolete">Šis repozitorijs ir atslēgts, jo tas nav savietojams ar jūsu izmantoto Quantum GIS versiju</translation>
     </message>
     <message>
         <source>orphans</source>
-        <translation type="unfinished">bāreņi</translation>
+        <translation type="obsolete">bāreņi</translation>
     </message>
     <message>
         <source>any status</source>
-        <translation type="unfinished">jebkāds statuss</translation>
+        <translation type="obsolete">jebkāds statuss</translation>
     </message>
     <message>
         <source>not installed</source>
-        <translation type="unfinished">nav instalēts</translation>
+        <translation type="obsolete">nav instalēts</translation>
     </message>
     <message>
         <source>installed</source>
-        <translation type="unfinished">instalēts</translation>
+        <translation type="obsolete">instalēts</translation>
     </message>
     <message>
         <source>upgradeable and news</source>
-        <translation type="unfinished">atjaunojami un jaunumi</translation>
+        <translation type="obsolete">atjaunojami un jaunumi</translation>
     </message>
     <message>
         <source>This plugin is not installed</source>
-        <translation type="unfinished">Šis spraudnis nav instalēts</translation>
+        <translation type="obsolete">Šis spraudnis nav instalēts</translation>
     </message>
     <message>
         <source>This plugin is installed</source>
-        <translation type="unfinished">Šis spraudnis ir instalēts</translation>
+        <translation type="obsolete">Šis spraudnis ir instalēts</translation>
     </message>
     <message>
         <source>This plugin is installed, but there is an updated version available</source>
-        <translation type="unfinished">Šis spraudnis ir instalēts un tam ir pieejama jaunāka versija</translation>
+        <translation type="obsolete">Šis spraudnis ir instalēts un tam ir pieejama jaunāka versija</translation>
     </message>
     <message>
         <source>This plugin is installed, but I can&apos;t find it in any enabled repository</source>
-        <translation type="unfinished">Šis spraudnis ir instalēts, taču nav iespējams to atrast nevienā no aktivizētajiem repozitorijiem</translation>
+        <translation type="obsolete">Šis spraudnis ir instalēts, taču nav iespējams to atrast nevienā no aktivizētajiem repozitorijiem</translation>
     </message>
     <message>
         <source>This plugin is not installed and is seen for the first time</source>
-        <translation type="unfinished">Šis spraudnis nav instalēts un tas iepriekš nav redzēts</translation>
+        <translation type="obsolete">Šis spraudnis nav instalēts un tas iepriekš nav redzēts</translation>
     </message>
     <message>
         <source>This plugin is installed and is newer than its version available in a repository</source>
-        <translation type="unfinished">Šis spraudnis ir instalēts un ir jaunāks nekā repozitorijā pieejamā versija</translation>
+        <translation type="obsolete">Šis spraudnis ir instalēts un ir jaunāks nekā repozitorijā pieejamā versija</translation>
     </message>
     <message>
         <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
-        <translation type="unfinished">Šis spraudnis nav savietojams ar jūsu Quantum GIS versiju un visticamāk nestrādās.</translation>
+        <translation type="obsolete">Šis spraudnis nav savietojams ar jūsu Quantum GIS versiju un visticamāk nestrādās.</translation>
     </message>
     <message>
         <source>The required Python module is not installed.
 For more information, please visit its homepage and Quantum GIS wiki.</source>
-        <translation type="unfinished">Nepieciešamais Python modulis nav instalēts.
+        <translation type="obsolete">Nepieciešamais Python modulis nav instalēts.
 Lai iegūtu sīkāku informāciju, apmeklējiet tā mājaslapu un Quantum GIS wiki.</translation>
     </message>
     <message>
         <source>This plugin seems to be broken.
 It has been installed but can&apos;t be loaded.
 Here is the error message:</source>
-        <translation type="unfinished">Šis spraudnis izskātās, ka ir bojāts.
+        <translation type="obsolete">Šis spraudnis izskātās, ka ir bojāts.
 Tas ir instalēts, bet to nevar ielādēt.
 Te būs kļūdas paziņojums:</translation>
     </message>
     <message>
         <source>upgradeable</source>
-        <translation type="unfinished">atjaunināms</translation>
+        <translation type="obsolete">atjaunināms</translation>
     </message>
     <message>
         <source>new!</source>
-        <translation type="unfinished">jauns!</translation>
+        <translation type="obsolete">jauns!</translation>
     </message>
     <message>
         <source>invalid</source>
-        <translation type="unfinished">nederīgs</translation>
+        <translation type="obsolete">nederīgs</translation>
     </message>
     <message>
         <source>Note that it&apos;s an uninstallable core plugin</source>
-        <translation type="unfinished">Šis ir neatinstalējams kodola spraudnis</translation>
+        <translation type="obsolete">Šis ir neatinstalējams kodola spraudnis</translation>
     </message>
     <message>
         <source>installed version</source>
-        <translation type="unfinished">instalētā versija</translation>
+        <translation type="obsolete">instalētā versija</translation>
     </message>
     <message>
         <source>available version</source>
-        <translation type="unfinished">pieejamā versija</translation>
+        <translation type="obsolete">pieejamā versija</translation>
     </message>
     <message>
         <source>That&apos;s the newest available version</source>
-        <translation type="unfinished">Šī ir pati jaunākā pieejamā versija</translation>
+        <translation type="obsolete">Šī ir pati jaunākā pieejamā versija</translation>
     </message>
     <message>
         <source>There is no version available for download</source>
-        <translation type="unfinished">Nav versijas lejupielādei</translation>
+        <translation type="obsolete">Nav versijas lejupielādei</translation>
     </message>
     <message>
         <source>This plugin is broken</source>
-        <translation type="unfinished">Šis spraudnis ir bojāts</translation>
+        <translation type="obsolete">Šis spraudnis ir bojāts</translation>
     </message>
     <message>
         <source>This plugin requires a newer version of Quantum GIS</source>
-        <translation type="unfinished">Šim spraudnim ir nepieciešama jaunāka Quantum GIS versija</translation>
+        <translation type="obsolete">Šim spraudnim ir nepieciešama jaunāka Quantum GIS versija</translation>
     </message>
     <message>
         <source>at least</source>
-        <translation type="unfinished">vismaz</translation>
+        <translation type="obsolete">vismaz</translation>
     </message>
     <message>
         <source>This plugin requires a missing module</source>
-        <translation type="unfinished">Šim spraudnim ir nepieciešams iztrūkstošs modulis</translation>
+        <translation type="obsolete">Šim spraudnim ir nepieciešams iztrūkstošs modulis</translation>
     </message>
     <message>
         <source>only locally available</source>
-        <translation type="unfinished">pieejams tikai lokāli</translation>
+        <translation type="obsolete">pieejams tikai lokāli</translation>
     </message>
     <message>
         <source>Install plugin</source>
-        <translation type="unfinished">Instalēt spraudni</translation>
+        <translation type="obsolete">Instalēt spraudni</translation>
     </message>
     <message>
         <source>Reinstall plugin</source>
-        <translation type="unfinished">Pārinstalēt spraudni</translation>
+        <translation type="obsolete">Pārinstalēt spraudni</translation>
     </message>
     <message>
         <source>Upgrade plugin</source>
-        <translation type="unfinished">Atjaunināt spraudni</translation>
+        <translation type="obsolete">Atjaunināt spraudni</translation>
     </message>
     <message>
         <source>Downgrade plugin</source>
-        <translation type="unfinished">Pazemināt spraudņa versiju</translation>
+        <translation type="obsolete">Pazemināt spraudņa versiju</translation>
     </message>
     <message>
         <source>Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!</source>
-        <translation type="unfinished">Vai tiešām vēlaties pazemināt spraudņa versiju uz jaunāko pieejamo versiju? Šobrīd ir instalēta jaunāka versija!</translation>
+        <translation type="obsolete">Vai tiešām vēlaties pazemināt spraudņa versiju uz jaunāko pieejamo versiju? Šobrīd ir instalēta jaunāka versija!</translation>
     </message>
     <message>
         <source>Plugin installation failed</source>
-        <translation type="unfinished">Spraudņa instalēšana neizdevās</translation>
+        <translation type="obsolete">Spraudņa instalēšana neizdevās</translation>
     </message>
     <message>
         <source>Plugin has disappeared</source>
-        <translation type="unfinished">Spraudnis ir pazudis</translation>
+        <translation type="obsolete">Spraudnis ir pazudis</translation>
     </message>
     <message>
         <source>Plugin installed successfully</source>
-        <translation type="unfinished">Spraudnis ir sekmīgi instalēts</translation>
+        <translation type="obsolete">Spraudnis ir sekmīgi instalēts</translation>
     </message>
     <message>
         <source>Python plugin installed.
 Now you need to enable it in Plugin Manager.</source>
-        <translation type="unfinished">Python spraudnis ir instalēts.
+        <translation type="obsolete">Python spraudnis ir instalēts.
 Tagad ir nepieciešams to aktivizēt iekš Spraudņu pārvaldnieka.</translation>
     </message>
     <message>
         <source>Plugin reinstalled successfully</source>
-        <translation type="unfinished">Spraudnis ir sekmīgi pārinstalēts</translation>
+        <translation type="obsolete">Spraudnis ir sekmīgi pārinstalēts</translation>
     </message>
     <message>
         <source>Python plugin reinstalled.
 You need to restart Quantum GIS in order to reload it.</source>
-        <translation type="unfinished">Python spraudnis ir pārinstalēts.
+        <translation type="obsolete">Python spraudnis ir pārinstalēts.
 Jums ir nepieciešams pārstartēt Quantum GIS, lai varētu sākt izmantot šo spraudni.</translation>
     </message>
     <message>
         <source>The plugin is designed for a newer version of Quantum GIS. The minimum required version is:</source>
-        <translation type="unfinished">Šis spraudnis ir veidots priekš jaunākas Quantum GIS versijas. Minimālā versija ir:</translation>
+        <translation type="obsolete">Šis spraudnis ir veidots priekš jaunākas Quantum GIS versijas. Minimālā versija ir:</translation>
     </message>
     <message>
         <source>The plugin depends on some components missing on your system. You need to install the following Python module in order to enable it:</source>
-        <translation type="unfinished">Šim spraudnim ir nepieciešami komponenti, kuri nav pieejami jūsu sistēmā. Jums ir nepieciešams instalēt sekojošus Python moduļus, lai aktivizētu šo spraudni:</translation>
+        <translation type="obsolete">Šim spraudnim ir nepieciešami komponenti, kuri nav pieejami jūsu sistēmā. Jums ir nepieciešams instalēt sekojošus Python moduļus, lai aktivizētu šo spraudni:</translation>
     </message>
     <message>
         <source>The plugin is broken. Python said:</source>
-        <translation type="unfinished">Spraudnis ir bojāts. Python kļūda:</translation>
+        <translation type="obsolete">Spraudnis ir bojāts. Python kļūda:</translation>
     </message>
     <message>
         <source>Plugin uninstall failed</source>
-        <translation type="unfinished">Neizdevās atintstalēt spraudni</translation>
+        <translation type="obsolete">Neizdevās atintstalēt spraudni</translation>
     </message>
     <message>
         <source>Are you sure you want to uninstall the following plugin?</source>
-        <translation type="unfinished">Vai tiešām vēlaties atinstalēt šo spraudni?</translation>
+        <translation type="obsolete">Vai tiešām vēlaties atinstalēt šo spraudni?</translation>
     </message>
     <message>
         <source>Warning: this plugin isn&apos;t available in any accessible repository!</source>
-        <translation type="unfinished">Brīdinājums: šis spraudnis nav pieejams nevienā pieejamajā repozitorijā!</translation>
+        <translation type="obsolete">Brīdinājums: šis spraudnis nav pieejams nevienā pieejamajā repozitorijā!</translation>
     </message>
     <message>
         <source>Plugin uninstalled successfully</source>
-        <translation type="unfinished">Spraudņa atinstalēšana bija sekmīga</translation>
+        <translation type="obsolete">Spraudņa atinstalēšana bija sekmīga</translation>
     </message>
     <message>
         <source>Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely.</source>
-        <translation type="unfinished">Python spraudnis ir atinstalēts. Ievērojiet, ka jums ir nepieciešams pārstartēt Quantum GIS, lai to pilnībā aizvāktu.</translation>
+        <translation type="obsolete">Python spraudnis ir atinstalēts. Ievērojiet, ka jums ir nepieciešams pārstartēt Quantum GIS, lai to pilnībā aizvāktu.</translation>
     </message>
     <message>
         <source>You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.</source>
-        <translation type="unfinished">Jūs plānojat pievienot spraudņu repozitoriju, kuru neatbalsta un nav autorizējuši Quantum GIS izstrādātāji. Parasti spraudņu autori cenšas veidot savus spraudņus drošus un noderīgus, taču Quantum GIS izstrādātāji nevar uzņemties atbildību par to.</translation>
+        <translation type="obsolete">Jūs plānojat pievienot spraudņu repozitoriju, kuru neatbalsta un nav autorizējuši Quantum GIS izstrādātāji. Parasti spraudņu autori cenšas veidot savus spraudņus drošus un noderīgus, taču Quantum GIS izstrādātāji nevar uzņemties atbildību par to.</translation>
     </message>
     <message>
         <source>Unable to add another repository with the same URL!</source>
-        <translation type="unfinished">Nav iespējams pievienot repozitoriju ar tādu pašu URL!</translation>
+        <translation type="obsolete">Nav iespējams pievienot repozitoriju ar tādu pašu URL!</translation>
     </message>
     <message>
         <source>Are you sure you want to remove the following repository?</source>
-        <translation type="unfinished">Vai tiešām vēlaties aizvākt sekojošu repozitoriju?</translation>
-    </message>
-    <message>
-        <source>The plugin seems to have been installed but I don&apos;t know where. Probably the plugin package contained a wrong named directory.
-Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll find the plugin there, but I just can&apos;t determine which of them it is. It also means that I won&apos;t be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue.</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Vai tiešām vēlaties aizvākt sekojošu repozitoriju?</translation>
     </message>
 </context>
 <context>
@@ -23017,35 +22947,35 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerFetchingDialog</name>
     <message>
         <source>Success</source>
-        <translation type="unfinished">Sekmīgi</translation>
+        <translation type="obsolete">Sekmīgi</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="unfinished">Noskaidro resursdatora nosaukumu...</translation>
+        <translation type="obsolete">Noskaidro resursdatora nosaukumu...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="unfinished">Pieslēdzas...</translation>
+        <translation type="obsolete">Pieslēdzas...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="unfinished">Savienots ar resursdatoru. Sūta pieprasījumu...</translation>
+        <translation type="obsolete">Savienots ar resursdatoru. Sūta pieprasījumu...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation type="unfinished">Lejuplādē datus...</translation>
+        <translation type="obsolete">Lejuplādē datus...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="unfinished">Dīkstāve</translation>
+        <translation type="obsolete">Dīkstāve</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="unfinished">Slēdz savienojumu...</translation>
+        <translation type="obsolete">Slēdz savienojumu...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Kļūda</translation>
+        <translation type="obsolete">Kļūda</translation>
     </message>
 </context>
 <context>
@@ -23080,43 +23010,43 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerInstallingDialog</name>
     <message>
         <source>Installing...</source>
-        <translation type="unfinished">Instalē...</translation>
+        <translation type="obsolete">Instalē...</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="unfinished">Noskaidro resursdatora nosaukumu...</translation>
+        <translation type="obsolete">Noskaidro resursdatora nosaukumu...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="unfinished">Pieslēdzas...</translation>
+        <translation type="obsolete">Pieslēdzas...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="unfinished">Savienots ar resursdatoru. Sūta pieprasījumu...</translation>
+        <translation type="obsolete">Savienots ar resursdatoru. Sūta pieprasījumu...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation type="unfinished">Lejuplādē datus...</translation>
+        <translation type="obsolete">Lejuplādē datus...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="unfinished">Dīkstāve</translation>
+        <translation type="obsolete">Dīkstāve</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="unfinished">Aizver savienojumu...</translation>
+        <translation type="obsolete">Aizver savienojumu...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Kļūda</translation>
+        <translation type="obsolete">Kļūda</translation>
     </message>
     <message>
         <source>Failed to unzip the plugin package. Probably it&apos;s broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:</source>
-        <translation type="unfinished">Neizdevās atpakot spraudņa paku. Iespējams, ka tā ir bojāta, vai nav pieejama repozitorijā. Rekomendējam arī pārbaudīt vai jums ir rakstīšanas tiesības spraudņu mapei:</translation>
+        <translation type="obsolete">Neizdevās atpakot spraudņa paku. Iespējams, ka tā ir bojāta, vai nav pieejama repozitorijā. Rekomendējam arī pārbaudīt vai jums ir rakstīšanas tiesības spraudņu mapei:</translation>
     </message>
     <message>
         <source>Aborted by user</source>
-        <translation type="unfinished">Lietotājs ir pārtraucis</translation>
+        <translation type="obsolete">Lietotājs ir pārtraucis</translation>
     </message>
 </context>
 <context>
@@ -23141,7 +23071,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerPluginErrorDialog</name>
     <message>
         <source>no error message received</source>
-        <translation type="unfinished">kļūdas ziņojums nav saņemts</translation>
+        <translation type="obsolete">kļūdas ziņojums nav saņemts</translation>
     </message>
 </context>
 <context>
@@ -30840,51 +30770,51 @@ Tika mēģināts URL: %1</translation>
     <name>VisualDialog</name>
     <message>
         <source>Please specify input field</source>
-        <translation type="unfinished">Lūdzu norādiet ievades lauku</translation>
+        <translation type="obsolete">Lūdzu norādiet ievades lauku</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation type="unfinished">Pārbaudīt ģeometrijas derīgumu</translation>
+        <translation type="obsolete">Pārbaudīt ģeometrijas derīgumu</translation>
     </message>
     <message>
         <source>Geometry errors</source>
-        <translation type="unfinished">Ģeometrijas kļūdas</translation>
+        <translation type="obsolete">Ģeometrijas kļūdas</translation>
     </message>
     <message>
         <source>Total encountered errors</source>
-        <translation type="unfinished">Pavisam sastaptās kļudas</translation>
+        <translation type="obsolete">Pavisam sastaptās kļudas</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation type="unfinished">Parādīt unikālās vērtības</translation>
+        <translation type="obsolete">Parādīt unikālās vērtības</translation>
     </message>
     <message>
         <source>Unique values</source>
-        <translation type="unfinished">Unikālās vērtības</translation>
+        <translation type="obsolete">Unikālās vērtības</translation>
     </message>
     <message>
         <source>Total unique values</source>
-        <translation type="unfinished">Kopā unikālās vērtības</translation>
+        <translation type="obsolete">Kopā unikālās vērtības</translation>
     </message>
     <message>
         <source>Basics statistics</source>
-        <translation type="unfinished">Pamata statistika</translation>
+        <translation type="obsolete">Pamata statistika</translation>
     </message>
     <message>
         <source>Statistics output</source>
-        <translation type="unfinished">Statistikas izvade</translation>
+        <translation type="obsolete">Statistikas izvade</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation type="unfinished">Tuvākā kaimiņa analīze</translation>
+        <translation type="obsolete">Tuvākā kaimiņa analīze</translation>
     </message>
     <message>
         <source>Nearest neighbour statistics</source>
-        <translation type="unfinished">Tuvākā kaimiņa statistika</translation>
+        <translation type="obsolete">Tuvākā kaimiņa statistika</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="unfinished">Lūdzu norādiet ievades vektordatu slāni</translation>
+        <translation type="obsolete">Lūdzu norādiet ievades vektordatu slāni</translation>
     </message>
 </context>
 <context>
@@ -31934,12 +31864,12 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>fTools</name>
     <message>
         <source>Quantum GIS version detected: </source>
-        <translation type="unfinished">Detektētā Quantum GIS versija: </translation>
+        <translation type="obsolete">Detektētā Quantum GIS versija: </translation>
     </message>
     <message>
         <source>This version of fTools requires at least QGIS version 1.0.0
 Plugin will not be enabled.</source>
-        <translation type="unfinished">Šai fTools versijai ir nepieciešama QGIS versija 1.0.0 vai jaunāka.
+        <translation type="obsolete">Šai fTools versijai ir nepieciešama QGIS versija 1.0.0 vai jaunāka.
 Spraudnis netiks ieslēgts.</translation>
     </message>
     <message>
@@ -31948,179 +31878,159 @@ Spraudnis netiks ieslēgts.</translation>
     </message>
     <message>
         <source>&amp;Analysis Tools</source>
-        <translation type="unfinished">&amp;Analīzes rīki</translation>
+        <translation type="obsolete">&amp;Analīzes rīki</translation>
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation type="unfinished">Attāluma matrica</translation>
+        <translation type="obsolete">Attāluma matrica</translation>
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation type="unfinished">Summēt līniju garumus</translation>
+        <translation type="obsolete">Summēt līniju garumus</translation>
     </message>
     <message>
         <source>Points in polygon</source>
-        <translation type="unfinished">Punkti poligonā</translation>
+        <translation type="obsolete">Punkti poligonā</translation>
     </message>
     <message>
         <source>Basic statistics</source>
-        <translation type="unfinished">Pamata statistika</translation>
+        <translation type="obsolete">Pamata statistika</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation type="unfinished">Parādīt unikālās vērtības</translation>
+        <translation type="obsolete">Parādīt unikālās vērtības</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation type="unfinished">Tuvākā kaimiņa analīze</translation>
+        <translation type="obsolete">Tuvākā kaimiņa analīze</translation>
     </message>
     <message>
         <source>Mean coordinate(s)</source>
-        <translation type="unfinished">Vidējās koordiātes</translation>
+        <translation type="obsolete">Vidējās koordiātes</translation>
     </message>
     <message>
         <source>Line intersections</source>
-        <translation type="unfinished">Līniju krustpunkti</translation>
+        <translation type="obsolete">Līniju krustpunkti</translation>
     </message>
     <message>
         <source>&amp;Research Tools</source>
-        <translation type="unfinished">&amp;Pētniecības rīki</translation>
+        <translation type="obsolete">&amp;Pētniecības rīki</translation>
     </message>
     <message>
         <source>Random selection</source>
-        <translation type="unfinished">Nejauša izvēle</translation>
+        <translation type="obsolete">Nejauša izvēle</translation>
     </message>
     <message>
         <source>Random selection within subsets</source>
-        <translation type="unfinished">Nejauša izvēle apakškopās</translation>
+        <translation type="obsolete">Nejauša izvēle apakškopās</translation>
     </message>
     <message>
         <source>Random points</source>
-        <translation type="unfinished">Nejauši punkti</translation>
+        <translation type="obsolete">Nejauši punkti</translation>
     </message>
     <message>
         <source>Regular points</source>
-        <translation type="unfinished">Regulāri punkti</translation>
+        <translation type="obsolete">Regulāri punkti</translation>
     </message>
     <message>
         <source>Vector grid</source>
-        <translation type="unfinished">Vektoru tīkls</translation>
+        <translation type="obsolete">Vektoru tīkls</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="unfinished">Izvēle pēc vietas</translation>
+        <translation type="obsolete">Izvēle pēc vietas</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
-        <translation type="unfinished">Poligons no slāņa apjoma</translation>
+        <translation type="obsolete">Poligons no slāņa apjoma</translation>
     </message>
     <message>
         <source>&amp;Geoprocessing Tools</source>
-        <translation type="unfinished">Ģe&amp;oprocesēšanas rīki</translation>
+        <translation type="obsolete">Ģe&amp;oprocesēšanas rīki</translation>
     </message>
     <message>
         <source>&amp;Data Management Tools</source>
-        <translation type="unfinished">&amp;Datu pārvaldības rīki</translation>
+        <translation type="obsolete">&amp;Datu pārvaldības rīki</translation>
     </message>
     <message>
         <source>Export to new projection</source>
-        <translation type="unfinished">Eksportēt uz citu projekciju</translation>
+        <translation type="obsolete">Eksportēt uz citu projekciju</translation>
     </message>
     <message>
         <source>Define current projection</source>
-        <translation type="unfinished">Definēt pašreizējo projekciju</translation>
+        <translation type="obsolete">Definēt pašreizējo projekciju</translation>
     </message>
     <message>
         <source>Join attributes</source>
-        <translation type="unfinished">Apvienot atribūtus</translation>
+        <translation type="obsolete">Apvienot atribūtus</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
-        <translation type="unfinished">Apvienot atribūtus pēc atrašanās vietas</translation>
+        <translation type="obsolete">Apvienot atribūtus pēc atrašanās vietas</translation>
     </message>
     <message>
         <source>Split vector layer</source>
-        <translation type="unfinished">Sadalīt vektoru slāni</translation>
+        <translation type="obsolete">Sadalīt vektoru slāni</translation>
     </message>
     <message>
         <source>fTools Information</source>
-        <translation type="unfinished">fTools informācija</translation>
+        <translation type="obsolete">fTools informācija</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="unfinished">Buferis</translation>
+        <translation type="obsolete">Buferis</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation type="unfinished">Pārklāt</translation>
+        <translation type="obsolete">Pārklāt</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="unfinished">Apvienot</translation>
+        <translation type="obsolete">Apvienot</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="unfinished">Simetriskā starpība</translation>
+        <translation type="obsolete">Simetriskā starpība</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="unfinished">Izgriezt</translation>
+        <translation type="obsolete">Izgriezt</translation>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="unfinished">Izšķīdināt</translation>
+        <translation type="obsolete">Izšķīdināt</translation>
     </message>
     <message>
         <source>Difference</source>
-        <translation type="unfinished">Starpība</translation>
+        <translation type="obsolete">Starpība</translation>
     </message>
     <message>
         <source>G&amp;eometry Tools</source>
-        <translation type="unfinished">Ģ&amp;eometrijas rīki</translation>
+        <translation type="obsolete">Ģ&amp;eometrijas rīki</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="unfinished">Eksportēt/pievienot ģeometrijas kolonnas</translation>
+        <translation type="obsolete">Eksportēt/pievienot ģeometrijas kolonnas</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation type="unfinished">Pārbaudīt ģeometrijas korektumu</translation>
+        <translation type="obsolete">Pārbaudīt ģeometrijas korektumu</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation type="unfinished">Poligona centroīdi</translation>
+        <translation type="obsolete">Poligona centroīdi</translation>
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation type="unfinished">Izvilkt mezglus</translation>
+        <translation type="obsolete">Izvilkt mezglus</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation type="unfinished">Vienkāršot ģeometriju</translation>
+        <translation type="obsolete">Vienkāršot ģeometriju</translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation type="unfinished">Pārveidot poligonus līnijās</translation>
-    </message>
-    <message>
-        <source>&amp;Vector</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Convex hull(s)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Delaunay triangulation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Multipart to singleparts</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Singleparts to multipart</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Pārveidot poligonus līnijās</translation>
     </message>
 </context>
 <context>
@@ -32149,95 +32059,15 @@ Spraudnis netiks ieslēgts.</translation>
     <name>visualThread</name>
     <message>
         <source>Feature %1 is not closed</source>
-        <translation type="unfinished">Objekts %1 nav noslēgts</translation>
+        <translation type="obsolete">Objekts %1 nav noslēgts</translation>
     </message>
     <message>
         <source>Feature %1 is self intersecting</source>
-        <translation type="unfinished">Objekts %1 krustojas pats ar sevi</translation>
+        <translation type="obsolete">Objekts %1 krustojas pats ar sevi</translation>
     </message>
     <message>
         <source>Feature %1 has incorrect node ordering</source>
-        <translation type="unfinished">Objektam %1 ir nekorekta mezglu kārtība</translation>
-    </message>
-    <message>
-        <source>Max. len:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Min. len:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Mean. len:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Filled:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Empty:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>N:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Mean:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>StdDev:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sum:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Min:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Max:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>CV:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Number of unique values:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Range:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Median:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Observed mean distance:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Expected mean distance:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Nearest neighbour index:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Z-Score:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Feature %1 contains an unnested hole</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Objektam %1 ir nekorekta mezglu kārtība</translation>
     </message>
 </context>
 </TS>
