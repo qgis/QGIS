@@ -1079,65 +1079,65 @@ p, li { white-space: pre-wrap; }(new line)
     </message>
     <message>
         <source>creating new selection</source>
-        <translation type="obsolete">új szelekció létrehozás</translation>
+        <translation type="unfinished">új szelekció létrehozás</translation>
     </message>
     <message>
         <source>adding to current selection</source>
-        <translation type="obsolete">hozzáadás az aktuális szelekcióhoz</translation>
+        <translation type="unfinished">hozzáadás az aktuális szelekcióhoz</translation>
     </message>
     <message>
         <source>removing from current selection</source>
-        <translation type="obsolete">törlés az aktuális szelekcióból</translation>
+        <translation type="unfinished">törlés az aktuális szelekcióból</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="obsolete">Szelekció elhelyezkedés alapján</translation>
+        <translation type="unfinished">Szelekció elhelyezkedés alapján</translation>
     </message>
     <message>
         <source>Select features in:</source>
-        <translation type="obsolete">Elemek szelektálása ebben:</translation>
+        <translation type="unfinished">Elemek szelektálása ebben:</translation>
     </message>
     <message>
         <source>that intersect features in:</source>
-        <translation type="obsolete">melyek metszenek elemeket ebben:</translation>
+        <translation type="unfinished">melyek metszenek elemeket ebben:</translation>
     </message>
     <message>
         <source>Modify current selection by:</source>
-        <translation type="obsolete">Aktuális szelekció módosítás ezzel:</translation>
+        <translation type="unfinished">Aktuális szelekció módosítás ezzel:</translation>
     </message>
     <message>
         <source>Please specify input layer</source>
-        <translation type="obsolete">Add meg az input réteget</translation>
+        <translation type="unfinished">Add meg az input réteget</translation>
     </message>
     <message>
         <source>Please specify select layer</source>
-        <translation type="obsolete">Add meg a szelekció réteget</translation>
+        <translation type="unfinished">Add meg a szelekció réteget</translation>
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation type="obsolete">Távolság mátrix</translation>
+        <translation type="unfinished">Távolság mátrix</translation>
     </message>
     <message>
         <source>Created output matrix:
 </source>
-        <translation type="obsolete">Eredmény mátrix:</translation>
+        <translation type="unfinished">Eredmény mátrix:</translation>
     </message>
     <message>
         <source>Points in polygon</source>
-        <translation type="obsolete">Pontok a felületben</translation>
+        <translation type="unfinished">Pontok a felületben</translation>
     </message>
     <message>
         <source>Created output Shapefile:
 </source>
-        <translation type="obsolete">Eredmény Shape fájl:</translation>
+        <translation type="unfinished">Eredmény Shape fájl:</translation>
     </message>
     <message>
         <source>Vector layer is not valid</source>
-        <translation type="obsolete">Vektor réteg hibás</translation>
+        <translation type="unfinished">Vektor réteg hibás</translation>
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation type="obsolete">Össz vonalhossz</translation>
+        <translation type="unfinished">Össz vonalhossz</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="241"/>
@@ -1590,19 +1590,19 @@ p, li { white-space: pre-wrap; }(new line)
     <name>GeometryDialog</name>
     <message>
         <source>Merge all</source>
-        <translation type="obsolete">Mindent összevon</translation>
+        <translation type="unfinished">Mindent összevon</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="obsolete">Add meg az input vektor réteget</translation>
+        <translation type="unfinished">Add meg az input vektor réteget</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="obsolete">Add meg az eredmény shapefájlt</translation>
+        <translation type="unfinished">Add meg az eredmény shapefájlt</translation>
     </message>
     <message>
         <source>Please specify valid tolerance value</source>
-        <translation type="obsolete">Adj meg egy megfelelő tolerancia értéket</translation>
+        <translation type="unfinished">Adj meg egy megfelelő tolerancia értéket</translation>
     </message>
     <message>
         <source>Created output shapefile</source>
@@ -1610,71 +1610,71 @@ p, li { white-space: pre-wrap; }(new line)
     </message>
     <message>
         <source>Output shapefile</source>
-        <translation type="obsolete">Eredmény shapefájl</translation>
+        <translation type="unfinished">Eredmény shapefájl</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
-        <translation type="obsolete">Többrészűből egyrészűekbe</translation>
+        <translation type="unfinished">Többrészűből egyrészűekbe</translation>
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation type="obsolete">Csomópontok kivonat</translation>
+        <translation type="unfinished">Csomópontok kivonat</translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation type="obsolete">Felületek vonallá</translation>
+        <translation type="unfinished">Felületek vonallá</translation>
     </message>
     <message>
         <source>Input polygon vector layer</source>
-        <translation type="obsolete">Input felület vektor réteg</translation>
+        <translation type="unfinished">Input felület vektor réteg</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="obsolete">Export/geometria oszlop hozzáadás</translation>
+        <translation type="unfinished">Export/geometria oszlop hozzáadás</translation>
     </message>
     <message>
         <source>Input vector layer</source>
-        <translation type="obsolete">Input vektor réteg</translation>
+        <translation type="unfinished">Input vektor réteg</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation type="obsolete">Geometria egyszerűsítése</translation>
+        <translation type="unfinished">Geometria egyszerűsítése</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation type="obsolete">Felület centrálisok</translation>
+        <translation type="unfinished">Felület centrálisok</translation>
     </message>
     <message>
         <source>Output point shapefile</source>
-        <translation type="obsolete">Eredmény pont shapefájl</translation>
+        <translation type="unfinished">Eredmény pont shapefájl</translation>
     </message>
     <message>
         <source>Delaunay triangulation</source>
-        <translation type="obsolete">Delaunay háromszögek</translation>
+        <translation type="unfinished">Delaunay háromszögek</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
-        <translation type="obsolete">Felület a réteg terjedelemből</translation>
+        <translation type="unfinished">Felület a réteg terjedelemből</translation>
     </message>
     <message>
         <source>Input layer</source>
-        <translation type="obsolete">Input réteg</translation>
+        <translation type="unfinished">Input réteg</translation>
     </message>
     <message>
         <source>Output polygon shapefile</source>
-        <translation type="obsolete">Eredmény felület shape fájl</translation>
+        <translation type="unfinished">Eredmény felület shape fájl</translation>
     </message>
     <message>
         <source>Unable to delete existing shapefile.</source>
-        <translation type="obsolete">Nem tudom törölni a létező shapefájlt.</translation>
+        <translation type="unfinished">Nem tudom törölni a létező shapefájlt.</translation>
     </message>
     <message>
         <source>Error processing specified tolerance!</source>
-        <translation type="obsolete">Hiba a megadott tolerancia feldolgozása során!</translation>
+        <translation type="unfinished">Hiba a megadott tolerancia feldolgozása során!</translation>
     </message>
     <message>
         <source>Please choose larger tolerance...</source>
-        <translation type="obsolete">Válassz nagyobb toleranciát...</translation>
+        <translation type="unfinished">Válassz nagyobb toleranciát...</translation>
     </message>
     <message>
         <source>Error writing output shapefile</source>
@@ -1686,31 +1686,31 @@ p, li { white-space: pre-wrap; }(new line)
     </message>
     <message>
         <source>Input point vector layer</source>
-        <translation type="obsolete">Input pont vektor réteg</translation>
+        <translation type="unfinished">Input pont vektor réteg</translation>
     </message>
     <message>
         <source>Please specify valid UID field</source>
-        <translation type="obsolete">Adj meg egy érvényes UID mezőt</translation>
+        <translation type="unfinished">Adj meg egy érvényes UID mezőt</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
-        <translation type="obsolete">Egyrészűekből többrészűbe</translation>
+        <translation type="unfinished">Egyrészűekből többrészűbe</translation>
     </message>
     <message>
         <source>Unable to delete incomplete shapefile.</source>
-        <translation type="obsolete">Nem tudom törölni a félbehagyott shapefájlt.</translation>
+        <translation type="unfinished">Nem tudom törölni a félbehagyott shapefájlt.</translation>
     </message>
     <message>
         <source>Created output shapefile:</source>
-        <translation type="obsolete">Eredmény Shape fájl:</translation>
+        <translation type="unfinished">Eredmény Shape fájl:</translation>
     </message>
     <message>
         <source>Would you like to add the new layer to the TOC?</source>
-        <translation type="obsolete">Hozzá akarod adni az új réteget a tartalomjegyzékhez?</translation>
+        <translation type="unfinished">Hozzá akarod adni az új réteget a tartalomjegyzékhez?</translation>
     </message>
     <message>
         <source>Error writing output shapefile.</source>
-        <translation type="obsolete">Hiba az eredmény shapefájl írása közben</translation>
+        <translation type="unfinished">Hiba az eredmény shapefájl írása közben</translation>
     </message>
 </context>
 <context>
@@ -1732,23 +1732,23 @@ p, li { white-space: pre-wrap; }(new line)
     <name>GeoprocessingDialog</name>
     <message>
         <source>Dissolve all</source>
-        <translation type="obsolete">Mindent összevon</translation>
+        <translation type="unfinished">Mindent összevon</translation>
     </message>
     <message>
         <source>Please specify an input layer</source>
-        <translation type="obsolete">Add meg az input réteget</translation>
+        <translation type="unfinished">Add meg az input réteget</translation>
     </message>
     <message>
         <source>Please specify a difference/intersect/union layer</source>
-        <translation type="obsolete">Add meg a különbség/metszet/unió réteget</translation>
+        <translation type="unfinished">Add meg a különbség/metszet/unió réteget</translation>
     </message>
     <message>
         <source>Please specify valid buffer value</source>
-        <translation type="obsolete">Adj meg helyes övezet értéket</translation>
+        <translation type="unfinished">Adj meg helyes övezet értéket</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="obsolete">Add meg az eredmény shapefájlt</translation>
+        <translation type="unfinished">Add meg az eredmény shapefájlt</translation>
     </message>
     <message>
         <source>Created output shapefile</source>
@@ -1756,15 +1756,15 @@ p, li { white-space: pre-wrap; }(new line)
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="obsolete">Övezet(ek)</translation>
+        <translation type="unfinished">Övezet(ek)</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation type="obsolete">Konvex körvonal</translation>
+        <translation type="unfinished">Konvex körvonal</translation>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="obsolete">Összevon</translation>
+        <translation type="unfinished">Összevon</translation>
     </message>
     <message>
         <source>Erase layer</source>
@@ -1772,55 +1772,59 @@ p, li { white-space: pre-wrap; }(new line)
     </message>
     <message>
         <source>Difference</source>
-        <translation type="obsolete">Különbség</translation>
+        <translation type="unfinished">Különbség</translation>
     </message>
     <message>
         <source>Intersect layer</source>
-        <translation type="obsolete">Metsző réteg</translation>
+        <translation type="unfinished">Metsző réteg</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation type="obsolete">Metszés</translation>
+        <translation type="unfinished">Metszés</translation>
     </message>
     <message>
         <source>Difference layer</source>
-        <translation type="obsolete">Különbség réteg</translation>
+        <translation type="unfinished">Különbség réteg</translation>
+    </message>
+    <message>
+        <source>Please specify dissolve field</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>No features selected, please uncheck &apos;Use selected&apos; or make a selection</source>
-        <translation type="obsolete">Nincs szelektált elem, kapcsold ki a &apos;szelektáltak használatát&apos; vagy szelektálj</translation>
+        <translation type="unfinished">Nincs szelektált elem, kapcsold ki a &apos;szelektáltak használatát&apos; vagy szelektálj</translation>
     </message>
     <message>
         <source>Create single minimum convex hull</source>
-        <translation type="obsolete">Minimális konvex körvonal</translation>
+        <translation type="unfinished">Minimális konvex körvonal</translation>
     </message>
     <message>
         <source>Create convex hulls based on input field</source>
-        <translation type="obsolete">Konvex körvonal az input mezők alapján</translation>
+        <translation type="unfinished">Konvex körvonal az input mezők alapján</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="obsolete">Szimmetrikus különbség</translation>
+        <translation type="unfinished">Szimmetrikus különbség</translation>
     </message>
     <message>
         <source>Clip layer</source>
-        <translation type="obsolete">Vágó réteg</translation>
+        <translation type="unfinished">Vágó réteg</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="obsolete">Vág</translation>
+        <translation type="unfinished">Vág</translation>
     </message>
     <message>
         <source>Union layer</source>
-        <translation type="obsolete">Unió réteg</translation>
+        <translation type="unfinished">Unió réteg</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="obsolete">Unió</translation>
+        <translation type="unfinished">Unió</translation>
     </message>
     <message>
         <source>Unable to delete existing shapefile.</source>
-        <translation type="obsolete">Nem tudom törölni a létező shapefájlt.</translation>
+        <translation type="unfinished">Nem tudom törölni a létező shapefájlt.</translation>
     </message>
     <message>
         <source>Warnings:</source>
@@ -1831,28 +1835,39 @@ p, li { white-space: pre-wrap; }(new line)
 Some output geometries may be missing or invalid.
 
 Would you like to add the new layer anyway?</source>
-        <translation type="obsolete">Néhány eredmény geometria hiányzik vagy hibás.
+        <translation type="unfinished">Néhány eredmény geometria hiányzik vagy hibás.
 
 Ennek ellenére hozzá akarod adni a réteget?</translation>
     </message>
     <message>
         <source>
+
+Would you like to add the new layer to the TOC?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
 Input CRS error: Different input coordinate reference systems detected, results may not be as expected.</source>
-        <translation type="obsolete">Bemeneti CRS hiba: eltérő bemeneti koordinátarendszert találtam, az eredmény az elvárttól eltérő lehet.</translation>
+        <translation type="unfinished">Bemeneti CRS hiba: eltérő bemeneti koordinátarendszert találtam, az eredmény az elvárttól eltérő lehet.</translation>
     </message>
     <message>
         <source>
 Feature geometry error: One or more output features ignored due to invalid geometry.</source>
-        <translation type="obsolete">Elem geometria hiba. Egy vagy több output elemet kihagytam a hibás geometria miatt.</translation>
+        <translation type="unfinished">Elem geometria hiba. Egy vagy több output elemet kihagytam a hibás geometria miatt.</translation>
     </message>
     <message>
         <source>
 GEOS geoprocessing error: One or more input features have invalid geometry.</source>
-        <translation type="obsolete">GEOS feldolgozási hiba: egy vagy több elem hibás geometriát tartalmaz.</translation>
+        <translation type="unfinished">GEOS feldolgozási hiba: egy vagy több elem hibás geometriát tartalmaz.</translation>
     </message>
     <message>
         <source>Created output shapefile:</source>
-        <translation type="obsolete">Eredmény Shape fájl:</translation>
+        <translation type="unfinished">Eredmény Shape fájl:</translation>
+    </message>
+    <message>
+        <source>
+Warnings:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2445,7 +2460,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>OSM Information</source>
-        <translation type="obsolete">OSM információ</translation>
+        <translation type="unfinished">OSM információ</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="78"/>
@@ -2606,51 +2621,51 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <name>OsmDownloadDlg</name>
     <message>
         <source>OSM Download</source>
-        <translation type="obsolete">OSM letöltés</translation>
+        <translation type="unfinished">OSM letöltés</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="obsolete">Nem tudom menteni a fájlt %1: %2.</translation>
+        <translation type="unfinished">Nem tudom menteni a fájlt %1: %2.</translation>
     </message>
     <message>
         <source>Waiting for OpenStreetMap server ...</source>
-        <translation type="obsolete">Várok az OpenStreetMap szerverre ...</translation>
+        <translation type="unfinished">Várok az OpenStreetMap szerverre ...</translation>
     </message>
     <message>
         <source>Download process failed. OpenStreetMap server response: %1 - %2</source>
-        <translation type="obsolete">Letöltési folyamat megszakadt. Open Street Map szerver válasza: %1 - %2</translation>
+        <translation type="unfinished">Letöltési folyamat megszakadt. Open Street Map szerver válasza: %1 - %2</translation>
     </message>
     <message>
         <source>OSM Download Error</source>
-        <translation type="obsolete">OSM letöltési hiba</translation>
+        <translation type="unfinished">OSM letöltési hiba</translation>
     </message>
     <message>
         <source>Download failed: %1.</source>
-        <translation type="obsolete">Letöltési hiba: %1.</translation>
+        <translation type="unfinished">Letöltési hiba: %1.</translation>
     </message>
     <message>
         <source>Getting data</source>
-        <translation type="obsolete">Adatletöltés</translation>
+        <translation type="unfinished">Adatletöltés</translation>
     </message>
     <message>
         <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
-        <translation type="obsolete">Az OpenStreetMap server ahonnan az OSM adatokat letöltöd (~ api.openstreetmap.org) korlátozza a letölthet adatok mennyiségét. Ahogy a &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; oldalon szerepel, a letöltött terjedelem nem lehet nagyobb mint 0.25 fok. A Quantum GIS megengedi, hogy tetszőleges terjedelmet adj meg, de az OpenStreetMap szerver visszautasítja azokat a kéréseket, melyek nem felelnek meg a letöltési korlátozásnak.</translation>
+        <translation type="unfinished">Az OpenStreetMap server ahonnan az OSM adatokat letöltöd (~ api.openstreetmap.org) korlátozza a letölthet adatok mennyiségét. Ahogy a &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; oldalon szerepel, a letöltött terjedelem nem lehet nagyobb mint 0.25 fok. A Quantum GIS megengedi, hogy tetszőleges terjedelmet adj meg, de az OpenStreetMap szerver visszautasítja azokat a kéréseket, melyek nem felelnek meg a letöltési korlátozásnak.</translation>
     </message>
     <message>
         <source>Both extents are too large!</source>
-        <translation type="obsolete">Mindkét terjedelem túl nagy!</translation>
+        <translation type="unfinished">Mindkét terjedelem túl nagy!</translation>
     </message>
     <message>
         <source>Latitude extent is too large!</source>
-        <translation type="obsolete">Szélesség terjedelem túl nagy!</translation>
+        <translation type="unfinished">Szélesség terjedelem túl nagy!</translation>
     </message>
     <message>
         <source>Longitude extent is too large!</source>
-        <translation type="obsolete">Hosszúság terjedelem túl nagy!</translation>
+        <translation type="unfinished">Hosszúság terjedelem túl nagy!</translation>
     </message>
     <message>
         <source>OK! Area is probably acceptable to server.</source>
-        <translation type="obsolete">OK! A terület valószínűleg elfogadható a szervernek.</translation>
+        <translation type="unfinished">OK! A terület valószínűleg elfogadható a szervernek.</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="19"/>
@@ -2883,19 +2898,23 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>OSM Plugin</source>
-        <translation type="obsolete">OSM modul</translation>
+        <translation type="unfinished">OSM modul</translation>
     </message>
     <message>
         <source>The &apos;Create OSM Relation&apos; dialog was closed automatically because current OSM database was changed.</source>
-        <translation type="obsolete">Az &apos;OSM kapcsolat létrehozás&apos; párbeszédablakot automatikusan bezártam, mert az aktuális OSM adatbázis módosult.</translation>
+        <translation type="unfinished">Az &apos;OSM kapcsolat létrehozás&apos; párbeszédablakot automatikusan bezártam, mert az aktuális OSM adatbázis módosult.</translation>
+    </message>
+    <message>
+        <source>OSM Feature Dock Widget</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Choose OSM feature first.</source>
-        <translation type="obsolete">Válassz először OSM elemet.</translation>
+        <translation type="unfinished">Válassz először OSM elemet.</translation>
     </message>
     <message>
         <source>Choose relation for editing first.</source>
-        <translation type="obsolete">Először válassz kapcsolatot a szerkesztéshez.</translation>
+        <translation type="unfinished">Először válassz kapcsolatot a szerkesztéshez.</translation>
     </message>
     <message>
         <source>Property &apos;%1&apos; cannot be added twice.</source>
@@ -2983,31 +3002,31 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <name>OsmSaveDlg</name>
     <message>
         <source>Save OSM to file</source>
-        <translation type="obsolete">OSM mentés fájlba</translation>
+        <translation type="unfinished">OSM mentés fájlba</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="obsolete">Nem tudom menteni a fájlt %1: %2.</translation>
+        <translation type="unfinished">Nem tudom menteni a fájlt %1: %2.</translation>
     </message>
     <message>
         <source>Initializing...</source>
-        <translation type="obsolete">Inicializálás ...</translation>
+        <translation type="unfinished">Inicializálás ...</translation>
     </message>
     <message>
         <source>Saving nodes...</source>
-        <translation type="obsolete">Csomópontok mentése...</translation>
+        <translation type="unfinished">Csomópontok mentése...</translation>
     </message>
     <message>
         <source>Saving lines...</source>
-        <translation type="obsolete">Vonalak mentése...</translation>
+        <translation type="unfinished">Vonalak mentése...</translation>
     </message>
     <message>
         <source>Saving polygons...</source>
-        <translation type="obsolete">Felületek mentése...</translation>
+        <translation type="unfinished">Felületek mentése...</translation>
     </message>
     <message>
         <source>Saving relations...</source>
-        <translation type="obsolete">Kapcsolatok mentése...</translation>
+        <translation type="unfinished">Kapcsolatok mentése...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="16"/>
@@ -3118,11 +3137,11 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <name>OsmUploadDlg</name>
     <message>
         <source>OSM Upload</source>
-        <translation type="obsolete">OSM feltöltés</translation>
+        <translation type="unfinished">OSM feltöltés</translation>
     </message>
     <message>
         <source>Uploading data...</source>
-        <translation type="obsolete">Adatfeltöltés...</translation>
+        <translation type="unfinished">Adatfeltöltés...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="22"/>
@@ -3194,27 +3213,39 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <name>Python</name>
     <message>
         <source>An error has occured while executing Python code:</source>
-        <translation type="obsolete">Hiba a Phyton kód végrehajtása közben:</translation>
+        <translation type="unfinished">Hiba a Phyton kód végrehajtása közben:</translation>
     </message>
     <message>
         <source>Python version:</source>
-        <translation type="obsolete">Python verzió:</translation>
+        <translation type="unfinished">Python verzió:</translation>
     </message>
     <message>
         <source>Python path:</source>
-        <translation type="obsolete">Python elérési út:</translation>
+        <translation type="unfinished">Python elérési út:</translation>
     </message>
     <message>
         <source>Python error</source>
-        <translation type="obsolete">Phyton hiba</translation>
+        <translation type="unfinished">Phyton hiba</translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t load plugin &apos;%1&apos; from [&apos;%2&apos;]</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin %1</source>
-        <translation type="obsolete">Nem tudom betölteni a modult: %1</translation>
+        <translation type="unfinished">Nem tudom betölteni a modult: %1</translation>
+    </message>
+    <message>
+        <source>%1 due an error when calling its classFactory() method</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 due an error when calling its initGui() method</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Error while unloading plugin %1</source>
-        <translation type="obsolete">Hiba a %1 modul feltöltése során</translation>
+        <translation type="unfinished">Hiba a %1 modul feltöltése során</translation>
     </message>
 </context>
 <context>
@@ -22833,51 +22864,51 @@ táblához.</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the local plugin directory</source>
-        <translation type="obsolete">Nem tudom megnyitni a rendszer helyi modul könyvtárat</translation>
+        <translation type="unfinished">Nem tudom megnyitni a rendszer helyi modul könyvtárat</translation>
     </message>
     <message>
         <source>Fetch Python Plugins...</source>
-        <translation type="obsolete">Python modulok lekérése...</translation>
+        <translation type="unfinished">Python modulok lekérése...</translation>
     </message>
     <message>
         <source>Install more plugins from remote repositories</source>
-        <translation type="obsolete">További modulok telepítése a távoli tárházakból</translation>
+        <translation type="unfinished">További modulok telepítése a távoli tárházakból</translation>
     </message>
     <message>
         <source>Looking for new plugins...</source>
-        <translation type="obsolete">Új modulok keresése...</translation>
+        <translation type="unfinished">Új modulok keresése...</translation>
     </message>
     <message>
         <source>There is a new plugin available</source>
-        <translation type="obsolete">Új modul elérhető</translation>
+        <translation type="unfinished">Új modul elérhető</translation>
     </message>
     <message>
         <source>There is a plugin update available</source>
-        <translation type="obsolete">Modul frissítés elérhető</translation>
+        <translation type="unfinished">Modul frissítés elérhető</translation>
     </message>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="obsolete">QGIS Python modul telepítő</translation>
+        <translation type="unfinished">QGIS Python modul telepítő</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
-        <translation type="obsolete">Hiba a tárház olvasása közben:</translation>
+        <translation type="unfinished">Hiba a tárház olvasása közben:</translation>
     </message>
     <message>
         <source>Nothing to remove! Plugin directory doesn&apos;t exist:</source>
-        <translation type="obsolete">Nincs mit törölni! A modul könyvtár nem létezik:</translation>
+        <translation type="unfinished">Nincs mit törölni! A modul könyvtár nem létezik:</translation>
     </message>
     <message>
         <source>Failed to remove the directory:</source>
-        <translation type="obsolete">Sikertelen könyvtár törlés:</translation>
+        <translation type="unfinished">Sikertelen könyvtár törlés:</translation>
     </message>
     <message>
         <source>Check permissions or remove it manually</source>
-        <translation type="obsolete">Ellenőrizd a jogokat vagy töröld manuálisan</translation>
+        <translation type="unfinished">Ellenőrizd a jogokat vagy töröld manuálisan</translation>
     </message>
     <message>
         <source>QGIS Plugin Conflict:</source>
-        <translation type="obsolete">QGIS modul konfliktus:</translation>
+        <translation type="unfinished">QGIS modul konfliktus:</translation>
     </message>
     <message>
         <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. Probably it is a remainder of an older QGIS installation. Please use the Plugin Installer to remove it in order to unmask the instance shipped with this version of QGIS.</source>
@@ -22885,58 +22916,58 @@ táblához.</translation>
     </message>
     <message>
         <source>Couldn&apos;t parse output from the repository</source>
-        <translation type="obsolete">Nem tudom értelmezni a tárház outputot</translation>
+        <translation type="unfinished">Nem tudom értelmezni a tárház outputot</translation>
     </message>
     <message>
         <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. This is likely due to files associated with a previous installation of QGIS. Please use the Plugin Installer to remove that older plugin in order to unmask the newer version shipped with this copy of QGIS.</source>
-        <translation type="obsolete">A modul telepítő egy elavult modult talált, emiatt nem használható ezzel a QGIS verzióval szállított újabb verzió. Valószínűleg egy korábbi telepítésből maradt itt. A modul telepítővel távolítsd el, hogy az új verzióval szállított példány láthatóvá váljon.</translation>
+        <translation type="unfinished">A modul telepítő egy elavult modult talált, emiatt nem használható ezzel a QGIS verzióval szállított újabb verzió. Valószínűleg egy korábbi telepítésből maradt itt. A modul telepítővel távolítsd el, hogy az új verzióval szállított példány láthatóvá váljon.</translation>
     </message>
 </context>
 <context>
     <name>QgsPluginInstallerDialog</name>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="obsolete">QGIS Python modul telepítő</translation>
+        <translation type="unfinished">QGIS Python modul telepítő</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
-        <translation type="obsolete">Hiba a tárház olvasása közben:</translation>
+        <translation type="unfinished">Hiba a tárház olvasása közben:</translation>
     </message>
     <message>
         <source>all repositories</source>
-        <translation type="obsolete">minden tárház</translation>
+        <translation type="unfinished">minden tárház</translation>
     </message>
     <message>
         <source>connected</source>
-        <translation type="obsolete">kapcsolódtam</translation>
+        <translation type="unfinished">kapcsolódtam</translation>
     </message>
     <message>
         <source>unavailable</source>
-        <translation type="obsolete">nem elérhető</translation>
+        <translation type="unfinished">nem elérhető</translation>
     </message>
     <message>
         <source>This repository is enabled, but unavailable</source>
-        <translation type="obsolete">Ezt a tárházat bekapcsolták, de nem érhető el</translation>
+        <translation type="unfinished">Ezt a tárházat bekapcsolták, de nem érhető el</translation>
     </message>
     <message>
         <source>disabled</source>
-        <translation type="obsolete">nincs engedélyezve</translation>
+        <translation type="unfinished">nincs engedélyezve</translation>
     </message>
     <message>
         <source>This repository is disabled</source>
-        <translation type="obsolete">A tárházat nem engedélyezték</translation>
+        <translation type="unfinished">A tárházat nem engedélyezték</translation>
     </message>
     <message>
         <source>This repository is blocked due to incompatibility with your Quantum GIS version</source>
-        <translation type="obsolete">A tárházat blokkolom, a Quantum GIS verzióddal nem kompatibilis</translation>
+        <translation type="unfinished">A tárházat blokkolom, a Quantum GIS verzióddal nem kompatibilis</translation>
     </message>
     <message>
         <source>orphans</source>
-        <translation type="obsolete">árvák</translation>
+        <translation type="unfinished">árvák</translation>
     </message>
     <message>
         <source>any status</source>
-        <translation type="obsolete">bármilyen státusz</translation>
+        <translation type="unfinished">bármilyen státusz</translation>
     </message>
     <message>
         <source>not installed</source>
@@ -22950,31 +22981,31 @@ táblához.</translation>
     </message>
     <message>
         <source>upgradeable and news</source>
-        <translation type="obsolete">frissíthető és újak</translation>
+        <translation type="unfinished">frissíthető és újak</translation>
     </message>
     <message>
         <source>This plugin is not installed</source>
-        <translation type="obsolete">Modult nem installálták</translation>
+        <translation type="unfinished">Modult nem installálták</translation>
     </message>
     <message>
         <source>This plugin is installed</source>
-        <translation type="obsolete">A modul installálták</translation>
+        <translation type="unfinished">A modul installálták</translation>
     </message>
     <message>
         <source>This plugin is installed, but there is an updated version available</source>
-        <translation type="obsolete">Ezt a modult telepítetted, de egy újabb verzió elérhető</translation>
+        <translation type="unfinished">Ezt a modult telepítetted, de egy újabb verzió elérhető</translation>
     </message>
     <message>
         <source>This plugin is installed, but I can&apos;t find it in any enabled repository</source>
-        <translation type="obsolete">Ezt a modult telepítetted, de nem találom egyik bekapcsolt tárházban sem</translation>
+        <translation type="unfinished">Ezt a modult telepítetted, de nem találom egyik bekapcsolt tárházban sem</translation>
     </message>
     <message>
         <source>This plugin is not installed and is seen for the first time</source>
-        <translation type="obsolete">Ezt a modult nem telepítetted és először látom</translation>
+        <translation type="unfinished">Ezt a modult nem telepítetted és először látom</translation>
     </message>
     <message>
         <source>This plugin is installed and is newer than its version available in a repository</source>
-        <translation type="obsolete">Ezt a modult telepítetted és újabb mint a tárházban elérhető</translation>
+        <translation type="unfinished">Ezt a modult telepítetted és újabb mint a tárházban elérhető</translation>
     </message>
     <message>
         <source>not installed</source>
@@ -23003,183 +23034,187 @@ táblához.</translation>
     </message>
     <message>
         <source>installed version</source>
-        <translation type="obsolete">installált verzió</translation>
+        <translation type="unfinished">installált verzió</translation>
     </message>
     <message>
         <source>available version</source>
-        <translation type="obsolete">elérhető verzió</translation>
+        <translation type="unfinished">elérhető verzió</translation>
     </message>
     <message>
         <source>That&apos;s the newest available version</source>
-        <translation type="obsolete">Ez a legújabb elérhető verzió</translation>
+        <translation type="unfinished">Ez a legújabb elérhető verzió</translation>
     </message>
     <message>
         <source>There is no version available for download</source>
-        <translation type="obsolete">Nincs letölthető verzió</translation>
+        <translation type="unfinished">Nincs letölthető verzió</translation>
     </message>
     <message>
         <source>only locally available</source>
-        <translation type="obsolete">csak helyben elérhető</translation>
+        <translation type="unfinished">csak helyben elérhető</translation>
     </message>
     <message>
         <source>Install plugin</source>
-        <translation type="obsolete">modul telepítés</translation>
+        <translation type="unfinished">modul telepítés</translation>
     </message>
     <message>
         <source>Reinstall plugin</source>
-        <translation type="obsolete">Modul újratelepítés</translation>
+        <translation type="unfinished">Modul újratelepítés</translation>
     </message>
     <message>
         <source>Upgrade plugin</source>
-        <translation type="obsolete">Modul frissítés</translation>
+        <translation type="unfinished">Modul frissítés</translation>
     </message>
     <message>
         <source>Install/upgrade plugin</source>
-        <translation type="obsolete">Modul telepítés/frissítés</translation>
+        <translation type="unfinished">Modul telepítés/frissítés</translation>
     </message>
     <message>
         <source>Downgrade plugin</source>
-        <translation type="obsolete">Korábbi verzióra</translation>
+        <translation type="unfinished">Korábbi verzióra</translation>
     </message>
     <message>
         <source>Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!</source>
-        <translation type="obsolete">Biztos vagy benne, hogy vissza akarsz térni egy korábbi verzióhoz? A telepített újabb!</translation>
+        <translation type="unfinished">Biztos vagy benne, hogy vissza akarsz térni egy korábbi verzióhoz? A telepített újabb!</translation>
     </message>
     <message>
         <source>Plugin installation failed</source>
-        <translation type="obsolete">Sikertelen modul telepítés</translation>
+        <translation type="unfinished">Sikertelen modul telepítés</translation>
     </message>
     <message>
         <source>Plugin has disappeared</source>
-        <translation type="obsolete">A modul eltünt</translation>
+        <translation type="unfinished">A modul eltünt</translation>
     </message>
     <message>
         <source>The plugin seems to have been installed but I don&apos;t know where. Probably the plugin package contained a wrong named directory.
 Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll find the plugin there, but I just can&apos;t determine which of them it is. It also means that I won&apos;t be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue.</source>
-        <translation type="obsolete">Látszólag a modult telepítették, de nem tudom hová. Valószínűleg a telepítő egy rossz könyvtárnevet tartalmazott.
+        <translation type="unfinished">Látszólag a modult telepítették, de nem tudom hová. Valószínűleg a telepítő egy rossz könyvtárnevet tartalmazott.
 Nézd át a telepített modulok listáját. Majdnem biztos vagyok, hogy megtalálod ott a modult, de nem tudom eldönteni, hogy melyik az. Ez azt is jelenti, hogy nem tudom eldönteni, hogy telepítve lett-e és nem tudlak értesíteni a frissítésekről. A modul ennek ellenére működhet. Vedd fel a kacsolatot a modul szerzőjével és jelezd a problémát.</translation>
     </message>
     <message>
         <source>Plugin installed successfully</source>
-        <translation type="obsolete">A modult sikeresen telepítettem</translation>
+        <translation type="unfinished">A modult sikeresen telepítettem</translation>
     </message>
     <message>
         <source>Plugin uninstall failed</source>
-        <translation type="obsolete">Sikertelen modul eltávolítás</translation>
+        <translation type="unfinished">Sikertelen modul eltávolítás</translation>
     </message>
     <message>
         <source>Are you sure you want to uninstall the following plugin?</source>
-        <translation type="obsolete">Biztos vagy benne, hogy eltávolítod a következő modult?</translation>
+        <translation type="unfinished">Biztos vagy benne, hogy eltávolítod a következő modult?</translation>
     </message>
     <message>
         <source>Warning: this plugin isn&apos;t available in any accessible repository!</source>
-        <translation type="obsolete">Figyelmeztetés: ezt a modul nem találom egyetlen elérhető tárházban sem!</translation>
+        <translation type="unfinished">Figyelmeztetés: ezt a modul nem találom egyetlen elérhető tárházban sem!</translation>
     </message>
     <message>
         <source>Plugin uninstalled successfully</source>
-        <translation type="obsolete">A modult sikeresen eltávolítottam</translation>
+        <translation type="unfinished">A modult sikeresen eltávolítottam</translation>
     </message>
     <message>
         <source>Unable to add another repository with the same URL!</source>
-        <translation type="obsolete">Nem tudok ugyanazzal az URL-lel másik tárházat hozzáadni!</translation>
+        <translation type="unfinished">Nem tudok ugyanazzal az URL-lel másik tárházat hozzáadni!</translation>
     </message>
     <message>
         <source>Are you sure you want to remove the following repository?</source>
-        <translation type="obsolete">Biztos vagy benne, hogy eltávolítod a következő tárházat?</translation>
+        <translation type="unfinished">Biztos vagy benne, hogy eltávolítod a következő tárházat?</translation>
     </message>
     <message>
         <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
-        <translation type="obsolete">A modul nem kompatibilis a Quantum GIS verzióddal és valószínűleg nem fog működni.</translation>
+        <translation type="unfinished">A modul nem kompatibilis a Quantum GIS verzióddal és valószínűleg nem fog működni.</translation>
     </message>
     <message>
         <source>This plugin seems to be broken.
 It has been installed but can&apos;t be loaded.
 Here is the error message:</source>
-        <translation type="obsolete">Ez modul sérültnek látszik
+        <translation type="unfinished">Ez modul sérültnek látszik
 Telepítettük, de nem tudom betölteni
 A hiba üzenet:</translation>
     </message>
     <message>
         <source>Note that it&apos;s an uninstallable core plugin</source>
-        <translation type="obsolete">Figyelem ez egy nem eltávolítható alap modul</translation>
+        <translation type="unfinished">Figyelem ez egy nem eltávolítható alap modul</translation>
     </message>
     <message>
         <source>This plugin is broken</source>
-        <translation type="obsolete">A modul sérült</translation>
+        <translation type="unfinished">A modul sérült</translation>
     </message>
     <message>
         <source>This plugin requires a newer version of Quantum GIS</source>
-        <translation type="obsolete">A modulhoz egy újabb Quantum GIS verzió szükséges</translation>
+        <translation type="unfinished">A modulhoz egy újabb Quantum GIS verzió szükséges</translation>
     </message>
     <message>
         <source>This plugin requires a missing module</source>
-        <translation type="obsolete">A modul egy másik hiányzó modult igényel</translation>
+        <translation type="unfinished">A modul egy másik hiányzó modult igényel</translation>
     </message>
     <message>
         <source>Plugin reinstalled successfully</source>
-        <translation type="obsolete">A modult sikeresen újratelepítettem</translation>
+        <translation type="unfinished">A modult sikeresen újratelepítettem</translation>
     </message>
     <message>
         <source>The plugin is designed for a newer version of Quantum GIS. The minimum required version is:</source>
-        <translation type="obsolete">Ezt a modult egy újabb Quantum GIS verzióhoz készítették. Minimálisan szükséges verzió:</translation>
+        <translation type="unfinished">Ezt a modult egy újabb Quantum GIS verzióhoz készítették. Minimálisan szükséges verzió:</translation>
     </message>
     <message>
         <source>The plugin depends on some components missing on your system. You need to install the following Python module in order to enable it:</source>
-        <translation type="obsolete">A modul néhány, a rendszeredből hiányzó komponenstől függ. A következő Python modulokat kell telepítened a használatához:</translation>
+        <translation type="unfinished">A modul néhány, a rendszeredből hiányzó komponenstől függ. A következő Python modulokat kell telepítened a használatához:</translation>
     </message>
     <message>
         <source>The plugin is broken. Python said:</source>
-        <translation type="obsolete">A modul sérült. Python üzenet:</translation>
+        <translation type="unfinished">A modul sérült. Python üzenet:</translation>
     </message>
     <message>
         <source>The required Python module is not installed.
 For more information, please visit its homepage and Quantum GIS wiki.</source>
-        <translation type="obsolete">A szükséges Python modult nem telepítetted.
+        <translation type="unfinished">A szükséges Python modult nem telepítetted.
 További információkért látogasd meg a Quantum GIS wiki oldalát.</translation>
     </message>
     <message>
         <source>Python plugin installed.
 Now you need to enable it in Plugin Manager.</source>
-        <translation type="obsolete">Python modult telepítettem.
+        <translation type="unfinished">Python modult telepítettem.
 Most engedélyezned kell a modul kezelőben.</translation>
     </message>
     <message>
         <source>Python plugin reinstalled.
 You need to restart Quantum GIS in order to reload it.</source>
-        <translation type="obsolete">Python modult újratelepítettem.
+        <translation type="unfinished">Python modult újratelepítettem.
 Most újra kell indítanod a Quantum GIS-t, hogy újra betöltse azt.</translation>
     </message>
     <message>
         <source>Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely.</source>
-        <translation type="obsolete">A Python modult eltávolítottam. Vedd figyelembe, hogy a Quantum GIS újraindítására lehet szükség a teljes eltávolításhoz.</translation>
+        <translation type="unfinished">A Python modult eltávolítottam. Vedd figyelembe, hogy a Quantum GIS újraindítására lehet szükség a teljes eltávolításhoz.</translation>
     </message>
     <message>
         <source>upgradeable</source>
-        <translation type="obsolete">frissíthető</translation>
+        <translation type="unfinished">frissíthető</translation>
     </message>
     <message>
         <source>new!</source>
-        <translation type="obsolete">új!</translation>
+        <translation type="unfinished">új!</translation>
     </message>
     <message>
         <source>invalid</source>
-        <translation type="obsolete">érvénytelen</translation>
+        <translation type="unfinished">érvénytelen</translation>
     </message>
     <message>
         <source>This repository is connected</source>
-        <translation type="obsolete">Ehhez a tárházhoz kapcsolódtam</translation>
+        <translation type="unfinished">Ehhez a tárházhoz kapcsolódtam</translation>
     </message>
     <message>
         <source>not installed</source>
-        <translation type="obsolete">nincs telepítve</translation>
+        <translation type="unfinished">nincs telepítve</translation>
     </message>
     <message>
         <source>installed</source>
-        <translation type="obsolete">telepítve</translation>
+        <translation type="unfinished">telepítve</translation>
     </message>
     <message>
         <source>at least</source>
-        <translation type="obsolete">legalább</translation>
+        <translation type="unfinished">legalább</translation>
+    </message>
+    <message>
+        <source>You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -23462,35 +23497,35 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerFetchingDialog</name>
     <message>
         <source>Success</source>
-        <translation type="obsolete">Sikeres</translation>
+        <translation type="unfinished">Sikeres</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="obsolete">Gép név feloldása</translation>
+        <translation type="unfinished">Gép név feloldása</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="obsolete">Kapcsolódás...</translation>
+        <translation type="unfinished">Kapcsolódás...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="obsolete">Kapcsolódtam a géphez. Küldöm a kérést...</translation>
+        <translation type="unfinished">Kapcsolódtam a géphez. Küldöm a kérést...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation type="obsolete">Adatletöltés...</translation>
+        <translation type="unfinished">Adatletöltés...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="obsolete">Üresjárat</translation>
+        <translation type="unfinished">Üresjárat</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="obsolete">Kapcsolat lezárása</translation>
+        <translation type="unfinished">Kapcsolat lezárása</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="obsolete">Hiba</translation>
+        <translation type="unfinished">Hiba</translation>
     </message>
 </context>
 <context>
@@ -23525,43 +23560,43 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerInstallingDialog</name>
     <message>
         <source>Installing...</source>
-        <translation type="obsolete">Telepítés...</translation>
+        <translation type="unfinished">Telepítés...</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="obsolete">Gép név felodás...</translation>
+        <translation type="unfinished">Gép név felodás...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="obsolete">Kapcsolódás...</translation>
+        <translation type="unfinished">Kapcsolódás...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="obsolete">Kapcsolódtam a géphez. Küldöm a kérést...</translation>
+        <translation type="unfinished">Kapcsolódtam a géphez. Küldöm a kérést...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation type="obsolete">Adatletöltés...</translation>
+        <translation type="unfinished">Adatletöltés...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="obsolete">Üresjárat</translation>
+        <translation type="unfinished">Üresjárat</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="obsolete">Kapcsolat lezárása...</translation>
+        <translation type="unfinished">Kapcsolat lezárása...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="obsolete">Hiba</translation>
+        <translation type="unfinished">Hiba</translation>
     </message>
     <message>
         <source>Failed to unzip the plugin package. Probably it&apos;s broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:</source>
-        <translation type="obsolete">Nem sikerült kitömöríteni a modul csomagot. Valószinűleg hibás vagy hiányzik a tárházból. Meggyőződhetnél róla, hogy van írási jogod a modul könyvtárra:</translation>
+        <translation type="unfinished">Nem sikerült kitömöríteni a modul csomagot. Valószinűleg hibás vagy hiányzik a tárházból. Meggyőződhetnél róla, hogy van írási jogod a modul könyvtárra:</translation>
     </message>
     <message>
         <source>Aborted by user</source>
-        <translation type="obsolete">Felhasználó megszakította</translation>
+        <translation type="unfinished">Felhasználó megszakította</translation>
     </message>
 </context>
 <context>
@@ -23586,7 +23621,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerPluginErrorDialog</name>
     <message>
         <source>no error message received</source>
-        <translation type="obsolete">nem kaptam hibaüzenetet</translation>
+        <translation type="unfinished">nem kaptam hibaüzenetet</translation>
     </message>
 </context>
 <context>
@@ -31124,27 +31159,27 @@ Tried URL: %1</source>
     <name>VisualDialog</name>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="obsolete">Kérem add meg az input vektor réteget</translation>
+        <translation type="unfinished">Kérem add meg az input vektor réteget</translation>
     </message>
     <message>
         <source>Please specify input field</source>
-        <translation type="obsolete">Kérem add meg az input mezőt</translation>
+        <translation type="unfinished">Kérem add meg az input mezőt</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation type="obsolete">Ellenőrizd a geometria helyességét</translation>
+        <translation type="unfinished">Ellenőrizd a geometria helyességét</translation>
     </message>
     <message>
         <source>Geometry errors</source>
-        <translation type="obsolete">Geometriai hibák</translation>
+        <translation type="unfinished">Geometriai hibák</translation>
     </message>
     <message>
         <source>Total encountered errors</source>
-        <translation type="obsolete">Összes feltárt hiba</translation>
+        <translation type="unfinished">Összes feltárt hiba</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation type="obsolete">Egyedi értékek listája</translation>
+        <translation type="unfinished">Egyedi értékek listája</translation>
     </message>
     <message>
         <source>Unique values:</source>
@@ -31156,19 +31191,19 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>Basics statistics</source>
-        <translation type="obsolete">Alap statisztika</translation>
+        <translation type="unfinished">Alap statisztika</translation>
     </message>
     <message>
         <source>Statistics output</source>
-        <translation type="obsolete">Statisztikai eredmények</translation>
+        <translation type="unfinished">Statisztikai eredmények</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation type="obsolete">Legközelebbi szomszéd elemzés</translation>
+        <translation type="unfinished">Legközelebbi szomszéd elemzés</translation>
     </message>
     <message>
         <source>Nearest neighbour statistics</source>
-        <translation type="obsolete">Legközelebbi szomszéd statisztika</translation>
+        <translation type="unfinished">Legközelebbi szomszéd statisztika</translation>
     </message>
     <message>
         <source>Feature %1 is not closed</source>
@@ -31180,11 +31215,11 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>Unique values</source>
-        <translation type="obsolete">Egyedi értékek</translation>
+        <translation type="unfinished">Egyedi értékek</translation>
     </message>
     <message>
         <source>Total unique values</source>
-        <translation type="obsolete">Öszes egyedi érték</translation>
+        <translation type="unfinished">Öszes egyedi érték</translation>
     </message>
 </context>
 <context>
@@ -32256,7 +32291,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>fTools</name>
     <message>
         <source>Quantum GIS version detected: </source>
-        <translation type="obsolete">Észlelt QGIS verzió: </translation>
+        <translation type="unfinished">Észlelt QGIS verzió: </translation>
     </message>
     <message>
         <source>This version of fTools requires at least QGIS version 1.0.0</source>
@@ -32265,7 +32300,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     <message>
         <source>This version of fTools requires at least QGIS version 1.0.0
 Plugin will not be enabled.</source>
-        <translation type="obsolete">Az fTools ezen verziója a QGIS 1.0.0 verzióját igényli
+        <translation type="unfinished">Az fTools ezen verziója a QGIS 1.0.0 verzióját igényli
 A modult nem engedélyezem.</translation>
     </message>
     <message>
@@ -32274,171 +32309,183 @@ A modult nem engedélyezem.</translation>
     </message>
     <message>
         <source>&amp;Analysis Tools</source>
-        <translation type="obsolete">&amp;Elemző eszközök</translation>
+        <translation type="unfinished">&amp;Elemző eszközök</translation>
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation type="obsolete">Távolság mátrix</translation>
+        <translation type="unfinished">Távolság mátrix</translation>
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation type="obsolete">Össz vonalhossz</translation>
+        <translation type="unfinished">Össz vonalhossz</translation>
     </message>
     <message>
         <source>Points in polygon</source>
-        <translation type="obsolete">Pontok a felületben</translation>
+        <translation type="unfinished">Pontok a felületben</translation>
     </message>
     <message>
         <source>Basic statistics</source>
-        <translation type="obsolete">Alap statisztika</translation>
+        <translation type="unfinished">Alap statisztika</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation type="obsolete">Egyedi értékek listája</translation>
+        <translation type="unfinished">Egyedi értékek listája</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation type="obsolete">Legközelebbi szomszéd elemzés</translation>
+        <translation type="unfinished">Legközelebbi szomszéd elemzés</translation>
     </message>
     <message>
         <source>Mean coordinate(s)</source>
-        <translation type="obsolete">Átlag koordinátá(k)</translation>
+        <translation type="unfinished">Átlag koordinátá(k)</translation>
     </message>
     <message>
         <source>Line intersections</source>
-        <translation type="obsolete">Vonal metszések</translation>
+        <translation type="unfinished">Vonal metszések</translation>
     </message>
     <message>
         <source>&amp;Research Tools</source>
-        <translation type="obsolete">Kutató eszközök</translation>
+        <translation type="unfinished">Kutató eszközök</translation>
     </message>
     <message>
         <source>Random selection</source>
-        <translation type="obsolete">Véletlen szelekció</translation>
+        <translation type="unfinished">Véletlen szelekció</translation>
     </message>
     <message>
         <source>Random selection within subsets</source>
-        <translation type="obsolete">Véletlen szelekció alhalmazokkal</translation>
+        <translation type="unfinished">Véletlen szelekció alhalmazokkal</translation>
     </message>
     <message>
         <source>Random points</source>
-        <translation type="obsolete">Véletlen pontok</translation>
+        <translation type="unfinished">Véletlen pontok</translation>
     </message>
     <message>
         <source>Regular points</source>
-        <translation type="obsolete">Szabályos pontok</translation>
+        <translation type="unfinished">Szabályos pontok</translation>
     </message>
     <message>
         <source>Vector grid</source>
-        <translation type="obsolete">Vektor rács</translation>
+        <translation type="unfinished">Vektor rács</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="obsolete">Szelekció pozíció alapján</translation>
+        <translation type="unfinished">Szelekció pozíció alapján</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
-        <translation type="obsolete">Geometria egyszerűsítése</translation>
+        <translation type="unfinished">Geometria egyszerűsítése</translation>
+    </message>
+    <message>
+        <source>&amp;Geoprocessing Tools</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation type="obsolete">Konvex körvonal</translation>
+        <translation type="unfinished">Konvex körvonal</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="obsolete">Övezet(ek)</translation>
+        <translation type="unfinished">Övezet(ek)</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation type="obsolete">Metszés</translation>
+        <translation type="unfinished">Metszés</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="obsolete">Unió</translation>
+        <translation type="unfinished">Unió</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="obsolete">Szimmetrikus különbség</translation>
+        <translation type="unfinished">Szimmetrikus különbség</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="obsolete">Vág</translation>
+        <translation type="unfinished">Vág</translation>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="obsolete">Összevon</translation>
+        <translation type="unfinished">Összevon</translation>
     </message>
     <message>
         <source>Difference</source>
-        <translation type="obsolete">Különbség</translation>
+        <translation type="unfinished">Különbség</translation>
+    </message>
+    <message>
+        <source>G&amp;eometry Tools</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="obsolete">Export/geometria oszlop hozzáadás</translation>
+        <translation type="unfinished">Export/geometria oszlop hozzáadás</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation type="obsolete">Ellenőrizd a geometria helyességét</translation>
+        <translation type="unfinished">Ellenőrizd a geometria helyességét</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation type="obsolete">Felület centrálisok</translation>
+        <translation type="unfinished">Felület centrálisok</translation>
     </message>
     <message>
         <source>Delaunay triangulation</source>
-        <translation type="obsolete">Delaunay háromszögek</translation>
+        <translation type="unfinished">Delaunay háromszögek</translation>
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation type="obsolete">Csomópontok kivonat</translation>
+        <translation type="unfinished">Csomópontok kivonat</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation type="obsolete">Geometria egyszerűsítése</translation>
+        <translation type="unfinished">Geometria egyszerűsítése</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
-        <translation type="obsolete">Többrészűből egyrészűekbe</translation>
+        <translation type="unfinished">Többrészűből egyrészűekbe</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
-        <translation type="obsolete">Egyrészűekből többrészűbe</translation>
+        <translation type="unfinished">Egyrészűekből többrészűbe</translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation type="obsolete">Felületek vonallá</translation>
+        <translation type="unfinished">Felületek vonallá</translation>
     </message>
     <message>
         <source>&amp;Data Management Tools</source>
-        <translation type="obsolete">Adatkezelő eszközök</translation>
+        <translation type="unfinished">Adatkezelő eszközök</translation>
     </message>
     <message>
         <source>Export to new projection</source>
-        <translation type="obsolete">Export új vetületbe</translation>
+        <translation type="unfinished">Export új vetületbe</translation>
     </message>
     <message>
         <source>Define current projection</source>
-        <translation type="obsolete">Aktuális vetület megadása</translation>
+        <translation type="unfinished">Aktuális vetület megadása</translation>
     </message>
     <message>
         <source>Join attributes</source>
-        <translation type="obsolete">Attribútumok kapcsolása</translation>
+        <translation type="unfinished">Attribútumok kapcsolása</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
-        <translation type="obsolete">Attribútumok kapcsolása hely alapján</translation>
+        <translation type="unfinished">Attribútumok kapcsolása hely alapján</translation>
     </message>
     <message>
         <source>Split vector layer</source>
-        <translation type="obsolete">Vektor réteg darabolás</translation>
+        <translation type="unfinished">Vektor réteg darabolás</translation>
     </message>
     <message>
         <source>fTools Information</source>
-        <translation type="obsolete">fTools információ</translation>
+        <translation type="unfinished">fTools információ</translation>
     </message>
     <message>
         <source>About fTools</source>
         <translation type="obsolete">fTools névjegy</translation>
+    </message>
+    <message>
+        <source>&amp;Vector</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -32506,19 +32553,95 @@ A modult nem engedélyezem.</translation>
     </message>
     <message>
         <source>Feature %1 contains an unnested hole</source>
-        <translation type="obsolete">%1 elem nem belső lyukat tartalmaz</translation>
+        <translation type="unfinished">%1 elem nem belső lyukat tartalmaz</translation>
     </message>
     <message>
         <source>Feature %1 has incorrect node ordering</source>
-        <translation type="obsolete">%1 elem hibás töréspont sorrend</translation>
+        <translation type="unfinished">%1 elem hibás töréspont sorrend</translation>
     </message>
     <message>
         <source>Feature %1 is not closed</source>
-        <translation type="obsolete">%1 elem nem zárt</translation>
+        <translation type="unfinished">%1 elem nem zárt</translation>
+    </message>
+    <message>
+        <source>Max. len:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Min. len:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mean. len:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filled:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>N:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mean:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>StdDev:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sum:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Min:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Max:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CV:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of unique values:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Range:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Median:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Observed mean distance:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Expected mean distance:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Nearest neighbour index:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Z-Score:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Feature %1 is self intersecting</source>
-        <translation type="obsolete">%1 elem önmagát metszi</translation>
+        <translation type="unfinished">%1 elem önmagát metszi</translation>
     </message>
 </context>
 </TS>
