@@ -1099,7 +1099,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="303"/>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="309"/>
         <source>OGR Layer Converter</source>
-        <translation type="unfinished">Преобразователь слоёв OGR</translation>
+        <translation>Преобразователь слоёв OGR</translation>
     </message>
 </context>
 <context>
@@ -1986,7 +1986,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="216"/>
         <source>Rotation</source>
-        <translation>Угол поворота</translation>
+        <translation>Вращение</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="233"/>
@@ -4789,7 +4789,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="449"/>
         <source>QGIS Ready!</source>
-        <translation>QGIS Готова!</translation>
+        <translation>QGIS готова к запуску</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="569"/>
@@ -6529,19 +6529,55 @@ GRASS:
         <translation type="obsolete">Эта версия включает более 30 исправлений ошибок и других обновлений с момента выхода QGIS 1.2.0. Кроме того, мы добавили следующие возможности: </translation>
     </message>
     <message>
+        <source>&lt;p&gt;OSM plugin &amp;amp; provider updates:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;new OSM style files.&lt;/li&gt;
+  &lt;li&gt;new icons.&lt;/li&gt;
+  &lt;li&gt;dialog text updated and completed.&lt;/li&gt;
+  &lt;li&gt;Saving OSM into file functionality was improvements.&lt;/li&gt;
+  &lt;li&gt;fixed some problems with encoding... ascii to utf-8.&lt;/li&gt;
+  &lt;li&gt;all OSM layers are automatically removed after disabling OSM plugin in plugin manager.&lt;/li&gt;
+  &lt;li&gt;other OSM related bugfixes.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Other notable features and improvements in this release&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Marker size is now configurable when editing a layer.&lt;/li&gt;
+  &lt;li&gt;Incorporation of the analysis library into the mainstream release.&lt;/li&gt;
+  &lt;li&gt;Identify features across multiple layers.&lt;/li&gt;
+  &lt;li&gt;Added a new plugin for carrying out raster terrain analysis (computing slope aspect, steepness etc).&lt;/li&gt;
+  &lt;li&gt;A reshape tool to apply to line/polygon geometries. The part of a geometry between the first and
+      last intersection of the reshape line will be replaced.&lt;/li&gt;
+  &lt;li&gt;Added snapping to current layer in measure dialog.&lt;/li&gt;
+  &lt;li&gt;Added ability to select the primary key for views.&lt;/li&gt;
+  &lt;li&gt;Zoom to a coordinate by entering it in the status bar coordinate display.&lt;/li&gt;
+&lt;/ul&gt;</source>
+        <translation type="obsolete">&lt;p&gt;Обновления модуля OpenStreetMap:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Новые файлы стилей OSM.&lt;/li&gt;
+  &lt;li&gt;Новые значки.&lt;/li&gt;
+  &lt;li&gt;Обвнолены и дополнены сообщения в диалогах.&lt;/li&gt;
+  &lt;li&gt;Улучшена функция сохранения данных OSM в файле.&lt;/li&gt;
+  &lt;li&gt;Исправлены проблемы с преобразованием кодировки ASCII в UTF-8.&lt;/li&gt;
+  &lt;li&gt;Все слои OSM будут автоматически удалены при выключении модуля.&lt;/li&gt;
+  &lt;li&gt;Исправлено множество недочётов.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Другие изменения в этом выпуске:&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;Настройка размера маркеров при редактировании слоя.&lt;/li&gt;
+  &lt;li&gt;Библиотека анализа включена в поставку QGIS.&lt;/li&gt;
+  &lt;li&gt;Возможность определения объектов в нескольких слоях.&lt;/li&gt;
+  &lt;li&gt;Добавлен модуль морфометрического анализа (вычисление уклонов, экспозиции и т.д.).&lt;/li&gt;
+  &lt;li&gt;Добавлен инструмент корректировки, предназначенный для изменения геометрии объектов.
+      Часть геометрии между первым и последним пересечением с линией корректировки будет изменена.&lt;/li&gt;
+  &lt;li&gt;В диалоге измерения добавлена возможность прилипания к объектам текущего слоя.&lt;/li&gt;
+  &lt;li&gt;Добавлена возможность выбора первичного ключа для видов.&lt;/li&gt;
+  &lt;li&gt;Добавлена возможность перехода к координате путём её ввода в строке состояния.&lt;/li&gt;
+&lt;/ul&gt;</translation>
+    </message>
+    <message>
         <location filename="../src/app/qgisapp.cpp" line="2335"/>
         <source>%1 is not a valid or recognized data source</source>
         <translation>%1 не является действительным источником данных</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="2772"/>
-        <source>New Shapefile</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="2773"/>
-        <source>Shapefiles must end on .shp</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2859"/>
@@ -6876,57 +6912,57 @@ This copy of QGIS has been built without SpatiaLite support.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2129"/>
         <source>Whats new in Version 1.4.0?</source>
-        <translation type="unfinished"></translation>
+        <translation>Что нового в версии 1.4.0?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2132"/>
         <source>Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.3.0. If an unchanging user interface, programmatic API and long term support is more important to you then cool new and untested features, we recommend that you use a copy of QGIS from our Long Term Support (LTS)1.0.x release series. In all other cases we recommend that you use this version.</source>
-        <translation type="unfinished"></translation>
+        <translation>Обратите внимание, что данный выпуск относится к числу «нестабильных». Это означает, что он включает новые возможности и расширяет библиотечные интерфейсы в сравнении с версиями 1.0.x и 1.3.0. Если для вас важна стабильность и долговременная поддержка, мы рекомендуем использовать версию QGIS из серии стабильных выпусков 1.0.x.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2140"/>
         <source>This release includes around 200 bug fixes, nearly 30 new features and has had a lot of love and attention poured in to it to take our favourite desktop GIS application another step on the road to GIS nirvana! So much has happened in the 3 months since our last release that it is impossible to document everything here. Instead we will just highlight a couple of important new features for you.</source>
-        <translation type="unfinished"></translation>
+        <translation>Данный выпуск включает более 200 исправлений ошибок и около 30 нововведений. Мы сделали ещё один шаг к тому, чтобы сделать Quantum GIS основной настольной ГИС для вашего рабочего места. Поскольку за последние три месяца с момента предыдущего выпуска было сделано очень много изменений, мы остановимся только на ключевых особенностях данной версии.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2148"/>
         <source>Probably the biggest new feature is the addition of the new vector symbology infrastructure. This is provided alongside the old implementation - you can switch using a button in the vector layer properties dialog. It does&apos;t replace the old symbology implementation completely yet because there are various issues that need to be resolved and a large amount of testing before it is considered ready.</source>
-        <translation type="unfinished"></translation>
+        <translation>Самым большим нововведением стало появление новой инфраструктуры символики векторных слоёв. Новая инфраструктура предоставляется параллельно со старой и реализацию отрисовки можно переключать в диалоге свойств векторного слоя. Новая символика не предназначена для того, чтобы полностью заменить старую, так как она всё ещё требует тестирования и доработки.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2156"/>
         <source>QGIS now has a field calculator, accessible via a button in the attribute section of the vector properties, and from the attribute table user interface. You can use feature length, feature area, string concatenation and type conversions in the field calculator, as well as field values.</source>
-        <translation type="unfinished"></translation>
+        <translation>В QGIS появился калькулятор полей, доступный для вызова из секции «Атрибуты» диалога свойств слоя или таблицы атрибутов. В калькуляторе допускается использование значений полей, длин и площадей объектов, конкатенация строк и преобразование типов.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2163"/>
         <source>The map composer has had a lot of attention. A grid can now be added to composer maps. Composer maps can now be rotated in the layout. The limitation of a single map layout per project has been removed. A new composer manager dialog has been added to manage the existing composer instances. The composer widget property sheets have been completely overhauled to use less screen space </source>
-        <translation type="unfinished"></translation>
+        <translation>В новой версии существенно дополнен компоновщик карт. На карту теперь можно накладывать сетку, а карты в компоновке можно вращать. В проекте стало возможно использовать несколько компоновок, для чего был создан диалог управления компоновками. Панели свойств объектов компоновки были переработаны с учётом экономии экранного пространства </translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2171"/>
         <source>Various parts of the user interface have been overhauled with the goal of improving consistency and to improve support for netbooks and other smaller screen devices. Loading and saving of shortcuts. Position can now be displayed as Degrees, Minutes, Seconds in the status bar. The add, move and delete vertex buttons are now removed and the node tool is moved from the advanced editing toolbar to the standard editing toolbar. The identification tool has also undergone numerous improvements.</source>
-        <translation type="unfinished"></translation>
+        <translation>Многие элементы пользовательского интерфейса также были переработаны с целью повышения удобства и возможности использования QGIS на нетбуках и других устройствах с небольшим экраном. Добавлены функции сохранения и загрузки клавиатурных комбинаций. Положение курсора теперь может отображаться в градусах, минутах, секундах. Были удалены кнопки добавления, удаления и перемещения вершин, а инструмент редактирования узлов перемещён в панель инструментов оцифровки. Кроме того, был доработан инструмент определения объектов.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2181"/>
         <source>A render caching capability has been added to QGIS. This speeds up common operations such as layer re-ordering, changing symbology, WMS / WFS client, hiding / showing layers and opens the door for future enhancements such as threaded rendering and pre-compositing layer cache manipulation. Note that it is disabled by default, and can be enabled in the options dialog.</source>
-        <translation type="unfinished"></translation>
+        <translation>Для ускорения вывода на экран был добавлен кэш отрисовки. Благодаря кэшированию, повышается быстродействие таких операций, как изменение порядка слоёв, изменение символики, включение и выключение слоёв и отображение данных с WFS и WMS-серверов. В перспективе, кэширование допускает многопоточную отрисовку и предварительную обработку списка слоёв в легенде.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2189"/>
         <source>User defined SVG search paths are now added to the options dialog.</source>
-        <translation type="unfinished"></translation>
+        <translation>В диалоге параметров стало возможно указывать пути для загрузки пользовательских значков в формате SVG.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2192"/>
         <source>When creating a new shapefile, you can now specify its CRS. Also the avoid intersections option for polygons is now also possible with background layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>При создании нового shape-файла стало возможно указать его систему координат. Функция преотвращения пересечения новых полигонов теперь работает в пределах нескольких слоёв.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2196"/>
         <source>For power users, you can now create customizable attribute forms using Qt Designer dialog UIs.</source>
-        <translation type="unfinished"></translation>
+        <translation>Для опытных пользователей была добавлена возможность создания форм редактирования свойств средствами Qt Designer.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3673"/>
@@ -6939,6 +6975,16 @@ This copy of QGIS has been built without SpatiaLite support.</source>
         <location filename="../src/app/qgisapp.cpp" line="794"/>
         <source>Deselect features from all layers</source>
         <translation>Снять выделение во всех слоях</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2772"/>
+        <source>New Shapefile</source>
+        <translation>Создание shape-файла</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2773"/>
+        <source>Shapefiles must end on .shp</source>
+        <translation>Новые shape-файлы должны иметь расширение .shp</translation>
     </message>
 </context>
 <context>
@@ -7385,7 +7431,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsattributedialog.cpp" line="187"/>
         <source>Attributes - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Атрибуты — %1</translation>
     </message>
     <message>
         <source>...</source>
@@ -7611,6 +7657,11 @@ p, li { white-space: pre-wrap; }
         <translation>Копировать выбранные строки в буфер обмена (Ctrl+C)</translation>
     </message>
     <message>
+        <location filename="../src/ui/qgsattributetabledialog.ui" line="230"/>
+        <source>Delete selected features</source>
+        <translation>Удалить выделенные объекты</translation>
+    </message>
+    <message>
         <source>Copies the selected rows to the clipboard</source>
         <translation type="obsolete">Копировать выбранные строки в буфер обмена</translation>
     </message>
@@ -7655,7 +7706,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="330"/>
         <source>Looks for the given value in the given attribute column</source>
-        <translation type="unfinished"></translation>
+        <translation>Найти заданное значение в выбранном поле</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="333"/>
@@ -7668,24 +7719,19 @@ p, li { white-space: pre-wrap; }
         <translation>Показать только выбранные записи</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributetabledialog.ui" line="56"/>
-        <source>Opens the search query builder</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="59"/>
         <source>Advanced search</source>
         <translation>Расширенный поиск</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributetabledialog.ui" line="72"/>
-        <source>Help</source>
-        <translation type="unfinished">Справка</translation>
+        <location filename="../src/ui/qgsattributetabledialog.ui" line="56"/>
+        <source>Opens the search query builder</source>
+        <translation>Открыть конструктор поисковых запросов</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributetabledialog.ui" line="230"/>
-        <source>Delete selected features</source>
-        <translation type="unfinished"></translation>
+        <location filename="../src/ui/qgsattributetabledialog.ui" line="72"/>
+        <source>Help</source>
+        <translation>Справка</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="233"/>
@@ -9431,7 +9477,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="137"/>
         <source>Rotation</source>
-        <translation>Поворот</translation>
+        <translation>Вращение</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="166"/>
@@ -9604,7 +9650,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="247"/>
         <source>Rotation</source>
-        <translation>Поворот</translation>
+        <translation>Вращение</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="41"/>
@@ -9887,7 +9933,7 @@ Error was:%2</source>
         <source>Rotation </source>
         <comment>Rotation</comment>
         <extracomment>Rotation</extracomment>
-        <translation>Поворот</translation>
+        <translation>Вращение</translation>
     </message>
 </context>
 <context>
@@ -10808,7 +10854,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="263"/>
         <source>Calculate</source>
-        <translation>Расчитать</translation>
+        <translation>Рассчитать</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="190"/>
@@ -10864,7 +10910,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="167"/>
         <source>Use the text boxes below to test the CRS definition you are creating. Enter a coordinate where both the lat/long and the transformed result are known (for example by reading off a map). Then press the calculate button to see if the CRS definition you are creating is accurate.</source>
-        <translation>Используйте данные поля для проверки вновь созданной системы координат. Введите точку для которой известны широта/долгота и прямоугольные координаты (например, с карты). После этого нажмите кнопку «Расчитать» и проверьте, верно ли задана ваша система координат.</translation>
+        <translation>Используйте данные поля для проверки вновь созданной системы координат. Введите точку для которой известны широта/долгота и прямоугольные координаты (например, с карты). После этого нажмите кнопку «Рассчитать» и проверьте, верно ли задана ваша система координат.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="197"/>
@@ -15852,7 +15898,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="132"/>
         <source>This help file is not available in your language. If you would like to translate it, please contact the QGIS  development team.</source>
-        <translation type="unfinished"></translation>
+        <translation>Для вашего языка отсутствует данный файл справки. Пожалуйста, свяжитесь с командой разработки QGIS, если вы хотели бы перевести его на ваш язык.</translation>
     </message>
     <message>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="184"/>
@@ -16123,7 +16169,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsidentifyresults.cpp" line="255"/>
         <location filename="../src/app/qgsidentifyresults.cpp" line="348"/>
         <source>Edit feature form</source>
-        <translation>Открыть форму объекта</translation>
+        <translation>Открыть форму объекта (ред.)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="200"/>
@@ -16140,22 +16186,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="353"/>
         <source>Clear results</source>
-        <translation type="unfinished"></translation>
+        <translation>Очистить результаты</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="354"/>
         <source>Clear highlights</source>
-        <translation type="unfinished"></translation>
+        <translation>Очистить подсветку</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="355"/>
         <source>Highlight all</source>
-        <translation type="unfinished"></translation>
+        <translation>Подсветить все</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="356"/>
         <source>Highlight layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Подсветить все в слое</translation>
     </message>
 </context>
 <context>
@@ -16539,12 +16585,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="234"/>
         <source>Above</source>
-        <translation>Сверху</translation>
+        <translation>Вверху</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="224"/>
         <source>Over</source>
-        <translation>Поверх</translation>
+        <translation>По центру</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="241"/>
@@ -16564,7 +16610,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="255"/>
         <source>Above Right</source>
-        <translation>Сверху справа</translation>
+        <translation>Вверху справа</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="203"/>
@@ -16574,7 +16620,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="262"/>
         <source>Above Left</source>
-        <translation>Сверху слева</translation>
+        <translation>Вверху слева</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="248"/>
@@ -16677,11 +16723,6 @@ p, li { white-space: pre-wrap; }
         <translation>Смещение по Y (пункты)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="359"/>
-        <source>Buffer labels</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="550"/>
         <source>&amp;Font family</source>
         <translation>&amp;Шрифт</translation>
@@ -16779,6 +16820,11 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgslabeldialogbase.ui" line="538"/>
         <source>Data defined properties</source>
         <translation>Данные свойств</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="359"/>
+        <source>Buffer labels</source>
+        <translation>Буферизовать подписи</translation>
     </message>
 </context>
 <context>
@@ -17346,13 +17392,13 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="63"/>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="127"/>
         <source>No feature selected. Please select a feature with the selection tool or in the attribute table</source>
-        <translation type="unfinished"></translation>
+        <translation>Объект не выбран. Пожалуйста, выберите объект в таблице атрибутов или используя инструмент выделения</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="67"/>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="131"/>
         <source>Several features are selected. Please select only one feature to which an island should be added.</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбрано несколько объектов. Пожалуйста, выберите один объект, к которому будет добавлен остров.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="72"/>
@@ -17373,7 +17419,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="107"/>
         <source>Part added</source>
-        <translation type="unfinished"></translation>
+        <translation>Создание части составного объекта</translation>
     </message>
     <message>
         <source>Island added</source>
@@ -17382,22 +17428,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="115"/>
         <source>Selected feature is not a multipolygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбранный объект не является мультиполигоном</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="119"/>
         <source>New ring is not a valid geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>Новое кольцо не является действительной геометрией</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="123"/>
         <source>New polygon ring not disjoint with existing polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Новое кольцо пересекается с существующими полигонами</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="135"/>
         <source>Selected geometry could not be found</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось найти выбранную геометрию</translation>
     </message>
 </context>
 <context>
@@ -17774,7 +17820,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="92"/>
         <source>No point feature was detected at the clicked position. Please click closer to the feature or enhance the search tolerance under Settings-&gt;Options-&gt;Digitizing-&gt;Serch radius for vertex edits</source>
-        <translation>Объект не найден в позиции курсора. Пожалуйста, щёлкните мышью ближе к объекту или увеличте радиус поиска для редактирования вершин в диалоге параметров оцифровки (Правка-&gt;Параметры)</translation>
+        <translation>Объект не найден в позиции курсора. Пожалуйста, щёлкните мышью ближе к объекту или увеличьте радиус поиска для редактирования вершин в диалоге параметров оцифровки (Правка-&gt;Параметры)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="106"/>
@@ -17789,7 +17835,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="185"/>
         <source>Rotate symbol</source>
-        <translation>Поворот значка</translation>
+        <translation>Вращение значка</translation>
     </message>
 </context>
 <context>
@@ -18249,17 +18295,17 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="450"/>
         <source>Layer/label options</source>
-        <translation>Дополнительные параметры</translation>
+        <translation>Параметры подписей</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="456"/>
         <source>Forces labels on, regardless of collisions. Available only for cached labels.</source>
-        <translation type="unfinished"></translation>
+        <translation>Включить все подписи, независимо от того, существуют ли коллизии. Параметр доступен только для кэшированных подписей.</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="459"/>
         <source>Force</source>
-        <translation type="unfinished"></translation>
+        <translation>Не игнорировать</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="469"/>
@@ -18269,7 +18315,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="472"/>
         <source>Anti-alias</source>
-        <translation>Сглаживание подписей</translation>
+        <translation>Сглаживание</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="482"/>
@@ -18509,12 +18555,12 @@ Extended error information:
     <message>
         <location filename="../src/app/qgsnewconnection.cpp" line="90"/>
         <source>Save connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранение соединения</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewconnection.cpp" line="91"/>
         <source>Should the existing connection %1 be overwritten?</source>
-        <translation type="unfinished"></translation>
+        <translation>Перезаписать существующее соединение %1?</translation>
     </message>
 </context>
 <context>
@@ -18636,12 +18682,12 @@ Extended error information:
     <message>
         <location filename="../src/app/qgsnewhttpconnection.cpp" line="62"/>
         <source>Save connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранение соединения</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewhttpconnection.cpp" line="63"/>
         <source>Should the existing connection %1 be overwritten?</source>
-        <translation type="unfinished"></translation>
+        <translation>Перезаписать существующее соединение %1?</translation>
     </message>
 </context>
 <context>
@@ -18723,12 +18769,12 @@ Extended error information:
     <message>
         <location filename="../src/app/ogr/qgsnewogrconnection.cpp" line="109"/>
         <source>Save connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Сохранение соединения</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsnewogrconnection.cpp" line="110"/>
         <source>Should the existing connection %1 be overwritten?</source>
-        <translation type="unfinished"></translation>
+        <translation>Перезаписать существующее соединение %1?</translation>
     </message>
 </context>
 <context>
@@ -19178,19 +19224,6 @@ p, li { white-space: pre-wrap; }
         <translation>Подтвердите удаление</translation>
     </message>
     <message>
-        <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="300"/>
-        <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="340"/>
-        <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="352"/>
-        <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="364"/>
-        <source>Add vector layer</source>
-        <translation type="unfinished">Добавить векторный слой</translation>
-    </message>
-    <message>
-        <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="301"/>
-        <source>No database selected.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="317"/>
         <source>Password for </source>
         <translation>Пароль для </translation>
@@ -19201,19 +19234,32 @@ p, li { white-space: pre-wrap; }
         <translation>Пожалуйста, введите ваш пароль:</translation>
     </message>
     <message>
+        <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="300"/>
+        <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="340"/>
+        <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="352"/>
+        <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="364"/>
+        <source>Add vector layer</source>
+        <translation>Добавление векторного слоя</translation>
+    </message>
+    <message>
+        <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="301"/>
+        <source>No database selected.</source>
+        <translation>Не выбрана база данных.</translation>
+    </message>
+    <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="341"/>
         <source>No protocol URI entered.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не указан URI протокола.</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="353"/>
         <source>No layers selected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не выбран ни один слой.</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="365"/>
         <source>No directory selected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не выбран каталог.</translation>
     </message>
 </context>
 <context>
@@ -21129,7 +21175,7 @@ Here is the error message:</source>
     </message>
     <message>
         <source>This plugin requires a missing module</source>
-        <translation>Требуются отстутствующие в системе библиотеки</translation>
+        <translation>Требуются отсутствующие в системе библиотеки</translation>
     </message>
     <message>
         <source>Plugin reinstalled successfully</source>
@@ -21374,7 +21420,7 @@ You need to restart Quantum GIS in order to reload it.</source>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="30"/>
         <source>Help</source>
-        <translation type="unfinished">Справка</translation>
+        <translation>Справка</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="82"/>
@@ -21994,7 +22040,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="512"/>
         <source>Failed to compute GCP transform: Transform is not solvable.</source>
-        <translation>Не удалось расчитать преобразование. Это преобразование неразрешимо.</translation>
+        <translation>Не удалось рассчитать преобразование. Это преобразование неразрешимо.</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="632"/>
@@ -22586,13 +22632,14 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
     <message>
         <location filename="../src/gui/qgsprojectbadlayerguihandler.cpp" line="26"/>
         <source>QGIS Project Read Error</source>
-        <translation type="unfinished">Ошибка чтения проекта QGIS</translation>
+        <translation>Ошибка чтения проекта QGIS</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsprojectbadlayerguihandler.cpp" line="27"/>
         <source>Unable to open one or more project layers
 Try to find missing layers?</source>
-        <translation type="unfinished"></translation>
+        <translation>Не удалось открыть некоторые слои проекта.
+Попытаться найти недостающий слои?</translation>
     </message>
 </context>
 <context>
@@ -23950,19 +23997,19 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="587"/>
         <source>&lt;h3&gt;Multiband Image Notes&lt;/h3&gt;&lt;p&gt;This is a multiband image. You can choose to render it as grayscale or color (RGB). For color images, you can associate bands to colors arbitarily. For example, if you have a seven band landsat image, you may choose to render it as:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Visible Blue (0.45 to 0.52 microns) - not mapped&lt;/li&gt;&lt;li&gt;Visible Green (0.52 to 0.60 microns) - not mapped&lt;/li&gt;&lt;/li&gt;Visible Red (0.63 to 0.69 microns) - mapped to red in image&lt;/li&gt;&lt;li&gt;Near Infrared (0.76 to 0.90 microns) - mapped to green in image&lt;/li&gt;&lt;li&gt;Mid Infrared (1.55 to 1.75 microns) - not mapped&lt;/li&gt;&lt;li&gt;Thermal Infrared (10.4 to 12.5 microns) - not mapped&lt;/li&gt;&lt;li&gt;Mid Infrared (2.08 to 2.35 microns) - mapped to blue in image&lt;/li&gt;&lt;/ul&gt;</source>
         <comment>COMMENTED OUT</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="594"/>
         <source>&lt;h3&gt;Paletted Image Notes&lt;/h3&gt; &lt;p&gt;This image uses a fixed color palette. You can remap these colors in different combinations e.g.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Red - blue in image&lt;/li&gt;&lt;li&gt;Green - blue in image&lt;/li&gt;&lt;li&gt;Blue - green in image&lt;/li&gt;&lt;/ul&gt;</source>
         <comment>COMMENTED OUT</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="601"/>
         <source>&lt;h3&gt;Grayscale Image Notes&lt;/h3&gt; &lt;p&gt;You can remap these grayscale colors to a pseudocolor image using an automatically generated color ramp.&lt;/p&gt;</source>
         <comment>COMMENTED OUT</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="750"/>
@@ -24696,7 +24743,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2propertiesdialog.cpp" line="176"/>
         <source>Do you wish to use the original symbology implementation for this layer?</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы хотите использовать для этого слоя оригинальную реализацию отрисовки условных знаков?</translation>
     </message>
 </context>
 <context>
@@ -25098,16 +25145,6 @@ p, li { white-space: pre-wrap; }
         <source>Search query builder</source>
         <translation>Конструктор поисковых запросов</translation>
     </message>
-    <message>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="43"/>
-        <source>&amp;Test</source>
-        <translation type="unfinished">&amp;Проверить</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="47"/>
-        <source>&amp;Clear</source>
-        <translation type="unfinished">&amp;Очистить</translation>
-    </message>
     <message numerus="yes">
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="178"/>
         <source>Found %n matching feature(s).</source>
@@ -25117,6 +25154,16 @@ p, li { white-space: pre-wrap; }
             <numerusform>Найдено %n подходящих объекта.</numerusform>
             <numerusform>Найдено %n подходящих объектов.</numerusform>
         </translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgssearchquerybuilder.cpp" line="43"/>
+        <source>&amp;Test</source>
+        <translation>&amp;Проверить</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgssearchquerybuilder.cpp" line="47"/>
+        <source>&amp;Clear</source>
+        <translation>&amp;Очистить</translation>
     </message>
 </context>
 <context>
@@ -25604,7 +25651,7 @@ The error was:
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="356"/>
         <source>Rotation</source>
-        <translation>Поворот</translation>
+        <translation>Вращение</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="369"/>
@@ -25930,22 +25977,22 @@ SQL: %2</translation>
     <message>
         <location filename="../src/ui/qgsspatialitesourceselectbase.ui" line="57"/>
         <source>SpatiaLite Databases</source>
-        <translation type="unfinished"></translation>
+        <translation>Базы данных SpatiaLite</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsspatialitesourceselectbase.ui" line="108"/>
         <source>Search</source>
-        <translation type="unfinished">Поиск</translation>
+        <translation>Искать</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsspatialitesourceselectbase.ui" line="118"/>
         <source>Search mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Режим поиска</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsspatialitesourceselectbase.ui" line="131"/>
         <source>Search in columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Искать в полях</translation>
     </message>
 </context>
 <context>
@@ -26563,22 +26610,22 @@ Do you want to overwrite the [%2] relation?</source>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="20"/>
         <source>Style item type:</source>
-        <translation type="unfinished">Тип условного знака:</translation>
+        <translation>Тип условного знака:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="57"/>
         <source>Add item</source>
-        <translation type="unfinished">Добавить элемент</translation>
+        <translation>Добавить элемент</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="64"/>
         <source>Edit item</source>
-        <translation type="unfinished">Изменить элемент</translation>
+        <translation>Изменить элемент</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="71"/>
         <source>Remove item</source>
-        <translation type="unfinished">Удалить элемент</translation>
+        <translation>Удалить элемент</translation>
     </message>
 </context>
 <context>
@@ -26643,12 +26690,12 @@ Do you want to overwrite the [%2] relation?</source>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="192"/>
         <source>Add to style</source>
-        <translation type="unfinished">Добавить в библиотеку</translation>
+        <translation>Добавить в библиотеку</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="201"/>
         <source>Symbols from style:</source>
-        <translation type="unfinished">Библиотека стилей:</translation>
+        <translation>Библиотека стилей:</translation>
     </message>
 </context>
 <context>
@@ -27459,7 +27506,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1129"/>
         <source>Do you wish to use the new symbology implementation for this layer?</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы хотите использовать для этого слоя новую реализацию отрисовки условных знаков?</translation>
     </message>
 </context>
 <context>
@@ -29555,7 +29602,7 @@ p, li { white-space: pre-wrap; }
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="108"/>
         <source>All of the attribute information for the point associated with the photo being viewed is displayed here. If the file type being referenced in the displayed record is not an image but is of a file type defined in the “Configure External Applications” tab then when you double-click on the value of the field containing the path to the file the application to open the file will be launched to view or hear the contents of the file. If the file extension is recognized the attribute data will be displayed in green.</source>
-        <translation>Область вывода атрибутивной информации точечного объекта, связанного с текущей фотографией. Если файл, указанный в оторажаемом поле не является изображением, но принадлежит к типу файлов, определённому на вкладке «Внешние приложения», то для открытия файла в соответствующем приложении щёлкните дважды на значении поля, содержащем путь к файлу. Если расширение файла определено, значение атрибута будет выведено зелёным цветом.</translation>
+        <translation>Область вывода атрибутивной информации точечного объекта, связанного с текущей фотографией. Если файл, указанный в отображаемом поле не является изображением, но принадлежит к типу файлов, определённому на вкладке «Внешние приложения», то для открытия файла в соответствующем приложении щёлкните дважды на значении поля, содержащем путь к файлу. Если расширение файла определено, значение атрибута будет выведено зелёным цветом.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="112"/>

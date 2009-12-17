@@ -392,39 +392,39 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>creating new selection</source>
-        <translation type="unfinished">สร้างชุดที่เลือกใหม่</translation>
+        <translation type="obsolete">สร้างชุดที่เลือกใหม่</translation>
     </message>
     <message>
         <source>adding to current selection</source>
-        <translation type="unfinished">เพื่อไปในชุดที่เลือก</translation>
+        <translation type="obsolete">เพื่อไปในชุดที่เลือก</translation>
     </message>
     <message>
         <source>removing from current selection</source>
-        <translation type="unfinished">เอาออกจากชุดที่เลือก</translation>
+        <translation type="obsolete">เอาออกจากชุดที่เลือก</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="unfinished">เลือกโดยตำแหน่ง</translation>
+        <translation type="obsolete">เลือกโดยตำแหน่ง</translation>
     </message>
     <message>
         <source>Select features in:</source>
-        <translation type="unfinished">เลือกข้อมูลใน:</translation>
+        <translation type="obsolete">เลือกข้อมูลใน:</translation>
     </message>
     <message>
         <source>that intersect features in:</source>
-        <translation type="unfinished">ที่ตัดกับข้อมูลใน:</translation>
+        <translation type="obsolete">ที่ตัดกับข้อมูลใน:</translation>
     </message>
     <message>
         <source>Modify current selection by:</source>
-        <translation type="unfinished">ปรับปรุงข้อมูลที่เลือกโดย:</translation>
+        <translation type="obsolete">ปรับปรุงข้อมูลที่เลือกโดย:</translation>
     </message>
     <message>
         <source>Please specify input layer</source>
-        <translation type="unfinished">โปรดระบุชั้นข้อมูลที่จะนำเข้า</translation>
+        <translation type="obsolete">โปรดระบุชั้นข้อมูลที่จะนำเข้า</translation>
     </message>
     <message>
         <source>Please specify select layer</source>
-        <translation type="unfinished">โปรดระบุชั้นข้อมูลที่เลือก</translation>
+        <translation type="obsolete">โปรดระบุชั้นข้อมูลที่เลือก</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="48"/>
@@ -780,17 +780,17 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Points in polygon</source>
-        <translation type="unfinished">จุดในรูปปิด</translation>
+        <translation type="obsolete">จุดในรูปปิด</translation>
     </message>
     <message>
         <source>Created output Shapefile:
 </source>
-        <translation type="unfinished">สร้างผลลัพธ์ของ Shapefile:
+        <translation type="obsolete">สร้างผลลัพธ์ของ Shapefile:
 </translation>
     </message>
     <message>
         <source>Vector layer is not valid</source>
-        <translation type="unfinished">ชั้นของมูลไม่ถูกต้อง</translation>
+        <translation type="obsolete">ชั้นของมูลไม่ถูกต้อง</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="38"/>
@@ -843,16 +843,16 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation type="unfinished">ระยะ matrix</translation>
+        <translation type="obsolete">ระยะ matrix</translation>
     </message>
     <message>
         <source>Created output matrix:
 </source>
-        <translation type="unfinished">สร้างผลลัพธ์ matrix:</translation>
+        <translation type="obsolete">สร้างผลลัพธ์ matrix:</translation>
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation type="unfinished">ผลรวมความยาวของเส้น</translation>
+        <translation type="obsolete">ผลรวมความยาวของเส้น</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="16"/>
@@ -1216,115 +1216,107 @@ p, li { white-space: pre-wrap; }
     <name>GeometryDialog</name>
     <message>
         <source>Merge all</source>
-        <translation type="unfinished">รวมทั้งหมด</translation>
+        <translation type="obsolete">รวมทั้งหมด</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="unfinished">โปรดระบุชั้นข้อมูลเชิงเส้นที่จะนำเข้า</translation>
+        <translation type="obsolete">โปรดระบุชั้นข้อมูลเชิงเส้นที่จะนำเข้า</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="unfinished">โปรดระบุชั้นข้อมูลเชิงเส้นที่เป็นผลลัพธ์</translation>
+        <translation type="obsolete">โปรดระบุชั้นข้อมูลเชิงเส้นที่เป็นผลลัพธ์</translation>
     </message>
     <message>
         <source>Please specify valid tolerance value</source>
-        <translation type="unfinished">โปรดระบุค่าผิดพลาดที่ยอมรับได้</translation>
+        <translation type="obsolete">โปรดระบุค่าผิดพลาดที่ยอมรับได้</translation>
     </message>
     <message>
         <source>Please specify valid UID field</source>
-        <translation type="unfinished">โปรดระบุ ช่องของข้มมูลที่มีค่าไม่ซำ้</translation>
+        <translation type="obsolete">โปรดระบุ ช่องของข้มมูลที่มีค่าไม่ซำ้</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
-        <translation type="unfinished">แบบชิ้นส่วนเดียวไปเป็นแบบหลายชิ้นส่วน</translation>
+        <translation type="obsolete">แบบชิ้นส่วนเดียวไปเป็นแบบหลายชิ้นส่วน</translation>
     </message>
     <message>
         <source>Output shapefile</source>
-        <translation type="unfinished">shapefile ผลลัพธ์</translation>
+        <translation type="obsolete">shapefile ผลลัพธ์</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
-        <translation type="unfinished">แบบหลายชิ้นส่วนไปเป็นแบบชิ้นส่วนเดียว</translation>
+        <translation type="obsolete">แบบหลายชิ้นส่วนไปเป็นแบบชิ้นส่วนเดียว</translation>
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation type="unfinished">สกัด Node</translation>
+        <translation type="obsolete">สกัด Node</translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation type="unfinished">รูปปิดไปเป็นเส้น</translation>
+        <translation type="obsolete">รูปปิดไปเป็นเส้น</translation>
     </message>
     <message>
         <source>Input polygon vector layer</source>
-        <translation type="unfinished">นำเข้าชันข้อมูลเชิงเส้นแบบรูปปิด</translation>
+        <translation type="obsolete">นำเข้าชันข้อมูลเชิงเส้นแบบรูปปิด</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="unfinished">ส่งออก/เพิ่มช่องค่าพิกัด</translation>
+        <translation type="obsolete">ส่งออก/เพิ่มช่องค่าพิกัด</translation>
     </message>
     <message>
         <source>Input vector layer</source>
-        <translation type="unfinished">นำเข้าชั้นข้อมูลเชิงเส้น</translation>
+        <translation type="obsolete">นำเข้าชั้นข้อมูลเชิงเส้น</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation type="unfinished">ทำรูปทรงให้ง่าย</translation>
+        <translation type="obsolete">ทำรูปทรงให้ง่าย</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation type="unfinished">จุดศูนย์ถ่วงของรูปปิด</translation>
+        <translation type="obsolete">จุดศูนย์ถ่วงของรูปปิด</translation>
     </message>
     <message>
         <source>Output point shapefile</source>
-        <translation type="unfinished">ผลลัพธ์ของข้อมูล shape แบบจุด</translation>
+        <translation type="obsolete">ผลลัพธ์ของข้อมูล shape แบบจุด</translation>
     </message>
     <message>
         <source>Input point vector layer</source>
-        <translation type="unfinished">นำเข้าข้อมูล shape แบบจุด</translation>
+        <translation type="obsolete">นำเข้าข้อมูล shape แบบจุด</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
-        <translation type="unfinished">รูปปิดจากกรอบของชั้นข้อมูล</translation>
+        <translation type="obsolete">รูปปิดจากกรอบของชั้นข้อมูล</translation>
     </message>
     <message>
         <source>Input layer</source>
-        <translation type="unfinished">นำเข้าชั้นข้อมูล</translation>
+        <translation type="obsolete">นำเข้าชั้นข้อมูล</translation>
     </message>
     <message>
         <source>Output polygon shapefile</source>
-        <translation type="unfinished">ผลลัพธ์ของข้อมูล shape แบบรูปปิด</translation>
+        <translation type="obsolete">ผลลัพธ์ของข้อมูล shape แบบรูปปิด</translation>
     </message>
     <message>
         <source>Unable to delete existing shapefile.</source>
-        <translation type="unfinished">ไม่สามารถลบ Shapefile</translation>
+        <translation type="obsolete">ไม่สามารถลบ Shapefile</translation>
     </message>
     <message>
         <source>Please choose larger tolerance...</source>
-        <translation type="unfinished">โปรดเพิ่มค่า tolerrance</translation>
+        <translation type="obsolete">โปรดเพิ่มค่า tolerrance</translation>
     </message>
     <message>
         <source>Unable to delete incomplete shapefile.</source>
-        <translation type="unfinished">ไม่สามารถลบ Shapefile</translation>
+        <translation type="obsolete">ไม่สามารถลบ Shapefile</translation>
     </message>
     <message>
         <source>Created output shapefile:</source>
-        <translation type="unfinished">สร้าง shapefile ผลลัพธ์</translation>
+        <translation type="obsolete">สร้าง shapefile ผลลัพธ์</translation>
     </message>
     <message>
         <source>Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished">คุณต้องการจะเพิ่มชั้นข้อมูลใหม่ใน TOC หรือไม่</translation>
+        <translation type="obsolete">คุณต้องการจะเพิ่มชั้นข้อมูลใหม่ใน TOC หรือไม่</translation>
     </message>
     <message>
         <source>Error writing output shapefile.</source>
-        <translation type="unfinished">เกิดข้อผิดพลาดขณะเขียน shapefile ผลลัพธ์</translation>
-    </message>
-    <message>
-        <source>Delaunay triangulation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error processing specified tolerance!</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">เกิดข้อผิดพลาดขณะเขียน shapefile ผลลัพธ์</translation>
     </message>
 </context>
 <context>
@@ -1350,92 +1342,92 @@ p, li { white-space: pre-wrap; }
     <name>GeoprocessingDialog</name>
     <message>
         <source>Dissolve all</source>
-        <translation type="unfinished">หลอมรวมทั้งหมด</translation>
+        <translation type="obsolete">หลอมรวมทั้งหมด</translation>
     </message>
     <message>
         <source>Please specify an input layer</source>
-        <translation type="unfinished">โปรดระบุข้อมูลที่จะนำเข้า</translation>
+        <translation type="obsolete">โปรดระบุข้อมูลที่จะนำเข้า</translation>
     </message>
     <message>
         <source>Please specify a difference/intersect/union layer</source>
-        <translation type="unfinished">โปรดระบุ แตกต่ง/ตัดกัน/รวมกัน</translation>
+        <translation type="obsolete">โปรดระบุ แตกต่ง/ตัดกัน/รวมกัน</translation>
     </message>
     <message>
         <source>Please specify valid buffer value</source>
-        <translation type="unfinished">โปรดระบุค่า แนวกันชนให้ถูกต้อง</translation>
+        <translation type="obsolete">โปรดระบุค่า แนวกันชนให้ถูกต้อง</translation>
     </message>
     <message>
         <source>Please specify dissolve field</source>
-        <translation type="unfinished">โปรดระบุ ช่องที่กำหนดค่าการหลอมรวม</translation>
+        <translation type="obsolete">โปรดระบุ ช่องที่กำหนดค่าการหลอมรวม</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="unfinished">โปรดระบุ shapefile ผลลัพธ์</translation>
+        <translation type="obsolete">โปรดระบุ shapefile ผลลัพธ์</translation>
     </message>
     <message>
         <source>No features selected, please uncheck &apos;Use selected&apos; or make a selection</source>
-        <translation type="unfinished">ไม่มีข้อมูลที่ถูกเลือก โปรดไม่เลือก ใช้ที่เลือกหรือสร้างการเลือก</translation>
+        <translation type="obsolete">ไม่มีข้อมูลที่ถูกเลือก โปรดไม่เลือก ใช้ที่เลือกหรือสร้างการเลือก</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="unfinished">แนวกันชน</translation>
+        <translation type="obsolete">แนวกันชน</translation>
     </message>
     <message>
         <source>Create single minimum convex hull</source>
-        <translation type="unfinished">สร้าง convex hull เดี่ยว</translation>
+        <translation type="obsolete">สร้าง convex hull เดี่ยว</translation>
     </message>
     <message>
         <source>Create convex hulls based on input field</source>
-        <translation type="unfinished">สร้าง convex hull โดยช่องข้อมูลที่ระบุ</translation>
+        <translation type="obsolete">สร้าง convex hull โดยช่องข้อมูลที่ระบุ</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation type="unfinished">Convex hull(s)</translation>
+        <translation type="obsolete">Convex hull(s)</translation>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="unfinished">หลอมรวม</translation>
+        <translation type="obsolete">หลอมรวม</translation>
     </message>
     <message>
         <source>Difference layer</source>
-        <translation type="unfinished">ชั้นข้อมูลที่แตกต่าง</translation>
+        <translation type="obsolete">ชั้นข้อมูลที่แตกต่าง</translation>
     </message>
     <message>
         <source>Difference</source>
-        <translation type="unfinished">แตกต่าง</translation>
+        <translation type="obsolete">แตกต่าง</translation>
     </message>
     <message>
         <source>Intersect layer</source>
-        <translation type="unfinished">ชั้นขอ้มูลที่ตัดกัน</translation>
+        <translation type="obsolete">ชั้นขอ้มูลที่ตัดกัน</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation type="unfinished">ตัดกัน</translation>
+        <translation type="obsolete">ตัดกัน</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="unfinished">รูปทรงแตกต่าง</translation>
+        <translation type="obsolete">รูปทรงแตกต่าง</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="unfinished">Clip</translation>
+        <translation type="obsolete">Clip</translation>
     </message>
     <message>
         <source>Union layer</source>
-        <translation type="unfinished">รวมชั้นข้อมูล</translation>
+        <translation type="obsolete">รวมชั้นข้อมูล</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="unfinished">รวม</translation>
+        <translation type="obsolete">รวม</translation>
     </message>
     <message>
         <source>Unable to delete existing shapefile.</source>
-        <translation type="unfinished">ไม่สามารถลบ Shapefile</translation>
+        <translation type="obsolete">ไม่สามารถลบ Shapefile</translation>
     </message>
     <message>
         <source>
 Warnings:</source>
-        <translation type="unfinished">
+        <translation type="obsolete">
 คำเตือน</translation>
     </message>
     <message>
@@ -1443,40 +1435,36 @@ Warnings:</source>
 Some output geometries may be missing or invalid.
 
 Would you like to add the new layer anyway?</source>
-        <translation type="unfinished">บางข้อมูลอาจหายไป 
+        <translation type="obsolete">บางข้อมูลอาจหายไป 
 คุณต้องการเพิ่มลงในขั้นข้อมูลใหม่ด้วยหรือไม่?</translation>
     </message>
     <message>
         <source>
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished">
+        <translation type="obsolete">
 
 คุณต้องการที่จะเพิ่มชั้นข้อมูลใหม่ใน TOC?</translation>
     </message>
     <message>
         <source>
 Input CRS error: Different input coordinate reference systems detected, results may not be as expected.</source>
-        <translation type="unfinished">ข้อมูล CRS ผิดพลาด: พบว่า CRS แตกต่างกันอาจทำให้ผลลัพธ์ผิดพลาด</translation>
+        <translation type="obsolete">ข้อมูล CRS ผิดพลาด: พบว่า CRS แตกต่างกันอาจทำให้ผลลัพธ์ผิดพลาด</translation>
     </message>
     <message>
         <source>
 Feature geometry error: One or more output features ignored due to invalid geometry.</source>
-        <translation type="unfinished">ข้อมูลพิกัดผิดพลาด อาจทำให้ข้อมูลผิดพลาด</translation>
+        <translation type="obsolete">ข้อมูลพิกัดผิดพลาด อาจทำให้ข้อมูลผิดพลาด</translation>
     </message>
     <message>
         <source>
 GEOS geoprocessing error: One or more input features have invalid geometry.</source>
-        <translation type="unfinished">
+        <translation type="obsolete">
 GEOS geoprocessing ผิดพลาด อาจทำให้ข้อมูลผิดพลาด</translation>
     </message>
     <message>
         <source>Created output shapefile:</source>
-        <translation type="unfinished">สร้าง Shapefile ผลลัพธ์</translation>
-    </message>
-    <message>
-        <source>Clip layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">สร้าง Shapefile ผลลัพธ์</translation>
     </message>
 </context>
 <context>
@@ -2151,7 +2139,7 @@ GEOS geoprocessing ผิดพลาด อาจทำให้ข้อมู
     </message>
     <message>
         <source>OSM Information</source>
-        <translation type="unfinished">ข้อมูล OSM</translation>
+        <translation type="obsolete">ข้อมูล OSM</translation>
     </message>
 </context>
 <context>
@@ -2181,51 +2169,51 @@ GEOS geoprocessing ผิดพลาด อาจทำให้ข้อมู
     <name>OsmDownloadDlg</name>
     <message>
         <source>OSM Download</source>
-        <translation type="unfinished">ดาวน์โลด OSM</translation>
+        <translation type="obsolete">ดาวน์โลด OSM</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="unfinished">ไม่สามารถบันทึกไฟล์ %1: %2.</translation>
+        <translation type="obsolete">ไม่สามารถบันทึกไฟล์ %1: %2.</translation>
     </message>
     <message>
         <source>Waiting for OpenStreetMap server ...</source>
-        <translation type="unfinished">คำเตือนสำหรับเครื่องแม่ข่าย OpenStreetMap</translation>
+        <translation type="obsolete">คำเตือนสำหรับเครื่องแม่ข่าย OpenStreetMap</translation>
     </message>
     <message>
         <source>Download process failed. OpenStreetMap server response: %1 - %2</source>
-        <translation type="unfinished">ดาวน์โลด ผิดพลาด เครื่องแม่ข่าย OpenStreetMap ตอบกลับว่า: %1 - %2</translation>
+        <translation type="obsolete">ดาวน์โลด ผิดพลาด เครื่องแม่ข่าย OpenStreetMap ตอบกลับว่า: %1 - %2</translation>
     </message>
     <message>
         <source>OSM Download Error</source>
-        <translation type="unfinished">ดาวน์โลด OSM ผิดพลาด</translation>
+        <translation type="obsolete">ดาวน์โลด OSM ผิดพลาด</translation>
     </message>
     <message>
         <source>Download failed: %1.</source>
-        <translation type="unfinished">ดาวน์โลด ล้มเหลว: %1.</translation>
+        <translation type="obsolete">ดาวน์โลด ล้มเหลว: %1.</translation>
     </message>
     <message>
         <source>Getting data</source>
-        <translation type="unfinished">กำลังรับข้อมูล</translation>
+        <translation type="obsolete">กำลังรับข้อมูล</translation>
     </message>
     <message>
         <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
-        <translation type="unfinished">เครื่องแม่ข่าย OpenStreetMap ที่คุณกำลัง ดาวน์โลดข้อมูลจำกัดจำนวนข้อมูลที่ดาวน์โลดที่ให้ไม่เกินกรอบ 0.25 องศา</translation>
+        <translation type="obsolete">เครื่องแม่ข่าย OpenStreetMap ที่คุณกำลัง ดาวน์โลดข้อมูลจำกัดจำนวนข้อมูลที่ดาวน์โลดที่ให้ไม่เกินกรอบ 0.25 องศา</translation>
     </message>
     <message>
         <source>Both extents are too large!</source>
-        <translation type="unfinished">กรอบทั้งสองด้าน  ใหญ่กินไป</translation>
+        <translation type="obsolete">กรอบทั้งสองด้าน  ใหญ่กินไป</translation>
     </message>
     <message>
         <source>Latitude extent is too large!</source>
-        <translation type="unfinished">กรอบทางด้น Latitude  ใหญ่กินไป</translation>
+        <translation type="obsolete">กรอบทางด้น Latitude  ใหญ่กินไป</translation>
     </message>
     <message>
         <source>Longitude extent is too large!</source>
-        <translation type="unfinished">กรอบทางด้น Longitude  ใหญ่กินไป</translation>
+        <translation type="obsolete">กรอบทางด้น Longitude  ใหญ่กินไป</translation>
     </message>
     <message>
         <source>OK! Area is probably acceptable to server.</source>
-        <translation type="unfinished">ตกลง พื้นที่นี้มีการให้บริการ</translation>
+        <translation type="obsolete">ตกลง พื้นที่นี้มีการให้บริการ</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="19"/>
@@ -2462,23 +2450,23 @@ GEOS geoprocessing ผิดพลาด อาจทำให้ข้อมู
     </message>
     <message>
         <source>OSM Plugin</source>
-        <translation type="unfinished">OSM Plugin</translation>
+        <translation type="obsolete">OSM Plugin</translation>
     </message>
     <message>
         <source>The &apos;Create OSM Relation&apos; dialog was closed automatically because current OSM database was changed.</source>
-        <translation type="unfinished">หน้าต่างการสร้างความสัมพันธ์ของ OSM ปิดอัตโมัติเพราะ ฐานข้อมูล OSM ถูกเปลี่ยนแปลง</translation>
+        <translation type="obsolete">หน้าต่างการสร้างความสัมพันธ์ของ OSM ปิดอัตโมัติเพราะ ฐานข้อมูล OSM ถูกเปลี่ยนแปลง</translation>
     </message>
     <message>
         <source>OSM Feature Dock Widget</source>
-        <translation type="unfinished">OSM Feature Dock Widget</translation>
+        <translation type="obsolete">OSM Feature Dock Widget</translation>
     </message>
     <message>
         <source>Choose OSM feature first.</source>
-        <translation type="unfinished">เลือก OSM feature ก่อน</translation>
+        <translation type="obsolete">เลือก OSM feature ก่อน</translation>
     </message>
     <message>
         <source>Choose relation for editing first.</source>
-        <translation type="unfinished">เลือก ความสัมพันธ์สำหรับแก้ไขก่อน</translation>
+        <translation type="obsolete">เลือก ความสัมพันธ์สำหรับแก้ไขก่อน</translation>
     </message>
     <message>
         <source>Property &apos;%1&apos; cannot be added twice.</source>
@@ -2566,31 +2554,31 @@ GEOS geoprocessing ผิดพลาด อาจทำให้ข้อมู
     <name>OsmSaveDlg</name>
     <message>
         <source>Save OSM to file</source>
-        <translation type="unfinished">บันทึก OSM ไฟล์</translation>
+        <translation type="obsolete">บันทึก OSM ไฟล์</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="unfinished">ไม่สามารถบันทึกไฟล์  %1: %2.</translation>
+        <translation type="obsolete">ไม่สามารถบันทึกไฟล์  %1: %2.</translation>
     </message>
     <message>
         <source>Initializing...</source>
-        <translation type="unfinished">เริ่มต้นการทำงาน...</translation>
+        <translation type="obsolete">เริ่มต้นการทำงาน...</translation>
     </message>
     <message>
         <source>Saving nodes...</source>
-        <translation type="unfinished">บันทึก node...</translation>
+        <translation type="obsolete">บันทึก node...</translation>
     </message>
     <message>
         <source>Saving lines...</source>
-        <translation type="unfinished">บันทึก เส้น...</translation>
+        <translation type="obsolete">บันทึก เส้น...</translation>
     </message>
     <message>
         <source>Saving polygons...</source>
-        <translation type="unfinished">บันทึก รุปปิด...</translation>
+        <translation type="obsolete">บันทึก รุปปิด...</translation>
     </message>
     <message>
         <source>Saving relations...</source>
-        <translation type="unfinished">บันทึก ความสัมพันธ์...</translation>
+        <translation type="obsolete">บันทึก ความสัมพันธ์...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="16"/>
@@ -2750,50 +2738,42 @@ GEOS geoprocessing ผิดพลาด อาจทำให้ข้อมู
     </message>
     <message>
         <source>OSM Upload</source>
-        <translation type="unfinished">ส่งข้อมูล OSM</translation>
+        <translation type="obsolete">ส่งข้อมูล OSM</translation>
     </message>
     <message>
         <source>Uploading data...</source>
-        <translation type="unfinished">กำลังส่ง ข้อมูล...</translation>
+        <translation type="obsolete">กำลังส่ง ข้อมูล...</translation>
     </message>
 </context>
 <context>
     <name>Python</name>
     <message>
         <source>An error has occured while executing Python code:</source>
-        <translation type="unfinished">เกิดข้อผิดพลาดขณะใช้ Python</translation>
+        <translation type="obsolete">เกิดข้อผิดพลาดขณะใช้ Python</translation>
     </message>
     <message>
         <source>Python version:</source>
-        <translation type="unfinished">Python รุ่น</translation>
+        <translation type="obsolete">Python รุ่น</translation>
     </message>
     <message>
         <source>Python path:</source>
-        <translation type="unfinished">Python path:</translation>
+        <translation type="obsolete">Python path:</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin %1</source>
-        <translation type="unfinished">ไม่สามารถอ่านส่วนเพิ่มเติม %1</translation>
+        <translation type="obsolete">ไม่สามารถอ่านส่วนเพิ่มเติม %1</translation>
     </message>
     <message>
         <source>%1 due an error when calling its classFactory() method</source>
-        <translation type="unfinished">%1 เกิดข้อผืดพลาดเมื่อเรียกใช้ classFactory()</translation>
+        <translation type="obsolete">%1 เกิดข้อผืดพลาดเมื่อเรียกใช้ classFactory()</translation>
     </message>
     <message>
         <source>%1 due an error when calling its initGui() method</source>
-        <translation type="unfinished">%1 เกิดข้อผืดพลาดเมื่อเรียกใช้ initGui()</translation>
+        <translation type="obsolete">%1 เกิดข้อผืดพลาดเมื่อเรียกใช้ initGui()</translation>
     </message>
     <message>
         <source>Error while unloading plugin %1</source>
-        <translation type="unfinished">เกิดข้อผิดพลาดเมื่ออ่านส่วนเพิ่มเติม %1</translation>
-    </message>
-    <message>
-        <source>Python error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Couldn&apos;t load plugin &apos;%1&apos; from [&apos;%2&apos;]</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">เกิดข้อผิดพลาดเมื่ออ่านส่วนเพิ่มเติม %1</translation>
     </message>
 </context>
 <context>
@@ -22890,318 +22870,314 @@ geometry.</translation>
     <name>QgsPluginInstaller</name>
     <message>
         <source>Nothing to remove! Plugin directory doesn&apos;t exist:</source>
-        <translation type="unfinished">ไม่มีอะไรต้องเอาออก Directory ส่วนเพิ่มเติมไม่มีอยู่</translation>
+        <translation type="obsolete">ไม่มีอะไรต้องเอาออก Directory ส่วนเพิ่มเติมไม่มีอยู่</translation>
     </message>
     <message>
         <source>Failed to remove the directory:</source>
-        <translation type="unfinished">ล้มเหลวที่จะเอา Directory ออก</translation>
+        <translation type="obsolete">ล้มเหลวที่จะเอา Directory ออก</translation>
     </message>
     <message>
         <source>Check permissions or remove it manually</source>
-        <translation type="unfinished">ตรวจสอบ permissions หรือลบมันออก</translation>
+        <translation type="obsolete">ตรวจสอบ permissions หรือลบมันออก</translation>
     </message>
     <message>
         <source>Fetch Python Plugins...</source>
-        <translation type="unfinished">ตรวจ ส่วนเพิ่มเติม  Python ...</translation>
+        <translation type="obsolete">ตรวจ ส่วนเพิ่มเติม  Python ...</translation>
     </message>
     <message>
         <source>Install more plugins from remote repositories</source>
-        <translation type="unfinished">ติดตั้งเพิ่ม ส่วนเพิ่มเติมจากเครื่องแม่ข่าย</translation>
+        <translation type="obsolete">ติดตั้งเพิ่ม ส่วนเพิ่มเติมจากเครื่องแม่ข่าย</translation>
     </message>
     <message>
         <source>Looking for new plugins...</source>
-        <translation type="unfinished">กำลังค้นหา ส่วนเพิ่มเติมใหม่ๆ...</translation>
+        <translation type="obsolete">กำลังค้นหา ส่วนเพิ่มเติมใหม่ๆ...</translation>
     </message>
     <message>
         <source>QGIS Plugin Conflict:</source>
-        <translation type="unfinished">ส่วนเพิ่มเติมขัดแย้งกัน</translation>
+        <translation type="obsolete">ส่วนเพิ่มเติมขัดแย้งกัน</translation>
     </message>
     <message>
         <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. This is likely due to files associated with a previous installation of QGIS. Please use the Plugin Installer to remove that older plugin in order to unmask the newer version shipped with this copy of QGIS.</source>
-        <translation type="unfinished">The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. This is likely due to files associated with a previous installation of QGIS. Please use the Plugin Installer to remove that older plugin in order to unmask the newer version shipped with this copy of QGIS.</translation>
+        <translation type="obsolete">The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. This is likely due to files associated with a previous installation of QGIS. Please use the Plugin Installer to remove that older plugin in order to unmask the newer version shipped with this copy of QGIS.</translation>
     </message>
     <message>
         <source>There is a new plugin available</source>
-        <translation type="unfinished">ไม่พบส่วนเพิ่มเติมใหม่ๆ</translation>
+        <translation type="obsolete">ไม่พบส่วนเพิ่มเติมใหม่ๆ</translation>
     </message>
     <message>
         <source>There is a plugin update available</source>
-        <translation type="unfinished">มีส่วนเพิ่มเติมใหม่ๆ...</translation>
+        <translation type="obsolete">มีส่วนเพิ่มเติมใหม่ๆ...</translation>
     </message>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="unfinished">ส่วนเพิ่มเติม QGIS Python Plugin Installer</translation>
+        <translation type="obsolete">ส่วนเพิ่มเติม QGIS Python Plugin Installer</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
-        <translation type="unfinished">เกิดข้อผิดพลาดขณะอ่าน</translation>
+        <translation type="obsolete">เกิดข้อผิดพลาดขณะอ่าน</translation>
     </message>
     <message>
         <source>Couldn&apos;t parse output from the repository</source>
-        <translation type="unfinished">ไม่สามารถอ่านผลลัพธ์จากเครื่องแม่ข่าย</translation>
+        <translation type="obsolete">ไม่สามารถอ่านผลลัพธ์จากเครื่องแม่ข่าย</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the local plugin directory</source>
-        <translation type="unfinished">ไม่สามารถเปิด Directory ท้องถิ่น</translation>
+        <translation type="obsolete">ไม่สามารถเปิด Directory ท้องถิ่น</translation>
     </message>
 </context>
 <context>
     <name>QgsPluginInstallerDialog</name>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="unfinished">ตัวติดตั้ง QGIS Python Plugin</translation>
+        <translation type="obsolete">ตัวติดตั้ง QGIS Python Plugin</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
-        <translation type="unfinished">เกิดข้อผิดพลาดขณะอ่าน</translation>
+        <translation type="obsolete">เกิดข้อผิดพลาดขณะอ่าน</translation>
     </message>
     <message>
         <source>all repositories</source>
-        <translation type="unfinished">เครื่องแม่ข่ายทั้งหมด</translation>
+        <translation type="obsolete">เครื่องแม่ข่ายทั้งหมด</translation>
     </message>
     <message>
         <source>connected</source>
-        <translation type="unfinished">เชื่อมต่อ</translation>
+        <translation type="obsolete">เชื่อมต่อ</translation>
     </message>
     <message>
         <source>This repository is connected</source>
-        <translation type="unfinished">เรื่องแม่ข่ายได้ถูกเชื่อมต่อ</translation>
+        <translation type="obsolete">เรื่องแม่ข่ายได้ถูกเชื่อมต่อ</translation>
     </message>
     <message>
         <source>unavailable</source>
-        <translation type="unfinished">ไม่สามารถใช้งานได้</translation>
+        <translation type="obsolete">ไม่สามารถใช้งานได้</translation>
     </message>
     <message>
         <source>This repository is enabled, but unavailable</source>
-        <translation type="unfinished">เรื่องแม่ข่ายต่อได้แต่ไม่ตอบสนอง</translation>
+        <translation type="obsolete">เรื่องแม่ข่ายต่อได้แต่ไม่ตอบสนอง</translation>
     </message>
     <message>
         <source>disabled</source>
-        <translation type="unfinished">ไม่ตอบสนอง</translation>
+        <translation type="obsolete">ไม่ตอบสนอง</translation>
     </message>
     <message>
         <source>This repository is disabled</source>
-        <translation type="unfinished">เครื่องแม่ข่ายไม่ตอบสนอง</translation>
+        <translation type="obsolete">เครื่องแม่ข่ายไม่ตอบสนอง</translation>
     </message>
     <message>
         <source>This repository is blocked due to incompatibility with your Quantum GIS version</source>
-        <translation type="unfinished">เครื่องแม่ข่ายถูกกั้นเพราะเข้ากันไม่ได้กับ Quantum GIS รุ่นที่คุณใช้อยู่</translation>
+        <translation type="obsolete">เครื่องแม่ข่ายถูกกั้นเพราะเข้ากันไม่ได้กับ Quantum GIS รุ่นที่คุณใช้อยู่</translation>
     </message>
     <message>
         <source>orphans</source>
-        <translation type="unfinished">orphans</translation>
+        <translation type="obsolete">orphans</translation>
     </message>
     <message>
         <source>any status</source>
-        <translation type="unfinished">สถานะใดๆ</translation>
+        <translation type="obsolete">สถานะใดๆ</translation>
     </message>
     <message>
         <source>not installed</source>
-        <translation type="unfinished">ไม่ได้ติดตั้ง</translation>
+        <translation type="obsolete">ไม่ได้ติดตั้ง</translation>
     </message>
     <message>
         <source>installed</source>
-        <translation type="unfinished">ติดตั้ง</translation>
+        <translation type="obsolete">ติดตั้ง</translation>
     </message>
     <message>
         <source>upgradeable and news</source>
-        <translation type="unfinished">ปรับปรุงและใหม่</translation>
+        <translation type="obsolete">ปรับปรุงและใหม่</translation>
     </message>
     <message>
         <source>This plugin is not installed</source>
-        <translation type="unfinished">ส่วนเพิ่มเติมไม่ได้ติดดั้ง</translation>
+        <translation type="obsolete">ส่วนเพิ่มเติมไม่ได้ติดดั้ง</translation>
     </message>
     <message>
         <source>This plugin is installed</source>
-        <translation type="unfinished">ส่วนเพิ่มเติมได้ติดดั้ง</translation>
+        <translation type="obsolete">ส่วนเพิ่มเติมได้ติดดั้ง</translation>
     </message>
     <message>
         <source>This plugin is installed, but there is an updated version available</source>
-        <translation type="unfinished">ส่วนเพิ่มเติมนี้ได้ถูกติดตั้งและมีการปรับปรุงรุ่นใหม่แล้ว</translation>
+        <translation type="obsolete">ส่วนเพิ่มเติมนี้ได้ถูกติดตั้งและมีการปรับปรุงรุ่นใหม่แล้ว</translation>
     </message>
     <message>
         <source>This plugin is installed, but I can&apos;t find it in any enabled repository</source>
-        <translation type="unfinished">ส่วนเพิ่มเติมนี้ได้ถูกติดตั้งแล้วแต่ไม่พบเครื่องแม่ข่ายที่ตอบสนอง</translation>
+        <translation type="obsolete">ส่วนเพิ่มเติมนี้ได้ถูกติดตั้งแล้วแต่ไม่พบเครื่องแม่ข่ายที่ตอบสนอง</translation>
     </message>
     <message>
         <source>This plugin is not installed and is seen for the first time</source>
-        <translation type="unfinished">ส่วนเพิ่มเติมนี้ไม่ได้ถูกติดตั้งดูเหมือนว่าจะเป็นการติดตั้งครั้งแรก</translation>
+        <translation type="obsolete">ส่วนเพิ่มเติมนี้ไม่ได้ถูกติดตั้งดูเหมือนว่าจะเป็นการติดตั้งครั้งแรก</translation>
     </message>
     <message>
         <source>This plugin is installed and is newer than its version available in a repository</source>
-        <translation type="unfinished">ส่วนเพิ่มเติมนี้ได้ถูกติดตั้งและมีการปรับปรุงรุ่นใหม่กว่าแล้ว</translation>
+        <translation type="obsolete">ส่วนเพิ่มเติมนี้ได้ถูกติดตั้งและมีการปรับปรุงรุ่นใหม่กว่าแล้ว</translation>
     </message>
     <message>
         <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
-        <translation type="unfinished">ส่วนเพ่มเติมใช้ได้กับ Quantum GIS รุ่นที่คุณติดตั้งอยู่แต่อาจทำงานไม่ได้</translation>
+        <translation type="obsolete">ส่วนเพ่มเติมใช้ได้กับ Quantum GIS รุ่นที่คุณติดตั้งอยู่แต่อาจทำงานไม่ได้</translation>
     </message>
     <message>
         <source>The required Python module is not installed.
 For more information, please visit its homepage and Quantum GIS wiki.</source>
-        <translation type="unfinished">Python module ที่ต้องการไม่ได้ติดตั้ง
+        <translation type="obsolete">Python module ที่ต้องการไม่ได้ติดตั้ง
 หาข้อมูลเพิ่มเติมจาก homepage และ Quantum GIS wiki.</translation>
     </message>
     <message>
         <source>This plugin seems to be broken.
 It has been installed but can&apos;t be loaded.
 Here is the error message:</source>
-        <translation type="unfinished">ส่วนเพิ่มเติมนี้ดูเหมือนจะใช้ไม่ได้
+        <translation type="obsolete">ส่วนเพิ่มเติมนี้ดูเหมือนจะใช้ไม่ได้
 มันได้ถูกติดตั้งแต่ใช้งานไม่ได้.
 มีข้อผิดพลาดเกิดขี้น:</translation>
     </message>
     <message>
         <source>upgradeable</source>
-        <translation type="unfinished">ปรับปรุงได้</translation>
+        <translation type="obsolete">ปรับปรุงได้</translation>
     </message>
     <message>
         <source>new!</source>
-        <translation type="unfinished">ใหบ่</translation>
+        <translation type="obsolete">ใหบ่</translation>
     </message>
     <message>
         <source>invalid</source>
-        <translation type="unfinished">ไม่ถูกต้อง</translation>
+        <translation type="obsolete">ไม่ถูกต้อง</translation>
     </message>
     <message>
         <source>Note that it&apos;s an uninstallable core plugin</source>
-        <translation type="unfinished">ไม่ได้ติดตั้งส่วนเพิ่มเติมหลัก</translation>
+        <translation type="obsolete">ไม่ได้ติดตั้งส่วนเพิ่มเติมหลัก</translation>
     </message>
     <message>
         <source>installed version</source>
-        <translation type="unfinished">ติดตั้งรุ่น</translation>
+        <translation type="obsolete">ติดตั้งรุ่น</translation>
     </message>
     <message>
         <source>available version</source>
-        <translation type="unfinished">รุ่ที่ใช้งาน</translation>
+        <translation type="obsolete">รุ่ที่ใช้งาน</translation>
     </message>
     <message>
         <source>That&apos;s the newest available version</source>
-        <translation type="unfinished">อันนี้เป็นรุ่นใหม่สุด</translation>
+        <translation type="obsolete">อันนี้เป็นรุ่นใหม่สุด</translation>
     </message>
     <message>
         <source>There is no version available for download</source>
-        <translation type="unfinished">ไม่มีราุ่นที่ให้ download</translation>
+        <translation type="obsolete">ไม่มีราุ่นที่ให้ download</translation>
     </message>
     <message>
         <source>This plugin is broken</source>
-        <translation type="unfinished">ส่วนเพิ่มเติมนี้ใช้งานไม่ได้</translation>
+        <translation type="obsolete">ส่วนเพิ่มเติมนี้ใช้งานไม่ได้</translation>
     </message>
     <message>
         <source>This plugin requires a newer version of Quantum GIS</source>
-        <translation type="unfinished">ส่วนเพิ่มเติมนี้ต้องการ Quantum GIS รุ่นใหม่กว่านี้</translation>
+        <translation type="obsolete">ส่วนเพิ่มเติมนี้ต้องการ Quantum GIS รุ่นใหม่กว่านี้</translation>
     </message>
     <message>
         <source>at least</source>
-        <translation type="unfinished">อย่างน้อย</translation>
+        <translation type="obsolete">อย่างน้อย</translation>
     </message>
     <message>
         <source>This plugin requires a missing module</source>
-        <translation type="unfinished">ส่วนเพิ่มเติมนี้ต้องการ module ที่หายไป</translation>
+        <translation type="obsolete">ส่วนเพิ่มเติมนี้ต้องการ module ที่หายไป</translation>
     </message>
     <message>
         <source>only locally available</source>
-        <translation type="unfinished">ใช้ได้ในเครื่อข่ายภายใน</translation>
+        <translation type="obsolete">ใช้ได้ในเครื่อข่ายภายใน</translation>
     </message>
     <message>
         <source>Install plugin</source>
-        <translation type="unfinished">ติดตั้งส่วนเพิ่มเติม</translation>
+        <translation type="obsolete">ติดตั้งส่วนเพิ่มเติม</translation>
     </message>
     <message>
         <source>Reinstall plugin</source>
-        <translation type="unfinished">ติดตั้งส่วนเพิ่มเติมใหม่</translation>
+        <translation type="obsolete">ติดตั้งส่วนเพิ่มเติมใหม่</translation>
     </message>
     <message>
         <source>Upgrade plugin</source>
-        <translation type="unfinished">ปรับปรุงเพิ่มเติม</translation>
+        <translation type="obsolete">ปรับปรุงเพิ่มเติม</translation>
     </message>
     <message>
         <source>Install/upgrade plugin</source>
-        <translation type="unfinished">ติดตั้งและปรับปรุงส่วนเพิ่มเติม</translation>
+        <translation type="obsolete">ติดตั้งและปรับปรุงส่วนเพิ่มเติม</translation>
     </message>
     <message>
         <source>Downgrade plugin</source>
-        <translation type="unfinished">ลดรุ่นของเพิ่มเติม</translation>
+        <translation type="obsolete">ลดรุ่นของเพิ่มเติม</translation>
     </message>
     <message>
         <source>Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!</source>
-        <translation type="unfinished">คุณแน่ใจนะว่าต้องการลดรุ่นของส่วนเพิ่มเติม</translation>
+        <translation type="obsolete">คุณแน่ใจนะว่าต้องการลดรุ่นของส่วนเพิ่มเติม</translation>
     </message>
     <message>
         <source>Plugin installation failed</source>
-        <translation type="unfinished">การติดตั้งส่วนเพิ่มเติมล้มเหลว</translation>
+        <translation type="obsolete">การติดตั้งส่วนเพิ่มเติมล้มเหลว</translation>
     </message>
     <message>
         <source>Plugin has disappeared</source>
-        <translation type="unfinished">ส่วนเพิ่มเติมหายไป</translation>
+        <translation type="obsolete">ส่วนเพิ่มเติมหายไป</translation>
     </message>
     <message>
         <source>The plugin seems to have been installed but I don&apos;t know where. Probably the plugin package contained a wrong named directory.
 Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll find the plugin there, but I just can&apos;t determine which of them it is. It also means that I won&apos;t be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue.</source>
-        <translation type="unfinished">ส่วนเพิ่มเติมดูเหมือนว่าจะติดตั้งแล้วแต่ไม่รู้ว่าอยู่ที่ไหนบางที่ชุดส่วนเพิ่มเติมอาจใช้ชื่อ directory ผิด
+        <translation type="obsolete">ส่วนเพิ่มเติมดูเหมือนว่าจะติดตั้งแล้วแต่ไม่รู้ว่าอยู่ที่ไหนบางที่ชุดส่วนเพิ่มเติมอาจใช้ชื่อ directory ผิด
 โปรดหารายการของการติดตั้งหรือติดต่อผู้ผลิด</translation>
     </message>
     <message>
         <source>Plugin installed successfully</source>
-        <translation type="unfinished">การติดตั้งส่วนเพิ่มเติมเรียบร้อย</translation>
+        <translation type="obsolete">การติดตั้งส่วนเพิ่มเติมเรียบร้อย</translation>
     </message>
     <message>
         <source>Python plugin installed.
 Now you need to enable it in Plugin Manager.</source>
-        <translation type="unfinished">ส่วนเพิ่มเติม Python ติดตั้งแล้ว
+        <translation type="obsolete">ส่วนเพิ่มเติม Python ติดตั้งแล้ว
 ตอนนี้คุณต้องปรัให้ใช้งานได้ในตัวจัดการส่วนเพิ่มเติม</translation>
     </message>
     <message>
         <source>Plugin reinstalled successfully</source>
-        <translation type="unfinished">การติดตั้งส่วนเพิ่มเติมใหม่เรียบร้อย</translation>
+        <translation type="obsolete">การติดตั้งส่วนเพิ่มเติมใหม่เรียบร้อย</translation>
     </message>
     <message>
         <source>Python plugin reinstalled.
 You need to restart Quantum GIS in order to reload it.</source>
-        <translation type="unfinished">ติดตั้งส่วนเพิ่มเติม Python ใหม่
+        <translation type="obsolete">ติดตั้งส่วนเพิ่มเติม Python ใหม่
 คุณต้องเริ่ม Quantum GIS ใหม่เพื่อจะอ่านมันใหม่</translation>
     </message>
     <message>
         <source>The plugin is designed for a newer version of Quantum GIS. The minimum required version is:</source>
-        <translation type="unfinished">ส่วนเพิ่มเติมออกแบบมาสำหรับ  Quantum GIS รุ่นใหม่ๆอย่างน้อยควรเป็นรุ่น:</translation>
+        <translation type="obsolete">ส่วนเพิ่มเติมออกแบบมาสำหรับ  Quantum GIS รุ่นใหม่ๆอย่างน้อยควรเป็นรุ่น:</translation>
     </message>
     <message>
         <source>The plugin is broken. Python said:</source>
-        <translation type="unfinished">ส่วนเพิ่มเติ่มนี้ใช้ไม่ได้</translation>
+        <translation type="obsolete">ส่วนเพิ่มเติ่มนี้ใช้ไม่ได้</translation>
     </message>
     <message>
         <source>Plugin uninstall failed</source>
-        <translation type="unfinished">การถอดการติดตั้งล้มเหลว</translation>
+        <translation type="obsolete">การถอดการติดตั้งล้มเหลว</translation>
     </message>
     <message>
         <source>Are you sure you want to uninstall the following plugin?</source>
-        <translation type="unfinished">คุณแน่ใจหรือ ที่จะเอาส่วนเพิ่มเติมนี้ออก?</translation>
+        <translation type="obsolete">คุณแน่ใจหรือ ที่จะเอาส่วนเพิ่มเติมนี้ออก?</translation>
     </message>
     <message>
         <source>Warning: this plugin isn&apos;t available in any accessible repository!</source>
-        <translation type="unfinished">คำเตือน สว่นเพิ่มเติมนี้ใช้ไม่ได้</translation>
+        <translation type="obsolete">คำเตือน สว่นเพิ่มเติมนี้ใช้ไม่ได้</translation>
     </message>
     <message>
         <source>Plugin uninstalled successfully</source>
-        <translation type="unfinished">การถอดการติดตั้งสำเร็จ</translation>
+        <translation type="obsolete">การถอดการติดตั้งสำเร็จ</translation>
     </message>
     <message>
         <source>Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely.</source>
-        <translation type="unfinished">ส่วนเพิ่มเติม Python ได้ถูกถอดการติดตั้ง คงอาจจะต้องเริ่ม Quantum GIS ใหม่เพือเอามันออกอย่างสมบูรณ์</translation>
+        <translation type="obsolete">ส่วนเพิ่มเติม Python ได้ถูกถอดการติดตั้ง คงอาจจะต้องเริ่ม Quantum GIS ใหม่เพือเอามันออกอย่างสมบูรณ์</translation>
     </message>
     <message>
         <source>You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.</source>
-        <translation type="unfinished">คุณกำลังจะเพิ่มหลายส่วนเพิ่มเติมที่รองรับกับ Quantum GIS ทีม. ผู้เขียนส่วนมากจะพยายามทำให้มันใช้งานได้</translation>
+        <translation type="obsolete">คุณกำลังจะเพิ่มหลายส่วนเพิ่มเติมที่รองรับกับ Quantum GIS ทีม. ผู้เขียนส่วนมากจะพยายามทำให้มันใช้งานได้</translation>
     </message>
     <message>
         <source>Unable to add another repository with the same URL!</source>
-        <translation type="unfinished">ไม่สามารถเพิ่มด้วย URL เดียวกัน</translation>
+        <translation type="obsolete">ไม่สามารถเพิ่มด้วย URL เดียวกัน</translation>
     </message>
     <message>
         <source>Are you sure you want to remove the following repository?</source>
-        <translation type="unfinished">คุณแน่ใจหรือ คุณต้องการจะเอาส่วนนี้ออก?</translation>
-    </message>
-    <message>
-        <source>The plugin depends on some components missing on your system. You need to install the following Python module in order to enable it:</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">คุณแน่ใจหรือ คุณต้องการจะเอาส่วนนี้ออก?</translation>
     </message>
 </context>
 <context>
@@ -23480,35 +23456,35 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerFetchingDialog</name>
     <message>
         <source>Success</source>
-        <translation type="unfinished">สำเร็จ</translation>
+        <translation type="obsolete">สำเร็จ</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="unfinished">หาชื่อเครื่อง</translation>
+        <translation type="obsolete">หาชื่อเครื่อง</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="unfinished">กำลังเชื่อมต่อ</translation>
+        <translation type="obsolete">กำลังเชื่อมต่อ</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="unfinished">ต่อเครื่องแม่ข่ายแล้ว ส่งคำสั่ง...</translation>
+        <translation type="obsolete">ต่อเครื่องแม่ข่ายแล้ว ส่งคำสั่ง...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation type="unfinished">Downloading ข้อมูล</translation>
+        <translation type="obsolete">Downloading ข้อมูล</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="unfinished">ว่างอยู่</translation>
+        <translation type="obsolete">ว่างอยู่</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="unfinished">ปิดการเชื่อมต่อ</translation>
+        <translation type="obsolete">ปิดการเชื่อมต่อ</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">ข้อผิดพลาด</translation>
+        <translation type="obsolete">ข้อผิดพลาด</translation>
     </message>
 </context>
 <context>
@@ -23543,43 +23519,43 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerInstallingDialog</name>
     <message>
         <source>Installing...</source>
-        <translation type="unfinished">กำลังติดตั้ง</translation>
+        <translation type="obsolete">กำลังติดตั้ง</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="unfinished">หาชื่อเครื่องแม่ข่าย</translation>
+        <translation type="obsolete">หาชื่อเครื่องแม่ข่าย</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="unfinished">กำลังเชื่อมต่อ...</translation>
+        <translation type="obsolete">กำลังเชื่อมต่อ...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="unfinished">ต่อเครื่องแม่ข่ายแล้ว ส่งคำสั่ง...</translation>
+        <translation type="obsolete">ต่อเครื่องแม่ข่ายแล้ว ส่งคำสั่ง...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation type="unfinished">Downloading ข้อมูล</translation>
+        <translation type="obsolete">Downloading ข้อมูล</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="unfinished">ว่างอยู่</translation>
+        <translation type="obsolete">ว่างอยู่</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="unfinished">ปิดการเชื่อมต่อ</translation>
+        <translation type="obsolete">ปิดการเชื่อมต่อ</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">ข้อผิดพลาด</translation>
+        <translation type="obsolete">ข้อผิดพลาด</translation>
     </message>
     <message>
         <source>Failed to unzip the plugin package. Probably it&apos;s broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:</source>
-        <translation type="unfinished">เกิดข้อผิดพลาดขณะ unzip ชุดส่วนเพิ่มเติมบางทีอาจใช้ไม่ได้ คุณต้องแน่ใจว่า directory ของส่วนเพิ่มเติม สามารถเขียนทับได้</translation>
+        <translation type="obsolete">เกิดข้อผิดพลาดขณะ unzip ชุดส่วนเพิ่มเติมบางทีอาจใช้ไม่ได้ คุณต้องแน่ใจว่า directory ของส่วนเพิ่มเติม สามารถเขียนทับได้</translation>
     </message>
     <message>
         <source>Aborted by user</source>
-        <translation type="unfinished">อกกโดยผู้ใช้</translation>
+        <translation type="obsolete">อกกโดยผู้ใช้</translation>
     </message>
 </context>
 <context>
@@ -23604,7 +23580,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerPluginErrorDialog</name>
     <message>
         <source>no error message received</source>
-        <translation type="unfinished">ไม่ได้รับข้อความความผิดพลาด</translation>
+        <translation type="obsolete">ไม่ได้รับข้อความความผิดพลาด</translation>
     </message>
 </context>
 <context>
@@ -31651,51 +31627,51 @@ Tried URL: %1</source>
     <name>VisualDialog</name>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="unfinished">โปรดใส่ชั้นข้อมูลเชิงเส้น</translation>
+        <translation type="obsolete">โปรดใส่ชั้นข้อมูลเชิงเส้น</translation>
     </message>
     <message>
         <source>Please specify input field</source>
-        <translation type="unfinished">โปรดระบุช่อง</translation>
+        <translation type="obsolete">โปรดระบุช่อง</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation type="unfinished">ตรวจสอบรูปร่าง</translation>
+        <translation type="obsolete">ตรวจสอบรูปร่าง</translation>
     </message>
     <message>
         <source>Geometry errors</source>
-        <translation type="unfinished">รูปร่างผิดพลาด</translation>
+        <translation type="obsolete">รูปร่างผิดพลาด</translation>
     </message>
     <message>
         <source>Total encountered errors</source>
-        <translation type="unfinished">ค่าความผิดพลาดทั้งหมด</translation>
+        <translation type="obsolete">ค่าความผิดพลาดทั้งหมด</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation type="unfinished">รายการค่าที่ไม่ซำ้</translation>
+        <translation type="obsolete">รายการค่าที่ไม่ซำ้</translation>
     </message>
     <message>
         <source>Unique values</source>
-        <translation type="unfinished">ค่าที่ไม่ซำ้</translation>
+        <translation type="obsolete">ค่าที่ไม่ซำ้</translation>
     </message>
     <message>
         <source>Total unique values</source>
-        <translation type="unfinished">ค่าที่ไม่ซำ้ทั้งหมด</translation>
+        <translation type="obsolete">ค่าที่ไม่ซำ้ทั้งหมด</translation>
     </message>
     <message>
         <source>Basics statistics</source>
-        <translation type="unfinished">ค่าทางสถิติพื้นฐาน</translation>
+        <translation type="obsolete">ค่าทางสถิติพื้นฐาน</translation>
     </message>
     <message>
         <source>Statistics output</source>
-        <translation type="unfinished">ผลลัพธ์ทางสถิติ</translation>
+        <translation type="obsolete">ผลลัพธ์ทางสถิติ</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation type="unfinished">การวิเคราะห์แบบ Nearest neighbour</translation>
+        <translation type="obsolete">การวิเคราะห์แบบ Nearest neighbour</translation>
     </message>
     <message>
         <source>Nearest neighbour statistics</source>
-        <translation type="unfinished">ค่าสถิติ ของ Nearest neighbour</translation>
+        <translation type="obsolete">ค่าสถิติ ของ Nearest neighbour</translation>
     </message>
 </context>
 <context>
@@ -32800,12 +32776,12 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>fTools</name>
     <message>
         <source>Quantum GIS version detected: </source>
-        <translation type="unfinished">Quantum GIS version detected: </translation>
+        <translation type="obsolete">Quantum GIS version detected: </translation>
     </message>
     <message>
         <source>This version of fTools requires at least QGIS version 1.0.0
 Plugin will not be enabled.</source>
-        <translation type="unfinished">ftools รุ่นนี้ QGIS ต้องเป็นรุ่น 1.0.0 ขึ้นไป</translation>
+        <translation type="obsolete">ftools รุ่นนี้ QGIS ต้องเป็นรุ่น 1.0.0 ขึ้นไป</translation>
     </message>
     <message>
         <source>&amp;Tools</source>
@@ -32813,179 +32789,171 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>&amp;Analysis Tools</source>
-        <translation type="unfinished">&amp;เครื่องมือในการวิเคราะห์</translation>
+        <translation type="obsolete">&amp;เครื่องมือในการวิเคราะห์</translation>
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation type="unfinished">การหาระยะแบบ matrix</translation>
+        <translation type="obsolete">การหาระยะแบบ matrix</translation>
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation type="unfinished">รวมความยาวเส้น</translation>
+        <translation type="obsolete">รวมความยาวเส้น</translation>
     </message>
     <message>
         <source>Points in polygon</source>
-        <translation type="unfinished">จุดในรูปปิด</translation>
+        <translation type="obsolete">จุดในรูปปิด</translation>
     </message>
     <message>
         <source>Basic statistics</source>
-        <translation type="unfinished">ค่าทางสถิติ</translation>
+        <translation type="obsolete">ค่าทางสถิติ</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation type="unfinished">รายการค่าที่ไม่ซำ้</translation>
+        <translation type="obsolete">รายการค่าที่ไม่ซำ้</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation type="unfinished">การวิเคราะห์ค่าข้างเคียง</translation>
+        <translation type="obsolete">การวิเคราะห์ค่าข้างเคียง</translation>
     </message>
     <message>
         <source>Mean coordinate(s)</source>
-        <translation type="unfinished">ค่าพิกัดเฉลี่ย</translation>
+        <translation type="obsolete">ค่าพิกัดเฉลี่ย</translation>
     </message>
     <message>
         <source>Line intersections</source>
-        <translation type="unfinished">เส้นที่ตัดกัน</translation>
+        <translation type="obsolete">เส้นที่ตัดกัน</translation>
     </message>
     <message>
         <source>&amp;Research Tools</source>
-        <translation type="unfinished">&amp;เครื่องมือที่ใช้ทำวิจัย</translation>
+        <translation type="obsolete">&amp;เครื่องมือที่ใช้ทำวิจัย</translation>
     </message>
     <message>
         <source>Random selection</source>
-        <translation type="unfinished">เลือกแบบสุ่ม</translation>
+        <translation type="obsolete">เลือกแบบสุ่ม</translation>
     </message>
     <message>
         <source>Random selection within subsets</source>
-        <translation type="unfinished">เลือกแบบสุ่มภายในกลุ่มข้อมูลที่เลือก</translation>
+        <translation type="obsolete">เลือกแบบสุ่มภายในกลุ่มข้อมูลที่เลือก</translation>
     </message>
     <message>
         <source>Random points</source>
-        <translation type="unfinished">จุดแบบสุ่ม</translation>
+        <translation type="obsolete">จุดแบบสุ่ม</translation>
     </message>
     <message>
         <source>Regular points</source>
-        <translation type="unfinished">จุดแบบปกติ</translation>
+        <translation type="obsolete">จุดแบบปกติ</translation>
     </message>
     <message>
         <source>Vector grid</source>
-        <translation type="unfinished">กริดแบบเส้น</translation>
+        <translation type="obsolete">กริดแบบเส้น</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="unfinished">เลือกโดยตำแหน่ง</translation>
+        <translation type="obsolete">เลือกโดยตำแหน่ง</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
-        <translation type="unfinished">รูปปิดจากกรอบของชั้นข้อมูล</translation>
+        <translation type="obsolete">รูปปิดจากกรอบของชั้นข้อมูล</translation>
     </message>
     <message>
         <source>&amp;Geoprocessing Tools</source>
-        <translation type="unfinished">&amp;เครื่องมือประมวลผลเชิงตำแหน่ง</translation>
+        <translation type="obsolete">&amp;เครื่องมือประมวลผลเชิงตำแหน่ง</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation type="unfinished">Convex hull(s)</translation>
+        <translation type="obsolete">Convex hull(s)</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="unfinished">แนวกันชน</translation>
+        <translation type="obsolete">แนวกันชน</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation type="unfinished">ตัดกัน</translation>
+        <translation type="obsolete">ตัดกัน</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="unfinished">รวมกัน</translation>
+        <translation type="obsolete">รวมกัน</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="unfinished">รูปร่างแตกต่างกัน</translation>
+        <translation type="obsolete">รูปร่างแตกต่างกัน</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="unfinished">ตัดออก</translation>
+        <translation type="obsolete">ตัดออก</translation>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="unfinished">หลอมรวม</translation>
+        <translation type="obsolete">หลอมรวม</translation>
     </message>
     <message>
         <source>Difference</source>
-        <translation type="unfinished">แตกต่าง</translation>
+        <translation type="obsolete">แตกต่าง</translation>
     </message>
     <message>
         <source>G&amp;eometry Tools</source>
-        <translation type="unfinished">&amp;เครื่องมือด้านรูปทรง</translation>
+        <translation type="obsolete">&amp;เครื่องมือด้านรูปทรง</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="unfinished">ส่งออก/เพิ่มช่องเรื่งรูปทรง</translation>
+        <translation type="obsolete">ส่งออก/เพิ่มช่องเรื่งรูปทรง</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation type="unfinished">ตรวจสอบรูปทรง</translation>
+        <translation type="obsolete">ตรวจสอบรูปทรง</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation type="unfinished">จุดศูนถ่วงของรูปปิด</translation>
+        <translation type="obsolete">จุดศูนถ่วงของรูปปิด</translation>
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation type="unfinished">สกัด Node ออก</translation>
+        <translation type="obsolete">สกัด Node ออก</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation type="unfinished">ทำให้เป็นรูปทรงอย่างง่าย</translation>
+        <translation type="obsolete">ทำให้เป็นรูปทรงอย่างง่าย</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
-        <translation type="unfinished">แบบหลายส่วนไปเป็นส่วนดี่ยว</translation>
+        <translation type="obsolete">แบบหลายส่วนไปเป็นส่วนดี่ยว</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
-        <translation type="unfinished">ส่วนดี่ยวไปเป็นแบบหลายส่วน</translation>
+        <translation type="obsolete">ส่วนดี่ยวไปเป็นแบบหลายส่วน</translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation type="unfinished">รูปปิดไปเป็นเส้น</translation>
+        <translation type="obsolete">รูปปิดไปเป็นเส้น</translation>
     </message>
     <message>
         <source>&amp;Data Management Tools</source>
-        <translation type="unfinished">&amp;เครื่องมือจัดการข้อมูล</translation>
+        <translation type="obsolete">&amp;เครื่องมือจัดการข้อมูล</translation>
     </message>
     <message>
         <source>Export to new projection</source>
-        <translation type="unfinished">นำออกไปเป็นโปรเจคชั่นใหม่</translation>
+        <translation type="obsolete">นำออกไปเป็นโปรเจคชั่นใหม่</translation>
     </message>
     <message>
         <source>Define current projection</source>
-        <translation type="unfinished">กำหนด โปรเจคชั่นปัจจุบัน</translation>
+        <translation type="obsolete">กำหนด โปรเจคชั่นปัจจุบัน</translation>
     </message>
     <message>
         <source>Join attributes</source>
-        <translation type="unfinished">เชื่อมรายละเอียดข้อมูล</translation>
+        <translation type="obsolete">เชื่อมรายละเอียดข้อมูล</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
-        <translation type="unfinished">เชื่อมรายละเอียดข้อมูลด้วยตำแหน่ง</translation>
+        <translation type="obsolete">เชื่อมรายละเอียดข้อมูลด้วยตำแหน่ง</translation>
     </message>
     <message>
         <source>Split vector layer</source>
-        <translation type="unfinished">ตัดชั้นข้อมูลเชิงเส้น</translation>
+        <translation type="obsolete">ตัดชั้นข้อมูลเชิงเส้น</translation>
     </message>
     <message>
         <source>fTools Information</source>
-        <translation type="unfinished">รายละเอียดของ ftools</translation>
-    </message>
-    <message>
-        <source>&amp;Vector</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Delaunay triangulation</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">รายละเอียดของ ftools</translation>
     </message>
 </context>
 <context>
@@ -33068,95 +33036,19 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Feature %1 contains an unnested hole</source>
-        <translation type="unfinished">ข้อมูล %1 มี unnested hole</translation>
+        <translation type="obsolete">ข้อมูล %1 มี unnested hole</translation>
     </message>
     <message>
         <source>Feature %1 is not closed</source>
-        <translation type="unfinished">ข้อมูล %1 ไม่ได้ปิด</translation>
+        <translation type="obsolete">ข้อมูล %1 ไม่ได้ปิด</translation>
     </message>
     <message>
         <source>Feature %1 is self intersecting</source>
-        <translation type="unfinished">ข้อมูล %1 ไม่ได้ตัวตัวเอง</translation>
+        <translation type="obsolete">ข้อมูล %1 ไม่ได้ตัวตัวเอง</translation>
     </message>
     <message>
         <source>Feature %1 has incorrect node ordering</source>
-        <translation type="unfinished">ข้อมูล %1 มี node ผิดลำดับ</translation>
-    </message>
-    <message>
-        <source>Max. len:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Min. len:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Mean. len:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Filled:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Empty:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>N:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Mean:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>StdDev:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sum:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Min:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Max:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>CV:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Number of unique values:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Range:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Median:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Observed mean distance:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Expected mean distance:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Nearest neighbour index:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Z-Score:</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">ข้อมูล %1 มี node ผิดลำดับ</translation>
     </message>
 </context>
 </TS>
