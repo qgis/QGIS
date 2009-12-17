@@ -3223,6 +3223,10 @@ int QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeome
 /**Replaces a part of this geometry with another line*/
 int QgsGeometry::reshapeGeometry( const QList<QgsPoint>& reshapeWithLine )
 {
+  if ( reshapeWithLine.size() < 2 )
+  {
+    return 1;
+  }
   if ( type() == QGis::Point )
   {
     return 1; //cannot reshape points
