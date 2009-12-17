@@ -1303,19 +1303,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="obsolete">Chọn theo vị trí</translation>
+        <translation type="unfinished">Chọn theo vị trí</translation>
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation type="obsolete">Ma trận khoảng cách</translation>
+        <translation type="unfinished">Ma trận khoảng cách</translation>
     </message>
     <message>
         <source>Points in polygon</source>
-        <translation type="obsolete">Các điểm trong vùng</translation>
+        <translation type="unfinished">Các điểm trong vùng</translation>
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation type="obsolete">Tính tổng chiều dài đường</translation>
+        <translation type="unfinished">Tính tổng chiều dài đường</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="241"/>
@@ -1331,50 +1331,50 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Created output matrix:
 </source>
-        <translation type="obsolete">Ma trận đầu ra được tạo thành:
+        <translation type="unfinished">Ma trận đầu ra được tạo thành:
 </translation>
     </message>
     <message>
         <source>Created output Shapefile:
 </source>
-        <translation type="obsolete">Tập tin shape đầu ra được tạo thành:
+        <translation type="unfinished">Tập tin shape đầu ra được tạo thành:
 </translation>
     </message>
     <message>
         <source>Vector layer is not valid</source>
-        <translation type="obsolete">Lớp vector không hợp lệ</translation>
+        <translation type="unfinished">Lớp vector không hợp lệ</translation>
     </message>
     <message>
         <source>creating new selection</source>
-        <translation type="obsolete">đang tạo phép chọn mới</translation>
+        <translation type="unfinished">đang tạo phép chọn mới</translation>
     </message>
     <message>
         <source>adding to current selection</source>
-        <translation type="obsolete">thêm vào phép chọn hiện tại</translation>
+        <translation type="unfinished">thêm vào phép chọn hiện tại</translation>
     </message>
     <message>
         <source>removing from current selection</source>
-        <translation type="obsolete">loại bỏ khỏi phép chọn hiện tại</translation>
+        <translation type="unfinished">loại bỏ khỏi phép chọn hiện tại</translation>
     </message>
     <message>
         <source>Select features in:</source>
-        <translation type="obsolete">Chọn các đối tượng trong:</translation>
+        <translation type="unfinished">Chọn các đối tượng trong:</translation>
     </message>
     <message>
         <source>that intersect features in:</source>
-        <translation type="obsolete">nào cắt các đối tượng trong:</translation>
+        <translation type="unfinished">nào cắt các đối tượng trong:</translation>
     </message>
     <message>
         <source>Modify current selection by:</source>
-        <translation type="obsolete">Thay đổi phép chọn hiện tại bằng:</translation>
+        <translation type="unfinished">Thay đổi phép chọn hiện tại bằng:</translation>
     </message>
     <message>
         <source>Please specify input layer</source>
-        <translation type="obsolete">Vui lòng chỉ định lớp đầu vào</translation>
+        <translation type="unfinished">Vui lòng chỉ định lớp đầu vào</translation>
     </message>
     <message>
         <source>Please specify select layer</source>
-        <translation type="obsolete">Vui lòng chỉ định lớp chọn</translation>
+        <translation type="unfinished">Vui lòng chỉ định lớp chọn</translation>
     </message>
 </context>
 <context>
@@ -1569,23 +1569,23 @@ p, li { white-space: pre-wrap; }
     <name>GeometryDialog</name>
     <message>
         <source>Merge all</source>
-        <translation type="obsolete">Gộp tất cả</translation>
+        <translation type="unfinished">Gộp tất cả</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="obsolete">Vuii lòng chỉ định lớp vector đầu vào</translation>
+        <translation type="unfinished">Vuii lòng chỉ định lớp vector đầu vào</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="obsolete">Vui lòng chỉ định tập tin shape đầu ra</translation>
+        <translation type="unfinished">Vui lòng chỉ định tập tin shape đầu ra</translation>
     </message>
     <message>
         <source>Please specify valid tolerance value</source>
-        <translation type="obsolete">Vui lòng chỉ định giá trị dung sai hợp lệ</translation>
+        <translation type="unfinished">Vui lòng chỉ định giá trị dung sai hợp lệ</translation>
     </message>
     <message>
         <source>Please specify valid UID field</source>
-        <translation type="obsolete">Vui lòng chỉ định trường UID đúng</translation>
+        <translation type="unfinished">Vui lòng chỉ định trường UID đúng</translation>
     </message>
     <message>
         <source>Created output shapefile</source>
@@ -1593,59 +1593,59 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Would you like to add the new layer to the TOC?</source>
-        <translation type="obsolete">Bạn có muốn thêm lớp mới vào TOC?</translation>
+        <translation type="unfinished">Bạn có muốn thêm lớp mới vào TOC?</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
-        <translation type="obsolete">Các đơn phần thành một đa phần</translation>
+        <translation type="unfinished">Các đơn phần thành một đa phần</translation>
     </message>
     <message>
         <source>Output shapefile</source>
-        <translation type="obsolete">Tập tin shape đầu ra</translation>
+        <translation type="unfinished">Tập tin shape đầu ra</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
-        <translation type="obsolete">Một đa phần thành nhiều đơn phần</translation>
+        <translation type="unfinished">Một đa phần thành nhiều đơn phần</translation>
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation type="obsolete">Trích xuất nốt</translation>
+        <translation type="unfinished">Trích xuất nốt</translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation type="obsolete">Vùng thành đường</translation>
+        <translation type="unfinished">Vùng thành đường</translation>
     </message>
     <message>
         <source>Input polygon vector layer</source>
-        <translation type="obsolete">Lớp vector kiểu vùng đầu vào</translation>
+        <translation type="unfinished">Lớp vector kiểu vùng đầu vào</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="obsolete">Xuất/Thêm cột hình học</translation>
+        <translation type="unfinished">Xuất/Thêm cột hình học</translation>
     </message>
     <message>
         <source>Input vector layer</source>
-        <translation type="obsolete">Lớp vector đầu vào</translation>
+        <translation type="unfinished">Lớp vector đầu vào</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation type="obsolete">Đơn giản hoá các đối tượng hình học</translation>
+        <translation type="unfinished">Đơn giản hoá các đối tượng hình học</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation type="obsolete">Trọng tâm của vùng</translation>
+        <translation type="unfinished">Trọng tâm của vùng</translation>
     </message>
     <message>
         <source>Output point shapefile</source>
-        <translation type="obsolete">Tập tin shape kiểu điểm đầu ra</translation>
+        <translation type="unfinished">Tập tin shape kiểu điểm đầu ra</translation>
     </message>
     <message>
         <source>Error processing specified tolerance!</source>
-        <translation type="obsolete">Lỗi khi xử lý dung sai đã chỉ định!</translation>
+        <translation type="unfinished">Lỗi khi xử lý dung sai đã chỉ định!</translation>
     </message>
     <message>
         <source>Please choose larger tolerance...</source>
-        <translation type="obsolete">Vui lòng chọn dung sai lớn hơn...</translation>
+        <translation type="unfinished">Vui lòng chọn dung sai lớn hơn...</translation>
     </message>
     <message>
         <source>Function not found</source>
@@ -1661,66 +1661,66 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Input point vector layer</source>
-        <translation type="obsolete">Lớp vector điểm đầu vào</translation>
+        <translation type="unfinished">Lớp vector điểm đầu vào</translation>
     </message>
     <message>
         <source>Delaunay triangulation</source>
-        <translation type="obsolete">Phép tam giác Delaunay</translation>
+        <translation type="unfinished">Phép tam giác Delaunay</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
-        <translation type="obsolete">Vùng từ phạm vi của lớp</translation>
+        <translation type="unfinished">Vùng từ phạm vi của lớp</translation>
     </message>
     <message>
         <source>Input layer</source>
-        <translation type="obsolete">Lớp đầu vào</translation>
+        <translation type="unfinished">Lớp đầu vào</translation>
     </message>
     <message>
         <source>Output polygon shapefile</source>
-        <translation type="obsolete">Tập tin shape kiểu vùng đầu ra</translation>
+        <translation type="unfinished">Tập tin shape kiểu vùng đầu ra</translation>
     </message>
     <message>
         <source>Unable to delete existing shapefile.</source>
-        <translation type="obsolete">Không thể xoá tập tin shape hiện có.</translation>
+        <translation type="unfinished">Không thể xoá tập tin shape hiện có.</translation>
     </message>
     <message>
         <source>Unable to delete incomplete shapefile.</source>
-        <translation type="obsolete">Không thể xoá tập tin shape chưa hoàn chỉnh.</translation>
+        <translation type="unfinished">Không thể xoá tập tin shape chưa hoàn chỉnh.</translation>
     </message>
     <message>
         <source>Created output shapefile:</source>
-        <translation type="obsolete">Tập tin shape đầu ra được tạo thành:</translation>
+        <translation type="unfinished">Tập tin shape đầu ra được tạo thành:</translation>
     </message>
     <message>
         <source>Error writing output shapefile.</source>
-        <translation type="obsolete">Lỗi khi ghi tập tin shape đầu ra.</translation>
+        <translation type="unfinished">Lỗi khi ghi tập tin shape đầu ra.</translation>
     </message>
 </context>
 <context>
     <name>GeoprocessingDialog</name>
     <message>
         <source>Dissolve all</source>
-        <translation type="obsolete">&apos;Hoà tan&apos; tất cả</translation>
+        <translation type="unfinished">&apos;Hoà tan&apos; tất cả</translation>
     </message>
     <message>
         <source>Please specify an input layer</source>
-        <translation type="obsolete">Vui lòng chỉ định lớp đầu vào</translation>
+        <translation type="unfinished">Vui lòng chỉ định lớp đầu vào</translation>
     </message>
     <message>
         <source>Please specify a difference/intersect/union layer</source>
-        <translation type="obsolete">Vui lòng chỉ định một lớp sai biệt/giao nhau/hợp</translation>
+        <translation type="unfinished">Vui lòng chỉ định một lớp sai biệt/giao nhau/hợp</translation>
     </message>
     <message>
         <source>Please specify valid buffer value</source>
-        <translation type="obsolete">Vui lòng chỉ định giá trị đệm hợp lệ</translation>
+        <translation type="unfinished">Vui lòng chỉ định giá trị đệm hợp lệ</translation>
     </message>
     <message>
         <source>Please specify dissolve field</source>
-        <translation type="obsolete">Vui lòng chỉ định trường &apos;hoà tan&apos;</translation>
+        <translation type="unfinished">Vui lòng chỉ định trường &apos;hoà tan&apos;</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="obsolete">Vui lòng chỉ định tập tin shape đầu ra</translation>
+        <translation type="unfinished">Vui lòng chỉ định tập tin shape đầu ra</translation>
     </message>
     <message>
         <source>Unable to create geoprocessing result.</source>
@@ -1736,23 +1736,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="obsolete">Đệm</translation>
+        <translation type="unfinished">Đệm</translation>
     </message>
     <message>
         <source>Create single minimum convex hull</source>
-        <translation type="obsolete">Tạo bao lồi tối thiểu duy nhất</translation>
+        <translation type="unfinished">Tạo bao lồi tối thiểu duy nhất</translation>
     </message>
     <message>
         <source>Create convex hulls based on input field</source>
-        <translation type="obsolete">Tạo các bao lồi dựa trên trường đầu vào</translation>
+        <translation type="unfinished">Tạo các bao lồi dựa trên trường đầu vào</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation type="obsolete">(Các) bao lồi</translation>
+        <translation type="unfinished">(Các) bao lồi</translation>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="obsolete">&apos;Hoà tan&apos;</translation>
+        <translation type="unfinished">&apos;Hoà tan&apos;</translation>
     </message>
     <message>
         <source>Erase layer</source>
@@ -1760,52 +1760,52 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Difference</source>
-        <translation type="obsolete">Sai biệt</translation>
+        <translation type="unfinished">Sai biệt</translation>
     </message>
     <message>
         <source>Intersect layer</source>
-        <translation type="obsolete">Lớp giao</translation>
+        <translation type="unfinished">Lớp giao</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation type="obsolete">Giao nhau</translation>
+        <translation type="unfinished">Giao nhau</translation>
     </message>
     <message>
         <source>Difference layer</source>
-        <translation type="obsolete">Lớp sai biệt</translation>
+        <translation type="unfinished">Lớp sai biệt</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="obsolete">Sai biệt đối xứng</translation>
+        <translation type="unfinished">Sai biệt đối xứng</translation>
     </message>
     <message>
         <source>Clip layer</source>
-        <translation type="obsolete">Cắt lớp</translation>
+        <translation type="unfinished">Cắt lớp</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="obsolete">Cắt</translation>
+        <translation type="unfinished">Cắt</translation>
     </message>
     <message>
         <source>Union layer</source>
-        <translation type="obsolete">Hợp lớp</translation>
+        <translation type="unfinished">Hợp lớp</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="obsolete">Hợp</translation>
+        <translation type="unfinished">Hợp</translation>
     </message>
     <message>
         <source>No features selected, please uncheck &apos;Use selected&apos; or make a selection</source>
-        <translation type="obsolete">Không có đối tượng được chọn, vui lòng khử đánh dấu mục &apos;Dùng phần được chọn&apos; hoặc thực hiện phép chọn trước</translation>
+        <translation type="unfinished">Không có đối tượng được chọn, vui lòng khử đánh dấu mục &apos;Dùng phần được chọn&apos; hoặc thực hiện phép chọn trước</translation>
     </message>
     <message>
         <source>Unable to delete existing shapefile.</source>
-        <translation type="obsolete">Không thể xoá tập tin shape hiện có.</translation>
+        <translation type="unfinished">Không thể xoá tập tin shape hiện có.</translation>
     </message>
     <message>
         <source>
 Warnings:</source>
-        <translation type="obsolete">
+        <translation type="unfinished">
 (Các) cảnh báo:</translation>
     </message>
     <message>
@@ -1813,7 +1813,7 @@ Warnings:</source>
 Some output geometries may be missing or invalid.
 
 Would you like to add the new layer anyway?</source>
-        <translation type="obsolete">
+        <translation type="unfinished">
 Một số hình học đầu ra có thể bị mất hoặc không hợp lệ.
 
 Mặc dù vậy, bạn có muốn thêm lớp mới vào không?</translation>
@@ -1822,31 +1822,31 @@ Mặc dù vậy, bạn có muốn thêm lớp mới vào không?</translation>
         <source>
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="obsolete">
+        <translation type="unfinished">
 
 Bạn có muốn thêm lớp mới vào Danh sách lớp không?</translation>
     </message>
     <message>
         <source>
 Input CRS error: Different input coordinate reference systems detected, results may not be as expected.</source>
-        <translation type="obsolete">
+        <translation type="unfinished">
 Lỗi HTĐ đầu vào: Phát hiện thấy sai biệt hệ toạ độ, kết quả có thể không như mong đợi.</translation>
     </message>
     <message>
         <source>
 Feature geometry error: One or more output features ignored due to invalid geometry.</source>
-        <translation type="obsolete">
+        <translation type="unfinished">
 Lỗi hình học đối tượng: Một hoặc nhiều đối tượng đầu ra bị bỏ qua do hình học không hợp lệ.</translation>
     </message>
     <message>
         <source>
 GEOS geoprocessing error: One or more input features have invalid geometry.</source>
-        <translation type="obsolete">
+        <translation type="unfinished">
 Lỗi xử lý địa lý GEOS: Một hoặc nhiều đối tượng đầu vào có hình học không hợp lệ.</translation>
     </message>
     <message>
         <source>Created output shapefile:</source>
-        <translation type="obsolete">Tập tin shape đầu ra được tạo thành:</translation>
+        <translation type="unfinished">Tập tin shape đầu ra được tạo thành:</translation>
     </message>
 </context>
 <context>
@@ -2485,7 +2485,7 @@ Lỗi xử lý địa lý GEOS: Một hoặc nhiều đối tượng đầu vào
     </message>
     <message>
         <source>OSM Information</source>
-        <translation type="obsolete">Thông tin OSM</translation>
+        <translation type="unfinished">Thông tin OSM</translation>
     </message>
 </context>
 <context>
@@ -2588,51 +2588,51 @@ Lỗi xử lý địa lý GEOS: Một hoặc nhiều đối tượng đầu vào
     </message>
     <message>
         <source>OSM Download</source>
-        <translation type="obsolete">Tải xuống OSM</translation>
+        <translation type="unfinished">Tải xuống OSM</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="obsolete">Không thể lưu tập tin %1: %2.</translation>
+        <translation type="unfinished">Không thể lưu tập tin %1: %2.</translation>
     </message>
     <message>
         <source>Waiting for OpenStreetMap server ...</source>
-        <translation type="obsolete">Đang đợi máy chủ OpenStreetMap ...</translation>
+        <translation type="unfinished">Đang đợi máy chủ OpenStreetMap ...</translation>
     </message>
     <message>
         <source>Download process failed. OpenStreetMap server response: %1 - %2</source>
-        <translation type="obsolete">Việc tải xuống thất bại. Máy chủ OSM phản hồi: %1 - %2</translation>
+        <translation type="unfinished">Việc tải xuống thất bại. Máy chủ OSM phản hồi: %1 - %2</translation>
     </message>
     <message>
         <source>OSM Download Error</source>
-        <translation type="obsolete">Lỗi tải xuống OSM</translation>
+        <translation type="unfinished">Lỗi tải xuống OSM</translation>
     </message>
     <message>
         <source>Download failed: %1.</source>
-        <translation type="obsolete">Tải xuống thất bại: %1.</translation>
+        <translation type="unfinished">Tải xuống thất bại: %1.</translation>
     </message>
     <message>
         <source>Getting data</source>
-        <translation type="obsolete">Đang lấy dữ liệu</translation>
+        <translation type="unfinished">Đang lấy dữ liệu</translation>
     </message>
     <message>
         <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
-        <translation type="obsolete">Máy chủ OpenStreetMap mà bạn đang tải xuống dữ liệu từ (~ api.openstreetmap.org) có giới hạn cố định lượng dữ liệu mà bạ có thể lấy. Như đã trình bày tại &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt;, phạm vi kinh và vĩ độ của vùng tải xuống không được lớp hơn 0,25 độ. Lưu ý rằng QGIS cho phép bạn chỉ định bất kỳ phạm vi nào bạn muốn, nhưng máy chủ OpenStreetMap sẽ từ chối những yêu cầu nào không thoả mãn giới hạn về việc tải xuống.</translation>
+        <translation type="unfinished">Máy chủ OpenStreetMap mà bạn đang tải xuống dữ liệu từ (~ api.openstreetmap.org) có giới hạn cố định lượng dữ liệu mà bạ có thể lấy. Như đã trình bày tại &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt;, phạm vi kinh và vĩ độ của vùng tải xuống không được lớp hơn 0,25 độ. Lưu ý rằng QGIS cho phép bạn chỉ định bất kỳ phạm vi nào bạn muốn, nhưng máy chủ OpenStreetMap sẽ từ chối những yêu cầu nào không thoả mãn giới hạn về việc tải xuống.</translation>
     </message>
     <message>
         <source>Both extents are too large!</source>
-        <translation type="obsolete">Cả hai phạm vi đều quá lớn!</translation>
+        <translation type="unfinished">Cả hai phạm vi đều quá lớn!</translation>
     </message>
     <message>
         <source>Latitude extent is too large!</source>
-        <translation type="obsolete">Phạm vi vĩ độ quá lớn!</translation>
+        <translation type="unfinished">Phạm vi vĩ độ quá lớn!</translation>
     </message>
     <message>
         <source>Longitude extent is too large!</source>
-        <translation type="obsolete">Phạm vi kinh độ quá lớn!</translation>
+        <translation type="unfinished">Phạm vi kinh độ quá lớn!</translation>
     </message>
     <message>
         <source>OK! Area is probably acceptable to server.</source>
-        <translation type="obsolete">Ổn! Vùng được chọn có lẻ là được máy chủ đồng ý.</translation>
+        <translation type="unfinished">Ổn! Vùng được chọn có lẻ là được máy chủ đồng ý.</translation>
     </message>
 </context>
 <context>
@@ -2805,23 +2805,23 @@ Lỗi xử lý địa lý GEOS: Một hoặc nhiều đối tượng đầu vào
     </message>
     <message>
         <source>OSM Plugin</source>
-        <translation type="obsolete">Phần mở rộng OSM</translation>
+        <translation type="unfinished">Phần mở rộng OSM</translation>
     </message>
     <message>
         <source>The &apos;Create OSM Relation&apos; dialog was closed automatically because current OSM database was changed.</source>
-        <translation type="obsolete">Hộp thoại &apos;Tạo mối quan hệ OSM&apos; đã được tự động đóng lại bởi vì CSDL OSM hiện tại đã bị thay đổi.</translation>
+        <translation type="unfinished">Hộp thoại &apos;Tạo mối quan hệ OSM&apos; đã được tự động đóng lại bởi vì CSDL OSM hiện tại đã bị thay đổi.</translation>
     </message>
     <message>
         <source>OSM Feature Dock Widget</source>
-        <translation type="obsolete">Widget gắn đối tượng OSM</translation>
+        <translation type="unfinished">Widget gắn đối tượng OSM</translation>
     </message>
     <message>
         <source>Choose OSM feature first.</source>
-        <translation type="obsolete">Chọn đối tượng OSM trước.</translation>
+        <translation type="unfinished">Chọn đối tượng OSM trước.</translation>
     </message>
     <message>
         <source>Choose relation for editing first.</source>
-        <translation type="obsolete">Chọn quan hệ cần chỉnh sửa trước.</translation>
+        <translation type="unfinished">Chọn quan hệ cần chỉnh sửa trước.</translation>
     </message>
 </context>
 <context>
@@ -2929,31 +2929,31 @@ Lỗi xử lý địa lý GEOS: Một hoặc nhiều đối tượng đầu vào
     </message>
     <message>
         <source>Save OSM to file</source>
-        <translation type="obsolete">Lưu OSM vào tập tin</translation>
+        <translation type="unfinished">Lưu OSM vào tập tin</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="obsolete">Không thể lưu tập tin %1: %2.</translation>
+        <translation type="unfinished">Không thể lưu tập tin %1: %2.</translation>
     </message>
     <message>
         <source>Initializing...</source>
-        <translation type="obsolete">Đang khởi tạo...</translation>
+        <translation type="unfinished">Đang khởi tạo...</translation>
     </message>
     <message>
         <source>Saving nodes...</source>
-        <translation type="obsolete">Đang lưu các nốt...</translation>
+        <translation type="unfinished">Đang lưu các nốt...</translation>
     </message>
     <message>
         <source>Saving lines...</source>
-        <translation type="obsolete">Đang lưu các đường...</translation>
+        <translation type="unfinished">Đang lưu các đường...</translation>
     </message>
     <message>
         <source>Saving polygons...</source>
-        <translation type="obsolete">Đang lưu các vùng...</translation>
+        <translation type="unfinished">Đang lưu các vùng...</translation>
     </message>
     <message>
         <source>Saving relations...</source>
-        <translation type="obsolete">Đang lưu các quan hệ...</translation>
+        <translation type="unfinished">Đang lưu các quan hệ...</translation>
     </message>
 </context>
 <context>
@@ -3068,11 +3068,11 @@ Lỗi xử lý địa lý GEOS: Một hoặc nhiều đối tượng đầu vào
     </message>
     <message>
         <source>Uploading data...</source>
-        <translation type="obsolete">Đang tải dữ liệu lên...</translation>
+        <translation type="unfinished">Đang tải dữ liệu lên...</translation>
     </message>
     <message>
         <source>OSM Upload</source>
-        <translation type="obsolete">Tải lên OSM</translation>
+        <translation type="unfinished">Tải lên OSM</translation>
     </message>
 </context>
 <context>
@@ -3658,39 +3658,39 @@ nicht installierz ist, wo es QGIS finden kann, funktioniert dieses Werkzeug nich
     <name>Python</name>
     <message>
         <source>An error has occured while executing Python code:</source>
-        <translation type="obsolete">Một lỗi đã xảy ra khi thực thi mã Python:</translation>
+        <translation type="unfinished">Một lỗi đã xảy ra khi thực thi mã Python:</translation>
     </message>
     <message>
         <source>Python version:</source>
-        <translation type="obsolete">Phiên bản Python:</translation>
+        <translation type="unfinished">Phiên bản Python:</translation>
     </message>
     <message>
         <source>Python path:</source>
-        <translation type="obsolete">Đường dẫn Python:</translation>
+        <translation type="unfinished">Đường dẫn Python:</translation>
     </message>
     <message>
         <source>Python error</source>
-        <translation type="obsolete">Lỗi Python</translation>
+        <translation type="unfinished">Lỗi Python</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin %1</source>
-        <translation type="obsolete">Không thể nạp phần mở rộng %1</translation>
+        <translation type="unfinished">Không thể nạp phần mở rộng %1</translation>
     </message>
     <message>
         <source>%1 due an error when calling its classFactory() method</source>
-        <translation type="obsolete">%1 do một lỗi khi gọi phương pháp classFactory() của nó</translation>
+        <translation type="unfinished">%1 do một lỗi khi gọi phương pháp classFactory() của nó</translation>
     </message>
     <message>
         <source>%1 due an error when calling its initGui() method</source>
-        <translation type="obsolete">%1 do một lỗi khi gọi phương pháp initGui() của nó</translation>
+        <translation type="unfinished">%1 do một lỗi khi gọi phương pháp initGui() của nó</translation>
     </message>
     <message>
         <source>Error while unloading plugin %1</source>
-        <translation type="obsolete">Lỗi khi gỡ phần mở rộng %1</translation>
+        <translation type="unfinished">Lỗi khi gỡ phần mở rộng %1</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin &apos;%1&apos; from [&apos;%2&apos;]</source>
-        <translation type="obsolete">Không thể nạp phần mở rộng &apos;%1&apos; từ [&apos;%2&apos;]</translation>
+        <translation type="unfinished">Không thể nạp phần mở rộng &apos;%1&apos; từ [&apos;%2&apos;]</translation>
     </message>
 </context>
 <context>
@@ -25840,7 +25840,7 @@ hình học PostGIS.</translation>
     <name>QgsPluginInstaller</name>
     <message>
         <source>Couldn&apos;t parse output from the repository</source>
-        <translation type="obsolete">Không thể phân tách đầu ra từ kho chứa (repository)</translation>
+        <translation type="unfinished">Không thể phân tách đầu ra từ kho chứa (repository)</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the system plugin directory</source>
@@ -25848,51 +25848,51 @@ hình học PostGIS.</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the local plugin directory</source>
-        <translation type="obsolete">Không thể mở thư mục phần mở rộng cục bộ</translation>
+        <translation type="unfinished">Không thể mở thư mục phần mở rộng cục bộ</translation>
     </message>
     <message>
         <source>Fetch Python Plugins...</source>
-        <translation type="obsolete">Lấy về các phần mở rộng Python...</translation>
+        <translation type="unfinished">Lấy về các phần mở rộng Python...</translation>
     </message>
     <message>
         <source>Install more plugins from remote repositories</source>
-        <translation type="obsolete">Cài đặt thêm các phần mở rộng từ các kho chứa từ xa</translation>
+        <translation type="unfinished">Cài đặt thêm các phần mở rộng từ các kho chứa từ xa</translation>
     </message>
     <message>
         <source>Looking for new plugins...</source>
-        <translation type="obsolete">Đang tìm các phần mở rộng mới...</translation>
+        <translation type="unfinished">Đang tìm các phần mở rộng mới...</translation>
     </message>
     <message>
         <source>There is a new plugin available</source>
-        <translation type="obsolete">Có một phần mở rộng mới</translation>
+        <translation type="unfinished">Có một phần mở rộng mới</translation>
     </message>
     <message>
         <source>There is a plugin update available</source>
-        <translation type="obsolete">Có bản cập nhật của phần mở rộng</translation>
+        <translation type="unfinished">Có bản cập nhật của phần mở rộng</translation>
     </message>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="obsolete">Trình cài đặt phần mở rộng Python của QGIS</translation>
+        <translation type="unfinished">Trình cài đặt phần mở rộng Python của QGIS</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
-        <translation type="obsolete">Lỗi đọc kho chứa:</translation>
+        <translation type="unfinished">Lỗi đọc kho chứa:</translation>
     </message>
     <message>
         <source>Nothing to remove! Plugin directory doesn&apos;t exist:</source>
-        <translation type="obsolete">Không có gì bị loại bỏ! Thư mục phần mở rộng không tồn tại:</translation>
+        <translation type="unfinished">Không có gì bị loại bỏ! Thư mục phần mở rộng không tồn tại:</translation>
     </message>
     <message>
         <source>Failed to remove the directory:</source>
-        <translation type="obsolete">Thất bại trong việc loại bỏ thư mục:</translation>
+        <translation type="unfinished">Thất bại trong việc loại bỏ thư mục:</translation>
     </message>
     <message>
         <source>Check permissions or remove it manually</source>
-        <translation type="obsolete">Kiểm tra các quyền hoặc loại bỏ nó một cách thủ công</translation>
+        <translation type="unfinished">Kiểm tra các quyền hoặc loại bỏ nó một cách thủ công</translation>
     </message>
     <message>
         <source>QGIS Plugin Conflict:</source>
-        <translation type="obsolete">Mâu thuẫn phần mở rộng của QGIS:</translation>
+        <translation type="unfinished">Mâu thuẫn phần mở rộng của QGIS:</translation>
     </message>
     <message>
         <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. Probably it is a remainder of an older QGIS installation. Please use the Plugin Installer to remove it in order to unmask the instance shipped with this version of QGIS.</source>
@@ -25900,58 +25900,58 @@ hình học PostGIS.</translation>
     </message>
     <message>
         <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. This is likely due to files associated with a previous installation of QGIS. Please use the Plugin Installer to remove that older plugin in order to unmask the newer version shipped with this copy of QGIS.</source>
-        <translation type="obsolete">Trình cài đặt Phần mở rộng đã phát hiện ra một phần mở rộng cũ che mất phiên bản mới được đóng gói chung với phiên bản của QGIS. Điều này có thể là cho các tập tin liên quan đến bản cài đặt trước của QGIS. Vui lòng dùng Trình cài đặt Phần mở rộng để loại bỏ phần mở rộng cũ để gỡ che phiên bản mới hơn đi kèm với phiên bản QGIS này.</translation>
+        <translation type="unfinished">Trình cài đặt Phần mở rộng đã phát hiện ra một phần mở rộng cũ che mất phiên bản mới được đóng gói chung với phiên bản của QGIS. Điều này có thể là cho các tập tin liên quan đến bản cài đặt trước của QGIS. Vui lòng dùng Trình cài đặt Phần mở rộng để loại bỏ phần mở rộng cũ để gỡ che phiên bản mới hơn đi kèm với phiên bản QGIS này.</translation>
     </message>
 </context>
 <context>
     <name>QgsPluginInstallerDialog</name>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="obsolete">Trình Cài đặt Phần mở rộng Python của QGIS</translation>
+        <translation type="unfinished">Trình Cài đặt Phần mở rộng Python của QGIS</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
-        <translation type="obsolete">Lỗi đọc kho chứa:</translation>
+        <translation type="unfinished">Lỗi đọc kho chứa:</translation>
     </message>
     <message>
         <source>all repositories</source>
-        <translation type="obsolete">tất cả các kho chứa</translation>
+        <translation type="unfinished">tất cả các kho chứa</translation>
     </message>
     <message>
         <source>connected</source>
-        <translation type="obsolete">đã kết nối</translation>
+        <translation type="unfinished">đã kết nối</translation>
     </message>
     <message>
         <source>This repository is connected</source>
-        <translation type="obsolete">Kho chứa này được kết nối</translation>
+        <translation type="unfinished">Kho chứa này được kết nối</translation>
     </message>
     <message>
         <source>unavailable</source>
-        <translation type="obsolete">không dùng được</translation>
+        <translation type="unfinished">không dùng được</translation>
     </message>
     <message>
         <source>This repository is enabled, but unavailable</source>
-        <translation type="obsolete">Kho chứa này được kích hoạt, nhưng không dùng được</translation>
+        <translation type="unfinished">Kho chứa này được kích hoạt, nhưng không dùng được</translation>
     </message>
     <message>
         <source>disabled</source>
-        <translation type="obsolete">bị bất hoạt</translation>
+        <translation type="unfinished">bị bất hoạt</translation>
     </message>
     <message>
         <source>This repository is disabled</source>
-        <translation type="obsolete">Kho chứa này bị bất hoạt</translation>
+        <translation type="unfinished">Kho chứa này bị bất hoạt</translation>
     </message>
     <message>
         <source>This repository is blocked due to incompatibility with your Quantum GIS version</source>
-        <translation type="obsolete">Kho chứa này bị khoá do không tương thích với phiên bản Quantum GIS của bạn</translation>
+        <translation type="unfinished">Kho chứa này bị khoá do không tương thích với phiên bản Quantum GIS của bạn</translation>
     </message>
     <message>
         <source>orphans</source>
-        <translation type="obsolete">các phần &apos;mồ côi&apos;</translation>
+        <translation type="unfinished">các phần &apos;mồ côi&apos;</translation>
     </message>
     <message>
         <source>any status</source>
-        <translation type="obsolete">bất kỳ trạng thái nào</translation>
+        <translation type="unfinished">bất kỳ trạng thái nào</translation>
     </message>
     <message>
         <source>not installed</source>
@@ -25965,31 +25965,31 @@ hình học PostGIS.</translation>
     </message>
     <message>
         <source>upgradeable and news</source>
-        <translation type="obsolete">có thể nâng cấp và mới</translation>
+        <translation type="unfinished">có thể nâng cấp và mới</translation>
     </message>
     <message>
         <source>This plugin is not installed</source>
-        <translation type="obsolete">Phần mở rộng này không được cài đặt</translation>
+        <translation type="unfinished">Phần mở rộng này không được cài đặt</translation>
     </message>
     <message>
         <source>This plugin is installed</source>
-        <translation type="obsolete">Phần mở rộng này được cài đặt</translation>
+        <translation type="unfinished">Phần mở rộng này được cài đặt</translation>
     </message>
     <message>
         <source>This plugin is installed, but there is an updated version available</source>
-        <translation type="obsolete">Phần mở rộng này được cài đặt, nhưng hiện có một phiên bản cập nhật</translation>
+        <translation type="unfinished">Phần mở rộng này được cài đặt, nhưng hiện có một phiên bản cập nhật</translation>
     </message>
     <message>
         <source>This plugin is installed, but I can&apos;t find it in any enabled repository</source>
-        <translation type="obsolete">Phần mở rộng này được cài đặt, nhưng tôi không thể tìm thấy nó trong bất kỳ kho chứa được kích hoạt nào</translation>
+        <translation type="unfinished">Phần mở rộng này được cài đặt, nhưng tôi không thể tìm thấy nó trong bất kỳ kho chứa được kích hoạt nào</translation>
     </message>
     <message>
         <source>This plugin is not installed and is seen for the first time</source>
-        <translation type="obsolete">Phần mở rộng này không được cài đặt và được phát hiện lần đầu tiên</translation>
+        <translation type="unfinished">Phần mở rộng này không được cài đặt và được phát hiện lần đầu tiên</translation>
     </message>
     <message>
         <source>This plugin is installed and is newer than its version available in a repository</source>
-        <translation type="obsolete">Phần mở rộng này được cài đặt và mới hơn phiên bản của nó trong kho chứa</translation>
+        <translation type="unfinished">Phần mở rộng này được cài đặt và mới hơn phiên bản của nó trong kho chứa</translation>
     </message>
     <message>
         <source>not installed</source>
@@ -26018,183 +26018,183 @@ hình học PostGIS.</translation>
     </message>
     <message>
         <source>installed version</source>
-        <translation type="obsolete">phiên bản được cài đặt</translation>
+        <translation type="unfinished">phiên bản được cài đặt</translation>
     </message>
     <message>
         <source>available version</source>
-        <translation type="obsolete">phiên bản hiện có</translation>
+        <translation type="unfinished">phiên bản hiện có</translation>
     </message>
     <message>
         <source>That&apos;s the newest available version</source>
-        <translation type="obsolete">Đó là phiên bản mới nhất</translation>
+        <translation type="unfinished">Đó là phiên bản mới nhất</translation>
     </message>
     <message>
         <source>There is no version available for download</source>
-        <translation type="obsolete">Không có phiên bản nào để tải về</translation>
+        <translation type="unfinished">Không có phiên bản nào để tải về</translation>
     </message>
     <message>
         <source>only locally available</source>
-        <translation type="obsolete">chỉ khả dụng cục bộ</translation>
+        <translation type="unfinished">chỉ khả dụng cục bộ</translation>
     </message>
     <message>
         <source>Install plugin</source>
-        <translation type="obsolete">Cài đặt phần mở rộng</translation>
+        <translation type="unfinished">Cài đặt phần mở rộng</translation>
     </message>
     <message>
         <source>Reinstall plugin</source>
-        <translation type="obsolete">Cài đặt lại phần mở rộng</translation>
+        <translation type="unfinished">Cài đặt lại phần mở rộng</translation>
     </message>
     <message>
         <source>Upgrade plugin</source>
-        <translation type="obsolete">Nâng cấp phần mở rộng</translation>
+        <translation type="unfinished">Nâng cấp phần mở rộng</translation>
     </message>
     <message>
         <source>Install/upgrade plugin</source>
-        <translation type="obsolete">Cài đặt/Nâng cấp phần mở rộng</translation>
+        <translation type="unfinished">Cài đặt/Nâng cấp phần mở rộng</translation>
     </message>
     <message>
         <source>Downgrade plugin</source>
-        <translation type="obsolete">Hạ cấp phần mở rộng</translation>
+        <translation type="unfinished">Hạ cấp phần mở rộng</translation>
     </message>
     <message>
         <source>Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!</source>
-        <translation type="obsolete">Có chắc là bạn muốn hạ cấp phần mở rộng này xuống phiên bản sau cùng không? Bản đã cài đặt mới hơn!</translation>
+        <translation type="unfinished">Có chắc là bạn muốn hạ cấp phần mở rộng này xuống phiên bản sau cùng không? Bản đã cài đặt mới hơn!</translation>
     </message>
     <message>
         <source>Plugin installation failed</source>
-        <translation type="obsolete">Việc cài đặt phần mở rộng thất bại</translation>
+        <translation type="unfinished">Việc cài đặt phần mở rộng thất bại</translation>
     </message>
     <message>
         <source>Plugin has disappeared</source>
-        <translation type="obsolete">Phần mở rộng đã biến mất</translation>
+        <translation type="unfinished">Phần mở rộng đã biến mất</translation>
     </message>
     <message>
         <source>The plugin seems to have been installed but I don&apos;t know where. Probably the plugin package contained a wrong named directory.
 Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll find the plugin there, but I just can&apos;t determine which of them it is. It also means that I won&apos;t be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue.</source>
-        <translation type="obsolete">Phần mở rộng này có vẻ như đã được cài đặt nhưng tôi không biết nó ở đâu, có lẽ việc đóng gói phần mở rộng có một thư mục được đặt tên sai.
+        <translation type="unfinished">Phần mở rộng này có vẻ như đã được cài đặt nhưng tôi không biết nó ở đâu, có lẽ việc đóng gói phần mở rộng có một thư mục được đặt tên sai.
 Vui lòng tìm kiếm danh sách các phần mở rộng đã được cài đặt. Tôi gần như chắc chắn là bạn có thể tìm thấy nó, tuy nhiên tôi không thể xác định nó là cái nào. Điều này cũng có thể có nghĩa là tôi sẽ không thể xác định được rằng phần mở rộng này có được cài đặt hay không và thông báo cho bạn về các cập nhật dùng được. Tuy nhiên phần mở rộng này có thể chạy được. Vui lòng liên hệ với tác giả của phần mở rộng và báo cáo vấn đề này.</translation>
     </message>
     <message>
         <source>Plugin installed successfully</source>
-        <translation type="obsolete">Phần mở rộng được cài đặt thành công</translation>
+        <translation type="unfinished">Phần mở rộng được cài đặt thành công</translation>
     </message>
     <message>
         <source>Plugin uninstall failed</source>
-        <translation type="obsolete">Gỡ cài đặt phần mở rộng thất bại</translation>
+        <translation type="unfinished">Gỡ cài đặt phần mở rộng thất bại</translation>
     </message>
     <message>
         <source>Are you sure you want to uninstall the following plugin?</source>
-        <translation type="obsolete">Có chắc bạn muốn gỡ cài đặt phần mở rộng sau?</translation>
+        <translation type="unfinished">Có chắc bạn muốn gỡ cài đặt phần mở rộng sau?</translation>
     </message>
     <message>
         <source>Warning: this plugin isn&apos;t available in any accessible repository!</source>
-        <translation type="obsolete">Cảnh báo: phần mở rộng này không có trong bất kỳ kho chứa có thể truy cập nào!</translation>
+        <translation type="unfinished">Cảnh báo: phần mở rộng này không có trong bất kỳ kho chứa có thể truy cập nào!</translation>
     </message>
     <message>
         <source>Plugin uninstalled successfully</source>
-        <translation type="obsolete">Phần mở rộng được gỡ cài đặt thành công</translation>
+        <translation type="unfinished">Phần mở rộng được gỡ cài đặt thành công</translation>
     </message>
     <message>
         <source>Unable to add another repository with the same URL!</source>
-        <translation type="obsolete">Không thể thêm kho chứa khác với cùng URL!</translation>
+        <translation type="unfinished">Không thể thêm kho chứa khác với cùng URL!</translation>
     </message>
     <message>
         <source>Are you sure you want to remove the following repository?</source>
-        <translation type="obsolete">Có chắc bạn muốn loại bỏ kho chứa sau?</translation>
+        <translation type="unfinished">Có chắc bạn muốn loại bỏ kho chứa sau?</translation>
     </message>
     <message>
         <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
-        <translation type="obsolete">Phần mở rộng này không tương thích với phiên bản Quantum GIS của bạn và có thể không chạy được.</translation>
+        <translation type="unfinished">Phần mở rộng này không tương thích với phiên bản Quantum GIS của bạn và có thể không chạy được.</translation>
     </message>
     <message>
         <source>This plugin seems to be broken.
 It has been installed but can&apos;t be loaded.
 Here is the error message:</source>
-        <translation type="obsolete">Phần mở rộng này có vẻ như đã hỏng.
+        <translation type="unfinished">Phần mở rộng này có vẻ như đã hỏng.
 Nó được cài đặt nhưng không nạp được.
 Dưới đây là thông báo lỗi:</translation>
     </message>
     <message>
         <source>Note that it&apos;s an uninstallable core plugin</source>
-        <translation type="obsolete">Lưu ý rằng nó là phần mở rộng lõi không thể gỡ cài đặt được</translation>
+        <translation type="unfinished">Lưu ý rằng nó là phần mở rộng lõi không thể gỡ cài đặt được</translation>
     </message>
     <message>
         <source>This plugin is broken</source>
-        <translation type="obsolete">Phần mở rộng này đã bị hỏng</translation>
+        <translation type="unfinished">Phần mở rộng này đã bị hỏng</translation>
     </message>
     <message>
         <source>This plugin requires a newer version of Quantum GIS</source>
-        <translation type="obsolete">Phần mở rộng này yêu cầu phiên bản Quantum GIS mới hơn</translation>
+        <translation type="unfinished">Phần mở rộng này yêu cầu phiên bản Quantum GIS mới hơn</translation>
     </message>
     <message>
         <source>This plugin requires a missing module</source>
-        <translation type="obsolete">Phần mở rộng này cần một mô-đun bị thiếu</translation>
+        <translation type="unfinished">Phần mở rộng này cần một mô-đun bị thiếu</translation>
     </message>
     <message>
         <source>Plugin reinstalled successfully</source>
-        <translation type="obsolete">Phần mở rộng được cài đặt lại thành công</translation>
+        <translation type="unfinished">Phần mở rộng được cài đặt lại thành công</translation>
     </message>
     <message>
         <source>The plugin is designed for a newer version of Quantum GIS. The minimum required version is:</source>
-        <translation type="obsolete">Phần mở rộng này được thiết kế cho phiên bản Quantum GIS mới hơn. Phiên bản tối thiểu cần có là:</translation>
+        <translation type="unfinished">Phần mở rộng này được thiết kế cho phiên bản Quantum GIS mới hơn. Phiên bản tối thiểu cần có là:</translation>
     </message>
     <message>
         <source>The plugin depends on some components missing on your system. You need to install the following Python module in order to enable it:</source>
-        <translation type="obsolete">Phần mở rộng này phụ thuộc vào một số thành phần bị thiếu trên hệ thống của bạn. Bạn cần phải cài đặt mô-đun Python sau để kích hoạt được nó:</translation>
+        <translation type="unfinished">Phần mở rộng này phụ thuộc vào một số thành phần bị thiếu trên hệ thống của bạn. Bạn cần phải cài đặt mô-đun Python sau để kích hoạt được nó:</translation>
     </message>
     <message>
         <source>The plugin is broken. Python said:</source>
-        <translation type="obsolete">Phần mở rộng này bị hỏng. Python nói rằng:</translation>
+        <translation type="unfinished">Phần mở rộng này bị hỏng. Python nói rằng:</translation>
     </message>
     <message>
         <source>The required Python module is not installed.
 For more information, please visit its homepage and Quantum GIS wiki.</source>
-        <translation type="obsolete">Mô-đun Python cần thiết không được cài đặt.
+        <translation type="unfinished">Mô-đun Python cần thiết không được cài đặt.
 Để biết thêm thông tin, vui lòng thăm trang chủ của nó và trang Quantum GIS wiki.</translation>
     </message>
     <message>
         <source>Python plugin installed.
 Now you need to enable it in Plugin Manager.</source>
-        <translation type="obsolete">Phần mở rộng Python được cài đặt.
+        <translation type="unfinished">Phần mở rộng Python được cài đặt.
 Bây giờ bạn phải kích hoạt nó trong Trình quản lý Phần mở rộng.</translation>
     </message>
     <message>
         <source>Python plugin reinstalled.
 You need to restart Quantum GIS in order to reload it.</source>
-        <translation type="obsolete">Phần mở rộng Python được cài đặt lại.
+        <translation type="unfinished">Phần mở rộng Python được cài đặt lại.
 Bạn cần phải khởi động lại Quantum GIS để nạp lại nó.</translation>
     </message>
     <message>
         <source>Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely.</source>
-        <translation type="obsolete">Phần mở rộng Python được gỡ cài đặt. Lưu ý rằng bạn cần phải khởi động lại Quantum GIS để loại bỏ nó hoàn toàn.</translation>
+        <translation type="unfinished">Phần mở rộng Python được gỡ cài đặt. Lưu ý rằng bạn cần phải khởi động lại Quantum GIS để loại bỏ nó hoàn toàn.</translation>
     </message>
     <message>
         <source>You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.</source>
-        <translation type="obsolete">Bạn đang chuẩn bị thêm một số kho chứa phần mở rộng không được kiểm chứng hoặc không được nhóm phát triển Quantum GIS hỗ trợ. Các tác giả của các phần mở rộng có những nỗ lực để đảm bảo rằng việc sử dụng chúng hữu ích và an toàn, tuy nhiên, chúng tôi không chịu trách nhiệm về chúng.</translation>
+        <translation type="unfinished">Bạn đang chuẩn bị thêm một số kho chứa phần mở rộng không được kiểm chứng hoặc không được nhóm phát triển Quantum GIS hỗ trợ. Các tác giả của các phần mở rộng có những nỗ lực để đảm bảo rằng việc sử dụng chúng hữu ích và an toàn, tuy nhiên, chúng tôi không chịu trách nhiệm về chúng.</translation>
     </message>
     <message>
         <source>not installed</source>
-        <translation type="obsolete">không được cài đặt</translation>
+        <translation type="unfinished">không được cài đặt</translation>
     </message>
     <message>
         <source>installed</source>
-        <translation type="obsolete">được cài đặt</translation>
+        <translation type="unfinished">được cài đặt</translation>
     </message>
     <message>
         <source>upgradeable</source>
-        <translation type="obsolete">có thể nâng cấp</translation>
+        <translation type="unfinished">có thể nâng cấp</translation>
     </message>
     <message>
         <source>new!</source>
-        <translation type="obsolete">mới!</translation>
+        <translation type="unfinished">mới!</translation>
     </message>
     <message>
         <source>invalid</source>
-        <translation type="obsolete">không hợp lệ</translation>
+        <translation type="unfinished">không hợp lệ</translation>
     </message>
     <message>
         <source>at least</source>
-        <translation type="obsolete">tối thiểu</translation>
+        <translation type="unfinished">tối thiểu</translation>
     </message>
 </context>
 <context>
@@ -26477,35 +26477,35 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerFetchingDialog</name>
     <message>
         <source>Success</source>
-        <translation type="obsolete">Thành công</translation>
+        <translation type="unfinished">Thành công</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="obsolete">Đang giải tên máy chủ...</translation>
+        <translation type="unfinished">Đang giải tên máy chủ...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="obsolete">Đang kết nối...</translation>
+        <translation type="unfinished">Đang kết nối...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="obsolete">Máy chủ được kết nối. Đang gửi yêu cầu...</translation>
+        <translation type="unfinished">Máy chủ được kết nối. Đang gửi yêu cầu...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation type="obsolete">Đang tải dữ liệu xuống...</translation>
+        <translation type="unfinished">Đang tải dữ liệu xuống...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="obsolete">Nghỉ</translation>
+        <translation type="unfinished">Nghỉ</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="obsolete">Đang đóng kết nối...</translation>
+        <translation type="unfinished">Đang đóng kết nối...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="obsolete">Lỗi</translation>
+        <translation type="unfinished">Lỗi</translation>
     </message>
 </context>
 <context>
@@ -26540,43 +26540,43 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerInstallingDialog</name>
     <message>
         <source>Installing...</source>
-        <translation type="obsolete">Đang cài đặt...</translation>
+        <translation type="unfinished">Đang cài đặt...</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="obsolete">Đang giải tên máy chủ...</translation>
+        <translation type="unfinished">Đang giải tên máy chủ...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="obsolete">Đang kết nối...</translation>
+        <translation type="unfinished">Đang kết nối...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="obsolete">Máy chủ kết nối. Đang gửi yêu cầu...</translation>
+        <translation type="unfinished">Máy chủ kết nối. Đang gửi yêu cầu...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation type="obsolete">Đang tải dữ liệu xuống...</translation>
+        <translation type="unfinished">Đang tải dữ liệu xuống...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="obsolete">Nghỉ</translation>
+        <translation type="unfinished">Nghỉ</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="obsolete">Đang đóng kết nối...</translation>
+        <translation type="unfinished">Đang đóng kết nối...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="obsolete">Lỗi</translation>
+        <translation type="unfinished">Lỗi</translation>
     </message>
     <message>
         <source>Failed to unzip the plugin package. Probably it&apos;s broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:</source>
-        <translation type="obsolete">Thất bại khi giải nén gói phần mở rộng. Có thể nó bị hỏng hoặc bị thiếu từ kho chứa. Bạn cũng có thể kiểm tra để đảm bảo mình có quyền ghi trong thư mục của phần mở rộng:</translation>
+        <translation type="unfinished">Thất bại khi giải nén gói phần mở rộng. Có thể nó bị hỏng hoặc bị thiếu từ kho chứa. Bạn cũng có thể kiểm tra để đảm bảo mình có quyền ghi trong thư mục của phần mở rộng:</translation>
     </message>
     <message>
         <source>Aborted by user</source>
-        <translation type="obsolete">Bị bỏ bởi người dùng</translation>
+        <translation type="unfinished">Bị bỏ bởi người dùng</translation>
     </message>
 </context>
 <context>
@@ -26601,7 +26601,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerPluginErrorDialog</name>
     <message>
         <source>no error message received</source>
-        <translation type="obsolete">không có thông báo lỗi nào</translation>
+        <translation type="unfinished">không có thông báo lỗi nào</translation>
     </message>
 </context>
 <context>
@@ -34945,27 +34945,27 @@ Tried URL: %1</source>
     <name>VisualDialog</name>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="obsolete">Vui lòng chỉ định lớp vector đầu vào</translation>
+        <translation type="unfinished">Vui lòng chỉ định lớp vector đầu vào</translation>
     </message>
     <message>
         <source>Please specify input field</source>
-        <translation type="obsolete">Vui lòng chỉ định trường đầu vào</translation>
+        <translation type="unfinished">Vui lòng chỉ định trường đầu vào</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation type="obsolete">Kiểm tra tính đúng đắn về mặt hình học</translation>
+        <translation type="unfinished">Kiểm tra tính đúng đắn về mặt hình học</translation>
     </message>
     <message>
         <source>Geometry errors</source>
-        <translation type="obsolete">Các lỗi hình học</translation>
+        <translation type="unfinished">Các lỗi hình học</translation>
     </message>
     <message>
         <source>Total encountered errors</source>
-        <translation type="obsolete">Tổng số lỗi gặp</translation>
+        <translation type="unfinished">Tổng số lỗi gặp</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation type="obsolete">Liệt kê các giá trị không trùng</translation>
+        <translation type="unfinished">Liệt kê các giá trị không trùng</translation>
     </message>
     <message>
         <source>Unique values:</source>
@@ -34977,19 +34977,19 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>Basics statistics</source>
-        <translation type="obsolete">Thống kê cơ bản</translation>
+        <translation type="unfinished">Thống kê cơ bản</translation>
     </message>
     <message>
         <source>Statistics output</source>
-        <translation type="obsolete">Đầu ra thống kê</translation>
+        <translation type="unfinished">Đầu ra thống kê</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation type="obsolete">Phân tích lân cận gần nhất</translation>
+        <translation type="unfinished">Phân tích lân cận gần nhất</translation>
     </message>
     <message>
         <source>Nearest neighbour statistics</source>
-        <translation type="obsolete">Thống kê lân cận gần nhất</translation>
+        <translation type="unfinished">Thống kê lân cận gần nhất</translation>
     </message>
     <message>
         <source>Observed mean distance : </source>
@@ -35021,11 +35021,11 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>Unique values</source>
-        <translation type="obsolete">Các giá trị không trùng</translation>
+        <translation type="unfinished">Các giá trị không trùng</translation>
     </message>
     <message>
         <source>Total unique values</source>
-        <translation type="obsolete">Tổng các giá trị không trùng</translation>
+        <translation type="unfinished">Tổng các giá trị không trùng</translation>
     </message>
 </context>
 <context>
@@ -36254,7 +36254,7 @@ do người dùng định nghĩa (tức là chỉ giữ lại tên tập tin t�
     <name>fTools</name>
     <message>
         <source>Quantum GIS version detected: </source>
-        <translation type="obsolete">Phiên bản Quantum GIS ghi nhận được:</translation>
+        <translation type="unfinished">Phiên bản Quantum GIS ghi nhận được:</translation>
     </message>
     <message>
         <source>This version of fTools requires at least QGIS version 1.0.0</source>
@@ -36270,39 +36270,39 @@ do người dùng định nghĩa (tức là chỉ giữ lại tên tập tin t�
     </message>
     <message>
         <source>&amp;Analysis Tools</source>
-        <translation type="obsolete">Các công cụ &amp;Phân tích</translation>
+        <translation type="unfinished">Các công cụ &amp;Phân tích</translation>
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation type="obsolete">Ma trận khoảng cách</translation>
+        <translation type="unfinished">Ma trận khoảng cách</translation>
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation type="obsolete">Tổng chiều dài đường</translation>
+        <translation type="unfinished">Tổng chiều dài đường</translation>
     </message>
     <message>
         <source>Points in polygon</source>
-        <translation type="obsolete">Các điểm trong vùng</translation>
+        <translation type="unfinished">Các điểm trong vùng</translation>
     </message>
     <message>
         <source>Basic statistics</source>
-        <translation type="obsolete">Thống kê cơ bản</translation>
+        <translation type="unfinished">Thống kê cơ bản</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation type="obsolete">Liệt kê các giá trị không trùng</translation>
+        <translation type="unfinished">Liệt kê các giá trị không trùng</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation type="obsolete">Phân tích lân cận gần nhất</translation>
+        <translation type="unfinished">Phân tích lân cận gần nhất</translation>
     </message>
     <message>
         <source>Mean coordinate(s)</source>
-        <translation type="obsolete">Toạ độ trung bình</translation>
+        <translation type="unfinished">Toạ độ trung bình</translation>
     </message>
     <message>
         <source>Line intersections</source>
-        <translation type="obsolete">Các giao điểm của đường</translation>
+        <translation type="unfinished">Các giao điểm của đường</translation>
     </message>
     <message>
         <source>&amp;Sampling Tools</source>
@@ -36310,123 +36310,123 @@ do người dùng định nghĩa (tức là chỉ giữ lại tên tập tin t�
     </message>
     <message>
         <source>Random selection</source>
-        <translation type="obsolete">Phép chọn ngẫu nhiên</translation>
+        <translation type="unfinished">Phép chọn ngẫu nhiên</translation>
     </message>
     <message>
         <source>Random selection within subsets</source>
-        <translation type="obsolete">Phép chọn ngẫu nhiên trong các bộ mẫu con</translation>
+        <translation type="unfinished">Phép chọn ngẫu nhiên trong các bộ mẫu con</translation>
     </message>
     <message>
         <source>Random points</source>
-        <translation type="obsolete">Các điểm ngẫu nhiên</translation>
+        <translation type="unfinished">Các điểm ngẫu nhiên</translation>
     </message>
     <message>
         <source>Regular points</source>
-        <translation type="obsolete">Các điểm đều đặn</translation>
+        <translation type="unfinished">Các điểm đều đặn</translation>
     </message>
     <message>
         <source>Vector grid</source>
-        <translation type="obsolete">Lưới vector</translation>
+        <translation type="unfinished">Lưới vector</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="obsolete">Chọn theo vị trí</translation>
+        <translation type="unfinished">Chọn theo vị trí</translation>
     </message>
     <message>
         <source>&amp;Geoprocessing Tools</source>
-        <translation type="obsolete">Các công cụ &amp;Xử lý địa lý</translation>
+        <translation type="unfinished">Các công cụ &amp;Xử lý địa lý</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation type="obsolete">Bao lồi</translation>
+        <translation type="unfinished">Bao lồi</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="obsolete">Đệm</translation>
+        <translation type="unfinished">Đệm</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation type="obsolete">Giao</translation>
+        <translation type="unfinished">Giao</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="obsolete">Hợp</translation>
+        <translation type="unfinished">Hợp</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="obsolete">Sai biệt đối xứng</translation>
+        <translation type="unfinished">Sai biệt đối xứng</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="obsolete">Cắt</translation>
+        <translation type="unfinished">Cắt</translation>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="obsolete">&apos;Hoà tan&apos;</translation>
+        <translation type="unfinished">&apos;Hoà tan&apos;</translation>
     </message>
     <message>
         <source>Difference</source>
-        <translation type="obsolete">Sai biệt</translation>
+        <translation type="unfinished">Sai biệt</translation>
     </message>
     <message>
         <source>G&amp;eometry Tools</source>
-        <translation type="obsolete">Các công cụ &amp;Hình học</translation>
+        <translation type="unfinished">Các công cụ &amp;Hình học</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="obsolete">Xuất/thêm các cột hình học</translation>
+        <translation type="unfinished">Xuất/thêm các cột hình học</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation type="obsolete">Kiểm tra tính đúng đắn về mặt hình học</translation>
+        <translation type="unfinished">Kiểm tra tính đúng đắn về mặt hình học</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation type="obsolete">Trọng tâm của vùng</translation>
+        <translation type="unfinished">Trọng tâm của vùng</translation>
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation type="obsolete">Trích ra các nốt</translation>
+        <translation type="unfinished">Trích ra các nốt</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation type="obsolete">Đơn giản hóa các hình học</translation>
+        <translation type="unfinished">Đơn giản hóa các hình học</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
-        <translation type="obsolete">Một đa phần thành các đơn phần</translation>
+        <translation type="unfinished">Một đa phần thành các đơn phần</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
-        <translation type="obsolete">Các đơn phần thành một đa phần</translation>
+        <translation type="unfinished">Các đơn phần thành một đa phần</translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation type="obsolete">Vùng thành đường</translation>
+        <translation type="unfinished">Vùng thành đường</translation>
     </message>
     <message>
         <source>&amp;Data Management Tools</source>
-        <translation type="obsolete">Các công cụ &amp;Quản lý dữ liệu</translation>
+        <translation type="unfinished">Các công cụ &amp;Quản lý dữ liệu</translation>
     </message>
     <message>
         <source>Export to new projection</source>
-        <translation type="obsolete">Xuất thành phép chiếu mới</translation>
+        <translation type="unfinished">Xuất thành phép chiếu mới</translation>
     </message>
     <message>
         <source>Define current projection</source>
-        <translation type="obsolete">Định nghĩa phép chiếu hiện tại</translation>
+        <translation type="unfinished">Định nghĩa phép chiếu hiện tại</translation>
     </message>
     <message>
         <source>Join attributes</source>
-        <translation type="obsolete">Liên kết các thuộc tính</translation>
+        <translation type="unfinished">Liên kết các thuộc tính</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
-        <translation type="obsolete">Liên kết các thuộc tính theo vị trí</translation>
+        <translation type="unfinished">Liên kết các thuộc tính theo vị trí</translation>
     </message>
     <message>
         <source>Split vector layer</source>
-        <translation type="obsolete">Cắt lớp vector</translation>
+        <translation type="unfinished">Cắt lớp vector</translation>
     </message>
     <message>
         <source>About fTools</source>
@@ -36435,24 +36435,28 @@ do người dùng định nghĩa (tức là chỉ giữ lại tên tập tin t�
     <message>
         <source>This version of fTools requires at least QGIS version 1.0.0
 Plugin will not be enabled.</source>
-        <translation type="obsolete">Phiên bản fTools này đòi hỏi QGIS phiên bản tối thiểu là 1.0.0
+        <translation type="unfinished">Phiên bản fTools này đòi hỏi QGIS phiên bản tối thiểu là 1.0.0
 Phần mở rộng này sẽ không được kích hoạt.</translation>
     </message>
     <message>
         <source>&amp;Research Tools</source>
-        <translation type="obsolete">Các công cụ &amp;Nghiên cứu</translation>
+        <translation type="unfinished">Các công cụ &amp;Nghiên cứu</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
-        <translation type="obsolete">Vùng từ phạm vi của lớp</translation>
+        <translation type="unfinished">Vùng từ phạm vi của lớp</translation>
     </message>
     <message>
         <source>Delaunay triangulation</source>
-        <translation type="obsolete">Phép tam giác Delaunay</translation>
+        <translation type="unfinished">Phép tam giác Delaunay</translation>
     </message>
     <message>
         <source>fTools Information</source>
-        <translation type="obsolete">Thông tin về fTools</translation>
+        <translation type="unfinished">Thông tin về fTools</translation>
+    </message>
+    <message>
+        <source>&amp;Vector</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -36480,6 +36484,10 @@ Phần mở rộng này sẽ không được kích hoạt.</translation>
 <context>
     <name>visualThread</name>
     <message>
+        <source>Z-Score:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Observed mean distance : </source>
         <translation type="obsolete">Khoảng cách trung bình ghi nhận được:</translation>
     </message>
@@ -36493,83 +36501,91 @@ Phần mở rộng này sẽ không được kích hoạt.</translation>
     </message>
     <message>
         <source>Feature %1 contains an unnested hole</source>
-        <translation type="obsolete">Đối tượng %1 chứa một lỗ không lồng (unnested hole)</translation>
+        <translation type="unfinished">Đối tượng %1 chứa một lỗ không lồng (unnested hole)</translation>
     </message>
     <message>
         <source>Feature %1 is not closed</source>
-        <translation type="obsolete">Đối tượng %1 không khép kín</translation>
+        <translation type="unfinished">Đối tượng %1 không khép kín</translation>
     </message>
     <message>
         <source>Feature %1 is self intersecting</source>
-        <translation type="obsolete">Đối tượng %1 tự giao nhau</translation>
+        <translation type="unfinished">Đối tượng %1 tự giao nhau</translation>
     </message>
     <message>
         <source>Feature %1 has incorrect node ordering</source>
-        <translation type="obsolete">Đối tượng %1 có thứ tự nốt không đúng</translation>
+        <translation type="unfinished">Đối tượng %1 có thứ tự nốt không đúng</translation>
     </message>
     <message>
         <source>Max. len:</source>
-        <translation type="obsolete">Chiều dài lớn nhất:</translation>
+        <translation type="unfinished">Chiều dài lớn nhất:</translation>
     </message>
     <message>
         <source>Min. len:</source>
-        <translation type="obsolete">Chiều dài nhỏ nhất:</translation>
+        <translation type="unfinished">Chiều dài nhỏ nhất:</translation>
     </message>
     <message>
         <source>Mean. len:</source>
-        <translation type="obsolete">Chiều dài tr.bình:</translation>
+        <translation type="unfinished">Chiều dài tr.bình:</translation>
     </message>
     <message>
         <source>Filled:</source>
-        <translation type="obsolete">Được lấp đầy:</translation>
+        <translation type="unfinished">Được lấp đầy:</translation>
     </message>
     <message>
         <source>Empty:</source>
-        <translation type="obsolete">Rỗng:</translation>
+        <translation type="unfinished">Rỗng:</translation>
+    </message>
+    <message>
+        <source>N:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Mean:</source>
-        <translation type="obsolete">Tr.bình:</translation>
+        <translation type="unfinished">Tr.bình:</translation>
     </message>
     <message>
         <source>StdDev:</source>
-        <translation type="obsolete">Độ lệch chuẩn:</translation>
+        <translation type="unfinished">Độ lệch chuẩn:</translation>
     </message>
     <message>
         <source>Sum:</source>
-        <translation type="obsolete">Tổng:</translation>
+        <translation type="unfinished">Tổng:</translation>
     </message>
     <message>
         <source>Min:</source>
-        <translation type="obsolete">Nhỏ.nhất:</translation>
+        <translation type="unfinished">Nhỏ.nhất:</translation>
     </message>
     <message>
         <source>Max:</source>
-        <translation type="obsolete">Lớn.nhất:</translation>
+        <translation type="unfinished">Lớn.nhất:</translation>
+    </message>
+    <message>
+        <source>CV:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Number of unique values:</source>
-        <translation type="obsolete">Số lượng giá trị không trùng:</translation>
+        <translation type="unfinished">Số lượng giá trị không trùng:</translation>
     </message>
     <message>
         <source>Range:</source>
-        <translation type="obsolete">Miền:</translation>
+        <translation type="unfinished">Miền:</translation>
     </message>
     <message>
         <source>Median:</source>
-        <translation type="obsolete">Giá trị giữa:</translation>
+        <translation type="unfinished">Giá trị giữa:</translation>
     </message>
     <message>
         <source>Observed mean distance:</source>
-        <translation type="obsolete">Kh.cách tr.bình quan sát được:</translation>
+        <translation type="unfinished">Kh.cách tr.bình quan sát được:</translation>
     </message>
     <message>
         <source>Expected mean distance:</source>
-        <translation type="obsolete">Kh.cách tr.bình mong đợi:</translation>
+        <translation type="unfinished">Kh.cách tr.bình mong đợi:</translation>
     </message>
     <message>
         <source>Nearest neighbour index:</source>
-        <translation type="obsolete">Chỉ số lân cận gần nhất:</translation>
+        <translation type="unfinished">Chỉ số lân cận gần nhất:</translation>
     </message>
 </context>
 </TS>

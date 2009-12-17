@@ -427,7 +427,7 @@
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="128"/>
         <source>Coordinate in map canvas coordinate reference system</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">在地圖CRS中的座標</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="131"/>
@@ -437,7 +437,7 @@
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="136"/>
         <source>Click to enable mouse tracking. Click the canvas to stop</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">按一下啟用滑鼠軌跡，再按一下地圖後停止</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="141"/>
@@ -616,7 +616,7 @@
     <message>
         <location filename="../python/plugins/fTools/frmAbout.ui" line="36"/>
         <source>fTools</source>
-        <translation>fTools</translation>
+        <translation type="unfinished">fTools向量工具</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/frmAbout.ui" line="46"/>
@@ -649,12 +649,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="16"/>
         <source>Extract Nodes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">擷取結點</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="27"/>
         <source>Input line or polygon vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輸入條或多邊形向量圖層</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="41"/>
@@ -666,17 +666,17 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="55"/>
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="35"/>
         <source>Unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">唯一值ID欄位</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="110"/>
         <source>Output point shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輸出點shape檔</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="19"/>
         <source>Geoprocessing</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">地理空間運算</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="27"/>
@@ -689,60 +689,60 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="48"/>
         <source>Intersect layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">交集圖層</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="71"/>
         <source>Buffer distance</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">環域距離</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="111"/>
         <source>Buffer distance field</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">環域距離欄位</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="118"/>
         <source>Dissolve field</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">融合欄位</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="166"/>
         <source>Dissolve buffer results</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">融合環域結果</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="190"/>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="93"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="304"/>
         <source>Output shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輸出shape檔</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="16"/>
         <source>Locate Line Intersections</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">線相交(Intersect)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="27"/>
         <source>Input line layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輸入線圖層</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="41"/>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="41"/>
         <source>Input unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輸入唯一ID欄位</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="55"/>
         <source>Intersect line layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">相交線圖層</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="69"/>
         <source>Intersect unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">相交唯一ID欄位</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="96"/>
@@ -753,153 +753,153 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="194"/>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="61"/>
         <source>Output Shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輸出shape檔</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="16"/>
         <source>Join Attributes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">結合(Join)屬性</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="27"/>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="27"/>
         <source>Target vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">目標向量圖層</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="41"/>
         <source>Target join field</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">目標結合(Join)欄位</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="53"/>
         <source>Join data</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">結合(Join)資料</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="61"/>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="41"/>
         <source>Join vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">結合(Join)向量圖層</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="78"/>
         <source>Join dbf table</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">結合(Join)dbf表格</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="113"/>
         <source>Join field</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">結合(Join)欄位</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="157"/>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="177"/>
         <source>Output table</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輸出表格</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="163"/>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="183"/>
         <source>Only keep matching records</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">僅保留結合成功的記錄</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="173"/>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="193"/>
         <source>Keep all records (includeing non-matching target records)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">保留所有記錄(包括無法結合成功的目標記錄)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="16"/>
         <source>Generate Centroids</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">產生質心</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="41"/>
         <source>Weight field</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">權重欄位</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="69"/>
         <source>Number of standard deviations</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">標準差數目</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="76"/>
         <source>Std. Dev.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">標準差</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="16"/>
         <source>Create Distance Matrix</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">建立距離矩陣</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="27"/>
         <source>Input point layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輸入點圖層</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="55"/>
         <source>Target point layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">目前點圖層</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="69"/>
         <source>Target unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">目標唯一ID欄位</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="81"/>
         <source>Output matrix type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輸出矩陣類型</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="87"/>
         <source>Linear (N*k x 3) distance matrix</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">線性(N*k x 3)距離矩陣</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="97"/>
         <source>Standard (N x T) distance matrix</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">標準(N*k x 3)距離矩陣</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="104"/>
         <source>Summary distance matrix (mean, std. dev., min, max)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">概括(Summary)距離矩陣(平均,標準差,最小值,最大值)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="111"/>
         <source>Use only the nearest (k) target points:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">僅使用最鄰近(k)目標點:</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="149"/>
         <source>Output distance matrix</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輸出距離矩陣</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="16"/>
         <source>Count Points In Polygons</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">計算多邊形中的點</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="27"/>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="90"/>
         <source>Input polygon vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輸入多邊形向量圖層</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="41"/>
         <source>Input point vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輸入點向量圖層</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="55"/>
         <source>Output count field name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輸出計算欄位名稱</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="62"/>
@@ -909,80 +909,80 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="16"/>
         <source>Generate Random Points</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">產生隨機點</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="31"/>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="25"/>
         <source>Input Boundary Layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輸入邊界圖層</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="46"/>
         <source>Minimum distance between points</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">兩點之間的最小距離</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="62"/>
         <source>Sample Size</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">取樣大小</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="75"/>
         <source>Unstratified Sampling Design (Entire layer)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">分層取樣設計(整個圖層)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="84"/>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="125"/>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="139"/>
         <source>Use this number of points</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">使用點的數目</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="116"/>
         <source>Stratified Sampling Design (Individual polygons)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">分層取樣設計(單一多邊形)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="149"/>
         <source>Use this density of points</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">使用點密度</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="179"/>
         <source>Use value from input field</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">使用欄位中的值</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandom.ui" line="16"/>
         <source>Random Selection Tool</source>
-        <translation type="unfinished"></translation>
+        <translation>隨機選取工具</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandom.ui" line="25"/>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="27"/>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="28"/>
         <source>Input Vector Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>輸入向量圖層</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandom.ui" line="35"/>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="57"/>
         <source>Randomly Select</source>
-        <translation type="unfinished"></translation>
+        <translation>隨機選取</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandom.ui" line="44"/>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="66"/>
         <source>Number of Features</source>
-        <translation type="unfinished"></translation>
+        <translation>圖徵數目</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandom.ui" line="78"/>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="102"/>
         <source>Percentage of Features</source>
-        <translation type="unfinished"></translation>
+        <translation>圖徵百分比</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandom.ui" line="98"/>
@@ -993,112 +993,112 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="16"/>
         <source>Projection Management Tool</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">投影管理工具</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="35"/>
         <source>Input spatial reference system</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輸入空間參考系統</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="49"/>
         <source>Output spatial reference system</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輸出空間參考系統</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="55"/>
         <source>Use predefined spatial reference system</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">使用預定的空間參考系統</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="74"/>
         <source>Choose</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">選取</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="83"/>
         <source>Import spatial reference system from existing layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">從已存在的圖層匯入空間參考系統</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="100"/>
         <source>Import spatial reference system:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">匯入空間參考系統:</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="16"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="16"/>
         <source>Generate Regular Points</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">產生點</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="38"/>
         <source>Input Coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輸入座標</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="47"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="65"/>
         <source>X Min</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">X最小值</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="61"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="92"/>
         <source>Y Min</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Y最小值</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="75"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="119"/>
         <source>X Max</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">X最大值</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="89"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="146"/>
         <source>Y Max</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Y最大值</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="101"/>
         <source>Grid Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">框格間距</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="109"/>
         <source>Use this point spacing</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">使用點距</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="158"/>
         <source>Apply random offset to point spacing</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">點距使用隨機偏移</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="178"/>
         <source>Initial inset from corner (LH side)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">從角落開始插入(LH邊)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="16"/>
         <source>Spatial Join</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">空間結合(Join)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="53"/>
         <source>Attribute Summary</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">屬性摘要</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="59"/>
         <source>Take attributes of first located feature</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">最先找到圖徵屬性</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="69"/>
         <source>Take summary of intersecting features</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">相交圖徵概要</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="92"/>
@@ -1118,32 +1118,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="125"/>
         <source>Sum</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">總合</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="150"/>
         <source>Output Shapefile:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輸出shape檔:</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="16"/>
         <source>Random Selection From Within Subsets</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">在子集合中隨機選取</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="41"/>
         <source>Input subset field (unique ID field)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輸入子集的欄位(唯一ID欄位)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="16"/>
         <source>Sum Line Length In Polygons</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">在多邊形中計算線段長度</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="27"/>
         <source>Output summed length field name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輸出計算長度欄位的名稱</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="34"/>
@@ -1153,22 +1153,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="127"/>
         <source>Input line vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輸入線向量圖層</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="25"/>
         <source>Grid extent</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">格網範圍</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="40"/>
         <source>Update extents from layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">由圖層範圍更新</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="53"/>
         <source>Update extents from canvas</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">由地圖範圍更新</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="171"/>
@@ -1183,7 +1183,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="213"/>
         <source>Lock 1:1 ratio</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">鎖定 1:1 比例</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="252"/>
@@ -1193,49 +1193,49 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="278"/>
         <source>Output grid as polygons</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輸出格網為多邊形</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="288"/>
         <source>Output grid as lines</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輸出格網為線</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="16"/>
         <source>Vector Split</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ＰＮＯＤ</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="45"/>
         <source>Output folder</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輸出資料夾</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="17"/>
         <source>List Unique Values</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">列出唯一值</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="42"/>
         <source>Target field</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">目標欄位</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="56"/>
         <source>Unique values list</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">唯一值清單</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="104"/>
         <source>Unique value count</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">唯一值計算</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="239"/>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="250"/>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="122"/>
         <source>Use only selected features</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">僅使用選取的圖徵</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="241"/>
@@ -1246,7 +1246,71 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="303"/>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="309"/>
         <source>OGR Layer Converter</source>
-        <translation type="unfinished">OGR檔案轉換工具</translation>
+        <translation type="unfinished">OGR圖層轉換工具</translation>
+    </message>
+    <message>
+        <source>Sum line lengths</source>
+        <translation type="unfinished">計算線段長度</translation>
+    </message>
+    <message>
+        <source>Distance matrix</source>
+        <translation type="unfinished">距離矩陣</translation>
+    </message>
+    <message>
+        <source>Created output matrix:
+</source>
+        <translation type="unfinished">已建立輸出的矩陣:
+</translation>
+    </message>
+    <message>
+        <source>Points in polygon</source>
+        <translation type="unfinished">多邊形中的點</translation>
+    </message>
+    <message>
+        <source>Created output Shapefile:
+</source>
+        <translation type="unfinished">已建立輸出的Shape檔:
+</translation>
+    </message>
+    <message>
+        <source>Vector layer is not valid</source>
+        <translation type="unfinished">無效的向量圖層</translation>
+    </message>
+    <message>
+        <source>creating new selection</source>
+        <translation type="unfinished">建立新的選取</translation>
+    </message>
+    <message>
+        <source>adding to current selection</source>
+        <translation type="unfinished">新增至目前的選取</translation>
+    </message>
+    <message>
+        <source>removing from current selection</source>
+        <translation type="unfinished">從目前的選取中移除</translation>
+    </message>
+    <message>
+        <source>Select by location</source>
+        <translation type="unfinished">空間選取</translation>
+    </message>
+    <message>
+        <source>Select features in:</source>
+        <translation type="unfinished">選取圖徵在:</translation>
+    </message>
+    <message>
+        <source>that intersect features in:</source>
+        <translation type="unfinished">相交(intersect)圖徵在:</translation>
+    </message>
+    <message>
+        <source>Modify current selection by:</source>
+        <translation type="unfinished">修改目前選取由:</translation>
+    </message>
+    <message>
+        <source>Please specify input layer</source>
+        <translation type="unfinished">請指定輸入圖層</translation>
+    </message>
+    <message>
+        <source>Please specify select layer</source>
+        <translation type="unfinished">請指定選取圖層</translation>
     </message>
 </context>
 <context>
@@ -1493,47 +1557,47 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="14"/>
         <source>Symbol properties</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">符號屬性</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="20"/>
         <source>Symbol preview:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">符號預覽:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="31"/>
         <source>Symbol layer type:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">符號圖層類型:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="49"/>
         <source>Symbol layer properties</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">符號圖層屬性</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="65"/>
         <source>This symbol layer doesn&apos;t have GUI for settings.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">這符號圖層沒有GUI設定。</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="100"/>
         <source>Symbol layers:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">符號圖層:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="125"/>
         <source>Add symbol layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">新增符號圖層</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="138"/>
         <source>Remove symbol layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">移除符號圖層</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="167"/>
         <source>Lock layer&apos;s color</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">鎖定圖層顏色</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="199"/>
@@ -1634,7 +1698,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/labeling/engineconfigdialog.ui" line="22"/>
         <source>Search method</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">搜尋方法</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/engineconfigdialog.ui" line="30"/>
@@ -1664,7 +1728,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/labeling/engineconfigdialog.ui" line="78"/>
         <source>Number of candidates</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">候選數目</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/engineconfigdialog.ui" line="84"/>
@@ -1684,23 +1748,127 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/labeling/engineconfigdialog.ui" line="178"/>
         <source>Show all labels (i.e. including colliding labels)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">顯示所有標籤(例如包括衝突標籤)</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/engineconfigdialog.ui" line="185"/>
         <source>Show label candidates (for debugging)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">顯示候選標籤(除錯用)</translation>
     </message>
 </context>
 <context>
     <name>GeometryDialog</name>
     <message>
         <source>Input vector layer</source>
-        <translation type="obsolete">輸入向量圖層</translation>
+        <translation type="unfinished">輸入向量圖層</translation>
     </message>
     <message>
         <source>Merge all</source>
-        <translation type="obsolete">合併所有</translation>
+        <translation type="unfinished">合併所有</translation>
+    </message>
+    <message>
+        <source>Please specify input vector layer</source>
+        <translation type="unfinished">請指定輸入向量圖層</translation>
+    </message>
+    <message>
+        <source>Please specify output shapefile</source>
+        <translation type="unfinished">請指定輸出向量圖層</translation>
+    </message>
+    <message>
+        <source>Please specify valid tolerance value</source>
+        <translation type="unfinished">請指定有效的容許值</translation>
+    </message>
+    <message>
+        <source>Please specify valid UID field</source>
+        <translation type="unfinished">請指定有效的UID欄位</translation>
+    </message>
+    <message>
+        <source>Singleparts to multipart</source>
+        <translation>單一部件分割成多重部件</translation>
+    </message>
+    <message>
+        <source>Output shapefile</source>
+        <translation type="unfinished">輸出shape檔</translation>
+    </message>
+    <message>
+        <source>Multipart to singleparts</source>
+        <translation type="unfinished">多重部件合併成單一部件</translation>
+    </message>
+    <message>
+        <source>Extract nodes</source>
+        <translation type="unfinished">擷取節點</translation>
+    </message>
+    <message>
+        <source>Polygons to lines</source>
+        <translation type="unfinished">多邊形轉換成線段</translation>
+    </message>
+    <message>
+        <source>Input polygon vector layer</source>
+        <translation type="unfinished">輸入多邊形向量圖層</translation>
+    </message>
+    <message>
+        <source>Export/Add geometry columns</source>
+        <translation type="unfinished">匯出/新增幾何欄位</translation>
+    </message>
+    <message>
+        <source>Simplify geometries</source>
+        <translation type="unfinished">簡化幾何形狀</translation>
+    </message>
+    <message>
+        <source>Polygon centroids</source>
+        <translation type="unfinished">多邊形質心</translation>
+    </message>
+    <message>
+        <source>Output point shapefile</source>
+        <translation type="unfinished">輸出點shape檔</translation>
+    </message>
+    <message>
+        <source>Delaunay triangulation</source>
+        <translation type="unfinished">德洛涅(Delaunay)三角面分割</translation>
+    </message>
+    <message>
+        <source>Input point vector layer</source>
+        <translation type="unfinished">輸入點向量圖層</translation>
+    </message>
+    <message>
+        <source>Polygon from layer extent</source>
+        <translation type="unfinished">由圖層範圍建立多邊形</translation>
+    </message>
+    <message>
+        <source>Input layer</source>
+        <translation type="unfinished">輸入圖層</translation>
+    </message>
+    <message>
+        <source>Output polygon shapefile</source>
+        <translation type="unfinished">輸出多邊形shape檔</translation>
+    </message>
+    <message>
+        <source>Unable to delete existing shapefile.</source>
+        <translation type="unfinished">無法刪除已存在的shape檔。</translation>
+    </message>
+    <message>
+        <source>Error processing specified tolerance!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please choose larger tolerance...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to delete incomplete shapefile.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created output shapefile:</source>
+        <translation type="unfinished">已建立輸出shape檔:</translation>
+    </message>
+    <message>
+        <source>Would you like to add the new layer to the TOC?</source>
+        <translation type="unfinished">您要新增此圖層至TOC中嗎?</translation>
+    </message>
+    <message>
+        <source>Error writing output shapefile.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1724,6 +1892,135 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Browse</source>
         <translation type="obsolete">瀏覽</translation>
+    </message>
+</context>
+<context>
+    <name>GeoprocessingDialog</name>
+    <message>
+        <source>Dissolve all</source>
+        <translation type="unfinished">全部融合</translation>
+    </message>
+    <message>
+        <source>Please specify an input layer</source>
+        <translation type="unfinished">請指定一個輸入的圖層</translation>
+    </message>
+    <message>
+        <source>Please specify a difference/intersect/union layer</source>
+        <translation type="unfinished">請指定切除(Difference)/交集(Intersect)/聯集(Union)的圖層</translation>
+    </message>
+    <message>
+        <source>Please specify valid buffer value</source>
+        <translation type="unfinished">請指定有效的環域值</translation>
+    </message>
+    <message>
+        <source>Please specify dissolve field</source>
+        <translation type="unfinished">請講定融合欄位</translation>
+    </message>
+    <message>
+        <source>Please specify output shapefile</source>
+        <translation type="unfinished">請指定輸出的shape檔</translation>
+    </message>
+    <message>
+        <source>No features selected, please uncheck &apos;Use selected&apos; or make a selection</source>
+        <translation type="unfinished">沒有已選取的圖徵，請不勾選&apos;使用選取&apos;或建立選取</translation>
+    </message>
+    <message>
+        <source>Buffer(s)</source>
+        <translation type="unfinished">環域(Buffer)</translation>
+    </message>
+    <message>
+        <source>Create single minimum convex hull</source>
+        <translation type="unfinished">建立單一最小凸包輪廓</translation>
+    </message>
+    <message>
+        <source>Create convex hulls based on input field</source>
+        <translation type="unfinished">以輸入的欄位建立凸包輪廓</translation>
+    </message>
+    <message>
+        <source>Convex hull(s)</source>
+        <translation type="unfinished">繪出輪廓-凸包演算法(Convex hull)</translation>
+    </message>
+    <message>
+        <source>Dissolve</source>
+        <translation type="unfinished">融合(Dissolve)</translation>
+    </message>
+    <message>
+        <source>Difference layer</source>
+        <translation type="unfinished">欲切除的圖層</translation>
+    </message>
+    <message>
+        <source>Difference</source>
+        <translation type="unfinished">切除(Difference)</translation>
+    </message>
+    <message>
+        <source>Intersect layer</source>
+        <translation type="unfinished">交集圖層</translation>
+    </message>
+    <message>
+        <source>Intersect</source>
+        <translation type="unfinished">交集(Intersect)</translation>
+    </message>
+    <message>
+        <source>Symetrical difference</source>
+        <translation type="unfinished">對稱差(Symetrial difference)</translation>
+    </message>
+    <message>
+        <source>Clip layer</source>
+        <translation type="unfinished">裁切形狀圖層</translation>
+    </message>
+    <message>
+        <source>Clip</source>
+        <translation type="unfinished">形狀裁切(Clip)</translation>
+    </message>
+    <message>
+        <source>Union layer</source>
+        <translation type="unfinished">聯集圖層</translation>
+    </message>
+    <message>
+        <source>Union</source>
+        <translation type="unfinished">聯集(Union)</translation>
+    </message>
+    <message>
+        <source>Unable to delete existing shapefile.</source>
+        <translation type="unfinished">無法刪除已存在的shape檔。</translation>
+    </message>
+    <message>
+        <source>
+Warnings:</source>
+        <translation type="unfinished">
+警告:</translation>
+    </message>
+    <message>
+        <source>
+Some output geometries may be missing or invalid.
+
+Would you like to add the new layer anyway?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+
+Would you like to add the new layer to the TOC?</source>
+        <translation type="unfinished">您想在TOC中新增到新的圖層?</translation>
+    </message>
+    <message>
+        <source>
+Input CRS error: Different input coordinate reference systems detected, results may not be as expected.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+Feature geometry error: One or more output features ignored due to invalid geometry.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+GEOS geoprocessing error: One or more input features have invalid geometry.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created output shapefile:</source>
+        <translation type="unfinished">已建立輸出的shape檔:</translation>
     </message>
 </context>
 <context>
@@ -1836,17 +2133,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/labeling/labeling.cpp" line="111"/>
         <source>Labeling</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">標籤</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labeling.cpp" line="113"/>
         <source>Replace this with a short description of what the plugin does</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">用簡短的描述替換這行文字，說明附加元件的功能</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labeling.cpp" line="118"/>
         <source>&amp;Labeling</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">標籤(&amp;L)</translation>
     </message>
 </context>
 <context>
@@ -1854,17 +2151,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="14"/>
         <source>Layer labeling settings</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">圖層標籤設定</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="25"/>
         <source>Label this layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">此圖層使用標籤</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="34"/>
         <source>Field with labels</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">標籤欄位</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="62"/>
@@ -1874,58 +2171,58 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="87"/>
         <source>around point</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">圍繞點</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="97"/>
         <source>over point</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">點之上</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="108"/>
         <source>parallel</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">平行</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="118"/>
         <source>curved</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">曲線</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="125"/>
         <source>horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">水平</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="136"/>
         <source>over centroid</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">質心之上</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="146"/>
         <source>around centroid</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">圍繞質心</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="153"/>
         <source>horizontal (slow)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">水平(慢)</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="160"/>
         <source>free (slow)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">自由(慢)</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="167"/>
         <source>using perimeter</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">貼近邊線(perimeter)</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="192"/>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="298"/>
         <source>Label distance</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">標籤距離</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="209"/>
@@ -1936,47 +2233,47 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="216"/>
         <source>Rotation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">旋轉</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="233"/>
         <source>degrees</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">度</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="244"/>
         <source>above line</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">線之下</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="254"/>
         <source>on line</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">在線上</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="261"/>
         <source>below line</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">線之下</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="270"/>
         <source>Orientation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">方向</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="277"/>
         <source>map</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">地圖</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="287"/>
         <source>line</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">線條</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="334"/>
         <source>Text style</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">文字樣式</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="346"/>
@@ -2003,7 +2300,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="442"/>
         <source>Buffer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輪廓</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="467"/>
@@ -2013,32 +2310,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="515"/>
         <source>Sample</source>
-        <translation type="unfinished">查詢欄位取樣值</translation>
+        <translation type="unfinished">範例</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="531"/>
         <source>Lorem Ipsum</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Lorem Ipsum 中文１２ 12 龘 龖</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="551"/>
         <source>Priority</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">優先權</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="557"/>
         <source>Low</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">低</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="583"/>
         <source>High</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">高</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="593"/>
         <source>Scale-based visibility</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">依比例顯示</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="599"/>
@@ -2058,22 +2355,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="654"/>
         <source>label every part of multi-part features</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">在多重圖徵上都使用文字標籤</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="661"/>
         <source>merge connected lines to avoid duplicate labels</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">合併連結線以避免重複使用標籤</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="673"/>
         <source>features don&apos;t act as obstacles for labels</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">使用標籤時不避開其它圖徵</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="696"/>
         <source>Engine settings</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">標籤放置演算方式</translation>
     </message>
 </context>
 <context>
@@ -2362,7 +2659,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>OSM Information</source>
-        <translation type="obsolete">OSM 資訊</translation>
+        <translation type="unfinished">OSM 資訊</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="78"/>
@@ -2574,7 +2871,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="283"/>
         <source>Use custom renderer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">使用自訂繪圖</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="358"/>
@@ -2588,51 +2885,51 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>OSM Download</source>
-        <translation type="obsolete">OSM下載</translation>
+        <translation type="unfinished">OSM下載</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="obsolete">無法儲存檔案 %1: %2.</translation>
+        <translation type="unfinished">無法儲存檔案 %1: %2.</translation>
     </message>
     <message>
         <source>Waiting for OpenStreetMap server ...</source>
-        <translation type="obsolete">等待OpenStreetMap(OSM)伺服器中...</translation>
+        <translation type="unfinished">等待OpenStreetMap(OSM)伺服器中...</translation>
     </message>
     <message>
         <source>Download process failed. OpenStreetMap server response: %1 - %2</source>
-        <translation type="obsolete">下載過程失敗。OpenStreetMap伺服器回應%1 - %2</translation>
+        <translation type="unfinished">下載過程失敗。OpenStreetMap伺服器回應%1 - %2</translation>
     </message>
     <message>
         <source>OSM Download Error</source>
-        <translation type="obsolete">OSM下載錯誤</translation>
+        <translation type="unfinished">OSM下載錯誤</translation>
     </message>
     <message>
         <source>Download failed: %1.</source>
-        <translation type="obsolete">下載失敗:%1。</translation>
+        <translation type="unfinished">下載失敗:%1。</translation>
     </message>
     <message>
         <source>Getting data</source>
-        <translation type="obsolete">取得資料中</translation>
+        <translation type="unfinished">取得資料中</translation>
     </message>
     <message>
         <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
-        <translation type="obsolete">您從OpenStreetMap伺服器(~ api.openstreetmap.org)下載的有固定限制的大小，在 &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt;中提到經度或緯度的可下載範圍不能超過0.25度。注意 Quantum GIS 允許您指定您任何範圍，但是 OpenStreetMap 伺服器會依據下載的限制拒絕您的下載。</translation>
+        <translation type="unfinished">您從OpenStreetMap伺服器(~ api.openstreetmap.org)下載的有固定限制的大小，在 &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt;中提到經度或緯度的可下載範圍不能超過0.25度。注意 Quantum GIS 允許您指定您任何範圍，但是 OpenStreetMap 伺服器會依據下載的限制拒絕您的下載。</translation>
     </message>
     <message>
         <source>Both extents are too large!</source>
-        <translation type="obsolete">緯度與經度範圍過大!</translation>
+        <translation type="unfinished">緯度與經度範圍過大!</translation>
     </message>
     <message>
         <source>Latitude extent is too large!</source>
-        <translation type="obsolete">緯度範圍過大!</translation>
+        <translation type="unfinished">緯度範圍過大!</translation>
     </message>
     <message>
         <source>Longitude extent is too large!</source>
-        <translation type="obsolete">經度範圍過大!</translation>
+        <translation type="unfinished">經度範圍過大!</translation>
     </message>
     <message>
         <source>OK! Area is probably acceptable to server.</source>
-        <translation type="obsolete">OK!面積大小伺服器可以接受。</translation>
+        <translation type="unfinished">OK!面積大小伺服器可以接受。</translation>
     </message>
 </context>
 <context>
@@ -2747,7 +3044,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="528"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="531"/>
         <source>Remove selected tags</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">移除已選取的標籤</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="552"/>
@@ -2759,21 +3056,21 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="587"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="590"/>
         <source>Add relation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">新增關連</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="600"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="603"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="606"/>
         <source>Edit relation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">編輯關連</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="616"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="619"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="622"/>
         <source>Remove relation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">移除關連</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="652"/>
@@ -2792,23 +3089,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>OSM Plugin</source>
-        <translation type="obsolete">OSM附加元件</translation>
+        <translation type="unfinished">OSM附加元件</translation>
     </message>
     <message>
         <source>The &apos;Create OSM Relation&apos; dialog was closed automatically because current OSM database was changed.</source>
-        <translation type="obsolete">因為OSM資料庫異動，所以&apos;建立OSM關連&apos;對話方塊將會自動關閉。</translation>
+        <translation type="unfinished">因為OSM資料庫異動，所以&apos;建立OSM關連&apos;對話方塊將會自動關閉。</translation>
     </message>
     <message>
         <source>OSM Feature Dock Widget</source>
-        <translation type="obsolete">OSM 圖徵停駐工具</translation>
+        <translation type="unfinished">OSM 圖徵停駐工具</translation>
     </message>
     <message>
         <source>Choose OSM feature first.</source>
-        <translation type="obsolete">請先選取OSM圖徵。</translation>
+        <translation type="unfinished">請先選取OSM圖徵。</translation>
     </message>
     <message>
         <source>Choose relation for editing first.</source>
-        <translation type="obsolete">請先選取關連來編輯。</translation>
+        <translation type="unfinished">請先選取關連來編輯。</translation>
     </message>
     <message>
         <source>Property &apos;%1&apos; cannot be added twice.</source>
@@ -2819,21 +3116,21 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="103"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="106"/>
         <source>Identify feature</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">識別圖徵</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="134"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="137"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="140"/>
         <source>Move feature</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">移動圖徵</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="419"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="422"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="425"/>
         <source>Remove this feature</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">移除此圖徵</translation>
     </message>
 </context>
 <context>
@@ -2841,22 +3138,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmImportDlg.ui" line="16"/>
         <source>Import data to OSM</source>
-        <translation type="unfinished">匯入資料至OSM</translation>
+        <translation>匯入資料至OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmImportDlg.ui" line="25"/>
         <source>In this dialog you can import a layer loaded in QGIS into active OSM data.</source>
-        <translation type="unfinished">在這對話方塊，您可以匯入QGIS中的圖層至作用中的OSM資料</translation>
+        <translation>在這對話方塊，您可以匯入QGIS中的圖層至作用中的OSM資料。</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmImportDlg.ui" line="50"/>
         <source>Layer</source>
-        <translation type="unfinished">圖層</translation>
+        <translation>圖層</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmImportDlg.ui" line="69"/>
         <source>Import only current selection</source>
-        <translation type="unfinished">僅匯入目前選取</translation>
+        <translation>僅匯入目前選取</translation>
     </message>
 </context>
 <context>
@@ -2884,7 +3181,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="78"/>
         <source>Use custom renderer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">使用自訂繪圖</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="128"/>
@@ -2941,31 +3238,31 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Save OSM to file</source>
-        <translation type="obsolete">儲存OSM為檔案</translation>
+        <translation type="unfinished">儲存OSM為檔案</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="obsolete">無法儲存檔案 %1: %2.</translation>
+        <translation type="unfinished">無法儲存檔案 %1: %2.</translation>
     </message>
     <message>
         <source>Initializing...</source>
-        <translation type="obsolete">初始化...</translation>
+        <translation type="unfinished">初始化...</translation>
     </message>
     <message>
         <source>Saving nodes...</source>
-        <translation type="obsolete">儲存結點中...</translation>
+        <translation type="unfinished">儲存結點中...</translation>
     </message>
     <message>
         <source>Saving lines...</source>
-        <translation type="obsolete">儲存線中...</translation>
+        <translation type="unfinished">儲存線中...</translation>
     </message>
     <message>
         <source>Saving polygons...</source>
-        <translation type="obsolete">儲存多邊形中...</translation>
+        <translation type="unfinished">儲存多邊形中...</translation>
     </message>
     <message>
         <source>Saving relations...</source>
-        <translation type="obsolete">儲存關連中...</translation>
+        <translation type="unfinished">儲存關連中...</translation>
     </message>
 </context>
 <context>
@@ -2973,35 +3270,35 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="16"/>
         <source>OSM Edit History</source>
-        <translation type="unfinished">OSM編輯歷程</translation>
+        <translation>OSM編輯歷程</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="25"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="28"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="31"/>
         <source>Clear all</source>
-        <translation type="unfinished">全部清除</translation>
+        <translation>全部清除</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="34"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="66"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="85"/>
         <source>...</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="57"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="60"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="63"/>
         <source>Undo</source>
-        <translation type="unfinished">復原</translation>
+        <translation>復原</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="76"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="79"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="82"/>
         <source>Redo</source>
-        <translation type="unfinished">取消復原</translation>
+        <translation>取消復原</translation>
     </message>
 </context>
 <context>
@@ -3092,11 +3389,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>OSM Upload</source>
-        <translation type="obsolete">OSM上傳</translation>
+        <translation type="unfinished">OSM上傳</translation>
     </message>
     <message>
         <source>Uploading data...</source>
-        <translation type="obsolete">上傳資料...</translation>
+        <translation type="unfinished">上傳資料...</translation>
     </message>
 </context>
 <context>
@@ -3403,7 +3700,39 @@ p, li { white-space: pre-wrap; }
     <name>Python</name>
     <message>
         <source>Python error</source>
-        <translation type="obsolete">Python錯誤</translation>
+        <translation type="unfinished">Python錯誤</translation>
+    </message>
+    <message>
+        <source>An error has occured while executing Python code:</source>
+        <translation type="unfinished">執行Python程式碼時發生錯誤:</translation>
+    </message>
+    <message>
+        <source>Python version:</source>
+        <translation type="unfinished">Python 版本:</translation>
+    </message>
+    <message>
+        <source>Python path:</source>
+        <translation type="unfinished">Python 路徑:</translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t load plugin &apos;%1&apos; from [&apos;%2&apos;]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t load plugin %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 due an error when calling its classFactory() method</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 due an error when calling its initGui() method</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error while unloading plugin %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4387,7 +4716,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="45"/>
         <source>PostgreSQL Geoprocessing</source>
-        <translation type="unfinished"></translation>
+        <translation>PostGIS 地理空間運算</translation>
     </message>
     <message>
         <location filename="../src/plugins/quick_print/quickprintplugin.cpp" line="39"/>
@@ -4443,12 +4772,12 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="164"/>
         <source>Python version:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Python 版本:</translation>
     </message>
     <message>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="165"/>
         <source>Python path:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Python 路徑:</translation>
     </message>
     <message>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="153"/>
@@ -4788,7 +5117,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramoverlayplugin.cpp" line="34"/>
         <source>Diagram Overlay</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">圖表套疊</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramoverlayplugin.cpp" line="35"/>
@@ -4813,22 +5142,22 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/core/symbology-ng/qgsrendererv2registry.cpp" line="19"/>
         <source>Categorized</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">分類設定(Categorized)</translation>
     </message>
     <message>
         <location filename="../src/core/symbology-ng/qgsrendererv2registry.cpp" line="23"/>
         <source>Graduated</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">漸進設定(Graduated)</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labeling.cpp" line="43"/>
         <source>Labeling</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">文字標籤</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labeling.cpp" line="44"/>
         <source>Smart labeling for vector layers</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">向量圖層智慧文字標籤</translation>
     </message>
 </context>
 <context>
@@ -5107,7 +5436,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1818"/>
         <source>Map canvas. This is where raster and vector layers are displayed when added to the map</source>
-        <translation>地圖顯示區。這是影像和向量圖層顯示的地方</translation>
+        <translation type="unfinished">f地圖顯示區。這是影像和向量圖層顯示的地方</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1354"/>
@@ -6465,7 +6794,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="986"/>
         <source>Toggle fullscreen mode</source>
-        <translation>切換至全螢幕</translation>
+        <translation type="unfinished">切換全螢幕模式</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1627"/>
@@ -6717,7 +7046,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="984"/>
         <source>Toggle Full Screen Mode</source>
-        <translation>切換至全螢幕模式</translation>
+        <translation type="unfinished">切換全螢幕模式</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1000"/>
@@ -6858,12 +7187,12 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2772"/>
         <source>New Shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>新增Shape檔</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2773"/>
         <source>Shapefiles must end on .shp</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">新增Shape檔必須使用.shp結尾</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3053"/>
@@ -7060,7 +7389,7 @@ This copy of QGIS has been built without SpatiaLite support.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="745"/>
         <source>Delete Part</source>
-        <translation>刪除部分(Part)</translation>
+        <translation type="unfinished">刪除部件(Part)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1006"/>
@@ -7197,7 +7526,7 @@ This copy of QGIS has been built without SpatiaLite support.</source>
         <location filename="../src/app/qgisapp.cpp" line="682"/>
         <location filename="../src/app/qgisapp.cpp" line="684"/>
         <source>Reshape Features</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">重塑圖徵</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="799"/>
@@ -7293,12 +7622,12 @@ This copy of QGIS has been built without SpatiaLite support.</source>
         <location filename="../src/app/qgisapp.cpp" line="1549"/>
         <location filename="../src/app/qgisapp.cpp" line="4969"/>
         <source>Coordinate:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">座標:</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1550"/>
         <source>Current map coordinate</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">擷取地圖座標</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1564"/>
@@ -7308,18 +7637,18 @@ This copy of QGIS has been built without SpatiaLite support.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1568"/>
         <source>Current map coordinate (formatted as x,y)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">目前的地圖座標(格式為x,y)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4982"/>
         <source>Extents:</source>
-        <translation type="unfinished">範圍:</translation>
+        <translation>範圍:</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="763"/>
         <location filename="../src/app/qgisapp.cpp" line="765"/>
         <source>Rotate Point Symbols</source>
-        <translation type="unfinished"></translation>
+        <translation>旋轉點符號</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="227"/>
@@ -7329,7 +7658,7 @@ This copy of QGIS has been built without SpatiaLite support.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="594"/>
         <source>&amp;New Print Composer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">地圖出版設計(&amp;N)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="595"/>
@@ -7340,64 +7669,64 @@ This copy of QGIS has been built without SpatiaLite support.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="596"/>
         <source>New Print Composer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">新版出圖設計</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1203"/>
         <source>Print Composers</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">所有設計</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="727"/>
         <source>Add Part</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">新增部件(Part)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="729"/>
         <source>Add part to multipolygon</source>
-        <translation type="unfinished"></translation>
+        <translation>新增部件至多邊形</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="741"/>
         <source>Click a vertex of the ring to delete</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">按一下環形上的轉折點且刪除</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="747"/>
         <source>Click a vertex of the part to delete</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">按一下部件上的轉折點且刪除</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="599"/>
         <source>Composer manager...</source>
-        <translation type="unfinished"></translation>
+        <translation>設計管理...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="600"/>
         <source>Composer manager</source>
-        <translation type="unfinished"></translation>
+        <translation>設計管理</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="792"/>
         <location filename="../src/app/qgisapp.cpp" line="794"/>
         <source>Deselect features from all layers</source>
-        <translation type="unfinished"></translation>
+        <translation>取消所有圖層的圖徵的選取</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1064"/>
         <source>Style manager...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">樣式管理...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1066"/>
         <source>Show style manager V2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">顯示樣式管理 V2</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3673"/>
         <location filename="../src/app/qgisapp.cpp" line="3711"/>
         <source>Composer %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">設計 %1</translation>
     </message>
 </context>
 <context>
@@ -8331,7 +8660,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="23"/>
         <source>N&amp;ame</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">名稱(&amp;a)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="36"/>
@@ -8531,7 +8860,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="20"/>
         <source>Attribute Actions</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">屬性動作</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="130"/>
@@ -8541,7 +8870,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="184"/>
         <source>Browse for action</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">瀏覽動作</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="187"/>
@@ -8567,7 +8896,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="29"/>
         <source>Action list</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">動作清單</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="54"/>
@@ -8578,7 +8907,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="237"/>
         <source>Generic</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">通用</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="242"/>
@@ -9008,28 +9337,28 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="83"/>
         <source>Unselect all</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">取消全部選取</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="106"/>
         <source>Move selection to top</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">移動選取至最上層</translation>
     </message>
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="676"/>
         <source>Attribute added</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">屬性已新增</translation>
     </message>
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="683"/>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="724"/>
         <source>Attribute Error</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">屬性錯誤</translation>
     </message>
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="683"/>
         <source>The attribute could not be added to the layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">屬性無法加入此圖層</translation>
     </message>
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="707"/>
@@ -9039,7 +9368,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="724"/>
         <source>The attribute(s) could not be deleted</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">屬性無法增加</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="250"/>
@@ -9054,7 +9383,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="290"/>
         <source>Open field calculator</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">開啟欄位計算</translation>
     </message>
 </context>
 <context>
@@ -9545,22 +9874,22 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="19"/>
         <source>Column:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">欄位:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="56"/>
         <source>Symbol:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">符號:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="69"/>
         <source>change</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">改變</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="76"/>
         <source>Color ramp:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">漸層色彩:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="113"/>
@@ -9575,7 +9904,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="127"/>
         <source>Delete all</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">全部刪除</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="150"/>
@@ -9871,7 +10200,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="842"/>
         <source>save template</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">儲存範本</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="868"/>
@@ -9886,7 +10215,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="876"/>
         <source>Load template</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">載入範本</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="889"/>
@@ -9912,7 +10241,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1113"/>
         <source>Composer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">出圖設計</translation>
     </message>
 </context>
 <context>
@@ -9920,12 +10249,12 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/composer/qgscomposerarrowwidget.cpp" line="39"/>
         <source>General options</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">一般選項</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerarrowwidget.cpp" line="79"/>
         <source>Arrow color</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">箭頭顏色</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerarrowwidget.cpp" line="207"/>
@@ -9948,47 +10277,47 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="32"/>
         <source>Arrow</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">箭頭</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="38"/>
         <source>Arrow color...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">箭頭顏色...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="45"/>
         <source>Outline width </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">線寬 </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="52"/>
         <source>Arrow head width </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">箭頭寬 </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="59"/>
         <source>Arrow markers</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">箭頭符號</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="65"/>
         <source>Default marker</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">預設符號</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="72"/>
         <source>No marker</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">無</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="79"/>
         <source>SVG markers</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">SVG符號</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="86"/>
         <source>Start marker</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">開始符號</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="96"/>
@@ -9999,7 +10328,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="103"/>
         <source>End marker</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">結束符號</translation>
     </message>
 </context>
 <context>
@@ -10021,7 +10350,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="116"/>
         <source>Item</source>
-        <translation>專案</translation>
+        <translation type="unfinished">項目內容</translation>
     </message>
     <message>
         <source>Toolbar_2</source>
@@ -10090,7 +10419,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="260"/>
         <source>Select/Move item</source>
-        <translation>選擇/移動專案</translation>
+        <translation type="unfinished">選擇/移動項目</translation>
     </message>
     <message>
         <source>Export as image</source>
@@ -10343,27 +10672,27 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="439"/>
         <source>&amp;Quit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">離開(&amp;Q)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="442"/>
         <source>Quit</source>
-        <translation type="unfinished"></translation>
+        <translation>離開</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="445"/>
         <source>Ctrl+Q</source>
-        <translation type="unfinished">Ctrl+Q</translation>
+        <translation>Ctrl+Q</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="453"/>
         <source>Add Basic Shape</source>
-        <translation type="unfinished"></translation>
+        <translation>新增基本形狀</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="461"/>
         <source>Add arrow</source>
-        <translation type="unfinished"></translation>
+        <translation>新增箭頭</translation>
     </message>
 </context>
 <context>
@@ -10413,7 +10742,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="34"/>
         <source>Opacity</source>
-        <translation type="unfinished"></translation>
+        <translation>透明度</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="57"/>
@@ -10423,17 +10752,17 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="80"/>
         <source>Show frame</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">顯示圖框</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="20"/>
         <source>Frame color...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">圖框顏色...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="27"/>
         <source>Background color...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">背景顏色...</translation>
     </message>
 </context>
 <context>
@@ -10456,7 +10785,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="31"/>
         <source>General options</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">一般選項</translation>
     </message>
 </context>
 <context>
@@ -10478,17 +10807,17 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="71"/>
         <source>Margin (mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>邊界間隙(公釐)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="38"/>
         <source>Label</source>
-        <translation type="unfinished">標籤</translation>
+        <translation>標籤</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="64"/>
         <source>Font color...</source>
-        <translation type="unfinished"></translation>
+        <translation>字體顏色...</translation>
     </message>
 </context>
 <context>
@@ -10513,7 +10842,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerlegenditemdialogbase.ui" line="19"/>
         <source>Item text</source>
-        <translation type="unfinished"></translation>
+        <translation>項目文字</translation>
     </message>
 </context>
 <context>
@@ -10521,7 +10850,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="30"/>
         <source>Item Options</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">項目選項</translation>
     </message>
 </context>
 <context>
@@ -10633,27 +10962,27 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="62"/>
         <source>&amp;Title</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">標題(&amp;T)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="81"/>
         <source>Title Font...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">標題字體...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="88"/>
         <source>Layer Font...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">圖層字體...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="95"/>
         <source>Item Font...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">項目字體...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="102"/>
         <source>Symbol width </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">符號寬度 </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="105"/>
@@ -10668,27 +10997,27 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="112"/>
         <source>Symbol height </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">符號高度 </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="122"/>
         <source>Layer space </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">圖層間距 </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="132"/>
         <source>Symbol space </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">符號間距 </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="142"/>
         <source>Icon label space </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">圖示標籤間距 </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="152"/>
         <source>Box space </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">矩形間距 </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="203"/>
@@ -10713,7 +11042,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="238"/>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">全部</translation>
     </message>
 </context>
 <context>
@@ -10744,27 +11073,27 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposermanagerbase.ui" line="14"/>
         <source>Composer manager</source>
-        <translation type="unfinished"></translation>
+        <translation>設計管理</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermanagerbase.ui" line="23"/>
         <source>Add</source>
-        <translation type="unfinished">新增</translation>
+        <translation>新增</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermanagerbase.ui" line="30"/>
         <source>Remove</source>
-        <translation type="unfinished">移除</translation>
+        <translation>移除</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermanagerbase.ui" line="37"/>
         <source>Rename</source>
-        <translation type="unfinished"></translation>
+        <translation>重新命名</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermanagerbase.ui" line="44"/>
         <source>Show</source>
-        <translation type="unfinished"></translation>
+        <translation>顯示</translation>
     </message>
 </context>
 <context>
@@ -10891,34 +11220,34 @@ Error was:%2</source>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="48"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="318"/>
         <source>Solid</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">實線</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="49"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="314"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="560"/>
         <source>Cross</source>
-        <translation type="unfinished">十字</translation>
+        <translation type="unfinished">十字形</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="51"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="326"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="622"/>
         <source>Inside frame</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">在圖框內</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="52"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="330"/>
         <source>Outside frame</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">在圖框外</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="54"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="347"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="660"/>
         <source>Horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">水平</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="55"/>
@@ -10932,18 +11261,18 @@ Error was:%2</source>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="355"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="668"/>
         <source>Horizontal and Vertical</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">水平與垂直</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="57"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="359"/>
         <source>Boundary direction</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">邊界方向</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="31"/>
         <source>General options</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">一般選項</translation>
     </message>
 </context>
 <context>
@@ -11028,32 +11357,32 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="218"/>
         <source>X min</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">X最小</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="250"/>
         <source>Y min</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Y最小</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="234"/>
         <source>X max</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">X最大</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="266"/>
         <source>Y max</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Y最大</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="288"/>
         <source>Set to map canvas extent</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">設定為地圖範圍</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="166"/>
         <source>Lock layers for map item</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">為地圖項目鎖定圖層</translation>
     </message>
     <message>
         <source>Line width:</source>
@@ -11062,7 +11391,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="423"/>
         <source>Draw annotation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">顯示文字說明</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="491"/>
@@ -11072,82 +11401,82 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="514"/>
         <source>Coordinate precision</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">座標精準度</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="137"/>
         <source>Rotation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">旋轉</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="326"/>
         <source>Show grid?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">顯示格網?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="341"/>
         <source>Grid &amp;type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">格網類別(&amp;t)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="357"/>
         <source>Interval X</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">X區間</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="380"/>
         <source>Offset X</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">X偏移</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="403"/>
         <source>Line width</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">線寬</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="430"/>
         <source>Annotation position</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">文字位置</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="449"/>
         <source>Annotation direction</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">文字方向</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="465"/>
         <source>Line color</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">線的顏色</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="498"/>
         <source>Distance to map frame</source>
-        <translation type="unfinished"></translation>
+        <translation>與地圖圖框之距離</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="547"/>
         <source>Interval Y</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Y區間</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="570"/>
         <source>Offset Y</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Y偏移</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="583"/>
         <source>Cross width</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">十字形寬</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="203"/>
         <source>Extents</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">範圍</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="320"/>
         <source>Grid</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">格網</translation>
     </message>
 </context>
 <context>
@@ -11218,7 +11547,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="38"/>
         <source>General options</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">一般選項</translation>
     </message>
 </context>
 <context>
@@ -11287,7 +11616,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="247"/>
         <source>Rotation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">旋轉</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="151"/>
@@ -11297,12 +11626,12 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="41"/>
         <source>Picture options</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">圖片選項</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="263"/>
         <source>Sync from map</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">從地圖同步</translation>
     </message>
 </context>
 <context>
@@ -11311,38 +11640,38 @@ Error was:%2</source>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="34"/>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="291"/>
         <source>Single Box</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">單一長條</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="35"/>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="295"/>
         <source>Double Box</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">雙線長條</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="36"/>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="299"/>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="303"/>
         <source>Line Ticks Middle</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">中央軸線</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="37"/>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="307"/>
         <source>Line Ticks Down</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">下方軸線</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="38"/>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="311"/>
         <source>Line Ticks Up</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">上方軸線</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="39"/>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="315"/>
         <source>Numeric</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">文字數字</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="66"/>
@@ -11353,7 +11682,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="31"/>
         <source>General options</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">一般選項</translation>
     </message>
 </context>
 <context>
@@ -11420,12 +11749,12 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="47"/>
         <source>Segment size (map units)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">分段大小(地圖單位)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="70"/>
         <source>Map units per bar unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">每單位比例尺/地圖單位</translation>
     </message>
     <message>
         <source>Number of segments</source>
@@ -11449,17 +11778,17 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="41"/>
         <source>Scale bar</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">比例尺</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="90"/>
         <source> Right segments</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"> 右邊分段數</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="97"/>
         <source> Left segments</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished"> 左邊分段數</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="149"/>
@@ -11472,22 +11801,22 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="152"/>
         <source>Height </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">高度 </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="165"/>
         <source>Line width </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">線寬 </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="184"/>
         <source>Label space </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">標籤間距 </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="194"/>
         <source>Box space </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">矩形間距 </translation>
     </message>
 </context>
 <context>
@@ -11530,14 +11859,14 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="29"/>
         <source>General options</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">一般選項</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="34"/>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="68"/>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="107"/>
         <source>Ellipse</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">圓形</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="35"/>
@@ -11551,17 +11880,17 @@ Error was:%2</source>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="76"/>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="115"/>
         <source>Triangle</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">三角形</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="130"/>
         <source>Select outline color</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">選擇外框色彩</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="179"/>
         <source>Select fill color</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">選擇填滿色彩</translation>
     </message>
 </context>
 <context>
@@ -11574,34 +11903,34 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="32"/>
         <source>Shape</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">形狀</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="41"/>
         <source>Shape outline color...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">形狀外框顏色...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="48"/>
         <source>Outline width </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">外框寬度 </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="55"/>
         <source>Transparent fill</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">透明填滿</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="62"/>
         <source>Shape fill Color...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">形狀填滿顏色...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="69"/>
         <source>Rotation </source>
         <comment>Rotation</comment>
         <extracomment>Rotation</extracomment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">旋轉 </translation>
     </message>
 </context>
 <context>
@@ -11896,19 +12225,19 @@ Error was:%2</source>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="77"/>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="473"/>
         <source>Solid</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">實線</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="78"/>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="477"/>
         <source>Dots</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">點</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="79"/>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="481"/>
         <source>Crosses</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">十字形</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="31"/>
@@ -11918,7 +12247,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="32"/>
         <source>inch</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">英寸</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="128"/>
@@ -12056,57 +12385,57 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="245"/>
         <source>Grid color</source>
-        <translation type="unfinished"></translation>
+        <translation>格線顏色</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="271"/>
         <source>Grid style</source>
-        <translation type="unfinished"></translation>
+        <translation>格線樣式</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="44"/>
         <source>Paper and quality</source>
-        <translation type="unfinished"></translation>
+        <translation>紙張及品質</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="153"/>
         <source> dpi</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="156"/>
         <source>Quality </source>
-        <translation type="unfinished"></translation>
+        <translation>品質 </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="166"/>
         <source>Width </source>
-        <translation type="unfinished"></translation>
+        <translation>寬度 </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="179"/>
         <source>Height </source>
-        <translation type="unfinished"></translation>
+        <translation>高度 </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="208"/>
         <source>Spacing </source>
-        <translation type="unfinished"></translation>
+        <translation>間距 </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="221"/>
         <source>X offset </source>
-        <translation type="unfinished"></translation>
+        <translation>X偏移 </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="231"/>
         <source>Y offset </source>
-        <translation type="unfinished"></translation>
+        <translation>Y偏移 </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="238"/>
         <source>Pen width </source>
-        <translation type="unfinished"></translation>
+        <translation>筆寬 </translation>
     </message>
 </context>
 <context>
@@ -12170,7 +12499,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="76"/>
         <source>Save shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">儲存捷徑</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="76"/>
@@ -12181,7 +12510,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="90"/>
         <source>Saving shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">儲存捷徑中</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="91"/>
@@ -12227,12 +12556,12 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="82"/>
         <source>Load...</source>
-        <translation type="unfinished"></translation>
+        <translation>載入...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="92"/>
         <source>Save...</source>
-        <translation type="unfinished"></translation>
+        <translation>儲存...</translation>
     </message>
 </context>
 <context>
@@ -12602,22 +12931,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="25"/>
         <source>Enable copyright label</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">顯示版權標籤</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="35"/>
         <source>&amp;Enter your copyright label here:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">在此輸入版權標籤(&amp;E):</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="56"/>
         <source>&amp;Placement</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">位置(&amp;P)</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="90"/>
         <source>&amp;Orientation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">方向(&amp;Q)</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="114"/>
@@ -13172,7 +13501,7 @@ has failed. The database said:
     <message>
         <location filename="../src/app/qgsdbtablemodel.cpp" line="29"/>
         <source>Primary key column</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">主鍵(PK)欄位</translation>
     </message>
 </context>
 <context>
@@ -13493,12 +13822,12 @@ has failed. The database said:
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="189"/>
         <source>Geometry</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">幾何欄位</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="112"/>
         <source>Delimiter string</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">分隔文字</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="150"/>
@@ -13570,7 +13899,7 @@ has failed. The database said:
         <location filename="../src/plugins/diagram_overlay/qgsdiagramdialog.cpp" line="83"/>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramdialog.cpp" line="319"/>
         <source>linearly scaling</source>
-        <translation type="unfinished"></translation>
+        <translation>線性縮放</translation>
     </message>
 </context>
 <context>
@@ -13600,17 +13929,17 @@ has failed. The database said:
     <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramdialogbase.ui" line="35"/>
         <source>Diagram type</source>
-        <translation type="unfinished"></translation>
+        <translation>圖表類型</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramdialogbase.ui" line="70"/>
         <source>Classification attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>分類屬性</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramdialogbase.ui" line="80"/>
         <source>Classification type</source>
-        <translation type="unfinished"></translation>
+        <translation>分類方式</translation>
     </message>
 </context>
 <context>
@@ -14049,7 +14378,7 @@ has failed. The database said:
     <message>
         <location filename="../src/app/qgsfieldcalculator.cpp" line="73"/>
         <source>Syntax error</source>
-        <translation type="unfinished"></translation>
+        <translation>語法錯誤</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldcalculator.cpp" line="109"/>
@@ -14082,22 +14411,22 @@ has failed. The database said:
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="14"/>
         <source>Field calculator</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">欄位計算</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="20"/>
         <source>Update existing field</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">更新已存在的欄位</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="30"/>
         <source>Only update selected features</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">僅更新選取的圖徵</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="37"/>
         <source>New field</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">新增欄位</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="98"/>
@@ -14117,7 +14446,7 @@ has failed. The database said:
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="126"/>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">全部</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="136"/>
@@ -14197,37 +14526,37 @@ has failed. The database said:
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="43"/>
         <source>Output field name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輸出的欄位名稱</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="56"/>
         <source>Output field type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輸出的欄位類型</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="69"/>
         <source>Output field width</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輸出的欄位寬度</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="82"/>
         <source>Output field precision</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輸出的欄位精確度</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="240"/>
         <source>to real</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">轉為實數(real)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="247"/>
         <source>to int</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">轉為整數(int)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="254"/>
         <source>to string</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">轉為文字(string)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="261"/>
@@ -14237,12 +14566,12 @@ has failed. The database said:
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="268"/>
         <source>area</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">面積</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="278"/>
         <source>Field calculator expression</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">欄位計算的表示式</translation>
     </message>
 </context>
 <context>
@@ -14926,23 +15255,23 @@ Please reselect a valid file.</source>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="37"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">檔案</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="61"/>
         <source>Feature types</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">圖徵類型</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="145"/>
         <source>File to import</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">要匯入的文件</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="169"/>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="315"/>
         <source>Feature type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">圖徵類型</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="189"/>
@@ -14955,39 +15284,39 @@ Please reselect a valid file.</source>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="202"/>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="583"/>
         <source>GPX output file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">GPX輸出檔</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="249"/>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="441"/>
         <source>GPS device</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">GPS設備</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="282"/>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="480"/>
         <source>Port</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">連接埠號</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="363"/>
         <source>Output file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輸出檔案</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="409"/>
         <source>Data layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">資料圖層</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="539"/>
         <source>GPX input file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">GPX輸入檔案</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="563"/>
         <source>Conversion</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">轉換</translation>
     </message>
 </context>
 <context>
@@ -15266,7 +15595,7 @@ Please reselect a valid file.</source>
     </message>
     <message>
         <source>Raster file:</source>
-        <translation type="obsolete">影像影像檔案:</translation>
+        <translation type="obsolete">影像檔案:</translation>
     </message>
     <message>
         <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:Sans Serif&quot;&gt;
@@ -15410,7 +15739,7 @@ Factor</source>
         <location filename="../src/app/qgsgraduatedsymboldialog.cpp" line="292"/>
         <location filename="../src/app/qgsgraduatedsymboldialog.cpp" line="366"/>
         <source>Equal Interval</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">相等組距</translation>
     </message>
     <message>
         <location filename="../src/app/qgsgraduatedsymboldialog.cpp" line="62"/>
@@ -15496,27 +15825,27 @@ Factor</source>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="19"/>
         <source>Column:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">欄位:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="29"/>
         <source>Symbol:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">符號:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="42"/>
         <source>change</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">改變</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="49"/>
         <source>Classes:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">分級數:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="72"/>
         <source>Color ramp:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">漸層色彩:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="82"/>
@@ -15526,12 +15855,12 @@ Factor</source>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="93"/>
         <source>Equal Interval</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">相等組距</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="98"/>
         <source>Quantile</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">分位數</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="130"/>
@@ -17082,7 +17411,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2852"/>
         <source>Attribute field</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">屬性欄位</translation>
     </message>
 </context>
 <context>
@@ -17643,12 +17972,12 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="17"/>
         <source>GRASS Database</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">GRASS 資料庫</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="39"/>
         <source>Tree</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">樹目錄</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="44"/>
@@ -17662,7 +17991,11 @@ at line %2 column %3</source>
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;GRASS data are stored in tree directory structure. The GRASS database is the top-level directory in this tree structure.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;GRASS資料是使用樹狀結構目錄儲存。GRASS資料庫是在樹狀結構目錄的最上層。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="596"/>
@@ -17672,7 +18005,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="633"/>
         <source>GRASS Location</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">GRASS位置</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1163"/>
@@ -17720,7 +18053,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="2650"/>
         <source>Create New Mapset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">建立新的地圖集</translation>
     </message>
 </context>
 <context>
@@ -19012,47 +19345,47 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="285"/>
         <source>Set to current extent</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">設定目前範圍</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="38"/>
         <source>Vector layers</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">向量圖層</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="58"/>
         <source>Interpolation attribute</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">內插屬性</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="191"/>
         <source>Cellsize X</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">X間隔大小(Cellsize)</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="211"/>
         <source>Cellsize Y</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Y間隔大小(Cellsize)</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="233"/>
         <source>X min</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">X最小值</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="246"/>
         <source>X max</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">X最大值</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="259"/>
         <source>Y min</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Y最小值</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="272"/>
         <source>Y max</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Y最大值</translation>
     </message>
 </context>
 <context>
@@ -19070,22 +19403,22 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgsitempositiondialogbase.ui" line="14"/>
         <source>Set item position</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">設定項目位置</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsitempositiondialogbase.ui" line="20"/>
         <source>Item reference point</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">項目參考點</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsitempositiondialogbase.ui" line="92"/>
         <source>Coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">座標</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsitempositiondialogbase.ui" line="144"/>
         <source>Set Position</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">設定位置</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsitempositiondialogbase.ui" line="151"/>
@@ -19138,7 +19471,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgslabeldialog.cpp" line="214"/>
         <source>Auto</source>
-        <translation type="unfinished"></translation>
+        <translation>自動</translation>
     </message>
 </context>
 <context>
@@ -19479,7 +19812,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="359"/>
         <source>Buffer labels</source>
-        <translation type="unfinished"></translation>
+        <translation>字體輪廓</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="550"/>
@@ -19573,17 +19906,17 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="46"/>
         <source>Basic label options</source>
-        <translation type="unfinished"></translation>
+        <translation>基本標籤選項</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="497"/>
         <source>Data defined placement</source>
-        <translation type="unfinished"></translation>
+        <translation>選擇定義位置的欄位</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="538"/>
         <source>Data defined properties</source>
-        <translation type="unfinished"></translation>
+        <translation>選擇定義字體的欄位</translation>
     </message>
 </context>
 <context>
@@ -20036,7 +20369,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgslinearlyscalingdialogbase.ui" line="35"/>
         <source>Find maximum value</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">找最大值</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgslinearlyscalingdialogbase.ui" line="45"/>
@@ -20046,12 +20379,12 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgslinearlyscalingdialogbase.ui" line="59"/>
         <source>Size unit</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">大小單位</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgslinearlyscalingdialogbase.ui" line="23"/>
         <source>Scale linearly between 0 and the following attribute value / diagram size:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">線性比例介於0與以下的資性質/圖表大小:</translation>
     </message>
 </context>
 <context>
@@ -20678,7 +21011,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="382"/>
         <source>Raster</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">影像</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="326"/>
@@ -20779,7 +21112,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="92"/>
         <source>No point feature</source>
-        <translation type="unfinished"></translation>
+        <translation>無點圖徵</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="92"/>
@@ -20789,7 +21122,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="106"/>
         <source>No rotation Attributes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">無旋轉屬性</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="106"/>
@@ -20799,7 +21132,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="185"/>
         <source>Rotate symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>旋轉符號</translation>
     </message>
 </context>
 <context>
@@ -20807,7 +21140,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsmaptoolselect.cpp" line="71"/>
         <source>No active layer</source>
-        <translation type="unfinished">沒有啟動的圖層</translation>
+        <translation type="unfinished">沒有作用中的圖層</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolselect.cpp" line="72"/>
@@ -20831,7 +21164,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/app/qgsmaptoolsimplify.cpp" line="279"/>
         <location filename="../src/app/qgsmaptoolsimplify.cpp" line="300"/>
         <source>Unsupported operation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">不支援的操作</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsimplify.cpp" line="279"/>
@@ -20854,7 +21187,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="92"/>
         <source>Split error</source>
-        <translation type="unfinished"></translation>
+        <translation>分割錯誤</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="92"/>
@@ -20864,7 +21197,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="87"/>
         <source>No feature split done</source>
-        <translation type="unfinished"></translation>
+        <translation>沒有圖徵被分割</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="87"/>
@@ -20874,7 +21207,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="42"/>
         <source>Not a vector layer</source>
-        <translation type="unfinished">不是向量圖層</translation>
+        <translation>不是向量圖層</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="43"/>
@@ -20904,7 +21237,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="82"/>
         <source>Features split</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">圖徵分割</translation>
     </message>
 </context>
 <context>
@@ -21192,7 +21525,7 @@ Do you want to overwrite it?</source>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="472"/>
         <source>Anti-alias</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">反鋸齒功能</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="482"/>
@@ -21212,12 +21545,12 @@ Do you want to overwrite it?</source>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="230"/>
         <source>Paths</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">路徑</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="204"/>
         <source>MapServer url</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">MapServer 網址</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="456"/>
@@ -21232,22 +21565,22 @@ Do you want to overwrite it?</source>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="15"/>
         <source>MapServer Export: Save project to MapFile</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">MapServer 匯出：將專案存成MapFile</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="24"/>
         <source>Use current project</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">使用目前專案</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="87"/>
         <source>LAYER information only</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">僅圖層資訊</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="142"/>
         <source>Rendering</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">繪圖</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="214"/>
@@ -21260,17 +21593,17 @@ http://my.host.com/cgi-bin/mapserv.exe</source>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="239"/>
         <source>Inline</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">內嵌</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="258"/>
         <source>Symbolset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">符號集</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="271"/>
         <source>Use templates</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">使用範本</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="335"/>
@@ -21280,7 +21613,7 @@ http://my.host.com/cgi-bin/mapserv.exe</source>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="354"/>
         <source>Fontset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">字體集</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="367"/>
@@ -21290,7 +21623,7 @@ http://my.host.com/cgi-bin/mapserv.exe</source>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="450"/>
         <source>Layer/label options</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">圖層/標籤選項</translation>
     </message>
 </context>
 <context>
@@ -21950,22 +22283,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsnewvectorlayerdialog.cpp" line="34"/>
         <source>Text data</source>
-        <translation type="unfinished"></translation>
+        <translation>文字資料</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewvectorlayerdialog.cpp" line="35"/>
         <source>Whole number</source>
-        <translation type="unfinished"></translation>
+        <translation>整數</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewvectorlayerdialog.cpp" line="36"/>
         <source>Decimal number</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">實數</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewvectorlayerdialog.cpp" line="42"/>
         <source>ESRI Shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>ESRI Shape檔</translation>
     </message>
 </context>
 <context>
@@ -21973,72 +22306,72 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="14"/>
         <source>New Vector Layer</source>
-        <translation type="unfinished">新增向量圖層</translation>
+        <translation>新增向量圖層</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="26"/>
         <source>File format</source>
-        <translation type="unfinished">檔案格式</translation>
+        <translation>檔案格式</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="43"/>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="92"/>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="168"/>
         <source>Type</source>
-        <translation type="unfinished">類型</translation>
+        <translation>類型</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="49"/>
         <source>Point</source>
-        <translation type="unfinished">點</translation>
+        <translation>點</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="56"/>
         <source>Line</source>
-        <translation type="unfinished">線</translation>
+        <translation>線</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="63"/>
         <source>Polygon</source>
-        <translation type="unfinished">多邊形</translation>
+        <translation>多邊形</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="73"/>
         <source>New attribute</source>
-        <translation type="unfinished">新屬性</translation>
+        <translation>新增屬性</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="79"/>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="163"/>
         <source>Name</source>
-        <translation type="unfinished">名稱</translation>
+        <translation>名稱</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="105"/>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="173"/>
         <source>Width</source>
-        <translation type="unfinished">寬度</translation>
+        <translation>寬度</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="118"/>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="178"/>
         <source>Precision</source>
-        <translation type="unfinished">精確度</translation>
+        <translation>精確度</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="241"/>
         <source>Add attribute to list</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">新增屬性至清單中</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="247"/>
         <source>Add to attributes list</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">新增至屬性清單中</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="141"/>
         <source>Attributes list</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">屬性清單</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="205"/>
@@ -22048,7 +22381,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="208"/>
         <source>Remove selected attribute</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">移除已選取的屬性</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="274"/>
@@ -22059,7 +22392,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="291"/>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="294"/>
         <source>Specify the coordinate reference system of the layer&apos;s geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">指定幾合圖層的座標參考系統。</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="297"/>
@@ -22264,7 +22597,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/osm/osmprovider.cpp" line="407"/>
         <source>Open Street Map format</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Open Street Map格式</translation>
     </message>
 </context>
 <context>
@@ -22284,17 +22617,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="172"/>
         <source>Whole number (integer)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">整數</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="173"/>
         <source>Decimal number (real)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">十進制數(實數)</translation>
     </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="174"/>
         <source>Text (string)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">文字(字串)</translation>
     </message>
 </context>
 <context>
@@ -22312,7 +22645,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="171"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished">您確定要移除%1連線與所有的設定嗎？</translation>
+        <translation type="unfinished">您確定要移除%1連線與所有的設定嗎?</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="173"/>
@@ -22400,7 +22733,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="94"/>
         <source>BIG5</source>
-        <translation>BIG5(大五碼)</translation>
+        <translation type="unfinished">BIG5</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="99"/>
@@ -22695,7 +23028,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsoptions.cpp" line="275"/>
         <location filename="../src/app/qgsoptions.cpp" line="545"/>
         <source>Cross</source>
-        <translation type="unfinished">十字</translation>
+        <translation type="unfinished">十字形</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="214"/>
@@ -22749,32 +23082,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="51"/>
         <source>Current layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">目前圖層</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="52"/>
         <source>Top down, stop at first</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">上至下,停至第一個(Top down, stop at first)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="53"/>
         <source>Top down</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">上至下(Top down)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="234"/>
         <source>To vertex</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">自動接合 轉折點</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="235"/>
         <source>To segment</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">自動接合 線段</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="236"/>
         <source>To vertex and segment</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">自動接合 轉折點與線段</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="746"/>
@@ -23350,7 +23683,7 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="915"/>
         <source>Enter attribute values</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輸入屬性值</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="921"/>
@@ -23433,7 +23766,7 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="447"/>
         <source>Identify</source>
-        <translation type="unfinished">識別圖徵</translation>
+        <translation>識別圖徵</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="492"/>
@@ -23443,12 +23776,12 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="986"/>
         <source>When a new layer is created, or when a layer is loaded that has no coordinate reference system (CRS)</source>
-        <translation type="unfinished"></translation>
+        <translation>當新的圖層建立或圖層載入時沒有指定座標參考系統(CRS)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="193"/>
         <source>Open identify results in a dock window (QGIS restart required)</source>
-        <translation type="unfinished"></translation>
+        <translation>在停駐視窗中開啟識別結果(QGIS需重新啟動)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="892"/>
@@ -23458,87 +23791,87 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="739"/>
         <source>Default snapping tolerance</source>
-        <translation type="unfinished"></translation>
+        <translation>預設接合容許範圍</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="769"/>
         <source>Search radius for vertex edits</source>
-        <translation type="unfinished"></translation>
+        <translation>編輯轉控點的搜尋半徑</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="14"/>
         <source>Options</source>
-        <translation type="unfinished">選項</translation>
+        <translation>選項</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="276"/>
         <source>Use render caching where possible to speed up redraws</source>
-        <translation type="unfinished"></translation>
+        <translation>當需要加快重繪速度時使用繪圖快取機制</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="315"/>
         <source>SVG paths</source>
-        <translation type="unfinished"></translation>
+        <translation>SVG 路徑</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="321"/>
         <source>Path(s) to search for Scalable Vector Graphic (SVG) symbols</source>
-        <translation type="unfinished"></translation>
+        <translation>可縮放向量圖形(SVG)符號的路徑</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1097"/>
         <source>Timeout for network requests (ms):</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">發出網站需求的過期時間(ms):</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1199"/>
         <source>Exclude URLs (starting with):</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">排除的網址:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="361"/>
         <source>Compatibility</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">相容性</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="367"/>
         <source>Use new generation symbology for rendering</source>
-        <translation type="unfinished"></translation>
+        <translation>繪圖時使用新式符號</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="499"/>
         <source>Open feature form, if a single feature is identified</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">如果識別出單一圖徵，則開啟圖徵從</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="977"/>
         <source>Default Coordinate Reference System</source>
-        <translation type="unfinished"></translation>
+        <translation>預設的座標參考系統</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1314"/>
         <source>General</source>
-        <translation type="unfinished">一般</translation>
+        <translation>一般</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1326"/>
         <source>Rendering &amp; SVG</source>
-        <translation type="unfinished"></translation>
+        <translation>繪圖與SVG</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1338"/>
         <source>Map tools</source>
-        <translation type="unfinished"></translation>
+        <translation>地圖工具</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1356"/>
         <source>Digitising</source>
-        <translation type="unfinished"></translation>
+        <translation>數位化</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1383"/>
         <source>Network &amp; Proxy</source>
-        <translation type="unfinished"></translation>
+        <translation>網路及代理伺服器</translation>
     </message>
 </context>
 <context>
@@ -23564,7 +23897,7 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="117"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished">您確定要移除%1連線與所有的設定嗎？</translation>
+        <translation type="unfinished">您確定要移除%1連線與所有的設定嗎?</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="120"/>
@@ -24007,25 +24340,25 @@ Geoprocessing functions are only available for PostgreSQL/PostGIS Layers</source
         <location filename="../src/app/qgspgsourceselect.cpp" line="54"/>
         <location filename="../src/app/qgspgsourceselect.cpp" line="186"/>
         <source>Wildcard</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">萬用字元</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="55"/>
         <location filename="../src/app/qgspgsourceselect.cpp" line="190"/>
         <source>RegExp</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">正規表示式</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="57"/>
         <location filename="../src/app/qgspgsourceselect.cpp" line="198"/>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">全砲</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="58"/>
         <location filename="../src/app/qgspgsourceselect.cpp" line="202"/>
         <source>Schema</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">架構</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="59"/>
@@ -24049,7 +24382,7 @@ Geoprocessing functions are only available for PostgreSQL/PostGIS Layers</source
         <location filename="../src/app/qgspgsourceselect.cpp" line="62"/>
         <location filename="../src/app/qgspgsourceselect.cpp" line="218"/>
         <source>Primary key column</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">主鍵(PK)欄位</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="63"/>
@@ -24060,7 +24393,7 @@ Geoprocessing functions are only available for PostgreSQL/PostGIS Layers</source
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="110"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished">您確定要移除%1連線與所有的設定嗎？</translation>
+        <translation type="unfinished">您確定要移除%1連線與所有的設定嗎?</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="112"/>
@@ -24147,7 +24480,7 @@ geometry.</source>
     <message>
         <location filename="../src/ui/qgspgsourceselectbase.ui" line="31"/>
         <source>PostgreSQL Connections</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">PostGIS連線</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgsourceselectbase.ui" line="43"/>
@@ -24215,19 +24548,59 @@ geometry.</source>
     <name>QgsPluginInstaller</name>
     <message>
         <source>Fetch Python Plugins...</source>
-        <translation type="obsolete">Python附加元件...</translation>
+        <translation type="unfinished">Python附加元件...</translation>
     </message>
     <message>
         <source>Looking for new plugins...</source>
-        <translation type="obsolete">尋找新的附加元件...</translation>
+        <translation type="unfinished">尋找新的附加元件...</translation>
     </message>
     <message>
         <source>QGIS Plugin Conflict:</source>
-        <translation type="obsolete">QGIS附加元件衝突:</translation>
+        <translation type="unfinished">QGIS附加元件衝突:</translation>
     </message>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="obsolete">QGIS Python附加元件安裝</translation>
+        <translation type="unfinished">QGIS Python附加元件安裝</translation>
+    </message>
+    <message>
+        <source>Nothing to remove! Plugin directory doesn&apos;t exist:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to remove the directory:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check permissions or remove it manually</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t parse output from the repository</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Couldn&apos;t open the local plugin directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Install more plugins from remote repositories</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. This is likely due to files associated with a previous installation of QGIS. Please use the Plugin Installer to remove that older plugin in order to unmask the newer version shipped with this copy of QGIS.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There is a new plugin available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There is a plugin update available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error reading repository:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -24266,75 +24639,254 @@ geometry.</source>
     </message>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="obsolete">QGIS Python 附加元件安裝</translation>
+        <translation type="unfinished">QGIS Python 附加元件安裝</translation>
     </message>
     <message>
         <source>all repositories</source>
-        <translation type="obsolete">所有附加元件主機</translation>
+        <translation type="unfinished">所有附加元件主機</translation>
     </message>
     <message>
         <source>connected</source>
-        <translation type="obsolete">已連線</translation>
+        <translation type="unfinished">已連線</translation>
     </message>
     <message>
         <source>disabled</source>
-        <translation type="obsolete">停用</translation>
+        <translation type="unfinished">停用</translation>
     </message>
     <message>
         <source>any status</source>
-        <translation type="obsolete">任何狀態</translation>
+        <translation type="unfinished">任何狀態</translation>
     </message>
     <message>
         <source>not installed</source>
-        <translation type="obsolete">未安裝</translation>
+        <translation type="unfinished">未安裝</translation>
     </message>
     <message>
         <source>installed</source>
-        <translation type="obsolete">已安裝</translation>
+        <translation type="unfinished">已安裝</translation>
     </message>
     <message>
         <source>upgradeable and news</source>
-        <translation type="obsolete">可升級與新版</translation>
+        <translation type="unfinished">可升級與新版</translation>
     </message>
     <message>
         <source>This plugin is not installed</source>
-        <translation type="obsolete">這附加元件未安裝</translation>
+        <translation type="unfinished">這附加元件未安裝</translation>
     </message>
     <message>
         <source>This plugin is installed</source>
-        <translation type="obsolete">這附加元件已安裝</translation>
+        <translation type="unfinished">這附加元件已安裝</translation>
     </message>
     <message>
         <source>This plugin is installed, but there is an updated version available</source>
-        <translation type="obsolete">這附加元件已安裝，且有新版本可以安裝</translation>
+        <translation type="unfinished">這附加元件已安裝，且有新版本可以安裝</translation>
     </message>
     <message>
         <source>upgradeable</source>
-        <translation type="obsolete">可升級</translation>
+        <translation type="unfinished">可升級</translation>
     </message>
     <message>
         <source>Install plugin</source>
-        <translation type="obsolete">安裝附加元件</translation>
+        <translation type="unfinished">安裝附加元件</translation>
     </message>
     <message>
         <source>Reinstall plugin</source>
-        <translation type="obsolete">重新安裝附加元件</translation>
+        <translation type="unfinished">重新安裝附加元件</translation>
     </message>
     <message>
         <source>Upgrade plugin</source>
-        <translation type="obsolete">升級附加元件</translation>
+        <translation type="unfinished">升級附加元件</translation>
     </message>
     <message>
         <source>Install/upgrade plugin</source>
-        <translation type="obsolete">安裝/升級附加元件</translation>
+        <translation type="unfinished">安裝/升級附加元件</translation>
     </message>
     <message>
         <source>Downgrade plugin</source>
-        <translation type="obsolete">降級附加元件</translation>
+        <translation type="unfinished">降級附加元件</translation>
     </message>
     <message>
         <source>Plugin installation failed</source>
-        <translation type="obsolete">附加元件安裝失敗</translation>
+        <translation type="unfinished">附加元件安裝失敗</translation>
+    </message>
+    <message>
+        <source>Error reading repository:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This repository is connected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>unavailable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This repository is enabled, but unavailable</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This repository is disabled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This repository is blocked due to incompatibility with your Quantum GIS version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>orphans</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This plugin is installed, but I can&apos;t find it in any enabled repository</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This plugin is not installed and is seen for the first time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This plugin is installed and is newer than its version available in a repository</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The required Python module is not installed.
+For more information, please visit its homepage and Quantum GIS wiki.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This plugin seems to be broken.
+It has been installed but can&apos;t be loaded.
+Here is the error message:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>new!</source>
+        <translation type="unfinished">新!</translation>
+    </message>
+    <message>
+        <source>invalid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Note that it&apos;s an uninstallable core plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>installed version</source>
+        <translation type="unfinished">已安裝版本</translation>
+    </message>
+    <message>
+        <source>available version</source>
+        <translation type="unfinished">可安裝的版本</translation>
+    </message>
+    <message>
+        <source>That&apos;s the newest available version</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There is no version available for download</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This plugin is broken</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This plugin requires a newer version of Quantum GIS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>at least</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This plugin requires a missing module</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>only locally available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plugin has disappeared</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The plugin seems to have been installed but I don&apos;t know where. Probably the plugin package contained a wrong named directory.
+Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll find the plugin there, but I just can&apos;t determine which of them it is. It also means that I won&apos;t be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plugin installed successfully</source>
+        <translation type="unfinished">附加元件成功地安裝</translation>
+    </message>
+    <message>
+        <source>Python plugin installed.
+Now you need to enable it in Plugin Manager.</source>
+        <translation type="unfinished">需要在附加元件管理中開啟此Python附加元件。</translation>
+    </message>
+    <message>
+        <source>Plugin reinstalled successfully</source>
+        <translation type="unfinished">附加元件成功地重新安裝</translation>
+    </message>
+    <message>
+        <source>Python plugin reinstalled.
+You need to restart Quantum GIS in order to reload it.</source>
+        <translation type="unfinished">Python附加元件已重新安裝
+您必須新重啟動Quantum GIS，以載入此附加元件。</translation>
+    </message>
+    <message>
+        <source>The plugin is designed for a newer version of Quantum GIS. The minimum required version is:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The plugin depends on some components missing on your system. You need to install the following Python module in order to enable it:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The plugin is broken. Python said:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plugin uninstall failed</source>
+        <translation type="unfinished">移除附加元件失敗</translation>
+    </message>
+    <message>
+        <source>Are you sure you want to uninstall the following plugin?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warning: this plugin isn&apos;t available in any accessible repository!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Plugin uninstalled successfully</source>
+        <translation type="unfinished">附加元件成功地移除</translation>
+    </message>
+    <message>
+        <source>Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely.</source>
+        <translation type="unfinished">Python附加元件已移除。注意：您也許需要重新啟動QGIS，以完全移除此附加元件。</translation>
+    </message>
+    <message>
+        <source>You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to add another repository with the same URL!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to remove the following repository?</source>
+        <translation type="unfinished">您確定要移除以下的附加元件主機?</translation>
     </message>
 </context>
 <context>
@@ -24613,35 +25165,35 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerFetchingDialog</name>
     <message>
         <source>Downloading data...</source>
-        <translation type="obsolete">下載資料...</translation>
+        <translation type="unfinished">下載資料...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="obsolete">錯誤</translation>
+        <translation type="unfinished">錯誤</translation>
     </message>
     <message>
         <source>Success</source>
-        <translation type="obsolete">成功</translation>
+        <translation type="unfinished">成功</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="obsolete">解析主機名稱...</translation>
+        <translation type="unfinished">解析主機名稱...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="obsolete">連線中...</translation>
+        <translation type="unfinished">連線中...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="obsolete">主機已連線。傳送需求中...</translation>
+        <translation type="unfinished">主機已連線。傳送需求中...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="obsolete">閒置</translation>
+        <translation type="unfinished">閒置</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="obsolete">關閉連線中...</translation>
+        <translation type="unfinished">關閉連線中...</translation>
     </message>
 </context>
 <context>
@@ -24676,43 +25228,43 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerInstallingDialog</name>
     <message>
         <source>Downloading data...</source>
-        <translation type="obsolete">下載資料...</translation>
+        <translation type="unfinished">下載資料...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="obsolete">錯誤</translation>
+        <translation type="unfinished">錯誤</translation>
     </message>
     <message>
         <source>Installing...</source>
-        <translation type="obsolete">安裝中...</translation>
+        <translation type="unfinished">安裝中...</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="obsolete">解析主機名稱...</translation>
+        <translation type="unfinished">解析主機名稱...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="obsolete">連接中...</translation>
+        <translation type="unfinished">連接中...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="obsolete">主機已連線。傳送請求中...</translation>
+        <translation type="unfinished">主機已連線。傳送請求中...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="obsolete">閒置</translation>
+        <translation type="unfinished">閒置</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="obsolete">關閉連線中...</translation>
+        <translation type="unfinished">關閉連線中...</translation>
     </message>
     <message>
         <source>Failed to unzip the plugin package. Probably it&apos;s broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:</source>
-        <translation type="obsolete">附加元件解壓縮失敗。可能是從主機下載失敗。您要先確定您的附加元件資料夾有寫入的權限:</translation>
+        <translation type="unfinished">附加元件解壓縮失敗。可能是從主機下載失敗。您要先確定您的附加元件資料夾有寫入的權限:</translation>
     </message>
     <message>
         <source>Aborted by user</source>
-        <translation type="obsolete">使用者已放棄</translation>
+        <translation type="unfinished">使用者已放棄</translation>
     </message>
 </context>
 <context>
@@ -24737,7 +25289,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerPluginErrorDialog</name>
     <message>
         <source>no error message received</source>
-        <translation type="obsolete">無接收到錯誤訊息</translation>
+        <translation type="unfinished">無接收到錯誤訊息</translation>
     </message>
 </context>
 <context>
@@ -25346,22 +25898,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgspointdialogbase.ui" line="261"/>
         <source>Raster file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">影像檔案</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgspointdialogbase.ui" line="294"/>
         <source>Transform type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">轉換方式</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgspointdialogbase.ui" line="307"/>
         <source>Modified raster</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">修改後的影像檔案</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgspointdialogbase.ui" line="327"/>
         <source>World file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">World文件</translation>
     </message>
 </context>
 <context>
@@ -25548,7 +26100,7 @@ column with a 16bit block number.
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="239"/>
         <source>Decimal number (real)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">十進制數(實數)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="240"/>
@@ -25681,32 +26233,32 @@ Try to find missing layers?</source>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="220"/>
         <source>Layer</source>
-        <translation type="unfinished">圖層</translation>
+        <translation>圖層</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="221"/>
         <source>Type</source>
-        <translation type="unfinished">類型</translation>
+        <translation>類型</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="222"/>
         <source>Identifiable</source>
-        <translation type="unfinished"></translation>
+        <translation>可識別</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="242"/>
         <source>Vector</source>
-        <translation type="unfinished"></translation>
+        <translation>向量</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="250"/>
         <source>WMS</source>
-        <translation type="unfinished"></translation>
+        <translation>WMS</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="254"/>
         <source>Raster</source>
-        <translation type="unfinished"></translation>
+        <translation>影像</translation>
     </message>
 </context>
 <context>
@@ -25863,12 +26415,12 @@ Try to find missing layers?</source>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="52"/>
         <source>Descriptive project name</source>
-        <translation type="unfinished">描述座作名稱</translation>
+        <translation>描述專案名稱</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="293"/>
         <source>Enable topological editing</source>
-        <translation type="unfinished">使用拓撲(topological)編輯</translation>
+        <translation>使用拓撲(topological)編輯</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="307"/>
@@ -25896,7 +26448,7 @@ Try to find missing layers?</source>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="101"/>
         <source>Background color</source>
-        <translation type="unfinished">背景顏色</translation>
+        <translation>背景顏色</translation>
     </message>
     <message>
         <source>Map units</source>
@@ -25905,7 +26457,7 @@ Try to find missing layers?</source>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="318"/>
         <source>Coordinate Reference System (CRS)</source>
-        <translation type="unfinished">座標參考系統(CRS)</translation>
+        <translation>座標參考系統(CRS)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="336"/>
@@ -25924,52 +26476,52 @@ Try to find missing layers?</source>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="36"/>
         <source>General settings</source>
-        <translation type="unfinished"></translation>
+        <translation>一般設定</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="347"/>
         <source>Identifiable layers</source>
-        <translation type="unfinished"></translation>
+        <translation>可識別的圖層</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="357"/>
         <source>Layer</source>
-        <translation type="unfinished">圖層</translation>
+        <translation>圖層</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="362"/>
         <source>Type</source>
-        <translation type="unfinished">類型</translation>
+        <translation>類型</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="367"/>
         <source>Identifiable</source>
-        <translation type="unfinished"></translation>
+        <translation>可識別</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="138"/>
         <source>absolute</source>
-        <translation type="unfinished"></translation>
+        <translation>絕對</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="143"/>
         <source>relative</source>
-        <translation type="unfinished"></translation>
+        <translation>相對</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="151"/>
         <source>Save paths</source>
-        <translation type="unfinished"></translation>
+        <translation>存檔路徑</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="207"/>
         <source>Degrees, Minutes, Seconds</source>
-        <translation type="unfinished"></translation>
+        <translation>度,分,秒</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="300"/>
         <source>Avoid intersections of new polygons...</source>
-        <translation type="unfinished"></translation>
+        <translation>避免新多邊形產生交叉</translation>
     </message>
 </context>
 <context>
@@ -26131,12 +26683,16 @@ Because of this the projection selector will not work...</source>
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;To access Quantum GIS environment from this python console use qgis.utils.iface object which is an instance of QgisInterface class.&lt;br /&gt;Usage e.g.: qgis.utils.iface.zoomFull()&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;使用QGIS環境中python主控台存取物件，是使用全域的QgisInterface類別實體&lt;br&gt;使用範例: iface.zoomFull()&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspythondialog.ui" line="50"/>
         <source>E&amp;xecute</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">執行(&amp;E)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspythondialog.ui" line="57"/>
@@ -26158,12 +26714,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsquerybuilder.cpp" line="106"/>
         <source>Invalid Query</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">無效的查詢</translation>
     </message>
     <message>
         <location filename="../src/app/qgsquerybuilder.cpp" line="106"/>
         <source>Setting the query failed</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">設定查訒欄位</translation>
     </message>
     <message>
         <location filename="../src/app/qgsquerybuilder.cpp" line="163"/>
@@ -26196,7 +26752,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsquerybuilder.cpp" line="176"/>
         <source>An error occurred when executing the query</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">執行查詢時發生錯誤</translation>
     </message>
     <message>
         <location filename="../src/app/qgsquerybuilder.cpp" line="194"/>
@@ -26211,12 +26767,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsquerybuilder.cpp" line="40"/>
         <source>&amp;Test</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">測試(&amp;T)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsquerybuilder.cpp" line="44"/>
         <source>&amp;Clear</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">清除(&amp;C)</translation>
     </message>
 </context>
 <context>
@@ -26281,7 +26837,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="124"/>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">全部</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="134"/>
@@ -26876,7 +27432,9 @@ p, li { white-space: pre-wrap; }
         <source>Write access denied. Adjust the file permissions and try again.
 
 </source>
-        <translation type="unfinished">拒絕寫操作。修改檔許可權然後重試.</translation>
+        <translation type="unfinished">拒絕寫操作。修改檔許可權然後重試。
+
+</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1584"/>
@@ -26884,7 +27442,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1595"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1600"/>
         <source>Building pyramids failed.</source>
-        <translation type="unfinished">建立快取顯示檔(Pyramid)失敗.</translation>
+        <translation type="unfinished">建立快取金字塔顯示檔(Pyramid)失敗.</translation>
     </message>
     <message>
         <source>The file was not writeable. Some formats can not be written to, only read. You can also try to check the permissions and then try again.</source>
@@ -26894,7 +27452,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1591"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1601"/>
         <source>Building pyramid overviews is not supported on this type of raster.</source>
-        <translation type="unfinished">此類影像不支持建立快取顯示檔(Pyramid)的全覽圖.</translation>
+        <translation type="unfinished">此類影像不支持建立快取金字塔(Pyramids)的全覽圖.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="111"/>
@@ -26961,17 +27519,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="309"/>
         <source>Large resolution raster layers can slow navigation in QGIS.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">高解析度的影像圖層在QGIS會降低瀏覽速度。</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="310"/>
         <source>By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">建立低解析度的資料複製(快取金字塔-Pyramids)，執行效率會有顯著提高，因為QGIS會根據縮放的級別來選擇最合適的解析度。</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="311"/>
         <source>You must have write access in the directory where the original data is stored to build pyramids.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">要建立快取金字塔(Pyramids)，您必須對原始資料的儲存資料夾有寫許可權。</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="370"/>
@@ -27143,12 +27701,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="312"/>
         <source>Please note that building internal pyramids may alter the original data file and once created they cannot be removed!</source>
-        <translation type="unfinished"></translation>
+        <translation>請注意，建立內部快取金字塔(internal pyramids)可能會修改原始資料檔案，而且它們一經建立就無法刪除!</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="313"/>
         <source>Please note that building internal pyramids could corrupt your image - always make a backup of your data first!</source>
-        <translation type="unfinished"></translation>
+        <translation>請注意，建立內部快取金字塔(internal pyramids)可能會破壞料原始圖檔，請先建立備份!</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1585"/>
@@ -27163,7 +27721,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2702"/>
         <source>QGIS Generated Color Map Export File</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">QGIS色彩影射表輸出檔</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2760"/>
@@ -27186,7 +27744,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="450"/>
         <source>Note: Minimum Maximum values are actual values computed from the band(s)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">注意：最大值/最小值是由各波段中計算取得的實際值</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="587"/>
@@ -27210,34 +27768,36 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="750"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2938"/>
         <source>Default R:%1 G:%2 B:%3</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">預設波段 R:%1 G:%2 B:%3</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="820"/>
         <source>Columns: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">列:%1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="821"/>
         <source>Rows: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">行: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="824"/>
         <source>No-Data Value: %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">沒有資料值: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1580"/>
         <source>Write access denied. Adjust the file permissions and try again.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">拒絕寫操作。修改檔許可權然後重試。</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2350"/>
         <source>The following lines contained errors
 
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">以下包含錯誤訊息
+
+%1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2760"/>
@@ -27258,7 +27818,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="446"/>
         <source>Note: Minimum Maximum values are estimates, user defined, or calculated from the current extent</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">注意: 最小值/最大值是由使用者定義或由目前範圍計算而得</translation>
     </message>
 </context>
 <context>
@@ -27456,7 +28016,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="137"/>
         <source>Pyramids</source>
-        <translation type="unfinished">快取顯示檔(Pyramid)</translation>
+        <translation type="unfinished">快取金字塔(Pyramids)</translation>
     </message>
     <message>
         <source>Resampling Method</source>
@@ -27763,7 +28323,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="609"/>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="786"/>
         <source>Use standard deviation</source>
-        <translation type="unfinished">使用標準差</translation>
+        <translation>使用標準差</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="826"/>
@@ -27888,7 +28448,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1300"/>
         <source>Number of entries</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輸入數目</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1346"/>
@@ -27928,7 +28488,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1811"/>
         <source>Pyramid resolutions</source>
-        <translation type="unfinished">快取顯示檔(Pyramid)解析度</translation>
+        <translation type="unfinished">快取金字塔(Pyramids)解析度</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1861"/>
@@ -27938,7 +28498,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1889"/>
         <source>Build pyramids</source>
-        <translation type="unfinished">建立快取顯示檔(Pyramid)</translation>
+        <translation type="unfinished">建立快取金字塔(Pyramids)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1949"/>
@@ -27993,7 +28553,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1369"/>
         <source>Add entry</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">新增輸入</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1383"/>
@@ -28047,23 +28607,23 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1854"/>
         <source>Build pyramids internally if possible</source>
-        <translation type="unfinished">從內部建立快取顯示檔(Pyramid)</translation>
+        <translation type="unfinished">從內部建立快取金字塔(Pyramids)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1627"/>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1630"/>
         <source>Specify the coordinate reference system of the layer&apos;s geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">指定幾合圖層的座標參考系統。</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1633"/>
         <source>Specify...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">指定...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="898"/>
         <source>Current extent</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">目前的範圍</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1824"/>
@@ -28108,7 +28668,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="14"/>
         <source>Raster based terrain analysis</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">影像(Raster)地形分析</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="78"/>
@@ -28118,27 +28678,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="98"/>
         <source>Add result to project</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">加入結果至專案中</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="20"/>
         <source>Analysis</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">分析</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="40"/>
         <source>Input layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輸入圖層</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="53"/>
         <source>Output layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輸出圖層</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="85"/>
         <source>Output format</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輸出格式</translation>
     </message>
 </context>
 <context>
@@ -28148,7 +28708,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="53"/>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="61"/>
         <source>&amp;Raster based terrain analysis...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">影像(&amp;Raster)地形分析...</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="93"/>
@@ -28173,12 +28733,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="112"/>
         <source>Calculating </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">計算</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="112"/>
         <source>Abort...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">放棄...</translation>
     </message>
 </context>
 <context>
@@ -28186,12 +28746,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2propertiesdialog.cpp" line="175"/>
         <source>Symbology</source>
-        <translation type="unfinished"></translation>
+        <translation>符號設計</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2propertiesdialog.cpp" line="176"/>
         <source>Do you wish to use the original symbology implementation for this layer?</source>
-        <translation type="unfinished"></translation>
+        <translation>您想在目前圖層使用原來的符號設計?</translation>
     </message>
 </context>
 <context>
@@ -28199,22 +28759,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="14"/>
         <source>Renderer settings</source>
-        <translation type="unfinished"></translation>
+        <translation>繪圖設定</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="22"/>
         <source>Renderer:</source>
-        <translation type="unfinished"></translation>
+        <translation>繪圖:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="45"/>
         <source>Symbol levels</source>
-        <translation type="unfinished"></translation>
+        <translation>符號層級</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="52"/>
         <source>Old symbology</source>
-        <translation type="unfinished"></translation>
+        <translation>原本的符號設計</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="77"/>
@@ -28249,7 +28809,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/qgsrunprocess.cpp" line="54"/>
         <source>&lt;b&gt;Starting %1...&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;b&gt;開始 %1...&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../src/core/qgsrunprocess.cpp" line="72"/>
@@ -28314,7 +28874,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/diagram_overlay/qgssvgdiagramfactorywidget.cpp" line="93"/>
         <source>Select svg file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">選擇SVG檔</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgssvgdiagramfactorywidget.cpp" line="133"/>
@@ -28352,7 +28912,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/diagram_overlay/qgssvgdiagramfactorywidgetbase.ui" line="81"/>
         <source>SVG Preview</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">SVG預覽</translation>
     </message>
     <message>
         <source>Browse...</source>
@@ -28626,17 +29186,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="77"/>
         <source>Scale bar style</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">比例尺的樣式</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="126"/>
         <source>Colour of bar</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">比例尺顏色</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="161"/>
         <source>Size of bar</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">比例尺大小</translation>
     </message>
 </context>
 <context>
@@ -28684,12 +29244,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="43"/>
         <source>&amp;Test</source>
-        <translation type="unfinished"></translation>
+        <translation>測試(&amp;T)</translation>
     </message>
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="47"/>
         <source>&amp;Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>清除(&amp;C)</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="178"/>
@@ -28936,7 +29496,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/spit/qgsshapefile.cpp" line="442"/>
         <source>The database gave an error while executing this SQL:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">資料庫回應錯誤訊息，當在執行此SQL:</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsshapefile.cpp" line="446"/>
@@ -28958,14 +29518,19 @@ p, li { white-space: pre-wrap; }
 The error was:
 %2
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">資料庫回應錯誤訊息，當在執行此SQL:
+%1
+錯誤是:
+%2</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsshapefile.cpp" line="450"/>
         <source>The error was:
 %1
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">錯誤是:
+%1
+</translation>
     </message>
 </context>
 <context>
@@ -29063,18 +29628,18 @@ The error was:
     <message>
         <location filename="../src/app/qgssinglesymboldialog.cpp" line="184"/>
         <source>Texture</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">材質</translation>
     </message>
     <message>
         <location filename="../src/app/qgssinglesymboldialog.cpp" line="63"/>
         <source>Refresh markers</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">重新整理符號</translation>
     </message>
     <message>
         <location filename="../src/app/qgssinglesymboldialog.cpp" line="164"/>
         <location filename="../src/app/qgssinglesymboldialog.cpp" line="183"/>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">無</translation>
     </message>
 </context>
 <context>
@@ -29172,17 +29737,17 @@ The error was:
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="116"/>
         <source>In map units</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">在地圖單位</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="350"/>
         <source>Drawing by field</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">由欄位決定</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="356"/>
         <source>Rotation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">旋轉</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="369"/>
@@ -29192,12 +29757,12 @@ The error was:
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="155"/>
         <source>Fill options</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">填滿選項</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="243"/>
         <source>Outline options</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">框線選項</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="299"/>
@@ -29305,7 +29870,7 @@ SQL: %2</source>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="120"/>
         <source>Whole number (integer)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">整數</translation>
     </message>
 </context>
 <context>
@@ -29330,19 +29895,19 @@ SQL: %2</source>
         <location filename="../src/app/qgsspatialitesourceselect.cpp" line="51"/>
         <location filename="../src/app/qgsspatialitesourceselect.cpp" line="102"/>
         <source>Wildcard</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">萬用字元</translation>
     </message>
     <message>
         <location filename="../src/app/qgsspatialitesourceselect.cpp" line="52"/>
         <location filename="../src/app/qgsspatialitesourceselect.cpp" line="106"/>
         <source>RegExp</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">正規表示式</translation>
     </message>
     <message>
         <location filename="../src/app/qgsspatialitesourceselect.cpp" line="54"/>
         <location filename="../src/app/qgsspatialitesourceselect.cpp" line="114"/>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">全部</translation>
     </message>
     <message>
         <location filename="../src/app/qgsspatialitesourceselect.cpp" line="55"/>
@@ -29427,7 +29992,7 @@ SQL: %2</source>
     <message>
         <location filename="../src/app/qgsspatialitesourceselect.cpp" line="340"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished">您確定要移除%1連線與所有的設定嗎？</translation>
+        <translation type="unfinished">您確定要移除%1連線與所有的設定嗎?</translation>
     </message>
     <message>
         <location filename="../src/app/qgsspatialitesourceselect.cpp" line="280"/>
@@ -29502,22 +30067,22 @@ SQL: %2</source>
     <message>
         <location filename="../src/ui/qgsspatialitesourceselectbase.ui" line="57"/>
         <source>SpatiaLite Databases</source>
-        <translation type="unfinished"></translation>
+        <translation>SpatiaLite資料庫</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsspatialitesourceselectbase.ui" line="108"/>
         <source>Search</source>
-        <translation type="unfinished">尋找</translation>
+        <translation>尋找</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsspatialitesourceselectbase.ui" line="118"/>
         <source>Search mode</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">搜尋模式</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsspatialitesourceselectbase.ui" line="131"/>
         <source>Search in columns</source>
-        <translation type="unfinished"></translation>
+        <translation>在欄位中尋找</translation>
     </message>
 </context>
 <context>
@@ -29791,7 +30356,7 @@ SQL: %2</source>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="67"/>
         <source>Schema</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">架構</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="176"/>
@@ -30059,17 +30624,17 @@ Do you want to overwrite the [%2] relation?</source>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="45"/>
         <source>PostgreSQL connections</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">PostGIS連線</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="128"/>
         <source>Geometry column name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">幾何欄位的名稱</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="147"/>
         <source>Use default geometry column name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">使用預設的幾何欄位的名稱</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="154"/>
@@ -30079,17 +30644,17 @@ Do you want to overwrite the [%2] relation?</source>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="183"/>
         <source>Use default SRID</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">使用預設SRID</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="190"/>
         <source>Primary key column name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">主鍵(PK)欄位名稱</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="203"/>
         <source>Global schema</source>
-        <translation type="unfinished"></translation>
+        <translation>全域架構</translation>
     </message>
 </context>
 <context>
@@ -30116,27 +30681,27 @@ Do you want to overwrite the [%2] relation?</source>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="14"/>
         <source>Style Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>樣式管理</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="20"/>
         <source>Style item type:</source>
-        <translation type="unfinished"></translation>
+        <translation>樣式項目類別:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="57"/>
         <source>Add item</source>
-        <translation type="unfinished"></translation>
+        <translation>新增項目</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="64"/>
         <source>Edit item</source>
-        <translation type="unfinished"></translation>
+        <translation>編輯項目</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="71"/>
         <source>Remove item</source>
-        <translation type="unfinished"></translation>
+        <translation>刪除項目</translation>
     </message>
 </context>
 <context>
@@ -30144,12 +30709,12 @@ Do you want to overwrite the [%2] relation?</source>
     <message>
         <location filename="../src/ui/qgssymbollevelsv2dialogbase.ui" line="14"/>
         <source>Symbol Levels</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">符號層級</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbollevelsv2dialogbase.ui" line="20"/>
         <source>Enable symbol levels</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">啟用符號層級</translation>
     </message>
 </context>
 <context>
@@ -30157,7 +30722,7 @@ Do you want to overwrite the [%2] relation?</source>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="14"/>
         <source>Symbol selector</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">符號選擇</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="57"/>
@@ -30181,7 +30746,7 @@ Do you want to overwrite the [%2] relation?</source>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="88"/>
         <source>Rotation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">旋轉</translation>
     </message>
     <message utf8="true">
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="95"/>
@@ -30201,12 +30766,12 @@ Do you want to overwrite the [%2] relation?</source>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="192"/>
         <source>Add to style</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">新增至樣式</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="201"/>
         <source>Symbols from style:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">符號樣式:</translation>
     </message>
 </context>
 <context>
@@ -30261,7 +30826,7 @@ Do you want to overwrite the [%2] relation?</source>
     <message>
         <location filename="../src/plugins/interpolation/qgstininterpolatordialogbase.ui" line="59"/>
         <source>Output file</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輸出檔案</translation>
     </message>
 </context>
 <context>
@@ -30357,7 +30922,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsuniquevaluedialogbase.ui" line="153"/>
         <source>Restrict changes to common properties</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">限制變更一般屬性</translation>
     </message>
 </context>
 <context>
@@ -31074,17 +31639,17 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1072"/>
         <source>UI file (*.ui)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">UI 檔案 (*.ui)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1128"/>
         <source>Symbology</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">符號設計</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1129"/>
         <source>Do you wish to use the new symbology implementation for this layer?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">您想在目前圖層使用新版符號設計?</translation>
     </message>
 </context>
 <context>
@@ -31334,7 +31899,7 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="514"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="517"/>
         <source>Specify the coordinate reference system of the layer&apos;s geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">指定幾合圖層的座標參考系統。</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="520"/>
@@ -31344,17 +31909,17 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="355"/>
         <source>Field calculator</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">欄位計算</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="252"/>
         <source>New symbology</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">新版符號設計</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="476"/>
         <source>Edit UI</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">編輯UI</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="488"/>
@@ -31364,7 +31929,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="527"/>
         <source>Init function</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Init 功能</translation>
     </message>
 </context>
 <context>
@@ -31523,22 +32088,22 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="260"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished">您確定要移除%1連線與所有的設定嗎？</translation>
+        <translation type="unfinished">您確定要移除%1連線與所有的設定嗎?</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="237"/>
         <source>Create a new WFS connection</source>
-        <translation type="unfinished"></translation>
+        <translation>建立新的WFS連線</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="248"/>
         <source>Modify WFS connection</source>
-        <translation type="unfinished"></translation>
+        <translation>修改WFS連線</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="147"/>
         <source>Error</source>
-        <translation type="unfinished">錯誤</translation>
+        <translation>錯誤</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="147"/>
@@ -31633,7 +32198,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="96"/>
         <source>Server connections</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">伺服器連線</translation>
     </message>
 </context>
 <context>
@@ -31664,7 +32229,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgswkndiagramfactorywidgetbase.ui" line="31"/>
         <source>Attributes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">屬性</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgswkndiagramfactorywidgetbase.ui" line="50"/>
@@ -31682,7 +32247,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="200"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished">您確定要移除%1連線與所有的設定嗎？</translation>
+        <translation type="unfinished">您確定要移除%1連線與所有的設定嗎?</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="202"/>
@@ -31786,7 +32351,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="47"/>
         <source>C&amp;onnect</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">連線(&amp;o)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="54"/>
@@ -31897,7 +32462,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="307"/>
         <source>Change ...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">改變...</translation>
     </message>
     <message>
         <source>Help</source>
@@ -32376,17 +32941,17 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/plugins/quick_print/quickprintguibase.ui" line="24"/>
         <source>Map title</source>
-        <translation type="unfinished"></translation>
+        <translation>地圖標題</translation>
     </message>
     <message>
         <location filename="../src/plugins/quick_print/quickprintguibase.ui" line="37"/>
         <source>Map name</source>
-        <translation type="unfinished">地圖名稱</translation>
+        <translation>地圖名稱</translation>
     </message>
     <message>
         <location filename="../src/plugins/quick_print/quickprintguibase.ui" line="60"/>
         <source>Page size</source>
-        <translation type="unfinished"></translation>
+        <translation>紙張大小</translation>
     </message>
 </context>
 <context>
@@ -32423,17 +32988,17 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="14"/>
         <source>Select Oracle Spatial GeoRaster</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">選擇Oracle空間 GeoRaster</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="36"/>
         <source>Server Connections</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">伺服器連線</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="81"/>
         <source>C&amp;onnect</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">連線(&amp;o)</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="54"/>
@@ -32453,7 +33018,7 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="148"/>
         <source>Selection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">選取</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="160"/>
@@ -32472,7 +33037,7 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="119"/>
         <source>Subdatasets</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">子資料集</translation>
     </message>
     <message>
         <source>Help</source>
@@ -32558,7 +33123,51 @@ Tried URL: %1</source>
     <name>VisualDialog</name>
     <message>
         <source>Unique values</source>
-        <translation type="obsolete">唯一值</translation>
+        <translation type="unfinished">唯一值</translation>
+    </message>
+    <message>
+        <source>Please specify input vector layer</source>
+        <translation type="unfinished">請指定輸入向量圖層</translation>
+    </message>
+    <message>
+        <source>Please specify input field</source>
+        <translation type="unfinished">請指定輸入欄位</translation>
+    </message>
+    <message>
+        <source>Check geometry validity</source>
+        <translation type="unfinished">檢查幾何正確性</translation>
+    </message>
+    <message>
+        <source>Geometry errors</source>
+        <translation type="unfinished">幾何錯誤</translation>
+    </message>
+    <message>
+        <source>Total encountered errors</source>
+        <translation type="unfinished">全部遇到的錯誤</translation>
+    </message>
+    <message>
+        <source>List unique values</source>
+        <translation type="unfinished">列出唯一值</translation>
+    </message>
+    <message>
+        <source>Total unique values</source>
+        <translation type="unfinished">唯一值總計</translation>
+    </message>
+    <message>
+        <source>Basics statistics</source>
+        <translation type="unfinished">基本統計</translation>
+    </message>
+    <message>
+        <source>Statistics output</source>
+        <translation type="unfinished">統計結果</translation>
+    </message>
+    <message>
+        <source>Nearest neighbour analysis</source>
+        <translation type="unfinished">最鄰近採樣分析</translation>
+    </message>
+    <message>
+        <source>Nearest neighbour statistics</source>
+        <translation type="unfinished">最鄰近採樣統計</translation>
     </message>
 </context>
 <context>
@@ -32633,22 +33242,22 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="52"/>
         <source>Border color:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">邊線顏色:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="69"/>
         <source>Fill style:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">填滿樣式:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="76"/>
         <source>Border style:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">邊線樣式:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="86"/>
         <source>Border width:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">邊線寬度:</translation>
     </message>
 </context>
 <context>
@@ -32704,7 +33313,7 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="22"/>
         <source>Border color:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">邊線顏色:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="29"/>
@@ -32715,7 +33324,7 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="52"/>
         <source>Fill color:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">填滿顏色:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="66"/>
@@ -32725,12 +33334,12 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="73"/>
         <source>Angle:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">角度:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="93"/>
         <source>Offset X,Y:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">偏移量 X,Y:</translation>
     </message>
 </context>
 <context>
@@ -32748,12 +33357,12 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="48"/>
         <source>Angle:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">角度:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="92"/>
         <source>Offset X,Y:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">偏移量 X,Y:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="117"/>
@@ -32822,13 +33431,13 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconverter.cpp" line="77"/>
         <source>Converts DXF files in Shapefile format</source>
-        <translation type="unfinished">Dxf轉成Shape檔檔案格式</translation>
+        <translation type="unfinished">Dxf轉Shape檔格式</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconverter.cpp" line="84"/>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconverter.cpp" line="116"/>
         <source>&amp;Dxf2Shp</source>
-        <translation type="unfinished">Dxf轉成shp檔(&amp;D)</translation>
+        <translation type="unfinished">Dxf轉shp檔(&amp;D)</translation>
     </message>
 </context>
 <context>
@@ -32924,12 +33533,12 @@ For support send a mail to scala@itc.cnr.it
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="37"/>
         <source>Input and output</source>
-        <translation type="unfinished"></translation>
+        <translation>輸入與輸出</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="63"/>
         <source>Output file</source>
-        <translation type="unfinished"></translation>
+        <translation>輸出檔案</translation>
     </message>
 </context>
 <context>
@@ -33079,7 +33688,7 @@ For support send a mail to scala@itc.cnr.it
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="13"/>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="153"/>
         <source>Database Connection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">資料庫連線</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="65"/>
@@ -33099,7 +33708,7 @@ For support send a mail to scala@itc.cnr.it
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="165"/>
         <source>not connected</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">未連線</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="175"/>
@@ -33107,12 +33716,15 @@ For support send a mail to scala@itc.cnr.it
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;Connection Status: &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;微軟正黑體&apos;; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-style:italic;&quot;&gt;連線狀態: &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="185"/>
         <source>Database Host</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">資料庫主機</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="192"/>
@@ -33152,17 +33764,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="289"/>
         <source>Database Name</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">資料庫名稱</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="303"/>
         <source>Database Type</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">資料庫類型</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="350"/>
         <source>SQL Query</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">SQL查詢</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="375"/>
@@ -33172,7 +33784,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="378"/>
         <source>Run Query</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">執行查詢</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="388"/>
@@ -33187,12 +33799,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="458"/>
         <source>Output Console</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">輸出主控台</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="47"/>
         <source>Predefined Queries</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">預先定義的查詢</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="108"/>
@@ -33304,7 +33916,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1091"/>
         <source>All ( * )</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">全部( * )</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="309"/>
@@ -33667,27 +34279,188 @@ Base Path (i.e. keep only filename from attribute)</source>
     </message>
     <message>
         <source>&amp;Analysis Tools</source>
-        <translation type="obsolete">分析工具(&amp;A)</translation>
+        <translation type="unfinished">分析工具(&amp;A)</translation>
     </message>
     <message>
         <source>&amp;Research Tools</source>
-        <translation type="obsolete">研究工具(&amp;R)</translation>
+        <translation type="unfinished">研究工具(&amp;R)</translation>
     </message>
     <message>
         <source>&amp;Geoprocessing Tools</source>
-        <translation type="obsolete">地理空間運算工具(&amp;G)</translation>
+        <translation type="unfinished">地理空間運算工具(&amp;G)</translation>
     </message>
     <message>
         <source>G&amp;eometry Tools</source>
-        <translation type="obsolete">幾何工具(G&amp;)</translation>
+        <translation type="unfinished">幾何工具(G&amp;)</translation>
     </message>
     <message>
         <source>&amp;Data Management Tools</source>
-        <translation type="obsolete">資料管理工具(&amp;D)</translation>
+        <translation type="unfinished">資料管理工具(&amp;D)</translation>
     </message>
     <message>
         <source>fTools Information</source>
-        <translation type="obsolete">fTools 資訊</translation>
+        <translation type="unfinished">fTools 資訊</translation>
+    </message>
+    <message>
+        <source>Quantum GIS version detected: </source>
+        <translation type="unfinished">Quantum GIS 版本偵測:</translation>
+    </message>
+    <message>
+        <source>This version of fTools requires at least QGIS version 1.0.0
+Plugin will not be enabled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Vector</source>
+        <translation type="unfinished">向量工具(&amp;V)</translation>
+    </message>
+    <message>
+        <source>Distance matrix</source>
+        <translation type="unfinished">距離矩陣</translation>
+    </message>
+    <message>
+        <source>Sum line lengths</source>
+        <translation type="unfinished">計算線段長度</translation>
+    </message>
+    <message>
+        <source>Points in polygon</source>
+        <translation type="unfinished">多邊形中的點</translation>
+    </message>
+    <message>
+        <source>Basic statistics</source>
+        <translation type="unfinished">基本統計</translation>
+    </message>
+    <message>
+        <source>List unique values</source>
+        <translation type="unfinished">列出唯一值</translation>
+    </message>
+    <message>
+        <source>Nearest neighbour analysis</source>
+        <translation type="unfinished">最鄰近採樣分析</translation>
+    </message>
+    <message>
+        <source>Mean coordinate(s)</source>
+        <translation type="unfinished">中值座標</translation>
+    </message>
+    <message>
+        <source>Line intersections</source>
+        <translation type="unfinished">線相交(Intersect)</translation>
+    </message>
+    <message>
+        <source>Random selection</source>
+        <translation>隨機選取</translation>
+    </message>
+    <message>
+        <source>Random selection within subsets</source>
+        <translation type="unfinished">在子集合中隨機選取</translation>
+    </message>
+    <message>
+        <source>Random points</source>
+        <translation type="unfinished">產生隨機點</translation>
+    </message>
+    <message>
+        <source>Regular points</source>
+        <translation type="unfinished">產生點</translation>
+    </message>
+    <message>
+        <source>Vector grid</source>
+        <translation type="unfinished">向量格網</translation>
+    </message>
+    <message>
+        <source>Select by location</source>
+        <translation type="unfinished">由空間選取</translation>
+    </message>
+    <message>
+        <source>Polygon from layer extent</source>
+        <translation type="unfinished">由圖層範圍建立多邊形</translation>
+    </message>
+    <message>
+        <source>Convex hull(s)</source>
+        <translation type="unfinished">繪出輪廓-凸包演算法(Convex hull)</translation>
+    </message>
+    <message>
+        <source>Buffer(s)</source>
+        <translation type="unfinished">環域(Buffer)</translation>
+    </message>
+    <message>
+        <source>Intersect</source>
+        <translation type="unfinished">交集(Intersect)</translation>
+    </message>
+    <message>
+        <source>Union</source>
+        <translation type="unfinished">聯集(Union)</translation>
+    </message>
+    <message>
+        <source>Symetrical difference</source>
+        <translation type="unfinished">對稱差(Symetrial difference)</translation>
+    </message>
+    <message>
+        <source>Clip</source>
+        <translation type="unfinished">形狀裁切(Clip)</translation>
+    </message>
+    <message>
+        <source>Dissolve</source>
+        <translation type="unfinished">融合(Dissolve)</translation>
+    </message>
+    <message>
+        <source>Difference</source>
+        <translation type="unfinished">切除(Difference)</translation>
+    </message>
+    <message>
+        <source>Export/Add geometry columns</source>
+        <translation type="unfinished">匯出/新增幾何欄位</translation>
+    </message>
+    <message>
+        <source>Check geometry validity</source>
+        <translation type="unfinished">檢查幾何正確性</translation>
+    </message>
+    <message>
+        <source>Polygon centroids</source>
+        <translation type="unfinished">多邊形質心</translation>
+    </message>
+    <message>
+        <source>Delaunay triangulation</source>
+        <translation type="unfinished">德洛涅(Delaunay)三角面分割</translation>
+    </message>
+    <message>
+        <source>Extract nodes</source>
+        <translation type="unfinished">擷取節點</translation>
+    </message>
+    <message>
+        <source>Simplify geometries</source>
+        <translation type="unfinished">簡化幾何形狀</translation>
+    </message>
+    <message>
+        <source>Multipart to singleparts</source>
+        <translation type="unfinished">多重部件合併成單一部件</translation>
+    </message>
+    <message>
+        <source>Singleparts to multipart</source>
+        <translation type="unfinished">單一部件分割成多重部件</translation>
+    </message>
+    <message>
+        <source>Polygons to lines</source>
+        <translation type="unfinished">多邊形轉換成線段</translation>
+    </message>
+    <message>
+        <source>Export to new projection</source>
+        <translation type="unfinished">匯出至新投影</translation>
+    </message>
+    <message>
+        <source>Define current projection</source>
+        <translation type="unfinished">定義目前投影</translation>
+    </message>
+    <message>
+        <source>Join attributes</source>
+        <translation type="unfinished">結合(Join)屬性</translation>
+    </message>
+    <message>
+        <source>Join attributes by location</source>
+        <translation type="unfinished">由空間結合(Join)屬性</translation>
+    </message>
+    <message>
+        <source>Split vector layer</source>
+        <translation type="unfinished">分割向量圖層</translation>
     </message>
 </context>
 <context>
@@ -33724,6 +34497,101 @@ Base Path (i.e. keep only filename from attribute)</source>
     <message>
         <location filename="../src/plugins/plugin_template/plugin.cpp" line="75"/>
         <source>Replace this with a short description of what the plugin does</source>
+        <translation type="unfinished">用簡短的描述替換這行文字，說明附加元件的功能</translation>
+    </message>
+</context>
+<context>
+    <name>visualThread</name>
+    <message>
+        <source>Max. len:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Min. len:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mean. len:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filled:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Empty:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>N:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mean:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>StdDev:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sum:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Min:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Max:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CV:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of unique values:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Range:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Median:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Observed mean distance:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Expected mean distance:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Nearest neighbour index:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Z-Score:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature %1 contains an unnested hole</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature %1 is not closed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature %1 is self intersecting</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature %1 has incorrect node ordering</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
