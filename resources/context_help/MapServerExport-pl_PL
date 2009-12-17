@@ -2,33 +2,31 @@
 <p>
 To narzędzie umożliwia wyeksportowanie zapisanego projetu QGIS 
 do pliku w formacie mapy MapServer. Program do eksportu to plik binarny i może być wykorzystany niezależnie od programu głównego QGIS. Należy jedynie podać <b>nazwę pliku mapy MapServera</b> oraz <b>nazwę pliku projektu QGIS</b>.
-</p>
-<h4>Pliki wejściowe</h4>
-<dl>
-  <dt>Nazwa pliku mapy MapServera</dt>
-  <dd>Podaj nazwę pliku mapy, który zostanie utworzony. Możesz wykorzystać przycisk znajdujący się po prawej stronie, aby wskazać kartotekę w której będzie zapisany.
-  <dt>Nazwa pliku projektu QGIS</dt>
-  <dd>Podaj pełną ścieżkę dostępu do pliku projektu QGIS (.qgs), który chcesz wyeksportować. Możesz wykorzystać przycisk znajdujący się po prawej stronie, aby przeglądać kartoteki.</dd>
-</dl>
-<h4>Parametry mapy</h4>
+<p>
+Zaznacz <label>Użyj bieżącego projektu</label> lub podaj pełną ścieżkę dostępu do pliku projektu QGIS (.qgs), który chcesz wyeksportować. Możesz wykorzystać przycisk znajdujący się po prawej stronie, aby przeglądać katalogi.
+<h4>Plik mapy</h4>
+
+<label>Plik mapy</label> Podaj nazwę pliku mapy, który zostanie utworzony. Użyj przycisku znajdującego się po prawej stronie, aby wskazać katalog w którym będzie zapisany.
+
+<h4>Mapa</h4>
 Te parametry zostaną zapisane w pliku mapy, określając takie elementy mapy, jak rozmiar mapy, jednostki, czy też format mapy.
 <dl>
-  <dt>Nazwa</dt>
-  <dd>Nazwa mapy. Ta nazwa jest prefiksem dla wszystkich map generowanych przez MapServer.</dd>
-  <dt>Szerokość</dt>
+  <label>Nazwa</label>
+  <dd>Ta nazwa jest prefiksem dla wszystkich map generowanych przez MapServer.</dd>
+  <label>Szerokość</label>
   <dd>Szerokość mapy wyjściowej w pikselach.</dd>
-  <dt>Wysokość</dt>
+  <label>Wysokość</label>
   <dd>Wysokość mapy wyjściowej w pikselach.</dd>
-  <dt>Jednostki</dt>
+  <label>Jednostki</label>
   <dd>Jednostki miary mapy wyjściowej.</dd>
-  <dt>Format mapy</dt>
+  <label>Format mapy</label>
   <dd>Określa w jakim formacie zostanie wygenerowana mapa MapServera</dd>
 </dl>
-<h4>Web Interface Definition</h4>
+<h4>Ścieżki</h4>
 <dl>
-  <dt>Szablon</dt>
+  <label>Szablon</label>
   <dd>Pełna ścieżka dostępu do pliku z szablonem MapServera, który ma zostać wykorzystany.</dd>
-  <dt>Nagłówek</dt>
+  <label>Nagłówek</label>
   <dd>Pełna ścieżka dostępu do pliku nagłówkowego MapServera, który ma zostać wykorzystany.</dd>
-  <dt>Stopka</dt>
+  <label>Stopka</label>
   <dd>Pełna ścieżka dostępu do pliku stopki MapServera, który ma zostać wykorzystany.</dd>
