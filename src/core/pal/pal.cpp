@@ -493,7 +493,9 @@ namespace pal
 
     Feats *feat;
 
-    std::cout << "FIRSST NBFT : " << prob->nbft << std::endl;
+#ifdef _VERBOSE_
+    std::cout << "FIRST NBFT : " << prob->nbft << std::endl;
+#endif
 
     // Filtering label positions against obstacles
     amin[0] = amin[1] = -DBL_MAX;

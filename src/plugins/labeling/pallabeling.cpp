@@ -21,6 +21,7 @@
 #include <QTime>
 #include <QPainter>
 
+#include <qgslogger.h>
 #include <qgsvectorlayer.h>
 #include <qgsmaplayerregistry.h>
 #include <qgsvectordataprovider.h>
@@ -240,7 +241,7 @@ void LayerSettings::registerFeature( QgsFeature& f )
   }
   catch ( std::exception* e )
   {
-    std::cerr << "Ignoring feature " << f.id() << " due PAL exception: " << e->what() << std::endl;
+    QgsDebugMsg( QString( "Ignoring feature %1 due PAL exception: " ).arg( f.id() ) + QString::fromLatin1( e->what() ) );
     return;
   }
 
@@ -431,7 +432,7 @@ void PalLabeling::drawLabeling( QgsRenderContext& context )
   }
   catch ( std::exception& e )
   {
-    std::cerr << "PAL EXCEPTION :-( " << e.what() << std::endl;
+    QgsDebugMsg( "PAL EXCEPTION :-( " + QString::fromLatin1( e.what() ) );
     mActiveLayers.clear(); // clean up
     return;
   }
@@ -460,7 +461,7 @@ void PalLabeling::drawLabeling( QgsRenderContext& context )
   // find the solution
   labels = mPal->solveProblem( problem, mShowingAllLabels );
 
-  std::cout << "LABELING work:   " << t.elapsed() << "ms  ... labels# " << labels->size() << std::endl;
+  QgsDebugMsg( QString( "LABELING work:  %1 ms ... labels# %2" ).arg( t.elapsed() ).arg( labels->size() ) );
   t.restart();
 
   painter->setRenderHint( QPainter::Antialiasing );
@@ -477,7 +478,7 @@ void PalLabeling::drawLabeling( QgsRenderContext& context )
     drawLabel( *it, painter, xform );
   }
 
-  std::cout << "LABELING draw:   " << t.elapsed() << "ms" << std::endl;
+  QgsDebugMsg( QString( "LABELING draw:  %1 ms" ).arg( t.elapsed() ) );
 
   delete problem;
   delete labels;

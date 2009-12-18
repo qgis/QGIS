@@ -4117,7 +4117,7 @@ bool QgsGeometry::exportWkbToGeos()
         hasZValue = true;
       case QGis::WKBLineString:
       {
-        QgsDebugMsg( "Linestring found" );
+        QgsDebugMsgLevel( "Linestring found", 3 );
 
         QgsPolyline sequence;
 
@@ -4181,7 +4181,7 @@ bool QgsGeometry::exportWkbToGeos()
         hasZValue = true;
       case QGis::WKBPolygon:
       {
-        QgsDebugMsg( "Polygon found" );
+        QgsDebugMsgLevel( "Polygon found", 3 );
 
         // get number of rings in the polygon
         numRings = ( int * )( mGeometry + 1 + sizeof( int ) );
@@ -4223,7 +4223,7 @@ bool QgsGeometry::exportWkbToGeos()
         hasZValue = true;
       case QGis::WKBMultiPolygon:
       {
-        QgsDebugMsg( "Multipolygon found" );
+        QgsDebugMsgLevel( "Multipolygon found", 3 );
 
         QVector<GEOSGeometry*> polygons;
 
