@@ -1153,7 +1153,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/fTools/tools/frmRandom.ui" line="78"/>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="102"/>
         <source>Percentage of Features</source>
-        <translation>Percentuale di feature</translation>
+        <translation>Percentuale di elementi</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandom.ui" line="98"/>
@@ -1889,12 +1889,12 @@ Input CRS error: Different input coordinate reference systems detected, results 
     <message>
         <source>
 Feature geometry error: One or more output features ignored due to invalid geometry.</source>
-        <translation>Errore geometria: una o più feature sono state ignorate a causa di inconsistenze geometriche.</translation>
+        <translation>Errore geometria: uno o più elementi sono stati ignorati a causa di incongruenze geometriche.</translation>
     </message>
     <message>
         <source>
 GEOS geoprocessing error: One or more input features have invalid geometry.</source>
-        <translation>Errore GEOS di geoprocessing: una o più feature hanno inconsistenze geometriche.</translation>
+        <translation>Errore GEOS di geoprocessing: uno o più elementi hanno incongruenze geometriche.</translation>
     </message>
     <message>
         <source>Created output shapefile:</source>
@@ -1946,7 +1946,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="65"/>
         <source>This is the class that provides the &apos;glue&apos; between your custom application logic and the QGIS application. You will see that a number of methods are already implemented for you - including some examples of how to add a raster or vector layer to the main application map canvas. This class is a concrete instance of the QgisPlugin interface which defines required behaviour for a plugin. In particular, a plugin has a number of static methods and members so that the QgsPluginManager and plugin loader logic can identify each plugin, create an appropriate menu entry for it etc. Note there is nothing stopping you creating multiple toolbar icons and menu entries for a single plugin. By default though a single menu entry and toolbar button is created and its pre-configured to call the run() method in this class when selected. This default implementation provided for you by the plugin builder is well documented, so please refer to the code for further advice.</source>
-        <translation>Questa è la classe che fornisce la &apos;colla&apos; fra la logica della tua applicazione e l&apos;applicazione QGIS. Noterai che numerosi metodi sono già implementati in modo che tu li possa usare - inclusi alcuni esempi su come aggiungere un livello raster o vettoriale alla main canvas dell&apos;applicazione. Questa classe è un istanza concreta dell&apos;interfaccia QgisPlugin che definisce le funzionalità richieste per un plugin. In particolare, un plugin possiede un numero di metodi statici e membri cosicchè il QgsPluginManager e il plugin loader logic siano in grado di identificare ogni plugin, creare una voce di menu appropriata ecc. Puoi anche creare molteplici voci di menu ed icone per le barre di strumenti afferenti ad un singolo plugin. Per impostazioni predefinite viene comunque creata una singola voce di menu ed un bottone sulla barra degli strumenti, che, se selezionate invocano il metodo run() di questa classe. Questa implementazione predefinita fornita dal plugin builder è ben documentata, si consiglia di far riferimento direttamente al codice generato per ulteriori informazioni.</translation>
+        <translation>Questa è la classe che fornisce la &apos;colla&apos; fra la logica della tua applicazione e l&apos;applicazione QGIS. Noterai che numerosi metodi sono già implementati in modo che tu li possa usare - inclusi alcuni esempi su come aggiungere un livello raster o vettoriale alla main canvas dell&apos;applicazione. Questa classe è un&apos;istanza concreta dell&apos;interfaccia QgisPlugin che definisce le funzionalità richieste per un plugin. In particolare, un plugin possiede un numero di metodi statici e membri cosicché il QgsPluginManager e il plugin loader logic siano in grado di identificare ogni plugin, creare una voce di menu appropriata ecc. Puoi anche creare molteplici voci di menu ed icone per le barre di strumenti afferenti ad un singolo plugin. Per impostazioni predefinite viene comunque creata una singola voce di menu ed un bottone sulla barra degli strumenti, che, se selezionate invocano il metodo run() di questa classe. Questa implementazione predefinita fornita dal plugin builder è ben documentata, si consiglia di far riferimento direttamente al codice generato per ulteriori informazioni.</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="66"/>
@@ -1966,7 +1966,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="69"/>
         <source>This is the icon that will be used for your plugin menu entry and toolbar icon. Simply replace this icon with your own icon to make your plugin disctinctive from the rest.</source>
-        <translation>Questa è l&apos;icona che verrà utilizzata dalla voce di menu e come icona nella barra strumenti. E&apos; sufficiente sostituirla in modo da averne una personalizzata che permetta di distinguere il tuo plugin dal resto.</translation>
+        <translation>Questa è l&apos;icona che verrà utilizzata dalla voce di menu e come icona nella barra strumenti. È sufficiente sostituirla in modo da averne una personalizzata che permetta di distinguere il tuo plugin dal resto.</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="70"/>
@@ -2734,21 +2734,21 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="103"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="106"/>
         <source>Identify feature</source>
-        <translation>Informazioni feature</translation>
+        <translation>Informazioni elemento</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="134"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="137"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="140"/>
         <source>Move feature</source>
-        <translation>Muovi feature</translation>
+        <translation>Muovi elemento</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="419"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="422"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="425"/>
         <source>Remove this feature</source>
-        <translation>Rimuovi feature</translation>
+        <translation>Rimuovi elemento</translation>
     </message>
     <message>
         <source>OSM Plugin</source>
@@ -2760,11 +2760,11 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>OSM Feature Dock Widget</source>
-        <translation>Widget feature OSM</translation>
+        <translation>Widget elemento OSM</translation>
     </message>
     <message>
         <source>Choose OSM feature first.</source>
-        <translation>Selezionare prima una feature OSM.</translation>
+        <translation>Selezionare prima un elemento OSM.</translation>
     </message>
     <message>
         <source>Choose relation for editing first.</source>
@@ -2777,7 +2777,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="37"/>
         <source>OSM Feature</source>
-        <translation>Feature OSM</translation>
+        <translation>Elemento OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="75"/>
@@ -2850,7 +2850,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="345"/>
         <source>Feature:</source>
-        <translation>Feature:</translation>
+        <translation>Elemento:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="371"/>
@@ -3008,7 +3008,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="61"/>
         <source>Features to save:</source>
-        <translation>Feature da salvare:</translation>
+        <translation>Elementi da salvare:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="81"/>
@@ -4600,7 +4600,7 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="85"/>
         <source>An event visualization tool - view images associated with vector features</source>
-        <translation>Uno strumento di visualizzazione di eventi - visualizza immagini associate alle feature del vettoriale</translation>
+        <translation>Uno strumento di visualizzazione di eventi - visualizza immagini associate agli elementi del vettoriale</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="86"/>
@@ -4894,12 +4894,12 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3556"/>
         <source>Deleting features only works on vector layers</source>
-        <translation>La cancellazione delle feature è possibile solo su layer vettoriali</translation>
+        <translation>La cancellazione degli elementi è possibile solo su layer vettoriali</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3547"/>
         <source>To delete features, you must select a vector layer in the legend</source>
-        <translation>Per cancellare una feature occorre prima selezionare un layer vettoriale dalla legenda</translation>
+        <translation>Per cancellare un elemento occorre prima selezionare un layer vettoriale dalla legenda</translation>
     </message>
     <message>
         <source>Quantum GIS is licensed under the GNU General Public License</source>
@@ -5364,7 +5364,7 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1035"/>
         <source>Help Contents</source>
-        <translation>Contenuti dell&apos;aiuto</translation>
+        <translation>Contenuti della guida</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1039"/>
@@ -5742,7 +5742,7 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1376"/>
         <source>&amp;Help</source>
-        <translation>Ai&amp;uto</translation>
+        <translation>&amp;Guida</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1398"/>
@@ -5757,7 +5757,7 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1505"/>
         <source>Help</source>
-        <translation>Aiuto</translation>
+        <translation type="unfinished">Guida</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1431"/>
@@ -6044,7 +6044,7 @@ Compilanto contro Qt </translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2132"/>
         <source>Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.3.0. If an unchanging user interface, programmatic API and long term support is more important to you then cool new and untested features, we recommend that you use a copy of QGIS from our Long Term Support (LTS)1.0.x release series. In all other cases we recommend that you use this version.</source>
-        <translation>Si prega di notare che questa è una versione &apos;cutting edge&apos;(all&apos;avanguardia). In quanto tale contiene nuove funzionalità e estende l&apos;interfaccia di programmazione su QGIS 1.0.x e QGIS 1.3.0. Se si ritiene che sia meglio avere un&apos;interfaccia utente immutabile, API di programmazione ed un supporto a lungo termine è più importante rinunciare alle nuove funzionalitá e utilizzare una copia di QGIS di long term support (LTS) della serie 1.0.x serie. In tutti gli altri casi si consiglia di utilizzare questa versione.</translation>
+        <translation>Si prega di notare che questa è una versione &apos;cutting edge&apos; (all&apos;avanguardia). In quanto tale contiene nuove funzionalità e estende l&apos;interfaccia di programmazione su QGIS 1.0.x e QGIS 1.3.0. Se si ritiene che sia meglio avere un&apos;interfaccia utente immutabile, API di programmazione ed un supporto a lungo termine è più importante rinunciare alle nuove funzionalità e utilizzare una copia di QGIS di long term support (LTS) della serie 1.0.x serie. In tutti gli altri casi si consiglia di utilizzare questa versione.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2140"/>
@@ -8471,7 +8471,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="230"/>
         <source>Delete selected features</source>
-        <translation>Elimina le feature selezionate</translation>
+        <translation>Elimina gli elementi selezionati</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="233"/>
@@ -14342,7 +14342,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="235"/>
         <source>(Note: Selecting correct file type in browser dialog important!)</source>
-        <translation>(Nota: E&apos; importante selezionare il tipo di file appropriato dalla finestra!)</translation>
+        <translation>(Nota: è importante selezionare il tipo di file appropriato dalla finestra!)</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="249"/>
@@ -15239,7 +15239,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1410"/>
         <source>Orphan record was left in attribute table. &lt;br&gt;Delete the record?</source>
-        <translation>E&apos; stato individuato un record orfano nella tabella degli attributi: &lt;br&gt;Eliminare il record?</translation>
+        <translation>È stato individuato un record orfano nella tabella degli attributi: &lt;br&gt;Eliminare il record?</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1420"/>
@@ -17159,7 +17159,7 @@ p, li { white-space: pre-wrap; }
         <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; 
-}&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;La GRASS region definisce un&apos;area di lavoro per i moduli raster. La region predefinita è valida per una sola location. E&apos; possibile definire un insieme di region per ogni mapset. La region predefinita può essere modificata successivamente.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+}&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;La GRASS region definisce un&apos;area di lavoro per i moduli raster. La region predefinita è valida per una sola location. È possibile definire un insieme di region per ogni mapset. La region predefinita può essere modificata successivamente.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="2033"/>
@@ -18023,7 +18023,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="215"/>
         <source>The QGIS help database is not installed</source>
-        <translation>Database QGIS di aiuto non installato</translation>
+        <translation>La guida di QGIS non è installata</translation>
     </message>
     <message>
         <source>This help file does not exist for your language</source>
@@ -18036,28 +18036,28 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="156"/>
         <source>Quantum GIS Help</source>
-        <translation>Aiuto di Quantum GIS</translation>
+        <translation>Guida di Quantum GIS</translation>
     </message>
     <message>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="137"/>
         <source>This help file does not exist for your language:&lt;p&gt;&lt;b&gt;%1&lt;/b&gt;&lt;p&gt;If you would like to create it, contact the QGIS development team</source>
-        <translation>Questo file di aiuto non esiste nella lingua attualmente in uso.&lt;p&gt;&lt;b&gt;%1&lt;/b&gt;&lt;p&gt;Se interessati a crearlo, contattare il team di sviluppo QGIS</translation>
+        <translation>Questa guida non esiste nella lingua attualmente in uso.&lt;p&gt;&lt;b&gt;%1&lt;/b&gt;&lt;p&gt;Se interessati a crearlo, contattare il team di sviluppo QGIS</translation>
     </message>
     <message>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="132"/>
         <source>This help file is not available in your language. If you would like to translate it, please contact the QGIS  development team.</source>
-        <translation>Il file della guida non è disponibile nella lingua in uso. Se si vuole contribuire alla traduzione si prega di contattare il team di sviluppatori QGIS.</translation>
+        <translation>Questa guida non è disponibile nella lingua in uso. Se si vuole contribuire alla traduzione si prega di contattare il team di sviluppatori QGIS.</translation>
     </message>
     <message>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="184"/>
         <source>Quantum GIS Help - %1</source>
-        <translation>Aiuto Quantum GIS - %1</translation>
+        <translation>Guida Quantum GIS - %1</translation>
     </message>
     <message>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="190"/>
         <source>Failed to get the help text from the database:
   %1</source>
-        <translation>Impossibile caricare il file di aiuto dal database:
+        <translation>Impossibile caricare la guida dal database:
   %1</translation>
     </message>
 </context>
@@ -18067,7 +18067,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/helpviewer/qgshelpviewerbase.ui" line="14"/>
         <location filename="../src/ui/qgshelpviewerbase.ui" line="13"/>
         <source>QGIS Help</source>
-        <translation>Aiuto QGIS</translation>
+        <translation>Guida QGIS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgshelpviewerbase.ui" line="39"/>
@@ -20196,7 +20196,7 @@ p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot;
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="92"/>
         <source>No point feature was detected at the clicked position. Please click closer to the feature or enhance the search tolerance under Settings-&gt;Options-&gt;Digitizing-&gt;Serch radius for vertex edits</source>
-        <translation>Nessun punto è stato trovato nella posizione dove è stato fatto il clic. Si prega di cliccare in una zona più vicina alla feature oppure migliorare la tolleranza di ricerca nel menu Impostazioni -&gt; Opzioni -&gt; Digitalizzazione -&gt; raggio di ricerca per la modifica dei vertici</translation>
+        <translation>Nessun punto è stato trovato nella posizione dove è stato fatto il clic. Si prega di cliccare in una zona più vicina all&apos;elemento oppure migliorare la tolleranza di ricerca nel menu Impostazioni -&gt; Opzioni -&gt; Digitalizzazione -&gt; raggio di ricerca per la modifica dei vertici</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="106"/>
@@ -20522,7 +20522,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="469"/>
         <source>Should text be antialiased? Note that this requires more available colors, decreases drawing performance, and results in slightly larger output images.</source>
-        <translation>Il testo deve utilizzare l&apos;antialiasing? Da notare che questo richiede più colori disponibili, diminuisce le prestazioni di disegno, e si traduce in immagini un pò più grandi in output.</translation>
+        <translation>Il testo deve utilizzare l&apos;antialiasing? Da notare che questo richiede più colori disponibili, diminuisce le prestazioni di disegno, e si traduce in immagini un po&apos; più grandi in output.</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="472"/>
@@ -22795,7 +22795,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="499"/>
         <source>Open feature form, if a single feature is identified</source>
-        <translation>Apri il modulo della feature, se viene identificata una singola feature</translation>
+        <translation>Apri il modulo degli elementi, se viene identificato un singolo elemento</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="560"/>
@@ -24180,7 +24180,7 @@ Si deve riavviare Quantum GIS per poterlo utilizzare.</translation>
     </message>
     <message>
         <source>You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.</source>
-        <translation>Si sta per aggiungere diversi repository di plugin il cui supporto non è autorizzato dal team di Quantum GIS. Generalmente gli autori fanno molta attenzione agli effetti del loro lavoro e sono sicuri, in ogni caso il Team di QGIS non si assume responsabilitá in merito.</translation>
+        <translation>Si sta per aggiungere diversi repository di plugin il cui supporto non è autorizzato dal team di Quantum GIS. Generalmente gli autori fanno molta attenzione agli effetti del loro lavoro e sono sicuri, in ogni caso il Team di QGIS non si assume responsabilità in merito.</translation>
     </message>
 </context>
 <context>
@@ -24600,7 +24600,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerpluginerrorbase.ui" line="35"/>
         <source>The plugin seems to be invalid or have unfulfilled dependencies. It has been installed, but can&apos;t be loaded. If you really need this plugin, you can contact its author or &lt;a href=&quot;http://lists.osgeo.org/mailman/listinfo/qgis-user&quot;&gt;QGIS users group&lt;/a&gt; and try to solve the problem. If not, you can just uninstall it. Here is the error message below:</source>
-        <translation>Il plugin sembra essere non valido o ha dipendenze non soddisfatte. E&apos; stato installato ma non può essere caricato. Se hai bisogno realmente di questo plugin, puoi contattare l&apos;autore o il &lt;a href=&quot;http://lists.osgeo.org/mailman/listinfo/qgis-user&quot;&gt;QGIS users group&lt;/a&gt; per cercare di risolvere il problema. Altrimenti puoi semplicemente disintallarlo. Ecco qui sotto il messaggio di errore:</translation>
+        <translation>Il plugin sembra essere non valido o ha dipendenze non soddisfatte. È stato installato ma non può essere caricato. Se hai bisogno realmente di questo plugin, puoi contattare l&apos;autore o il &lt;a href=&quot;http://lists.osgeo.org/mailman/listinfo/qgis-user&quot;&gt;QGIS users group&lt;/a&gt; per cercare di risolvere il problema. Altrimenti puoi semplicemente disintallarlo. Ecco qui sotto il messaggio di errore:</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerpluginerrorbase.ui" line="83"/>
@@ -26573,7 +26573,7 @@ p, li { white-space: pre-wrap; }(new line)
         <location filename="../src/gui/qgsquickprint.cpp" line="659"/>
         <source>Please wait while your report is generated</source>
         <comment>COMMENTED OUT</comment>
-        <translation>Un pò di pazienza mentre il report viene generato</translation>
+        <translation type="unfinished">Un po&apos; di pazienza mentre il report viene generato</translation>
     </message>
 </context>
 <context>
@@ -27320,7 +27320,7 @@ p, li { white-space: pre-wrap; }(new line)
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="587"/>
         <source>&lt;h3&gt;Multiband Image Notes&lt;/h3&gt;&lt;p&gt;This is a multiband image. You can choose to render it as grayscale or color (RGB). For color images, you can associate bands to colors arbitarily. For example, if you have a seven band landsat image, you may choose to render it as:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Visible Blue (0.45 to 0.52 microns) - not mapped&lt;/li&gt;&lt;li&gt;Visible Green (0.52 to 0.60 microns) - not mapped&lt;/li&gt;&lt;/li&gt;Visible Red (0.63 to 0.69 microns) - mapped to red in image&lt;/li&gt;&lt;li&gt;Near Infrared (0.76 to 0.90 microns) - mapped to green in image&lt;/li&gt;&lt;li&gt;Mid Infrared (1.55 to 1.75 microns) - not mapped&lt;/li&gt;&lt;li&gt;Thermal Infrared (10.4 to 12.5 microns) - not mapped&lt;/li&gt;&lt;li&gt;Mid Infrared (2.08 to 2.35 microns) - mapped to blue in image&lt;/li&gt;&lt;/ul&gt;</source>
         <comment>COMMENTED OUT</comment>
-        <translation>&lt;h3&gt;Note immagine multibanda&lt;/h3&gt;&lt;p&gt;Questa è una immagine multibanda. E&apos; possibile disegnarla come una scala di grigi o colori (RGB). Per immagini a colori è possibile associare arbitrariamente bande ai colori. Ad esempio, nel caso di una immagine landsat a 7 bande, è possibile colorarla come:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Blu Visibile (da 0.45 a 0.52 micron) - non mappati&lt;/li&gt;&lt;li&gt;Verde Visibile (da 0.52 a 0.60 micron) - non mappati&lt;/li&gt;&lt;li&gt;Rosso Visibile (da 0.63 a 0.69 micron) - mappati da rosso nell&apos;immagine&lt;/li&gt;&lt;li&gt;Infrarosso vicino (da 0.76 a 0.90 micron) - mappato da verde nell&apos;immagine&lt;/li&gt;&lt;li&gt;Infrarosso medio (da 1.55 a 1.75 micron) - non mappato&lt;/li&gt;&lt;li&gt;Infrarosso termale (da 10.4 a 12.5 micron) - non mappato&lt;/li&gt;&lt;li&gt;Infrarosso medio (da 2.08 a 2.35 micron) - mappato da blu nell&apos;immagine&lt;/li&gt;&lt;/ul&gt;</translation>
+        <translation>&lt;h3&gt;Note immagine multibanda&lt;/h3&gt;&lt;p&gt;Questa è una immagine multibanda. È possibile disegnarla come una scala di grigi o colori (RGB). Per immagini a colori è possibile associare arbitrariamente bande ai colori. Ad esempio, nel caso di una immagine landsat a 7 bande, è possibile colorarla come:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Blu Visibile (da 0.45 a 0.52 micron) - non mappati&lt;/li&gt;&lt;li&gt;Verde Visibile (da 0.52 a 0.60 micron) - non mappati&lt;/li&gt;&lt;li&gt;Rosso Visibile (da 0.63 a 0.69 micron) - mappati da rosso nell&apos;immagine&lt;/li&gt;&lt;li&gt;Infrarosso vicino (da 0.76 a 0.90 micron) - mappato da verde nell&apos;immagine&lt;/li&gt;&lt;li&gt;Infrarosso medio (da 1.55 a 1.75 micron) - non mappato&lt;/li&gt;&lt;li&gt;Infrarosso termale (da 10.4 a 12.5 micron) - non mappato&lt;/li&gt;&lt;li&gt;Infrarosso medio (da 2.08 a 2.35 micron) - mappato da blu nell&apos;immagine&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="594"/>
@@ -27923,7 +27923,7 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1103"/>
         <source>Reset no data value</source>
-        <translation>Resetta a nessun valore</translation>
+        <translation>Ripristina a nessun valore</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1113"/>
@@ -29751,7 +29751,7 @@ SQL: %2</translation>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="358"/>
         <source>General Interface Help:</source>
-        <translation>Interfaccia generale di aiuto:</translation>
+        <translation>Guida generale all&apos;interfaccia:</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="359"/>
@@ -29841,7 +29841,7 @@ SQL: %2</translation>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="379"/>
         <source>[Help] - display this help dialog</source>
-        <translation>[Aiuto] - visualizza questa finestra di aiuto</translation>
+        <translation>[Guida] - visualizza questa guida</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="397"/>
@@ -33217,14 +33217,14 @@ For support send a mail to scala@itc.cnr.it
         <translation>Descrizione campi:
 * Input file DXF: percorso del file DXF da convertire
 * Output file Shp: nome scelto da attribuire allo shape file
-* tipo file Shp in output : specifica il tipo e l´output dello shape file
-* Checbox esporta eitchette di testo: se scelto, viene creato un altro file shp di punti,   e la tabella dbf associata conterrá le informazioni in merito al &quot;TESTO&quot; dei campi trovati nel file dxf e relative stringhe
+* Tipo file Shp in output: specifica il tipo e l´output dello shape file
+* Checbox esporta etichette di testo: se scelto, viene creato un altro file shp di punti, e la tabella dbf associata conterrà le informazioni in merito al &quot;TESTO&quot; dei campi trovati nel file dxf e relative stringhe
 
 
 
 ---
 Sviluppato da Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
-CNR, Milano Unità (Information Technology), Istituto delle Construzioni Technologiche.
+CNR, sede di Milano (Information Technology), Istituto per le Tecnologie della Construzione.
 Per supporto spedire una email a scala@itc.cnr.it
 </translation>
     </message>
@@ -33239,17 +33239,17 @@ Per supporto spedire una email a scala@itc.cnr.it
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="105"/>
         <source>eVis Database Connection</source>
-        <translation>Connessione Database eVis</translation>
+        <translation>Connessione database eVis</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="106"/>
         <source>eVis Event Id Tool</source>
-        <translation>Strumento Id Evento eVis</translation>
+        <translation>Strumento Id evento eVis</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="107"/>
         <source>eVis Event Browser</source>
-        <translation>Sfoglia Evento eVis</translation>
+        <translation>Sfoglia evento eVis</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="110"/>
@@ -33259,12 +33259,12 @@ Per supporto spedire una email a scala@itc.cnr.it
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="111"/>
         <source>Open an Event Browers and display the selected feature</source>
-        <translation>Apri un browser Event e mostra la geometria scelta</translation>
+        <translation>Apri un browser evento e mostra la geometria scelta</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="112"/>
         <source>Open an Event Browser to explore the current layer&apos;s features</source>
-        <translation>Apri un browser Event per esplorare gli elementi del layer usato</translation>
+        <translation>Apri un browser evento per esplorare gli elementi del layer usato</translation>
     </message>
 </context>
 <context>
@@ -33548,7 +33548,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="135"/>
         <source>Generic Event Browser</source>
-        <translation>Browser Evento Generico</translation>
+        <translation>Browser evento generico</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="159"/>
@@ -33594,28 +33594,28 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="274"/>
         <source>An invalid feature was received during initialization</source>
-        <translation>Ricevuta una una feature non valida durante l´inizializzazione</translation>
+        <translation>Ricevuto un elemento non valido durante l&apos;inizializzazione</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="309"/>
         <source>Event Browser - Displaying records 01 of %1</source>
-        <translation>Browser Evento - Visualizzazione record 01 of %1</translation>
+        <translation>Browser evento - Visualizzazione record 1 of %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="996"/>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1018"/>
         <source>Event Browser - Displaying records %1 of %2</source>
-        <translation>Browser Evento - Visualizzazione record %1 of %2</translation>
+        <translation>Browser evento - Visualizzazione record %1 of %2</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="793"/>
         <source>Attribute Contents</source>
-        <translation>Contenuti Attributi</translation>
+        <translation>Contenuti attributi</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1091"/>
         <source>Select Application</source>
-        <translation>Seleziona Applicazione</translation>
+        <translation>Scegli applicazione</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1091"/>
@@ -33653,7 +33653,7 @@ p, li { white-space: pre-wrap; }
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="108"/>
         <source>All of the attribute information for the point associated with the photo being viewed is displayed here. If the file type being referenced in the displayed record is not an image but is of a file type defined in the “Configure External Applications” tab then when you double-click on the value of the field containing the path to the file the application to open the file will be launched to view or hear the contents of the file. If the file extension is recognized the attribute data will be displayed in green.</source>
-        <translation>Tutte le informazioni associate al punto saranno qui  visualizzate insieme alla foto. Se il tipo di file associato al record da visualizzare non é una immagine ma uno definito nel tab ¨Configura Applicazioni Esterne¨ allora il doppio clic sul valore riportato nel campo conterrà il percorso dell´applicazione da eseguire per visualizzare o ascoltare il contenuto del file. Se l´estensione del tipo di file è nota allora sarà evidenziata in verde.</translation>
+        <translation>Tutte le informazioni associate al punto saranno qui  visualizzate insieme alla foto. Se il tipo di file associato al record da visualizzare non è una immagine ma uno definito nel tab ¨Configura Applicazioni Esterne¨ allora il doppio clic sul valore riportato nel campo conterrà il percorso dell´applicazione da eseguire per visualizzare o ascoltare il contenuto del file. Se l&apos;estensione del tipo di file è nota allora sarà evidenziata in verde.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="112"/>
@@ -33697,7 +33697,7 @@ p, li { white-space: pre-wrap; }
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="185"/>
         <source>If checked the path to the image will be defined appending the attribute in the field selected from the “Attribute Containing Path to Image” drop-down list to the “Base Path” defined below.</source>
-        <translation>Se selezionato il percorso dell´immagine sará definito dai valori presenti nel campo selezionato nella drop down list &quot;Attributo con Percorso Immagine&quot;del &quot;Percorso Base&quot; definito qui.</translation>
+        <translation>Se selezionato il percorso dell´immagine sarà definito dai valori presenti nel campo selezionato nella drop down list &quot;Attributo con Percorso Immagine&quot;del &quot;Percorso Base&quot; definito qui.</translation>
     </message>
     <message>
         <source>Path Is Relative</source>
@@ -33716,18 +33716,18 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="631"/>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="694"/>
         <source>Reset to default</source>
-        <translation>Reset ai valori predefiniti</translation>
+        <translation>Ripristina i valori predefiniti</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="236"/>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="338"/>
         <source>Resets the values on this line to the default setting.</source>
-        <translation>Reset dei valori di questa linea ai parametri predefiniti.</translation>
+        <translation>Ripristina i valori di questa linea ai parametri predefiniti.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="290"/>
         <source>If checked an arrow pointing in the direction defined by the attribute in the field selected from the drop-down list to the right will be displayed in the QGIS window on top of the point for this image.</source>
-        <translation>Se selezionato una freccia punterá nella direzione contenuta nei valori del campo scelto dalla lista drop down a destra. Nella finestra QGIS il punto sarà visualizzato in alto per questa immagine.</translation>
+        <translation>Se selezionato una freccia punterà nella direzione contenuta nei valori del campo scelto dalla lista drop down a destra. Nella finestra QGIS il punto sarà visualizzato in alto per questa immagine.</translation>
     </message>
     <message>
         <source>Display Compass Bearing</source>
@@ -33741,7 +33741,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="303"/>
         <source>If checked, the Display Compass Bearing values will be saved for the next session.</source>
-        <translation>Se selezionato, i valori della bussola di riferimento, saranno salvati per la prossima sessione.</translation>
+        <translation>Se selezionato, i valori della bussola di riferimento saranno salvati per la prossima sessione.</translation>
     </message>
     <message>
         <source>Compass Offset</source>
@@ -33785,38 +33785,38 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="474"/>
         <source>Resets the compass offset values to the default settings.</source>
-        <translation>Reset dei valori di offset della bussola ai valori predefiniti.</translation>
+        <translation>Rirpistina i valori di offset della bussola ai valori predefiniti.</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="502"/>
         <source>The base path or url from which images and documents can be “relative”</source>
-        <translation>Il percorso base o ll&apos;url da cui immagini e documenti sono &quot;relativi&quot;</translation>
+        <translation>Il percorso base o l&apos;url da cui immagini e documenti sono &quot;relativi&quot;</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="522"/>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="535"/>
         <source>Base Path</source>
-        <translation>Percorso Base</translation>
+        <translation>Percorso base</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="570"/>
         <source>Enters the default “Base Path” which is the path to the directory of the vector layer containing the image information.</source>
-        <translation>Inserisce il valore  di &quot;Percorso Base&quot; che è il percorso della directory del vettoriale che contiene le informazioni dell&apos;immagine.</translation>
+        <translation>Inserisce il valore di &quot;Percorso base&quot; che è il percorso della directory del vettoriale che contiene le informazioni dell&apos;immagine.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="662"/>
         <source>If checked, the same path rules that are defined for images will be used for non-image documents such as movies, text documents, and sound files. If not checked the path rules will only apply to images and other documents will ignore the Base Path parameter.</source>
-        <translation>Se selezionato, lo stesso percorso definito per le immagini sarà usato per documenti non immagine come video, testi, documenti e suoni. Se non selezionato il percorso si applica solo alle immagini e gli altri documenti ignoreranno il parametro di Percorso Base.</translation>
+        <translation>Se selezionato, lo stesso percorso definito per le immagini sarà usato per documenti non immagine come video, testi, documenti e suoni. Se non selezionato il percorso si applica solo alle immagini e gli altri documenti ignoreranno il parametro di Percorso base.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="538"/>
         <source>The Base Path onto which the relative path defined above will be appended.</source>
-        <translation>Il Percorso Base con cui il percorso relativo viene aggiunto.</translation>
+        <translation>Il Percorso base con cui il percorso relativo viene aggiunto.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="153"/>
         <source>File path</source>
-        <translation>Percorso File</translation>
+        <translation>Percorso file</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="159"/>
@@ -33846,7 +33846,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="637"/>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="700"/>
         <source>Reset</source>
-        <translation>Reset</translation>
+        <translation>Ripristina</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="258"/>
@@ -33866,29 +33866,29 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="360"/>
         <source>Compass offset</source>
-        <translation>offset bussola</translation>
+        <translation>Offset bussola</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="496"/>
         <source>Relative paths</source>
-        <translation>percorsi relativi</translation>
+        <translation>Percorsi relativi</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="548"/>
         <source>If checked, the Base Path will be saved for the next session.</source>
-        <translation>Se selezionato, il Percorso Base sará salvato per la prossima sessione.</translation>
+        <translation>Se selezionato, il Percorso base sarà salvato per la prossima sessione.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="598"/>
         <source>If checked, the Base Path will append only the file name instead of the entire relative path (defined above) to create the full directory path to the file. </source>
-        <translation>Se selezionato, nel Percoso Base  apparirà solo il nome del file invece dell&apos;intero percorso relativo (definito qui sotto) per creare il percorso completo de file. </translation>
+        <translation>Se selezionato, nel Percoso base apparirà solo il nome del file invece dell&apos;intero percorso relativo (definito qui sotto) per creare il percorso completo de file. </translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="601"/>
         <source>Replace entire path/url stored in image path attribute with user defined
 Base Path (i.e. keep only filename from attribute)</source>
         <translation>Sostituisce l´intero percorso/url salvato nell´attributo immagine definito dall´utente
-Percorso Base (es. prende solo il nome del file dall´attributo)</translation>
+Percorso base (es. prende solo il nome del file dall´attributo)</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="612"/>
@@ -33910,12 +33910,12 @@ Percorso Base (es. prende solo il nome del file dall´attributo)</translation>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="729"/>
         <source>Clicking on Save will save the settings without closing the Options pane. Clicking on Restore Defaults will reset all of the fields to their default settings. It has the same effect as clicking all of the “Reset to default” buttons. </source>
-        <translation>Con un clic su Salva tutti i parametri saranno salvati senza chiudere il pannello di Opzioni. Clic su Recupera Predefiniti ripristina tutti i campi ai valori predefiniti. Questo ha lo stesso effetto di un clic sui bottoni &quot;Reset ai valori predefiniti&quot;.</translation>
+        <translation>Con un clic su Salva tutti i parametri saranno salvati senza chiudere il pannello di Opzioni. Clic su Recupera Predefiniti ripristina tutti i campi ai valori predefiniti. Questo ha lo stesso effetto di un clic sui bottoni &quot;Ripristina i valori predefiniti&quot;.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="740"/>
         <source>Configure External Applications</source>
-        <translation>Configura Applicazioni Esterne</translation>
+        <translation>Configura applicazioni esterne</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="761"/>
@@ -33988,7 +33988,7 @@ Percorso Base (es. prende solo il nome del file dall´attributo)</translation>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="56"/>
         <source>Zoom to display the entire image.</source>
-        <translation>Zoom all&apos;estesione dell&apos;intera immagine.</translation>
+        <translation>Zoom all&apos;estensione dell&apos;intera immagine.</translation>
     </message>
 </context>
 <context>
@@ -34073,7 +34073,7 @@ Il plugin non sarà abilitato.</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation>Seleziona per locazione</translation>
+        <translation>Seleziona per localizzazione</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
@@ -34157,7 +34157,7 @@ Il plugin non sarà abilitato.</translation>
     </message>
     <message>
         <source>&amp;Data Management Tools</source>
-        <translation>Strumenti di Gestione &amp;Dati</translation>
+        <translation>Strumenti di gestione &amp;Dati</translation>
     </message>
     <message>
         <source>Export to new projection</source>
@@ -34173,7 +34173,7 @@ Il plugin non sarà abilitato.</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
-        <translation>Unisci attributi per locazione</translation>
+        <translation>Unisci attributi per localizzazione</translation>
     </message>
     <message>
         <source>Split vector layer</source>
@@ -34256,11 +34256,11 @@ Il plugin non sarà abilitato.</translation>
     </message>
     <message>
         <source>Min. len:</source>
-        <translation>Lung. Min:</translation>
+        <translation>Lung. min:</translation>
     </message>
     <message>
         <source>Mean. len:</source>
-        <translation>Lung. Media:</translation>
+        <translation>Lung. media:</translation>
     </message>
     <message>
         <source>Filled:</source>
@@ -34320,7 +34320,7 @@ Il plugin non sarà abilitato.</translation>
     </message>
     <message>
         <source>Nearest neighbour index:</source>
-        <translation>Indice più vicino :</translation>
+        <translation>Indice vicino più prossimo:</translation>
     </message>
     <message>
         <source>Z-Score:</source>
