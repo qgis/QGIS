@@ -1110,67 +1110,67 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>creating new selection</source>
-        <translation type="unfinished">nieuwe selectie maken</translation>
+        <translation>nieuwe selectie maken</translation>
     </message>
     <message>
         <source>adding to current selection</source>
-        <translation type="unfinished">toevoegen aan bestaande selectie</translation>
+        <translation>toevoegen aan bestaande selectie</translation>
     </message>
     <message>
         <source>removing from current selection</source>
-        <translation type="unfinished">verwijderen uit bestaande selectie</translation>
+        <translation>verwijderen uit bestaande selectie</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="unfinished">Selecteren op plaats</translation>
+        <translation>Selecteren op plaats</translation>
     </message>
     <message>
         <source>Select features in:</source>
-        <translation type="unfinished">Selecteer objecten in:</translation>
+        <translation>Selecteer objecten in:</translation>
     </message>
     <message>
         <source>that intersect features in:</source>
-        <translation type="unfinished">die objecten doorsnijden in:</translation>
+        <translation>die objecten doorsnijden in:</translation>
     </message>
     <message>
         <source>Modify current selection by:</source>
-        <translation type="unfinished">Bestaande selectie aanpassen door:</translation>
+        <translation>Bestaande selectie aanpassen door:</translation>
     </message>
     <message>
         <source>Please specify input layer</source>
-        <translation type="unfinished">Selecteer een laag als input</translation>
+        <translation>Selecteer een laag als input</translation>
     </message>
     <message>
         <source>Please specify select layer</source>
-        <translation type="unfinished">Selecteer een laag om te selecteren</translation>
+        <translation>Selecteer een laag om te selecteren</translation>
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation type="unfinished">Afstandsmatrix</translation>
+        <translation>Afstandsmatrix</translation>
     </message>
     <message>
         <source>Created output matrix:
 </source>
-        <translation type="unfinished">Aanmaken uitvoermatrix:
+        <translation>Aanmaken uitvoermatrix:
 </translation>
     </message>
     <message>
         <source>Points in polygon</source>
-        <translation type="unfinished">Punt in polygoon</translation>
+        <translation>Punt in polygoon</translation>
     </message>
     <message>
         <source>Created output Shapefile:
 </source>
-        <translation type="unfinished">Uitvoerbestand (shape) aangemaakt:
+        <translation>Uitvoerbestand (shape) aangemaakt:
 </translation>
     </message>
     <message>
         <source>Vector layer is not valid</source>
-        <translation type="unfinished">Vectorlaag is niet geldig</translation>
+        <translation>Vectorlaag is niet geldig</translation>
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation type="unfinished">Lijnlengtes sommeren</translation>
+        <translation>Lijnlengtes sommeren</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="241"/>
@@ -1412,23 +1412,23 @@ p, li { white-space: pre-wrap; }
     <name>GeometryDialog</name>
     <message>
         <source>Merge all</source>
-        <translation type="unfinished">Alles samenvoegen</translation>
+        <translation>Alles samenvoegen</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="unfinished">Selecteer een vectorlaag als input</translation>
+        <translation>Selecteer een vectorlaag als input</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="unfinished">Selecteer een vectorlaag voor uitvoer</translation>
+        <translation>Selecteer een vectorlaag voor uitvoer</translation>
     </message>
     <message>
         <source>Please specify valid tolerance value</source>
-        <translation type="unfinished">Specificeer een geldige tolerantie-waarde</translation>
+        <translation>Specificeer een geldige tolerantie-waarde</translation>
     </message>
     <message>
         <source>Please specify valid UID field</source>
-        <translation type="unfinished">Specificeer een geldig UID-veld</translation>
+        <translation>Specificeer een geldig UID-veld</translation>
     </message>
     <message>
         <source>Created output shapefile</source>
@@ -1436,79 +1436,79 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished">De nieuwe laag aan de TOC toevoegen?</translation>
+        <translation>De nieuwe laag aan de TOC toevoegen?</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
-        <translation type="unfinished">Enkelvoudige objecten naar meervoudige </translation>
+        <translation>Enkelvoudige objecten naar meervoudige </translation>
     </message>
     <message>
         <source>Output shapefile</source>
-        <translation type="unfinished">Uitvoerbestand (shape)</translation>
+        <translation>Uitvoerbestand (shape)</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
-        <translation type="unfinished">Meervoudige objecten naar enkelvoudige</translation>
+        <translation>Meervoudige objecten naar enkelvoudige</translation>
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation type="unfinished">Knooppunten extraheren</translation>
+        <translation>Knooppunten extraheren</translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation type="unfinished">Polygonen naar lijnen</translation>
+        <translation>Polygonen naar lijnen</translation>
     </message>
     <message>
         <source>Input polygon vector layer</source>
-        <translation type="unfinished">Invoer polygon-vectorlaag</translation>
+        <translation>Invoer polygon-vectorlaag</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="unfinished">Exporteer/Toevoegen geometrie-kolommen</translation>
+        <translation>Exporteren/Toevoegen geometrie-kolommen</translation>
     </message>
     <message>
         <source>Input vector layer</source>
-        <translation type="unfinished">Invoer vectorlaag</translation>
+        <translation>Invoer vectorlaag</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation type="unfinished">Geometrien vereenvoudigen</translation>
+        <translation>Geometrien vereenvoudigen</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation type="unfinished">Polygoon-centroiden</translation>
+        <translation>Polygoon-centroiden</translation>
     </message>
     <message>
         <source>Output point shapefile</source>
-        <translation type="unfinished">Uitvoerbestand (shape)</translation>
+        <translation>Uitvoerbestand (shape)</translation>
     </message>
     <message>
         <source>Delaunay triangulation</source>
-        <translation type="unfinished">Delaunay triangulation</translation>
+        <translation>Delaunay triangulation</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
-        <translation type="unfinished">Polygoon van laagextent</translation>
+        <translation>Polygoon van laagextent</translation>
     </message>
     <message>
         <source>Input layer</source>
-        <translation type="unfinished">Invoerlaag</translation>
+        <translation>Invoerlaag</translation>
     </message>
     <message>
         <source>Output polygon shapefile</source>
-        <translation type="unfinished">Uitvoerbestand (shape)</translation>
+        <translation>Uitvoerbestand (shape)</translation>
     </message>
     <message>
         <source>Unable to delete existing shapefile.</source>
-        <translation type="unfinished">Verwijderen van bestaand (shape-)bestand niet mogelijk.</translation>
+        <translation>Verwijderen van bestaand (shape-)bestand niet mogelijk.</translation>
     </message>
     <message>
         <source>Error processing specified tolerance!</source>
-        <translation type="unfinished">Fout bij toepassen van gespecificeerde tolerantie!</translation>
+        <translation>Fout bij toepassen van gespecificeerde tolerantie!</translation>
     </message>
     <message>
         <source>Please choose larger tolerance...</source>
-        <translation type="unfinished">Kies een hogere tolerantie...</translation>
+        <translation>Kies een hogere tolerantie...</translation>
     </message>
     <message>
         <source>Function not found</source>
@@ -1524,19 +1524,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Input point vector layer</source>
-        <translation type="unfinished">Invoer punt-vectorlaag</translation>
+        <translation>Invoer punt-vectorlaag</translation>
     </message>
     <message>
         <source>Unable to delete incomplete shapefile.</source>
-        <translation type="unfinished">Verwijderen van bestaande shape-bestand niet mogelijk.</translation>
+        <translation>Verwijderen van bestaande shape-bestand niet mogelijk.</translation>
     </message>
     <message>
         <source>Created output shapefile:</source>
-        <translation type="unfinished">Uitvoerbestand (shape) aangemaakt:</translation>
+        <translation>Uitvoerbestand (shape) aangemaakt:</translation>
     </message>
     <message>
         <source>Error writing output shapefile.</source>
-        <translation type="unfinished">Fout bij het maken van de shapefile.</translation>
+        <translation>Fout bij het maken van de shapefile.</translation>
     </message>
 </context>
 <context>
@@ -1622,27 +1622,27 @@ p, li { white-space: pre-wrap; }
     <name>GeoprocessingDialog</name>
     <message>
         <source>Dissolve all</source>
-        <translation type="unfinished">&apos;Dissolve&apos; alles</translation>
+        <translation>&apos;Dissolve&apos; alles</translation>
     </message>
     <message>
         <source>Please specify an input layer</source>
-        <translation type="unfinished">Selecteer een laag als input</translation>
+        <translation>Selecteer een laag als input</translation>
     </message>
     <message>
         <source>Please specify a difference/intersect/union layer</source>
-        <translation type="unfinished">Selecteer een laag als &apos;difference/intersectie/union&apos;-laag</translation>
+        <translation>Selecteer een laag als &apos;difference/intersectie/union&apos;-laag</translation>
     </message>
     <message>
         <source>Please specify valid buffer value</source>
-        <translation type="unfinished">Geef een geldige bufferwaarde</translation>
+        <translation>Geef een geldige bufferwaarde</translation>
     </message>
     <message>
         <source>Please specify dissolve field</source>
-        <translation type="unfinished">Selecteer het veld voor de &apos;dissolve&apos;-aktie</translation>
+        <translation>Selecteer het veld voor de &apos;dissolve&apos;-aktie</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="unfinished">Selecteer een vectorlaag voor uitvoer</translation>
+        <translation>Selecteer een vectorlaag voor uitvoer</translation>
     </message>
     <message>
         <source>Unable to create geoprocessing result.</source>
@@ -1658,23 +1658,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="unfinished">Buffer(s)</translation>
+        <translation>Buffer(s)</translation>
     </message>
     <message>
         <source>Create single minimum convex hull</source>
-        <translation type="unfinished">Aanmaken &apos;single minimum convex hull&apos;</translation>
+        <translation>Aanmaken &apos;single minimum convex hull&apos;</translation>
     </message>
     <message>
         <source>Create convex hulls based on input field</source>
-        <translation type="unfinished">Aanmaken &apos;convex hull&apos; op basis van een invoerveld</translation>
+        <translation>Aanmaken &apos;convex hull&apos; op basis van een invoerveld</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation type="unfinished">&apos;Convex hull(s)&apos;</translation>
+        <translation>&apos;Convex hull(s)&apos;</translation>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="unfinished">Dissolve</translation>
+        <translation>Dissolve</translation>
     </message>
     <message>
         <source>Erase layer</source>
@@ -1682,52 +1682,52 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Difference</source>
-        <translation type="unfinished">Difference</translation>
+        <translation>Difference</translation>
     </message>
     <message>
         <source>Intersect layer</source>
-        <translation type="unfinished">Intersectie van laag</translation>
+        <translation>Intersectie van laag</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation type="unfinished">Intersectie</translation>
+        <translation>Intersectie</translation>
     </message>
     <message>
         <source>Difference layer</source>
-        <translation type="unfinished">Difference laag</translation>
+        <translation>Difference laag</translation>
     </message>
     <message>
         <source>No features selected, please uncheck &apos;Use selected&apos; or make a selection</source>
-        <translation type="unfinished">Geen objecten geselecteerd, verwijder het vinkje &apos;Selectie gebruiken&apos; of maak een selectie</translation>
+        <translation>Geen objecten geselecteerd, verwijder het vinkje &apos;Selectie gebruiken&apos; of maak een selectie</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="unfinished">Symmetrische difference</translation>
+        <translation>Symmetrische difference</translation>
     </message>
     <message>
         <source>Clip layer</source>
-        <translation type="unfinished">&apos;Clip&apos; laag</translation>
+        <translation>&apos;Clip&apos; laag</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="unfinished">Clip</translation>
+        <translation>Clip</translation>
     </message>
     <message>
         <source>Union layer</source>
-        <translation type="unfinished">Union laag</translation>
+        <translation>Union laag</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="unfinished">Union</translation>
+        <translation>Union</translation>
     </message>
     <message>
         <source>Unable to delete existing shapefile.</source>
-        <translation type="unfinished">Verwijderen van bestaande shape-bestand niet mogelijk.</translation>
+        <translation>Verwijderen van bestaande shape-bestand niet mogelijk.</translation>
     </message>
     <message>
         <source>
 Warnings:</source>
-        <translation type="unfinished">
+        <translation>
 Waarschuwingen:</translation>
     </message>
     <message>
@@ -1735,7 +1735,7 @@ Waarschuwingen:</translation>
 Some output geometries may be missing or invalid.
 
 Would you like to add the new layer anyway?</source>
-        <translation type="unfinished">
+        <translation>
 Sommige resultaat-geometrie-objecten zijn ongeldig of missen.
 
 Wilt u de laag toch toevoegen?</translation>
@@ -1744,26 +1744,31 @@ Wilt u de laag toch toevoegen?</translation>
         <source>
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished">De nieuwe laag aan de TOC toevoegen?</translation>
+        <translation>
+
+De nieuwe laag aan de TOC toevoegen?</translation>
     </message>
     <message>
         <source>
 Input CRS error: Different input coordinate reference systems detected, results may not be as expected.</source>
-        <translation type="unfinished">Ruimtelijk Referentie Systeem (CSR) fout: verschillende CSR-systemen bij de invoer aangetroffen, onverwachte resultaten kunnen het gevolg zijn.</translation>
+        <translation>
+Ruimtelijk Referentie Systeem (CSR) fout: verschillende CSR-systemen bij de invoer aangetroffen, onverwachte resultaten kunnen het gevolg zijn.</translation>
     </message>
     <message>
         <source>
 Feature geometry error: One or more output features ignored due to invalid geometry.</source>
-        <translation type="unfinished">Object-geometrie fout: een of meer uitvoerobjecten vervallen door ongeldige geometrie.</translation>
+        <translation>
+Object-geometrie fout: een of meer uitvoerobjecten vervallen door ongeldige geometrie.</translation>
     </message>
     <message>
         <source>
 GEOS geoprocessing error: One or more input features have invalid geometry.</source>
-        <translation type="unfinished">GEOS fout: een of meer invoerobjecten hebben een ongeldige geometrie.</translation>
+        <translation>
+GEOS fout: een of meer invoerobjecten hebben een ongeldige geometrie.</translation>
     </message>
     <message>
         <source>Created output shapefile:</source>
-        <translation type="unfinished">Uitvoerbestand (shape) aangemaakt:</translation>
+        <translation>Uitvoerbestand (shape) aangemaakt:</translation>
     </message>
 </context>
 <context>
@@ -2423,7 +2428,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>OSM Information</source>
-        <translation type="unfinished">OSM Informatie</translation>
+        <translation>OSM Informatie</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="78"/>
@@ -2512,51 +2517,51 @@ p, li { white-space: pre-wrap; }
     <name>OsmDownloadDlg</name>
     <message>
         <source>OSM Download</source>
-        <translation type="unfinished">OSM Download</translation>
+        <translation>OSM Download</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="unfinished">Bestand opslaan niet mogelijk %1: %2.</translation>
+        <translation>Bestand opslaan niet mogelijk %1: %2.</translation>
     </message>
     <message>
         <source>Waiting for OpenStreetMap server ...</source>
-        <translation type="unfinished">Wachten op OpenStreetMap-server ...</translation>
+        <translation>Wachten op OpenStreetMap-server ...</translation>
     </message>
     <message>
         <source>Download process failed. OpenStreetMap server response: %1 - %2</source>
-        <translation type="unfinished">Download mislukt. Melding van OpenStreetMap-server: %1 - %2</translation>
+        <translation>Download mislukt. Melding van OpenStreetMap-server: %1 - %2</translation>
     </message>
     <message>
         <source>OSM Download Error</source>
-        <translation type="unfinished">OSM Download Fout</translation>
+        <translation>OSM Download Fout</translation>
     </message>
     <message>
         <source>Download failed: %1.</source>
-        <translation type="unfinished">Download mislukt: %1.</translation>
+        <translation>Download mislukt: %1.</translation>
     </message>
     <message>
         <source>Getting data</source>
-        <translation type="unfinished">Data ophalen</translation>
+        <translation>Data ophalen</translation>
     </message>
     <message>
         <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
-        <translation type="unfinished">De OpenStreetMap-server waar u OSM-data van wilt downloaden (~ api.openstreetmap.org) heeft een vaste begrenzing aan de hoeveelheid de downloaden data. Zoals beschreven in &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; kan zowel de longitude als de latitude extent niet groter zijn dan 0.25 graden. Quantum GIS laat u wel elke extent specificeren, maar de OpenStreetMap-server zal eenvoudig de verzoeken afslaan wanneer deze niet voldoen aan bovenstaande begrenzing.</translation>
+        <translation>De OpenStreetMap-server waar u OSM-data van wilt downloaden (~ api.openstreetmap.org) heeft een vaste begrenzing aan de hoeveelheid de downloaden data. Zoals beschreven in &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; kan zowel de longitude als de latitude extent niet groter zijn dan 0.25 graden. Quantum GIS laat u wel elke extent specificeren, maar de OpenStreetMap-server zal eenvoudig de verzoeken afslaan wanneer deze niet voldoen aan bovenstaande begrenzing.</translation>
     </message>
     <message>
         <source>Both extents are too large!</source>
-        <translation type="unfinished">Beide extents zijn te groot!</translation>
+        <translation>Beide extents zijn te groot!</translation>
     </message>
     <message>
         <source>Latitude extent is too large!</source>
-        <translation type="unfinished">Latitude lengte is te groot!</translation>
+        <translation>Latitude lengte is te groot!</translation>
     </message>
     <message>
         <source>Longitude extent is too large!</source>
-        <translation type="unfinished">Longitude lengte is te groot!</translation>
+        <translation>Longitude lengte is te groot!</translation>
     </message>
     <message>
         <source>OK! Area is probably acceptable to server.</source>
-        <translation type="unfinished">OK! Oppervlakte is waarschijnlijk acceptabel voor de server.</translation>
+        <translation>OK! Oppervlakte is waarschijnlijk acceptabel voor de server.</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="19"/>
@@ -2793,23 +2798,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>OSM Plugin</source>
-        <translation type="unfinished">OMS Plugin</translation>
+        <translation>OMS Plugin</translation>
     </message>
     <message>
         <source>The &apos;Create OSM Relation&apos; dialog was closed automatically because current OSM database was changed.</source>
-        <translation type="unfinished">De &apos;OSM Relatie Aanmaken&apos;-dialoog is automatisch gesloten omdat de huidige OSM-database is aangepast.</translation>
+        <translation>De &apos;OSM Relatie Aanmaken&apos;-dialoog is automatisch gesloten omdat de huidige OSM-database is aangepast.</translation>
     </message>
     <message>
         <source>OSM Feature Dock Widget</source>
-        <translation type="unfinished">OSM-Object &apos;Dock Widget&apos;</translation>
+        <translation>OSM-Object &apos;Dock Widget&apos;</translation>
     </message>
     <message>
         <source>Choose OSM feature first.</source>
-        <translation type="unfinished">Kies eerst een OSM-object.</translation>
+        <translation>Kies eerst een OSM-object.</translation>
     </message>
     <message>
         <source>Choose relation for editing first.</source>
-        <translation type="unfinished">Kies eerst een relatie om aan te passen.</translation>
+        <translation>Kies eerst een relatie om aan te passen.</translation>
     </message>
     <message>
         <source>Property &apos;%1&apos; cannot be added twice.</source>
@@ -2897,31 +2902,31 @@ p, li { white-space: pre-wrap; }
     <name>OsmSaveDlg</name>
     <message>
         <source>Save OSM to file</source>
-        <translation type="unfinished">OSM naar bestand opslaan</translation>
+        <translation>OSM naar bestand opslaan</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="unfinished">Bestand opslaan niet mogelijk %1: %2.</translation>
+        <translation>Bestand opslaan niet mogelijk %1: %2.</translation>
     </message>
     <message>
         <source>Initializing...</source>
-        <translation type="unfinished">Initialiseren...</translation>
+        <translation>Initialiseren...</translation>
     </message>
     <message>
         <source>Saving nodes...</source>
-        <translation type="unfinished">Nodes/knooppunten opslaan...</translation>
+        <translation>Nodes/knooppunten opslaan...</translation>
     </message>
     <message>
         <source>Saving lines...</source>
-        <translation type="unfinished">Lijnen opslaan...</translation>
+        <translation>Lijnen opslaan...</translation>
     </message>
     <message>
         <source>Saving polygons...</source>
-        <translation type="unfinished">Polygonen opslaan...</translation>
+        <translation>Polygonen opslaan...</translation>
     </message>
     <message>
         <source>Saving relations...</source>
-        <translation type="unfinished">Relaties opslaan...</translation>
+        <translation>Relaties opslaan...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="16"/>
@@ -3016,11 +3021,11 @@ p, li { white-space: pre-wrap; }
     <name>OsmUploadDlg</name>
     <message>
         <source>OSM Upload</source>
-        <translation type="unfinished">OSM Uploaden</translation>
+        <translation>OSM Uploaden</translation>
     </message>
     <message>
         <source>Uploading data...</source>
-        <translation type="unfinished">Data wordt geupload...</translation>
+        <translation>Data wordt geupload...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="22"/>
@@ -3092,39 +3097,39 @@ p, li { white-space: pre-wrap; }
     <name>Python</name>
     <message>
         <source>An error has occured while executing Python code:</source>
-        <translation type="unfinished">Er is een fout opgetreden bij het uitvoeren van Python code:</translation>
+        <translation>Er is een fout opgetreden bij het uitvoeren van Python code:</translation>
     </message>
     <message>
         <source>Python version:</source>
-        <translation type="unfinished">Python versie:</translation>
+        <translation>Python versie:</translation>
     </message>
     <message>
         <source>Python path:</source>
-        <translation type="unfinished">Python pad:</translation>
+        <translation>Python pad:</translation>
     </message>
     <message>
         <source>Python error</source>
-        <translation type="unfinished">Python fout</translation>
+        <translation>Python fout</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin &apos;%1&apos; from [&apos;%2&apos;]</source>
-        <translation type="unfinished">Kan plugin &apos;%1&apos; niet laden van [&apos;%2&apos;]</translation>
+        <translation>Kan plugin &apos;%1&apos; niet laden van [&apos;%2&apos;]</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin %1</source>
-        <translation type="unfinished">Kan deze plugin niet laden %1</translation>
+        <translation>Kan deze plugin niet laden %1</translation>
     </message>
     <message>
         <source>%1 due an error when calling its classFactory() method</source>
-        <translation type="unfinished">%1 door een fout bij het aanroepen van de classFactory()-methode</translation>
+        <translation>%1 door een fout bij het aanroepen van de classFactory()-methode</translation>
     </message>
     <message>
         <source>%1 due an error when calling its initGui() method</source>
-        <translation type="unfinished">%1 door een fout bij het aanroepen van de initGui()-methode</translation>
+        <translation>%1 door een fout bij het aanroepen van de initGui()-methode</translation>
     </message>
     <message>
         <source>Error while unloading plugin %1</source>
-        <translation type="unfinished">Fout bij het uitschakelen van plugin %1</translation>
+        <translation>Fout bij het uitschakelen van plugin %1</translation>
     </message>
 </context>
 <context>
@@ -7201,57 +7206,57 @@ Deze kopie van QGIS heeft geen SpatialLite ondersteuning.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2129"/>
         <source>Whats new in Version 1.4.0?</source>
-        <translation type="unfinished"></translation>
+        <translation>Wat is er nieuw in Versie 1.4.0?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2132"/>
         <source>Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.3.0. If an unchanging user interface, programmatic API and long term support is more important to you then cool new and untested features, we recommend that you use a copy of QGIS from our Long Term Support (LTS)1.0.x release series. In all other cases we recommend that you use this version.</source>
-        <translation type="unfinished"></translation>
+        <translation>Let op: dit is een release uit onze &apos;haantje-de-voorste&apos;-releases. Daarom bevat het nieuwe features en uitbreidingen van de programmeerinterface ten opzichte van QGIS 1.0.x en QGIS 1.1.0. Als stabiliteit en langetermijn ondersteuning belangrijker is voor u dan vette nieuwe en ongeteste features, dan raden wij u aan om een kopie van QGIS uit de stabiele 1.0.x versie te gebruiken.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2140"/>
         <source>This release includes around 200 bug fixes, nearly 30 new features and has had a lot of love and attention poured in to it to take our favourite desktop GIS application another step on the road to GIS nirvana! So much has happened in the 3 months since our last release that it is impossible to document everything here. Instead we will just highlight a couple of important new features for you.</source>
-        <translation type="unfinished"></translation>
+        <translation>Deze nieuwe versie bevat ongeveer 200 foutverbeteringen, bijna 30 nieuwe mogelijkheden en heeft heel wat liefde en attentie gehad om onze favoriete desktop-GIS-applicatie weer een stapje dichter bij het GIS-nirvana te brengen. Er zijn zoveel nieuwe veranderingen bijgekomen de afgelopen 3 maanden dat het bijna onmogelijk is om hier alles op te noemen. In plaats daarvan zullen we een paar belangrijke nieuwigheden belichten voor u.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2148"/>
         <source>Probably the biggest new feature is the addition of the new vector symbology infrastructure. This is provided alongside the old implementation - you can switch using a button in the vector layer properties dialog. It does&apos;t replace the old symbology implementation completely yet because there are various issues that need to be resolved and a large amount of testing before it is considered ready.</source>
-        <translation type="unfinished"></translation>
+        <translation>Waarschijnlijk de de belangrijkste grote vernieuwing is de toevoeging van een nieuwe vector-symbologie-infrastructuur. Deze staat naast de oude implementatie - u kunt wisselen tussen de twee met een knop in de vectorlaag-eigenschappen-dialoog. Het vervangt de oude symbologie implementatie niet helemaal omdat er nog verschillende zaken open staat die moeten worden opgelost, en er moet nog meer worden getest voordat we het als helmaal af beschouwen.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2156"/>
         <source>QGIS now has a field calculator, accessible via a button in the attribute section of the vector properties, and from the attribute table user interface. You can use feature length, feature area, string concatenation and type conversions in the field calculator, as well as field values.</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS heeft nu een veld-berekeningmogelijkheid, te benaderen via een knop in het attribuutdeel van de vector-eigenschappen, en vanuit de attributentabel-interface. U kunt berekeningen uitvoeren met de objectlengte, objectoppervlakte, stringmanipulatie en -veranderingen uitvoeren en werken met de veldwaarden.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2163"/>
         <source>The map composer has had a lot of attention. A grid can now be added to composer maps. Composer maps can now be rotated in the layout. The limitation of a single map layout per project has been removed. A new composer manager dialog has been added to manage the existing composer instances. The composer widget property sheets have been completely overhauled to use less screen space </source>
-        <translation type="unfinished"></translation>
+        <translation>Er is veel zorg besteed aan de map-layouter. Er kan gewerkt worden met een grid. Kaarten kunnen in de layout worden geroteerd. De beperking om maar 1 layout per project te kunnen hebben is er niet meer. Via een dialoog kunt u met meerdere layouts werken. De dialogen zijn aangepast om ook te kunnen worden gebruikt op kleinere computerschermen</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2171"/>
         <source>Various parts of the user interface have been overhauled with the goal of improving consistency and to improve support for netbooks and other smaller screen devices. Loading and saving of shortcuts. Position can now be displayed as Degrees, Minutes, Seconds in the status bar. The add, move and delete vertex buttons are now removed and the node tool is moved from the advanced editing toolbar to the standard editing toolbar. The identification tool has also undergone numerous improvements.</source>
-        <translation type="unfinished"></translation>
+        <translation>Verschillende stukken van de gebruikersinterface zijn op opnieuw opgebouwd, om een consistenter uiterlijk te krijgen en ook bruikbaar te zijn op netbooks en andere apparaten met kleine schermen. Veranderen en bewaren van snelkoppelingen. Positie kan nu worden afgebeeld als Graden, Minuten en Seconden in de statusbalk. Het toevoegen, verschuiven en verwijderen van objectknooppunten zijn verwijderd en dit knooppuntgereedschap is verplaatst van de &apos;geavanceerde editing&apos; naar de &apos;normale edit&apos;-balk.Het identificatie-gereedschap heeft verschillende verbeteringen gekregen.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2181"/>
         <source>A render caching capability has been added to QGIS. This speeds up common operations such as layer re-ordering, changing symbology, WMS / WFS client, hiding / showing layers and opens the door for future enhancements such as threaded rendering and pre-compositing layer cache manipulation. Note that it is disabled by default, and can be enabled in the options dialog.</source>
-        <translation type="unfinished"></translation>
+        <translation>Rendering-caching is toegevoegd aan QGIS. Dit versneld operaties als lagenverschuiven, symbologie aanpassingen, WMS en WFS-lagen, tonen/verbergen van lagen en zou een begin kunnen zijn om in de toekomst te kunnen gaan werken met &apos;threaded rendering&apos; en &apos;pre-compositing layer cache manipulation&apos;. Let op: dit is standaard uitgeschakeld maar kan worden ingeschakeld in de optiesdialoog.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2189"/>
         <source>User defined SVG search paths are now added to the options dialog.</source>
-        <translation type="unfinished"></translation>
+        <translation>SVG-zoekpaden in de optiesdialoog.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2192"/>
         <source>When creating a new shapefile, you can now specify its CRS. Also the avoid intersections option for polygons is now also possible with background layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Bij het aanmaken van een shape-bestand kunt u nu het CRS opgeven. Het &apos;vermijdenen van doorsnijdingen&apos; van polygonen is nu ook mogelijk met achtergrondlagen.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2196"/>
         <source>For power users, you can now create customizable attribute forms using Qt Designer dialog UIs.</source>
-        <translation type="unfinished"></translation>
+        <translation>Voor gevorderde gebruikers: u kunt nu ook zelf vervaardigde attribuutformulieren gebruiken die u maakt met Qt Designer.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3673"/>
@@ -8248,7 +8253,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="72"/>
         <source>Help</source>
-        <translation type="unfinished">Help</translation>
+        <translation>Help</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="230"/>
@@ -19155,7 +19160,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="107"/>
         <source>Part added</source>
-        <translation type="unfinished"></translation>
+        <translation>Onderdeel toegevoegd</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="115"/>
@@ -22990,7 +22995,7 @@ geometrische objecten.</translation>
     <name>QgsPluginInstaller</name>
     <message>
         <source>Couldn&apos;t parse output from the repository</source>
-        <translation type="unfinished">Antwoord van de repository kan niet worden begrepen (geparseerd)</translation>
+        <translation>Antwoord van de repository kan niet worden begrepen (geparseerd)</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the system plugin directory</source>
@@ -22998,51 +23003,51 @@ geometrische objecten.</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the local plugin directory</source>
-        <translation type="unfinished">De lokale pluginmap kan niet worden geopend</translation>
+        <translation>De lokale pluginmap kan niet worden geopend</translation>
     </message>
     <message>
         <source>Fetch Python Plugins...</source>
-        <translation type="unfinished">Python Plugins Ophalen...</translation>
+        <translation>Python Plugins Ophalen...</translation>
     </message>
     <message>
         <source>Install more plugins from remote repositories</source>
-        <translation type="unfinished">Installeer meer plugins van decentrale repositories</translation>
+        <translation>Installeer meer plugins van decentrale repositories</translation>
     </message>
     <message>
         <source>Looking for new plugins...</source>
-        <translation type="unfinished">Zoeken naar nieuwe plugins...</translation>
+        <translation>Zoeken naar nieuwe plugins...</translation>
     </message>
     <message>
         <source>There is a new plugin available</source>
-        <translation type="unfinished">Er is een nieuwe plugin beschikbaar</translation>
+        <translation>Er is een nieuwe plugin beschikbaar</translation>
     </message>
     <message>
         <source>There is a plugin update available</source>
-        <translation type="unfinished">Er is een update voor een plugin beschikbaar</translation>
+        <translation>Er is een update voor een plugin beschikbaar</translation>
     </message>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="unfinished">QGIS Python Plugins Installeren</translation>
+        <translation>QGIS Python Plugins Installeren</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
-        <translation type="unfinished">Fout bij het lezen van repository:</translation>
+        <translation>Fout bij het lezen van repository:</translation>
     </message>
     <message>
         <source>Nothing to remove! Plugin directory doesn&apos;t exist:</source>
-        <translation type="unfinished">Niets te verwijderen! Pluginmap bestaat niet:</translation>
+        <translation>Niets te verwijderen! Pluginmap bestaat niet:</translation>
     </message>
     <message>
         <source>Failed to remove the directory:</source>
-        <translation type="unfinished">Fout bij het verwijderen van de map: </translation>
+        <translation>Fout bij het verwijderen van de map: </translation>
     </message>
     <message>
         <source>Check permissions or remove it manually</source>
-        <translation type="unfinished">Controleer bestandsrechten of verwijder handmatig</translation>
+        <translation>Controleer bestandsrechten of verwijder handmatig</translation>
     </message>
     <message>
         <source>QGIS Plugin Conflict:</source>
-        <translation type="unfinished">QGIS-plugin Conflict:</translation>
+        <translation>QGIS-plugin Conflict:</translation>
     </message>
     <message>
         <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. Probably it is a remainder of an older QGIS installation. Please use the Plugin Installer to remove it in order to unmask the instance shipped with this version of QGIS.</source>
@@ -23050,58 +23055,58 @@ geometrische objecten.</translation>
     </message>
     <message>
         <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. This is likely due to files associated with a previous installation of QGIS. Please use the Plugin Installer to remove that older plugin in order to unmask the newer version shipped with this copy of QGIS.</source>
-        <translation type="unfinished">Bij de plugininstallatie is er een niet meer ondersteunde/overbodige plugin gevonden die een nieuwere, met QGIS meegeleverde versie, maskeert. Waarschijnlijk is dit een overblijfsel van een ouder QGIS-installatie. Gebruik de &apos;Plugin-installer&apos;  om die oude plugin te verwijderen zodat de nieuwe versie kan worden gebruikt.</translation>
+        <translation>Bij de plugininstallatie is er een niet meer ondersteunde/overbodige plugin gevonden die een nieuwere, met QGIS meegeleverde versie, maskeert. Waarschijnlijk is dit een overblijfsel van een ouder QGIS-installatie. Gebruik de &apos;Plugin-installer&apos;  om die oude plugin te verwijderen zodat de nieuwe versie kan worden gebruikt.</translation>
     </message>
 </context>
 <context>
     <name>QgsPluginInstallerDialog</name>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="unfinished">QGIS Python Plugin Installeren</translation>
+        <translation>QGIS Python Plugin Installeren</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
-        <translation type="unfinished">Fout bij het lezen van repository:</translation>
+        <translation>Fout bij het lezen van repository:</translation>
     </message>
     <message>
         <source>all repositories</source>
-        <translation type="unfinished">alle repositories</translation>
+        <translation>alle repositories</translation>
     </message>
     <message>
         <source>connected</source>
-        <translation type="unfinished">verbonden</translation>
+        <translation>verbonden</translation>
     </message>
     <message>
         <source>This repository is connected</source>
-        <translation type="unfinished">Deze repository is verbonden</translation>
+        <translation>Deze repository is verbonden</translation>
     </message>
     <message>
         <source>unavailable</source>
-        <translation type="unfinished">niet beschikbaar</translation>
+        <translation>niet beschikbaar</translation>
     </message>
     <message>
         <source>This repository is enabled, but unavailable</source>
-        <translation type="unfinished">Deze repository is aangevinkt, maar niet beschikbaar</translation>
+        <translation>Deze repository is aangevinkt, maar niet beschikbaar</translation>
     </message>
     <message>
         <source>disabled</source>
-        <translation type="unfinished">uitgeschakeld</translation>
+        <translation>uitgeschakeld</translation>
     </message>
     <message>
         <source>This repository is disabled</source>
-        <translation type="unfinished">Deze repository is uitgeschakeld</translation>
+        <translation>Deze repository is uitgeschakeld</translation>
     </message>
     <message>
         <source>This repository is blocked due to incompatibility with your Quantum GIS version</source>
-        <translation type="unfinished">Deze repository is geblokkeerd vanwege incompatibiliteit met uw huidige Quantum GIS versie</translation>
+        <translation>Deze repository is geblokkeerd vanwege incompatibiliteit met uw huidige Quantum GIS versie</translation>
     </message>
     <message>
         <source>orphans</source>
-        <translation type="unfinished">wezen</translation>
+        <translation>wezen</translation>
     </message>
     <message>
         <source>any status</source>
-        <translation type="unfinished">elke status</translation>
+        <translation>elke status</translation>
     </message>
     <message>
         <source>not installed</source>
@@ -23115,31 +23120,31 @@ geometrische objecten.</translation>
     </message>
     <message>
         <source>upgradeable and news</source>
-        <translation type="unfinished">op te waarderen en nieuwe</translation>
+        <translation>op te waarderen en nieuwe</translation>
     </message>
     <message>
         <source>This plugin is not installed</source>
-        <translation type="unfinished">Deze plugin is niet geïnstalleerd</translation>
+        <translation>Deze plugin is niet geïnstalleerd</translation>
     </message>
     <message>
         <source>This plugin is installed</source>
-        <translation type="unfinished">Deze plugin is geïnstalleerd</translation>
+        <translation>Deze plugin is geïnstalleerd</translation>
     </message>
     <message>
         <source>This plugin is installed, but there is an updated version available</source>
-        <translation type="unfinished">Deze plugin is geïnstalleerd, maar er is een nieuwere versie beschikbaar</translation>
+        <translation>Deze plugin is geïnstalleerd, maar er is een nieuwere versie beschikbaar</translation>
     </message>
     <message>
         <source>This plugin is installed, but I can&apos;t find it in any enabled repository</source>
-        <translation type="unfinished">Deze plugin is geïnstalleerd, maar niet beschikbaar in een ingeschakelde repository</translation>
+        <translation>Deze plugin is geïnstalleerd, maar niet beschikbaar in een ingeschakelde repository</translation>
     </message>
     <message>
         <source>This plugin is not installed and is seen for the first time</source>
-        <translation type="unfinished">Deze plugin is niet geïnstalleerd en voor het eerst gezien</translation>
+        <translation>Deze plugin is niet geïnstalleerd en voor het eerst gezien</translation>
     </message>
     <message>
         <source>This plugin is installed and is newer than its version available in a repository</source>
-        <translation type="unfinished">Deze plugin is geïnstalleerd en is nieuwer dan de in de repository beschikbare</translation>
+        <translation>Deze plugin is geïnstalleerd en is nieuwer dan de in de repository beschikbare</translation>
     </message>
     <message>
         <source>not installed</source>
@@ -23168,81 +23173,81 @@ geometrische objecten.</translation>
     </message>
     <message>
         <source>installed version</source>
-        <translation type="unfinished">geïnstalleerde versie</translation>
+        <translation>geïnstalleerde versie</translation>
     </message>
     <message>
         <source>available version</source>
-        <translation type="unfinished">beschikbare versie</translation>
+        <translation>beschikbare versie</translation>
     </message>
     <message>
         <source>That&apos;s the newest available version</source>
-        <translation type="unfinished">Dat is de nieuwst beschikbare versie</translation>
+        <translation>Dat is de nieuwst beschikbare versie</translation>
     </message>
     <message>
         <source>There is no version available for download</source>
-        <translation type="unfinished">Er is geen versie beschikbaar om op te halen</translation>
+        <translation>Er is geen versie beschikbaar om op te halen</translation>
     </message>
     <message>
         <source>only locally available</source>
-        <translation type="unfinished">alleen lokaal beschikbaar</translation>
+        <translation>alleen lokaal beschikbaar</translation>
     </message>
     <message>
         <source>Install plugin</source>
-        <translation type="unfinished">Installeer plugin</translation>
+        <translation>Installeer plugin</translation>
     </message>
     <message>
         <source>Reinstall plugin</source>
-        <translation type="unfinished">Herinstalleer plugin</translation>
+        <translation>Herinstalleer plugin</translation>
     </message>
     <message>
         <source>Upgrade plugin</source>
-        <translation type="unfinished">Plugin opwaarderen</translation>
+        <translation>Plugin opwaarderen</translation>
     </message>
     <message>
         <source>Install/upgrade plugin</source>
-        <translation type="unfinished">Installeer/opwaarderen plugin</translation>
+        <translation>Installeer/opwaarderen plugin</translation>
     </message>
     <message>
         <source>Downgrade plugin</source>
-        <translation type="unfinished">Downgrade plugin</translation>
+        <translation>Downgrade plugin</translation>
     </message>
     <message>
         <source>Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!</source>
-        <translation type="unfinished">Weet u zeker dat u de plugin wilt terugzetten naar de laatst beschikbare versie? De geïnstalleerde is nieuwer!</translation>
+        <translation>Weet u zeker dat u de plugin wilt terugzetten naar de laatst beschikbare versie? De geïnstalleerde is nieuwer!</translation>
     </message>
     <message>
         <source>Plugin installation failed</source>
-        <translation type="unfinished">Installatie van plugin mislukt</translation>
+        <translation>Installatie van plugin mislukt</translation>
     </message>
     <message>
         <source>Plugin has disappeared</source>
-        <translation type="unfinished">Plugin is verdwenen</translation>
+        <translation>Plugin is verdwenen</translation>
     </message>
     <message>
         <source>The plugin seems to have been installed but I don&apos;t know where. Probably the plugin package contained a wrong named directory.
 Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll find the plugin there, but I just can&apos;t determine which of them it is. It also means that I won&apos;t be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue.</source>
-        <translation type="unfinished">De plugin lijkt geïnstalleerd, maar het is niet duidelijk waar. Waarschijnlijk bevatte het pluginpakket een verkeerde mapnaam.
+        <translation>De plugin lijkt geïnstalleerd, maar het is niet duidelijk waar. Waarschijnlijk bevatte het pluginpakket een verkeerde mapnaam.
 Zoek in de lijst van geïnstalleerde plugins. Het is waarschijnlijk dat de plugin er tussen staat, alleen kan het programma niet onderscheiden welk het precies is. Dit betekent ook dat u niet geïnformeerd kan worden over updates. De plugin werkt misschien wel. Neem contact op met de bouwer van de plugin en meld deze fout.</translation>
     </message>
     <message>
         <source>Plugin installed successfully</source>
-        <translation type="unfinished">Plugin succesvol geïnstalleerd</translation>
+        <translation>Plugin succesvol geïnstalleerd</translation>
     </message>
     <message>
         <source>Plugin uninstall failed</source>
-        <translation type="unfinished">Deïnstallatie plugin mislukt</translation>
+        <translation>Deïnstallatie plugin mislukt</translation>
     </message>
     <message>
         <source>Are you sure you want to uninstall the following plugin?</source>
-        <translation type="unfinished">Weet u zeker dat u deze plugin wilt deïnstalleren?</translation>
+        <translation>Weet u zeker dat u deze plugin wilt deïnstalleren?</translation>
     </message>
     <message>
         <source>Warning: this plugin isn&apos;t available in any accessible repository!</source>
-        <translation type="unfinished">Waarschuwing: deze plugin is niet beschikbaar in een benaderbare repository!</translation>
+        <translation>Waarschuwing: deze plugin is niet beschikbaar in een benaderbare repository!</translation>
     </message>
     <message>
         <source>Plugin uninstalled successfully</source>
-        <translation type="unfinished">Plugin succesvol gedeïnstalleerd</translation>
+        <translation>Plugin succesvol gedeïnstalleerd</translation>
     </message>
     <message>
         <source>You are going to add some plugin repositories neither authorized nor supported by the Quantum GIS team, however provided by folks associated with us. Plugin authors generally make efforts to make their works useful and safe, but we can&apos;t assume any responsibility for them. FEEL WARNED!</source>
@@ -23250,105 +23255,105 @@ Zoek in de lijst van geïnstalleerde plugins. Het is waarschijnlijk dat de plugi
     </message>
     <message>
         <source>Unable to add another repository with the same URL!</source>
-        <translation type="unfinished">Toevoegen van nog een repository met dezelfde URL is niet mogelijk!</translation>
+        <translation>Toevoegen van nog een repository met dezelfde URL is niet mogelijk!</translation>
     </message>
     <message>
         <source>Are you sure you want to remove the following repository?</source>
-        <translation type="unfinished">Weet u zeker dat u deze repository wilt verwijderen?</translation>
+        <translation>Weet u zeker dat u deze repository wilt verwijderen?</translation>
     </message>
     <message>
         <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
-        <translation type="unfinished">Deze plugin is incompatibel met uw huidige Quantum GIS versie en zal waarschijnlijk niet werken.</translation>
+        <translation>Deze plugin is incompatibel met uw huidige Quantum GIS versie en zal waarschijnlijk niet werken.</translation>
     </message>
     <message>
         <source>This plugin seems to be broken.
 It has been installed but can&apos;t be loaded.
 Here is the error message:</source>
-        <translation type="unfinished">Deze plugin lijkt niet te werken.
+        <translation>Deze plugin lijkt niet te werken.
 Het is geïnstalleerd maar kan niet worden geladen.
 Dit is de foutmelding:</translation>
     </message>
     <message>
         <source>Note that it&apos;s an uninstallable core plugin</source>
-        <translation type="unfinished">Merk op dat dit een niet te installeren systeemplugin is</translation>
+        <translation>Merk op dat dit een niet-te-installeren systeemplugin is</translation>
     </message>
     <message>
         <source>This plugin is broken</source>
-        <translation type="unfinished">Deze plugin werkt niet</translation>
+        <translation>Deze plugin werkt niet</translation>
     </message>
     <message>
         <source>This plugin requires a newer version of Quantum GIS</source>
-        <translation type="unfinished">Deze plugin vereist een nieuwere versie van Quantum GIS</translation>
+        <translation>Deze plugin vereist een nieuwere versie van Quantum GIS</translation>
     </message>
     <message>
         <source>This plugin requires a missing module</source>
-        <translation type="unfinished">Deze plugin vereist een niet aanwezige (python) module</translation>
+        <translation>Deze plugin vereist een niet aanwezige (python) module</translation>
     </message>
     <message>
         <source>Plugin reinstalled successfully</source>
-        <translation type="unfinished">Herinstallatie van plugin geslaagd</translation>
+        <translation>Herinstallatie van plugin geslaagd</translation>
     </message>
     <message>
         <source>The plugin is designed for a newer version of Quantum GIS. The minimum required version is:</source>
-        <translation type="unfinished">De plugin is gemaakt voor een nieuwere versie van Quantum GIS. De minimaal vereiste versie is:</translation>
+        <translation>De plugin is gemaakt voor een nieuwere versie van Quantum GIS. De minimaal vereiste versie is:</translation>
     </message>
     <message>
         <source>The plugin depends on some components missing on your system. You need to install the following Python module in order to enable it:</source>
-        <translation type="unfinished">De plugin is afhankelijk van componenten die missen op uw systeem. De volgende Pythonmodule is nodig om de plugin te gebruiken:</translation>
+        <translation>De plugin is afhankelijk van componenten die missen op uw systeem. De volgende Pythonmodule is nodig om de plugin te gebruiken:</translation>
     </message>
     <message>
         <source>The plugin is broken. Python said:</source>
-        <translation type="unfinished">De plugin werkt niet. Python meldt:</translation>
+        <translation>De plugin werkt niet. Python meldt:</translation>
     </message>
     <message>
         <source>The required Python module is not installed.
 For more information, please visit its homepage and Quantum GIS wiki.</source>
-        <translation type="unfinished">De vereiste Python-module is niet geïnstalleerd.
+        <translation>De vereiste Python-module is niet geïnstalleerd.
 Voor meer informatie, bezoek de homepage van de plugin en de Quantum GIS wiki.</translation>
     </message>
     <message>
         <source>Python plugin installed.
 Now you need to enable it in Plugin Manager.</source>
-        <translation type="unfinished">Python plugin geïnstalleerd.
+        <translation>Python plugin geïnstalleerd.
 Nu moet u het inschakelen in de Plugin Manager.</translation>
     </message>
     <message>
         <source>Python plugin reinstalled.
 You need to restart Quantum GIS in order to reload it.</source>
-        <translation type="unfinished">Python plugin geïnstalleerd.
+        <translation>Python plugin geïnstalleerd.
 U dient Quantum GIS te herstarten om de plugin te laden.</translation>
     </message>
     <message>
         <source>Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely.</source>
-        <translation type="unfinished">Python plugin gedeïnstalleerd. U dient Quantum GIS te herstarten om de plugin volledig te verwijderen.</translation>
+        <translation>Python plugin gedeïnstalleerd. U dient Quantum GIS te herstarten om de plugin volledig te verwijderen.</translation>
     </message>
     <message>
         <source>You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.</source>
-        <translation type="unfinished">U staat op het punt enkele plugin-repositories toe te voegen die niet geautoriseerd zijn of ondersteund worden door het QGIS-team. Pluginmakers doen hun best om hun werk goed en bruikbaar te maken, maar we zijn hier niet verantwoordelijk voor.</translation>
+        <translation>U staat op het punt enkele plugin-repositories toe te voegen die niet geautoriseerd zijn of ondersteund worden door het QGIS-team. Pluginmakers doen hun best om hun werk goed en bruikbaar te maken, maar we zijn hier niet verantwoordelijk voor.</translation>
     </message>
     <message>
         <source>installed</source>
-        <translation type="unfinished">geïnstalleerd</translation>
+        <translation>geïnstalleerd</translation>
     </message>
     <message>
         <source>upgradeable</source>
-        <translation type="unfinished">op te waarderen</translation>
+        <translation>op te waarderen</translation>
     </message>
     <message>
         <source>new!</source>
-        <translation type="unfinished">nieuw!</translation>
+        <translation>nieuw!</translation>
     </message>
     <message>
         <source>invalid</source>
-        <translation type="unfinished">ongeldig</translation>
+        <translation>ongeldig</translation>
     </message>
     <message>
         <source>not installed</source>
-        <translation type="unfinished">niet geïnstalleerd</translation>
+        <translation>niet geïnstalleerd</translation>
     </message>
     <message>
         <source>at least</source>
-        <translation type="unfinished">minstens</translation>
+        <translation>minstens</translation>
     </message>
 </context>
 <context>
@@ -23531,7 +23536,7 @@ U dient Quantum GIS te herstarten om de plugin te laden.</translation>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="30"/>
         <source>Help</source>
-        <translation type="unfinished">Help</translation>
+        <translation>Help</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="82"/>
@@ -23627,35 +23632,35 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerFetchingDialog</name>
     <message>
         <source>Success</source>
-        <translation type="unfinished">Succes</translation>
+        <translation>Succes</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="unfinished">Hostnaam wordt opgezocht...</translation>
+        <translation>Hostnaam wordt opgezocht...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="unfinished">Verbinden...</translation>
+        <translation>Verbinden...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="unfinished">Verbonden met host. Verzoek wordt verzonden...</translation>
+        <translation>Verbonden met host. Verzoek wordt verzonden...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation type="unfinished">Data wordt gedownload...</translation>
+        <translation>Data wordt gedownload...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="unfinished">In rust</translation>
+        <translation>In rust</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="unfinished">Verbinding wordt afgesloten...</translation>
+        <translation>Verbinding wordt afgesloten...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Fout</translation>
+        <translation>Fout</translation>
     </message>
 </context>
 <context>
@@ -23690,43 +23695,43 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerInstallingDialog</name>
     <message>
         <source>Installing...</source>
-        <translation type="unfinished">Bezig met ïnstalleren...</translation>
+        <translation>Bezig met installeren...</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="unfinished">Hostnaam wordt opgezocht...</translation>
+        <translation>Hostnaam wordt opgezocht...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="unfinished">Verbinden...</translation>
+        <translation>Verbinden...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="unfinished">Verbonden met host. Verzoek wordt verzonden...</translation>
+        <translation>Verbonden met host. Verzoek wordt verzonden...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation type="unfinished">Data wordt gedownload...</translation>
+        <translation>Data wordt gedownload...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="unfinished">In rust</translation>
+        <translation>In rust</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="unfinished">Verbinding wordt afgesloten...</translation>
+        <translation>Verbinding wordt afgesloten...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Fout</translation>
+        <translation>Fout</translation>
     </message>
     <message>
         <source>Failed to unzip the plugin package. Probably it&apos;s broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:</source>
-        <translation type="unfinished">Problemen bij het uitpakken van het zipbestand van de plugin. Waarschijnlijk is het niet compleet of niet beschikbaar in de repository. Controleer eventueel ook of u de juiste lees- en schrijfrechten heeft in de plugin map: </translation>
+        <translation>Problemen bij het uitpakken van het zipbestand van de plugin. Waarschijnlijk is het niet compleet of niet beschikbaar in de repository. Controleer eventueel ook of u de juiste lees- en schrijfrechten heeft in de plugin map: </translation>
     </message>
     <message>
         <source>Aborted by user</source>
-        <translation type="unfinished">Afgebroken door gebruiker</translation>
+        <translation>Afgebroken door gebruiker</translation>
     </message>
 </context>
 <context>
@@ -23751,7 +23756,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerPluginErrorDialog</name>
     <message>
         <source>no error message received</source>
-        <translation type="unfinished">geen foutmelding (terug)ontvangen</translation>
+        <translation>geen foutmelding (terug)ontvangen</translation>
     </message>
 </context>
 <context>
@@ -31556,27 +31561,27 @@ Tried URL: %1</source>
     <name>VisualDialog</name>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="unfinished">Selecteer een vectorlaag als input</translation>
+        <translation>Selecteer een vectorlaag als input</translation>
     </message>
     <message>
         <source>Please specify input field</source>
-        <translation type="unfinished">Selecteer een input-veld</translation>
+        <translation>Selecteer een input-veld</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation type="unfinished">Check geometrie op geldigheid</translation>
+        <translation>Check geometrie op geldigheid</translation>
     </message>
     <message>
         <source>Geometry errors</source>
-        <translation type="unfinished">Geometrie-fouten</translation>
+        <translation>Geometrie-fouten</translation>
     </message>
     <message>
         <source>Total encountered errors</source>
-        <translation type="unfinished">Totaal aantal gevonden fouten</translation>
+        <translation>Totaal aantal gevonden fouten</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation type="unfinished">Lijst unieke waarden</translation>
+        <translation>Lijst unieke waarden</translation>
     </message>
     <message>
         <source>Unique values:</source>
@@ -31588,19 +31593,19 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>Basics statistics</source>
-        <translation type="unfinished">Basisstatistieken</translation>
+        <translation>Basisstatistieken</translation>
     </message>
     <message>
         <source>Statistics output</source>
-        <translation type="unfinished">Uitvoer statistieken</translation>
+        <translation>Uitvoer statistieken</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation type="unfinished">&apos;Nearest neighbour&apos;-analyse</translation>
+        <translation>&apos;Nearest neighbour&apos;-analyse</translation>
     </message>
     <message>
         <source>Nearest neighbour statistics</source>
-        <translation type="unfinished">&apos;Nearest neighbour&apos;-statistieken</translation>
+        <translation>&apos;Nearest neighbour&apos;-statistieken</translation>
     </message>
     <message>
         <source>Observed mean distance : </source>
@@ -31632,11 +31637,11 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>Unique values</source>
-        <translation type="unfinished">Unieke waarden</translation>
+        <translation>Unieke waarden</translation>
     </message>
     <message>
         <source>Total unique values</source>
-        <translation type="unfinished">Totaal unieke waarden</translation>
+        <translation>Totaal unieke waarden</translation>
     </message>
 </context>
 <context>
@@ -32872,7 +32877,7 @@ door de gebruiker gedefinieerd Basispad (b.v. gebruik alleen de bestandsnaam van
     <name>fTools</name>
     <message>
         <source>Quantum GIS version detected: </source>
-        <translation type="unfinished">Quantum GIS versie gedetecteerd:</translation>
+        <translation>Quantum GIS versie gedetecteerd:</translation>
     </message>
     <message>
         <source>This version of fTools requires at least QGIS version 1.0.0</source>
@@ -32888,39 +32893,39 @@ door de gebruiker gedefinieerd Basispad (b.v. gebruik alleen de bestandsnaam van
     </message>
     <message>
         <source>&amp;Analysis Tools</source>
-        <translation type="unfinished">&amp;Analyse Gereedschappen</translation>
+        <translation>&amp;Analyse Gereedschappen</translation>
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation type="unfinished">Distance matrix</translation>
+        <translation>Distance matrix</translation>
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation type="unfinished">Lijnlengtes sommeren</translation>
+        <translation>Lijnlengtes sommeren</translation>
     </message>
     <message>
         <source>Points in polygon</source>
-        <translation type="unfinished">Punt in polygoon</translation>
+        <translation>Punt in polygoon</translation>
     </message>
     <message>
         <source>Basic statistics</source>
-        <translation type="unfinished">Basisstatistieken</translation>
+        <translation>Basisstatistieken</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation type="unfinished">Lijst unieke waarden</translation>
+        <translation>Lijst unieke waarden</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation type="unfinished">&apos;Nearest neighbour&apos;-analyse</translation>
+        <translation>&apos;Nearest neighbour&apos;-analyse</translation>
     </message>
     <message>
         <source>Mean coordinate(s)</source>
-        <translation type="unfinished">Gemiddelde coördinaten</translation>
+        <translation>Gemiddelde coördinaten</translation>
     </message>
     <message>
         <source>Line intersections</source>
-        <translation type="unfinished">Lijn-intersectie</translation>
+        <translation>Lijn-intersectie</translation>
     </message>
     <message>
         <source>&amp;Sampling Tools</source>
@@ -32929,148 +32934,148 @@ door de gebruiker gedefinieerd Basispad (b.v. gebruik alleen de bestandsnaam van
     <message>
         <source>This version of fTools requires at least QGIS version 1.0.0
 Plugin will not be enabled.</source>
-        <translation type="unfinished">Deze versie van fTools vereist ten minste versie 1.0.0 van QGIS
+        <translation>Deze versie van fTools vereist ten minste versie 1.0.0 van QGIS
 Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>&amp;Vector</source>
-        <translation type="unfinished">&amp;Vector</translation>
+        <translation>&amp;Vector</translation>
     </message>
     <message>
         <source>&amp;Research Tools</source>
-        <translation type="unfinished">&amp;Onderzoeksgereedschap</translation>
+        <translation>&amp;Onderzoeksgereedschap</translation>
     </message>
     <message>
         <source>Random selection</source>
-        <translation type="unfinished">Willekeurige Selectie</translation>
+        <translation>Willekeurige Selectie</translation>
     </message>
     <message>
         <source>Random selection within subsets</source>
-        <translation type="unfinished">Willekeurige selectie binnen subsets</translation>
+        <translation>Willekeurige selectie binnen subsets</translation>
     </message>
     <message>
         <source>Random points</source>
-        <translation type="unfinished">Willekeurige punten</translation>
+        <translation>Willekeurige punten</translation>
     </message>
     <message>
         <source>Regular points</source>
-        <translation type="unfinished">Regelmatige punten</translation>
+        <translation>Regelmatige punten</translation>
     </message>
     <message>
         <source>Vector grid</source>
-        <translation type="unfinished">Vectorgrid</translation>
+        <translation>Vectorgrid</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="unfinished">Selecteren op plaats</translation>
+        <translation>Selecteren op plaats</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
-        <translation type="unfinished">Polygoon van laagextent</translation>
+        <translation>Polygoon van laagextent</translation>
     </message>
     <message>
         <source>&amp;Geoprocessing Tools</source>
-        <translation type="unfinished">&amp;Geoprocessing Gereedschap</translation>
+        <translation>&amp;Geoprocessing Gereedschap</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation type="unfinished">&apos;Convex hull(s)&apos;</translation>
+        <translation>&apos;Convex hull(s)&apos;</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="unfinished">Buffer(s)</translation>
+        <translation>Buffer(s)</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation type="unfinished">Intersectie</translation>
+        <translation>Intersectie</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="unfinished">Union</translation>
+        <translation>Union</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="unfinished">Symmetrische difference</translation>
+        <translation>Symmetrische difference</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="unfinished">Clip</translation>
+        <translation>Clip</translation>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="unfinished">Dissolve</translation>
+        <translation>Dissolve</translation>
     </message>
     <message>
         <source>Difference</source>
-        <translation type="unfinished">Difference</translation>
+        <translation>Difference</translation>
     </message>
     <message>
         <source>G&amp;eometry Tools</source>
-        <translation type="unfinished">G&amp;eometrie gereedschappen</translation>
+        <translation>G&amp;eometrie gereedschappen</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="unfinished">Exporteer/Toevoegen geometrie-kolommen</translation>
+        <translation>Exporteer/Toevoegen geometrie-kolommen</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation type="unfinished">Check geometrie op geldigheid</translation>
+        <translation>Check geometrie op geldigheid</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation type="unfinished">Polygoon-centroide</translation>
+        <translation>Polygoon-centroide</translation>
     </message>
     <message>
         <source>Delaunay triangulation</source>
-        <translation type="unfinished">Delaunay triangulation</translation>
+        <translation>Delaunay triangulation</translation>
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation type="unfinished">Extraheer Knooppunten</translation>
+        <translation>Extraheer Knooppunten</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation type="unfinished">Geometrien vereenvoudigen</translation>
+        <translation>Geometrien vereenvoudigen</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
-        <translation type="unfinished">Meervoudige objecten naar enkelvoudige</translation>
+        <translation>Meervoudige objecten naar enkelvoudige</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
-        <translation type="unfinished">Enkelvoudige objecten naar meervoudige </translation>
+        <translation>Enkelvoudige objecten naar meervoudige </translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation type="unfinished">Polygonen naar lijnen</translation>
+        <translation>Polygonen naar lijnen</translation>
     </message>
     <message>
         <source>&amp;Data Management Tools</source>
-        <translation type="unfinished">&amp;Datamanagement Gereedschappen</translation>
+        <translation>&amp;Datamanagement Gereedschappen</translation>
     </message>
     <message>
         <source>Export to new projection</source>
-        <translation type="unfinished">Naar nieuwe projectie exporteren</translation>
+        <translation>Naar nieuwe projectie exporteren</translation>
     </message>
     <message>
         <source>Define current projection</source>
-        <translation type="unfinished">Definieer huidige projectie</translation>
+        <translation>Definieer huidige projectie</translation>
     </message>
     <message>
         <source>Join attributes</source>
-        <translation type="unfinished">Join attributen</translation>
+        <translation>Join attributen</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
-        <translation type="unfinished">Join attributen op basis van plaats</translation>
+        <translation>Join attributen op basis van plaats</translation>
     </message>
     <message>
         <source>Split vector layer</source>
-        <translation type="unfinished">Vector laag splitsen</translation>
+        <translation>Vector laag splitsen</translation>
     </message>
     <message>
         <source>fTools Information</source>
-        <translation type="unfinished">fTools Informatie</translation>
+        <translation>fTools Informatie</translation>
     </message>
     <message>
         <source>About fTools</source>
@@ -33145,95 +33150,95 @@ p, li { white-space: pre-wrap; }(new line)
     </message>
     <message>
         <source>Feature %1 contains an unnested hole</source>
-        <translation type="unfinished">Kaartobject %1 bevat een niet-genest gat</translation>
+        <translation>Kaartobject %1 bevat een niet-genest gat</translation>
     </message>
     <message>
         <source>Feature %1 is not closed</source>
-        <translation type="unfinished">Kaartobject %1 is niet gesloten</translation>
+        <translation>Kaartobject %1 is niet gesloten</translation>
     </message>
     <message>
         <source>Feature %1 is self intersecting</source>
-        <translation type="unfinished">Kaartobject %1 bevat en zelfdoorsnijding</translation>
+        <translation>Kaartobject %1 bevat en zelfdoorsnijding</translation>
     </message>
     <message>
         <source>Feature %1 has incorrect node ordering</source>
-        <translation type="unfinished">Kaartobject %1 heeft fouten in de hoekpunt volgorde</translation>
+        <translation>Kaartobject %1 heeft fouten in de hoekpunt volgorde</translation>
     </message>
     <message>
         <source>Max. len:</source>
-        <translation type="unfinished">Max. len:</translation>
+        <translation>Max. len:</translation>
     </message>
     <message>
         <source>Min. len:</source>
-        <translation type="unfinished">Min. len:</translation>
+        <translation>Min. len:</translation>
     </message>
     <message>
         <source>Mean. len:</source>
-        <translation type="unfinished">Gemidd. len:</translation>
+        <translation>Gemidd. len:</translation>
     </message>
     <message>
         <source>Filled:</source>
-        <translation type="unfinished">Vulling:</translation>
+        <translation>Vulling:</translation>
     </message>
     <message>
         <source>Empty:</source>
-        <translation type="unfinished">Leeg:</translation>
+        <translation>Leeg:</translation>
     </message>
     <message>
         <source>N:</source>
-        <translation type="unfinished">N:</translation>
+        <translation>N:</translation>
     </message>
     <message>
         <source>Mean:</source>
-        <translation type="unfinished">Gemiddeld:</translation>
+        <translation>Gemiddeld:</translation>
     </message>
     <message>
         <source>StdDev:</source>
-        <translation type="unfinished">StdAfw:</translation>
+        <translation>StdAfw:</translation>
     </message>
     <message>
         <source>Sum:</source>
-        <translation type="unfinished">Som:</translation>
+        <translation>Som:</translation>
     </message>
     <message>
         <source>Min:</source>
-        <translation type="unfinished">Min:</translation>
+        <translation>Min:</translation>
     </message>
     <message>
         <source>Max:</source>
-        <translation type="unfinished">Max:</translation>
+        <translation>Max:</translation>
     </message>
     <message>
         <source>CV:</source>
-        <translation type="unfinished">CV:</translation>
+        <translation>CV:</translation>
     </message>
     <message>
         <source>Number of unique values:</source>
-        <translation type="unfinished">Aantal unieke waarden:</translation>
+        <translation>Aantal unieke waarden:</translation>
     </message>
     <message>
         <source>Range:</source>
-        <translation type="unfinished">Range:</translation>
+        <translation>Range:</translation>
     </message>
     <message>
         <source>Median:</source>
-        <translation type="unfinished">Mediaan:</translation>
+        <translation>Mediaan:</translation>
     </message>
     <message>
         <source>Observed mean distance:</source>
-        <translation type="unfinished">Aangetroffen gemiddelde afstand:</translation>
+        <translation>Aangetroffen gemiddelde afstand:</translation>
     </message>
     <message>
         <source>Expected mean distance:</source>
-        <translation type="unfinished">Verwachtte gemiddelde afstand:</translation>
+        <translation>Verwachtte gemiddelde afstand:</translation>
     </message>
     <message>
         <source>Nearest neighbour index:</source>
-        <translation type="unfinished">&apos;Nearest neighbour&apos;-index:</translation>
+        <translation>&apos;Nearest neighbour&apos;-index:</translation>
     </message>
     <message>
         <source>Z-Score:</source>
-        <translation type="unfinished">Z-Score:</translation>
+        <translation>Z-Score:</translation>
     </message>
 </context>
 </TS>
