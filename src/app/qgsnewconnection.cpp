@@ -34,10 +34,10 @@ QgsNewConnection::QgsNewConnection( QWidget *parent, const QString& connName, Qt
 {
   setupUi( this );
 
-  cbxSSLmode->insertItem( QgsDataSourceURI::SSLprefer, tr( "prefer" ) );
-  cbxSSLmode->insertItem( QgsDataSourceURI::SSLrequire, tr( "require" ) );
-  cbxSSLmode->insertItem( QgsDataSourceURI::SSLallow, tr( "allow" ) );
-  cbxSSLmode->insertItem( QgsDataSourceURI::SSLdisable, tr( "disable" ) );
+  cbxSSLmode->addItem( tr( "disable" ), QgsDataSourceURI::SSLdisable );
+  cbxSSLmode->addItem( tr( "allow" ), QgsDataSourceURI::SSLallow );
+  cbxSSLmode->addItem( tr( "prefer" ), QgsDataSourceURI::SSLprefer );
+  cbxSSLmode->addItem( tr( "require" ), QgsDataSourceURI::SSLrequire );
 
   if ( !connName.isEmpty() )
   {
@@ -66,7 +66,7 @@ QgsNewConnection::QgsNewConnection( QWidget *parent, const QString& connName, Qt
     // Ensure that cb_plublicSchemaOnly is set correctly
     on_cb_geometryColumnsOnly_clicked();
 
-    cbxSSLmode->setCurrentIndex( settings.value( key + "/sslmode", QgsDataSourceURI::SSLprefer ).toInt() );
+    cbxSSLmode->setCurrentIndex( cbxSSLmode->findData( settings.value( key + "/sslmode", QgsDataSourceURI::SSLprefer ).toInt() ) );
 
     if ( settings.value( key + "/save" ).toString() == "true" )
     {
@@ -110,7 +110,7 @@ void QgsNewConnection::accept()
   settings.setValue( baseKey + "/publicOnly", cb_publicSchemaOnly->isChecked() );
   settings.setValue( baseKey + "/geometryColumnsOnly", cb_geometryColumnsOnly->isChecked() );
   settings.setValue( baseKey + "/save", chkStorePassword->isChecked() ? "true" : "false" );
-  settings.setValue( baseKey + "/sslmode", cbxSSLmode->currentIndex() );
+  settings.setValue( baseKey + "/sslmode", cbxSSLmode->itemData( cbxSSLmode->currentIndex() ).toInt() );
 
   QDialog::accept();
 }
@@ -137,7 +137,7 @@ QgsNewConnection::~QgsNewConnection()
 void QgsNewConnection::testConnection()
 {
   QgsDataSourceURI uri;
-  uri.setConnection( txtHost->text(), txtPort->text(), txtDatabase->text(), txtUsername->text(), txtPassword->text(), ( QgsDataSourceURI::SSLmode ) cbxSSLmode->currentIndex() );
+  uri.setConnection( txtHost->text(), txtPort->text(), txtDatabase->text(), txtUsername->text(), txtPassword->text(), ( QgsDataSourceURI::SSLmode ) cbxSSLmode->itemData( cbxSSLmode->currentIndex() ).toInt() );
 
   QgsDebugMsg( "PQconnectdb(" + uri.connectionInfo() + ");" );
 
