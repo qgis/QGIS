@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """@package OsmDownloadDlg
 Module provides simple way how to download OSM data.
 First user is asked to choose download region, output file etc.
@@ -54,7 +55,6 @@ class OsmDownloadDlg(QDialog, Ui_OsmDownloadDlg):
         self.urlPathPrefix="/api/0.6/map?bbox="
 
         self.downloadButton.setDefault(True)
-        self.downloadButton.setEnabled(False)
 
         # determining default area for download
         if QgsMapLayerRegistry.instance().count()>0:
@@ -99,7 +99,6 @@ class OsmDownloadDlg(QDialog, Ui_OsmDownloadDlg):
         defaultFileName=self.generateDefFileName()
         self.destdirLineEdit.setText(defaultFileName)
         self.destdirLineEdit.setEnabled(True)
-        self.downloadButton.setEnabled(True)
 
         # check default extent
         self.checkExtent()
@@ -119,12 +118,6 @@ class OsmDownloadDlg(QDialog, Ui_OsmDownloadDlg):
         It's called after click() signal is emitted on Download button.
         """
 
-        if self.finished:
-            return
-
-        self.downloadButton.setEnabled(False)
-        self.disconnectDlgSignals()
-
         # finding out which area should be downloaded, and to where
         urlPath = self.urlPathPrefix + self.lonFromLineEdit.text() + "," + self.latFromLineEdit.text() + "," + self.lonToLineEdit.text() + "," + self.latToLineEdit.text()
         fileName = self.destdirLineEdit.text()
@@ -141,6 +134,9 @@ class OsmDownloadDlg(QDialog, Ui_OsmDownloadDlg):
             self.outFile = None
             return
 
+        self.setEnabled(False)
+        self.finished = False
+
         # creating progress dialog for download
         self.progressDialog=QProgressDialog(self)
         # !!! don't set progress dialog modal !!! it would cause serious problems!
@@ -148,8 +144,6 @@ class OsmDownloadDlg(QDialog, Ui_OsmDownloadDlg):
         self.progressDialog.setWindowTitle(self.tr("OSM Download"))
         self.connect(self.progressDialog,SIGNAL("canceled()"), self.progressDlgCanceled)
 
-        self.setEnabled(False)
-        self.progressDialog.setEnabled(True)
         self.progressDialog.show()
         self.progressDialog.setLabelText(self.tr("Waiting for OpenStreetMap server ..."))
         self.progressDialog.setMaximum(1)
@@ -254,6 +248,9 @@ class OsmDownloadDlg(QDialog, Ui_OsmDownloadDlg):
         del self.http
         self.http=None
 
+        self.progressDialog.close()
+        self.setEnabled(True)
+
         # request was not aborted
         if error:
             self.httpSuccess=False
@@ -263,17 +260,18 @@ class OsmDownloadDlg(QDialog, Ui_OsmDownloadDlg):
                 del self.outFile
                 self.outFile=None
 
-            # and tell user
-            if self.errMessage==None:
-                self.errMessage="Check your internet connection"
-            QMessageBox.information(self, self.tr("OSM Download Error")
-                ,self.tr("Download failed: %1.").arg(self.errMessage))
-        else:
-            self.httpSuccess=True
+            # and tell user (if the download wasn't cancelled by user)
+            if self.errMessage != "__cancel__":
+                if self.errMessage==None:
+                    self.errMessage="Check your internet connection"
+                QMessageBox.information(self, self.tr("OSM Download Error")
+                    ,self.tr("Download failed: %1.").arg(self.errMessage))
+            return
+
+        self.httpSuccess=True
 
         # well, download process has finished successfully;
-        # close progress dialog and the whole download dialog
-        self.progressDialog.close()
+        # close the whole download dialog
         self.close()
 
 
@@ -304,15 +302,11 @@ class OsmDownloadDlg(QDialog, Ui_OsmDownloadDlg):
         Only OSM files can be selected.
         """
 
-        if self.finished:
-            return
-
         # display file open dialog and get absolute path to selected directory
         fileSelected = QFileDialog.getSaveFileName(self, "Choose file to save","download.osm", "OSM Files (*.osm)");
         # insert selected directory path into line edit control
         if not fileSelected.isNull():
             self.destdirLineEdit.setText(fileSelected)
-            self.downloadButton.setEnabled(True)
 
 
     def generateDefFileName(self):
@@ -321,9 +315,6 @@ class OsmDownloadDlg(QDialog, Ui_OsmDownloadDlg):
         It's called mainly from downloader initialization.
         Default name is always unique. It consist of current timestamp and a postfix.
         """
-
-        if self.finished:
-            return
 
         prefix=QDir.tempPath() + "/"
         if self.dbm.currentKey:
@@ -339,9 +330,6 @@ class OsmDownloadDlg(QDialog, Ui_OsmDownloadDlg):
         """Function is called after clicking on AutoLoad checkbox.
         """
 
-        if self.finished:
-            return
-
         if not self.autoLoadCheckBox.isChecked():
             self.chkCustomRenderer.setEnabled(False)
             self.chkReplaceData.setEnabled(False)
@@ -355,9 +343,6 @@ class OsmDownloadDlg(QDialog, Ui_OsmDownloadDlg):
         It shows basic information on downloading. 
         """
 
-        if self.finished:
-            return
-
         mb=QMessageBox()
         mb.setMinimumWidth(390)
         mb.information(self, self.tr("Getting data"),self.tr("The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at <http://wiki.openstreetmap.org/wiki/Getting_Data> neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won't satisfy downloading limitations."))
@@ -369,9 +354,6 @@ class OsmDownloadDlg(QDialog, Ui_OsmDownloadDlg):
         It's called whenever download region changed.
         Result of checking is displayed on dialog.
         """
-
-        if self.finished:
-            return
 
         lim = 0.25        # download limitations of openstreetmap server in degrees
 
@@ -406,11 +388,8 @@ class OsmDownloadDlg(QDialog, Ui_OsmDownloadDlg):
         It aborts HTTP connection.
         """
 
-        if self.finished:
-            return
-
-        # cancel download with no message for user
-        self.cancelDownload()
+        # cancel download with a special message
+        self.cancelDownload("__cancel__")
 
 
     def setProxy(self):
@@ -419,9 +398,6 @@ class OsmDownloadDlg(QDialog, Ui_OsmDownloadDlg):
         HTTP connection object is not given in function parameter,
         because it's global - accessible for the whole downloader.
         """
-
-        if self.finished:
-            return
 
         # getting and setting proxy information
         settings=QSettings()
