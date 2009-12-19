@@ -59,7 +59,13 @@ void QgsVectorColorBrewerColorRampV2Dialog::populateVariants()
   }
 
   // try to set the original variant again (if exists)
-  cboColors->setCurrentIndex( cboColors->findText( oldVariant ) );
+  int idx = cboColors->findText( oldVariant );
+  if ( idx == -1 ) // not found?
+  {
+    // use the last item
+    idx = cboColors->count() - 1;
+  }
+  cboColors->setCurrentIndex( idx );
 }
 
 void QgsVectorColorBrewerColorRampV2Dialog::updatePreview()
