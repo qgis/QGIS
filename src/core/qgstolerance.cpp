@@ -35,7 +35,7 @@ double QgsTolerance::vertexSearchRadius( QgsMapLayer* layer, QgsMapRenderer* ren
 {
   QSettings settings;
   double tolerance = settings.value( "/qgis/digitizing/search_radius_vertex_edit", 10 ).toDouble();
-  UnitType units = ( QgsTolerance::UnitType ) settings.value( "/qgis/digitizing/search_radius_vertex_edit_unit", 0 ).toInt();
+  UnitType units = ( QgsTolerance::UnitType ) settings.value( "/qgis/digitizing/search_radius_vertex_edit_unit", QgsTolerance::Pixels ).toInt();
   return toleranceInMapUnits( tolerance, layer, renderer, units );
 }
 
