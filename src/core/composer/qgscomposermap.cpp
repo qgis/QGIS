@@ -485,12 +485,7 @@ void QgsComposerMap::setNewScale( double scaleDenominator )
   }
 
   double scaleRatio = scaleDenominator / currentScaleDenominator;
-
-  double newXMax = mExtent.xMinimum() + scaleRatio * ( mExtent.xMaximum() - mExtent.xMinimum() );
-  double newYMax = mExtent.yMinimum() + scaleRatio * ( mExtent.yMaximum() - mExtent.yMinimum() );
-
-  QgsRectangle newExtent( mExtent.xMinimum(), mExtent.yMinimum(), newXMax, newYMax );
-  mExtent = newExtent;
+  mExtent.scale( scaleRatio );
   mCacheUpdated = false;
   emit extentChanged();
   cache();
