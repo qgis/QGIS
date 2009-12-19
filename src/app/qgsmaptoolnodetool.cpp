@@ -505,6 +505,7 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
 
     if ( snapResults.size() < 1 )
     {
+      displaySnapToleranceWarning();
       return;
     }
     mSelectionFeature = new SelectionFeature();
