@@ -185,14 +185,13 @@ int QgsMapCanvasSnapper::snapToBackgroundLayers( const QPoint& p, QList<QgsSnapp
 
         //layer
         layer = QgsMapLayerRegistry::instance()->mapLayer( *layerIt );
-        if ( layer )
-        {
-          vlayer = qobject_cast<QgsVectorLayer *>( layer );
-          if ( vlayer )
-          {
-            snapLayer.mLayer = vlayer;
-          }
-        }
+        if ( layer == NULL )
+          continue;
+        vlayer = qobject_cast<QgsVectorLayer *>( layer );
+        if ( vlayer == NULL )
+          continue;
+
+        snapLayer.mLayer = vlayer;
 
         //tolerance
         snapLayer.mTolerance = tolIt->toDouble();
