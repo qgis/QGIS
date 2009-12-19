@@ -3414,6 +3414,8 @@ bool QgsVectorLayer::rollBack()
 
   deleteCachedGeometries();
 
+  undoStack()->clear();
+
   mEditable = false;
   emit editingStopped();
 
@@ -3422,7 +3424,6 @@ bool QgsVectorLayer::rollBack()
   // after the rollback
   setCacheImage( 0 );
   triggerRepaint();
-
 
   return true;
 }
