@@ -248,7 +248,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
     index = mDefaultSnappingToleranceComboBox->findText( tr( "pixels" ) );
   }
   mDefaultSnappingToleranceComboBox->setCurrentIndex( index );
-  if ( settings.value( "/qgis/digitizing/search_radius_vertex_edit_unit", 0 ).toInt() == QgsTolerance::MapUnits )
+  if ( settings.value( "/qgis/digitizing/search_radius_vertex_edit_unit", QgsTolerance::Pixels ).toInt() == QgsTolerance::MapUnits )
   {
     index = mSearchRadiusVertexEditComboBox->findText( tr( "map units" ) );
   }
@@ -256,7 +256,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   {
     index = mSearchRadiusVertexEditComboBox->findText( tr( "pixels" ) );
   }
-  mSearchRadiusVertexEditComboBox->setCurrentIndex( settings.value( "/qgis/digitizing/search_radius_vertex_edit_unit", 0 ).toInt() );
+  mSearchRadiusVertexEditComboBox->setCurrentIndex( index );
 
   //vertex marker
   mMarkersOnlyForSelectedCheckBox->setChecked( settings.value( "/qgis/digitizing/marker_only_for_selected", false ).toBool() );
