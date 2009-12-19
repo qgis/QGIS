@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """@package OsmUploadDlg
 Module provides simple way of uploading current OSM data.
 
@@ -566,7 +567,7 @@ class OsmUploadDlg(QDialog, Ui_OsmUploadDlg):
 
         # selecting tags to construct correct XML
         ct=self.dbm.getConnection().cursor()
-        ct.execute("select key, val from tag where object_id=:nodeId and object_type=\"node\"",{"nodeId":nodeRecord[0]})
+        ct.execute("select key, val from tag where object_id=:nodeId and object_type=\"node\" and u=1",{"nodeId":nodeRecord[0]})
         for tagRecord in ct:
             requestXml.append(QString("<tag k=\"%1\" v=\"%2\"/>").arg(tagRecord[0]).arg(tagRecord[1]))
         ct.close()
