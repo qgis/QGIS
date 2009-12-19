@@ -30,7 +30,7 @@
 static const QString TEXT_PROVIDER_KEY = "osm";
 static const QString TEXT_PROVIDER_DESCRIPTION = "Open Street Map data provider";
 static const QString DATE_TIME_FMT = "dd.MM.yyyy HH:mm:ss";
-static const QString PROVIDER_VERSION = "0.5";
+static const QString PROVIDER_VERSION = "0.5.1";
 
 // supported attributes
 const char* QgsOSMDataProvider::attr[] = { "timestamp", "user", "tags" };
@@ -213,14 +213,19 @@ QgsOSMDataProvider::QgsOSMDataProvider( QString uri )
         const unsigned char *boundaries_char = sqlite3_column_text( stmtSelectBoundary, 0 );
         QString boundaries(( const char * ) boundaries_char );
 
-        // boundaries should be string in following format: "xMin-yMin-xMax-yMax"
-        int separ1_pos = boundaries.indexOf( "-" );
-        int separ2_pos = boundaries.indexOf( "-", separ1_pos + 1 );
-        int separ3_pos = boundaries.indexOf( "-", separ2_pos + 1 );
-        xMin = boundaries.left( separ1_pos ).toDouble();
-        yMin = boundaries.mid( separ1_pos + 1, separ2_pos - separ1_pos - 1 ).toDouble();
-        xMax = boundaries.mid( separ2_pos + 1, separ3_pos - separ2_pos - 1 ).toDouble();
-        yMax = boundaries.right( boundaries.size() - separ3_pos - 1 ).toDouble();
+        // boundaries should be string in following format: "xMin:yMin:xMax:yMax"
+        QStringList parts = boundaries.split( QChar( ':' ) );
+        if ( parts.count() == 4 )
+        {
+          xMin = parts[0].toDouble();
+          yMin = parts[1].toDouble();
+          xMax = parts[2].toDouble();
+          yMax = parts[3].toDouble();
+        }
+        else
+        {
+          QgsDebugMsg( "Default area boundary has invalid format." );
+        }
       }
     }
 
@@ -1402,8 +1407,8 @@ bool QgsOSMDataProvider::loadOsmFile( QString osm_filename )
   yMax = handler->yMax;
 
   // storing boundary information into database
-  QString cmd3 = QString( "INSERT INTO meta ( key, val ) VALUES ('default-area-boundaries','%1-%2-%3-%4');" )
-                 .arg( xMin, 0, 'f', 20 ).arg( yMin, 0, 'f', 20 ).arg( xMax, 0, 'f', 20 ).arg( yMax, 0, 'f', 20 );
+  QString cmd3 = QString( "INSERT INTO meta ( key, val ) VALUES ('default-area-boundaries','%1:%2:%3:%4');" )
+                 .arg( xMin, 0, 'f', 10 ).arg( yMin, 0, 'f', 10 ).arg( xMax, 0, 'f', 10 ).arg( yMax, 0, 'f', 10 );
   QByteArray cmd_bytes3  = cmd3.toAscii();
   const char *ptr3 = cmd_bytes3.data();
 
