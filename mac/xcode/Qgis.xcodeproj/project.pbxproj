@@ -633,7 +633,6 @@
 		7238DB6810AA191E00963E09 /* qgstininterpolator.h in Headers */ = {isa = PBXBuildFile; fileRef = 721597D11052B2B0003D1610 /* qgstininterpolator.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7238DB6B10AA198C00963E09 /* qgsrasterviewport.h in Headers */ = {isa = PBXBuildFile; fileRef = 7209E6F40F39E57A003DC336 /* qgsrasterviewport.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		723FD05F0FBCB87900EFA55D /* qgspalgeometry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 723FD05D0FBCB85D00EFA55D /* qgspalgeometry.cpp */; };
-		72411D4510D883CB00DA6DBB /* QgsPluginInstallerDialog-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72411D4410D883B900DA6DBB /* QgsPluginInstallerDialog-en_US */; };
 		72442AEB1095DD4C00B54796 /* qgsavoidintersectionsdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72442AE91095DCFC00B54796 /* qgsavoidintersectionsdialog.cpp */; };
 		72442AEC1095DD4C00B54796 /* qgsavoidintersectionsdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72442AEA1095DCFC00B54796 /* qgsavoidintersectionsdialog.h */; };
 		724D05C610A910F200F9680A /* north-arrow_10_with_map_layers.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 724D05BE10A910B400F9680A /* north-arrow_10_with_map_layers.svg */; };
@@ -957,118 +956,6 @@
 		729BBF3F0F407D82001BCB63 /* qgspythonutilsimpl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC830F39E57B003DC336 /* qgspythonutilsimpl.cpp */; };
 		729E6DF610A78A4F00D72B73 /* qgsoverlayanalyzer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 729E6DF410A78A3C00D72B73 /* qgsoverlayanalyzer.cpp */; };
 		729E6DF810A78A8C00D72B73 /* qgsoverlayanalyzer.h in Headers */ = {isa = PBXBuildFile; fileRef = 729E6DF510A78A3C00D72B73 /* qgsoverlayanalyzer.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		729FA30910D7487D005E7C15 /* eVisDatabaseConnectionGui-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 729FA2F910D745AA005E7C15 /* eVisDatabaseConnectionGui-en_US */; };
-		729FA30A10D7487D005E7C15 /* MapServerExport-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 729FA2FA10D745AA005E7C15 /* MapServerExport-en_US */; };
-		729FA30B10D7487D005E7C15 /* QgsAttributeTableDialog-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 729FA2F810D74424005E7C15 /* QgsAttributeTableDialog-de_DE */; };
-		729FA30C10D7487D005E7C15 /* QgsAttributeTableDialog-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB0910B47263006E3698 /* QgsAttributeTableDialog-en_US */; };
-		729FA30D10D7487D005E7C15 /* QgsAttributeTableDialog-fr_FR in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 7296CD8710C2E6E3001EAD92 /* QgsAttributeTableDialog-fr_FR */; };
-		729FA30E10D7487D005E7C15 /* QgsAttributeTableDialog-pl_PL in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB0A10B47263006E3698 /* QgsAttributeTableDialog-pl_PL */; };
-		729FA30F10D7487D005E7C15 /* QgsAttributeTableDialog-ru_RU in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB0B10B47263006E3698 /* QgsAttributeTableDialog-ru_RU */; };
-		729FA31010D7487D005E7C15 /* QgsAttributeTableDialog-sk_SK in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB0C10B47263006E3698 /* QgsAttributeTableDialog-sk_SK */; };
-		729FA31110D7487D005E7C15 /* QgsBookmarks-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB0D10B47263006E3698 /* QgsBookmarks-de_DE */; };
-		729FA31210D7487D005E7C15 /* QgsBookmarks-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB0E10B47263006E3698 /* QgsBookmarks-en_US */; };
-		729FA31310D7487D005E7C15 /* QgsBookmarks-es_ES in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB0F10B47263006E3698 /* QgsBookmarks-es_ES */; };
-		729FA31410D7487D005E7C15 /* QgsBookmarks-fr_FR in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 7296CD8810C2E6E3001EAD92 /* QgsBookmarks-fr_FR */; };
-		729FA31510D7487D005E7C15 /* QgsBookmarks-pl_PL in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB1010B47263006E3698 /* QgsBookmarks-pl_PL */; };
-		729FA31610D7487D005E7C15 /* QgsBookmarks-ru_RU in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB1110B47263006E3698 /* QgsBookmarks-ru_RU */; };
-		729FA31710D7487D005E7C15 /* QgsBookmarks-sk_SK in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB1210B47263006E3698 /* QgsBookmarks-sk_SK */; };
-		729FA31810D7487D005E7C15 /* QgsBookmarks-sv_SE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB1310B47263006E3698 /* QgsBookmarks-sv_SE */; };
-		729FA31910D7487D005E7C15 /* QgsComposer-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB1410B47263006E3698 /* QgsComposer-de_DE */; };
-		729FA31A10D7487D005E7C15 /* QgsComposer-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB1510B47263006E3698 /* QgsComposer-en_US */; };
-		729FA31B10D7487D005E7C15 /* QgsComposer-fr_FR in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 7296CD8910C2E6E3001EAD92 /* QgsComposer-fr_FR */; };
-		729FA31C10D7487D005E7C15 /* QgsComposer-pl_PL in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB1610B47263006E3698 /* QgsComposer-pl_PL */; };
-		729FA31D10D7487D005E7C15 /* QgsComposer-ru_RU in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB1710B47263006E3698 /* QgsComposer-ru_RU */; };
-		729FA31E10D7487D005E7C15 /* QgsComposer-sk_SK in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB1810B47263006E3698 /* QgsComposer-sk_SK */; };
-		729FA31F10D7487D005E7C15 /* QgsCopyrightLabelPluginGui-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB1910B47263006E3698 /* QgsCopyrightLabelPluginGui-de_DE */; };
-		729FA32010D7487D005E7C15 /* QgsCopyrightLabelPluginGui-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB1A10B47263006E3698 /* QgsCopyrightLabelPluginGui-en_US */; };
-		729FA32110D7487D005E7C15 /* QgsCopyrightLabelPluginGui-fr_FR in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 7296CD8A10C2E6E3001EAD92 /* QgsCopyrightLabelPluginGui-fr_FR */; };
-		729FA32210D7487D005E7C15 /* QgsCopyrightLabelPluginGui-ru_RU in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB1B10B47263006E3698 /* QgsCopyrightLabelPluginGui-ru_RU */; };
-		729FA32310D7487D005E7C15 /* QgsCopyrightLabelPluginGui-sk_SK in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB1C10B47263006E3698 /* QgsCopyrightLabelPluginGui-sk_SK */; };
-		729FA32410D7487D005E7C15 /* QgsCopyrightLabelPluginGui-sv_SE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB1D10B47263006E3698 /* QgsCopyrightLabelPluginGui-sv_SE */; };
-		729FA32510D7487D005E7C15 /* QgsDelimitedTextPluginGui-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB2810B47263006E3698 /* QgsDelimitedTextPluginGui-de_DE */; };
-		729FA32610D7487D005E7C15 /* QgsDelimitedTextPluginGui-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB2910B47263006E3698 /* QgsDelimitedTextPluginGui-en_US */; };
-		729FA32710D7487D005E7C15 /* QgsDelimitedTextPluginGui-ru_RU in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB2A10B47263006E3698 /* QgsDelimitedTextPluginGui-ru_RU */; };
-		729FA32810D7487D005E7C15 /* QgsDelimitedTextPluginGui-sk_SK in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB2B10B47263006E3698 /* QgsDelimitedTextPluginGui-sk_SK */; };
-		729FA32910D7487D005E7C15 /* QgsDelimitedTextPluginGui-sv_SE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB2C10B47263006E3698 /* QgsDelimitedTextPluginGui-sv_SE */; };
-		729FA32A10D7487D005E7C15 /* QgsGPSPlugin-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB2D10B47263006E3698 /* QgsGPSPlugin-de_DE */; };
-		729FA32B10D7487D005E7C15 /* QgsGPSPlugin-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB2E10B47263006E3698 /* QgsGPSPlugin-en_US */; };
-		729FA32C10D7487D005E7C15 /* QgsGPSPlugin-ru_RU in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB2F10B47263006E3698 /* QgsGPSPlugin-ru_RU */; };
-		729FA32D10D7487D005E7C15 /* QgsGPSPlugin-sk_SK in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB3010B47263006E3698 /* QgsGPSPlugin-sk_SK */; };
-		729FA32E10D7487D005E7C15 /* QgsIdentifyResults-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB3110B47263006E3698 /* QgsIdentifyResults-de_DE */; };
-		729FA32F10D7487D005E7C15 /* QgsIdentifyResults-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB3210B47263006E3698 /* QgsIdentifyResults-en_US */; };
-		729FA33010D7487D005E7C15 /* QgsIdentifyResults-es_ES in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB3310B47263006E3698 /* QgsIdentifyResults-es_ES */; };
-		729FA33110D7487D005E7C15 /* QgsIdentifyResults-pl_PL in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB3410B47263006E3698 /* QgsIdentifyResults-pl_PL */; };
-		729FA33210D7487D005E7C15 /* QgsIdentifyResults-ru_RU in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB3510B47263006E3698 /* QgsIdentifyResults-ru_RU */; };
-		729FA33310D7487D005E7C15 /* QgsIdentifyResults-sk_SK in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB3610B47263006E3698 /* QgsIdentifyResults-sk_SK */; };
-		729FA33410D7487D005E7C15 /* QgsIdentifyResults-sv_SE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB3710B47263006E3698 /* QgsIdentifyResults-sv_SE */; };
-		729FA33510D7487D005E7C15 /* QgsMapserverExport-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB3810B47263006E3698 /* QgsMapserverExport-de_DE */; };
-		729FA33610D7487D005E7C15 /* QgsMapserverExport-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB3910B47263006E3698 /* QgsMapserverExport-en_US */; };
-		729FA33710D7487D005E7C15 /* QgsMapserverExport-es_ES in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB3A10B47263006E3698 /* QgsMapserverExport-es_ES */; };
-		729FA33810D7487D005E7C15 /* QgsMapserverExport-pl_PL in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB3B10B47263006E3698 /* QgsMapserverExport-pl_PL */; };
-		729FA33910D7487D005E7C15 /* QgsMapserverExport-ru_RU in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB3C10B47263006E3698 /* QgsMapserverExport-ru_RU */; };
-		729FA33A10D7487D005E7C15 /* QgsMapserverExport-sk_SK in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB3D10B47263006E3698 /* QgsMapserverExport-sk_SK */; };
-		729FA33B10D7487D005E7C15 /* QgsMeasureDialog-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB3E10B47263006E3698 /* QgsMeasureDialog-de_DE */; };
-		729FA33C10D7487D005E7C15 /* QgsMeasureDialog-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB3F10B47263006E3698 /* QgsMeasureDialog-en_US */; };
-		729FA33D10D7487D005E7C15 /* QgsMeasureDialog-es_ES in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB4010B47263006E3698 /* QgsMeasureDialog-es_ES */; };
-		729FA33E10D7487D005E7C15 /* QgsMeasureDialog-pl_PL in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB4110B47263006E3698 /* QgsMeasureDialog-pl_PL */; };
-		729FA33F10D7487D005E7C15 /* QgsMeasureDialog-ru_RU in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB4210B47263006E3698 /* QgsMeasureDialog-ru_RU */; };
-		729FA34010D7487D005E7C15 /* QgsMeasureDialog-sk_SK in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB4310B47263006E3698 /* QgsMeasureDialog-sk_SK */; };
-		729FA34110D7487D005E7C15 /* QgsMeasureDialog-sv_SE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB4410B47263006E3698 /* QgsMeasureDialog-sv_SE */; };
-		729FA34210D7487D005E7C15 /* QgsNewConnection-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB4510B47263006E3698 /* QgsNewConnection-de_DE */; };
-		729FA34310D7487D005E7C15 /* QgsNewConnection-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB4610B47263006E3698 /* QgsNewConnection-en_US */; };
-		729FA34410D7487D005E7C15 /* QgsNewConnection-es_ES in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB4710B47263006E3698 /* QgsNewConnection-es_ES */; };
-		729FA34510D7487D005E7C15 /* QgsNewConnection-pl_PL in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB4810B47263006E3698 /* QgsNewConnection-pl_PL */; };
-		729FA34610D7487D005E7C15 /* QgsNewConnection-ru_RU in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB4910B47263006E3698 /* QgsNewConnection-ru_RU */; };
-		729FA34710D7487D005E7C15 /* QgsNewConnection-sk_SK in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB4A10B47263006E3698 /* QgsNewConnection-sk_SK */; };
-		729FA34810D7487D005E7C15 /* QgsNewConnection-sv_SE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB4B10B47263006E3698 /* QgsNewConnection-sv_SE */; };
-		729FA34910D7487D005E7C15 /* QgsNewHttpConnection-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB4C10B47263006E3698 /* QgsNewHttpConnection-de_DE */; };
-		729FA34A10D7487D005E7C15 /* QgsNewHttpConnection-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB4D10B47263006E3698 /* QgsNewHttpConnection-en_US */; };
-		729FA34B10D7487D005E7C15 /* QgsNewHttpConnection-ru_RU in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB4E10B47263006E3698 /* QgsNewHttpConnection-ru_RU */; };
-		729FA34C10D7487D005E7C15 /* QgsNewHttpConnection-sk_SK in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB4F10B47263006E3698 /* QgsNewHttpConnection-sk_SK */; };
-		729FA34D10D7487D005E7C15 /* QgsNewHttpConnection-sv_SE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB5010B47263006E3698 /* QgsNewHttpConnection-sv_SE */; };
-		729FA34E10D7487D005E7C15 /* QgsNewOgrConnection-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB5110B47263006E3698 /* QgsNewOgrConnection-en_US */; };
-		729FA34F10D7487D005E7C15 /* QgsNewOgrConnection-ru_RU in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB5210B47263006E3698 /* QgsNewOgrConnection-ru_RU */; };
-		729FA35010D7487D005E7C15 /* QgsNewVectorLayerDialog-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB1E10B47263006E3698 /* QgsNewVectorLayerDialog-de_DE */; };
-		729FA35110D7487D005E7C15 /* QgsNewVectorLayerDialog-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB1F10B47263006E3698 /* QgsNewVectorLayerDialog-en_US */; };
-		729FA35210D7487D005E7C15 /* QgsNewVectorLayerDialog-fr_FR in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 7296CD8B10C2E6E3001EAD92 /* QgsNewVectorLayerDialog-fr_FR */; };
-		729FA35310D7487D005E7C15 /* QgsNewVectorLayerDialog-ru_RU in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB2010B47263006E3698 /* QgsNewVectorLayerDialog-ru_RU */; };
-		729FA35410D7487D005E7C15 /* QgsNewVectorLayerDialog-sk_SK in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB2110B47263006E3698 /* QgsNewVectorLayerDialog-sk_SK */; };
-		729FA35510D7487D005E7C15 /* QgsOpenVectorLayerDialog-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 729FA2FF10D7464A005E7C15 /* QgsOpenVectorLayerDialog-de_DE */; };
-		729FA35610D7487D005E7C15 /* QgsOpenVectorLayerDialog-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB5310B47263006E3698 /* QgsOpenVectorLayerDialog-en_US */; };
-		729FA35710D7487D005E7C15 /* QgsOpenVectorLayerDialog-ru_RU in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB5410B47263006E3698 /* QgsOpenVectorLayerDialog-ru_RU */; };
-		729FA35810D7487D005E7C15 /* QgsOptions-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 729FA30110D746A4005E7C15 /* QgsOptions-en_US */; };
-		729FA35910D7487D005E7C15 /* QgsPgSourceSelect-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB2210B47263006E3698 /* QgsPgSourceSelect-de_DE */; };
-		729FA35A10D7487D005E7C15 /* QgsPgSourceSelect-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB2310B47263006E3698 /* QgsPgSourceSelect-en_US */; };
-		729FA35B10D7487D005E7C15 /* QgsPgSourceSelect-pl_PL in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB2410B47263006E3698 /* QgsPgSourceSelect-pl_PL */; };
-		729FA35C10D7487D005E7C15 /* QgsPgSourceSelect-ru_RU in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB2510B47263006E3698 /* QgsPgSourceSelect-ru_RU */; };
-		729FA35D10D7487D005E7C15 /* QgsPgSourceSelect-sk_SK in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB2610B47263006E3698 /* QgsPgSourceSelect-sk_SK */; };
-		729FA35E10D7487D005E7C15 /* QgsPgSourceSelect-sv_SE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB2710B47263006E3698 /* QgsPgSourceSelect-sv_SE */; };
-		729FA35F10D7487D005E7C15 /* QgsProjectProperties-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB5510B47263006E3698 /* QgsProjectProperties-de_DE */; };
-		729FA36010D7487D005E7C15 /* QgsProjectProperties-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB5610B47263006E3698 /* QgsProjectProperties-en_US */; };
-		729FA36110D7487D005E7C15 /* QgsProjectProperties-es_ES in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB5710B47263006E3698 /* QgsProjectProperties-es_ES */; };
-		729FA36210D7487D005E7C15 /* QgsProjectProperties-pl_PL in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB5810B47263006E3698 /* QgsProjectProperties-pl_PL */; };
-		729FA36310D7487D005E7C15 /* QgsProjectProperties-ru_RU in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB5910B47263006E3698 /* QgsProjectProperties-ru_RU */; };
-		729FA36410D7487D005E7C15 /* QgsProjectProperties-sk_SK in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB5A10B47263006E3698 /* QgsProjectProperties-sk_SK */; };
-		729FA36510D7487D005E7C15 /* QgsProjectProperties-sv_SE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB5B10B47263006E3698 /* QgsProjectProperties-sv_SE */; };
-		729FA36610D7487D005E7C15 /* QgsScaleBarPluginGui-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 729FA30310D74737005E7C15 /* QgsScaleBarPluginGui-en_US */; };
-		729FA36710D7487D005E7C15 /* QgsServerSourceSelect-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB5C10B47263006E3698 /* QgsServerSourceSelect-de_DE */; };
-		729FA36810D7487D005E7C15 /* QgsServerSourceSelect-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB5D10B47263006E3698 /* QgsServerSourceSelect-en_US */; };
-		729FA36910D7487D005E7C15 /* QgsServerSourceSelect-ru_RU in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB5E10B47263006E3698 /* QgsServerSourceSelect-ru_RU */; };
-		729FA36A10D7487D005E7C15 /* QgsServerSourceSelect-sk_SK in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB5F10B47263006E3698 /* QgsServerSourceSelect-sk_SK */; };
-		729FA36B10D7487D005E7C15 /* QgsServerSourceSelect-sv_SE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB6010B47263006E3698 /* QgsServerSourceSelect-sv_SE */; };
-		729FA36C10D7487D005E7C15 /* QgsSpatiaLiteSourceSelect-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 729FA30510D747D6005E7C15 /* QgsSpatiaLiteSourceSelect-en_US */; };
-		729FA36D10D7487D005E7C15 /* QgsStyleV2ManagerDialog-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 729FA30610D747D6005E7C15 /* QgsStyleV2ManagerDialog-en_US */; };
-		729FA36E10D7487D005E7C15 /* QgsVectorLayerProperties-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB6110B47263006E3698 /* QgsVectorLayerProperties-de_DE */; };
-		729FA36F10D7487D005E7C15 /* QgsVectorLayerProperties-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB6210B47263006E3698 /* QgsVectorLayerProperties-en_US */; };
-		729FA37010D7487D005E7C15 /* QgsVectorLayerProperties-es_ES in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB6310B47263006E3698 /* QgsVectorLayerProperties-es_ES */; };
-		729FA37110D7487D005E7C15 /* QgsVectorLayerProperties-pl_PL in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB6410B47263006E3698 /* QgsVectorLayerProperties-pl_PL */; };
-		729FA37210D7487D005E7C15 /* QgsVectorLayerProperties-ru_RU in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB6510B47263006E3698 /* QgsVectorLayerProperties-ru_RU */; };
-		729FA37310D7487D005E7C15 /* QgsVectorLayerProperties-sk_SK in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 724FFB6610B47263006E3698 /* QgsVectorLayerProperties-sk_SK */; };
-		729FA37510D748F4005E7C15 /* QgsCustomProjectionDialog-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 729FA37410D748C1005E7C15 /* QgsCustomProjectionDialog-en_US */; };
-		729FA37710D7492F005E7C15 /* QgsDelimitedTextPluginGui-pl_PL in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 729FA37610D7490C005E7C15 /* QgsDelimitedTextPluginGui-pl_PL */; };
-		729FA37A10D74974005E7C15 /* QgsNewOgrConnection-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 729FA37910D7496E005E7C15 /* QgsNewOgrConnection-de_DE */; };
-		729FA37C10D749C8005E7C15 /* QgsNorthArrowPluginGui-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 729FA37B10D749AD005E7C15 /* QgsNorthArrowPluginGui-en_US */; };
-		729FA37E10D74A9C005E7C15 /* QgsCopyrightLabelPluginGui-pl_PL in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 729FA37D10D74A84005E7C15 /* QgsCopyrightLabelPluginGui-pl_PL */; };
 		72A07CC90F3BC2DE004FC2A4 /* qgsmemoryprovider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC5F0F39E57B003DC336 /* qgsmemoryprovider.cpp */; };
 		72A07CFC0F3BD3C5004FC2A4 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		72A07CFF0F3BD3E1004FC2A4 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
@@ -1198,6 +1085,120 @@
 		72A892CE0FAF7B9400108152 /* qgsconfigureshortcutsdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72A892CB0FAF7B6100108152 /* qgsconfigureshortcutsdialog.h */; };
 		72AA0BE9107394D900D00B43 /* qgsfieldcalculator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72AA0BE71073949C00D00B43 /* qgsfieldcalculator.cpp */; };
 		72AA0BEA107394D900D00B43 /* qgsfieldcalculator.h in Sources */ = {isa = PBXBuildFile; fileRef = 72AA0BE81073949C00D00B43 /* qgsfieldcalculator.h */; };
+		72AB646D10DD667200A7BD3A /* eVisDatabaseConnectionGui-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB63FB10DD666300A7BD3A /* eVisDatabaseConnectionGui-en_US */; };
+		72AB646E10DD667200A7BD3A /* MapServerExport-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB63FC10DD666300A7BD3A /* MapServerExport-en_US */; };
+		72AB646F10DD667200A7BD3A /* MapServerExport-pl_PL in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB63FD10DD666300A7BD3A /* MapServerExport-pl_PL */; };
+		72AB647010DD667200A7BD3A /* QgsAttributeTableDialog-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB63FE10DD666300A7BD3A /* QgsAttributeTableDialog-de_DE */; };
+		72AB647110DD667200A7BD3A /* QgsAttributeTableDialog-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB63FF10DD666300A7BD3A /* QgsAttributeTableDialog-en_US */; };
+		72AB647210DD667200A7BD3A /* QgsAttributeTableDialog-fr_FR in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB640010DD666300A7BD3A /* QgsAttributeTableDialog-fr_FR */; };
+		72AB647310DD667200A7BD3A /* QgsAttributeTableDialog-pl_PL in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB640110DD666300A7BD3A /* QgsAttributeTableDialog-pl_PL */; };
+		72AB647410DD667200A7BD3A /* QgsAttributeTableDialog-ru_RU in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB640210DD666300A7BD3A /* QgsAttributeTableDialog-ru_RU */; };
+		72AB647510DD667200A7BD3A /* QgsAttributeTableDialog-sk_SK in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB640310DD666300A7BD3A /* QgsAttributeTableDialog-sk_SK */; };
+		72AB647610DD667200A7BD3A /* QgsBookmarks-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB640410DD666300A7BD3A /* QgsBookmarks-de_DE */; };
+		72AB647710DD667200A7BD3A /* QgsBookmarks-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB640510DD666300A7BD3A /* QgsBookmarks-en_US */; };
+		72AB647810DD667200A7BD3A /* QgsBookmarks-es_ES in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB640610DD666300A7BD3A /* QgsBookmarks-es_ES */; };
+		72AB647910DD667200A7BD3A /* QgsBookmarks-fr_FR in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB640710DD666300A7BD3A /* QgsBookmarks-fr_FR */; };
+		72AB647A10DD667200A7BD3A /* QgsBookmarks-pl_PL in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB640810DD666300A7BD3A /* QgsBookmarks-pl_PL */; };
+		72AB647B10DD667200A7BD3A /* QgsBookmarks-ru_RU in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB640910DD666300A7BD3A /* QgsBookmarks-ru_RU */; };
+		72AB647C10DD667200A7BD3A /* QgsBookmarks-sk_SK in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB640A10DD666300A7BD3A /* QgsBookmarks-sk_SK */; };
+		72AB647D10DD667200A7BD3A /* QgsBookmarks-sv_SE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB640B10DD666300A7BD3A /* QgsBookmarks-sv_SE */; };
+		72AB647E10DD667200A7BD3A /* QgsComposer-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB640C10DD666300A7BD3A /* QgsComposer-de_DE */; };
+		72AB647F10DD667200A7BD3A /* QgsComposer-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB640D10DD666300A7BD3A /* QgsComposer-en_US */; };
+		72AB648010DD667200A7BD3A /* QgsComposer-fr_FR in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB640E10DD666300A7BD3A /* QgsComposer-fr_FR */; };
+		72AB648110DD667200A7BD3A /* QgsComposer-pl_PL in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB640F10DD666300A7BD3A /* QgsComposer-pl_PL */; };
+		72AB648210DD667200A7BD3A /* QgsComposer-ru_RU in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB641010DD666300A7BD3A /* QgsComposer-ru_RU */; };
+		72AB648310DD667200A7BD3A /* QgsComposer-sk_SK in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB641110DD666300A7BD3A /* QgsComposer-sk_SK */; };
+		72AB648410DD667200A7BD3A /* QgsCopyrightLabelPluginGui-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB641210DD666300A7BD3A /* QgsCopyrightLabelPluginGui-de_DE */; };
+		72AB648510DD667200A7BD3A /* QgsCopyrightLabelPluginGui-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB641310DD666300A7BD3A /* QgsCopyrightLabelPluginGui-en_US */; };
+		72AB648610DD667200A7BD3A /* QgsCopyrightLabelPluginGui-fr_FR in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB641410DD666300A7BD3A /* QgsCopyrightLabelPluginGui-fr_FR */; };
+		72AB648710DD667200A7BD3A /* QgsCopyrightLabelPluginGui-pl_PL in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB641510DD666300A7BD3A /* QgsCopyrightLabelPluginGui-pl_PL */; };
+		72AB648810DD667200A7BD3A /* QgsCopyrightLabelPluginGui-ru_RU in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB641610DD666300A7BD3A /* QgsCopyrightLabelPluginGui-ru_RU */; };
+		72AB648910DD667200A7BD3A /* QgsCopyrightLabelPluginGui-sk_SK in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB641710DD666300A7BD3A /* QgsCopyrightLabelPluginGui-sk_SK */; };
+		72AB648A10DD667200A7BD3A /* QgsCopyrightLabelPluginGui-sv_SE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB641810DD666300A7BD3A /* QgsCopyrightLabelPluginGui-sv_SE */; };
+		72AB648B10DD667200A7BD3A /* QgsCustomProjectionDialog-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB641910DD666300A7BD3A /* QgsCustomProjectionDialog-en_US */; };
+		72AB648C10DD667200A7BD3A /* QgsDelimitedTextPluginGui-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB641A10DD666300A7BD3A /* QgsDelimitedTextPluginGui-de_DE */; };
+		72AB648D10DD667200A7BD3A /* QgsDelimitedTextPluginGui-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB641B10DD666300A7BD3A /* QgsDelimitedTextPluginGui-en_US */; };
+		72AB648E10DD667200A7BD3A /* QgsDelimitedTextPluginGui-pl_PL in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB641C10DD666300A7BD3A /* QgsDelimitedTextPluginGui-pl_PL */; };
+		72AB648F10DD667200A7BD3A /* QgsDelimitedTextPluginGui-ru_RU in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB641D10DD666300A7BD3A /* QgsDelimitedTextPluginGui-ru_RU */; };
+		72AB649010DD667200A7BD3A /* QgsDelimitedTextPluginGui-sk_SK in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB641E10DD666300A7BD3A /* QgsDelimitedTextPluginGui-sk_SK */; };
+		72AB649110DD667200A7BD3A /* QgsDelimitedTextPluginGui-sv_SE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB641F10DD666300A7BD3A /* QgsDelimitedTextPluginGui-sv_SE */; };
+		72AB649210DD667200A7BD3A /* QgsGPSPluginGui-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB642010DD666300A7BD3A /* QgsGPSPluginGui-de_DE */; };
+		72AB649310DD667200A7BD3A /* QgsGPSPluginGui-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB642110DD666300A7BD3A /* QgsGPSPluginGui-en_US */; };
+		72AB649410DD667200A7BD3A /* QgsGPSPluginGui-ru_RU in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB642210DD666300A7BD3A /* QgsGPSPluginGui-ru_RU */; };
+		72AB649510DD667200A7BD3A /* QgsGPSPluginGui-sk_SK in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB642310DD666300A7BD3A /* QgsGPSPluginGui-sk_SK */; };
+		72AB649610DD667200A7BD3A /* QgsIdentifyResults-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB642410DD666300A7BD3A /* QgsIdentifyResults-de_DE */; };
+		72AB649710DD667200A7BD3A /* QgsIdentifyResults-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB642510DD666300A7BD3A /* QgsIdentifyResults-en_US */; };
+		72AB649810DD667200A7BD3A /* QgsIdentifyResults-es_ES in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB642610DD666300A7BD3A /* QgsIdentifyResults-es_ES */; };
+		72AB649910DD667200A7BD3A /* QgsIdentifyResults-pl_PL in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB642710DD666300A7BD3A /* QgsIdentifyResults-pl_PL */; };
+		72AB649A10DD667200A7BD3A /* QgsIdentifyResults-ru_RU in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB642810DD666300A7BD3A /* QgsIdentifyResults-ru_RU */; };
+		72AB649B10DD667200A7BD3A /* QgsIdentifyResults-sk_SK in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB642910DD666300A7BD3A /* QgsIdentifyResults-sk_SK */; };
+		72AB649C10DD667200A7BD3A /* QgsIdentifyResults-sv_SE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB642A10DD666300A7BD3A /* QgsIdentifyResults-sv_SE */; };
+		72AB649D10DD667200A7BD3A /* QgsMapserverExport-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB642B10DD666300A7BD3A /* QgsMapserverExport-de_DE */; };
+		72AB649E10DD667200A7BD3A /* QgsMapserverExport-es_ES in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB642C10DD666300A7BD3A /* QgsMapserverExport-es_ES */; };
+		72AB649F10DD667200A7BD3A /* QgsMapserverExport-ru_RU in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB642D10DD666300A7BD3A /* QgsMapserverExport-ru_RU */; };
+		72AB64A010DD667200A7BD3A /* QgsMapserverExport-sk_SK in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB642E10DD666300A7BD3A /* QgsMapserverExport-sk_SK */; };
+		72AB64A110DD667200A7BD3A /* QgsMeasureDialog-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB642F10DD666300A7BD3A /* QgsMeasureDialog-de_DE */; };
+		72AB64A210DD667200A7BD3A /* QgsMeasureDialog-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB643010DD666300A7BD3A /* QgsMeasureDialog-en_US */; };
+		72AB64A310DD667200A7BD3A /* QgsMeasureDialog-es_ES in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB643110DD666300A7BD3A /* QgsMeasureDialog-es_ES */; };
+		72AB64A410DD667200A7BD3A /* QgsMeasureDialog-pl_PL in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB643210DD666300A7BD3A /* QgsMeasureDialog-pl_PL */; };
+		72AB64A510DD667200A7BD3A /* QgsMeasureDialog-ru_RU in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB643310DD666300A7BD3A /* QgsMeasureDialog-ru_RU */; };
+		72AB64A610DD667200A7BD3A /* QgsMeasureDialog-sk_SK in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB643410DD666300A7BD3A /* QgsMeasureDialog-sk_SK */; };
+		72AB64A710DD667200A7BD3A /* QgsMeasureDialog-sv_SE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB643510DD666300A7BD3A /* QgsMeasureDialog-sv_SE */; };
+		72AB64A810DD667200A7BD3A /* QgsNewConnection-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB643610DD666300A7BD3A /* QgsNewConnection-de_DE */; };
+		72AB64A910DD667200A7BD3A /* QgsNewConnection-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB643710DD666400A7BD3A /* QgsNewConnection-en_US */; };
+		72AB64AA10DD667200A7BD3A /* QgsNewConnection-es_ES in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB643810DD666400A7BD3A /* QgsNewConnection-es_ES */; };
+		72AB64AB10DD667200A7BD3A /* QgsNewConnection-pl_PL in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB643910DD666400A7BD3A /* QgsNewConnection-pl_PL */; };
+		72AB64AC10DD667200A7BD3A /* QgsNewConnection-ru_RU in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB643A10DD666400A7BD3A /* QgsNewConnection-ru_RU */; };
+		72AB64AD10DD667200A7BD3A /* QgsNewConnection-sk_SK in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB643B10DD666400A7BD3A /* QgsNewConnection-sk_SK */; };
+		72AB64AE10DD667200A7BD3A /* QgsNewConnection-sv_SE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB643C10DD666400A7BD3A /* QgsNewConnection-sv_SE */; };
+		72AB64AF10DD667200A7BD3A /* QgsNewOgrConnection-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB643D10DD666400A7BD3A /* QgsNewOgrConnection-de_DE */; };
+		72AB64B010DD667200A7BD3A /* QgsNewOgrConnection-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB643E10DD666400A7BD3A /* QgsNewOgrConnection-en_US */; };
+		72AB64B110DD667200A7BD3A /* QgsNewOgrConnection-ru_RU in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB643F10DD666400A7BD3A /* QgsNewOgrConnection-ru_RU */; };
+		72AB64B210DD667200A7BD3A /* QgsNewVectorLayerDialog-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB644010DD666400A7BD3A /* QgsNewVectorLayerDialog-de_DE */; };
+		72AB64B310DD667200A7BD3A /* QgsNewVectorLayerDialog-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB644110DD666400A7BD3A /* QgsNewVectorLayerDialog-en_US */; };
+		72AB64B410DD667200A7BD3A /* QgsNewVectorLayerDialog-fr_FR in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB644210DD666400A7BD3A /* QgsNewVectorLayerDialog-fr_FR */; };
+		72AB64B510DD667200A7BD3A /* QgsNewVectorLayerDialog-ru_RU in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB644310DD666400A7BD3A /* QgsNewVectorLayerDialog-ru_RU */; };
+		72AB64B610DD667200A7BD3A /* QgsNewVectorLayerDialog-sk_SK in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB644410DD666400A7BD3A /* QgsNewVectorLayerDialog-sk_SK */; };
+		72AB64B710DD667200A7BD3A /* QgsNorthArrowPluginGui-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB644510DD666400A7BD3A /* QgsNorthArrowPluginGui-en_US */; };
+		72AB64B810DD667200A7BD3A /* QgsOpenVectorLayerDialog-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB644610DD666400A7BD3A /* QgsOpenVectorLayerDialog-de_DE */; };
+		72AB64B910DD667200A7BD3A /* QgsOpenVectorLayerDialog-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB644710DD666400A7BD3A /* QgsOpenVectorLayerDialog-en_US */; };
+		72AB64BA10DD667200A7BD3A /* QgsOpenVectorLayerDialog-ru_RU in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB644810DD666400A7BD3A /* QgsOpenVectorLayerDialog-ru_RU */; };
+		72AB64BB10DD667200A7BD3A /* QgsOptions-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB644910DD666400A7BD3A /* QgsOptions-en_US */; };
+		72AB64BC10DD667200A7BD3A /* QgsPgSourceSelect-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB644A10DD666400A7BD3A /* QgsPgSourceSelect-de_DE */; };
+		72AB64BD10DD667200A7BD3A /* QgsPgSourceSelect-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB644B10DD666400A7BD3A /* QgsPgSourceSelect-en_US */; };
+		72AB64BE10DD667200A7BD3A /* QgsPgSourceSelect-pl_PL in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB644C10DD666400A7BD3A /* QgsPgSourceSelect-pl_PL */; };
+		72AB64BF10DD667200A7BD3A /* QgsPgSourceSelect-ru_RU in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB644D10DD666400A7BD3A /* QgsPgSourceSelect-ru_RU */; };
+		72AB64C010DD667200A7BD3A /* QgsPgSourceSelect-sk_SK in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB644E10DD666400A7BD3A /* QgsPgSourceSelect-sk_SK */; };
+		72AB64C110DD667200A7BD3A /* QgsPgSourceSelect-sv_SE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB644F10DD666400A7BD3A /* QgsPgSourceSelect-sv_SE */; };
+		72AB64C210DD667200A7BD3A /* QgsPluginInstallerDialog-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB645010DD666400A7BD3A /* QgsPluginInstallerDialog-de_DE */; };
+		72AB64C310DD667200A7BD3A /* QgsPluginInstallerDialog-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB645110DD666400A7BD3A /* QgsPluginInstallerDialog-en_US */; };
+		72AB64C410DD667200A7BD3A /* QgsProjectProperties-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB645210DD666400A7BD3A /* QgsProjectProperties-de_DE */; };
+		72AB64C510DD667200A7BD3A /* QgsProjectProperties-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB645310DD666400A7BD3A /* QgsProjectProperties-en_US */; };
+		72AB64C610DD667200A7BD3A /* QgsProjectProperties-es_ES in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB645410DD666400A7BD3A /* QgsProjectProperties-es_ES */; };
+		72AB64C710DD667200A7BD3A /* QgsProjectProperties-pl_PL in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB645510DD666400A7BD3A /* QgsProjectProperties-pl_PL */; };
+		72AB64C810DD667200A7BD3A /* QgsProjectProperties-ru_RU in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB645610DD666400A7BD3A /* QgsProjectProperties-ru_RU */; };
+		72AB64C910DD667200A7BD3A /* QgsProjectProperties-sk_SK in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB645710DD666400A7BD3A /* QgsProjectProperties-sk_SK */; };
+		72AB64CA10DD667200A7BD3A /* QgsProjectProperties-sv_SE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB645810DD666400A7BD3A /* QgsProjectProperties-sv_SE */; };
+		72AB64CB10DD667200A7BD3A /* QgsScaleBarPluginGui-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB645910DD666400A7BD3A /* QgsScaleBarPluginGui-de_DE */; };
+		72AB64CC10DD667200A7BD3A /* QgsScaleBarPluginGui-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB645A10DD666400A7BD3A /* QgsScaleBarPluginGui-en_US */; };
+		72AB64CD10DD667200A7BD3A /* QgsServerSourceSelect-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB645B10DD666400A7BD3A /* QgsServerSourceSelect-de_DE */; };
+		72AB64CE10DD667200A7BD3A /* QgsServerSourceSelect-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB645C10DD666400A7BD3A /* QgsServerSourceSelect-en_US */; };
+		72AB64CF10DD667200A7BD3A /* QgsServerSourceSelect-ru_RU in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB645D10DD666400A7BD3A /* QgsServerSourceSelect-ru_RU */; };
+		72AB64D010DD667200A7BD3A /* QgsServerSourceSelect-sk_SK in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB645E10DD666400A7BD3A /* QgsServerSourceSelect-sk_SK */; };
+		72AB64D110DD667200A7BD3A /* QgsServerSourceSelect-sv_SE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB645F10DD666400A7BD3A /* QgsServerSourceSelect-sv_SE */; };
+		72AB64D210DD667200A7BD3A /* QgsSpatiaLiteSourceSelect-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB646010DD666400A7BD3A /* QgsSpatiaLiteSourceSelect-en_US */; };
+		72AB64D310DD667200A7BD3A /* QgsStyleV2ManagerDialog-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB646110DD666400A7BD3A /* QgsStyleV2ManagerDialog-en_US */; };
+		72AB64D410DD667200A7BD3A /* QgsVectorLayerProperties-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB646210DD666400A7BD3A /* QgsVectorLayerProperties-de_DE */; };
+		72AB64D510DD667200A7BD3A /* QgsVectorLayerProperties-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB646310DD666400A7BD3A /* QgsVectorLayerProperties-en_US */; };
+		72AB64D610DD667200A7BD3A /* QgsVectorLayerProperties-es_ES in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB646410DD666400A7BD3A /* QgsVectorLayerProperties-es_ES */; };
+		72AB64D710DD667200A7BD3A /* QgsVectorLayerProperties-pl_PL in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB646510DD666400A7BD3A /* QgsVectorLayerProperties-pl_PL */; };
+		72AB64D810DD667200A7BD3A /* QgsVectorLayerProperties-ru_RU in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB646610DD666400A7BD3A /* QgsVectorLayerProperties-ru_RU */; };
+		72AB64D910DD667200A7BD3A /* QgsVectorLayerProperties-sk_SK in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB646710DD666400A7BD3A /* QgsVectorLayerProperties-sk_SK */; };
+		72AB64DA10DD667200A7BD3A /* QgsWMSSourceSelect-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB646810DD666400A7BD3A /* QgsWMSSourceSelect-de_DE */; };
+		72AB64DB10DD667200A7BD3A /* QgsWMSSourceSelect-en_US in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB646910DD666400A7BD3A /* QgsWMSSourceSelect-en_US */; };
+		72AB64DC10DD667200A7BD3A /* QgsWMSSourceSelect-ru_RU in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB646A10DD666400A7BD3A /* QgsWMSSourceSelect-ru_RU */; };
+		72AB64DD10DD667200A7BD3A /* QgsWMSSourceSelect-sk_SK in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB646B10DD666400A7BD3A /* QgsWMSSourceSelect-sk_SK */; };
+		72AB64DE10DD667200A7BD3A /* QgsWMSSourceSelect-sv_SE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72AB646C10DD666400A7BD3A /* QgsWMSSourceSelect-sv_SE */; };
 		72BD9FE510A499D700FEA70F /* qgszonalstatistics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72BD9FE310A4998600FEA70F /* qgszonalstatistics.cpp */; };
 		72BD9FE610A499FA00FEA70F /* qgszonalstatistics.h in Headers */ = {isa = PBXBuildFile; fileRef = 72BD9FE410A4998600FEA70F /* qgszonalstatistics.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		72C83D5210A5D22600B97B43 /* utils.py in Copy - qgis */ = {isa = PBXBuildFile; fileRef = 72C83D4F10A5D08E00B97B43 /* utils.py */; };
@@ -2632,119 +2633,120 @@
 			dstPath = "$(QGIS_DATA_SUBDIR)/resources/context_help";
 			dstSubfolderSpec = 6;
 			files = (
-				729FA30910D7487D005E7C15 /* eVisDatabaseConnectionGui-en_US in Copy - context_help */,
-				729FA30A10D7487D005E7C15 /* MapServerExport-en_US in Copy - context_help */,
-				729FA30B10D7487D005E7C15 /* QgsAttributeTableDialog-de_DE in Copy - context_help */,
-				729FA30C10D7487D005E7C15 /* QgsAttributeTableDialog-en_US in Copy - context_help */,
-				729FA30D10D7487D005E7C15 /* QgsAttributeTableDialog-fr_FR in Copy - context_help */,
-				729FA30E10D7487D005E7C15 /* QgsAttributeTableDialog-pl_PL in Copy - context_help */,
-				729FA30F10D7487D005E7C15 /* QgsAttributeTableDialog-ru_RU in Copy - context_help */,
-				729FA31010D7487D005E7C15 /* QgsAttributeTableDialog-sk_SK in Copy - context_help */,
-				729FA31110D7487D005E7C15 /* QgsBookmarks-de_DE in Copy - context_help */,
-				729FA31210D7487D005E7C15 /* QgsBookmarks-en_US in Copy - context_help */,
-				729FA31310D7487D005E7C15 /* QgsBookmarks-es_ES in Copy - context_help */,
-				729FA31410D7487D005E7C15 /* QgsBookmarks-fr_FR in Copy - context_help */,
-				729FA31510D7487D005E7C15 /* QgsBookmarks-pl_PL in Copy - context_help */,
-				729FA31610D7487D005E7C15 /* QgsBookmarks-ru_RU in Copy - context_help */,
-				729FA31710D7487D005E7C15 /* QgsBookmarks-sk_SK in Copy - context_help */,
-				729FA31810D7487D005E7C15 /* QgsBookmarks-sv_SE in Copy - context_help */,
-				729FA31910D7487D005E7C15 /* QgsComposer-de_DE in Copy - context_help */,
-				729FA31A10D7487D005E7C15 /* QgsComposer-en_US in Copy - context_help */,
-				729FA31B10D7487D005E7C15 /* QgsComposer-fr_FR in Copy - context_help */,
-				729FA31C10D7487D005E7C15 /* QgsComposer-pl_PL in Copy - context_help */,
-				729FA31D10D7487D005E7C15 /* QgsComposer-ru_RU in Copy - context_help */,
-				729FA31E10D7487D005E7C15 /* QgsComposer-sk_SK in Copy - context_help */,
-				729FA31F10D7487D005E7C15 /* QgsCopyrightLabelPluginGui-de_DE in Copy - context_help */,
-				729FA32010D7487D005E7C15 /* QgsCopyrightLabelPluginGui-en_US in Copy - context_help */,
-				729FA32110D7487D005E7C15 /* QgsCopyrightLabelPluginGui-fr_FR in Copy - context_help */,
-				729FA32210D7487D005E7C15 /* QgsCopyrightLabelPluginGui-ru_RU in Copy - context_help */,
-				729FA32310D7487D005E7C15 /* QgsCopyrightLabelPluginGui-sk_SK in Copy - context_help */,
-				729FA32410D7487D005E7C15 /* QgsCopyrightLabelPluginGui-sv_SE in Copy - context_help */,
-				729FA32510D7487D005E7C15 /* QgsDelimitedTextPluginGui-de_DE in Copy - context_help */,
-				729FA32610D7487D005E7C15 /* QgsDelimitedTextPluginGui-en_US in Copy - context_help */,
-				729FA32710D7487D005E7C15 /* QgsDelimitedTextPluginGui-ru_RU in Copy - context_help */,
-				729FA32810D7487D005E7C15 /* QgsDelimitedTextPluginGui-sk_SK in Copy - context_help */,
-				729FA32910D7487D005E7C15 /* QgsDelimitedTextPluginGui-sv_SE in Copy - context_help */,
-				729FA32A10D7487D005E7C15 /* QgsGPSPlugin-de_DE in Copy - context_help */,
-				729FA32B10D7487D005E7C15 /* QgsGPSPlugin-en_US in Copy - context_help */,
-				729FA32C10D7487D005E7C15 /* QgsGPSPlugin-ru_RU in Copy - context_help */,
-				729FA32D10D7487D005E7C15 /* QgsGPSPlugin-sk_SK in Copy - context_help */,
-				729FA32E10D7487D005E7C15 /* QgsIdentifyResults-de_DE in Copy - context_help */,
-				729FA32F10D7487D005E7C15 /* QgsIdentifyResults-en_US in Copy - context_help */,
-				729FA33010D7487D005E7C15 /* QgsIdentifyResults-es_ES in Copy - context_help */,
-				729FA33110D7487D005E7C15 /* QgsIdentifyResults-pl_PL in Copy - context_help */,
-				729FA33210D7487D005E7C15 /* QgsIdentifyResults-ru_RU in Copy - context_help */,
-				729FA33310D7487D005E7C15 /* QgsIdentifyResults-sk_SK in Copy - context_help */,
-				729FA33410D7487D005E7C15 /* QgsIdentifyResults-sv_SE in Copy - context_help */,
-				729FA33510D7487D005E7C15 /* QgsMapserverExport-de_DE in Copy - context_help */,
-				729FA33610D7487D005E7C15 /* QgsMapserverExport-en_US in Copy - context_help */,
-				729FA33710D7487D005E7C15 /* QgsMapserverExport-es_ES in Copy - context_help */,
-				729FA33810D7487D005E7C15 /* QgsMapserverExport-pl_PL in Copy - context_help */,
-				729FA33910D7487D005E7C15 /* QgsMapserverExport-ru_RU in Copy - context_help */,
-				729FA33A10D7487D005E7C15 /* QgsMapserverExport-sk_SK in Copy - context_help */,
-				729FA33B10D7487D005E7C15 /* QgsMeasureDialog-de_DE in Copy - context_help */,
-				729FA33C10D7487D005E7C15 /* QgsMeasureDialog-en_US in Copy - context_help */,
-				729FA33D10D7487D005E7C15 /* QgsMeasureDialog-es_ES in Copy - context_help */,
-				729FA33E10D7487D005E7C15 /* QgsMeasureDialog-pl_PL in Copy - context_help */,
-				729FA33F10D7487D005E7C15 /* QgsMeasureDialog-ru_RU in Copy - context_help */,
-				729FA34010D7487D005E7C15 /* QgsMeasureDialog-sk_SK in Copy - context_help */,
-				729FA34110D7487D005E7C15 /* QgsMeasureDialog-sv_SE in Copy - context_help */,
-				729FA34210D7487D005E7C15 /* QgsNewConnection-de_DE in Copy - context_help */,
-				729FA34310D7487D005E7C15 /* QgsNewConnection-en_US in Copy - context_help */,
-				729FA34410D7487D005E7C15 /* QgsNewConnection-es_ES in Copy - context_help */,
-				729FA34510D7487D005E7C15 /* QgsNewConnection-pl_PL in Copy - context_help */,
-				729FA34610D7487D005E7C15 /* QgsNewConnection-ru_RU in Copy - context_help */,
-				729FA34710D7487D005E7C15 /* QgsNewConnection-sk_SK in Copy - context_help */,
-				729FA34810D7487D005E7C15 /* QgsNewConnection-sv_SE in Copy - context_help */,
-				729FA34910D7487D005E7C15 /* QgsNewHttpConnection-de_DE in Copy - context_help */,
-				729FA34A10D7487D005E7C15 /* QgsNewHttpConnection-en_US in Copy - context_help */,
-				729FA34B10D7487D005E7C15 /* QgsNewHttpConnection-ru_RU in Copy - context_help */,
-				729FA34C10D7487D005E7C15 /* QgsNewHttpConnection-sk_SK in Copy - context_help */,
-				729FA34D10D7487D005E7C15 /* QgsNewHttpConnection-sv_SE in Copy - context_help */,
-				729FA34E10D7487D005E7C15 /* QgsNewOgrConnection-en_US in Copy - context_help */,
-				729FA34F10D7487D005E7C15 /* QgsNewOgrConnection-ru_RU in Copy - context_help */,
-				729FA35010D7487D005E7C15 /* QgsNewVectorLayerDialog-de_DE in Copy - context_help */,
-				729FA35110D7487D005E7C15 /* QgsNewVectorLayerDialog-en_US in Copy - context_help */,
-				729FA35210D7487D005E7C15 /* QgsNewVectorLayerDialog-fr_FR in Copy - context_help */,
-				729FA35310D7487D005E7C15 /* QgsNewVectorLayerDialog-ru_RU in Copy - context_help */,
-				729FA35410D7487D005E7C15 /* QgsNewVectorLayerDialog-sk_SK in Copy - context_help */,
-				729FA35510D7487D005E7C15 /* QgsOpenVectorLayerDialog-de_DE in Copy - context_help */,
-				729FA35610D7487D005E7C15 /* QgsOpenVectorLayerDialog-en_US in Copy - context_help */,
-				729FA35710D7487D005E7C15 /* QgsOpenVectorLayerDialog-ru_RU in Copy - context_help */,
-				729FA35810D7487D005E7C15 /* QgsOptions-en_US in Copy - context_help */,
-				729FA35910D7487D005E7C15 /* QgsPgSourceSelect-de_DE in Copy - context_help */,
-				729FA35A10D7487D005E7C15 /* QgsPgSourceSelect-en_US in Copy - context_help */,
-				729FA35B10D7487D005E7C15 /* QgsPgSourceSelect-pl_PL in Copy - context_help */,
-				729FA35C10D7487D005E7C15 /* QgsPgSourceSelect-ru_RU in Copy - context_help */,
-				729FA35D10D7487D005E7C15 /* QgsPgSourceSelect-sk_SK in Copy - context_help */,
-				729FA35E10D7487D005E7C15 /* QgsPgSourceSelect-sv_SE in Copy - context_help */,
-				729FA35F10D7487D005E7C15 /* QgsProjectProperties-de_DE in Copy - context_help */,
-				729FA36010D7487D005E7C15 /* QgsProjectProperties-en_US in Copy - context_help */,
-				729FA36110D7487D005E7C15 /* QgsProjectProperties-es_ES in Copy - context_help */,
-				729FA36210D7487D005E7C15 /* QgsProjectProperties-pl_PL in Copy - context_help */,
-				729FA36310D7487D005E7C15 /* QgsProjectProperties-ru_RU in Copy - context_help */,
-				729FA36410D7487D005E7C15 /* QgsProjectProperties-sk_SK in Copy - context_help */,
-				729FA36510D7487D005E7C15 /* QgsProjectProperties-sv_SE in Copy - context_help */,
-				729FA36610D7487D005E7C15 /* QgsScaleBarPluginGui-en_US in Copy - context_help */,
-				729FA36710D7487D005E7C15 /* QgsServerSourceSelect-de_DE in Copy - context_help */,
-				729FA36810D7487D005E7C15 /* QgsServerSourceSelect-en_US in Copy - context_help */,
-				729FA36910D7487D005E7C15 /* QgsServerSourceSelect-ru_RU in Copy - context_help */,
-				729FA36A10D7487D005E7C15 /* QgsServerSourceSelect-sk_SK in Copy - context_help */,
-				729FA36B10D7487D005E7C15 /* QgsServerSourceSelect-sv_SE in Copy - context_help */,
-				729FA36C10D7487D005E7C15 /* QgsSpatiaLiteSourceSelect-en_US in Copy - context_help */,
-				729FA36D10D7487D005E7C15 /* QgsStyleV2ManagerDialog-en_US in Copy - context_help */,
-				729FA36E10D7487D005E7C15 /* QgsVectorLayerProperties-de_DE in Copy - context_help */,
-				729FA36F10D7487D005E7C15 /* QgsVectorLayerProperties-en_US in Copy - context_help */,
-				729FA37010D7487D005E7C15 /* QgsVectorLayerProperties-es_ES in Copy - context_help */,
-				729FA37110D7487D005E7C15 /* QgsVectorLayerProperties-pl_PL in Copy - context_help */,
-				729FA37210D7487D005E7C15 /* QgsVectorLayerProperties-ru_RU in Copy - context_help */,
-				729FA37310D7487D005E7C15 /* QgsVectorLayerProperties-sk_SK in Copy - context_help */,
-				729FA37510D748F4005E7C15 /* QgsCustomProjectionDialog-en_US in Copy - context_help */,
-				729FA37710D7492F005E7C15 /* QgsDelimitedTextPluginGui-pl_PL in Copy - context_help */,
-				729FA37A10D74974005E7C15 /* QgsNewOgrConnection-de_DE in Copy - context_help */,
-				729FA37C10D749C8005E7C15 /* QgsNorthArrowPluginGui-en_US in Copy - context_help */,
-				729FA37E10D74A9C005E7C15 /* QgsCopyrightLabelPluginGui-pl_PL in Copy - context_help */,
-				72411D4510D883CB00DA6DBB /* QgsPluginInstallerDialog-en_US in Copy - context_help */,
+				72AB646D10DD667200A7BD3A /* eVisDatabaseConnectionGui-en_US in Copy - context_help */,
+				72AB646E10DD667200A7BD3A /* MapServerExport-en_US in Copy - context_help */,
+				72AB646F10DD667200A7BD3A /* MapServerExport-pl_PL in Copy - context_help */,
+				72AB647010DD667200A7BD3A /* QgsAttributeTableDialog-de_DE in Copy - context_help */,
+				72AB647110DD667200A7BD3A /* QgsAttributeTableDialog-en_US in Copy - context_help */,
+				72AB647210DD667200A7BD3A /* QgsAttributeTableDialog-fr_FR in Copy - context_help */,
+				72AB647310DD667200A7BD3A /* QgsAttributeTableDialog-pl_PL in Copy - context_help */,
+				72AB647410DD667200A7BD3A /* QgsAttributeTableDialog-ru_RU in Copy - context_help */,
+				72AB647510DD667200A7BD3A /* QgsAttributeTableDialog-sk_SK in Copy - context_help */,
+				72AB647610DD667200A7BD3A /* QgsBookmarks-de_DE in Copy - context_help */,
+				72AB647710DD667200A7BD3A /* QgsBookmarks-en_US in Copy - context_help */,
+				72AB647810DD667200A7BD3A /* QgsBookmarks-es_ES in Copy - context_help */,
+				72AB647910DD667200A7BD3A /* QgsBookmarks-fr_FR in Copy - context_help */,
+				72AB647A10DD667200A7BD3A /* QgsBookmarks-pl_PL in Copy - context_help */,
+				72AB647B10DD667200A7BD3A /* QgsBookmarks-ru_RU in Copy - context_help */,
+				72AB647C10DD667200A7BD3A /* QgsBookmarks-sk_SK in Copy - context_help */,
+				72AB647D10DD667200A7BD3A /* QgsBookmarks-sv_SE in Copy - context_help */,
+				72AB647E10DD667200A7BD3A /* QgsComposer-de_DE in Copy - context_help */,
+				72AB647F10DD667200A7BD3A /* QgsComposer-en_US in Copy - context_help */,
+				72AB648010DD667200A7BD3A /* QgsComposer-fr_FR in Copy - context_help */,
+				72AB648110DD667200A7BD3A /* QgsComposer-pl_PL in Copy - context_help */,
+				72AB648210DD667200A7BD3A /* QgsComposer-ru_RU in Copy - context_help */,
+				72AB648310DD667200A7BD3A /* QgsComposer-sk_SK in Copy - context_help */,
+				72AB648410DD667200A7BD3A /* QgsCopyrightLabelPluginGui-de_DE in Copy - context_help */,
+				72AB648510DD667200A7BD3A /* QgsCopyrightLabelPluginGui-en_US in Copy - context_help */,
+				72AB648610DD667200A7BD3A /* QgsCopyrightLabelPluginGui-fr_FR in Copy - context_help */,
+				72AB648710DD667200A7BD3A /* QgsCopyrightLabelPluginGui-pl_PL in Copy - context_help */,
+				72AB648810DD667200A7BD3A /* QgsCopyrightLabelPluginGui-ru_RU in Copy - context_help */,
+				72AB648910DD667200A7BD3A /* QgsCopyrightLabelPluginGui-sk_SK in Copy - context_help */,
+				72AB648A10DD667200A7BD3A /* QgsCopyrightLabelPluginGui-sv_SE in Copy - context_help */,
+				72AB648B10DD667200A7BD3A /* QgsCustomProjectionDialog-en_US in Copy - context_help */,
+				72AB648C10DD667200A7BD3A /* QgsDelimitedTextPluginGui-de_DE in Copy - context_help */,
+				72AB648D10DD667200A7BD3A /* QgsDelimitedTextPluginGui-en_US in Copy - context_help */,
+				72AB648E10DD667200A7BD3A /* QgsDelimitedTextPluginGui-pl_PL in Copy - context_help */,
+				72AB648F10DD667200A7BD3A /* QgsDelimitedTextPluginGui-ru_RU in Copy - context_help */,
+				72AB649010DD667200A7BD3A /* QgsDelimitedTextPluginGui-sk_SK in Copy - context_help */,
+				72AB649110DD667200A7BD3A /* QgsDelimitedTextPluginGui-sv_SE in Copy - context_help */,
+				72AB649210DD667200A7BD3A /* QgsGPSPluginGui-de_DE in Copy - context_help */,
+				72AB649310DD667200A7BD3A /* QgsGPSPluginGui-en_US in Copy - context_help */,
+				72AB649410DD667200A7BD3A /* QgsGPSPluginGui-ru_RU in Copy - context_help */,
+				72AB649510DD667200A7BD3A /* QgsGPSPluginGui-sk_SK in Copy - context_help */,
+				72AB649610DD667200A7BD3A /* QgsIdentifyResults-de_DE in Copy - context_help */,
+				72AB649710DD667200A7BD3A /* QgsIdentifyResults-en_US in Copy - context_help */,
+				72AB649810DD667200A7BD3A /* QgsIdentifyResults-es_ES in Copy - context_help */,
+				72AB649910DD667200A7BD3A /* QgsIdentifyResults-pl_PL in Copy - context_help */,
+				72AB649A10DD667200A7BD3A /* QgsIdentifyResults-ru_RU in Copy - context_help */,
+				72AB649B10DD667200A7BD3A /* QgsIdentifyResults-sk_SK in Copy - context_help */,
+				72AB649C10DD667200A7BD3A /* QgsIdentifyResults-sv_SE in Copy - context_help */,
+				72AB649D10DD667200A7BD3A /* QgsMapserverExport-de_DE in Copy - context_help */,
+				72AB649E10DD667200A7BD3A /* QgsMapserverExport-es_ES in Copy - context_help */,
+				72AB649F10DD667200A7BD3A /* QgsMapserverExport-ru_RU in Copy - context_help */,
+				72AB64A010DD667200A7BD3A /* QgsMapserverExport-sk_SK in Copy - context_help */,
+				72AB64A110DD667200A7BD3A /* QgsMeasureDialog-de_DE in Copy - context_help */,
+				72AB64A210DD667200A7BD3A /* QgsMeasureDialog-en_US in Copy - context_help */,
+				72AB64A310DD667200A7BD3A /* QgsMeasureDialog-es_ES in Copy - context_help */,
+				72AB64A410DD667200A7BD3A /* QgsMeasureDialog-pl_PL in Copy - context_help */,
+				72AB64A510DD667200A7BD3A /* QgsMeasureDialog-ru_RU in Copy - context_help */,
+				72AB64A610DD667200A7BD3A /* QgsMeasureDialog-sk_SK in Copy - context_help */,
+				72AB64A710DD667200A7BD3A /* QgsMeasureDialog-sv_SE in Copy - context_help */,
+				72AB64A810DD667200A7BD3A /* QgsNewConnection-de_DE in Copy - context_help */,
+				72AB64A910DD667200A7BD3A /* QgsNewConnection-en_US in Copy - context_help */,
+				72AB64AA10DD667200A7BD3A /* QgsNewConnection-es_ES in Copy - context_help */,
+				72AB64AB10DD667200A7BD3A /* QgsNewConnection-pl_PL in Copy - context_help */,
+				72AB64AC10DD667200A7BD3A /* QgsNewConnection-ru_RU in Copy - context_help */,
+				72AB64AD10DD667200A7BD3A /* QgsNewConnection-sk_SK in Copy - context_help */,
+				72AB64AE10DD667200A7BD3A /* QgsNewConnection-sv_SE in Copy - context_help */,
+				72AB64AF10DD667200A7BD3A /* QgsNewOgrConnection-de_DE in Copy - context_help */,
+				72AB64B010DD667200A7BD3A /* QgsNewOgrConnection-en_US in Copy - context_help */,
+				72AB64B110DD667200A7BD3A /* QgsNewOgrConnection-ru_RU in Copy - context_help */,
+				72AB64B210DD667200A7BD3A /* QgsNewVectorLayerDialog-de_DE in Copy - context_help */,
+				72AB64B310DD667200A7BD3A /* QgsNewVectorLayerDialog-en_US in Copy - context_help */,
+				72AB64B410DD667200A7BD3A /* QgsNewVectorLayerDialog-fr_FR in Copy - context_help */,
+				72AB64B510DD667200A7BD3A /* QgsNewVectorLayerDialog-ru_RU in Copy - context_help */,
+				72AB64B610DD667200A7BD3A /* QgsNewVectorLayerDialog-sk_SK in Copy - context_help */,
+				72AB64B710DD667200A7BD3A /* QgsNorthArrowPluginGui-en_US in Copy - context_help */,
+				72AB64B810DD667200A7BD3A /* QgsOpenVectorLayerDialog-de_DE in Copy - context_help */,
+				72AB64B910DD667200A7BD3A /* QgsOpenVectorLayerDialog-en_US in Copy - context_help */,
+				72AB64BA10DD667200A7BD3A /* QgsOpenVectorLayerDialog-ru_RU in Copy - context_help */,
+				72AB64BB10DD667200A7BD3A /* QgsOptions-en_US in Copy - context_help */,
+				72AB64BC10DD667200A7BD3A /* QgsPgSourceSelect-de_DE in Copy - context_help */,
+				72AB64BD10DD667200A7BD3A /* QgsPgSourceSelect-en_US in Copy - context_help */,
+				72AB64BE10DD667200A7BD3A /* QgsPgSourceSelect-pl_PL in Copy - context_help */,
+				72AB64BF10DD667200A7BD3A /* QgsPgSourceSelect-ru_RU in Copy - context_help */,
+				72AB64C010DD667200A7BD3A /* QgsPgSourceSelect-sk_SK in Copy - context_help */,
+				72AB64C110DD667200A7BD3A /* QgsPgSourceSelect-sv_SE in Copy - context_help */,
+				72AB64C210DD667200A7BD3A /* QgsPluginInstallerDialog-de_DE in Copy - context_help */,
+				72AB64C310DD667200A7BD3A /* QgsPluginInstallerDialog-en_US in Copy - context_help */,
+				72AB64C410DD667200A7BD3A /* QgsProjectProperties-de_DE in Copy - context_help */,
+				72AB64C510DD667200A7BD3A /* QgsProjectProperties-en_US in Copy - context_help */,
+				72AB64C610DD667200A7BD3A /* QgsProjectProperties-es_ES in Copy - context_help */,
+				72AB64C710DD667200A7BD3A /* QgsProjectProperties-pl_PL in Copy - context_help */,
+				72AB64C810DD667200A7BD3A /* QgsProjectProperties-ru_RU in Copy - context_help */,
+				72AB64C910DD667200A7BD3A /* QgsProjectProperties-sk_SK in Copy - context_help */,
+				72AB64CA10DD667200A7BD3A /* QgsProjectProperties-sv_SE in Copy - context_help */,
+				72AB64CB10DD667200A7BD3A /* QgsScaleBarPluginGui-de_DE in Copy - context_help */,
+				72AB64CC10DD667200A7BD3A /* QgsScaleBarPluginGui-en_US in Copy - context_help */,
+				72AB64CD10DD667200A7BD3A /* QgsServerSourceSelect-de_DE in Copy - context_help */,
+				72AB64CE10DD667200A7BD3A /* QgsServerSourceSelect-en_US in Copy - context_help */,
+				72AB64CF10DD667200A7BD3A /* QgsServerSourceSelect-ru_RU in Copy - context_help */,
+				72AB64D010DD667200A7BD3A /* QgsServerSourceSelect-sk_SK in Copy - context_help */,
+				72AB64D110DD667200A7BD3A /* QgsServerSourceSelect-sv_SE in Copy - context_help */,
+				72AB64D210DD667200A7BD3A /* QgsSpatiaLiteSourceSelect-en_US in Copy - context_help */,
+				72AB64D310DD667200A7BD3A /* QgsStyleV2ManagerDialog-en_US in Copy - context_help */,
+				72AB64D410DD667200A7BD3A /* QgsVectorLayerProperties-de_DE in Copy - context_help */,
+				72AB64D510DD667200A7BD3A /* QgsVectorLayerProperties-en_US in Copy - context_help */,
+				72AB64D610DD667200A7BD3A /* QgsVectorLayerProperties-es_ES in Copy - context_help */,
+				72AB64D710DD667200A7BD3A /* QgsVectorLayerProperties-pl_PL in Copy - context_help */,
+				72AB64D810DD667200A7BD3A /* QgsVectorLayerProperties-ru_RU in Copy - context_help */,
+				72AB64D910DD667200A7BD3A /* QgsVectorLayerProperties-sk_SK in Copy - context_help */,
+				72AB64DA10DD667200A7BD3A /* QgsWMSSourceSelect-de_DE in Copy - context_help */,
+				72AB64DB10DD667200A7BD3A /* QgsWMSSourceSelect-en_US in Copy - context_help */,
+				72AB64DC10DD667200A7BD3A /* QgsWMSSourceSelect-ru_RU in Copy - context_help */,
+				72AB64DD10DD667200A7BD3A /* QgsWMSSourceSelect-sk_SK in Copy - context_help */,
+				72AB64DE10DD667200A7BD3A /* QgsWMSSourceSelect-sv_SE in Copy - context_help */,
 			);
 			name = "Copy - context_help";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -5055,7 +5057,6 @@
 		72411D4110D8835A00DA6DBB /* v.in.ogr.qgis.where.1.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.in.ogr.qgis.where.1.svg; path = "../../src/plugins/grass/modules-common/v.in.ogr.qgis.where.1.svg"; sourceTree = SOURCE_ROOT; };
 		72411D4210D8835A00DA6DBB /* v.in.ogr.qgis.where.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = v.in.ogr.qgis.where.2.png; path = "../../src/plugins/grass/modules-common/v.in.ogr.qgis.where.2.png"; sourceTree = SOURCE_ROOT; };
 		72411D4310D8835A00DA6DBB /* v.in.ogr.qgis.where.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = v.in.ogr.qgis.where.qgm; path = "../../src/plugins/grass/modules-common/v.in.ogr.qgis.where.qgm"; sourceTree = SOURCE_ROOT; };
-		72411D4410D883B900DA6DBB /* QgsPluginInstallerDialog-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsPluginInstallerDialog-en_US"; path = "../../resources/context_help/QgsPluginInstallerDialog-en_US"; sourceTree = SOURCE_ROOT; };
 		72411D4710D8841F00DA6DBB /* mActionComposerManager.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionComposerManager.png; path = ../../images/themes/default/mActionComposerManager.png; sourceTree = SOURCE_ROOT; };
 		72411D4810D8843300DA6DBB /* mActionComposerManager.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionComposerManager.png; path = ../../images/themes/gis/mActionComposerManager.png; sourceTree = SOURCE_ROOT; };
 		72411D4910D8844600DA6DBB /* mActionComposerManager.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionComposerManager.png; path = ../../images/themes/newgis/mActionComposerManager.png; sourceTree = SOURCE_ROOT; };
@@ -5211,100 +5212,6 @@
 		724D064510A9112D00F9680A /* scale_bar.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = scale_bar.png; path = ../../images/themes/newgis/plugins/scale_bar.png; sourceTree = SOURCE_ROOT; };
 		724D064610A9112D00F9680A /* spit.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = spit.png; path = ../../images/themes/newgis/plugins/spit.png; sourceTree = SOURCE_ROOT; };
 		724D064710A9112D00F9680A /* wfs.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = wfs.png; path = ../../images/themes/newgis/plugins/wfs.png; sourceTree = SOURCE_ROOT; };
-		724FFB0910B47263006E3698 /* QgsAttributeTableDialog-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsAttributeTableDialog-en_US"; path = "../../resources/context_help/QgsAttributeTableDialog-en_US"; sourceTree = SOURCE_ROOT; };
-		724FFB0A10B47263006E3698 /* QgsAttributeTableDialog-pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsAttributeTableDialog-pl_PL"; path = "../../resources/context_help/QgsAttributeTableDialog-pl_PL"; sourceTree = SOURCE_ROOT; };
-		724FFB0B10B47263006E3698 /* QgsAttributeTableDialog-ru_RU */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsAttributeTableDialog-ru_RU"; path = "../../resources/context_help/QgsAttributeTableDialog-ru_RU"; sourceTree = SOURCE_ROOT; };
-		724FFB0C10B47263006E3698 /* QgsAttributeTableDialog-sk_SK */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsAttributeTableDialog-sk_SK"; path = "../../resources/context_help/QgsAttributeTableDialog-sk_SK"; sourceTree = SOURCE_ROOT; };
-		724FFB0D10B47263006E3698 /* QgsBookmarks-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsBookmarks-de_DE"; path = "../../resources/context_help/QgsBookmarks-de_DE"; sourceTree = SOURCE_ROOT; };
-		724FFB0E10B47263006E3698 /* QgsBookmarks-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsBookmarks-en_US"; path = "../../resources/context_help/QgsBookmarks-en_US"; sourceTree = SOURCE_ROOT; };
-		724FFB0F10B47263006E3698 /* QgsBookmarks-es_ES */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsBookmarks-es_ES"; path = "../../resources/context_help/QgsBookmarks-es_ES"; sourceTree = SOURCE_ROOT; };
-		724FFB1010B47263006E3698 /* QgsBookmarks-pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsBookmarks-pl_PL"; path = "../../resources/context_help/QgsBookmarks-pl_PL"; sourceTree = SOURCE_ROOT; };
-		724FFB1110B47263006E3698 /* QgsBookmarks-ru_RU */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsBookmarks-ru_RU"; path = "../../resources/context_help/QgsBookmarks-ru_RU"; sourceTree = SOURCE_ROOT; };
-		724FFB1210B47263006E3698 /* QgsBookmarks-sk_SK */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsBookmarks-sk_SK"; path = "../../resources/context_help/QgsBookmarks-sk_SK"; sourceTree = SOURCE_ROOT; };
-		724FFB1310B47263006E3698 /* QgsBookmarks-sv_SE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsBookmarks-sv_SE"; path = "../../resources/context_help/QgsBookmarks-sv_SE"; sourceTree = SOURCE_ROOT; };
-		724FFB1410B47263006E3698 /* QgsComposer-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsComposer-de_DE"; path = "../../resources/context_help/QgsComposer-de_DE"; sourceTree = SOURCE_ROOT; };
-		724FFB1510B47263006E3698 /* QgsComposer-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsComposer-en_US"; path = "../../resources/context_help/QgsComposer-en_US"; sourceTree = SOURCE_ROOT; };
-		724FFB1610B47263006E3698 /* QgsComposer-pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsComposer-pl_PL"; path = "../../resources/context_help/QgsComposer-pl_PL"; sourceTree = SOURCE_ROOT; };
-		724FFB1710B47263006E3698 /* QgsComposer-ru_RU */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsComposer-ru_RU"; path = "../../resources/context_help/QgsComposer-ru_RU"; sourceTree = SOURCE_ROOT; };
-		724FFB1810B47263006E3698 /* QgsComposer-sk_SK */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsComposer-sk_SK"; path = "../../resources/context_help/QgsComposer-sk_SK"; sourceTree = SOURCE_ROOT; };
-		724FFB1910B47263006E3698 /* QgsCopyrightLabelPluginGui-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsCopyrightLabelPluginGui-de_DE"; path = "../../resources/context_help/QgsCopyrightLabelPluginGui-de_DE"; sourceTree = SOURCE_ROOT; };
-		724FFB1A10B47263006E3698 /* QgsCopyrightLabelPluginGui-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsCopyrightLabelPluginGui-en_US"; path = "../../resources/context_help/QgsCopyrightLabelPluginGui-en_US"; sourceTree = SOURCE_ROOT; };
-		724FFB1B10B47263006E3698 /* QgsCopyrightLabelPluginGui-ru_RU */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsCopyrightLabelPluginGui-ru_RU"; path = "../../resources/context_help/QgsCopyrightLabelPluginGui-ru_RU"; sourceTree = SOURCE_ROOT; };
-		724FFB1C10B47263006E3698 /* QgsCopyrightLabelPluginGui-sk_SK */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsCopyrightLabelPluginGui-sk_SK"; path = "../../resources/context_help/QgsCopyrightLabelPluginGui-sk_SK"; sourceTree = SOURCE_ROOT; };
-		724FFB1D10B47263006E3698 /* QgsCopyrightLabelPluginGui-sv_SE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsCopyrightLabelPluginGui-sv_SE"; path = "../../resources/context_help/QgsCopyrightLabelPluginGui-sv_SE"; sourceTree = SOURCE_ROOT; };
-		724FFB1E10B47263006E3698 /* QgsNewVectorLayerDialog-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsNewVectorLayerDialog-de_DE"; path = "../../resources/context_help/QgsNewVectorLayerDialog-de_DE"; sourceTree = SOURCE_ROOT; };
-		724FFB1F10B47263006E3698 /* QgsNewVectorLayerDialog-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsNewVectorLayerDialog-en_US"; path = "../../resources/context_help/QgsNewVectorLayerDialog-en_US"; sourceTree = SOURCE_ROOT; };
-		724FFB2010B47263006E3698 /* QgsNewVectorLayerDialog-ru_RU */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsNewVectorLayerDialog-ru_RU"; path = "../../resources/context_help/QgsNewVectorLayerDialog-ru_RU"; sourceTree = SOURCE_ROOT; };
-		724FFB2110B47263006E3698 /* QgsNewVectorLayerDialog-sk_SK */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsNewVectorLayerDialog-sk_SK"; path = "../../resources/context_help/QgsNewVectorLayerDialog-sk_SK"; sourceTree = SOURCE_ROOT; };
-		724FFB2210B47263006E3698 /* QgsPgSourceSelect-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsPgSourceSelect-de_DE"; path = "../../resources/context_help/QgsPgSourceSelect-de_DE"; sourceTree = SOURCE_ROOT; };
-		724FFB2310B47263006E3698 /* QgsPgSourceSelect-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsPgSourceSelect-en_US"; path = "../../resources/context_help/QgsPgSourceSelect-en_US"; sourceTree = SOURCE_ROOT; };
-		724FFB2410B47263006E3698 /* QgsPgSourceSelect-pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsPgSourceSelect-pl_PL"; path = "../../resources/context_help/QgsPgSourceSelect-pl_PL"; sourceTree = SOURCE_ROOT; };
-		724FFB2510B47263006E3698 /* QgsPgSourceSelect-ru_RU */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsPgSourceSelect-ru_RU"; path = "../../resources/context_help/QgsPgSourceSelect-ru_RU"; sourceTree = SOURCE_ROOT; };
-		724FFB2610B47263006E3698 /* QgsPgSourceSelect-sk_SK */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsPgSourceSelect-sk_SK"; path = "../../resources/context_help/QgsPgSourceSelect-sk_SK"; sourceTree = SOURCE_ROOT; };
-		724FFB2710B47263006E3698 /* QgsPgSourceSelect-sv_SE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsPgSourceSelect-sv_SE"; path = "../../resources/context_help/QgsPgSourceSelect-sv_SE"; sourceTree = SOURCE_ROOT; };
-		724FFB2810B47263006E3698 /* QgsDelimitedTextPluginGui-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsDelimitedTextPluginGui-de_DE"; path = "../../resources/context_help/QgsDelimitedTextPluginGui-de_DE"; sourceTree = SOURCE_ROOT; };
-		724FFB2910B47263006E3698 /* QgsDelimitedTextPluginGui-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsDelimitedTextPluginGui-en_US"; path = "../../resources/context_help/QgsDelimitedTextPluginGui-en_US"; sourceTree = SOURCE_ROOT; };
-		724FFB2A10B47263006E3698 /* QgsDelimitedTextPluginGui-ru_RU */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsDelimitedTextPluginGui-ru_RU"; path = "../../resources/context_help/QgsDelimitedTextPluginGui-ru_RU"; sourceTree = SOURCE_ROOT; };
-		724FFB2B10B47263006E3698 /* QgsDelimitedTextPluginGui-sk_SK */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsDelimitedTextPluginGui-sk_SK"; path = "../../resources/context_help/QgsDelimitedTextPluginGui-sk_SK"; sourceTree = SOURCE_ROOT; };
-		724FFB2C10B47263006E3698 /* QgsDelimitedTextPluginGui-sv_SE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsDelimitedTextPluginGui-sv_SE"; path = "../../resources/context_help/QgsDelimitedTextPluginGui-sv_SE"; sourceTree = SOURCE_ROOT; };
-		724FFB2D10B47263006E3698 /* QgsGPSPlugin-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsGPSPlugin-de_DE"; path = "../../resources/context_help/QgsGPSPlugin-de_DE"; sourceTree = SOURCE_ROOT; };
-		724FFB2E10B47263006E3698 /* QgsGPSPlugin-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsGPSPlugin-en_US"; path = "../../resources/context_help/QgsGPSPlugin-en_US"; sourceTree = SOURCE_ROOT; };
-		724FFB2F10B47263006E3698 /* QgsGPSPlugin-ru_RU */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsGPSPlugin-ru_RU"; path = "../../resources/context_help/QgsGPSPlugin-ru_RU"; sourceTree = SOURCE_ROOT; };
-		724FFB3010B47263006E3698 /* QgsGPSPlugin-sk_SK */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsGPSPlugin-sk_SK"; path = "../../resources/context_help/QgsGPSPlugin-sk_SK"; sourceTree = SOURCE_ROOT; };
-		724FFB3110B47263006E3698 /* QgsIdentifyResults-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsIdentifyResults-de_DE"; path = "../../resources/context_help/QgsIdentifyResults-de_DE"; sourceTree = SOURCE_ROOT; };
-		724FFB3210B47263006E3698 /* QgsIdentifyResults-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsIdentifyResults-en_US"; path = "../../resources/context_help/QgsIdentifyResults-en_US"; sourceTree = SOURCE_ROOT; };
-		724FFB3310B47263006E3698 /* QgsIdentifyResults-es_ES */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsIdentifyResults-es_ES"; path = "../../resources/context_help/QgsIdentifyResults-es_ES"; sourceTree = SOURCE_ROOT; };
-		724FFB3410B47263006E3698 /* QgsIdentifyResults-pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsIdentifyResults-pl_PL"; path = "../../resources/context_help/QgsIdentifyResults-pl_PL"; sourceTree = SOURCE_ROOT; };
-		724FFB3510B47263006E3698 /* QgsIdentifyResults-ru_RU */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsIdentifyResults-ru_RU"; path = "../../resources/context_help/QgsIdentifyResults-ru_RU"; sourceTree = SOURCE_ROOT; };
-		724FFB3610B47263006E3698 /* QgsIdentifyResults-sk_SK */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsIdentifyResults-sk_SK"; path = "../../resources/context_help/QgsIdentifyResults-sk_SK"; sourceTree = SOURCE_ROOT; };
-		724FFB3710B47263006E3698 /* QgsIdentifyResults-sv_SE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsIdentifyResults-sv_SE"; path = "../../resources/context_help/QgsIdentifyResults-sv_SE"; sourceTree = SOURCE_ROOT; };
-		724FFB3810B47263006E3698 /* QgsMapserverExport-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsMapserverExport-de_DE"; path = "../../resources/context_help/QgsMapserverExport-de_DE"; sourceTree = SOURCE_ROOT; };
-		724FFB3910B47263006E3698 /* QgsMapserverExport-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsMapserverExport-en_US"; path = "../../resources/context_help/QgsMapserverExport-en_US"; sourceTree = SOURCE_ROOT; };
-		724FFB3A10B47263006E3698 /* QgsMapserverExport-es_ES */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsMapserverExport-es_ES"; path = "../../resources/context_help/QgsMapserverExport-es_ES"; sourceTree = SOURCE_ROOT; };
-		724FFB3B10B47263006E3698 /* QgsMapserverExport-pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsMapserverExport-pl_PL"; path = "../../resources/context_help/QgsMapserverExport-pl_PL"; sourceTree = SOURCE_ROOT; };
-		724FFB3C10B47263006E3698 /* QgsMapserverExport-ru_RU */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsMapserverExport-ru_RU"; path = "../../resources/context_help/QgsMapserverExport-ru_RU"; sourceTree = SOURCE_ROOT; };
-		724FFB3D10B47263006E3698 /* QgsMapserverExport-sk_SK */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsMapserverExport-sk_SK"; path = "../../resources/context_help/QgsMapserverExport-sk_SK"; sourceTree = SOURCE_ROOT; };
-		724FFB3E10B47263006E3698 /* QgsMeasureDialog-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsMeasureDialog-de_DE"; path = "../../resources/context_help/QgsMeasureDialog-de_DE"; sourceTree = SOURCE_ROOT; };
-		724FFB3F10B47263006E3698 /* QgsMeasureDialog-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsMeasureDialog-en_US"; path = "../../resources/context_help/QgsMeasureDialog-en_US"; sourceTree = SOURCE_ROOT; };
-		724FFB4010B47263006E3698 /* QgsMeasureDialog-es_ES */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsMeasureDialog-es_ES"; path = "../../resources/context_help/QgsMeasureDialog-es_ES"; sourceTree = SOURCE_ROOT; };
-		724FFB4110B47263006E3698 /* QgsMeasureDialog-pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsMeasureDialog-pl_PL"; path = "../../resources/context_help/QgsMeasureDialog-pl_PL"; sourceTree = SOURCE_ROOT; };
-		724FFB4210B47263006E3698 /* QgsMeasureDialog-ru_RU */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsMeasureDialog-ru_RU"; path = "../../resources/context_help/QgsMeasureDialog-ru_RU"; sourceTree = SOURCE_ROOT; };
-		724FFB4310B47263006E3698 /* QgsMeasureDialog-sk_SK */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsMeasureDialog-sk_SK"; path = "../../resources/context_help/QgsMeasureDialog-sk_SK"; sourceTree = SOURCE_ROOT; };
-		724FFB4410B47263006E3698 /* QgsMeasureDialog-sv_SE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsMeasureDialog-sv_SE"; path = "../../resources/context_help/QgsMeasureDialog-sv_SE"; sourceTree = SOURCE_ROOT; };
-		724FFB4510B47263006E3698 /* QgsNewConnection-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsNewConnection-de_DE"; path = "../../resources/context_help/QgsNewConnection-de_DE"; sourceTree = SOURCE_ROOT; };
-		724FFB4610B47263006E3698 /* QgsNewConnection-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsNewConnection-en_US"; path = "../../resources/context_help/QgsNewConnection-en_US"; sourceTree = SOURCE_ROOT; };
-		724FFB4710B47263006E3698 /* QgsNewConnection-es_ES */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsNewConnection-es_ES"; path = "../../resources/context_help/QgsNewConnection-es_ES"; sourceTree = SOURCE_ROOT; };
-		724FFB4810B47263006E3698 /* QgsNewConnection-pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsNewConnection-pl_PL"; path = "../../resources/context_help/QgsNewConnection-pl_PL"; sourceTree = SOURCE_ROOT; };
-		724FFB4910B47263006E3698 /* QgsNewConnection-ru_RU */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsNewConnection-ru_RU"; path = "../../resources/context_help/QgsNewConnection-ru_RU"; sourceTree = SOURCE_ROOT; };
-		724FFB4A10B47263006E3698 /* QgsNewConnection-sk_SK */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsNewConnection-sk_SK"; path = "../../resources/context_help/QgsNewConnection-sk_SK"; sourceTree = SOURCE_ROOT; };
-		724FFB4B10B47263006E3698 /* QgsNewConnection-sv_SE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsNewConnection-sv_SE"; path = "../../resources/context_help/QgsNewConnection-sv_SE"; sourceTree = SOURCE_ROOT; };
-		724FFB4C10B47263006E3698 /* QgsNewHttpConnection-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsNewHttpConnection-de_DE"; path = "../../resources/context_help/QgsNewHttpConnection-de_DE"; sourceTree = SOURCE_ROOT; };
-		724FFB4D10B47263006E3698 /* QgsNewHttpConnection-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsNewHttpConnection-en_US"; path = "../../resources/context_help/QgsNewHttpConnection-en_US"; sourceTree = SOURCE_ROOT; };
-		724FFB4E10B47263006E3698 /* QgsNewHttpConnection-ru_RU */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsNewHttpConnection-ru_RU"; path = "../../resources/context_help/QgsNewHttpConnection-ru_RU"; sourceTree = SOURCE_ROOT; };
-		724FFB4F10B47263006E3698 /* QgsNewHttpConnection-sk_SK */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsNewHttpConnection-sk_SK"; path = "../../resources/context_help/QgsNewHttpConnection-sk_SK"; sourceTree = SOURCE_ROOT; };
-		724FFB5010B47263006E3698 /* QgsNewHttpConnection-sv_SE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsNewHttpConnection-sv_SE"; path = "../../resources/context_help/QgsNewHttpConnection-sv_SE"; sourceTree = SOURCE_ROOT; };
-		724FFB5110B47263006E3698 /* QgsNewOgrConnection-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsNewOgrConnection-en_US"; path = "../../resources/context_help/QgsNewOgrConnection-en_US"; sourceTree = SOURCE_ROOT; };
-		724FFB5210B47263006E3698 /* QgsNewOgrConnection-ru_RU */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsNewOgrConnection-ru_RU"; path = "../../resources/context_help/QgsNewOgrConnection-ru_RU"; sourceTree = SOURCE_ROOT; };
-		724FFB5310B47263006E3698 /* QgsOpenVectorLayerDialog-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsOpenVectorLayerDialog-en_US"; path = "../../resources/context_help/QgsOpenVectorLayerDialog-en_US"; sourceTree = SOURCE_ROOT; };
-		724FFB5410B47263006E3698 /* QgsOpenVectorLayerDialog-ru_RU */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsOpenVectorLayerDialog-ru_RU"; path = "../../resources/context_help/QgsOpenVectorLayerDialog-ru_RU"; sourceTree = SOURCE_ROOT; };
-		724FFB5510B47263006E3698 /* QgsProjectProperties-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsProjectProperties-de_DE"; path = "../../resources/context_help/QgsProjectProperties-de_DE"; sourceTree = SOURCE_ROOT; };
-		724FFB5610B47263006E3698 /* QgsProjectProperties-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsProjectProperties-en_US"; path = "../../resources/context_help/QgsProjectProperties-en_US"; sourceTree = SOURCE_ROOT; };
-		724FFB5710B47263006E3698 /* QgsProjectProperties-es_ES */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsProjectProperties-es_ES"; path = "../../resources/context_help/QgsProjectProperties-es_ES"; sourceTree = SOURCE_ROOT; };
-		724FFB5810B47263006E3698 /* QgsProjectProperties-pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsProjectProperties-pl_PL"; path = "../../resources/context_help/QgsProjectProperties-pl_PL"; sourceTree = SOURCE_ROOT; };
-		724FFB5910B47263006E3698 /* QgsProjectProperties-ru_RU */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsProjectProperties-ru_RU"; path = "../../resources/context_help/QgsProjectProperties-ru_RU"; sourceTree = SOURCE_ROOT; };
-		724FFB5A10B47263006E3698 /* QgsProjectProperties-sk_SK */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsProjectProperties-sk_SK"; path = "../../resources/context_help/QgsProjectProperties-sk_SK"; sourceTree = SOURCE_ROOT; };
-		724FFB5B10B47263006E3698 /* QgsProjectProperties-sv_SE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsProjectProperties-sv_SE"; path = "../../resources/context_help/QgsProjectProperties-sv_SE"; sourceTree = SOURCE_ROOT; };
-		724FFB5C10B47263006E3698 /* QgsServerSourceSelect-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsServerSourceSelect-de_DE"; path = "../../resources/context_help/QgsServerSourceSelect-de_DE"; sourceTree = SOURCE_ROOT; };
-		724FFB5D10B47263006E3698 /* QgsServerSourceSelect-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsServerSourceSelect-en_US"; path = "../../resources/context_help/QgsServerSourceSelect-en_US"; sourceTree = SOURCE_ROOT; };
-		724FFB5E10B47263006E3698 /* QgsServerSourceSelect-ru_RU */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsServerSourceSelect-ru_RU"; path = "../../resources/context_help/QgsServerSourceSelect-ru_RU"; sourceTree = SOURCE_ROOT; };
-		724FFB5F10B47263006E3698 /* QgsServerSourceSelect-sk_SK */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsServerSourceSelect-sk_SK"; path = "../../resources/context_help/QgsServerSourceSelect-sk_SK"; sourceTree = SOURCE_ROOT; };
-		724FFB6010B47263006E3698 /* QgsServerSourceSelect-sv_SE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsServerSourceSelect-sv_SE"; path = "../../resources/context_help/QgsServerSourceSelect-sv_SE"; sourceTree = SOURCE_ROOT; };
-		724FFB6110B47263006E3698 /* QgsVectorLayerProperties-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsVectorLayerProperties-de_DE"; path = "../../resources/context_help/QgsVectorLayerProperties-de_DE"; sourceTree = SOURCE_ROOT; };
-		724FFB6210B47263006E3698 /* QgsVectorLayerProperties-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsVectorLayerProperties-en_US"; path = "../../resources/context_help/QgsVectorLayerProperties-en_US"; sourceTree = SOURCE_ROOT; };
-		724FFB6310B47263006E3698 /* QgsVectorLayerProperties-es_ES */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsVectorLayerProperties-es_ES"; path = "../../resources/context_help/QgsVectorLayerProperties-es_ES"; sourceTree = SOURCE_ROOT; };
-		724FFB6410B47263006E3698 /* QgsVectorLayerProperties-pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsVectorLayerProperties-pl_PL"; path = "../../resources/context_help/QgsVectorLayerProperties-pl_PL"; sourceTree = SOURCE_ROOT; };
-		724FFB6510B47263006E3698 /* QgsVectorLayerProperties-ru_RU */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsVectorLayerProperties-ru_RU"; path = "../../resources/context_help/QgsVectorLayerProperties-ru_RU"; sourceTree = SOURCE_ROOT; };
-		724FFB6610B47263006E3698 /* QgsVectorLayerProperties-sk_SK */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsVectorLayerProperties-sk_SK"; path = "../../resources/context_help/QgsVectorLayerProperties-sk_SK"; sourceTree = SOURCE_ROOT; };
 		7256F2DC0F4147890022BE1F /* TODO */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = TODO; path = ../../TODO; sourceTree = SOURCE_ROOT; };
 		7256F2DD0F4147890022BE1F /* SPONSORS */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = SPONSORS; path = ../../SPONSORS; sourceTree = SOURCE_ROOT; };
 		7256F2DE0F4147890022BE1F /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README; path = ../../README; sourceTree = SOURCE_ROOT; };
@@ -5428,11 +5335,6 @@
 		7286D63E1062769D008D83A6 /* qgspointrotationitem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgspointrotationitem.cpp; path = ../../src/app/qgspointrotationitem.cpp; sourceTree = SOURCE_ROOT; };
 		7286D63F1062769D008D83A6 /* qgspointrotationitem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgspointrotationitem.h; path = ../../src/app/qgspointrotationitem.h; sourceTree = SOURCE_ROOT; };
 		7296CD8610C2E667001EAD92 /* chstroke.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = chstroke.sh; path = ../../scripts/chstroke.sh; sourceTree = SOURCE_ROOT; };
-		7296CD8710C2E6E3001EAD92 /* QgsAttributeTableDialog-fr_FR */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsAttributeTableDialog-fr_FR"; path = "../../resources/context_help/QgsAttributeTableDialog-fr_FR"; sourceTree = SOURCE_ROOT; };
-		7296CD8810C2E6E3001EAD92 /* QgsBookmarks-fr_FR */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsBookmarks-fr_FR"; path = "../../resources/context_help/QgsBookmarks-fr_FR"; sourceTree = SOURCE_ROOT; };
-		7296CD8910C2E6E3001EAD92 /* QgsComposer-fr_FR */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsComposer-fr_FR"; path = "../../resources/context_help/QgsComposer-fr_FR"; sourceTree = SOURCE_ROOT; };
-		7296CD8A10C2E6E3001EAD92 /* QgsCopyrightLabelPluginGui-fr_FR */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsCopyrightLabelPluginGui-fr_FR"; path = "../../resources/context_help/QgsCopyrightLabelPluginGui-fr_FR"; sourceTree = SOURCE_ROOT; };
-		7296CD8B10C2E6E3001EAD92 /* QgsNewVectorLayerDialog-fr_FR */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsNewVectorLayerDialog-fr_FR"; path = "../../resources/context_help/QgsNewVectorLayerDialog-fr_FR"; sourceTree = SOURCE_ROOT; };
 		7299396A0FE3037600244D1A /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = "../../src/plugins/grass/modules-6.3/CMakeLists.txt"; sourceTree = SOURCE_ROOT; };
 		7299396B0FE3037600244D1A /* r.surf.fractal.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.surf.fractal.1.png; path = "../../src/plugins/grass/modules-6.3/r.surf.fractal.1.png"; sourceTree = SOURCE_ROOT; };
 		7299396C0FE3037600244D1A /* r.surf.fractal.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.surf.fractal.2.png; path = "../../src/plugins/grass/modules-6.3/r.surf.fractal.2.png"; sourceTree = SOURCE_ROOT; };
@@ -6235,19 +6137,6 @@
 		729FA2F510D743D0005E7C15 /* mIconLineLayer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mIconLineLayer.png; path = ../../images/themes/newgis/mIconLineLayer.png; sourceTree = SOURCE_ROOT; };
 		729FA2F610D743D0005E7C15 /* mIconPointLayer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mIconPointLayer.png; path = ../../images/themes/newgis/mIconPointLayer.png; sourceTree = SOURCE_ROOT; };
 		729FA2F710D743D0005E7C15 /* mIconPolygonLayer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mIconPolygonLayer.png; path = ../../images/themes/newgis/mIconPolygonLayer.png; sourceTree = SOURCE_ROOT; };
-		729FA2F810D74424005E7C15 /* QgsAttributeTableDialog-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsAttributeTableDialog-de_DE"; path = "../../resources/context_help/QgsAttributeTableDialog-de_DE"; sourceTree = SOURCE_ROOT; };
-		729FA2F910D745AA005E7C15 /* eVisDatabaseConnectionGui-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "eVisDatabaseConnectionGui-en_US"; path = "../../resources/context_help/eVisDatabaseConnectionGui-en_US"; sourceTree = SOURCE_ROOT; };
-		729FA2FA10D745AA005E7C15 /* MapServerExport-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "MapServerExport-en_US"; path = "../../resources/context_help/MapServerExport-en_US"; sourceTree = SOURCE_ROOT; };
-		729FA2FF10D7464A005E7C15 /* QgsOpenVectorLayerDialog-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "QgsOpenVectorLayerDialog-de_DE"; sourceTree = "<group>"; };
-		729FA30110D746A4005E7C15 /* QgsOptions-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsOptions-en_US"; path = "../../resources/context_help/QgsOptions-en_US"; sourceTree = SOURCE_ROOT; };
-		729FA30310D74737005E7C15 /* QgsScaleBarPluginGui-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsScaleBarPluginGui-en_US"; path = "../../resources/context_help/QgsScaleBarPluginGui-en_US"; sourceTree = SOURCE_ROOT; };
-		729FA30510D747D6005E7C15 /* QgsSpatiaLiteSourceSelect-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsSpatiaLiteSourceSelect-en_US"; path = "../../resources/context_help/QgsSpatiaLiteSourceSelect-en_US"; sourceTree = SOURCE_ROOT; };
-		729FA30610D747D6005E7C15 /* QgsStyleV2ManagerDialog-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsStyleV2ManagerDialog-en_US"; path = "../../resources/context_help/QgsStyleV2ManagerDialog-en_US"; sourceTree = SOURCE_ROOT; };
-		729FA37410D748C1005E7C15 /* QgsCustomProjectionDialog-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "QgsCustomProjectionDialog-en_US"; sourceTree = "<group>"; };
-		729FA37610D7490C005E7C15 /* QgsDelimitedTextPluginGui-pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "QgsDelimitedTextPluginGui-pl_PL"; sourceTree = "<group>"; };
-		729FA37910D7496E005E7C15 /* QgsNewOgrConnection-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "QgsNewOgrConnection-de_DE"; sourceTree = "<group>"; };
-		729FA37B10D749AD005E7C15 /* QgsNorthArrowPluginGui-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "QgsNorthArrowPluginGui-en_US"; sourceTree = "<group>"; };
-		729FA37D10D74A84005E7C15 /* QgsCopyrightLabelPluginGui-pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "QgsCopyrightLabelPluginGui-pl_PL"; sourceTree = "<group>"; };
 		72A07CBC0F3BBFEE004FC2A4 /* libmemoryprovider.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libmemoryprovider.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		72A07CF70F3BD1F9004FC2A4 /* libogrprovider.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libogrprovider.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		72A07D120F3BD625004FC2A4 /* libwmsprovider.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libwmsprovider.so; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -6300,6 +6189,121 @@
 		72AA0BE61073946500D00B43 /* qgsfieldcalculatorbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgsfieldcalculatorbase.ui; path = ../../src/ui/qgsfieldcalculatorbase.ui; sourceTree = SOURCE_ROOT; };
 		72AA0BE71073949C00D00B43 /* qgsfieldcalculator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsfieldcalculator.cpp; path = ../../src/app/qgsfieldcalculator.cpp; sourceTree = SOURCE_ROOT; };
 		72AA0BE81073949C00D00B43 /* qgsfieldcalculator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsfieldcalculator.h; path = ../../src/app/qgsfieldcalculator.h; sourceTree = SOURCE_ROOT; };
+		72AB63FB10DD666300A7BD3A /* eVisDatabaseConnectionGui-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "eVisDatabaseConnectionGui-en_US"; path = "../../resources/context_help/eVisDatabaseConnectionGui-en_US"; sourceTree = SOURCE_ROOT; };
+		72AB63FC10DD666300A7BD3A /* MapServerExport-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "MapServerExport-en_US"; path = "../../resources/context_help/MapServerExport-en_US"; sourceTree = SOURCE_ROOT; };
+		72AB63FD10DD666300A7BD3A /* MapServerExport-pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "MapServerExport-pl_PL"; path = "../../resources/context_help/MapServerExport-pl_PL"; sourceTree = SOURCE_ROOT; };
+		72AB63FE10DD666300A7BD3A /* QgsAttributeTableDialog-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsAttributeTableDialog-de_DE"; path = "../../resources/context_help/QgsAttributeTableDialog-de_DE"; sourceTree = SOURCE_ROOT; };
+		72AB63FF10DD666300A7BD3A /* QgsAttributeTableDialog-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsAttributeTableDialog-en_US"; path = "../../resources/context_help/QgsAttributeTableDialog-en_US"; sourceTree = SOURCE_ROOT; };
+		72AB640010DD666300A7BD3A /* QgsAttributeTableDialog-fr_FR */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsAttributeTableDialog-fr_FR"; path = "../../resources/context_help/QgsAttributeTableDialog-fr_FR"; sourceTree = SOURCE_ROOT; };
+		72AB640110DD666300A7BD3A /* QgsAttributeTableDialog-pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsAttributeTableDialog-pl_PL"; path = "../../resources/context_help/QgsAttributeTableDialog-pl_PL"; sourceTree = SOURCE_ROOT; };
+		72AB640210DD666300A7BD3A /* QgsAttributeTableDialog-ru_RU */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsAttributeTableDialog-ru_RU"; path = "../../resources/context_help/QgsAttributeTableDialog-ru_RU"; sourceTree = SOURCE_ROOT; };
+		72AB640310DD666300A7BD3A /* QgsAttributeTableDialog-sk_SK */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsAttributeTableDialog-sk_SK"; path = "../../resources/context_help/QgsAttributeTableDialog-sk_SK"; sourceTree = SOURCE_ROOT; };
+		72AB640410DD666300A7BD3A /* QgsBookmarks-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsBookmarks-de_DE"; path = "../../resources/context_help/QgsBookmarks-de_DE"; sourceTree = SOURCE_ROOT; };
+		72AB640510DD666300A7BD3A /* QgsBookmarks-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsBookmarks-en_US"; path = "../../resources/context_help/QgsBookmarks-en_US"; sourceTree = SOURCE_ROOT; };
+		72AB640610DD666300A7BD3A /* QgsBookmarks-es_ES */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsBookmarks-es_ES"; path = "../../resources/context_help/QgsBookmarks-es_ES"; sourceTree = SOURCE_ROOT; };
+		72AB640710DD666300A7BD3A /* QgsBookmarks-fr_FR */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsBookmarks-fr_FR"; path = "../../resources/context_help/QgsBookmarks-fr_FR"; sourceTree = SOURCE_ROOT; };
+		72AB640810DD666300A7BD3A /* QgsBookmarks-pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsBookmarks-pl_PL"; path = "../../resources/context_help/QgsBookmarks-pl_PL"; sourceTree = SOURCE_ROOT; };
+		72AB640910DD666300A7BD3A /* QgsBookmarks-ru_RU */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsBookmarks-ru_RU"; path = "../../resources/context_help/QgsBookmarks-ru_RU"; sourceTree = SOURCE_ROOT; };
+		72AB640A10DD666300A7BD3A /* QgsBookmarks-sk_SK */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsBookmarks-sk_SK"; path = "../../resources/context_help/QgsBookmarks-sk_SK"; sourceTree = SOURCE_ROOT; };
+		72AB640B10DD666300A7BD3A /* QgsBookmarks-sv_SE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsBookmarks-sv_SE"; path = "../../resources/context_help/QgsBookmarks-sv_SE"; sourceTree = SOURCE_ROOT; };
+		72AB640C10DD666300A7BD3A /* QgsComposer-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsComposer-de_DE"; path = "../../resources/context_help/QgsComposer-de_DE"; sourceTree = SOURCE_ROOT; };
+		72AB640D10DD666300A7BD3A /* QgsComposer-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsComposer-en_US"; path = "../../resources/context_help/QgsComposer-en_US"; sourceTree = SOURCE_ROOT; };
+		72AB640E10DD666300A7BD3A /* QgsComposer-fr_FR */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsComposer-fr_FR"; path = "../../resources/context_help/QgsComposer-fr_FR"; sourceTree = SOURCE_ROOT; };
+		72AB640F10DD666300A7BD3A /* QgsComposer-pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsComposer-pl_PL"; path = "../../resources/context_help/QgsComposer-pl_PL"; sourceTree = SOURCE_ROOT; };
+		72AB641010DD666300A7BD3A /* QgsComposer-ru_RU */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsComposer-ru_RU"; path = "../../resources/context_help/QgsComposer-ru_RU"; sourceTree = SOURCE_ROOT; };
+		72AB641110DD666300A7BD3A /* QgsComposer-sk_SK */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsComposer-sk_SK"; path = "../../resources/context_help/QgsComposer-sk_SK"; sourceTree = SOURCE_ROOT; };
+		72AB641210DD666300A7BD3A /* QgsCopyrightLabelPluginGui-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsCopyrightLabelPluginGui-de_DE"; path = "../../resources/context_help/QgsCopyrightLabelPluginGui-de_DE"; sourceTree = SOURCE_ROOT; };
+		72AB641310DD666300A7BD3A /* QgsCopyrightLabelPluginGui-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsCopyrightLabelPluginGui-en_US"; path = "../../resources/context_help/QgsCopyrightLabelPluginGui-en_US"; sourceTree = SOURCE_ROOT; };
+		72AB641410DD666300A7BD3A /* QgsCopyrightLabelPluginGui-fr_FR */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsCopyrightLabelPluginGui-fr_FR"; path = "../../resources/context_help/QgsCopyrightLabelPluginGui-fr_FR"; sourceTree = SOURCE_ROOT; };
+		72AB641510DD666300A7BD3A /* QgsCopyrightLabelPluginGui-pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsCopyrightLabelPluginGui-pl_PL"; path = "../../resources/context_help/QgsCopyrightLabelPluginGui-pl_PL"; sourceTree = SOURCE_ROOT; };
+		72AB641610DD666300A7BD3A /* QgsCopyrightLabelPluginGui-ru_RU */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsCopyrightLabelPluginGui-ru_RU"; path = "../../resources/context_help/QgsCopyrightLabelPluginGui-ru_RU"; sourceTree = SOURCE_ROOT; };
+		72AB641710DD666300A7BD3A /* QgsCopyrightLabelPluginGui-sk_SK */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsCopyrightLabelPluginGui-sk_SK"; path = "../../resources/context_help/QgsCopyrightLabelPluginGui-sk_SK"; sourceTree = SOURCE_ROOT; };
+		72AB641810DD666300A7BD3A /* QgsCopyrightLabelPluginGui-sv_SE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsCopyrightLabelPluginGui-sv_SE"; path = "../../resources/context_help/QgsCopyrightLabelPluginGui-sv_SE"; sourceTree = SOURCE_ROOT; };
+		72AB641910DD666300A7BD3A /* QgsCustomProjectionDialog-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsCustomProjectionDialog-en_US"; path = "../../resources/context_help/QgsCustomProjectionDialog-en_US"; sourceTree = SOURCE_ROOT; };
+		72AB641A10DD666300A7BD3A /* QgsDelimitedTextPluginGui-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsDelimitedTextPluginGui-de_DE"; path = "../../resources/context_help/QgsDelimitedTextPluginGui-de_DE"; sourceTree = SOURCE_ROOT; };
+		72AB641B10DD666300A7BD3A /* QgsDelimitedTextPluginGui-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsDelimitedTextPluginGui-en_US"; path = "../../resources/context_help/QgsDelimitedTextPluginGui-en_US"; sourceTree = SOURCE_ROOT; };
+		72AB641C10DD666300A7BD3A /* QgsDelimitedTextPluginGui-pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsDelimitedTextPluginGui-pl_PL"; path = "../../resources/context_help/QgsDelimitedTextPluginGui-pl_PL"; sourceTree = SOURCE_ROOT; };
+		72AB641D10DD666300A7BD3A /* QgsDelimitedTextPluginGui-ru_RU */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsDelimitedTextPluginGui-ru_RU"; path = "../../resources/context_help/QgsDelimitedTextPluginGui-ru_RU"; sourceTree = SOURCE_ROOT; };
+		72AB641E10DD666300A7BD3A /* QgsDelimitedTextPluginGui-sk_SK */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsDelimitedTextPluginGui-sk_SK"; path = "../../resources/context_help/QgsDelimitedTextPluginGui-sk_SK"; sourceTree = SOURCE_ROOT; };
+		72AB641F10DD666300A7BD3A /* QgsDelimitedTextPluginGui-sv_SE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsDelimitedTextPluginGui-sv_SE"; path = "../../resources/context_help/QgsDelimitedTextPluginGui-sv_SE"; sourceTree = SOURCE_ROOT; };
+		72AB642010DD666300A7BD3A /* QgsGPSPluginGui-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsGPSPluginGui-de_DE"; path = "../../resources/context_help/QgsGPSPluginGui-de_DE"; sourceTree = SOURCE_ROOT; };
+		72AB642110DD666300A7BD3A /* QgsGPSPluginGui-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsGPSPluginGui-en_US"; path = "../../resources/context_help/QgsGPSPluginGui-en_US"; sourceTree = SOURCE_ROOT; };
+		72AB642210DD666300A7BD3A /* QgsGPSPluginGui-ru_RU */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsGPSPluginGui-ru_RU"; path = "../../resources/context_help/QgsGPSPluginGui-ru_RU"; sourceTree = SOURCE_ROOT; };
+		72AB642310DD666300A7BD3A /* QgsGPSPluginGui-sk_SK */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsGPSPluginGui-sk_SK"; path = "../../resources/context_help/QgsGPSPluginGui-sk_SK"; sourceTree = SOURCE_ROOT; };
+		72AB642410DD666300A7BD3A /* QgsIdentifyResults-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsIdentifyResults-de_DE"; path = "../../resources/context_help/QgsIdentifyResults-de_DE"; sourceTree = SOURCE_ROOT; };
+		72AB642510DD666300A7BD3A /* QgsIdentifyResults-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsIdentifyResults-en_US"; path = "../../resources/context_help/QgsIdentifyResults-en_US"; sourceTree = SOURCE_ROOT; };
+		72AB642610DD666300A7BD3A /* QgsIdentifyResults-es_ES */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsIdentifyResults-es_ES"; path = "../../resources/context_help/QgsIdentifyResults-es_ES"; sourceTree = SOURCE_ROOT; };
+		72AB642710DD666300A7BD3A /* QgsIdentifyResults-pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsIdentifyResults-pl_PL"; path = "../../resources/context_help/QgsIdentifyResults-pl_PL"; sourceTree = SOURCE_ROOT; };
+		72AB642810DD666300A7BD3A /* QgsIdentifyResults-ru_RU */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsIdentifyResults-ru_RU"; path = "../../resources/context_help/QgsIdentifyResults-ru_RU"; sourceTree = SOURCE_ROOT; };
+		72AB642910DD666300A7BD3A /* QgsIdentifyResults-sk_SK */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsIdentifyResults-sk_SK"; path = "../../resources/context_help/QgsIdentifyResults-sk_SK"; sourceTree = SOURCE_ROOT; };
+		72AB642A10DD666300A7BD3A /* QgsIdentifyResults-sv_SE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsIdentifyResults-sv_SE"; path = "../../resources/context_help/QgsIdentifyResults-sv_SE"; sourceTree = SOURCE_ROOT; };
+		72AB642B10DD666300A7BD3A /* QgsMapserverExport-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsMapserverExport-de_DE"; path = "../../resources/context_help/QgsMapserverExport-de_DE"; sourceTree = SOURCE_ROOT; };
+		72AB642C10DD666300A7BD3A /* QgsMapserverExport-es_ES */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsMapserverExport-es_ES"; path = "../../resources/context_help/QgsMapserverExport-es_ES"; sourceTree = SOURCE_ROOT; };
+		72AB642D10DD666300A7BD3A /* QgsMapserverExport-ru_RU */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsMapserverExport-ru_RU"; path = "../../resources/context_help/QgsMapserverExport-ru_RU"; sourceTree = SOURCE_ROOT; };
+		72AB642E10DD666300A7BD3A /* QgsMapserverExport-sk_SK */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsMapserverExport-sk_SK"; path = "../../resources/context_help/QgsMapserverExport-sk_SK"; sourceTree = SOURCE_ROOT; };
+		72AB642F10DD666300A7BD3A /* QgsMeasureDialog-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsMeasureDialog-de_DE"; path = "../../resources/context_help/QgsMeasureDialog-de_DE"; sourceTree = SOURCE_ROOT; };
+		72AB643010DD666300A7BD3A /* QgsMeasureDialog-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsMeasureDialog-en_US"; path = "../../resources/context_help/QgsMeasureDialog-en_US"; sourceTree = SOURCE_ROOT; };
+		72AB643110DD666300A7BD3A /* QgsMeasureDialog-es_ES */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsMeasureDialog-es_ES"; path = "../../resources/context_help/QgsMeasureDialog-es_ES"; sourceTree = SOURCE_ROOT; };
+		72AB643210DD666300A7BD3A /* QgsMeasureDialog-pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsMeasureDialog-pl_PL"; path = "../../resources/context_help/QgsMeasureDialog-pl_PL"; sourceTree = SOURCE_ROOT; };
+		72AB643310DD666300A7BD3A /* QgsMeasureDialog-ru_RU */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsMeasureDialog-ru_RU"; path = "../../resources/context_help/QgsMeasureDialog-ru_RU"; sourceTree = SOURCE_ROOT; };
+		72AB643410DD666300A7BD3A /* QgsMeasureDialog-sk_SK */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsMeasureDialog-sk_SK"; path = "../../resources/context_help/QgsMeasureDialog-sk_SK"; sourceTree = SOURCE_ROOT; };
+		72AB643510DD666300A7BD3A /* QgsMeasureDialog-sv_SE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsMeasureDialog-sv_SE"; path = "../../resources/context_help/QgsMeasureDialog-sv_SE"; sourceTree = SOURCE_ROOT; };
+		72AB643610DD666300A7BD3A /* QgsNewConnection-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsNewConnection-de_DE"; path = "../../resources/context_help/QgsNewConnection-de_DE"; sourceTree = SOURCE_ROOT; };
+		72AB643710DD666400A7BD3A /* QgsNewConnection-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsNewConnection-en_US"; path = "../../resources/context_help/QgsNewConnection-en_US"; sourceTree = SOURCE_ROOT; };
+		72AB643810DD666400A7BD3A /* QgsNewConnection-es_ES */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsNewConnection-es_ES"; path = "../../resources/context_help/QgsNewConnection-es_ES"; sourceTree = SOURCE_ROOT; };
+		72AB643910DD666400A7BD3A /* QgsNewConnection-pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsNewConnection-pl_PL"; path = "../../resources/context_help/QgsNewConnection-pl_PL"; sourceTree = SOURCE_ROOT; };
+		72AB643A10DD666400A7BD3A /* QgsNewConnection-ru_RU */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsNewConnection-ru_RU"; path = "../../resources/context_help/QgsNewConnection-ru_RU"; sourceTree = SOURCE_ROOT; };
+		72AB643B10DD666400A7BD3A /* QgsNewConnection-sk_SK */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsNewConnection-sk_SK"; path = "../../resources/context_help/QgsNewConnection-sk_SK"; sourceTree = SOURCE_ROOT; };
+		72AB643C10DD666400A7BD3A /* QgsNewConnection-sv_SE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsNewConnection-sv_SE"; path = "../../resources/context_help/QgsNewConnection-sv_SE"; sourceTree = SOURCE_ROOT; };
+		72AB643D10DD666400A7BD3A /* QgsNewOgrConnection-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsNewOgrConnection-de_DE"; path = "../../resources/context_help/QgsNewOgrConnection-de_DE"; sourceTree = SOURCE_ROOT; };
+		72AB643E10DD666400A7BD3A /* QgsNewOgrConnection-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsNewOgrConnection-en_US"; path = "../../resources/context_help/QgsNewOgrConnection-en_US"; sourceTree = SOURCE_ROOT; };
+		72AB643F10DD666400A7BD3A /* QgsNewOgrConnection-ru_RU */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsNewOgrConnection-ru_RU"; path = "../../resources/context_help/QgsNewOgrConnection-ru_RU"; sourceTree = SOURCE_ROOT; };
+		72AB644010DD666400A7BD3A /* QgsNewVectorLayerDialog-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsNewVectorLayerDialog-de_DE"; path = "../../resources/context_help/QgsNewVectorLayerDialog-de_DE"; sourceTree = SOURCE_ROOT; };
+		72AB644110DD666400A7BD3A /* QgsNewVectorLayerDialog-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsNewVectorLayerDialog-en_US"; path = "../../resources/context_help/QgsNewVectorLayerDialog-en_US"; sourceTree = SOURCE_ROOT; };
+		72AB644210DD666400A7BD3A /* QgsNewVectorLayerDialog-fr_FR */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsNewVectorLayerDialog-fr_FR"; path = "../../resources/context_help/QgsNewVectorLayerDialog-fr_FR"; sourceTree = SOURCE_ROOT; };
+		72AB644310DD666400A7BD3A /* QgsNewVectorLayerDialog-ru_RU */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsNewVectorLayerDialog-ru_RU"; path = "../../resources/context_help/QgsNewVectorLayerDialog-ru_RU"; sourceTree = SOURCE_ROOT; };
+		72AB644410DD666400A7BD3A /* QgsNewVectorLayerDialog-sk_SK */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsNewVectorLayerDialog-sk_SK"; path = "../../resources/context_help/QgsNewVectorLayerDialog-sk_SK"; sourceTree = SOURCE_ROOT; };
+		72AB644510DD666400A7BD3A /* QgsNorthArrowPluginGui-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsNorthArrowPluginGui-en_US"; path = "../../resources/context_help/QgsNorthArrowPluginGui-en_US"; sourceTree = SOURCE_ROOT; };
+		72AB644610DD666400A7BD3A /* QgsOpenVectorLayerDialog-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsOpenVectorLayerDialog-de_DE"; path = "../../resources/context_help/QgsOpenVectorLayerDialog-de_DE"; sourceTree = SOURCE_ROOT; };
+		72AB644710DD666400A7BD3A /* QgsOpenVectorLayerDialog-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsOpenVectorLayerDialog-en_US"; path = "../../resources/context_help/QgsOpenVectorLayerDialog-en_US"; sourceTree = SOURCE_ROOT; };
+		72AB644810DD666400A7BD3A /* QgsOpenVectorLayerDialog-ru_RU */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsOpenVectorLayerDialog-ru_RU"; path = "../../resources/context_help/QgsOpenVectorLayerDialog-ru_RU"; sourceTree = SOURCE_ROOT; };
+		72AB644910DD666400A7BD3A /* QgsOptions-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsOptions-en_US"; path = "../../resources/context_help/QgsOptions-en_US"; sourceTree = SOURCE_ROOT; };
+		72AB644A10DD666400A7BD3A /* QgsPgSourceSelect-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsPgSourceSelect-de_DE"; path = "../../resources/context_help/QgsPgSourceSelect-de_DE"; sourceTree = SOURCE_ROOT; };
+		72AB644B10DD666400A7BD3A /* QgsPgSourceSelect-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsPgSourceSelect-en_US"; path = "../../resources/context_help/QgsPgSourceSelect-en_US"; sourceTree = SOURCE_ROOT; };
+		72AB644C10DD666400A7BD3A /* QgsPgSourceSelect-pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsPgSourceSelect-pl_PL"; path = "../../resources/context_help/QgsPgSourceSelect-pl_PL"; sourceTree = SOURCE_ROOT; };
+		72AB644D10DD666400A7BD3A /* QgsPgSourceSelect-ru_RU */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsPgSourceSelect-ru_RU"; path = "../../resources/context_help/QgsPgSourceSelect-ru_RU"; sourceTree = SOURCE_ROOT; };
+		72AB644E10DD666400A7BD3A /* QgsPgSourceSelect-sk_SK */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsPgSourceSelect-sk_SK"; path = "../../resources/context_help/QgsPgSourceSelect-sk_SK"; sourceTree = SOURCE_ROOT; };
+		72AB644F10DD666400A7BD3A /* QgsPgSourceSelect-sv_SE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsPgSourceSelect-sv_SE"; path = "../../resources/context_help/QgsPgSourceSelect-sv_SE"; sourceTree = SOURCE_ROOT; };
+		72AB645010DD666400A7BD3A /* QgsPluginInstallerDialog-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsPluginInstallerDialog-de_DE"; path = "../../resources/context_help/QgsPluginInstallerDialog-de_DE"; sourceTree = SOURCE_ROOT; };
+		72AB645110DD666400A7BD3A /* QgsPluginInstallerDialog-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsPluginInstallerDialog-en_US"; path = "../../resources/context_help/QgsPluginInstallerDialog-en_US"; sourceTree = SOURCE_ROOT; };
+		72AB645210DD666400A7BD3A /* QgsProjectProperties-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsProjectProperties-de_DE"; path = "../../resources/context_help/QgsProjectProperties-de_DE"; sourceTree = SOURCE_ROOT; };
+		72AB645310DD666400A7BD3A /* QgsProjectProperties-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsProjectProperties-en_US"; path = "../../resources/context_help/QgsProjectProperties-en_US"; sourceTree = SOURCE_ROOT; };
+		72AB645410DD666400A7BD3A /* QgsProjectProperties-es_ES */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsProjectProperties-es_ES"; path = "../../resources/context_help/QgsProjectProperties-es_ES"; sourceTree = SOURCE_ROOT; };
+		72AB645510DD666400A7BD3A /* QgsProjectProperties-pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsProjectProperties-pl_PL"; path = "../../resources/context_help/QgsProjectProperties-pl_PL"; sourceTree = SOURCE_ROOT; };
+		72AB645610DD666400A7BD3A /* QgsProjectProperties-ru_RU */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsProjectProperties-ru_RU"; path = "../../resources/context_help/QgsProjectProperties-ru_RU"; sourceTree = SOURCE_ROOT; };
+		72AB645710DD666400A7BD3A /* QgsProjectProperties-sk_SK */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsProjectProperties-sk_SK"; path = "../../resources/context_help/QgsProjectProperties-sk_SK"; sourceTree = SOURCE_ROOT; };
+		72AB645810DD666400A7BD3A /* QgsProjectProperties-sv_SE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsProjectProperties-sv_SE"; path = "../../resources/context_help/QgsProjectProperties-sv_SE"; sourceTree = SOURCE_ROOT; };
+		72AB645910DD666400A7BD3A /* QgsScaleBarPluginGui-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsScaleBarPluginGui-de_DE"; path = "../../resources/context_help/QgsScaleBarPluginGui-de_DE"; sourceTree = SOURCE_ROOT; };
+		72AB645A10DD666400A7BD3A /* QgsScaleBarPluginGui-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsScaleBarPluginGui-en_US"; path = "../../resources/context_help/QgsScaleBarPluginGui-en_US"; sourceTree = SOURCE_ROOT; };
+		72AB645B10DD666400A7BD3A /* QgsServerSourceSelect-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsServerSourceSelect-de_DE"; path = "../../resources/context_help/QgsServerSourceSelect-de_DE"; sourceTree = SOURCE_ROOT; };
+		72AB645C10DD666400A7BD3A /* QgsServerSourceSelect-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsServerSourceSelect-en_US"; path = "../../resources/context_help/QgsServerSourceSelect-en_US"; sourceTree = SOURCE_ROOT; };
+		72AB645D10DD666400A7BD3A /* QgsServerSourceSelect-ru_RU */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsServerSourceSelect-ru_RU"; path = "../../resources/context_help/QgsServerSourceSelect-ru_RU"; sourceTree = SOURCE_ROOT; };
+		72AB645E10DD666400A7BD3A /* QgsServerSourceSelect-sk_SK */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsServerSourceSelect-sk_SK"; path = "../../resources/context_help/QgsServerSourceSelect-sk_SK"; sourceTree = SOURCE_ROOT; };
+		72AB645F10DD666400A7BD3A /* QgsServerSourceSelect-sv_SE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsServerSourceSelect-sv_SE"; path = "../../resources/context_help/QgsServerSourceSelect-sv_SE"; sourceTree = SOURCE_ROOT; };
+		72AB646010DD666400A7BD3A /* QgsSpatiaLiteSourceSelect-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsSpatiaLiteSourceSelect-en_US"; path = "../../resources/context_help/QgsSpatiaLiteSourceSelect-en_US"; sourceTree = SOURCE_ROOT; };
+		72AB646110DD666400A7BD3A /* QgsStyleV2ManagerDialog-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsStyleV2ManagerDialog-en_US"; path = "../../resources/context_help/QgsStyleV2ManagerDialog-en_US"; sourceTree = SOURCE_ROOT; };
+		72AB646210DD666400A7BD3A /* QgsVectorLayerProperties-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsVectorLayerProperties-de_DE"; path = "../../resources/context_help/QgsVectorLayerProperties-de_DE"; sourceTree = SOURCE_ROOT; };
+		72AB646310DD666400A7BD3A /* QgsVectorLayerProperties-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsVectorLayerProperties-en_US"; path = "../../resources/context_help/QgsVectorLayerProperties-en_US"; sourceTree = SOURCE_ROOT; };
+		72AB646410DD666400A7BD3A /* QgsVectorLayerProperties-es_ES */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsVectorLayerProperties-es_ES"; path = "../../resources/context_help/QgsVectorLayerProperties-es_ES"; sourceTree = SOURCE_ROOT; };
+		72AB646510DD666400A7BD3A /* QgsVectorLayerProperties-pl_PL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsVectorLayerProperties-pl_PL"; path = "../../resources/context_help/QgsVectorLayerProperties-pl_PL"; sourceTree = SOURCE_ROOT; };
+		72AB646610DD666400A7BD3A /* QgsVectorLayerProperties-ru_RU */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsVectorLayerProperties-ru_RU"; path = "../../resources/context_help/QgsVectorLayerProperties-ru_RU"; sourceTree = SOURCE_ROOT; };
+		72AB646710DD666400A7BD3A /* QgsVectorLayerProperties-sk_SK */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsVectorLayerProperties-sk_SK"; path = "../../resources/context_help/QgsVectorLayerProperties-sk_SK"; sourceTree = SOURCE_ROOT; };
+		72AB646810DD666400A7BD3A /* QgsWMSSourceSelect-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsWMSSourceSelect-de_DE"; path = "../../resources/context_help/QgsWMSSourceSelect-de_DE"; sourceTree = SOURCE_ROOT; };
+		72AB646910DD666400A7BD3A /* QgsWMSSourceSelect-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsWMSSourceSelect-en_US"; path = "../../resources/context_help/QgsWMSSourceSelect-en_US"; sourceTree = SOURCE_ROOT; };
+		72AB646A10DD666400A7BD3A /* QgsWMSSourceSelect-ru_RU */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsWMSSourceSelect-ru_RU"; path = "../../resources/context_help/QgsWMSSourceSelect-ru_RU"; sourceTree = SOURCE_ROOT; };
+		72AB646B10DD666400A7BD3A /* QgsWMSSourceSelect-sk_SK */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsWMSSourceSelect-sk_SK"; path = "../../resources/context_help/QgsWMSSourceSelect-sk_SK"; sourceTree = SOURCE_ROOT; };
+		72AB646C10DD666400A7BD3A /* QgsWMSSourceSelect-sv_SE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsWMSSourceSelect-sv_SE"; path = "../../resources/context_help/QgsWMSSourceSelect-sv_SE"; sourceTree = SOURCE_ROOT; };
+		72AB64E210DD66B200A7BD3A /* qgis_is.ts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgis_is.ts; path = ../../i18n/qgis_is.ts; sourceTree = SOURCE_ROOT; };
 		72ACC813100E126A00894938 /* r.bilinear.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = r.bilinear.qgm; path = "../../src/plugins/grass/modules-6.4/r.bilinear.qgm"; sourceTree = SOURCE_ROOT; };
 		72ACC814100E126A00894938 /* r.grow.distance.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = r.grow.distance.qgm; path = "../../src/plugins/grass/modules-6.4/r.grow.distance.qgm"; sourceTree = SOURCE_ROOT; };
 		72ACC815100E126A00894938 /* r.grow.distance.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.grow.distance.2.png; path = "../../src/plugins/grass/modules-6.4/r.grow.distance.2.png"; sourceTree = SOURCE_ROOT; };
@@ -9059,119 +9063,120 @@
 			isa = PBXGroup;
 			children = (
 				7209ED800F39E5D9003DC336 /* CMakeLists.txt */,
-				729FA2F810D74424005E7C15 /* QgsAttributeTableDialog-de_DE */,
-				724FFB0D10B47263006E3698 /* QgsBookmarks-de_DE */,
-				724FFB1410B47263006E3698 /* QgsComposer-de_DE */,
-				724FFB1910B47263006E3698 /* QgsCopyrightLabelPluginGui-de_DE */,
-				724FFB2810B47263006E3698 /* QgsDelimitedTextPluginGui-de_DE */,
-				724FFB2D10B47263006E3698 /* QgsGPSPlugin-de_DE */,
-				724FFB3110B47263006E3698 /* QgsIdentifyResults-de_DE */,
-				724FFB3810B47263006E3698 /* QgsMapserverExport-de_DE */,
-				724FFB3E10B47263006E3698 /* QgsMeasureDialog-de_DE */,
-				724FFB4510B47263006E3698 /* QgsNewConnection-de_DE */,
-				724FFB4C10B47263006E3698 /* QgsNewHttpConnection-de_DE */,
-				729FA37910D7496E005E7C15 /* QgsNewOgrConnection-de_DE */,
-				724FFB1E10B47263006E3698 /* QgsNewVectorLayerDialog-de_DE */,
-				729FA2FF10D7464A005E7C15 /* QgsOpenVectorLayerDialog-de_DE */,
-				724FFB2210B47263006E3698 /* QgsPgSourceSelect-de_DE */,
-				724FFB5510B47263006E3698 /* QgsProjectProperties-de_DE */,
-				724FFB5C10B47263006E3698 /* QgsServerSourceSelect-de_DE */,
-				724FFB6110B47263006E3698 /* QgsVectorLayerProperties-de_DE */,
-				729FA2F910D745AA005E7C15 /* eVisDatabaseConnectionGui-en_US */,
-				729FA2FA10D745AA005E7C15 /* MapServerExport-en_US */,
-				724FFB0910B47263006E3698 /* QgsAttributeTableDialog-en_US */,
-				724FFB0E10B47263006E3698 /* QgsBookmarks-en_US */,
-				724FFB1510B47263006E3698 /* QgsComposer-en_US */,
-				724FFB1A10B47263006E3698 /* QgsCopyrightLabelPluginGui-en_US */,
-				729FA37410D748C1005E7C15 /* QgsCustomProjectionDialog-en_US */,
-				724FFB2910B47263006E3698 /* QgsDelimitedTextPluginGui-en_US */,
-				724FFB2E10B47263006E3698 /* QgsGPSPlugin-en_US */,
-				724FFB3210B47263006E3698 /* QgsIdentifyResults-en_US */,
-				724FFB3910B47263006E3698 /* QgsMapserverExport-en_US */,
-				724FFB3F10B47263006E3698 /* QgsMeasureDialog-en_US */,
-				724FFB4610B47263006E3698 /* QgsNewConnection-en_US */,
-				724FFB4D10B47263006E3698 /* QgsNewHttpConnection-en_US */,
-				724FFB5110B47263006E3698 /* QgsNewOgrConnection-en_US */,
-				724FFB1F10B47263006E3698 /* QgsNewVectorLayerDialog-en_US */,
-				729FA37B10D749AD005E7C15 /* QgsNorthArrowPluginGui-en_US */,
-				724FFB5310B47263006E3698 /* QgsOpenVectorLayerDialog-en_US */,
-				729FA30110D746A4005E7C15 /* QgsOptions-en_US */,
-				724FFB2310B47263006E3698 /* QgsPgSourceSelect-en_US */,
-				72411D4410D883B900DA6DBB /* QgsPluginInstallerDialog-en_US */,
-				724FFB5610B47263006E3698 /* QgsProjectProperties-en_US */,
-				729FA30310D74737005E7C15 /* QgsScaleBarPluginGui-en_US */,
-				724FFB5D10B47263006E3698 /* QgsServerSourceSelect-en_US */,
-				729FA30510D747D6005E7C15 /* QgsSpatiaLiteSourceSelect-en_US */,
-				729FA30610D747D6005E7C15 /* QgsStyleV2ManagerDialog-en_US */,
-				724FFB6210B47263006E3698 /* QgsVectorLayerProperties-en_US */,
-				724FFB0F10B47263006E3698 /* QgsBookmarks-es_ES */,
-				724FFB3310B47263006E3698 /* QgsIdentifyResults-es_ES */,
-				724FFB3A10B47263006E3698 /* QgsMapserverExport-es_ES */,
-				724FFB4010B47263006E3698 /* QgsMeasureDialog-es_ES */,
-				724FFB4710B47263006E3698 /* QgsNewConnection-es_ES */,
-				724FFB5710B47263006E3698 /* QgsProjectProperties-es_ES */,
-				724FFB6310B47263006E3698 /* QgsVectorLayerProperties-es_ES */,
-				7296CD8710C2E6E3001EAD92 /* QgsAttributeTableDialog-fr_FR */,
-				7296CD8810C2E6E3001EAD92 /* QgsBookmarks-fr_FR */,
-				7296CD8910C2E6E3001EAD92 /* QgsComposer-fr_FR */,
-				7296CD8A10C2E6E3001EAD92 /* QgsCopyrightLabelPluginGui-fr_FR */,
-				724FFB0A10B47263006E3698 /* QgsAttributeTableDialog-pl_PL */,
-				724FFB1010B47263006E3698 /* QgsBookmarks-pl_PL */,
-				724FFB1610B47263006E3698 /* QgsComposer-pl_PL */,
-				729FA37D10D74A84005E7C15 /* QgsCopyrightLabelPluginGui-pl_PL */,
-				729FA37610D7490C005E7C15 /* QgsDelimitedTextPluginGui-pl_PL */,
-				724FFB3410B47263006E3698 /* QgsIdentifyResults-pl_PL */,
-				724FFB3B10B47263006E3698 /* QgsMapserverExport-pl_PL */,
-				724FFB4110B47263006E3698 /* QgsMeasureDialog-pl_PL */,
-				724FFB4810B47263006E3698 /* QgsNewConnection-pl_PL */,
-				7296CD8B10C2E6E3001EAD92 /* QgsNewVectorLayerDialog-fr_FR */,
-				724FFB2410B47263006E3698 /* QgsPgSourceSelect-pl_PL */,
-				724FFB5810B47263006E3698 /* QgsProjectProperties-pl_PL */,
-				724FFB6410B47263006E3698 /* QgsVectorLayerProperties-pl_PL */,
-				724FFB0B10B47263006E3698 /* QgsAttributeTableDialog-ru_RU */,
-				724FFB1110B47263006E3698 /* QgsBookmarks-ru_RU */,
-				724FFB1710B47263006E3698 /* QgsComposer-ru_RU */,
-				724FFB1B10B47263006E3698 /* QgsCopyrightLabelPluginGui-ru_RU */,
-				724FFB2A10B47263006E3698 /* QgsDelimitedTextPluginGui-ru_RU */,
-				724FFB2F10B47263006E3698 /* QgsGPSPlugin-ru_RU */,
-				724FFB3510B47263006E3698 /* QgsIdentifyResults-ru_RU */,
-				724FFB3C10B47263006E3698 /* QgsMapserverExport-ru_RU */,
-				724FFB4210B47263006E3698 /* QgsMeasureDialog-ru_RU */,
-				724FFB4910B47263006E3698 /* QgsNewConnection-ru_RU */,
-				724FFB4E10B47263006E3698 /* QgsNewHttpConnection-ru_RU */,
-				724FFB5210B47263006E3698 /* QgsNewOgrConnection-ru_RU */,
-				724FFB2010B47263006E3698 /* QgsNewVectorLayerDialog-ru_RU */,
-				724FFB5410B47263006E3698 /* QgsOpenVectorLayerDialog-ru_RU */,
-				724FFB2510B47263006E3698 /* QgsPgSourceSelect-ru_RU */,
-				724FFB5910B47263006E3698 /* QgsProjectProperties-ru_RU */,
-				724FFB5E10B47263006E3698 /* QgsServerSourceSelect-ru_RU */,
-				724FFB6510B47263006E3698 /* QgsVectorLayerProperties-ru_RU */,
-				724FFB0C10B47263006E3698 /* QgsAttributeTableDialog-sk_SK */,
-				724FFB1210B47263006E3698 /* QgsBookmarks-sk_SK */,
-				724FFB1810B47263006E3698 /* QgsComposer-sk_SK */,
-				724FFB1C10B47263006E3698 /* QgsCopyrightLabelPluginGui-sk_SK */,
-				724FFB2B10B47263006E3698 /* QgsDelimitedTextPluginGui-sk_SK */,
-				724FFB3010B47263006E3698 /* QgsGPSPlugin-sk_SK */,
-				724FFB3610B47263006E3698 /* QgsIdentifyResults-sk_SK */,
-				724FFB3D10B47263006E3698 /* QgsMapserverExport-sk_SK */,
-				724FFB4310B47263006E3698 /* QgsMeasureDialog-sk_SK */,
-				724FFB4A10B47263006E3698 /* QgsNewConnection-sk_SK */,
-				724FFB4F10B47263006E3698 /* QgsNewHttpConnection-sk_SK */,
-				724FFB2110B47263006E3698 /* QgsNewVectorLayerDialog-sk_SK */,
-				724FFB2610B47263006E3698 /* QgsPgSourceSelect-sk_SK */,
-				724FFB5A10B47263006E3698 /* QgsProjectProperties-sk_SK */,
-				724FFB5F10B47263006E3698 /* QgsServerSourceSelect-sk_SK */,
-				724FFB6610B47263006E3698 /* QgsVectorLayerProperties-sk_SK */,
-				724FFB1310B47263006E3698 /* QgsBookmarks-sv_SE */,
-				724FFB1D10B47263006E3698 /* QgsCopyrightLabelPluginGui-sv_SE */,
-				724FFB2C10B47263006E3698 /* QgsDelimitedTextPluginGui-sv_SE */,
-				724FFB3710B47263006E3698 /* QgsIdentifyResults-sv_SE */,
-				724FFB4410B47263006E3698 /* QgsMeasureDialog-sv_SE */,
-				724FFB4B10B47263006E3698 /* QgsNewConnection-sv_SE */,
-				724FFB5010B47263006E3698 /* QgsNewHttpConnection-sv_SE */,
-				724FFB2710B47263006E3698 /* QgsPgSourceSelect-sv_SE */,
-				724FFB5B10B47263006E3698 /* QgsProjectProperties-sv_SE */,
-				724FFB6010B47263006E3698 /* QgsServerSourceSelect-sv_SE */,
+				72AB63FB10DD666300A7BD3A /* eVisDatabaseConnectionGui-en_US */,
+				72AB63FC10DD666300A7BD3A /* MapServerExport-en_US */,
+				72AB63FD10DD666300A7BD3A /* MapServerExport-pl_PL */,
+				72AB63FE10DD666300A7BD3A /* QgsAttributeTableDialog-de_DE */,
+				72AB63FF10DD666300A7BD3A /* QgsAttributeTableDialog-en_US */,
+				72AB640010DD666300A7BD3A /* QgsAttributeTableDialog-fr_FR */,
+				72AB640110DD666300A7BD3A /* QgsAttributeTableDialog-pl_PL */,
+				72AB640210DD666300A7BD3A /* QgsAttributeTableDialog-ru_RU */,
+				72AB640310DD666300A7BD3A /* QgsAttributeTableDialog-sk_SK */,
+				72AB640410DD666300A7BD3A /* QgsBookmarks-de_DE */,
+				72AB640510DD666300A7BD3A /* QgsBookmarks-en_US */,
+				72AB640610DD666300A7BD3A /* QgsBookmarks-es_ES */,
+				72AB640710DD666300A7BD3A /* QgsBookmarks-fr_FR */,
+				72AB640810DD666300A7BD3A /* QgsBookmarks-pl_PL */,
+				72AB640910DD666300A7BD3A /* QgsBookmarks-ru_RU */,
+				72AB640A10DD666300A7BD3A /* QgsBookmarks-sk_SK */,
+				72AB640B10DD666300A7BD3A /* QgsBookmarks-sv_SE */,
+				72AB640C10DD666300A7BD3A /* QgsComposer-de_DE */,
+				72AB640D10DD666300A7BD3A /* QgsComposer-en_US */,
+				72AB640E10DD666300A7BD3A /* QgsComposer-fr_FR */,
+				72AB640F10DD666300A7BD3A /* QgsComposer-pl_PL */,
+				72AB641010DD666300A7BD3A /* QgsComposer-ru_RU */,
+				72AB641110DD666300A7BD3A /* QgsComposer-sk_SK */,
+				72AB641210DD666300A7BD3A /* QgsCopyrightLabelPluginGui-de_DE */,
+				72AB641310DD666300A7BD3A /* QgsCopyrightLabelPluginGui-en_US */,
+				72AB641410DD666300A7BD3A /* QgsCopyrightLabelPluginGui-fr_FR */,
+				72AB641510DD666300A7BD3A /* QgsCopyrightLabelPluginGui-pl_PL */,
+				72AB641610DD666300A7BD3A /* QgsCopyrightLabelPluginGui-ru_RU */,
+				72AB641710DD666300A7BD3A /* QgsCopyrightLabelPluginGui-sk_SK */,
+				72AB641810DD666300A7BD3A /* QgsCopyrightLabelPluginGui-sv_SE */,
+				72AB641910DD666300A7BD3A /* QgsCustomProjectionDialog-en_US */,
+				72AB641A10DD666300A7BD3A /* QgsDelimitedTextPluginGui-de_DE */,
+				72AB641B10DD666300A7BD3A /* QgsDelimitedTextPluginGui-en_US */,
+				72AB641C10DD666300A7BD3A /* QgsDelimitedTextPluginGui-pl_PL */,
+				72AB641D10DD666300A7BD3A /* QgsDelimitedTextPluginGui-ru_RU */,
+				72AB641E10DD666300A7BD3A /* QgsDelimitedTextPluginGui-sk_SK */,
+				72AB641F10DD666300A7BD3A /* QgsDelimitedTextPluginGui-sv_SE */,
+				72AB642010DD666300A7BD3A /* QgsGPSPluginGui-de_DE */,
+				72AB642110DD666300A7BD3A /* QgsGPSPluginGui-en_US */,
+				72AB642210DD666300A7BD3A /* QgsGPSPluginGui-ru_RU */,
+				72AB642310DD666300A7BD3A /* QgsGPSPluginGui-sk_SK */,
+				72AB642410DD666300A7BD3A /* QgsIdentifyResults-de_DE */,
+				72AB642510DD666300A7BD3A /* QgsIdentifyResults-en_US */,
+				72AB642610DD666300A7BD3A /* QgsIdentifyResults-es_ES */,
+				72AB642710DD666300A7BD3A /* QgsIdentifyResults-pl_PL */,
+				72AB642810DD666300A7BD3A /* QgsIdentifyResults-ru_RU */,
+				72AB642910DD666300A7BD3A /* QgsIdentifyResults-sk_SK */,
+				72AB642A10DD666300A7BD3A /* QgsIdentifyResults-sv_SE */,
+				72AB642B10DD666300A7BD3A /* QgsMapserverExport-de_DE */,
+				72AB642C10DD666300A7BD3A /* QgsMapserverExport-es_ES */,
+				72AB642D10DD666300A7BD3A /* QgsMapserverExport-ru_RU */,
+				72AB642E10DD666300A7BD3A /* QgsMapserverExport-sk_SK */,
+				72AB642F10DD666300A7BD3A /* QgsMeasureDialog-de_DE */,
+				72AB643010DD666300A7BD3A /* QgsMeasureDialog-en_US */,
+				72AB643110DD666300A7BD3A /* QgsMeasureDialog-es_ES */,
+				72AB643210DD666300A7BD3A /* QgsMeasureDialog-pl_PL */,
+				72AB643310DD666300A7BD3A /* QgsMeasureDialog-ru_RU */,
+				72AB643410DD666300A7BD3A /* QgsMeasureDialog-sk_SK */,
+				72AB643510DD666300A7BD3A /* QgsMeasureDialog-sv_SE */,
+				72AB643610DD666300A7BD3A /* QgsNewConnection-de_DE */,
+				72AB643710DD666400A7BD3A /* QgsNewConnection-en_US */,
+				72AB643810DD666400A7BD3A /* QgsNewConnection-es_ES */,
+				72AB643910DD666400A7BD3A /* QgsNewConnection-pl_PL */,
+				72AB643A10DD666400A7BD3A /* QgsNewConnection-ru_RU */,
+				72AB643B10DD666400A7BD3A /* QgsNewConnection-sk_SK */,
+				72AB643C10DD666400A7BD3A /* QgsNewConnection-sv_SE */,
+				72AB643D10DD666400A7BD3A /* QgsNewOgrConnection-de_DE */,
+				72AB643E10DD666400A7BD3A /* QgsNewOgrConnection-en_US */,
+				72AB643F10DD666400A7BD3A /* QgsNewOgrConnection-ru_RU */,
+				72AB644010DD666400A7BD3A /* QgsNewVectorLayerDialog-de_DE */,
+				72AB644110DD666400A7BD3A /* QgsNewVectorLayerDialog-en_US */,
+				72AB644210DD666400A7BD3A /* QgsNewVectorLayerDialog-fr_FR */,
+				72AB644310DD666400A7BD3A /* QgsNewVectorLayerDialog-ru_RU */,
+				72AB644410DD666400A7BD3A /* QgsNewVectorLayerDialog-sk_SK */,
+				72AB644510DD666400A7BD3A /* QgsNorthArrowPluginGui-en_US */,
+				72AB644610DD666400A7BD3A /* QgsOpenVectorLayerDialog-de_DE */,
+				72AB644710DD666400A7BD3A /* QgsOpenVectorLayerDialog-en_US */,
+				72AB644810DD666400A7BD3A /* QgsOpenVectorLayerDialog-ru_RU */,
+				72AB644910DD666400A7BD3A /* QgsOptions-en_US */,
+				72AB644A10DD666400A7BD3A /* QgsPgSourceSelect-de_DE */,
+				72AB644B10DD666400A7BD3A /* QgsPgSourceSelect-en_US */,
+				72AB644C10DD666400A7BD3A /* QgsPgSourceSelect-pl_PL */,
+				72AB644D10DD666400A7BD3A /* QgsPgSourceSelect-ru_RU */,
+				72AB644E10DD666400A7BD3A /* QgsPgSourceSelect-sk_SK */,
+				72AB644F10DD666400A7BD3A /* QgsPgSourceSelect-sv_SE */,
+				72AB645010DD666400A7BD3A /* QgsPluginInstallerDialog-de_DE */,
+				72AB645110DD666400A7BD3A /* QgsPluginInstallerDialog-en_US */,
+				72AB645210DD666400A7BD3A /* QgsProjectProperties-de_DE */,
+				72AB645310DD666400A7BD3A /* QgsProjectProperties-en_US */,
+				72AB645410DD666400A7BD3A /* QgsProjectProperties-es_ES */,
+				72AB645510DD666400A7BD3A /* QgsProjectProperties-pl_PL */,
+				72AB645610DD666400A7BD3A /* QgsProjectProperties-ru_RU */,
+				72AB645710DD666400A7BD3A /* QgsProjectProperties-sk_SK */,
+				72AB645810DD666400A7BD3A /* QgsProjectProperties-sv_SE */,
+				72AB645910DD666400A7BD3A /* QgsScaleBarPluginGui-de_DE */,
+				72AB645A10DD666400A7BD3A /* QgsScaleBarPluginGui-en_US */,
+				72AB645B10DD666400A7BD3A /* QgsServerSourceSelect-de_DE */,
+				72AB645C10DD666400A7BD3A /* QgsServerSourceSelect-en_US */,
+				72AB645D10DD666400A7BD3A /* QgsServerSourceSelect-ru_RU */,
+				72AB645E10DD666400A7BD3A /* QgsServerSourceSelect-sk_SK */,
+				72AB645F10DD666400A7BD3A /* QgsServerSourceSelect-sv_SE */,
+				72AB646010DD666400A7BD3A /* QgsSpatiaLiteSourceSelect-en_US */,
+				72AB646110DD666400A7BD3A /* QgsStyleV2ManagerDialog-en_US */,
+				72AB646210DD666400A7BD3A /* QgsVectorLayerProperties-de_DE */,
+				72AB646310DD666400A7BD3A /* QgsVectorLayerProperties-en_US */,
+				72AB646410DD666400A7BD3A /* QgsVectorLayerProperties-es_ES */,
+				72AB646510DD666400A7BD3A /* QgsVectorLayerProperties-pl_PL */,
+				72AB646610DD666400A7BD3A /* QgsVectorLayerProperties-ru_RU */,
+				72AB646710DD666400A7BD3A /* QgsVectorLayerProperties-sk_SK */,
+				72AB646810DD666400A7BD3A /* QgsWMSSourceSelect-de_DE */,
+				72AB646910DD666400A7BD3A /* QgsWMSSourceSelect-en_US */,
+				72AB646A10DD666400A7BD3A /* QgsWMSSourceSelect-ru_RU */,
+				72AB646B10DD666400A7BD3A /* QgsWMSSourceSelect-sk_SK */,
+				72AB646C10DD666400A7BD3A /* QgsWMSSourceSelect-sv_SE */,
 			);
 			name = context_help;
 			path = ../../resources/context_help;
@@ -10101,6 +10106,7 @@
 				72F8D9460F89264000D10CE5 /* qgis_he.ts */,
 				7209EFDF0F39E5D9003DC336 /* qgis_hu.ts */,
 				7209EFE00F39E5D9003DC336 /* qgis_id.ts */,
+				72AB64E210DD66B200A7BD3A /* qgis_is.ts */,
 				7209EFE10F39E5D9003DC336 /* qgis_it.ts */,
 				7209EFE20F39E5D9003DC336 /* qgis_ja.ts */,
 				7209EFE30F39E5D9003DC336 /* qgis_ka_GE.ts */,
@@ -17748,7 +17754,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 12487;
+				QGIS_VERSION_BUILD = 12522;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -17759,7 +17765,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 12487;
+				QGIS_VERSION_BUILD = 12522;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
