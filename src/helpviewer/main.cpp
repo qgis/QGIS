@@ -49,6 +49,12 @@ int main( int argc, char ** argv )
   if ( myTranslationCode.isEmpty() )
   {
     myTranslationCode = QLocale::system().name();
+
+    QSettings settings;
+    if( settings.value( "locale/overrideFlag", false ).toBool() )
+    {
+      myTranslationCode = settings.value( "locale/userLocale", "en_US" ).toString();
+    }
   }
   QgsDebugMsg( QString( "Setting translation to %1/qgis_%2" ).arg( i18nPath ).arg( myTranslationCode ) );
 
