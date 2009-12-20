@@ -384,7 +384,7 @@ bool NormVecDecorator::estimateFirstDerivative( int pointno )
   if ( !vlist )
   {
     //something went wrong in getSurroundingTriangles, set the normal to (0,0,0)
-    if ( mNormVec->size() <= mNormVec->count() )//allocate more memory if neccessary
+    if ( mNormVec->size() <= mNormVec->count() )//allocate more memory if necessary
     {
       QgsDebugMsg( QString( "resizing mNormVec from %1 to %2" ).arg( mNormVec->size() ).arg( mNormVec->size() + 1 ) );
       mNormVec->resize( mNormVec->size() + 1 );
@@ -474,7 +474,7 @@ bool NormVecDecorator::estimateFirstDerivative( int pointno )
   {
     status = ENDPOINT;
   }
-  else if ( numberofbreaks > 1 )
+  else
   {
     status = BREAKLINE;
   }
@@ -482,7 +482,7 @@ bool NormVecDecorator::estimateFirstDerivative( int pointno )
   delete vlist;
 
   //insert the new calculated vector
-  if ( mNormVec->size() <= mNormVec->count() )//allocate more memory if neccessary
+  if ( mNormVec->size() <= mNormVec->count() )//allocate more memory if necessary
   {
     mNormVec->resize( mNormVec->size() + 1 );
   }
