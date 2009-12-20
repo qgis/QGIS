@@ -1,5 +1,11 @@
 <h3>Create New Vector Layer</h3>
 To create a new layer for editing, choose <label>New Vector Layer</label> from the <label>Layer</label> menu. <br/>
+With this dialog you can create a Shapefile layer.
+<h4>Type</h4>
 Choose the type of layer <label>Point</label>, <label>Line</label> or <label>Polygon</label>.<br/>
+Click on <label>Specify CRS</label> button to change the coordinate reference system of the layer if needed.
+<h4>New attribute</h4>
 Add the desired attributes by clicking on the <label>Add</label> button and specifying a name and type for the attribute. Only real, integer, and string attributes are supported.<br/>
 You can also define the width and precision of the new attribute column.
+<h4>Attributes list</h4>
+In this section you can see the list of attributes. To delete one of them, click on it and choose <label>Remove selected attribute</label> button.
