@@ -20,6 +20,7 @@
 #include <qgsvectorlayer.h>
 #include <qgsvectordataprovider.h>
 #include <qgsuniquevaluerenderer.h>
+#include <qgscategorizedsymbolrendererv2.h>
 #include <qgssymbol.h>
 
 #include <QPushButton>
@@ -88,10 +89,10 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
       QComboBox *cb = comboBox( editor, parent );
       if ( cb )
       {
-        cb->setEditable( true );
+        cb->setEditable( false );
 
         for ( QList<QVariant>::iterator it = values.begin(); it != values.end(); it++ )
-          cb->addItem( it->toString() );
+          cb->addItem( it->toString(), it->toString() );
 
         myWidget = cb;
       }
@@ -109,7 +110,7 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
         QStringList::const_iterator s_it = enumValues.constBegin();
         for ( ; s_it != enumValues.constEnd(); ++s_it )
         {
-          cb->addItem( *s_it );
+          cb->addItem( *s_it, *s_it );
         }
 
         myWidget = cb;
@@ -136,14 +137,11 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
 
     case QgsVectorLayer::Classification:
     {
-      int classificationField = -1;
       QMap<QString, QString> classes;
 
       const QgsUniqueValueRenderer *uvr = dynamic_cast<const QgsUniqueValueRenderer *>( vl->renderer() );
       if ( uvr )
       {
-        classificationField = uvr->classificationField();
-
         const QList<QgsSymbol *> symbols = uvr->symbols();
 
         for ( int i = 0; i < symbols.size(); i++ )
@@ -155,6 +153,20 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
             label = name;
 
           classes.insert( name, label );
+        }
+      }
+
+      const QgsCategorizedSymbolRendererV2 *csr = dynamic_cast<const QgsCategorizedSymbolRendererV2 *>( vl->rendererV2() );
+      if ( csr )
+      {
+        const QgsCategoryList &categories = (( QgsCategorizedSymbolRendererV2 * )csr )->categories(); // FIXME: QgsCategorizedSymbolRendererV2::categories() should be const
+        for ( int i = 0; i < categories.size(); i++ )
+        {
+          QString label = categories[i].label();
+          QString value = categories[i].value().toString();
+          if ( label.isEmpty() )
+            label = value;
+          classes.insert( label, value );
         }
       }
 
