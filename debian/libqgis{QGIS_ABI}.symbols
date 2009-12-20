@@ -1234,6 +1234,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN14QgsPALGeometryD2Ev@Base 1.4.0
  _ZN14QgsPropertyKey5clearEv@Base 1.4.0
  _ZN14QgsPropertyKey7readXMLER8QDomNode@Base 1.4.0
+ _ZN14QgsPropertyKey8setValueERK7QStringRK8QVariant@Base 1.4.0
  _ZN14QgsPropertyKey8writeXMLERK7QStringR11QDomElementR12QDomDocument@Base 1.4.0
  _ZN14QgsPropertyKey9clearKeysEv@Base 1.4.0
  _ZN14QgsPropertyKeyC1E7QString@Base 1.4.0
@@ -2033,6 +2034,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN20QgsPseudoColorShaderD1Ev@Base 1.4.0
  _ZN20QgsVectorColorRampV2D0Ev@Base 1.4.0
  _ZN20QgsVectorColorRampV2D1Ev@Base 1.4.0
+ _ZN21QgsColorBrewerPalette11listSchemesEv@Base 1.4.0
  _ZN21QgsColorBrewerPalette16listSchemeColorsE7QStringi@Base 1.4.0
  _ZN21QgsColorBrewerPalette18listSchemeVariantsE7QString@Base 1.4.0
  _ZN21QgsRasterDataProvider11qt_metacallEN11QMetaObject4CallEiPPv@Base 1.4.0
@@ -2811,6 +2813,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN3pal5RTreeIPNS_11FeaturePartEdLi2EdLi8ELi4EE12RemoveAllRecEPNS3_4NodeE@Base 1.4.0
  _ZN3pal5RTreeIPNS_11FeaturePartEdLi2EdLi8ELi4EE13InsertRectRecEPNS3_4RectERKS2_PNS3_4NodeEPS9_i@Base 1.4.0
  _ZN3pal5RTreeIPNS_11FeaturePartEdLi2EdLi8ELi4EE13RemoveRectRecEPNS3_4RectERKS2_PNS3_4NodeEPPNS3_8ListNodeE@Base 1.4.0
+ _ZN3pal5RTreeIPNS_11FeaturePartEdLi2EdLi8ELi4EE14CalcRectVolumeEPNS3_4RectE@Base 1.4.0
  _ZN3pal5RTreeIPNS_11FeaturePartEdLi2EdLi8ELi4EE15ChoosePartitionEPNS3_13PartitionVarsEi@Base 1.4.0
  _ZN3pal5RTreeIPNS_11FeaturePartEdLi2EdLi8ELi4EE16DisconnectBranchEPNS3_4NodeEi@Base 1.4.0
  _ZN3pal5RTreeIPNS_11FeaturePartEdLi2EdLi8ELi4EE19RectSphericalVolumeEPNS3_4RectE@Base 1.4.0
@@ -2834,6 +2837,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN3pal5RTreeIPNS_13LabelPositionEdLi2EdLi8ELi4EE12RemoveAllRecEPNS3_4NodeE@Base 1.4.0
  _ZN3pal5RTreeIPNS_13LabelPositionEdLi2EdLi8ELi4EE13InsertRectRecEPNS3_4RectERKS2_PNS3_4NodeEPS9_i@Base 1.4.0
  _ZN3pal5RTreeIPNS_13LabelPositionEdLi2EdLi8ELi4EE13RemoveRectRecEPNS3_4RectERKS2_PNS3_4NodeEPPNS3_8ListNodeE@Base 1.4.0
+ _ZN3pal5RTreeIPNS_13LabelPositionEdLi2EdLi8ELi4EE14CalcRectVolumeEPNS3_4RectE@Base 1.4.0
  _ZN3pal5RTreeIPNS_13LabelPositionEdLi2EdLi8ELi4EE15ChoosePartitionEPNS3_13PartitionVarsEi@Base 1.4.0
  _ZN3pal5RTreeIPNS_13LabelPositionEdLi2EdLi8ELi4EE16DisconnectBranchEPNS3_4NodeEi@Base 1.4.0
  _ZN3pal5RTreeIPNS_13LabelPositionEdLi2EdLi8ELi4EE19RectSphericalVolumeEPNS3_4RectE@Base 1.4.0
@@ -2877,6 +2881,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN3pal5RTreeIPNS_8PointSetEdLi2EdLi8ELi4EE11InitParVarsEPNS3_13PartitionVarsEii@Base 1.4.0
  _ZN3pal5RTreeIPNS_8PointSetEdLi2EdLi8ELi4EE12RemoveAllRecEPNS3_4NodeE@Base 1.4.0
  _ZN3pal5RTreeIPNS_8PointSetEdLi2EdLi8ELi4EE13InsertRectRecEPNS3_4RectERKS2_PNS3_4NodeEPS9_i@Base 1.4.0
+ _ZN3pal5RTreeIPNS_8PointSetEdLi2EdLi8ELi4EE14CalcRectVolumeEPNS3_4RectE@Base 1.4.0
  _ZN3pal5RTreeIPNS_8PointSetEdLi2EdLi8ELi4EE15ChoosePartitionEPNS3_13PartitionVarsEi@Base 1.4.0
  _ZN3pal5RTreeIPNS_8PointSetEdLi2EdLi8ELi4EE19RectSphericalVolumeEPNS3_4RectE@Base 1.4.0
  _ZN3pal5RTreeIPNS_8PointSetEdLi2EdLi8ELi4EE6SearchEPNS3_4NodeEPNS3_4RectERiPFbS2_PvES9_@Base 1.4.0
@@ -3030,6 +3035,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN4QMapI7QStringP11QgsSymbolV2EaSERKS3_@Base 1.4.0
  _ZN4QMapI7QStringP20QgsVectorColorRampV2E11node_createEP8QMapDataPPNS4_4NodeERKS0_RKS2_@Base 1.4.0
  _ZN4QMapI7QStringP20QgsVectorColorRampV2E13detach_helperEv@Base 1.4.0
+ _ZN4QMapI7QStringP20QgsVectorColorRampV2E4takeERKS0_@Base 1.4.0
  _ZN4QMapI7QStringP20QgsVectorColorRampV2E8freeDataEP8QMapData@Base 1.4.0
  _ZN4QMapI7QStringP20QgsVectorColorRampV2ED1Ev@Base 1.4.0
  _ZN4QMapI7QStringP9QgsSymbolE11node_createEP8QMapDataPPNS4_4NodeERKS0_RKS2_@Base 1.4.0
@@ -3306,9 +3312,12 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN5Tools12ExternalSortD0Ev@Base 1.4.0
  _ZN5Tools12ExternalSortD1Ev@Base 1.4.0
  _ZN5Tools12ExternalSortD2Ev@Base 1.4.0
+ _ZN5Tools12SmartPointerIN12SpatialIndex5IDataEE7releaseEv@Base 1.4.0
  _ZN5Tools12SmartPointerIN12SpatialIndex5IDataEED1Ev@Base 1.4.0
+ _ZN5Tools12SmartPointerIN12SpatialIndex8ICommandEE7releaseEv@Base 1.4.0
  _ZN5Tools12SmartPointerIN12SpatialIndex8ICommandEED1Ev@Base 1.4.0
  _ZN5Tools12SmartPointerINS_13IObjectStreamEED1Ev@Base 1.4.0
+ _ZN5Tools12SmartPointerINS_13TemporaryFileEE7releaseEv@Base 1.4.0
  _ZN5Tools12SmartPointerINS_13TemporaryFileEED1Ev@Base 1.4.0
  _ZN5Tools12externalSortERNS_13IObjectStreamERNS_17IObjectComparatorEm@Base 1.4.0
  _ZN5Tools12externalSortERNS_13IObjectStreamEm@Base 1.4.0
@@ -4045,6 +4054,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZNK4QMapI7QStringP11QgsSymbolV2E8findNodeERKS0_@Base 1.4.0
  _ZNK4QMapI7QStringP20QgsVectorColorRampV2E15mutableFindNodeEPPN8QMapData4NodeERKS0_@Base 1.4.0
  _ZNK4QMapI7QStringP20QgsVectorColorRampV2E8findNodeERKS0_@Base 1.4.0
+ _ZNK4QMapI7QStringP9QgsSymbolE6valuesEv@Base 1.4.0
  _ZNK4QMapI7QStringS_IS0_8QVariantEE15mutableFindNodeEPPN8QMapData4NodeERKS0_@Base 1.4.0
  _ZNK4QMapIi8QgsFieldE8containsERKi@Base 1.4.0
  _ZNK4QMapIi8QgsFieldEixERKi@Base 1.4.0
@@ -4156,24 +4166,31 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZNK9QgsSymbol9pointSizeEv@Base 1.4.0
  _ZNSs12_S_constructIPcEES0_T_S1_RKSaIcESt20forward_iterator_tag@Base 1.4.0
  _ZNSt10_List_baseI8QDomNodeSaIS0_EED2Ev@Base 1.4.0
+ _ZNSt11_Deque_baseIN12SpatialIndex5RTree5RTree13ValidateEntryESaIS3_EE15_M_create_nodesEPPS3_S7_@Base 1.4.0
  _ZNSt11_Deque_baseIN12SpatialIndex5RTree5RTree13ValidateEntryESaIS3_EE17_M_initialize_mapEj@Base 1.4.0
  _ZNSt11_Deque_baseIN12SpatialIndex5RTree5RTree13ValidateEntryESaIS3_EE17_M_initialize_mapEm@Base 1.4.0
  _ZNSt11_Deque_baseIN12SpatialIndex5RTree5RTree13ValidateEntryESaIS3_EED2Ev@Base 1.4.0
+ _ZNSt11_Deque_baseIN5Tools11PoolPointerIN12SpatialIndex5RTree4NodeEEESaIS5_EE15_M_create_nodesEPPS5_S9_@Base 1.4.0
  _ZNSt11_Deque_baseIN5Tools11PoolPointerIN12SpatialIndex5RTree4NodeEEESaIS5_EE17_M_initialize_mapEj@Base 1.4.0
  _ZNSt11_Deque_baseIN5Tools11PoolPointerIN12SpatialIndex5RTree4NodeEEESaIS5_EE17_M_initialize_mapEm@Base 1.4.0
  _ZNSt11_Deque_baseIN5Tools11PoolPointerIN12SpatialIndex5RTree4NodeEEESaIS5_EED2Ev@Base 1.4.0
+ _ZNSt11_Deque_baseIN5Tools12SmartPointerINS0_13TemporaryFileEEESaIS3_EE15_M_create_nodesEPPS3_S7_@Base 1.4.0
  _ZNSt11_Deque_baseIN5Tools12SmartPointerINS0_13TemporaryFileEEESaIS3_EE17_M_initialize_mapEj@Base 1.4.0
  _ZNSt11_Deque_baseIN5Tools12SmartPointerINS0_13TemporaryFileEEESaIS3_EE17_M_initialize_mapEm@Base 1.4.0
  _ZNSt11_Deque_baseIN5Tools12SmartPointerINS0_13TemporaryFileEEESaIS3_EED2Ev@Base 1.4.0
+ _ZNSt11_Deque_baseIPN12SpatialIndex5RTree4NodeESaIS3_EE15_M_create_nodesEPPS3_S7_@Base 1.4.0
  _ZNSt11_Deque_baseIPN12SpatialIndex5RTree4NodeESaIS3_EE17_M_initialize_mapEj@Base 1.4.0
  _ZNSt11_Deque_baseIPN12SpatialIndex5RTree4NodeESaIS3_EE17_M_initialize_mapEm@Base 1.4.0
  _ZNSt11_Deque_baseIPN12SpatialIndex5RTree4NodeESaIS3_EED2Ev@Base 1.4.0
+ _ZNSt11_Deque_baseIPN5Tools8Geometry5PointESaIS3_EE15_M_create_nodesEPPS3_S7_@Base 1.4.0
  _ZNSt11_Deque_baseIPN5Tools8Geometry5PointESaIS3_EE17_M_initialize_mapEj@Base 1.4.0
  _ZNSt11_Deque_baseIPN5Tools8Geometry5PointESaIS3_EE17_M_initialize_mapEm@Base 1.4.0
  _ZNSt11_Deque_baseIPN5Tools8Geometry5PointESaIS3_EED2Ev@Base 1.4.0
+ _ZNSt11_Deque_baseIPN5Tools8Geometry6RegionESaIS3_EE15_M_create_nodesEPPS3_S7_@Base 1.4.0
  _ZNSt11_Deque_baseIPN5Tools8Geometry6RegionESaIS3_EE17_M_initialize_mapEj@Base 1.4.0
  _ZNSt11_Deque_baseIPN5Tools8Geometry6RegionESaIS3_EE17_M_initialize_mapEm@Base 1.4.0
  _ZNSt11_Deque_baseIPN5Tools8Geometry6RegionESaIS3_EED2Ev@Base 1.4.0
+ _ZNSt11_Deque_baseIlSaIlEE15_M_create_nodesEPPlS3_@Base 1.4.0
  _ZNSt11_Deque_baseIlSaIlEE17_M_initialize_mapEj@Base 1.4.0
  _ZNSt11_Deque_baseIlSaIlEE17_M_initialize_mapEm@Base 1.4.0
  _ZNSt11_Deque_baseIlSaIlEED2Ev@Base 1.4.0
@@ -4269,7 +4286,9 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZSt13__adjust_heapIN9__gnu_cxx17__normal_iteratorIPlSt6vectorIlSaIlEEEEilSt7greaterIlEEvT_T0_SA_T1_T2_@Base 1.4.0
  _ZSt13__adjust_heapIN9__gnu_cxx17__normal_iteratorIPlSt6vectorIlSaIlEEEEllSt7greaterIlEEvT_T0_SA_T1_T2_@Base 1.4.0
  _ZSt22__uninitialized_copy_aISt15_Deque_iteratorIN5Tools12SmartPointerINS1_13TemporaryFileEEERS4_PS4_ES7_S4_ET0_T_S9_S8_RSaIT1_E@Base 1.4.0
+ _ZSt22__uninitialized_move_aIPSsS0_SaISsEET0_T_S3_S2_RT1_@Base 1.4.0
  _ZSt22__uninitialized_move_aIPiS0_SaIiEET0_T_S3_S2_RT1_@Base 1.4.0
+ _ZSt8_DestroyISt15_Deque_iteratorIN5Tools12SmartPointerINS1_13TemporaryFileEEERS4_PS4_EEvT_S8_@Base 1.4.0
  _ZStplIcSt11char_traitsIcESaIcEESbIT_T0_T1_EPKS3_RKS6_@Base 1.4.0
  _ZTCN5Tools8Geometry11LineSegmentE16_NS0_6IShapeE@Base 1.4.0
  _ZTCN5Tools8Geometry11LineSegmentE32_NS0_6IShapeE@Base 1.4.0
@@ -5801,6 +5820,7 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN19QgsRendererV2WidgetD1Ev@Base 1.4.0
  _ZN19QgsRendererV2WidgetD2Ev@Base 1.4.0
  _ZN19Ui_QgsMessageViewer7setupUiEP7QDialog@Base 1.4.0
+ _ZN19Ui_WidgetMarkerLine13retranslateUiEP7QWidget@Base 1.4.0
  _ZN19Ui_WidgetMarkerLine7setupUiEP7QWidget@Base 1.4.0
  _ZN19Ui_WidgetSimpleFill13retranslateUiEP7QWidget@Base 1.4.0
  _ZN19Ui_WidgetSimpleFill7setupUiEP7QWidget@Base 1.4.0
@@ -6207,6 +6227,7 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN36QgsCategorizedSymbolRendererV2Widget15currentCategoryEv@Base 1.4.0
  _ZN36QgsCategorizedSymbolRendererV2Widget15populateColumnsEv@Base 1.4.0
  _ZN36QgsCategorizedSymbolRendererV2Widget16staticMetaObjectE@Base 1.4.0
+ _ZN36QgsCategorizedSymbolRendererV2Widget18changeCurrentValueEP13QStandardItem@Base 1.4.0
  _ZN36QgsCategorizedSymbolRendererV2Widget18currentCategoryRowEv@Base 1.4.0
  _ZN36QgsCategorizedSymbolRendererV2Widget18populateCategoriesEv@Base 1.4.0
  _ZN36QgsCategorizedSymbolRendererV2Widget18populateColorRampsEv@Base 1.4.0
