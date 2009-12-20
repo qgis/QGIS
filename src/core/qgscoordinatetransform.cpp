@@ -483,7 +483,7 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
       }
     }
 
-    pjErr << tr( "with error: " ) << pj_strerrno( projResult ) << '\n';
+    pjErr << tr( "with error: " ) << QString::fromUtf8( pj_strerrno( projResult ) ) << '\n';
 
     QgsDebugMsg( "Projection failed emitting invalid transform signal: " + QString( msg.toLocal8Bit().data() ) );
 
