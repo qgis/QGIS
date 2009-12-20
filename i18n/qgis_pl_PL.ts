@@ -956,7 +956,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/labeling/engineconfigdialog.ui" line="50"/>
         <source>FALP (fastest)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">FALP (najszybszy)</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/engineconfigdialog.ui" line="78"/>
@@ -4643,7 +4643,7 @@ Prosimy o kontakt z autorami.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1203"/>
         <source>Print Composers</source>
-        <translation>Asystent wydruku</translation>
+        <translation type="unfinished">Arkusze</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1210"/>
@@ -4709,62 +4709,62 @@ Prosimy o kontakt z autorami.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2132"/>
         <source>Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.3.0. If an unchanging user interface, programmatic API and long term support is more important to you then cool new and untested features, we recommend that you use a copy of QGIS from our Long Term Support (LTS)1.0.x release series. In all other cases we recommend that you use this version.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zważ, że ta wersja należy do linii rozwojowej. Jako taka zawiera nowe funkcje i rozszerzenia programistyczne w porównaniu do wersji QGIS 1.0.x oraz QGIS 1.3.0. Jeśli stabilność i długoterminowe wsparcie - a nie nowości i nieprzetestowane do końca funkcje - są dla Ciebie priorytetem, polecamy użycie stabilnej wersji QGIS 1.0.x (LTS). W pozostałych przypadkach zalecamy korzystanie z tej właśnie wersji.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2140"/>
         <source>This release includes around 200 bug fixes, nearly 30 new features and has had a lot of love and attention poured in to it to take our favourite desktop GIS application another step on the road to GIS nirvana! So much has happened in the 3 months since our last release that it is impossible to document everything here. Instead we will just highlight a couple of important new features for you.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">W tym wydaniu usunięto około 200 błędów, dodano 30 nowych funkcji i włożono wiele serca, aby nasz ulubiony program GIS zrobił kolejny krok w kierunku nirwany! Tak wiele wydarzyło się w ciągu ostatnich trzech miesięcy od ostatniego wydania, że nie sposób to wszystko tutaj opisać. Postaramy się jedynie podkreślić kilka najistotniejszych zmian.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2148"/>
         <source>Probably the biggest new feature is the addition of the new vector symbology infrastructure. This is provided alongside the old implementation - you can switch using a button in the vector layer properties dialog. It does&apos;t replace the old symbology implementation completely yet because there are various issues that need to be resolved and a large amount of testing before it is considered ready.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Prawdopodobnie największą zmianą jest dodanie nowej infrastruktury stylów. Jest ona dostępna równolegle z poprzednimi stylami w ramach właściwości warstw wektorowych. Nie zastępuje ona jeszcze całkowicie poprzedniej, ponieważ wymaga jeszcze dokładnego przetestowania.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2156"/>
         <source>QGIS now has a field calculator, accessible via a button in the attribute section of the vector properties, and from the attribute table user interface. You can use feature length, feature area, string concatenation and type conversions in the field calculator, as well as field values.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">QGIS został wyposażony w kalkulator pól dostępny poprzez klawisz w sekcji atrybutów właściwości warstw wektorowych oraz w tabeli atrybutów. Można liczyć długości obiektów, ich pola powierzchni, łączyć łańcuchy tekstowe, konwertować typy oraz obliczać wartości z pól.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2163"/>
         <source>The map composer has had a lot of attention. A grid can now be added to composer maps. Composer maps can now be rotated in the layout. The limitation of a single map layout per project has been removed. A new composer manager dialog has been added to manage the existing composer instances. The composer widget property sheets have been completely overhauled to use less screen space </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Wiele uwagi poświęcono tworzeniu arkuszy. Można teraz dodać do arkusza siatkę. Arkusze mogą być obracane. Usunięto ograniczenie jednego arkusza na projekt. Dodano możliwość zarządzania arkuszami. Przebudowano układ okna z arkuszami, aby zajmowało ono mniej miejsca na ekranie.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2171"/>
         <source>Various parts of the user interface have been overhauled with the goal of improving consistency and to improve support for netbooks and other smaller screen devices. Loading and saving of shortcuts. Position can now be displayed as Degrees, Minutes, Seconds in the status bar. The add, move and delete vertex buttons are now removed and the node tool is moved from the advanced editing toolbar to the standard editing toolbar. The identification tool has also undergone numerous improvements.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Usprawniono interfejs użytkownika w celu poprawy spójności i lepszej obsługi przez netbooki oraz inne urządzenia o małych ekranach. Dodano możliwość wczytywania i zapis skrótów klawiszowych. Pozycja kursora może być teraz wyświetlana w pasku statusu jako stopnie, minuty i sekundy. Przyciski dodaj, przesuń oraz usuń wierzchołek zastąpiono jednym narzędziem do edycji węzłów, które przeniesiono z paska narzędziowego edycji zaawansowanej do paska standardowego. Usprawniono narzędzie identyfikacji.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2181"/>
         <source>A render caching capability has been added to QGIS. This speeds up common operations such as layer re-ordering, changing symbology, WMS / WFS client, hiding / showing layers and opens the door for future enhancements such as threaded rendering and pre-compositing layer cache manipulation. Note that it is disabled by default, and can be enabled in the options dialog.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dodano pamięć podręczną renderowania. Przyspiesza to częste operacje, takie jak zmiana kolejności warstw, zmiana stylów, dodawanie warstw WMS / WFS, czy wyświetlanie i ukrywanie warstw. Toruje też drogę dla przyszłych usprawnień, takich jak wielowątkowy rendering oraz wyprzedzające wczytywanie warstw. Ta opcja domyślnie jest wyłączona i można ja uaktywnić w opcjach.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2189"/>
         <source>User defined SVG search paths are now added to the options dialog.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dodano definiowanie przez użytkownika ścieżek poszukiwania plików SVG.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2192"/>
         <source>When creating a new shapefile, you can now specify its CRS. Also the avoid intersections option for polygons is now also possible with background layers.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Przy tworzeniu nowego pliku shapefile można określić jego układ współrzędnych. Możliwe jest też wykorzystanie opcji unikaj przecinania z warstwami tła dla poligonów.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2196"/>
         <source>For power users, you can now create customizable attribute forms using Qt Designer dialog UIs.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zaawansowani użytkownicy mogą teraz dostosować formularz atrybutów używając Qt Designer.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2772"/>
         <source>New Shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Nowy Shapefile</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2773"/>
         <source>Shapefiles must end on .shp</source>
-        <translation type="unfinished"></translation>
+        <translation>Plik shapefile musi posiadać rozszerzenie .shp</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3053"/>
@@ -4795,7 +4795,7 @@ Prosimy o kontakt z autorami.
         <location filename="../src/app/qgisapp.cpp" line="3673"/>
         <location filename="../src/app/qgisapp.cpp" line="3711"/>
         <source>Composer %1</source>
-        <translation>Wydruk %1</translation>
+        <translation type="unfinished">Arkusz %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3744"/>
@@ -4902,7 +4902,7 @@ Prosimy o kontakt z autorami.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="594"/>
         <source>&amp;New Print Composer</source>
-        <translation type="unfinished">&amp;Nowy wydruk</translation>
+        <translation type="unfinished">&amp;Nowy arkusz</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="595"/>
@@ -4913,17 +4913,17 @@ Prosimy o kontakt z autorami.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="596"/>
         <source>New Print Composer</source>
-        <translation type="unfinished">Nowy asystent wydruku</translation>
+        <translation type="unfinished">Nowy arkusz</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="599"/>
         <source>Composer manager...</source>
-        <translation type="unfinished">Zarządzanie wydrukami...</translation>
+        <translation type="unfinished">Zarządzanie arkuszami...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="600"/>
         <source>Composer manager</source>
-        <translation type="unfinished">Zarządzanie asystentami wydruku</translation>
+        <translation type="unfinished">Zarządzanie arkuszami</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="659"/>
@@ -5050,12 +5050,12 @@ Prosimy o kontakt z autorami.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1064"/>
         <source>Style manager...</source>
-        <translation type="unfinished">Zarządanie stylem...</translation>
+        <translation>Zarządanie stylem...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1066"/>
         <source>Show style manager V2</source>
-        <translation type="unfinished">Wyświetl zarządzanie stylem V2</translation>
+        <translation>Wyświetl zarządzanie stylem V2</translation>
     </message>
     <message>
         <source>Whats new in Version 1.3.0?</source>
@@ -5911,7 +5911,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="330"/>
         <source>Looks for the given value in the given attribute column</source>
-        <translation type="unfinished"></translation>
+        <translation>Szuka określonej wartości w podanej kolumnie atrybutów</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="333"/>
@@ -6247,7 +6247,7 @@ Błąd brzmi:%2</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="264"/>
         <source>There are no available color ramps. You can add them in Style Manager.</source>
-        <translation type="unfinished">Brak dostępnych palet kolorów. Można je dodać w Zarządzaniu Stylem.</translation>
+        <translation>Brak dostępnych palet kolorów. Można je dodać w Zarządzaniu Stylem.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="266"/>
@@ -6362,7 +6362,7 @@ Błąd brzmi:%2</translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1113"/>
         <source>Composer</source>
-        <translation type="unfinished">Wydruk</translation>
+        <translation type="unfinished">Arkusz</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1409"/>
@@ -7024,12 +7024,12 @@ Błąd brzmi:%2</translation>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="83"/>
         <source>Remove composer</source>
         <translatorcomment>m.</translatorcomment>
-        <translation type="unfinished">Usuń kompozycję wydruku</translation>
+        <translation type="unfinished">Usuń arkusz</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="83"/>
         <source>Do you really want to remove the map composer &apos;%1&apos;?</source>
-        <translation type="unfinished">Na pewno chcesz usunąć kompozycję wydruku &apos;%1&apos;?</translation>
+        <translation type="unfinished">Na pewno chcesz usunąć arkusz &apos;%1&apos;?</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="143"/>
@@ -7047,7 +7047,7 @@ Błąd brzmi:%2</translation>
     <message>
         <location filename="../src/ui/qgscomposermanagerbase.ui" line="14"/>
         <source>Composer manager</source>
-        <translation type="unfinished">Menedżer wydruków</translation>
+        <translation type="unfinished">Zarządzanie arkuszami</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermanagerbase.ui" line="23"/>
@@ -10368,7 +10368,7 @@ Please reselect a valid file.</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="213"/>
         <source>Symbology</source>
-        <translation>Symbolika</translation>
+        <translation type="unfinished">Style</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="327"/>
@@ -13500,7 +13500,7 @@ Może to być spowodowane problemem w sieci lokalnej lub problemem serwera WMS.<
         <location filename="../src/core/qgsmaplayer.cpp" line="649"/>
         <source>Could not save symbology because:
 %1</source>
-        <translation>Nie można zapisać symboliki ponieważ:
+        <translation>Nie można zapisać stylu ponieważ:
 %1</translation>
     </message>
     <message>
@@ -13694,17 +13694,17 @@ Może to być spowodowane problemem w sieci lokalnej lub problemem serwera WMS.<
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="119"/>
         <source>New ring is not a valid geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>Nowy pierścień ma niewłaściwą geometrię</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="123"/>
         <source>New polygon ring not disjoint with existing polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Nowy pierścień nie jest rozłączny z istniejącymi poligonami</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="135"/>
         <source>Selected geometry could not be found</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można odnaleźć wybranej geometrii</translation>
     </message>
 </context>
 <context>
@@ -14252,7 +14252,7 @@ Czy chcesz go nadpisać?</translation>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="456"/>
         <source>Forces labels on, regardless of collisions. Available only for cached labels.</source>
-        <translation>Wymusza etykiety niezależnie od konflitków.</translation>
+        <translation>Wymusza etykiety niezależnie od konfliktów.</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="495"/>
@@ -14303,7 +14303,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="258"/>
         <source>Symbolset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Symbole</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="271"/>
@@ -14318,7 +14318,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="354"/>
         <source>Fontset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Czcionki</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="367"/>
@@ -14353,7 +14353,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="498"/>
         <source>Dump</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Zrzut</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="230"/>
@@ -15897,7 +15897,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="367"/>
         <source>Use new generation symbology for rendering</source>
-        <translation>Użyj nowego mechanizmu symboliki do renderowania wektorów</translation>
+        <translation>Użyj nowego mechanizmu stylów do wyświetlania</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="417"/>
@@ -16582,7 +16582,7 @@ Sprawdź czy masz uprawnienia SELECT do tabeli zawierającej geometrię PostGIS.
     <name>QgsPluginInstaller</name>
     <message>
         <source>Couldn&apos;t parse output from the repository</source>
-        <translation>Nie mogę rozczytać zawartości repozytorium </translation>
+        <translation type="unfinished">Nie mogę poprawnie odczytać zawartości repozytorium </translation>
     </message>
     <message>
         <source>Couldn&apos;t open the local plugin directory</source>
@@ -19427,7 +19427,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="92"/>
         <source>Symbology</source>
-        <translation>Symbolika</translation>
+        <translation>Style</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1084"/>
@@ -20088,12 +20088,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2propertiesdialog.cpp" line="175"/>
         <source>Symbology</source>
-        <translation>Symbolika</translation>
+        <translation>Style</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2propertiesdialog.cpp" line="176"/>
         <source>Do you wish to use the original symbology implementation for this layer?</source>
-        <translation>Czy chcesz użyć starego mechanizmu symboliki dla tej warstwy?</translation>
+        <translation>Czy chcesz użyć oryginalnego mechanizmu stylów dla tej warstwy?</translation>
     </message>
 </context>
 <context>
@@ -20111,12 +20111,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="45"/>
         <source>Symbol levels</source>
-        <translation>Po&amp;ziomy symboli</translation>
+        <translation type="unfinished">Po&amp;ziomy wyświetlania</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="52"/>
         <source>Old symbology</source>
-        <translation>Stara &amp;symbolika</translation>
+        <translation type="unfinished">Poprzednie &amp;style</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="77"/>
@@ -21508,7 +21508,7 @@ Czy chcesz nadpisać relację [%2]?</translation>
         <location filename="../src/plugins/interpolation/qgstininterpolatordialog.cpp" line="34"/>
         <location filename="../src/plugins/interpolation/qgstininterpolatordialog.cpp" line="46"/>
         <source>Clough-Toucher (cubic)</source>
-        <translation type="unfinished">Clough-Toucher (sześcienna)</translation>
+        <translation>Clough-Toucher (sześcienna)</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgstininterpolatordialog.cpp" line="86"/>
@@ -21636,7 +21636,7 @@ Czy aktualne klasy powiny zostać usunięte przed klasyfikacją?</translation>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="14"/>
         <source>Gradient color ramp</source>
         <translatorcomment>?</translatorcomment>
-        <translation type="unfinished">Gradientowa paleta kolorów</translation>
+        <translation>Gradientowa paleta kolorów</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="22"/>
@@ -21996,12 +21996,12 @@ Czy aktualne klasy powiny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1128"/>
         <source>Symbology</source>
-        <translation>Symbolika</translation>
+        <translation>Style</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1129"/>
         <source>Do you wish to use the new symbology implementation for this layer?</source>
-        <translation>Czy chcesz użyć nowego mechanizmu symboliki dla tej warstwy?</translation>
+        <translation>Czy chcesz użyć nowego mechanizmu stylów dla tej warstwy?</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="170"/>
@@ -22161,7 +22161,7 @@ Czy aktualne klasy powiny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="88"/>
         <source>Symbology</source>
-        <translation>Symbolika</translation>
+        <translation>Style</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="115"/>
@@ -22171,7 +22171,7 @@ Czy aktualne klasy powiny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="476"/>
         <source>Edit UI</source>
-        <translation type="unfinished">Formularz edycji</translation>
+        <translation>Formularz edycji</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="488"/>
@@ -22327,7 +22327,7 @@ Czy aktualne klasy powiny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="252"/>
         <source>New symbology</source>
-        <translation>Nowa symbolika</translation>
+        <translation>Nowe style</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="305"/>
@@ -23180,7 +23180,7 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/plugins/quick_print/quickprintguibase.ui" line="115"/>
         <source>Note: If you want more control over the map layout please use the map composer function in QGIS.</source>
-        <translation>Uwaga: Jeśli chcesz mieć większą kontrolę nad kompozycją mapy wykorzystaj Asystenta wydruku QGIS.</translation>
+        <translation type="unfinished">Uwaga: Jeśli chcesz mieć większą kontrolę nad kompozycją mapy wykorzystaj funkcję arkusza QGIS.</translation>
     </message>
 </context>
 <context>
