@@ -29,6 +29,7 @@
 #include <QFile>
 #include <QSettings>
 #include <QFileInfo>
+#include <QDir>
 #include <QTextCodec>
 #include <QTextStream>
 #include <QSet>
@@ -439,25 +440,23 @@ QgsVectorFileWriter::writeAsShapefile( QgsVectorLayer* layer,
 
 bool QgsVectorFileWriter::deleteShapeFile( QString theFileName )
 {
-  //
-  // Remove old copies that may be lying around
-  // TODO: should be case-insensitive
-  //
-  QString myFileBase = theFileName.replace( ".shp", "" );
-  bool ok = true;
+  QFileInfo fi( theFileName );
+  QDir dir = fi.dir();
 
+  QStringList filter;
   const char *suffixes[] = { ".shp", ".shx", ".dbf", ".prj", ".qix", ".qpj" };
   for ( std::size_t i = 0; i < sizeof( suffixes ) / sizeof( *suffixes ); i++ )
   {
-    QString file = myFileBase + suffixes[i];
-    QFileInfo myInfo( file );
-    if ( myInfo.exists() )
+    filter << fi.completeBaseName() + suffixes[i];
+  }
+
+  bool ok = true;
+  foreach( QString file, dir.entryList( filter ) )
+  {
+    if ( !QFile::remove( dir.canonicalPath() + "/" + file ) )
     {
-      if ( !QFile::remove( file ) )
-      {
-        QgsDebugMsg( "Removing file failed : " + file );
-        ok = false;
-      }
+      QgsDebugMsg( "Removing file failed : " + file );
+      ok = false;
     }
   }
 

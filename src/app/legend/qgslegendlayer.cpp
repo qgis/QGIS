@@ -533,7 +533,7 @@ void QgsLegendLayer::saveAsShapefileGeneral( bool saveOnlySelection )
     return;
 
   // add the extension if not present
-  if ( shapefileName.indexOf( ".shp" ) == -1 )
+  if ( !shapefileName.endsWith( ".shp", Qt::CaseInsensitive ) )
   {
     shapefileName += ".shp";
   }
@@ -567,13 +567,8 @@ void QgsLegendLayer::saveAsShapefileGeneral( bool saveOnlySelection )
 
   // overwrite the file - user will already have been prompted
   // to verify they want to overwrite by the file dialog above
-  if ( QFile::exists( shapefileName ) )
-  {
-    if ( !QgsVectorFileWriter::deleteShapeFile( shapefileName ) )
-    {
-      return;
-    }
-  }
+  // might not even exists in the given case.
+  QgsVectorFileWriter::deleteShapeFile( shapefileName );
 
   // ok if the file existed it should be deleted now so we can continue...
   QApplication::setOverrideCursor( Qt::WaitCursor );
