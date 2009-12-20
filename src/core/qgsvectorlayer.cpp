@@ -476,7 +476,7 @@ unsigned char *QgsVectorLayer::drawLineString( unsigned char *feature, QgsRender
     std::vector<double>::const_iterator yIt;
     for ( xIt = x.begin(), yIt = y.begin(); xIt != x.end(); ++xIt, ++yIt )
     {
-      drawVertexMarker(( int )( *xIt ), ( int )( *yIt ), *p, mCurrentVertexMarkerType, mCurrentVertexMarkerSize );
+      drawVertexMarker( *xIt, *yIt, *p, mCurrentVertexMarkerType, mCurrentVertexMarkerSize );
     }
   }
 
@@ -669,7 +669,7 @@ unsigned char *QgsVectorLayer::drawPolygon( unsigned char *feature, QgsRenderCon
       for ( int i = 0; i < path.elementCount(); ++i )
       {
         const QPainterPath::Element & e = path.elementAt( i );
-        drawVertexMarker(( int )e.x, ( int )e.y, *p, mCurrentVertexMarkerType, mCurrentVertexMarkerSize );
+        drawVertexMarker( e.x, e.y, *p, mCurrentVertexMarkerType, mCurrentVertexMarkerSize );
       }
     }
 
@@ -686,6 +686,9 @@ unsigned char *QgsVectorLayer::drawPolygon( unsigned char *feature, QgsRenderCon
 
 void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool labeling )
 {
+  QSettings settings;
+  bool vertexMarkerOnlyForSelection = settings.value( "/qgis/digitizing/marker_only_for_selected", false ).toBool();
+
   mRendererV2->startRender( rendererContext, this );
 
   QgsSingleSymbolRendererV2* selRenderer = NULL;
@@ -693,17 +696,23 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
   {
     selRenderer = new QgsSingleSymbolRendererV2( QgsSymbolV2::defaultSymbol( geometryType() ) );
     selRenderer->symbol()->setColor( QgsRenderer::selectionColor() );
+    selRenderer->setVertexMarkerAppearance( currentVertexMarkerType(), currentVertexMarkerSize() );
     selRenderer->startRender( rendererContext, this );
   }
 
   QgsFeature fet;
   while ( nextFeature( fet ) )
   {
-    if ( mSelectedFeatureIds.contains( fet.id() ) )
-      selRenderer->renderFeature( fet, rendererContext );
-    else
-      mRendererV2->renderFeature( fet, rendererContext );
+    bool sel = mSelectedFeatureIds.contains( fet.id() );
+    bool drawMarker = ( mEditable && ( !vertexMarkerOnlyForSelection || sel ) );
 
+    // render feature
+    if ( sel )
+      selRenderer->renderFeature( fet, rendererContext, -1, drawMarker );
+    else
+      mRendererV2->renderFeature( fet, rendererContext, -1, drawMarker );
+
+    // labeling - register feature
     if ( labeling && mRendererV2->symbolForFeature( fet ) != NULL )
       rendererContext.labelingEngine()->registerFeature( this, fet );
 
@@ -727,6 +736,9 @@ void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bo
 {
   QHash< QgsSymbolV2*, QList<QgsFeature> > features; // key = symbol, value = array of features
 
+  QSettings settings;
+  bool vertexMarkerOnlyForSelection = settings.value( "/qgis/digitizing/marker_only_for_selected", false ).toBool();
+
   // startRender must be called before symbolForFeature() calls to make sure renderer is ready
   mRendererV2->startRender( rendererContext, this );
 
@@ -735,6 +747,7 @@ void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bo
   {
     selRenderer = new QgsSingleSymbolRendererV2( QgsSymbolV2::defaultSymbol( geometryType() ) );
     selRenderer->symbol()->setColor( QgsRenderer::selectionColor() );
+    selRenderer->setVertexMarkerAppearance( currentVertexMarkerType(), currentVertexMarkerSize() );
     selRenderer->startRender( rendererContext, this );
   }
 
@@ -792,10 +805,14 @@ void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bo
       QList<QgsFeature>::iterator fit;
       for ( fit = lst.begin(); fit != lst.end(); ++fit )
       {
-        if ( mSelectedFeatureIds.contains( fit->id() ) )
-          selRenderer->renderFeature( *fit, rendererContext );
+        bool sel = mSelectedFeatureIds.contains( fit->id() );
+        // maybe vertex markers should be drawn only during the last pass...
+        bool drawMarker = ( mEditable && ( !vertexMarkerOnlyForSelection || sel ) );
+
+        if ( sel )
+          selRenderer->renderFeature( *fit, rendererContext, -1, drawMarker );
         else
-          mRendererV2->renderFeature( *fit, rendererContext, layer );
+          mRendererV2->renderFeature( *fit, rendererContext, layer, drawMarker );
       }
     }
   }
@@ -823,6 +840,9 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
       // Destroy all cached geometries and clear the references to them
       deleteCachedGeometries();
       mCachedGeometriesRect = rendererContext.extent();
+
+      // set editing vertex markers style
+      mRendererV2->setVertexMarkerAppearance( currentVertexMarkerType(), currentVertexMarkerSize() );
     }
 
     // TODO: really needed?
@@ -1009,7 +1029,7 @@ void QgsVectorLayer::deleteCachedGeometries()
   mCachedGeometriesRect = QgsRectangle();
 }
 
-void QgsVectorLayer::drawVertexMarker( int x, int y, QPainter& p, QgsVectorLayer::VertexMarkerType type, int m )
+void QgsVectorLayer::drawVertexMarker( double x, double y, QPainter& p, QgsVectorLayer::VertexMarkerType type, int m )
 {
   if ( type == QgsVectorLayer::SemiTransparentCircle )
   {

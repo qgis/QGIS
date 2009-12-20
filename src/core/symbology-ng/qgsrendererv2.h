@@ -72,7 +72,7 @@ class CORE_EXPORT QgsFeatureRendererV2
 
     virtual QgsFeatureRendererV2* clone() = 0;
 
-    void renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1 );
+    void renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool drawVertexMarker = false );
 
     //! for debugging
     virtual QString dump();
@@ -92,12 +92,27 @@ class CORE_EXPORT QgsFeatureRendererV2
     //! return a list of symbology items for the legend
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
 
+    //! set type and size of editing vertex markers for subsequent rendering
+    void setVertexMarkerAppearance( int type, int size );
+
   protected:
     QgsFeatureRendererV2( QString type );
+
+    //! render editing vertex marker at specified point
+    void renderVertexMarker( QPointF& pt, QgsRenderContext& context );
+    //! render editing vertex marker for a polyline
+    void renderVertexMarkerPolyline( QPolygonF& pts, QgsRenderContext& context );
+    //! render editing vertex marker for a polygon
+    void renderVertexMarkerPolygon( QPolygonF& pts, QList<QPolygonF>* rings, QgsRenderContext& context );
 
     QString mType;
 
     bool mUsingSymbolLevels;
+
+    /** The current type of editing marker */
+    int mCurrentVertexMarkerType;
+    /** The current size of editing marker */
+    int mCurrentVertexMarkerSize;
 };
 
 

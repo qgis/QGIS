@@ -70,7 +70,7 @@ public:
 
   virtual QgsSymbolV2List symbols()=0;
 
-  void renderFeature(QgsFeature& feature, QgsRenderContext& context, int layer = -1);
+  void renderFeature(QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool drawVertexMarker = false );
 
   bool usingSymbolLevels() const;
   void setUsingSymbolLevels(bool usingSymbolLevels);
@@ -84,8 +84,18 @@ public:
   //! return a list of symbology items for the legend
   virtual QgsLegendSymbologyList legendSymbologyItems(QSize iconSize);
 
+  //! set type and size of editing vertex markers for subsequent rendering
+  void setVertexMarkerAppearance( int type, int size );
+
 protected:
   QgsFeatureRendererV2(QString type);
+
+  //! render editing vertex marker at specified point
+  void renderVertexMarker( QPointF& pt, QgsRenderContext& context );
+  //! render editing vertex marker for a polyline
+  void renderVertexMarkerPolyline( QPolygonF& pts, QgsRenderContext& context );
+  //! render editing vertex marker for a polygon
+  void renderVertexMarkerPolygon( QPolygonF& pts, QList<QPolygonF>* rings, QgsRenderContext& context );
 
 };
 

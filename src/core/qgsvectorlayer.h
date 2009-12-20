@@ -533,6 +533,19 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     int fieldNameIndex( const QString& fieldName ) const;
 
+    /** Editing vertex markers
+      @note public from version 1.4 */
+    enum VertexMarkerType
+    {
+      SemiTransparentCircle,
+      Cross,
+      NoMarker  /* added in version 1.1 */
+    };
+
+    /** Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex editing.)
+      @note public and static from version 1.4 */
+    static void drawVertexMarker( double x, double y, QPainter& p, QgsVectorLayer::VertexMarkerType type, int vertexSize );
+
   public slots:
     /** Select feature by its ID, optionally emit signal selectionChanged() */
     void select( int featureId, bool emitSignal = TRUE );
@@ -568,13 +581,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void attributeValueChanged( int fid, int idx, const QVariant & );
 
   private:                       // Private methods
-
-    enum VertexMarkerType
-    {
-      SemiTransparentCircle,
-      Cross,
-      NoMarker  /* added in version 1.1 */
-    };
 
     /** vector layers are not copyable */
     QgsVectorLayer( QgsVectorLayer const & rhs );
@@ -616,9 +622,6 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /**Deletes the geometries in mCachedGeometries*/
     void deleteCachedGeometries();
 
-    /** Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex editing.) */
-    void drawVertexMarker( int x, int y, QPainter& p, QgsVectorLayer::VertexMarkerType type, int vertexSize );
-
     /**Snaps to a geometry and adds the result to the multimap if it is within the snapping result
      @param startPoint start point of the snap
      @param geom geometry to snap
@@ -634,10 +637,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     int boundingBoxFromPointList( const QList<QgsPoint>& list, double& xmin, double& ymin, double& xmax, double& ymax ) const;
 
     /**Reads vertex marker type from settings*/
-    QgsVectorLayer::VertexMarkerType currentVertexMarkerType();
+    static QgsVectorLayer::VertexMarkerType currentVertexMarkerType();
 
     /**Reads vertex marker size from settings*/
-    int currentVertexMarkerSize();
+    static int currentVertexMarkerSize();
 
     /**Update feature with uncommited attribute updates*/
     void updateFeatureAttributes( QgsFeature &f );
