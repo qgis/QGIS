@@ -179,7 +179,7 @@ void QgsFieldCalculator::accept()
       }
 
       // stop blocking layerModified signals and make sure that one layerModified signal is emitted
-      mVectorLayer->blockSignals( true );
+      mVectorLayer->blockSignals( false );
       mVectorLayer->setModified( true, false );
 
     }
