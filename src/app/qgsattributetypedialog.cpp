@@ -344,61 +344,74 @@ void QgsAttributeTypeDialog::setIndex( int index, int editTypeInt )
   //setPageForIndex( index );
   setPageForEditType( editType );
 
-  if ( editType == QgsVectorLayer::ValueMap )
+  switch ( editType )
   {
+    case QgsVectorLayer::ValueMap:
+    {
 
-    tableWidget->clearContents();
-    for ( int i = tableWidget->rowCount() - 1; i > 0; i-- )
-    {
-      tableWidget->removeRow( i );
-    }
-
-    // if some value map already present use it
-    QMap<QString, QVariant> map;
-    if ( !mValueMap.empty() )
-    {
-      map = mValueMap;
-    }
-    else
-    {
-      map = mLayer->valueMap( index );
-    }
-
-    int row = 0;
-    for ( QMap<QString, QVariant>::iterator mit = map.begin(); mit != map.end(); mit++, row++ )
-    {
-      tableWidget->insertRow( row );
-      if ( mit.value().isNull() )
+      tableWidget->clearContents();
+      for ( int i = tableWidget->rowCount() - 1; i > 0; i-- )
       {
-        tableWidget->setItem( row, 0, new QTableWidgetItem( mit.key() ) );
+        tableWidget->removeRow( i );
+      }
+
+      // if some value map already present use it
+      QMap<QString, QVariant> map;
+      if ( !mValueMap.empty() )
+      {
+        map = mValueMap;
       }
       else
       {
-        tableWidget->setItem( row, 0, new QTableWidgetItem( mit.value().toString() ) );
-        tableWidget->setItem( row, 1, new QTableWidgetItem( mit.key() ) );
+        map = mLayer->valueMap( index );
       }
-    }
 
-  }
-  else if ( editType == QgsVectorLayer::EditRange ||
-            editType == QgsVectorLayer::SliderRange )
-  {
-    if ( mLayer->pendingFields()[mIndex].type() != QVariant::Int )
-    {
-      minimumSpinBox->setValue( mLayer->range( index ).mMin.toInt() );
-      maximumSpinBox->setValue( mLayer->range( index ).mMax.toInt() );
-      stepSpinBox->setValue( mLayer->range( index ).mStep.toInt() );
+      int row = 0;
+      for ( QMap<QString, QVariant>::iterator mit = map.begin(); mit != map.end(); mit++, row++ )
+      {
+        tableWidget->insertRow( row );
+        if ( mit.value().isNull() )
+        {
+          tableWidget->setItem( row, 0, new QTableWidgetItem( mit.key() ) );
+        }
+        else
+        {
+          tableWidget->setItem( row, 0, new QTableWidgetItem( mit.value().toString() ) );
+          tableWidget->setItem( row, 1, new QTableWidgetItem( mit.key() ) );
+        }
+      }
+
     }
-    else if ( mLayer->pendingFields()[mIndex].type() == QVariant::Double )
+    break;
+
+    case QgsVectorLayer::EditRange:
+    case QgsVectorLayer::SliderRange:
     {
-      minimumDoubleSpinBox->setValue( mLayer->range( index ).mMin.toDouble() );
-      maximumDoubleSpinBox->setValue( mLayer->range( index ).mMax.toDouble() );
-      stepDoubleSpinBox->setValue( mLayer->range( index ).mStep.toDouble() );
+      if ( mLayer->pendingFields()[mIndex].type() != QVariant::Int )
+      {
+        minimumSpinBox->setValue( mLayer->range( index ).mMin.toInt() );
+        maximumSpinBox->setValue( mLayer->range( index ).mMax.toInt() );
+        stepSpinBox->setValue( mLayer->range( index ).mStep.toInt() );
+      }
+      else if ( mLayer->pendingFields()[mIndex].type() == QVariant::Double )
+      {
+        minimumDoubleSpinBox->setValue( mLayer->range( index ).mMin.toDouble() );
+        maximumDoubleSpinBox->setValue( mLayer->range( index ).mMax.toDouble() );
+        stepDoubleSpinBox->setValue( mLayer->range( index ).mStep.toDouble() );
+      }
+      if ( editType == QgsVectorLayer::EditRange )
+        editableRadioButton->setChecked( true );
+      else //slider range
+        sliderRadioButton->setChecked( true );
     }
-    if ( editType == QgsVectorLayer::EditRange )
-      editableRadioButton->setChecked( true );
-    else //slider range
-      sliderRadioButton->setChecked( true );
+    break;
+
+    case QgsVectorLayer::UniqueValuesEditable:
+      editableUniqueValues->setChecked( editType == QgsVectorLayer::UniqueValuesEditable );
+      break;
+
+    default:
+      break;
   }
 }
 

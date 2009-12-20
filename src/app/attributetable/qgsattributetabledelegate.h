@@ -66,7 +66,6 @@ class QgsAttributeTableDelegate : public QItemDelegate
      * @param index index of field which is to be retrieved
      */
     void setEditorData( QWidget *editor, const QModelIndex &index ) const;
-
 };
 
 #endif //QGSATTRIBUTETABLEDELEGATE_H
