@@ -11,6 +11,7 @@
 #include "qgsgeometry.h"
 #include "qgsfeature.h"
 #include "qgslogger.h"
+#include "qgsvectorlayer.h"
 
 #include <QDomElement>
 #include <QDomDocument>
@@ -138,7 +139,9 @@ static unsigned char* _getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsR
 
 
 QgsFeatureRendererV2::QgsFeatureRendererV2( QString type )
-    : mType( type ), mUsingSymbolLevels( false )
+    : mType( type ), mUsingSymbolLevels( false ),
+    mCurrentVertexMarkerType( QgsVectorLayer::Cross ),
+    mCurrentVertexMarkerSize( 3 )
 {
 }
 
@@ -148,7 +151,7 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::defaultRenderer( QGis::GeometryType 
 }
 
 
-void QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer )
+void QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool drawVertexMarker )
 {
   QgsSymbolV2* symbol = symbolForFeature( feature );
   if ( symbol == NULL )
@@ -170,6 +173,9 @@ void QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext&
       QPointF pt;
       _getPoint( pt, context, geom->asWkb() );
       (( QgsMarkerSymbolV2* )symbol )->renderPoint( pt, context, layer );
+
+      //if ( drawVertexMarker )
+      //  renderVertexMarker( pt, context );
     }
     break;
 
@@ -184,6 +190,9 @@ void QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext&
       QPolygonF pts;
       _getLineString( pts, context, geom->asWkb() );
       (( QgsLineSymbolV2* )symbol )->renderPolyline( pts, context, layer );
+
+      if ( drawVertexMarker )
+        renderVertexMarkerPolyline( pts, context );
     }
     break;
 
@@ -199,6 +208,9 @@ void QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext&
       QList<QPolygonF> holes;
       _getPolygon( pts, holes, context, geom->asWkb() );
       (( QgsFillSymbolV2* )symbol )->renderPolygon( pts, ( holes.count() ? &holes : NULL ), context, layer );
+
+      if ( drawVertexMarker )
+        renderVertexMarkerPolygon( pts, ( holes.count() ? &holes : NULL ), context );
     }
     break;
 
@@ -220,6 +232,9 @@ void QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext&
       {
         ptr = _getPoint( pt, context, ptr );
         (( QgsMarkerSymbolV2* )symbol )->renderPoint( pt, context, layer );
+
+        //if ( drawVertexMarker )
+        //  renderVertexMarker( pt, context );
       }
     }
     break;
@@ -242,6 +257,9 @@ void QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext&
       {
         ptr = _getLineString( pts, context, ptr );
         (( QgsLineSymbolV2* )symbol )->renderPolyline( pts, context, layer );
+
+        if ( drawVertexMarker )
+          renderVertexMarkerPolyline( pts, context );
       }
     }
     break;
@@ -265,6 +283,9 @@ void QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext&
       {
         ptr = _getPolygon( pts, holes, context, ptr );
         (( QgsFillSymbolV2* )symbol )->renderPolygon( pts, ( holes.count() ? &holes : NULL ), context, layer );
+
+        if ( drawVertexMarker )
+          renderVertexMarkerPolygon( pts, ( holes.count() ? &holes : NULL ), context );
       }
     }
     break;
@@ -313,4 +334,38 @@ QgsLegendSymbologyList QgsFeatureRendererV2::legendSymbologyItems( QSize iconSiz
 {
   // empty list by default
   return QgsLegendSymbologyList();
+}
+
+void QgsFeatureRendererV2::setVertexMarkerAppearance( int type, int size )
+{
+  mCurrentVertexMarkerType = type;
+  mCurrentVertexMarkerSize = size;
+}
+
+void QgsFeatureRendererV2::renderVertexMarker( QPointF& pt, QgsRenderContext& context )
+{
+  QgsVectorLayer::drawVertexMarker( pt.x(), pt.y(), *context.painter(),
+                                    ( QgsVectorLayer::VertexMarkerType ) mCurrentVertexMarkerType,
+                                    mCurrentVertexMarkerSize );
+}
+
+void QgsFeatureRendererV2::renderVertexMarkerPolyline( QPolygonF& pts, QgsRenderContext& context )
+{
+  foreach( QPointF pt, pts )
+  renderVertexMarker( pt, context );
+}
+
+void QgsFeatureRendererV2::renderVertexMarkerPolygon( QPolygonF& pts, QList<QPolygonF>* rings, QgsRenderContext& context )
+{
+  foreach( QPointF pt, pts )
+  renderVertexMarker( pt, context );
+
+  if ( rings )
+  {
+    foreach( QPolygonF ring, *rings )
+    {
+      foreach( QPointF pt, ring )
+      renderVertexMarker( pt, context );
+    }
+  }
 }

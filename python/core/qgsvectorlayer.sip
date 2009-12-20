@@ -480,6 +480,24 @@ public:
     /** Execute redo operation. To be called only from QgsVectorLayerUndoCommand. */
     // (not necessary) void redoEditCommand(QgsUndoCommand* cmd);
 
+    /** Returns the index of a field name or -1 if the field does not exist
+      @note this method was added in version 1.4
+     */
+    int fieldNameIndex( const QString& fieldName ) const;
+
+    /** Editing vertex markers
+      @note public from version 1.4 */
+    enum VertexMarkerType
+    {
+      SemiTransparentCircle,
+      Cross,
+      NoMarker  /* added in version 1.1 */
+    };
+
+    /** Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex editing.)
+      @note public and static from version 1.4 */
+    static void drawVertexMarker( double x, double y, QPainter& p, QgsVectorLayer::VertexMarkerType type, int vertexSize );
+
 public slots:
 
   /** Select feature by its ID, optionally emit signal selectionChanged() */
@@ -497,11 +515,6 @@ public slots:
    *  added/deleted or the layer has been subsetted.
    */
   virtual void updateExtents();
-
-  /** Returns the index of a field name or -1 if the field does not exist
-    @note this method was added in version 1.4
-   */
-  int fieldNameIndex( const QString& fieldName ) const;
 
 signals:
 
