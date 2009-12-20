@@ -1,3 +1,5 @@
 <h3>Vektorlayer hinzufügen</h3>
 
-Der Dialog "Vektorlayer hinzufügen" wird zum Hinzufügen von Vektordaten zur QGIS-Karte benutzt. Vektordaten sind räumliche DAten, die durch Punkte, Linien oder Polygone (eingegrenzte Flächen) beschrieben werden.</p>
+Der Dialog "Vektorlayer hinzufügen" wird zum Hinzufügen von Vektordaten zur
+QGIS-Karte benutzt. Vektordaten sind räumliche Daten, die durch Punkte, Linien
+oder Polygone (umschlossene Flächen) beschrieben werden.</p>

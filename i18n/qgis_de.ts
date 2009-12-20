@@ -13,7 +13,7 @@
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="98"/>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="144"/>
         <source>Click on the map to view coordinates and capture to clipboard.</source>
-        <translation>Bitte auf die Karte klicken, um Koordinaten anzuzeigen und in die Zwischenanlage zu übertragen.</translation>
+        <translation>Bitte auf die Karte klicken, um Koordinaten anzuzeigen und in die Zwischenablage zu übertragen.</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="101"/>
@@ -455,11 +455,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>adding to current selection</source>
-        <translation>Ergänze aktuelle Auswahl</translation>
+        <translation>Zur aktuellen Auswahl hinzufügen</translation>
     </message>
     <message>
         <source>removing from current selection</source>
-        <translation>Entferne aus aktueller Auswahl</translation>
+        <translation>Aus aktueller Auswahl entfernen</translation>
     </message>
     <message>
         <source>Select by location</source>
@@ -13948,21 +13948,29 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
 <context>
     <name>QgsMapToolSelect</name>
     <message>
+        <location filename="../src/app/qgsmaptooldeselect.cpp" line="71"/>
+        <location filename="../src/app/qgsmaptooldeselectall.cpp" line="71"/>
         <location filename="../src/app/qgsmaptoolselect.cpp" line="71"/>
         <source>No active layer</source>
         <translation>Kein aktiver Layer</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsmaptooldeselect.cpp" line="72"/>
+        <location filename="../src/app/qgsmaptooldeselectall.cpp" line="72"/>
         <location filename="../src/app/qgsmaptoolselect.cpp" line="72"/>
         <source>To select features, you must choose a vector layer by clicking on its name in the legend</source>
         <translation>Um Objekte zu wählen, müssen Sie einen Vektorlayer in der Legende durch Anklicken auswählen</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsmaptooldeselect.cpp" line="140"/>
+        <location filename="../src/app/qgsmaptooldeselectall.cpp" line="140"/>
         <location filename="../src/app/qgsmaptoolselect.cpp" line="140"/>
         <source>CRS Exception</source>
         <translation>KBS-Ausnahme</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsmaptooldeselect.cpp" line="141"/>
+        <location filename="../src/app/qgsmaptooldeselectall.cpp" line="141"/>
         <location filename="../src/app/qgsmaptoolselect.cpp" line="141"/>
         <source>Selection extends beyond layer&apos;s coordinate system.</source>
         <translation>Auswahl außerhalb des Koordinatensystems des Layers.</translation>
@@ -14541,12 +14549,12 @@ Ausführliche Fehlerinformation:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsnewconnection.cpp" line="39"/>
+        <location filename="../src/app/qgsnewconnection.cpp" line="38"/>
         <source>prefer</source>
         <translation>bevorzugen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsnewconnection.cpp" line="40"/>
+        <location filename="../src/app/qgsnewconnection.cpp" line="37"/>
         <source>require</source>
         <translation>verlangen</translation>
     </message>
@@ -20271,7 +20279,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="203"/>
         <source>Automatically snap to round number on resize</source>
-        <translation>Größenänderungen automatisch auf runde Zahlen einstellen</translation>
+        <translation>Bei Größenänderungen automatisch runde Zahlen einstellen</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="48"/>

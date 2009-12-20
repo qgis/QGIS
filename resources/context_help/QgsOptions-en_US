@@ -45,19 +45,19 @@ Define placement algorithm for labels. Choose between <label>central point (fast
 <h4>Digitizing</h4>
 </a>
 In the <label>Digitizing</label> tab you can define a general, project wide snapping tolerance. <p>
-You can select between to vertex, to segment or to vertex and segment as default snap mode. You can also define a default snapping tolerance and a search radius for vertex edits. The tolerance can be set either in map units or in pixels. The advantage of choosing pixels, is that the snapping tolerance doesn’t have to be changed after zoom operations. <p>
+You can select between <label>to vertex</label>, <label>to segment</label> or <label>to vertex and segment</label> as default snap mode. You can also define a default snapping tolerance and a search radius for vertex edits. The tolerance can be set either in map units or in pixels. The advantage of choosing pixels, is that the snapping tolerance doesn't have to be changed after zoom operations. <p>
 A layer based snapping tolerance can be defined by choosing <label>Settings</label> (or <label>File</label>)
 > <label>Project Properties...</label>. In the <label>General</label> tab, section <label>Digitize</label> you can click on <label>Snapping options...</label> to enable and adjust snapping mode and tolerance on a layer basis.
 <a name="crs">
 <h4>CRS</h4>
 </a>
-QGIS no longer sets the map CRS to the coordinate reference system of the first layer loaded. When you start a QGIS session with layers that do not have a CRS, you need to control and define the CRS definition for these layers. This can be done globally on this tab.<p>
+QGIS no longer sets the map CRS to the coordinate reference system of the first layer loaded. When you start a QGIS session with layers that do not have a CRS, you need to check and define the CRS definition for these layers. This can be done globally on this tab.<p>
 The global default CRS <i>proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs</i> comes predefined in QGIS but can of course be changed, and the new definition will be saved for subsequent QGIS sessions.
 <a name="lov">
 <h4>Locale</h4>
 </a>
 Informs you about active system locale.
-To change it tick <label>Override system locale</label> and restart QGIS. This does not apply to context help as it depends on active system locale of your computer.
+To change it tick <label>Override system locale</label> and restart QGIS.
 <a name="net">
 <h4>Network & Proxy</h4>
 </a>
