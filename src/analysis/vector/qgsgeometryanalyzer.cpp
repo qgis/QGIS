@@ -493,10 +493,10 @@ bool QgsGeometryAnalyzer::convexHull( QgsVectorLayer* layer, const QString& shap
         ++jt;
       }
       QList<double> values;
-      if( !dissolveGeometry )
+      if ( !dissolveGeometry )
       {
         QgsDebugMsg( "no dissolved geometry - should not happen" );
-	return false;
+        return false;
       }
       dissolveGeometry = dissolveGeometry->convexHull();
       values = simpleMeasure( dissolveGeometry );
@@ -539,7 +539,7 @@ bool QgsGeometryAnalyzer::convexHull( QgsVectorLayer* layer, const QString& shap
       }
       QList<double> values;
       // QgsGeometry* tmpGeometry = 0;
-      if( !dissolveGeometry )
+      if ( !dissolveGeometry )
       {
         QgsDebugMsg( "no dissolved geometry - should not happen" );
         return false;
@@ -767,7 +767,7 @@ bool QgsGeometryAnalyzer::buffer( QgsVectorLayer* layer, const QString& shapefil
 
   QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), dp->fields(), outputType, &crs );
   QgsFeature currentFeature;
-  QgsGeometry* dissolveGeometry; //dissolve geometry (if dissolve enabled)
+  QgsGeometry *dissolveGeometry = 0; //dissolve geometry (if dissolve enabled)
 
   //take only selection
   if ( onlySelectedFeatures )
@@ -840,6 +840,11 @@ bool QgsGeometryAnalyzer::buffer( QgsVectorLayer* layer, const QString& shapefil
   if ( dissolve )
   {
     QgsFeature dissolveFeature;
+    if ( !dissolveGeometry )
+    {
+      QgsDebugMsg( "no dissolved geometry - should not happen" );
+      return false;
+    }
     dissolveFeature.setGeometry( dissolveGeometry );
     vWriter.addFeature( dissolveFeature );
   }

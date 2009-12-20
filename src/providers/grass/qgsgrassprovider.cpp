@@ -292,7 +292,7 @@ QString QgsGrassProvider::storageType() const
 bool QgsGrassProvider::nextFeature( QgsFeature& feature )
 {
   feature.setValid( false );
-  int cat, type, id;
+  int cat = -1, type = -1, id = -1;
   unsigned char *wkb;
   int wkbsize;
 

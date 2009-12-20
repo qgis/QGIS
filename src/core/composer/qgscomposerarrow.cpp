@@ -253,7 +253,7 @@ void QgsComposerArrow::setStartMarker( const QString& svgPath )
   if ( !r.load( svgPath ) )
   {
     return;
-    mStartArrowHeadHeight = 0;
+    // mStartArrowHeadHeight = 0;
   }
   mStartMarkerFile = svgPath;
 
@@ -269,7 +269,7 @@ void QgsComposerArrow::setEndMarker( const QString& svgPath )
   if ( !r.load( svgPath ) )
   {
     return;
-    mStopArrowHeadHeight = 0;
+    // mStopArrowHeadHeight = 0;
   }
   mEndMarkerFile = svgPath;
 
