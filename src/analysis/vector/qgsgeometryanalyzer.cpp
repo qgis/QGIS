@@ -408,7 +408,7 @@ bool QgsGeometryAnalyzer::convexHull( QgsVectorLayer* layer, const QString& shap
 
   QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), fields, outputType, &crs );
   QgsFeature currentFeature;
-  QgsGeometry* dissolveGeometry; //dissolve geometry
+  QgsGeometry* dissolveGeometry = 0; //dissolve geometry
   QMultiMap<QString, int> map;
 
   if ( onlySelectedFeatures )
@@ -493,6 +493,11 @@ bool QgsGeometryAnalyzer::convexHull( QgsVectorLayer* layer, const QString& shap
         ++jt;
       }
       QList<double> values;
+      if( !dissolveGeometry )
+      {
+        QgsDebugMsg( "no dissolved geometry - should not happen" );
+	return false;
+      }
       dissolveGeometry = dissolveGeometry->convexHull();
       values = simpleMeasure( dissolveGeometry );
       QgsAttributeMap attributeMap;
@@ -534,6 +539,11 @@ bool QgsGeometryAnalyzer::convexHull( QgsVectorLayer* layer, const QString& shap
       }
       QList<double> values;
       // QgsGeometry* tmpGeometry = 0;
+      if( !dissolveGeometry )
+      {
+        QgsDebugMsg( "no dissolved geometry - should not happen" );
+        return false;
+      }
       dissolveGeometry = dissolveGeometry->convexHull();
       // values = simpleMeasure( tmpGeometry );
       values = simpleMeasure( dissolveGeometry );
@@ -629,7 +639,7 @@ bool QgsGeometryAnalyzer::dissolve( QgsVectorLayer* layer, const QString& shapef
     }
   }
 
-  QgsGeometry* dissolveGeometry; //dissolve geometry
+  QgsGeometry *dissolveGeometry = 0; //dissolve geometry
   QMultiMap<QString, int>::const_iterator jt = map.constBegin();
   QgsFeature outputFeature;
   while ( jt != map.constEnd() )

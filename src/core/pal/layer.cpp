@@ -237,7 +237,6 @@ namespace pal
     {
       modMutex->unlock();
       throw new PalException::FeatureExists();
-      return false;
     }
 
     // Split MULTI GEOM and Collection in simple geometries

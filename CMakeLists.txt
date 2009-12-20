@@ -75,7 +75,7 @@ IF (WITH_BINDINGS)
   SET (BINDINGS_GLOBAL_INSTALL FALSE CACHE BOOL "Install bindings to global python directory? (might need root)")
 ENDIF (WITH_BINDINGS)
 
-# Compile flag. Make it posible to turn it off.
+# Compile flag. Make it possible to turn it off.
 SET (PEDANTIC FALSE CACHE BOOL "Determines if we should compile in pedantic mode.")
 
 # whether unit tests should be build
@@ -214,8 +214,9 @@ IF (PEDANTIC)
     ADD_DEFINITIONS( /wd4510 )  # default constructor could not be generated (sqlite3_index_info, QMap)
     ADD_DEFINITIONS( /wd4512 )  # assignment operator could not be generated (sqlite3_index_info)
     ADD_DEFINITIONS( /wd4610 )  # user defined constructor required (sqlite3_index_info)
+    ADD_DEFINITIONS( /wd4706 )  # assignment within conditional expression (pal)
   ELSE (MSVC)
-    ADD_DEFINITIONS( -Wall -Wno-long-long -Wformat-security )
+    ADD_DEFINITIONS( -Wall -Wno-long-long -Wformat-security -Wno-strict-aliasing )
     # Qt produces lots of warnings with strict aliasing (as of Qt 4.4.0 & GCC 4.3)
     # ADD_DEFINITIONS( -fstrict-aliasing -Wstrict-aliasing=1 )
   ENDIF (MSVC)
@@ -284,7 +285,7 @@ ENDIF (WIN32)
 
 #assume we have excaped compiler directives
 #eventually we want to change this to new
-#since we dont need to jump through so many 
+#since we don't need to jump through so many 
 #hoops to escape compiler directives then
 IF(COMMAND cmake_policy)
   cmake_policy(SET CMP0003 NEW)
