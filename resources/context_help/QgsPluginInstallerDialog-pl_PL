@@ -1,0 +1,104 @@
+<h3>Instalator Wtyczek</h3>
+Pobiera i instaluje pythonowe wtyczki z repozytoriów sieciowych.
+<br/><br/>
+<a href="#pltab">Zakładka Wtyczki</a><br/>
+<a href="#retab">Zakładka Repozytoria</a><br/>
+<a href="#optab">Zakładka Opcje</a><br/>
+
+<a name="pltab">
+<h4>Zakładka Wtyczki</h4>
+</a>
+
+<p align='justify'>
+Zakładka <label>Wtyczki</label> zawiera listę wszystkich zainstalowanych oraz dostępnych w repozytoriach wtyczek pythonowych. Każda z nich może być:
+<ul>
+<li> <em>niezainstalowana</em> - dostępna w jednym z repozytoriów, ale jeszcze niezainstalowana. Aby to uczynić, wybierz ją z listy i kliknij klawisz <label>Instaluj wtyczkę</label>.</li>
+<li> <em>nowa</em> - nowość w repozytorium.</li>
+<li> <em>zainstalowana</em> - wtyczka jest zainstalowana. Jeśli jest również dostępna w jednym z repozytoriów, klawisz <label>Przeinstaluj wtyczkę</label> będzie aktywny. Jeśli dostępna wersja jest starsza, niż wtyczka zainstalowana na komputerze (co się zdarza, gdy np. zainstalowano nieoficjalną, testową wersję), klawisz ten zmieni nazwę na <label>Cofnij wtyczkę</label>.</li>
+<li> aktualizowalna - wtyczka jest zainstalowana, ale w repozytorium dostępna jest już nowsza wersja. W takim przypadku dostępny będzie klawisz <label>Aktualizuj wtyczkę</label>.</li>
+<li> <em>uszkodzona</em> - wtyczka jest zainstalowana, ale nie daje się uruchomić. Powód podany jest w polu opisu.</li>
+</ul>
+</p>
+
+Poniższa tabela prezentuje miejsca instalacji wtyczek na dysku:
+<table border=1>
+<tr><td>system operacyjny</td><td>wtyczki systemowe</td><td>wtyczki instalowane przez użytkownika</td></tr>
+<tr><td>Linux i inne uniksy</td><td>./share/qgis/python/plugins</td><td>/home/$UŻYTKOWNIK/.qgis/python/plugins</td></tr>
+<tr><td>Mac OS X</td><td>./Contents/MacOS/share/qgis/python/plugins</td><td>/Users/$UŻYTKOWNIK/.qgis/python/plugins</td></tr>
+<tr><td>Windows</td><td>C:\Program Files\QGIS\python\plugins</td><td>C:\Documents and Settings\$UŻYTKOWNIK\.qgis\python\plugins</td></tr>
+</table>
+<br/>
+
+<p align='justify'>
+Po udanej instalacji, nowa wtyczka jest gotowa do użytku. Po aktualizacji zainstalowanej wcześniej wtyczki, wymagane jest powtórne uruchomienie programu.
+</p>
+
+<p align='justify'>
+Jeśli instalacja nie powiedzie się, pojawi się okienko z wyjaśnieniem przyczyny. Zazwyczaj błędy instalacji spowodowane są bądź 
+przez problemy z połączeniem sieciowym, bądź brak wymaganych modułów Pythona w Twoim systemie. W pierwszym przypadku prawdopodobnie 
+musisz poczekać i spróbować ponowić instalację. W drugim, musisz zainstalować brakujące moduły, aby użyć wtyczki. Jeśli używasz Linuksa, 
+potrzebne moduły najpewniej dostępne będą w Twoim menedżerze oprogramowania. Jeśli Windowsów lub MacOSa, instrukcji instalacji szukaj 
+na stronie internetowej brakującego modułu. Jeśli używasz proxy, być może musisz je skonfigurować w oknie 
+<label>Edycja</label> > <label>Opcje</label> (GNOME, OSX) lub <label>Ustawienia</label> > <label>Opcje</label> (KDE, Windows) 
+w zakładce <label>Sieć</label>.
+</p>
+
+<p align='justify'>
+Klawisz <label>Odinstaluj wtyczkę</label> jest aktywny tylko wtedy, gdy podświetlona wtyczka jest jest zainstalowana i nie jest nieusuwalną 
+wtyczką systemową. Zauważ, że jeśli zainstalowałaś/łeś aktualizację wtyczki systemowej, możesz odinstalować tę aktualizację, naciskając klawisz 
+<label>Odinstaluj wtyczkę</label> i powrócić do wersji zainstalowanej razem z programem. Natomiast ta domyślna wersja nie może być już odinstalowana.
+</p>
+
+
+
+
+<a name="retab">
+<h4>Zakładka Repozytoria</h4>
+</a>
+<p align='justify'>
+Druga zakładka, <label>Repozytoria</label>, zawiera listę sieciowych repozytoriów wtyczek, dostępnych dla Instalatora. 
+Domyślnie włączone jest tylko Oficjalne Repozytorium QGIS. Możesz dodać kolejne repozytoria, w tym centralne repozytorium użytkowników 
+(QGIS Contributed Repository) oraz wiele repozytoriów prowadzonych przez naszych programistów i użytkowników, klikając przycisk 
+<label>Dodaj niezależne repozytoria</label>. Zawierają one dziesiątki wtyczek nie wspieranych przez Zespół Rozwojowy QGIS, niekiedy 
+bardzo przydatnych, ale z oczywistych powodów nie możemy brać za nie żadnej odpowiedzialności. Możesz także zarządzać listą repozytoriów 
+ręcznie, używając klawiszy po prawej stronie okienka. Aby tymczasowo wyłączyć któreś repozytorium, kliknij klawisz <label>Edycja...</label>.
+</p>
+
+
+
+
+
+<a name="optab">
+<h4>Zakładka Opcje</h4>
+</a>
+<p align='justify'>
+Zakładka <label>Opcje</label> służy do zmiany ustawień Instalatora. Zaznaczenie pola <label>x Poszukuj aktualizacji przy starcie programu</label> 
+włączy automatyczne poszukiwanie nowych wtyczek oraz uaktualnień już zainstalowanych. Po włączeniu, wszystkie repozytoria ustawione w sąsiedniej zakładce 
+są przeglądane przy każdym starcie programu. Za pomocą listy rozwijalnej można ograniczyć częstość sprawdzania do np. raz dziennie lub raz na 
+miesiąc. Po wykryciu nowej wtyczki lub uaktualnieniu którejś z zainstalowanych, informacja o tym pokaże się w pasku stanu programu. 
+</p>
+
+<p align='justify'>
+Jeśli pole to jest wyłączone, poszukiwanie nowości i uaktualnień nastąpi dopiero po ręcznym wywołaniu Instalatora.
+</p>
+
+<p align='justify'>
+Niektóre połączenia sieciowe mogą powodować problemy z automatycznym poszukiwaniem aktualizacji. Jeśli napis <i>Poszukiwanie nowych wtyczek...</i> 
+widnieje w pasku stanu programu przez cały czas oraz pojawiają się problemy z poprawnym wyłączeniem programu, konieczne może być wyłączenie tej funkcji.
+</p>
+
+<p align='justify'>
+Dodatkowo możesz wyszczególnić, jakie wtyczki mają być uwzględniane przez Instalator. W sekcji <i>Dopuszczone wtyczki</i> możesz 
+wybrać, czy Instalator ma wyświetlać:
+<ul>
+<li> tylko wtyczki z oficjalnego repozytorium</li>
+<li> wtyczki ze wszystkich repozytoriów, za wyjątkiem oznaczonych przez autora jako eksperymentalne</li>
+<li> wszystkie wtyczki ze wszystkich repozytoriów, włącznie z eksperymentalnymi</li>
+</ul>
+</p>
+
+<table border=1 width='95%' align='center'><tr><td>
+Uwaga: Eksperymentalne wtyczki z zasady nie są przeznaczone do produktywnego użytku. Są to wtyczki na bardzo wczesnym etapie rozwoju 
+i powinny być traktowane jako demonstracja przyszłego produktu. Zespół rozwojowy QGIS nie zaleca instalowania ich, póki nie robisz 
+tego świadomie w celach testowych.
+</td></tr></table>

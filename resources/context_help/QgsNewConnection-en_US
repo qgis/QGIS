@@ -6,7 +6,7 @@ To create a new PostGIS Connection, you need to know the host, port, and your us
 <li><label>Host</label> - the host name of the database server (eg. madison.qgis.org)
 <li><label>Database</label> - name of the database to connect to
 <li><label>Port</label> - port that PostgreSQL is listening on. By default this is 5432. If in doubt, check with your database administrator.
-<li>Username</label> - your database user name
+<li><label>Username</label> - your database user name
 <li><label>Password</label> - your database password
 </ul>
 <h4>Options</h4>
