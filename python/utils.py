@@ -91,6 +91,9 @@ def uninstallConsoleHooks():
 # dictionary of plugins
 plugins = {}
 
+# list of active (started) plugins
+active_plugins = []
+
 def pluginMetadata(packageName, fct):
   """ fetch metadata from a plugin """
   try:
@@ -125,7 +128,9 @@ def loadPlugin(packageName):
 
 def startPlugin(packageName):
   """ initialize the plugin """
-  global plugins, iface
+  global plugins, active_plugins, iface
+
+  if packageName in active_plugins: return False
 
   package = sys.modules[packageName]
 
@@ -147,20 +152,32 @@ def startPlugin(packageName):
     showException(sys.exc_type, sys.exc_value, sys.exc_traceback, msg)
     return False
 
+  # add to active plugins
+  active_plugins.append(packageName)
+
   return True
 
 
 def unloadPlugin(packageName):
   """ unload and delete plugin! """
-  global plugins
+  global plugins, active_plugins
   
   if not plugins.has_key(packageName): return False
+  if packageName not in active_plugins: return False
 
   try:
     plugins[packageName].unload()
     del plugins[packageName]
+    active_plugins.remove(packageName)
     return True
   except Exception, e:
     msg = QCoreApplication.translate("Python", "Error while unloading plugin %1").arg(packageName)
     showException(sys.exc_type, sys.exc_value, sys.exc_traceback, msg)
     return False
+
+def isPluginLoaded(packageName):
+  """ find out whether a plugin is active (i.e. has been started) """
+  global plugins, active_plugins
+
+  if not plugins.has_key(packageName): return False
+  return (packageName in active_plugins)

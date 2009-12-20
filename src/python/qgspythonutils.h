@@ -76,6 +76,12 @@ class PYTHON_EXPORT QgsPythonUtils
     //! return list of all available python plugins
     virtual QStringList pluginList() = 0;
 
+    //! return whether the plugin is loaded (active)
+    virtual bool isPluginLoaded( QString packageName ) = 0;
+
+    //! return a list of active plugins
+    virtual QStringList listActivePlugins() = 0;
+
     //! load python plugin (import)
     virtual bool loadPlugin( QString packageName ) = 0;
 

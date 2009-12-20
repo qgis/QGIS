@@ -21,12 +21,10 @@
 #include "qgspluginmetadata.h"
 QgsPluginMetadata::QgsPluginMetadata( QString _libraryPath,
                                       QString _name,
-                                      QgisPlugin * _plugin,
-                                      bool _python ):
+                                      QgisPlugin * _plugin ):
     m_name( _name ),
     libraryPath( _libraryPath ),
-    m_plugin( _plugin ),
-    m_python( _python )
+    m_plugin( _plugin )
 {
 
 }
@@ -44,9 +42,4 @@ QString QgsPluginMetadata::library()
 QgisPlugin *QgsPluginMetadata::plugin()
 {
   return m_plugin;
-}
-
-bool QgsPluginMetadata::isPython()
-{
-  return m_python;
 }
