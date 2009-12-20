@@ -32,6 +32,6 @@ Unter diesem Reiter können Sie die Reihenfolge der geladenen WMS-Layer ändern.
 <a name="search">
 <h4>Serversuche</h4>
 </a>
-Unter diesem Reiter können Sie nach WMS-Servern suchen.  Sie können Suchbegriff in einem Textfeld angeben, nachdem dann über den Knopf <label>Suche</label> gesucht wird.<p>
+Unter diesem Reiter können Sie nach WMS-Servern suchen.  Sie können einen Suchbegriff in einem Textfeld angeben, nachdem dann über den Knopf <label>Suche</label> gesucht wird.<p>
 Um das Ergebnis anzuzeigen, wählen Sie einen Eintrag und klicken auf <label>Gewählte Zeile der WMS-Liste hinzufügen</label> und wechseln wieder zum Reiter <label>Server</label>.<p>
 Sie können dann die Layerliste mit einem Klick auf den Knopf <label>Verbinden</label> erfragen.
