@@ -267,7 +267,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="118"/>
         <source>Dissolve field</source>
         <translatorcomment>to jest chyba jakiś relikt przeszłości, zawsze ukryty</translatorcomment>
-        <translation type="unfinished">Pole agregacji</translation>
+        <translation>Pole agregacji</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="166"/>
@@ -4644,7 +4644,7 @@ Prosimy o kontakt z autorami.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1203"/>
         <source>Print Composers</source>
-        <translation type="unfinished">Arkusze</translation>
+        <translation>Wydruki</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1210"/>
@@ -4715,7 +4715,7 @@ Prosimy o kontakt z autorami.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2140"/>
         <source>This release includes around 200 bug fixes, nearly 30 new features and has had a lot of love and attention poured in to it to take our favourite desktop GIS application another step on the road to GIS nirvana! So much has happened in the 3 months since our last release that it is impossible to document everything here. Instead we will just highlight a couple of important new features for you.</source>
-        <translation type="unfinished">W tym wydaniu usunięto około 200 błędów, dodano 30 nowych funkcji i włożono wiele serca, aby nasz ulubiony program GIS zrobił kolejny krok w kierunku nirwany! Tak wiele wydarzyło się w ciągu ostatnich trzech miesięcy od ostatniego wydania, że nie sposób to wszystko tutaj opisać. Postaramy się jedynie podkreślić kilka najistotniejszych zmian.</translation>
+        <translation>W tym wydaniu usunięto około 200 błędów, dodano 30 nowych funkcji i włożono wiele serca, aby nasz ulubiony program GIS zrobił kolejny krok w kierunku nirwany! Tak wiele wydarzyło się w ciągu ostatnich trzech miesięcy od ostatniego wydania, że nie sposób to wszystko tutaj opisać. Postaramy się jedynie podkreślić kilka najistotniejszych zmian.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2148"/>
@@ -4730,7 +4730,7 @@ Prosimy o kontakt z autorami.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2163"/>
         <source>The map composer has had a lot of attention. A grid can now be added to composer maps. Composer maps can now be rotated in the layout. The limitation of a single map layout per project has been removed. A new composer manager dialog has been added to manage the existing composer instances. The composer widget property sheets have been completely overhauled to use less screen space </source>
-        <translation type="unfinished">Wiele uwagi poświęcono tworzeniu arkuszy. Można teraz dodać do mapy siatkę. Mapy mogą być obracane. Usunięto ograniczenie jednego arkusza na projekt. Dodano możliwość zarządzania arkuszami. Przebudowano układ okna z arkuszami, aby zajmowało ono mniej miejsca na ekranie</translation>
+        <translation>Wiele uwagi poświęcono tworzeniu wydruków. Można teraz dodać do wydruku siatkę mapy. Mapy mogą być obracane na wydruku. Usunięto ograniczenie jednego wydruku na projekt. Dodano możliwość zarządzania wydrukami. Przebudowano układ okna z wydrukami, aby zajmowało ono mniej miejsca na ekranie</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2171"/>
@@ -4796,7 +4796,7 @@ Prosimy o kontakt z autorami.
         <location filename="../src/app/qgisapp.cpp" line="3673"/>
         <location filename="../src/app/qgisapp.cpp" line="3711"/>
         <source>Composer %1</source>
-        <translation type="unfinished">Arkusz %1</translation>
+        <translation>Wydruk %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3744"/>
@@ -4903,7 +4903,7 @@ Prosimy o kontakt z autorami.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="594"/>
         <source>&amp;New Print Composer</source>
-        <translation type="unfinished">&amp;Nowy arkusz</translation>
+        <translation>&amp;Nowy wydruk</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="595"/>
@@ -4914,17 +4914,17 @@ Prosimy o kontakt z autorami.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="596"/>
         <source>New Print Composer</source>
-        <translation type="unfinished">Nowy arkusz</translation>
+        <translation>Nowy wydruk</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="599"/>
         <source>Composer manager...</source>
-        <translation type="unfinished">Zarządzanie arkuszami...</translation>
+        <translation>Zarządzanie wydrukami...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="600"/>
         <source>Composer manager</source>
-        <translation type="unfinished">Zarządzanie arkuszami</translation>
+        <translation>Zarządzanie wydrukami</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="659"/>
@@ -6363,7 +6363,7 @@ Błąd brzmi:%2</translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1113"/>
         <source>Composer</source>
-        <translation type="unfinished">Arkusz</translation>
+        <translation>Wydruk</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1409"/>
@@ -7025,12 +7025,12 @@ Błąd brzmi:%2</translation>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="83"/>
         <source>Remove composer</source>
         <translatorcomment>m.</translatorcomment>
-        <translation type="unfinished">Usuń arkusz</translation>
+        <translation>Usuń wydruk</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="83"/>
         <source>Do you really want to remove the map composer &apos;%1&apos;?</source>
-        <translation type="unfinished">Na pewno chcesz usunąć arkusz &apos;%1&apos;?</translation>
+        <translation>Na pewno chcesz usunąć wydruk &apos;%1&apos;?</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="143"/>
@@ -7048,7 +7048,7 @@ Błąd brzmi:%2</translation>
     <message>
         <location filename="../src/ui/qgscomposermanagerbase.ui" line="14"/>
         <source>Composer manager</source>
-        <translation type="unfinished">Zarządzanie arkuszami</translation>
+        <translation>Zarządzanie wydrukami</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermanagerbase.ui" line="23"/>
@@ -10369,7 +10369,7 @@ Please reselect a valid file.</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="213"/>
         <source>Symbology</source>
-        <translation type="unfinished">Styl</translation>
+        <translation>Styl</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="327"/>
@@ -20107,17 +20107,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="22"/>
         <source>Renderer:</source>
-        <translation type="unfinished">Renderer:</translation>
+        <translation>Typ legendy:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="45"/>
         <source>Symbol levels</source>
-        <translation type="unfinished">Po&amp;ziomy wyświetlania</translation>
+        <translation>Po&amp;ziomy wyświetlania</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="52"/>
         <source>Old symbology</source>
-        <translation type="unfinished">Poprzednie &amp;style</translation>
+        <translation>&amp;Style retro</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="77"/>
@@ -22182,7 +22182,7 @@ Czy aktualne klasy powiny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="527"/>
         <source>Init function</source>
-        <translation type="unfinished">Inicjacja formularza</translation>
+        <translation>Inicjacja formularza</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="537"/>
@@ -23181,7 +23181,7 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/plugins/quick_print/quickprintguibase.ui" line="115"/>
         <source>Note: If you want more control over the map layout please use the map composer function in QGIS.</source>
-        <translation type="unfinished">Uwaga: Jeśli chcesz mieć większą kontrolę nad kompozycją mapy wykorzystaj funkcję arkusza QGIS.</translation>
+        <translation>Uwaga: Jeśli chcesz mieć większą kontrolę nad kompozycją mapy wykorzystaj funkcję wydruku QGIS.</translation>
     </message>
 </context>
 <context>
