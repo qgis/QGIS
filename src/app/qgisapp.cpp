@@ -2145,30 +2145,30 @@ void QgisApp::about()
                     "to document everything here. Instead we will just highlight "
                     "a couple of important new features for you." )
                 + "</p><p>" +
-                tr("Probably the biggest new feature is the addition of the new "
-                   "vector symbology infrastructure. This is provided alongside the "
+                tr( "Probably the biggest new feature is the addition of the new "
+                    "vector symbology infrastructure. This is provided alongside the "
                     "old implementation - you can switch using a button in the "
                     "vector layer properties dialog. It does't replace the old "
                     "symbology implementation completely yet because there are "
                     "various issues that need to be resolved and a large amount "
-                    "of testing before it is considered ready.")
+                    "of testing before it is considered ready." )
                 + "</p><p>" +
-                tr("QGIS now has a field calculator, accessible via a button in "
+                tr( "QGIS now has a field calculator, accessible via a button in "
                     "the attribute section of the vector properties, and from "
                     "the attribute table user interface. You can use feature "
                     "length, feature area, string concatenation and type "
                     "conversions in the field calculator, as well as field "
-                    "values.")
+                    "values." )
                 + "</p><p>" +
-                tr("The map composer has had a lot of attention. A grid can now "
+                tr( "The map composer has had a lot of attention. A grid can now "
                     "be added to composer maps. Composer maps can now be rotated "
                     "in the layout. The limitation of a single map layout "
                     "per project has been removed. A new composer manager dialog "
                     "has been added to manage the existing composer instances. "
                     "The composer widget property sheets have been completely "
-                    "overhauled to use less screen space ")
+                    "overhauled to use less screen space " )
                 + "</p><p>" +
-                tr("Various parts of the user interface have been overhauled "
+                tr( "Various parts of the user interface have been overhauled "
                     "with the goal of improving consistency and to improve "
                     "support for netbooks and other smaller screen devices. "
                     "Loading and saving of shortcuts. Position can now be "
@@ -2176,25 +2176,25 @@ void QgisApp::about()
                     "The add, move and delete vertex buttons are now removed and "
                     "the node tool is moved from the advanced editing toolbar to "
                     "the standard editing toolbar. The identification tool has also "
-                    "undergone numerous improvements.")
+                    "undergone numerous improvements." )
                 + "</p><p>" +
-                tr("A render caching capability has been added to QGIS. This "
+                tr( "A render caching capability has been added to QGIS. This "
                     "speeds up common operations such as layer re-ordering, "
                     "changing symbology, WMS / WFS client, hiding / showing "
                     "layers and opens the door for future enhancements such as "
                     "threaded rendering and pre-compositing layer cache "
                     "manipulation. Note that it is disabled by default, and "
-                    "can be enabled in the options dialog.")
+                    "can be enabled in the options dialog." )
                 + "</p><p>" +
-                tr("User defined SVG search paths are now added to the options "
-                    "dialog.")
+                tr( "User defined SVG search paths are now added to the options "
+                    "dialog." )
                 + "</p><p>" +
-                tr("When creating a new shapefile, you can now specify its CRS. "
+                tr( "When creating a new shapefile, you can now specify its CRS. "
                     "Also the avoid intersections option for polygons is now "
-                    "also possible with background layers.")
+                    "also possible with background layers." )
                 + "</p><p>" +
-                tr("For power users, you can now create customizable attribute "
-                    "forms using Qt Designer dialog UIs.")
+                tr( "For power users, you can now create customizable attribute "
+                    "forms using Qt Designer dialog UIs." )
                 + "</p>" +
                 + "</body></html>";
 
@@ -2766,12 +2766,20 @@ void QgisApp::newVectorLayer()
   {
     fileName = openFileDialog->selectedFiles().first();
 
-    if ( fileformat == "ESRI Shapefile" && !isValidShapeFileName( fileName ) )
+    if ( fileformat == "ESRI Shapefile" )
     {
-      QMessageBox::information( this,
-                                tr( "New Shapefile" ),
-                                tr( "Shapefiles must end on .shp" ) );
-      continue;
+      if ( !isValidShapeFileName( fileName ) )
+      {
+        fileName += ".shp";
+      }
+
+      if ( !isValidShapeFileName( fileName ) )
+      {
+        QMessageBox::information( this,
+                                  tr( "New Shapefile" ),
+                                  tr( "Shapefiles must end on .shp" ) );
+        continue;
+      }
     }
 
     break;
