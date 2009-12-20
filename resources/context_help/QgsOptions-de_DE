@@ -56,7 +56,7 @@ angezeigten Layer abgefragt werden.
 <a name="over">
 <h4>Überlagerung</h4>
 </a>
-Legen Sie einen Plazierungsalgorithmus für Beschriftungen fest. Wählen Sie
+Legen Sie einen Platzierungsalgorithmus für Beschriftungen fest. Wählen Sie
 zwischen <label>Zentrum (am schnellsten)</label>, <label>Kette
 (schnell)</label>, <label>Popmusik-Tabu-Kette (langsam)</label>,
 <label>Popmusik-Tabu (langsam)</label> und <label>Popmusik-Kette (sehr
