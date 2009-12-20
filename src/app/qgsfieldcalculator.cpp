@@ -177,12 +177,12 @@ void QgsFieldCalculator::accept()
       {
         mVectorLayer->changeAttributeValue( feature.id(), attributeId, value.string(), false );
       }
-
-      // stop blocking layerModified signals and make sure that one layerModified signal is emitted
-      mVectorLayer->blockSignals( false );
-      mVectorLayer->setModified( true, false );
-
     }
+
+    // stop blocking layerModified signals and make sure that one layerModified signal is emitted
+    mVectorLayer->blockSignals( false );
+    mVectorLayer->setModified( true, false );
+
 
     if ( !calculationSuccess )
     {
