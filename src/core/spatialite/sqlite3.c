@@ -6034,7 +6034,7 @@ typedef struct sqlite3_backup sqlite3_backup;
 ** the source and destination databases, where nPage is the value of the 
 ** second parameter passed to sqlite3_backup_step(). If nPage is a negative
 ** value, all remaining source pages are copied. If the required pages are 
-** succesfully copied, but there are still more pages to copy before the 
+** successfully copied, but there are still more pages to copy before the 
 ** backup is complete, it returns [SQLITE_OK]. If no error occured and there 
 ** are no more pages to copy, then [SQLITE_DONE] is returned. If an error 
 ** occurs, then an SQLite error code is returned. As well as [SQLITE_OK] and
@@ -29135,7 +29135,7 @@ SQLITE_API int sqlite3_os_end(void){
 ** bitmap.  Bits are numbered starting with 1.
 **
 ** A bitmap is used to record which pages of a database file have been
-** journalled during a transaction, or which pages have the "dont-write"
+** journalled during a transaction, or which pages have the "don't-write"
 ** property.  Usually only a few pages are meet either condition.
 ** So the bitmap is usually sparse and has low cardinality.
 ** But sometimes (for example when during a DROP of a large table) most
@@ -35077,7 +35077,7 @@ static void pagerUnlockIfUnused(Pager *pPager){
 ** page is initialized to all zeros. 
 **
 ** If noContent is true, it means that we do not care about the contents
-** of the page. This occurs in two seperate scenarios:
+** of the page. This occurs in two separate scenarios:
 **
 **   a) When reading a free-list leaf page from the database, and
 **
@@ -37391,7 +37391,7 @@ SQLITE_PRIVATE void sqlite3BtreeEnter(Btree *p){
   if( p->locked ) return;
 
   /* In most cases, we should be able to acquire the lock we
-  ** want without having to go throught the ascending lock
+  ** want without having to go through the ascending lock
   ** procedure that follows.  Just be sure not to block.
   */
   if( sqlite3_mutex_try(p->pBt->mutex)==SQLITE_OK ){
@@ -38829,7 +38829,7 @@ static int allocateSpace(MemPage *pPage, int nByte, int *pIdx){
   }else if( gap+2<=top ){
     /* Search the freelist looking for a free slot big enough to satisfy 
     ** the request. The allocation is made from the first free slot in 
-    ** the list that is large enough to accomadate it.
+    ** the list that is large enough to accommodate it.
     */
     int pc, addr;
     for(addr=hdr+1; (pc = get2byte(&data[addr]))>0; addr=pc){
@@ -49569,7 +49569,7 @@ SQLITE_PRIVATE int sqlite3VdbeCursorMoveto(VdbeCursor *p){
 ** the blob of data that it corresponds to. In a table record, all serial
 ** types are stored at the start of the record, and the blobs of data at
 ** the end. Hence these functions allow the caller to handle the
-** serial-type and data blob seperately.
+** serial-type and data blob separately.
 **
 ** The following table describes the various storage classes for data:
 **
@@ -56618,7 +56618,7 @@ case OP_ParseSchema: {
   ** u.bu.iDb mutex may be temporarily released to avoid deadlock. If
   ** this happens, then some other thread may delete the in-memory
   ** schema of database u.bu.iDb before the SQL statement runs. The schema
-  ** will not be reloaded becuase the db->init.busy flag is set. This
+  ** will not be reloaded because the db->init.busy flag is set. This
   ** can result in a "no such table: sqlite_master" or "malformed
   ** database schema" error being returned to the user.
   */
@@ -68024,7 +68024,7 @@ SQLITE_PRIVATE void sqlite3DropTable(Parse *pParse, SrcList *pName, int isView, 
     /* Drop all SQLITE_MASTER table and index entries that refer to the
     ** table. The program name loops through the master table and deletes
     ** every row that refers to a table of the same name as the one being
-    ** dropped. Triggers are handled seperately because a trigger can be
+    ** dropped. Triggers are handled separately because a trigger can be
     ** created in the temp database that refers to a table in another
     ** database.
     */
@@ -73546,7 +73546,7 @@ SQLITE_PRIVATE void sqlite3TableAffinityStr(Vdbe *v, Table *pTab){
 /*
 ** Return non-zero if the table pTab in database iDb or any of its indices
 ** have been opened at any point in the VDBE program beginning at location
-** iStartAddr throught the end of the program.  This is used to see if 
+** iStartAddr through the end of the program.  This is used to see if 
 ** a statement of the form  "INSERT INTO <iDb, pTab> SELECT ..." can 
 ** run without using temporary table for the results of the SELECT. 
 */
@@ -75601,7 +75601,7 @@ struct sqlite3_api_routines {
 
 /*
 ** The following macros redefine the API routines so that they are
-** redirected throught the global sqlite3_api structure.
+** redirected through the global sqlite3_api structure.
 **
 ** This header file is also used by the loadext.c source file
 ** (part of the main SQLite library - not an extension) so that
@@ -78796,7 +78796,7 @@ SQLITE_PRIVATE void sqlite3SelectDelete(sqlite3 *db, Select *p){
 }
 
 /*
-** Given 1 to 3 identifiers preceeding the JOIN keyword, determine the
+** Given 1 to 3 identifiers preceding the JOIN keyword, determine the
 ** type of join.  Return an integer constant that expresses that type
 ** in terms of the following bit values:
 **
@@ -81681,7 +81681,7 @@ SQLITE_PRIVATE int sqlite3IndexedByLookup(Parse *pParse, struct SrcList_item *pF
 **         without worrying about messing up the presistent representation
 **         of the view.
 **
-**    (3)  Add terms to the WHERE clause to accomodate the NATURAL keyword
+**    (3)  Add terms to the WHERE clause to accommodate the NATURAL keyword
 **         on joins and the ON and USING clause of joins.
 **
 **    (4)  Scan the list of columns in the result set (pEList) looking
@@ -87089,7 +87089,7 @@ static void exprAnalyzeOrTerm(
         }
         if( (chngToIN & getMask(pMaskSet, pOrTerm->leftCursor))==0 ){
           /* This term must be of the form t1.a==t2.b where t2 is in the
-          ** chngToIN set but t1 is not.  This term will be either preceeded
+          ** chngToIN set but t1 is not.  This term will be either preceded
           ** or follwed by an inverted copy (t2.b==t1.a).  Skip this term 
           ** and use its inversion. */
           testcase( pOrTerm->wtFlags & TERM_COPIED );
@@ -94422,7 +94422,7 @@ SQLITE_PRIVATE const char sqlite3IsEbcdicIdChar[];
 **                 a statement.
 **
 **   (3) CREATE    The keyword CREATE has been seen at the beginning of a
-**                 statement, possibly preceeded by EXPLAIN and/or followed by
+**                 statement, possibly preceded by EXPLAIN and/or followed by
 **                 TEMP or TEMPORARY
 **
 **   (4) TRIGGER   We are in the middle of a trigger definition that must be
@@ -94472,7 +94472,7 @@ SQLITE_API int sqlite3_complete(const char *zSql){
      /* 6     END: */ {    0,  6,     4,      4,      4,    4,       4,   4,  },
   };
 #else
-  /* If triggers are not suppored by this compile then the statement machine
+  /* If triggers are not supported by this compile then the statement machine
   ** used to detect the end of a statement is much simplier
   */
   static const u8 trans[2][3] = {
@@ -95243,7 +95243,7 @@ static int binCollFunc(
 /*
 ** Another built-in collating sequence: NOCASE. 
 **
-** This collating sequence is intended to be used for "case independant
+** This collating sequence is intended to be used for "case independent
 ** comparison". SQLite's knowledge of upper and lower case equivalents
 ** extends only to the 26 characters used in the English language.
 **
@@ -96640,7 +96640,7 @@ SQLITE_API int sqlite3_global_recover(void){
 /*
 ** Test to see whether or not the database connection is in autocommit
 ** mode.  Return TRUE if it is and FALSE if not.  Autocommit mode is on
-** by default.  Autocommit is disabled by a BEGIN statement and reenabled
+** by default.  Autocommit is disabled by a BEGIN statement and re-enabled
 ** by the next COMMIT or ROLLBACK.
 **
 ******* THIS IS AN EXPERIMENTAL API AND IS SUBJECT TO CHANGE ******
@@ -106245,7 +106245,7 @@ static int star_oh(const char *z){
 
 /*
 ** If the word ends with zFrom and xCond() is true for the stem
-** of the word that preceeds the zFrom ending, then change the 
+** of the word that preceds the zFrom ending, then change the 
 ** ending to zTo.
 **
 ** The input word *pz and zFrom are both in reverse order.  zTo

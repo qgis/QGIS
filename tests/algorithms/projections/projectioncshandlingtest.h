@@ -187,7 +187,7 @@ class ProjectionCsHandlingTest : public CppUnit::TestCase
       OGRSpatialReference myInputSpatialRefSys;
       char *pWkt = ( char* )wktAkAlbers.ascii();
       CPPUNIT_ASSERT( myInputSpatialRefSys.importFromWkt( &pWkt ) == OGRERR_NONE );
-      std::cout << "\tGetting proj4 paramters without morph to ESRI form" << std::endl;
+      std::cout << "\tGetting proj4 parameters without morph to ESRI form" << std::endl;
       // get the proj4 for the unmorphed projection
       char *proj4src;
       CPPUNIT_ASSERT( myInputSpatialRefSys.exportToProj4( &proj4src ) == OGRERR_NONE );
@@ -206,7 +206,7 @@ class ProjectionCsHandlingTest : public CppUnit::TestCase
       OGRSpatialReference myInputSpatialRefSys;
       char *pWkt = ( char* )wktAkAlbers.ascii();
       CPPUNIT_ASSERT( myInputSpatialRefSys.importFromWkt( &pWkt ) == OGRERR_NONE );
-      std::cout << "\tGetting proj4 paramters with morph to ESRI form" << std::endl;
+      std::cout << "\tGetting proj4 parameters with morph to ESRI form" << std::endl;
       CPPUNIT_ASSERT( myInputSpatialRefSys.morphFromESRI() == OGRERR_NONE );
       // get the proj4 for the unmorphed projection
       char *proj4src;
@@ -244,7 +244,7 @@ class ProjectionCsHandlingTest : public CppUnit::TestCase
       // set up the spatial ref
       OGRSpatialReference myInputSpatialRefSys;
       CPPUNIT_ASSERT( myInputSpatialRefSys.importFromWkt( &buf ) == OGRERR_NONE );
-      //      std::cout << "\tGetting proj4 paramters with morph to ESRI form" << std::endl;
+      //      std::cout << "\tGetting proj4 parameters with morph to ESRI form" << std::endl;
       //      CPPUNIT_ASSERT(myInputSpatialRefSys.morphFromESRI() == OGRERR_NONE);
       // get the proj4 for the unmorphed projection
       char *proj4src;
@@ -264,7 +264,7 @@ class ProjectionCsHandlingTest : public CppUnit::TestCase
       OGRSpatialReference myInputSpatialRefSys;
       char *pWkt = ( char* )wktAkAlbers.ascii();
       CPPUNIT_ASSERT( myInputSpatialRefSys.importFromWkt( &pWkt ) == OGRERR_NONE );
-      std::cout << "\tGetting proj4 paramters with morph to ESRI form" << std::endl;
+      std::cout << "\tGetting proj4 parameters with morph to ESRI form" << std::endl;
       CPPUNIT_ASSERT( myInputSpatialRefSys.morphFromESRI() == OGRERR_NONE );
       OGRSpatialReference oTarcrs;
       char *pWgs84 = ( char * )wkt.ascii();

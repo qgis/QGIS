@@ -483,7 +483,7 @@ class Qgis2Map:
           resultMsg += " ! No password in connection string for postgres layer '" +  layer_name + \
             "' \n  Add it, or make sure mapserver can connect to postgres.\n"  
         layer_def += "    CONNECTION \"" + connectionInfo + "\"\n"
-        # EvdP: it seems that the uri.geometryColumn() is quoted automaticly by PostGIS.
+        # EvdP: it seems that the uri.geometryColumn() is quoted automatically by PostGIS.
         # To prevent double quoting, we don't quote here.
         # Now we are unable to process uri.geometryColumn()s with special characters (uppercase... etc.)
         #layer_def += "    DATA '\"" + uri.geometryColumn() + "\" FROM " + uri.quotedTablename() + "'\n"

@@ -3,7 +3,7 @@ README for QGIS version 1.4 'Enceladus'
 Quantum GIS (QGIS) is an Open Source Geographic Information System. The
 project was born in May of 2002 and was established as a project on
 SourceForge in June of the same year. We've worked hard to make GIS
-software (which is traditionaly expensive commerical software) a viable
+software (which is traditionaly expensive commercial software) a viable
 prospect for anyone with basic access to a Personal Computer.  QGIS
 currently runs on most Unix platforms, Windows, and OS X. QGIS is
 developed using the Qt toolkit (http://www.trolltech.com) and C++.  This

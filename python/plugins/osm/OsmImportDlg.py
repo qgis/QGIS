@@ -41,7 +41,7 @@ class dummyFeat:
 
 
 class OsmImportDlg(QDialog, Ui_OsmImportDlg):
-    """This class provides structures and methods neccessary for import OSM data.
+    """This class provides structures and methods necessary for import OSM data.
     Class is direct descendant of OSM Import dialog.
 
     After confirming OSM Import dialog process is immediately started.

@@ -72,8 +72,8 @@ class CORE_EXPORT QgsSnapper
     {
       /**Only one snapping result is retured*/
       SnapWithOneResult,
-      /**Several snapping results which have the same position are returned. This is usefull for topological
-       editing*/
+      /**Several snapping results which have the same position are returned.
+         This is useful for topological editing*/
       SnapWithResultsForSamePosition,
       /**All results within the given layer tolerances are returned*/
       SnapWithResultsWithinTolerances

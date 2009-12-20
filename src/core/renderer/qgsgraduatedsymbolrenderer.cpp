@@ -79,7 +79,7 @@ QgsGraduatedSymbolRenderer::Mode QgsGraduatedSymbolRenderer::mode() const
 {
   //mode is only really used to be able to reinstate
   //the graduated dialog properties properly, so we
-  //dont do anything else besides accessors and mutators in
+  //don't do anything else besides accessors and mutators in
   //this class
   return mMode;
 }
@@ -88,7 +88,7 @@ void QgsGraduatedSymbolRenderer::setMode( QgsGraduatedSymbolRenderer::Mode theMo
 {
   //mode is only really used to be able to reinstate
   //the graduated dialog properties properly, so we
-  //dont do anything else besides accessors and mutators in
+  //don't do anything else besides accessors and mutators in
   //this class
   mMode = theMode;
 }
@@ -202,7 +202,7 @@ void QgsGraduatedSymbolRenderer::renderFeature( QgsRenderContext &renderContext,
         brush.setColor( mSelectionColor );
         p->setBrush( brush );
       }
-      else //dont draw outlines in selection colour for polys otherwise they appear merged
+      else //don't draw outlines in selection colour for polys otherwise they appear merged
       {
         pen.setColor( mSelectionColor );
       }

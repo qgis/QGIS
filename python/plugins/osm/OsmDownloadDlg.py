@@ -214,7 +214,7 @@ class OsmDownloadDlg(QDialog, Ui_OsmDownloadDlg):
     def stateChanged(self,newState):
         """Function is called after stateChanged(...) signal is emitted on HTTP connection.
 
-        OSM Downloader does actully nothing in here.
+        OSM Downloader does actually nothing in here.
         Maybe in future function will be used.
 
         @param newState number representing new state of the connection
@@ -226,7 +226,7 @@ class OsmDownloadDlg(QDialog, Ui_OsmDownloadDlg):
 
     def httpDone(self,error):
         """Function is called after done(...) signal is emitted on HTTP connection.
-        (Done signal is emitted immediatelly after all requests of HTTP connection
+        (Done signal is emitted immediately after all requests of HTTP connection
         are finished ~ emits an requestFinished(...) signal).
 
         @param error True if error occured on any of HTTP connection requests; False otherwise
@@ -435,7 +435,7 @@ class OsmDownloadDlg(QDialog, Ui_OsmDownloadDlg):
 
 
     def connectDlgSignals(self):
-        """Function connects neccessary signals to appropriate slots.
+        """Function connects necessary signals to appropriate slots.
         """
 
         # whenever extent coordinates are changed, currently set extent has to be tested for validity

@@ -359,7 +359,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     virtual bool supportedLayers( QVector<QgsWmsLayerProperty> & layers );
 
     /**
-     * \brief   Returns a map for the hierachy of layers
+     * \brief   Returns a map for the hierarchy of layers
      */
     virtual void layerParents( QMap<int, int> &parents, QMap<int, QStringList> &parentNames ) const;
 
@@ -613,7 +613,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     QByteArray retrieveUrl( QString url );
 
     /*
-      //! Test function: see if we can download a WMS' capabilites
+      //! Test function: see if we can download a WMS' capabilities
       //! \retval FALSE if the download failed in some way
       bool downloadCapabilitiesURI(QString const &  uri);
     */

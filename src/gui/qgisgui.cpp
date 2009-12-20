@@ -30,7 +30,7 @@ namespace QgisGui
     // used filter
 
     QSettings settings;         // where we keep last used filter in
-    // persistant state
+    // persistent state
 
     haveLastUsedFilter = settings.contains( "/UI/" + filterName );
     QString lastUsedFilter = settings.value( "/UI/" + filterName,

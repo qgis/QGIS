@@ -1032,7 +1032,7 @@ namespace pal
 
 
 // Pick a branch.  Pick the one that will need the smallest increase
-// in area to accomodate the new rectangle.  This will result in the
+// in area to accommodate the new rectangle.  This will result in the
 // least total area for the covering rectangles in the current node.
 // In case of a tie, pick the one which was smaller before, to get
 // the best resolution when searching.

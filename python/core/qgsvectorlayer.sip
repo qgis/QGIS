@@ -273,14 +273,14 @@ public:
 		
   /**Adds a vertex to segments which intersect point p but don't 
      already have a vertex there. If a feature already has a vertex at position p, 
-     no additional vertex is inserted. This method is usefull for topological 
+     no additional vertex is inserted. This method is useful for topological 
      editing.
      @param p position of the vertex
      @return 0 in case of success*/
   int addTopologicalPoints(const QgsPoint& p);
 
  /**Inserts vertices to the snapped segments.
-   This is usefull for topological editing if snap to segment is enabled.
+   This is useful for topological editing if snap to segment is enabled.
    @param snapResults results collected from the snapping operation
    @return 0 in case of success*/
   int insertSegmentVerticesForSnap(const QList<QgsSnappingResult>& snapResults);	

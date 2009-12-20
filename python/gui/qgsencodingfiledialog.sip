@@ -1,5 +1,5 @@
 
-/**A file dialog which lets the user select the prefered encoding type for a data provider*/
+/**A file dialog which lets the user select the preferred encoding type for a data provider*/
 class QgsEncodingFileDialog : QFileDialog
 {
 %TypeHeaderCode
@@ -11,7 +11,7 @@ class QgsEncodingFileDialog : QFileDialog
         const QString & caption = QString(), const QString & directory = QString(),
         const QString & filter = QString(), const QString & encoding = QString());
     ~QgsEncodingFileDialog();
-    /**Returns a string describing the choosen encoding*/
+    /**Returns a string describing the chosen encoding*/
     QString encoding() const;
 };
 

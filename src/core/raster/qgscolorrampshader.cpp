@@ -128,7 +128,7 @@ bool QgsColorRampShader::exactColor( double theValue, int* theReturnRedValue, in
     {
       mCurrentColorRampItemIndex++;
     }
-    //Search back toward the begining of the list
+    //Search back toward the beginning of the list
     else
     {
       mCurrentColorRampItemIndex--;

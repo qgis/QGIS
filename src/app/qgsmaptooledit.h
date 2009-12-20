@@ -38,14 +38,14 @@ class QgsMapToolEdit: public QgsMapTool
     QgsMapCanvasSnapper mSnapper;
 
     /**Inserts vertices to the snapped segments of the editing layer.
-     This is usefull for topological editing if snap to segment is enabled.
+     This is useful for topological editing if snap to segment is enabled.
      @param snapResults results collected from the snapping operation
      @param editedLayer pointer to the editing layer
      @return 0 in case of success*/
     int insertSegmentVerticesForSnap( const QList<QgsSnappingResult>& snapResults, QgsVectorLayer* editedLayer );
 
     /**Extracts a single snapping point from a set of snapping results.
-       This is usefull for snapping operations that just require a position to snap to and not all the
+       This is useful for snapping operations that just require a position to snap to and not all the
        snapping results. If the list is empty, the screen coordinates are transformed into map coordinates and returned
        @param snapResults results collected from the snapping operation.
        @return the snapped point in map coordinates*/

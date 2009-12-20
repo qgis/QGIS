@@ -85,7 +85,7 @@ void addToTmpNodes(QgsSearchTreeNode* node);
 
 // operator precedence
 // all operators have left associativity
-// (right associtativity is used for  assigment)
+// (right associtativity is used for assignment)
 %left '^'
 %left '*' '/'
 %left '+' '-'

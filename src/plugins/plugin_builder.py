@@ -148,7 +148,7 @@ for file in files:
 	content = f.read()
 	f.close()
 	
-	# replace everything neccessary
+	# replace everything necessary
 	for repl in replacements:
 		content = re.sub(repl[0], repl[1], content)
 	

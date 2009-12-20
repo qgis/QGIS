@@ -429,7 +429,7 @@ class QgsLegend : public QTreeWidget
     QAction* mToggleEditingAction;
 
     /*!
-     * A fuction sed to determin how far down in the list an item is (starting with one for the first Item.
+     * A function to determine how far down in the list an item is (starting with one for the first Item).
      *If the item is not in the legend, -1 is returned
      * @see mItemBeingMovedOrigPos
      */

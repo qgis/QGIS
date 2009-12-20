@@ -45,7 +45,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     //! geometryIndex is the index of the feature part (in case of multipart geometries)
     void addPoint( const QgsPoint & p, bool update = true, int geometryIndex = 0 );
 
-    //!Removes the last point. Most usefull in connection with undo operations
+    //!Removes the last point. Most useful in connection with undo operations
     void removeLastPoint( int geometryIndex = 0 );
 
     void movePoint( const QgsPoint & p, int geometryIndex = 0 );
@@ -54,7 +54,7 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     void movePoint( int index, const QgsPoint& p, int geometryIndex = 0 );
 
     /**Sets this rubber band to the geometry of an existing feature.
-     This is usefull for feature highlighting.
+     This is useful for feature highlighting.
     @param geom the geometry object
     @param layer the layer containing the feature, used for coord transformation to map
     crs. In case of 0 pointer, the coordinates are not going to be transformed.

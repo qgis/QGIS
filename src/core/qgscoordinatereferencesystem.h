@@ -162,7 +162,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     bool createFromProj4( const QString theProjString );
 
-    /*! Find out whether this CRS is correctly initialised and useable */
+    /*! Find out whether this CRS is correctly initialised and usable */
     bool isValid() const;
 
     /*! Perform some validation on this CRS. If the sts doesn't validate the
@@ -171,7 +171,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * method will do its best to make sure that this CRS is valid - even
      * if that involves resorting to a hard coded default of geocs:wgs84.
      *
-     * @note It is not usually neccessary to use this function, unless you
+     * @note It is not usually necessary to use this function, unless you
      * are trying to force this srs to be valid.
      */
     void validate();
@@ -305,7 +305,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      */
     QString validationHint();
     // Mutators -----------------------------------
-    // We dont want to expose these to the public api since they wont create
+    // We don't want to expose these to the public api since they wont create
     // a fully valid crs. Programmers should use the createFrom* methods rather
   private:
     /** A static helper function to find out the proj4 string for a srsid

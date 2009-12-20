@@ -2199,9 +2199,6 @@ Build the ALL_BUILD project. This will build all the QGIS binaries along with al
   8. Building under Windows using MSVC Express
   ============================================
 
-/!\ Note: Building under MSVC is still a work in progress. In particular the
-following dont work yet: python, grass, postgis connections.
-
 /!\ This section of the document is in draft form and is not ready to be used
 yet.
 
@@ -2268,7 +2265,7 @@ First thing we need to get is MSVC Express from here:
 
 http://msdn2.microsoft.com/en-us/express/aa975050.aspx
 
-The page is really confusing so dont feel bad if you cant actually find the 
+The page is really confusing so don't feel bad if you cant actually find the 
 download at first! There are six coloured blocks on the page for the various  
 studio family members (vb / c# / j# etc). Simply choose your language under 
 the 'select your language' combo under the yellow C++ block, and your download 
@@ -2485,7 +2482,7 @@ and replace it with this one:
   ==========================
 
 Right click on 'My computer' then select the 'Advanced' tab. Click environment variables and 
-create or augment the following '''System''' variables (if they dont already exist):
+create or augment the following '''System''' variables (if they don't already exist):
 
 
   Variable Name:     Value:

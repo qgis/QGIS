@@ -112,7 +112,7 @@ void Regression1141::diacriticalTest()
                                   &mCRS );
 
     QgsPoint myPoint = QgsPoint( 10.0, 10.0 );
-    // NOTE: dont delete this pointer again -
+    // NOTE: don't delete this pointer again -
     // ownership is passed to the feature which will
     // delete it in its dtor!
     QgsGeometry * mypPointGeometry = QgsGeometry::fromPoint( myPoint );

@@ -176,7 +176,7 @@ void QgsContinuousColorRenderer::renderFeature( QgsRenderContext &renderContext,
     }
     if ( selected )
     {
-      //for polygons we dont use selection colour for outline
+      //for polygons we don't use selection colour for outline
       //otherwise adjacent features appear merged when selected
       if ( mGeometryType != QGis::Polygon )
       {

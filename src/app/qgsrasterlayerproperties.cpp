@@ -1890,7 +1890,7 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
 
   QgsDebugMsg( "Computing histogram minima and maxima" );
   //somtimes there are more bins than needed
-  //we find out the last on that actully has data in it
+  //we find out the last on that actually has data in it
   //so we can discard the rest adn the x-axis scales correctly
   int myLastBinWithData = 0;
   //
@@ -2025,7 +2025,7 @@ void QgsRasterLayerProperties::on_pbnHistRefresh_clicked()
       //see wehter to draw something each loop or to save up drawing for after iteration
       if ( myGraphType == BAR_CHART )
       {
-        //determin which color to draw the bar
+        //determine which color to draw the bar
         int c1, c2, c3;
         // Take middle of the interval for color
         // TODO: this is not precise
@@ -3120,7 +3120,7 @@ void QgsRasterLayerProperties::on_pbnSaveDefaultStyle_clicked()
 
 void QgsRasterLayerProperties::on_pbnLoadStyle_clicked()
 {
-  QSettings myQSettings;  // where we keep last used filter in persistant state
+  QSettings myQSettings;  // where we keep last used filter in persistent state
   QString myLastUsedDir = myQSettings.value( "style/lastStyleDir", "." ).toString();
 
   //create a file dialog
@@ -3185,7 +3185,7 @@ void QgsRasterLayerProperties::on_pbnLoadStyle_clicked()
 void QgsRasterLayerProperties::on_pbnSaveStyleAs_clicked()
 {
 
-  QSettings myQSettings;  // where we keep last used filter in persistant state
+  QSettings myQSettings;  // where we keep last used filter in persistent state
   QString myLastUsedDir = myQSettings.value( "style/lastStyleDir", "." ).toString();
 
   //create a file dialog
@@ -3226,7 +3226,7 @@ void QgsRasterLayerProperties::on_pbnSaveStyleAs_clicked()
       //reset if the default style was loaded ok only
       if ( defaultLoadedFlag )
       {
-        //dont show the message if all went well...
+        //don't show the message if all went well...
         sync();
       }
       else

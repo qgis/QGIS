@@ -1375,7 +1375,7 @@ QString QgsProject::readPath( QString src ) const
   int pos;
   while (( pos = projElems.indexOf( ".." ) ) > 0 )
   {
-    // remove preceeding element and ..
+    // remove preceding element and ..
     projElems.removeAt( pos - 1 );
     projElems.removeAt( pos - 1 );
   }

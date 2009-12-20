@@ -296,7 +296,7 @@ class OsmCreateLineMT(QgsMapTool):
             if self.snappedPoint:
                 newLinePoint=self.snappedPoint
 
-            # add new point into rubberband (and removing last one if neccessary) and into new line members list
+            # add new point into rubberband (and removing last one if necessary) and into new line members list
             if not self.lastPointIsStable:
                 self.lineRubBand.removeLastPoint()
                 self.lastPointIsStable=True

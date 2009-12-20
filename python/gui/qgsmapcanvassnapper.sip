@@ -2,7 +2,7 @@
 /** \ingroup gui
  * This class reads the snapping properties from the current project and
  * configures a QgsSnapper to perform the snapping.
- * Snapping can be done to the active layer  (usefull for selecting a vertex to
+ * Snapping can be done to the active layer  (useful for selecting a vertex to
  * manipulate) or to background layers
  */
 class QgsMapCanvasSnapper
@@ -30,7 +30,7 @@ class QgsMapCanvasSnapper
        @param snappingTol snapping tolerance. -1 means that the search radius for vertex edits is taken
        @param excludePoints a list with (map coordinate) points that should be excluded in the snapping result. Useful e.g. for vertex moves where a vertex should not be snapped to its original position*/
     int snapToCurrentLayer( const QPoint& p, QList<QgsSnappingResult>& results /Out/, QgsSnapper::SnappingType snap_to, double snappingTol = -1, const QList<QgsPoint>& excludePoints = QList<QgsPoint>() );
-    /**Snaps to the background layers. This method is usefull to align the features of the
+    /**Snaps to the background layers. This method is useful to align the features of the
        edited layers to those of other layers (as described in the project properties).
        Uses snap mode QgsSnapper::SnapWithOneResult. Therefore, only the
        closest result is returned.

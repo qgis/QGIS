@@ -47,7 +47,7 @@ class QTermWidget : public QWidget
 
 
     //Creation of widget
-    QTermWidget( int startnow = 1, //start shell programm immediatelly
+    QTermWidget( int startnow = 1, //start shell program immediately
                  QWidget *parent = 0 );
     ~QTermWidget();
 

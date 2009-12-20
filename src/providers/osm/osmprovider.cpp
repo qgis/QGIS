@@ -145,7 +145,7 @@ QgsOSMDataProvider::QgsOSMDataProvider( QString uri )
   QFile osmFile( mFileName );
   bool databaseExists = dbFile.exists();
 
-  // open database and create database schema for OSM data if neccessary
+  // open database and create database schema for OSM data if necessary
   // (find out if such database already exists; if not create it)
   if ( !openDatabase() )
   {
@@ -154,7 +154,7 @@ QgsOSMDataProvider::QgsOSMDataProvider( QString uri )
     return;
   };
 
-  // flag determining if OSM file parsing is neccessary
+  // flag determining if OSM file parsing is necessary
   bool shouldParse = true;
 
   if ( mFeatureType != PolygonType )

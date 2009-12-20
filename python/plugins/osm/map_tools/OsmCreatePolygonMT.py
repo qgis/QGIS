@@ -296,7 +296,7 @@ class OsmCreatePolygonMT(QgsMapTool):
             if self.snappedPoint:
                 newPolygonPoint=self.snappedPoint
 
-            # add new point into rubberband (and removing last one if neccessary) and into new polygon members list
+            # add new point into rubberband (and removing last one if necessary) and into new polygon members list
             if not self.lastPointIsStable:
                 self.polygonRubBand.removeLastPoint()
                 self.lastPointIsStable=True

@@ -570,7 +570,7 @@ void QgsComposerItem::drawSelectionBoxes( QPainter* p )
 
     if ( mItemPositionLocked )
     {
-      //draw lock symbol at upper left edge. Use QImage to be independant of the graphic system
+      //draw lock symbol at upper left edge. Use QImage to be independent of the graphic system
       QString lockIconPath = QgsApplication::activeThemePath() + "/mIconLock.png";
       if ( !QFile::exists( lockIconPath ) )
       {

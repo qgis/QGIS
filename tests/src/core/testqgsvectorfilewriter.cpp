@@ -125,7 +125,7 @@ void TestQgsVectorFileWriter::createPoint()
   // Create a feature
   //
   //
-  // NOTE: dont delete this pointer again -
+  // NOTE: don't delete this pointer again -
   // ownership is passed to the feature which will
   // delete it in its dtor!
   QgsGeometry * mypPointGeometry = QgsGeometry::fromPoint( mPoint1 );
@@ -172,7 +172,7 @@ void TestQgsVectorFileWriter::createLine()
   QgsPolyline myPolyline;
   myPolyline << mPoint1 << mPoint2 << mPoint3;
   //
-  // NOTE: dont delete this pointer again -
+  // NOTE: don't delete this pointer again -
   // ownership is passed to the feature which will
   // delete it in its dtor!
   QgsGeometry * mypLineGeometry = QgsGeometry::fromPolyline( myPolyline );
@@ -225,7 +225,7 @@ void TestQgsVectorFileWriter::createPolygon()
   //polygon: first item of the list is outer ring,
   // inner rings (if any) start from second item
   //
-  // NOTE: dont delete this pointer again -
+  // NOTE: don't delete this pointer again -
   // ownership is passed to the feature which will
   // delete it in its dtor!
   QgsGeometry * mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
@@ -285,7 +285,7 @@ void TestQgsVectorFileWriter::polygonGridTest()
       //polygon: first item of the list is outer ring,
       // inner rings (if any) start from second item
       //
-      // NOTE: dont delete this pointer again -
+      // NOTE: don't delete this pointer again -
       // ownership is passed to the feature which will
       // delete it in its dtor!
       QgsGeometry * mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
@@ -358,7 +358,7 @@ void TestQgsVectorFileWriter::projectedPlygonGridTest()
       //polygon: first item of the list is outer ring,
       // inner rings (if any) start from second item
       //
-      // NOTE: dont delete this pointer again -
+      // NOTE: don't delete this pointer again -
       // ownership is passed to the feature which will
       // delete it in its dtor!
       QgsGeometry * mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );

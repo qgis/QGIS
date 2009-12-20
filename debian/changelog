@@ -66,7 +66,7 @@ qgis (1.1.0) UNRELEASED; urgency=low
   * gridmaker plugin removed from package
   * updated mime support
   * sync with debian-gis debian/ tree
-    - introduce arch-independant qgis-common and
+    - introduce arch-independent qgis-common and
       qgis-plugin-grass-common
     - policy updated to 3.8.0
     - join libqgis1-core and libqgis1-gui to libqgis1
@@ -74,7 +74,7 @@ qgis (1.1.0) UNRELEASED; urgency=low
     - dh_lintian overrides
     - fix qgis.desktop
     - fix license reference in copyright
-  * introduce arch-independant python-qgis-common
+  * introduce arch-independent python-qgis-common
   * added sharedmimeinfo
   * remove dpatch
 

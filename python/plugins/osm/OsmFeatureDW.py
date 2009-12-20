@@ -201,7 +201,7 @@ class OsmFeatureDW(QDockWidget, Ui_OsmFeatureDW,  object):
 
 
     def __connectWidgetSignals(self):
-        """Function connects all neccessary signals to appropriate slots.
+        """Function connects all necessary signals to appropriate slots.
         """
 
         # signals emitted on clicking with tag and member tables
@@ -228,7 +228,7 @@ class OsmFeatureDW(QDockWidget, Ui_OsmFeatureDW,  object):
 
     def databaseChanged(self,dbKey):
         """This function is called when current OSM database of plugin changes.
-        The OsmFeatureDW performs neccessary actions and tells current map tool about the change.
+        The OsmFeatureDW performs necessary actions and tells current map tool about the change.
 
         @param dbKey key (name) of new current database
         """

@@ -333,8 +333,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /**Adds a vertex to segments which intersect point p but don't
      already have a vertex there. If a feature already has a vertex at position p,
-     no additional vertex is inserted. This method is usefull for topological
-    editing.
+     no additional vertex is inserted. This method is useful for topological
+     editing.
     @param p position of the vertex
     @return 0 in case of success*/
     int addTopologicalPoints( const QgsPoint& p );

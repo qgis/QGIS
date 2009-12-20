@@ -211,7 +211,7 @@ namespace pal
         PointSet *obstacle;
       } PruneCtx;
 
-      /** Check wheter the candidate in ctx overlap with obstacle feat */
+      /** Check whether the candidate in ctx overlap with obstacle feat */
       static bool pruneCallback( LabelPosition *lp, void *ctx );
 
       // for sorting

@@ -182,7 +182,7 @@ void QgsGrassTools::runModule( QString name )
 
   mTabWidget->setCurrentIndex( mTabWidget->count() - 1 );
 
-  // We must call resize to reset COLUMNS enviroment variable
+  // We must call resize to reset COLUMNS environment variable
   // used by bash !!!
 
   /* TODO: Implement something that resizes the terminal without

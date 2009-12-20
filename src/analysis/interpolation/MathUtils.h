@@ -45,11 +45,11 @@ namespace MathUtils
   double ANALYSIS_EXPORT distPointFromLine( Point3D* thepoint, Point3D* p1, Point3D* p2 );
   /**faculty function*/
   int ANALYSIS_EXPORT faculty( int n );
-  /**Tests, wheter 'testp' is inside the circle through 'p1', 'p2' and 'p3'*/
+  /**Tests, whether 'testp' is inside the circle through 'p1', 'p2' and 'p3'*/
   bool ANALYSIS_EXPORT inCircle( Point3D* testp, Point3D* p1, Point3D* p2, Point3D* p3 );
   /**Tests, whether 'point' is inside the diametral circle through 'p1' and 'p2'*/
   bool ANALYSIS_EXPORT inDiametral( Point3D* p1, Point3D* p2, Point3D* point );
-  /**Returns whether 'thepoint' is left or right of the line from 'p1' to 'p2'. Negativ values mean left and positiv values right. There may be numerical instabilities, so a treshold may be useful*/
+  /**Returns whether 'thepoint' is left or right of the line from 'p1' to 'p2'. Negativ values mean left and positiv values right. There may be numerical instabilities, so a threshold may be useful*/
   double ANALYSIS_EXPORT leftOf( Point3D* thepoint, Point3D* p1, Point3D* p2 );
   /**Returns true, if line1 (p1 to p2) and line2 (p3 to p4) intersect. If the lines have an endpoint in common, false is returned*/
   bool ANALYSIS_EXPORT lineIntersection( Point3D* p1, Point3D* p2, Point3D* p3, Point3D* p4 );

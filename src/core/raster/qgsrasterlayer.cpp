@@ -2917,7 +2917,7 @@ QPixmap QgsRasterLayer::paletteAsPixmap( int theBandNumber )
 
   // Only do this for the non-provider (hard-coded GDAL) scenario...
   // Maybe WMS can do this differently using QImage::numColors and QImage::color()
-  if ( mProviderKey.isEmpty() && hasBand( "Palette" ) && theBandNumber > 0 ) //dont tr() this its a gdal word!
+  if ( mProviderKey.isEmpty() && hasBand( "Palette" ) && theBandNumber > 0 ) //don't tr() this its a gdal word!
   {
     QgsDebugMsg( "....found paletted image" );
     QgsColorRampShader myShader;
@@ -2977,7 +2977,7 @@ void QgsRasterLayer::populateHistogram( int theBandNo, int theBinCount, bool the
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
   QgsRasterBandStats myRasterBandStats = bandStatistics( theBandNo );
   //calculate the histogram for this band
-  //we assume that it only needs to be calculated if the lenght of the histogram
+  //we assume that it only needs to be calculated if the length of the histogram
   //vector is not equal to the number of bins
   //i.e if the histogram has never previously been generated or the user has
   //selected a new number of bins.
@@ -3786,7 +3786,7 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
   {
     QgsColorRampShader* myColorRampShader = ( QgsColorRampShader* ) mRasterShader->rasterShaderFunction();
 
-    //TODO: Remove the customColorRampType check and following if() in v2.0, added for compatability with older ( bugged ) project files
+    //TODO: Remove the customColorRampType check and following if() in v2.0, added for compatibility with older ( bugged ) project files
     QDomNode customColorRampTypeNode = customColorRampNode.namedItem( "customColorRampType" );
     QDomNode colorRampTypeNode = customColorRampNode.namedItem( "colorRampType" );
     QString myRampType = "";
@@ -5314,7 +5314,7 @@ bool QgsRasterLayer::readFile( QString const &theFilename )
     mRasterType = Multiband;
   }
   //TODO hasBand is really obsolete and only used in the Palette instance, change to new function hasPalette(int)
-  else if ( hasBand( "Palette" ) ) //dont tr() this its a gdal word!
+  else if ( hasBand( "Palette" ) ) //don't tr() this its a gdal word!
   {
     mRasterType = Palette;
   }

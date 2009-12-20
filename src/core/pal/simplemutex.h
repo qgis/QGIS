@@ -35,7 +35,7 @@
 #include <config.h>
 #endif
 
-// Platform dependant mutex
+// Platform dependent mutex
 #ifdef _HAVE_PTHREAD_
 #include <pthread.h>
 #define THREAD_TYPE pthread_mutex_t

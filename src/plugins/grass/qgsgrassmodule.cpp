@@ -323,7 +323,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
   QProcess process( this );
   process.start( cmd, arguments );
 
-  // ? Does binary on Win need .exe extention ?
+  // ? Does binary on Win need .exe extension ?
   // Return code 255 (-1) was correct in GRASS < 6.1.0
   if ( !process.waitForFinished()
        || ( process.exitCode() != 0 && process.exitCode() != 255 ) )
@@ -1204,7 +1204,7 @@ void QgsGrassModule::run()
     // Warning: it is not useful to write requested region to WIND file and
     //          reset then to original beacuse it is reset before
     //          the region is read by a module even if waitForStarted() is used
-    //          -> necessary to pass region as enviroment variable
+    //          -> necessary to pass region as environment variable
     //             but the feature is available in GRASS 6.1 only since 23.3.2006
 
     QStringList environment = QProcess::systemEnvironment();
@@ -1217,7 +1217,7 @@ void QgsGrassModule::run()
 
     // I was not able to get scripts working on Windows
     // via QProcess and sh.exe (MinGW). g.parser runs well
-    // and it sets parameters correctly as enviroment variables
+    // and it sets parameters correctly as environment variables
     // but it fails (without error) to re-run the script with
     // execlp(). And I could not figure out why it fails.
     // Because of this problem we simulate here what g.parser
@@ -1239,7 +1239,7 @@ void QgsGrassModule::run()
     {
       QStringList usedFlagNames;
 
-      // Set enviroment variables
+      // Set environment variables
       for ( int i = 0; i < arguments.size(); i++ )
       {
         QString arg = arguments.at( i );
