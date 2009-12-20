@@ -221,14 +221,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="41"/>
         <source>Tolerance</source>
-        <translation>&amp;Tolerancja</translation>
+        <translation>Tolerancja</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="86"/>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="55"/>
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="35"/>
         <source>Unique ID field</source>
-        <translation>Pole z &amp;unikalnym ID</translation>
+        <translation>Pole z unikalnym ID</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="110"/>
@@ -266,7 +266,8 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="118"/>
         <source>Dissolve field</source>
-        <translation>Pole a&amp;gregacji</translation>
+        <translatorcomment>to jest chyba jakiś relikt przeszłości, zawsze ukryty</translatorcomment>
+        <translation type="unfinished">Pole agregacji</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="166"/>
@@ -956,7 +957,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/labeling/engineconfigdialog.ui" line="50"/>
         <source>FALP (fastest)</source>
-        <translation type="unfinished">FALP (najszybszy)</translation>
+        <translation>FALP (najszybszy)</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/engineconfigdialog.ui" line="78"/>
@@ -4709,7 +4710,7 @@ Prosimy o kontakt z autorami.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2132"/>
         <source>Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.3.0. If an unchanging user interface, programmatic API and long term support is more important to you then cool new and untested features, we recommend that you use a copy of QGIS from our Long Term Support (LTS)1.0.x release series. In all other cases we recommend that you use this version.</source>
-        <translation type="unfinished">Zważ, że ta wersja należy do linii rozwojowej. Jako taka zawiera nowe funkcje i rozszerzenia programistyczne w porównaniu do wersji QGIS 1.0.x oraz QGIS 1.3.0. Jeśli stabilność i długoterminowe wsparcie - a nie nowości i nieprzetestowane do końca funkcje - są dla Ciebie priorytetem, polecamy użycie stabilnej wersji QGIS 1.0.x (LTS). W pozostałych przypadkach zalecamy korzystanie z tej właśnie wersji.</translation>
+        <translation>Zważ, że ta wersja należy do linii rozwojowej. Jako taka, zawiera nowe funkcje i rozszerzenia programistyczne w porównaniu do wersji QGIS 1.0.x oraz QGIS 1.3.0. Jeśli stabilność i długoterminowe wsparcie, a nie nowości i nieprzetestowane do końca funkcje, są dla Ciebie priorytetem, polecamy użycie stabilnej wersji QGIS 1.0.x (LTS). W pozostałych przypadkach zalecamy korzystanie z tej właśnie wersji.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2140"/>
@@ -4719,42 +4720,42 @@ Prosimy o kontakt z autorami.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2148"/>
         <source>Probably the biggest new feature is the addition of the new vector symbology infrastructure. This is provided alongside the old implementation - you can switch using a button in the vector layer properties dialog. It does&apos;t replace the old symbology implementation completely yet because there are various issues that need to be resolved and a large amount of testing before it is considered ready.</source>
-        <translation type="unfinished">Prawdopodobnie największą zmianą jest dodanie nowej infrastruktury stylów. Jest ona dostępna równolegle z poprzednimi stylami w ramach właściwości warstw wektorowych. Nie zastępuje ona jeszcze całkowicie poprzedniej, ponieważ wymaga jeszcze dokładnego przetestowania.</translation>
+        <translation>Prawdopodobnie największą z nich jest dodanie nowej infrastruktury stylów. Jest ona dostępna równolegle z poprzednimi stylami w ramach właściwości warstw wektorowych. Nie zastępuje jeszcze całkowicie poprzedniej, ponieważ wymaga dokładnego przetestowania.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2156"/>
         <source>QGIS now has a field calculator, accessible via a button in the attribute section of the vector properties, and from the attribute table user interface. You can use feature length, feature area, string concatenation and type conversions in the field calculator, as well as field values.</source>
-        <translation type="unfinished">QGIS został wyposażony w kalkulator pól dostępny poprzez klawisz w sekcji atrybutów właściwości warstw wektorowych oraz w tabeli atrybutów. Można liczyć długości obiektów, ich pola powierzchni, łączyć łańcuchy tekstowe, konwertować typy oraz obliczać wartości z pól.</translation>
+        <translation>QGIS został wyposażony w kalkulator pól, dostępny poprzez klawisz w sekcji atrybutów właściwości warstw wektorowych oraz w tabeli atrybutów. Można obliczać wartości z pól, łączyć łańcuchy tekstowe, konwertować typy oraz korzystać z pomiarów długości i pola powierzchni obiektów.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2163"/>
         <source>The map composer has had a lot of attention. A grid can now be added to composer maps. Composer maps can now be rotated in the layout. The limitation of a single map layout per project has been removed. A new composer manager dialog has been added to manage the existing composer instances. The composer widget property sheets have been completely overhauled to use less screen space </source>
-        <translation type="unfinished">Wiele uwagi poświęcono tworzeniu arkuszy. Można teraz dodać do arkusza siatkę. Arkusze mogą być obracane. Usunięto ograniczenie jednego arkusza na projekt. Dodano możliwość zarządzania arkuszami. Przebudowano układ okna z arkuszami, aby zajmowało ono mniej miejsca na ekranie.</translation>
+        <translation type="unfinished">Wiele uwagi poświęcono tworzeniu arkuszy. Można teraz dodać do mapy siatkę. Mapy mogą być obracane. Usunięto ograniczenie jednego arkusza na projekt. Dodano możliwość zarządzania arkuszami. Przebudowano układ okna z arkuszami, aby zajmowało ono mniej miejsca na ekranie</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2171"/>
         <source>Various parts of the user interface have been overhauled with the goal of improving consistency and to improve support for netbooks and other smaller screen devices. Loading and saving of shortcuts. Position can now be displayed as Degrees, Minutes, Seconds in the status bar. The add, move and delete vertex buttons are now removed and the node tool is moved from the advanced editing toolbar to the standard editing toolbar. The identification tool has also undergone numerous improvements.</source>
-        <translation type="unfinished">Usprawniono interfejs użytkownika w celu poprawy spójności i lepszej obsługi przez netbooki oraz inne urządzenia o małych ekranach. Dodano możliwość wczytywania i zapis skrótów klawiszowych. Pozycja kursora może być teraz wyświetlana w pasku statusu jako stopnie, minuty i sekundy. Przyciski dodaj, przesuń oraz usuń wierzchołek zastąpiono jednym narzędziem do edycji węzłów, które przeniesiono z paska narzędziowego edycji zaawansowanej do paska standardowego. Usprawniono narzędzie identyfikacji.</translation>
+        <translation>Usprawniono interfejs użytkownika w celu poprawy spójności i lepszej obsługi przez netbooki oraz inne urządzenia o małych ekranach. Dodano możliwość wczytywania i zapisu skrótów klawiszowych. Pozycja kursora może być teraz wyświetlana w pasku statusu jako stopnie, minuty i sekundy. Przyciski dodaj, przesuń oraz usuń wierzchołek zastąpiono jednym narzędziem do edycji węzłów, które przeniesiono z paska narzędziowego edycji zaawansowanej do paska standardowego. Usprawniono narzędzie identyfikacji.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2181"/>
         <source>A render caching capability has been added to QGIS. This speeds up common operations such as layer re-ordering, changing symbology, WMS / WFS client, hiding / showing layers and opens the door for future enhancements such as threaded rendering and pre-compositing layer cache manipulation. Note that it is disabled by default, and can be enabled in the options dialog.</source>
-        <translation type="unfinished">Dodano pamięć podręczną renderowania. Przyspiesza to częste operacje, takie jak zmiana kolejności warstw, zmiana stylów, dodawanie warstw WMS / WFS, czy wyświetlanie i ukrywanie warstw. Toruje też drogę dla przyszłych usprawnień, takich jak wielowątkowy rendering oraz wyprzedzające wczytywanie warstw. Ta opcja domyślnie jest wyłączona i można ja uaktywnić w opcjach.</translation>
+        <translation>Dodano pamięć podręczną renderowania. Przyspiesza to częste operacje, takie jak zmiana kolejności warstw, zmiana stylów, dodawanie warstw WMS / WFS, czy wyświetlanie i ukrywanie warstw. Toruje też drogę dla przyszłych usprawnień, takich jak wielowątkowy rendering oraz wyprzedzające wczytywanie warstw. Ta opcja domyślnie jest wyłączona i można ja uaktywnić w opcjach.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2189"/>
         <source>User defined SVG search paths are now added to the options dialog.</source>
-        <translation type="unfinished">Dodano definiowanie przez użytkownika ścieżek poszukiwania plików SVG.</translation>
+        <translation>Dodano definiowalne przez użytkownika ścieżki poszukiwania plików SVG.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2192"/>
         <source>When creating a new shapefile, you can now specify its CRS. Also the avoid intersections option for polygons is now also possible with background layers.</source>
-        <translation type="unfinished">Przy tworzeniu nowego pliku shapefile można określić jego układ współrzędnych. Możliwe jest też wykorzystanie opcji unikaj przecinania z warstwami tła dla poligonów.</translation>
+        <translation>Przy tworzeniu nowego pliku Shapefile można określić jego układ współrzędnych. Możliwe jest też wykorzystanie opcji unikaj przecinania z warstwami tła dla poligonów.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2196"/>
         <source>For power users, you can now create customizable attribute forms using Qt Designer dialog UIs.</source>
-        <translation type="unfinished">Zaawansowani użytkownicy mogą teraz dostosować formularz atrybutów używając Qt Designer.</translation>
+        <translation>Zaawansowani użytkownicy mogą teraz tworzyć własne formularze edycji atrybutów używając Qt Designera.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2772"/>
@@ -10368,7 +10369,7 @@ Please reselect a valid file.</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="213"/>
         <source>Symbology</source>
-        <translation type="unfinished">Style</translation>
+        <translation type="unfinished">Styl</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="327"/>
@@ -12597,14 +12598,14 @@ Może to być spowodowane problemem w sieci lokalnej lub problemem serwera WMS.<
         <location filename="../src/app/qgsidentifyresults.cpp" line="255"/>
         <location filename="../src/app/qgsidentifyresults.cpp" line="348"/>
         <source>Edit feature form</source>
-        <translation type="unfinished">Edytuj atrybuty w formularzu</translation>
+        <translation>Edytuj w formularzu</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="200"/>
         <location filename="../src/app/qgsidentifyresults.cpp" line="255"/>
         <location filename="../src/app/qgsidentifyresults.cpp" line="348"/>
         <source>View feature form</source>
-        <translation type="unfinished">Wyświetl formularz obiektu</translation>
+        <translation>Wyświetl w formularzu</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="349"/>
@@ -14252,12 +14253,12 @@ Czy chcesz go nadpisać?</translation>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="456"/>
         <source>Forces labels on, regardless of collisions. Available only for cached labels.</source>
-        <translation>Wymusza etykiety niezależnie od konfliktów.</translation>
+        <translation>Wymusza etykiety niezależnie od konfliktów (FORCE).</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="495"/>
         <source>Check to allow MapServer to return data in GML format. Useful when used with WMS GetFeatureInfo operations.</source>
-        <translation>Zaznacz aby MapServer zwrócił dane w formacie GML. Przydatne, gdy wykorzystuje się z GetFeatureInfo usługi WMS.</translation>
+        <translation>Zaznacz aby MapServer zwrócił dane w formacie GML. Przydatne, gdy wykorzystuje się z GetFeatureInfo usługi WMS (DUMP).</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="459"/>
@@ -14313,7 +14314,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="335"/>
         <source>The file name of the fonts file.</source>
-        <translation>Nazwa pliku czcionek.</translation>
+        <translation>Nazwa pliku czcionek (FONTSET).</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="354"/>
@@ -14323,7 +14324,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="367"/>
         <source>The file name of the symbols file.</source>
-        <translation>Nazwa pliku symboli.</translation>
+        <translation>Nazwa pliku symboli (SYMBOLSET).</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="450"/>
@@ -14333,7 +14334,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="469"/>
         <source>Should text be antialiased? Note that this requires more available colors, decreases drawing performance, and results in slightly larger output images.</source>
-        <translation>Wygładzanie tekstu etykiet. To wymaga większej ilości dostępnych kolorów, spowalnia rysowanie orz produkuje nieco większe obrazy.</translation>
+        <translation>Wygładzanie tekstu etykiet. To wymaga większej ilości dostępnych kolorów, spowalnia rysowanie orz produkuje nieco większe obrazy (ANTIALIAS).</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="472"/>
@@ -14343,7 +14344,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="482"/>
         <source>Can text run off the edge of the map?</source>
-        <translation>Czy etykiety mogą wychodzić poza obszar mapy?</translation>
+        <translation>Czy etykiety mogą wychodzić poza obszar mapy (PARTIALS)?</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="485"/>
@@ -14353,7 +14354,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="498"/>
         <source>Dump</source>
-        <translation type="unfinished">Zrzut</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="230"/>
@@ -16582,7 +16583,7 @@ Sprawdź czy masz uprawnienia SELECT do tabeli zawierającej geometrię PostGIS.
     <name>QgsPluginInstaller</name>
     <message>
         <source>Couldn&apos;t parse output from the repository</source>
-        <translation type="unfinished">Nie mogę poprawnie odczytać zawartości repozytorium </translation>
+        <translation>Nie mogę poprawnie odczytać zawartości repozytorium </translation>
     </message>
     <message>
         <source>Couldn&apos;t open the local plugin directory</source>
