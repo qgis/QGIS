@@ -248,7 +248,7 @@ QString QgsProjectionSelector::ogcWmsCrsFilterAsSqlExpression( QSet<QString> * c
 
     if ( parts.at( 0 ) == "EPSG" && parts.size() >= 2 )
     {
-      //this line is neccesary to make change projection work
+      //this line is necessary to make change projection work
       //with geoserver because for some reason geoserver returns
       //EPSG:WGS84(DD) as the first srs and is invalid because the
       //epsg database expect an integer string
@@ -699,7 +699,7 @@ void QgsProjectionSelector::loadUserCrsList( QSet<QString> * crsFilter )
     // XXX This will likely never happen since on open, sqlite creates the
     //     database if it does not exist. But we checked earlier for its existance
     //     and aborted in that case. This is because we may be runnig from read only
-    //     media such as live cd and dont want to force trying to create a db.
+    //     media such as live cd and don't want to force trying to create a db.
     showDBMissingWarning( myDatabaseFileName );
     return;
   }
@@ -759,7 +759,7 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> * crsFilter )
   mProjList->setIcon( 0, QIcon( QgsApplication::activeThemePath() + "transformed.png" ) );
 
   //bail out in case the projections db does not exist
-  //this is neccessary in case the pc is running linux with a
+  //this is necessary in case the pc is running linux with a
   //read only filesystem because otherwise sqlite will try
   //to create the db file on the fly
 
@@ -971,7 +971,7 @@ void QgsProjectionSelector::on_pbnFind_clicked()
     // XXX This will likely never happen since on open, sqlite creates the
     //     database if it does not exist. But we checked earlier for its existance
     //     and aborted in that case. This is because we may be runnig from read only
-    //     media such as live cd and dont want to force trying to create a db.
+    //     media such as live cd and don't want to force trying to create a db.
     showDBMissingWarning( mSrsDatabaseFileName );
     return;
   }
@@ -1050,7 +1050,7 @@ long QgsProjectionSelector::getLargestCRSIDMatch( QString theSql )
       // XXX This will likely never happen since on open, sqlite creates the
       //     database if it does not exist. But we checked earlier for its existance
       //     and aborted in that case. This is because we may be runnig from read only
-      //     media such as live cd and dont want to force trying to create a db.
+      //     media such as live cd and don't want to force trying to create a db.
       showDBMissingWarning( myDatabaseFileName );
       return 0;
     }

@@ -585,7 +585,7 @@ unsigned char* QgsLabel::labelPoint( labelpoint& point, unsigned char *geom, siz
 #endif
   Q_ASSERT( geom + 1 + sizeof( wkbType ) <= geomend );
 
-  geom++; // skip endianess
+  geom++; // skip endianness
   memcpy( &wkbType, geom, sizeof( wkbType ) );
   geom += sizeof( wkbType );
 

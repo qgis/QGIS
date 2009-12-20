@@ -207,7 +207,7 @@ namespace pal
 
       PalStat * getStats();
 
-      /* usefull only for postscript post-conversion*/
+      /* useful only for postscript post-conversion*/
       //void toFile(char *label_file);
 
       SubPart *subPart( int r, int featseed, int *isIn );

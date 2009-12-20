@@ -114,7 +114,7 @@
  * Added stdlib.h to ensure that atof() is prototyped.
  *
  * Revision 1.21  1999/12/13 17:25:46  warmerda
- * Added support for upper case .DBF extention.
+ * Added support for upper case .DBF extension.
  *
  * Revision 1.20  1999/11/30 16:32:11  warmerda
  * Use atof() instead of sscanf().

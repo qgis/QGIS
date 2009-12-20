@@ -5597,7 +5597,7 @@ typedef struct sqlite3_backup sqlite3_backup;
 ** the source and destination databases, where nPage is the value of the 
 ** second parameter passed to sqlite3_backup_step(). If nPage is a negative
 ** value, all remaining source pages are copied. If the required pages are 
-** succesfully copied, but there are still more pages to copy before the 
+** successfully copied, but there are still more pages to copy before the 
 ** backup is complete, it returns [SQLITE_OK]. If no error occured and there 
 ** are no more pages to copy, then [SQLITE_DONE] is returned. If an error 
 ** occurs, then an SQLite error code is returned. As well as [SQLITE_OK] and
@@ -6053,7 +6053,7 @@ struct sqlite3_api_routines {
 
 /*
 ** The following macros redefine the API routines so that they are
-** redirected throught the global sqlite3_api structure.
+** redirected through the global sqlite3_api structure.
 **
 ** This header file is also used by the loadext.c source file
 ** (part of the main SQLite library - not an extension) so that
@@ -6859,7 +6859,7 @@ extern "C"
 	char *Name;		/* field name */
 	unsigned char Type;	/* field type */
 	int Offset;		/* buffer offset [this field begins at *buffer+offset* and extends for *length* bytes */
-	unsigned char Length;	/* field total lenght [in bytes] */
+	unsigned char Length;	/* field total length [in bytes] */
 	unsigned char Decimals;	/* decimal positions */
 	gaiaValuePtr Value;	/* the current multitype value for this attribute */
 	struct gaiaDbfFieldStruct *Next;	/* pointer to next element in linked list */

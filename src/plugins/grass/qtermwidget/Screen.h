@@ -231,11 +231,11 @@ namespace Konsole
       bool getMode( int mode ) const;
 
       /**
-       * Saves the current position and appearence (text color and style) of the cursor.
+       * Saves the current position and appearance (text color and style) of the cursor.
        * It can be restored by calling restoreCursor()
        */
       void saveCursor();
-      /** Restores the position and appearence of the cursor.  See saveCursor() */
+      /** Restores the position and appearance of the cursor.  See saveCursor() */
       void restoreCursor();
 
       /** Clear the whole screen, moving the current screen contents into the history first. */
@@ -261,14 +261,14 @@ namespace Konsole
       void helpAlign();
 
       /**
-       * Enables the given @p rendition flag.  Rendition flags control the appearence
+       * Enables the given @p rendition flag.  Rendition flags control the appearance
        * of characters on the screen.
        *
        * @see Character::rendition
        */
       void setRendition( int rendition );
       /**
-       * Disables the given @p rendition flag.  Rendition flags control the appearence
+       * Disables the given @p rendition flag.  Rendition flags control the appearance
        * of characters on the screen.
        *
        * @see Character::rendition

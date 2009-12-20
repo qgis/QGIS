@@ -44,7 +44,7 @@ class CORE_EXPORT QgsSearchString
     //! destructor - deletes node tree
     ~QgsSearchString();
 
-    //! assigment operator takes care to copy search tree correctly
+    //! assignment operator takes care to copy search tree correctly
     QgsSearchString& operator=( const QgsSearchString& str );
 
     /** sets search string and parses search tree

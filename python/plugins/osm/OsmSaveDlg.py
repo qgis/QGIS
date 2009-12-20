@@ -20,7 +20,7 @@ import sqlite3
 
 
 class OsmSaveDlg(QDialog, Ui_OsmSaveDlg):
-    """This class provides all structures and methods neccessary for current OSM data saving.
+    """This class provides all structures and methods necessary for current OSM data saving.
 
     Saving is done to XML file.
     After XML file selection and confirming the dialog, process is started.
@@ -93,7 +93,7 @@ class OsmSaveDlg(QDialog, Ui_OsmSaveDlg):
     def onOK(self):
         """Function is called after clicking on OK button of OSM Save dialog.
 
-        It performs all actions neccessary for OSM data saving.
+        It performs all actions necessary for OSM data saving.
         """
 
         # prepare data

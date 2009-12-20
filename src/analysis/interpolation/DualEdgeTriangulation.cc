@@ -1689,7 +1689,7 @@ void DualEdgeTriangulation::ruppertRefinement()
 
 
   //first, go through all the forced edges and subdivide if they are encroached by a point
-  bool stop = false;//flag to ensure that the for-loop is repeated until no half edge is splitted any more
+  bool stop = false;//flag to ensure that the for-loop is repeated until no half edge is split any more
 
   while ( stop == false )
   {

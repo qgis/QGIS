@@ -455,7 +455,7 @@ void QgsComposer::on_mActionRefreshView_triggered()
 
 void QgsComposer::on_mActionExportAsPDF_triggered()
 {
-  QSettings myQSettings;  // where we keep last used filter in persistant state
+  QSettings myQSettings;  // where we keep last used filter in persistent state
   QString myLastUsedFile = myQSettings.value( "/UI/lastSaveAsPdfFile", "qgis.pdf" ).toString();
   QFileInfo file( myLastUsedFile );
   QFileDialog *myQFileDialog = new QFileDialog( this, tr( "Choose a file name to save the map as" ),
@@ -597,7 +597,7 @@ void QgsComposer::on_mActionExportAsImage_triggered()
   FilterMap myFilterMap;
 
   //find out the last used filter
-  QSettings myQSettings;  // where we keep last used filter in persistant state
+  QSettings myQSettings;  // where we keep last used filter in persistent state
   QString myLastUsedFormat = myQSettings.value( "/UI/lastSaveAsImageFormat", "png" ).toString();
   QString myLastUsedFile = myQSettings.value( "/UI/lastSaveAsImageFile", "qgis.png" ).toString();
   QFileInfo file( myLastUsedFile );

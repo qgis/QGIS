@@ -374,7 +374,7 @@ extern "C"
 	char *Name;		/* field name */
 	unsigned char Type;	/* field type */
 	int Offset;		/* buffer offset [this field begins at *buffer+offset* and extends for *length* bytes */
-	unsigned char Length;	/* field total lenght [in bytes] */
+	unsigned char Length;	/* field total length [in bytes] */
 	unsigned char Decimals;	/* decimal positions */
 	gaiaValuePtr Value;	/* the current multitype value for this attribute */
 	struct gaiaDbfFieldStruct *Next;	/* pointer to next element in linked list */

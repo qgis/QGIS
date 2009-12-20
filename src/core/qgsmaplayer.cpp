@@ -316,7 +316,7 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
   maplayer.appendChild( layerName );
 
   // zorder
-  // This is no longer stored in the project file. It is superflous since the layers
+  // This is no longer stored in the project file. It is superfluous since the layers
   // are written and read in the proper order.
 
   // spatial reference system id

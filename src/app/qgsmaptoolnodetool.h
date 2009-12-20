@@ -248,13 +248,13 @@ class QgsMapToolNodeTool: public QgsMapToolVertexEdit
 
   protected slots:
     /**
-     * Processing incomming signal of deleted feature (for deletion of selected feature)
+     * Processing incoming signal of deleted feature (for deletion of selected feature)
      * @param featureId id of deleted feature
      */
     void featureDeleted( int featureId );
 
     /**
-     * Processing incomming signal of deleted feature (for deletion of selected feature)
+     * Processing incoming signal of deleted feature (for deletion of selected feature)
      * @param featureId id of deleted feature
      */
     void layerModified( bool onlyGeometry );

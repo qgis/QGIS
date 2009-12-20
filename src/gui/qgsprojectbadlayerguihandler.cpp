@@ -237,7 +237,7 @@ bool QgsProjectBadLayerGuiHandler::findLayer( QString const & fileFilters, QDomN
       break;
 
     case IS_Unknown:
-      QgsDebugMsg( "layer has an unkown type" );
+      QgsDebugMsg( "layer has an unknown type" );
       break;
   }
   return retVal;

@@ -40,14 +40,14 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer: public QgsRenderer
 
     /** Get the mode - which is only really used to be able to reinstate
      * the graduated dialog properties properly, so we
-     * dont do anything else besides accessors and mutators in
+     * don't do anything else besides accessors and mutators in
      * this class.
      */
     Mode mode() const;
 
     /** Set the mode - which is only really used to be able to reinstate
      * the graduated dialog properties properly, so we
-     * dont do anything else besides accessors and mutators in
+     * don't do anything else besides accessors and mutators in
      * this class.
      */
     void setMode( Mode theMode );

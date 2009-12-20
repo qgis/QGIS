@@ -129,7 +129,7 @@ void TestQgsMapRenderer::initTestCase()
         //polygon: first item of the list is outer ring,
         // inner rings (if any) start from second item
         //
-        // NOTE: dont delete this pointer again -
+        // NOTE: don't delete this pointer again -
         // ownership is passed to the feature which will
         // delete it in its dtor!
         QgsGeometry * mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );

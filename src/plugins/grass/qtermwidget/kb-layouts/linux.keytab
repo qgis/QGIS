@@ -43,7 +43,7 @@ keyboard "Linux console"
 #
 # If the key is not found here, the text of the
 # key event as provided by QT is emitted, possibly
-# preceeded by ESC if the Alt key is pressed.
+# preceded by ESC if the Alt key is pressed.
 #
 # --------------------------------------------------------------
 

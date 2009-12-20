@@ -114,7 +114,7 @@ namespace Konsole
 {
 
   /**
-   * A convertor which maps between key sequences pressed by the user and the
+   * A converter which maps between key sequences pressed by the user and the
    * character strings which should be sent to the terminal and commands
    * which should be invoked when those character sequences are pressed.
    *

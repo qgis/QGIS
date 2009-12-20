@@ -70,7 +70,7 @@ class QgsIdentifyResultsDock : public QDockWidget
     }
 };
 
-// Tree hierachy
+// Tree hierarchy
 //
 // layer [userrole: QgsMapLayer]
 //   feature: displayfield|displayvalue [userrole: fid]

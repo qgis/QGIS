@@ -542,7 +542,7 @@ QString GRASS_EXPORT QgsGrass::openMapset( QString gisdbase, QString location, Q
 
   out.close();
 
-  // Set GISRC enviroment variable
+  // Set GISRC environment variable
 
   /* _Correct_ putenv() implementation is not making copy! */
   QString gisrcEnv = "GISRC=" + mGisrc;
@@ -604,7 +604,7 @@ QString QgsGrass::closeMapset( )
 
     // Delete temporary dir
 
-    // To be sure that we dont delete '/' for example
+    // To be sure that we don't delete '/' for example
     if ( mTmp.left( 4 ) == "/tmp" )
     {
       QDir dir( mTmp );

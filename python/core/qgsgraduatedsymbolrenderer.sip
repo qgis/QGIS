@@ -22,14 +22,14 @@ class QgsGraduatedSymbolRenderer : QgsRenderer
     
     /** Get the mode - which is only really used to be able to reinstate
      * the graduated dialog properties properly, so we 
-     * dont do anything else besides accessors and mutators in
+     * don't do anything else besides accessors and mutators in
      * this class.
      */
     const Mode mode() const;
 
     /** Set the mode - which is only really used to be able to reinstate
      * the graduated dialog properties properly, so we 
-     * dont do anything else besides accessors and mutators in
+     * don't do anything else besides accessors and mutators in
      * this class.
      */
     void setMode( Mode theMode );

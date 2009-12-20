@@ -97,7 +97,7 @@ Version 1.2.0 'Daphnis'
 ** - add support for data defined symbols
 ** - add support for font symbol markers (only data defined - no gui yet)
 ** - add symbol size in map units (ie. symbols that keep the size in mapunits
-**   independant of the mapscale)
+**   independent of the mapscale)
 ** 
 ** Command line arguments:
 ** 
@@ -185,7 +185,7 @@ Version 1.0.0 'Kore'
 Version 0.11.0 'Metis'
 ** This release includes over 60 bug fixes and enhancements over the 
 ** QGIS 0.10.0 release. In addition we have made the following changes:
-** Revision of all dialogs for user interface consistancy
+** Revision of all dialogs for user interface consistency
 ** Improvements to unique value renderer vector dialog
 ** Symbol previews when defining vector classes
 ** Separation of python support into its own library
@@ -206,7 +206,7 @@ Version 0.10.0 'Io'
 ** in raster layers. Support for color ramps in raster layers. 
 ** Support for non-north up rasters. Many other raster 
 ** improvements 'under the hood'.
-** Updated icons for improved visual consistancy.
+** Updated icons for improved visual consistency.
 ** Support for migration of old projects to work in newer QGIS versions.
 Version 0.9.2rc1 'Ganymede'
 ** This release candidate includes over 40 bug fixes and enchancements 
@@ -309,7 +309,7 @@ very well tested at this stage but works for me with my test dataset
 2005-04-17 [timlinux] 0.6devel17
 ** Custom Projection dialog. Various bugfixes plus delete, insert and update of new
    records possible. User projections now whow in projection selector but are
-   still not useable
+   still not usable
 2005-04-16 [ges] 0.6.0devel16
 ** Fixed bug 1177637 that prevented a PostgreSQL connection from being 
    completely deleted
@@ -861,7 +861,7 @@ linking with -rdynamic and using dlopen()'s RTLD_GLOBAL flag.
 
 ** Moved raster load stuff to a group at the end of qgisapp.cpp file.
 
-** Removed generically useable raster fns from qgisapp to static methods of qgsrasterlayer.
+** Removed generically usable raster fns from qgisapp to static methods of qgsrasterlayer.
 
 ** Some renaming of variable names etc.
 
@@ -870,7 +870,7 @@ linking with -rdynamic and using dlopen()'s RTLD_GLOBAL flag.
 
 2004-06-13 [ts] 0.3.0devel33
 
-** Globally changed legen item fonts to arial 10pt for consistancy with rest of ui. Will soft
+** Globally changed legen item fonts to arial 10pt for consistency with rest of ui. Will soft
    code in qgsoptions in next release.
 
 2004-06-13 [ts] 0.3.0devel32
@@ -1113,7 +1113,7 @@ of qt designer...
 2004-05-18 [ts] 0.2.0devel24
 ** Relax checking of raster filetype extensions to cater for filetypes where
 extension is unpredictable (e.g. grass).
-Now I use gdal to quickly check if a file is useable so pretty much anything
+Now I use gdal to quickly check if a file is usable so pretty much anything
 gdal iscompile with should get through if you have chosen wildcard
  filter in add raster dialog.
  
@@ -1343,7 +1343,7 @@ Probably more cleaning in the Makefiles needed
 drawn!) before snapshot is taken.
 
 2004-03-27 [jobi] 0.1.0devel17
-** autogen.sh now passes paramters to configure
+** autogen.sh now passes parameters to configure
 ** fixed tools/qgiscommit by using mktemp, thanx mcoletti
 ** pluginpath is now taken of libdir to be 64bit compliant (e.g. /usr/lib64/qgis)
 
@@ -1471,7 +1471,7 @@ Version 0.1 'Moroz' February 25, 2004
   based on Everaldo's Crystal icon set.
 **QGIS can load layers and / or a project on start up by specifying these
   on the command line.
-**Symbol renderers for simple, graduated, and continous symbols
+**Symbol renderers for simple, graduated, and continuous symbols
 **Raster support for most GDAL formats
 **Raster implementation supports a variety of rendering settings including
   semi transparent overlays, pallette inversion, flexible band to colour mapping

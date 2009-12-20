@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """@package OsmLoadDlg
-This module provides all structures and methods neccessary for OSM data loading.
+This module provides all structures and methods necessary for OSM data loading.
 
 Loading is done from XML file. After XML file selection and confirming the dialog three vector layers
 are created in Quantum GIS. Layer for points, one for lines and one for polygons.
@@ -24,7 +24,7 @@ from sip import *
 
 
 class OsmLoadDlg(QDialog, Ui_OsmLoadDlg):
-    """This class provides all structures and methods neccessary for OSM data loading.
+    """This class provides all structures and methods necessary for OSM data loading.
 
     Loading is done from XML file. After XML file selection and confirming the dialog three vector layers
     are created in Quantum GIS. Layer for points, one for lines and one for polygons.
@@ -99,7 +99,7 @@ class OsmLoadDlg(QDialog, Ui_OsmLoadDlg):
     def onOK(self):
         """Function is called after clicking on OK button of OSM Load dialog.
 
-        It performs all actions neccessary for OSM data loading.
+        It performs all actions necessary for OSM data loading.
         It creates three QGIS vector layers for loaded data (point,line,polygon layer).
         """
 

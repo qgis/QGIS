@@ -296,7 +296,7 @@ double QgsSymbol::pointSize() const
 
 QImage QgsSymbol::getLineSymbolAsImage()
 {
-  //Note by Tim: dont use premultiplied - it causes
+  //Note by Tim: don't use premultiplied - it causes
   //artifacts on the output icon!
   QImage img( 15, 15, QImage::Format_ARGB32 );//QImage::Format_ARGB32_Premultiplied);
   //0 = fully transparent
@@ -316,7 +316,7 @@ QImage QgsSymbol::getLineSymbolAsImage()
 
 QImage QgsSymbol::getPolygonSymbolAsImage()
 {
-  //Note by Tim: dont use premultiplied - it causes
+  //Note by Tim: don't use premultiplied - it causes
   //artifacts on the output icon!
   QImage img( 15, 15, QImage::Format_ARGB32 ); //, QImage::Format_ARGB32_Premultiplied);
   //0 = fully transparent
@@ -327,7 +327,7 @@ QImage QgsSymbol::getPolygonSymbolAsImage()
   p.setBrush( mBrush );
   QPolygon myPolygon;
   //leave a little white space around so
-  //dont draw at 0,0,15,15
+  //don't draw at 0,0,15,15
   myPolygon << QPoint( 2, 2 )
   << QPoint( 1, 5 )
   << QPoint( 1, 10 )

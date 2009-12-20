@@ -284,7 +284,7 @@ static void customSrsValidation_( QgsCoordinateReferenceSystem* srs )
     //it in the ctor of the layer projection selector
 
     QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector();
-    mySelector->setMessage( srs->validationHint() ); //shows a generic message, if not speficied
+    mySelector->setMessage( srs->validationHint() ); //shows a generic message, if not specified
     toProj4 = QgsProject::instance()->readEntry( "SpatialRefSys", "//ProjectCRSProj4String", GEOPROJ4 );
     QgsCoordinateReferenceSystem defaultCRS;
     if ( defaultCRS.createFromProj4( toProj4 ) )
@@ -2312,7 +2312,7 @@ bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QS
       {
         askUserForSublayers( layer );
 
-        // The first layer loaded is not usefull in that case. The user can select it in
+        // The first layer loaded is not useful in that case. The user can select it in
         // the list if he wants to load it.
         delete layer;
 
@@ -2737,7 +2737,7 @@ void QgisApp::newVectorLayer()
   QString fileName;
 
   QSettings settings;         // where we keep last used filter in
-  // persistant state
+  // persistent state
 
   haveLastUsedFilter = settings.contains( "/UI/lastVectorFileFilter" );
   QString lastUsedFilter = settings.value( "/UI/lastVectorFileFilter",
@@ -3180,7 +3180,7 @@ void QgisApp::saveMapAsImage()
   FilterMap myFilterMap;
 
   //find out the last used filter
-  QSettings myQSettings;  // where we keep last used filter in persistant state
+  QSettings myQSettings;  // where we keep last used filter in persistent state
   QString myLastUsedFilter = myQSettings.value( "/UI/saveAsImageFilter" ).toString();
   QString myLastUsedDir = myQSettings.value( "/UI/lastSaveAsImageDir", "." ).toString();
 

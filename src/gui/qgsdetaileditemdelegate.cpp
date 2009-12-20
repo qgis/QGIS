@@ -229,7 +229,7 @@ int QgsDetailedItemDelegate::height( const QStyleOptionViewItem & theOption,
 {
   QFontMetrics myTitleMetrics( titleFont( theOption ) );
   QFontMetrics myDetailMetrics( detailFont( theOption ) );
-  //we dont word wrap the title so its easy to measure
+  //we don't word wrap the title so its easy to measure
   int myHeight = myTitleMetrics.height() + verticalSpacing();
   //the detail needs to be measured though
   QStringList myList = wordWrap( theData.detail(),

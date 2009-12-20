@@ -92,7 +92,7 @@ class QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDia
      */
     void updateRowPressed( int index );
     /**
-     * Updates selection of specifed rows
+     * Updates selection of specified rows
      * @param first first row
      * @param last last row
      * @param clickType 0:Single click, 1:Shift, 2:Ctrl, 3:dragged click

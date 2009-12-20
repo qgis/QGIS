@@ -62,7 +62,7 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     int getOppositePoint( int p1, int p2 );
     /**Finds out, in which triangle the point with coordinates x and y is and assigns the numbers of the vertices to 'n1', 'n2' and 'n3' and the vertices to 'p1', 'p2' and 'p3'*/
     virtual bool getTriangle( double x, double y, Point3D* p1, int* n1, Point3D* p2, int* n2, Point3D* p3, int* n3 );
-    /**Finds out, in which triangle the point with coordinates x and y is and assigns adresses to the points at the vertices to 'p1', 'p2' and 'p3*/
+    /**Finds out, in which triangle the point with coordinates x and y is and assigns addresses to the points at the vertices to 'p1', 'p2' and 'p3*/
     virtual bool getTriangle( double x, double y, Point3D* p1, Point3D* p2, Point3D* p3 );
     /**Returns a pointer to a value list with the information of the triangles surrounding (counterclockwise) a point. Four integer values describe a triangle, the first three are the number of the half edges of the triangle and the fourth is -10, if the third (and most counterclockwise) edge is a breakline, and -20 otherwise. The value list has to be deleted by the code which called the method*/
     QList<int>* getSurroundingTriangles( int pointno );

@@ -121,7 +121,7 @@ class QgsCoordinateReferenceSystem
          */
         bool createFromProj4 (const QString theProjString);
 
-        /*! Find out whether this CRS is correctly initialised and useable */
+        /*! Find out whether this CRS is correctly initialised and usable */
         bool isValid() const;
         /*! Perform some validation on this CRS. If the sts doesnt validate the
          *  default behaviour settings for layers with unknown CRS will be 
@@ -129,7 +129,7 @@ class QgsCoordinateReferenceSystem
          * method will do its best to make sure that this CRS is valid - even
          * if that involves resorting to a hard coded default of geocs:wgs84.
          *
-         * @note It is not usually neccessary to use this function, unless you
+         * @note It is not usually necessary to use this function, unless you
          * are trying to force theis srs to be valid.
          */
         void validate();

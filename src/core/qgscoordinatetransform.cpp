@@ -565,7 +565,7 @@ void QgsCoordinateTransform::setFinder()
   // (version 0.7) and the old installation was deleted
 
   // Another problem: PROJ checks if pj_finder was set before
-  // PROJ_LIB enviroment variable. pj_finder is probably set in
+  // PROJ_LIB environment variable. pj_finder is probably set in
   // GRASS gproj library when plugin is loaded, consequently
   // PROJ_LIB is ignored
 
