@@ -104,7 +104,14 @@ void QgsHelpViewer::loadContext( const QString &contextId )
      * determine the locale and create the file name from
      * the context id
      */
-    QString lang( QLocale::system().name() );
+    QString lang = QLocale::system().name();
+
+    QSettings settings;
+    if( settings.value( "locale/overrideFlag", false ).toBool() )
+    {
+       QLocale l( settings.value( "locale/userLocale", "en_US" ).toString() );
+       lang = l.name();
+    }
     /*
      * If the language isn't set on the system, assume en_US,
      * otherwise we get the banner at the top of the help file
@@ -129,7 +136,7 @@ void QgsHelpViewer::loadContext( const QString &contextId )
       // translate this for us message
       if ( !lang.contains( "en_" ) )
       {
-        helpContents = "<i>" + tr( "This help file is not available in your language. If you would like to translate it, please contact the QGIS  development team." ) + "</i><hr />";
+        helpContents = "<i>" + tr( "This help file is not available in your language %1. If you would like to translate it, please contact the QGIS  development team." ).arg( lang ) + "</i><hr />";
       }
     }
     if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
