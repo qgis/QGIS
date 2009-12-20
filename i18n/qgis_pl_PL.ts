@@ -3376,7 +3376,7 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
     <message>
         <location filename="../src/core/symbology-ng/qgsrendererv2registry.cpp" line="23"/>
         <source>Graduated</source>
-        <translation>Stopniowy</translation>
+        <translation>Symbol stopniowy</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labeling.cpp" line="43"/>
@@ -6258,7 +6258,7 @@ Błąd brzmi:%2</translation>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="19"/>
         <source>Column:</source>
-        <translation>Kolumna:</translation>
+        <translation>Pole klasyfikacji:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="56"/>
