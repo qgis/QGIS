@@ -5108,7 +5108,7 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="579"/>
         <source>&amp;Save Project</source>
-        <translation>&amp;Salva Progetto</translation>
+        <translation>&amp;Salva progetto</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="580"/>
@@ -5757,7 +5757,7 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1505"/>
         <source>Help</source>
-        <translation type="unfinished">Guida</translation>
+        <translation>Guida</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1431"/>
@@ -6663,7 +6663,7 @@ Si prega di contattare gli sviluppatori.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1203"/>
         <source>Print Composers</source>
-        <translation>Stampa</translation>
+        <translation>Stampe</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1210"/>
@@ -20339,7 +20339,7 @@ p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot;
     <message>
         <location filename="../src/app/qgsmaptoolvertexedit.cpp" line="58"/>
         <source>Have you set the tolerance in Settings &gt; Project Properties &gt; General?</source>
-        <translation>Hai impostato la tolleranza in Impostazioni &gt; Proprietà Progetto &gt; Generale &gt; Opzioni di Snap?</translation>
+        <translation>Hai impostato la tolleranza in Impostazioni &gt; Proprietà progetto &gt; Generale &gt; Opzioni di snap?</translation>
     </message>
 </context>
 <context>
@@ -20898,7 +20898,7 @@ http://mio.server.it/cgi-bin/mapserver.exe</translation>
     <message>
         <location filename="../src/app/qgsmeasuretool.cpp" line="78"/>
         <source>&lt;p&gt;This map is defined with a geographic coordinate system (latitude/longitude) but the map extents suggests that it is actually a projected coordinate system (e.g., Mercator). If so, the results from line or area measurements will be incorrect.&lt;/p&gt;&lt;p&gt;To fix this, explicitly set an appropriate map coordinate system using the &lt;tt&gt;Settings:Project Properties&lt;/tt&gt; menu.</source>
-        <translation>&lt;p&gt;Questa mappa è definita con un sistema di coordinate geografico (latitudine/longitudine) ma l&apos;estensione della mappa suggerisce che attualmente si sta facendo uso di un altro sistema di proiezione (e.s. Mercatore) per tale motivo i risultati delle misurazione di linee o aree risulta sbagliato.&lt;/p&gt;&lt;p&gt;Per risolvere il problema occorre assegnare il  sistema di coordinate corretto utilizzando la voce di menu &lt;tt&gt;Impostazioni: Proprietà Progetto&lt;/tt&gt;.</translation>
+        <translation>&lt;p&gt;Questa mappa è definita con un sistema di coordinate geografico (latitudine/longitudine) ma l&apos;estensione della mappa suggerisce che attualmente si sta facendo uso di un altro sistema di proiezione (e.s. Mercatore) per tale motivo i risultati delle misurazione di linee o aree risulta sbagliato.&lt;/p&gt;&lt;p&gt;Per risolvere il problema occorre assegnare il  sistema di coordinate corretto utilizzando la voce di menu &lt;tt&gt;Impostazioni: Proprietà progetto&lt;/tt&gt;.</translation>
     </message>
 </context>
 <context>
