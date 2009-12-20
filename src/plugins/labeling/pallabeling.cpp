@@ -288,6 +288,14 @@ PalLabeling::~PalLabeling()
 }
 
 
+bool PalLabeling::willUseLayer( QgsVectorLayer* layer )
+{
+  LayerSettings lyrTmp;
+  lyrTmp.readFromLayer( layer );
+  return lyrTmp.enabled;
+}
+
+
 int PalLabeling::prepareLayer( QgsVectorLayer* layer, int& attrIndex )
 {
   // start with a temporary settings class, find out labeling info
@@ -298,7 +306,7 @@ int PalLabeling::prepareLayer( QgsVectorLayer* layer, int& attrIndex )
     return 0;
 
   // find out which field will be needed
-  int fldIndex = layer->dataProvider()->fieldNameIndex( lyrTmp.fieldName );
+  int fldIndex = layer->fieldNameIndex( lyrTmp.fieldName );
   if ( fldIndex == -1 )
     return 0;
   attrIndex = fldIndex;
