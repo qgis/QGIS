@@ -123,6 +123,8 @@ class PalLabeling : public QgsLabelingEngineInterface
 
     //! called when we're going to start with rendering
     virtual void init();
+    //! called to find out whether the layer is used for labeling
+    virtual bool willUseLayer( QgsVectorLayer* layer );
     //! hook called when drawing layer before issuing select()
     virtual int prepareLayer( QgsVectorLayer* layer, int& attrIndex );
     //! hook called when drawing for every feature in a layer

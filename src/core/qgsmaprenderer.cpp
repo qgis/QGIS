@@ -180,9 +180,9 @@ void QgsMapRenderer::adjustExtentToSize()
     dymax = mExtent.yMaximum() + whitespace;
   }
 
-  QgsDebugMsg( QString("Map units per pixel (x,y) : %1, %2\n" ).arg( mapUnitsPerPixelX ).arg( mapUnitsPerPixelY ) );
-  QgsDebugMsg( QString("Pixmap dimensions (x,y) : %1, %2\n" ).arg( myWidth ).arg( myHeight ) );
-  QgsDebugMsg( QString("Extent dimensions (x,y) : %1, %2\n" ).arg( mExtent.width() ).arg( mExtent.height() ) );
+  QgsDebugMsg( QString( "Map units per pixel (x,y) : %1, %2\n" ).arg( mapUnitsPerPixelX ).arg( mapUnitsPerPixelY ) );
+  QgsDebugMsg( QString( "Pixmap dimensions (x,y) : %1, %2\n" ).arg( myWidth ).arg( myHeight ) );
+  QgsDebugMsg( QString( "Extent dimensions (x,y) : %1, %2\n" ).arg( mExtent.width() ).arg( mExtent.height() ) );
   QgsDebugMsg( mExtent.toString() );
 
   // update extent
@@ -194,7 +194,7 @@ void QgsMapRenderer::adjustExtentToSize()
   // update the scale
   updateScale();
 
-  QgsDebugMsg( QString("Scale (assuming meters as map units) = 1:%1").arg( mScale ) );
+  QgsDebugMsg( QString( "Scale (assuming meters as map units) = 1:%1" ).arg( mScale ) );
 
   newCoordXForm.setParameters( mMapUnitsPerPixel, dxmin, dymin, myHeight );
   mRenderContext.setMapToPixel( newCoordXForm );
@@ -406,10 +406,12 @@ void QgsMapRenderer::render( QPainter* painter )
       }
 
       // Force render of layers that are being edited
+      // or if there's a labeling engine that needs the layer to register features
       if ( ml->type() == QgsMapLayer::VectorLayer )
       {
         QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
-        if ( vl->isEditable() )
+        if ( vl->isEditable() ||
+             ( mRenderContext.labelingEngine() && mRenderContext.labelingEngine()->willUseLayer( vl ) ) )
         {
           ml->setCacheImage( 0 );
         }
@@ -576,7 +578,7 @@ void QgsMapRenderer::render( QPainter* painter )
   {
     // set correct extent
     mRenderContext.setExtent( mExtent );
-    mRenderContext.setCoordinateTransform(NULL);
+    mRenderContext.setCoordinateTransform( NULL );
 
     mLabelingEngine->drawLabeling( mRenderContext );
     mLabelingEngine->exit();
@@ -813,7 +815,7 @@ void QgsMapRenderer::updateFullExtent()
     QgsMapLayer * lyr = registry->mapLayer( *it );
     if ( lyr == NULL )
     {
-      QgsDebugMsg( QString("WARNING: layer '%1' not found in map layer registry!").arg( *it ) );
+      QgsDebugMsg( QString( "WARNING: layer '%1' not found in map layer registry!" ).arg( *it ) );
     }
     else
     {

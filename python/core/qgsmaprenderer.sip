@@ -14,6 +14,8 @@ public:
 
   //! called when we're going to start with rendering
   virtual void init() = 0;
+  //! called to find out whether the layer is used for labeling
+  virtual bool willUseLayer( QgsVectorLayer* layer ) = 0;
   //! called when starting rendering of a layer
   virtual int prepareLayer(QgsVectorLayer* layer, int& attrIndex) = 0;
   //! called for every feature
