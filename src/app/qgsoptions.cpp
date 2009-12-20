@@ -265,7 +265,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   mMarkerStyleComboBox->addItem( tr( "Cross" ) );
   mMarkerStyleComboBox->addItem( tr( "None" ) );
 
-  QString markerStyle = settings.value( "/qgis/digitizing/marker_style", "SemiTransparentCircle" ).toString();
+  QString markerStyle = settings.value( "/qgis/digitizing/marker_style", "Cross" ).toString();
   if ( markerStyle == "SemiTransparentCircle" )
   {
     mMarkerStyleComboBox->setCurrentIndex( mMarkerStyleComboBox->findText( tr( "Semi transparent circle" ) ) );
@@ -278,7 +278,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   {
     mMarkerStyleComboBox->setCurrentIndex( mMarkerStyleComboBox->findText( tr( "None" ) ) );
   }
-  mMarkerSizeSpinBox->setValue( settings.value( "/qgis/digitizing/marker_size", 7 ).toInt() );
+  mMarkerSizeSpinBox->setValue( settings.value( "/qgis/digitizing/marker_size", 3 ).toInt() );
 
   chkDisableAttributeValuesDlg->setChecked( settings.value( "/qgis/digitizing/disable_enter_attribute_values_dialog", false ).toBool() );
 

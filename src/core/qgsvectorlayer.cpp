@@ -3812,7 +3812,7 @@ int QgsVectorLayer::boundingBoxFromPointList( const QList<QgsPoint>& list, doubl
 QgsVectorLayer::VertexMarkerType QgsVectorLayer::currentVertexMarkerType()
 {
   QSettings settings;
-  QString markerTypeString = settings.value( "/qgis/digitizing/marker_style", "SemiTransparentCircle" ).toString();
+  QString markerTypeString = settings.value( "/qgis/digitizing/marker_style", "Cross" ).toString();
   if ( markerTypeString == "Cross" )
   {
     return QgsVectorLayer::Cross;
@@ -3830,7 +3830,7 @@ QgsVectorLayer::VertexMarkerType QgsVectorLayer::currentVertexMarkerType()
 int QgsVectorLayer::currentVertexMarkerSize()
 {
   QSettings settings;
-  return settings.value( "/qgis/digitizing/marker_size", 7 ).toInt();
+  return settings.value( "/qgis/digitizing/marker_size", 3 ).toInt();
 }
 
 void QgsVectorLayer::drawFeature( QgsRenderContext &renderContext,
