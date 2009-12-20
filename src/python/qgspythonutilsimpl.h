@@ -98,6 +98,12 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     //! return list of all available python plugins
     QStringList pluginList();
 
+    //! return whether the plugin is loaded (active)
+    virtual bool isPluginLoaded( QString packageName );
+
+    //! return a list of active plugins
+    virtual QStringList listActivePlugins();
+
     //! load python plugin (import)
     bool loadPlugin( QString packageName );
 

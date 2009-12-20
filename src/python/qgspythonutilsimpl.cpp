@@ -475,3 +475,17 @@ bool QgsPythonUtilsImpl::unloadPlugin( QString packageName )
   evalString( "qgis.utils.unloadPlugin('" + packageName + "')", output );
   return ( output == "True" );
 }
+
+bool QgsPythonUtilsImpl::isPluginLoaded( QString packageName )
+{
+  QString output;
+  evalString( "qgis.utils.isPluginLoaded('" + packageName + "')", output );
+  return ( output == "True" );
+}
+
+QStringList QgsPythonUtilsImpl::listActivePlugins()
+{
+  QString output;
+  evalString( "'\\n'.join(qgis.utils.active_plugins)", output );
+  return output.split( QChar( '\n' ) );
+}

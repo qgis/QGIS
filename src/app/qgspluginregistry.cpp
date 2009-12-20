@@ -68,16 +68,30 @@ void QgsPluginRegistry::setPythonUtils( QgsPythonUtils* pythonUtils )
 bool QgsPluginRegistry::isLoaded( QString key )
 {
   QMap<QString, QgsPluginMetadata>::iterator it = mPlugins.find( key );
-  return ( it != mPlugins.end() );
+  if ( it != mPlugins.end() ) // found a c++ plugin?
+    return true;
+
+  if ( mPythonUtils && mPythonUtils->isEnabled() )
+  {
+    return mPythonUtils->isPluginLoaded( key );
+  }
+
+  return false;
 }
 
 QString QgsPluginRegistry::library( QString key )
 {
   QMap<QString, QgsPluginMetadata>::iterator it = mPlugins.find( key );
-  if ( it == mPlugins.end() )
-    return QString();
+  if ( it != mPlugins.end() )
+    return it->library();
 
-  return it->library();
+  if ( mPythonUtils && mPythonUtils->isEnabled() )
+  {
+    if ( mPythonUtils->isPluginLoaded( key ) )
+      return key;
+  }
+
+  return QString();
 }
 
 QgisPlugin *QgsPluginRegistry::plugin( QString key )
@@ -86,15 +100,19 @@ QgisPlugin *QgsPluginRegistry::plugin( QString key )
   if ( it == mPlugins.end() )
     return NULL;
 
+  // note: not used by python plugins
+
   return it->plugin();
 }
 
 bool QgsPluginRegistry::isPythonPlugin( QString key )
 {
-  QMap<QString, QgsPluginMetadata>::iterator it = mPlugins.find( key );
-  if ( it == mPlugins.end() )
-    return false;
-  return it->isPython();
+  if ( mPythonUtils && mPythonUtils->isEnabled() )
+  {
+    if ( mPythonUtils->isPluginLoaded( key ) )
+      return true;
+  }
+  return false;
 }
 
 void QgsPluginRegistry::addPlugin( QString key, QgsPluginMetadata metadata )
@@ -104,16 +122,24 @@ void QgsPluginRegistry::addPlugin( QString key, QgsPluginMetadata metadata )
 
 void QgsPluginRegistry::dump()
 {
-  QgsDebugMsg( "PLUGINS IN REGISTRY: key -> (name, library, isPython)" );
+  QgsDebugMsg( "PLUGINS IN REGISTRY: key -> (name, library)" );
   for ( QMap<QString, QgsPluginMetadata>::iterator it = mPlugins.begin();
         it != mPlugins.end();
         it++ )
   {
-    QgsDebugMsg( QString( "PLUGIN: %1 -> (%2, %3, %4)" )
+    QgsDebugMsg( QString( "PLUGIN: %1 -> (%2, %3)" )
                  .arg( it.key() )
                  .arg( it->name() )
-                 .arg( it->library() )
-                 .arg( it->isPython() ) );
+                 .arg( it->library() ) );
+  }
+
+  if ( mPythonUtils && mPythonUtils->isEnabled() )
+  {
+    QgsDebugMsg( "PYTHON PLUGINS IN REGISTRY:" );
+    foreach( QString pluginName, mPythonUtils->listActivePlugins() )
+    {
+      QgsDebugMsg( pluginName );
+    }
   }
 }
 
@@ -126,6 +152,8 @@ void QgsPluginRegistry::removePlugin( QString key )
   {
     mPlugins.erase( it );
   }
+
+  // python plugins are removed when unloaded
 }
 
 void QgsPluginRegistry::unloadAll()
@@ -134,19 +162,17 @@ void QgsPluginRegistry::unloadAll()
         it != mPlugins.end();
         it++ )
   {
-    if ( isPythonPlugin( it.key() ) )
-    {
-      if ( mPythonUtils )
-        mPythonUtils->unloadPlugin( it->library() );
-      else
-        QgsDebugMsg( "warning: python utils is NULL" );
-    }
+    if ( it->plugin() )
+      it->plugin()->unload();
     else
+      QgsDebugMsg( "warning: plugin is NULL:" + it.key() );
+  }
+
+  if ( mPythonUtils && mPythonUtils->isEnabled() )
+  {
+    foreach( QString pluginName, mPythonUtils->listActivePlugins() )
     {
-      if ( it->plugin() )
-        it->plugin()->unload();
-      else
-        QgsDebugMsg( "warning: plugin is NULL:" + it.key() );
+      mPythonUtils->unloadPlugin( pluginName );
     }
   }
 }
@@ -221,9 +247,6 @@ void QgsPluginRegistry::loadPythonPlugin( QString packageName )
     // TODO: test success
 
     QString pluginName = mPythonUtils->getPluginMetadata( packageName, "name" );
-
-    // add to plugin registry
-    addPlugin( packageName, QgsPluginMetadata( packageName, pluginName, NULL, true ) );
 
     // add to settings
     settings.setValue( "/PythonPlugins/" + packageName, true );
