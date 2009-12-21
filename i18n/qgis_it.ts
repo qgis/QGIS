@@ -776,7 +776,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="110"/>
         <source>Output point shapefile</source>
-        <translation>Shapefile di punti in uscita</translation>
+        <translation>Shapefile poligoni in output</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="19"/>
@@ -831,7 +831,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="27"/>
         <source>Input line layer</source>
-        <translation>Vettoriale lineare in ingresso</translation>
+        <translation>Vettoriale lineare in input</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="41"/>
@@ -1010,7 +1010,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Select features in:</source>
-        <translation>Selezione le geometrie nel:</translation>
+        <translation>Seleziona le geometrie nel:</translation>
     </message>
     <message>
         <source>that intersect features in:</source>
@@ -1304,7 +1304,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="41"/>
         <source>Input subset field (unique ID field)</source>
-        <translation>Campo sottoinsieme in input(ID univoco)</translation>
+        <translation>Campo sottoinsieme in input (ID univoco)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="16"/>
@@ -1637,11 +1637,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation>Prego selezionare vettoriale in input</translation>
+        <translation>Selezionare vettoriale in input</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation>Prego specificare shapefile in output</translation>
+        <translation>Specificare shapefile in output</translation>
     </message>
     <message>
         <source>Please specify valid tolerance value</source>
@@ -1795,7 +1795,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>No features selected, please uncheck &apos;Use selected&apos; or make a selection</source>
-        <translation>Nessuna geometria selezionata, prego deselezionare &apos;Usa selezionato&apos; o fare una selezione</translation>
+        <translation>Nessuna geometria selezionata, deselezionare &apos;Usa selezionato&apos; o fare una selezione</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
@@ -5544,7 +5544,7 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="804"/>
         <source>Measure Line </source>
-        <translation>Misura linea </translation>
+        <translation>Misura</translation>
     </message>
     <message>
         <source>Ctrl+M</source>
@@ -6049,7 +6049,7 @@ Compilanto contro Qt </translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2140"/>
         <source>This release includes around 200 bug fixes, nearly 30 new features and has had a lot of love and attention poured in to it to take our favourite desktop GIS application another step on the road to GIS nirvana! So much has happened in the 3 months since our last release that it is impossible to document everything here. Instead we will just highlight a couple of important new features for you.</source>
-        <translation>Questa versione include circa 200 bug fix, quasi 30 nuove funzionalità e ha avuto un sacco di amore e attenzioen affinchè diventi la vostra applicazione desktop GIS preferita che vi guidi passo passo verso la strada del nirvana GIS! Molte sono le cose accadute negli ultimi 3 mesi che sono impossibili da documentare, per tale motivo vi riportiamo quelle che riteniamo essere le novitá di maggiore successo per voi.</translation>
+        <translation>Questa versione include circa 200 bug fix, quasi 30 nuove funzionalità e ha avuto un sacco di amore e attenzione affinchè diventi la vostra applicazione desktop GIS preferita che vi guidi passo passo verso la strada del nirvana GIS! Molte sono le cose accadute negli ultimi 3 mesi che sono impossibili da documentare, per tale motivo vi riportiamo quelle che riteniamo essere le novitá di maggiore successo per voi.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2148"/>
@@ -7338,7 +7338,7 @@ Provo a cercare i layer persi?</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3744"/>
         <source>No active layer found. Please select a layer in the layer list</source>
-        <translation>Non è stato trovato alcun layer attivo. Prego selezionarne uno dalla lista</translation>
+        <translation>Non è stato trovato alcun layer attivo. Selezionarne uno dalla lista</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3750"/>
@@ -7348,7 +7348,7 @@ Provo a cercare i layer persi?</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3750"/>
         <source>The merge features tool only works on vector layers. Please select a vector layer from the layer list</source>
-        <translation>Lo strumento di unione delle geometrie funziona solo con layer vettoriali. Prego selezionare un layer vettoriale dalla lista</translation>
+        <translation>Lo strumento di unione delle geometrie funziona solo con layer vettoriali. Selezionare un layer vettoriale dalla lista</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3755"/>
@@ -12260,28 +12260,28 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="651"/>
         <source> Please give the projection a name before pressing save.</source>
-        <translation> Prego assegnare un nome alla proiezione prima di salvare.</translation>
+        <translation> Assegnare un nome alla proiezione prima di salvare.</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="658"/>
         <source> Please add the parameters before pressing save.</source>
-        <translation> Prego aggiungere i parametri prima di salvare.</translation>
+        <translation> Aggiungere i parametri prima di salvare.</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="674"/>
         <source> Please add a proj= clause before pressing save.</source>
-        <translation> Prego aggiungere una clausola proj= prima di salvare.</translation>
+        <translation> Aggiungere una clausola proj= prima di salvare.</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="690"/>
         <source>This proj4 ellipsoid definition is not valid. Please add a ellips= clause before pressing save.</source>
         <comment>COMMENTED OUT</comment>
-        <translation>L&apos;elissoide proj4 definito non è valido. Prego aggiungere la clausola ellips= prima di salvare.</translation>
+        <translation>L&apos;elissoide proj4 definito non è valido. Aggiungere la clausola ellips= prima di salvare.</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="707"/>
         <source> Please correct before pressing save.</source>
-        <translation> Prego correggere prima di salvare.</translation>
+        <translation> Correggere prima di salvare.</translation>
     </message>
 </context>
 <context>
@@ -14004,7 +14004,7 @@ p, li { white-space: pre-wrap; }
         <source>Unable to read the selected file.
 Please reselect a valid file.</source>
         <translation>Impossibile leggere il file selezionato
-Prego ri-selezionare un file valido.</translation>
+Selezionare un file valido.</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="416"/>
@@ -16275,7 +16275,7 @@ alla linea </translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="251"/>
         <source>Please ensure you have the GRASS documentation installed.</source>
-        <translation>Prego assicurarsi di aver installato la documentazione di GRASS.</translation>
+        <translation>Assicurarsi di aver installato la documentazione di GRASS.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="145"/>
@@ -18385,7 +18385,7 @@ p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot;
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="106"/>
         <source>Please add one or more input layers</source>
-        <translation>Prego aggiungere uno o più layer di input</translation>
+        <translation>Aggiungere uno o più layer di input</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="115"/>
@@ -19768,13 +19768,13 @@ p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot;
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="63"/>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="127"/>
         <source>No feature selected. Please select a feature with the selection tool or in the attribute table</source>
-        <translation>Nessuna geometria selezionata. Prego selezionare una geometria con lo strumneto di selezione o mediante la tabella attributi</translation>
+        <translation>Nessuna geometria selezionata. Selezionare una geometria con lo strumneto di selezione o mediante la tabella attributi</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="67"/>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="131"/>
         <source>Several features are selected. Please select only one feature to which an island should be added.</source>
-        <translation>Ci sono più geometrie selezionate. Prego selezionare una sola geometria alla quale aggiungere un&apos;isola.</translation>
+        <translation>Ci sono più geometrie selezionate. Selezionare una sola geometria alla quale aggiungere un&apos;isola.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="72"/>
@@ -20889,7 +20889,7 @@ http://mio.server.it/cgi-bin/mapserver.exe</translation>
     <message>
         <location filename="../src/app/qgsmeasuretool.cpp" line="77"/>
         <source>Incorrect measure results</source>
-        <translation>Risultati di misurazione non corretti</translation>
+        <translation>Risultati di misura non corretti</translation>
     </message>
     <message>
         <source>&lt;p&gt;This map is defined with a geographic coordinate system (latitude/longitude) but the map extents suggest that it is actually a projected coordinate system (e.g., Mercator). If so, the results from line or area measurements will be incorrect.&lt;/p&gt;&lt;p&gt;To fix this, explicitly set an appropriate map coordinate system using the &lt;tt&gt;Settings:Project Properties&lt;/tt&gt; menu.</source>
@@ -20898,7 +20898,7 @@ http://mio.server.it/cgi-bin/mapserver.exe</translation>
     <message>
         <location filename="../src/app/qgsmeasuretool.cpp" line="78"/>
         <source>&lt;p&gt;This map is defined with a geographic coordinate system (latitude/longitude) but the map extents suggests that it is actually a projected coordinate system (e.g., Mercator). If so, the results from line or area measurements will be incorrect.&lt;/p&gt;&lt;p&gt;To fix this, explicitly set an appropriate map coordinate system using the &lt;tt&gt;Settings:Project Properties&lt;/tt&gt; menu.</source>
-        <translation>&lt;p&gt;Questa mappa è definita con un sistema di coordinate geografico (latitudine/longitudine) ma l&apos;estensione della mappa suggerisce che attualmente si sta facendo uso di un altro sistema di proiezione (e.s. Mercatore) per tale motivo i risultati delle misurazione di linee o aree risulta sbagliato.&lt;/p&gt;&lt;p&gt;Per risolvere il problema occorre assegnare il  sistema di coordinate corretto utilizzando la voce di menu &lt;tt&gt;Impostazioni: Proprietà progetto&lt;/tt&gt;.</translation>
+        <translation>&lt;p&gt;Questa mappa è definita con un sistema di coordinate geografico (latitudine/longitudine) ma l&apos;estensione della mappa suggerisce che attualmente si sta facendo uso di un altro sistema di proiezione (e.s. Mercatore) per tale motivo i risultati di misure di linee o aree risultano errati.&lt;/p&gt;&lt;p&gt;Per risolvere il problema occorre assegnare il sistema di coordinate corretto utilizzando la voce di menu &lt;tt&gt;File: Proprietà progetto&lt;/tt&gt;.</translation>
     </message>
 </context>
 <context>
@@ -21901,7 +21901,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="318"/>
         <source>Please enter your password:</source>
-        <translation>Prego inserire la password:</translation>
+        <translation>Inserire la password:</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="341"/>
@@ -22505,7 +22505,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="522"/>
         <source>Measure tool</source>
-        <translation>Strumenti di misurazione</translation>
+        <translation>Strumenti di misura</translation>
     </message>
     <message>
         <source>Ellipsoid for distance calculations:</source>
@@ -23105,7 +23105,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="153"/>
         <source>Please enter your password:</source>
-        <translation>Prego inserire la password:</translation>
+        <translation>Inserire la password:</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="193"/>
@@ -23115,7 +23115,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="194"/>
         <source>The connection to %1 failed. Please verify your connection parameters. Make sure you have the GDAL GeoRaster plugin installed.</source>
-        <translation>La connessione a %1 non è riuscita. Prego verificare i parametri della connessione. Verficare inoltre di aver installato il plugin GDAL GeoRaster.</translation>
+        <translation>La connessione a %1 non è riuscita. Verificare i parametri della connessione. Verificare inoltre di aver installato il plugin GDAL GeoRaster.</translation>
     </message>
 </context>
 <context>
@@ -23675,7 +23675,7 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="422"/>
         <source>Please enter your password:</source>
-        <translation>Prego inserire la password:</translation>
+        <translation>Inserire la password:</translation>
     </message>
     <message>
         <location filename="../src/app/qgspgsourceselect.cpp" line="473"/>
@@ -25764,7 +25764,7 @@ Si prega di installare PostGIS con il supporto a GEOS (http://geos.refractions.n
     <message>
         <location filename="../src/core/qgsproject.cpp" line="946"/>
         <source>%1 is not writeable. Please adjust permissions (if possible) and try again.</source>
-        <translation>%1 non é scrivibile. Prego sistemare (se possibili) i permessi e provare ancora.</translation>
+        <translation>%1 non é scrivibile. Sistemare (se possibile) i permessi e provare ancora.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsproject.cpp" line="1032"/>
@@ -30027,7 +30027,7 @@ SQL: %2</translation>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="412"/>
         <source>Please enter your password:</source>
-        <translation>Prego inserire la password:</translation>
+        <translation>Inserire la password:</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="148"/>
@@ -32819,11 +32819,11 @@ URL provata: %1</translation>
     <name>VisualDialog</name>
     <message>
         <source>Please specify input vector layer</source>
-        <translation>Prego selezionare vettoriale in input</translation>
+        <translation type="unfinished">Selezionare vettoriale in input</translation>
     </message>
     <message>
         <source>Please specify input field</source>
-        <translation>Prego specificare il campo di input</translation>
+        <translation type="unfinished">Specificare il campo di input</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
@@ -33785,7 +33785,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="474"/>
         <source>Resets the compass offset values to the default settings.</source>
-        <translation>Rirpistina i valori di offset della bussola ai valori predefiniti.</translation>
+        <translation>Ripristina i valori di offset della bussola ai valori predefiniti.</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="502"/>
