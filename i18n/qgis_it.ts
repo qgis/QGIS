@@ -650,7 +650,7 @@
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="242"/>
         <source>Input OGR dataset is missing!</source>
-        <translation>Set di dati OGR in input mancante!</translation>
+        <translation>Manca il nome del set di dati OGR in input!</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="250"/>
@@ -660,17 +660,17 @@
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="265"/>
         <source>Target OGR format not selected!</source>
-        <translation>Formato OGR di destinazione non selezionato!</translation>
+        <translation>Manca il formato OGR di destinazione!</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="273"/>
         <source>Output OGR dataset is missing!</source>
-        <translation>Set di dati OGR in output mancante!</translation>
+        <translation>Manca il nome del set di dati OGR in output!</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="281"/>
         <source>Output OGR layer name is missing!</source>
-        <translation>Nome del layer OGR in output mancante!</translation>
+        <translation>Manca il nome del layer OGR in output!</translation>
     </message>
     <message>
         <source>Successfully translated layer &apos;</source>
@@ -4657,7 +4657,7 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramoverlayplugin.cpp" line="34"/>
         <source>Diagram Overlay</source>
-        <translation>Diagramma Sovrapposto</translation>
+        <translation>Diagramma sovrapposto</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramoverlayplugin.cpp" line="35"/>
