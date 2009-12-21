@@ -1,5 +1,5 @@
 <h3>Layer aus Textdatei laden</h3>
-Läd und stell Textdatei in CSV-Format, die x- und y-Koordinaten haben, dar.
+Läd und stell Textdatei in CSV-Format, die x- und y-Koordinaten haben, dar. 
 <p>
 <p>
 <a href="#re">Anforderungen</a><br/>
@@ -9,7 +9,7 @@ Läd und stell Textdatei in CSV-Format, die x- und y-Koordinaten haben, dar.
 <a name="re">
 <h4>Anforderungen</h4>
 </a>
-Um eine Textdatei als Layer anzuzeigen, muß sie folgende Daten enthalten:
+Um eine Textdatei als Layer anzuzeigen, muß sie folgende Daten enthalten: 
 <ol>
 <li>Eine Titelzeile mit den Namen der Fehler. Dies muß die erste Zeile der Textdatei sein.</li>
 <li>Die Titelzeile muss ein X und ein Y-Feld enthalten. Diese Fehler können beliebige Namen haben.</li>

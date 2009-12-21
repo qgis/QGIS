@@ -1,0 +1,23 @@
+<h3>Definition eines Benutzerkoordinatensystems</h3>
+Wenn QGIS ein benötigtes Koordinatensystem nicht zur Verfügung stellt, können Sie ein Benutzer-KBS definieren.
+<p>Um ein KBS anzugeben, wählen Sie <label>Benutzerkoordinatensystem...</label> aus dem Menü <label>Bearbeiten</label> (Gnome, OSX) bzw. <label>Einstellungen</label> (KDE, Windows). 
+Benutzer-KBS werden in Ihrer QGIS-Benutzerdatenbank gespeichert.  Neben Ihren Benutzer-KBS enthält diese auch die räumlichen Lesezeichen und andere Benutzerdaten. 
+
+<h4>Definieren</h4>
+Um ein neues KBS anzulegen, klicken Sie auf den Knopf <label>Neu (Sternchen)</label> und machen folgende Eingabe: 
+<dl> 
+<dt>Name</dt><dd>Beschreibung</dd>
+<dt>Parameter</dt><dd>KBS Parameter (PROJ.4 Format)</dd>
+</dl> 
+Danach speichern Sie Ihr KBS durch einen Klick auf den <label>Speichern (Symbol Diskette)</label> 
+<p> 
+Beachten Sie, dass die Parameter mit einem Block <code>+proj=</code> beginnen müssen, um ein neues 
+Koordinatensystem darzustellen. 
+<p> 
+Ein Benutzer-KBS in QGIS zu definieren erfordert gutes Verständnis der PROJ.4-Projektionsbibiliothek. 
+Zum Einstieg sei auf <em><a href="ftp://ftp.remotesensing.org/proj/OF90-284.pdf">Cartographic Projection Procedures for the UNIX 
+Environment</a>, A User's Manual by Gerald I. Evenden, U.S. Geological Survey 
+Open-File Report 90-284, 1990</em> verwiesen.  Dieses Handbuch beschreibt die 
+Benutzung von <em>PROJ.4</em> und die zugehörigen Kommandozeilenwerkzeuge. Die 
+kartographischen Parameter in <em>PROJ.4</em> sind im diesem Handbuch 
+beschrieben und sind die gleichen wie die in QGIS benutzten. 

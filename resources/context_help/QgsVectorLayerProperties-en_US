@@ -74,23 +74,26 @@ The <label>Toggle editing mode</label> button toggles this mode.<p>
 Within the Attributes tab you also find an edit widget column. This column can be used to define values or a range of values that are allowed to be added to the specific attribute table column. If you click on the <label>edit widget</label> button, a dialog opens, where you can define different widgets. These widgets are:<br/>
 <ul>
 <li><label>Line edit</label> an edit field which allows to enter simple text (or restrict to numbers for numeric attributes).
-<li><label>Classification</label> Displays a combo box with the values used for classification, if you have chosen ’unique value’ as legend type in the symbology tab of the properties dialog.
+<li><label>Classification</label> Displays a combo box with the values used for classification, if you have chosen <label>unique value</label> as legend type in the symbology tab of the properties dialog.
 <li><label>Range</label> Allows to set numeric values from a specific range. The edit widget can be either a slider or a spin box.
-<li><label>Unique value</label> The user can select one of the values already used in the attribute table. If editable is activated, a line edit is shown with autocompletion support, otherwise a combo box is used.
+<li><label>Unique value</label> The user can select one of the values already used in the attribute table. If <label>editable</label> is activated, a line edit is shown with autocompletion support, but additional values are possible, otherwise a combo box is used.
 <li><label>File name</label> Simplifies the selection by adding a file chooser dialog.
 <li><label>Value map</label> a combo box with predefined items. The value is stored in the attribute, the description is shown in the comboo box. You can define values manually or load them from a layer or a csv file.
 <li><label>Enumeration</label> Opens a combo box with values that can be used within the columns type. This is currently only supported by the postgres provider.
 <li><label>Immutable</label> The immutable attribute column is read-only. The user is not able to modify the content.
+<li><label>Hidden</label> A hidden attribute column is invisible to the user.
+<li><label>Checkbox</label> A checkbox is shown.  The value representing the state of the checkbox in the attribute has to be entered.
+<li><label>Text edit</label> A text edit field is shown, that allows entering multiline text.
 </ul>
 
 <a name="general">
 <h4>General</h4>
 </a>
-The General tab allows you to change the display name, set scale dependent rendering options, create a spatial index of the vector file (only for OGR supported formats and PostGIS) and view or change the projection of the specific vetor layer.<p>
-If your vector layer has been loaded from a PostgreSQL / PostGIS datastore, you can also alter the underlying SQL for the layer - either by hand editing the SQL on this tab or by invoking the <label>Query Builder</label>.
+The General tab allows you to change the display name, set scale dependent rendering options, create a spatial index of the vector file (only for OGR supported formats and PostGIS) and view or change the projection of the specific vector layer.<p>
+You can also set filter expressions using the <label>Query Builder</label>.
 
 <h5>Subset</h5>
-The <label>Query Builder</label> button allows you to create a subset of the features in the layer.
+The <label>Query Builder</label> button allows you to limit the features of a layer to a subset matching an expression.
 
 <a name="metadata">
 <h4>Metadata</h4>
@@ -100,17 +103,17 @@ The <label>Metadata</label> tab contains information about the layer, including 
 <a name="actions">
 <h4>Actions</h4>
 </a>
-QGIS provides the ability to perform an action based on the attributes of a feature. This can be used to perform any number of actions, for example, running a program with arguments built from theattributes of a feature or passing parameters to a web reporting tool. <br/>
+QGIS provides the ability to perform an action based on the attributes of a feature. This can be used to perform any number of actions, for example, running a program with arguments built from the attributes of a feature or passing parameters to a web reporting tool. <br/>
 Actions are useful when you frequently want to run an external application or view a web page based on one or more values in your vector layer. An example is performing a search based on an attribute value.<p>
 See the User Guide for further information.
 
 <h5>Using Actions</h5>
-Actions can be invoked from either the <label>Identify Results</label> dialog or an <label>Attribute Table</label> dialog.
+Actions can be invoked from the <label>Identify Results</label> dialog.
 
 <a name="diagram">
 <h4>Diagram Overlay</h4>
 </a>
-The Diagram tab allows you to add a grahic overlay to a vector layer. To activate this feature, open the <label>Plugin Manager</label> and select the <label>Diagram Overlay’</label> plugin. After this, there is a new tab in the vector <label>Layer Properties</label> dialog where the settings for diagrams may be entered.<p>
+The Diagram tab allows you to add a graphic overlay to a vector layer. To activate this feature, open the <label>Plugin Manager</label> and select the <label>Diagram Overlay</label> plugin. After this, there is a new tab in the vector <label>Layer Properties</label> dialog where the settings for diagrams may be entered.<p>
 The current implementation of diagrams provides support for pie- and barcharts and for linear scaling
 of the diagram size according to a classification attribute.
 

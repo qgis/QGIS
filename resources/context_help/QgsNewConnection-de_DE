@@ -1,19 +1,21 @@
 <h3>Neue PostGIS-Verbindung erzeugen</h3>
 Um eine PostGIS-Verbindung anzulegen, müssen Sie den Host, Port und Ihren Benutzername/Paßwort für den Datenbankserver kennen. 
-<h4>Benötigte Parameter</h4> 
-<ul> 
-<li><label>Name</label> - ein beschreibender Name für die Verbindung 
-<li><label>Host</label> - der Name des Hosts des Dantenbankservers (z.B. madison.qgis.org) 
-<li><label>Datenbank</label> - Name der zu verbindenden Datenbank 
-<li><label>Port</label> - Port auf dem PostgreSQL horcht. Voreingestellt ist 5432. Im Zweifel fragen Sie Ihren Datenbankadministrator 
-<li><label>Benutzername</label> - Ihre Datenbankbenutzername 
-<li><label>Paßwort</label> - Ihr Datenbankpasswort 
-</ul> 
-<h4>Optionen</h4> 
-<ol> 
-<li><label>Paßwort spreichern</label>  - speichern Sie Ihr Paßwort, damit sie es nicht jedesmal wieder eingeben müssen. Das Paßwort wird im Klartext in Ihren QGIS-Einstellungen gespeichert. 
-<li><label>Nur in die geometry_columns-Tabelle gucken</label> - normalerweise durchsucht QGIS alle Tabellen nach Geometriespalten und fügt sie dann der Layerliste hinzu. Ein Haken hier sorgt dafür, dass QGIS nur "registrierte" Tabellen mit einem Eintrag in der geometry_columns-Tabelle anzeigt. 
-<li><label>Nur im 'public'-Schema</label> - diese begrenzt die Suche auf Layer im public-Schema 
-</ol> 
-<h4>Verbindung testen</h4> 
-Klicken Sie auf <label>Verbindung testen</label> um einen Verbindungsversuch mit diesen Parameters auszulösen. Hiermit können Sie die Verbindungsparameter vor dem Speichern gut prüfen. 
+<h4>Benötigte Parameter</h4>
+<ul>
+<li><label>Name</label> - ein beschreibender Name für die Verbindung
+<li><label>Host</label> - der Name des Hosts des Dantenbankservers (z.B. madison.qgis.org)
+<li><label>Datenbank</label> - Name der zu verbindenden Datenbank
+<li><label>Port</label> - Port auf dem PostgreSQL horcht. Voreingestellt ist 5432. Im Zweifel fragen Sie Ihren Datenbankadministrator
+<li><label>Benutzername</label> - Ihre Datenbankbenutzername
+<li><label>Paßwort</label> - Ihr Datenbankpasswort
+</ul>
+<h4>Optionen</h4>
+<ol>
+<li><label>Paßwort spreichern</label>  - speichern Sie Ihr Paßwort, damit sie es nicht jedesmal wieder eingeben müssen. Das Paßwort wird im Klartext in Ihren QGIS-Einstellungen gespeichert.
+<li><label>Nur in die geometry_columns-Tabelle gucken</label> - normalerweise durchsucht QGIS alle Tabellen nach Geometriespalten und fügt sie dann der Layerliste hinzu. Ein Haken hier sorgt dafür, dass QGIS nur "registrierte" Tabellen mit einem Eintrag in der geometry_columns-Tabelle anzeigt.
+<li><label>Nur im 'public'-Schema</label> - diese begrenzt die Suche auf Layer im public-Schema
+</ol>
+<h4>Verbindung testen</h4>
+Klicken Sie auf <label>Verbindung testen</label> um einen Verbindungsversuch 
+mit diesen Parameters auszulösen. Hiermit können Sie die Verbindungsparameter 
+vor dem Speichern gut prüfen.

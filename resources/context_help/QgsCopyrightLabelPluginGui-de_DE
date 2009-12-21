@@ -1,6 +1,6 @@
 <h3>Copyright Label-Erweiterung</h3>
 Zeichnet einen Urheberrechtshinweis mit Informationen.<br/>
-Sie können der Karte beliebigen Text hinzufügen nicht nur einen Urheberrechtshinweis.
+Sie können der Karte beliebigen Text hinzufügen nicht nur einen Urheberrechtshinweis. 
 <p>
 <a href="#howto">Wie's geht?</a><br/>
 <a href="#text">Textformatierung</a><br/>
@@ -19,7 +19,7 @@ Sie können der Karte beliebigen Text hinzufügen nicht nur einen Urheberrechtsh
 <a name="text">
 <h4>Textformatierung</h4>
 </a>
-Diese Erweiterung unterstützt grundlegende HTML-Hervorhebungstags zur Textformatierung. Zum Beispiel:
+Diese Erweiterung unterstützt grundlegende HTML-Hervorhebungstags zur Textformatierung. Zum Beispiel: 
 
 <ul>
 <li>&lt;B&gt;<b> Fett </b>&lt;/B&gt;

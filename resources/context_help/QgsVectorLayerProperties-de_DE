@@ -1,27 +1,170 @@
-<h3>Layereigenschaften</h3> 
-Dieser Dialog erlaubt Ihnen die Arbeit mit den Vektorlayereinstellungen und -eigenschaften. 
-Es gibt fünf Reiter: 
-<ol> 
-<li><a href="#symbology">Bezeichnungen</a></li> 
-<li><a href="#general">Allgemein</a></li> 
-<li><a href="#metadata">Metadaten</a></li> 
-<li><a href="#labels">Beschriftungen</a></li> 
-<li><a href="#actions">Aktionen</a></li> 
-</ol> 
-<a name="symbology"> 
-<h4>Symbolik</h4> 
-</a> 
- 
-<a name="general"> 
-<h4>Allgemein</h4> 
-</a> 
- 
-<a name="metadata"> 
-<h4>Metadaten</h4> 
-</a> 
-<a name="labels"> 
-<h4>Beschriftung</h4> 
-</a> 
-<a name="actions"> 
-<h4>Aktionen</h4> 
-</a> 
+<h3>Vektorlayereigenschaften</h3>
+In diesem Dialog können Sie an den Vektorlayereinstellungen und -eigenschaften 
+arbeiten. Es gibt sieben Reiter:
+<p>
+<a href="#symbology">Darstellung</a><br/>
+<a href="#labels">Beschriftungen</a><br/>
+<a href="#attributes">Attribute</a><br/>
+<a href="#general">Allgemein</a><br/>
+<a href="#metadata">Metadaten</a><br/>
+<a href="#actions">Aktionen</a><br/>
+<a href="#diagram">Diagramm-Überlagerung</a><br/>
+
+<a name="symbology">
+<h4>Darstellung</h4>
+</a>
+Um die Darstellung eines Layers zu ändern, klicken Sie einfach doppelt auf 
+seinen Legendeneintrag und der Dialog <label>Layereigenschaften</label> wird 
+angezeigt.<p>
+In diesem Dialog können Sie Ihren Vektorlayer gestalten.  Abhängig von den 
+Zeichnungseinstellungen haben Sie auch die Möglichkeit Ihre Kartenobjekte zu 
+klassifizieren. 
+
+<h5>Darstellungen</h5>
+QGIS unterstützt eine Reihe von unterschiedlichen Darstellungen für Vektorobjekte.  Derzeit sind folgende Darstellungen verfügbar: 
+<ul>
+<li><label>Einzelsymbol</label> - alle Objekte werden gleich dargestellt
+<li><label>Abgestuftes Symbol</label> - Objekte eines Layers werden abhängig vom Wert eines bestimmten Attributs klassifiziert und darstellt.
+<li><label>Fortlaufende Farbe</label> - Objekte eines Layers werden abhängig vom nummerische Wert eines bestimmten Attribute in einem Farbverlauf dargestellt.
+<li><label>Eindeutiger Wert</label> - Jedem möglichen Wert eines bestimmten Attributs kann ein unterschiedliches Symbol zugeordnet werden.
+</ul>
+
+<h5>Neue Darstellung</h5>
+Klicken Sie auf den Knopf <label>Neue Darstellung</label>, um den Layer in der neuen Darstellung anzuzeigen.
+
+<h5>Vektortransparenz</h5>
+Für jeden Vektorlayer kann in QGIS eine Transparenz eingestellt werden. Dies erfolgt über den Schieber <label>Transparenz</label> 
+und ist sehr nützlich, um mehrere Vektorlayer übereinander zu legen.
+
+<h5>Stilvorgaben speichern</h5>
+Wenn Sie Ihren Layer gestaltet haben, können Sie Ihre Gestaltung in einer 
+gesonderten Datei (mit Endung <code>*.qml</code>) speichern.  Benutzen Sie dazu 
+den Knopf <label>Stil speichern...</label>.  Dass <label>Stil laden...</label> 
+Ihren gespeicherten Stil wiedr läd, sollte klar sein. 
+<p>Wenn Sie wann immer Sie den Layer laden den gleichen Stil verwenden wollen, 
+können Sie Ihn über den Knopf <label>Als Vorgabe speichern</label> 
+voreinstellen.  Außerdem können Sie mit dem Knopf <label>Stilvorgaben 
+wiederherstellen</label> Ihre Änderungen jederzeit zurücknehmen, wenn Sie mit 
+Ihnen nicht glücklich sind. 
+
+<a name="labels">
+<h4>Beschriftungen</h4>
+</a>
+Unter dem Reiter Beschriftungen können Sie die Beschriftungen einschalten und 
+einige Einstellungen zu Schriftarten, Platzierung, Stil, Ausrichtung und 
+Freistellung vornehmen.<br/>
+Setzen Sie das Häkchen in <label>Beschriftungen anzeigen</label>, um die 
+Beschriftungen einzuschalten.
+
+<h5>Grundlegende Beschriftungsoptionen</h5>
+Wählen Sie ein anzuschreibendes Feld.<p>
+Wählen Sie die zu benutzende <label>Schriftart</label> und <label>Farbe</label>. 
+Sie können auch den Winkel und die Platzierung der Beschriftung wählen.<p>
+Wenn Sie mehrzeilige Beschriftungen haben, setzen Sie ein Häkchen in <label>Mehrzeilige Beschriftungen?</label>.
+QGIS wird dann echte Zeilenumbrüche in Ihrem Beschriftungsfeld entsprechend 
+behandeln. Ein echter Zeilenumbruch in ein einzelnes Zeichen <code>\n</code> (ASCII 
+LINEFEED; nicht zwei einzelne Zeichen wie umgekehrter Schrägstrich gefolgt von 
+einem Buchstaben n).
+
+<h5>Platzierunge</h5>
+Ändern Sie die Beschriftungsplatzierung indem Sie eine Optionsfeld der Gruppe 
+<label>Platzierung</label> wählen.
+
+<h5>Schriftgrößen(-einheiten)</h5>
+Unter <label>Schriftgrößen</label> können Sie zwischen <label>Punkten</label> 
+oder <label>Karteneinheiten</label> wählen.
+
+<h5>Beschriftungen freistellen</h5>
+Beschriftungen freizustellen bedeutet dahinter einen Rand zu zeichnen, um sie 
+besser hervorzuheben.  Dazu:
+<ol>
+<li>Setzen Sie eine Haken in <label>Beschriftungen freistellen</label>, um die Freistellung zu aktivieren,
+<li>Wählen Sie die Größe des Puffers.
+<li>Wählen Sie die Farbe durch Klick auf <label>Farbe</label> Ihre Lieblingsfarbe. Falls Sie es vorziehen, können Sie auch Transparenz wählen.
+<li>Klicken Sie auf <label>Anwenden</label>, um zu sehen, ob Ihnen die Änderungen gefallen.
+</ol>
+Beachten Sie, dass Sie die Puffergröße auch in Karteneinheiten angeben können, 
+wenn Ihnen das besser paßt.
+
+<h5>Datendefinierte Platzierung, Eigenschaften, Freistellung und Position</h5> 
+Die verbleibenden Einträge im Reiter <label>Beschriftung</label> erlauben es 
+Ihnen die Erscheinung der Beschriftungen mit im Layer gespeichern Attributen zu 
+steuern. Die mit <label>Datendefiniert</label> beginnenden Einträge gestatten 
+es Ihnen alle Parameter der Beschriftungen über Felder des Layers zu setzen. 
+
+<a name="attributes">
+<h4>Attribute</h4>
+</a>
+Im Reiter <label>Attribute</label> können die Attribute des gewählten Layers 
+geändert werden.
+Die Knöpfe <label>Neue Spalte</label> und <label>Spalte löschen</label> sind im 
+Bearbeitungsmodus verfügbar. Die OGR-Bibliothek unterstützt für Shapedateien 
+das Hinzufügen von Feldern (ab GDAL 1.6), aber nicht das Löschen. Sonst 
+können nur Spalten von PostGIS-Layers bearbeitet werden. 
+<p>Der Knopf <label>Bearbeitungsmodus umschalten</label> wechselt den Modus. 
+<p>Im Reiter Attribute finden sie auch eine Spalte Bearbeitungselement. Diese 
+Spalte kann verwendet werden, um Werte oder Wertebereich festzulegen die für 
+die jeweilige Attributspalte erlaubt sind. Wenn Sie auf einen Knopf in der 
+Spalte <label>Bearbeitungselement</label> klicken, öffnet sich ein Dialog in 
+dem sie Bearbeitungselement einstellen können. Diese Elemente sind:<br/> 
+<ul>
+<li><label>Eingabezeile</label> Ein Bearbeitungsfeld in dem einfacher Text (oder nur Zahlen für numerische Attribute) eingegeben werden kann.
+<li><label>Klassifikation</label> Zeigt ein Kombinationsfeld (Combobox) mit den Werten an, die auch für die Darstellung <label>Eindeutige Werte</label> verwendet.
+<li><label>Range</label> Gestattet die Einstellung eines Wertebereichs für numerische Werte. Das Bearbeitungselement kann als Eingabezeile oder Schieber dargestellt werden.
+<li><label>Eindeutige Werte</label> Der Benutzer kann über ein Kombinationsfeld aus Werten wählen, die bereits in der Attributspalte verwendet werden. Wenn <label>Änderbar</label> aktiv ist, wird eine Eingabezeile mit automatischer Vervollständigung angezeigt und es sind auch neue Eingaben möglich.
+<li><label>Dateiname</label> Vereinfacht die Eingabe durch Hinzufügen eine Dateiauswahl.
+<li><label>Wertabbildung</label> eine Kombinationsfeld mit vordefinierten Werten. Der Wert wird im Attribut gespeichert, die Beschreibung im Kombinationsfeld angezeigt. Sie können die Werte manuell eingeben oder aus einem Layer oder einer CSV-Datei laden.
+<li><label>Aufzählung</label> öffnet ein Kombinationsfeld mit den möglichen Werten des Spaltentyps. Dies wird gegenwärtig nur für PostGIS-Layer unterstützt.
+<li><label>Unveränderbar</label> Eine unveränderliche Spalte ist schreibgeschützt. Der Benutzer kann den Inhalt nicht ändern.
+<li><label>Versteckt</label> Versteckte Felder sind für den Benutzer unsichtbar.
+<li><label>Kontrollkästchen</label> Ein Kontrollkästchen wird angezeigt.  Im Dialog sind die Werte einzugeben, die für den jeweiligen Kästchenzustand im Attribut abbilden.
+<li><label>Textfeld</label> Es wird ein Eingabefeld angezeigt, dass die Eingabe von mehrzeiligem Text erlaubt.
+</ul>
+
+<a name="general">
+<h4>Allgemein</h4>
+</a>
+Im Reiter <label>Allgemein</label> kann der Anzeigename, das massstabsabhängige Zeichnen eingestellt werden, räumliche Indizes für Vektorlayer (nur OGR- und PostGIS-Layer) und die Projektion des Vektorlayers eingesehen oder verändert werden.<p> 
+Sie können über <label>Abfrageerstellung</label> auch Filterausdrücke festlegen.
+
+<h5>Untermenge</h5>
+Der Knopf <label>Abfrageerstellung</label> erlaubt die Objekte eines Layer auf eine einem Ausdruck genügende Untermenge zu beschränken.
+
+<a name="metadata">
+<h4>Metadaten</h4>
+</a>
+Der Reiter <label>Metadaten</label> einhält Information über den Layer, 
+einschließlich Einzelheiten zu Typ und Ort, Objektanzahl, Objekttyp und 
+Bearbeitungsmöglichkeiten. Im Abschnitt <label>Räumliches Bezugssystem des 
+Layers</label> stehen Information zur Projektion. Dies ist ein einfacher Weg, 
+um Informationen zum Layer zu erhalten.
+
+<a name="actions">
+<h4>Aktionen</h4>
+</a>
+<p>QGIS bietet die Möglichkeit Aktionen mit Attributen eines Objekts auszuführen. 
+Dies kann dazu genutzt werden eine Reihe von Aktionen durchzuführen.  Zum 
+Beispiel ein Programm mit Argumenten aufzurufen, die aus Attributen eines 
+Objekts gebildet werden oder um Parameter an ein Webberichtswerkzeug zu 
+übergeben.
+<p>Aktionen sind sinnvoll, wenn man oft externe Anwendungen aufrufen oder Webseite 
+abhängig von einem oder mehreren Attributwerten Ihres Vektorlayers anzeigen 
+möchte. Ein Beispiel ist an auf einem Attribut basierende Suche.
+<p>Im Benutzerhandbuch finden Sie nährere Informationen.
+
+<h5>Aktionen verwenden</h5>
+Aktionen können aus dem <label>Abfragewerkzeug</label> heraus aufgerufen werden.
+
+<a name="diagram">
+<h4>Diagramm-Überlagerung</h4>
+</a>
+Der Reiter Diagramm-Überlagerung gestattet Ihnen über dem Layer eine Grafik 
+einzublenden. Um diese Möglichkeit einzuschalten, öffnen Sie 
+<label>Erweiterungen verwalten...</label> und aktivieren die Erweiterung 
+<label>Diagramm Überlagerung</label>.  Danach steht Ihnen ein neuer Reiter im 
+Dialog <label>Layereigenschaften</label>, in dem Sie die Diagrammeinstellungen 
+vornehmen können, zur Verfügung.<p> Die gegenwärtige Diagramm-Implementierung 
+ermöglicht Kuchen- und Balkendiagramme sowie die lineare Skalierung gemäß eines 
+Klassifikationsattribut.
+
+
