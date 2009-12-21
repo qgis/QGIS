@@ -19,6 +19,7 @@ SET(QGIS_CORE_SRCS
   symbology-ng/qgsgraduatedsymbolrendererv2.cpp
   symbology-ng/qgsvectorcolorrampv2.cpp
   symbology-ng/qgsstylev2.cpp
+  symbology-ng/qgssymbologyv2conversion.cpp
 
   qgis.cpp
   qgsapplication.cpp
