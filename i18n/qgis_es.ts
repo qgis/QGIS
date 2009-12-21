@@ -8743,7 +8743,7 @@ El error fue: %2</translation>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="583"/>
         <source>Cross width</source>
-        <translation>Anchra de cruz</translation>
+        <translation>Anchura de cruz</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="234"/>
@@ -18967,7 +18967,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgspenstylecombobox.cpp" line="71"/>
         <source>Round</source>
-        <translation type="unfinished">Redondo</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
