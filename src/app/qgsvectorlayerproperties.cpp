@@ -56,8 +56,7 @@
 
 #include "qgsrendererv2propertiesdialog.h"
 #include "qgsstylev2.h"
-#include "qgssinglesymbolrenderer.h"
-#include "qgssinglesymbolrendererv2.h"
+#include "qgssymbologyv2conversion.h"
 
 #if QT_VERSION < 0x040300
 #define toPlainText() text()
@@ -1108,15 +1107,11 @@ void QgsVectorLayerProperties::setUsingNewSymbology( bool useNewSymbology )
 {
   if ( useNewSymbology )
   {
-    layer->setUsingRendererV2( true );
-    layer->setRendererV2( QgsFeatureRendererV2::defaultRenderer( layer->geometryType() ) );
-    layer->setRenderer( NULL );
+    QgsSymbologyV2Conversion::rendererV1toV2( layer );
   }
   else
   {
-    layer->setUsingRendererV2( false );
-    layer->setRendererV2( NULL );
-    layer->setRenderer( new QgsSingleSymbolRenderer( layer->geometryType() ) );
+    QgsSymbologyV2Conversion::rendererV2toV1( layer );
   }
 
   // update GUI!
