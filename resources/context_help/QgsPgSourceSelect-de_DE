@@ -1,5 +1,6 @@
 <h3>PostGIS-Tabelle hinzufügen</h3>
-In diesem Dialog können Sie PostGIS-Layern (Tabellen mit Geometriespaten) zur Karte hinzufügen.
+In diesem Dialog können Sie PostGIS-Layern (Tabellen mit Geometriespaten) zur 
+Karte hinzufügen.
 <p>
 <a href="#connect">Verbindungen</a><br/>
 <a href="#add">Layer hinzufügen</a><br/>
@@ -18,15 +19,15 @@ In diesem Dialog können Sie PostGIS-Layern (Tabellen mit Geometriespaten) zur K
 </a>
 Um einen Layer hinzuzufügen:
 <ol>
-<li>Wählen Sie die gewünschte Verbindung aus der Liste,
+<li>Wählen Sie die gewünschte Verbindung aus der Liste, 
 <li>klicken Sie auf <label>Verbinden</label>,
-<li>suchen Sie den Layer, den Sie der Liste hinzufügen wollen und klicken Sie ihn an um ihn auszuwählen,
+<li>suchen Sie den Layer, den Sie der Liste hinzufügen wollen und klicken Sie ihn an um ihn auszuwählen, 
 <li>Sie können zusätzliche Layer wählen indem Sie die Ctrl-Taste gedrückt halten,
 <li>klicken Sie auf <label>Hinzufügen</label> um den/die Layer der Karte hinzuzufügen.
 </ol>
 <a name="filter">
 <h4>Layer filtern</h4>
 </a>
-Um Layer vor dem Hinzufügen zu Filtern klicken Sie doppelt auf deren Namen.
-Daraufhin öffnet sich der Abfrageneditor, in dem Sie SQL-Anweisungen zum Filtern der
-Datensätze festlegen können.
+Um Layer vor dem Hinzufügen zu Filtern klicken Sie doppelt auf deren Namen. 
+Daraufhin öffnet sich der Abfrageneditor, in dem Sie SQL-Anweisungen zum 
+Filtern der Datensätze festlegen können.

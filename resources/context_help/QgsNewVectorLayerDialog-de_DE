@@ -1,12 +1,21 @@
 <h3>Einen neuen Vektorlayer erzeugen</h3>
-Um einen neuen Vektorlayer zur Bearbeitung zu erzeugen, wählen Sie <label>Neuen Vektorlayer erzeugen</label> aus dem Menü <label>Layer</label>
+Um einen neuen Vektorlayer zur Bearbeitung zu erzeugen, wählen Sie <label>Neuen 
+Vektorlayer erzeugen</label> aus dem Menü <label>Layer</label>
 <br/>
 Mit diesem Dialog können einen Shapedatei-Layer erzeugen.
+
 <h4>Typ</h4>
 Wählen Sie <label>Punkt</label>, <label>Linie</label> oder <label>Polygon</label> als Layertyp.<br/>
 Klicken Sie auf den Knopf <label>KBS angeben</label>, um ggf. das Koordinatenbezugssystem festzulegen.
+
 <h4>Neues Attribute</h4>
-Ein gewünschtes Attribut fügen Sie über den Knopf <label>Der Attributliste hinzufügen</label> hinzu, nachdem Sie einen Name und den Attributtyp festgelegt haben. Derzeit werden Fließkomma- (Real), ganze Zahlen (Integer) und Zeichenketten unterstützt.<br/>
-Sie können auch die Breite und Genauigket der neuen Attributspalte angeben.
+Ein gewünschtes Attribut fügen Sie über den Knopf <label>Der Attributliste 
+hinzufügen</label> hinzu, nachdem Sie einen Name und den Attributtyp festgelegt 
+haben. Derzeit werden Fließkomma- (Real), ganze Zahlen (Integer) und 
+Zeichenketten unterstützt.<br/> Sie können auch die Breite und Genauigket der 
+neuen Attributspalte angeben. 
+
 <h4>Attributliste</h4>
-In diesem Abschnitt werden die vorhandenen Attribute aufgelisten. Um ein Attribute zu löschen klicken Sie es an und wählen dann <label>Gewähltes Attribute löschen</label>.
+In diesem Abschnitt werden die vorhandenen Attribute aufgelisten. Um ein 
+Attribute zu löschen klicken Sie es an und wählen dann <label>Gewähltes 
+Attribute löschen</label>.
