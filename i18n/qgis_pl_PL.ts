@@ -19428,7 +19428,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="92"/>
         <source>Symbology</source>
-        <translation>Style</translation>
+        <translation>Styl</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1084"/>
@@ -20089,7 +20089,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2propertiesdialog.cpp" line="175"/>
         <source>Symbology</source>
-        <translation>Style</translation>
+        <translation>Styl</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2propertiesdialog.cpp" line="176"/>
@@ -20117,7 +20117,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="52"/>
         <source>Old symbology</source>
-        <translation>&amp;Style retro</translation>
+        <translation>&amp;Stare style</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="77"/>
@@ -21433,12 +21433,12 @@ Czy chcesz nadpisać relację [%2]?</translation>
     <message>
         <location filename="../src/ui/qgssymbollevelsv2dialogbase.ui" line="14"/>
         <source>Symbol Levels</source>
-        <translation>Poziomy symboli</translation>
+        <translation>Poziomy wyświetlania</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbollevelsv2dialogbase.ui" line="20"/>
         <source>Enable symbol levels</source>
-        <translation>Włącz po&amp;ziomy symboli</translation>
+        <translation>Włącz po&amp;ziomy wyświetlana warstw symboli</translation>
     </message>
 </context>
 <context>
@@ -21490,12 +21490,12 @@ Czy chcesz nadpisać relację [%2]?</translation>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="192"/>
         <source>Add to style</source>
-        <translation>Dodaj do stylu</translation>
+        <translation>Zapisz symbol</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="201"/>
         <source>Symbols from style:</source>
-        <translation>Symbole ze stylu:</translation>
+        <translation>Zapisane symbole:</translation>
     </message>
 </context>
 <context>
@@ -21997,7 +21997,7 @@ Czy aktualne klasy powiny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1128"/>
         <source>Symbology</source>
-        <translation>Style</translation>
+        <translation>Styl</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1129"/>
@@ -22162,7 +22162,7 @@ Czy aktualne klasy powiny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="88"/>
         <source>Symbology</source>
-        <translation>Style</translation>
+        <translation>Styl</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="115"/>
