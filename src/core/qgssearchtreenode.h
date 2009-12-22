@@ -165,8 +165,8 @@ class CORE_EXPORT QgsSearchTreeNode
     QgsDistanceArea mCalc;
 };
 
-// TODO: poslat do zvlast suboru
-class QgsSearchTreeValue
+// TODO: put it into separate file
+class CORE_EXPORT QgsSearchTreeValue
 {
   public:
 
