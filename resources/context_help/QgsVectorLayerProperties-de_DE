@@ -96,7 +96,7 @@ es Ihnen alle Parameter der Beschriftungen über Felder des Layers zu setzen.
 <h4>Attribute</h4>
 </a>
 Im Reiter <label>Attribute</label> können die Attribute des gewählten Layers 
-geändert werden.
+geändert werden. 
 Die Knöpfe <label>Neue Spalte</label> und <label>Spalte löschen</label> sind im 
 Bearbeitungsmodus verfügbar. Die OGR-Bibliothek unterstützt für Shapedateien 
 das Hinzufügen von Feldern (ab GDAL 1.6), aber nicht das Löschen. Sonst 

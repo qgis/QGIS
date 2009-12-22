@@ -10,18 +10,18 @@ Downloads and installs plugins from remote repositories.
 </a>
 
 <p align='justify'>
-The <label>Plugins</label> tab contains a list of all locally installed Python plugins, as well as plugins available in
+The <label>Plugins</label> tab contains a list of all locally installed Python plugins, as well as plugins available in 
 remote repositories. Each plugin can be either:
 <ul>
-<li> not installed - this means the plugin is available in the repository, but is not installed yet. In
+<li> not installed - this means the plugin is available in the repository, but is not installed yet. In 
 order to install it, select the plugin from the list and click the <label>Install plugin</label> button.</li>
 <li> new - this means that the plugin is newly available in the repository.</li>
-<li> installed - this indicates that the plugin is already installed. If it is also available in any repository
-the <label>Reinstall plugin</label> button will be enabled. If the available version is older than the installed
+<li> installed - this indicates that the plugin is already installed. If it is also available in any repository 
+the <label>Reinstall plugin</label> button will be enabled. If the available version is older than the installed 
 version, the <label>Downgrade plugin</label> button will appear instead.</li>
 <li> upgradeable - this means that the plugin is installed, but there is an updated version available. 
 In this case, the <label>Upgrade plugin</label> button will be enabled.</li>
-<li> invalid - this means that the plugin is installed, but is unavailable or broken. The reason will be
+<li> invalid - this means that the plugin is installed, but is unavailable or broken. The reason will be 
 explained in the plugin description ﬁeld.</li>
 </ul>
 </p>
@@ -40,19 +40,19 @@ If the installation is successful, a conﬁrmation message will appear. The plug
 </p>
 
 <p align='justify'>
-If the installation fails, the reason for the failure will be displayed in a warning dialog. Most often,
-errors are the result of connection problems and/or missing Python modules. In the former case you
-will likely need to wait before trying the install again, in the latter case, you should install the missing
-modules relevant to your operating system prior to using the plugin. For Linux, most required
-modules should be available via a package manager. For install instructions in Windows visit the
-module home page. If you are using a proxy, you may need to conﬁgure it under <label>Edit</label> > <label>Options</label>
+If the installation fails, the reason for the failure will be displayed in a warning dialog. Most often, 
+errors are the result of connection problems and/or missing Python modules. In the former case you 
+will likely need to wait before trying the install again, in the latter case, you should install the missing 
+modules relevant to your operating system prior to using the plugin. For Linux, most required 
+modules should be available via a package manager. For install instructions in Windows visit the 
+module home page. If you are using a proxy, you may need to conﬁgure it under <label>Edit</label> > <label>Options</label> 
 (Gnome, OSX) or <label>Settings</label> > <label>Options</label> (KDE, Windows) on the <label>Proxy</label> tab.
 </p>
 
 <p align='justify'>
-The <label>Uninstall plugin</label> button is enabled only if the selected plugin is installed and is not a core
-plugin. Note that if you have installed an update to a core plugin, you can uninstall this update
-with the <label>Uninstall plugin</label> and revert to the version shipped with Quantum GIS. This default version
+The <label>Uninstall plugin</label> button is enabled only if the selected plugin is installed and is not a core 
+plugin. Note that if you have installed an update to a core plugin, you can uninstall this update 
+with the <label>Uninstall plugin</label> and revert to the version shipped with Quantum GIS. This default version 
 however, cannot be uninstalled.
 </p>
 
@@ -63,13 +63,13 @@ however, cannot be uninstalled.
 <h4>Repositories tab</h4>
 </a>
 <p align='justify'>
-The second tab <label>Repositories</label>, contains a list of plugin repositories available for the Plugin
+The second tab <label>Repositories</label>, contains a list of plugin repositories available for the Plugin 
 Installer. By default, only the QGIS Ofﬁcial Repository is enabled. You can add several user-
-contributed repositories, including the central QGIS Contributed Repository and other external repos-
-itories by clicking the <label>Add 3rd party repositories</label> button. The added repositories contain a large
-number of useful plugins which are not maintained by the QGIS Development Team. As such, we
-cannot take any responsibility for them. You can also manage the repository list manually, that is add,
-remove, and edit the entries. Temporarily disabling a particular repository is possible by clicking the
+contributed repositories, including the central QGIS Contributed Repository and other external repositories $
+by clicking the <label>Add 3rd party repositories</label> button. The added repositories contain a large 
+number of useful plugins which are not maintained by the QGIS Development Team. As such, we 
+cannot take any responsibility for them. You can also manage the repository list manually, that is add, 
+remove, and edit the entries. Temporarily disabling a particular repository is possible by clicking the 
 <label>Edit...</label> button.
 </p>
 
@@ -82,24 +82,24 @@ remove, and edit the entries. Temporarily disabling a particular repository is p
 </a>
 <p align='justify'>
 The <label>Options</label> tab is where you can conﬁgure the settings of the Plugin Installer. 
-The <label>x Check for updates on startup</label> checkbox tells QGIS to automatically look for plugin updates and
-news. By default, if this feature is enabled all repositories listed and enabled in the <label>Repositories</label>
-tab are checked for updates each time the program is started. The frequency of update checking
-can be adjusted using the dropdown menu, and may be adjusted from once a day right up to once a
-month. If a new plugin or update is available for one of the installed plugins, a notiﬁcation will appear
-in the Status Bar. If the checkbox is disabled, looking for updates and news is performed only when
+The <label>x Check for updates on startup</label> checkbox tells QGIS to automatically look for plugin updates and 
+news. By default, if this feature is enabled all repositories listed and enabled in the <label>Repositories</label> 
+tab are checked for updates each time the program is started. The frequency of update checking 
+can be adjusted using the dropdown menu, and may be adjusted from once a day right up to once a 
+month. If a new plugin or update is available for one of the installed plugins, a notiﬁcation will appear 
+in the Status Bar. If the checkbox is disabled, looking for updates and news is performed only when 
 the Plugin Installer is manually launched from the menu.
 </p>
 
 <p align='justify'>
-Some internet connections will cause problems when attempting to automatically check for updates.
-In these cases, a <i>Looking for new plugins...</i> indicator will remain visible in the Status Bar during your
-entire QGIS session, and may cause a program crash when exiting. In this case please disable the
+Some internet connections will cause problems when attempting to automatically check for updates. 
+In these cases, a <i>Looking for new plugins...</i> indicator will remain visible in the Status Bar during your 
+entire QGIS session, and may cause a program crash when exiting. In this case please disable the 
 checkbox.
 </p>
 
 
-In addition, you may specify the type of plugins that are displayed by the Plugin Installer. Under
+In addition, you may specify the type of plugins that are displayed by the Plugin Installer. Under 
 <i>Allowed plugins</i>, you can specify whether you would like to:
 <ul>
 <li> Only show plugins from the ofﬁcial repository</li>
@@ -109,8 +109,8 @@ In addition, you may specify the type of plugins that are displayed by the Plugi
 
 <br/>
 <table border=1 width='95%' align='center'><tr><td>
-Note: Experimental plugins are generally unsuitable for production use. These plugins are in the early stages of
-development, and should be considered ’incomplete’ or ’proof of concept’ tools. The QGIS development team
+Note: Experimental plugins are generally unsuitable for production use. These plugins are in the early stages of 
+development, and should be considered "incomplete" or "proof of concept" tools. The QGIS development team 
 does not recommend installing these plugins unless you intend to use them for testing purposes.
 </td></tr></table>
 

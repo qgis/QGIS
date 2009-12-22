@@ -1,7 +1,7 @@
 ﻿<h3>Scalebar Plugin</h3>
 Draws a scale bar on the map.
 <p>
-You can control the style and placement, as well as the labeling of the bar.
+You can control the style and placement, as well as the labeling of the bar. 
 QGIS only supports displaying the scale in the same units as your map frame. So if the units of your layers are in meters, you can't create a scale bar in feet. Likewise if you are using decimal degrees, you can't create a scale bar to display distance in meters.</p>
 <p>
 To add a scale bar:

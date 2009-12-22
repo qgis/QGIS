@@ -59,7 +59,7 @@ To buffer the labels means putting a backdrop around them to make them stand out
 <li>Choose a color by clicking on <label>Color</label> and choosing your favorite from the color selector. You can also set some transparency for the buffer if you prefer.
 <li>Click <label>Apply</label> to see if you like the changes.
 </ol>
-Notice you can also specify the buffer size in map
+Notice you can also specify the buffer size in map 
 units if that works out better for you.
 
 <h5>Data defined placement, properties, buffer, position</h5>
