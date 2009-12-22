@@ -23,9 +23,12 @@
 #include <QPalette>
 #include <QSettings>
 
-#ifndef Q_WS_WIN    // (if Windows, use icon from resource)
-#include "../../images/themes/default/qgis.xpm" // Linux/Mac
+// (if Windows/Mac, use icon from resource)
+#if ! defined(Q_WS_WIN) && ! defined(Q_WS_MAC)
+#include "../../images/themes/default/qgis.xpm" // Linux
 #include <QIcon>
+#endif
+#ifndef Q_WS_WIN
 #include <netinet/in.h>
 #else
 #include <winsock.h>
@@ -65,9 +68,9 @@ QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled )
   setPrefixPath( myPrefix, true );
 #endif
 
-  // set application's icon
-#ifndef Q_WS_WIN       // (if Windows, use icon from resource)
-  setWindowIcon( QPixmap( qgis_xpm ) );        // Linux/Mac
+  // set application's icon (if Windows/Mac, use icon from resource)
+#if ! defined(Q_WS_WIN) && ! defined(Q_WS_MAC)
+  setWindowIcon( QPixmap( qgis_xpm ) );        // Linux
 #endif
 }
 
