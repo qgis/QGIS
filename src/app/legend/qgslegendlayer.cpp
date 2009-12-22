@@ -216,6 +216,26 @@ void QgsLegendLayer::vectorLayerSymbology( const QgsVectorLayer* layer, double w
   const QgsRenderer* renderer = layer->renderer();
   const QList<QgsSymbol*> sym = renderer->symbols();
 
+  //create an item for each classification field (only one for most renderers)
+  QSettings settings;
+  if ( settings.value( "/qgis/showLegendClassifiers", false ).toBool() )
+  {
+    if ( renderer->needsAttributes() )
+    {
+      QgsAttributeList classfieldlist = renderer->classificationAttributes();
+      const QgsFieldMap& fields = layer->pendingFields();
+      for ( QgsAttributeList::iterator it = classfieldlist.begin(); it != classfieldlist.end(); ++it )
+      {
+        QString classfieldname = layer->attributeAlias( *it );
+        if ( classfieldname.isEmpty() )
+        {
+          classfieldname = fields[*it].name();
+        }
+        itemList.append( qMakePair( classfieldname, QPixmap() ) );
+      }
+    }
+  }
+
   for ( QList<QgsSymbol*>::const_iterator it = sym.begin(); it != sym.end(); ++it )
   {
     QImage img;
@@ -253,27 +273,6 @@ void QgsLegendLayer::vectorLayerSymbology( const QgsVectorLayer* layer, double w
 
     QPixmap pix = QPixmap::fromImage( img ); // convert to pixmap
     itemList.append( qMakePair( values, pix ) );
-  }
-
-
-  //create an item for each classification field (only one for most renderers)
-  QSettings settings;
-  if ( settings.value( "/qgis/showLegendClassifiers", false ).toBool() )
-  {
-    if ( renderer->needsAttributes() )
-    {
-      QgsAttributeList classfieldlist = renderer->classificationAttributes();
-      const QgsFieldMap& fields = layer->pendingFields();
-      for ( QgsAttributeList::iterator it = classfieldlist.begin(); it != classfieldlist.end(); ++it )
-      {
-        QString classfieldname = layer->attributeAlias( *it );
-        if ( classfieldname.isEmpty() )
-        {
-          classfieldname = fields[*it].name();
-        }
-        itemList.append( qMakePair( classfieldname, QPixmap() ) );
-      }
-    }
   }
 
   changeSymbologySettings( layer, itemList );
