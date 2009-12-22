@@ -1422,6 +1422,7 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN14QgsVectorLayer15undoEditCommandEP14QgsUndoCommand@Base 1.4.0
  _ZN14QgsVectorLayer16attributeDeletedEi@Base 1.4.0
  _ZN14QgsVectorLayer16beginEditCommandE7QString@Base 1.4.0
+ _ZN14QgsVectorLayer16drawVertexMarkerEddR8QPainterNS_16VertexMarkerTypeEi@Base 1.4.0
  _ZN14QgsVectorLayer16drawVertexMarkerEiiR8QPainterNS_16VertexMarkerTypeEi@Base 1.4.0
  _ZN14QgsVectorLayer16selectedFeaturesEv@Base 1.4.0
  _ZN14QgsVectorLayer16selectionChangedEv@Base 1.4.0
@@ -2003,9 +2004,14 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN20QgsComposerItemGroupD1Ev@Base 1.4.0
  _ZN20QgsComposerItemGroupD2Ev@Base 1.4.0
  _ZN20QgsFeatureRendererV213renderFeatureER10QgsFeatureR16QgsRenderContexti@Base 1.4.0
+ _ZN20QgsFeatureRendererV213renderFeatureER10QgsFeatureR16QgsRenderContextib@Base 1.4.0
  _ZN20QgsFeatureRendererV214fieldNameIndexERK4QMapIi8QgsFieldERK7QString@Base 1.4.0
  _ZN20QgsFeatureRendererV215defaultRendererEN4QGis12GeometryTypeE@Base 1.4.0
+ _ZN20QgsFeatureRendererV218renderVertexMarkerER7QPointFR16QgsRenderContext@Base 1.4.0
  _ZN20QgsFeatureRendererV220legendSymbologyItemsE5QSize@Base 1.4.0
+ _ZN20QgsFeatureRendererV225renderVertexMarkerPolygonER9QPolygonFP5QListIS0_ER16QgsRenderContext@Base 1.4.0
+ _ZN20QgsFeatureRendererV225setVertexMarkerAppearanceEii@Base 1.4.0
+ _ZN20QgsFeatureRendererV226renderVertexMarkerPolylineER9QPolygonFR16QgsRenderContext@Base 1.4.0
  _ZN20QgsFeatureRendererV24dumpEv@Base 1.4.0
  _ZN20QgsFeatureRendererV24loadER11QDomElement@Base 1.4.0
  _ZN20QgsFeatureRendererV24saveER12QDomDocument@Base 1.4.0
@@ -2246,6 +2252,10 @@ libqgis_core.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN24QgsSymbolLayerV2Registry9mInstanceE@Base 1.4.0
  _ZN24QgsSymbolLayerV2RegistryC1Ev@Base 1.4.0
  _ZN24QgsSymbolLayerV2RegistryC2Ev@Base 1.4.0
+ _ZN24QgsSymbologyV2Conversion12symbolV1toV2EPK9QgsSymbol@Base 1.4.0
+ _ZN24QgsSymbologyV2Conversion12symbolV2toV1EP11QgsSymbolV2@Base 1.4.0
+ _ZN24QgsSymbologyV2Conversion14rendererV1toV2EP14QgsVectorLayer@Base 1.4.0
+ _ZN24QgsSymbologyV2Conversion14rendererV2toV1EP14QgsVectorLayer@Base 1.4.0
  _ZN25QgsDoubleBoxScaleBarStyleC1EPK19QgsComposerScaleBar@Base 1.4.0
  _ZN25QgsDoubleBoxScaleBarStyleC1Ev@Base 1.4.0
  _ZN25QgsDoubleBoxScaleBarStyleC2EPK19QgsComposerScaleBar@Base 1.4.0
