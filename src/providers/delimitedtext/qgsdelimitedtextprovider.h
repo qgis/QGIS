@@ -219,4 +219,6 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     };
     wkbPoint mWKBpt;
 
+    QStringList splitLine( QString line );
+
 };
