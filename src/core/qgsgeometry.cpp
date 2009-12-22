@@ -531,6 +531,7 @@ QgsGeometry & QgsGeometry::operator=( QgsGeometry const & rhs )
   mGeometrySize    = rhs.mGeometrySize;
 
   // deep-copy the GEOS Geometry if appropriate
+  GEOSGeom_destroy( mGeos );
   mGeos = rhs.mGeos ? GEOSGeom_clone( rhs.mGeos ) : 0;
 
   mDirtyGeos = rhs.mDirtyGeos;
@@ -5145,22 +5146,49 @@ GEOSGeometry* QgsGeometry::reshapePolygon( const GEOSGeometry* polygon, const GE
     newOuterRing = GEOSGeom_clone( outerRing );
   }
 
-  GEOSGeometry** newInnerRings = new GEOSGeometry*[nRings];
-  for ( int i = 0; i < nRings; ++i )
+  //check if all the rings are still inside the outer boundary
+  QList<GEOSGeometry*> ringList;
+  if ( nRings > 0 )
   {
-    if ( lastIntersectingRing == i )
+    GEOSGeometry* outerRingPoly = GEOSGeom_createPolygon( GEOSGeom_clone( newOuterRing ), 0, 0 );
+    if ( outerRingPoly )
     {
-      newInnerRings[i] = newRing;
+      GEOSGeometry* currentRing = 0;
+      for ( int i = 0; i < nRings; ++i )
+      {
+        if ( lastIntersectingRing == i )
+        {
+          currentRing = newRing;
+        }
+        else
+        {
+          currentRing = GEOSGeom_clone( innerRings[i] );
+        }
+
+        //possibly a ring is no longer contained in the result polygon after reshape
+        if ( GEOSContains( outerRingPoly, currentRing ) == 1 )
+        {
+          ringList.push_back( currentRing );
+        }
+        else
+        {
+          GEOSGeom_destroy( currentRing );
+        }
+      }
     }
-    else
-    {
-      newInnerRings[i] = GEOSGeom_clone( innerRings[i] );
-    }
+    GEOSGeom_destroy( outerRingPoly );
+  }
+
+  GEOSGeometry** newInnerRings = new GEOSGeometry*[ringList.size()];
+  QList<GEOSGeometry*>::const_iterator it = ringList.constBegin();
+  for ( int i = 0; i < ringList.size(); ++i )
+  {
+    newInnerRings[i] = ringList.at( i );
   }
 
   delete [] innerRings;
 
-  GEOSGeometry* reshapedPolygon = GEOSGeom_createPolygon( newOuterRing, newInnerRings, nRings );
+  GEOSGeometry* reshapedPolygon = GEOSGeom_createPolygon( newOuterRing, newInnerRings, ringList.size() );
   delete[] newInnerRings;
   if ( !reshapedPolygon )
   {
