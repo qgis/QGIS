@@ -1287,7 +1287,7 @@ GEOS-Verarbeitugnsfehler: Eine oder mehrere Objekte haben ungültige Geometrie.<
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="65"/>
         <source>This is the class that provides the &apos;glue&apos; between your custom application logic and the QGIS application. You will see that a number of methods are already implemented for you - including some examples of how to add a raster or vector layer to the main application map canvas. This class is a concrete instance of the QgisPlugin interface which defines required behaviour for a plugin. In particular, a plugin has a number of static methods and members so that the QgsPluginManager and plugin loader logic can identify each plugin, create an appropriate menu entry for it etc. Note there is nothing stopping you creating multiple toolbar icons and menu entries for a single plugin. By default though a single menu entry and toolbar button is created and its pre-configured to call the run() method in this class when selected. This default implementation provided for you by the plugin builder is well documented, so please refer to the code for further advice.</source>
-        <translation>Dies ist die Klasse, die Ihre Applikation mit QGIS verbindet. Sie werden sehen, dass bereits eine Vielzahl an Methoden bereitstehen, inklusive einiger Beispiele, etwa wie Raster- oder Vektorlayer in das Kartenfenster integriert werden können. Diese Klasse ist eine feste Instanz der QGIS-Erweiterungsschnittstelle, welche notwendiges Verhalten der Erweiterung definiert. Genau gesagt, enthält eine Erweiterung eine Reihe statischer Methoden und Klassenmitglieder, damit der QGIS-Erweiterungsmanager und der Erweiterungslader die Erweiterung identifizieren, einen passenden Menüeintrag erstellen kann usw. Beachten Sie, dass Sie auch mehrere Icons für die Werkzeugleiste sowie mehrere Menüeinträge für eine einzelne Erweiterung erstellen können. Vordefiniert wird jedoch nur ein einzelnes Icon und ein Menüeintrag, die so vorkonfiguriert werden, dass die Methode run() dieser Klasse bei ihrer Auswahl gestarted wird. Diese durch die Erweiterungserstellung bereitgestellte vordefinierte Implementierung ist sehr gut dokumentiert. Beziehen Sie sich daher bitte auf den Quellcode für weitere Hinweise.</translation>
+        <translation>Dies ist die Klasse, die Ihre Anwendung mit QGIS verbindet. Sie werden sehen, dass bereits eine Vielzahl an Methoden bereitstehen, inklusive einiger Beispiele, etwa wie Raster- oder Vektorlayer in das Kartenfenster integriert werden können. Diese Klasse ist eine feste Instanz der QGIS-Erweiterungsschnittstelle, welche notwendiges Verhalten der Erweiterung definiert. Genau gesagt, enthält eine Erweiterung eine Reihe statischer Methoden und Klassenmitglieder, damit der QGIS-Erweiterungsmanager und der Erweiterungslader die Erweiterung identifizieren, einen passenden Menüeintrag erstellen kann usw. Beachten Sie, dass Sie auch mehrere Icons für die Werkzeugleiste sowie mehrere Menüeinträge für eine einzelne Erweiterung erstellen können. Vordefiniert wird jedoch nur ein einzelnes Icon und ein Menüeintrag, die so vorkonfiguriert werden, dass die Methode run() dieser Klasse bei ihrer Auswahl gestarted wird. Diese durch die Erweiterungserstellung bereitgestellte vordefinierte Implementierung ist sehr gut dokumentiert. Beziehen Sie sich daher bitte auf den Quellcode für weitere Hinweise.</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="66"/>
@@ -1297,7 +1297,7 @@ GEOS-Verarbeitugnsfehler: Eine oder mehrere Objekte haben ungültige Geometrie.<
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="67"/>
         <source>This is the concrete class where application logic for the above mentioned dialog should go. The world is your oyster here really....</source>
-        <translation>Dies ist eine feste Klasse in welche die Applikationstechnologie des oben beschriebenen Dialogs, eingefügt werden sollte Die Welt steht Ihnen an dieser Stelle absolut offen....</translation>
+        <translation>Dies ist eine feste Klasse in welche die Anwendungstechnologie des oben beschriebenen Dialogs, eingefügt werden sollte Die Welt steht Ihnen an dieser Stelle absolut offen....</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="68"/>
@@ -4393,7 +4393,7 @@ This binary was compiled against Qt %1,and is currently running against Qt %2</s
         <source>Multiple instances of Quantum GIS application object detected.
 Please contact the developers.
 </source>
-        <translation>Mehrere Instanzen der Quantum GIS-Applikation wurden festgestellt.
+        <translation>Mehrere Instanzen der Quantum GIS-Anwendung wurden festgestellt.
 Bitte nehmen Sie Kontakt zu den Entwicklern auf.</translation>
     </message>
     <message>
@@ -5605,7 +5605,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="190"/>
         <source>Clicking the button will let you select an application to use as the action</source>
-        <translation>Mit diesem Knopf kann man eine Applikation für diese Aktion wählen</translation>
+        <translation>Mit diesem Knopf kann man eine Anwendung für diese Aktion wählen</translation>
     </message>
 </context>
 <context>
@@ -12329,7 +12329,7 @@ in Zeile %2, Spalte %3</translation>
     <message>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="144"/>
         <source>This help file does not exist for your language:&lt;p&gt;&lt;b&gt;%1&lt;/b&gt;&lt;p&gt;If you would like to create it, contact the QGIS development team</source>
-        <translation type="unfinished"></translation>
+        <translation>Diese Hilfedatei gibt es in Ihrer Sprache:&lt;p&gt;&lt;b&gt;%1&lt;/b&gt;&lt;p&gt;Wenn Sie sie erstellen wollen, kontaktieren Sie das QGIS-Entwicklerteam.</translation>
     </message>
     <message>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="191"/>
@@ -23937,7 +23937,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="245"/>
         <source>Unable to connect to either the map canvas or application interface</source>
-        <translation>Konnte keine Verbindung zum Kartenfenster oder der Applikationsschnittstelle aufnehmen</translation>
+        <translation>Konnte keine Verbindung zum Kartenfenster oder der Anwendungsschnittstelle aufnehmen</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="274"/>
@@ -24236,17 +24236,17 @@ Base Path (i.e. keep only filename from attribute)</source>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="834"/>
         <source>Configure External Applications</source>
-        <translation>Externe Applikationen konfigurieren</translation>
+        <translation>Externe Anwendungen konfigurieren</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="855"/>
         <source>File extension and external application in which to load a document of that type</source>
-        <translation>Dateierweitungen und externe Applikationen mit der Dateien dieses Typs geladen werden sollen festlegen</translation>
+        <translation>Dateierweitungen und externe Anwendungen mit der Dateien dieses Typs geladen werden sollen festlegen</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="880"/>
         <source>A table containing file types that can be opened using eVis. Each file type needs a file extension and the path to an application that can open that type of file. This provides the capability of opening a broad range of files such as movies, sound recording, and text documents instead of only images. </source>
-        <translation>Eine Tabelle, die Dateitypen enthält, die mit eVis geöffnet werden können. Jeder Dateityp braucht eine Dateierweiterung und einen Pfad zur Applikation, die diesen Typ öffnen kann. Dies ermöglicht es eine große Breite von Dateien wie Filmen, Audioaufnahmen und Textdokumenten statt nur Bildern zu öffnen.</translation>
+        <translation>Eine Tabelle, die Dateitypen enthält, die mit eVis geöffnet werden können. Jeder Dateityp braucht eine Dateierweiterung und einen Pfad zur Anwendung, die diesen Typ öffnen kann. Dies ermöglicht es eine große Breite von Dateien wie Filmen, Audioaufnahmen und Textdokumenten statt nur Bildern zu öffnen.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="884"/>
@@ -24256,7 +24256,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="889"/>
         <source>Application</source>
-        <translation>Applikation</translation>
+        <translation>Anwendung</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="899"/>
@@ -24266,7 +24266,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="902"/>
         <source>Add a new file type with a unique extension and the path for the application that can open the file.</source>
-        <translation>Eine neuen Dateityp anlegen mit einer eindeutigen Erweiterung und der Applikation, die die Datei öffnen kann.</translation>
+        <translation>Eine neuen Dateityp anlegen mit einer eindeutigen Erweiterung und der Anwendung, die die Datei öffnen kann.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="916"/>
