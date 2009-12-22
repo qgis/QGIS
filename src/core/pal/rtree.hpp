@@ -1079,7 +1079,7 @@ namespace pal
   {
     ASSERT( a_rectA && a_rectB );
 
-    Rect newRect;
+    Rect newRect = { {0,}, {0,} };
 
     for ( int index = 0; index < NUMDIMS; ++index )
     {
