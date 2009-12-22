@@ -36,7 +36,7 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WFlags fl
   mTypeBox->addItem( tr( "Decimal number" ), "Real" );
 
   mWidth->setValidator( new QIntValidator( 1, 255, this ) );
-  mPrecision->setValidator( new QIntValidator( 0, 20, this ) );
+  mPrecision->setValidator( new QIntValidator( 0, 5, this ) );
 
   mPointRadioButton->setChecked( true );
   mFileFormatComboBox->addItem( tr( "ESRI Shapefile" ), "ESRI Shapefile" );
@@ -65,7 +65,33 @@ QgsNewVectorLayerDialog::~QgsNewVectorLayerDialog()
 
 void QgsNewVectorLayerDialog::on_mTypeBox_currentIndexChanged( int index )
 {
-  mPrecision->setEnabled( index == 2 );  // Real
+  // FIXME: sync with providers/ogr/qgsogrprovider.cpp
+  switch ( index )
+  {
+    case 0: // Text data
+      mWidth->setValidator( new QIntValidator( 1, 255, this ) );
+      mPrecision->setEnabled( false );
+      break;
+
+    case 1: // Whole number
+      if ( mWidth->text().toInt() > 10 )
+        mWidth->setText( "10" );
+      mPrecision->setEnabled( false );
+      mWidth->setValidator( new QIntValidator( 1, 10, this ) );
+      break;
+
+    case 2: // Decimal number
+      if ( mWidth->text().toInt() > 20 )
+        mWidth->setText( "20" );
+      mPrecision->setEnabled( false );
+      mWidth->setValidator( new QIntValidator( 1, 20, this ) );
+      mPrecision->setEnabled( true );
+      break;
+
+    default:
+      QgsDebugMsg( "unexpected index" );
+      break;
+  }
 }
 
 QGis::WkbType QgsNewVectorLayerDialog::selectedType() const
