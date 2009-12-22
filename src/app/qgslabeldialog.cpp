@@ -188,7 +188,15 @@ void QgsLabelDialog::init( )
   {
     mFont.setItalic( false );
   }
-  mFont.setUnderline( myLabelAttributes->underline() );
+  if ( myLabelAttributes->underlineIsSet() )
+  {
+    mFont.setUnderline( myLabelAttributes->underline() );
+  }
+  else
+  {
+    mFont.setUnderline( false );
+  }
+
   mFontColor = myLabelAttributes->color();
 
   if ( myLabelAttributes->offsetIsSet() )
