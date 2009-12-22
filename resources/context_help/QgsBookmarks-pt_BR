@@ -1,0 +1,22 @@
+<h3>Favoritos Espacial</h3>
+Os Favoritos Geoespaciais permitem você armazenar locais geográficos favoritos para retornar aos mesmos em outra ocasião.
+
+<h4>Criar Favoritos</h4>
+Para criar favoritos:
+<ol>
+<li>Aproxime ou movimente até a área de interesse
+<li>Clique em <i>Criar um favorito geoespacial</i> ou digite Ctrl+B
+<li>Entre com uma descrição para os favoritos (no máximo 255 caracteres)
+<li>Clique <i>OK</i> para adicionar aos Favoritos ou <i>Cancelar</i> para sair sem adicionar o local de interesse aos favoritos
+</ol>
+Note que você pode ter múltiplos favoritos com o mesmo nome.
+<h4>Trabalhar com favoritos</h4>
+Para usar ou gerenciar favoritos clique no botão <i>Mostrar favoritos geoespaciais</i> ou escolha <i>Favoritos Geoespaciais</i> no menu <i>Exibir</i>. O diálogo favoritos permite você ir ao favorito ou exclui-lo. Você não pode editar o nome ou coordenadas do favorito.
+<h5>Aproximando para um Favorito</h5>
+A partir do diálogo Favoritos, selecione o favorito desejado clicando nele, então clique no botão <i>Aproximar para</i>.
+<p>
+Você pode também aproximar para o favorito através de um duplo clique no mesmo.
+
+<h5>Excluir um Favorito</h5>
+Para excluir um favorito do diálogo de Favoritos, clique nele e depois no botão <i>Excluir</i>. Confirme sua escolha clicando em <i>Sim</i> ou cancele a exclusão clicando em <i>Não</i>.
+

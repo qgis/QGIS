@@ -1,0 +1,33 @@
+<h3>Exporta um Projeto do QGIS para um arquivo MAP do MapServer</h3>
+<p>
+Esta ferramenta permite você exportar um projeto do QGIS salvo para um arquivo MAP do MapServer. A ferramenta é instalada na pasta binária do QGIS e pode ser usada independentemente do QGIS. Apenas a entrada de <b>Arquivo Map</b> e <b>arquivo de projeto QGIS</b> é solicitada.
+</p>
+<h4>Entrada de Arquivo</h4>
+<dl>
+  <dt>arquivo Map</dt>
+  <dd>Entre com o nome do arquivo Map a ser criado. Você pode usar o botão à direita para buscar uma pasta onde você deseja salvar o arquivo Map criado.
+  <dt>arquivo de projeto do QGIS</dt>
+  <dd>Entre com o caminho completo do arquivo de projeto do QGIS (.qgs) que você deseja exportar. Você pode usar o botão à direita para burcar o arquivo de projeto do QGIS.</dd>
+</dl>
+<h4>Parâmetros do arquivo Map</h4>
+Estes valores serão escritos no arquivo Map em lugar apropriado para definir coisas como tamanho de imagem de saída, unidades e tipo de imagem.
+<dl>
+  <dt>Nome</dt>
+  <dd>Um nome para o Map. Este nome é pré-fixado a todas as imagens geradas pelo MapServer.</dd>
+  <dt>Largura</dt>
+  <dd>Largura da imagem de saída em pixels.</dd>
+  <dt>Altura</dt>
+  <dd>Altura da imagem de saída em pixels.</dd>
+  <dt>Unidades</dt>
+  <dd>Unidades de saída usadas para a saída.</dd>
+  <dt>Tipo de imagem</dt>
+  <dd>Formato para a imagem de saída gerada pelo MapServer</dd>
+</dl>
+<h4>Definição da Interface da Web</h4>
+<dl>
+  <dt>Modelo</dt>
+  <dd>Caminho completo para o arquivo de modelo do MapServer a ser usado com o arquivo Map.</dd>
+  <dt>Cabeçalho</dt>
+  <dd>Caminho completo para o arquivo de cabeçalho do MapServer a ser usado com o arquivo Map</dd>
+  <dt>Rodapé</dt>
+  <dd>Caminho completo para o arquivo de rodapé do MapServer a ser usado com o arquivo Map.</dd>

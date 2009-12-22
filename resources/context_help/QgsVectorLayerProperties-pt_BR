@@ -1,0 +1,27 @@
+<h3>Propriedades da Camada Vetorial</h3>
+Este diálogo permite você trabalhar com propriedades e configurações de camadas vetoriais.
+Existem cinco abas:
+<ol>
+<li><a href="#symbology">Simbologia</a></li>
+<li><a href="#general">Geral</a></li>
+<li><a href="#metadata">Metadados</a></li>
+<li><a href="#labels">Rótulos</a></li>
+<li><a href="#actions">Ações</a></li>
+</ol>
+<a name="symbology">
+<h4>Simbologia</h4>
+</a>
+
+<a name="general">
+<h4>Geral</h4>
+</a>
+
+<a name="metadata">
+<h4>Metadados</h4>
+</a>
+<a name="labels">
+<h4>Rótulos</h4>
+</a>
+<a name="actions">
+<h4>Ações</h4>
+</a>

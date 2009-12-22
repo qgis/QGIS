@@ -1,0 +1,24 @@
+<h3>Propriedades do Projeto</h3>
+Este diálogo permite você definir um número de propriedades relacionadas ao <i>Projeto</i>. Um projeto é um conjunto salvo de camadas e configurações, bem como outras informações solicitadas para reconstruir o projeto do disco.<p>
+
+<h4>Aba Geral</h4>
+<table border=1>
+<tr>
+<td>Título do Projeto</td><td>Um título de descrição do projeto. Este título será mostrado na barra de títulos da janela do QGIS</td>
+</tr>
+<tr>
+<td>Unidades do Mapa</td><td>Escolha a unidade apropriada para cada camada no seu projeto</td>
+</tr>
+<tr>
+<td>Precisão do Cursor</td><td>Usa a configuração manual para definir a precisão que será mostrada pelo cursor na barra de status. No que o mouse é movimentado na tela, as coordenadas são atualizadas e mostradas na barra de status usando a precisão que você escolheu. O resultado automático (o padrão) é baseado na unidades do mapa.</td>
+</tr>
+<tr>
+<td>Configurações de Vetorização</td><td>Este permite você definir a tolerância de aproximação em pixels, a espessura da linha usada quando se está vetorizando e a cor para linhas vetorizadas.</td>
+</tr>
+<tr><td>Seleção de cor</td><td>Feições selecionadas são mostradas no mapa usando esta cor.</td>
+</tr>
+</table>
+<a anchor="projections"></a><h4>Aba Projeção</h4>
+A aba Projeções permite você definir a projeção para o projeto atual e habilitar a projeção "on the fly". Você não pode ter salvo o projeto para poder habilitar a projeção "on the fly".<p>
+Para usar a projeção "on the fly" clique na caixa de marcação <i>Habilitar projeção "on the fly"</i>. Então, escolha a projeção para o projeto (mapa da tela) a partir da lista de sistemas de coordenadas Geográficas ou Projetadas.<p>
+Você pode procurar um sistema de coordenadas entrando com seu código PostGIS SRID, EPSG ou o QGIS SRSRID e clicando no botão <i>Procurar</i>.
