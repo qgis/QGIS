@@ -1808,7 +1808,7 @@ void QgisApp::setupConnections()
   connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ),
            this, SLOT( projectChanged( const QDomDocument & ) ) );
   connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ),
-           this, SLOT( projectChanged( QDomDocument & ) ) );
+           this, SLOT( projectChanged( const QDomDocument & ) ) );
 }
 
 void QgisApp::createCanvas()
