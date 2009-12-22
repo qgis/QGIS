@@ -1314,6 +1314,10 @@ void QgsRasterLayer::computeMinimumMaximumFromLastExtent( int theBand, double* t
       for ( int myColumn = 0; myColumn < mLastViewPort.drawableAreaXDim; ++myColumn )
       {
         myValue = readValue( myGdalScanData, myDataType, myRow * mLastViewPort.drawableAreaXDim + myColumn );
+        if ( mValidNoDataValue && ( fabs( myValue - mNoDataValue ) <= TINY_VALUE || myValue != myValue ) )
+        {
+          continue;
+        }
         myMin = qMin( myMin, myValue );
         myMax = qMax( myMax, myValue );
       }
