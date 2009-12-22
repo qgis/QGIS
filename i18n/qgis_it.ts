@@ -776,7 +776,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="110"/>
         <source>Output point shapefile</source>
-        <translation>Shapefile poligoni in output</translation>
+        <translation>Shapefile di punti in output</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="19"/>
@@ -26573,7 +26573,7 @@ p, li { white-space: pre-wrap; }(new line)
         <location filename="../src/gui/qgsquickprint.cpp" line="659"/>
         <source>Please wait while your report is generated</source>
         <comment>COMMENTED OUT</comment>
-        <translation type="unfinished">Un po&apos; di pazienza mentre il report viene generato</translation>
+        <translation>Attendere la generazione del report</translation>
     </message>
 </context>
 <context>
@@ -28466,7 +28466,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="166"/>
         <source> metres/km</source>
-        <translation>. metri/km</translation>
+        <translation> metri/km</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="289"/>
@@ -28562,7 +28562,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="105"/>
         <source>Creates a scale bar that is displayed on the map canvas</source>
-        <translation>Crea una barra di scala che verrà visualizzata sopra sulla mappa</translation>
+        <translation>Crea una barra di scala che verrà visualizzata sulla mappa</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="114"/>
@@ -32819,11 +32819,11 @@ URL provata: %1</translation>
     <name>VisualDialog</name>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="unfinished">Selezionare vettoriale in input</translation>
+        <translation>Selezionare vettoriale in input</translation>
     </message>
     <message>
         <source>Please specify input field</source>
-        <translation type="unfinished">Specificare il campo di input</translation>
+        <translation>Specificare il campo di input</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
