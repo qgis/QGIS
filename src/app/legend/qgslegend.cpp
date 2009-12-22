@@ -1055,6 +1055,7 @@ QgsLegendLayer* QgsLegend::readLayerFromXML( QDomElement& childelem, bool& isOpe
 
   //set the layer type icon
   ll->updateIcon();
+  ll->setToolTip( 0, theMapLayer->publicSource() );
 
   // setup connections that will update the layer icons
   if ( qobject_cast<QgsVectorLayer *>( theMapLayer ) )
