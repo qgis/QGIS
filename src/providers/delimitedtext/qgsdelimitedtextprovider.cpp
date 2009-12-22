@@ -44,6 +44,66 @@ static const QString TEXT_PROVIDER_KEY = "delimitedtext";
 static const QString TEXT_PROVIDER_DESCRIPTION = "Delimited text data provider";
 
 
+QStringList QgsDelimitedTextProvider::splitLine( QString line )
+{
+  QgsDebugMsg( "Attempting to split the input line: " + line + " using delimiter " + mDelimiter );
+
+  QStringList parts;
+  if ( mDelimiterType == "regexp" )
+    parts = line.split( mDelimiterRegexp );
+  else
+    parts = line.split( mDelimiter );
+
+  QgsDebugMsg( "Split line into " + QString::number( parts.size() ) + " parts" );
+
+  if ( mDelimiterType == "plain" )
+  {
+    QChar delim;
+    int i = 0, first = parts.size();
+    while ( i < parts.size() )
+    {
+      if ( delim == 0 && ( parts[i][0] == '"' || parts[i][0] == '\'' ) )
+      {
+        delim = parts[i][0];
+        first = i;
+        continue;
+      }
+
+      if ( delim != 0 && parts[i][ parts[i].length() - 1 ] == delim )
+      {
+        parts[first] = parts[first].mid( 1 );
+        parts[i] = parts[i].left( parts[i].length() - 1 );
+
+        if ( first < i )
+        {
+          QStringList values;
+          while ( first <= i )
+          {
+            values << parts[first];
+            parts.takeAt( first );
+            i--;
+          }
+
+          parts.insert( first, values.join( mDelimiter ) );
+        }
+
+        first = -1;
+        delim = 0;
+      }
+
+      i++;
+
+      if ( i == parts.size() && first >= 0 )
+      {
+        i = first + 1;
+        first = -1;
+        delim = 0;
+      }
+    }
+  }
+
+  return parts;
+}
 
 QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
     : QgsVectorDataProvider( uri ),
@@ -137,14 +197,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
     {
       // Get the fields from the header row and store them in the
       // fields vector
-      QgsDebugMsg( "Attempting to split the input line: " + line + " using delimiter " + mDelimiter );
-
-      QStringList fieldList;
-      if ( mDelimiterType == "regexp" )
-        fieldList = line.split( mDelimiterRegexp );
-      else
-        fieldList = line.split( mDelimiter );
-      QgsDebugMsg( "Split line into " + QString::number( fieldList.size() ) + " parts" );
+      QStringList fieldList = splitLine( line );
 
       // We don't know anything about a text based field other
       // than its name. All fields are assumed to be text
@@ -185,11 +238,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
       mNumberFeatures++;
 
       // split the line on the delimiter
-      QStringList parts;
-      if ( mDelimiterType == "regexp" )
-        parts = line.split( mDelimiterRegexp );
-      else
-        parts = line.split( mDelimiter );
+      QStringList parts = splitLine( line );
 
       // Skip malformed lines silently. Report line number with nextFeature()
       if ( attributeFields.size() != parts.size() )
@@ -293,11 +342,7 @@ bool QgsDelimitedTextProvider::nextFeature( QgsFeature& feature )
     QString line = mStream->readLine(); // Default local 8 bit encoding
 
     // lex the tokens from the current data line
-    QStringList tokens;
-    if ( mDelimiterType == "regexp" )
-      tokens = line.split( mDelimiterRegexp );
-    else
-      tokens = line.split( mDelimiter );
+    QStringList tokens = splitLine( line );
 
     bool xOk = false;
     bool yOk = false;
