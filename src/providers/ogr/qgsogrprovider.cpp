@@ -168,10 +168,11 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
     valid = false;
   }
 
+  // FIXME: sync with app/qgsnewvectorlayerdialog.cpp
   mNativeTypes
   << QgsVectorDataProvider::NativeType( tr( "Whole number (integer)" ), "integer", QVariant::Int, 1, 10 )
   << QgsVectorDataProvider::NativeType( tr( "Decimal number (real)" ), "double", QVariant::Double, 1, 20, 0, 5 )
-  << QgsVectorDataProvider::NativeType( tr( "Text (string)" ), "string", QVariant::String, 1, 255, 0, 0 )
+  << QgsVectorDataProvider::NativeType( tr( "Text (string)" ), "string", QVariant::String, 1, 255 )
   ;
 }
 
@@ -1534,7 +1535,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
       break;
     default:
     {
-      QgsDebugMsg( QString("Unknown vector type of: %1").arg( ( int )( vectortype ) ) );
+      QgsDebugMsg( QString( "Unknown vector type of: %1" ).arg(( int )( vectortype ) ) );
       return false;
       break;
     }
