@@ -1417,7 +1417,7 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
 {
   QgsDebugMsg( "entered. (renderContext)" );
 
-  //Dont waste time drawing if transparency is at 0 (completely transparent)
+  // Don't waste time drawing if transparency is at 0 (completely transparent)
   if ( mTransparencyLevel == 0 )
     return TRUE;
 
@@ -2097,7 +2097,7 @@ QPixmap QgsRasterLayer::legendAsPixmap( bool theWithNameFlag )
               mDrawingStyle == PalettedSingleBandPseudoColor || mDrawingStyle == SingleBandPseudoColor )
     {
 
-      //set up the three class breaks for pseudocolour mapping
+      //set up the three class breaks for pseudocolor mapping
       double myRangeSize = 90;  //hard coded for now
       double myBreakSize = myRangeSize / 3;
       double myClassBreakMin1 = 0;
@@ -2314,7 +2314,7 @@ QPixmap QgsRasterLayer::legendAsPixmap( int theLabelCount )
   //these next two vars are not used anywhere so commented out for now
   //int myLongestLabelWidth =  myQFontMetrics.width(name());
   //const int myHorizontalLabelSpacing = 5;
-  const int myColourBarWidth = 10;
+  const int myColorBarWidth = 10;
   //
   // Get the adjusted matrix stats
   //
@@ -2353,7 +2353,7 @@ QPixmap QgsRasterLayer::legendAsPixmap( int theLabelCount )
             mDrawingStyle == PalettedSingleBandPseudoColor || mDrawingStyle == SingleBandPseudoColor )
   {
 
-    //set up the three class breaks for pseudocolour mapping
+    //set up the three class breaks for pseudocolor mapping
     double myRangeSize = 90;  //hard coded for now
     double myBreakSize = myRangeSize / 3;
     double myClassBreakMin1 = 0;
@@ -2496,11 +2496,11 @@ QPixmap QgsRasterLayer::legendAsPixmap( int theLabelCount )
   //hard coding thes values for now.
   if ( myLegendQPixmap.height() == 3 )
   {
-    myQWMatrix.scale( myColourBarWidth, 2 );
+    myQWMatrix.scale( myColorBarWidth, 2 );
   }
   else
   {
-    myQWMatrix.scale( myColourBarWidth, 2 );
+    myQWMatrix.scale( myColorBarWidth, 2 );
   }
   //apply the matrix
   QPixmap myQPixmap2 = myLegendQPixmap.transformed( myQWMatrix );
@@ -4773,7 +4773,7 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor( QPainter * theQPainter, 
 }
 
 /**
- * This method is used to render a paletted raster layer as a colour image -- currently not supported
+ * This method is used to render a paletted raster layer as a color image -- currently not supported
  * @param theQPainter - pointer to the QPainter onto which the layer should be drawn.
  * @param theRasterViewPort - pointer to the ViewPort struct containing dimensions of viewable area and subset area to be extracted from data file.
  * @param theGdalBand - pointer to the GDALRasterBand which should be rendered.
@@ -5269,7 +5269,7 @@ bool QgsRasterLayer::readFile( QString const &theFilename )
   mHeight = GDALGetRasterYSize( mGdalDataset );
 
   //
-  // Determin the nodatavalue
+  // Determine the nodata value
   //
   mNoDataValue = -9999.0; //Standard default?
   mValidNoDataValue = false;

@@ -7,7 +7,7 @@ class QgsRenderer
 %End
   
  public:
-    /** Default ctor sets up selection colour from project properties */
+    /** Default ctor sets up selection color from project properties */
     QgsRenderer();
     /** Virtual destructor because we have virtual methods... */
     virtual ~QgsRenderer();

@@ -97,7 +97,7 @@ void QgsQuickPrint::setOutputPdf( QString theFileName )
 void QgsQuickPrint::setMapCanvas( QgsMapCanvas * thepMapCanvas )
 {
   mpMapRenderer = thepMapCanvas->mapRenderer();
-  mMapBackgroundColour = thepMapCanvas->canvasColor();
+  mMapBackgroundColor = thepMapCanvas->canvasColor();
 }
 void QgsQuickPrint::setMapRenderer( QgsMapRenderer * thepMapRenderer )
 {
@@ -105,7 +105,7 @@ void QgsQuickPrint::setMapRenderer( QgsMapRenderer * thepMapRenderer )
 }
 void QgsQuickPrint::setMapBackgroundColor( QColor theColor )
 {
-  mMapBackgroundColour = theColor;
+  mMapBackgroundColor = theColor;
 }
 void QgsQuickPrint::setPageSize( QPrinter::PageSize theSize )
 {
@@ -247,9 +247,9 @@ void QgsQuickPrint::printMap()
 #endif
   QString myFontFamily = "Arial";
 
-  // Background colour for pixmaps
-  QColor myLegendBackgroundColour = Qt::white;
-  //QColor myMapBackgroundColour = "#98dbf9"; // nice blue colour
+  // Background color for pixmaps
+  QColor myLegendBackgroundColor = Qt::white;
+  //QColor myMapBackgroundColor = "#98dbf9"; // nice blue color
 
 
   //
@@ -780,7 +780,7 @@ void QgsQuickPrint::renderPrintScaleBar( QPainter * thepPainter,
 {
   //hard coding some options for now
   bool mySnappingFlag = true;
-  QColor mColour = Qt::black;
+  QColor mColor = Qt::black;
   // Hard coded sizes
   int myTextOffsetX = 0;
   int myTextOffsetY = 5;
@@ -905,7 +905,7 @@ void QgsQuickPrint::renderPrintScaleBar( QPainter * thepPainter,
   int myOriginY = myYMargin;
 
   //Set pen to draw with
-  QPen myForegroundPen( mColour, 2 );
+  QPen myForegroundPen( mColor, 2 );
   QPen myBackgroundPen( Qt::white, 3 );
 
   //Cast myScaleBarWidth to int for drawing

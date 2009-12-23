@@ -181,11 +181,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   cbxIdentifyResultsDocked->setChecked( settings.value( "/qgis/dockIdentifyResults", false ).toBool() );
   cbxAddPostgisDC->setChecked( settings.value( "/qgis/addPostgisDC", false ).toBool() );
 
-  //set the colour for selections
+  //set the color for selections
   int myRed = settings.value( "/qgis/default_selection_color_red", 255 ).toInt();
   int myGreen = settings.value( "/qgis/default_selection_color_green", 255 ).toInt();
   int myBlue = settings.value( "/qgis/default_selection_color_blue", 0 ).toInt();
-  pbnSelectionColour->setColor( QColor( myRed, myGreen, myBlue ) );
+  pbnSelectionColor->setColor( QColor( myRed, myGreen, myBlue ) );
 
   //set the default color for canvas background
   myRed = settings.value( "/qgis/default_canvas_color_red", 255 ).toInt();
@@ -197,7 +197,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   myRed = settings.value( "/qgis/default_measure_color_red", 180 ).toInt();
   myGreen = settings.value( "/qgis/default_measure_color_green", 180 ).toInt();
   myBlue = settings.value( "/qgis/default_measure_color_blue", 180 ).toInt();
-  pbnMeasureColour->setColor( QColor( myRed, myGreen, myBlue ) );
+  pbnMeasureColor->setColor( QColor( myRed, myGreen, myBlue ) );
 
   capitaliseCheckBox->setChecked( settings.value( "qgis/capitaliseLayerName", QVariant( false ) ).toBool() );
 
@@ -228,7 +228,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   myRed = settings.value( "/qgis/digitizing/line_color_red", 255 ).toInt();
   myGreen = settings.value( "/qgis/digitizing/line_color_green", 0 ).toInt();
   myBlue = settings.value( "/qgis/digitizing/line_color_blue", 0 ).toInt();
-  mLineColourToolButton->setColor( QColor( myRed, myGreen, myBlue ) );
+  mLineColorToolButton->setColor( QColor( myRed, myGreen, myBlue ) );
 
   //default snap mode
   mDefaultSnapModeComboBox->insertItem( 0, tr( "To vertex" ), "to vertex" );
@@ -327,12 +327,12 @@ QgsOptions::~QgsOptions()
   settings.setValue( "/Windows/Options/row", listWidget->currentRow() );
 }
 
-void QgsOptions::on_pbnSelectionColour_clicked()
+void QgsOptions::on_pbnSelectionColor_clicked()
 {
-  QColor color = QColorDialog::getColor( pbnSelectionColour->color(), this );
+  QColor color = QColorDialog::getColor( pbnSelectionColor->color(), this );
   if ( color.isValid() )
   {
-    pbnSelectionColour->setColor( color );
+    pbnSelectionColor->setColor( color );
   }
 }
 
@@ -345,21 +345,21 @@ void QgsOptions::on_pbnCanvasColor_clicked()
   }
 }
 
-void QgsOptions::on_pbnMeasureColour_clicked()
+void QgsOptions::on_pbnMeasureColor_clicked()
 {
-  QColor color = QColorDialog::getColor( pbnMeasureColour->color(), this );
+  QColor color = QColorDialog::getColor( pbnMeasureColor->color(), this );
   if ( color.isValid() )
   {
-    pbnMeasureColour->setColor( color );
+    pbnMeasureColor->setColor( color );
   }
 }
 
-void QgsOptions::on_mLineColourToolButton_clicked()
+void QgsOptions::on_mLineColorToolButton_clicked()
 {
-  QColor color = QColorDialog::getColor( mLineColourToolButton->color(), this );
+  QColor color = QColorDialog::getColor( mLineColorToolButton->color(), this );
   if ( color.isValid() )
   {
-    mLineColourToolButton->setColor( color );
+    mLineColorToolButton->setColor( color );
   }
 }
 
@@ -497,8 +497,8 @@ void QgsOptions::saveOptions()
     settings.setValue( "/qgis/measure/displayunits", "meters" );
   }
   settings.setValue( "/qgis/measure/ellipsoid", getEllipsoidAcronym( cmbEllipsoid->currentText() ) );
-  //set the colour for selections
-  QColor myColor = pbnSelectionColour->color();
+  //set the color for selections
+  QColor myColor = pbnSelectionColor->color();
   settings.setValue( "/qgis/default_selection_color_red", myColor.red() );
   settings.setValue( "/qgis/default_selection_color_green", myColor.green() );
   settings.setValue( "/qgis/default_selection_color_blue", myColor.blue() );
@@ -510,7 +510,7 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/default_canvas_color_blue", myColor.blue() );
 
   //set the default color for the measure tool
-  myColor = pbnMeasureColour->color();
+  myColor = pbnMeasureColor->color();
   settings.setValue( "/qgis/default_measure_color_red", myColor.red() );
   settings.setValue( "/qgis/default_measure_color_green", myColor.green() );
   settings.setValue( "/qgis/default_measure_color_blue", myColor.blue() );
@@ -520,7 +520,7 @@ void QgsOptions::saveOptions()
 
   //digitizing
   settings.setValue( "/qgis/digitizing/line_width", mLineWidthSpinBox->value() );
-  QColor digitizingColor = mLineColourToolButton->color();
+  QColor digitizingColor = mLineColorToolButton->color();
   settings.setValue( "/qgis/digitizing/line_color_red", digitizingColor.red() );
   settings.setValue( "/qgis/digitizing/line_color_green", digitizingColor.green() );
   settings.setValue( "/qgis/digitizing/line_color_blue", digitizingColor.blue() );

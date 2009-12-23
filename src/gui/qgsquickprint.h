@@ -108,7 +108,7 @@ class GUI_EXPORT QgsQuickPrint: public QObject
     QString mLogo1File;
     QString mLogo2File;
     QString mOutputFileName;
-    QColor mMapBackgroundColour;
+    QColor mMapBackgroundColor;
     QPrinter::PageSize mPageSize;
 };
 

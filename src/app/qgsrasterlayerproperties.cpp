@@ -1468,7 +1468,7 @@ void QgsRasterLayerProperties::apply()
   //make sure the layer is redrawn
   mRasterLayer->triggerRepaint();
 
-  //Becuase Min Max values can be set during the redraw if a strech is requested we need to resync after apply
+  //Because Min Max values can be set during the redraw if a strech is requested we need to resync after apply
   if ( mRasterLayerIsGdal && QgsContrastEnhancement::NoEnhancement != mRasterLayer->contrastEnhancementAlgorithm() )
   {
     //set the stdDevs and min max values

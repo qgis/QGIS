@@ -29,7 +29,7 @@ QgsFreakOutShader::QgsFreakOutShader( double theMinimumValue, double theMaximumV
 
 void QgsFreakOutShader::setClassBreaks()
 {
-  //set up the three class breaks for pseudocolour mapping
+  //set up the three class breaks for pseudocolor mapping
   mBreakSize = mMinimumMaximumRange / 3;
   mClassBreakMin1 = mMinimumValue;
   mClassBreakMax1 = mClassBreakMin1 + mBreakSize;

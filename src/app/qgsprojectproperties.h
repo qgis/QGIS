@@ -76,12 +76,12 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
     void showProjectionsTab();
 
     /*!
-     * Slot to select the map selection colour
+     * Slot to select the map selection color
      */
-    void on_pbnSelectionColour_clicked();
+    void on_pbnSelectionColor_clicked();
 
     /*!
-     * Slot to select the map selection colour
+     * Slot to select the map selection color
      */
     void on_pbnCanvasColor_clicked();
 

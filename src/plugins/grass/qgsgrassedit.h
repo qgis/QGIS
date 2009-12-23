@@ -217,7 +217,7 @@ class QgsGrassEdit: public QMainWindow, private Ui::QgsGrassEditBase
     //! Window with attributes closed
     void attributesClosed();
 
-    //! Recieve key press from different widget
+    //! Receive key press from different widget
     void keyPress( QKeyEvent *e );
 
   signals:

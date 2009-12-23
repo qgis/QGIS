@@ -86,7 +86,7 @@ QgsScaleBarPlugin::QgsScaleBarPlugin( QgisInterface * theQgisInterFace ):
   mStyleIndex = 0;
   mEnabled = true;
   mSnapping = true;
-  mColour = Qt::black;
+  mColor = Qt::black;
 }
 
 QgsScaleBarPlugin::~QgsScaleBarPlugin()
@@ -129,7 +129,7 @@ void QgsScaleBarPlugin::projectRead()
   int myRedInt = QgsProject::instance()->readNumEntry( "ScaleBar", "/ColorRedPart", 0 );
   int myGreenInt = QgsProject::instance()->readNumEntry( "ScaleBar", "/ColorGreenPart", 0 );
   int myBlueInt = QgsProject::instance()->readNumEntry( "ScaleBar", "/ColorBluePart", 0 );
-  mColour = QColor( myRedInt, myGreenInt, myBlueInt );
+  mColor = QColor( myRedInt, myGreenInt, myBlueInt );
 }
 //method defined in interface
 void QgsScaleBarPlugin::help()
@@ -149,14 +149,14 @@ void QgsScaleBarPlugin::run()
   myPluginGui->setEnabled( mEnabled );
   myPluginGui->setStyleLabels( mStyleLabels );
   myPluginGui->setStyle( mStyleIndex );
-  myPluginGui->setColour( mColour );
+  myPluginGui->setColor( mColor );
 
   connect( myPluginGui, SIGNAL( changePreferredSize( int ) ), this, SLOT( setPreferredSize( int ) ) );
   connect( myPluginGui, SIGNAL( changeSnapping( bool ) ), this, SLOT( setSnapping( bool ) ) );
   connect( myPluginGui, SIGNAL( changePlacement( int ) ), this, SLOT( setPlacement( int ) ) );
   connect( myPluginGui, SIGNAL( changeEnabled( bool ) ), this, SLOT( setEnabled( bool ) ) );
   connect( myPluginGui, SIGNAL( changeStyle( int ) ), this, SLOT( setStyle( int ) ) );
-  connect( myPluginGui, SIGNAL( changeColour( QColor ) ), this, SLOT( setColour( QColor ) ) );
+  connect( myPluginGui, SIGNAL( changeColor( QColor ) ), this, SLOT( setColor( QColor ) ) );
   connect( myPluginGui, SIGNAL( refreshCanvas() ), this, SLOT( refreshCanvas() ) );
   myPluginGui->show();
   //set the map units in the spin box
@@ -341,7 +341,7 @@ void QgsScaleBarPlugin::renderScaleBar( QPainter * theQPainter )
     }
 
     //Set pen to draw with
-    QPen myForegroundPen( mColour, 2 );
+    QPen myForegroundPen( mColor, 2 );
     QPen myBackgroundPen( Qt::white, 4 );
 
     //Cast myScaleBarWidth to int for drawing
@@ -433,7 +433,7 @@ void QgsScaleBarPlugin::renderScaleBar( QPainter * theQPainter )
         theQPainter->drawPolyline( myBoxArray );
         //now draw the bar itself in user selected color
         theQPainter->setPen( myForegroundPen );
-        theQPainter->setBrush( QBrush( mColour, Qt::SolidPattern ) );
+        theQPainter->setBrush( QBrush( mColor, Qt::SolidPattern ) );
         int midPointX = myScaleBarWidthInt / 2 + myOriginX;
         myBoxArray.putPoints( 0, 5,
                               myOriginX                    ,  myOriginY,
@@ -591,13 +591,13 @@ void QgsScaleBarPlugin::setStyle( int styleIndex )
   mStyleIndex = styleIndex;
   QgsProject::instance()->writeEntry( "ScaleBar", "/Style", mStyleIndex );
 }
-//! set the scale bar colour
-void QgsScaleBarPlugin::setColour( QColor theQColor )
+//! set the scale bar color
+void QgsScaleBarPlugin::setColor( QColor theQColor )
 {
-  mColour = theQColor;
-  QgsProject::instance()->writeEntry( "ScaleBar", "/ColorRedPart", mColour.red() );
-  QgsProject::instance()->writeEntry( "ScaleBar", "/ColorGreenPart", mColour.green() );
-  QgsProject::instance()->writeEntry( "ScaleBar", "/ColorBluePart", mColour.blue() );
+  mColor = theQColor;
+  QgsProject::instance()->writeEntry( "ScaleBar", "/ColorRedPart", mColor.red() );
+  QgsProject::instance()->writeEntry( "ScaleBar", "/ColorGreenPart", mColor.green() );
+  QgsProject::instance()->writeEntry( "ScaleBar", "/ColorBluePart", mColor.blue() );
 }
 
 //! Set icons to the current theme

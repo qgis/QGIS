@@ -434,8 +434,8 @@ void QgsSymbol::cache( QColor selectionColor )
   QPen pen = mPen;
   pen.setColor( selectionColor );
   QBrush brush = mBrush;
-  // For symbols that have a different coloured border, the line
-  // below causes the fill colour to be wrong for the print
+  // For symbols that have a different colored border, the line
+  // below causes the fill color to be wrong for the print
   // composer. Not sure why...
   // brush.setColor ( selectionColor );
 

@@ -592,7 +592,7 @@ void TerminalDisplay::drawCursor( QPainter& painter,
 
         if ( !_cursorColor.isValid() )
         {
-          // invert the colour used to draw the text to ensure that the character at
+          // invert the color used to draw the text to ensure that the character at
           // the cursor position is readable
           invertCharacterColor = true;
         }
@@ -1214,7 +1214,7 @@ void TerminalDisplay::paintFilters( QPainter& painter )
       // drawn on top of them
       else if ( spot->type() == Filter::HotSpot::Marker )
       {
-        //TODO - Do not use a hardcoded colour for this
+        //TODO - Do not use a hardcoded color for this
         painter.fillRect( r, QBrush( QColor( 255, 0, 0, 120 ) ) );
       }
     }

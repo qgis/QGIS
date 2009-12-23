@@ -20,7 +20,7 @@ QGIS supports a number of symbology renderers to control how vector features are
 <ul>
 <li><label>Single symbol</label> - a single style is applied to every object in the layer.
 <li><label>Graduated symbol</label> - objects within the layer are displayed with different symbols classified by the values of a particular field.
-<li><label>Continuous color</label> - objects within the layer are displayed with a spread of colours classified by the numerical values within a specified field.
+<li><label>Continuous color</label> - objects within the layer are displayed with a spread of colors classified by the numerical values within a specified field.
 <li><label>Unique value</label> - objects are classified by the unique values within a specified field with each value having a different symbol.
 </ul>
 

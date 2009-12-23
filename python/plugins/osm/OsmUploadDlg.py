@@ -1481,7 +1481,7 @@ class OsmUploadDlg(QDialog, Ui_OsmUploadDlg):
         We are really not interested in function parameters - we just cancel the connection.
         """
 
-        self.cancelUpload("Authentification failed. Please try again with correct login and password.")
+        self.cancelUpload("Authentication failed. Please try again with correct login and password.")
 
 
     def __setProxy(self):

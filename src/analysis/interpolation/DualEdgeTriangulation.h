@@ -142,7 +142,7 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     unsigned int insertEdge( int dual, int next, int point, bool mbreak, bool forced );
     /**inserts a forced segment between the points with the numbers p1 and p2 into the triangulation and returns the number of a HalfEdge belonging to this forced edge or -100 in case of failure*/
     int insertForcedSegment( int p1, int p2, bool breakline );
-    /**Treshold for the leftOfTest to handle numerical instabilities*/
+    /**Threshold for the leftOfTest to handle numerical instabilities*/
     //const static double leftOfTresh=0.00001;
     /**Security to prevent endless loops in 'baseEdgeOfTriangle'. It there are more iteration then this number, the point will not be inserted*/
     const static int nBaseOfRuns = 300000;

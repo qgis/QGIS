@@ -33,7 +33,7 @@ class QgsScaleBarPluginGui : public QDialog, private Ui::QgsScaleBarPluginGuiBas
     void setEnabled( bool );
     void setStyleLabels( QStringList& );
     void setStyle( int );
-    void setColour( QColor );
+    void setColor( QColor );
 
     //accessor for getting a pointer to the size spin widget
     QSpinBox * getSpinSize();
@@ -42,7 +42,7 @@ class QgsScaleBarPluginGui : public QDialog, private Ui::QgsScaleBarPluginGuiBas
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
-    void on_pbnChangeColour_clicked();
+    void on_pbnChangeColor_clicked();
 
   signals:
     void drawRasterLayer( QString );
@@ -52,7 +52,7 @@ class QgsScaleBarPluginGui : public QDialog, private Ui::QgsScaleBarPluginGuiBas
     void changeSnapping( bool );
     void changeEnabled( bool );
     void changeStyle( int );
-    void changeColour( QColor );
+    void changeColor( QColor );
     void refreshCanvas();
 };
 

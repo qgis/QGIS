@@ -40,7 +40,7 @@ typedef QList<int> QgsAttributeList;
 class CORE_EXPORT QgsRenderer
 {
   public:
-    /** Default ctor sets up selection colour from project properties */
+    /** Default ctor sets up selection color from project properties */
     QgsRenderer();
     /** Virtual destructor because we have virtual methods... */
     virtual ~QgsRenderer();

@@ -160,7 +160,7 @@ void QgsCopyrightLabelPlugin::renderLabel( QPainter * theQPainter )
 
     QTextDocument text;
     text.setDefaultFont( mQFont );
-    // To set the text colour in a QTextDocument we use a CSS style
+    // To set the text color in a QTextDocument we use a CSS style
     QString style = "<style type=\"text/css\"> p {color: " +
                     mLabelQColor.name() + "}</style>";
     text.setHtml( style + "<p>" + mLabelQString + "</p>" );
@@ -234,7 +234,7 @@ void QgsCopyrightLabelPlugin::setLabel( QString theLabelQString )
   QgsProject::instance()->writeEntry( "CopyrightLabel", "/Label", mLabelQString );
   refreshCanvas();
 }
-//! change the copyright text colour
+//! change the copyright text color
 void QgsCopyrightLabelPlugin::setColor( QColor theQColor )
 {
   mLabelQColor = theQColor;

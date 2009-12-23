@@ -134,8 +134,8 @@ namespace Konsole
      3     - Index(256)  - u: 16..255  v:0        w:0
      4     - RGB         - u:  0..255  v:0..256   w:0..256
 
-     Default colour space has two separate colours, namely
-     default foreground and default background colour.
+     Default color space has two separate colors, namely
+     default foreground and default background color.
   */
 
 #define COLOR_SPACE_UNDEFINED   0

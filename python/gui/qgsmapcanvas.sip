@@ -122,7 +122,7 @@ class QgsMapCanvas : QGraphicsView
     /** Updates the full extent */
     void updateFullExtent();
 
-    //! return the map layer at postion index in the layer stack
+    //! return the map layer at position index in the layer stack
     QgsMapLayer *layer(int index);
     
     //! return number of layers on the map

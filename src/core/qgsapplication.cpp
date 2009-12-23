@@ -376,7 +376,7 @@ QString QgsApplication::reportStyleSheet()
 {
   //
   // Make the style sheet desktop preferences aware by using qappliation
-  // palette as a basis for colours where appropriate
+  // palette as a basis for colors where appropriate
   //
   QColor myColor1 = palette().highlight().color();
   QColor myColor2 = myColor1;

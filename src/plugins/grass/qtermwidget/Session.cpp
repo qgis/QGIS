@@ -342,7 +342,7 @@ void Session::setUserTitle( int what, const QString &caption )
   if ( what == 11 )
   {
     QString colorString = caption.section( ';', 0, 0 );
-    qDebug() << __FILE__ << __LINE__ << ": setting background colour to " << colorString;
+    qDebug() << __FILE__ << __LINE__ << ": setting background color to " << colorString;
     QColor backColor = QColor( colorString );
     if ( backColor.isValid() ) // change color via \033]11;Color\007
     {

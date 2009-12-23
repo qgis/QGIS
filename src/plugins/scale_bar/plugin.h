@@ -74,8 +74,8 @@ class QgsScaleBarPlugin: public QObject, public QgisPlugin
     void setEnabled( bool );
     //! set the scale bar style
     void setStyle( int );
-    //! set the scale bar colour
-    void setColour( QColor );
+    //! set the scale bar color
+    void setColor( QColor );
     //! update the plugins theme when the app tells us its theme is changed
     void setCurrentTheme( QString theThemeName );
 
@@ -96,8 +96,8 @@ class QgsScaleBarPlugin: public QObject, public QgisPlugin
     //! Style of scale bar. An index and the translated text
     int mStyleIndex;
     QStringList mStyleLabels;
-    //! The scale bar colour
-    QColor mColour;
+    //! The scale bar color
+    QColor mColor;
 
     //! Pointer to the QGIS interface object
     QgisInterface *qGisInterface;

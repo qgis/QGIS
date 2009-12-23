@@ -949,7 +949,7 @@ void QgsProjectionSelector::on_pbnFind_clicked()
     }
     else
     {
-      // search ahead of the current postion
+      // search ahead of the current position
       mySql = "select srs_id from tbl_srs where description like '%" + mySearchString + "%'" +
               " and srs_id > " + QString::number( selectedCrsId() ) + " order by srs_id limit 1";
     }

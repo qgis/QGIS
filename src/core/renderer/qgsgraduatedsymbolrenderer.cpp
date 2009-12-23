@@ -202,7 +202,7 @@ void QgsGraduatedSymbolRenderer::renderFeature( QgsRenderContext &renderContext,
         brush.setColor( mSelectionColor );
         p->setBrush( brush );
       }
-      else //don't draw outlines in selection colour for polys otherwise they appear merged
+      else //don't draw outlines in selection color for polys otherwise they appear merged
       {
         pen.setColor( mSelectionColor );
       }

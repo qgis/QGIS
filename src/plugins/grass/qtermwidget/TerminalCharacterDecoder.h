@@ -35,9 +35,9 @@ namespace Konsole
    * Base class for terminal character decoders
    *
    * The decoder converts lines of terminal characters which consist of a unicode character, foreground
-   * and background colours and other appearance-related properties into text strings.
+   * and background colors and other appearance-related properties into text strings.
    *
-   * Derived classes may produce either plain text with no other colour or appearance information, or
+   * Derived classes may produce either plain text with no other color or appearance information, or
    * they may produce text which incorporates these additional properties.
    */
   class TerminalCharacterDecoder
@@ -64,7 +64,7 @@ namespace Konsole
   };
 
   /**
-   * A terminal character decoder which produces plain text, ignoring colours and other appearance-related
+   * A terminal character decoder which produces plain text, ignoring colors and other appearance-related
    * properties of the original characters.
    */
   class PlainTextDecoder : public TerminalCharacterDecoder
@@ -109,7 +109,7 @@ namespace Konsole
       HTMLDecoder();
 
       /**
-       * Sets the colour table which the decoder uses to produce the HTML colour codes in its
+       * Sets the color table which the decoder uses to produce the HTML color codes in its
        * output
        */
       void setColorTable( const ColorEntry* table );

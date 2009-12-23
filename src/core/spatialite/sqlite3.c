@@ -16860,7 +16860,7 @@ SQLITE_PRIVATE void sqlite3VXPrintf(
         }
         if( xtype==etGENERIC && precision>0 ) precision--;
 #if 0
-        /* Rounding works like BSD when the constant 0.4999 is used.  Wierd! */
+        /* Rounding works like BSD when the constant 0.4999 is used.  Weird! */
         for(idx=precision, rounder=0.4999; idx>0; idx--, rounder*=0.1);
 #else
         /* It makes more sense to use 0.5 */

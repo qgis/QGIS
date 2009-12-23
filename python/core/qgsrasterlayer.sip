@@ -305,7 +305,7 @@ public:
 
     /** \brief Returns a string representation of drawing style
      *
-     * Implementaed mainly for serialisation / deserialisation of settings to xml.
+     * Implemented mainly for serialisation / deserialisation of settings to xml.
      * NOTE: May be deprecated in the future!. DrawingStyle drawingStyle() instead.
      * */
     QString drawingStyleAsString() const;
