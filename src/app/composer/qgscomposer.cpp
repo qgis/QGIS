@@ -440,10 +440,10 @@ void QgsComposer::on_mActionRefreshView_triggered()
 
   //refresh preview of all composer maps
   QMap<QgsComposerItem*, QWidget*>::iterator it = mItemWidgetMap.begin();
-  for(; it != mItemWidgetMap.end(); ++it)
+  for ( ; it != mItemWidgetMap.end(); ++it )
   {
-    QgsComposerMap* map = dynamic_cast<QgsComposerMap*>(it.key());
-    if(map && !map->isDrawing())
+    QgsComposerMap* map = dynamic_cast<QgsComposerMap*>( it.key() );
+    if ( map && !map->isDrawing() )
     {
       map->cache();
       map->update();

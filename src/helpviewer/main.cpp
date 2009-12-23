@@ -51,7 +51,7 @@ int main( int argc, char ** argv )
     myTranslationCode = QLocale::system().name();
 
     QSettings settings;
-    if( settings.value( "locale/overrideFlag", false ).toBool() )
+    if ( settings.value( "locale/overrideFlag", false ).toBool() )
     {
       myTranslationCode = settings.value( "locale/userLocale", "en_US" ).toString();
     }

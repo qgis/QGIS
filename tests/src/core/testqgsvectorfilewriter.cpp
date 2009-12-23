@@ -267,9 +267,9 @@ void TestQgsVectorFileWriter::polygonGridTest()
                                 QGis::WKBPolygon,
                                 &mCRS );
   double myInterval = 5.0;
-  for ( double i = -180.0;i <= 180.0;i += myInterval )
+  for ( double i = -180.0; i <= 180.0; i += myInterval )
   {
-    for ( double j = -90.0;j <= 90.0;j += myInterval )
+    for ( double j = -90.0; j <= 90.0; j += myInterval )
     {
       //
       // Create a polygon feature
@@ -340,9 +340,9 @@ void TestQgsVectorFileWriter::projectedPlygonGridTest()
                                 QGis::WKBPolygon,
                                 &mCRS );
   double myInterval = 1000.0; //1km2
-  for ( double i = 0.0;i <= 10000.0;i += myInterval ) //10km
+  for ( double i = 0.0; i <= 10000.0; i += myInterval ) //10km
   {
-    for ( double j = 0.0;j <= 10000.0;j += myInterval )//10km
+    for ( double j = 0.0; j <= 10000.0; j += myInterval )//10km
     {
       //
       // Create a polygon feature
