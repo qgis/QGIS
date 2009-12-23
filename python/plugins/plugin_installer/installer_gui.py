@@ -500,7 +500,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
           a.setToolTip(4,"")
         a.setText(5,repository)
         a.setToolTip(5,p["url"])
-        # set fonts and colours
+        # set fonts and colors
         for i in [0,1,2,3,4,5]:
           if p["error"]:
             a.setForeground(i,QBrush(QColor(Qt.red)))

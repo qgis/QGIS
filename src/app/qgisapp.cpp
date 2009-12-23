@@ -425,7 +425,7 @@ QgisApp::QgisApp( QSplashScreen *splash, QWidget * parent, Qt::WFlags fl )
   QgsProject::instance()->setBadLayerHandler( new QgsProjectBadLayerGuiHandler() );
 
 #if 0
-  // Set the background colour for toolbox and overview as they default to
+  // Set the background color for toolbox and overview as they default to
   // white instead of the window color
   QPalette myPalette = toolBox->palette();
   myPalette.setColor( QPalette::Button, myPalette.window().color() );
@@ -2667,9 +2667,9 @@ void QgisApp::fileNew( bool thePromptToSaveFlag )
 
   QSettings settings;
 
-  //set the colour for selections
+  //set the color for selections
   //the default can be set in qgisoptions
-  //use project properties to override the colour on a per project basis
+  //use project properties to override the color on a per project basis
   int myRed = settings.value( "/qgis/default_selection_color_red", 255 ).toInt();
   int myGreen = settings.value( "/qgis/default_selection_color_green", 255 ).toInt();
   int myBlue = settings.value( "/qgis/default_selection_color_blue", 0 ).toInt();
@@ -2678,9 +2678,9 @@ void QgisApp::fileNew( bool thePromptToSaveFlag )
   prj->writeEntry( "Gui", "/SelectionColorBluePart", myBlue );
   QgsRenderer::setSelectionColor( QColor( myRed, myGreen, myBlue ) );
 
-  //set the canvas to the default background colour
+  //set the canvas to the default background color
   //the default can be set in qgisoptions
-  //use project properties to override the colour on a per project basis
+  //use project properties to override the color on a per project basis
   myRed = settings.value( "/qgis/default_canvas_color_red", 255 ).toInt();
   myGreen = settings.value( "/qgis/default_canvas_color_green", 255 ).toInt();
   myBlue = settings.value( "/qgis/default_canvas_color_blue", 255 ).toInt();
@@ -2945,7 +2945,7 @@ bool QgisApp::addProject( QString projectFile )
   int  myGreenInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorGreenPart", 255 );
   int  myBlueInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorBluePart", 255 );
   QColor myColor = QColor( myRedInt, myGreenInt, myBlueInt );
-  mMapCanvas->setCanvasColor( myColor ); //this is fill colour before rendering starts
+  mMapCanvas->setCanvasColor( myColor ); //this is fill color before rendering starts
   QgsDebugMsg( "Canvas background color restored..." );
 
   mMapCanvas->updateScale();
@@ -5124,7 +5124,7 @@ void QgisApp::projectProperties()
   int  myGreenInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorGreenPart", 255 );
   int  myBlueInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorBluePart", 255 );
   QColor myColor = QColor( myRedInt, myGreenInt, myBlueInt );
-  mMapCanvas->setCanvasColor( myColor ); // this is fill colour before rendering onto canvas
+  mMapCanvas->setCanvasColor( myColor ); // this is fill color before rendering onto canvas
 
   // Set the window title.
   setTitleBarText_( *this );

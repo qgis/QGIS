@@ -101,7 +101,7 @@ void QgsRunProcess::stderrAvailable()
 {
   QString line( mProcess->readAllStandardError() );
 
-  // Add the new output to the dialog box, but colour it red
+  // Add the new output to the dialog box, but color it red
   mOutput->appendMessage( "<font color=red>" + line + "</font>" );
 }
 

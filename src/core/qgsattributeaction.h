@@ -63,7 +63,7 @@ class CORE_EXPORT QgsAction
     //! Whether to capture output for display when this action is run
     bool capture() const { return mCaptureOutput; }
 
-    //! Wheter the action is runable on the current platform
+    //! Whether the action is runable on the current platform
     bool runable() const
     {
       return mType == Generic ||

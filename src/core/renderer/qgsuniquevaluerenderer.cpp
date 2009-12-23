@@ -175,7 +175,7 @@ void QgsUniqueValueRenderer::renderFeature( QgsRenderContext &renderContext, Qgs
         brush.setColor( mSelectionColor );
         p->setBrush( brush );
       }
-      else //don't draw outlines of polygons in selection colour otherwise they appear merged
+      else //don't draw outlines of polygons in selection color otherwise they appear merged
       {
         pen.setColor( mSelectionColor );
       }

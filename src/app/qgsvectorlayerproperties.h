@@ -160,7 +160,7 @@ class QgsVectorLayerProperties : public QDialog, private Ui::QgsVectorLayerPrope
     void loadRows();
     void setRow( int row, int idx, const QgsField &field );
 
-    /**Requests all overlay plugis from the plugin registry. Usefull for inserting their dialogs as new tabs*/
+    /**Requests all overlay plugis from the plugin registry. Useful for inserting their dialogs as new tabs*/
     QList<QgsVectorOverlayPlugin*> overlayPlugins() const;
 
     /**Buffer pixmap which takes the picture of renderers before they are assigned to the vector layer*/

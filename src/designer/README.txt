@@ -1,4 +1,4 @@
-Notes on the useage of the QGIS custom designer plugins
+Notes on the usage of the QGIS custom designer plugins
 
                  Tim Sutton, 2006
 --------------------------------------------------------

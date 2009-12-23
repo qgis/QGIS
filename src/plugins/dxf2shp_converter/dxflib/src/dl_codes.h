@@ -478,7 +478,7 @@ const double dxfColors[][3] =
 #define SCALE_Z_CODE         43
 #define BULGE_CODE           42  // Used in PLINE verts for arcs
 #define ROTATION_CODE        50
-#define COLOUR_CODE          62  // What follows is a color int
+#define COLOR_CODE           62  // What follows is a color int
 #define LTYPE_CODE            6  // What follows is a linetype
 
 

@@ -1999,7 +1999,7 @@ First thing we need to get is MSVC Express from here:
 http://msdn2.microsoft.com/en-us/express/aa975050.aspx
 
 The page is really confusing so don't feel bad if you cant actually find the 
-download at first! There are six coloured blocks on the page for the various  
+download at first! There are six colored blocks on the page for the various  
 studio family members (vb / c# / j# etc). Simply choose your language under 
 the 'select your language' combo under the yellow C++ block, and your download 
 will begin. Under internet explorer I had to disable popup blocking for the 
@@ -2008,7 +2008,7 @@ download to be able to commence.
 Once the setup commences you will be prompted with various options. Here is what 
 I chose :
 
- * Send useage information to Microsoft   (No)
+ * Send usage information to Microsoft    (No)
  * Install options:
    * Graphical IDE                        (Yes)
    * Microsoft MSDN Express Edition       (No)

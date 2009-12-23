@@ -89,19 +89,19 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   int dp = QgsProject::instance()->readNumEntry( "PositionPrecision", "/DecimalPlaces" );
   spinBoxDP->setValue( dp );
 
-  //get the colour selections and set the button colour accordingly
+  //get the color selections and set the button color accordingly
   int myRedInt = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorRedPart", 255 );
   int myGreenInt = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorGreenPart", 255 );
   int myBlueInt = QgsProject::instance()->readNumEntry( "Gui", "/SelectionColorBluePart", 0 );
-  QColor myColour = QColor( myRedInt, myGreenInt, myBlueInt );
-  pbnSelectionColour->setColor( myColour );
+  QColor myColor = QColor( myRedInt, myGreenInt, myBlueInt );
+  pbnSelectionColor->setColor( myColor );
 
-  //get the colour for map canvas background and set button colour accordingly (default white)
+  //get the color for map canvas background and set button color accordingly (default white)
   myRedInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorRedPart", 255 );
   myGreenInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorGreenPart", 255 );
   myBlueInt = QgsProject::instance()->readNumEntry( "Gui", "/CanvasColorBluePart", 255 );
-  myColour = QColor( myRedInt, myGreenInt, myBlueInt );
-  pbnCanvasColor->setColor( myColour );
+  myColor = QColor( myRedInt, myGreenInt, myBlueInt );
+  pbnCanvasColor->setColor( myColor );
 
   //read the digitizing settings
   int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
@@ -390,18 +390,18 @@ void QgsProjectProperties::apply()
 
   QgsProject::instance()->writeEntry( "Paths", "/Absolute", cbxAbsolutePath->currentIndex() == 0 );
 
-  //set the colour for selections
-  QColor myColour = pbnSelectionColour->color();
-  QgsProject::instance()->writeEntry( "Gui", "/SelectionColorRedPart", myColour.red() );
-  QgsProject::instance()->writeEntry( "Gui", "/SelectionColorGreenPart", myColour.green() );
-  QgsProject::instance()->writeEntry( "Gui", "/SelectionColorBluePart", myColour.blue() );
-  QgsRenderer::setSelectionColor( myColour );
+  //set the color for selections
+  QColor myColor = pbnSelectionColor->color();
+  QgsProject::instance()->writeEntry( "Gui", "/SelectionColorRedPart", myColor.red() );
+  QgsProject::instance()->writeEntry( "Gui", "/SelectionColorGreenPart", myColor.green() );
+  QgsProject::instance()->writeEntry( "Gui", "/SelectionColorBluePart", myColor.blue() );
+  QgsRenderer::setSelectionColor( myColor );
 
-  //set the colour for canvas
-  myColour = pbnCanvasColor->color();
-  QgsProject::instance()->writeEntry( "Gui", "/CanvasColorRedPart", myColour.red() );
-  QgsProject::instance()->writeEntry( "Gui", "/CanvasColorGreenPart", myColour.green() );
-  QgsProject::instance()->writeEntry( "Gui", "/CanvasColorBluePart", myColour.blue() );
+  //set the color for canvas
+  myColor = pbnCanvasColor->color();
+  QgsProject::instance()->writeEntry( "Gui", "/CanvasColorRedPart", myColor.red() );
+  QgsProject::instance()->writeEntry( "Gui", "/CanvasColorGreenPart", myColor.green() );
+  QgsProject::instance()->writeEntry( "Gui", "/CanvasColorBluePart", myColor.blue() );
 
   //write the digitizing settings
   int topologicalEditingEnabled = ( mEnableTopologicalEditingCheckBox->checkState() == Qt::Checked ) ? 1 : 0;
@@ -475,7 +475,7 @@ void QgsProjectProperties::apply()
 
   QgsProject::instance()->writeEntry( "Identify", "/disabledLayers", noIdentifyLayerList );
 
-  //todo XXX set canvas colour
+  //todo XXX set canvas color
   emit refresh();
 }
 
@@ -489,12 +489,12 @@ void QgsProjectProperties::showProjectionsTab()
   tabWidget->setCurrentIndex( 1 );
 }
 
-void QgsProjectProperties::on_pbnSelectionColour_clicked()
+void QgsProjectProperties::on_pbnSelectionColor_clicked()
 {
-  QColor color = QColorDialog::getColor( pbnSelectionColour->color(), this );
+  QColor color = QColorDialog::getColor( pbnSelectionColor->color(), this );
   if ( color.isValid() )
   {
-    pbnSelectionColour->setColor( color );
+    pbnSelectionColor->setColor( color );
   }
 }
 

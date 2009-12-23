@@ -160,7 +160,7 @@ void HTMLDecoder::decodeLine( const Character* const characters, int count, Line
       if ( _lastRendition & RE_UNDERLINE )
         style.append( "font-decoration:underline;" );
 
-      //colours - a colour table must have been defined first
+      //colors - a color table must have been defined first
       if ( _colorTable )
       {
         style.append( QString( "color:%1;" ).arg( _lastForeColor.color( _colorTable ).name() ) );

@@ -62,7 +62,7 @@
              <string>Selection color</string>
             </property>
             <property name="buddy">
-             <cstring>pbnSelectionColour</cstring>
+             <cstring>pbnSelectionColor</cstring>
             </property>
            </widget>
           </item>
@@ -83,7 +83,7 @@
            </spacer>
           </item>
           <item row="1" column="3">
-           <widget class="QgsColorButton" name="pbnSelectionColour">
+           <widget class="QgsColorButton" name="pbnSelectionColor">
             <property name="minimumSize">
              <size>
               <width>100</width>
@@ -401,7 +401,7 @@
  </customwidgets>
  <tabstops>
   <tabstop>titleEdit</tabstop>
-  <tabstop>pbnSelectionColour</tabstop>
+  <tabstop>pbnSelectionColor</tabstop>
   <tabstop>pbnCanvasColor</tabstop>
   <tabstop>cbxAbsolutePath</tabstop>
   <tabstop>radMeters</tabstop>

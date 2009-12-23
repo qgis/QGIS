@@ -1712,7 +1712,7 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
         connect( b, SIGNAL( clicked() ), this, SLOT( removeLineEdit() ) );
         vl->addWidget( b, 0, Qt::AlignTop );
 
-        // Dont enable this, it makes the group box expanding
+        // Don't enable this, it makes the group box expanding
         // vl->addStretch();
       }
       else

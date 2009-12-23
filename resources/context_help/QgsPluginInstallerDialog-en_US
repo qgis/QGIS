@@ -12,26 +12,26 @@ Downloads and installs plugins from remote repositories.
 <p align='justify'>
 The <label>Plugins</label> tab contains a list of all locally installed Python plugins, as well as plugins available in 
 remote repositories. Each plugin can be either:
-<ul>
-<li> not installed - this means the plugin is available in the repository, but is not installed yet. In 
-order to install it, select the plugin from the list and click the <label>Install plugin</label> button.</li>
-<li> new - this means that the plugin is newly available in the repository.</li>
-<li> installed - this indicates that the plugin is already installed. If it is also available in any repository 
+<dl>
+<dt>not installed</dt><dd>this means the plugin is available in the repository, but is not installed yet. In 
+order to install it, select the plugin from the list and click the <label>Install plugin</label> button.</dd>
+<dt>new</dt><dd>this means that the plugin is newly available in the repository.</dd>
+<dt>installed</dt><dd>this indicates that the plugin is already installed. If it is also available in any repository 
 the <label>Reinstall plugin</label> button will be enabled. If the available version is older than the installed 
-version, the <label>Downgrade plugin</label> button will appear instead.</li>
-<li> upgradeable - this means that the plugin is installed, but there is an updated version available. 
-In this case, the <label>Upgrade plugin</label> button will be enabled.</li>
-<li> invalid - this means that the plugin is installed, but is unavailable or broken. The reason will be 
-explained in the plugin description ﬁeld.</li>
-</ul>
+version, the <label>Downgrade plugin</label> button will appear instead.</dd>
+<dt>upgradeable</dt><dd>this means that the plugin is installed, but there is an updated version available. 
+In this case, the <label>Upgrade plugin</label> button will be enabled.</dd>
+<dt>invalid</dt><dd>this means that the plugin is installed, but is unavailable or broken. The reason will be 
+explained in the plugin description ﬁeld.</dd>
+</dl>
 </p>
 
 To install a plugin, select it from the list and click the <label>Install plugin</label> button. The plugin is installed in its own directory in:
 <table border=1>
-<tr><td>OS</td><td>system plugins</td><td>plugins installed by user</td></tr>
-<tr><td>Linux and other unices</td><td>./share/qgis/python/plugins</td><td>/home/$USERNAME/.qgis/python/plugins</td></tr>
-<tr><td>Mac OS X</td><td>./Contents/MacOS/share/qgis/python/plugins</td><td>/Users/$USERNAME/.qgis/python/plugins</td></tr>
-<tr><td>Windows</td><td>C:\Program Files\QGIS\python\plugins</td><td>C:\Documents and Settings\$USERNAME\.qgis\python\plugins</td></tr>
+<tr><th>OS</th><th>system plugins</th><th>plugins installed by user</th></tr>
+<tr><td>Linux and other unices</td><td>./share/qgis/python/plugins</td><td rowspan=2>$HOME/qgis/python/plugins</td></tr>
+<tr><td>Mac OS X</td><td>./Contents/MacOS/share/qgis/python/plugins</td></tr>
+<tr><td>Windows</td><td>(QGIS install directory)\python\plugins</td><td>%USERPROFILE%\.qgis\python\plugins</td></tr>
 </table>
 <br/>
 

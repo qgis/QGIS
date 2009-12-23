@@ -84,8 +84,8 @@ void addToTmpNodes(QgsSearchTreeNode* node);
 //%error-verbose
 
 // operator precedence
-// all operators have left associativity, i.e. 1+2+3 traslates to (1+2)+3
-// the order of operators here determines their precendence
+// all operators have left associativity, i.e. 1+2+3 translates to (1+2)+3
+// the order of operators here determines their precedence
 
 %left OR
 %left AND
@@ -96,7 +96,7 @@ void addToTmpNodes(QgsSearchTreeNode* node);
 %left '+' '-'
 %left '*' '/'
 %left '^'
-%left UMINUS  // fictious symbol (for unary minus)
+%left UMINUS  // fictitious symbol (for unary minus)
 
 
 %%

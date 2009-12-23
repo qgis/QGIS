@@ -70,7 +70,7 @@
            </widget>
           </item>
           <item row="0" column="3">
-           <widget class="QgsColorButton" name="pbnSelectionColour">
+           <widget class="QgsColorButton" name="pbnSelectionColor">
             <property name="minimumSize">
              <size>
               <width>100</width>
@@ -539,7 +539,7 @@
            </spacer>
           </item>
           <item row="1" column="1">
-           <widget class="QgsColorButton" name="pbnMeasureColour">
+           <widget class="QgsColorButton" name="pbnMeasureColor">
             <property name="minimumSize">
              <size>
               <width>100</width>
@@ -675,14 +675,14 @@
            </widget>
           </item>
           <item row="1" column="0">
-           <widget class="QLabel" name="mLineColourTextLabel">
+           <widget class="QLabel" name="mLineColorTextLabel">
             <property name="text">
              <string>Line colour</string>
             </property>
            </widget>
           </item>
           <item row="1" column="1">
-           <widget class="QgsColorButton" name="mLineColourToolButton">
+           <widget class="QgsColorButton" name="mLineColorToolButton">
             <property name="minimumSize">
              <size>
               <width>100</width>
@@ -1403,7 +1403,7 @@
   <tabstop>stackedWidget</tabstop>
   <tabstop>chbAskToSaveProjectChanges</tabstop>
   <tabstop>chbWarnOldProjectVersion</tabstop>
-  <tabstop>pbnSelectionColour</tabstop>
+  <tabstop>pbnSelectionColor</tabstop>
   <tabstop>pbnCanvasColor</tabstop>
   <tabstop>cmbTheme</tabstop>
   <tabstop>capitaliseCheckBox</tabstop>
@@ -1423,14 +1423,14 @@
   <tabstop>cmbIdentifyMode</tabstop>
   <tabstop>spinBoxIdentifyValue</tabstop>
   <tabstop>cmbEllipsoid</tabstop>
-  <tabstop>pbnMeasureColour</tabstop>
+  <tabstop>pbnMeasureColor</tabstop>
   <tabstop>radMeters</tabstop>
   <tabstop>radFeet</tabstop>
   <tabstop>cmbWheelAction</tabstop>
   <tabstop>spinZoomFactor</tabstop>
   <tabstop>mOverlayAlgorithmComboBox</tabstop>
   <tabstop>mLineWidthSpinBox</tabstop>
-  <tabstop>mLineColourToolButton</tabstop>
+  <tabstop>mLineColorToolButton</tabstop>
   <tabstop>mDefaultSnapModeComboBox</tabstop>
   <tabstop>mDefaultSnappingToleranceSpinBox</tabstop>
   <tabstop>mDefaultSnappingToleranceComboBox</tabstop>

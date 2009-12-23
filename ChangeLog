@@ -909,7 +909,7 @@ linking with -rdynamic and using dlopen()'s RTLD_GLOBAL flag.
 Tidied up the SPIT gui to match the plugin template.
 Fixed bug in scale bar which displayed the bar the wrong size!
 Fixed all the plugins so they do not do multiple refreshes on exit.
-Added colour selection for scale bar.
+Added color selection for scale bar.
 
 2004-06-09 [mcoletti] 0.3.0devel25
 Added support for a feature type name in QgsFeature.  The GDAL/OGR shape file
@@ -1474,7 +1474,7 @@ Version 0.1 'Moroz' February 25, 2004
 **Symbol renderers for simple, graduated, and continuous symbols
 **Raster support for most GDAL formats
 **Raster implementation supports a variety of rendering settings including
-  semi transparent overlays, pallette inversion, flexible band to colour mapping
+  semi transparent overlays, pallette inversion, flexible band to color mapping
   in multiband images and creation of pseudocolor.
 **Change to a data provider architecture for vector layers. Addtional data
   types can be supported by writing a provider plugin

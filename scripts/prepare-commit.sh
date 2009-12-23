@@ -34,7 +34,12 @@ ASTYLEDIFF=astyle.r$REV.diff
 # reformat
 for f in $MODIFIED; do
 	case "$f" in
-        *.cpp|*.h|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H)
+	src/core/spatialite/*)
+                echo $f skipped
+		continue
+		;;
+
+        *.cpp|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H)
                 ;;
 
         *)
