@@ -152,7 +152,7 @@ QgsOSMDataProvider::QgsOSMDataProvider( QString uri )
     QgsDebugMsg( "Opening sqlite3 database failed, OSM provider cannot be constructed." );
     closeDatabase();
     return;
-  };
+  }
 
   // flag determining if OSM file parsing is necessary
   bool shouldParse = true;
@@ -161,7 +161,7 @@ QgsOSMDataProvider::QgsOSMDataProvider( QString uri )
     shouldParse = false;
 
   // test if db file that belongs to source OSM file already exists and if it has the right version
-  if ( shouldParse && databaseExists && isDatabaseCompatibleWithInput( mFileName ) && isDatabaseCompatibleWithProvider() )
+  if ( databaseExists && isDatabaseCompatibleWithInput( mFileName ) && isDatabaseCompatibleWithProvider() )
     shouldParse = false;
 
   if ( shouldParse )
@@ -367,7 +367,7 @@ bool QgsOSMDataProvider::isDatabaseCompatibleWithInput( QString mFileName )
       // each OSM database schema carry info on last-modified of file from which database was created;
       // if value equals to last-modified of current input file then DB file belongs to current input file
       // (in such case we say that "database is compatible with input")
-      if ( mOsmFileLastModif == oldOsmFileLastModif )
+      if ( mOsmFileLastModif.toTime_t() == oldOsmFileLastModif.toTime_t() )
       {
         sqlite3_finalize( stmtSelectLastModif );
         return true;
@@ -1657,11 +1657,8 @@ bool QgsOSMDataProvider::openDatabase()
 {
   QgsDebugMsg( "Opening database." );
 
-  QByteArray dbfn_bytes  = mDatabaseFileName.toAscii();
-  const char *ptr = dbfn_bytes.data();
-
   // open database
-  if ( sqlite3_open( ptr, &mDatabase ) != SQLITE_OK )
+  if ( sqlite3_open( mDatabaseFileName.toUtf8().data(), &mDatabase ) != SQLITE_OK )
   {
     mError = ( char * ) "Opening SQLite3 database failed.";
     sqlite3_close( mDatabase );
