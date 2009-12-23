@@ -5553,7 +5553,7 @@ int QgsGeometry::pointContainedInLine( const GEOSGeometry* point, const GEOSGeom
     return -1;
   }
 
-  double bufferDistance = 0.0000001;
+  double bufferDistance = 0.000001;
   GEOSGeometry* lineBuffer = GEOSBuffer( line, bufferDistance, 8 );
   if ( !lineBuffer )
   {
