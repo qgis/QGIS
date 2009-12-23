@@ -38,6 +38,7 @@
 #include <QMouseEvent>
 #include <QCursor>
 #include <QPixmap>
+#include <QStatusBar>
 
 QgsMapToolIdentify::QgsMapToolIdentify( QgsMapCanvas* canvas )
     : QgsMapTool( canvas )
@@ -156,7 +157,7 @@ void QgsMapToolIdentify::canvasReleaseEvent( QMouseEvent * e )
     {
       results()->clear();
     }
-    QMessageBox::information( 0, tr( "Identify results" ), tr( "No features at this position found." ) );
+    QgisApp::instance()->statusBar()->showMessage( tr( "No features at this position found." ) );
   }
 }
 
