@@ -109,7 +109,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="41"/>
         <source>Tolerance</source>
-        <translation type="unfinished"></translation>
+        <translation>Málvik</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="86"/>
@@ -360,7 +360,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="16"/>
         <source>Count Points In Polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Telja punkta í marghyrningi</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="27"/>
@@ -465,7 +465,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/fTools/tools/frmRandom.ui" line="98"/>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="122"/>
         <source>%</source>
-        <translation type="unfinished"></translation>
+        <translation>%</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="16"/>
@@ -490,7 +490,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="74"/>
         <source>Choose</source>
-        <translation type="unfinished"></translation>
+        <translation>Velja</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="83"/>
@@ -572,7 +572,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>adding to current selection</source>
-        <translation type="unfinished"></translation>
+        <translation>bæta við núverandi val</translation>
     </message>
     <message>
         <source>removing from current selection</source>
@@ -772,7 +772,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="115"/>
         <source>Connect</source>
-        <translation type="unfinished"></translation>
+        <translation>Tengja</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="192"/>
@@ -784,7 +784,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="193"/>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="423"/>
         <source>Could not establish connection to: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Náði ekki tengingu við:&apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="216"/>
@@ -846,7 +846,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="310"/>
         <source>Failed to translate layer &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Gat ekki þýtt lag &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="419"/>
@@ -1638,7 +1638,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/ogr_converter/ogrconverterguibase.ui" line="136"/>
         <source>File</source>
-        <translation type="unfinished">Skrá</translation>
+        <translation>Skrá</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/ogrconverterguibase.ui" line="143"/>
@@ -3393,17 +3393,17 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="344"/>
         <source>Checking database</source>
-        <translation type="unfinished"></translation>
+        <translation>Athuga gagnagrunn</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="350"/>
         <source>Reading settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Les uppsetningar</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="353"/>
         <source>Setting up the GUI</source>
-        <translation type="unfinished"></translation>
+        <translation>Set upp myndrænt viðmót</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="389"/>
@@ -3418,27 +3418,27 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="405"/>
         <source>Starting Python</source>
-        <translation type="unfinished"></translation>
+        <translation>Ræsi Python</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="412"/>
         <source>Restoring loaded plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Endurheimti innlesnar viðbætur</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="417"/>
         <source>Initializing file filters</source>
-        <translation type="unfinished"></translation>
+        <translation>Ræsi skráarsíur</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="445"/>
         <source>Restoring window state</source>
-        <translation type="unfinished"></translation>
+        <translation>Endurheimti stöður glugga</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="449"/>
         <source>QGIS Ready!</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS er tilbúið!</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="569"/>
@@ -3459,7 +3459,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="574"/>
         <source>&amp;Open Project...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nýtt verkefni...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="575"/>
@@ -3517,7 +3517,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="594"/>
         <source>&amp;New Print Composer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nýjan prentsmið</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="595"/>
@@ -3528,7 +3528,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="596"/>
         <source>New Print Composer</source>
-        <translation type="unfinished"></translation>
+        <translation>Nýr prentsmiður</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="599"/>
@@ -3559,7 +3559,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="612"/>
         <source>Cu&amp;t</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Klippa</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="613"/>
@@ -3575,7 +3575,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="617"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Afrita</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="618"/>
@@ -3607,7 +3607,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="628"/>
         <source>&amp;Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Hætta við</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="629"/>
@@ -3617,12 +3617,12 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="630"/>
         <source>Undo the last operation</source>
-        <translation type="unfinished"></translation>
+        <translation>Taka til baka siðustu aðgerð</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="634"/>
         <source>&amp;Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Framkvæma aftur</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="635"/>
@@ -3632,7 +3632,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="636"/>
         <source>Redo the last operation</source>
-        <translation type="unfinished"></translation>
+        <translation>Endurtaka síðustu aðgerð</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="640"/>
@@ -3667,7 +3667,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="658"/>
         <source>Capture Point</source>
-        <translation type="unfinished"></translation>
+        <translation>Grípa punkt</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="659"/>
@@ -3678,12 +3678,12 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="660"/>
         <source>Capture Points</source>
-        <translation type="unfinished"></translation>
+        <translation>Grípa punkta</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="664"/>
         <source>Capture Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Grípa línu</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="665"/>
@@ -3694,12 +3694,12 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="666"/>
         <source>Capture Lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Grípa línur</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="670"/>
         <source>Capture Polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Grípa marghyning</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="671"/>
@@ -3710,7 +3710,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="672"/>
         <source>Capture Polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Grípa marghyrninga</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="676"/>
@@ -3734,31 +3734,31 @@ Please contact the developers.
         <location filename="../src/app/qgisapp.cpp" line="694"/>
         <location filename="../src/app/qgisapp.cpp" line="696"/>
         <source>Delete Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Eyða valið</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="702"/>
         <location filename="../src/app/qgisapp.cpp" line="704"/>
         <source>Add Vertex</source>
-        <translation type="unfinished"></translation>
+        <translation>Bæta við punkti</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="708"/>
         <location filename="../src/app/qgisapp.cpp" line="710"/>
         <source>Move Vertex</source>
-        <translation type="unfinished"></translation>
+        <translation>Flytja punkt</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="714"/>
         <location filename="../src/app/qgisapp.cpp" line="716"/>
         <source>Delete Vertex</source>
-        <translation type="unfinished"></translation>
+        <translation>Eyða punkt</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="721"/>
         <location filename="../src/app/qgisapp.cpp" line="723"/>
         <source>Add Ring</source>
-        <translation type="unfinished"></translation>
+        <translation>Bæta við hring</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="727"/>
@@ -3779,22 +3779,22 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="739"/>
         <source>Delete Ring</source>
-        <translation type="unfinished"></translation>
+        <translation>Eyða hring</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="741"/>
         <source>Click a vertex of the ring to delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Smella á punkt í hring sem á að eyða</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="745"/>
         <source>Delete Part</source>
-        <translation type="unfinished"></translation>
+        <translation>Eyða hluta</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="747"/>
         <source>Click a vertex of the part to delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Smella á punkt í hluta sem á að eyða</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="751"/>
@@ -3985,7 +3985,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="851"/>
         <source>New Bookmark...</source>
-        <translation type="unfinished"></translation>
+        <translation>Nýtt bókamerki...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="852"/>
@@ -3997,13 +3997,13 @@ Please contact the developers.
         <location filename="../src/app/qgisapp.cpp" line="853"/>
         <location filename="../src/app/qgisapp.cpp" line="5817"/>
         <source>New Bookmark</source>
-        <translation type="unfinished"></translation>
+        <translation>Nýtt bókamerki</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="856"/>
         <location filename="../src/app/qgisapp.cpp" line="858"/>
         <source>Show Bookmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>Sýna bókamerki</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="857"/>
@@ -4014,7 +4014,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="861"/>
         <source>Refresh</source>
-        <translation type="unfinished"></translation>
+        <translation>Hressa</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="862"/>
@@ -4025,12 +4025,12 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="863"/>
         <source>Refresh Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Hressa kort</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="868"/>
         <source>New Vector Layer...</source>
-        <translation>Nýtt vigurlag</translation>
+        <translation>Nýtt vigurlag...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="869"/>
@@ -4041,12 +4041,12 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="870"/>
         <source>Create a New Vector Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Búa til nýtt vigurlag</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="873"/>
         <source>Add Vector Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Bæta við vigurlagi...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="874"/>
@@ -4062,7 +4062,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="878"/>
         <source>Add Raster Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Bæta við myndlagi...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="879"/>
@@ -4078,7 +4078,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="883"/>
         <source>Add PostGIS Layer...</source>
-        <translation>Bæta við PostGIS lagi</translation>
+        <translation>Bæta við PostGIS lagi...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="884"/>
@@ -4094,7 +4094,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="895"/>
         <source>Add SpatiaLite Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Bæta við SpatiaLite lagi...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="896"/>
@@ -4110,7 +4110,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="907"/>
         <source>Add WMS Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Bæta bið WMS lagi...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="908"/>
@@ -4162,7 +4162,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="937"/>
         <source>Remove Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Fjarlægja lag</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="938"/>
@@ -4173,22 +4173,22 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="939"/>
         <source>Remove a Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Fjarlægja lag</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="943"/>
         <source>Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>Stillingar...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="945"/>
         <source>Set properties of the current layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Setja stillingar núverandi lags</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="949"/>
         <source>Add to Overview</source>
-        <translation type="unfinished"></translation>
+        <translation>Bæta við yfirlit</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="950"/>
@@ -4199,32 +4199,32 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="951"/>
         <source>Add current layer to overview map</source>
-        <translation>Bæta virku lagi í yfirsýn</translation>
+        <translation>Bæta virku lagi í yfirlitskort</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="955"/>
         <source>Add All to Overview</source>
-        <translation>Bæta öllu í yfirsýn</translation>
+        <translation>Bæta öllu í yfirlitskort</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="957"/>
         <source>Show all layers in the overview map</source>
-        <translation type="unfinished"></translation>
+        <translation>Sýna öll lög í yfirlitskorti</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="960"/>
         <source>Remove All From Overview</source>
-        <translation type="unfinished"></translation>
+        <translation>Fjarlægja allt úr yfirlitskorti</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="962"/>
         <source>Remove all layers from overview map</source>
-        <translation type="unfinished"></translation>
+        <translation>Fjarlægja öll lög úr yfirlitskorti</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="965"/>
         <source>Show All Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Sýna öll lög</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="966"/>
@@ -4235,12 +4235,12 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="967"/>
         <source>Show all layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Sýna öll lög</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="970"/>
         <source>Hide All Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Fela öll lög</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="971"/>
@@ -4251,7 +4251,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="972"/>
         <source>Hide all layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Fela öll lög</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="977"/>
@@ -4261,7 +4261,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="979"/>
         <source>Open the plugin manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Opna viðbótarstjórann</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="984"/>
@@ -4282,7 +4282,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="989"/>
         <source>Project Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>Stillingar verks...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="990"/>
@@ -4298,7 +4298,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="994"/>
         <source>Options...</source>
-        <translation type="unfinished"></translation>
+        <translation>Stillingar...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="996"/>
@@ -4318,7 +4318,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1006"/>
         <source>Configure shortcuts...</source>
-        <translation type="unfinished"></translation>
+        <translation>Skilgreina skammval...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1008"/>
@@ -4328,7 +4328,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1014"/>
         <source>Minimize</source>
-        <translation type="unfinished"></translation>
+        <translation>Minnka</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1015"/>
@@ -4354,12 +4354,12 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1024"/>
         <source>Bring All to Front</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalla alla fram</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1026"/>
         <source>Bring forward all open windows</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalla fram alla opna glugga</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1035"/>
@@ -4387,7 +4387,7 @@ Please contact the developers.
         <location filename="../src/app/qgisapp.cpp" line="1044"/>
         <location filename="../src/app/qgisapp.cpp" line="1050"/>
         <source>QGIS Home Page</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Heimasíða QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1046"/>
@@ -4398,17 +4398,17 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1053"/>
         <source>Check Qgis Version</source>
-        <translation type="unfinished"></translation>
+        <translation>Athuga útgáfu Qgis</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1055"/>
         <source>Check if your QGIS version is up to date (requires internet access)</source>
-        <translation type="unfinished"></translation>
+        <translation>Athuga hvort QGIS útgáfa sé sú nýjasta (þarfnast internet aðgangs)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1058"/>
         <source>About</source>
-        <translation>Um</translation>
+        <translation>Um forritið</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1060"/>
@@ -4428,12 +4428,12 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1180"/>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Skrá</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1184"/>
         <source>&amp;Open Recent Projects</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Opna nýleg verkefni</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1203"/>
@@ -4453,22 +4453,22 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1261"/>
         <source>Toolbars</source>
-        <translation type="unfinished"></translation>
+        <translation>Verkfærastikur</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1265"/>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sýn</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1300"/>
         <source>&amp;Layer</source>
-        <translation>&amp;Lag</translation>
+        <translation>&amp;Lög</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1335"/>
         <source>&amp;Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Stillingar</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1354"/>
@@ -4478,7 +4478,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1363"/>
         <source>&amp;Window</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Gluggi</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1376"/>
@@ -4493,7 +4493,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1410"/>
         <source>Manage Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Umsjón laga</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1431"/>
@@ -4539,7 +4539,7 @@ Please contact the developers.
         <location filename="../src/app/qgisapp.cpp" line="1549"/>
         <location filename="../src/app/qgisapp.cpp" line="4977"/>
         <source>Coordinate:</source>
-        <translation type="unfinished"></translation>
+        <translation>Hnit:</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1550"/>
@@ -4579,12 +4579,12 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1604"/>
         <source>Stop map rendering</source>
-        <translation type="unfinished"></translation>
+        <translation>Stöðva teiknin korts</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1607"/>
         <source>Render</source>
-        <translation type="unfinished"></translation>
+        <translation>Teikna</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1610"/>
@@ -4621,7 +4621,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1642"/>
         <source>Ready</source>
-        <translation type="unfinished"></translation>
+        <translation>Tilbúin</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1818"/>
@@ -4684,7 +4684,7 @@ This binary was compiled against Qt %1,and is currently running against Qt %2</s
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2128"/>
         <source>Version</source>
-        <translation type="unfinished"></translation>
+        <translation>Útgáfa</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2129"/>
@@ -5019,27 +5019,27 @@ Errors: %2
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4414"/>
         <source>Python Console</source>
-        <translation type="unfinished"></translation>
+        <translation>Python skjár</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4471"/>
         <source>There is a new version of QGIS available</source>
-        <translation type="unfinished"></translation>
+        <translation>Það er nýrri útgáfa af QGIS til</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4477"/>
         <source>You are running a development version of QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Þú er að nota þróunarútgáfu af QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4481"/>
         <source>You are running the current version of QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Þú ert að nota studda útgáfu af QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4486"/>
         <source>Would you like more information?</source>
-        <translation type="unfinished"></translation>
+        <translation>Viltu meiri upplýsingar?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4489"/>
@@ -5047,7 +5047,7 @@ Errors: %2
         <location filename="../src/app/qgisapp.cpp" line="4507"/>
         <location filename="../src/app/qgisapp.cpp" line="4535"/>
         <source>QGIS Version Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Upplýsingar um útgáfu QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4495"/>
@@ -5062,22 +5062,22 @@ Errors: %2
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4521"/>
         <source>Connection refused - server may be down</source>
-        <translation type="unfinished"></translation>
+        <translation>Tengingu hafnað - þjónn gæti verið bilaður</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4524"/>
         <source>QGIS server was not found</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS þjónn fannst ekki</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4527"/>
         <source>Network error while communicating with server</source>
-        <translation type="unfinished"></translation>
+        <translation>Villa í netsamskiptum við þjón</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4530"/>
         <source>Unknown network socket error</source>
-        <translation type="unfinished"></translation>
+        <translation>Óþekkt samskiptavilla</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4535"/>
@@ -5097,7 +5097,7 @@ Errors: %2
         <location filename="../src/app/qgisapp.cpp" line="4723"/>
         <location filename="../src/app/qgisapp.cpp" line="5635"/>
         <source>The layer is not a valid layer and can not be added to the map</source>
-        <translation type="unfinished"></translation>
+        <translation>Lagið er ekki gilt lag og ekki hægt að bæta því við kortið</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4767"/>
@@ -5107,7 +5107,7 @@ Errors: %2
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4768"/>
         <source>Do you want to save the current project?</source>
-        <translation type="unfinished"></translation>
+        <translation>Viltu vista núverandi verkefni?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4967"/>
@@ -5200,13 +5200,13 @@ Errors: %2
         <location filename="../src/app/qgsabout.cpp" line="132"/>
         <location filename="../src/app/qgsabout.cpp" line="181"/>
         <source>Name</source>
-        <translation type="unfinished">Nafn</translation>
+        <translation>Nafn</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="133"/>
         <location filename="../src/app/qgsabout.cpp" line="182"/>
         <source>Website</source>
-        <translation type="unfinished"></translation>
+        <translation>Vefsvæði</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="177"/>
@@ -5221,12 +5221,12 @@ Errors: %2
     <message>
         <location filename="../src/app/qgsabout.cpp" line="230"/>
         <source>Language</source>
-        <translation type="unfinished"></translation>
+        <translation>Tungumál</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="231"/>
         <source>Names</source>
-        <translation type="unfinished"></translation>
+        <translation>Nöfn</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="284"/>
@@ -5251,12 +5251,12 @@ Errors: %2
     <message>
         <location filename="../src/ui/qgsabout.ui" line="13"/>
         <source>About Quantum GIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Um Quantum GIS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="26"/>
         <source>About</source>
-        <translation type="unfinished">Um</translation>
+        <translation>Um forritið</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="50"/>
@@ -5269,7 +5269,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsabout.ui" line="65"/>
         <source>Version</source>
-        <translation type="unfinished"></translation>
+        <translation>Útgáfa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="91"/>
@@ -5284,7 +5284,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsabout.ui" line="129"/>
         <source>QGIS Home Page</source>
-        <translation type="unfinished"></translation>
+        <translation>Heimasíða QGIS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="139"/>
@@ -5364,7 +5364,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsApplication</name>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="89"/>
+        <location filename="../src/core/qgsapplication.cpp" line="92"/>
         <source>Exception</source>
         <translation>Frávik</translation>
     </message>
@@ -6532,7 +6532,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="308"/>
         <source>Refresh</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Hressa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="311"/>
@@ -7001,7 +7001,7 @@ Error was:%2</source>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="125"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="265"/>
         <source>Render</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Teikna</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="46"/>
@@ -7956,7 +7956,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="248"/>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ekkert</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="249"/>
@@ -8657,12 +8657,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsDelimitedTextProvider</name>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="400"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="445"/>
         <source>Error</source>
         <translation>Villa</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="401"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="446"/>
         <source>Note: the following lines were not loaded because Qgis was unable to determine values for the x and y coordinates:
 </source>
         <translation>Ath: eftirtaldar línur voru ekki lesnar vegna þess að Qgis gat ekki fundið gildi fyrir x og y hnit:
@@ -9481,7 +9481,7 @@ Please reselect a valid file.</source>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="308"/>
         <source>Refresh</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Hressa</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="363"/>
@@ -9904,7 +9904,7 @@ Please reselect a valid file.</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="88"/>
         <source>Refresh</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Hressa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="268"/>
@@ -10033,7 +10033,7 @@ Please reselect a valid file.</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="295"/>
         <source>Delete vertex</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Eyða punkt</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="301"/>
@@ -10344,17 +10344,17 @@ Please reselect a valid file.</source>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="590"/>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="601"/>
         <source>Select vertex</source>
-        <translation type="unfinished"></translation>
+        <translation>Velja punkt</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="586"/>
         <source>Delete vertex</source>
-        <translation type="unfinished"></translation>
+        <translation>Eyða punkt</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="586"/>
         <source>Release vertex</source>
-        <translation type="unfinished"></translation>
+        <translation>Sleppa punkt</translation>
     </message>
 </context>
 <context>
@@ -10385,7 +10385,7 @@ Please reselect a valid file.</source>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="292"/>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="328"/>
         <source>Select vertex</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Velja punkt</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="317"/>
@@ -12776,7 +12776,7 @@ This may be a problem in your network connection or at the WMS server.</source>
 <context>
     <name>QgsLabelDialog</name>
     <message>
-        <location filename="../src/app/qgslabeldialog.cpp" line="214"/>
+        <location filename="../src/app/qgslabeldialog.cpp" line="222"/>
         <source>Auto</source>
         <translation>Sjálfvirkt</translation>
     </message>
@@ -12957,7 +12957,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="423"/>
         <source>%</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="446"/>
@@ -12965,13 +12965,13 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="452"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="459"/>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="826"/>
         <source>Y Offset (pts)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="459"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="452"/>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="810"/>
         <source>X Offset (pts)</source>
         <translation type="unfinished"></translation>
@@ -13112,12 +13112,12 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="1729"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="1730"/>
         <source>No Layer Selected</source>
         <translation type="unfinished">Ekkert lag valið</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="1730"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="1731"/>
         <source>To open an attribute table, you must select a vector layer in the legend</source>
         <translation type="unfinished"></translation>
     </message>
@@ -13125,104 +13125,104 @@ This may be a problem in your network connection or at the WMS server.</source>
 <context>
     <name>QgsLegendLayer</name>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="389"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="388"/>
         <source>&amp;Zoom to layer extent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="392"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="391"/>
         <source>&amp;Zoom to best scale (100%)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="396"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="395"/>
         <source>&amp;Show in overview</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="404"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="403"/>
         <source>&amp;Remove</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="413"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="412"/>
         <source>&amp;Open attribute table</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="427"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="426"/>
         <source>Save as shapefile...</source>
         <translation>Vista sem shapefile...</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="430"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="429"/>
         <source>Save selection as shapefile...</source>
         <translation>Vista val sem shapefile...</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="441"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="440"/>
         <source>&amp;Properties</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="514"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="513"/>
         <source>Save layer as...</source>
         <translation>Vista lag sem...</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="550"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="549"/>
         <source>Select the coordinate reference system for the saved shapefile. The data points will be transformed from the layer coordinate reference system.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="584"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="583"/>
         <source>Saving done</source>
         <translation>Vistun lokið</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="584"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="583"/>
         <source>Export to Shapefile has been completed</source>
         <translation>Útflutningur í shapefile lokið</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="588"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="587"/>
         <source>Driver not found</source>
         <translation>Rekill finnst ekki</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="588"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="587"/>
         <source>ESRI Shapefile driver is not available</source>
         <translation>ESRI Shapefile rekill er ekki tiltækur</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="592"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="591"/>
         <source>Error creating shapefile</source>
         <translation>Villa við gerð shapefile</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="593"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="592"/>
         <source>The shapefile could not be created (%1)</source>
         <translation>Ekki tókst að búa til shapefile (%1)</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="597"/>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="601"/>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="606"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="596"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="600"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="605"/>
         <source>Error</source>
         <translation>Villa</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="597"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="596"/>
         <source>Layer creation failed</source>
         <translation>Villa við að búa til lag</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="602"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="601"/>
         <source>Layer attribute table contains unsupported datatype(s)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="607"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="606"/>
         <source>Creation of an attribute failed</source>
         <translation type="unfinished"></translation>
     </message>
@@ -15026,17 +15026,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsOgrProvider</name>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="172"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="173"/>
         <source>Whole number (integer)</source>
         <translation>Heilar tölur (integer)</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="173"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="174"/>
         <source>Decimal number (real)</source>
         <translation>Rauntölur (real)</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="174"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="175"/>
         <source>Text (string)</source>
         <translation>Texti (strengur)</translation>
     </message>
@@ -15477,7 +15477,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsoptions.cpp" line="279"/>
         <location filename="../src/app/qgsoptions.cpp" line="549"/>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ekkert</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="290"/>
@@ -15722,7 +15722,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="473"/>
         <source>%</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="492"/>
@@ -16003,17 +16003,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="56"/>
         <source>Select GeoRaster</source>
-        <translation type="unfinished"></translation>
+        <translation>Velja GeoRaster</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="58"/>
         <source>Open a Oracle Spatial GeoRaster</source>
-        <translation type="unfinished"></translation>
+        <translation>Opna Oracle Spatial GeoRaster</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="63"/>
         <source>&amp;Oracle Spatial</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Oracle Spatial</translation>
     </message>
 </context>
 <context>
@@ -16362,7 +16362,7 @@ geometry.</source>
     <message>
         <location filename="../src/ui/qgspgsourceselectbase.ui" line="64"/>
         <source>Connect</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tengja</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgsourceselectbase.ui" line="87"/>
@@ -16784,7 +16784,7 @@ You need to restart Quantum GIS in order to reload it.</source>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="218"/>
         <source>Version</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Útgáfa</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="223"/>
@@ -17479,7 +17479,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="791"/>
         <source>Capture Points</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Grípa punkta</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="794"/>
@@ -17489,7 +17489,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="795"/>
         <source>Delete Selected</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Eyða valið</translation>
     </message>
 </context>
 <context>
@@ -18364,7 +18364,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="178"/>
         <source>%</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="185"/>
@@ -18485,9 +18485,9 @@ p, li { white-space: pre-wrap; }
     <name>QgsRasterLayer</name>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="85"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2548"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="3468"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="3484"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2552"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="3472"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="3488"/>
         <source>Not Set</source>
         <translation type="unfinished"></translation>
     </message>
@@ -18522,208 +18522,208 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1577"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1581"/>
         <source>Retrieving %1 using %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1664"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1668"/>
         <source>%1 retrieved using %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1924"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1928"/>
         <source>out of extent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1965"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1969"/>
         <source>null (no data)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2560"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2564"/>
         <source>Driver:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2585"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2589"/>
         <source>Dataset Description</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2606"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2610"/>
         <source>Band %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2637"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2641"/>
         <source>Dimensions:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2640"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2644"/>
         <source>X: %1 Y: %2 Bands: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2650"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2654"/>
         <source>No Data Value</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2659"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2663"/>
         <source>NoDataValue not set</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2665"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2669"/>
         <source>Data Type:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2671"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2675"/>
         <source>GDT_Byte - Eight bit unsigned integer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2674"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2678"/>
         <source>GDT_UInt16 - Sixteen bit unsigned integer </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2677"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2681"/>
         <source>GDT_Int16 - Sixteen bit signed integer </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2680"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2684"/>
         <source>GDT_UInt32 - Thirty two bit unsigned integer </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2683"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2687"/>
         <source>GDT_Int32 - Thirty two bit signed integer </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2686"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2690"/>
         <source>GDT_Float32 - Thirty two bit floating point </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2689"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2693"/>
         <source>GDT_Float64 - Sixty four bit floating point </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2692"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2696"/>
         <source>GDT_CInt16 - Complex Int16 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2695"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2699"/>
         <source>GDT_CInt32 - Complex Int32 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2698"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2702"/>
         <source>GDT_CFloat32 - Complex Float32 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2701"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2705"/>
         <source>GDT_CFloat64 - Complex Float64 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2704"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2708"/>
         <source>Could not determine raster data type.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2709"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2713"/>
         <source>Pyramid overviews:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2730"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2734"/>
         <source>Layer Spatial Reference System: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2740"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2744"/>
         <source>Project Spatial Reference System: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2758"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2762"/>
         <source>Origin:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2767"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2771"/>
         <source>Pixel Size:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2785"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="5005"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2789"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="5009"/>
         <source>Band</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2792"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2796"/>
         <source>Band No</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2804"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2808"/>
         <source>No Stats</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2807"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2811"/>
         <source>No stats collected yet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2817"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2821"/>
         <source>Min Val</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2825"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2829"/>
         <source>Max Val</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2833"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2837"/>
         <source>Range</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2841"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2845"/>
         <source>Mean</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2849"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2853"/>
         <source>Sum of squares</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2857"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2861"/>
         <source>Standard Deviation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2865"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2869"/>
         <source>Sum of all cells</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2873"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2877"/>
         <source>Cell Count</source>
         <translation type="unfinished"></translation>
     </message>
@@ -19409,7 +19409,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1038"/>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ekkert</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1064"/>
@@ -19705,7 +19705,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2051"/>
         <source>Refresh</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Hressa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2062"/>
@@ -20263,13 +20263,13 @@ The error was:
     <message>
         <location filename="../src/app/qgssinglesymboldialog.cpp" line="63"/>
         <source>Refresh markers</source>
-        <translation type="unfinished"></translation>
+        <translation>Hressa merki</translation>
     </message>
     <message>
         <location filename="../src/app/qgssinglesymboldialog.cpp" line="164"/>
         <location filename="../src/app/qgssinglesymboldialog.cpp" line="183"/>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation>Ekkert</translation>
     </message>
     <message>
         <location filename="../src/app/qgssinglesymboldialog.cpp" line="184"/>
@@ -20401,7 +20401,7 @@ The error was:
     <message>
         <location filename="../src/ui/qgssnappingdialogbase.ui" line="48"/>
         <source>Tolerance</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Málvik</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssnappingdialogbase.ui" line="53"/>
@@ -20601,7 +20601,7 @@ SQL: %2</source>
     <message>
         <location filename="../src/ui/qgsspatialitesourceselectbase.ui" line="83"/>
         <source>Connect</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tengja</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsspatialitesourceselectbase.ui" line="108"/>
@@ -20993,7 +20993,7 @@ Do you want to overwrite the [%2] relation?</source>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="69"/>
         <source>Connect</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tengja</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="76"/>
@@ -22501,7 +22501,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="323"/>
         <source>Ready</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tilbúin</translation>
     </message>
 </context>
 <context>
@@ -22957,7 +22957,7 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="183"/>
         <source>Ready</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tilbúin</translation>
     </message>
 </context>
 <context>
@@ -23575,7 +23575,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="252"/>
         <source>Connect</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tengja</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="262"/>
