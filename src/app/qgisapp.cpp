@@ -2559,7 +2559,7 @@ void QgisApp::addSpatiaLiteLayer()
 
       // create the layer
       //qWarning("creating layer");
-      QgsVectorLayer *layer = new QgsVectorLayer( "dbname='" + connectionInfo + "' table=" + *it + ")", layername, "spatialite" );
+      QgsVectorLayer *layer = new QgsVectorLayer( "dbname='" + connectionInfo + "' table=" + *it + ") sql=", layername, "spatialite" );
       if ( layer->isValid() )
       {
         // register this layer with the central layers registry
