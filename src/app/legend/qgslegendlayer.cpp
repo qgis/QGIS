@@ -85,6 +85,9 @@ QgsLegendLayer::QgsLegendLayer( QgsMapLayer* layer )
     connect( layer, SIGNAL( editingStopped() ), this, SLOT( updateIcon() ) );
   }
   connect( layer, SIGNAL( layerNameChanged() ), this, SLOT( layerNameChanged() ) );
+
+  updateIcon();
+  setToolTip( 0, layer->publicSource() );
 }
 
 QgsLegendLayer::~QgsLegendLayer()

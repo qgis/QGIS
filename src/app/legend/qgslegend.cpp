@@ -504,9 +504,6 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
 
   QgsLegendLayer* llayer = new QgsLegendLayer( layer );
 
-  llayer->updateIcon();
-  llayer->setToolTip( 0, layer->publicSource() );
-
   //set the correct check states
   blockSignals( true );
   if ( llayer->isVisible() )
@@ -1045,20 +1042,8 @@ QgsLegendLayer* QgsLegend::readLayerFromXML( QDomElement& childelem, bool& isOpe
   // load layer's visibility and 'show in overview' flag
   ll->setInOverview( atoi( fileElem.attribute( "isInOverview" ).toUtf8() ) );
 
-  //set the layer type icon
-  ll->updateIcon();
-  ll->setToolTip( 0, theMapLayer->publicSource() );
-
-  // setup connections that will update the layer icons
-  if ( qobject_cast<QgsVectorLayer *>( theMapLayer ) )
-  {
-    QgsDebugMsg( "Connecting signals for updating icons, layer " + theMapLayer->name() );
-    connect( theMapLayer, SIGNAL( editingStarted() ), ll, SLOT( updateIcon() ) );
-    connect( theMapLayer, SIGNAL( editingStopped() ), ll, SLOT( updateIcon() ) );
-  }
-
   // expanded or collapsed
-  isOpen = ( childelem.attribute( "open" ) == "true" );
+  isOpen = childelem.attribute( "open" ) == "true";
 
   //set the checkbox of the legend layer to the right state
   blockSignals( true );
