@@ -88,39 +88,39 @@ class OsmFeatureDW(QDockWidget, Ui_OsmFeatureDW,  object):
 
         # initializing rubberbands/vertexmarkers; getting qgis settings of line width and color for rubberbands
         settings=QSettings()
-        qgsLineWidth=settings.value( "/qgis/digitizing/line_width", QVariant(10) ).toInt()
+        qgsLineWidth=2 # use fixed width
         qgsLineRed=settings.value( "/qgis/digitizing/line_color_red", QVariant(255) ).toInt()
         qgsLineGreen=settings.value( "/qgis/digitizing/line_color_green", QVariant(0) ).toInt()
         qgsLineBlue=settings.value( "/qgis/digitizing/line_color_blue", QVariant(0) ).toInt()
 
         self.rubBandPol=QgsRubberBand(plugin.canvas,True)
         self.rubBandPol.setColor(QColor(qgsLineRed[0],qgsLineGreen[0],qgsLineBlue[0]))
-        self.rubBandPol.setWidth(qgsLineWidth[0])
+        self.rubBandPol.setWidth(qgsLineWidth)
 
         self.rubBand=QgsRubberBand(plugin.canvas,False)
         self.rubBand.setColor(QColor(qgsLineRed[0],qgsLineGreen[0],qgsLineBlue[0]))
-        self.rubBand.setWidth(qgsLineWidth[0])
+        self.rubBand.setWidth(qgsLineWidth)
 
         self.verMarker=QgsVertexMarker(plugin.canvas)
         self.verMarker.setIconType(2)
         self.verMarker.setIconSize(13)
         self.verMarker.setColor(QColor(qgsLineRed[0],qgsLineGreen[0],qgsLineBlue[0]))
-        self.verMarker.setPenWidth(qgsLineWidth[0])
+        self.verMarker.setPenWidth(qgsLineWidth)
         self.verMarkers=[]
 
         self.relRubBandPol=QgsRubberBand(plugin.canvas,True)
         self.relRubBandPol.setColor(QColor(qgsLineRed[0],50,50))
-        self.relRubBandPol.setWidth(qgsLineWidth[0]+4)
+        self.relRubBandPol.setWidth(qgsLineWidth+4)
 
         self.relRubBand=QgsRubberBand(plugin.canvas,False)
         self.relRubBand.setColor(QColor(qgsLineRed[0],50,50))
-        self.relRubBand.setWidth(qgsLineWidth[0]+4)
+        self.relRubBand.setWidth(qgsLineWidth+4)
 
         self.relVerMarker=QgsVertexMarker(plugin.canvas)
         self.relVerMarker.setIconType(2)
         self.relVerMarker.setIconSize(13)
         self.relVerMarker.setColor(QColor(qgsLineRed[0],50,50))
-        self.relVerMarker.setPenWidth(qgsLineWidth[0])
+        self.relVerMarker.setPenWidth(qgsLineWidth)
 
         # initializing inner variables
         self.activeEditButton=self.dummyButton
@@ -1076,7 +1076,7 @@ class OsmFeatureDW(QDockWidget, Ui_OsmFeatureDW,  object):
 
         # get qgis settings of line width and color for rubberband
         settings=QSettings()
-        qgsLineWidth=settings.value("/qgis/digitizing/line_width",QVariant(10)).toInt()
+        qgsLineWidth=2 # use fixed width
         qgsLineRed=settings.value("/qgis/digitizing/line_color_red",QVariant(255)).toInt()
         qgsLineGreen=settings.value("/qgis/digitizing/line_color_green",QVariant(0)).toInt()
         qgsLineBlue=settings.value("/qgis/digitizing/line_color_blue",QVariant(0)).toInt()
@@ -1086,7 +1086,7 @@ class OsmFeatureDW(QDockWidget, Ui_OsmFeatureDW,  object):
             verMarker.setIconType(3)
             verMarker.setIconSize(6)
             verMarker.setColor(QColor(qgsLineRed[0],qgsLineGreen[0],qgsLineBlue[0]))
-            verMarker.setPenWidth(qgsLineWidth[0])
+            verMarker.setPenWidth(qgsLineWidth)
             verMarker.setCenter(pline[i])
             verMarker.show()
             self.verMarkers.append(verMarker)

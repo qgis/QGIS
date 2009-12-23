@@ -186,14 +186,14 @@ class OsmMoveMT(QgsMapTool):
 
         # get qgis settings of line width and color for rubberband
         settings=QSettings()
-        qgsLineWidth=settings.value( "/qgis/digitizing/line_width", QVariant(10) ).toInt()
+        qgsLineWidth=2 # use fixed width
         qgsLineRed=settings.value( "/qgis/digitizing/line_color_red", QVariant(255) ).toInt()
         qgsLineGreen=settings.value( "/qgis/digitizing/line_color_green", QVariant(0) ).toInt()
         qgsLineBlue=settings.value( "/qgis/digitizing/line_color_blue", QVariant(0) ).toInt()
 
         rband=QgsRubberBand(self.canvas,isPolygon)
         rband.setColor(QColor(qgsLineRed[0],qgsLineGreen[0],qgsLineBlue[0]))
-        rband.setWidth( qgsLineWidth[0] )
+        rband.setWidth( qgsLineWidth )
 
         return rband
 
@@ -207,11 +207,11 @@ class OsmMoveMT(QgsMapTool):
 
         # get qgis settings of line width and color for rubberband
         settings=QSettings()
-        qgsLineWidth=settings.value( "/qgis/digitizing/line_width", QVariant(10) ).toInt()
+        qgsLineWidth=2 # use fixed width
 
         rband=QgsRubberBand(self.canvas,False)
         rband.setColor(QColor(255,0,0))
-        rband.setWidth(qgsLineWidth[0])
+        rband.setWidth(qgsLineWidth)
 
         return rband
 
@@ -224,7 +224,7 @@ class OsmMoveMT(QgsMapTool):
 
         # get qgis settings
         settings=QSettings()
-        qgsLineWidth=settings.value("/qgis/digitizing/line_width",QVariant(10)).toInt()
+        qgsLineWidth=2 # use fixed width
         qgsLineRed=settings.value("/qgis/digitizing/line_color_red",QVariant(255)).toInt()
         qgsLineGreen=settings.value("/qgis/digitizing/line_color_green",QVariant(0)).toInt()
         qgsLineBlue=settings.value("/qgis/digitizing/line_color_blue",QVariant(0)).toInt()
@@ -233,7 +233,7 @@ class OsmMoveMT(QgsMapTool):
         verMarker.setIconType(2)
         verMarker.setIconSize(13)
         verMarker.setColor(QColor(qgsLineRed[0],qgsLineGreen[0],qgsLineBlue[0]))
-        verMarker.setPenWidth(qgsLineWidth[0])
+        verMarker.setPenWidth(qgsLineWidth)
         verMarker.setCenter(QgsPoint(-1000,-1000))
 
         return verMarker
