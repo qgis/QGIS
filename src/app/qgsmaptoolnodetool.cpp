@@ -835,6 +835,9 @@ void QgsMapToolNodeTool::canvasDoubleClickEvent( QMouseEvent * e )
 
         vlayer->endEditCommand();
 
+        // make sure that new node gets its vertex marker
+        mCanvas->refresh();
+
         mSelectionFeature->updateFromFeature();
         mChangingGeometry = false;
       }
