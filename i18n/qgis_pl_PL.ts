@@ -1289,7 +1289,7 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="66"/>
         <source>This is a Qt designer &apos;ui&apos; file. It defines the look of the default plugin dialog without implementing any application logic. You can modify this form to suite your needs or completely remove it if your plugin does not need to display a user form (e.g. for custom MapTools).</source>
-        <translation>To jest plik &apos;ui&apos; projektanta Qt. Określa on wygląd domyślnego okna wtyczki bez logiki aplikacji. Możesz dostosować ten szablon do swoich potrzeb lub zupełnie go usunąć jeśli Twoja wtyczka nie porzebuje interfejsu (np. do narzędzi mapowych).</translation>
+        <translation>To jest plik &apos;ui&apos; projektanta Qt. Określa on wygląd domyślnego okna wtyczki bez logiki aplikacji. Możesz dostosować ten szablon do swoich potrzeb lub zupełnie go usunąć jeśli Twoja wtyczka nie potrzebuje interfejsu (np. do narzędzi mapowych).</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="67"/>
@@ -1570,7 +1570,7 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="661"/>
         <source>merge connected lines to avoid duplicate labels</source>
-        <translation>scal połączone linie aby uniknąć powtarznia etykiet</translation>
+        <translation>scal połączone linie aby uniknąć powtarzania etykiet</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="673"/>
@@ -1791,7 +1791,7 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="185"/>
         <source>Members</source>
-        <translation>Elelmenty</translation>
+        <translation>Elementy</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="205"/>
@@ -1850,7 +1850,7 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
     </message>
     <message>
         <source>Download failed: %1.</source>
-        <translation>Pobieranie nie powiódło się: %1.</translation>
+        <translation>Pobieranie nie powiodło się: %1.</translation>
     </message>
     <message>
         <source>Getting data</source>
@@ -1858,7 +1858,7 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
     </message>
     <message>
         <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
-        <translation>Serwer OpenStreetMap (~ api.openstreetmap.org) ma określone ograniczenia odnośnie pobierania danych. Jak podano w &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; ani zakres szerokości ani długości geograficznej pobieranego regionu nie może przekraczać 0,25 stopnia. Zauważ, że GIS nie ma takiego ogranicznia, lecz serwer OpenStreetMap odrzuci takie zapytanie.</translation>
+        <translation>Serwer OpenStreetMap (~ api.openstreetmap.org) ma określone ograniczenia odnośnie pobierania danych. Jak podano w &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; ani zakres szerokości ani długości geograficznej pobieranego regionu nie może przekraczać 0,25 stopnia. Zauważ, że GIS nie ma takiego ograniczenia, lecz serwer OpenStreetMap odrzuci takie zapytanie.</translation>
     </message>
     <message>
         <source>Both extents are too large!</source>
@@ -4765,7 +4765,7 @@ Prosimy o kontakt z autorami.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2773"/>
         <source>Shapefiles must end on .shp</source>
-        <translation>Plik shapefile musi posiadać rozszerzenie .shp</translation>
+        <translation>Plik Shapefile musi posiadać rozszerzenie .shp</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3053"/>
@@ -4980,7 +4980,7 @@ Prosimy o kontakt z autorami.
         <location filename="../src/app/qgisapp.cpp" line="792"/>
         <location filename="../src/app/qgisapp.cpp" line="794"/>
         <source>Deselect features from all layers</source>
-        <translation>Zlikwiduj zaznacznie obiektów ze wszystkich warstw</translation>
+        <translation>Zlikwiduj zaznaczenie obiektów ze wszystkich warstw</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="799"/>
@@ -5051,7 +5051,7 @@ Prosimy o kontakt z autorami.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1064"/>
         <source>Style manager...</source>
-        <translation>Zarządanie stylem...</translation>
+        <translation>Zarządzanie stylem...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1066"/>
@@ -5255,7 +5255,7 @@ Ta wersja QGIS została skompilowana bez wsparcia SpatiaLite.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1006"/>
         <source>Configure shortcuts...</source>
-        <translation>Konfigurujacja skrótów...</translation>
+        <translation>Konfiguracja skrótów...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1008"/>
@@ -5986,7 +5986,7 @@ Błąd brzmi:%2</translation>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="448"/>
         <source>Enumeration is not available for this attribute</source>
-        <translation>Enumeracja nie jest dostęþna dla tego atrybutu</translation>
+        <translation>Enumeracja nie jest dostępna dla tego atrybutu</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="547"/>
@@ -6098,7 +6098,7 @@ Błąd brzmi:%2</translation>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="284"/>
         <source>The user can select one of the values already used in the attribute. If editable, a line edit is shown with autocompletion support, otherwise a combo box is used.</source>
-        <translation>Użytkownik może wybrać jedną z wartości już będących atrybutem. Jeśli element jest edytowalny, dostęþny będzie wiersz edycji z autouzupełnianiem, lub lista rozwijana w innym przypadku.</translation>
+        <translation>Użytkownik może wybrać jedną z wartości już będących atrybutem. Jeśli element jest edytowalny, dostępny będzie wiersz edycji z autouzupełnianiem, lub lista rozwijana w innym przypadku.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="320"/>
@@ -6163,7 +6163,7 @@ Błąd brzmi:%2</translation>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="557"/>
         <source>A text edit field that accepts multiple lines will be used.</source>
-        <translation>Zostanie użyte wielowierszowe pole tesktowe.</translation>
+        <translation>Zostanie użyte wielowierszowe pole tekstowe.</translation>
     </message>
 </context>
 <context>
@@ -8963,7 +8963,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="14"/>
         <source>Field calculator</source>
-        <translation>Klakulator pól</translation>
+        <translation>Kalkulator pól</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="20"/>
@@ -13591,7 +13591,7 @@ Może to być spowodowane problemem w sieci lokalnej lub problemem serwera WMS.<
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="480"/>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="497"/>
         <source>Feature added</source>
-        <translation>Odano obiekt</translation>
+        <translation>Dodano obiekt</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="218"/>
@@ -17824,7 +17824,7 @@ SQL: %3</translation>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="239"/>
         <source>Decimal number (real)</source>
-        <translation>Liczby dziesiętner (real)</translation>
+        <translation>Liczby dziesiętne (real)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="240"/>
@@ -18031,7 +18031,7 @@ Zainstaluj PostGIS ze wsparciem GEOS (http://geos.refractions.net)</translation>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="339"/>
         <source>Your database has no working PostGIS support.
 </source>
-        <translation>Baza danych nie posiada działającej obsługi PostgGIS.
+        <translation>Baza danych nie posiada działającej obsługi PostGIS.
 </translation>
     </message>
 </context>
@@ -18320,7 +18320,7 @@ Poszukać brakujących warstw?</translation>
 Because of this the projection selector will not work...</source>
         <translation>Błąd odczytu pliku bazy danych z: 
  %1
-Z tego powodu wybrór odwzorowania nie będzie działał...</translation>
+Z tego powodu wybór odwzorowania nie będzie działał...</translation>
     </message>
 </context>
 <context>
@@ -20547,7 +20547,7 @@ Komunikat błędu:%2</translation>
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="116"/>
         <source>In map units</source>
-        <translation>W jdnostakch mapy</translation>
+        <translation>W jednostkach mapy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="350"/>
@@ -21514,7 +21514,7 @@ Czy chcesz nadpisać relację [%2]?</translation>
     <message>
         <location filename="../src/plugins/interpolation/qgstininterpolatordialog.cpp" line="86"/>
         <source>Save triangulation to file</source>
-        <translation>Zapisz traingulację w pliku</translation>
+        <translation>Zapisz triangulację w pliku</translation>
     </message>
 </context>
 <context>
@@ -21562,7 +21562,7 @@ Czy chcesz nadpisać relację [%2]?</translation>
         <source>The classification field was changed from &apos;%1&apos; to &apos;%2&apos;.
 Should the existing classes be deleted before classification?</source>
         <translation>Pole klasyfikacji zostało zmienione z  &apos;%1&apos; na &apos;%2&apos;.
-Czy aktualne klasy powiny zostać usunięte przed klasyfikacją?</translation>
+Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     </message>
 </context>
 <context>
@@ -21848,7 +21848,7 @@ Czy aktualne klasy powiny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="454"/>
         <source>The query used to limit the features in the layer is shown here. This is currently only supported for PostgreSQL layers. To enter or modify the query, click on the Query Builder button</source>
-        <translation>Zobacz zapytanie użyte do wyboru obiektów na warstwie. Aktualnie jest ono wspierane tylko przez warstwy PostgrSQL. Aby wprowadzić lub zmienić zapytanie, kliknij na Query Builder</translation>
+        <translation>Zobacz zapytanie użyte do wyboru obiektów na warstwie. Aktualnie jest ono wspierane tylko przez warstwy PostgreSQL. Aby wprowadzić lub zmienić zapytanie, kliknij na Query Builder</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="531"/>
@@ -21987,7 +21987,7 @@ Czy aktualne klasy powiny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1072"/>
         <source>Select edit form</source>
-        <translation>Wybier okno edycji</translation>
+        <translation>Wybierz formularz edycji</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1072"/>
@@ -23331,7 +23331,7 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>List unique values</source>
-        <translation>Wyświel unikalne wartości</translation>
+        <translation>Wyświetl unikalne wartości</translation>
     </message>
     <message>
         <source>Basics statistics</source>
@@ -23396,17 +23396,17 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="52"/>
         <source>Marker interval:</source>
-        <translation>Przedział znacznika:</translation>
+        <translation>Odstęp znaczników:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="59"/>
         <source>Rotate marker</source>
-        <translation>Obróć znacznik</translation>
+        <translation>Obracaj wzdłuż linii</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="66"/>
         <source>Line offset:</source>
-        <translation>Przesunięcie linii:</translation>
+        <translation>Przesunięcie poprzeczne:</translation>
     </message>
 </context>
 <context>
@@ -24325,7 +24325,7 @@ Base Path (i.e. keep only filename from attribute)</source>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="729"/>
         <source>Clicking on Save will save the settings without closing the Options pane. Clicking on Restore Defaults will reset all of the fields to their default settings. It has the same effect as clicking all of the “Reset to default” buttons. </source>
         <translatorcomment>Coś tu się kupy nie trzyma, bo niegdzie w tekście nie ma ciągu &quot;Restore Defaults&quot;. Dlatego tłumaczenie skrócono.</translatorcomment>
-        <translation>Wybór przycisku &quot;Zapisz&quot; spowoduje zapisanie ustawień bez zamykania okna. Wybór &quot;Przywróć domyślne&quot; spowoduje powróŧ wszystkich ustawień do wartości domyślnych.</translation>
+        <translation>Wybór przycisku &quot;Zapisz&quot; spowoduje zapisanie ustawień bez zamykania okna. Wybór &quot;Przywróć domyślne&quot; spowoduje powrót wszystkich ustawień do wartości domyślnych.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="740"/>
@@ -24435,7 +24435,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     </message>
     <message>
         <source>List unique values</source>
-        <translation>Wyświel unikalne wartości</translation>
+        <translation>Wyświetl unikalne wartości</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
@@ -24443,7 +24443,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     </message>
     <message>
         <source>Mean coordinate(s)</source>
-        <translation>Środek cieżkości</translation>
+        <translation>Środek ciężkości</translation>
     </message>
     <message>
         <source>Line intersections</source>
