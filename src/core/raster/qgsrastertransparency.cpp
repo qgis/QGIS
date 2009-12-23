@@ -105,7 +105,7 @@ int QgsRasterTransparency::alphaValue( double theValue, int theGlobalTransparenc
 
   //Search through he transparency list looking for a match
   bool myTransparentPixelFound = false;
-  TransparentSingleValuePixel myTransparentPixel = {0,100};
+  TransparentSingleValuePixel myTransparentPixel = {0, 100};
   for ( int myListRunner = 0; myListRunner < mTransparentSingleValuePixelList.count(); myListRunner++ )
   {
     myTransparentPixel = mTransparentSingleValuePixelList[myListRunner];
@@ -143,7 +143,7 @@ int QgsRasterTransparency::alphaValue( double theRedValue, double theGreenValue,
 
   //Search through he transparency list looking for a match
   bool myTransparentPixelFound = false;
-  TransparentThreeValuePixel myTransparentPixel = {0,0,0,100};
+  TransparentThreeValuePixel myTransparentPixel = {0, 0, 0, 100};
   for ( int myListRunner = 0; myListRunner < mTransparentThreeValuePixelList.count(); myListRunner++ )
   {
     myTransparentPixel = mTransparentThreeValuePixelList[myListRunner];

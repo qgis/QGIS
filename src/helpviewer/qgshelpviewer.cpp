@@ -107,10 +107,10 @@ void QgsHelpViewer::loadContext( const QString &contextId )
     QString lang = QLocale::system().name();
 
     QSettings settings;
-    if( settings.value( "locale/overrideFlag", false ).toBool() )
+    if ( settings.value( "locale/overrideFlag", false ).toBool() )
     {
-       QLocale l( settings.value( "locale/userLocale", "en_US" ).toString() );
-       lang = l.name();
+      QLocale l( settings.value( "locale/userLocale", "en_US" ).toString() );
+      lang = l.name();
     }
     /*
      * If the language isn't set on the system, assume en_US,

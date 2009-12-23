@@ -111,9 +111,9 @@ void TestQgsMapRenderer::initTestCase()
                                   QGis::WKBPolygon,
                                   &mCRS );
     double myInterval = 0.5;
-    for ( double i = -180.0;i <= 180.0;i += myInterval )
+    for ( double i = -180.0; i <= 180.0; i += myInterval )
     {
-      for ( double j = -90.0;j <= 90.0;j += myInterval )
+      for ( double j = -90.0; j <= 90.0; j += myInterval )
       {
         //
         // Create a polygon feature

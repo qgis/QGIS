@@ -329,8 +329,8 @@ void QgsGPSPlugin::convertGPSFile( QString inputFileName,
 
   // try to start the gpsbabel process
   QStringList babelArgs;
-  babelArgs << mBabelPath << "-i" << "gpx" << "-f" << QString("\"%1\"").arg( inputFileName )
-  << convertStrings << "-o" << "gpx" << "-F" << QString("\"%1\"").arg( outputFileName );
+  babelArgs << mBabelPath << "-i" << "gpx" << "-f" << QString( "\"%1\"" ).arg( inputFileName )
+  << convertStrings << "-o" << "gpx" << "-F" << QString( "\"%1\"" ).arg( outputFileName );
   QgsDebugMsg( QString( "Conversion command: " ) + babelArgs.join( "|" ) );
 
   QProcess babelProcess;

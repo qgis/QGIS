@@ -39,8 +39,8 @@ QgisAppInterface::QgisAppInterface( QgisApp * _qgis )
            this, SIGNAL( currentLayerChanged( QgsMapLayer * ) ) );
   connect( qgis, SIGNAL( currentThemeChanged( QString ) ),
            this, SIGNAL( currentThemeChanged( QString ) ) );
-  connect( qgis, SIGNAL(composerAdded(QgsComposerView*)), this, SIGNAL(composerAdded( QgsComposerView* )));
-  connect( qgis, SIGNAL(composerWillBeRemoved(QgsComposerView*)), this, SIGNAL(composerWillBeRemoved(QgsComposerView*)));
+  connect( qgis, SIGNAL( composerAdded( QgsComposerView* ) ), this, SIGNAL( composerAdded( QgsComposerView* ) ) );
+  connect( qgis, SIGNAL( composerWillBeRemoved( QgsComposerView* ) ), this, SIGNAL( composerWillBeRemoved( QgsComposerView* ) ) );
 }
 
 QgisAppInterface::~QgisAppInterface()

@@ -147,9 +147,9 @@ QStringList QgsBabelCommand::importCommand( const QString& babel,
     else if ( *iter == "%type" )
       copy.append( featuretype );
     else if ( *iter == "%in" )
-      copy.append( QString("\"%1\"").arg( input ) );
+      copy.append( QString( "\"%1\"" ).arg( input ) );
     else if ( *iter == "%out" )
-      copy.append( QString("\"%1\"").arg( output ) );
+      copy.append( QString( "\"%1\"" ).arg( output ) );
     else
       copy.append( *iter );
   }
@@ -171,9 +171,9 @@ QStringList QgsBabelCommand::exportCommand( const QString& babel,
     else if ( *iter == "%type" )
       copy.append( featuretype );
     else if ( *iter == "%in" )
-      copy.append( QString("\"%1\"").arg( input ) );
+      copy.append( QString( "\"%1\"" ).arg( input ) );
     else if ( *iter == "%out" )
-      copy.append( QString("\"%1\"").arg( output ) );
+      copy.append( QString( "\"%1\"" ).arg( output ) );
     else
       copy.append( *iter );
   }
