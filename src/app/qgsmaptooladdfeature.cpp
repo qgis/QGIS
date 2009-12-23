@@ -506,7 +506,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
           }
           vlayer->endEditCommand();
         }
-        delete mypDialog;
+        mypDialog->deleteLater();
       }
       delete f;
 
