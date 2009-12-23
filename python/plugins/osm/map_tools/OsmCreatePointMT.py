@@ -96,7 +96,7 @@ class OsmCreatePointMT(QgsMapTool):
 
         # get qgis settings
         settings=QSettings()
-        qgsLineWidth=settings.value("/qgis/digitizing/line_width",QVariant(10)).toInt()
+        qgsLineWidth=2 # use fixed width
         qgsLineRed=settings.value("/qgis/digitizing/line_color_red",QVariant(255)).toInt()
         qgsLineGreen=settings.value("/qgis/digitizing/line_color_green",QVariant(0)).toInt()
         qgsLineBlue=settings.value("/qgis/digitizing/line_color_blue",QVariant(0)).toInt()
@@ -105,7 +105,7 @@ class OsmCreatePointMT(QgsMapTool):
         verMarker.setIconType(2)
         verMarker.setIconSize(13)
         verMarker.setColor(QColor(qgsLineRed[0],qgsLineGreen[0],qgsLineBlue[0]))
-        verMarker.setPenWidth(qgsLineWidth[0])
+        verMarker.setPenWidth(qgsLineWidth)
         verMarker.setCenter(QgsPoint(-1000,-1000))
 
         return verMarker
