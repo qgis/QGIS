@@ -77,16 +77,14 @@ QgsLegendLayer::QgsLegendLayer( QgsMapLayer* layer )
   // not in overview by default
   mLyr.setInOverview( FALSE );
 
-  // Add check if vector layer when connecting to selectionChanged slot
-  // Ticket #811 - racicot
-  QgsMapLayer *currentLayer = mLyr.layer();
-  QgsVectorLayer *isVectLyr = qobject_cast<QgsVectorLayer *>( currentLayer );
-  if ( isVectLyr )
+  // setup connections that will update the layer icons
+  if ( qobject_cast<QgsVectorLayer *>( layer ) )
   {
-    connect( mLyr.layer(), SIGNAL( editingStarted() ), this, SLOT( updateLegendItem() ) );
-    connect( mLyr.layer(), SIGNAL( editingStopped() ), this, SLOT( updateLegendItem() ) );
+    QgsDebugMsg( "Connecting signals for updating icons, layer " + layer->name() );
+    connect( layer, SIGNAL( editingStarted() ), this, SLOT( updateIcon() ) );
+    connect( layer, SIGNAL( editingStopped() ), this, SLOT( updateIcon() ) );
   }
-  connect( mLyr.layer(), SIGNAL( layerNameChanged() ), this, SLOT( layerNameChanged() ) );
+  connect( layer, SIGNAL( layerNameChanged() ), this, SLOT( layerNameChanged() ) );
 }
 
 QgsLegendLayer::~QgsLegendLayer()

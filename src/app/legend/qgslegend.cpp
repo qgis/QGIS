@@ -537,14 +537,6 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
   setCurrentItem( llayer );
   //make the QTreeWidget item up-to-date
   doItemsLayout();
-
-  // setup connections that will update the layer icons
-  if ( qobject_cast<QgsVectorLayer *>( layer ) )
-  {
-    QgsDebugMsg( "Connecting signals for updating icons, layer " + layer->name() );
-    connect( layer, SIGNAL( editingStarted() ), llayer, SLOT( updateIcon() ) );
-    connect( layer, SIGNAL( editingStopped() ), llayer, SLOT( updateIcon() ) );
-  }
 }
 
 QgsLegendLayer* QgsLegend::currentLegendLayer()
