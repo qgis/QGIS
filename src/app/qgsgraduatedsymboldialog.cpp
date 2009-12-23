@@ -112,6 +112,7 @@ QgsGraduatedSymbolDialog::QgsGraduatedSymbolDialog( QgsVectorLayer * layer ): QD
       sym->setBrush(( *it )->brush() );
       sym->setNamedPointSymbol(( *it )->pointSymbolName() );
       sym->setPointSize(( *it )->pointSize() );
+      sym->setPointSizeUnits(( *it )->pointSizeUnits() );
       sym->setScaleClassificationField(( *it )->scaleClassificationField() );
       sym->setRotationClassificationField(( *it )->rotationClassificationField() );
       mEntries.insert( std::make_pair( classbreak, sym ) );
@@ -210,6 +211,7 @@ void QgsGraduatedSymbolDialog::apply()
     {
       sy->setNamedPointSymbol( it->second->pointSymbolName() );
       sy->setPointSize( it->second->pointSize() );
+      sy->setPointSizeUnits( it->second->pointSizeUnits() );
       sy->setScaleClassificationField( it->second->scaleClassificationField() );
       sy->setRotationClassificationField( it->second->rotationClassificationField() );
     }
