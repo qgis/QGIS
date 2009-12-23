@@ -100,11 +100,11 @@ class QgsFeature
     
     /** Set this feature's geometry from another QgsGeometry object (deep copy)
      */
-    void setGeometry(const QgsGeometry& geom);
+    //void setGeometry(const QgsGeometry& geom);
     
     /** Set this feature's geometry (takes geometry ownership)
      */
-    void setGeometry(QgsGeometry* geom);
+    void setGeometry(QgsGeometry* geom /Transfer/);
     
     /** 
      * Set this feature's geometry from WKB
