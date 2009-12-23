@@ -81,6 +81,7 @@ QgsUniqueValueDialog::QgsUniqueValueDialog( QgsVectorLayer* vl ): QDialog(), mVe
         sym->setBrush( symbol->brush() );
         sym->setNamedPointSymbol( symbol->pointSymbolName() );
         sym->setPointSize( symbol->pointSize() );
+        sym->setPointSizeUnits( symbol->pointSizeUnits() );
         sym->setScaleClassificationField( symbol->scaleClassificationField() );
         sym->setRotationClassificationField( symbol->rotationClassificationField() );
         mValues.insert( symbolvalue, sym );
@@ -141,6 +142,7 @@ void QgsUniqueValueDialog::apply()
     newsymbol->setBrush( symbol->brush() );
     newsymbol->setNamedPointSymbol( symbol->pointSymbolName() );
     newsymbol->setPointSize( symbol->pointSize() );
+    newsymbol->setPointSizeUnits( symbol->pointSizeUnits() );
     newsymbol->setScaleClassificationField( symbol->scaleClassificationField() );
     newsymbol->setRotationClassificationField( symbol->rotationClassificationField() );
     renderer->insertValue( it.key(), newsymbol );
