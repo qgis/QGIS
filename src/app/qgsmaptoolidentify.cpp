@@ -206,6 +206,9 @@ bool QgsMapToolIdentify::identifyVectorLayer( QgsVectorLayer *layer, int x, int 
   double identifyValue = settings.value( "/Map/identifyRadius", QGis::DEFAULT_IDENTIFY_RADIUS ).toDouble();
   QString ellipsoid = settings.value( "/qgis/measure/ellipsoid", "WGS84" ).toString();
 
+  if ( identifyValue <= 0.0 )
+    identifyValue = QGis::DEFAULT_IDENTIFY_RADIUS;
+
   int featureCount = 0;
   const QgsFieldMap& fields = layer->pendingFields();
 
