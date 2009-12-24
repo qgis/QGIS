@@ -39,6 +39,7 @@
 #include <QPolygonF>
 #include <QSettings>
 #include <QString>
+#include <QDomNode>
 
 #include "qgsvectorlayer.h"
 
@@ -703,23 +704,33 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
   QgsFeature fet;
   while ( nextFeature( fet ) )
   {
-    bool sel = mSelectedFeatureIds.contains( fet.id() );
-    bool drawMarker = ( mEditable && ( !vertexMarkerOnlyForSelection || sel ) );
-
-    // render feature
-    if ( sel )
-      selRenderer->renderFeature( fet, rendererContext, -1, drawMarker );
-    else
-      mRendererV2->renderFeature( fet, rendererContext, -1, drawMarker );
-
-    // labeling - register feature
-    if ( labeling && mRendererV2->symbolForFeature( fet ) != NULL )
-      rendererContext.labelingEngine()->registerFeature( this, fet );
-
-    if ( mEditable )
+    try
     {
-      // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
-      mCachedGeometries[fet.id()] = *fet.geometry();
+      bool sel = mSelectedFeatureIds.contains( fet.id() );
+      bool drawMarker = ( mEditable && ( !vertexMarkerOnlyForSelection || sel ) );
+
+      // render feature
+      if ( sel )
+        selRenderer->renderFeature( fet, rendererContext, -1, drawMarker );
+      else
+        mRendererV2->renderFeature( fet, rendererContext, -1, drawMarker );
+
+      // labeling - register feature
+      if ( labeling && mRendererV2->symbolForFeature( fet ) != NULL )
+        rendererContext.labelingEngine()->registerFeature( this, fet );
+
+      if ( mEditable )
+      {
+        // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
+        mCachedGeometries[fet.id()] = *fet.geometry();
+      }
+    }
+    catch ( const QgsCsException &cse )
+    {
+      QString msg( "Failed to transform a point while drawing a feature of type '"
+                   + fet.typeName() + "'. Ignoring this feature." );
+      msg += cse.what();
+      QgsLogger::warning( msg );
     }
   }
 
@@ -809,10 +820,20 @@ void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bo
         // maybe vertex markers should be drawn only during the last pass...
         bool drawMarker = ( mEditable && ( !vertexMarkerOnlyForSelection || sel ) );
 
-        if ( sel )
-          selRenderer->renderFeature( *fit, rendererContext, -1, drawMarker );
-        else
-          mRendererV2->renderFeature( *fit, rendererContext, layer, drawMarker );
+        try
+        {
+          if ( sel )
+            selRenderer->renderFeature( *fit, rendererContext, -1, drawMarker );
+          else
+            mRendererV2->renderFeature( *fit, rendererContext, layer, drawMarker );
+        }
+        catch ( const QgsCsException &cse )
+        {
+          QString msg( "Failed to transform a point while drawing a feature of type '"
+                       + fet.typeName() + "'. Ignoring this feature." );
+          msg += cse.what();
+          QgsLogger::warning( msg );
+        }
       }
     }
   }
