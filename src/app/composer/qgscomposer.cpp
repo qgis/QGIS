@@ -1098,19 +1098,18 @@ void QgsComposer::readXML( const QDomDocument& doc )
   {
     return;
   }
-  readXML( composerNodeList.at( 0 ).toElement(), doc );
+  readXML( composerNodeList.at( 0 ).toElement(), doc, true );
 }
 
-void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& doc )
+void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& doc, bool fromTemplate )
 {
-  // Create action to select this window
-  delete mWindowAction;
-  mWindowAction = new QAction( windowTitle(), this );
-  connect( mWindowAction, SIGNAL( triggered() ), this, SLOT( activate() ) );
-
-  if ( composerElem.hasAttribute( "title" ) )
+  // Set title only if reading from project file
+  if ( !fromTemplate )
   {
-    setTitle( composerElem.attribute( "title", tr( "Composer" ) ) );
+    if ( composerElem.hasAttribute( "title" ) )
+    {
+      setTitle( composerElem.attribute( "title", tr( "Composer" ) ) );
+    }
   }
 
   //delete composer view and composition
