@@ -231,7 +231,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! Sets state from Dom document
     void readXML( const QDomDocument& doc );
-    void readXML( const QDomElement& composerElem, const QDomDocument& doc );
+    void readXML( const QDomElement& composerElem, const QDomDocument& doc, bool fromTemplate = false );
 
     void setSelectionTool();
 
