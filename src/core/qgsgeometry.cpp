@@ -1198,8 +1198,8 @@ bool QgsGeometry::insertVertex( double x, double y,
   // Bounds checking
   if ( beforeVertex < 0 )
   {
-    ( *new_sequence ) = 0;
-    return FALSE;
+    *new_sequence = 0;
+    return false;
   }
 
   unsigned int numPoints;
@@ -4335,7 +4335,8 @@ bool QgsGeometry::exportGeosToWkb()
       memcpy( mGeometry + 5, &x, sizeof( double ) );
       memcpy( mGeometry + 13, &y, sizeof( double ) );
 
-      break;
+      mDirtyWkb = false;
+      return true;
     } // case GEOS_GEOM::GEOS_POINT
 
     case GEOS_LINESTRING:            // a linestring
