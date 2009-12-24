@@ -436,7 +436,7 @@
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="124"/>
         <source>Coordinate in your selected CRS</source>
-        <translation>Coordinate nel tuo CRS selezionato</translation>
+        <translation>Coordinate nel CRS selezionato</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="128"/>
@@ -869,7 +869,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="27"/>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="27"/>
         <source>Target vector layer</source>
-        <translation>Vettoriale di destinazione</translation>
+        <translation>Vettoriale in output</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="41"/>
@@ -1884,7 +1884,7 @@ Vuoi aggiungere il nuovo layer alla legenda?</translation>
     <message>
         <source>
 Input CRS error: Different input coordinate reference systems detected, results may not be as expected.</source>
-        <translation>Errore CRS di input: individuato un errore nelle coordinate del sistema di riferimento, i risultati potrebbero non essere quelli attesi. </translation>
+        <translation>Errore CRS di input: individuato un errore nelle coordinate del sistema di riferimento, i risultati potrebbero non essere quelli attesi.</translation>
     </message>
     <message>
         <source>
@@ -2666,7 +2666,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="283"/>
         <source>Use custom renderer</source>
-        <translation>Usa un modo di disegno personalizzato</translation>
+        <translation>Usa un render personalizzato</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="358"/>
@@ -2980,7 +2980,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="78"/>
         <source>Use custom renderer</source>
-        <translation>Usa un modo di disegno personalizzato</translation>
+        <translation>Usa un render personalizzato</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="128"/>
@@ -4912,7 +4912,7 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1607"/>
         <source>Render</source>
-        <translation>Disegna</translation>
+        <translation>Render</translation>
     </message>
     <message>
         <source>Unable to save project</source>
@@ -4940,7 +4940,7 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1522"/>
         <source>Progress bar that displays the status of rendering layers and other time-intensive operations</source>
-        <translation>Barra di progressione che mostra lo stato del ridisegnamento (rendering) dei layer e molte altre operazioni che richiedono tempo</translation>
+        <translation>Barra di progressione che mostra lo stato di rendering dei layer e molte altre operazioni che richiedono tempo</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1594"/>
@@ -4954,7 +4954,7 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1610"/>
         <source>When checked, the map layers are rendered in response to map navigation commands and other events. When not checked, no rendering is done. This allows you to add a large number of layers and symbolize them before rendering.</source>
-        <translation>Se selezionato, l&apos;area dedicata alla mappa ridisegna (rendering) tutti i vettoriali con le relative proprietà. Se non selezionato, non avverrà alcun rendering. Questo permette di aggiungere un gran numero di vettoriali e di cambiarne le proprietà prima che vengano disegnati.</translation>
+        <translation>Se selezionato, vengono ridisegnati (rendering) tutti i vettoriali con le relative proprietà. Se non selezionato, non avverrà alcun rendering. Questo permette di aggiungere un gran numero di vettoriali e di cambiarne le proprietà prima che vengano disegnati.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1354"/>
@@ -4964,7 +4964,7 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1614"/>
         <source>Toggle map rendering</source>
-        <translation>Attiva/disattiva il disegno della mappa</translation>
+        <translation>Attiva/disattiva il rendering della mappa</translation>
     </message>
     <message>
         <source>This icon shows whether on the fly projection is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour.</source>
@@ -5376,7 +5376,7 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1041"/>
         <source>Help Documentation</source>
-        <translation>Documentazione di aiuto</translation>
+        <translation>Guida</translation>
     </message>
     <message>
         <source>Qgis Home Page</source>
@@ -6049,32 +6049,32 @@ Compilanto contro Qt </translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2140"/>
         <source>This release includes around 200 bug fixes, nearly 30 new features and has had a lot of love and attention poured in to it to take our favourite desktop GIS application another step on the road to GIS nirvana! So much has happened in the 3 months since our last release that it is impossible to document everything here. Instead we will just highlight a couple of important new features for you.</source>
-        <translation>Questa versione include circa 200 bug fix, quasi 30 nuove funzionalità e ha avuto un sacco di amore e attenzione affinchè diventi la vostra applicazione desktop GIS preferita che vi guidi passo passo verso la strada del nirvana GIS! Molte sono le cose accadute negli ultimi 3 mesi che sono impossibili da documentare, per tale motivo vi riportiamo quelle che riteniamo essere le novitá di maggiore successo per voi.</translation>
+        <translation>Questa versione include circa 200 bug fix, quasi 30 nuove funzionalità e ha avuto un sacco di amore e attenzione affinchè diventi la vostra applicazione desktop GIS preferita che vi guidi passo passo verso la strada del nirvana GIS! Molte sono le cose accadute negli ultimi 3 mesi che sono impossibili da documentare, per tale motivo vi riportiamo quelle che riteniamo essere le novità di maggiore successo per voi.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2148"/>
         <source>Probably the biggest new feature is the addition of the new vector symbology infrastructure. This is provided alongside the old implementation - you can switch using a button in the vector layer properties dialog. It does&apos;t replace the old symbology implementation completely yet because there are various issues that need to be resolved and a large amount of testing before it is considered ready.</source>
-        <translation>Probabilmente la novitá di maggior interessa è la creazione della nuova infrastruttura per la simbologia dei dati vettoriali. Questa funzionalitá è prevista assieme alla vecchia - è possibile passare alla vecchia implementazione attraverso un bottone presente nella finestra di dialogo delle proprietá del vettoriale. Questa funzione non sostituisce pienamente la precedente a causa del fatto ci sono tantissime richieste che si vogliono soddisfare e una considerevolte attivitá di testing da terminare.</translation>
+        <translation>Probabilmente la novità di maggior interessa è la creazione della nuova infrastruttura per la simbologia dei dati vettoriali. Questa funzionalità è prevista assieme alla vecchia - è possibile passare alla vecchia implementazione attraverso un bottone presente nella finestra di dialogo delle proprietà del vettoriale. Questa funzione non sostituisce pienamente la precedente a causa del fatto ci sono tantissime richieste che si vogliono soddisfare e una considerevole attività di testing da terminare.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2156"/>
         <source>QGIS now has a field calculator, accessible via a button in the attribute section of the vector properties, and from the attribute table user interface. You can use feature length, feature area, string concatenation and type conversions in the field calculator, as well as field values.</source>
-        <translation>QGIS ora offre una calcolatrice di campo accessibile via un bottone sulla sezione degli attributi delle proprietá del vettoriale e dalla interfaccia di visualizzazione a tabella degli attributi. Tramite questa funzione è possibile utilizzare la lunghezza, l&apos;area di un elemento del vettoriale, concatenare stringhe e convertire i tipi nella calcolatrice di ogni valore di campo.</translation>
+        <translation>QGIS ora offre una calcolatrice di campo accessibile via un bottone sulla sezione degli attributi delle proprietà del vettoriale e dalla interfaccia di visualizzazione a tabella degli attributi. Tramite questa funzione è possibile utilizzare la lunghezza, l&apos;area di un elemento del vettoriale, concatenare stringhe e convertire i tipi nella calcolatrice di ogni valore di campo.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2163"/>
         <source>The map composer has had a lot of attention. A grid can now be added to composer maps. Composer maps can now be rotated in the layout. The limitation of a single map layout per project has been removed. A new composer manager dialog has been added to manage the existing composer instances. The composer widget property sheets have been completely overhauled to use less screen space </source>
-        <translation>Sono state date moltisse novitá al compositore di mappa. Ora è possibile aggiungere una griglia ad ogni compositore. Inoltre i compositori possono essere ruotati nel layout. La limitazione di layout di mappa per ogni singolo progetto ora è stata eliminata. È stato aggiunto un manager di compisotori di mappe in grado di gestire altre instanze di compisizione. Il widget con le proprietá del compositore è stato completamente rivisitato al fine di utilizzare meno spazio sullo schermo</translation>
+        <translation>Sono state date moltisse novità al compositore di mappa. Ora è possibile aggiungere una griglia ad ogni compositore. Inoltre i compositori possono essere ruotati nel layout. La limitazione di layout di mappa per ogni singolo progetto ora è stata eliminata. È stato aggiunto un manager di compisotori di mappe in grado di gestire altre instanze di compisizione. Il widget con le proprietà del compositore è stato completamente rivisitato al fine di utilizzare meno spazio sullo schermo</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2171"/>
         <source>Various parts of the user interface have been overhauled with the goal of improving consistency and to improve support for netbooks and other smaller screen devices. Loading and saving of shortcuts. Position can now be displayed as Degrees, Minutes, Seconds in the status bar. The add, move and delete vertex buttons are now removed and the node tool is moved from the advanced editing toolbar to the standard editing toolbar. The identification tool has also undergone numerous improvements.</source>
-        <translation>Varie parti del interfaccia utente sono state rinnovate con l&apos;obiettivo di migliorare la coerenza e il supporto per portatili e altri dispositivi a schermo piccolo. Le impostazioni delle scorciatoie possono essere salvate e caricate. La posizione ora può essere visualizzata in gradi, minuti, secondi nella barra di stato. I pulsanti per aggiungere, spostare ed eliminare ora sono stati rimossi e lo strumento nodo è stato spostato dalla barra degli strumenti avanzati di editing  dela barra degli strumenti di editing. Lo strumento di identificazione ha subito numerosi miglioramenti.</translation>
+        <translation>Varie parti del interfaccia utente sono state rinnovate con l&apos;obiettivo di migliorare la coerenza e il supporto per portatili e altri dispositivi a schermo piccolo. Le impostazioni delle scorciatoie possono essere salvate e caricate. La posizione ora può essere visualizzata in gradi, minuti, secondi nella barra di stato. I pulsanti per aggiungere, spostare ed eliminare ora sono stati rimossi e lo strumento nodo è stato spostato dalla barra degli strumenti avanzati di editing della barra degli strumenti di editing. Lo strumento di identificazione ha subito numerosi miglioramenti.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2181"/>
         <source>A render caching capability has been added to QGIS. This speeds up common operations such as layer re-ordering, changing symbology, WMS / WFS client, hiding / showing layers and opens the door for future enhancements such as threaded rendering and pre-compositing layer cache manipulation. Note that it is disabled by default, and can be enabled in the options dialog.</source>
-        <translation>È stato aggiunto in QGIS un sistema di &quot;render caching&quot;. Questo velocizza diverse operazioni comuni come il riordinamento dei layer, la modifica della simbologia, i client WMS/WFS, il nascondere/visualizzare layer; e apre la porta verso funzionalitá future come il threaded rendering threaded e e la pre-compisizione della cache di manipolazione dei layer. Importante sottolineare che questa funzione si presenta disabilitata nelle pre-impostazioni e può essere abilitata nella finestra di dialogo delle opzioni.</translation>
+        <translation>È stato aggiunto in QGIS un sistema di &quot;render caching&quot;. Questo velocizza diverse operazioni comuni come il riordinamento dei layer, la modifica della simbologia, i client WMS/WFS, il nascondere/visualizzare layer; e apre la porta verso funzionalità future come il threaded rendering e la pre-compisizione della cache di manipolazione dei layer. Importante sottolineare che questa funzione si presenta disabilitata nelle pre-impostazioni e può essere abilitata nella finestra di dialogo delle opzioni.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2189"/>
@@ -6373,7 +6373,7 @@ Questo binario è stato compilato con le Qt %1, quelle attualmente in uso dall´
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1604"/>
         <source>Stop map rendering</source>
-        <translation>Interrompi il disegno della mappa</translation>
+        <translation>Interrompi il render della mappa</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="334"/>
@@ -7422,7 +7422,7 @@ Errori: %2
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5842"/>
         <source>&lt;p&gt;This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.&lt;p&gt;Even though QGIS developers try to maintain backwards compatibility, some of the information from the old project file might be lost. To improve the quality of QGIS, we appreciate if you file a bug report at %3. Be sure to include the old project file, and state the version of QGIS you used to discover the error.&lt;p&gt;To remove this warning when opening an older project file, uncheck the box &apos;%5&apos; in the %4 menu.&lt;p&gt;Version of the project file: %1&lt;br&gt;Current version of QGIS: %2</source>
-        <translation>&lt;p&gt;Questo file di progetto è stato salvato con una vecchia versione di QGIS. Salvando questo file, QGIS lo aggiornerá automaticamente all´ultima versione rendendolo così difficile da leggere per le vecchie versioni di QGIS.&lt;p&gt;Ad ogni nuova versione gli sviluppatori di QGIS cercano di conservare la compabilità con la versione precedente, ma alcune delle informazioni contenute nel file possono essere perse. Per migliorare la qualità di QGIS siamo molto contenti di ricevere bug report a %3. Fare attenzione di includere il vecchio file di progetto e la versione di QGIS con cui l´errore si è verificato.&lt;p&gt;Per eliminare questo messaggio di attenzione ogni volta che si apre un vecchio file di progetto, basta deselezionare la relativa voce nel box &apos;%5&apos; contenuta nel menu %4.&lt;p&gt;Versione del file di progetto: %1&lt;br&gt;Version di QGIS attualmente in uso: %2</translation>
+        <translation>&lt;p&gt;Questo file di progetto è stato salvato con una vecchia versione di QGIS. Salvando questo file, QGIS lo aggiornerà automaticamente all´ultima versione rendendolo così difficile da leggere per le vecchie versioni di QGIS.&lt;p&gt;Ad ogni nuova versione gli sviluppatori di QGIS cercano di conservare la compabilità con la versione precedente, ma alcune delle informazioni contenute nel file possono essere perse. Per migliorare la qualità di QGIS siamo molto contenti di ricevere bug report a %3. Fare attenzione di includere il vecchio file di progetto e la versione di QGIS con cui l´errore si è verificato.&lt;p&gt;Per eliminare questo messaggio di attenzione ogni volta che si apre un vecchio file di progetto, basta deselezionare la relativa voce nel box &apos;%5&apos; contenuta nel menu %4.&lt;p&gt;Versione del file di progetto: %1&lt;br&gt;Version di QGIS attualmente in uso: %2</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1949"/>
@@ -8020,7 +8020,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="190"/>
         <source>Clicking the button will let you select an application to use as the action</source>
-        <translation>Cliccando il bottone potrai scegliere una applicazione da usare come azione</translation>
+        <translation>Clicca il bottone per scegliere una applicazione da usare come azione</translation>
     </message>
 </context>
 <context>
@@ -10404,7 +10404,7 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="125"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="265"/>
         <source>Render</source>
-        <translation>Disegna</translation>
+        <translation>Render</translation>
     </message>
 </context>
 <context>
@@ -10965,12 +10965,12 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="184"/>
         <source>Label space </source>
-        <translation>Spazio etichetta</translation>
+        <translation>Spaziatura etichetta </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="194"/>
         <source>Box space </source>
-        <translation>Spazio del box</translation>
+        <translation>Spaziatura del box </translation>
     </message>
     <message>
         <source>Number of segments</source>
@@ -11437,7 +11437,7 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="114"/>
         <source>A5 (148x210 mm)</source>
-        <translation>A5  (148x210 mm)</translation>
+        <translation>A5 (148x210 mm)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="31"/>
@@ -11452,7 +11452,7 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="115"/>
         <source>A4 (210x297 mm)</source>
-        <translation>A4  (210x297 mm)</translation>
+        <translation>A4 (210x297 mm)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="116"/>
@@ -11985,7 +11985,7 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="418"/>
         <source>The source spatial reference system (CRS) is not valid. </source>
-        <translation>Il sistema di riferimento spaziale (CRS) non è valido. </translation>
+        <translation>Il sistema di riferimento spaziale (CRS) di origine non è valido. </translation>
     </message>
     <message>
         <source>The coordinates can not be reprojected. The CRS is: </source>
@@ -11994,7 +11994,7 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="426"/>
         <source>The destination spatial reference system (CRS) is not valid. </source>
-        <translation>Il sistema di riferimento spaziale (CRS) di destinazione non è valido.</translation>
+        <translation>Il sistema di riferimento spaziale (CRS) di destinazione non è valido. </translation>
     </message>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="419"/>
@@ -12432,7 +12432,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="167"/>
         <source>Use the text boxes below to test the CRS definition you are creating. Enter a coordinate where both the lat/long and the transformed result are known (for example by reading off a map). Then press the calculate button to see if the CRS definition you are creating is accurate.</source>
-        <translation>Usa i riquadri di testo sottostanti per provare la definizione del CRS che stai creando. Inserisci una coordinata laddove siano note lat/long ed il risultato trasformato sia noto (ad esempio leggendolo da una mappa). Poi premi il bottone calcola per vedere se la definizione del CRS che stai creando è accurata.</translation>
+        <translation>Usa i riquadri di testo sottostanti per provare la definizione del CRS che stai creando. Inserisci una coordinata laddove siano note sia lat/long che il risultato trasformato (ad esempio leggendolo da una mappa). Poi premi il bottone calcola per vedere se la definizione del CRS che stai creando è accurata.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="197"/>
@@ -13018,7 +13018,7 @@ Per selezionare il file da caricare utilizzare il bottone Sfoglia.</translation>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="62"/>
         <source>Use this button to browse to the location of the delimited text file. This button will not be enabled until a delimiter has been entered in the &lt;i&gt;Delimiter&lt;/i&gt; box. Once a file is chosen, the X and Y field drop-down boxes will be populated with the fields from the delimited text file.</source>
-        <translation>Usa questo bottone per sfogliare il file system al fine di individuare il file di testo delimitato da caricare. Questo bottone non sarà abilitato fino a questo non verrà definito il carattere del delimitatore nell&apos;input area &lt;i&gt;Delimitatore&lt;/i&gt;. Una volta selezionato il file, scegliere i campi X e Y dai relativi menu a tendina popolati dalla lettura del file di testo delimitato.</translation>
+        <translation>Usa questo bottone per sfogliare il file system al fine di individuare il file di testo delimitato da caricare. Questo bottone non sarà abilitato fino a questo non verrà definito il carattere del delimitatore nell&apos;input area &lt;i&gt;Delimitatore&lt;/i&gt;. Una volta selezionato il file, scegli i campi X e Y dai relativi menu a tendina popolati dalla lettura del file di testo delimitato.</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="78"/>
@@ -18450,7 +18450,7 @@ p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot;
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="78"/>
         <source>Use z-Coordinate for interpolation</source>
-        <translation>Usa coordinate-z  per l&apos;interpolazione</translation>
+        <translation>Usa la coordinata Z per l&apos;interpolazione</translation>
     </message>
     <message>
         <source>Interpolation attribute </source>
@@ -18672,7 +18672,7 @@ p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot;
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="864"/>
         <source>QGIS Rocks!</source>
-        <translation>QGIS Spacca!</translation>
+        <translation>Viva QGIS!</translation>
     </message>
     <message>
         <source>Font Style</source>
@@ -19021,7 +19021,7 @@ p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot;
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="295"/>
         <source>Use scale dependent rendering</source>
-        <translation>Utilizzare un disegno in funzione della scala</translation>
+        <translation>Utilizzare un rendering in funzione della scala</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="307"/>
@@ -19979,7 +19979,7 @@ p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot;
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="96"/>
         <source>To identify features, you must choose an active layer by clicking on its name in the legend</source>
-        <translation>Per identificare una geometria, devi prima scegliere un layer cliccando il suo nome nella legenda</translation>
+        <translation>Per identificare una geometria, prima scegli un layer cliccando il suo nome nella legenda</translation>
     </message>
     <message>
         <source>Band</source>
@@ -20579,7 +20579,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="142"/>
         <source>Rendering</source>
-        <translation>Disegno in corso</translation>
+        <translation>Rendering in corso</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="204"/>
@@ -21250,7 +21250,7 @@ Ulteriori informazioni sull&apos;errore:
     <message>
         <location filename="../src/ui/qgsnewconnectionbase.ui" line="126"/>
         <source>SSL mode</source>
-        <translation>modalitá SSL</translation>
+        <translation>Modalità SSL</translation>
     </message>
 </context>
 <context>
@@ -22309,7 +22309,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsoptions.cpp" line="244"/>
         <location filename="../src/app/qgsoptions.cpp" line="253"/>
         <source>map units</source>
-        <translation>Unitá mappa</translation>
+        <translation>unità mappa</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="248"/>
@@ -22634,7 +22634,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="302"/>
         <source>Selecting this will unselect the &apos;make lines less&apos; jagged toggle</source>
-        <translation>Selezionando questo il comando &quot;rendi le linee più leggere&quot; rimarrá deselezionato</translation>
+        <translation>Selezionando questo, il comando &quot;rendi le linee più leggere&quot; rimarrà deselezionato</translation>
     </message>
     <message>
         <source>Digitizing</source>
@@ -22691,7 +22691,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="62"/>
         <source>Default Map Appearance (overridden by project properties)</source>
-        <translation>Visualizzazione predefinita della mappa (sovrascrittura delle proprietá di progetto)</translation>
+        <translation>Visualizzazione predefinita della mappa (sovrascrittura delle proprietà di progetto)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="68"/>
@@ -22755,12 +22755,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="276"/>
         <source>Use render caching where possible to speed up redraws</source>
-        <translation>Usa il caching del disegno quando possibile per velocizzare il disegno</translation>
+        <translation>Usa il caching del disegno quando possibile per velocizzare il render</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="286"/>
         <source>Rendering quality</source>
-        <translation>Qualitá del disegno</translation>
+        <translation>Qualità di rendering</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="315"/>
@@ -22775,7 +22775,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="361"/>
         <source>Compatibility</source>
-        <translation>Compatibilitá</translation>
+        <translation>Compatibilità</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="367"/>
@@ -22860,7 +22860,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="709"/>
         <source>Default snap mode</source>
-        <translation>Modalitá di snap predefinita</translation>
+        <translation>Modalità di snap predefinita</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="977"/>
@@ -22967,7 +22967,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="996"/>
         <source>Prompt for CRS</source>
-        <translation>Richiesta per CRS</translation>
+        <translation>Richiedi CRS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1003"/>
@@ -22977,7 +22977,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1010"/>
         <source>Global default CRS displa&amp;yed below will be used</source>
-        <translation>Verrá utilizzato il seguente CRS globale predefinito visual&amp;izzato qui sotto</translation>
+        <translation>Verrà utilizzato il CRS globale predefinito visual&amp;izzato qui sotto</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="915"/>
@@ -23058,7 +23058,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsoptionsbase.ui" line="806"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="820"/>
         <source>map units</source>
-        <translation>unitá mappa</translation>
+        <translation>unità mappa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="811"/>
@@ -24084,7 +24084,7 @@ Devi riavviare Quantum GIS per ricaricarlo.</translation>
     </message>
     <message>
         <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
-        <translation>Questo plugin è incompatibile con la versione di Quantum GIS in uso e probabilmente non funzionerá.</translation>
+        <translation>Questo plugin è incompatibile con la versione di Quantum GIS in uso e probabilmente non funzionerà.</translation>
     </message>
     <message>
         <source>The required Python module is not installed.
@@ -25095,7 +25095,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="305"/>
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="667"/>
         <source>&lt;p&gt;The selected file already seems to have a world file! Do you want to replace it with the new world file?&lt;/p&gt;</source>
-        <translation>&lt;p&gt;Il file scelto sembra giá avere un world file! Vuoi sostituirlo con un nuovo world file?&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;Il file scelto sembra già avere un world file! Vuoi sostituirlo con un nuovo world file?&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgspointdialog.cpp" line="439"/>
@@ -25564,14 +25564,14 @@ SQL: %2
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1135"/>
         <source>The unique index on column &apos;%1&apos; is unsuitable because Qgis does not currently support non-int4 type columns as a key into the table.
 </source>
-        <translation>L´indice di colonna  &apos;%1&apos; non é utilizzabile in quanto Qgis attualmente non è in grado di gestire i tipi int4 di colonna come chiavi nella tabella.
+        <translation>L´indice di colonna &apos;%1&apos; non è utilizzabile in quanto Qgis attualmente non è in grado di gestire i tipi int4 di colonna come chiavi nella tabella.
 </translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1163"/>
         <source>The unique index based on columns %1 is unsuitable because Qgis does not currently support multiple columns as a key into the table.
 </source>
-        <translation>L´indice di colonna  &apos;%1&apos; non é utilizzabile in quanto Qgis attualmente non è in grado di gestire colonne multiple come chiavi nella tabella.
+        <translation>L´indice di colonna &apos;%1&apos; non è utilizzabile in quanto Qgis attualmente non è in grado di gestire colonne multiple come chiavi nella tabella.
 </translation>
     </message>
     <message>
@@ -25910,7 +25910,7 @@ Cercare i layer mancanti?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="177"/>
         <source>Layer units (only used when CRS transformation is disabled)</source>
-        <translation>Unitá layer (utilizzato solo quando la trasformazione CRS è disabilitata)</translation>
+        <translation>Unità layer (utilizzato solo quando la riproiezione è disabilitata)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="207"/>
@@ -26080,7 +26080,7 @@ Cercare i layer mancanti?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="336"/>
         <source>Enable &apos;on the fly&apos; CRS transformation</source>
-        <translation>Abilita la &apos;modifica immediata&apos; trasformazione CRS</translation>
+        <translation>Abilita la riproiezione al volo</translation>
     </message>
 </context>
 <context>
@@ -28295,7 +28295,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2propertiesdialog.cpp" line="176"/>
         <source>Do you wish to use the original symbology implementation for this layer?</source>
-        <translation>Si vuole utilizzare la simbologia originale implementata per questo layer?</translation>
+        <translation>Si vuole utilizzare la simbologia originale per questo layer?</translation>
     </message>
 </context>
 <context>
@@ -30102,7 +30102,7 @@ Do you want to overwrite the [%2] relation?</source>
         <translation>Lo Shapefile:
 %1
 vuole usare la tabella [%2] per questi dati,
-che giá esiste e possiede dati.
+che già esiste e possiede dati.
 Per evitare di perdere dati cambiare il &quot;Nome Tabella DB&quot;
 per questo Shapefile nella finestra generale di dialogo del file.
 
@@ -31398,7 +31398,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="537"/>
         <source>Use scale dependent rendering</source>
-        <translation>Utilizzare un disegno in funzione della scala</translation>
+        <translation>Utilizzare un render in funzione della scala</translation>
     </message>
     <message>
         <source>Maximum 1:</source>
@@ -32220,12 +32220,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1558"/>
         <source>Could not get WMS Service Exception at %1: %2 at line %3 column %4</source>
-        <translation>Impossibile recuperare il servizio WMS da %1:  %2 alla riga %3 colonna %4</translation>
+        <translation>Impossibile recuperare il servizio WMS da %1: %2 alla riga %3 colonna %4</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1611"/>
         <source>Request contains a Format not offered by the server.</source>
-        <translation>La richieste contiene un formato non disponibile dal server.</translation>
+        <translation>La richiesta contiene un formato non disponibile dal server.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1615"/>
@@ -32235,7 +32235,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1619"/>
         <source>Request contains a SRS not offered by the server for one or more of the Layers in the request.</source>
-        <translation>La richiesta contiene un SRS non disponibile sul server per uno o più dei layer scelti.</translation>
+        <translation>La richiesta contiene un CRS non disponibile sul server per uno o più dei layer scelti.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1623"/>
@@ -32260,12 +32260,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1640"/>
         <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is equal to current value of service metadata update sequence number.</source>
-        <translation>il valore (opzionale) di UpdateSequence parameter in GetCapabilities request equivale al valore attuale del service metadata update sequence number.</translation>
+        <translation>Il valore (opzionale) di UpdateSequence parameter in GetCapabilities request equivale al valore attuale del service metadata update sequence number.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1645"/>
         <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is greater than current value of service metadata update sequence number.</source>
-        <translation>il valore (opzionale) di UpdateSequence parameter in GetCapabilities request è maggiore rispetto al valore attuale del service metadata update sequence number.</translation>
+        <translation>Il valore (opzionale) di UpdateSequence parameter in GetCapabilities request è maggiore rispetto al valore attuale del service metadata update sequence number.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1650"/>
@@ -32768,14 +32768,14 @@ URL provata: %1</translation>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="985"/>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1056"/>
         <source>Node tool</source>
-        <translation>Strumento Nodo</translation>
+        <translation>Strumento nodo</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="986"/>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1057"/>
         <source>Result geometry is invalid. Reverting last changes.
 </source>
-        <translation>La geometria risultante non è valida. Annulla le utlime modifiche.
+        <translation>La geometria risultante non è valida. Annulla le ultime modifiche.
 </translation>
     </message>
 </context>
@@ -33412,7 +33412,7 @@ p, li { white-space: pre-wrap; }
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="192"/>
         <source>Enter the database host. If the database resides on your desktop you should enter ¨localhost¨. If you selected ¨MSAccess¨ as the database type this option will not be available. </source>
-        <translation>Inserire l&apos;host del database. Se il database risiede sul proprio computer inserire ¨localhost¨. Se si seleziona ¨MSAccess&quot;come tipo di database questa opzione non sará disponbiile. </translation>
+        <translation>Inserire l&apos;host del database. Se il database risiede sul proprio computer inserire &quot;localhost&quot;. Se si seleziona ¨MSAccess&quot;come tipo di database questa opzione non sarà disponibile. </translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="202"/>
@@ -33437,7 +33437,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="249"/>
         <source>Connect to the database using the parameters selected above. If the connection was successful a message will be displayed in the Output Console below saying the connection was established. </source>
-        <translation>Connessione al database usando i seguenti parametri. Se la connessione è stata stabilita, un messaggio di conferma  apparirà nella Console di Output.</translation>
+        <translation>Connessione al database usando i seguenti parametri. Se la connessione è stata stabilita, un messaggio di conferma apparirà nella Console di Output.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="252"/>
@@ -33482,7 +33482,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="375"/>
         <source>Run the query entered above. The status of the query will be displayed in the Output  Console below.</source>
-        <translation>Esegui la query inserita qui sotto. Lo stato della query apparirá nella Console di Output.</translation>
+        <translation>Esegui la query inserita qui sotto. Lo stato della query apparirà nella Console di output.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="378"/>
@@ -33497,7 +33497,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="435"/>
         <source>A window for status messages to be displayed.</source>
-        <translation>Una finestra con i messaggi di stato verrá visualizzata.</translation>
+        <translation>Una finestra con i messaggi di stato verrà visualizzata.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="458"/>
@@ -33525,7 +33525,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaselayerfieldselectionguibase.ui" line="68"/>
         <source>Enter the name for the new layer that will be created and displayed in QGIS.</source>
-        <translation>Inserire il nome del nuovo layer che verrá creato e mostrato in QGIS.</translation>
+        <translation>Inserire il nome del nuovo layer che verrà creato e mostrato in QGIS.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaselayerfieldselectionguibase.ui" line="75"/>
@@ -33653,7 +33653,7 @@ p, li { white-space: pre-wrap; }
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="108"/>
         <source>All of the attribute information for the point associated with the photo being viewed is displayed here. If the file type being referenced in the displayed record is not an image but is of a file type defined in the “Configure External Applications” tab then when you double-click on the value of the field containing the path to the file the application to open the file will be launched to view or hear the contents of the file. If the file extension is recognized the attribute data will be displayed in green.</source>
-        <translation>Tutte le informazioni associate al punto saranno qui  visualizzate insieme alla foto. Se il tipo di file associato al record da visualizzare non è una immagine ma uno definito nel tab ¨Configura Applicazioni Esterne¨ allora il doppio clic sul valore riportato nel campo conterrà il percorso dell´applicazione da eseguire per visualizzare o ascoltare il contenuto del file. Se l&apos;estensione del tipo di file è nota allora sarà evidenziata in verde.</translation>
+        <translation>Tutte le informazioni associate al punto saranno qui visualizzate insieme alla foto. Se il tipo di file associato al record da visualizzare non è una immagine ma uno definito nel tab &quot;Configura Applicazioni Esterne&quot; allora il doppio clic sul valore riportato nel campo conterrà il percorso dell´applicazione da eseguire per visualizzare o ascoltare il contenuto del file. Se l&apos;estensione del tipo di file è nota allora sarà evidenziata in verde.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="112"/>
