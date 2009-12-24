@@ -15,6 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QDomNode>
+
 #include "qgsdiagramfactory.h"
 #include "qgsrendercontext.h"
 

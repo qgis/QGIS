@@ -17,6 +17,7 @@
 #include "qgsapplication.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsproviderregistry.h"
+#include "qgsexception.h"
 
 #include <QDir>
 #include <QMessageBox>
@@ -87,9 +88,17 @@ bool QgsApplication::notify( QObject * receiver, QEvent * event )
   {
     done = QApplication::notify( receiver, event );
   }
+  catch ( QgsException & e )
+  {
+    QMessageBox::critical( activeWindow(), tr( "Exception" ), e.what() );
+  }
   catch ( std::exception & e )
   {
     QMessageBox::critical( activeWindow(), tr( "Exception" ), e.what() );
+  }
+  catch ( ... )
+  {
+    QMessageBox::critical( activeWindow(), tr( "Exception" ), "unknown exception" );
   }
   return done;
 }

@@ -18,40 +18,28 @@
 #ifndef QGSEXCEPTION_H
 #define QGSEXCEPTION_H
 
-#include <exception>
-#include <string>
-#include <list>
-
-#include <QDomNode>
-#include <QDomDocument>
-
 /** \ingroup core
   * Defines a qgis exception class.
  */
-class CORE_EXPORT QgsException : public std::exception
+class CORE_EXPORT QgsException
 {
   public:
-
-    QgsException( std::string const & what )
-        : what_( what )
-    {}
-
     QgsException( QString const & what )
-        : what_(( const char * )what.toLocal8Bit().data() )
+        : what_( what )
     {}
 
     virtual ~QgsException() throw()
     {}
 
-    const char* what() const throw()
+    QString what() const throw()
     {
-      return what_.c_str();
+      return what_;
     }
 
   private:
 
     /// description of exception
-    std::string what_;
+    QString what_;
 
 }; // class QgsException
 
