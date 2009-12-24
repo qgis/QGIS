@@ -19,6 +19,7 @@
 #include "qgsrendercontext.h"
 #include <limits>
 #include <QPainter>
+#include <QDomNode>
 
 QgsBarDiagramFactory::QgsBarDiagramFactory(): QgsWKNDiagramFactory(), mBarWidth( 5 )
 {

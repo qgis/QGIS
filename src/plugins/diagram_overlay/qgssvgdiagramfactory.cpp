@@ -19,6 +19,7 @@
 #include "qgsrendercontext.h"
 #include <QImage>
 #include <QPainter>
+#include <QDomNode>
 
 QgsSVGDiagramFactory::QgsSVGDiagramFactory(): QgsDiagramFactory()
 {

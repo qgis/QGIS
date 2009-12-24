@@ -32,7 +32,9 @@
 #include "qgssymbologyutils.h"
 #include "qgsvectordataprovider.h"
 #include "qgslogger.h"
+
 #include <QPainter>
+#include <QDomNode>
 
 QgsDiagramOverlay::QgsDiagramOverlay( QgsVectorLayer* vl ): QgsVectorOverlay( vl ), mDiagramRenderer( 0 )
 {
