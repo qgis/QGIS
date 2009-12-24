@@ -1,0 +1,11 @@
+<h3>Crea nuovo layer vettoriale</h3>
+Per creare un nuovo layer, scegliere <label>Nuovo vettoriale</label> dal menu' <label>Layer</label>. <br/>
+Con questa finestra di dialogo e' possibile creare uno Shapefile.
+<h4>Tipo</h4>
+Scegliere il tipo di layer <label>Punto</label>, <label>Linea</label> o <label>Poligono</label>.<br/>
+Clic sul pulsante <label>Specifica CRS</label> per cambiare le coordinate di riferimento spaziale del layer se necessario.
+<h4>Nuovo attributo</h4>
+Aggiungere gli attributi desiderati con un clic sul pulsante <label>Aggiungi alla lista degli attributi</label> dopo aver specificato un nome ed un tipo per l'attributo. Gli attributi possono essere numeri reali, interi o stringhe.<br/>
+E'possibile definire l'ampiezza e la precisione della nuova colonna attributo.
+<h4>Lista attributi</h4>
+In questa sezione e' possibile visualizzare la lista degli attributi. Per cancellarne uno, selezionarlo e poi clic sul pulsante <label>Rimuovi attributo selezionato</label>.

@@ -1,0 +1,31 @@
+<h3>Plugin etichetta di copyright</h3>
+Disegna una etichetta di copyrigth con informazioni associate.<br/>
+E' possibile aggiungere qualsiasi testo alla mappa e non solo una etichetta di copyright.
+<p>
+<a href="#howto">Procedere</a><br/>
+<a href="#text">Formattazione del testo</a><br/>
+
+<a name="howto">
+<h4>Procedura</h4>
+</a>
+<ol>
+<li>Assicurarsi di avere caricato il plugin.
+<li>Clic su <label>Plugin > Decorazioni > Etichetta copyright</label> oppure clic sul pulsante <label>Etichetta copyright</label> dalla barra degli strumenti.
+<li>Scrivere il testo da inserire sulla mappa. Si puo' usare anche testo in HTML.
+<li>Scegliere una posizione per l'etichetta dal drop-down menu <label>In basso a destra</label>.
+<li>Assicurarsi che sia spuntato  <label>Abilita etichetta di copyright</label>.
+<li>Clic su <label>OK</label>.
+</ol>
+<a name="text">
+<h4> Formattazione del testo </h4>
+</a>
+Questo plugin supporta tag HTML di base per la formattazione del testo. Per esempio:
+
+<ul>
+<li>&lt;B&gt;<b> Grassetto </b>&lt;/B&gt;
+</li>
+<li>&lt;I&gt;<i> Corsivo </i>&lt;/I&gt;
+</li>
+<li>&lt;U&gt;<u> Sottolineato </u>&lt;/U&gt;
+</li>
+</ul>
