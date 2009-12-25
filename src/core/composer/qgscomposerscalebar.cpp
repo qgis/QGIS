@@ -343,6 +343,11 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
   {
     const QgsComposerMap* composerMap = mComposition->getComposerMapById( mapId );
     mComposerMap = composerMap;
+    if ( mComposerMap )
+    {
+      connect( mComposerMap, SIGNAL( extentChanged() ), this, SLOT( updateSegmentSize() ) );
+      connect( mComposerMap, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
+    }
   }
 
   refreshSegmentMillimeters();
