@@ -157,10 +157,14 @@ class InstallerPlugin():
 
     QApplication.restoreOverrideCursor()
 
-    # display an error message for every unavailable reposioty, except the case if all repositories are unavailable!
+    # display error messages for every unavailable reposioty, unless Shift pressed nor all repositories are unavailable
+    keepQuiet = QgsApplication.keyboardModifiers() == Qt.KeyboardModifiers(Qt.ShiftModifier)
     if repositories.allUnavailable() and repositories.allUnavailable() != repositories.allEnabled():
       for key in repositories.allUnavailable():
-        QMessageBox.warning(parent, QCoreApplication.translate("QgsPluginInstaller","QGIS Python Plugin Installer"), QCoreApplication.translate("QgsPluginInstaller","Error reading repository:") + QString(' %s\n%s' % (key,repositories.all()[key]["error"])))
+        if not keepQuiet:
+          QMessageBox.warning(parent, QCoreApplication.translate("QgsPluginInstaller","QGIS Python Plugin Installer"), QCoreApplication.translate("QgsPluginInstaller","Error reading repository:") + QString(' %s\n%s' % (key,repositories.all()[key]["error"])))
+        if QgsApplication.keyboardModifiers() == Qt.KeyboardModifiers(Qt.ShiftModifier):
+          keepQuiet = True
 
     flags = Qt.WindowTitleHint | Qt.WindowSystemMenuHint | Qt.WindowMaximizeButtonHint 
     self.guiDlg = QgsPluginInstallerDialog(parent,flags)

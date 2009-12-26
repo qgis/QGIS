@@ -311,10 +311,14 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
       for key in repositories.all():
         repositories.killConnection(key)
 
-    # display error messages for every unavailable reposioty, except the case if all repositories are unavailable!
+    # display error messages for every unavailable reposioty, unless Shift pressed nor all repositories are unavailable
+    keepQuiet = QgsApplication.keyboardModifiers() == Qt.KeyboardModifiers(Qt.ShiftModifier)
     if repositories.allUnavailable() and repositories.allUnavailable() != repositories.allEnabled():
       for key in repositories.allUnavailable():
-        QMessageBox.warning(self, self.tr("QGIS Python Plugin Installer"), self.tr("Error reading repository:") + " " + key + "\n" + repositories.all()[key]["error"])
+        if not keepQuiet:
+          QMessageBox.warning(self, self.tr("QGIS Python Plugin Installer"), self.tr("Error reading repository:") + " " + key + "\n" + repositories.all()[key]["error"])
+        if QgsApplication.keyboardModifiers() == Qt.KeyboardModifiers(Qt.ShiftModifier):
+          keepQuiet = True
 
 
   # ----------------------------------------- #
