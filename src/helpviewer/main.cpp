@@ -15,6 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <iostream>
 #include <QLocale>
 #include <QSettings>
 #include <QTranslator>
@@ -40,10 +41,6 @@ int main( int argc, char ** argv )
   {
     context = argv[1];
   }
-#ifdef Q_WS_MACX
-  // If we're on Mac, we have the resource library way above us...
-  a.setPkgDataPath( QgsApplication::prefixPath() + "/../../../../" + QString( QGIS_DATA_SUBDIR ) );
-#endif
 
   QString i18nPath = QgsApplication::i18nPath();
   if ( myTranslationCode.isEmpty() )
@@ -87,7 +84,7 @@ int main( int argc, char ** argv )
   // an additional viewer if one is already running.
   QgsHelpContextServer *helpServer = new QgsHelpContextServer();
   // Make port number available to client
-  QgsDebugMsg( helpServer->serverPort() );
+  std::cout << helpServer->serverPort() << std::endl;
   // Pass context request from socket to viewer widget
   QObject::connect( helpServer, SIGNAL( setContext( const QString& ) ),
                     &w, SLOT( setContext( const QString& ) ) );
