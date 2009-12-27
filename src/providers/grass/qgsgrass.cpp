@@ -335,9 +335,9 @@ void QgsGrass::setLocation( QString gisdbase, QString location )
 // #if defined(WIN32)
 //  G__setenv(( char * ) "GISDBASE", shortPath( gisdbase ).toLocal8Bit().data() );
 //#else
-  G__setenv(( char * ) "GISDBASE", gisdbase.toAscii().constData() );
+  G__setenv(( char * ) "GISDBASE", gisdbase.toUtf8().constData() );
 //#endif
-  G__setenv(( char * ) "LOCATION_NAME", location.toAscii().constData() );
+  G__setenv(( char * ) "LOCATION_NAME", location.toUtf8().constData() );
   G__setenv(( char * ) "MAPSET", ( char * ) "PERMANENT" ); // PERMANENT must always exist
 
   // Add all available mapsets to search path
