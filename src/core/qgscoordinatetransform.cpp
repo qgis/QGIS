@@ -453,14 +453,14 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
   if ( direction == ReverseTransform )
   {
     projResult = pj_transform( mDestinationProjection, mSourceProjection, numPoints, 0, x, y, z );
-    dir = tr( "inverse" );
+    dir = tr( "inverse transform" );
   }
   else
   {
     assert( mSourceProjection != 0 );
     assert( mDestinationProjection != 0 );
     projResult = pj_transform( mSourceProjection, mDestinationProjection, numPoints, 0, x, y, z );
-    dir = tr( "forward" );
+    dir = tr( "forward transform" );
   }
 
   if ( projResult != 0 )
@@ -480,10 +480,10 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
       }
     }
 
-    QString msg = tr("%1 transform of\n%2\nfailed with error: %3\n")
+    QString msg = tr("%1 of\n%2\nfailed with error: %3\n")
 	                  .arg( dir )
 	                  .arg( points )
-	                  .arg( QString::fromUtf8( pj_strerrno( projResult ) ) ) );
+	                  .arg( QString::fromUtf8( pj_strerrno( projResult ) ) );
 
     QgsDebugMsg( "Projection failed emitting invalid transform signal: " + msg );
 
