@@ -89,6 +89,10 @@ void QgsLabelDialog::init( )
   cboUnderlineField->addItems( myFieldStringList );
   cboUnderlineField->setCurrentIndex( itemNoForField( mLabel->labelField( QgsLabel::Underline ), myFieldStringList ) );
 
+  cboStrikeOutField->clear();
+  cboStrikeOutField->addItems( myFieldStringList );
+  cboStrikeOutField->setCurrentIndex( itemNoForField( mLabel->labelField( QgsLabel::StrikeOut ), myFieldStringList ) );
+
   cboFontSizeField->clear();
   cboFontSizeField->addItems( myFieldStringList );
   cboFontSizeField->setCurrentIndex( itemNoForField( mLabel->labelField( QgsLabel::Size ), myFieldStringList ) );
@@ -196,6 +200,14 @@ void QgsLabelDialog::init( )
   {
     mFont.setUnderline( false );
   }
+  if ( myLabelAttributes->strikeOutIsSet() )
+  {
+    mFont.setStrikeOut( myLabelAttributes->strikeOut() );
+  }
+  else
+  {
+    mFont.setStrikeOut( false );
+  }
 
   mFontColor = myLabelAttributes->color();
 
@@ -270,8 +282,6 @@ void QgsLabelDialog::init( )
 
   //NOTE: do we need this line too? TS
   spinBufferSize->setValue( myLabelAttributes->bufferSize() );
-  //TODO - transparency attributes for buffers
-
 }
 
 
@@ -364,6 +374,7 @@ void QgsLabelDialog::apply()
   myLabelAttributes->setBold( mFont.bold() );
   myLabelAttributes->setItalic( mFont.italic() );
   myLabelAttributes->setUnderline( mFont.underline() );
+  myLabelAttributes->setStrikeOut( mFont.strikeOut() );
   myLabelAttributes->setColor( mFontColor );
   myTypeInt = 0;
   if ( radioOffsetUnitsPoints->isChecked() )
@@ -412,6 +423,7 @@ void QgsLabelDialog::apply()
   mLabel->setLabelField( QgsLabel::Bold,  fieldIndexFromName( cboBoldField->currentText() ) );
   mLabel->setLabelField( QgsLabel::Italic,  fieldIndexFromName( cboItalicField->currentText() ) );
   mLabel->setLabelField( QgsLabel::Underline,  fieldIndexFromName( cboUnderlineField->currentText() ) );
+  mLabel->setLabelField( QgsLabel::StrikeOut,  fieldIndexFromName( cboStrikeOutField->currentText() ) );
   mLabel->setLabelField( QgsLabel::Size,  fieldIndexFromName( cboFontSizeField->currentText() ) );
   mLabel->setLabelField( QgsLabel::SizeType,  fieldIndexFromName( cboFontSizeTypeField->currentText() ) );
   mLabel->setLabelField( QgsLabel::Color,  fieldIndexFromName( cboFontColorField->currentText() ) );

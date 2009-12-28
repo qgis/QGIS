@@ -38,6 +38,7 @@ public:
       BorderColor,
       BorderStyle,
       MultilineEnabled,
+      StrikeOut,		// added in 1.5
       LabelFieldCount
     };
 

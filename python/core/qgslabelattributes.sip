@@ -47,6 +47,11 @@ public:
     bool underlineIsSet ( ) const;
     bool underline ( ) const; 
     
+    /* strikeout added in 1.5 */
+    void setStrikeOut( bool enable );
+    bool strikeOutIsSet ( ) const;
+    bool strikeOut ( ) const; 
+
     void   setSize ( double size, int type );
     bool   sizeIsSet ( ) const;
     int    sizeType ( ) const;

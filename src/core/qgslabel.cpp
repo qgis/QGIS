@@ -207,6 +207,16 @@ void QgsLabel::renderLabel( QgsRenderContext &renderContext,
     font.setUnderline(( bool ) value.toInt() );
   }
 
+  value = fieldValue( StrikeOut, feature );
+  if ( value.isEmpty() )
+  {
+    font.setStrikeOut( mLabelAttributes->strikeOut() );
+  }
+  else
+  {
+    font.setStrikeOut(( bool ) value.toInt() );
+  }
+
   //
   QgsPoint overridePoint;
   bool useOverridePoint = false;
@@ -832,6 +842,20 @@ void QgsLabel::readXML( const QDomNode& node )
     readLabelField( el, Underline );
   }
 
+  /* Strikeout */
+  scratchNode = node.namedItem( "strikeout" );
+
+  if ( scratchNode.isNull() )
+  {
+    QgsDebugMsg( "couldn't find QgsLabel ``strikeout'' attribute" );
+  }
+  else
+  {
+    el = scratchNode.toElement();
+    mLabelAttributes->setStrikeOut(( bool )el.attribute( "on", "0" ).toInt() );
+    readLabelField( el, StrikeOut );
+  }
+
   /* Color */
   scratchNode = node.namedItem( "color" );
 
@@ -1129,6 +1153,27 @@ void QgsLabel::writeXML( QDomNode & layer_node, QDomDocument & document ) const
     underline.setAttribute( "fieldname", "" );
   }
   labelattributes.appendChild( underline );
+
+  // strikeout
+  QDomElement strikeOut = document.createElement( "strikeout" );
+  if ( mLabelAttributes->strikeOutIsSet() )
+  {
+    strikeOut.setAttribute( "on", mLabelAttributes->strikeOut() );
+    if ( mLabelFieldIdx[StrikeOut] != -1 )
+    {
+      strikeOut.setAttribute( "fieldname", labelField( StrikeOut ) );
+    }
+    else
+    {
+      strikeOut.setAttribute( "fieldname", "" );
+    }
+  }
+  else
+  {
+    strikeOut.setAttribute( "on", 0 );
+    strikeOut.setAttribute( "fieldname", "" );
+  }
+  labelattributes.appendChild( strikeOut );
 
   // color
   QDomElement color = document.createElement( "color" );
