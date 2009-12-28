@@ -137,8 +137,8 @@ def main():
     if user: dsn += " user=" + user
     if password: dsn += " password=" + password
 
-    if grass.run_command('v.out.ogr', input=input, layer=layer, type=type, format="PostgreSQL", dsn=dsn, olayer=olayer ) != 0: 
-        grass.fatal("Cannot export vector to database.")
+    if grass.run_command('v.out.ogr', flags=flags_string, input=input, layer=layer, type=type, format="PostgreSQL", dsn=dsn, olayer=olayer ) != 0:
+         grass.fatal("Cannot export vector to database.")
 	
 if __name__ == "__main__":
     options, flags = grass.parser()

@@ -10,4 +10,5 @@
 	<option key="port" answer="5432"/>
 	<option key="user"/>
 	<option key="password"/>
+        <flag key="c" answer="off" hidden="no"/>
 </qgisgrassmodule>
