@@ -16,8 +16,8 @@
 ;Version variables
 
 !define RELEASE_VERSION_NUMBER "1.4.0"
-!define RELEASE_VERSION_NAME "Trunk-Test-Build"
-!define RELEASE_SVN_REVISION "11639"
+!define RELEASE_VERSION_NAME "Enceladus"
+!define RELEASE_SVN_REVISION "12636"
 !define RELEASE_BINARY_REVISION "0"
 
 !define DEV_VERSION_NUMBER ""
@@ -44,7 +44,7 @@ RequestExecutionLevel admin
 ;----------------------------------------------------------------------------------------------------------------------------
 
 ;define the QGIS Base Name
-!define RELEASE_QGIS_BASE "Quantum GIS Mimas"
+!define RELEASE_QGIS_BASE "Quantum GIS Enceladus"
 !define DEV_QGIS_BASE "Quantum GIS Unstable Dev"
 
 ;Set the installer variables, depending on the selected version to build
