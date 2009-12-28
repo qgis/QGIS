@@ -15,7 +15,7 @@ ARCHS_P = $(ARCHS_P_$(SDKSYS))
 //////////////////////////////////////////////////////////////////////
 
 // major-minor-patch must be integers for Mac OS X
-QGIS_RELEASE_NAME = Trunk
+QGIS_RELEASE_NAME = Enceladus
 QGIS_VERSION_MAJOR = 1
 QGIS_VERSION_MINOR = 4
 QGIS_VERSION_PATCH = 0
