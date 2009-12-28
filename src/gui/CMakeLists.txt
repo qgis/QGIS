@@ -77,6 +77,7 @@ qgsmessageviewer.h
 qgsprojectionselector.h
 qgsquickprint.h
 qgsludialog.h
+qgsprojectbadlayerguihandler.h
 )
 
 QT4_WRAP_CPP(QGIS_GUI_MOC_SRCS ${QGIS_GUI_MOC_HDRS})
