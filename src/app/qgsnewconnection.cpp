@@ -18,6 +18,7 @@
 
 #include <QSettings>
 #include <QMessageBox>
+#include <QInputDialog>
 
 #include "qgsnewconnection.h"
 #include "qgscontexthelp.h"
@@ -139,10 +140,36 @@ void QgsNewConnection::testConnection()
   QgsDataSourceURI uri;
   uri.setConnection( txtHost->text(), txtPort->text(), txtDatabase->text(), txtUsername->text(), txtPassword->text(), ( QgsDataSourceURI::SSLmode ) cbxSSLmode->itemData( cbxSSLmode->currentIndex() ).toInt() );
 
-  QgsDebugMsg( "PQconnectdb(" + uri.connectionInfo() + ");" );
+  QgsDebugMsg( "PQconnectdb(\"" + uri.connectionInfo() + "\");" );
 
-  PGconn *pd = PQconnectdb( uri.connectionInfo().toLocal8Bit().data() );
-  if ( PQstatus( pd ) == CONNECTION_OK )
+  PGconn *pd = PQconnectdb( uri.connectionInfo().toLocal8Bit() );  // use what is set based on locale; after connecting, use Utf8
+  // check the connection status
+  if ( PQstatus( pd ) != CONNECTION_OK && QString::fromUtf8( PQerrorMessage( pd ) ) == PQnoPasswordSupplied )
+  {
+    QString password = QString::null;
+
+    while( PQstatus( pd ) != CONNECTION_OK )
+    {
+      bool ok = true;
+      password = QInputDialog::getText( this,
+                                        tr( "Enter password" ),
+                                        tr( "Error: %1Enter password for %2")
+                                          .arg( QString::fromUtf8( PQerrorMessage( pd ) ) )
+                                          .arg( uri.connectionInfo() ),
+                                        QLineEdit::Password,
+                                        password,
+                                        &ok );
+
+      ::PQfinish( pd );
+
+      if( !ok )
+        break;
+
+      pd = PQconnectdb( QString( "%1 password='%2'" ).arg( uri.connectionInfo() ).arg( password ).toLocal8Bit() );
+    }
+  }
+
+  if ( PQstatus( pd ) == CONNECTION_OK  )
   {
     // Database successfully opened; we can now issue SQL commands.
     QMessageBox::information( this, tr( "Test connection" ), tr( "Connection to %1 was successful" ).arg( txtDatabase->text() ) );
