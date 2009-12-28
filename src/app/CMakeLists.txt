@@ -192,6 +192,7 @@ SET (QGIS_APP_MOC_HDRS
   ogr/qgsopenvectorlayerdialog.h
   ogr/qgsnewogrconnection.h
   
+  attributetable/qgsattributetableview.h
   attributetable/qgsattributetablemodel.h
   attributetable/qgsattributetablememorymodel.h
   attributetable/qgsattributetabledialog.h

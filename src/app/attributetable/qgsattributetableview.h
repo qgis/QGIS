@@ -17,11 +17,13 @@
 #define QGSATTRIBUTETABLEVIEW_H
 
 #include <QTableView>
+#include <QAction>
 
 class QgsAttributeTableModel;
 class QgsAttributeTableFilterModel;
 
 class QgsVectorLayer;
+class QMenu;
 
 
 class QgsAttributeTableView: public QTableView
@@ -42,9 +44,31 @@ class QgsAttributeTableView: public QTableView
      */
     void closeEvent( QCloseEvent *event );
 
+    void contextMenuEvent( QContextMenuEvent* );
+
   private:
     QgsAttributeTableModel* mModel;
     QgsAttributeTableFilterModel* mFilterModel;
+    QMenu *mActionPopup;
 };
+
+class QgsAttributeTableAction : public QAction
+{
+    Q_OBJECT
+
+  public:
+    QgsAttributeTableAction( const QString &name, QgsAttributeTableView *view, QgsAttributeTableModel *model, int action, const QModelIndex &fieldIdx ) :
+        QAction( name, view ), mModel( model ), mAction( action ), mFieldIdx( fieldIdx )
+    {}
+
+  public slots:
+    void execute();
+
+  private:
+    QgsAttributeTableModel *mModel;
+    int mAction;
+    QModelIndex mFieldIdx;
+};
+
 
 #endif

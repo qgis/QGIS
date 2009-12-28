@@ -125,6 +125,9 @@ class QgsAttributeTableModel: public QAbstractTableModel
      */
     QgsVectorLayer* layer() const { return mLayer; }
 
+    /** Execute an action */
+    void executeAction( int action, const QModelIndex &idx ) const;
+
   signals:
     /**
      * Model has been changed
