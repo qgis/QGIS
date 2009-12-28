@@ -411,9 +411,9 @@ QImage QgsSymbol::getPointSymbolAsImage( double widthScale, bool selected, QColo
   }
   else
   {
-    QgsDebugMsg( QString( "marker:%1 mPointSize:%2 mPointSizeUnits:%3 scale:%4 widthScale:%5 rasterScaleFactor:%6 opacity:%7" )
+    QgsDebugMsgLevel( QString( "marker:%1 mPointSize:%2 mPointSizeUnits:%3 scale:%4 widthScale:%5 rasterScaleFactor:%6 opacity:%7" )
                  .arg( mPointSymbolName ).arg( mSize ).arg( mSizeInMapUnits ? "true" : "false" )
-                 .arg( scale ).arg( widthScale ).arg( rasterScaleFactor ).arg( opacity ) );
+                 .arg( scale ).arg( widthScale ).arg( rasterScaleFactor ).arg( opacity ), 3 );
 
 
     preRotateImage = QgsMarkerCatalogue::instance()->imageMarker(
