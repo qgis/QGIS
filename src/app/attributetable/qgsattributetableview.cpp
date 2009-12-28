@@ -16,6 +16,7 @@
 #include <QKeyEvent>
 #include <QSettings>
 #include <QHeaderView>
+#include <QMenu>
 
 #include "qgsattributetableview.h"
 #include "qgsattributetablemodel.h"
@@ -25,10 +26,10 @@
 
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
-
+#include "qgsattributeaction.h"
 
 QgsAttributeTableView::QgsAttributeTableView( QWidget* parent )
-    : QTableView( parent )
+    : QTableView( parent ), mActionPopup( 0 )
 {
   QSettings settings;
   restoreGeometry( settings.value( "/BetterTable/geometry" ).toByteArray() );
@@ -41,7 +42,6 @@ QgsAttributeTableView::QgsAttributeTableView( QWidget* parent )
   setSelectionBehavior( QAbstractItemView::SelectRows );
   setSelectionMode( QAbstractItemView::NoSelection );
   setSortingEnabled( true );
-
 }
 
 void QgsAttributeTableView::setLayer( QgsVectorLayer* layer )
@@ -64,10 +64,55 @@ QgsAttributeTableView::~QgsAttributeTableView()
 {
   delete mModel;
   delete mFilterModel;
+  delete mActionPopup;
 }
 
 void QgsAttributeTableView::closeEvent( QCloseEvent *event )
 {
   QSettings settings;
   settings.setValue( "/BetterAttributeTable/geometry", QVariant( saveGeometry() ) );
+}
+
+void QgsAttributeTableView::contextMenuEvent( QContextMenuEvent *event )
+{
+  if ( mActionPopup )
+  {
+    delete mActionPopup;
+    mActionPopup = 0;
+  }
+
+  QModelIndex idx = indexAt( event->pos() );
+  if ( !idx.isValid() )
+  {
+    return;
+  }
+
+  QgsVectorLayer *vlayer = mModel->layer();
+  if ( !vlayer || vlayer->actions()->size() == 0 )
+  {
+    return;
+  }
+
+  mActionPopup = new QMenu();
+
+  QAction *a = mActionPopup->addAction( tr( "Run action" ) );
+  a->setEnabled( false );
+
+  for ( int i = 0; i < vlayer->actions()->size(); i++ )
+  {
+    const QgsAction &action = vlayer->actions()->at( i );
+
+    if ( !action.runable() )
+      continue;
+
+    QgsAttributeTableAction *a = new QgsAttributeTableAction( action.name(), this, mModel, i, idx );
+    mActionPopup->addAction( action.name(), a, SLOT( execute() ) );
+  }
+
+  mActionPopup->popup( event->globalPos() );
+}
+
+void QgsAttributeTableAction::execute()
+{
+  mModel->executeAction( mAction, mFieldIdx );
 }

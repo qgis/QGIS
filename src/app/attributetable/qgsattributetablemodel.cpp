@@ -19,6 +19,8 @@
 #include "qgsfield.h"
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
+#include "qgisapp.h"
+#include "qgsattributeaction.h"
 
 #include <QtGui>
 #include <QVariant>
@@ -317,7 +319,10 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
       return QVariant( attributeName );
     }
   }
-  else return QVariant();
+  else
+  {
+    return QVariant();
+  }
 }
 
 void QgsAttributeTableModel::sort( int column, Qt::SortOrder order )
@@ -487,3 +492,22 @@ void QgsAttributeTableModel::incomingChangeLayout()
   emit layoutAboutToBeChanged();
 }
 
+static void _runPythonString( const QString &expr )
+{
+  QgisApp::instance()->runPythonString( expr );
+}
+
+void QgsAttributeTableModel::executeAction( int action, const QModelIndex &idx ) const
+{
+  QList< QPair<QString, QString> > attributes;
+
+  for ( int i = 0; i < mAttributes.size(); i++ )
+  {
+    attributes << QPair<QString, QString>(
+      mLayer->pendingFields()[ mAttributes[i] ].name(),
+      data( index( idx.row(), i ), Qt::EditRole ).toString()
+    );
+  }
+
+  mLayer->actions()->doAction( action, attributes, fieldIdx( idx.column() ), _runPythonString );
+}
