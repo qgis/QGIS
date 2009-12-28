@@ -31,6 +31,7 @@ QgsLabelAttributes::QgsLabelAttributes( bool def )
     mBoldIsSet( false ),
     mItalicIsSet( false ),
     mUnderlineIsSet( false ),
+    mStrikeOutIsSet( false ),
     mSizeType( 0 ),
     mSize( 0.0 ),
     mSizeIsSet( false ),
@@ -245,6 +246,22 @@ bool QgsLabelAttributes::underlineIsSet( void ) const
 bool QgsLabelAttributes::underline( void ) const
 {
   return mFont.underline();
+}
+
+void QgsLabelAttributes::setStrikeOut( bool enable )
+{
+  mFont.setStrikeOut( enable );
+  mStrikeOutIsSet = true;
+}
+
+bool QgsLabelAttributes::strikeOutIsSet( void ) const
+{
+  return mStrikeOutIsSet;
+}
+
+bool QgsLabelAttributes::strikeOut( void ) const
+{
+  return mFont.strikeOut();
 }
 
 

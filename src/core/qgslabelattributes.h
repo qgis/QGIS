@@ -119,6 +119,11 @@ class  CORE_EXPORT QgsLabelAttributes
     bool underlineIsSet( void ) const;
     bool underline( void ) const;
 
+    /* strikeout added in 1.5 */
+    void setStrikeOut( bool enable );
+    bool strikeOutIsSet( void ) const;
+    bool strikeOut( void ) const;
+
     void   setSize( double size, int type );
     bool   sizeIsSet( void ) const;
     int    sizeType( void ) const;
@@ -185,12 +190,13 @@ class  CORE_EXPORT QgsLabelAttributes
     QString mText;
     bool mTextIsSet;
 
-    /** Font (family, weight, italic, underline) */
+    /** Font (family, weight, italic, underline, strikeout) */
     QFont mFont;
     bool mFamilyIsSet;
     bool mBoldIsSet;
     bool mItalicIsSet;
     bool mUnderlineIsSet;
+    bool mStrikeOutIsSet;
 
     /** Font size, size type */
     int  mSizeType;

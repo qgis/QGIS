@@ -81,6 +81,7 @@ class CORE_EXPORT QgsLabel
       BorderColor,
       BorderStyle,
       MultilineEnabled,
+      StrikeOut,  // added in 1.5
       LabelFieldCount
     };
 
