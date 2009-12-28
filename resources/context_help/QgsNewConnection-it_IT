@@ -1,5 +1,5 @@
 <h3>Crea una nuova connessione PostGIS</h3>
-Per creare una nuova connessione PostGIS e' necessario conoscere il nome del server (host), la porta, e nome utente/password per il server del database.
+Per creare una nuova connessione PostGIS è necessario conoscere il nome del server (host), la porta, e nome utente/password per il server del database.
 <h4>Parametri richiesti</h4>
 <ul>
 <li><label>Nome</label> - un nome descrittivo per la connessione
@@ -16,4 +16,4 @@ Per creare una nuova connessione PostGIS e' necessario conoscere il nome del ser
 <li><label>Cerca soltanto nello schema 'public'</label> - questo limita la ricerca dei layer nello schema public
 </ol>
 <h4>Test della connessione</h4>
-Facendo clic sul pulsante <label>Test Connessione</label> inizia un tentativo di connessione al database usando i parametri specificati. Questo e' un ottimo modo per controllare i parametri di connessione prima di salvare la connessione.
+Facendo clic sul pulsante <label>Test Connessione</label> inizia un tentativo di connessione al database usando i parametri specificati. Questo è un ottimo modo per controllare i parametri di connessione prima di salvare la connessione.
