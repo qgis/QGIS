@@ -12,6 +12,8 @@
  */
 class GUI_EXPORT QgsProjectBadLayerGuiHandler : public QObject, public QgsProjectBadLayerHandler
 {
+  Q_OBJECT
+
   public:
     QgsProjectBadLayerGuiHandler();
 
