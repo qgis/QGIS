@@ -27,7 +27,7 @@ X;Y;ELEV<br/>
 <h4>Note</h4>
 </a>
 <ol>
-<li>Il file di testo utilizza <b>;</b> (punto e virgola) come delimitatore. Qualsiasi carattere puo' essere usato per delimitare i campi.</li>
+<li>Il file di testo utilizza <b>;</b> (punto e virgola) come delimitatore. Qualsiasi carattere può essere usato per delimitare i campi.</li>
 <li>La prima riga e' la riga di intestazione (header). Contiene i campi X, Y e ELEV.</li>
 <li>Non si usano le virgolette (quotes=") per delimitare i campi di testo.</li>
 <li>Le coordinate x sono contenute nel campo X.</li>
