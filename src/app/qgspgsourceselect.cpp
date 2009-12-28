@@ -406,34 +406,30 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
   if ( pd != 0 )
     PQfinish( pd );
 
-  pd = PQconnectdb( m_connectionInfo.toLocal8Bit() );  // use what is set based on locale; after connecting, use Utf8
-
-#if defined(PG_VERSION_NUM) && PG_VERSION_NUM >= 80300
-  // if the connection needs a password ask for one
-  if ( PQstatus( pd ) == CONNECTION_BAD && PQconnectionNeedsPassword( pd ) )
-#else
-  // if the connection failed and we didn't have a password, ask for one and retry
-  if ( PQstatus( pd ) == CONNECTION_BAD && password.isEmpty() )
-#endif
+  pd = PQconnectdb( uri.connectionInfo().toLocal8Bit() );  // use what is set based on locale; after connecting, use Utf8
+  // check the connection status
+  if ( PQstatus( pd ) != CONNECTION_OK && QString::fromUtf8( PQerrorMessage( pd ) ) == PQnoPasswordSupplied )
   {
-    // get password from user
-    bool makeConnection = false;
-    password = QInputDialog::getText( this, tr( "Password for " ) + username,
-                                      tr( "Please enter your password:" ),
-                                      QLineEdit::Password, QString::null, &makeConnection );
-    // allow null password entry in case its valid for the database
-    if ( makeConnection )
-    {
-      uri.setConnection( settings.value( key + "/host" ).toString(),
-                         settings.value( key + "/port" ).toString(),
-                         database,
-                         settings.value( key + "/username" ).toString(),
-                         password,
-                         ( QgsDataSourceURI::SSLmode ) settings.value( key + "/sslmode", QgsDataSourceURI::SSLprefer ).toInt() );
+    QString password = QString::null;
 
-      m_connectionInfo = uri.connectionInfo();
-      PQfinish( pd );
-      pd = PQconnectdb( m_connectionInfo.toLocal8Bit() );  // use what is set based on locale; after connecting, use Utf8
+    while( PQstatus( pd ) != CONNECTION_OK )
+    {
+      bool ok = true;
+      password = QInputDialog::getText( this,
+                                        tr( "Enter password" ),
+                                        tr( "Error: %1Enter password for %2")
+                                          .arg( QString::fromUtf8( PQerrorMessage( pd ) ) )
+                                          .arg( uri.connectionInfo() ),
+                                        QLineEdit::Password,
+                                        password,
+                                        &ok );
+
+      ::PQfinish( pd );
+
+      if( !ok )
+        break;
+
+      pd = PQconnectdb( QString( "%1 password='%2'" ).arg( uri.connectionInfo() ).arg( password ).toLocal8Bit() );
     }
   }
 

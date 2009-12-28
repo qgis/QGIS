@@ -44,6 +44,8 @@
 #include "qgspostgisbox3d.h"
 #include "qgslogger.h"
 
+#include <QInputDialog>
+
 const QString POSTGRES_KEY = "postgres";
 const QString POSTGRES_DESCRIPTION = "PostgreSQL/PostGIS data provider";
 
@@ -304,8 +306,34 @@ QgsPostgresProvider::Conn *QgsPostgresProvider::Conn::connectDb( const QString &
 
   PGconn *pd = PQconnectdb( conninfo.toLocal8Bit() );  // use what is set based on locale; after connecting, use Utf8
   // check the connection status
+  if ( PQstatus( pd ) != CONNECTION_OK && QString::fromUtf8( PQerrorMessage( pd ) ) == PQnoPasswordSupplied )
+  {
+    QString password = QString::null;
+
+    while( PQstatus( pd ) != CONNECTION_OK )
+    {
+      bool ok = true;
+      password = QInputDialog::getText( 0,
+                                        tr( "Enter password" ),
+                                        tr( "Error: %1Enter password for %2")
+                                          .arg( QString::fromUtf8( PQerrorMessage( pd ) ) )
+                                          .arg( conninfo ),
+                                        QLineEdit::Password,
+                                        password,
+                                        &ok );
+
+      ::PQfinish( pd );
+
+      if( !ok )
+        break;
+
+      pd = PQconnectdb( QString( "%1 password='%2'" ).arg( conninfo ).arg( password ).toLocal8Bit() );
+    }
+  }
+
   if ( PQstatus( pd ) != CONNECTION_OK )
   {
+    ::PQfinish( pd );
     QgsDebugMsg( "Connection to database failed" );
     return NULL;
   }
