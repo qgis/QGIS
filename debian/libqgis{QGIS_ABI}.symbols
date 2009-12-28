@@ -6062,10 +6062,13 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZN28QgsGenericProjectionSelectorD2Ev@Base 1.4.0
  _ZN28QgsProjectBadLayerGuiHandler10dataSourceER8QDomNode@Base 1.4.0
  _ZN28QgsProjectBadLayerGuiHandler10findLayersERK7QStringRK5QListI8QDomNodeE@Base 1.4.0
+ _ZN28QgsProjectBadLayerGuiHandler11qt_metacallEN11QMetaObject4CallEiPPv@Base 1.4.0
+ _ZN28QgsProjectBadLayerGuiHandler11qt_metacastEPKc@Base 1.4.0
  _ZN28QgsProjectBadLayerGuiHandler12providerTypeER8QDomNode@Base 1.4.0
  _ZN28QgsProjectBadLayerGuiHandler13setDataSourceER8QDomNodeRK7QString@Base 1.4.0
  _ZN28QgsProjectBadLayerGuiHandler15findMissingFileERK7QStringR8QDomNode@Base 1.4.0
  _ZN28QgsProjectBadLayerGuiHandler15handleBadLayersE5QListI8QDomNodeE12QDomDocument@Base 1.4.0
+ _ZN28QgsProjectBadLayerGuiHandler16staticMetaObjectE@Base 1.4.0
  _ZN28QgsProjectBadLayerGuiHandler8dataTypeER8QDomNode@Base 1.4.0
  _ZN28QgsProjectBadLayerGuiHandler9findLayerERK7QStringRK8QDomNode@Base 1.4.0
  _ZN28QgsProjectBadLayerGuiHandlerC1Ev@Base 1.4.0
@@ -6437,6 +6440,7 @@ libqgis_gui.so.1.4.0 libqgis1.4.0 #MINVER#
  _ZNK25QgsSymbolV2SelectorDialog10metaObjectEv@Base 1.4.0
  _ZNK27QgsSymbolV2PropertiesDialog10metaObjectEv@Base 1.4.0
  _ZNK28QgsGenericProjectionSelector10metaObjectEv@Base 1.4.0
+ _ZNK28QgsProjectBadLayerGuiHandler10metaObjectEv@Base 1.4.0
  _ZNK29QgsRendererV2PropertiesDialog10metaObjectEv@Base 1.4.0
  _ZNK31QgsSingleSymbolRendererV2Widget10metaObjectEv@Base 1.4.0
  _ZNK31QgsSvgMarkerSymbolLayerV2Widget10metaObjectEv@Base 1.4.0
