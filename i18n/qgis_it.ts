@@ -3707,7 +3707,7 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     </message>
     <message>
         <source>Wrong editing tool</source>
-        <translation type="obsolete">Strumento di editing errato</translation>
+        <translation type="obsolete">Strumento di modifica errato</translation>
     </message>
     <message>
         <source>Cannot apply the &apos;capture point&apos; tool on this vector layer</source>
@@ -5945,7 +5945,7 @@ Compilanto contro Qt </translation>
     </message>
     <message>
         <source>Improved vector and attribute editing</source>
-        <translation type="obsolete">Migliotamento nella modifica dei vettoriali e degli attributi</translation>
+        <translation type="obsolete">Miglioramento nella modifica dei vettoriali e degli attributi</translation>
     </message>
     <message>
         <source>&lt;p&gt;Do you want to save the current project?&lt;/p&gt;</source>
@@ -6069,7 +6069,7 @@ Compilanto contro Qt </translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2171"/>
         <source>Various parts of the user interface have been overhauled with the goal of improving consistency and to improve support for netbooks and other smaller screen devices. Loading and saving of shortcuts. Position can now be displayed as Degrees, Minutes, Seconds in the status bar. The add, move and delete vertex buttons are now removed and the node tool is moved from the advanced editing toolbar to the standard editing toolbar. The identification tool has also undergone numerous improvements.</source>
-        <translation>Varie parti del interfaccia utente sono state rinnovate con l&apos;obiettivo di migliorare la coerenza e il supporto per portatili e altri dispositivi a schermo piccolo. Le impostazioni delle scorciatoie possono essere salvate e caricate. La posizione ora può essere visualizzata in gradi, minuti, secondi nella barra di stato. I pulsanti per aggiungere, spostare ed eliminare ora sono stati rimossi e lo strumento nodo è stato spostato dalla barra degli strumenti avanzati di editing della barra degli strumenti di editing. Lo strumento di identificazione ha subito numerosi miglioramenti.</translation>
+        <translation>Varie parti del interfaccia utente sono state rinnovate con l&apos;obiettivo di migliorare la coerenza e il supporto per portatili e altri dispositivi a schermo piccolo. Le impostazioni delle scorciatoie possono essere salvate e caricate. La posizione ora può essere visualizzata in gradi, minuti, secondi nella barra di stato. I pulsanti per aggiungere, spostare ed eliminare ora sono stati rimossi e lo strumento nodo è stato spostato dalla barra degli strumenti avanzati di modifica nella barra degli strumenti di modifica. Lo strumento di identificazione ha subito numerosi miglioramenti.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2181"/>
@@ -19677,7 +19677,7 @@ p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot;
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="217"/>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="225"/>
         <source>Wrong editing tool</source>
-        <translation>Strumento di editing errato</translation>
+        <translation>Strumento di modifica errato</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="94"/>
@@ -31611,7 +31611,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="339"/>
         <source>Toggle editing mode</source>
-        <translation>Abilita/disabilita la modalità di editing</translation>
+        <translation>Abilita/disabilita la modalità di modifica</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="342"/>
@@ -32120,7 +32120,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="245"/>
         <source>Add selected row to WMS list</source>
-        <translation>Aggiunta riga alla lista WMS</translation>
+        <translation>Aggiungi riga alla lista WMS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="268"/>
