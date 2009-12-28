@@ -300,7 +300,7 @@ void QgsMarkerCatalogue::hardMarker( QPainter * thepPainter, int imageSize, QStr
   // width is necessary.
   double r = s / 2; // get half the size of the figure to be rendered (the radius)
 
-  QgsDebugMsg( QString( "Hard marker size %1" ).arg( s ) );
+  QgsDebugMsgLevel( QString( "Hard marker size %1" ).arg( s ), 3 );
 
   // Find out center coordinates of the QImage to draw on.
   double x_c = ( double )( imageSize / 2 ) + 0.5; // add 1/2 pixel for proper rounding when the figure's coordinates are added
@@ -309,7 +309,7 @@ void QgsMarkerCatalogue::hardMarker( QPainter * thepPainter, int imageSize, QStr
   thepPainter->setPen( pen );
   thepPainter->setBrush( brush );
 
-  QgsDebugMsg( QString( "Hard marker radius %1" ).arg( r ) );
+  QgsDebugMsgLevel( QString( "Hard marker radius %1" ).arg( r ), 3 );
 
   // If radius is 0, draw a circle, so it wont disappear.
   if ( name == "circle" || r < 1 )
