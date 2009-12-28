@@ -8107,17 +8107,17 @@ Fehler war:%2</translation>
     </message>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="456"/>
-        <source>inverse</source>
+        <source>inverse transform</source>
         <translation>Rücktransformation</translation>
     </message>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="463"/>
-        <source>forward</source>
+        <source>forward transform</source>
         <translation>Transformation</translation>
     </message>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="483"/>
-        <source>%1 transform of
+        <source>%1 of
 %2
 failed with error: %3
 </source>
