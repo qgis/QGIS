@@ -1,3 +1,9 @@
+qgis (1.5.0) UNRELEASED; urgency=low
+
+  * new development version after 1.5 branch
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Mon, 28 Dec 2009 23:44:41 +0100
+
 qgis (1.4.0) UNRELEASED; urgency=low
 
   * new development version after 1.3 branch
