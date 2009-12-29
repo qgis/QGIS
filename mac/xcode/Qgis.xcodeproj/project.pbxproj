@@ -635,6 +635,8 @@
 		723FD05F0FBCB87900EFA55D /* qgspalgeometry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 723FD05D0FBCB85D00EFA55D /* qgspalgeometry.cpp */; };
 		72442AEB1095DD4C00B54796 /* qgsavoidintersectionsdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72442AE91095DCFC00B54796 /* qgsavoidintersectionsdialog.cpp */; };
 		72442AEC1095DD4C00B54796 /* qgsavoidintersectionsdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72442AEA1095DCFC00B54796 /* qgsavoidintersectionsdialog.h */; };
+		72448CD310E9A1C100D4586B /* qgsprojectbadlayerguihandler.h in Sources */ = {isa = PBXBuildFile; fileRef = 72A51A4B10CE05B000E202D7 /* qgsprojectbadlayerguihandler.h */; };
+		72448CD710E9A21500D4586B /* qgsattributetableview.h in Sources */ = {isa = PBXBuildFile; fileRef = 72A239480F74A62200AFC35B /* qgsattributetableview.h */; };
 		7249EBDC10E7BCDA00708435 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E7790F39E57A003DC336 /* main.cpp */; };
 		7249EBDD10E7BCDA00708435 /* qgshelpserver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E77A0F39E57A003DC336 /* qgshelpserver.cpp */; };
 		7249EBDE10E7BCDA00708435 /* qgshelpserver.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E77B0F39E57A003DC336 /* qgshelpserver.h */; };
@@ -2189,7 +2191,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 7249EBD610E7BBEA00708435 /* qgis_help */;
+			remoteGlobalIDString = 7249EBD610E7BBEA00708435;
 			remoteInfo = qgis_help;
 		};
 		7256F18F0F411B110022BE1F /* PBXContainerItemProxy */ = {
@@ -14182,6 +14184,7 @@
 				7292879C0F71D415006D9489 /* qgsmapoverviewcanvas.h in Sources */,
 				7292879D0F71D415006D9489 /* qgsmaptoolemitpoint.h in Sources */,
 				7292879E0F71D415006D9489 /* qgsmessageviewer.h in Sources */,
+				72448CD310E9A1C100D4586B /* qgsprojectbadlayerguihandler.h in Sources */,
 				7292879F0F71D415006D9489 /* qgsprojectionselector.h in Sources */,
 				729287A00F71D415006D9489 /* qgsquickprint.h in Sources */,
 				7225EFF810B2375300D23EA2 /* qgsbrushstylecombobox.cpp in Sources */,
@@ -14881,6 +14884,7 @@
 				72A239490F74A64400AFC35B /* qgsattributetabledialog.cpp in Sources */,
 				72A2394A0F74A64400AFC35B /* qgsattributetablemodel.cpp in Sources */,
 				72A2394B0F74A64400AFC35B /* qgsattributetableview.cpp in Sources */,
+				72448CD710E9A21500D4586B /* qgsattributetableview.h in Sources */,
 				72A2394C0F74A66400AFC35B /* qgsattributetabledialog.h in Sources */,
 				72A2394D0F74A66400AFC35B /* qgsattributetablemodel.h in Sources */,
 				7262ED830F7A750F00498385 /* qgsspatialitefilterproxymodel.cpp in Sources */,
@@ -16302,6 +16306,7 @@
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"$(QT_LIB_CORE)",
+					"$(QT_LIB_GUI)",
 					"$(PGSQL_LIB)",
 				);
 				PRODUCT_NAME = postgresprovider.so;
@@ -16331,6 +16336,7 @@
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"$(QT_LIB_CORE)",
+					"$(QT_LIB_GUI)",
 					"$(PGSQL_LIB)",
 				);
 				PRODUCT_NAME = postgresprovider.so;
@@ -18052,7 +18058,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 12622;
+				QGIS_VERSION_BUILD = 12646;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -18063,7 +18069,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 12622;
+				QGIS_VERSION_BUILD = 12646;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
