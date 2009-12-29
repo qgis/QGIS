@@ -51,7 +51,7 @@
 //SPATIALITE_GEOS = yes
 //SPATIALITE_PROJ = yes
 
-//GSL_FORM = shared // static or shared
+//GSL_FORM = fw // fw, static or shared
 //PGSQL_FORM = shared // static or shared
 
 // system expat only on Leopard+
@@ -100,7 +100,8 @@
 //PROJ_PREFIX_shared = /usr/local
 //GEOS_PREFIX_shared = /usr/local
 
-//GSL_PREFIX = /usr/local
+//GSL_PREFIX_shared = /usr/local
+//GSL_PREFIX_static = /usr/local
 
 // This must match exactly how GRASS was built and installed.
 // If it was moved or renamed, qgis GRASS plugin will not work.
@@ -140,7 +141,7 @@
 //EXPAT_INC = $(EXPAT_INC_$(EXPAT_FORM))
 //EXPAT_LIB = $(EXPAT_LIB_$(EXPAT_FORM))
 
-//GSL_INC = $(GSL_PREFIX)/include
+//GSL_INC = $(GSL_INC_$(GSL_FORM))
 //GSL_LIB = $(GSL_LIB_$(GSL_FORM))
 
 //PGSQL_INC = $(PGSQL_PREFIX)/include

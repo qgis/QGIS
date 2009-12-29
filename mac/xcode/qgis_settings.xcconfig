@@ -1,6 +1,6 @@
 // QGIS Xcode project common build settings
 
-CURRENT_PROJECT_VERSION = 2.2.2
+CURRENT_PROJECT_VERSION = 2.3.0
 
 // SDKSYS must be set to valid value
 SDKSYS = leo // tig (Tiger), leo (Leopard), snow (Snow Leopard)
@@ -67,7 +67,7 @@ SQLITE_FORM = fw // system, fw, shared or internal
 SPATIALITE_GEOS = yes
 SPATIALITE_PROJ = yes
 
-GSL_FORM = shared // static or shared
+GSL_FORM = fw // fw, static or shared
 PGSQL_FORM = shared // static or shared
 
 // system expat only on Leopard+
@@ -91,10 +91,10 @@ PYTHON_VERSION = $(PYTHON_VERSION_$(SDKSYS))
 // bundling GRASS doesn't make sense, as a full GRASS install is required
 // Qt always bundled - else Qt plugins will load that cause grief
 
-BUNDLE_GSL = YES
 BUNDLE_PGSQL = YES
 BUNDLE_GPSBABEL = YES
 // frameworks not bundled
+BUNDLE_GSL = YES
 BUNDLE_GDAL = YES
 BUNDLE_GEOS = YES
 BUNDLE_PROJ = YES
@@ -111,7 +111,8 @@ GDAL_PREFIX_shared = /usr/local
 PROJ_PREFIX_shared = /usr/local
 GEOS_PREFIX_shared = /usr/local
 
-GSL_PREFIX = /usr/local
+GSL_PREFIX_shared = /usr/local
+GSL_PREFIX_static = /usr/local
 
 // This must match exactly how GRASS was built and installed.
 // If it was moved or renamed, qgis GRASS plugin will not work.
@@ -278,7 +279,13 @@ EXPAT_LIB_shared = $(EXPAT_PREFIX)/lib/libexpat.dylib
 EXPAT_LIB_static = $(EXPAT_PREFIX)/lib/libexpat.a
 EXPAT_LIB = $(EXPAT_LIB_$(EXPAT_FORM))
 
-GSL_INC = $(GSL_PREFIX)/include
+GSL_PREFIX_fw = /Library/Frameworks/GSL.framework
+GSL_PREFIX = $(GSL_PREFIX_$(GSL_FORM))
+GSL_INC_fw = $(GSL_PREFIX_fw)/Headers
+GSL_INC_shared = $(GSL_PREFIX)/include
+GSL_INC_static = $(GSL_PREFIX)/include
+GSL_INC = $(GSL_INC_$(GSL_FORM))
+GSL_LIB_fw = -framework GSL
 GSL_LIB_shared = -L$(GSL_PREFIX)/lib -lgsl -lm
 GSL_LIB_static = $(GSL_PREFIX)/lib/libgsl.a $(GSL_PREFIX)/lib/libgslcblas.a -lm
 GSL_LIB = $(GSL_LIB_$(GSL_FORM))
