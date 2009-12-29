@@ -1241,6 +1241,7 @@
 		72A56DEC0F3CFEA400BA32A1 /* getInsertions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E7E00F39E57B003DC336 /* getInsertions.cpp */; };
 		72A56DED0F3CFEAC00BA32A1 /* dl_dxf.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E7D80F39E57B003DC336 /* dl_dxf.cpp */; };
 		72A56DEE0F3CFEAE00BA32A1 /* dl_writer_ascii.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E7DE0F39E57B003DC336 /* dl_writer_ascii.cpp */; };
+		72A6AA3510E98A9500FC5229 /* qgsprojectbadlayerguihandler.h in Sources */ = {isa = PBXBuildFile; fileRef = 72A51A4B10CE05B000E202D7 /* qgsprojectbadlayerguihandler.h */; };
 		72A892CC0FAF7B8500108152 /* qgsconfigureshortcutsdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72A892CA0FAF7B6100108152 /* qgsconfigureshortcutsdialog.cpp */; };
 		72A892CD0FAF7B8500108152 /* qgsshortcutsmanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72A892C90FAF7B6100108152 /* qgsshortcutsmanager.cpp */; };
 		72A892CE0FAF7B9400108152 /* qgsconfigureshortcutsdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72A892CB0FAF7B6100108152 /* qgsconfigureshortcutsdialog.h */; };
@@ -2189,7 +2190,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 7249EBD610E7BBEA00708435 /* qgis_help */;
+			remoteGlobalIDString = 7249EBD610E7BBEA00708435;
 			remoteInfo = qgis_help;
 		};
 		7256F18F0F411B110022BE1F /* PBXContainerItemProxy */ = {
@@ -14168,6 +14169,7 @@
 				7209F3A30F3A2FC3003DC336 /* qgsmaptoolzoom.cpp in Sources */,
 				7209F3A40F3A2FC3003DC336 /* qgsmessageviewer.cpp in Sources */,
 				72A51A4C10CE05C100E202D7 /* qgsprojectbadlayerguihandler.cpp in Sources */,
+				72A6AA3510E98A9500FC5229 /* qgsprojectbadlayerguihandler.h in Sources */,
 				7209F3A50F3A2FC3003DC336 /* qgsprojectionselector.cpp in Sources */,
 				7209F3A60F3A2FC3003DC336 /* qgsquickprint.cpp in Sources */,
 				7209F3A70F3A2FC3003DC336 /* qgsrubberband.cpp in Sources */,
