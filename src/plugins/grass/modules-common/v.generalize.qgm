@@ -3,19 +3,20 @@
 
 <qgisgrassmodule label="Simplify vector" module="v.generalize">
 	<option key="input" typeoption="type" layeroption="layer" />
+	<option key="type" />
 	<option key="method" />
-	<option key="threshold" ansewr="1.0" />
-	<option key="look_ahead" ansewr="7" />
-	<option key="reduction" ansewr="50" />
-	<option key="slide" ansewr="0.5" />
-	<option key="angle_thresh" ansewr="3" />
-	<option key="degree_thresh" ansewr="0" />
-	<option key="closeness_thresh" ansewr="0" />
-	<option key="betweeness_thresh" ansewr="0" />
-	<option key="alpha" ansewr="1.0" />
-	<option key="beta" ansewr="1.0" />
-	<option key="iterations" ansewr="1" />
-	<option key="layer" ansewr="1" />
+	<option key="threshold" answer="1.0" />
+	<option key="look_ahead" answer="7" />
+	<option key="reduction" answer="50" />
+	<option key="slide" answer="0.5" />
+	<option key="angle_thresh" answer="3" />
+	<option key="degree_thresh" answer="0" />
+	<option key="closeness_thresh" answer="0" />
+	<option key="betweeness_thresh" answer="0" />
+	<option key="alpha" answer="1.0" />
+	<option key="beta" answer="1.0" />
+	<option key="iterations" answer="1" />
+	<option key="layer" answer="1" />
 	<flag key="r" />
 	<option key="output" />
 </qgisgrassmodule>
