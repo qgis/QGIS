@@ -1,6 +1,6 @@
 #-----------------------------------------------------------
 # 
-# Random Selection Within Subsets
+# Random selection within subsets
 #
 # A QGIS plugin for randomly selecting features from 
 # within multiple user defined subsets based on an input field.
@@ -43,7 +43,7 @@ class Dialog(QDialog, Ui_Dialog):
 		# Set up the user interface from Designer.
 		self.setupUi(self)
 		QObject.connect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.update)		
-		self.setWindowTitle("Random selection within subsets")
+		self.setWindowTitle(self.tr("Random selection within subsets"))
 		# populate layer list
 		self.progressBar.setValue(0)
 		mapCanvas = self.iface.mapCanvas()
@@ -61,9 +61,9 @@ class Dialog(QDialog, Ui_Dialog):
 
 	def accept(self):
 		if self.inShape.currentText() == "":
-			QMessageBox.information(self, "Random Selection Within Subsets", "Please specify input vector layer")
+			QMessageBox.information(self, self.tr("Random selection within subsets"), self.tr("Please specify input vector layer"))
 		elif self.inField.currentText() == "":
-			QMessageBox.information(self, "Random Selection Within Subsets", "Please specify an input field")
+			QMessageBox.information(self, self.tr("Random selection within subsets"), self.tr("Please specify an input field"))
 		else:
 			inVect = self.inShape.currentText()
 			uidField = self.inField.currentText()
@@ -81,10 +81,10 @@ class Dialog(QDialog, Ui_Dialog):
 		self.outShape.clear()
 		fileDialog = QFileDialog()
 		fileDialog.setConfirmOverwrite(False)
-		outName = fileDialog.getSaveFileName(self, "Output Shapefile",".", "Shapefiles (*.shp)")
+		outName = fileDialog.getSaveFileName(self, self.tr("Output Shapefile"),".", self.tr("Shapefiles (*.shp)"))
 		fileCheck = QFile(outName)
 		if fileCheck.exists():
-			QMessageBox.warning(self, "Random Selection Within Subsets", "Cannot overwrite existing shapefile...")
+			QMessageBox.warning(self, self.tr("Random selection within subsets"), self.tr("Cannot overwrite existing shapefile..."))
 		else:
 			filePath = QFileInfo(outName).absoluteFilePath()
 			if filePath.right(4) != ".shp": filePath = filePath + ".shp"
@@ -139,7 +139,7 @@ class Dialog(QDialog, Ui_Dialog):
 				if vlayer.isValid():
 					return vlayer
 				else:
-					QMessageBox.information(self, "Random Selection Within Subsets", "Vector layer is not valid")
+					QMessageBox.information(self, self.tr("Random selection within subsets"), self.tr("Vector layer is not valid"))
 
 	def getMapLayerByName(self, myName):
 		mc = self.iface.mapCanvas()

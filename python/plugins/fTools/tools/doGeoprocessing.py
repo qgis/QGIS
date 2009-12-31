@@ -54,24 +54,24 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
   
   def accept( self ):
     if self.inShapeA.currentText() == "":
-      QMessageBox.warning( self, "Geoprocessing", self.tr( "Please specify an input layer" ) )
+      QMessageBox.warning( self, self.tr("Geoprocessing"), self.tr( "Please specify an input layer" ) )
     elif self.inShapeB.isVisible() and self.inShapeB.currentText() == "":
-      QMessageBox.warning( self, "Geoprocessing", self.tr( "Please specify a difference/intersect/union layer" ) )
+      QMessageBox.warning( self, self.tr("Geoprocessing"), self.tr( "Please specify a difference/intersect/union layer" ) )
     elif self.param.isEnabled() and self.param.isVisible() and self.param.text() == "":
-      QMessageBox.warning( self, "Geoprocessing", self.tr( "Please specify valid buffer value" ) )
+      QMessageBox.warning( self, self.tr("Geoprocessing"), self.tr( "Please specify valid buffer value" ) )
     elif self.attrib.isEnabled() and self.attrib.isVisible() and self.attrib.currentText() == "":
-      QMessageBox.warning( self, "Geoprocessing", self.tr( "Please specify dissolve field" ) )
+      QMessageBox.warning( self, self.tr("Geoprocessing"), self.tr( "Please specify dissolve field" ) )
     elif self.outShape.text() == "":
-      QMessageBox.warning( self, "Geoprocessing", self.tr( "Please specify output shapefile" ) )
+      QMessageBox.warning( self, self.tr("Geoprocessing"), self.tr( "Please specify output shapefile" ) )
     else:
       changedLayerA = ftools_utils.getVectorLayerByName( self.inShapeA.currentText() )
       changedLayerB = ftools_utils.getVectorLayerByName( self.inShapeB.currentText() )
       # check for selection in layer A
       if self.useSelectedA.isChecked() and changedLayerA.selectedFeatureCount() == 0:
-        QMessageBox.warning( self, "Geoprocessing", self.tr( "No features selected, please uncheck 'Use selected' or make a selection" ) )
+        QMessageBox.warning( self, self.tr("Geoprocessing"), self.tr( "No features selected, please uncheck 'Use selected' or make a selection" ) )
       # check for selection in layer B
       elif self.inShapeB.isVisible() and self.useSelectedB.isChecked() and changedLayerB.selectedFeatureCount() == 0:
-        QMessageBox.warning( self, "Geoprocessing", self.tr( "No features selected, please uncheck 'Use selected' or make a selection" ) )
+        QMessageBox.warning( self, self.tr("Geoprocessing"), self.tr( "No features selected, please uncheck 'Use selected' or make a selection" ) )
       else:
         self.outShape.clear()
         if self.attrib.isEnabled():
@@ -177,14 +177,14 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
     check = QFile( self.shapefileName )
     if check.exists():
       if not QgsVectorFileWriter.deleteShapeFile( self.shapefileName ):
-        QMessageBox.warning( self, "Geoprocessing", self.tr( "Unable to delete existing shapefile." ) )
+        QMessageBox.warning( self, self.tr("Geoprocessing"), self.tr( "Unable to delete existing shapefile." ) )
         return
     self.testThread = geoprocessingThread( self.iface.mainWindow(), self, self.myFunction, myLayerA, 
     myLayerB, myParam, myMerge, mySelectionA, mySelectionB, self.shapefileName, self.encoding )
     QObject.connect( self.testThread, SIGNAL( "runFinished(PyQt_PyObject)" ), self.runFinishedFromThread )
     QObject.connect( self.testThread, SIGNAL( "runStatus(PyQt_PyObject)" ), self.runStatusFromThread )
     QObject.connect( self.testThread, SIGNAL( "runRange(PyQt_PyObject)" ), self.runRangeFromThread )
-    self.cancel_close.setText( "Cancel" )
+    self.cancel_close.setText( self.tr("Cancel") )
     QObject.connect( self.cancel_close, SIGNAL( "clicked()" ), self.cancelThread )
     self.testThread.start()
     return True
@@ -194,7 +194,7 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
   
   def runFinishedFromThread( self, results ):
     self.testThread.stop()
-    self.cancel_close.setText( "Close" )
+    self.cancel_close.setText( self.tr("Close") )
     QObject.disconnect( self.cancel_close, SIGNAL( "clicked()" ), self.cancelThread )
     if not results[2] or not results[1] or not results [0]:
       out_text = self.tr( "\nWarnings:" )
@@ -210,8 +210,7 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
       out_text = out_text + self.tr( "\nGEOS geoprocessing error: One or more input features have invalid geometry.")
     else:
       out_text = ""
-    addToTOC = QMessageBox.question( self, "Geoprocessing", self.tr( "Created output shapefile:" ) + "\n"
-    + unicode( self.shapefileName ) + out_text + end_text, QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton )
+    addToTOC = QMessageBox.question( self, self.tr("Geoprocessing"), self.tr( "Created output shapefile:\n%1\n\n%2%3" ).arg( unicode( self.shapefileName ) ).arg( out_text ).arg( end_text ), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton )
     if addToTOC == QMessageBox.Yes:
       ftools_utils.addShapeToCanvas( unicode( self.shapefileName ) )
     

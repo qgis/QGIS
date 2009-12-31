@@ -25,18 +25,18 @@ class Dialog(QDialog, Ui_Dialog):
 
 	def updateUi(self):
 		if self.function == 1:
-			self.setWindowTitle("Mean coordinates")
+			self.setWindowTitle( self.tr("Mean coordinates") )
 			self.sizeValue.setVisible(False)
 			self.label_size.setVisible(False)
 		elif self.function == 2:
-			self.setWindowTitle("Standard distance")
+			self.setWindowTitle( self.tr("Standard distance") )
 		self.resize(381, 100)
 
 	def update(self, inputLayer):
 		self.weightField.clear()
 		self.uniqueField.clear()
-		self.weightField.addItem("(Optional) Weight field")
-		self.uniqueField.addItem("(Optional) Unique ID field")
+		self.weightField.addItem( self.tr("(Optional) Weight field") )
+		self.uniqueField.addItem( self.tr("(Optional) Unique ID field") )
 		self.changedLayer = self.getVectorLayerByName(inputLayer)
 		changedField = self.getFieldList(self.changedLayer)
 		for i in changedField:
@@ -46,9 +46,9 @@ class Dialog(QDialog, Ui_Dialog):
 
 	def accept(self):
 		if self.inShape.currentText() == "":
-			QMessageBox.information(self, "Coordinate statistics", "No input vector layer specified")
+			QMessageBox.information(self, self.tr("Coordinate statistics"), self.tr("No input vector layer specified"))
 		elif self.outShape.text() == "":
-			QMessageBox.information(self, "Coordinate statistics", "Please specify output shapefile")
+			QMessageBox.information(self, self.tr("Coordinate statistics"), self.tr("Please specify output shapefile"))
 		else:
 			inName = self.inShape.currentText()
 			outPath = self.outShape.text()
@@ -62,8 +62,7 @@ class Dialog(QDialog, Ui_Dialog):
 			self.compute(inName, outPath, self.weightField.currentText(), self.sizeValue.value(), self.uniqueField.currentText())
 			self.progressBar.setValue(100)
 			self.outShape.clear()
-			addToTOC = QMessageBox.question(self, "Coordinate statistics", "Created output point Shapefile:\n" + outPath
-				+ "\n\nWould you like to add the new layer to the TOC?", QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
+			addToTOC = QMessageBox.question(self, self.tr("Coordinate statistics"), self.tr("Created output point shapefile:\n%1\n\nWould you like to add the new layer to the TOC?").arg( outPath ), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
 			if addToTOC == QMessageBox.Yes:
 				self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
 				if self.vlayer.geometryType() == QGis.Point:

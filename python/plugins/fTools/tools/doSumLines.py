@@ -58,13 +58,13 @@ class Dialog(QDialog, Ui_Dialog):
 		
 	def accept(self):
 		if self.inPolygon.currentText() == "":
-			QMessageBox.information(self, "Sum Line Lengths In Polyons", "Please specify input polygon vector layer")
+			QMessageBox.information(self, self.tr("Sum Line Lengths In Polyons"), self.tr("Please specify input polygon vector layer"))
 		elif self.outShape.text() == "":
-			QMessageBox.information(self, "Sum Line Lengths In Polyons", "Please specify output shapefile")
+			QMessageBox.information(self, self.tr("Sum Line Lengths In Polyons"), self.tr("Please specify output shapefile"))
 		elif self.inPoint.currentText() == "":
-			QMessageBox.information(self, "Sum Line Lengths In Polyons", "Please specify input line vector layer")
+			QMessageBox.information(self, self.tr("Sum Line Lengths In Polyons"), self.tr("Please specify input line vector layer"))
 		elif self.lnField.text() == "":
-			QMessageBox.information(self, "Sum Line Lengths In Polyons", "Please specify output length field")
+			QMessageBox.information(self, self.tr("Sum Line Lengths In Polyons"), self.tr("Please specify output length field"))
 		else:
 			inPoly = self.inPolygon.currentText()
 			inLns = self.inPoint.currentText()
@@ -78,8 +78,7 @@ class Dialog(QDialog, Ui_Dialog):
 				outName = outName.left(outName.length() - 4)
 			self.compute(inPoly, inLns, inField, outPath, self.progressBar)
 			self.outShape.clear()
-			addToTOC = QMessageBox.question(self, "Sum line lengths", "Created output shapefile:\n" + outPath 
-			+ "\n\nWould you like to add the new layer to the TOC?", QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
+			addToTOC = QMessageBox.question(self, self.tr("Sum line lengths"), self.tr("Created output shapefile:\n%1\n\nWould you like to add the new layer to the TOC?").arg(unicode(outPath)), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
 			if addToTOC == QMessageBox.Yes:
 				self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
 				QgsMapLayerRegistry.instance().addMapLayer(self.vlayer)
@@ -98,7 +97,7 @@ class Dialog(QDialog, Ui_Dialog):
 		polyProvider = polyLayer.dataProvider()
 		lineProvider = lineLayer.dataProvider()
 		if polyProvider.crs() <> lineProvider.crs():
-			QMessageBox.warning(self, "CRS warning!", "Warning: Input layers have non-matching CRS.\nThis may cause unexpected results.")
+			QMessageBox.warning(self, self.tr("CRS warning!"), self.tr("Warning: Input layers have non-matching CRS.\nThis may cause unexpected results."))
 		allAttrs = polyProvider.attributeIndexes()
 		polyProvider.select(allAttrs)
 		allAttrs = lineProvider.attributeIndexes()
@@ -107,7 +106,7 @@ class Dialog(QDialog, Ui_Dialog):
 		index = polyProvider.fieldNameIndex(unicode(inField))
 		if index == -1:
 			index = polyProvider.fieldCount()
-			field = QgsField(unicode(inField), QVariant.Int, "real", 24, 15, "length field")
+			field = QgsField(unicode(inField), QVariant.Int, "real", 24, 15, self.tr("length field"))
 			fieldList[index] = field
 		sRs = polyProvider.crs()
 		inFeat = QgsFeature()
@@ -157,7 +156,7 @@ class Dialog(QDialog, Ui_Dialog):
 				if vlayer.isValid():
 					return vlayer
 				else:
-					QMessageBox.information(self, "Sum Line Lengths In Polyons", "Vector layer is not valid")
+					QMessageBox.information(self, self.tr("Sum Line Lengths In Polyons"), self.tr("Vector layer is not valid"))
 
 	def getFieldList(self, vlayer):
 		fProvider = vlayer.dataProvider()

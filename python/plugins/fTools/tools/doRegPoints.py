@@ -44,7 +44,7 @@ class Dialog(QDialog, Ui_Dialog):
 		self.iface = iface
 		self.setupUi(self)
 		QObject.connect(self.toolOut, SIGNAL("clicked()"), self.outFile)
-		self.setWindowTitle("Regular points")
+		self.setWindowTitle( self.tr("Regular points") )
 		self.progressBar.setValue(0)
 		mapCanvas = self.iface.mapCanvas()
 		for i in range(mapCanvas.layerCount()):
@@ -53,11 +53,11 @@ class Dialog(QDialog, Ui_Dialog):
 
 	def accept(self):
 		if not self.rdoCoordinates.isChecked() and self.inShape.currentText() == "":
-			QMessageBox.information(self, "Generate Regular Points", "Please specify input layer")
+			QMessageBox.information(self, self.tr("Generate Regular Points"), self.tr("Please specify input layer"))
 		elif self.rdoCoordinates.isChecked() and (self.xMin.text() == "" or self.xMax.text() == "" or self.yMin.text() == "" or self.yMax.text() == ""):
-			QMessageBox.information(self, "Generate Regular Points", "Please properly specify extent coordinates")
+			QMessageBox.information(self, self.tr("Generate Regular Points"), self.tr("Please properly specify extent coordinates"))
 		elif self.outShape.text() == "":
-			QMessageBox.information(self, "Generate Regular Points", "Please specify output shapefile")
+			QMessageBox.information(self, self.tr("Generate Regular Points"), self.tr("Please specify output shapefile"))
 		else:
 			inName = self.inShape.currentText()
 			outPath = self.outShape.text()
@@ -78,9 +78,7 @@ class Dialog(QDialog, Ui_Dialog):
 			else:
 				boundBox = QgsRect(float(self.xMin.text()), float(self.yMin.text()), float(self.xMax.text()), float(self.yMax.text()))
 			self.regularize(boundBox, outPath, offset, value, self.rdoSpacing.isChecked(), self.spnInset.value(), self.progressBar)
-			addToTOC = QMessageBox.question(self, "Generate Regular Points", "Created output point Shapefile:\n" + outPath 
-			+ "\nNote: Layer has no associated coordinate system, please use the Projection Management Tool to specify spatial reference system."
-			+ "\n\nWould you like to add the new layer to the TOC?", QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
+			addToTOC = QMessageBox.question(self, self.tr("Generate Regular Points"), self.tr("Created output point shapefile:\n%1\n\nNote: Layer has no associated coordinate system, please use the Projection Management Tool to specify spatial reference system.\n\nWould you like to add the new layer to the TOC?").arg( outPath ), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
 			if addToTOC == QMessageBox.Yes:
 				self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
 				QgsMapLayerRegistry.instance().addMapLayer(self.vlayer)
@@ -116,7 +114,7 @@ class Dialog(QDialog, Ui_Dialog):
 				if vlayer.isValid():
 					return vlayer
 				else:
-					QMessageBox.information(self, "Generate Regular Points", "Vector layer is not valid")
+					QMessageBox.information(self, self.tr("Generate Regular Points"), self.tr("Vector layer is not valid"))
 	
 # Get map layer by name from TOC     
 	def getMapLayerByName(self, myName):

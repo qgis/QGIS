@@ -51,7 +51,7 @@ class Dialog(QDialog, Ui_Dialog):
 		QObject.connect(self.toolTable, SIGNAL("clicked()"), self.inFile)
 		QObject.connect(self.rdoTable, SIGNAL("clicked()"), self.updateTableFields)
 		QObject.connect(self.rdoVector, SIGNAL("clicked()"), self.jupdate)
-		self.setWindowTitle("Join attributes")
+		self.setWindowTitle( self.tr("Join attributes") )
 		# populate layer list
 		self.progressBar.setValue(0)
 		mapCanvas = self.iface.mapCanvas()
@@ -77,17 +77,17 @@ class Dialog(QDialog, Ui_Dialog):
 		
 	def accept(self):
 		if self.inShape.currentText() == "":
-			QMessageBox.information(self, "Join Attributes", "Please specify target vector layer")
+			QMessageBox.information(self, self.tr("Join Attributes"), self.tr("Please specify target vector layer"))
 		elif self.outShape.text() == "":
-			QMessageBox.information(self, "Join Attributes", "Please specify output shapefile")
+			QMessageBox.information(self, self.tr("Join Attributes"), self.tr("Please specify output shapefile"))
 		elif self.joinShape.currentText() == "" and self.rdoVector.isChecked():
-			QMessageBox.information(self, "Join Attributes", "Please specify join vector layer")
+			QMessageBox.information(self, self.tr("Join Attributes"), self.tr("Please specify join vector layer"))
 		elif self.inField.currentText() == "":
-			QMessageBox.information(self, "Join Attributes", "Please specify target join field")
+			QMessageBox.information(self, self.tr("Join Attributes"), self.tr("Please specify target join field"))
 		elif self.joinField.currentText() == "":
-			QMessageBox.information(self, "Join Attributes", "Please specify join field")
+			QMessageBox.information(self, self.tr("Join Attributes"), self.tr("Please specify join field"))
 		elif self.inTable.text() == "" and self.rdoTable.isChecked():
-			QMessageBox.information(self, "Join Attributes", "Please specify input table")
+			QMessageBox.information(self, self.tr("Join Attributes"), self.tr("Please specify input table"))
 		else:
 			keep = self.rdoKeep.isChecked()
 			inName = self.inShape.currentText()
@@ -108,8 +108,7 @@ class Dialog(QDialog, Ui_Dialog):
 				outName = outName.left(outName.length() - 4)
 			self.compute(inName, inField, joinName, joinField, outPath, keep, useTable, self.progressBar)
 			self.outShape.clear()
-			addToTOC = QMessageBox.question(self, "Join Attributes", "Created output Shapefile:\n" + self.shapefileName 
-			+ "\n\nWould you like to add the new layer to the TOC?", QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
+			addToTOC = QMessageBox.question(self, self.tr("Join Attributes"), self.tr("Created output shapefile:\n%1\n\nWould you like to add the new layer to the TOC?").arg( unicode(self.shapefileName) ), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
 			if addToTOC == QMessageBox.Yes:
 				vlayer = QgsVectorLayer(self.shapefileName, outName, "ogr")
 				QgsMapLayerRegistry.instance().addMapLayer(vlayer)
@@ -126,7 +125,7 @@ class Dialog(QDialog, Ui_Dialog):
 		self.outShape.clear()
 		fileDialog = QFileDialog()
 		fileDialog.setConfirmOverwrite(False)
-		outName = fileDialog.getOpenFileName(self, "Join Table",".", "DBase Files (*.dbf)")
+		outName = fileDialog.getOpenFileName(self, self.tr("Join Table"), ".", "DBase Files (*.dbf)")
 		fileCheck = QFile(outName)
 		if fileCheck.exists():
 			filePath = QFileInfo(outName).absoluteFilePath()
@@ -136,7 +135,7 @@ class Dialog(QDialog, Ui_Dialog):
 				self.inTable.insert(filePath)
 				self.updateTableFields()
 		else:
-			QMessageBox.warning(self, "Join Attributes", "Input table does not exist")
+			QMessageBox.warning(self, self.tr("Join Attributes"), self.tr("Input table does not exist"))
 
 	def updateTableFields(self):
 		if self.inTable.text() != "":
@@ -250,7 +249,7 @@ class Dialog(QDialog, Ui_Dialog):
 				qtype = QVariant.Double
 			length = info[1]
 			prec = info[2]
-			field = QgsField(name, qtype, ntype, length, prec, "joined fields")
+			field = QgsField(name, qtype, ntype, length, prec, self.tr("joined fields"))
 			fieldList[item] = field
 			item = item + 1
 		return (fieldList, index2)
@@ -292,7 +291,7 @@ class Dialog(QDialog, Ui_Dialog):
 				if vlayer.isValid():
 					return vlayer
 				else:
-					QMessageBox.information(self, "Join Attributes", "Vector layer is not valid")
+					QMessageBox.information(self, self.tr("Join Attributes"), self.tr("Vector layer is not valid"))
 
 	def getFieldList(self, vlayer):
 		fProvider = vlayer.dataProvider()

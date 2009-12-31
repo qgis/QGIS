@@ -42,7 +42,7 @@ class Dialog(QDialog, Ui_Dialog):
 		self.setupUi(self)
 		QObject.connect(self.toolOut, SIGNAL("clicked()"), self.outFile)
 		QObject.connect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.update)
-		self.setWindowTitle("Split vector layer")
+		self.setWindowTitle(self.tr("Split vector layer"))
 		# populate layer list
 		self.progressBar.setValue(0)
 		mapCanvas = self.iface.mapCanvas()
@@ -60,9 +60,9 @@ class Dialog(QDialog, Ui_Dialog):
 
 	def accept(self):
 		if self.inShape.currentText() == "":
-			QMessageBox.information(self, "Vector Split", "No input shapefile specified")
+			QMessageBox.information(self, self.tr("Vector Split"), self.tr("No input shapefile specified"))
 		elif self.outShape.text() == "":
-			QMessageBox.information(self, "Vector Split", "Please specify output shapefile")
+			QMessageBox.information(self, self.tr("Vector Split"), self.tr("Please specify output shapefile"))
 		else:
 			inField = self.inField.currentText()
 			inLayer = self.getVectorLayerByName(unicode(self.inShape.currentText()))
@@ -76,7 +76,7 @@ class Dialog(QDialog, Ui_Dialog):
 			self.split(inLayer, unicode(outPath), unicode(inField), self.progressBar)
 			self.progressBar.setValue(100)
 			self.outShape.clear()
-			QMessageBox.information(self, "Vector Split", "Created output shapefiles in folder:\n" + unicode(outPath))
+			QMessageBox.information(self, self.tr("Vector Split"), self.tr("Created output shapefiles in folder:\n%1").arg( outPath))
 			self.progressBar.setValue(0)
 
 	def outFile(self):

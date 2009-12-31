@@ -45,7 +45,7 @@ class Dialog(QDialog, Ui_Dialog):
 		#QObject.connect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.updateInput)
 		QObject.connect(self.btnUpdate, SIGNAL("clicked()"), self.updateLayer)
 		QObject.connect(self.btnCanvas, SIGNAL("clicked()"), self.updateCanvas)
-		self.setWindowTitle("Vector grid")
+		self.setWindowTitle(self.tr("Vector grid"))
 		self.xMin.setValidator(QDoubleValidator(self.xMin))
 		self.xMax.setValidator(QDoubleValidator(self.xMax))
 		self.yMin.setValidator(QDoubleValidator(self.yMin))
@@ -78,9 +78,9 @@ class Dialog(QDialog, Ui_Dialog):
 
 	def accept(self):
 		if self.xMin.text() == "" or self.xMax.text() == "" or self.yMin.text() == "" or self.yMax.text() == "":
-			QMessageBox.information(self, "Vector grid", "Please specify valid extent coordinates")
+			QMessageBox.information(self, self.tr("Vector grid"), self.tr("Please specify valid extent coordinates"))
 		elif self.outShape.text() == "":
-			QMessageBox.information(self, "Vector grid", "Please specify output shapefile")
+			QMessageBox.information(self, self.tr("Vector grid"), self.tr("Please specify output shapefile"))
 		else:
 			try:
 				boundBox = QgsRectangle( 
@@ -89,19 +89,14 @@ class Dialog(QDialog, Ui_Dialog):
 				float( self.xMax.text() ),
 				float( self.yMax.text() ) )
 			except:
-				QMessageBox.information(self, "Vector grid", "Invalid extent coordinates entered")
+				QMessageBox.information(self, self.tr("Vector grid"), self.tr("Invalid extent coordinates entered"))
 			xSpace = self.spnX.value()
 			ySpace = self.spnY.value()
 			if self.rdoPolygons.isChecked(): polygon = True
 			else: polygon = False
 			self.outShape.clear()
 			self.compute( boundBox, xSpace, ySpace, polygon )
-			addToTOC = QMessageBox.question(self, 
-			"Generate Vector Grid", "Created output Shapefile:\n" + self.shapefileName 
-			+ "\nNote: Layer has no associated coordinate system, please use "
-			+ "the Projection Management Tool to specify spatial reference system."
-			+ "\n\nWould you like to add the new layer to the TOC?", 
-			QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
+			addToTOC = QMessageBox.question(self, self.tr("Generate Vector Grid"), self.tr("Created output shapefile:\n%1\n\nNote: Layer has no associated coordinate system, please use the Projection Management Tool to specify spatial reference system.\n\nWould you like to add the new layer to the TOC?").arg(unicode(self.shapefileName)), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
 			if addToTOC == QMessageBox.Yes:
 				ftools_utils.addShapeToCanvas( self.shapefileName )
 			self.progressBar.setValue( 0 )
