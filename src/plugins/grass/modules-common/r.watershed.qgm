@@ -2,7 +2,7 @@
 
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Watershed Analysis." module="r.watershed">
+<qgisgrassmodule label="Watershed Analysis" module="r.watershed">
 
 	<option key="elevation" />
 	<option key="threshold" />
@@ -10,7 +10,6 @@
 	<option key="accumulation" />
 	<option key="drainage" />
 	<option key="stream" />
-
 	<option key="basin" />
 
 </qgisgrassmodule>
