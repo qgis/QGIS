@@ -6,6 +6,6 @@
 	<option key="input"/>
 	<option key="coordinate" />
 	<option key="obs_elev" answer="1.75" hidden="no" />
-	<option key="max_dist" answer="1000" hidden="no" />
+	<option key="max_dist" answer="10000" hidden="no" />
 	<option key="output" />
 </qgisgrassmodule>
