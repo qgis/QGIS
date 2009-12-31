@@ -276,7 +276,7 @@ void QgsGrassTools::addModules( QTreeWidgetItem *parent, QDomElement &element )
 
       if ( e.tagName() == "section" )
       {
-        QString label = e.attribute( "label" );
+        QString label = QApplication::translate( "grasslabel", e.attribute( "label" ).toUtf8() );
         QgsDebugMsg( QString( "label = %1" ).arg( label ) );
         item->setText( 0, label );
         item->setExpanded( false );
