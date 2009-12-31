@@ -496,16 +496,6 @@ p, li { white-space: pre-wrap; }
 </translation>
     </message>
     <message>
-        <source>Points in polygon</source>
-        <translation>Punkte in Polygon</translation>
-    </message>
-    <message>
-        <source>Created output Shapefile:
-</source>
-        <translation>Ausgabeshapedatei erzeugt:
-</translation>
-    </message>
-    <message>
         <source>Vector layer is not valid</source>
         <translation>Vektorlayer ist ungültig</translation>
     </message>
@@ -785,6 +775,233 @@ p, li { white-space: pre-wrap; }
         <translation>Eingabelinienvektorlayer</translation>
     </message>
     <message>
+        <source>Export to new projection</source>
+        <translation>In neue Projektion exportieren</translation>
+    </message>
+    <message>
+        <source>No input layer specified</source>
+        <translation>Kein Eingabelayer angegeben</translation>
+    </message>
+    <message>
+        <source>Please specify output shapefile</source>
+        <translation>Bitte Ausgabeshapedatei angeben</translation>
+    </message>
+    <message>
+        <source>Define current projection</source>
+        <translation>Aktuelle Projektion definieren</translation>
+    </message>
+    <message>
+        <source>Please specify spatial reference system</source>
+        <translation>Bitte räumliches Bezugssystem angeben</translation>
+    </message>
+    <message>
+        <source>Created projected shapefile:
+%1
+
+Would you like to add the new layer to the TOC?</source>
+        <translation>Projizierte Shapedatei angelegt:
+%1
+
+Soll sie als neuer Layer eingefügt werden?</translation>
+    </message>
+    <message>
+        <source>Choose output CRS:</source>
+        <translation>Ausgabe-KBS wählen:</translation>
+    </message>
+    <message>
+        <source>Please select the projection system to be used by the output layer.</source>
+        <translation>Bitte Projektionssystem für den Ausgabelayer wählen.</translation>
+    </message>
+    <message>
+        <source>Output layer will be projected from it&apos;s current CRS to the output CRS.</source>
+        <translation>Ausgabelayer wird von seinem aktuellen KBs ins Ausgabe-KBS projiiziert.</translation>
+    </message>
+    <message>
+        <source>No Valid CRS selected</source>
+        <translation>Kein gültiges KBS gewählt</translation>
+    </message>
+    <message>
+        <source>Output spatial reference system is not valid</source>
+        <translation>Räumliches Ausgabebezugssystem ist ungültig</translation>
+    </message>
+    <message>
+        <source>Identical output spatial reference system chosen</source>
+        <translation>Gleiches räumliches Ausgabebezugssystem gewählt</translation>
+    </message>
+    <message>
+        <source>Regular points</source>
+        <translation>Regelmäßige Punkte</translation>
+    </message>
+    <message>
+        <source>Please properly specify extent coordinates</source>
+        <translation>Bitte Ausgabegrenzkoordinaten genau angeben</translation>
+    </message>
+    <message>
+        <source>Created output point shapefile:
+%1
+
+Note: Layer has no associated coordinate system, please use the Projection Management Tool to specify spatial reference system.
+
+Would you like to add the new layer to the TOC?</source>
+        <translation>Ausgabepunktshapedatei erzeugt:
+%1
+Hinweis: Layer hat kein zugeordnetes Koordinatensystem. Bitte benutzen Sie das Projektionsverwaltungswerkzeug, um ein räumliches Bezugssystem angeben.
+
+Würden ihn gerne als neuen Layer zum Projekt hinzufügen?</translation>
+    </message>
+    <message>
+        <source>Random selection</source>
+        <translation>Zufällige Auswahl</translation>
+    </message>
+    <message>
+        <source>Vector grid</source>
+        <translation>Vektorgitter</translation>
+    </message>
+    <message>
+        <source>Please specify valid extent coordinates</source>
+        <translation>Bitte geben Sie gültige Grenzkoordinaten an</translation>
+    </message>
+    <message>
+        <source>Invalid extent coordinates entered</source>
+        <translation>Ungültige Grenzkoordinaten angegeben</translation>
+    </message>
+    <message>
+        <source>Generate Vector Grid</source>
+        <translation>Vektorgitter erzeugen</translation>
+    </message>
+    <message>
+        <source>Created output shapefile:
+%1
+
+Note: Layer has no associated coordinate system, please use the Projection Management Tool to specify spatial reference system.
+
+Would you like to add the new layer to the TOC?</source>
+        <translation>Ausgabeshapedatei erzeugt:
+%1
+
+Hinweis: Layer hat kein zugeordnetes Koordinatensystem. Bitte benutzen Sie das Projektionsverwaltungswerkzeug, um ein räumliches Bezugssystem angeben.
+
+Würden ihn gerne als neuen Layer zum Projekt hinzufügen?</translation>
+    </message>
+    <message>
+        <source>Cannot define projection for PostGIS data...yet!</source>
+        <translation>Kann Projektionsdaten für PostGIS-Daten (noch!) nicht definieren...</translation>
+    </message>
+    <message>
+        <source>Unable to dynamically define projection.
+Please reload layer manually for projection definition to take effect.</source>
+        <translation>Kann Projektion nicht dynamisch definieren.
+Bitte laden Sie den Layer neu, um Projektsdefinition wirksam zu machen.</translation>
+    </message>
+    <message>
+        <source>Defined Projection For:
+%1.shp</source>
+        <translation>Definierte Projektion für:
+%1.shp</translation>
+    </message>
+    <message>
+        <source>Please select the projection system that defines the current layer.</source>
+        <translation>Bitte wählen Sie das Projektionssystem für den aktuellen Layer.</translation>
+    </message>
+    <message>
+        <source>Layer CRS information will be updated to the selected CRS.</source>
+        <translation>Layer-KBS-Information wird auf das gewählte KBS aktualisiert.</translation>
+    </message>
+    <message>
+        <source>Mean coordinates</source>
+        <translation>Mittlere Koordinaten</translation>
+    </message>
+    <message>
+        <source>Standard distance</source>
+        <translation>Standardabstand</translation>
+    </message>
+    <message>
+        <source>(Optional) Weight field</source>
+        <translation>(Optionales) Gewichtsfeld</translation>
+    </message>
+    <message>
+        <source>(Optional) Unique ID field</source>
+        <translation>(Optionales) Eindeutiges ID-Feld</translation>
+    </message>
+    <message>
+        <source>Coordinate statistics</source>
+        <translation>Koordinatenstatistik</translation>
+    </message>
+    <message>
+        <source>No input vector layer specified</source>
+        <translation>Keinen Eingabevektorlayer angegeben</translation>
+    </message>
+    <message>
+        <source>Created output point shapefile:
+%1
+
+Would you like to add the new layer to the TOC?</source>
+        <translation>Ausgabepunktshapedatei erzeugt:
+%1
+
+Soll es als neuer Layer hinzugefügt werden?</translation>
+    </message>
+    <message>
+        <source>Create Point Distance Matrix</source>
+        <translation>Punktabstandsmatrix erzeugen</translation>
+    </message>
+    <message>
+        <source>Please specify input point layer</source>
+        <translation>Bitte den Eingabelayer wählen</translation>
+    </message>
+    <message>
+        <source>Please specify output file</source>
+        <translation>Bitte Ausgabedatei angeben</translation>
+    </message>
+    <message>
+        <source>Please specify target point layer</source>
+        <translation>Bitte Zielpunktlayer angeben</translation>
+    </message>
+    <message>
+        <source>Please specify input unique ID field</source>
+        <translation>Bitte Eingabefeld für eindeutigen ID angeben</translation>
+    </message>
+    <message>
+        <source>Please specify target unique ID field</source>
+        <translation>Bitte Zielfeld für eindeutigen ID angeben</translation>
+    </message>
+    <message>
+        <source>Join attributes</source>
+        <translation>Attribute zusammenführen</translation>
+    </message>
+    <message>
+        <source>Please specify target vector layer</source>
+        <translation>Bitte Zielvektorlayer angeben</translation>
+    </message>
+    <message>
+        <source>Please specify join vector layer</source>
+        <translation>Bitte zusammenzuführenden Vektorlayer angeben</translation>
+    </message>
+    <message>
+        <source>Please specify target join field</source>
+        <translation>Bitte Zielverbindungsfeld angeben</translation>
+    </message>
+    <message>
+        <source>Please specify join field</source>
+        <translation>Bitte Verbindungsfeld angeben</translation>
+    </message>
+    <message>
+        <source>Please specify input table</source>
+        <translation>Bitte Eingabetabelle angeben</translation>
+    </message>
+    <message>
+        <source>Join Table</source>
+        <translation>Tabellen zusammenführen</translation>
+    </message>
+    <message>
+        <source>Input table does not exist</source>
+        <translation>Eingabetabelle existiert nicht</translation>
+    </message>
+    <message>
+        <source>joined fields</source>
+        <translation>zusammengeführte Felder</translation>
+    </message>
+    <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="25"/>
         <source>Grid extent</source>
         <translation>Rastergrenze</translation>
@@ -830,9 +1047,105 @@ p, li { white-space: pre-wrap; }
         <translation>Raster als Linien ausgeben</translation>
     </message>
     <message>
+        <source>Line intersections</source>
+        <translation>Linienschnittpunkte</translation>
+    </message>
+    <message>
+        <source>Please specify input line layer</source>
+        <translation>Bitte Eingabelinienlayer angeben</translation>
+    </message>
+    <message>
+        <source>Please specify line intersect layer</source>
+        <translation>Bitte Schnittlinienlayer angeben</translation>
+    </message>
+    <message>
+        <source>Please specify intersect unique ID field</source>
+        <translation>Bitte Feld für eindeutige Schnitt-ID angeben</translation>
+    </message>
+    <message>
+        <source>Join attributes by location</source>
+        <translation>Attribute nach Position zusammenführen</translation>
+    </message>
+    <message>
+        <source>Please specify at least one summary statistic</source>
+        <translation>Bitte mindestens eine Zusammenfassungsstatistik angeben</translation>
+    </message>
+    <message>
+        <source>CRS warning!</source>
+        <translation>KBS-Warnung!</translation>
+    </message>
+    <message>
+        <source>Warning: Input layers have non-matching CRS.
+This may cause unexpected results.</source>
+        <translation>Warnung: Eingabelayer haben nicht das gleiche KBS.
+Dies kann zu unerwarteten Ergebnissen führen.</translation>
+    </message>
+    <message>
+        <source>Summary field</source>
+        <translation>Zusammenfassungsfeld</translation>
+    </message>
+    <message>
+        <source>Random Points</source>
+        <translation>Zufällige Punkte</translation>
+    </message>
+    <message>
+        <source>unstratified</source>
+        <translation>nicht geschichtet</translation>
+    </message>
+    <message>
+        <source>stratified</source>
+        <translation>geschichtet</translation>
+    </message>
+    <message>
+        <source>density</source>
+        <translation>Dichte</translation>
+    </message>
+    <message>
+        <source>field</source>
+        <translation>Feld</translation>
+    </message>
+    <message>
+        <source>Unknown layer type...</source>
+        <translation>Unbekannter Layertyp...</translation>
+    </message>
+    <message>
+        <source>Split vector layer</source>
+        <translation>Vektorlayer teilen</translation>
+    </message>
+    <message>
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="16"/>
         <source>Vector Split</source>
         <translation>Vektorteilung</translation>
+    </message>
+    <message>
+        <source>No input shapefile specified</source>
+        <translation>Kein Eingabeshapedatei angegeben</translation>
+    </message>
+    <message>
+        <source>Created output shapefiles in folder:
+%1</source>
+        <translation>Ausgabeshapedateien erzeugt im Ordner:
+%1</translation>
+    </message>
+    <message>
+        <source>Count Points In Polygon</source>
+        <translation>Punkte in Polygonen zählen</translation>
+    </message>
+    <message>
+        <source>Please specify input polygon vector layer</source>
+        <translation>Bitte Eingabepolygonvektorlayer wählen</translation>
+    </message>
+    <message>
+        <source>Please specify input point vector layer</source>
+        <translation>Bitte Eingabepunktvektorlayer angeben</translation>
+    </message>
+    <message>
+        <source>Please specify output count field</source>
+        <translation>Bitte Ausgabezählfeld angeben</translation>
+    </message>
+    <message>
+        <source>point count field</source>
+        <translation>Punktzählfeld</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="45"/>
@@ -862,6 +1175,127 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Sum line lengths</source>
         <translation>Linienlängen summieren</translation>
+    </message>
+    <message>
+        <source>Random selection within subsets</source>
+        <translation>Zufällige Auswahl in Untermengen</translation>
+    </message>
+    <message>
+        <source>Please specify input vector layer</source>
+        <translation>Bitte Eingabevektorlayer angeben</translation>
+    </message>
+    <message>
+        <source>Please specify an input field</source>
+        <translation>Bitte Eingabefeld angeben</translation>
+    </message>
+    <message>
+        <source>Shapefiles (*.shp)</source>
+        <translation>Shapedatei (*.shp)</translation>
+    </message>
+    <message>
+        <source>Cannot overwrite existing shapefile...</source>
+        <translation>Konnte vorhandener Shapedatei nicht überschreiben...</translation>
+    </message>
+    <message>
+        <source>Sum Line Lengths In Polyons</source>
+        <translation>Länge in Polygonen summieren</translation>
+    </message>
+    <message>
+        <source>Please specify input line vector layer</source>
+        <translation>Bitte Eingabelinienvektorlayer angeben</translation>
+    </message>
+    <message>
+        <source>Please specify output length field</source>
+        <translation>Bitte Ausgabelängenfeld angeben</translation>
+    </message>
+    <message>
+        <source>Created output shapefile:
+%1
+
+Would you like to add the new layer to the TOC?</source>
+        <translation>Ausgabeshapedatei erzeugt:
+%1
+
+Soll sie dem Projekt als neuer Layer hinzugefügt werden?</translation>
+    </message>
+    <message>
+        <source>length field</source>
+        <translation>Längenfeld</translation>
+    </message>
+    <message>
+        <source>
+The goal of fTools is to provide a one-stop resource for many common vector-based GIS tasks, without the need for additional software, libraries, or complex workarounds.
+
+fTools is designed to extend the functionality of Quantum GIS using only core QGIS and python libraries. It provides a growing suite of spatial data management and analysis functions that are both quick and functional. In addition, the geoprocessing functions of  Dr. Horst Duester and Stefan Ziegler have been incorporated to futher facilitate and streamline GIS based research and analysis.
+
+If you would like to report a bug, make suggestions for improving fTools, or have a question about the tools, please email me: carson.farmer@gmail.com
+
+LICENSING INFORMATION:
+fTools is copyright (C) 2009  Carson J.Q. Farmer
+Geoprocessing functions adapted from &apos;Geoprocessing Plugin&apos;,
+(C) 2008 by Dr. Horst Duester, Stefan Ziegler
+
+licensed under the terms of GNU GPL 2
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+ACKNOWLEDGEMENTS:
+The following individuals (whether they know it or not) have contributed ideas, help, testing, code, and guidence towards this project, and I thank them.
+Hawthorn Beyer
+Borys Jurgiel
+Tim Sutton
+Barry Rowlingson
+Horst Duester and Stefan Ziegler
+Paolo Cavallini
+Aaron Racicot
+Colin Robertson
+Agustin Lobo
+Jurgen E. Fischer
+QGis developer and user communities
+Folks on #qgis at freenode.net
+All those who have reported bugs/fixes/suggestions/comments/etc.
+</source>
+        <translation>
+fTools zielt darauf ab, eine zentrale Anlaufstelle für allgemeine vektorbasierte GIS-Aufgabe zu sein ohne zusätzliche Software, Bibliotheken oder komplizierte Workarounds zu erfordern.
+
+fTools soll die Funktionalität von Quantum GIS erweitern und dabei nur auf Kern-QGIS- und Pythonbibliotheken zuzugreifen. Es stellt eine wachsende Zusammenstellung von Verwaltungs- und Analysefunktionen für räumliche Daten zur Verfügung, die sowohl schnell als auch funktionell sind. Außerdem wurden die Geodatenverarbeitungsfunktionen von Dr. Horst Düster and Stefan Ziegler integriert, um GIS-basierten Forschung und Analyse weiter zu vereinfachen.
+
+Wenn Sie einen Bug melden wollen, Verbesserungsvorschläge oder Fragen zu fTools haben, schicken Sie mir bitte eine E-Mail an carson.farmer@gmail.com
+
+LIZENZENSIERUNGSINFORMATIONEN:
+fTools ist urheberrechtlich geschützt: copyright (C) 2009  Carson J.Q. Farmer
+Geoverarbeitungsfunktionen adaptiert aus dem &apos;Geoprocessing Plugin&apos;,
+(C) 2008 durch Dr. Horst Düster, Stefan Ziegler
+
+Lizensiert unter den Bedingungen der GNU GPL 2
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+Danksagung:
+Folgende Personen (ob sie es wissen oder auch nicht) haben Ideen, Hilfe, Tests, Code oder Anleitung zum Projekt beigetragen, wofür ich ihnen danke.
+Hawthorn Beyer
+Borys Jurgiel
+Tim Sutton
+Barry Rowlingson
+Horst Duester and Stefan Ziegler
+Paolo Cavallini
+Aaron Racicot
+Colin Robertson
+Agustin Lobo
+Jürgen E. Fischer
+QGis Entwickler und Benutzer
+Leute in #qgis auf freenode.net
+Alle die Fehler gemeldet/Fehlerkorrekturen/Vorschläge/Kommentare usw. beigetragen haben.</translation>
+    </message>
+    <message>
+        <source>Count Points in Polygon</source>
+        <translation>Punkte in Polygon zählen</translation>
+    </message>
+    <message>
+        <source>Counts Points In Polygon</source>
+        <translation>Zählt Punkte in Polygon</translation>
     </message>
 </context>
 <context>
@@ -1013,10 +1447,6 @@ p, li { white-space: pre-wrap; }
         <translation>Bitte ein gültiges UID-Feld angeben</translation>
     </message>
     <message>
-        <source>Would you like to add the new layer to the TOC?</source>
-        <translation>Soll der neue Layer der Legende hinzugefügt werden?</translation>
-    </message>
-    <message>
         <source>Singleparts to multipart</source>
         <translation>Einzel- zu mehrteilig</translation>
     </message>
@@ -1061,14 +1491,6 @@ p, li { white-space: pre-wrap; }
         <translation>Ausgabepunktshapedatei</translation>
     </message>
     <message>
-        <source>Error processing specified tolerance!</source>
-        <translation>Fehler bei Verarbeitung der angegebenen Toleranz!</translation>
-    </message>
-    <message>
-        <source>Please choose larger tolerance...</source>
-        <translation>Bitte eine größere Toleranz wählen...</translation>
-    </message>
-    <message>
         <source>Delaunay triangulation</source>
         <translation>Delaunay-Triangulation</translation>
     </message>
@@ -1097,12 +1519,36 @@ p, li { white-space: pre-wrap; }
         <translation>Konnte unvollständige Shapedatei nicht löschen.</translation>
     </message>
     <message>
-        <source>Created output shapefile:</source>
-        <translation>Erzeugte Ausgabeshapedatei:</translation>
-    </message>
-    <message>
         <source>Error writing output shapefile.</source>
         <translation>Fehler beim Schreiben der Ausgabeshapedatei.</translation>
+    </message>
+    <message>
+        <source>Geometry</source>
+        <translation>Geometrie</translation>
+    </message>
+    <message>
+        <source>Geoprocessing</source>
+        <translation>Geodatenverarbeitung</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Abbruch</translation>
+    </message>
+    <message>
+        <source>Error processing specified tolerance!
+Please choose larger tolerance...</source>
+        <translation>Fehler beim Verarbeiten der angebenen Toleranz!
+Bitte wählen Sie eine größere Toleranz...</translation>
+    </message>
+    <message>
+        <source>Created output shapefile:
+%1
+
+Would you like to add the new layer to the TOC?</source>
+        <translation>Ausgabeshapedatei erzeugt:
+%1
+
+Soll sie dem Projekt als neuer Layer hinzugefügt werden?</translation>
     </message>
 </context>
 <context>
@@ -1168,6 +1614,10 @@ p, li { white-space: pre-wrap; }
         <translation>Differenzlayer</translation>
     </message>
     <message>
+        <source>Geoprocessing</source>
+        <translation>Geodatenverarbeitung</translation>
+    </message>
+    <message>
         <source>No features selected, please uncheck &apos;Use selected&apos; or make a selection</source>
         <translation>Keine Objekte gewählt, bitte &apos;Nur gewählte&apos; abschalten oder Objekte wählen</translation>
     </message>
@@ -1194,6 +1644,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Unable to delete existing shapefile.</source>
         <translation>Konnte vorhandene Shapedatei nicht löschen.</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Abbruch</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation>Schließen</translation>
     </message>
     <message>
         <source>
@@ -1238,8 +1696,13 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
 GEOS-Verarbeitugnsfehler: Eine oder mehrere Objekte haben ungültige Geometrie.</translation>
     </message>
     <message>
-        <source>Created output shapefile:</source>
-        <translation>Erzeugte Ausgabeshapedatei:</translation>
+        <source>Created output shapefile:
+%1
+
+%2%3</source>
+        <translation>Ausgabeshapedatei erzeugt:
+%1
+%2%3</translation>
     </message>
 </context>
 <context>
@@ -13054,7 +13517,7 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="38"/>
         <source>Basic label options and placement</source>
-        <translation></translation>
+        <translation>Allgemeine Beschriftungsoptionen und Platzierung</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="287"/>
@@ -23320,6 +23783,22 @@ URL %1 versucht</translation>
         <source>Total unique values</source>
         <translation>Gesamtzahl eindeutiger Werte</translation>
     </message>
+    <message>
+        <source>Error!</source>
+        <translation>Fehler!</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation>Abbruch</translation>
+    </message>
+    <message>
+        <source>Parameter</source>
+        <translation>Parameter</translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation>Wert</translation>
+    </message>
 </context>
 <context>
     <name>WidgetLineDecoration</name>
@@ -24554,6 +25033,29 @@ Plugin wird nicht aktiviert.</translation>
     <message>
         <source>fTools Information</source>
         <translation>fTools-Information</translation>
+    </message>
+</context>
+<context>
+    <name>geometryThread</name>
+    <message>
+        <source>Polygon area</source>
+        <translation>Polygonfläche</translation>
+    </message>
+    <message>
+        <source>Polygon perimeter</source>
+        <translation>Polygonumfang</translation>
+    </message>
+    <message>
+        <source>Line length</source>
+        <translation>Linienlänge</translation>
+    </message>
+    <message>
+        <source>Point x coordinate</source>
+        <translation>Punkt X-Koordinate</translation>
+    </message>
+    <message>
+        <source>Point y coordinate</source>
+        <translation>Punkt Y-Koordinate</translation>
     </message>
 </context>
 <context>
