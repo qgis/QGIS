@@ -1,7 +1,6 @@
 #!/usr/bin/perl
 
 use XML::Simple;
-use Data::Dumper;
 
 die "usage: $0 source.ts dest.cpp\n" unless @ARGV==2 && -f $ARGV[0];
 

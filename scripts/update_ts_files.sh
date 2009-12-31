@@ -40,13 +40,14 @@ for i in python/plugins/*/CMakeLists.txt; do
 	rm python-i18n.ts
 	cd ../../..
 done
+perl scripts/qgm2cpp.pl >src/plugins/grass/grasslabels-i18n.cpp
 echo Creating qmake project file
 qmake -project -o qgis_ts.pro -nopwd src python i18n
 echo Updating translation files
 lupdate$opts -verbose qgis_ts.pro
 echo Removing temporary python translation files
 perl -i.bak -ne 'print unless /^\s+<location.*python-i18n\.cpp.*$/;' i18n/qgis_*.ts
-rm python/python-i18n.cpp python/plugins/*/python-i18n.cpp i18n/qgis_*.ts.bak
+rm python/python-i18n.cpp python/plugins/*/python-i18n.cpp i18n/qgis_*.ts.bak src/plugins/grass/grasslabels-i18n.cpp
 echo Removing qmake project file
 rm qgis_ts.pro
 echo Unpacking qt_ts.tar

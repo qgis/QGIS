@@ -1314,7 +1314,7 @@ void QgsGrassMapcalc::load()
     {
       case QgsGrassMapcalcObject::Map:
       {
-        QString label = e.attribute( "label", "???" );
+        QString label = QApplication::translate( "grasslabel", e.attribute( "label", "???" ).toUtf8() );
         obj->setValue( value, label );
         break;
       }

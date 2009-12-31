@@ -941,7 +941,7 @@ QString QgsGrassModule::label( QString path )
   qFile.close();
   QDomElement qDocElem = qDoc.documentElement();
 
-  return ( qDocElem.attribute( "label" ) );
+  return QApplication::translate( "grasslabel", qDocElem.attribute( "label" ).toUtf8() );
 }
 
 QPixmap QgsGrassModule::pixmap( QString path, int height )
@@ -2503,7 +2503,7 @@ QgsGrassModuleItem::QgsGrassModuleItem( QgsGrassModule *module, QString key,
   QString label, description;
   if ( !qdesc.attribute( "label" ).isEmpty() )
   {
-    label = qdesc.attribute( "label" );
+    label = QApplication::translate( "grasslabel", qdesc.attribute( "label" ).toUtf8() );
   }
   if ( label.isEmpty() )
   {
@@ -2511,16 +2511,14 @@ QgsGrassModuleItem::QgsGrassModuleItem( QgsGrassModule *module, QString key,
     if ( !n.isNull() )
     {
       QDomElement e = n.toElement();
-      label = e.text().trimmed();
-      label.replace( 0, 1, label.left( 1 ).toUpper() );
+      label = QApplication::translate( "grasslabel", e.text().toUtf8() );
     }
   }
   QDomNode n = gnode.namedItem( "description" );
   if ( !n.isNull() )
   {
     QDomElement e = n.toElement();
-    description = e.text().trimmed();
-    description.replace( 0, 1, description.left( 1 ).toUpper() );
+    description = QApplication::translate( "grasslabel", e.text().toUtf8() );
   }
 
   if ( !label.isEmpty() )
