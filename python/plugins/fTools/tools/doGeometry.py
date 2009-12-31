@@ -33,13 +33,13 @@ class GeometryDialog(QDialog, Ui_Dialog):
 
   def accept(self):
     if self.inShape.currentText() == "":
-      QMessageBox.information(self, "Geometry", self.tr( "Please specify input vector layer" ) )
+      QMessageBox.information(self, self.tr("Geometry"), self.tr( "Please specify input vector layer" ) )
     elif self.outShape.text() == "":
-      QMessageBox.information(self, "Geometry", self.tr( "Please specify output shapefile" ) )
+      QMessageBox.information(self, self.tr("Geometry"), self.tr( "Please specify output shapefile" ) )
     elif self.lineEdit.isVisible() and self.lineEdit.value() <= 0.00:
-      QMessageBox.information(self, "Geometry", self.tr( "Please specify valid tolerance value" ) )
+      QMessageBox.information(self, self.tr("Geometry"), self.tr( "Please specify valid tolerance value" ) )
     elif self.cmbField.isVisible() and self.cmbField.currentText() == "":
-      QMessageBox.information(self, "Geometry", self.tr( "Please specify valid UID field" ) )
+      QMessageBox.information(self, self.tr("Geometry"), self.tr( "Please specify valid UID field" ) )
     else:
       self.outShape.clear()
       self.geometry( self.inShape.currentText(), self.lineEdit.value(), self.cmbField.currentText() )
@@ -148,14 +148,14 @@ class GeometryDialog(QDialog, Ui_Dialog):
     check = QFile( self.shapefileName )
     if check.exists():
       if not QgsVectorFileWriter.deleteShapeFile( self.shapefileName ):
-        QMessageBox.warning( self, "Geoprocessing", self.tr( "Unable to delete existing shapefile." ) )
+        QMessageBox.warning( self, self.tr("Geoprocessing"), self.tr( "Unable to delete existing shapefile." ) )
         return
     self.testThread = geometryThread( self.iface.mainWindow(), self, self.myFunction, vlayer, myParam, 
     myField, self.shapefileName, self.encoding )
     QObject.connect( self.testThread, SIGNAL( "runFinished(PyQt_PyObject)" ), self.runFinishedFromThread )
     QObject.connect( self.testThread, SIGNAL( "runStatus(PyQt_PyObject)" ), self.runStatusFromThread )
     QObject.connect( self.testThread, SIGNAL( "runRange(PyQt_PyObject)" ), self.runRangeFromThread )
-    self.cancel_close.setText( "Cancel" )
+    self.cancel_close.setText( self.tr("Cancel") )
     QObject.connect( self.cancel_close, SIGNAL( "clicked()" ), self.cancelThread )
     self.testThread.start()
 
@@ -165,21 +165,18 @@ class GeometryDialog(QDialog, Ui_Dialog):
   def runFinishedFromThread( self, success ):
     self.testThread.stop()
     if success == "math_error":
-      QMessageBox.warning( self, "Geometry", self.tr( "Error processing specified tolerance!" ) + "\n"
-      + self.tr( "Please choose larger tolerance..." ) )
+      QMessageBox.warning( self, self.tr("Geometry"), self.tr("Error processing specified tolerance!\nPlease choose larger tolerance...") )
       if not QgsVectorFileWriter.deleteShapeFile( self.shapefileName ):
-        QMessageBox.warning( self, "Geometry", self.tr( "Unable to delete incomplete shapefile." ) )
+        QMessageBox.warning( self, self.tr("Geometry"), self.tr( "Unable to delete incomplete shapefile." ) )
     else: 
       self.cancel_close.setText( "Close" )
       QObject.disconnect( self.cancel_close, SIGNAL( "clicked()" ), self.cancelThread )
       if success:
-        addToTOC = QMessageBox.question( self, "Geometry", self.tr( "Created output shapefile:" ) + "\n" + 
-        unicode( self.shapefileName ) + "\n\n" + self.tr( "Would you like to add the new layer to the TOC?" ), 
-        QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton )
+        addToTOC = QMessageBox.question( self, self.tr("Geometry"), self.tr( "Created output shapefile:\n%1\n\nWould you like to add the new layer to the TOC?" ).arg( unicode( self.shapefileName ) ), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton )
         if addToTOC == QMessageBox.Yes:
           ftools_utils.addShapeToCanvas( unicode( self.shapefileName ) )
       else:
-        QMessageBox.warning( self, "Geometry", self.tr( "Error writing output shapefile." ) )
+        QMessageBox.warning( self, self.tr("Geometry"), self.tr( "Error writing output shapefile." ) )
         
   def runStatusFromThread( self, status ):
     self.progressBar.setValue( status )
@@ -755,20 +752,20 @@ class geometryThread( QThread ):
       plp = "Poly"
       ( found, index1 ) = self.checkForField( nameList, "AREA" )           
       if not found:
-        field = QgsField( "AREA", QVariant.Double, "double", 10, 6, "Polygon area" )
+        field = QgsField( "AREA", QVariant.Double, "double", 10, 6, self.tr("Polygon area") )
         index1 = len( fieldList.keys() )
         fieldList[ index1 ] = field        
       ( found, index2 ) = self.checkForField( nameList, "PERIMETER" )
         
       if not found:
-        field = QgsField( "PERIMETER", QVariant.Double, "double", 10, 6, "Polygon perimeter" )
+        field = QgsField( "PERIMETER", QVariant.Double, "double", 10, 6, self.tr("Polygon perimeter") )
         index2 = len( fieldList.keys() )
         fieldList[ index2 ] = field         
     elif geomType == QGis.Line:
       plp = "Line"
       (found, index1) = self.checkForField(nameList, "LENGTH")
       if not found:
-        field = QgsField("LENGTH", QVariant.Double, "double", 10, 6, "Line length")
+        field = QgsField("LENGTH", QVariant.Double, "double", 10, 6, self.tr("Line length") )
         index1 = len(fieldList.keys())
         fieldList[index1] = field
       index2 = index1
@@ -776,12 +773,12 @@ class geometryThread( QThread ):
       plp = "Point"
       (found, index1) = self.checkForField(nameList, "XCOORD")
       if not found:
-        field = QgsField("XCOORD", QVariant.Double, "double", 10, 6, "Point x coordinate")
+        field = QgsField("XCOORD", QVariant.Double, "double", 10, 6, self.tr("Point x coordinate") )
         index1 = len(fieldList.keys())
         fieldList[index1] = field
       (found, index2) = self.checkForField(nameList, "YCOORD")
       if not found:
-        field = QgsField("YCOORD", QVariant.Double, "double", 10, 6, "Point y coordinate")
+        field = QgsField("YCOORD", QVariant.Double, "double", 10, 6, self.tr("Point y coordinate") )
         index2 = len(fieldList.keys())
         fieldList[index2] = field
     return (fieldList, index1, index2)

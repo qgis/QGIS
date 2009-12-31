@@ -44,7 +44,7 @@ class Dialog(QDialog, Ui_Dialog):
 		# Set up the user interface from Designer.
 		self.setupUi(self)
 		QObject.connect(self.toolOut, SIGNAL("clicked()"), self.outFile)
-		self.setWindowTitle(self.tr("Points in polygon"))
+		self.setWindowTitle(self.tr("Count Points in Polygon"))
 		# populate layer list
 		self.progressBar.setValue(0)
 		mapCanvas = self.iface.mapCanvas()
@@ -58,13 +58,13 @@ class Dialog(QDialog, Ui_Dialog):
 		
 	def accept(self):
 		if self.inPolygon.currentText() == "":
-			QMessageBox.information(self, "Count Points In Polyon", "Please specify input polygon vector layer")
+			QMessageBox.information(self, self.tr("Count Points In Polygon"), self.tr("Please specify input polygon vector layer"))
 		elif self.outShape.text() == "":
-			QMessageBox.information(self, "Count Points In Polygon", "Please specify output shapefile")
+			QMessageBox.information(self, self.tr("Count Points In Polygon"), self.tr("Please specify output shapefile"))
 		elif self.inPoint.currentText() == "":
-			QMessageBox.information(self, "Count Points In Polygon", "Please specify input point vector layer")
+			QMessageBox.information(self, self.tr("Count Points In Polygon"), self.tr("Please specify input point vector layer"))
 		elif self.lnField.text() == "":
-			QMessageBox.information(self, "Count Points In Polygon", "Please specify output count field")
+			QMessageBox.information(self, self.tr("Count Points In Polygon"), self.tr("Please specify output count field"))
 		else:
 			inPoly = self.inPolygon.currentText()
 			inPts = self.inPoint.currentText()
@@ -78,8 +78,7 @@ class Dialog(QDialog, Ui_Dialog):
 				outName = outName.left(outName.length() - 4)
 			self.compute(inPoly, inPts, inField, outPath, self.progressBar)
 			self.outShape.clear()
-			addToTOC = QMessageBox.question(self, "Count Points in Polygons", self.tr("Created output Shapefile:\n") + outPath 
-			+ "\n\nWould you like to add the new layer to the TOC?", QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
+			addToTOC = QMessageBox.question(self, self.tr("Count Points in Polygon"), self.tr("Created output shapefile:\n%1\n\nWould you like to add the new layer to the TOC?").arg(unicode(outPath)), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
 			if addToTOC == QMessageBox.Yes:
 				self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
 				QgsMapLayerRegistry.instance().addMapLayer(self.vlayer)
@@ -98,7 +97,7 @@ class Dialog(QDialog, Ui_Dialog):
 		polyProvider = polyLayer.dataProvider()
 		pointProvider = pointLayer.dataProvider()
 		if polyProvider.crs() <> pointProvider.crs():
-			QMessageBox.warning(self, "CRS warning!", "Warning: Input layers have non-matching CRS.\nThis may cause unexpected results.")
+			QMessageBox.warning(self, self.tr("CRS warning!"), self.tr("Warning: Input layers have non-matching CRS.\nThis may cause unexpected results."))
 		allAttrs = polyProvider.attributeIndexes()
 		polyProvider.select(allAttrs)
 		allAttrs = pointProvider.attributeIndexes()
@@ -107,7 +106,7 @@ class Dialog(QDialog, Ui_Dialog):
 		index = polyProvider.fieldNameIndex(unicode(inField))
 		if index == -1:
 			index = polyProvider.fieldCount()
-			field = QgsField(unicode(inField), QVariant.Int, "real", 24, 15, "point count field")
+			field = QgsField(unicode(inField), QVariant.Int, "real", 24, 15, self.tr("point count field"))
 			fieldList[index] = field
 		sRs = polyProvider.crs()
 		check = QFile(self.shapefileName)
@@ -154,7 +153,7 @@ class Dialog(QDialog, Ui_Dialog):
 				if vlayer.isValid():
 					return vlayer
 				else:
-					QMessageBox.information(self, "Counts Points In Polygons", self.tr("Vector layer is not valid"))
+					QMessageBox.information(self, self.tr("Counts Points In Polygon"), self.tr("Vector layer is not valid"))
 
 	def getFieldList(self, vlayer):
 		fProvider = vlayer.dataProvider()

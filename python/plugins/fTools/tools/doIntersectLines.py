@@ -47,7 +47,7 @@ class Dialog(QDialog, Ui_Dialog):
 		QObject.connect(self.toolOut, SIGNAL("clicked()"), self.outFile)
 		QObject.connect(self.inLine1, SIGNAL("currentIndexChanged(QString)"), self.update1)
 		QObject.connect(self.inLine2, SIGNAL("currentIndexChanged(QString)"), self.update2)
-		self.setWindowTitle("Line intersections")
+		self.setWindowTitle( self.tr("Line intersections") )
 		# populate layer list
 		self.progressBar.setValue(0)
 		mapCanvas = self.iface.mapCanvas()
@@ -74,15 +74,15 @@ class Dialog(QDialog, Ui_Dialog):
 
 	def accept(self):
 		if self.inLine1.currentText() == "":
-			QMessageBox.information(self, "Locate Line Intersections", "Please specify input line layer")
+			QMessageBox.information(self, self.tr("Locate Line Intersections"), self.tr("Please specify input line layer") )
 		elif self.outShape.text() == "":
-			QMessageBox.information(self, "Locate Line Intersections", "Please specify output shapefile")
+			QMessageBox.information(self, self.tr("Locate Line Intersections"), self.tr("Please specify output shapefile") )
 		elif self.inLine2.currentText() == "":
-			QMessageBox.information(self, "Locate Line Intersections", "Please specify line intersect layer")
+			QMessageBox.information(self, self.tr("Locate Line Intersections"), self.tr("Please specify line intersect layer") )
 		elif self.inField1.currentText() == "":
-			QMessageBox.information(self, "Locate Line Intersections", "Please specify input unique ID field")
+			QMessageBox.information(self, self.tr("Locate Line Intersections"), self.tr("Please specify input unique ID field") )
 		elif self.inField2.currentText() == "":
-			QMessageBox.information(self, "Locate Line Intersections", "Please specify intersect unique ID field")
+			QMessageBox.information(self, self.tr("Locate Line Intersections"), self.tr("Please specify intersect unique ID field") )
 		else:
 			line1 = self.inLine1.currentText()
 			line2 = self.inLine2.currentText()
@@ -98,8 +98,7 @@ class Dialog(QDialog, Ui_Dialog):
 			self.outShape.clear()
 			self.compute(line1, line2, field1, field2, outPath, self.progressBar)
 			self.progressBar.setValue(100)
-			addToTOC = QMessageBox.question(self, "Generate Centroids", "Created output point Shapefile:\n" + outPath 
-			+ "\n\nWould you like to add the new layer to the TOC?", QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
+			addToTOC = QMessageBox.question(self, self.tr("Generate Centroids"), self.tr("Created output point shapefile:\n%1\n\nWould you like to add the new layer to the TOC?").arg( outPath ), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
 			if addToTOC == QMessageBox.Yes:
 				self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
 				QgsMapLayerRegistry.instance().addMapLayer(self.vlayer)
@@ -185,7 +184,7 @@ class Dialog(QDialog, Ui_Dialog):
 				if vlayer.isValid():
 					return vlayer
 				else:
-					QMessageBox.information(self, "Locate Line Intersections", "Vector layer is not valid")
+					QMessageBox.information(self, self.tr("Locate Line Intersections"), self.tr("Vector layer is not valid") )
 
 	def getFieldList(self, vlayer):
 		fProvider = vlayer.dataProvider()

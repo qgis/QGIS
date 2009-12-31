@@ -46,7 +46,7 @@ class Dialog(QDialog, Ui_Dialog):
 		# Set up the user interface from Designer.
 		self.setupUi(self)
 		QObject.connect(self.toolOut, SIGNAL("clicked()"), self.outFile)
-		self.setWindowTitle("Join attributes by location")
+		self.setWindowTitle( self.tr("Join attributes by location") )
 		# populate layer list
 		self.progressBar.setValue(0)
 		mapCanvas = self.iface.mapCanvas()
@@ -58,13 +58,13 @@ class Dialog(QDialog, Ui_Dialog):
 		
 	def accept(self):
 		if self.inShape.currentText() == "":
-			QMessageBox.information(self, "Spatial Join", "Please specify target vector layer")
+			QMessageBox.information(self, self.tr("Spatial Join"), self.tr("Please specify target vector layer") )
 		elif self.outShape.text() == "":
-			QMessageBox.information(self, "Spatial Join", "Please specify output shapefile")
+			QMessageBox.information(self, self.tr("Spatial Join"), self.tr("Please specify output shapefile") )
 		elif self.joinShape.currentText() == "":
-			QMessageBox.information(self, "Spatial Join", "Please specify join vector layer")
+			QMessageBox.information(self, self.tr("Spatial Join"), self.tr("Please specify join vector layer") )
 		elif self.rdoSummary.isChecked() and not (self.chkMean.isChecked() or self.chkSum.isChecked() or self.chkMin.isChecked() or self.chkMax.isChecked() or self.chkMean.isChecked()):
-			QMessageBox.information(self, "Spatial Join", "Please specify at least one summary statistic")
+			QMessageBox.information(self, self.tr("Spatial Join"), self.tr("Please specify at least one summary statistic") )
 		else:
 			inName = self.inShape.currentText()
 			joinName = self.joinShape.currentText()
@@ -89,8 +89,7 @@ class Dialog(QDialog, Ui_Dialog):
 				outName = outName.left(outName.length() - 4)
 			self.compute(inName, joinName, outPath, summary, sumList, keep, self.progressBar)
 			self.outShape.clear()
-			addToTOC = QMessageBox.question(self, "Spatial Join", "Created output Shapefile:\n" + outPath 
-			+ "\n\nWould you like to add the new layer to the TOC?", QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
+			addToTOC = QMessageBox.question(self, self.tr("Spatial Join"), self.tr("Created output shapefile:\n%1\n\nWould you like to add the new layer to the TOC?").arg(unicode(outPath)), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
 			if addToTOC == QMessageBox.Yes:
 				self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
 				QgsMapLayerRegistry.instance().addMapLayer(self.vlayer)
@@ -117,7 +116,7 @@ class Dialog(QDialog, Ui_Dialog):
 		fieldList2 = self.getFieldList(layer2)
 		fieldList = []
 		if provider1.crs() <> provider2.crs():
-			QMessageBox.warning(self, "CRS warning!", "Warning: Input layers have non-matching CRS.\nThis may cause unexpected results.")
+			QMessageBox.warning(self, self.tr("CRS warning!"), self.tr("Warning: Input layers have non-matching CRS.\nThis may cause unexpected results."))
 		if not summary:
 			fieldList2 = self.testForUniqueness(fieldList1, fieldList2.values())
 			seq = range(0, len(fieldList1) + len(fieldList2))
@@ -129,9 +128,9 @@ class Dialog(QDialog, Ui_Dialog):
 				if fieldList2[j].type() == QVariant.Int or fieldList2[j].type() == QVariant.Double:
 					numFields[j] = []
 					for i in sumList:
-						field = QgsField(i + unicode(fieldList2[j].name()), QVariant.Double, "real", 24, 16, "Summary field")
+						field = QgsField(i + unicode(fieldList2[j].name()), QVariant.Double, "real", 24, 16, self.tr("Summary field") )
 						fieldList.append(field)
-			field = QgsField("COUNT", QVariant.Double, "real", 24, 16, "Summary field")
+			field = QgsField("COUNT", QVariant.Double, "real", 24, 16, self.tr("Summary field") )
 			fieldList.append(field)
 			fieldList2 = self.testForUniqueness(fieldList1, fieldList)
 			fieldList1.extend(fieldList)
@@ -251,7 +250,7 @@ class Dialog(QDialog, Ui_Dialog):
 				if vlayer.isValid():
 					return vlayer
 				else:
-					QMessageBox.information(self, "Spatial Join", "Vector layer is not valid")
+					QMessageBox.information(self, self.tr("Spatial Join"), self.tr("Vector layer is not valid"))
 
 	def getFieldList(self, vlayer):
 		fProvider = vlayer.dataProvider()

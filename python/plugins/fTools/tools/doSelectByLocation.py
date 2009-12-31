@@ -43,9 +43,9 @@ class Dialog(QDialog, Ui_Dialog):
 
 	def accept(self):
 		if self.inPolygon.currentText() == "":
-			QMessageBox.information(self, "Select by location", self.tr( "Please specify input layer"))
+			QMessageBox.information(self, self.tr("Select by location"), self.tr( "Please specify input layer"))
 		elif self.inPoint.currentText() == "":
-			QMessageBox.information(self, "Select by location", self.tr("Please specify select layer"))
+			QMessageBox.information(self, self.tr("Select by location"), self.tr("Please specify select layer"))
 		else:
 			inPoly = self.inPolygon.currentText()
 			inPts = self.inPoint.currentText()
@@ -68,9 +68,9 @@ class Dialog(QDialog, Ui_Dialog):
 			geom = QgsGeometry(feat.geometry())
 			if geom.intersects(geomLayer):
 				selectedSet.append(feat.id())
-		if modify == "adding to current selection":
+		if modify == self.tr("adding to current selection"):
 			selectedSet = list(set(inputLayer.selectedFeaturesIds()).union(selectedSet))
-		elif modify == "removing from current selection":
+		elif modify == self.tr("removing from current selection"):
 			selectedSet = list(set(inputLayer.selectedFeaturesIds()).difference(selectedSet))
 		inputLayer.setSelectedFeatures(selectedSet)
 				

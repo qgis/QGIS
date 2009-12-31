@@ -12,7 +12,7 @@ class Dialog(QDialog, Ui_Dialog):
         # Set up the user interface from Designer.
         self.setupUi(self)
         QObject.connect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.changed)
-        self.setWindowTitle("Random selection")
+        self.setWindowTitle(self.tr("Random selection"))
         # populate layer list
         self.progressBar.setValue(0)
         mapCanvas = self.iface.mapCanvas()
@@ -29,7 +29,7 @@ class Dialog(QDialog, Ui_Dialog):
 
     def accept(self):
 	if self.inShape.currentText() == "":
-	    QMessageBox.information(self, "Random Selection Tool", "No input shapefile specified")
+	    QMessageBox.information(self, self.tr("Random Selection Tool"), self.tr("No input shapefile specified"))
 	else:
             self.progressBar.setValue(10)
             inName = self.inShape.currentText()

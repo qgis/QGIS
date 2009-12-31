@@ -56,9 +56,9 @@ class VisualDialog( QDialog, Ui_Dialog ):
         
   def accept( self ):
     if self.inShape.currentText() == "":
-      QMessageBox.information( self, "Error!", self.tr( "Please specify input vector layer" ) )
+      QMessageBox.information( self, self.tr("Error!"), self.tr( "Please specify input vector layer" ) )
     elif self.cmbField.isVisible() and self.cmbField.currentText() == "":
-      QMessageBox.information( self, "Error!", self.tr( "Please specify input field" ) )
+      QMessageBox.information( self, self.tr("Error!"), self.tr( "Please specify input field" ) )
     else:
       self.visual( self.inShape.currentText(), self.cmbField.currentText(), self.useSelected.checkState() )
   
@@ -115,7 +115,7 @@ class VisualDialog( QDialog, Ui_Dialog ):
     QObject.connect( self.testThread, SIGNAL( "runRange(PyQt_PyObject)" ), self.runRangeFromThread )
     QObject.connect( self.testThread, SIGNAL( "runPartRange(PyQt_PyObject)" ), self.runPartRangeFromThread )
     QObject.connect( self.testThread, SIGNAL( "runPartStatus(PyQt_PyObject)" ), self.runPartStatusFromThread )
-    self.cancel_close.setText( "Cancel" )
+    self.cancel_close.setText( self.tr("Cancel") )
     QObject.connect( self.cancel_close, SIGNAL( "clicked()" ), self.cancelThread )
     self.testThread.start()
     return True
@@ -142,7 +142,7 @@ class VisualDialog( QDialog, Ui_Dialog ):
 	self.tblUnique.setItem( rec, 0, item )
 	item = QTableWidgetItem( tmp[ 1 ] )
 	self.tblUnique.setItem( rec, 1, item )
-	self.tblUnique.setHorizontalHeaderLabels( [ "Parameter", "Value" ] )
+	self.tblUnique.setHorizontalHeaderLabels( [ self.tr("Parameter"), self.tr("Value") ] )
 	self.tblUnique.horizontalHeader().setResizeMode( 1, QHeaderView.ResizeToContents )
 	self.tblUnique.horizontalHeader().show()
     self.tblUnique.horizontalHeader().setResizeMode( 0, QHeaderView.Stretch )

@@ -17,7 +17,7 @@ class Dialog(QDialog, Ui_Dialog):
 		self.outShape.setVisible(False)
 		self.label_2.setVisible(False)
 		self.label_2.setEnabled(False)
-		self.setWindowTitle("Define current projection")
+		self.setWindowTitle(self.tr("Define current projection"))
 		QObject.connect(self.btnProjection, SIGNAL("clicked()"), self.outProjFile)
 		QObject.connect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.updateProj1)
 		QObject.connect(self.cmbLayer, SIGNAL("currentIndexChanged(QString)"), self.updateProj2)
@@ -42,11 +42,11 @@ class Dialog(QDialog, Ui_Dialog):
 
 	def accept(self):
 		if self.inShape.currentText() == "":
-			QMessageBox.information(self, "Define current projection", "No input shapefile specified")
+			QMessageBox.information(self, self.tr("Define current projection"), self.tr("No input shapefile specified"))
 		elif self.txtProjection.text() == "" and self.rdoProjection.isChecked():
-			QMessageBox.information(self, "Define current projection", "Please specify spatial reference system")
+			QMessageBox.information(self, self.tr("Define current projection"), self.tr("Please specify spatial reference system"))
 		elif self.cmbLayer.currentText() == "" and self.rdoLayer.isChecked():
-			QMessageBox.information(self, "Define current projection", "Please specify spatial reference system")
+			QMessageBox.information(self, self.tr("Define current projection"), self.tr("Please specify spatial reference system"))
 		else:
 			self.progressBar.setValue(5)
 			inName = self.inShape.currentText()
@@ -54,7 +54,7 @@ class Dialog(QDialog, Ui_Dialog):
 			vLayer = self.getVectorLayerByName(inName)
 			self.progressBar.setValue(30)
 			if vLayer == "Error":
-				QMessageBox.information(self, "Define current projection", "Cannot define projection for PostGIS data...yet!")
+				QMessageBox.information(self, self.tr("Define current projection"), self.tr("Cannot define projection for PostGIS data...yet!"))
 			else:
 				srsDefine = QgsCoordinateReferenceSystem()
 				if self.rdoProjection.isChecked():
@@ -64,7 +64,7 @@ class Dialog(QDialog, Ui_Dialog):
 					destLayer = self.getVectorLayerByName(self.cmbLayer.currentText())
 					srsDefine = destLayer.srs()
 				if srsDefine == vLayer.srs():
-					QMessageBox.information(self, "Define current projection", "Identical output spatial reference system chosen")
+					QMessageBox.information(self, self.tr("Define current projection"), self.tr("Identical output spatial reference system chosen"))
 				else:
 					provider = vLayer.dataProvider()
 					self.progressBar.setValue(35)
@@ -74,7 +74,7 @@ class Dialog(QDialog, Ui_Dialog):
 						inPath = inPath.left(inPath.length() - 4)
 					self.progressBar.setValue(55)
 					if not srsDefine.isValid():
-						QMessageBox.information(self, "Define current projection", "Output spatial reference system is not valid")
+						QMessageBox.information(self, self.tr("Define current projection"), self.tr("Output spatial reference system is not valid"))
 					else:
 						self.progressBar.setValue(60)
 						outputWkt = srsDefine.toWkt()
@@ -87,26 +87,25 @@ class Dialog(QDialog, Ui_Dialog):
 						mLayer = self.getMapLayerByName(inName)
 						self.progressBar.setValue(90)
 						if not mLayer.isValid():
-							QMessageBox.information(self, "Define current projection", "Unable to dynamically define projection.\n"
-				        	+ "Please reload layer manually for projection definition to take effect.")
+							QMessageBox.information(self, self.tr("Define current projection"), self.tr("Unable to dynamically define projection.\nPlease reload layer manually for projection definition to take effect."))
 						else:
 							self.progressBar.setValue(95)
 							mLayer.setCrs(srsDefine)
 							self.progressBar.setValue(100)
-							QMessageBox.information(self, "Define current projection", "Defined Projection For:\n" + inPath + ".shp")
+							QMessageBox.information(self, self.tr("Define current projection"), self.tr("Defined Projection For:\n%1.shp").arg( inPath ) )
 		self.progressBar.setValue(0)
 
 	def outProjFile(self):
 		format = QString( "<h2>%1</h2>%2 <br/> %3" )
 		header = QString( "Define layer CRS:" )
-		sentence1 = QString( "Please select the projection system that defines the current layer." )
-		sentence2 = QString( "Layer CRS information will be updated to the selected CRS." )
+		sentence1 = self.tr( "Please select the projection system that defines the current layer." )
+		sentence2 = self.tr( "Layer CRS information will be updated to the selected CRS." )
 		self.projSelect = QgsGenericProjectionSelector(self, Qt.Widget)
 		self.projSelect.setMessage( format.arg( header ).arg( sentence1 ).arg( sentence2 ))
 		if self.projSelect.exec_():
 			projString = self.projSelect.selectedProj4String()
 			if projString == "":
-				QMessageBox.information(self, "Export to new projection", "No Valid CRS selected")
+				QMessageBox.information(self, self.tr("Export to new projection"), self.tr("No Valid CRS selected"))
 				return
 			else:
 				self.txtProjection.clear()

@@ -46,7 +46,7 @@ class Dialog(QDialog, Ui_Dialog):
         QObject.connect(self.toolOut, SIGNAL("clicked()"), self.outFile)
         QObject.connect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.update)
         self.progressBar.setValue(0)
-        self.setWindowTitle("Random points")
+        self.setWindowTitle(self.tr("Random Points"))
         mapCanvas = self.iface.mapCanvas()
         for i in range(mapCanvas.layerCount()):
             layer = mapCanvas.layer(i)
@@ -79,9 +79,9 @@ class Dialog(QDialog, Ui_Dialog):
 # when 'OK' button is pressed, gather required inputs, and initiate random points generation            
     def accept(self):
 	if self.inShape.currentText() == "":
-	    QMessageBox.information(self, "Random Points", "No input layer specified")
+	    QMessageBox.information(self, self.tr("Random Points"), self.tr("No input layer specified"))
 	elif self.outShape.text() == "":
-	    QMessageBox.information(self, "Random Points", "Please specify output shapefile")
+	    QMessageBox.information(self, self.tr("Random Points"), self.tr("Please specify output shapefile"))
 	else:
 		inName = self.inShape.currentText()
 		self.progressBar.setValue(1)
@@ -98,23 +98,23 @@ class Dialog(QDialog, Ui_Dialog):
 		if mLayer.type() == mLayer.VectorLayer:
 			inLayer = QgsVectorLayer(unicode(mLayer.source(),'latin1'),  unicode(mLayer.name(),'latin1'),  unicode(mLayer.dataProvider().name()))
 			if self.rdoUnstratified.isChecked():
-				design = "unstratified"
+				design = self.tr("unstratified")
 				value = self.spnUnstratified.value()
 			elif self.rdoStratified.isChecked():
-				design = "stratified"
+				design = self.tr("stratified")
 				value = self.spnStratified.value()
 			elif self.rdoDensity.isChecked():
-				design = "density"
+				design = self.tr("density")
 				value = self.spnDensity.value()
 			else:
-				design = "field"
+				design = self.tr("field")
 				value = unicode(self.cmbField.currentText())
 		elif mLayer.type() == mLayer.RasterLayer:
 			inLayer = QgsRasterLayer(unicode(mLayer.source(),'latin1'), unicode(mLayer.name(),'latin1'))
-			design = "unstratified"
+			design = self.tr("unstratified")
 			value = self.spnUnstratified.value()
 		else:
-			QMessageBox.information(self, "Random Points", "Unknown layer type...")
+			QMessageBox.information(self, self.tr("Random Points"), self.tr("Unknown layer type..."))
 		if self.chkMinimum.isChecked():
 			minimum = self.spnMinimum.value()
 		else:
@@ -123,8 +123,7 @@ class Dialog(QDialog, Ui_Dialog):
 		self.randomize(inLayer, outPath, minimum, design, value, self.progressBar)
 		self.progressBar.setValue(100)
 		self.outShape.clear()
-		addToTOC = QMessageBox.question(self, "Random Points", "Created output point Shapefile:\n" + outPath 
-			+ "\n\nWould you like to add the new layer to the TOC?", QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
+		addToTOC = QMessageBox.question(self, self.tr("Random Points"), self.tr("Created output point shapefile:\n%1\n\nWould you like to add the new layer to the TOC?").arg(outPath), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
 		if addToTOC == QMessageBox.Yes:
 			self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
 			QgsMapLayerRegistry.instance().addMapLayer(self.vlayer)
@@ -181,7 +180,7 @@ class Dialog(QDialog, Ui_Dialog):
 				if vlayer.isValid():
 					return vlayer
 				else:
-					QMessageBox.information(self, "Generate Centroids", "Vector layer is not valid")
+					QMessageBox.information(self, self.tr("Generate Centroids"), self.tr("Vector layer is not valid"))
 	
 # Get map layer by name from TOC     
     def getMapLayerByName(self, myName):
@@ -204,7 +203,7 @@ class Dialog(QDialog, Ui_Dialog):
 
     def randomize(self, inLayer, outPath, minimum, design, value, progressBar):
 		outFeat = QgsFeature()
-		if design == "unstratified":
+		if design == self.tr("unstratified"):
 			ext = inLayer.extent()
 			if inLayer.type() == inLayer.RasterLayer: bound = ext
 			else: bound = self.createSinglePolygon(inLayer, progressBar)
@@ -245,10 +244,10 @@ class Dialog(QDialog, Ui_Dialog):
 		add = 60.00 / sProvider.featureCount()
 		while sProvider.nextFeature(sFeat):
 			sGeom = sFeat.geometry()
-			if design == "density":
+			if design == self.tr("density"):
 				sDistArea = QgsDistanceArea()
 				value = int(round(numRand * sDistArea.measure(sGeom)))
-			elif design == "field":
+			elif design == self.tr("field"):
 				sAtMap = sFeat.attributeMap()
 				value = sAtMap[index].toInt()[0]
 			else:

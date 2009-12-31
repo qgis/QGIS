@@ -16,7 +16,7 @@ class Dialog(QDialog, Ui_Dialog):
 		QObject.connect(self.btnProjection, SIGNAL("clicked()"), self.outProjFile)
 		QObject.connect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.updateProj1)
 		QObject.connect(self.cmbLayer, SIGNAL("currentIndexChanged(QString)"), self.updateProj2)
-		self.setWindowTitle("Export to new projection")
+		self.setWindowTitle( self.tr("Export to new projection") )
 		self.progressBar.setValue(0)
 		mapCanvas = self.iface.mapCanvas()
 		for i in range(mapCanvas.layerCount()):
@@ -37,13 +37,13 @@ class Dialog(QDialog, Ui_Dialog):
 
 	def accept(self):
 		if self.inShape.currentText() == "":
-			QMessageBox.information(self, "Export to new projection", "No input layer specified")
+			QMessageBox.information(self, self.tr("Export to new projection"), self.tr("No input layer specified"))
 		elif self.outShape.text() == "":
-			QMessageBox.information(self, "Export to new projection", "Please specify output shapefile")
+			QMessageBox.information(self, self.tr("Export to new projection"), self.tr("Please specify output shapefile"))
 		elif self.txtProjection.text() == "" and self.rdoProjection.isChecked():
-			QMessageBox.information(self, "Define current projection", "Please specify spatial reference system")
+			QMessageBox.information(self, self.tr("Define current projection"), self.tr("Please specify spatial reference system"))
 		elif self.cmbLayer.currentText() == "" and self.rdoLayer.isChecked():
-			QMessageBox.information(self, "Define current projection", "Please specify spatial reference system")
+			QMessageBox.information(self, self.tr("Define current projection"), self.tr("Please specify spatial reference system"))
 		else:
 			inName = self.inShape.currentText()
 			self.progressBar.setValue(5)
@@ -58,8 +58,7 @@ class Dialog(QDialog, Ui_Dialog):
 			if self.reProject(inName, unicode(outPath), unicode(outProj), self.rdoProjection.isChecked(), self.progressBar):
 				self.outShape.clear()
 				self.progressBar.setValue(100)
-				addToTOC = QMessageBox.question(self, "Export to new projection", "Created projected shapefile:\n" + outPath
-				+ "\n\nWould you like to add the new layer to the TOC?", QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
+				addToTOC = QMessageBox.question(self, self.tr("Export to new projection"), self.tr("Created projected shapefile:\n%1\n\nWould you like to add the new layer to the TOC?").arg( outPath ), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
 				if addToTOC == QMessageBox.Yes:
 					self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
 					QgsMapLayerRegistry.instance().addMapLayer(self.vlayer)
@@ -67,15 +66,15 @@ class Dialog(QDialog, Ui_Dialog):
 
 	def outProjFile(self):
 		format = QString( "<h2>%1</h2>%2 <br/> %3" )
-		header = QString( "Choose output CRS:" )
-		sentence1 = QString( "Please select the projection system to be used by the output layer." )
-		sentence2 = QString( "Output layer will be projected from it's current CRS to the output CRS." )
+		header = self.tr( "Choose output CRS:" )
+		sentence1 = self.tr( "Please select the projection system to be used by the output layer." )
+		sentence2 = self.tr( "Output layer will be projected from it's current CRS to the output CRS." )
 		self.projSelect = QgsGenericProjectionSelector(self, Qt.Widget)
 		self.projSelect.setMessage( format.arg( header ).arg( sentence1 ).arg( sentence2 ))
 		if self.projSelect.exec_():
 			projString = self.projSelect.selectedProj4String()
 			if projString == "":
-				QMessageBox.information(self, "Export to new projection", "No Valid CRS selected")
+				QMessageBox.information(self, self.tr("Export to new projection"), self.tr("No Valid CRS selected"))
 				return
 			else:
 				self.txtProjection.clear()
@@ -105,7 +104,7 @@ class Dialog(QDialog, Ui_Dialog):
 			destLayer = self.getVectorLayerByName(outProj)
 			crsDest = destLayer.dataProvider().crs()
 		if not crsDest.isValid():
-			QMessageBox.information(self, "Export to new projection", "Output spatial reference system is not valid")
+			QMessageBox.information(self, self.tr("Export to new projection"), self.tr("Output spatial reference system is not valid"))
 			return False
 		else:
 			progressBar.setValue(5)
@@ -122,7 +121,7 @@ class Dialog(QDialog, Ui_Dialog):
 				if self.pointReproject(vlayer, xform, writer, progressBar): return True
 				else: return False
 			else:
-				QMessageBox.information(self, "Export to new projection", "Identical output spatial reference system chosen")
+				QMessageBox.information(self, self.tr("Export to new projection"), self.tr("Identical output spatial reference system chosen"))
 				return False
 
 # Gets vector layer by layername in canvas

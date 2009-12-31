@@ -75,15 +75,15 @@ class Dialog(QDialog, Ui_Dialog):
 
 	def accept(self):
 		if self.inPoint1.currentText() == "":
-			QMessageBox.information(self, "Create Point Distance Matrix", "Please specify input point layer")
+			QMessageBox.information(self, self.tr("Create Point Distance Matrix"), self.tr("Please specify input point layer"))
 		elif self.outFile.text() == "":
-			QMessageBox.information(self, "Create Point Distance Matrix", "Please specify output file")
+			QMessageBox.information(self, self.tr("Create Point Distance Matrix"), self.tr("Please specify output file"))
 		elif self.inPoint2.currentText() == "":
-			QMessageBox.information(self, "Create Point Distance Matrix", "Please specify target point layer")
+			QMessageBox.information(self, self.tr("Create Point Distance Matrix"), self.tr("Please specify target point layer"))
 		elif self.inField1.currentText() == "":
-			QMessageBox.information(self, "Create Point Distance Matrix", "Please specify input unique ID field")
+			QMessageBox.information(self, self.tr("Create Point Distance Matrix"), self.tr("Please specify input unique ID field"))
 		elif self.inField2.currentText() == "":
-			QMessageBox.information(self, "Create Point Distance Matrix", "Please specify target unique ID field")
+			QMessageBox.information(self, self.tr("Create Point Distance Matrix"), self.tr("Please specify target unique ID field"))
 		else:
 			point1 = self.inPoint1.currentText()
 			point2 = self.inPoint2.currentText()
@@ -223,7 +223,7 @@ class Dialog(QDialog, Ui_Dialog):
 				if vlayer.isValid():
 					return vlayer
 				else:
-					QMessageBox.information(self, "Locate Line Intersections", "Vector layer is not valid")
+					QMessageBox.information(self, self.tr("Locate Line Intersections"), self.tr("Vector layer is not valid"))
 
 	def getFieldList(self, vlayer):
 		fProvider = vlayer.dataProvider()
