@@ -57,6 +57,8 @@ class QgsGrassModule: public QDialog, private  Ui::QgsGrassModuleBase
     //! Destructor
     ~QgsGrassModule();
 
+    QString translate( QString string );
+
     //! Returns module label for module description path
     static QString label( QString path );
 
