@@ -43,6 +43,7 @@
 extern "C"
 {
 #include <grass/Vect.h>
+#include <grass/glocale.h>
 }
 
 #include <gdal.h>         // to collect version information
@@ -941,7 +942,7 @@ QString QgsGrassModule::label( QString path )
   qFile.close();
   QDomElement qDocElem = qDoc.documentElement();
 
-  return QApplication::translate( "grasslabel", qDocElem.attribute( "label" ).toUtf8() );
+  return QApplication::translate( "grasslabel", qDocElem.attribute( "label" ).trimmed().toUtf8() );
 }
 
 QPixmap QgsGrassModule::pixmap( QString path, int height )
@@ -1489,6 +1490,11 @@ QgsGrassModule::~QgsGrassModule()
   {
     mProcess.kill();
   }
+}
+
+QString QgsGrassModule::translate( QString msg )
+{
+  return QString::fromUtf8( G_gettext( "grassmods", msg.trimmed().toUtf8() ) );
 }
 
 QDomNode QgsGrassModule::nodeByKey( QDomElement elem, QString key )
@@ -2503,7 +2509,7 @@ QgsGrassModuleItem::QgsGrassModuleItem( QgsGrassModule *module, QString key,
   QString label, description;
   if ( !qdesc.attribute( "label" ).isEmpty() )
   {
-    label = QApplication::translate( "grasslabel", qdesc.attribute( "label" ).toUtf8() );
+    label = QApplication::translate( "grasslabel", qdesc.attribute( "label" ).trimmed().toUtf8() );
   }
   if ( label.isEmpty() )
   {
@@ -2511,14 +2517,14 @@ QgsGrassModuleItem::QgsGrassModuleItem( QgsGrassModule *module, QString key,
     if ( !n.isNull() )
     {
       QDomElement e = n.toElement();
-      label = QApplication::translate( "grasslabel", e.text().toUtf8() );
+      label = module->translate( e.text() );
     }
   }
   QDomNode n = gnode.namedItem( "description" );
   if ( !n.isNull() )
   {
     QDomElement e = n.toElement();
-    description = QApplication::translate( "grasslabel", e.text().toUtf8() );
+    description = module->translate( e.text() );
   }
 
   if ( !label.isEmpty() )
@@ -2583,7 +2589,7 @@ QgsGrassModuleGdalInput::QgsGrassModuleGdalInput(
 {
   if ( mTitle.isEmpty() )
   {
-    mTitle = "OGR/PostGIS/GDAL Input";
+    mTitle = tr("OGR/PostGIS/GDAL Input");
   }
   adjustTitle();
 
