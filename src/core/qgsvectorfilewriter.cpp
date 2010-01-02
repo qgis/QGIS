@@ -433,7 +433,7 @@ QgsVectorFileWriter::writeAsShapefile( QgsVectorLayer* layer,
 
         QString msg( "Failed to transform a point while drawing a feature of type '"
                      + fet.typeName() + "'. Writing stopped." );
-        msg += cse.what();
+        msg += e.what();
         QgsLogger::warning( msg );
 
         return ErrProjection;
