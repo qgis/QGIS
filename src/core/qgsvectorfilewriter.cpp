@@ -422,7 +422,22 @@ QgsVectorFileWriter::writeAsShapefile( QgsVectorLayer* layer,
 
     if ( shallTransform )
     {
-      fet.geometry()->transform( *ct );
+      try
+      {
+        fet.geometry()->transform( *ct );
+      }
+      catch ( QgsCsException &e )
+      {
+        delete ct;
+        delete writer;
+
+        QString msg( "Failed to transform a point while drawing a feature of type '"
+                     + fet.typeName() + "'. Writing stopped." );
+        msg += cse.what();
+        QgsLogger::warning( msg );
+
+        return ErrProjection;
+      }
     }
     writer->addFeature( fet );
   }
