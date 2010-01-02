@@ -1,0 +1,41 @@
+<h3>Crea una nuova connessione WMS</h3>
+I layers WMS possono essere aggiunti in maniera molto semplice, è necessario conoscere l'URL di accesso al server WMS, avere un servizio di accesso a questo server e il server deve supportare il protocollo di trasporto dei dati via HTTP.<p>
+QGIS attualmente può essere utilizzare come client WMS per le implementazione WMS 1.1, 1.1.1 e 1.3.
+<p>
+<a href="#serv">Server</a><br/>
+<a href="#load">Caricamento layer WMS</a><br/>
+<a href="#lay">Ordine dei layer</a><br/>
+<a href="#search">Ricerca server</a><br/>
+
+<a name="serv">
+<h4>Server</h4>
+</a>
+Per definire un nuovo server WMS nella sezione 
+To define a new WMS server in the <label>Connessioni server</label>, selezionare <label>Nuovo</label> ed inserire i parametri necessari per collegarsi al server WMS desiderato.<p>
+È possibile aggiungere diversi server pre-impostati con cui giocare con un clic sul bottone <label>Aggiungere server predefiniti</label>. Questo aggiungerà almeno tre server WMS da utilizzare, compreso il server WMS NASA (JPL).<p>
+Una volta che una nuova connessione ad un nuovo server WMS è stata creata, questa sarà preservata anche nella future sessione di QGIS.
+
+<a name="load">
+<h5>Caricamento layer WMS</h5>
+</a>
+Selezionare il bottone <
+Select the <label>Connetti</label> per recuperare le capabilities del server selezionato. Questo include le codifica del tipo di immagine, i layer disponibili, gli stili dei layer, e le proiezioni.<br/>
+Durante il trasferimento dei dati dai da un server WMS, il progresso di downlonad viene visualizzato in basso a sinistra nella finestra di dialogo del plugin WMS.<p>
+La sezione <label>Codifica immagine</label> visualizza la lista dei formati supportati sia dal server che dal client.<br/>
+Questo va scelto in relazione al tipo di accuratezza dell'immagine che si vuole ottenere<p>
+È possibile selezionare più layer contemporaneamente, questi verranno combinati dal server WMS e trasmessi a QGIS in una sola chiamata.<p>
+
+Ogni layer WMS può essere disponibile in CRS multiple, a seconda delle capacità del server WMS. Per scegliere un CRS, selezionare <label>Cambia ...</ label>
+
+<a name="lay">
+<h4>Ordine dei layer</h4>
+</a>
+Attraverso questo è possibile modificare l'ordine dei layer WMS caricati.
+
+<a name="search">
+<h4>Ricerca server</h4>
+</a>
+Attraverso questo tab è possibile cercare server WMS. Questo lo si fa inserendo una stringa da cercare nel campo di testo e con il relativo clic sul bottone <label>Cerca</label>.<p>
+Per visualizzare i risultati, selezionare una voce della tabella, premere il <label>Aggiungi riga alla lista WMS</button> e tornare al tab  <label>Server</label>.<p>
+A questo punto serve solo richiedere la lista dei layer attraverso il clic sul bottone <label>Connetti</label>.
+

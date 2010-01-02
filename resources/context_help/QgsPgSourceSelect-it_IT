@@ -1,0 +1,31 @@
+<h3>Aggiungi tabelle PostGIS</h3>
+Questa finestra di dialogo consente di aggiungere layer PostGIS (tabelle con colonna geometrica) all'area mappa di QGIS.
+<p>
+<a href="#connect">Connessioni</a><br/>
+<a href="#add">Aggiungere layer</a><br/>
+<a href="#filter">Filtrare un layer</a><br/>
+
+<a name="connect">
+<h4>Connessioni</h4>
+</a>
+<ul>
+<li>Scegliere la connessione da usare dal drop-down box e poi clic su <label>Connetti</label>.
+<li>Se non ci sono connessioni, usare il pulsante <label>Nuovo</label> per creare una connessione.
+<li>Per modificare una connessione, clic sul puslante <label>Modifica</label>.
+</ul>
+<a name="add">
+<h4>Aggiungere layer</h4>
+</a>
+Per aggiungere un layer:
+<ol>
+<li>Scegliere la connessione desiderata dal drop-down box.
+<li>Clic su <label>Connetti</label>.
+<li>Trovare il layer che si vuole aggiungere nella lista e poi clic su di esso per selezionarlo.
+<li>E' possibile selezionare layer aggiuntivi tenendo premuto il tasto Ctrl e facendo clic sui layer desiderati.
+<li>Clic su <label>Aggiungi</label> per aggiungere il/i layer alla mappa.
+</ol>
+<a name="filter">
+<h4>Filtrare un layer</h4>
+</a>
+Per filtrare un layer prima di aggiungerlo alla mappa, doppio clic sul suo nome. Questo aprira' il Query builder, consentendo di creare una istruzione SQL da usare per il filtraggio dei record.
+
