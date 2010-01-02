@@ -1,0 +1,120 @@
+<h3>Proprietà del vettoriale</h3>
+Questa finestra di dialogo consente di modificare le impostazioni e le proprietà di un layer vettoriale. Ci sono sette tab:
+<p>
+<a href="#symbology">Simbologia</a><br/>
+<a href="#labels">Etichette</a><br/>
+<a href="#attributes">Attributi</a><br/>
+<a href="#general">Generale</a><br/>
+<a href="#metadata">Metadati</a><br/>
+<a href="#actions">Azioni</a><br/>
+<a href="#diagram">Diagramma sovrapposto</a><br/>
+
+<a name="symbology">
+<h4>Symbologia</h4>
+</a>
+Per cambiare la simbologia ad un layer, doppio clic su di esso nella legenda (TOC): comparirà la finestra di dialogo <label>Proprietà del vettoriale</label>.<p>
+Con questa fienstra di dialogo si può impostare lo stile per il layer vettoriale selezionato. A seconda delle opzioni di rendering scelte si possono anche classificare gli elementi del vettoriale.
+
+<h5>Tipo legenda</h5>
+QGIS fornisce svariate simbologie per il render e per controllare come gli elementi vettoriali vengono visualizzati. Attualmente sono disponibili i seguenti tipi di rendering:
+<ul>
+<li><label>Simbolo singolo</label> - viene applicato uno stile singolo ad ogni oggetto del layer.
+<li><label>Simbolo graduato</label> - gli oggetti vengono visualizzati con simboli diversi classificati in base ai valori di un campo particolare.
+<li><label>Colore continuo</label> - gli oggetti vengono visualizzati con colori sfumati classificati dai valori numerici di un campo specifico.
+<li><label>Valori univoco</label> - gli oggetti vengono classificati dai valori univoci di un campo specifico con un simbolo diverso per ogni valore.
+</ul>
+
+<h5>Nuova simbologia</h5>
+Fare clic sul bottone <label>Nuova simbologia</label> per utilizzare sul layer l'implementazione della nuova simbologia.
+
+<h5>Trasparenza vettoriale</h5>
+QGIS permette di definire una trasparenze per ogni layer vettoriale. Questo può essere fatto attraverso lo slider <label>Trasparenza</label>. Questo strumento risulta molto utile quando si ha la necessità di sovrapporre diversi layer vettoriali.
+
+<h5>Salva stile</h5>
+
+Una volta definito uno stile per un layer è possibile salvare le impostazione in un file separato (con estensione .qml). Questa operazione la si ottiene utilizzando il bottone <label>Salva stile...</label>. Inutile specificare invece che il <label>Carica stile...</label> serve per caricare un file di stile precedentemente archiviato.<br/>
+Se si vuole utilizzare un particolare tipo di stile ogni volta che un layer viene caricato, allora si deve utilizzare il bottone <label>Salva come predefinito</label> e lo stile scelto sara utilizzato come predefinito. Qualora questa scelta non risulti poi soddisfacente è sempre possibile tornare alle impostazione predefinite attraverso l'uso del bottone <label>Ripristina Stile Predefinito</label>.
+
+<a name="labels">
+<h4>Etichette</h4>
+</a>
+Il tab Etichette permette di applicare una etichetta ad ogni oggetto del layer e controllare diverse opzioni relative al tipo di carattere, posizionamento, stile, allineamento e buffering.<br/>
+È sufficente un click sul checkbox <label>Mostra etichette</label> per abilitare la funzione di etichettatura.
+
+
+<h5>Opzioni base per l&apos;etichetta</h5>
+Selezionare il campo contenente i valori per le etichette.<p>
+Selezionare i bottoni <label>Famiglia del carattere</label> e <label>Colore</label> per scegliere tipo di carattere e colore. È quindi poi possibile anche cambiare l'angolo di piazzamento del testo delle etichette.<p>
+Se le etichette si estendono su più linee, allora selezionare anche <label>Etichette multilinea?</label>. QGIS cercherà il carattere di "a capo" nel campo scelto per l'etichettatura e di conseguenza spezzerà la linea. Il valore corretto di "a capo" è rappresentato dal singolo carattere \n, (non utilizzare due caratteri come un backslash \ seguito dal carattere n).
+
+<h5>Posizionamento</h5>
+Modifica la posizione delle etichette selezionando una delle opzioni presenti nel gruppo <label>Posizionamento</label>.
+
+<h5>Unità della dimensione del carattere</h5>
+La funzione <label>Unità della dimensione del carattere</label> permette di scegliere fra <label>Punti</label> o <label>Unità mappa</label>.
+
+<h5>Buffer etichette</h5>
+Il buffer etichette significa inserire uno sfondo intorno alle etichette per metterle maggiormente in evidenza. Per ottenere questo effetto::
+<ol>
+<li>Abilitare la funzione di buffering con un clic su <label>Buffer etichette</label> .
+<li>Cambiare le dimensioni del buffer attraverso lo spin box.
+<li>Clic su <label>Colore</label> selezionare il colore desideraro e, eventualmente, definire anche un grado di trasparenza per il buffer.
+<li>Clic <label>Applica</label> per vedere le scelte fatte.
+</ol>
+Nota: è anche possibile specificare le dimensioni del buffer in dimensione mappa
+
+<h5>Definizione piazzamento dati, proprietà, buffer, posizione</h5>
+Le voci rimanenti all'interno del tab <labe>Etichetta</label> consentono di controllare l'aspetto delle etichette utilizzando gli attributi memorizzati nel layer. Le voci che iniziano con <label>Definizione dei dati</label> consentono di impostare tutti i parametri per le etichette utilizzando i campi del layer.
+
+<a name="attributes">
+<h4>Attributi</h4>
+</a>
+Attraverso il tab <label>Attributi</label>, gli attributi di un insieme di dati può essere manipolato. I bottoni <label>Nuova colonna</label> e <label>Cancella colonna</label> possono essere utilizzati quando l'insieme di dati è in modalità di modifica (editing). La libreria OGR permette di aggiungere nuove colonne, ma non di rimuoverle e solo se si ha installato una versione di GDAL >= 1.6. Altrimenti è permessa la modifica solo per le colonne di layer di tipo PostGIS.<p>
+Il bottone <label>Abilita/Disabilita modalità di modifica</label> permette l'accesso a questa funzionalità.<p>
+
+All'interno della scheda Attributi si trova anche una modifica della colonna widget. Questa colonna può essere utilizzata per definire i valori o un intervallo di valori che possono essere aggiunti ad una specifica colonna della tabella degli attributi. Se si fa clic sul bottone <label>modifica widget</label>, si apre una finestra di dialogo, in cui è possibile definire i seguenti widget:<br/>
+<ul>
+<li><label>Modifica valore</label> Un campo di modifica che permette di inserire il testo semplice (o limitare ai numeri per attributi numerici).
+<li><label>Classificazione</label> Visualizza un combobox con i valori utilizzati per la classificazione, qualora si sia scelto <label>valore unico</label> come tipo di leggenda nella tab simbologia della finestra delle proprietà.
+<li><label>Intervallo</label> Permette di impostare i valori numerici da uno specifico intervallo. I valori possono essere impostati sia attraverso uno slider che uno spin box.
+<li><label>Valori univoci</label> L'utente può utilizzare uno dei valori già presenti nella tabella degli attributi. Se invece è stato attivato <label>modificabile</label>, viene visualizzato un valore modificabile provvisto di supporto di auto completamento, ma sono possibili ulteriori valori, in caso contrario sarà presentata una combobox.
+<li><label>Nome file</label> Semplifica la selezione con l'aggiunta di una finestra di dialogo di selezione file.
+<li><label>Mappa Valore</label> un combo box con oggetti predefiniti. Il valore è memorizzato in l'attributo, la descrizione è indicata nel combobox. È possibile definire i valori manualmente o caricarli da un layer o un file CSV.
+<li><label>Enumerazione</label> Apre un combo box con i valori che possono essere utilizzati in relazione al tipo di colonna. Questa funziona è attualmente supportata solo dal provider di dati postgres.
+<li><label>Immutabile</label> L'attributo di colonna immutabile è in sola lettura. L'utente non è in grado di modificarne il contenuto.
+<li><label>Nascosto</label> Una colonna attributo nascosta è invisibile all'utente.
+<li><label>Checkbox</label> Viene visualizzato un checkbox. Deve essere inserito il valore che rappresenta lo stato del combobox.
+<li><label>Modifica testo</label> Viene visualizzato un campo con del testo modificabile, che permette l'immissione di testo multilinea.
+</ul>
+
+<a name="general">
+<h4>Generale</h4>
+</a>
+La scheda Generale permette di modificare il nome visualizzato, impostare le opzioni di scala in relazione al rendering, creare un indice spaziale del file vettoriale (solo per i formati supportati da OGR e PostGIS) e visualizzare o modificare la proiezione del layer di uno specifico vettoriale. <p>
+È inoltre possibile impostare filtri utilizzando <label>Query Builder</label>.
+
+<h5>Sottoinsieme</h5>
+Il bottone <label>Query Builder</label> permette di filtrare ad un sottoinsieme di oggetti di un layer in relazione ad una espressione.
+
+<a name="metadata">
+<h4>Metadata</h4>
+</a>
+Il tab <label>Metadata</label> contiene informazioni in merito ad un layer, comprese specifiche sul tipo e la locazione, il numero di oggetti, il tipo di geometrie e la possibilità di modifica. La sezione Sistema di Riferimento Spaziale offre informazioni sulla proiezione e viene visualizzata in questa scheda. Questo tab permette di avere rapidamente informazioni riguardo il layer.
+
+<a name="actions">
+<h4>Azioni</h4>
+</a>
+QGIS offre la possibilità di eseguire un'azione in base agli attributi di una geometria. Questa funzione può essere utilizzata per eseguire un numero qualsiasi di azioni, ad esempio, eseguire un programma passando i relativi argomenti costruendo la stringa ricavando i dati dagli attributi di una geometria o per passare dei parametri ad un web tool di reporting. <br/>
+Le azioni sono utili quando si vuole eseguire un'applicazione esterna o visualizzare una pagina web sulla base di uno o più valori nel layer vettoriale. Ad esempio per eseguire una ricerca basata su un valore di attributo. <p>
+Consultare la Guida utente per ulteriori informazioni.
+
+<h5>Utilizzare le azioni</h5>
+Le azioni possono essere eseguite attraverso la finestra di diaologo <label>Informazioni sui risultati</label>.
+
+<a name="diagram">
+<h4>Diagramma sovrapposto</h4>
+</a>
+Il tab Diagramma permette di aggiungere una diagramma sovrapposto su un layer vettoriale. Per attivare questa funzione, aprire il <label>Gestore QGIS Plugin</label> e selezionare il plugin <label>Diagramma sovrapposto</label>. Fatta questa operazione, nella scheda del vettoriali <label>Proprietà layer</label> apparirà la possibilità di impostare i diagrammi.<p>
+L'implementazione attuale dei diagrammi permette la creazione di grafici a barra e a torta e di scala lineare del diagramma in relazione ad un attributo di classificazione.
+
+
