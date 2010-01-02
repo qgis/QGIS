@@ -606,6 +606,11 @@ void QgsLegendLayer::saveAsShapefileGeneral( bool saveOnlySelection )
       QMessageBox::warning( 0, tr( "Error" ),
                             tr( "Creation of an attribute failed" ) );
       break;
+
+    case QgsVectorFileWriter::ErrProjection:
+      QMessageBox::warning( 0, tr( "Error" ),
+                            tr( "Reprojection failed" ) );
+      break;
   }
 }
 

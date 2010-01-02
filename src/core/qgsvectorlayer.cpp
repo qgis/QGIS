@@ -1024,11 +1024,11 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     catch ( QgsCsException &cse )
     {
       QString msg( "Failed to transform a point while drawing a feature of type '"
-                   + fet.typeName() + "'. Ignoring this feature." );
+                   + fet.typeName() + "'. Rendering stopped." );
       msg += cse.what();
       QgsLogger::warning( msg );
+      return false;
     }
-
   }
   else
   {
@@ -1040,7 +1040,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     QgsDebugMsg( QString( "Cached %1 geometries." ).arg( mCachedGeometries.count() ) );
   }
 
-  return TRUE; // Assume success always
+  return true; // Assume success always
 }
 
 void QgsVectorLayer::deleteCachedGeometries()
@@ -1942,7 +1942,7 @@ int QgsVectorLayer::addIsland( const QList<QgsPoint>& ring )
   }
 
   //look if id of selected feature belongs to an added feature
-  /*
+#if 0
   for ( QgsFeatureList::iterator addedIt = mAddedFeatures.begin(); addedIt != mAddedFeatures.end(); ++addedIt )
   {
     if ( addedIt->id() == selectedFeatureId )
@@ -1951,7 +1951,7 @@ int QgsVectorLayer::addIsland( const QList<QgsPoint>& ring )
       mCachedGeometries[selectedFeatureId] = *addedIt->geometry();
     }
   }
-  */
+#endif
 
   //is the feature contained in the view extent (mCachedGeometries) ?
   QgsGeometryMap::iterator cachedIt = mCachedGeometries.find( selectedFeatureId );
@@ -2000,7 +2000,7 @@ int QgsVectorLayer::translateFeature( int featureId, double dx, double dy )
   }
 
   //look if id of selected feature belongs to an added feature
-  /*
+#if 0
   for ( QgsFeatureList::iterator addedIt = mAddedFeatures.begin(); addedIt != mAddedFeatures.end(); ++addedIt )
   {
     if ( addedIt->id() == featureId )
@@ -2008,7 +2008,7 @@ int QgsVectorLayer::translateFeature( int featureId, double dx, double dy )
       return addedIt->geometry()->translate( dx, dy );
     }
   }
-  */
+#endif
 
   //else look in mCachedGeometries to make access faster
   QgsGeometryMap::iterator cachedIt = mCachedGeometries.find( featureId );
