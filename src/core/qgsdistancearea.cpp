@@ -434,14 +434,21 @@ double QgsDistanceArea::measurePolygon( const QList<QgsPoint>& points )
 double QgsDistanceArea::bearing( const QgsPoint& p1, const QgsPoint& p2 )
 {
   QgsPoint pp1 = p1, pp2 = p2;
+  double bearing;
+
   if ( mProjectionsEnabled && ( mEllipsoid != "NONE" ) )
   {
     pp1 = mCoordTransform->transform( p1 );
     pp2 = mCoordTransform->transform( p2 );
+    computeDistanceBearing( pp1, pp2, &bearing );
+  }
+  else //compute simple planar azimuth
+  {
+    double dx = p2.x() - p1.x();
+    double dy = p2.y() - p1.y();
+    bearing = atan2( dx, dy );
   }
 
-  double bearing;
-  computeDistanceBearing( pp1, pp2, &bearing );
   return bearing;
 }
 

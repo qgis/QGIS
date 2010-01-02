@@ -591,6 +591,8 @@ class QgisApp : public QMainWindow
     void measure();
     //! Measure area
     void measureArea();
+    //! Measure angle
+    void measureAngle();
 
     //! show the attribute table for the currently selected layer
     void attributeTable();
@@ -798,6 +800,7 @@ class QgisApp : public QMainWindow
     QAction *mActionDeselectAll;
     QAction *mActionIdentify;
     QAction *mActionMeasure;
+    QAction *mActionMeasureAngle;
     QAction *mActionMeasureArea;
     QAction *mActionViewSeparator1;
     QAction *mActionZoomFullExtent;
@@ -900,6 +903,7 @@ class QgisApp : public QMainWindow
         QgsMapTool* mIdentify;
         QgsMapTool* mMeasureDist;
         QgsMapTool* mMeasureArea;
+        QgsMapTool* mMeasureAngle;
         QgsMapTool* mCapturePoint;
         QgsMapTool* mCaptureLine;
         QgsMapTool* mCapturePolygon;

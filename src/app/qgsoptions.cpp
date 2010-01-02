@@ -151,6 +151,25 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
     radMeters->setChecked( true );
   }
 
+  QButtonGroup* angleButtonGroup = new QButtonGroup( this );
+  angleButtonGroup->addButton( mDegreesRadioButton );
+  angleButtonGroup->addButton( mRadiansRadioButton );
+  angleButtonGroup->addButton( mGonRadioButton );
+
+  QString myAngleUnitsTxt = settings.value( "/qgis/measure/angleunits", "degrees" ).toString();
+  if ( myAngleUnitsTxt == "gon" )
+  {
+    mGonRadioButton->setChecked( true );
+  }
+  else if ( myAngleUnitsTxt == "radians" )
+  {
+    mRadiansRadioButton->setChecked( true );
+  }
+  else //degrees
+  {
+    mDegreesRadioButton->setChecked( true );
+  }
+
 
   // add the themes to the combo box on the option dialog
   QDir myThemeDir( ":/images/themes/" );
@@ -500,6 +519,23 @@ void QgsOptions::saveOptions()
     settings.setValue( "/qgis/measure/displayunits", "meters" );
   }
   settings.setValue( "/qgis/measure/ellipsoid", getEllipsoidAcronym( cmbEllipsoid->currentText() ) );
+
+  if ( mDegreesRadioButton->isChecked() )
+  {
+
+  }
+
+  QString angleUnitString = "degrees";
+  if ( mRadiansRadioButton->isChecked() )
+  {
+    angleUnitString = "radians";
+  }
+  else if ( mGonRadioButton->isChecked() )
+  {
+    angleUnitString = "gon";
+  }
+  settings.setValue( "/qgis/measure/angleunits", angleUnitString );
+
   //set the color for selections
   QColor myColor = pbnSelectionColor->color();
   settings.setValue( "/qgis/default_selection_color_red", myColor.red() );

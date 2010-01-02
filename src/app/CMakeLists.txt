@@ -21,6 +21,7 @@ SET(QGIS_APP_SRCS
   qgsspatialitefilterproxymodel.cpp
   qgsspatialitetablemodel.cpp
   qgsdelattrdialog.cpp
+  qgsdisplayangle.cpp
   qgsfieldcalculator.cpp
   qgsnewvectorlayerdialog.cpp
   qgsgraduatedsymboldialog.cpp
@@ -37,6 +38,7 @@ SET(QGIS_APP_SRCS
   qgsmaptooldeletevertex.cpp
   qgsmaptooledit.cpp
   qgsmaptoolidentify.cpp
+  qgsmaptoolmeasureangle.cpp
   qgsmaptoolmovefeature.cpp
   qgsmaptoolmovevertex.cpp
   qgsmaptoolnodetool.cpp
@@ -128,6 +130,7 @@ SET (QGIS_APP_MOC_HDRS
   qgscustomprojectiondialog.h
   qgsdelattrdialog.h
   qgsfieldcalculator.h
+  qgsmaptoolmeasureangle.h
   qgsnewvectorlayerdialog.h
   qgsgraduatedsymboldialog.h
   qgshelpviewer.h

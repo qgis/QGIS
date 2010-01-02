@@ -374,10 +374,170 @@
       </layout>
      </widget>
      <widget class="QWidget" name="stackedWidgetPage3">
-      <layout class="QGridLayout">
-       <property name="margin">
-        <number>0</number>
-       </property>
+      <layout class="QGridLayout" name="gridLayout_4">
+       <item row="0" column="0">
+        <widget class="QGroupBox" name="groupBox_7">
+         <property name="title">
+          <string>Identify</string>
+         </property>
+         <layout class="QGridLayout">
+          <property name="margin">
+           <number>11</number>
+          </property>
+          <item row="3" column="0" colspan="2">
+           <widget class="QLabel" name="textLabel2">
+            <property name="text">
+             <string>&lt;b&gt;Note:&lt;/b&gt; Specify the search radius as a percentage of the map width</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="textLabel1_3">
+            <property name="text">
+             <string>Search radius for identifying features and displaying map tips</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QDoubleSpinBox" name="spinBoxIdentifyValue">
+            <property name="suffix">
+             <string>%</string>
+            </property>
+            <property name="maximum">
+             <double>100.000000000000000</double>
+            </property>
+            <property name="singleStep">
+             <double>0.010000000000000</double>
+            </property>
+            <property name="value">
+             <double>5.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="cmbIdentifyMode"/>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>Mode</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QCheckBox" name="cbxAutoFeatureForm">
+            <property name="text">
+             <string>Open feature form, if a single feature is identified</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QGroupBox" name="groupBox_6">
+         <property name="title">
+          <string>Measure tool</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout">
+          <item row="0" column="0">
+           <widget class="QLabel" name="textLabel1_8">
+            <property name="text">
+             <string>Ellipsoid for distance calculations</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="cmbEllipsoid"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="textLabel1_10">
+            <property name="text">
+             <string>Rubberband color</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QgsColorButton" name="pbnMeasureColor">
+            <property name="minimumSize">
+             <size>
+              <width>100</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2" colspan="2">
+           <spacer>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>191</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="textLabel1_11">
+            <property name="text">
+             <string>Preferred measurements units</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QRadioButton" name="radMeters">
+            <property name="text">
+             <string>Meters</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2">
+           <widget class="QRadioButton" name="radFeet">
+            <property name="text">
+             <string>Feet</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="mAngleUnitsLabel">
+            <property name="text">
+             <string>Preferred angle units</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QRadioButton" name="mDegreesRadioButton">
+            <property name="text">
+             <string>Degrees</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="2">
+           <widget class="QRadioButton" name="mRadiansRadioButton">
+            <property name="text">
+             <string>Radians</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="3">
+           <widget class="QRadioButton" name="mGonRadioButton">
+            <property name="text">
+             <string>Gon</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
        <item row="2" column="0">
         <widget class="QGroupBox" name="groupBox_10">
          <property name="title">
@@ -441,68 +601,6 @@
          </layout>
         </widget>
        </item>
-       <item row="0" column="0">
-        <widget class="QGroupBox" name="groupBox_7">
-         <property name="title">
-          <string>Identify</string>
-         </property>
-         <layout class="QGridLayout">
-          <property name="margin">
-           <number>11</number>
-          </property>
-          <item row="3" column="0" colspan="2">
-           <widget class="QLabel" name="textLabel2">
-            <property name="text">
-             <string>&lt;b&gt;Note:&lt;/b&gt; Specify the search radius as a percentage of the map width</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="textLabel1_3">
-            <property name="text">
-             <string>Search radius for identifying features and displaying map tips</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QDoubleSpinBox" name="spinBoxIdentifyValue">
-            <property name="suffix">
-             <string>%</string>
-            </property>
-            <property name="maximum">
-             <double>100.000000000000000</double>
-            </property>
-            <property name="singleStep">
-             <double>0.010000000000000</double>
-            </property>
-            <property name="value">
-             <double>5.000000000000000</double>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QComboBox" name="cmbIdentifyMode"/>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_4">
-            <property name="text">
-             <string>Mode</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" colspan="2">
-           <widget class="QCheckBox" name="cbxAutoFeatureForm">
-            <property name="text">
-             <string>Open feature form, if a single feature is identified</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
        <item row="3" column="0">
         <spacer>
          <property name="orientation">
@@ -515,82 +613,6 @@
           </size>
          </property>
         </spacer>
-       </item>
-       <item row="1" column="0">
-        <widget class="QGroupBox" name="groupBox_6">
-         <property name="title">
-          <string>Measure tool</string>
-         </property>
-         <layout class="QGridLayout">
-          <property name="margin">
-           <number>11</number>
-          </property>
-          <item row="1" column="2">
-           <spacer>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>191</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="1" column="1">
-           <widget class="QgsColorButton" name="pbnMeasureColor">
-            <property name="minimumSize">
-             <size>
-              <width>100</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" colspan="2">
-           <widget class="QComboBox" name="cmbEllipsoid"/>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="textLabel1_10">
-            <property name="text">
-             <string>Rubberband color</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="textLabel1_8">
-            <property name="text">
-             <string>Ellipsoid for distance calculations</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="textLabel1_11">
-            <property name="text">
-             <string>Preferred measurements units</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QRadioButton" name="radMeters">
-            <property name="text">
-             <string>Meters</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="2">
-           <widget class="QRadioButton" name="radFeet">
-            <property name="text">
-             <string>Feet</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
        </item>
       </layout>
      </widget>
@@ -1470,8 +1492,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>186</x>
-     <y>574</y>
+     <x>190</x>
+     <y>532</y>
     </hint>
     <hint type="destinationlabel">
      <x>730</x>
@@ -1486,8 +1508,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>186</x>
-     <y>574</y>
+     <x>190</x>
+     <y>532</y>
     </hint>
     <hint type="destinationlabel">
      <x>731</x>
@@ -1502,12 +1524,12 @@
    <slot>setCurrentIndex(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>136</x>
-     <y>21</y>
+     <x>113</x>
+     <y>25</y>
     </hint>
     <hint type="destinationlabel">
-     <x>864</x>
-     <y>14</y>
+     <x>808</x>
+     <y>18</y>
     </hint>
    </hints>
   </connection>
