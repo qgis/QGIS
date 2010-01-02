@@ -72,11 +72,11 @@
 // bundling ignored for static libs
 //////////////////////////////////////////////////////////////////////
 
-//BUNDLE_GSL = YES
 //BUNDLE_PGSQL = YES
 //BUNDLE_GPSBABEL = YES
 
 // frameworks not bundled
+//BUNDLE_GSL = YES
 //BUNDLE_GDAL = YES
 //BUNDLE_GEOS = YES
 //BUNDLE_PROJ = YES
