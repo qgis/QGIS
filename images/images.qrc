@@ -156,6 +156,7 @@
     <file>themes/default/mActionLowerItems.png</file>
     <file>themes/default/mActionMapTips.png</file>
     <file>themes/default/mActionMeasure.png</file>
+    <file>themes/default/mActionMeasureAngle.png</file>
     <file>themes/default/mActionMeasureArea.png</file>
     <file>themes/default/mActionMergeFeatures.png</file>
     <file>themes/default/mActionMoveFeature.png</file>

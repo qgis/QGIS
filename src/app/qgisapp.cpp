@@ -169,6 +169,7 @@
 #include "qgsmaptooldeletepart.h"
 #include "qgsmaptooldeletevertex.h"
 #include "qgsmaptoolidentify.h"
+#include "qgsmaptoolmeasureangle.h"
 #include "qgsmaptoolmovefeature.h"
 #include "qgsmaptoolmovevertex.h"
 #include "qgsmaptoolnodetool.h"
@@ -811,6 +812,10 @@ void QgisApp::createActions()
   mActionMeasureArea->setStatusTip( tr( "Measure an Area" ) );
   connect( mActionMeasureArea, SIGNAL( triggered() ), this, SLOT( measureArea() ) );
 
+  mActionMeasureAngle = new QAction( getThemeIcon( "mActionMeasureAngle.png" ), tr( "Measure Angle" ), this );
+  mActionMeasureAngle->setStatusTip( tr( "Measure Angle" ) );
+  connect( mActionMeasureAngle, SIGNAL( triggered() ), this, SLOT( measureAngle() ) );
+
   mActionZoomFullExtent = new QAction( getThemeIcon( "mActionZoomFullExtent.png" ), tr( "Zoom Full" ), this );
   shortcuts->registerAction( mActionZoomFullExtent, tr( "Ctrl+Shift+F", "Zoom to Full Extents" ) );
   mActionZoomFullExtent->setStatusTip( tr( "Zoom to Full Extents" ) );
@@ -1110,6 +1115,8 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionMeasure );
   mActionMeasureArea->setCheckable( true );
   mMapToolGroup->addAction( mActionMeasureArea );
+  mActionMeasureAngle->setCheckable( true );
+  mMapToolGroup->addAction( mActionMeasureAngle );
   mActionCaptureLine->setCheckable( true );
   mMapToolGroup->addAction( mActionCaptureLine );
   mActionCapturePoint->setCheckable( true );
@@ -1272,6 +1279,7 @@ void QgisApp::createMenus()
   mViewMenu->addAction( mActionIdentify );
   mViewMenu->addAction( mActionMeasure );
   mViewMenu->addAction( mActionMeasureArea );
+  mViewMenu->addAction( mActionMeasureAngle );
   mActionViewSeparator1 = mViewMenu->addSeparator();
 
   mViewMenu->addAction( mActionZoomFullExtent );
@@ -1490,6 +1498,7 @@ void QgisApp::createToolBars()
   mAttributesToolBar->addAction( mActionOpenTable );
   mAttributesToolBar->addAction( mActionMeasure );
   mAttributesToolBar->addAction( mActionMeasureArea );
+  mAttributesToolBar->addAction( mActionMeasureAngle );
   mAttributesToolBar->addAction( mActionMapTips );
   mAttributesToolBar->addAction( mActionShowBookmarks );
   mAttributesToolBar->addAction( mActionNewBookmark );
@@ -1734,6 +1743,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionOpenTable->setIcon( getThemeIcon( "/mActionOpenTable.png" ) );
   mActionMeasure->setIcon( getThemeIcon( "/mActionMeasure.png" ) );
   mActionMeasureArea->setIcon( getThemeIcon( "/mActionMeasureArea.png" ) );
+  mActionMeasureAngle->setIcon( getThemeIcon( "/mActionMeasureAngle.png" ) );
   mActionMapTips->setIcon( getThemeIcon( "/mActionMapTips.png" ) );
   mActionShowBookmarks->setIcon( getThemeIcon( "/mActionShowBookmarks.png" ) );
   mActionNewBookmark->setIcon( getThemeIcon( "/mActionNewBookmark.png" ) );
@@ -1835,6 +1845,8 @@ void QgisApp::createCanvas()
   mMapTools.mMeasureDist->setAction( mActionMeasure );
   mMapTools.mMeasureArea = new QgsMeasureTool( mMapCanvas, TRUE /* area */ );
   mMapTools.mMeasureArea->setAction( mActionMeasureArea );
+  mMapTools.mMeasureAngle = new QgsMapToolMeasureAngle( mMapCanvas );
+  mMapTools.mMeasureAngle->setAction( mActionMeasureAngle );
   mMapTools.mCapturePoint = new QgsMapToolAddFeature( mMapCanvas, QgsMapToolCapture::CapturePoint );
   mMapTools.mCapturePoint->setAction( mActionCapturePoint );
   mActionCapturePoint->setVisible( false );
@@ -3506,6 +3518,11 @@ void QgisApp::measure()
 void QgisApp::measureArea()
 {
   mMapCanvas->setMapTool( mMapTools.mMeasureArea );
+}
+
+void QgisApp::measureAngle()
+{
+  mMapCanvas->setMapTool( mMapTools.mMeasureAngle );
 }
 
 void QgisApp::attributeTable()
