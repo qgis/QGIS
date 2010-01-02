@@ -142,7 +142,7 @@
    <item row="0" column="1">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="page_3">
       <layout class="QGridLayout" name="gridLayout_4">
@@ -423,8 +423,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>401</width>
-            <height>425</height>
+            <width>514</width>
+            <height>428</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
@@ -548,9 +548,6 @@
                 <property name="text">
                  <string>Maximum</string>
                 </property>
-                <property name="buddy">
-                 <cstring>spinMaximumScale</cstring>
-                </property>
                </widget>
               </item>
               <item row="0" column="0">
@@ -558,36 +555,13 @@
                 <property name="text">
                  <string>Minimum</string>
                 </property>
-                <property name="buddy">
-                 <cstring>spinMinimumScale</cstring>
-                </property>
                </widget>
               </item>
               <item row="0" column="1">
-               <widget class="QSpinBox" name="spinMinimumScale">
-                <property name="toolTip">
-                 <string>Minimum scale at which this layer will be displayed. </string>
-                </property>
-                <property name="minimum">
-                 <number>1</number>
-                </property>
-                <property name="maximum">
-                 <number>100000000</number>
-                </property>
-               </widget>
+               <widget class="QLineEdit" name="leMinimumScale"/>
               </item>
               <item row="0" column="3">
-               <widget class="QSpinBox" name="spinMaximumScale">
-                <property name="toolTip">
-                 <string>Maximum scale at which this layer will be displayed. </string>
-                </property>
-                <property name="minimum">
-                 <number>1</number>
-                </property>
-                <property name="maximum">
-                 <number>100000000</number>
-                </property>
-               </widget>
+               <widget class="QLineEdit" name="leMaximumScale"/>
               </item>
              </layout>
             </widget>
@@ -732,8 +706,8 @@
   <tabstop>displayFieldComboBox</tabstop>
   <tabstop>leSpatialRefSys</tabstop>
   <tabstop>pbnIndex</tabstop>
-  <tabstop>spinMinimumScale</tabstop>
-  <tabstop>spinMaximumScale</tabstop>
+  <tabstop>leMinimumScale</tabstop>
+  <tabstop>leMaximumScale</tabstop>
   <tabstop>txtSubsetSQL</tabstop>
   <tabstop>pbnQueryBuilder</tabstop>
   <tabstop>buttonBox</tabstop>

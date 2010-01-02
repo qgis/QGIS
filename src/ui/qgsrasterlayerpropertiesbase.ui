@@ -1569,45 +1569,31 @@
           <property name="margin">
            <number>11</number>
           </property>
-          <item row="0" column="3">
-           <widget class="QSpinBox" name="spinMaximumScale">
-            <property name="toolTip">
-             <string>Maximum scale at which this layer will be displayed. </string>
-            </property>
-            <property name="minimum">
-             <number>1</number>
-            </property>
-            <property name="maximum">
-             <number>100000000</number>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="2">
            <widget class="QLabel" name="textLabel1_2_2_2">
+            <property name="layoutDirection">
+             <enum>Qt::RightToLeft</enum>
+            </property>
             <property name="text">
              <string>Maximum</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
-           <widget class="QSpinBox" name="spinMinimumScale">
-            <property name="toolTip">
-             <string>Minimum scale at which this layer will be displayed. </string>
-            </property>
-            <property name="minimum">
-             <number>1</number>
-            </property>
-            <property name="maximum">
-             <number>100000000</number>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="0">
            <widget class="QLabel" name="textLabel1_3">
+            <property name="layoutDirection">
+             <enum>Qt::RightToLeft</enum>
+            </property>
             <property name="text">
              <string>Minimum</string>
             </property>
            </widget>
+          </item>
+          <item row="0" column="3">
+           <widget class="QLineEdit" name="leMaximumScale"/>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="leMinimumScale"/>
           </item>
          </layout>
         </widget>
@@ -1824,8 +1810,8 @@
           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'DejaVu Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans Serif'; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
         </widget>
        </item>
@@ -2114,8 +2100,8 @@ p, li { white-space: pre-wrap; }
   <tabstop>tableTransparency</tabstop>
   <tabstop>leDisplayName</tabstop>
   <tabstop>leLayerSource</tabstop>
-  <tabstop>spinMinimumScale</tabstop>
-  <tabstop>spinMaximumScale</tabstop>
+  <tabstop>leMinimumScale</tabstop>
+  <tabstop>leMaximumScale</tabstop>
   <tabstop>leSpatialRefSys</tabstop>
   <tabstop>pbnChangeSpatialRefSys</tabstop>
   <tabstop>tePyramidDescription</tabstop>

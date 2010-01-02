@@ -18,6 +18,7 @@
 /* $Id$ */
 
 #include <memory>
+#include <limits>
 
 #include "qgisapp.h"
 #include "qgsapplication.h"
@@ -476,8 +477,10 @@ void QgsVectorLayerProperties::reset( void )
 
   // set up the scale based layer visibility stuff....
   chkUseScaleDependentRendering->setChecked( layer->hasScaleBasedVisibility() );
-  spinMinimumScale->setValue(( int )layer->minimumScale() );
-  spinMaximumScale->setValue(( int )layer->maximumScale() );
+  leMinimumScale->setText( QString::number( layer->minimumScale(), 'f' ) );
+  leMinimumScale->setValidator( new QDoubleValidator( 0, std::numeric_limits<float>::max(), 1000, this ) );
+  leMaximumScale->setText( QString::number( layer->maximumScale(), 'f' ) );
+  leMaximumScale->setValidator( new QDoubleValidator( 0, std::numeric_limits<float>::max(), 1000, this ) );
 
   // symbology initialization
   if ( legendtypecombobox->count() == 0 )
@@ -570,8 +573,8 @@ void QgsVectorLayerProperties::apply()
 
   // set up the scale based layer visibility stuff....
   layer->toggleScaleBasedVisibility( chkUseScaleDependentRendering->isChecked() );
-  layer->setMinimumScale( spinMinimumScale->value() );
-  layer->setMaximumScale( spinMaximumScale->value() );
+  layer->setMinimumScale( leMinimumScale->text().toFloat() );
+  layer->setMaximumScale( leMaximumScale->text().toFloat() );
 
   // update the display field
   layer->setDisplayField( displayFieldComboBox->currentText() );

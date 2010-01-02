@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QDebug>
+#include <limits>
 
 #include "qgslogger.h"
 #include "qgsapplication.h"
@@ -98,8 +98,10 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QWidget *p
 
   // set up the scale based layer visibility stuff....
   chkUseScaleDependentRendering->setChecked( lyr->hasScaleBasedVisibility() );
-  spinMinimumScale->setValue(( int )lyr->minimumScale() );
-  spinMaximumScale->setValue(( int )lyr->maximumScale() );
+  leMinimumScale->setText( QString::number( lyr->minimumScale(), 'f' ) );
+  leMinimumScale->setValidator( new QDoubleValidator( 0, std::numeric_limits<float>::max(), 1000, this ) );
+  leMaximumScale->setText( QString::number( lyr->maximumScale(), 'f' ) );
+  leMaximumScale->setValidator( new QDoubleValidator( 0, std::numeric_limits<float>::max(), 1000, this ) );
 
   // build GUI components
   cboxColorMap->addItem( tr( "Grayscale" ) );
@@ -1446,8 +1448,8 @@ void QgsRasterLayerProperties::apply()
 
   // set up the scale based layer visibility stuff....
   mRasterLayer->toggleScaleBasedVisibility( chkUseScaleDependentRendering->isChecked() );
-  mRasterLayer->setMinimumScale( spinMinimumScale->value() );
-  mRasterLayer->setMaximumScale( spinMaximumScale->value() );
+  mRasterLayer->setMinimumScale( leMinimumScale->text().toFloat() );
+  mRasterLayer->setMaximumScale( leMaximumScale->text().toFloat() );
 
   //update the legend pixmap
   pixmapLegend->setPixmap( mRasterLayer->legendAsPixmap() );
