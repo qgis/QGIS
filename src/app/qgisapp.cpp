@@ -3635,8 +3635,9 @@ void QgisApp::deletePart()
   mMapCanvas->setMapTool( mMapTools.mDeletePart );
 }
 
-QgsGeometry* QgisApp::unionGeometries( const QgsVectorLayer* vl, QgsFeatureList& featureList )
+QgsGeometry* QgisApp::unionGeometries( const QgsVectorLayer* vl, QgsFeatureList& featureList, bool& canceled )
 {
+  canceled = false;
   if ( !vl || featureList.size() < 2 )
   {
     return 0;
@@ -3660,6 +3661,7 @@ QgsGeometry* QgisApp::unionGeometries( const QgsVectorLayer* vl, QgsFeatureList&
     {
       delete unionGeom;
       QApplication::restoreOverrideCursor();
+      canceled = true;
       return 0;
     }
     progress.setValue( i );
@@ -3668,6 +3670,12 @@ QgsGeometry* QgisApp::unionGeometries( const QgsVectorLayer* vl, QgsFeatureList&
     {
       backupPtr = unionGeom;
       unionGeom = unionGeom->combine( currentGeom );
+      if ( !unionGeom )
+      {
+        delete backupPtr;
+        QApplication::restoreOverrideCursor();
+        return 0;
+      }
       if ( i > 1 ) //delete previous intermediate results
       {
         delete backupPtr;
@@ -3798,9 +3806,14 @@ void QgisApp::mergeSelectedFeatures()
 
   //get initial selection (may be altered by attribute merge dialog later)
   QgsFeatureList featureList = vl->selectedFeatures();  //get QList<QgsFeature>
-  QgsGeometry* unionGeom = unionGeometries( vl, featureList );
+  bool canceled;
+  QgsGeometry* unionGeom = unionGeometries( vl, featureList, canceled );
   if ( !unionGeom )
   {
+    if ( !canceled )
+    {
+      QMessageBox::critical( 0, tr( "Merge failed" ), tr( "An error occured during the merge operation" ) );
+    }
     return;
   }
 
@@ -3835,9 +3848,14 @@ void QgisApp::mergeSelectedFeatures()
   if ( featureList.size() != featureListAfter.size() )
   {
     delete unionGeom;
-    unionGeom = unionGeometries( vl, featureListAfter );
+    bool canceled;
+    unionGeom = unionGeometries( vl, featureListAfter, canceled );
     if ( !unionGeom )
     {
+      if ( !canceled )
+      {
+        QMessageBox::critical( 0, tr( "Merge failed" ), tr( "An error occured during the merge operation" ) );
+      }
       return;
     }
 
