@@ -710,8 +710,8 @@ class QgisApp : public QMainWindow
     //! check to see if file is dirty and if so, prompt the user th save it
     bool saveDirty();
     /** Helper function to union several geometries together (used in function mergeSelectedFeatures)
-      @return 0 in case of error*/
-    QgsGeometry* unionGeometries( const QgsVectorLayer* vl, QgsFeatureList& featureList );
+      @return 0 in case of error or if canceled*/
+    QgsGeometry* unionGeometries( const QgsVectorLayer* vl, QgsFeatureList& featureList, bool& canceled );
 
     /**Deletes all the composer objects and clears mPrintComposers*/
     void deletePrintComposers();
