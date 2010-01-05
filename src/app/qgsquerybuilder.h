@@ -73,7 +73,7 @@ class QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBase
     void accept();
     void reject();
     void helpClicked();
-    void on_btnClear_clicked();
+    void clear();
     void on_btnEqual_clicked();
     void on_btnLessThan_clicked();
     void on_btnGreaterThan_clicked();
@@ -103,7 +103,7 @@ class QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBase
      * statement.
      * @param showResults If true, the results are displayed in a QMessageBox
      */
-    void on_btnTest_clicked();
+    void test();
     /*!
      * Get all distinct values for the field. Values are inserted
      * into the value list box
