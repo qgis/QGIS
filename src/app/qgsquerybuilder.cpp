@@ -39,11 +39,11 @@ QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
 
   QPushButton *pbn = new QPushButton( tr( "&Test" ) );
   buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
-  connect( pbn, SIGNAL( clicked() ), this, SLOT( on_btnTest_clicked() ) );
+  connect( pbn, SIGNAL( clicked() ), this, SLOT( test() ) );
 
   pbn = new QPushButton( tr( "&Clear" ) );
   buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
-  connect( pbn, SIGNAL( clicked() ), this, SLOT( on_btnClear_clicked() ) );
+  connect( pbn, SIGNAL( clicked() ), this, SLOT( clear() ) );
 
   setupGuiViews();
 
@@ -150,7 +150,7 @@ void QgsQueryBuilder::on_btnGetAllValues_clicked()
   delete tmp;
 }
 
-void QgsQueryBuilder::on_btnTest_clicked()
+void QgsQueryBuilder::test()
 {
   // test the sql statement to see if it works
   // by counting the number of records that would be
@@ -305,7 +305,7 @@ void QgsQueryBuilder::on_btnOr_clicked()
   txtSQL->insertPlainText( " OR " );
 }
 
-void QgsQueryBuilder::on_btnClear_clicked()
+void QgsQueryBuilder::clear()
 {
   txtSQL->clear();
 }
