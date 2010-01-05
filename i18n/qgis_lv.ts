@@ -975,9 +975,326 @@ p, li { white-space: pre-wrap; }
         <translation></translation>
     </message>
     <message>
+        <source>Random selection</source>
+        <translation type="unfinished">Nejauša izvēle</translation>
+    </message>
+    <message>
+        <source>No input shapefile specified</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Create Point Distance Matrix</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify input point layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify output file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify target point layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify input unique ID field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify target unique ID field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Random Points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No input layer specified</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify output shapefile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>unstratified</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>stratified</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>density</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown layer type...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created output point shapefile:
+%1
+
+Would you like to add the new layer to the TOC?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Export to new projection</source>
+        <translation type="unfinished">Eksportēt uz citu projekciju</translation>
+    </message>
+    <message>
+        <source>Define current projection</source>
+        <translation type="unfinished">Definēt pašreizējo projekciju</translation>
+    </message>
+    <message>
+        <source>Please specify spatial reference system</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created projected shapefile:
+%1
+
+Would you like to add the new layer to the TOC?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose output CRS:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please select the projection system to be used by the output layer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output layer will be projected from it&apos;s current CRS to the output CRS.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No Valid CRS selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Output spatial reference system is not valid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Identical output spatial reference system chosen</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mean coordinates</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Standard distance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(Optional) Weight field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(Optional) Unique ID field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Coordinate statistics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No input vector layer specified</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Vector grid</source>
+        <translation type="unfinished">Vektoru tīkls</translation>
+    </message>
+    <message>
+        <source>Please specify valid extent coordinates</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid extent coordinates entered</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Generate Vector Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created output shapefile:
+%1
+
+Note: Layer has no associated coordinate system, please use the Projection Management Tool to specify spatial reference system.
+
+Would you like to add the new layer to the TOC?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Split vector layer</source>
+        <translation type="unfinished">Sadalīt vektoru slāni</translation>
+    </message>
+    <message>
+        <source>Created output shapefiles in folder:
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Random selection within subsets</source>
+        <translation type="unfinished">Nejauša izvēle apakškopās</translation>
+    </message>
+    <message>
+        <source>Please specify input vector layer</source>
+        <translation type="unfinished">Lūdzu precizējiet ievades vektordatu slāni</translation>
+    </message>
+    <message>
+        <source>Please specify an input field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Shapefiles (*.shp)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot overwrite existing shapefile...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Join attributes by location</source>
+        <translation type="unfinished">Apvienot atribūtus pēc atrašanās vietas</translation>
+    </message>
+    <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="16"/>
         <source>Spatial Join</source>
         <translation>Telpisks savienojums</translation>
+    </message>
+    <message>
+        <source>Please specify target vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify join vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify at least one summary statistic</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created output shapefile:
+%1
+
+Would you like to add the new layer to the TOC?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CRS warning!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warning: Input layers have non-matching CRS.
+This may cause unexpected results.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Summary field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Count Points in Polygon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Count Points In Polygon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify input polygon vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify input point vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify output count field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>point count field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Counts Points In Polygon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Join attributes</source>
+        <translation type="unfinished">Apvienot atribūtus</translation>
+    </message>
+    <message>
+        <source>Please specify target join field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify join field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify input table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Join Table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Input table does not exist</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>joined fields</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sum Line Lengths In Polyons</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify input line vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify output length field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>length field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Regular points</source>
+        <translation type="unfinished">Regulāri punkti</translation>
+    </message>
+    <message>
+        <source>Please properly specify extent coordinates</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created output point shapefile:
+%1
+
+Note: Layer has no associated coordinate system, please use the Projection Management Tool to specify spatial reference system.
+
+Would you like to add the new layer to the TOC?</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="53"/>
@@ -1018,6 +1335,44 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="150"/>
         <source>Output Shapefile:</source>
         <translation>Izejošais shapefile</translation>
+    </message>
+    <message>
+        <source>Cannot define projection for PostGIS data...yet!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to dynamically define projection.
+Please reload layer manually for projection definition to take effect.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Defined Projection For:
+%1.shp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please select the projection system that defines the current layer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Layer CRS information will be updated to the selected CRS.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line intersections</source>
+        <translation type="unfinished">Līniju krustpunkti</translation>
+    </message>
+    <message>
+        <source>Please specify input line layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify line intersect layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please specify intersect unique ID field</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="16"/>
@@ -1171,12 +1526,12 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Points in polygon</source>
-        <translation>Punkti poligonā</translation>
+        <translation type="obsolete">Punkti poligonā</translation>
     </message>
     <message>
         <source>Created output Shapefile:
 </source>
-        <translation>Izveidotais izvades shapefile:
+        <translation type="obsolete">Izveidotais izvades shapefile:
 </translation>
     </message>
     <message>
@@ -1197,6 +1552,42 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="309"/>
         <source>OGR Layer Converter</source>
         <translation>OGR slāņu konvertors</translation>
+    </message>
+    <message>
+        <source>
+The goal of fTools is to provide a one-stop resource for many common vector-based GIS tasks, without the need for additional software, libraries, or complex workarounds.
+
+fTools is designed to extend the functionality of Quantum GIS using only core QGIS and python libraries. It provides a growing suite of spatial data management and analysis functions that are both quick and functional. In addition, the geoprocessing functions of  Dr. Horst Duester and Stefan Ziegler have been incorporated to futher facilitate and streamline GIS based research and analysis.
+
+If you would like to report a bug, make suggestions for improving fTools, or have a question about the tools, please email me: carson.farmer@gmail.com
+
+LICENSING INFORMATION:
+fTools is copyright (C) 2009  Carson J.Q. Farmer
+Geoprocessing functions adapted from &apos;Geoprocessing Plugin&apos;,
+(C) 2008 by Dr. Horst Duester, Stefan Ziegler
+
+licensed under the terms of GNU GPL 2
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+ACKNOWLEDGEMENTS:
+The following individuals (whether they know it or not) have contributed ideas, help, testing, code, and guidence towards this project, and I thank them.
+Hawthorn Beyer
+Borys Jurgiel
+Tim Sutton
+Barry Rowlingson
+Horst Duester and Stefan Ziegler
+Paolo Cavallini
+Aaron Racicot
+Colin Robertson
+Agustin Lobo
+Jurgen E. Fischer
+QGis developer and user communities
+Folks on #qgis at freenode.net
+All those who have reported bugs/fixes/suggestions/comments/etc.
+</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1690,7 +2081,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Would you like to add the new layer to the TOC?</source>
-        <translation>Vai vēlaties pievienot jauno slāni TOC?</translation>
+        <translation type="obsolete">Vai vēlaties pievienot jauno slāni TOC?</translation>
     </message>
     <message>
         <source>Output shapefile</source>
@@ -1746,11 +2137,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Error processing specified tolerance!</source>
-        <translation>Notika kļūda formējot noteikto pielaidi!</translation>
+        <translation type="obsolete">Notika kļūda formējot noteikto pielaidi!</translation>
     </message>
     <message>
         <source>Please choose larger tolerance...</source>
-        <translation>Lūdzu, izvēlieties lielāku pielaides vērtību...</translation>
+        <translation type="obsolete">Lūdzu, izvēlieties lielāku pielaides vērtību...</translation>
     </message>
     <message>
         <source>Function not found</source>
@@ -1774,7 +2165,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Created output shapefile:</source>
-        <translation>Izveidotais izvades Shapefile:</translation>
+        <translation type="obsolete">Izveidotais izvades Shapefile:</translation>
     </message>
     <message>
         <source>Error writing output shapefile.</source>
@@ -1791,6 +2182,30 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Delaunay triangulation</source>
         <translation>Delaunay triangulācija</translation>
+    </message>
+    <message>
+        <source>Geometry</source>
+        <translation type="unfinished">Ģeometrija</translation>
+    </message>
+    <message>
+        <source>Geoprocessing</source>
+        <translation type="unfinished">Ģeoapstrāde</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">Atcelt</translation>
+    </message>
+    <message>
+        <source>Error processing specified tolerance!
+Please choose larger tolerance...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Created output shapefile:
+%1
+
+Would you like to add the new layer to the TOC?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1825,7 +2240,7 @@ GEOS ģeoprocesēšanas kļūda: vienam vai vairākiem ievades objektiem ir nede
     </message>
     <message>
         <source>Created output shapefile:</source>
-        <translation>Izveidotais izvades Shapefile:</translation>
+        <translation type="obsolete">Izveidotais izvades Shapefile:</translation>
     </message>
     <message>
         <source>Dissolve all</source>
@@ -1942,6 +2357,25 @@ Would you like to add the new layer to the TOC?</source>
         <translation>
 
 Vai vēlaties pievienot jauno slāni TOC?</translation>
+    </message>
+    <message>
+        <source>Geoprocessing</source>
+        <translation type="unfinished">Ģeoapstrāde</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">Atcelt</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="unfinished">Aizvērt</translation>
+    </message>
+    <message>
+        <source>Created output shapefile:
+%1
+
+%2%3</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3311,12 +3745,12 @@ Vai vēlaties pievienot jauno slāni TOC?</translation>
         <translation>Saglabāt eksperimenta atskaiti PDF formātā</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3131"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3133"/>
         <source>Load layer properties from style file (.qml)</source>
         <translation>Ielādēt slāņa īpašības no stila faila (.qml)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3196"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3198"/>
         <source>Save layer properties as style file (.qml)</source>
         <translation>Saglabāt slāņa īpašības kā stila failu (.qml)</translation>
     </message>
@@ -3489,7 +3923,7 @@ Vai vēlaties pievienot jauno slāni TOC?</translation>
         <translation type="obsolete">Izvēlēties punktu uz līnijas</translation>
     </message>
     <message>
-        <location filename="../src/core/qgslabelattributes.cpp" line="61"/>
+        <location filename="../src/core/qgslabelattributes.cpp" line="62"/>
         <source>Label</source>
         <translation>Birka</translation>
     </message>
@@ -3534,14 +3968,14 @@ Vai vēlaties pievienot jauno slāni TOC?</translation>
         <translation>GPS apmaiņas formāta sniedzējs</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="304"/>
-        <location filename="../src/core/qgsdistancearea.cpp" line="329"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="307"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="332"/>
         <source>Caught a coordinate system exception while trying to transform a point. Unable to calculate line length.</source>
         <translation>Mēģinot transformēt punktu, tika konstatēts koordinātu transofmācijas sistēmas izņēmums. Nav iespējams noteikt līnijas garumu.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="396"/>
-        <location filename="../src/core/qgsdistancearea.cpp" line="425"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="399"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="428"/>
         <source>Caught a coordinate system exception while trying to transform a point. Unable to calculate polygon area.</source>
         <translation>Mēģinot transformēt punktu, tika konstatēts koordinātu transofmācijas sistēmas izņēmums. Nav iespējams noteikt poligona laukumu.</translation>
     </message>
@@ -3729,7 +4163,7 @@ Vai vēlaties norādīt ceļu līdz GRASS instalācijai (GISBASE)?</translation>
         <translation type="obsolete">Lai izvēlētos objektus, jums vispirms ir jāzivēlas vektoru slānis uzklikšķinot uz tā nosaukuma</translation>
     </message>
     <message>
-        <location filename="../src/app/qgspluginregistry.cpp" line="421"/>
+        <location filename="../src/app/qgspluginregistry.cpp" line="444"/>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="169"/>
         <source>Python error</source>
         <translation>Python kļūda</translation>
@@ -3841,83 +4275,83 @@ Python atbalsts tiks atslēgts.</translation>
         <translation type="obsolete">Kļūda, nevar pievienot apli</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="671"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="681"/>
         <source> km2</source>
         <translation> km2</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="676"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="686"/>
         <source> ha</source>
         <translation> ha</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="681"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="691"/>
         <source> m2</source>
         <translation> m2</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="689"/>
-        <location filename="../src/core/qgsdistancearea.cpp" line="709"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="699"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="719"/>
         <source> m</source>
         <translation> m</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="694"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="704"/>
         <source> km</source>
         <translation> km</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="699"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="709"/>
         <source> mm</source>
         <translation> mm</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="704"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="714"/>
         <source> cm</source>
         <translation> cm</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="718"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="728"/>
         <source> sq mile</source>
         <translation>kv. jūdze</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="723"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="733"/>
         <source> sq ft</source>
         <translation>kv. pēda</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="730"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="740"/>
         <source> mile</source>
         <translation>jūdze</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="736"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="746"/>
         <source> foot</source>
         <translation> pēdas</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="738"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="748"/>
         <source> feet</source>
         <translation> pēdas</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="745"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="755"/>
         <source> sq.deg.</source>
         <translation> kv. grādi</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="750"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="760"/>
         <source> degree</source>
         <translation> grāds</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="752"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="762"/>
         <source> degrees</source>
         <translation> grādi</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="756"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="766"/>
         <source> unknown</source>
         <translation> nezināms</translation>
     </message>
@@ -4511,12 +4945,12 @@ Python atbalsts tiks atslēgts.</translation>
         <translation>Konvertē OGR bibliotēkas atbalstītos vektordatu slāņus</translation>
     </message>
     <message>
-        <location filename="../src/app/qgspluginregistry.cpp" line="290"/>
+        <location filename="../src/app/qgspluginregistry.cpp" line="313"/>
         <source>Error Loading Plugin</source>
         <translation>Kļūda ielādējot spraudni</translation>
     </message>
     <message>
-        <location filename="../src/app/qgspluginregistry.cpp" line="291"/>
+        <location filename="../src/app/qgspluginregistry.cpp" line="314"/>
         <source>There was an error loading a plugin.The following diagnostic information may help the QGIS developers resolve the issue:
 %1.</source>
         <translation>Kļūda ielādējot spraudni. Sekojošā diagnostikas informācija var palīdzēt QGIS izstradātājiem atrisināt šo problēmu:
@@ -4532,7 +4966,7 @@ Python atbalsts tiks atslēgts.</translation>
         <translation>Kur ir &apos;%1&apos; (īstā atrašanās: %2 )?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgspluginregistry.cpp" line="422"/>
+        <location filename="../src/app/qgspluginregistry.cpp" line="445"/>
         <source>Error when reading metadata of plugin %1</source>
         <translation>Kļūda nolasot %1 spraudņa metadatus</translation>
     </message>
@@ -4643,12 +5077,12 @@ Python atbalsts tiks atslēgts.</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolnodetool.cpp" line="944"/>
+        <location filename="../src/app/qgsmaptoolnodetool.cpp" line="947"/>
         <source>Deleted vertices</source>
         <translation>Dzēstas virsotnes</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1007"/>
+        <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1010"/>
         <source>Moved vertices</source>
         <translation>Pārvietotas virsotnes</translation>
     </message>
@@ -4781,7 +5215,7 @@ Python atbalsts tiks atslēgts.</translation>
         <translation type="obsolete">http://www.gnu.org/licenses</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2128"/>
+        <location filename="../src/app/qgisapp.cpp" line="2140"/>
         <source>Version</source>
         <translation>Versija</translation>
     </message>
@@ -4794,20 +5228,20 @@ Python atbalsts tiks atslēgts.</translation>
         <translation type="obsolete">ir nederīgs vai neatpazīts datu avots</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2336"/>
-        <location filename="../src/app/qgisapp.cpp" line="5546"/>
+        <location filename="../src/app/qgisapp.cpp" line="2348"/>
+        <location filename="../src/app/qgisapp.cpp" line="5589"/>
         <source>Invalid Data Source</source>
         <translation>Nederīgs datu avots</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2491"/>
-        <location filename="../src/app/qgisapp.cpp" line="2573"/>
+        <location filename="../src/app/qgisapp.cpp" line="2503"/>
+        <location filename="../src/app/qgisapp.cpp" line="2585"/>
         <source>Invalid Layer</source>
         <translation>Nederīgs slānis</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2491"/>
-        <location filename="../src/app/qgisapp.cpp" line="2573"/>
+        <location filename="../src/app/qgisapp.cpp" line="2503"/>
+        <location filename="../src/app/qgisapp.cpp" line="2585"/>
         <source>%1 is an invalid layer and cannot be loaded.</source>
         <translation>%1 ir nederīgs slānis un nevar tikt ielādēts.</translation>
     </message>
@@ -4820,32 +5254,32 @@ Python atbalsts tiks atslēgts.</translation>
         <translation type="obsolete">Saglabāt kartes attēlu uz</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3546"/>
+        <location filename="../src/app/qgisapp.cpp" line="3571"/>
         <source>No Layer Selected</source>
         <translation>Nav izvēlēts slānis</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3584"/>
+        <location filename="../src/app/qgisapp.cpp" line="3609"/>
         <source>Problem deleting features</source>
         <translation>Problēma ar objektu dzēšanu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3585"/>
+        <location filename="../src/app/qgisapp.cpp" line="3610"/>
         <source>A problem occured during deletion of features</source>
         <translation>Dzēšot objektus gadījās problēma</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3555"/>
+        <location filename="../src/app/qgisapp.cpp" line="3580"/>
         <source>No Vector Layer Selected</source>
         <translation>Nav izvēlēts vektordatu slānis</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3556"/>
+        <location filename="../src/app/qgisapp.cpp" line="3581"/>
         <source>Deleting features only works on vector layers</source>
         <translation>Objektu dzēšana darbojas tikai vektordatu slāņiem</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3547"/>
+        <location filename="../src/app/qgisapp.cpp" line="3572"/>
         <source>To delete features, you must select a vector layer in the legend</source>
         <translation>Lai izdzēstu kādu objektu, Jums vispirms jāizvēlas vektordatu slānis no slāņu saraksta</translation>
     </message>
@@ -4910,45 +5344,45 @@ Python atbalsts tiks atslēgts.</translation>
         <translation type="obsolete">QGIS nevarēja ielādēt spraudni no: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4463"/>
+        <location filename="../src/app/qgisapp.cpp" line="4506"/>
         <source>There is a new version of QGIS available</source>
         <translation>Ir pieejama jaunāka QGIS versija</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4469"/>
+        <location filename="../src/app/qgisapp.cpp" line="4512"/>
         <source>You are running a development version of QGIS</source>
         <translation>Jūs lietojat QGIS izstrādes versiju</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4473"/>
+        <location filename="../src/app/qgisapp.cpp" line="4516"/>
         <source>You are running the current version of QGIS</source>
         <translation>Jūs lietojat jaunāko QGIS versiju</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4478"/>
+        <location filename="../src/app/qgisapp.cpp" line="4521"/>
         <source>Would you like more information?</source>
         <translation>Vai Jūs vēlaties sīkāku informāciju?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4481"/>
-        <location filename="../src/app/qgisapp.cpp" line="4494"/>
-        <location filename="../src/app/qgisapp.cpp" line="4499"/>
-        <location filename="../src/app/qgisapp.cpp" line="4527"/>
+        <location filename="../src/app/qgisapp.cpp" line="4524"/>
+        <location filename="../src/app/qgisapp.cpp" line="4537"/>
+        <location filename="../src/app/qgisapp.cpp" line="4542"/>
+        <location filename="../src/app/qgisapp.cpp" line="4570"/>
         <source>QGIS Version Information</source>
         <translation>QGIS versijas informācija</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4499"/>
+        <location filename="../src/app/qgisapp.cpp" line="4542"/>
         <source>Unable to get current version information from server</source>
         <translation>Nevaru saņemt informāciju par pašreizējo versiju no servera</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4513"/>
+        <location filename="../src/app/qgisapp.cpp" line="4556"/>
         <source>Connection refused - server may be down</source>
         <translation>Savienojums nav atļauts - serveris, iespējams, ir izslēgts</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4516"/>
+        <location filename="../src/app/qgisapp.cpp" line="4559"/>
         <source>QGIS server was not found</source>
         <translation>QGIS serveris netika atrasts</translation>
     </message>
@@ -4957,43 +5391,43 @@ Python atbalsts tiks atslēgts.</translation>
         <translation type="obsolete">Apjoms: </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1948"/>
+        <location filename="../src/app/qgisapp.cpp" line="1960"/>
         <source>Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties.</source>
         <translation>Kartes slāņu saraksts, kas parāda visus kartes skata rāmī esošos slāņus. 
 Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikšķis uz slāņa nosaukuma ļaus pielāgot tā attēlošanu un iestatīt citus tā parametrus.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1883"/>
+        <location filename="../src/app/qgisapp.cpp" line="1895"/>
         <source>Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas.</source>
         <translation>Kartes pārskata rāmis. Tas ļauj parādīt kartes pārskatu un pašreizējā kartes rāmī redzamā skata atrašanās vietu, kas redzams kā sarkans taisnstūris. Kartes pārskata rāmim var pievienot jebkuru kartes slāni.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1818"/>
+        <location filename="../src/app/qgisapp.cpp" line="1828"/>
         <source>Map canvas. This is where raster and vector layers are displayed when added to the map</source>
         <translation>Kartes audekls. Šeit tiek rādīti visi rastra un vektordatu slāņi, kad tos pievieno kartei</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1354"/>
+        <location filename="../src/app/qgisapp.cpp" line="1362"/>
         <source>&amp;Plugins</source>
         <translation>&amp;Spraudņi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1522"/>
+        <location filename="../src/app/qgisapp.cpp" line="1531"/>
         <source>Progress bar that displays the status of rendering layers and other time-intensive operations</source>
         <translation>Progresa josla rāda cik daudz no slāņiem jau ir parādīts, kā arī citu laikietilpīgu procesu paveikto daļu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1594"/>
+        <location filename="../src/app/qgisapp.cpp" line="1603"/>
         <source>Displays the current map scale</source>
         <translation>Attēlo pašreizējo kartes mērogu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1607"/>
+        <location filename="../src/app/qgisapp.cpp" line="1616"/>
         <source>Render</source>
         <translation>Renderēt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1610"/>
+        <location filename="../src/app/qgisapp.cpp" line="1619"/>
         <source>When checked, the map layers are rendered in response to map navigation commands and other events. When not checked, no rendering is done. This allows you to add a large number of layers and symbolize them before rendering.</source>
         <translation>Ja atzīmēts, kartes slāņi tiek renderēti uzreiz tiklīdz kāda darbība tiek veikta. Ja nav atzīmēts, renderēšana nenotiek. Tas ļauj pievienot lielu daudzumu slāņu un iestatīt tiem apzīmējumus pirms to attēlošanas kartē.</translation>
     </message>
@@ -5002,7 +5436,7 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
         <translation type="obsolete">Kas jauns versijā 1.3.0?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2990"/>
+        <location filename="../src/app/qgisapp.cpp" line="3010"/>
         <source>Choose a QGIS project file</source>
         <translation>Izvēlieties QGIS projekta failu</translation>
     </message>
@@ -5015,7 +5449,7 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
         <translation type="obsolete">Nav iespējams saglabāt projektu uz </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1614"/>
+        <location filename="../src/app/qgisapp.cpp" line="1623"/>
         <source>Toggle map rendering</source>
         <translation>Pārslēdz kartes renderēšanu</translation>
     </message>
@@ -5032,17 +5466,17 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
         <translation type="obsolete">Atvērt OGR atbalstītu vektordatu slāni</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2752"/>
+        <location filename="../src/app/qgisapp.cpp" line="2764"/>
         <source>Save As</source>
         <translation>Saglabāt kā</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2859"/>
+        <location filename="../src/app/qgisapp.cpp" line="2879"/>
         <source>Choose a QGIS project file to open</source>
         <translation>Izvēlieties QGIS projekta failu ko atvērt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2883"/>
+        <location filename="../src/app/qgisapp.cpp" line="2903"/>
         <source>QGIS Project Read Error</source>
         <translation>QGIS projekta faila nolasīšanas kļūda</translation>
     </message>
@@ -5055,7 +5489,7 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
         <translation type="obsolete">Saglabāt projektu iekš:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5453"/>
+        <location filename="../src/app/qgisapp.cpp" line="5496"/>
         <source>Open a GDAL Supported Raster Data Source</source>
         <translation>Atvērt GDAL atbalstītu datu avotu</translation>
     </message>
@@ -5064,7 +5498,7 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
         <translation type="obsolete">Jaunās iespējas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2925"/>
+        <location filename="../src/app/qgisapp.cpp" line="2945"/>
         <source>Unable to open project</source>
         <translation>Nav iespējams atvērt projektu</translation>
     </message>
@@ -5081,36 +5515,36 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
         <translation type="obsolete">Nav iespējams ielādēt projektu </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4669"/>
-        <location filename="../src/app/qgisapp.cpp" line="4714"/>
-        <location filename="../src/app/qgisapp.cpp" line="5626"/>
+        <location filename="../src/app/qgisapp.cpp" line="4712"/>
+        <location filename="../src/app/qgisapp.cpp" line="4757"/>
+        <location filename="../src/app/qgisapp.cpp" line="5669"/>
         <source>Layer is not valid</source>
         <translation>Slānis ir nederīgs</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4670"/>
-        <location filename="../src/app/qgisapp.cpp" line="4715"/>
-        <location filename="../src/app/qgisapp.cpp" line="5627"/>
+        <location filename="../src/app/qgisapp.cpp" line="4713"/>
+        <location filename="../src/app/qgisapp.cpp" line="4758"/>
+        <location filename="../src/app/qgisapp.cpp" line="5670"/>
         <source>The layer is not a valid layer and can not be added to the map</source>
         <translation>Slānis nav derīgs un tādēļ to nevar pievienot kartei</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4759"/>
+        <location filename="../src/app/qgisapp.cpp" line="4802"/>
         <source>Save?</source>
         <translation>Saglabāt?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4760"/>
+        <location filename="../src/app/qgisapp.cpp" line="4803"/>
         <source>Do you want to save the current project?</source>
         <translation>Vai Jūs vēlaties saglabāt projektu?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="967"/>
+        <location filename="../src/app/qgisapp.cpp" line="972"/>
         <source>Show all layers</source>
         <translation>Rādīt visus slāņus</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="972"/>
+        <location filename="../src/app/qgisapp.cpp" line="977"/>
         <source>Hide all layers</source>
         <translation>Slēpt visus slāņus</translation>
     </message>
@@ -5127,123 +5561,123 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
         <translation type="obsolete"> ir neatbalstīts rastra datu avots</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5713"/>
+        <location filename="../src/app/qgisapp.cpp" line="5756"/>
         <source>Unsupported Data Source</source>
         <translation>Neatbalstīts datu avots</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="853"/>
-        <location filename="../src/app/qgisapp.cpp" line="5809"/>
+        <location filename="../src/app/qgisapp.cpp" line="858"/>
+        <location filename="../src/app/qgisapp.cpp" line="5852"/>
         <source>New Bookmark</source>
         <translation>Jauna grāmatzīme</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5810"/>
+        <location filename="../src/app/qgisapp.cpp" line="5853"/>
         <source>Enter a name for the new bookmark:</source>
         <translation>Ievadiet nosaukumu jaunajai grāmatzīmei:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4148"/>
-        <location filename="../src/app/qgisapp.cpp" line="4161"/>
-        <location filename="../src/app/qgisapp.cpp" line="5827"/>
+        <location filename="../src/app/qgisapp.cpp" line="4191"/>
+        <location filename="../src/app/qgisapp.cpp" line="4204"/>
+        <location filename="../src/app/qgisapp.cpp" line="5870"/>
         <source>Error</source>
         <translation>Kļūda</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5827"/>
+        <location filename="../src/app/qgisapp.cpp" line="5870"/>
         <source>Unable to create the bookmark. Your user database may be missing or corrupted</source>
         <translation>Nav iespējams izveidot grāmatzīmi. Jūsu lietotāju datubāze ir vai nu bojāta, vai tās vispār nav</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="350"/>
+        <location filename="../src/app/qgisapp.cpp" line="351"/>
         <source>Reading settings</source>
         <translation>Iestatījumu nolasīšana</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="353"/>
+        <location filename="../src/app/qgisapp.cpp" line="354"/>
         <source>Setting up the GUI</source>
         <translation>Grafiskās vides iestatīšana</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="344"/>
+        <location filename="../src/app/qgisapp.cpp" line="345"/>
         <source>Checking database</source>
         <translation>Datu bāzes pārbaude</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="227"/>
+        <location filename="../src/app/qgisapp.cpp" line="228"/>
         <source>Quantum GIS </source>
         <translation>Quantum GIS </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="412"/>
+        <location filename="../src/app/qgisapp.cpp" line="413"/>
         <source>Restoring loaded plugins</source>
         <translation>Ielādēto spraudņu atjaunošana</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="417"/>
+        <location filename="../src/app/qgisapp.cpp" line="418"/>
         <source>Initializing file filters</source>
         <translation>Failu filtru inicializēšana</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="445"/>
+        <location filename="../src/app/qgisapp.cpp" line="446"/>
         <source>Restoring window state</source>
         <translation>Loga statusa atjaunošana</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="449"/>
+        <location filename="../src/app/qgisapp.cpp" line="450"/>
         <source>QGIS Ready!</source>
         <translation>QGIS darbam gatavs!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="569"/>
+        <location filename="../src/app/qgisapp.cpp" line="570"/>
         <source>&amp;New Project</source>
         <translation>&amp;Jauns projekts</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="570"/>
+        <location filename="../src/app/qgisapp.cpp" line="571"/>
         <source>Ctrl+N</source>
         <comment>New Project</comment>
         <translation>Ctrl+N</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="571"/>
+        <location filename="../src/app/qgisapp.cpp" line="572"/>
         <source>New Project</source>
         <translation>Jauns projekts</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="574"/>
+        <location filename="../src/app/qgisapp.cpp" line="575"/>
         <source>&amp;Open Project...</source>
         <translation>&amp;Atvērt projektu...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="575"/>
+        <location filename="../src/app/qgisapp.cpp" line="576"/>
         <source>Ctrl+O</source>
         <comment>Open a Project</comment>
         <translation>Ctrl+O</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="576"/>
+        <location filename="../src/app/qgisapp.cpp" line="577"/>
         <source>Open a Project</source>
         <translation>Atvērt projektu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="579"/>
+        <location filename="../src/app/qgisapp.cpp" line="580"/>
         <source>&amp;Save Project</source>
         <translation>&amp;Saglabāt projektu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="580"/>
+        <location filename="../src/app/qgisapp.cpp" line="581"/>
         <source>Ctrl+S</source>
         <comment>Save Project</comment>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="581"/>
+        <location filename="../src/app/qgisapp.cpp" line="582"/>
         <source>Save Project</source>
         <translation>Saglabāt projektu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="584"/>
+        <location filename="../src/app/qgisapp.cpp" line="585"/>
         <source>Save Project &amp;As...</source>
         <translation>Saglabāt projektu &amp;kā...</translation>
     </message>
@@ -5253,7 +5687,7 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
         <translation type="obsolete">Ctrl+A</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="586"/>
+        <location filename="../src/app/qgisapp.cpp" line="587"/>
         <source>Save Project under a new name</source>
         <translation>Saglabā projektu ar jaunu nosaukumu</translation>
     </message>
@@ -5271,7 +5705,7 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
         <translation type="obsolete">Drukāt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="589"/>
+        <location filename="../src/app/qgisapp.cpp" line="590"/>
         <source>Save as Image...</source>
         <translation>Saglabāt kā attēlu...</translation>
     </message>
@@ -5281,23 +5715,23 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
         <translation type="obsolete">Ctrl+I</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="591"/>
+        <location filename="../src/app/qgisapp.cpp" line="592"/>
         <source>Save map as image</source>
         <translation>Saglabā karti kā attēlu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="603"/>
+        <location filename="../src/app/qgisapp.cpp" line="604"/>
         <source>Exit</source>
         <translation>Iziet</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="604"/>
+        <location filename="../src/app/qgisapp.cpp" line="605"/>
         <source>Ctrl+Q</source>
         <comment>Exit QGIS</comment>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="605"/>
+        <location filename="../src/app/qgisapp.cpp" line="606"/>
         <source>Exit QGIS</source>
         <translation>Iziet no QGIS</translation>
     </message>
@@ -5311,7 +5745,7 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
         <translation type="obsolete">V</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="875"/>
+        <location filename="../src/app/qgisapp.cpp" line="880"/>
         <source>Add a Vector Layer</source>
         <translation>Pievieno vektordatu slāni</translation>
     </message>
@@ -5325,7 +5759,7 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
         <translation type="obsolete">R</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="880"/>
+        <location filename="../src/app/qgisapp.cpp" line="885"/>
         <source>Add a Raster Layer</source>
         <translation>Pievieno rastra datu slāni</translation>
     </message>
@@ -5339,12 +5773,12 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
         <translation type="obsolete">D</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="885"/>
+        <location filename="../src/app/qgisapp.cpp" line="890"/>
         <source>Add a PostGIS Layer</source>
         <translation>Pievieno PostGIS slāni</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="868"/>
+        <location filename="../src/app/qgisapp.cpp" line="873"/>
         <source>New Vector Layer...</source>
         <translation>Jauns vektordatu slānis...</translation>
     </message>
@@ -5354,23 +5788,23 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
         <translation type="obsolete">N</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="870"/>
+        <location filename="../src/app/qgisapp.cpp" line="875"/>
         <source>Create a New Vector Layer</source>
         <translation>Izveido jaunu vektordatu slāni</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="937"/>
+        <location filename="../src/app/qgisapp.cpp" line="942"/>
         <source>Remove Layer</source>
         <translation>Noņemt slāni</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="938"/>
+        <location filename="../src/app/qgisapp.cpp" line="943"/>
         <source>Ctrl+D</source>
         <comment>Remove a Layer</comment>
         <translation>Ctrl+D</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="939"/>
+        <location filename="../src/app/qgisapp.cpp" line="944"/>
         <source>Remove a Layer</source>
         <translation>Noņem slāni</translation>
     </message>
@@ -5384,12 +5818,12 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
         <translation type="obsolete">+</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="957"/>
+        <location filename="../src/app/qgisapp.cpp" line="962"/>
         <source>Show all layers in the overview map</source>
         <translation>Rādīt visus slāņus pārskata kartē</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="960"/>
+        <location filename="../src/app/qgisapp.cpp" line="965"/>
         <source>Remove All From Overview</source>
         <translation>Noņemt visu no pārskata</translation>
     </message>
@@ -5399,12 +5833,12 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
         <translation type="obsolete">-</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="962"/>
+        <location filename="../src/app/qgisapp.cpp" line="967"/>
         <source>Remove all layers from overview map</source>
         <translation>Noņem visus slāņus no pārskata kartes</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="965"/>
+        <location filename="../src/app/qgisapp.cpp" line="970"/>
         <source>Show All Layers</source>
         <translation>Rādīt visus slāņus</translation>
     </message>
@@ -5414,7 +5848,7 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
         <translation type="obsolete">S</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="970"/>
+        <location filename="../src/app/qgisapp.cpp" line="975"/>
         <source>Hide All Layers</source>
         <translation>Slēpt visus slāņus</translation>
     </message>
@@ -5424,7 +5858,7 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
         <translation type="obsolete">H</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="989"/>
+        <location filename="../src/app/qgisapp.cpp" line="994"/>
         <source>Project Properties...</source>
         <translation>Projekta īpašības...</translation>
     </message>
@@ -5434,17 +5868,17 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
         <translation type="obsolete">P</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="991"/>
+        <location filename="../src/app/qgisapp.cpp" line="996"/>
         <source>Set project properties</source>
         <translation>Iestata projekta īpašības</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="994"/>
+        <location filename="../src/app/qgisapp.cpp" line="999"/>
         <source>Options...</source>
         <translation>Opcijas...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="996"/>
+        <location filename="../src/app/qgisapp.cpp" line="1001"/>
         <source>Change various QGIS options</source>
         <translation>Maina dažādas QGIS opcijas</translation>
     </message>
@@ -5457,18 +5891,18 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
         <translation type="obsolete">Pārvaldīt pielāgotās projekcijas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1035"/>
+        <location filename="../src/app/qgisapp.cpp" line="1040"/>
         <source>Help Contents</source>
         <translation>Palīdzības saturs</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1039"/>
+        <location filename="../src/app/qgisapp.cpp" line="1044"/>
         <source>F1</source>
         <comment>Help Documentation</comment>
         <translation>F1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1041"/>
+        <location filename="../src/app/qgisapp.cpp" line="1046"/>
         <source>Help Documentation</source>
         <translation>Palīdzības dokumentācija</translation>
     </message>
@@ -5477,79 +5911,79 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
         <translation type="obsolete">QGIS mājaslapa</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1046"/>
+        <location filename="../src/app/qgisapp.cpp" line="1051"/>
         <source>Ctrl+H</source>
         <comment>QGIS Home Page</comment>
         <translation>Ctrl+H</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1044"/>
-        <location filename="../src/app/qgisapp.cpp" line="1050"/>
+        <location filename="../src/app/qgisapp.cpp" line="1049"/>
+        <location filename="../src/app/qgisapp.cpp" line="1055"/>
         <source>QGIS Home Page</source>
         <translation>QGIS mājaslapa</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1058"/>
+        <location filename="../src/app/qgisapp.cpp" line="1063"/>
         <source>About</source>
         <translation>Par</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1060"/>
+        <location filename="../src/app/qgisapp.cpp" line="1065"/>
         <source>About QGIS</source>
         <translation>Par QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1053"/>
+        <location filename="../src/app/qgisapp.cpp" line="1058"/>
         <source>Check Qgis Version</source>
         <translation>Pārbaudīt QGIS versiju</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1055"/>
+        <location filename="../src/app/qgisapp.cpp" line="1060"/>
         <source>Check if your QGIS version is up to date (requires internet access)</source>
         <translation>Pārbauda, vai izmantotā QGIS versija ir pati jaunākā (nepieciešama pieeja internetam)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="861"/>
+        <location filename="../src/app/qgisapp.cpp" line="866"/>
         <source>Refresh</source>
         <translation>Atjaunināt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="862"/>
+        <location filename="../src/app/qgisapp.cpp" line="867"/>
         <source>Ctrl+R</source>
         <comment>Refresh Map</comment>
         <translation>Ctrl+R</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="863"/>
+        <location filename="../src/app/qgisapp.cpp" line="868"/>
         <source>Refresh Map</source>
         <translation>Atjaunināt karti</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="776"/>
-        <location filename="../src/app/qgisapp.cpp" line="778"/>
+        <location filename="../src/app/qgisapp.cpp" line="777"/>
+        <location filename="../src/app/qgisapp.cpp" line="779"/>
         <source>Zoom In</source>
         <translation>Tuvināt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="777"/>
+        <location filename="../src/app/qgisapp.cpp" line="778"/>
         <source>Ctrl++</source>
         <comment>Zoom In</comment>
         <translation>Ctrl++</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="781"/>
-        <location filename="../src/app/qgisapp.cpp" line="783"/>
+        <location filename="../src/app/qgisapp.cpp" line="782"/>
+        <location filename="../src/app/qgisapp.cpp" line="784"/>
         <source>Zoom Out</source>
         <translation>Tālināt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="782"/>
+        <location filename="../src/app/qgisapp.cpp" line="783"/>
         <source>Ctrl+-</source>
         <comment>Zoom Out</comment>
         <translation>Ctrl+-</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="814"/>
+        <location filename="../src/app/qgisapp.cpp" line="819"/>
         <source>Zoom Full</source>
         <translation>Tuvināt kopskatu</translation>
     </message>
@@ -5559,7 +5993,7 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
         <translation type="obsolete">F</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="816"/>
+        <location filename="../src/app/qgisapp.cpp" line="821"/>
         <source>Zoom to Full Extents</source>
         <translation>Tālināt līdz kopskatam</translation>
     </message>
@@ -5577,22 +6011,22 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
         <translation type="obsolete">Tuvināt līdz izvēlei</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="771"/>
+        <location filename="../src/app/qgisapp.cpp" line="772"/>
         <source>Pan Map</source>
         <translation>Panoramēt karti</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="773"/>
+        <location filename="../src/app/qgisapp.cpp" line="774"/>
         <source>Pan the map</source>
         <translation>Velk karti</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="829"/>
+        <location filename="../src/app/qgisapp.cpp" line="834"/>
         <source>Zoom Last</source>
         <translation>Pēdējā tāllummaiņa</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="831"/>
+        <location filename="../src/app/qgisapp.cpp" line="836"/>
         <source>Zoom to Last Extent</source>
         <translation>Tuvina līdz iepriekšējam skatam</translation>
     </message>
@@ -5601,13 +6035,13 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
         <translation type="obsolete">Tuvināt līdz slānim</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="819"/>
-        <location filename="../src/app/qgisapp.cpp" line="821"/>
+        <location filename="../src/app/qgisapp.cpp" line="824"/>
+        <location filename="../src/app/qgisapp.cpp" line="826"/>
         <source>Zoom to Layer</source>
         <translation>Tuvina līdz slānim</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="798"/>
+        <location filename="../src/app/qgisapp.cpp" line="799"/>
         <source>Identify Features</source>
         <translation>Identificēt objektus</translation>
     </message>
@@ -5617,13 +6051,13 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
         <translation type="obsolete">I</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="800"/>
+        <location filename="../src/app/qgisapp.cpp" line="801"/>
         <source>Click on features to identify them</source>
         <translation>Klikšķiniet uz objektiem, lai tos identificētu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="786"/>
-        <location filename="../src/app/qgisapp.cpp" line="788"/>
+        <location filename="../src/app/qgisapp.cpp" line="787"/>
+        <location filename="../src/app/qgisapp.cpp" line="789"/>
         <source>Select Features</source>
         <translation>Izvēlēties objektus</translation>
     </message>
@@ -5632,7 +6066,7 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
         <translation type="obsolete">Atvērt tabulu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="804"/>
+        <location filename="../src/app/qgisapp.cpp" line="805"/>
         <source>Measure Line </source>
         <translation>Mērīt līniju </translation>
     </message>
@@ -5642,12 +6076,12 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
         <translation type="obsolete">Ctrl+M</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="806"/>
+        <location filename="../src/app/qgisapp.cpp" line="807"/>
         <source>Measure a Line</source>
         <translation>Mēra līniju</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="809"/>
+        <location filename="../src/app/qgisapp.cpp" line="810"/>
         <source>Measure Area</source>
         <translation>Mērīt laukumu</translation>
     </message>
@@ -5657,13 +6091,13 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
         <translation type="obsolete">Ctrl+J</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="811"/>
+        <location filename="../src/app/qgisapp.cpp" line="812"/>
         <source>Measure an Area</source>
         <translation>Mēra laukumu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="856"/>
-        <location filename="../src/app/qgisapp.cpp" line="858"/>
+        <location filename="../src/app/qgisapp.cpp" line="861"/>
+        <location filename="../src/app/qgisapp.cpp" line="863"/>
         <source>Show Bookmarks</source>
         <translation>Rādīt grāmatzīmes</translation>
     </message>
@@ -5673,18 +6107,18 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
         <translation type="obsolete">B</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="851"/>
+        <location filename="../src/app/qgisapp.cpp" line="856"/>
         <source>New Bookmark...</source>
         <translation>Jauna grāmatzīme...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="852"/>
+        <location filename="../src/app/qgisapp.cpp" line="857"/>
         <source>Ctrl+B</source>
         <comment>New Bookmark</comment>
         <translation>Ctrl+B</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="907"/>
+        <location filename="../src/app/qgisapp.cpp" line="912"/>
         <source>Add WMS Layer...</source>
         <translation>Pievienot WMS slāni...</translation>
     </message>
@@ -5707,7 +6141,7 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
         <translation type="obsolete">O</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="951"/>
+        <location filename="../src/app/qgisapp.cpp" line="956"/>
         <source>Add current layer to overview map</source>
         <translation>Pievienot pašreizējo slāni pārskata kartei</translation>
     </message>
@@ -5716,12 +6150,12 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
         <translation type="obsolete">Spraudņu pārvaldnieks...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="979"/>
+        <location filename="../src/app/qgisapp.cpp" line="984"/>
         <source>Open the plugin manager</source>
         <translation>Atver spraudņu pārvaldnieku</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="658"/>
+        <location filename="../src/app/qgisapp.cpp" line="659"/>
         <source>Capture Point</source>
         <translation>Atlikt punktu</translation>
     </message>
@@ -5731,12 +6165,12 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
         <translation type="obsolete">.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="660"/>
+        <location filename="../src/app/qgisapp.cpp" line="661"/>
         <source>Capture Points</source>
         <translation>Atliek punktus</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="664"/>
+        <location filename="../src/app/qgisapp.cpp" line="665"/>
         <source>Capture Line</source>
         <translation>Atlikt līniju</translation>
     </message>
@@ -5746,12 +6180,12 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
         <translation type="obsolete">/</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="666"/>
+        <location filename="../src/app/qgisapp.cpp" line="667"/>
         <source>Capture Lines</source>
         <translation>Atliek līnijas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="670"/>
+        <location filename="../src/app/qgisapp.cpp" line="671"/>
         <source>Capture Polygon</source>
         <translation>Atlikt poligonu</translation>
     </message>
@@ -5761,101 +6195,101 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
         <translation type="obsolete">Ctrl+/</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="672"/>
+        <location filename="../src/app/qgisapp.cpp" line="673"/>
         <source>Capture Polygons</source>
         <translation>Atliek poligonus</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="694"/>
-        <location filename="../src/app/qgisapp.cpp" line="696"/>
+        <location filename="../src/app/qgisapp.cpp" line="695"/>
+        <location filename="../src/app/qgisapp.cpp" line="697"/>
         <source>Delete Selected</source>
         <translation>Dzēst izvēlēto</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="702"/>
-        <location filename="../src/app/qgisapp.cpp" line="704"/>
+        <location filename="../src/app/qgisapp.cpp" line="703"/>
+        <location filename="../src/app/qgisapp.cpp" line="705"/>
         <source>Add Vertex</source>
         <translation>Pievienot virsotni</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="714"/>
-        <location filename="../src/app/qgisapp.cpp" line="716"/>
+        <location filename="../src/app/qgisapp.cpp" line="715"/>
+        <location filename="../src/app/qgisapp.cpp" line="717"/>
         <source>Delete Vertex</source>
         <translation>Dzēst virsotni</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="708"/>
-        <location filename="../src/app/qgisapp.cpp" line="710"/>
+        <location filename="../src/app/qgisapp.cpp" line="709"/>
+        <location filename="../src/app/qgisapp.cpp" line="711"/>
         <source>Move Vertex</source>
         <translation>Pārvietot virsotni</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1180"/>
+        <location filename="../src/app/qgisapp.cpp" line="1187"/>
         <source>&amp;File</source>
         <translation>&amp;Fails</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1184"/>
+        <location filename="../src/app/qgisapp.cpp" line="1191"/>
         <source>&amp;Open Recent Projects</source>
         <translation>&amp;Atvērt nesenos projektus</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1265"/>
+        <location filename="../src/app/qgisapp.cpp" line="1272"/>
         <source>&amp;View</source>
         <translation>&amp;Skats</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1300"/>
+        <location filename="../src/app/qgisapp.cpp" line="1308"/>
         <source>&amp;Layer</source>
         <translation>&amp;Slānis</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1335"/>
+        <location filename="../src/app/qgisapp.cpp" line="1343"/>
         <source>&amp;Settings</source>
         <translation>&amp;Iestatījumi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1376"/>
+        <location filename="../src/app/qgisapp.cpp" line="1384"/>
         <source>&amp;Help</source>
         <translation>&amp;Palīdzība</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1398"/>
+        <location filename="../src/app/qgisapp.cpp" line="1406"/>
         <source>File</source>
         <translation>Fails</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1410"/>
+        <location filename="../src/app/qgisapp.cpp" line="1418"/>
         <source>Manage Layers</source>
         <translation>Pārvaldīt slāņus</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1505"/>
+        <location filename="../src/app/qgisapp.cpp" line="1514"/>
         <source>Help</source>
         <translation>Palīdzība</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1431"/>
+        <location filename="../src/app/qgisapp.cpp" line="1439"/>
         <source>Digitizing</source>
         <translation>Digitizēšana</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1469"/>
+        <location filename="../src/app/qgisapp.cpp" line="1477"/>
         <source>Map Navigation</source>
         <translation>Kartes navigācija</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1484"/>
+        <location filename="../src/app/qgisapp.cpp" line="1492"/>
         <source>Attributes</source>
         <translation>Atribūti</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1499"/>
+        <location filename="../src/app/qgisapp.cpp" line="1508"/>
         <source>Plugins</source>
         <translation>Spraudņi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1642"/>
+        <location filename="../src/app/qgisapp.cpp" line="1651"/>
         <source>Ready</source>
         <translation>Gatavs</translation>
     </message>
@@ -5868,7 +6302,7 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
         <translation type="obsolete">QGIS - izmaiņas pašreizējas versijas sistēmā (SVN) kopš pēdējā laidiena</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1037"/>
+        <location filename="../src/app/qgisapp.cpp" line="1042"/>
         <source>Ctrl+?</source>
         <comment>Help Documentation (Mac)</comment>
         <translation>Ctrl+?</translation>
@@ -5882,32 +6316,32 @@ Uzklikšķiniet uz ķekškastes, lai parādītu / paslēptu slāni. Dubultklikš
         <translation type="obsolete">Slēpt rīkjoslas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="640"/>
+        <location filename="../src/app/qgisapp.cpp" line="641"/>
         <source>Cut Features</source>
         <translation>Izgriezt objektus</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="642"/>
+        <location filename="../src/app/qgisapp.cpp" line="643"/>
         <source>Cut selected features</source>
         <translation>Izgriež izvēlētos objektus</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="646"/>
+        <location filename="../src/app/qgisapp.cpp" line="647"/>
         <source>Copy Features</source>
         <translation>Kopēt objektus</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="648"/>
+        <location filename="../src/app/qgisapp.cpp" line="649"/>
         <source>Copy selected features</source>
         <translation>Kopē izvēlētos objektus</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="652"/>
+        <location filename="../src/app/qgisapp.cpp" line="653"/>
         <source>Paste Features</source>
         <translation>Ielīmēt objektus</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="654"/>
+        <location filename="../src/app/qgisapp.cpp" line="655"/>
         <source>Paste selected features</source>
         <translation>Ielīmē izvēlētos objektus</translation>
     </message>
@@ -5922,12 +6356,12 @@ Kompilēts ar Qt </translation>
         <translation type="obsolete">, darbināts ar Qt </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4519"/>
+        <location filename="../src/app/qgisapp.cpp" line="4562"/>
         <source>Network error while communicating with server</source>
         <translation>Tīkla kļūda komunicējot ar serveri</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4522"/>
+        <location filename="../src/app/qgisapp.cpp" line="4565"/>
         <source>Unknown network socket error</source>
         <translation>Nezināma tīkla ligzdas kļūda</translation>
     </message>
@@ -5946,12 +6380,12 @@ Kompilēts ar Qt </translation>
         <translation type="obsolete">Ctrl+R</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="401"/>
+        <location filename="../src/app/qgisapp.cpp" line="402"/>
         <source>Checking provider plugins</source>
         <translation>Pārbaudam izplatītāja spraudņus</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="405"/>
+        <location filename="../src/app/qgisapp.cpp" line="406"/>
         <source>Starting Python</source>
         <translation>Startējam Python</translation>
     </message>
@@ -5968,39 +6402,39 @@ Kompilēts ar Qt </translation>
         <translation type="obsolete">Kļūda nolasot spraudņa metadatus </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3562"/>
+        <location filename="../src/app/qgisapp.cpp" line="3587"/>
         <source>Provider does not support deletion</source>
         <translation>Sniedzējs neuztur dzēšanu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3563"/>
+        <location filename="../src/app/qgisapp.cpp" line="3588"/>
         <source>Data provider does not support deleting features</source>
         <translation>Datu sniedzējs neatbalsta objektu dzēšanu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3569"/>
-        <location filename="../src/app/qgisapp.cpp" line="3755"/>
+        <location filename="../src/app/qgisapp.cpp" line="3594"/>
+        <location filename="../src/app/qgisapp.cpp" line="3788"/>
         <source>Layer not editable</source>
         <translation>Slānis nav rediģējams</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3570"/>
+        <location filename="../src/app/qgisapp.cpp" line="3595"/>
         <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
         <translation>Aktīvais slānis nav rediģējams. Izvēlieties &quot;sākt rediģēt&quot; no digitizēšanas rīkjoslas.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="918"/>
+        <location filename="../src/app/qgisapp.cpp" line="923"/>
         <source>Toggle editing</source>
         <translation>Pārslēgt rediģēšanu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="920"/>
+        <location filename="../src/app/qgisapp.cpp" line="925"/>
         <source>Toggles the editing state of the current layer</source>
         <translation>Pārslēdz slāņa rediģēšanas statusu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="721"/>
-        <location filename="../src/app/qgisapp.cpp" line="723"/>
+        <location filename="../src/app/qgisapp.cpp" line="722"/>
+        <location filename="../src/app/qgisapp.cpp" line="724"/>
         <source>Add Ring</source>
         <translation>Pievienot riņķi</translation>
     </message>
@@ -6017,22 +6451,22 @@ Kompilēts ar Qt </translation>
         <translation type="obsolete">Rīkjoslas redzamība...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1580"/>
+        <location filename="../src/app/qgisapp.cpp" line="1589"/>
         <source>Scale </source>
         <translation>Mērogs </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1595"/>
+        <location filename="../src/app/qgisapp.cpp" line="1604"/>
         <source>Current map scale (formatted as x:y)</source>
         <translation>Pašreizējais kartes mērogs (formēts kā x:y)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4967"/>
+        <location filename="../src/app/qgisapp.cpp" line="5010"/>
         <source>Map coordinates at mouse cursor position</source>
         <translation>Kartes koordinātes peles atrašanās vietā</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4233"/>
+        <location filename="../src/app/qgisapp.cpp" line="4276"/>
         <source>Invalid scale</source>
         <translation>Nederīgs mērogs</translation>
     </message>
@@ -6041,39 +6475,39 @@ Kompilēts ar Qt </translation>
         <translation type="obsolete">Rāda pašreizējās peles kursora koordinātas. Tās tiek neprārtraukti atjauniātas, kad tiek kustināta pele.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="676"/>
-        <location filename="../src/app/qgisapp.cpp" line="678"/>
+        <location filename="../src/app/qgisapp.cpp" line="677"/>
+        <location filename="../src/app/qgisapp.cpp" line="679"/>
         <source>Move Feature</source>
         <translation>Pārvietot objektu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="688"/>
-        <location filename="../src/app/qgisapp.cpp" line="690"/>
+        <location filename="../src/app/qgisapp.cpp" line="689"/>
+        <location filename="../src/app/qgisapp.cpp" line="691"/>
         <source>Split Features</source>
         <translation>Sadalīt objektus</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="845"/>
+        <location filename="../src/app/qgisapp.cpp" line="850"/>
         <source>Map Tips</source>
         <translation>Kartes padomi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="847"/>
+        <location filename="../src/app/qgisapp.cpp" line="852"/>
         <source>Show information about a feature when the mouse is hovered over it</source>
         <translation>Rādīt informāciju par objektu, kad virs tā pārvieto peli.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1581"/>
+        <location filename="../src/app/qgisapp.cpp" line="1590"/>
         <source>Current map scale</source>
         <translation>Pašreizējais kartes mērogs</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4982"/>
+        <location filename="../src/app/qgisapp.cpp" line="5025"/>
         <source>Extents:</source>
         <translation>Apjoms: </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5841"/>
+        <location filename="../src/app/qgisapp.cpp" line="5884"/>
         <source>Project file is older</source>
         <translation>Projekta fails ir vecāks</translation>
     </message>
@@ -6106,13 +6540,13 @@ Kompilēts ar Qt </translation>
         <translation type="obsolete">&lt;p&gt;Projekta faila versija: %1&lt;br&gt;Pašreizējā QGIS versija: %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5858"/>
+        <location filename="../src/app/qgisapp.cpp" line="5901"/>
         <source>&lt;tt&gt;Settings:Options:General&lt;/tt&gt;</source>
         <comment>Menu path to setting options</comment>
         <translation>&lt;tt&gt;Iestatījumi:Opcijas:Vispārēji&lt;/tt&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5859"/>
+        <location filename="../src/app/qgisapp.cpp" line="5902"/>
         <source>Warn me when opening a project file saved with an older version of QGIS</source>
         <translation>Brīdināt mani atverot projekta failu, kas ir saglabāt ar vecāku QGIS versiju</translation>
     </message>
@@ -6121,13 +6555,13 @@ Kompilēts ar Qt </translation>
         <translation type="obsolete">Pārslēgt pilnekrāna režīmu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="985"/>
+        <location filename="../src/app/qgisapp.cpp" line="990"/>
         <source>Ctrl-F</source>
         <comment>Toggle fullscreen mode</comment>
         <translation>Ctrl-F</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="986"/>
+        <location filename="../src/app/qgisapp.cpp" line="991"/>
         <source>Toggle fullscreen mode</source>
         <translation>Pārslēdz pilnekrāna režīmu</translation>
     </message>
@@ -6148,19 +6582,19 @@ Kompilēts ar Qt </translation>
         <translation type="obsolete">Uzlabots rastra datu caurspīdīgums un kontrasta uzlabošana. Krāsu karšu atbalsts, rotētu rastru atbalsts, kā arī daudzi citi rastru uzlabojumi.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1627"/>
+        <location filename="../src/app/qgisapp.cpp" line="1636"/>
         <source>Resource Location Error</source>
         <translation>Datu avota atrašanās vietas kļūda</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1628"/>
+        <location filename="../src/app/qgisapp.cpp" line="1637"/>
         <source>Error reading icon resources from: 
  %1
  Quitting...</source>
         <translation>Kļūda nolasot ikonu avotu no:  %1 Beidzu...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1892"/>
+        <location filename="../src/app/qgisapp.cpp" line="1904"/>
         <source>Overview</source>
         <translation>Pārskats</translation>
     </message>
@@ -6169,22 +6603,22 @@ Kompilēts ar Qt </translation>
         <translation type="obsolete">Leģenda</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2101"/>
+        <location filename="../src/app/qgisapp.cpp" line="2113"/>
         <source>You are using QGIS version %1 built against code revision %2.</source>
         <translation>Tu lieto QGIS versiju %1 būvetu pēc koda revīzijas %2.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2105"/>
+        <location filename="../src/app/qgisapp.cpp" line="2117"/>
         <source> This copy of QGIS has been built with PostgreSQL support.</source>
         <translation> Šī QGIS kopija ir veidota ar PostgreSQL atbalstu.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2107"/>
+        <location filename="../src/app/qgisapp.cpp" line="2119"/>
         <source> This copy of QGIS has been built without PostgreSQL support.</source>
         <translation>Šī QGIS kopija ir veidota bez PostgreSQL atbalsta.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2116"/>
+        <location filename="../src/app/qgisapp.cpp" line="2128"/>
         <source>
 This binary was compiled against Qt %1,and is currently running against Qt %2</source>
         <translation>
@@ -6195,17 +6629,17 @@ This binary was compiled against Qt %1,and is currently running against Qt %2</s
         <translation type="obsolete">Šajā laidiena kandidāta versijā ir iekļauti vairāk kā 40 kļūdu labojumi un uzlabojumi salīdzinājumā ar QGIS 0.9.1 laidienu. Papildus tam ir pievienoti sekojoši uzlabojumi: {120 ?} {0.9.1 ?}</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1604"/>
+        <location filename="../src/app/qgisapp.cpp" line="1613"/>
         <source>Stop map rendering</source>
         <translation>Apturēt kartes zīmēšanu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="334"/>
+        <location filename="../src/app/qgisapp.cpp" line="335"/>
         <source>Multiple Instances of QgisApp</source>
         <translation>Vairākas QgisApp instances</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="335"/>
+        <location filename="../src/app/qgisapp.cpp" line="336"/>
         <source>Multiple instances of Quantum GIS application object detected.
 Please contact the developers.
 </source>
@@ -6214,7 +6648,7 @@ Lūgums kontaktēties ar izstrādātājiem.
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="585"/>
+        <location filename="../src/app/qgisapp.cpp" line="586"/>
         <source>Shift+Ctrl+S</source>
         <comment>Save Project under a new name</comment>
         <translation>Saglabāt projektu ar jaunu nosaukumu</translation>
@@ -6233,92 +6667,92 @@ Lūgums kontaktēties ar izstrādātājiem.
         <translation type="obsolete">Drukas veidotājs</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="628"/>
+        <location filename="../src/app/qgisapp.cpp" line="629"/>
         <source>&amp;Undo</source>
         <translation>&amp;Atcelt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="629"/>
+        <location filename="../src/app/qgisapp.cpp" line="630"/>
         <source>Ctrl+Z</source>
         <translation>Ctrl+Z</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="630"/>
+        <location filename="../src/app/qgisapp.cpp" line="631"/>
         <source>Undo the last operation</source>
         <translation>Atcelt pēdējo darbību</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="612"/>
+        <location filename="../src/app/qgisapp.cpp" line="613"/>
         <source>Cu&amp;t</source>
         <translation>Iz&amp;griezt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="613"/>
-        <location filename="../src/app/qgisapp.cpp" line="641"/>
+        <location filename="../src/app/qgisapp.cpp" line="614"/>
+        <location filename="../src/app/qgisapp.cpp" line="642"/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="614"/>
+        <location filename="../src/app/qgisapp.cpp" line="615"/>
         <source>Cut the current selection&apos;s contents to the clipboard</source>
         <translation>Izgreiezt pašreizējās izvēles saturu un ievietot starpliktuvē</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="617"/>
+        <location filename="../src/app/qgisapp.cpp" line="618"/>
         <source>&amp;Copy</source>
         <translation>&amp;Kopēt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="618"/>
-        <location filename="../src/app/qgisapp.cpp" line="647"/>
+        <location filename="../src/app/qgisapp.cpp" line="619"/>
+        <location filename="../src/app/qgisapp.cpp" line="648"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="619"/>
+        <location filename="../src/app/qgisapp.cpp" line="620"/>
         <source>Copy the current selection&apos;s contents to the clipboard</source>
         <translation>Kopēt pašreizējās izvēles saturu un ievietot starpliktuvē</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="622"/>
+        <location filename="../src/app/qgisapp.cpp" line="623"/>
         <source>&amp;Paste</source>
         <translation>&amp;Ievietot</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="623"/>
-        <location filename="../src/app/qgisapp.cpp" line="653"/>
+        <location filename="../src/app/qgisapp.cpp" line="624"/>
+        <location filename="../src/app/qgisapp.cpp" line="654"/>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="624"/>
+        <location filename="../src/app/qgisapp.cpp" line="625"/>
         <source>Paste the clipboard&apos;s contents into the current selection</source>
         <translation>Ievietot starpliktuves saturu pašreizējā izvēlē</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="634"/>
+        <location filename="../src/app/qgisapp.cpp" line="635"/>
         <source>&amp;Redo</source>
         <translation>&amp;Pārdarīt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="635"/>
+        <location filename="../src/app/qgisapp.cpp" line="636"/>
         <source>Ctrl+Shift+Z</source>
         <translation>Ctrl+Shift+Z</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="636"/>
+        <location filename="../src/app/qgisapp.cpp" line="637"/>
         <source>Redo the last operation</source>
         <translation>Pārdarīt pēdējo darbību</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="751"/>
-        <location filename="../src/app/qgisapp.cpp" line="753"/>
+        <location filename="../src/app/qgisapp.cpp" line="752"/>
+        <location filename="../src/app/qgisapp.cpp" line="754"/>
         <source>Merge selected features</source>
         <translation>Apvienot izvēlētos objektus</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="757"/>
-        <location filename="../src/app/qgisapp.cpp" line="759"/>
+        <location filename="../src/app/qgisapp.cpp" line="758"/>
+        <location filename="../src/app/qgisapp.cpp" line="760"/>
         <source>Node Tool</source>
         <translation>Virsotņu rīks</translation>
     </message>
@@ -6333,39 +6767,39 @@ Lūgums kontaktēties ar izstrādātājiem.
         <translation type="obsolete">Mērīt laukumu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="824"/>
-        <location filename="../src/app/qgisapp.cpp" line="826"/>
+        <location filename="../src/app/qgisapp.cpp" line="829"/>
+        <location filename="../src/app/qgisapp.cpp" line="831"/>
         <source>Zoom to Selection</source>
         <translation>Tuvināt līdz izvēlei</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="825"/>
+        <location filename="../src/app/qgisapp.cpp" line="830"/>
         <source>Ctrl+J</source>
         <comment>Zoom to Selection</comment>
         <translation>Ctrl+J</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="839"/>
+        <location filename="../src/app/qgisapp.cpp" line="844"/>
         <source>Zoom Actual Size</source>
         <translation>Tuvināt faktisko lielumu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="841"/>
+        <location filename="../src/app/qgisapp.cpp" line="846"/>
         <source>Zoom to Actual Size</source>
         <translation>Tuvināt līdz faktiskajam izmēram</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="873"/>
+        <location filename="../src/app/qgisapp.cpp" line="878"/>
         <source>Add Vector Layer...</source>
         <translation>Pievienot vektordatu slāni...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="878"/>
+        <location filename="../src/app/qgisapp.cpp" line="883"/>
         <source>Add Raster Layer...</source>
         <translation>Pievienot rastra datu slāni...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="883"/>
+        <location filename="../src/app/qgisapp.cpp" line="888"/>
         <source>Add PostGIS Layer...</source>
         <translation>Pievienot PostGIS slāni...</translation>
     </message>
@@ -6375,149 +6809,149 @@ Lūgums kontaktēties ar izstrādātājiem.
         <translation type="obsolete">Pievienot WMS slāni</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="909"/>
+        <location filename="../src/app/qgisapp.cpp" line="914"/>
         <source>Add a Web Mapping Server Layer</source>
         <translation>Pievieno WMS slāni</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="912"/>
-        <location filename="../src/app/qgisapp.cpp" line="914"/>
+        <location filename="../src/app/qgisapp.cpp" line="917"/>
+        <location filename="../src/app/qgisapp.cpp" line="919"/>
         <source>Open Attribute Table</source>
         <translation>Atvērt atribūtu tabulu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="925"/>
+        <location filename="../src/app/qgisapp.cpp" line="930"/>
         <source>Save as Shapefile...</source>
         <translation>Saglabāt kā shapefile...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="927"/>
+        <location filename="../src/app/qgisapp.cpp" line="932"/>
         <source>Save the current layer as a shapefile</source>
         <translation>Saglabāt pašreizējo slāni kā shapefile</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="931"/>
+        <location filename="../src/app/qgisapp.cpp" line="936"/>
         <source>Save Selection as Shapefile...</source>
         <translation>Saglabāt izvēli kā shapefile...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="933"/>
+        <location filename="../src/app/qgisapp.cpp" line="938"/>
         <source>Save the selection as a shapefile</source>
         <translation>Saglabāt izvēli kā shapefile</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="943"/>
+        <location filename="../src/app/qgisapp.cpp" line="948"/>
         <source>Properties...</source>
         <translation>Īpašības...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="945"/>
+        <location filename="../src/app/qgisapp.cpp" line="950"/>
         <source>Set properties of the current layer</source>
         <translation>Definēt pašreizejā slāņa īpašības</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="949"/>
+        <location filename="../src/app/qgisapp.cpp" line="954"/>
         <source>Add to Overview</source>
         <translation>Pievienot pārskatam</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="955"/>
+        <location filename="../src/app/qgisapp.cpp" line="960"/>
         <source>Add All to Overview</source>
         <translation>Pievienot visu pārskatam</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="977"/>
+        <location filename="../src/app/qgisapp.cpp" line="982"/>
         <source>Manage Plugins...</source>
         <translation>Parvaldīt spraudņus...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="984"/>
+        <location filename="../src/app/qgisapp.cpp" line="989"/>
         <source>Toggle Full Screen Mode</source>
         <translation>Pārslēgt pilnekrāna režīmu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1000"/>
+        <location filename="../src/app/qgisapp.cpp" line="1005"/>
         <source>Custom CRS...</source>
         <translation>Pielāgota CRS...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1002"/>
+        <location filename="../src/app/qgisapp.cpp" line="1007"/>
         <source>Manage custom coordinate reference systems</source>
         <translation>Pārvaldīt pielāgotās koordinātu sistēmas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1014"/>
+        <location filename="../src/app/qgisapp.cpp" line="1019"/>
         <source>Minimize</source>
         <translation>Samazināt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1015"/>
+        <location filename="../src/app/qgisapp.cpp" line="1020"/>
         <source>Ctrl+M</source>
         <comment>Minimize Window</comment>
         <translation>Ctrl+M</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1016"/>
+        <location filename="../src/app/qgisapp.cpp" line="1021"/>
         <source>Minimizes the active window to the dock</source>
         <translation>Samazināt aktīvo logu uz doku</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1019"/>
+        <location filename="../src/app/qgisapp.cpp" line="1024"/>
         <source>Zoom</source>
         <translation>Tuvināt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1021"/>
+        <location filename="../src/app/qgisapp.cpp" line="1026"/>
         <source>Toggles between a predefined size and the window size set by the user</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1024"/>
+        <location filename="../src/app/qgisapp.cpp" line="1029"/>
         <source>Bring All to Front</source>
         <translation>Pārvietot visu uz priekšu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1026"/>
+        <location filename="../src/app/qgisapp.cpp" line="1031"/>
         <source>Bring forward all open windows</source>
         <translation>Pārvietot uz priekšu visus atvērtos logus</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1203"/>
+        <location filename="../src/app/qgisapp.cpp" line="1210"/>
         <source>Print Composers</source>
         <translation>Drukas veidotāji</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1210"/>
+        <location filename="../src/app/qgisapp.cpp" line="1217"/>
         <source>&amp;Edit</source>
         <translation>&amp;Rediģēt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1260"/>
+        <location filename="../src/app/qgisapp.cpp" line="1267"/>
         <source>Panels</source>
         <translation>Paneļi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1261"/>
+        <location filename="../src/app/qgisapp.cpp" line="1268"/>
         <source>Toolbars</source>
         <translation>Rīkjoslas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1363"/>
+        <location filename="../src/app/qgisapp.cpp" line="1371"/>
         <source>&amp;Window</source>
         <translation>&amp;Logs</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1536"/>
+        <location filename="../src/app/qgisapp.cpp" line="1545"/>
         <source>Toggle extents and mouse position display</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1633"/>
+        <location filename="../src/app/qgisapp.cpp" line="1642"/>
         <source>This icon shows whether on the fly coordinate reference system transformation is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour.</source>
         <translation>Šī ikona rāda vai tūlītēja projekciju maiņa ir ieslēgta vai nē. Klikšķiniet uz ikonas, lai mainītu projekta īpašības.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1637"/>
+        <location filename="../src/app/qgisapp.cpp" line="1646"/>
         <source>CRS status - Click to open coordinate reference system dialog</source>
         <translation>CRS statuss - Klikšķini, lai atvērtu koordinātu sistēmu dialogu</translation>
     </message>
@@ -6538,32 +6972,32 @@ Lūgums kontaktēties ar izstrādātājiem.
         <translation type="obsolete">QML stiila atbalsts rastra un datubāžu slāņiem</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3053"/>
+        <location filename="../src/app/qgisapp.cpp" line="3073"/>
         <source>Choose a file name to save the QGIS project file as</source>
         <translation>Izvēlieties nosaukumu ar kādu saglabāt QGIS projekta failu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3213"/>
+        <location filename="../src/app/qgisapp.cpp" line="3233"/>
         <source>Choose a file name to save the map image as</source>
         <translation>Izvēlieties faila nosaukumu ar kādu saglabāt kartes attēlu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4131"/>
+        <location filename="../src/app/qgisapp.cpp" line="4174"/>
         <source>Start editing failed</source>
         <translation>Rediģēšanas sākšana neizdevās</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4131"/>
+        <location filename="../src/app/qgisapp.cpp" line="4174"/>
         <source>Provider cannot be opened for editing</source>
         <translation>Sniedzējs nevar tikt atvērts rediģēšanai</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4139"/>
+        <location filename="../src/app/qgisapp.cpp" line="4182"/>
         <source>Stop editing</source>
         <translation>Beigt rediģēšanu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4140"/>
+        <location filename="../src/app/qgisapp.cpp" line="4183"/>
         <source>Do you want to save the changes to layer %1?</source>
         <translation>Vai vēlies saglabāt veiktās izmaiņas slānim %1?</translation>
     </message>
@@ -6578,22 +7012,22 @@ Kļūdas:  %2
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4161"/>
+        <location filename="../src/app/qgisapp.cpp" line="4204"/>
         <source>Problems during roll back</source>
         <translation>Problēmas pie darbību atcelšanas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4406"/>
+        <location filename="../src/app/qgisapp.cpp" line="4449"/>
         <source>Python Console</source>
         <translation>Python konsole</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4959"/>
+        <location filename="../src/app/qgisapp.cpp" line="5002"/>
         <source>Map coordinates for the current view extents</source>
         <translation>Kartes koordinātes pašreizējam skatam</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5055"/>
+        <location filename="../src/app/qgisapp.cpp" line="5098"/>
         <source>Maptips require an active layer</source>
         <translation>Kartes padomiem nepieciešams aktīvs slānis</translation>
     </message>
@@ -6606,210 +7040,216 @@ Kļūdas:  %2
         <translation type="obsolete">Quantum GIS - %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="389"/>
+        <location filename="../src/app/qgisapp.cpp" line="390"/>
         <source>Quantum GIS - %1 (&apos;%2&apos;)</source>
         <translation>Quantum GIS - %1 (&apos;%2&apos;)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="594"/>
+        <location filename="../src/app/qgisapp.cpp" line="595"/>
         <source>&amp;New Print Composer</source>
         <translation>&amp; Jauns drukas veidotājs</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="595"/>
+        <location filename="../src/app/qgisapp.cpp" line="596"/>
         <source>Ctrl+P</source>
         <comment>New Print Composer</comment>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="596"/>
+        <location filename="../src/app/qgisapp.cpp" line="597"/>
         <source>New Print Composer</source>
         <translation>Jauns drukas veidotājs</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="599"/>
+        <location filename="../src/app/qgisapp.cpp" line="600"/>
         <source>Composer manager...</source>
         <translation>Drukas veidotāja pārvaldnieks</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="600"/>
+        <location filename="../src/app/qgisapp.cpp" line="601"/>
         <source>Composer manager</source>
         <translation>Drukas veidotāja pārvaldnieks</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="659"/>
+        <location filename="../src/app/qgisapp.cpp" line="660"/>
         <source>Ctrl+.</source>
         <comment>Capture Points</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="665"/>
+        <location filename="../src/app/qgisapp.cpp" line="666"/>
         <source>Ctrl+/</source>
         <comment>Capture Lines</comment>
         <translation>Ctrl+/</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="671"/>
+        <location filename="../src/app/qgisapp.cpp" line="672"/>
         <source>Ctrl+Shift+/</source>
         <comment>Capture Polygons</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="682"/>
-        <location filename="../src/app/qgisapp.cpp" line="684"/>
+        <location filename="../src/app/qgisapp.cpp" line="683"/>
+        <location filename="../src/app/qgisapp.cpp" line="685"/>
         <source>Reshape Features</source>
         <translation>Pārveidot objektus</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="727"/>
+        <location filename="../src/app/qgisapp.cpp" line="728"/>
         <source>Add Part</source>
         <translation>Pievienot daļu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="729"/>
+        <location filename="../src/app/qgisapp.cpp" line="730"/>
         <source>Add part to multipolygon</source>
         <translation>Pievienot daļu multipoligonam</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="741"/>
+        <location filename="../src/app/qgisapp.cpp" line="742"/>
         <source>Click a vertex of the ring to delete</source>
         <translation>Uzklišķiniet, lai dzēstu riņķa virsotni</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="747"/>
+        <location filename="../src/app/qgisapp.cpp" line="748"/>
         <source>Click a vertex of the part to delete</source>
         <translation>Uzklišķiniet, lai dzēstu daļas virsotni</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="763"/>
-        <location filename="../src/app/qgisapp.cpp" line="765"/>
+        <location filename="../src/app/qgisapp.cpp" line="764"/>
+        <location filename="../src/app/qgisapp.cpp" line="766"/>
         <source>Rotate Point Symbols</source>
         <translation>Pagriezt punkta simbolus</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="792"/>
-        <location filename="../src/app/qgisapp.cpp" line="794"/>
+        <location filename="../src/app/qgisapp.cpp" line="793"/>
+        <location filename="../src/app/qgisapp.cpp" line="795"/>
         <source>Deselect features from all layers</source>
         <translation>Noņemt objektus no visiem slāņiem</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="799"/>
+        <location filename="../src/app/qgisapp.cpp" line="800"/>
         <source>Ctrl+Shift+I</source>
         <comment>Click on features to identify them</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="805"/>
+        <location filename="../src/app/qgisapp.cpp" line="806"/>
         <source>Ctrl+Shift+M</source>
         <comment>Measure a Line</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="810"/>
+        <location filename="../src/app/qgisapp.cpp" line="811"/>
         <source>Ctrl+Shift+J</source>
         <comment>Measure an Area</comment>
         <translation></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="815"/>
+        <location filename="../src/app/qgisapp.cpp" line="816"/>
+        <source>Measure Angle</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="820"/>
         <source>Ctrl+Shift+F</source>
         <comment>Zoom to Full Extents</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="857"/>
+        <location filename="../src/app/qgisapp.cpp" line="862"/>
         <source>Ctrl+Shift+B</source>
         <comment>Show Bookmarks</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="869"/>
+        <location filename="../src/app/qgisapp.cpp" line="874"/>
         <source>Ctrl+Shift+N</source>
         <comment>Create a New Vector Layer</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="874"/>
+        <location filename="../src/app/qgisapp.cpp" line="879"/>
         <source>Ctrl+Shift+V</source>
         <comment>Add a Vector Layer</comment>
         <translation>Ctrl+Shift+V</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="879"/>
+        <location filename="../src/app/qgisapp.cpp" line="884"/>
         <source>Ctrl+Shift+R</source>
         <comment>Add a Raster Layer</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="884"/>
+        <location filename="../src/app/qgisapp.cpp" line="889"/>
         <source>Ctrl+Shift+D</source>
         <comment>Add a PostGIS Layer</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="896"/>
+        <location filename="../src/app/qgisapp.cpp" line="901"/>
         <source>Ctrl+Shift+L</source>
         <comment>Add a SpatiaLite Layer</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="908"/>
+        <location filename="../src/app/qgisapp.cpp" line="913"/>
         <source>Ctrl+Shift+W</source>
         <comment>Add a Web Mapping Server Layer</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="950"/>
+        <location filename="../src/app/qgisapp.cpp" line="955"/>
         <source>Ctrl+Shift+O</source>
         <comment>Add current layer to overview map</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="966"/>
+        <location filename="../src/app/qgisapp.cpp" line="971"/>
         <source>Ctrl+Shift+U</source>
         <comment>Show all layers</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="971"/>
+        <location filename="../src/app/qgisapp.cpp" line="976"/>
         <source>Ctrl+Shift+H</source>
         <comment>Hide all layers</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="990"/>
+        <location filename="../src/app/qgisapp.cpp" line="995"/>
         <source>Ctrl+Shift+P</source>
         <comment>Set project properties</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1064"/>
+        <location filename="../src/app/qgisapp.cpp" line="1069"/>
         <source>Style manager...</source>
         <translation>Stila pārvaldnieks...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1066"/>
+        <location filename="../src/app/qgisapp.cpp" line="1071"/>
         <source>Show style manager V2</source>
         <translation>Parādīt stila pārvaldnieku V2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1549"/>
-        <location filename="../src/app/qgisapp.cpp" line="4969"/>
+        <location filename="../src/app/qgisapp.cpp" line="1558"/>
+        <location filename="../src/app/qgisapp.cpp" line="5012"/>
         <source>Coordinate:</source>
         <translation>Koordinātes:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1550"/>
+        <location filename="../src/app/qgisapp.cpp" line="1559"/>
         <source>Current map coordinate</source>
         <translation>Pašreizējā kartes koordināta</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1564"/>
+        <location filename="../src/app/qgisapp.cpp" line="1573"/>
         <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved. It also allows editing to set the canvas center to a given position.</source>
         <translation>Parādit kartes koordinātas pašreizējā kursora novietojumā. Pārvietojot peles kursoru, koordinātas tiek atjaunotas. Izvēlētajam novietojumam ir iespejams noteikt skata centru.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1568"/>
+        <location filename="../src/app/qgisapp.cpp" line="1577"/>
         <source>Current map coordinate (formatted as x,y)</source>
         <translation>Pašreizējā kartes koodinate (formēta kā x:y)</translation>
     </message>
@@ -6818,14 +7258,14 @@ Kļūdas:  %2
         <translation type="obsolete">Kas jauns versijā 1.2.0?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2335"/>
+        <location filename="../src/app/qgisapp.cpp" line="2347"/>
         <source>%1 is not a valid or recognized data source</source>
         <translation>%1 ir nederīgs vai neatpazīts datu avots</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2859"/>
-        <location filename="../src/app/qgisapp.cpp" line="2991"/>
-        <location filename="../src/app/qgisapp.cpp" line="3053"/>
+        <location filename="../src/app/qgisapp.cpp" line="2879"/>
+        <location filename="../src/app/qgisapp.cpp" line="3011"/>
+        <location filename="../src/app/qgisapp.cpp" line="3073"/>
         <source>QGis files (*.qgs)</source>
         <translation>QGIS faili (*.qgs)</translation>
     </message>
@@ -6836,8 +7276,8 @@ Try to find missing layers?</source>
 Mēģini atrast trūkstošos slāņus?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3022"/>
-        <location filename="../src/app/qgisapp.cpp" line="3073"/>
+        <location filename="../src/app/qgisapp.cpp" line="3042"/>
+        <location filename="../src/app/qgisapp.cpp" line="3093"/>
         <source>Saved project to: %1</source>
         <translation>Saglabāt projektu iekš: %1</translation>
     </message>
@@ -6846,8 +7286,8 @@ Mēģini atrast trūkstošos slāņus?</translation>
         <translation type="obsolete">Nav iespējams saglabāt projektu uz %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3034"/>
-        <location filename="../src/app/qgisapp.cpp" line="3080"/>
+        <location filename="../src/app/qgisapp.cpp" line="3054"/>
+        <location filename="../src/app/qgisapp.cpp" line="3100"/>
         <source>Unable to save project %1</source>
         <translation>Nav iespējams saglabāt projektu %1</translation>
     </message>
@@ -6856,85 +7296,97 @@ Mēģini atrast trūkstošos slāņus?</translation>
         <translation type="obsolete">Nav iespējams ielādēt projektu %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3255"/>
+        <location filename="../src/app/qgisapp.cpp" line="3275"/>
         <source>Saved map image to %1</source>
         <translation>Saglabāt kartes attēlu uz %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3581"/>
+        <location filename="../src/app/qgisapp.cpp" line="3606"/>
         <source>Features deleted</source>
         <translation>Objekti ir dzēsti</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3627"/>
+        <location filename="../src/app/qgisapp.cpp" line="3653"/>
         <source>Merging features...</source>
         <translation>Objektu apvienošana...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3627"/>
+        <location filename="../src/app/qgisapp.cpp" line="3653"/>
         <source>Abort</source>
         <translation>Pārtraukt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3673"/>
-        <location filename="../src/app/qgisapp.cpp" line="3711"/>
+        <location filename="../src/app/qgisapp.cpp" line="3706"/>
+        <location filename="../src/app/qgisapp.cpp" line="3744"/>
         <source>Composer %1</source>
         <translation>Veidotājs %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3744"/>
+        <location filename="../src/app/qgisapp.cpp" line="3777"/>
         <source>No active layer</source>
         <translation>Nav aktīvā slāņa</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3744"/>
+        <location filename="../src/app/qgisapp.cpp" line="3777"/>
         <source>No active layer found. Please select a layer in the layer list</source>
         <translation>Nav atrasts aktīvs slānis. Lūdzu izvēlieties slāni no slāņu saraksta</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3750"/>
+        <location filename="../src/app/qgisapp.cpp" line="3783"/>
         <source>Active layer is not vector</source>
         <translation>Aktīvais slānis nav vektoru slānis</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3750"/>
+        <location filename="../src/app/qgisapp.cpp" line="3783"/>
         <source>The merge features tool only works on vector layers. Please select a vector layer from the layer list</source>
         <translation>Objektu apvienošanas rīks darbojas tikai ar vektordatu slāņiem. Izvēlieties vektordatu slāni no slāņu saraksta</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3755"/>
+        <location filename="../src/app/qgisapp.cpp" line="3788"/>
         <source>Merging features can only be done for layers in editing mode. To use the merge tool, go to  Layer-&gt;Toggle editing</source>
         <translation>Objektu apvienošana var tikt veikta tikai slāņa rediģēšanas režīmā. Lai lietotu apvienošanas rīku, izvēlieties Slānis-&gt;Ieslēgt rediģēšanu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3770"/>
-        <location filename="../src/app/qgisapp.cpp" line="3804"/>
+        <location filename="../src/app/qgisapp.cpp" line="3803"/>
+        <location filename="../src/app/qgisapp.cpp" line="3842"/>
         <source>The merge tool requires at least two selected features</source>
         <translation>Apvienošanas rīkam ir nepieciešami vismaz divi izvēlēti objekti</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3787"/>
-        <location filename="../src/app/qgisapp.cpp" line="3823"/>
+        <location filename="../src/app/qgisapp.cpp" line="3815"/>
+        <location filename="../src/app/qgisapp.cpp" line="3857"/>
+        <source>Merge failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="3815"/>
+        <location filename="../src/app/qgisapp.cpp" line="3857"/>
+        <source>An error occured during the merge operation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="3825"/>
+        <location filename="../src/app/qgisapp.cpp" line="3866"/>
         <source>The union operation would result in a geometry type that is not compatible with the current layer and therefore is canceled</source>
         <translation>Apvienošanas darbība radīs ģeometrijas tipu, kurš nav savietojams ar pašreizējā slāņa atbalstītajiem ģeometrijas tipiem, tādēļ darbība ir atcelta</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3829"/>
+        <location filename="../src/app/qgisapp.cpp" line="3872"/>
         <source>Merged features</source>
         <translation>Apvienotie objekti</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4001"/>
+        <location filename="../src/app/qgisapp.cpp" line="4044"/>
         <source>Features cut</source>
         <translation>Izgrieztie objekti</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4053"/>
+        <location filename="../src/app/qgisapp.cpp" line="4096"/>
         <source>Features pasted</source>
         <translation>Ielīmētie objekti</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4149"/>
+        <location filename="../src/app/qgisapp.cpp" line="4192"/>
         <source>Could not commit changes to layer %1
 
 Errors: %2
@@ -6945,12 +7397,12 @@ Kļūdas:  %2
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4487"/>
+        <location filename="../src/app/qgisapp.cpp" line="4530"/>
         <source>QGIS - Changes in SVN since last release</source>
         <translation>QGIS - izmaiņas pašreizējas versijas sistēmā (SVN) kopš pēdējā laidiena</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4527"/>
+        <location filename="../src/app/qgisapp.cpp" line="4570"/>
         <source>Unable to communicate with QGIS Version server
 %1</source>
         <translation>Nav iespējams sazināties ar QGIS versijas serveri
@@ -6961,32 +7413,32 @@ Kļūdas:  %2
         <translation type="obsolete">Apjoms: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5545"/>
+        <location filename="../src/app/qgisapp.cpp" line="5588"/>
         <source>%1 is not a valid or recognized raster data source</source>
         <translation>%1 ir nederīgs vai neatpazīts rastra datu avots</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5708"/>
+        <location filename="../src/app/qgisapp.cpp" line="5751"/>
         <source>%1 is not a supported raster data source</source>
         <translation> %1 ir neatbalstīts rastra datu avots</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5842"/>
+        <location filename="../src/app/qgisapp.cpp" line="5885"/>
         <source>&lt;p&gt;This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.&lt;p&gt;Even though QGIS developers try to maintain backwards compatibility, some of the information from the old project file might be lost. To improve the quality of QGIS, we appreciate if you file a bug report at %3. Be sure to include the old project file, and state the version of QGIS you used to discover the error.&lt;p&gt;To remove this warning when opening an older project file, uncheck the box &apos;%5&apos; in the %4 menu.&lt;p&gt;Version of the project file: %1&lt;br&gt;Current version of QGIS: %2</source>
         <translation type="unfinished">&lt;p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1949"/>
+        <location filename="../src/app/qgisapp.cpp" line="1961"/>
         <source>Layers</source>
         <translation>Slāņi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3576"/>
+        <location filename="../src/app/qgisapp.cpp" line="3601"/>
         <source>Delete features</source>
         <translation>Dzēst slāņus</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="3576"/>
+        <location filename="../src/app/qgisapp.cpp" line="3601"/>
         <source>Delete %n feature(s)?</source>
         <comment>number of features to delete</comment>
         <translation type="unfinished">
@@ -6997,7 +7449,7 @@ Kļūdas:  %2
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="895"/>
+        <location filename="../src/app/qgisapp.cpp" line="900"/>
         <source>Add SpatiaLite Layer...</source>
         <translation>Pievienot SpatiaLite slāni...</translation>
     </message>
@@ -7009,30 +7461,30 @@ Kļūdas:  %2
 Pievienot SpatiaLite slāni</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="897"/>
+        <location filename="../src/app/qgisapp.cpp" line="902"/>
         <source>Add a SpatiaLite Layer</source>
         <translation>Pievienot SpatiaLite slāni</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2111"/>
+        <location filename="../src/app/qgisapp.cpp" line="2123"/>
         <source>
 This copy of QGIS has been built with SpatiaLite support.</source>
         <translation>
 Šī QGIS versija ir sagatavota ar SpatiaLite atbalstu.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2113"/>
+        <location filename="../src/app/qgisapp.cpp" line="2125"/>
         <source>
 This copy of QGIS has been built without SpatiaLite support.</source>
         <translation>Šī QGIS versija ir sagatavota bez SpatiaLite atbalsta.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="834"/>
+        <location filename="../src/app/qgisapp.cpp" line="839"/>
         <source>Zoom Next</source>
         <translation>Nākošais skats</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="836"/>
+        <location filename="../src/app/qgisapp.cpp" line="841"/>
         <source>Zoom to Forward Extent</source>
         <translation>Tuvināt līdz priekšējam kopskatam</translation>
     </message>
@@ -7045,98 +7497,98 @@ This copy of QGIS has been built without SpatiaLite support.</source>
         <translation type="obsolete">Tulkojumu jauninājumi.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="733"/>
-        <location filename="../src/app/qgisapp.cpp" line="735"/>
+        <location filename="../src/app/qgisapp.cpp" line="734"/>
+        <location filename="../src/app/qgisapp.cpp" line="736"/>
         <source>Simplify Feature</source>
         <translation>Vienkāršot objektu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="739"/>
+        <location filename="../src/app/qgisapp.cpp" line="740"/>
         <source>Delete Ring</source>
         <translation>Dzēst riņķi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="745"/>
+        <location filename="../src/app/qgisapp.cpp" line="746"/>
         <source>Delete Part</source>
         <translation>Dzēst daļu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1006"/>
+        <location filename="../src/app/qgisapp.cpp" line="1011"/>
         <source>Configure shortcuts...</source>
         <translation>Konfigurēt īsceļus...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1008"/>
+        <location filename="../src/app/qgisapp.cpp" line="1013"/>
         <source>Configure shortcuts</source>
         <translation>Konfigurēt īsceļus</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1450"/>
+        <location filename="../src/app/qgisapp.cpp" line="1458"/>
         <source>Advanced Digitizing</source>
         <translation>Paplašinātā digitizēšana</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2772"/>
+        <location filename="../src/app/qgisapp.cpp" line="2791"/>
         <source>New Shapefile</source>
         <translation>Jauns shapefile:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2773"/>
+        <location filename="../src/app/qgisapp.cpp" line="2792"/>
         <source>Shapefiles must end on .shp</source>
         <translation>Shapefile ir jābeidzas ar .shp</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2129"/>
+        <location filename="../src/app/qgisapp.cpp" line="2141"/>
         <source>Whats new in Version 1.4.0?</source>
         <translation>Kas jauns 1.4.0 laidienā?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2132"/>
+        <location filename="../src/app/qgisapp.cpp" line="2144"/>
         <source>Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.3.0. If an unchanging user interface, programmatic API and long term support is more important to you then cool new and untested features, we recommend that you use a copy of QGIS from our Long Term Support (LTS)1.0.x release series. In all other cases we recommend that you use this version.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2140"/>
+        <location filename="../src/app/qgisapp.cpp" line="2152"/>
         <source>This release includes around 200 bug fixes, nearly 30 new features and has had a lot of love and attention poured in to it to take our favourite desktop GIS application another step on the road to GIS nirvana! So much has happened in the 3 months since our last release that it is impossible to document everything here. Instead we will just highlight a couple of important new features for you.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2148"/>
+        <location filename="../src/app/qgisapp.cpp" line="2160"/>
         <source>Probably the biggest new feature is the addition of the new vector symbology infrastructure. This is provided alongside the old implementation - you can switch using a button in the vector layer properties dialog. It does&apos;t replace the old symbology implementation completely yet because there are various issues that need to be resolved and a large amount of testing before it is considered ready.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2156"/>
+        <location filename="../src/app/qgisapp.cpp" line="2168"/>
         <source>QGIS now has a field calculator, accessible via a button in the attribute section of the vector properties, and from the attribute table user interface. You can use feature length, feature area, string concatenation and type conversions in the field calculator, as well as field values.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2163"/>
+        <location filename="../src/app/qgisapp.cpp" line="2175"/>
         <source>The map composer has had a lot of attention. A grid can now be added to composer maps. Composer maps can now be rotated in the layout. The limitation of a single map layout per project has been removed. A new composer manager dialog has been added to manage the existing composer instances. The composer widget property sheets have been completely overhauled to use less screen space </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2171"/>
+        <location filename="../src/app/qgisapp.cpp" line="2183"/>
         <source>Various parts of the user interface have been overhauled with the goal of improving consistency and to improve support for netbooks and other smaller screen devices. Loading and saving of shortcuts. Position can now be displayed as Degrees, Minutes, Seconds in the status bar. The add, move and delete vertex buttons are now removed and the node tool is moved from the advanced editing toolbar to the standard editing toolbar. The identification tool has also undergone numerous improvements.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2181"/>
+        <location filename="../src/app/qgisapp.cpp" line="2193"/>
         <source>A render caching capability has been added to QGIS. This speeds up common operations such as layer re-ordering, changing symbology, WMS / WFS client, hiding / showing layers and opens the door for future enhancements such as threaded rendering and pre-compositing layer cache manipulation. Note that it is disabled by default, and can be enabled in the options dialog.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2189"/>
+        <location filename="../src/app/qgisapp.cpp" line="2201"/>
         <source>User defined SVG search paths are now added to the options dialog.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2192"/>
+        <location filename="../src/app/qgisapp.cpp" line="2204"/>
         <source>When creating a new shapefile, you can now specify its CRS. Also the avoid intersections option for polygons is now also possible with background layers.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2196"/>
+        <location filename="../src/app/qgisapp.cpp" line="2208"/>
         <source>For power users, you can now create customizable attribute forms using Qt Designer dialog UIs.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -7395,7 +7847,9 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsApplication</name>
     <message>
-        <location filename="../src/core/qgsapplication.cpp" line="89"/>
+        <location filename="../src/core/qgsapplication.cpp" line="93"/>
+        <location filename="../src/core/qgsapplication.cpp" line="97"/>
+        <location filename="../src/core/qgsapplication.cpp" line="101"/>
         <source>Exception</source>
         <translation>Izņēmums</translation>
     </message>
@@ -8287,9 +8741,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsAttributeTableModel</name>
     <message>
-        <location filename="../src/app/attributetable/qgsattributetablemodel.cpp" line="483"/>
+        <location filename="../src/app/attributetable/qgsattributetablemodel.cpp" line="446"/>
         <source>Attribute changed</source>
         <translation>Atribūts ir nomainīts</translation>
+    </message>
+</context>
+<context>
+    <name>QgsAttributeTableView</name>
+    <message>
+        <location filename="../src/app/attributetable/qgsattributetableview.cpp" line="98"/>
+        <source>Run action</source>
+        <translation type="unfinished">Startēt darbību</translation>
     </message>
 </context>
 <context>
@@ -8772,7 +9234,7 @@ Kļūda bija %2</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="713"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1411"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1410"/>
         <source>Don&apos;t show this message again</source>
         <translation>Turpmāk nerādīt šo paziņojumu</translation>
     </message>
@@ -8871,17 +9333,17 @@ Kļūda bija %2</translation>
         <translation>Izvēlieties faila nosaukumu ar kādu saglabāt karti</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1113"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1111"/>
         <source>Composer</source>
         <translation>Veidotājs</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1409"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1408"/>
         <source>Project contains WMS layers</source>
         <translation>Projekts satur WMS slāņus</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1410"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1409"/>
         <source>Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed</source>
         <translation>WMS servisiem mēdz  būt augstuma un platuma ierobežojumi. Drukājot datus no šadiem servisiem var tikt parsniegts šis limits. Ja tas  ir šāds gadījums WMS slānis netiks izdrukāts</translation>
     </message>
@@ -9721,27 +10183,27 @@ Kļūda bija %2</translation>
 <context>
     <name>QgsComposerManagerBase</name>
     <message>
-        <location filename="../src/ui/qgscomposermanagerbase.ui" line="14"/>
+        <location filename="../src/ui/qgscomposermanagerbase.ui" line="13"/>
         <source>Composer manager</source>
         <translation>Drukas veidotāja pārvaldnieks</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermanagerbase.ui" line="23"/>
+        <location filename="../src/ui/qgscomposermanagerbase.ui" line="43"/>
         <source>Add</source>
         <translation>Pievienot</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermanagerbase.ui" line="30"/>
+        <location filename="../src/ui/qgscomposermanagerbase.ui" line="29"/>
         <source>Remove</source>
         <translation>Noņemt</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermanagerbase.ui" line="37"/>
+        <location filename="../src/ui/qgscomposermanagerbase.ui" line="36"/>
         <source>Rename</source>
         <translation>Pārsaukt</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposermanagerbase.ui" line="44"/>
+        <location filename="../src/ui/qgscomposermanagerbase.ui" line="22"/>
         <source>Show</source>
         <translation>Parādīt</translation>
     </message>
@@ -9855,76 +10317,76 @@ Kļūda bija %2</translation>
         <translation>Vispārīgi risinājumi</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="44"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="120"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="261"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="43"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="119"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="260"/>
         <source>Cache</source>
         <translation>Kešatmiņa</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="46"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="130"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="269"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="45"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="129"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="268"/>
         <source>Rectangle</source>
         <translation>Taisnstūris</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="48"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="318"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="47"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="317"/>
         <source>Solid</source>
         <translation>Vienlaidus</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="49"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="314"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="560"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="48"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="313"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="559"/>
         <source>Cross</source>
         <translation>Krusts</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="51"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="326"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="622"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="50"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="325"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="621"/>
         <source>Inside frame</source>
         <translation>Rāmja iekšpusē</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="52"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="330"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="51"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="329"/>
         <source>Outside frame</source>
         <translation>Rāmja ārpusē</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="54"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="347"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="660"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="53"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="346"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="659"/>
         <source>Horizontal</source>
         <translation>Horizontāls</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="55"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="351"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="664"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="54"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="350"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="663"/>
         <source>Vertical</source>
         <translation>Vertikāls</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="56"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="355"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="668"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="55"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="354"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="667"/>
         <source>Horizontal and Vertical</source>
         <translation>Horizontals un vertikāls</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="57"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="359"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="56"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="358"/>
         <source>Boundary direction</source>
         <translation>Robežas virziens</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="45"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="125"/>
-        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="265"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="44"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="124"/>
+        <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="264"/>
         <source>Render</source>
         <translation>Renderēt</translation>
     </message>
@@ -11407,19 +11869,16 @@ Kļūda bija %2</translation>
 <context>
     <name>QgsCoordinateTransform</name>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="473"/>
         <source>Failed</source>
-        <translation>Neveiksmīgs</translation>
+        <translation type="obsolete">Neveiksmīgs</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="473"/>
         <source>transform of</source>
-        <translation>transformēšana no</translation>
+        <translation type="obsolete">transformēšana no</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="486"/>
         <source>with error: </source>
-        <translation>ar kļūdu: </translation>
+        <translation type="obsolete">ar kļūdu: </translation>
     </message>
     <message>
         <source>The source spatial reference system (SRS) is not valid. </source>
@@ -11434,22 +11893,40 @@ Kļūda bija %2</translation>
         <translation type="obsolete">Mērķa telpisko norāžu sistēma (SRS) nav derīga. </translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="418"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="417"/>
         <source>The source spatial reference system (CRS) is not valid. </source>
         <translation>Resursa koordinātu sistēma (CRS) ir nederīga. </translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="456"/>
+        <source>inverse transform</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="463"/>
+        <source>forward transform</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="483"/>
+        <source>%1 of
+%2
+failed with error: %3
+</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>The coordinates can not be reprojected. The CRS is: </source>
         <translation type="obsolete">Koordinātes nav iespējams pārrēķinat/pārprojicēt. CRS ir:</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="426"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="425"/>
         <source>The destination spatial reference system (CRS) is not valid. </source>
         <translation>Mērķa koordinātu sistēma (CRS) nav derīga.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="419"/>
-        <location filename="../src/core/qgscoordinatetransform.cpp" line="427"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="418"/>
+        <location filename="../src/core/qgscoordinatetransform.cpp" line="426"/>
         <source>The coordinates can not be reprojected. The CRS is: %1</source>
         <translation>Koordinātes nav iespējams pārprojicēt. CRS ir: %1</translation>
     </message>
@@ -12354,13 +12831,13 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsDelimitedTextProvider</name>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="401"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="446"/>
         <source>Note: the following lines were not loaded because Qgis was unable to determine values for the x and y coordinates:
 </source>
         <translation>Piezīme: sekojošās rindas netika ielādētas, jo QGIS nevarēja noteikt vērtības X un Y koordinātām: </translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="400"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="445"/>
         <source>Error</source>
         <translation>Kļūda</translation>
     </message>
@@ -12452,6 +12929,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Classification type:</source>
         <translation type="obsolete">Klasifikācijas tips:</translation>
+    </message>
+</context>
+<context>
+    <name>QgsDisplayAngle</name>
+    <message>
+        <location filename="../src/app/qgsdisplayangle.cpp" line="41"/>
+        <source>%1 degrees</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsdisplayangle.cpp" line="45"/>
+        <source>%1 radians</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsdisplayangle.cpp" line="49"/>
+        <source>%1 gon</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsDisplayAngleBase</name>
+    <message>
+        <location filename="../src/ui/qgsdisplayanglebase.ui" line="14"/>
+        <source>Angle</source>
+        <translation type="unfinished">Leņķis</translation>
     </message>
 </context>
 <context>
@@ -13788,25 +14291,25 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsgraduatedsymboldialog.cpp" line="61"/>
         <location filename="../src/app/qgsgraduatedsymboldialog.cpp" line="78"/>
-        <location filename="../src/app/qgsgraduatedsymboldialog.cpp" line="292"/>
-        <location filename="../src/app/qgsgraduatedsymboldialog.cpp" line="366"/>
+        <location filename="../src/app/qgsgraduatedsymboldialog.cpp" line="294"/>
+        <location filename="../src/app/qgsgraduatedsymboldialog.cpp" line="368"/>
         <source>Equal Interval</source>
         <translation>Vienādi intervāli</translation>
     </message>
     <message>
         <location filename="../src/app/qgsgraduatedsymboldialog.cpp" line="62"/>
         <location filename="../src/app/qgsgraduatedsymboldialog.cpp" line="74"/>
-        <location filename="../src/app/qgsgraduatedsymboldialog.cpp" line="179"/>
-        <location filename="../src/app/qgsgraduatedsymboldialog.cpp" line="293"/>
-        <location filename="../src/app/qgsgraduatedsymboldialog.cpp" line="337"/>
+        <location filename="../src/app/qgsgraduatedsymboldialog.cpp" line="180"/>
+        <location filename="../src/app/qgsgraduatedsymboldialog.cpp" line="295"/>
+        <location filename="../src/app/qgsgraduatedsymboldialog.cpp" line="339"/>
         <source>Quantiles</source>
         <translation>Apjomi</translation>
     </message>
     <message>
         <location filename="../src/app/qgsgraduatedsymboldialog.cpp" line="63"/>
         <location filename="../src/app/qgsgraduatedsymboldialog.cpp" line="70"/>
-        <location filename="../src/app/qgsgraduatedsymboldialog.cpp" line="175"/>
-        <location filename="../src/app/qgsgraduatedsymboldialog.cpp" line="388"/>
+        <location filename="../src/app/qgsgraduatedsymboldialog.cpp" line="176"/>
+        <location filename="../src/app/qgsgraduatedsymboldialog.cpp" line="390"/>
         <source>Empty</source>
         <translation>Tukšs</translation>
     </message>
@@ -15171,13 +15674,13 @@ rindā %2 kolonnā %3</translation>
 <context>
     <name>QgsGrassModule</name>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1070"/>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1335"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1118"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1383"/>
         <source>Run</source>
         <translation>Darbināt</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1306"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1354"/>
         <source>Stop</source>
         <translation>Apturēt</translation>
     </message>
@@ -15186,17 +15689,17 @@ rindā %2 kolonnā %3</translation>
         <translation type="obsolete">Modulis</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="159"/>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="164"/>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="175"/>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="206"/>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="937"/>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1090"/>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1101"/>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1111"/>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1128"/>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1230"/>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1301"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="160"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="165"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="176"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="207"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="985"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1138"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1149"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1159"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1176"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1278"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1349"/>
         <source>Warning</source>
         <translation>Brīdinājums</translation>
     </message>
@@ -15257,13 +15760,13 @@ rindā </translation>
         <translation type="obsolete">Nav pieejams, nekorekts apraksts (</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1101"/>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1128"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1149"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1176"/>
         <source>Cannot get input region</source>
         <translation>Nevar saņemt ievades reģionu</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1117"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1165"/>
         <source>Use Input Region</source>
         <translation>Lietot ievades reģionu</translation>
     </message>
@@ -15276,17 +15779,17 @@ rindā </translation>
         <translation type="obsolete">Nevar startēt moduli: </translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1319"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1367"/>
         <source>&lt;B&gt;Successfully finished&lt;/B&gt;</source>
         <translation>&lt;b&gt;Sekmīgi pabeigts&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1328"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1376"/>
         <source>&lt;B&gt;Finished with error&lt;/B&gt;</source>
         <translation>&lt;b&gt;Beidza ar kļūdu&lt;/b&gt;</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1333"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1381"/>
         <source>&lt;B&gt;Module crashed or killed&lt;/B&gt;</source>
         <translation>&lt;b&gt;Modulis avarēja vai tika nogalitāts&lt;/b&gt;</translation>
     </message>
@@ -15295,34 +15798,34 @@ rindā </translation>
         <translation type="obsolete">Nav pieejams, apraksts nav atrasts (</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="251"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="252"/>
         <source>Please ensure you have the GRASS documentation installed.</source>
         <translation>Lūdzu pārbaudi vai sistēmai ir instalēta GRASS dokumentācija.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="145"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="146"/>
         <source>Module: %1</source>
         <translation>Modulis: %1</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="159"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="160"/>
         <source>The module file (%1) not found.</source>
         <translation>Moduļa fails (%1) netika atrasts.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="164"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="165"/>
         <source>Cannot open module file (%1)</source>
         <translation>Nebija iespējams atvērt moduļa failu (%1)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="172"/>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="934"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="173"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="982"/>
         <source>Cannot read module file (%1)</source>
         <translation>Nebija iespējams nolasīt moduļa failu (%1)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="173"/>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="935"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="174"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="983"/>
         <source>
 %1
 at line %2 column %3</source>
@@ -15331,47 +15834,47 @@ at line %2 column %3</source>
 rindā %2 kolonnā %3</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="206"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="207"/>
         <source>Module %1 not found</source>
         <translation>Modulis %1 nav atrasts</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="250"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="251"/>
         <source>Cannot find man page %1</source>
         <translation>Nebija iespējams atrast man lapu %1</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="923"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="971"/>
         <source>Not available, description not found (%1)</source>
         <translation>Nav pieejams, apraksts nav atrasts (%1)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="927"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="975"/>
         <source>Not available, cannot open description (%1)</source>
         <translation>Nav pieejams, nebija iespējams atvērt aprakstu (%1)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="939"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="987"/>
         <source>Not available, incorrect description (%1)</source>
         <translation>Nav pieejams, nekorekts apraksts (%1)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1112"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1160"/>
         <source>Input %1 outside current region!</source>
         <translation>Ievade %1 ir ārpus pašreizējā reģiona!</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1140"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1188"/>
         <source>Output %1 exists! Overwrite?</source>
         <translation>Izvade %1 eksistē! Pārrakstīt?</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1230"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1278"/>
         <source>Cannot find module %1</source>
         <translation>Nebija iespējams atrast moduli %1</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1301"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1349"/>
         <source>Cannot start module: %1</source>
         <translation>Nebija iespējams palaist moduli: %1</translation>
     </message>
@@ -15422,7 +15925,7 @@ rindā %2 kolonnā %3</translation>
 <context>
     <name>QgsGrassModuleField</name>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2852"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2903"/>
         <source>Attribute field</source>
         <translation>Atribūta lauks</translation>
     </message>
@@ -15430,7 +15933,7 @@ rindā %2 kolonnā %3</translation>
 <context>
     <name>QgsGrassModuleFile</name>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3036"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3087"/>
         <source>File</source>
         <translation>Fails</translation>
     </message>
@@ -15443,12 +15946,12 @@ rindā %2 kolonnā %3</translation>
         <translation type="obsolete">:&amp;nbsp;mape neeksistē</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3165"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3216"/>
         <source>%1:&amp;nbsp;missing value</source>
         <translation>%1:&amp;nbsp;trūkst vērtība</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3172"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3223"/>
         <source>%1:&amp;nbsp;directory does not exist</source>
         <translation>%1:&amp;nbsp;mape neeksistē</translation>
     </message>
@@ -15456,9 +15959,14 @@ rindā %2 kolonnā %3</translation>
 <context>
     <name>QgsGrassModuleGdalInput</name>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2608"/>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2623"/>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2804"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2639"/>
+        <source>OGR/PostGIS/GDAL Input</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2659"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2674"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2855"/>
         <source>Warning</source>
         <translation>Brīdinājums</translation>
     </message>
@@ -15467,7 +15975,7 @@ rindā %2 kolonnā %3</translation>
         <translation type="obsolete">Nevar atrast slāņa iestatījumus</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2805"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2856"/>
         <source>PostGIS driver in OGR does not support schemas!&lt;br&gt;Only the table name will be used.&lt;br&gt;It can result in wrong input if more tables of the same name&lt;br&gt;are present in the database.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -15476,22 +15984,22 @@ rindā %2 kolonnā %3</translation>
         <translation type="obsolete">:&amp;nbsp;nav ievades</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2608"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2659"/>
         <source>Cannot find layeroption %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2623"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2674"/>
         <source>Cannot find whereoption %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2669"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2720"/>
         <source>Select a layer</source>
         <translation>Izvēlieties slāni</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2832"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2883"/>
         <source>%1:&amp;nbsp;no input</source>
         <translation>%1&amp;nbsp;nav ievades</translation>
     </message>
@@ -15499,10 +16007,10 @@ rindā %2 kolonnā %3</translation>
 <context>
     <name>QgsGrassModuleInput</name>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1981"/>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1990"/>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2063"/>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2080"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2034"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2043"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2116"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2133"/>
         <source>Warning</source>
         <translation>Brīdinājums</translation>
     </message>
@@ -15527,7 +16035,7 @@ rindā %2 kolonnā %3</translation>
         <translation type="obsolete">nav atbalstīts</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2104"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2157"/>
         <source>Use region of this map</source>
         <translation>Lietot šīs kartes reģionu</translation>
     </message>
@@ -15536,37 +16044,37 @@ rindā %2 kolonnā %3</translation>
         <translation type="obsolete">:&amp;nbsp;nav ievades</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1981"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2034"/>
         <source>Cannot find typeoption %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1990"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2043"/>
         <source>Cannot find values for typeoption %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2063"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2116"/>
         <source>Cannot find layeroption %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2080"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2133"/>
         <source>GRASS element %1 not supported</source>
         <translation>GRASS elements %1 nav atbalstīts</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2179"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2232"/>
         <source>Select a layer</source>
         <translation>Izvēlieties slāni</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2464"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2517"/>
         <source>%1:&amp;nbsp;no input</source>
         <translation>%1&amp;nbsp;nav ievades</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1957"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2010"/>
         <source>Input</source>
         <translation>Ievade</translation>
     </message>
@@ -15578,7 +16086,7 @@ rindā %2 kolonnā %3</translation>
         <translation type="obsolete">:&amp;nbsp;trūkst vērtība</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1899"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1952"/>
         <source>%1:&amp;nbsp;missing value</source>
         <translation>%1:&amp;nbsp;trūkst vērtība</translation>
     </message>
@@ -15590,7 +16098,7 @@ rindā %2 kolonnā %3</translation>
         <translation type="obsolete">Atribūta lauks</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2932"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2983"/>
         <source>Selected categories</source>
         <translation>Izvēlētās kategorijas</translation>
     </message>
@@ -15598,15 +16106,25 @@ rindā %2 kolonnā %3</translation>
 <context>
     <name>QgsGrassModuleStandardOptions</name>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="315"/>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="332"/>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="353"/>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="389"/>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="529"/>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="751"/>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="783"/>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="806"/>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="843"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="541"/>
+        <source>&lt;&lt; Hide advanced options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="544"/>
+        <source>Show advanced options &gt;&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="316"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="333"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="354"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="421"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="577"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="799"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="831"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="854"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="891"/>
         <source>Warning</source>
         <translation>Brīdinājums</translation>
     </message>
@@ -15651,8 +16169,8 @@ rindā </translation>
         <translation type="obsolete"> nav atrasts</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="751"/>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="806"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="799"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="854"/>
         <source>Cannot get current region</source>
         <translation>Nevar saņemt pašreizējo reģionu</translation>
     </message>
@@ -15665,27 +16183,27 @@ rindā </translation>
         <translation type="obsolete">Nevar iestatīt kartes reģionu </translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="315"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="316"/>
         <source>Cannot find module %1</source>
         <translation>Nav iespējams atrast moduli %1</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="333"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="334"/>
         <source>Cannot start module %1</source>
         <translation>Nav iespējams palaist moduli %1</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="334"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="335"/>
         <source>&lt;br&gt;command: %1 %2&lt;br&gt;%3&lt;br&gt;%4</source>
         <translation>&lt;br&gt;komanda: %1 %2&lt;br&gt;%3&lt;br&gt;%4</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="348"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="349"/>
         <source>Cannot read module description (%1):</source>
         <translation>Nebija iespējams nolasīt moduļa aprakstu (%1):</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="349"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="350"/>
         <source>
 %1
 at line %2 column %3</source>
@@ -15694,22 +16212,22 @@ at line %2 column %3</source>
 rindā %2 kolonnā %3</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="389"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="421"/>
         <source>Cannot find key %1</source>
         <translation>Nevar atrast atslēgu %1</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="529"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="577"/>
         <source>Item with id %1 not found</source>
         <translation>Vienums ar ID %1 nav atrasts</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="783"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="831"/>
         <source>Cannot check region of map %1</source>
         <translation>Nevar parbaudīt reģionu kartei %1</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="843"/>
+        <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="891"/>
         <source>Cannot set region of map %1</source>
         <translation>Nevar iestatīt kartes %1 reģionu</translation>
     </message>
@@ -17622,7 +18140,7 @@ Tā vartētu būt problēma ar jūsu tīkla savienojumu vai WMS serveri.
 <context>
     <name>QgsLabelDialog</name>
     <message>
-        <location filename="../src/app/qgslabeldialog.cpp" line="214"/>
+        <location filename="../src/app/qgslabeldialog.cpp" line="240"/>
         <source>Auto</source>
         <translation>Auto</translation>
     </message>
@@ -17635,44 +18153,44 @@ Tā vartētu būt problēma ar jūsu tīkla savienojumu vai WMS serveri.
         <translation>Forma1</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="855"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="888"/>
         <source>Preview:</source>
         <translation>Priekšapskate:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="864"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="897"/>
         <source>QGIS Rocks!</source>
         <translation>QGIS ruļevoj!</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="98"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="102"/>
         <source>Font</source>
         <translation>Fonts</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="105"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="109"/>
         <source>Font size</source>
         <translation>Fonta izmērs</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="278"/>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="480"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="426"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="463"/>
         <source>Points</source>
         <translation>Punktos</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="285"/>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="487"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="433"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="484"/>
         <source>Map units</source>
         <translation>Kartes vienībās</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="423"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="395"/>
         <source>%</source>
         <translation>%</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="727"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="756"/>
         <source>Transparency:</source>
         <translation>Caurspīdīgums:</translation>
     </message>
@@ -17681,73 +18199,73 @@ Tā vartētu būt problēma ar jūsu tīkla savienojumu vai WMS serveri.
         <translation type="obsolete">Novietojums</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="750"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="779"/>
         <source>Size:</source>
         <translation>Izmērs:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="388"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="360"/>
         <source>Size is in map units</source>
         <translation>kartes vienībās</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="381"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="353"/>
         <source>Size is in points</source>
         <translation>punktos</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="234"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="242"/>
         <source>Above</source>
         <translation>Virs</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="224"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="232"/>
         <source>Over</source>
         <translation>Pāri</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="241"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="249"/>
         <source>Left</source>
         <translation>Pa kreisi</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="217"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="225"/>
         <source>Below</source>
         <translation>Zem</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="210"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="218"/>
         <source>Right</source>
         <translation>Pa labi</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="255"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="263"/>
         <source>Above Right</source>
         <translation>Virs pa labi</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="203"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="211"/>
         <source>Below Right</source>
         <translation>Zem pa labi</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="262"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="270"/>
         <source>Above Left</source>
         <translation>Virs pa kreisi</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="248"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="256"/>
         <source>Below Left</source>
         <translation>Zem pa kreisi</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="272"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="420"/>
         <source>Font size units</source>
         <translation>Fonta izmēra vienības</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="194"/>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="509"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="202"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="529"/>
         <source>Placement</source>
         <translation>Novietojums</translation>
     </message>
@@ -17760,17 +18278,17 @@ Tā vartētu būt problēma ar jūsu tīkla savienojumu vai WMS serveri.
         <translation type="obsolete">Bufera izmēra vienības</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="446"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="443"/>
         <source>Offset units</source>
         <translation>Nobīdes vienības</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="52"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="56"/>
         <source>Field containing label</source>
         <translation>Birkas lauks</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="72"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="76"/>
         <source>Default label</source>
         <translation>Noklusējuma birka</translation>
     </message>
@@ -17783,12 +18301,12 @@ Tā vartētu būt problēma ar jūsu tīkla savienojumu vai WMS serveri.
         <translation type="obsolete">Datu definēts novietojums</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="706"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="735"/>
         <source>Data defined buffer</source>
         <translation>Datu definēts buferis</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="766"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="801"/>
         <source>Data defined position</source>
         <translation>Datu definēta vieta</translation>
     </message>
@@ -17797,14 +18315,14 @@ Tā vartētu būt problēma ar jūsu tīkla savienojumu vai WMS serveri.
         <translation type="obsolete">Fonta caurspīdīgums</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="149"/>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="436"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="153"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="408"/>
         <source>Color</source>
         <translation>Krāsa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="156"/>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="525"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="160"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="545"/>
         <source>Angle (deg)</source>
         <translation>Leņķis (grādi)</translation>
     </message>
@@ -17813,85 +18331,109 @@ Tā vartētu būt problēma ar jūsu tīkla savienojumu vai WMS serveri.
         <translation type="obsolete">Veidot buferi ap birku?</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="371"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="343"/>
         <source>Buffer size</source>
         <translation>Bufera izmērs</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="398"/>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="667"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="370"/>
         <source>Transparency</source>
         <translation>Caurspīdīgums</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="459"/>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="810"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="449"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="845"/>
         <source>X Offset (pts)</source>
         <translation>X nobīde (punktos)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="452"/>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="826"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="470"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="861"/>
         <source>Y Offset (pts)</source>
         <translation>Y nobīde (punktos)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="46"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="50"/>
         <source>Basic label options</source>
         <translation>Birkas pamatopcijas</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="497"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="38"/>
+        <source>Basic label options and placement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="287"/>
+        <source>Scale dependent rendering, buffer labels, font size units and offset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="505"/>
+        <source>Data defined settings (placement and properties)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="517"/>
         <source>Data defined placement</source>
         <translation>Datu definēts izvietojums</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="538"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="564"/>
         <source>Data defined properties</source>
         <translation>Datu definētas īpašības</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="550"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="576"/>
         <source>&amp;Font family</source>
         <translation>&amp;Fontu saime</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="569"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="595"/>
         <source>&amp;Bold</source>
         <translation>&amp;Treknraksts</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="588"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="614"/>
         <source>&amp;Italic</source>
         <translation>&amp;Kursīvs</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="607"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="633"/>
         <source>&amp;Underline</source>
         <translation>&amp;Pasvītrots</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="626"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="652"/>
         <source>&amp;Size</source>
         <translation>&amp;Izmērs</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="645"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="671"/>
         <source>Size units</source>
         <translation>Izmēra vienības</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="778"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="706"/>
+        <source>Strikeout</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="723"/>
+        <source>Data defined settings: buffer and position</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="813"/>
         <source>X Coordinate</source>
         <translation>X koordināta</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="794"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="829"/>
         <source>Y Coordinate</source>
         <translation>Y koordināta</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="179"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="183"/>
         <source>Multiline labels?</source>
         <translation>Multilīnijas birkas?</translation>
     </message>
@@ -17900,32 +18442,30 @@ Tā vartētu būt problēma ar jūsu tīkla savienojumu vai WMS serveri.
         <translation type="obsolete">Vispārējs</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="295"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="293"/>
         <source>Use scale dependent rendering</source>
         <translation>Izmantot no mēroga atkarīgu renderēšanu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="307"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="305"/>
         <source>Maximum</source>
         <translation>Maksimālais</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="317"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="312"/>
         <source>Minimum</source>
         <translation>Minimālais</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="327"/>
         <source>Minimum scale at which this layer will be displayed. </source>
-        <translation>Minimālais mērogs pie kāda šis slānis tiks rādīts.  </translation>
+        <translation type="obsolete">Minimālais mērogs pie kāda šis slānis tiks rādīts.  </translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="340"/>
         <source>Maximum scale at which this layer will be displayed. </source>
-        <translation>Maksimālais mērogs pie kāda šis slānis tiks rādīts. </translation>
+        <translation type="obsolete">Maksimālais mērogs pie kāda šis slānis tiks rādīts. </translation>
     </message>
     <message utf8="true">
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="166"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="170"/>
         <source>°</source>
         <translation>°</translation>
     </message>
@@ -17935,7 +18475,7 @@ Tā vartētu būt problēma ar jūsu tīkla savienojumu vai WMS serveri.
         <translation>&amp;Krāsa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgslabeldialogbase.ui" line="359"/>
+        <location filename="../src/ui/qgslabeldialogbase.ui" line="331"/>
         <source>Buffer labels</source>
         <translation>Birkas buferis</translation>
     </message>
@@ -18008,24 +18548,24 @@ Tā vartētu būt problēma ar jūsu tīkla savienojumu vai WMS serveri.
         <translation type="obsolete">Rādīt failu grupas</translation>
     </message>
     <message>
+        <location filename="../src/app/legend/qgslegend.cpp" line="651"/>
         <location filename="../src/app/legend/qgslegend.cpp" line="662"/>
-        <location filename="../src/app/legend/qgslegend.cpp" line="673"/>
         <source>Stop editing</source>
         <translation>Pārtraukt rediģēšanu</translation>
     </message>
     <message>
+        <location filename="../src/app/legend/qgslegend.cpp" line="652"/>
         <location filename="../src/app/legend/qgslegend.cpp" line="663"/>
-        <location filename="../src/app/legend/qgslegend.cpp" line="674"/>
         <source>Do you want to save the changes to layer %1?</source>
         <translation>Vai vēlaties saglabāt veiktās izmaiņas slānim %1?</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="1729"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="1707"/>
         <source>No Layer Selected</source>
         <translation>Nav izvēlēts slānis</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="1730"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="1708"/>
         <source>To open an attribute table, you must select a vector layer in the legend</source>
         <translation>Lai atvērtu atribūtu tabulu, jums vispirms no leģendas ir jāizvēlas vektordatu slānis</translation>
     </message>
@@ -18116,6 +18656,7 @@ Tā vartētu būt problēma ar jūsu tīkla savienojumu vai WMS serveri.
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="597"/>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="601"/>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="606"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="611"/>
         <source>Error</source>
         <translation>Kļūda</translation>
     </message>
@@ -18133,6 +18674,11 @@ Tā vartētu būt problēma ar jūsu tīkla savienojumu vai WMS serveri.
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="607"/>
         <source>Creation of an attribute failed</source>
         <translation>Atribūta izveide bija nesekmīga</translation>
+    </message>
+    <message>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="612"/>
+        <source>Reprojection failed</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>More layers</source>
@@ -18817,8 +19363,8 @@ Identify results window title</comment>
         <translation type="obsolete">- atrasti %1 objekti</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolidentify.cpp" line="201"/>
-        <location filename="../src/app/qgsmaptoolidentify.cpp" line="388"/>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="202"/>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="392"/>
         <source>(clicked coordinate)</source>
         <translation>(klikšķa koordinātas)</translation>
     </message>
@@ -18839,12 +19385,12 @@ Identify results window title</comment>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolidentify.cpp" line="95"/>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="96"/>
         <source>No active layer</source>
         <translation>Nav aktīvā slāņa</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolidentify.cpp" line="96"/>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="97"/>
         <source>To identify features, you must choose an active layer by clicking on its name in the legend</source>
         <translation>Lai identificētu objektus, jums ir jāizvēlas aktīvais slānis, noklikšķinot uz tā nosaukuma leģendā</translation>
     </message>
@@ -18859,79 +19405,78 @@ Identify results window title</comment>
 %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolidentify.cpp" line="120"/>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="121"/>
         <source>Identifying on %1...</source>
         <translation>Norādot uz %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolidentify.cpp" line="134"/>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="135"/>
         <source>Identifying done.</source>
         <translation>Identificēšana pabeigta.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolidentify.cpp" line="159"/>
         <source>Identify results</source>
-        <translation>Identificēt rezultātus</translation>
+        <translation type="obsolete">Identificēt rezultātus</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolidentify.cpp" line="159"/>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="160"/>
         <source>No features at this position found.</source>
         <translation>Norādītajā vietā nekas nav atrasts.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolidentify.cpp" line="294"/>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="298"/>
         <source>Length</source>
         <translation>Garums</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolidentify.cpp" line="299"/>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="303"/>
         <source>firstX</source>
         <comment>attributes get sorted; translation for lastX should be lexically larger than this one</comment>
         <translation>pirmaisX</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolidentify.cpp" line="301"/>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="305"/>
         <source>firstY</source>
         <translation>pirmaisY</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolidentify.cpp" line="303"/>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="307"/>
         <source>lastX</source>
         <comment>attributes get sorted; translation for firstX should be lexically smaller than this one</comment>
         <translation>pēdējaisX</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolidentify.cpp" line="305"/>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="309"/>
         <source>lastY</source>
         <translation>pēdējaisY</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolidentify.cpp" line="314"/>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="318"/>
         <source>Area</source>
         <translation>Platība</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolidentify.cpp" line="326"/>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="330"/>
         <source>feature id</source>
         <translation>objekta id</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolidentify.cpp" line="326"/>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="330"/>
         <source>new feature</source>
         <translation>Jauns objekts</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolidentify.cpp" line="353"/>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="357"/>
         <source>WMS layer</source>
         <translation>WMS slānis</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolidentify.cpp" line="373"/>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="377"/>
         <source>Feature info</source>
         <translation>Objekta info</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolidentify.cpp" line="382"/>
+        <location filename="../src/app/qgsmaptoolidentify.cpp" line="386"/>
         <source>Raster</source>
         <translation>Rastrs</translation>
     </message>
@@ -19813,8 +20358,8 @@ Lūdzu instalējiet PostGIS ar GEOS atbalstu (http://geos.refractions.net)</tran
 <context>
     <name>QgsNewConnection</name>
     <message>
-        <location filename="../src/app/qgsnewconnection.cpp" line="148"/>
-        <location filename="../src/app/qgsnewconnection.cpp" line="152"/>
+        <location filename="../src/app/qgsnewconnection.cpp" line="175"/>
+        <location filename="../src/app/qgsnewconnection.cpp" line="179"/>
         <source>Test connection</source>
         <translation>Testēt savienojumu</translation>
     </message>
@@ -19830,12 +20375,12 @@ Paplašināta kļūdas informācija:
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsnewconnection.cpp" line="148"/>
+        <location filename="../src/app/qgsnewconnection.cpp" line="175"/>
         <source>Connection to %1 was successful</source>
         <translation>Savienojums ar %1 bija sekmīgs</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsnewconnection.cpp" line="152"/>
+        <location filename="../src/app/qgsnewconnection.cpp" line="179"/>
         <source>Connection failed - Check settings and try again.
 
 Extended error information:
@@ -19846,33 +20391,43 @@ Papildus kļūdas informācija:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsnewconnection.cpp" line="39"/>
+        <location filename="../src/app/qgsnewconnection.cpp" line="40"/>
         <source>prefer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsnewconnection.cpp" line="40"/>
+        <location filename="../src/app/qgsnewconnection.cpp" line="41"/>
         <source>require</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsnewconnection.cpp" line="38"/>
+        <location filename="../src/app/qgsnewconnection.cpp" line="39"/>
         <source>allow</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsnewconnection.cpp" line="37"/>
+        <location filename="../src/app/qgsnewconnection.cpp" line="38"/>
         <source>disable</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsnewconnection.cpp" line="90"/>
+        <location filename="../src/app/qgsnewconnection.cpp" line="91"/>
         <source>Save connection</source>
         <translation type="unfinished">Saglabāt savienojumu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsnewconnection.cpp" line="91"/>
+        <location filename="../src/app/qgsnewconnection.cpp" line="92"/>
         <source>Should the existing connection %1 be overwritten?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsnewconnection.cpp" line="155"/>
+        <source>Enter password</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsnewconnection.cpp" line="156"/>
+        <source>Error: %1Enter password for %2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -20543,17 +21098,17 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Simbolu virkne</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="172"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="173"/>
         <source>Whole number (integer)</source>
         <translation>Vesels skaitlis</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="173"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="174"/>
         <source>Decimal number (real)</source>
         <translation>Decimālskaitlis</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="174"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="175"/>
         <source>Text (string)</source>
         <translation>Teksts (rinda)</translation>
     </message>
@@ -20945,16 +21500,16 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">uz virsotni un segmentu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="264"/>
-        <location filename="../src/app/qgsoptions.cpp" line="271"/>
-        <location filename="../src/app/qgsoptions.cpp" line="541"/>
+        <location filename="../src/app/qgsoptions.cpp" line="286"/>
+        <location filename="../src/app/qgsoptions.cpp" line="293"/>
+        <location filename="../src/app/qgsoptions.cpp" line="580"/>
         <source>Semi transparent circle</source>
         <translation>Puscaurspīdīgs riņķis</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="265"/>
-        <location filename="../src/app/qgsoptions.cpp" line="275"/>
-        <location filename="../src/app/qgsoptions.cpp" line="545"/>
+        <location filename="../src/app/qgsoptions.cpp" line="287"/>
+        <location filename="../src/app/qgsoptions.cpp" line="297"/>
+        <location filename="../src/app/qgsoptions.cpp" line="584"/>
         <source>Cross</source>
         <translation>Krusts</translation>
     </message>
@@ -20971,20 +21526,20 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Rādīt pašreizs redzamos objektus</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="214"/>
+        <location filename="../src/app/qgsoptions.cpp" line="236"/>
         <source>Detected active locale on your system: %1</source>
         <translation>Jūsu sistēmā ir detektēta aktīva lokāle: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="266"/>
-        <location filename="../src/app/qgsoptions.cpp" line="279"/>
-        <location filename="../src/app/qgsoptions.cpp" line="549"/>
+        <location filename="../src/app/qgsoptions.cpp" line="288"/>
+        <location filename="../src/app/qgsoptions.cpp" line="301"/>
+        <location filename="../src/app/qgsoptions.cpp" line="588"/>
         <source>None</source>
         <translation>Nav</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="244"/>
-        <location filename="../src/app/qgsoptions.cpp" line="253"/>
+        <location filename="../src/app/qgsoptions.cpp" line="266"/>
+        <location filename="../src/app/qgsoptions.cpp" line="275"/>
         <source>map units</source>
         <translation>kartes vienības</translation>
     </message>
@@ -21004,53 +21559,53 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="234"/>
+        <location filename="../src/app/qgsoptions.cpp" line="256"/>
         <source>To vertex</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="235"/>
+        <location filename="../src/app/qgsoptions.cpp" line="257"/>
         <source>To segment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="236"/>
+        <location filename="../src/app/qgsoptions.cpp" line="258"/>
         <source>To vertex and segment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="248"/>
-        <location filename="../src/app/qgsoptions.cpp" line="257"/>
+        <location filename="../src/app/qgsoptions.cpp" line="270"/>
+        <location filename="../src/app/qgsoptions.cpp" line="279"/>
         <source>pixels</source>
         <translation>pikseļi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="290"/>
+        <location filename="../src/app/qgsoptions.cpp" line="312"/>
         <source>Central point (fastest)</source>
         <translation>Centra punkts (ātri)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="291"/>
+        <location filename="../src/app/qgsoptions.cpp" line="313"/>
         <source>Chain (fast)</source>
         <translation>Ķēde (ātri)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="292"/>
+        <location filename="../src/app/qgsoptions.cpp" line="314"/>
         <source>Popmusic tabu chain (slow)</source>
         <translation>Popmuzikas tabu ķēde (lēni)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="293"/>
+        <location filename="../src/app/qgsoptions.cpp" line="315"/>
         <source>Popmusic tabu (slow)</source>
         <translation>Popmuzikas tabu (lēni)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="294"/>
+        <location filename="../src/app/qgsoptions.cpp" line="316"/>
         <source>Popmusic chain (very slow)</source>
         <translation>Popmuzikas ķēde (ļoti lēni)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="746"/>
+        <location filename="../src/app/qgsoptions.cpp" line="785"/>
         <source>Choose a directory</source>
         <translation type="unfinished"></translation>
     </message>
@@ -21108,7 +21663,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Sākotnējā redzamība</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="967"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="989"/>
         <source>Select Global Default ...</source>
         <translation>Izvēlieties globālo noklusējumu...</translation>
     </message>
@@ -21159,7 +21714,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">&amp;Atjaunināt zīmēšanas laikā</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="522"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="443"/>
         <source>Measure tool</source>
         <translation>Mērīšanas rīks</translation>
     </message>
@@ -21197,27 +21752,27 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">&amp;Kartes rīki</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="473"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="407"/>
         <source>%</source>
         <translation>%</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="384"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="544"/>
         <source>Panning and zooming</source>
         <translation>Panoramēšana un tālummaiņa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="394"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="554"/>
         <source>Zoom</source>
         <translation>Tuvināt</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="399"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="559"/>
         <source>Zoom and recenter</source>
         <translation>Tuvināt un pārcentrēt</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="409"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="569"/>
         <source>Nothing</source>
         <translation>Nedarīt neko</translation>
     </message>
@@ -21238,7 +21793,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">&amp;Vispārējs</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1314"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1336"/>
         <source>General</source>
         <translation>Vispārējs</translation>
     </message>
@@ -21251,7 +21806,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Iezīmēšanas krāsa:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1374"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1396"/>
         <source>Locale</source>
         <translation>Lokāle</translation>
     </message>
@@ -21260,7 +21815,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Izmantot citu lokāli sistēmas lokāles vietā</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1036"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1058"/>
         <source>Locale to use instead</source>
         <translation>Izmantojāmā lokāle</translation>
     </message>
@@ -21269,12 +21824,12 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Piezīme: lokāles izmaiņas stājas spēkā pēc programmas pārstartēšanas.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1072"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1094"/>
         <source>Additional Info</source>
         <translation>Papildus informācija</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1078"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1100"/>
         <source>Detected active locale on your system:</source>
         <translation>Detektētā aktīvā sistēmas lokāle:</translation>
     </message>
@@ -21300,7 +21855,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Digitizēšana</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="657"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="679"/>
         <source>Rubberband</source>
         <translation>Iezīmēšana</translation>
     </message>
@@ -21309,7 +21864,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Līnijas platums:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="670"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="692"/>
         <source>Line width in pixels</source>
         <translation>Līniju platums pikseļos</translation>
     </message>
@@ -21318,7 +21873,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Līnijas krāsa:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="703"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="725"/>
         <source>Snapping</source>
         <translation>Pielipšana</translation>
     </message>
@@ -21331,7 +21886,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Meklēšanas rādiuss virsotņu labošanai (slāņa vienībās):</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="404"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="564"/>
         <source>Zoom to mouse cursor</source>
         <translation>Tuvināt peles kursora vietā</translation>
     </message>
@@ -21445,97 +22000,117 @@ p, li { white-space: pre-wrap; }
         <translation>Izmantot jauno simbolizāciju objektu attēlošanai</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="417"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="513"/>
+        <source>Preferred angle units</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="520"/>
+        <source>Degrees</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="527"/>
+        <source>Radians</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="534"/>
+        <source>Gon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="577"/>
         <source>Zoom factor</source>
         <translation>Tuvināšanas pakāpe</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="424"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="584"/>
         <source>Mouse wheel action</source>
         <translation>Peles ritenīša darbība</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="499"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="433"/>
         <source>Open feature form, if a single feature is identified</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="560"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="459"/>
         <source>Rubberband color</source>
         <translation>Iezīmēšanas krāsa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="567"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="449"/>
         <source>Ellipsoid for distance calculations</source>
         <translation>Attālumu mērīšanai izmantotais elipsoīds</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="574"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="492"/>
         <source>Preferred measurements units</source>
         <translation>Vēlamās mērīšanas vienības</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="581"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="499"/>
         <source>Meters</source>
         <translation>Metri</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="588"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="506"/>
         <source>Feet</source>
         <translation>Pēdas</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1356"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1378"/>
         <source>Digitising</source>
         <translation>Digitizēšana</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1383"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1405"/>
         <source>Network &amp; Proxy</source>
         <translation>Tīkls &amp; Starpniekserveris</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="447"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="381"/>
         <source>Identify</source>
         <translation>Identificēt</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="456"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="390"/>
         <source>&lt;b&gt;Note:&lt;/b&gt; Specify the search radius as a percentage of the map width</source>
         <translation>&lt;b&gt;Piezīme:&lt;/b&gt;Norādiet meklēšanas rādiusu kā procentus no krates platuma</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="466"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="400"/>
         <source>Search radius for identifying features and displaying map tips</source>
         <translation>Meklēšanas rādiuss objektu identificēšanai un kartes padomu rādīšanai</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="492"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="426"/>
         <source>Mode</source>
         <translation>Režīms</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="663"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="685"/>
         <source>Line width</source>
         <translation>Līnijas platums</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="680"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="702"/>
         <source>Line colour</source>
         <translation>Līnijas krāsa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="709"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="731"/>
         <source>Default snap mode</source>
         <translation>Noklusējuma pielipšanas režīms</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="977"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="999"/>
         <source>Default Coordinate Reference System</source>
         <translation>Noklusējuma koordinātu sistēma</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1199"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1221"/>
         <source>Exclude URLs (starting with):</source>
         <translation type="unfinished"></translation>
     </message>
@@ -21548,37 +22123,37 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Meklēšanas rādiuss virsotņu rediģēšanai slāņa vienībās</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="836"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="858"/>
         <source>Vertex markers</source>
         <translation>Virsotņu marķieri</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="842"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="864"/>
         <source>Show markers only for selected features</source>
         <translation>Rādīt marķierus tikai izvēlētajiem objektiem</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="849"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="871"/>
         <source>Marker style</source>
         <translation>Marķiera stils</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="892"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="914"/>
         <source>Marker size</source>
         <translation>Marķiera izmērs</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="986"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1008"/>
         <source>When a new layer is created, or when a layer is loaded that has no coordinate reference system (CRS)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1027"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1049"/>
         <source>Override system locale</source>
         <translation>Ignorēt sistēmas lokāli</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1046"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1068"/>
         <source>&lt;b&gt;Note:&lt;/b&gt; Enabling / changing overide on local requires an application restart</source>
         <translation>&lt;b&gt;Piezīme:&lt;/b&gt; Lokāles izmaiņas stājas spēkā pēc programmas pārstartēšanas</translation>
     </message>
@@ -21587,33 +22162,33 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Starpniekserveris</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1113"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1135"/>
         <source>Use proxy for web access</source>
         <translation>Lietot starpniekserveri tīmekļa pieejai</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1125"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1147"/>
         <source>Host</source>
         <translation>Hosts</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1135"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1157"/>
         <source>Port</source>
         <translation>Ports</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1145"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1167"/>
         <source>User</source>
         <translation>Lietotājvārds</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1152"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1166"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1174"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1188"/>
         <source>Leave this blank if no proxy username / password are required</source>
         <translation>Atstat tukšu, ja starpniekserverim nav nepieciešams lietotājs un parola</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1159"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1181"/>
         <source>Password</source>
         <translation>Parole</translation>
     </message>
@@ -21627,7 +22202,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Atribūtu tabulas uzvedība</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1365"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1387"/>
         <source>CRS</source>
         <translation>CRS</translation>
     </message>
@@ -21636,22 +22211,22 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Ja ielādē slāni bez koordinātu sistēmas (CRS)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="996"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1018"/>
         <source>Prompt for CRS</source>
         <translation>Vaicāt koordinātu sistēmu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1003"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1025"/>
         <source>Project wide default CRS will be used</source>
         <translation>Tiks lietota projekta noklusējuma koordinātu sistēma</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1010"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1032"/>
         <source>Global default CRS displa&amp;yed below will be used</source>
         <translation>&amp;Tiks lietota globālā noklusējuma koordinātu sistēma, kas ir parādīta zemāk</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="915"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="937"/>
         <source>Enter attribute values</source>
         <translation>Ievadiet atribūtu vērtības</translation>
     </message>
@@ -21661,27 +22236,27 @@ p, li { white-space: pre-wrap; }
         <translation>Parametri</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="739"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="761"/>
         <source>Default snapping tolerance</source>
         <translation>Noklusējuma pielipšanas tolerance</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="769"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="791"/>
         <source>Search radius for vertex edits</source>
         <translation>Meklēšanas rādiuss virsotņu rediģēšanai</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="921"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="943"/>
         <source>Suppress attributes pop-up windows after each created feature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1097"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1119"/>
         <source>Timeout for network requests (ms):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1176"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1198"/>
         <source>Proxy type</source>
         <translation>Starpniekservera tips</translation>
     </message>
@@ -21691,50 +22266,50 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="341"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1206"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1228"/>
         <source>Add</source>
         <translation>Pievienot</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="348"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1213"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1235"/>
         <source>Remove</source>
         <translation>Noņemt</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1326"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1348"/>
         <source>Rendering &amp; SVG</source>
         <translation>Renderēšana &amp; SVG</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1338"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1360"/>
         <source>Map tools</source>
         <translation>Kartes rīki</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1347"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1369"/>
         <source>Overlay</source>
         <translation>Pārklāt</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="605"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="627"/>
         <source>Position</source>
         <translation>Novietojums</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="611"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="633"/>
         <source>Placement algorithm:</source>
         <translation>Novietojuma algoritms:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="806"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="820"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="828"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="842"/>
         <source>map units</source>
         <translation>kartes vienības</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="811"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="825"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="833"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="847"/>
         <source>pixels</source>
         <translation>pikseļi</translation>
     </message>
@@ -22309,22 +22884,30 @@ p, li { white-space: pre-wrap; }
         <translation>Jums ir jāizvēlas tabula, lai varētu pievienot slāni.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgspgsourceselect.cpp" line="421"/>
+        <location filename="../src/app/qgspgsourceselect.cpp" line="419"/>
+        <source>Enter password</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgspgsourceselect.cpp" line="420"/>
+        <source>Error: %1Enter password for %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Password for </source>
-        <translation>Parole priekš</translation>
+        <translation type="obsolete">Parole priekš</translation>
     </message>
     <message>
-        <location filename="../src/app/qgspgsourceselect.cpp" line="422"/>
         <source>Please enter your password:</source>
-        <translation>Lūdzu, ievadiet paroli:</translation>
+        <translation type="obsolete">Lūdzu, ievadiet paroli:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgspgsourceselect.cpp" line="473"/>
+        <location filename="../src/app/qgspgsourceselect.cpp" line="469"/>
         <source>Connection failed</source>
         <translation>Savienošanās neizdevās</translation>
     </message>
     <message>
-        <location filename="../src/app/qgspgsourceselect.cpp" line="474"/>
+        <location filename="../src/app/qgspgsourceselect.cpp" line="470"/>
         <source>Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.
 
 Check your username and password and try again.
@@ -22336,14 +22919,14 @@ Pārbaudiet lietotājvārdu un paroli un mēģiniet vēlreiz.
 Datu bāze atbildēja: %3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgspgsourceselect.cpp" line="604"/>
-        <location filename="../src/app/qgspgsourceselect.cpp" line="682"/>
+        <location filename="../src/app/qgspgsourceselect.cpp" line="600"/>
+        <location filename="../src/app/qgspgsourceselect.cpp" line="678"/>
         <source>Accessible tables could not be determined</source>
         <translation>Nebija iespējams noteikt pieejamās tabulas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgspgsourceselect.cpp" line="605"/>
-        <location filename="../src/app/qgspgsourceselect.cpp" line="683"/>
+        <location filename="../src/app/qgspgsourceselect.cpp" line="601"/>
+        <location filename="../src/app/qgspgsourceselect.cpp" line="679"/>
         <source>Database connection was successful, but the accessible tables could not be determined.
 
 The error message from the database was:
@@ -22355,12 +22938,12 @@ Datu bāzes ziņotā kļūda bija:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgspgsourceselect.cpp" line="718"/>
+        <location filename="../src/app/qgspgsourceselect.cpp" line="714"/>
         <source>No accessible tables found</source>
         <translation>Nav atrastas pieejamas tabulas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgspgsourceselect.cpp" line="719"/>
+        <location filename="../src/app/qgspgsourceselect.cpp" line="715"/>
         <source>Database connection was successful, but no accessible tables were found.
 
 Please verify that you have SELECT privilege on a table carrying PostGIS
@@ -23772,8 +24355,8 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsPostgresProvider</name>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="105"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="125"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="107"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="127"/>
         <source>Unable to access relation</source>
         <translation>Nevaru piekļūt relācijai</translation>
     </message>
@@ -23801,7 +24384,7 @@ Objektu izvēle un identificēšana var nedarboties pareizi.
 Lūdzu instalējiet PostGIS ar GEOS atbalstu (http://geos.refractions.net)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1059"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1087"/>
         <source>No suitable key column in table</source>
         <translation>Tabulai nav derīgas atslēgas kolonnas</translation>
     </message>
@@ -23828,7 +24411,7 @@ primāro atslēgu, vai arī PostgreSQL oid kolonnu.
         <translation type="obsolete">nav derīgs, jo QGIS neatbalsta ne-int4 atslēgas kolonnas.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1157"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1185"/>
         <source>and </source>
         <translation>un </translation>
     </message>
@@ -23843,7 +24426,7 @@ primāro atslēgu, vai arī PostgreSQL oid kolonnu.
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1206"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1234"/>
         <source>Unable to find a key column</source>
         <translation>Nav iespējams atrast atslēgas kolonnu</translation>
     </message>
@@ -23852,7 +24435,7 @@ primāro atslēgu, vai arī PostgreSQL oid kolonnu.
         <translation type="obsolete"> atvasināts no </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1347"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1375"/>
         <source>and is suitable.</source>
         <translation>un ir derīgs.</translation>
     </message>
@@ -23865,12 +24448,12 @@ primāro atslēgu, vai arī PostgreSQL oid kolonnu.
         <translation type="obsolete">tips ir </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1353"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1381"/>
         <source> and has a suitable constraint)</source>
         <translation> un ir derīgs ierobežojums)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1355"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1383"/>
         <source> and does not have a suitable constraint)</source>
         <translation>  un nav derīga ierobežojuma)</translation>
     </message>
@@ -23895,12 +24478,12 @@ primāro atslēgu, vai arī PostgreSQL oid kolonnu.
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1458"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1486"/>
         <source>No suitable key column in view</source>
         <translation>Skatam nav derīgas atslēgas kolonnas</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2964"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2992"/>
         <source>Unknown geometry type</source>
         <translation>Nezināms ģeometrijas tips</translation>
     </message>
@@ -23927,7 +24510,7 @@ primāro atslēgu, vai arī PostgreSQL oid kolonnu.
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2976"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3004"/>
         <source>Unable to get feature type and srid</source>
         <translation>Nav iespējams saņemt objektu tipu un srid</translation>
     </message>
@@ -23946,32 +24529,32 @@ primāro atslēgu, vai arī PostgreSQL oid kolonnu.
         <translation type="obsolete">Nav iespējams noskaidrot tabulas piekļuves atļaujas priekš </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2261"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2289"/>
         <source>Error while adding features</source>
         <translation>Kļūda pievienojot objektus</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2301"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2329"/>
         <source>Error while deleting features</source>
         <translation>Kļūda dzēšot objektus</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2361"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2389"/>
         <source>Error while adding attributes</source>
         <translation>Kļūda pievienojot atribūtus</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2406"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2434"/>
         <source>Error while deleting attributes</source>
         <translation>Kļūda dzēšot atribūtus</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2474"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2502"/>
         <source>Error while changing attributes</source>
         <translation>Kļūda mainot atribūtus</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2560"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2588"/>
         <source>Error while changing geometry values</source>
         <translation>Kļūda maibot ģeometrijas vērtības</translation>
     </message>
@@ -24013,53 +24596,53 @@ SQL: %2</translation>
         <translation type="obsolete">teksts</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1135"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1163"/>
         <source>The unique index on column &apos;%1&apos; is unsuitable because Qgis does not currently support non-int4 type columns as a key into the table.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1163"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1191"/>
         <source>The unique index based on columns %1 is unsuitable because Qgis does not currently support multiple columns as a key into the table.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1343"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1371"/>
         <source>&apos;%1&apos; derives from &apos;%2.%3.%4&apos; </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1351"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1379"/>
         <source>and is not suitable (type is %1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1439"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1467"/>
         <source>Note: &apos;%1&apos; initially appeared suitable but does not contain unique data, so is not suitable.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1450"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1478"/>
         <source>The view &apos;%1.%2&apos; has no column suitable for use as a unique key.
 Qgis requires that the view has a column that can be used as a unique key. Such a column should be derived from a table column of type int4 and be a primary key, have a unique constraint on it, or be a PostgreSQL oid column. To improve performance the column should also be indexed.
 The view you selected has the following columns, none of which satisfy the above conditions:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2965"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2993"/>
         <source>Column %1 in %2 has a geometry type of %3, which Qgis does not currently support.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2972"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3000"/>
         <source>Qgis was unable to determine the type and srid of column %1 in %2. The database communication log was:
 %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1060"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1088"/>
         <source>The table has no column suitable for use as a key.
 
 Qgis requires that the table either has a column of type
@@ -24070,7 +24653,7 @@ column with a 16bit block number.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="106"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="108"/>
         <source>Unable to access the %1 relation.
 The error message from the database was:
 %2.
@@ -24078,7 +24661,7 @@ SQL: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="126"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="128"/>
         <source>Unable to determine table access privileges for the %1 relation.
 The error message from the database was:
 %2.
@@ -24086,52 +24669,52 @@ SQL: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="232"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="234"/>
         <source>Whole number (smallint - 16bit)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="235"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="237"/>
         <source>Decimal number (numeric)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="236"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="238"/>
         <source>Decimal number (decimal)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="239"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="241"/>
         <source>Decimal number (real)</source>
         <translation type="unfinished">Decimālskaitlis</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="240"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="242"/>
         <source>Decimal number (double)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="243"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="245"/>
         <source>Text, fixed length (char)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="233"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="235"/>
         <source>Whole number (integer - 32bit)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="234"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="236"/>
         <source>Whole number (integer - 64bit)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="244"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="246"/>
         <source>Text, limited variable length (varchar)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="245"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="247"/>
         <source>Text, unlimited length (text)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -24139,12 +24722,22 @@ SQL: %3</source>
 <context>
     <name>QgsPostgresProvider::Conn</name>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="353"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="317"/>
+        <source>Enter password</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="318"/>
+        <source>Error: %1Enter password for %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="381"/>
         <source>No GEOS Support!</source>
         <translation>Nav GEOS atbalsta!</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="354"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="382"/>
         <source>Your PostGIS installation has no GEOS support.
 Feature selection and identification will not work properly.
 Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
@@ -24153,12 +24746,12 @@ Objektu izvēle un identificēšana var nedarboties pareizi.
 Lūdzu instalējiet PostGIS ar GEOS atbalstu (http://geos.refractions.net)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="338"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="366"/>
         <source>No PostGIS Support!</source>
         <translation>Nav PostGIS atbalsta!</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="339"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="367"/>
         <source>Your database has no working PostGIS support.
 </source>
         <translation>Jūsu datu bāzei nav strādājoša PostGIS atbalsta.
@@ -24950,9 +25543,9 @@ p, li { white-space: pre-wrap; }
     <name>QgsRasterLayer</name>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="85"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2548"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="3468"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="3484"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2552"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="3472"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="3488"/>
         <source>Not Set</source>
         <translation>Neiestatīts</translation>
     </message>
@@ -24965,12 +25558,12 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Izgriestais apgabals: </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2560"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2564"/>
         <source>Driver:</source>
         <translation>Dzinējs:</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2637"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2641"/>
         <source>Dimensions:</source>
         <translation>Dimensijas:</translation>
     </message>
@@ -24987,82 +25580,82 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete"> Kanāli: </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2665"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2669"/>
         <source>Data Type:</source>
         <translation>Datu tips: </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2671"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2675"/>
         <source>GDT_Byte - Eight bit unsigned integer</source>
         <translation>GDT_Byte - Astoņu bitu neiezīmētu veselu skaitļu</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2674"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2678"/>
         <source>GDT_UInt16 - Sixteen bit unsigned integer </source>
         <translation>GDT_UInt16 - Sešpadsmit bitu neiezīmētu veselu skaitļu</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2677"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2681"/>
         <source>GDT_Int16 - Sixteen bit signed integer </source>
         <translation>GDT_Int16 - Sešpadsmit bitu zīmētu veselu skaitļu</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2680"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2684"/>
         <source>GDT_UInt32 - Thirty two bit unsigned integer </source>
         <translation>GDT_UInt32 - Trīsdesmit divu bitu nezīmētu veselu skaitļu</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2683"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2687"/>
         <source>GDT_Int32 - Thirty two bit signed integer </source>
         <translation>GDT_Int32 - Trīsdesmit divu bitu zīmēts vesels skaitlis </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2686"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2690"/>
         <source>GDT_Float32 - Thirty two bit floating point </source>
         <translation>GDT_Float32 - Trīsdesmit četru bitu daļskaitlis </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2689"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2693"/>
         <source>GDT_Float64 - Sixty four bit floating point </source>
         <translation>GDT_Float64 - Sešdesmit četru bitu daļskaitlis </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2692"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2696"/>
         <source>GDT_CInt16 - Complex Int16 </source>
         <translation>GDT_CInt16 - Komplekss Int16 </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2695"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2699"/>
         <source>GDT_CInt32 - Complex Int32 </source>
         <translation>GDT_CInt32 - Komplekss Int32 </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2698"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2702"/>
         <source>GDT_CFloat32 - Complex Float32 </source>
         <translation>GDT_CFloat32 - Komplekss Float32 </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2701"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2705"/>
         <source>GDT_CFloat64 - Complex Float64 </source>
         <translation>GDT_CFloat64 - Komplekss Float64 </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2704"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2708"/>
         <source>Could not determine raster data type.</source>
         <translation>Rastra tipu nebija iespējams noteikt.</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2709"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2713"/>
         <source>Pyramid overviews:</source>
         <translation>Piramīdu pārskats:</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2758"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2762"/>
         <source>Origin:</source>
         <translation>Izcelsme:</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2767"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2771"/>
         <source>Pixel Size:</source>
         <translation>Pikseļa izmērs:</translation>
     </message>
@@ -25075,63 +25668,63 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Vērtība</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2785"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="5005"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2789"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="5009"/>
         <source>Band</source>
         <translation>Kanāls</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2792"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2796"/>
         <source>Band No</source>
         <translation>Kanāla Nr</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2804"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2808"/>
         <source>No Stats</source>
         <translation>Nav statistikas</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2807"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2811"/>
         <source>No stats collected yet</source>
         <translation>Statistika vēl nav savākta</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2817"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2821"/>
         <source>Min Val</source>
         <translation>Min vērt</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2825"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2829"/>
         <source>Max Val</source>
         <translation>Maks vērt</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2833"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2837"/>
         <source>Range</source>
         <translation>Diapazons</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2841"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2845"/>
         <source>Mean</source>
         <translation>Vidējā vērtība</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2849"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2853"/>
         <source>Sum of squares</source>
         <translation>Kvadrātu summa</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2857"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2861"/>
         <source>Standard Deviation</source>
         <translation>Standarta novirze</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2865"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2869"/>
         <source>Sum of all cells</source>
         <translation>Visu šūnu summa</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2873"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2877"/>
         <source>Cell Count</source>
         <translation>Šūnu skaits</translation>
     </message>
@@ -25146,12 +25739,12 @@ p, li { white-space: pre-wrap; }
         <translation>Vidēji</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2730"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2734"/>
         <source>Layer Spatial Reference System: </source>
         <translation>Slāņa telpisko norāžu sistēma: </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1924"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1928"/>
         <source>out of extent</source>
         <translation>ārpus apjoma</translation>
     </message>
@@ -25161,27 +25754,27 @@ p, li { white-space: pre-wrap; }
         <translation>Visi citi faili (*)</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1577"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1581"/>
         <source>Retrieving %1 using %2</source>
         <translation>Saņem %1 izmantojot %2</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1664"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1668"/>
         <source>%1 retrieved using %2</source>
         <translation>Saņemti %1 izmantojot %2</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1965"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1969"/>
         <source>null (no data)</source>
         <translation>null (nav datu)</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2585"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2589"/>
         <source>Dataset Description</source>
         <translation>Datu kopas apraksts</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2650"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2654"/>
         <source>No Data Value</source>
         <translation>Nav datu vērtība</translation>
     </message>
@@ -25190,12 +25783,12 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">un visi citi faili</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2659"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2663"/>
         <source>NoDataValue not set</source>
         <translation>Nav iestatīta NavDatu vērtība</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2606"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2610"/>
         <source>Band %1</source>
         <translation>Kanāls %1</translation>
     </message>
@@ -25204,12 +25797,12 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">%1 un visi pārējie faili (*)</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2640"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2644"/>
         <source>X: %1 Y: %2 Bands: %3</source>
         <translation>X: %1 Y: %2 Kanāli: %3</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2740"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2744"/>
         <source>Project Spatial Reference System: </source>
         <translation>Projekta koordinātu sistēma: </translation>
     </message>
@@ -25236,30 +25829,30 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsRasterLayerProperties</name>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="105"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="634"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="978"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="996"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1025"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="107"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="636"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="980"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="998"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1027"/>
         <source>Grayscale</source>
         <translation>Pelēktoņu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="106"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="617"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1084"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1712"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2376"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2381"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="108"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="619"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1086"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1714"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2378"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2383"/>
         <source>Pseudocolor</source>
         <translation>Pseidokrāsu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="107"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="621"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1088"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1712"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2381"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="109"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="623"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1090"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1714"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2383"/>
         <source>Freak Out</source>
         <translation>Izceļošs</translation>
     </message>
@@ -25268,37 +25861,37 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Palete</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="834"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="836"/>
         <source>Columns: </source>
         <translation>Kolonnas: </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="835"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="837"/>
         <source>Rows: </source>
         <translation>Rindas: </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="836"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="838"/>
         <source>No-Data Value: </source>
         <translation>Nav datu vērtība: </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="834"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="835"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="836"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="837"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="838"/>
         <source>n/a</source>
         <translation>n/p</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1579"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1859"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2744"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1581"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1861"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2746"/>
         <source>Write access denied</source>
         <translation>Rakstīšanas atļauja liegta</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1859"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2744"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1861"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2746"/>
         <source>Write access denied. Adjust the file permissions and try again.
 
 </source>
@@ -25306,10 +25899,10 @@ p, li { white-space: pre-wrap; }
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1584"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1590"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1595"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1600"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1586"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1592"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1597"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1602"/>
         <source>Building pyramids failed.</source>
         <translation>Piramīdu izveidošana neizdevās.</translation>
     </message>
@@ -25318,8 +25911,8 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Fails nav rakstāms. Dažus formātus var tikai lasīt, bet ne rakstīt. Jūs varat pārbaudīt faila piekļuves tiesības un mēģināt vēlreiz.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1591"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1601"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1593"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1603"/>
         <source>Building pyramid overviews is not supported on this type of raster.</source>
         <translation>Pārskata piramīdu veidošana šī tipa rastram nav atbalstīta.</translation>
     </message>
@@ -25328,48 +25921,48 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Pielāgota krāsu karte</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="111"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="742"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="755"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="771"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2467"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2945"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="113"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="744"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="757"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="773"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2469"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2947"/>
         <source>No Stretch</source>
         <translation>Neizstiept</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="112"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="726"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="759"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1101"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2950"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="114"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="728"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="761"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1103"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2952"/>
         <source>Stretch To MinMax</source>
         <translation>Izstiept līdz MinMaks</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="113"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="730"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="763"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1105"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2955"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="115"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="732"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="765"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1107"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2957"/>
         <source>Stretch And Clip To MinMax</source>
         <translation>Izstiept un apcirst līdz MinMaks</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="114"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="734"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="767"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1109"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2960"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="116"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="736"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="769"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1111"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2962"/>
         <source>Clip To MinMax</source>
         <translation>Apcirst līdz MinMaks</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="139"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="900"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1425"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2708"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2803"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="141"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="902"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1427"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2710"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2805"/>
         <source>Discrete</source>
         <translation>Diskrēti</translation>
     </message>
@@ -25378,33 +25971,33 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Lineāri</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="142"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2591"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="144"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2593"/>
         <source>Equal interval</source>
         <translation>Vienādos intervālos</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2614"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2616"/>
         <source>Quantiles</source>
         <translation>Apjomi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="308"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="310"/>
         <source>Description</source>
         <translation>Apraksts</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="309"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="311"/>
         <source>Large resolution raster layers can slow navigation in QGIS.</source>
         <translation>Augstas izšķirtspējas rastra slāņi var padarīt navigāciju iekš QGIS lēnu.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="310"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="312"/>
         <source>By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom.</source>
         <translation>Izveidojot zemākas izšķirtspējas datu kopijas (piramīdas) var krietni uzlabot pārzīmēšanas ātrumu, jo QGIS automātiski izvēlēsies piemērotāko kopiju atkarībā no pašreizējās kartes tuvinājuma pakāpes.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="311"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="313"/>
         <source>You must have write access in the directory where the original data is stored to build pyramids.</source>
         <translation>Jums ir jābūt rakstīšanas tiesībām mapē, lai varētu izveidot piramīdas.</translation>
     </message>
@@ -25417,65 +26010,65 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Ievērojiet, ka piramīdu veidošana var sabojāt jūsu datus, tādēļ vispirms izveidojiet datu rezerves kopiju!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="370"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1772"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1831"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="372"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1774"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1833"/>
         <source>Red</source>
         <translation>Sarkans</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="371"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1773"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1831"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="373"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1775"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1833"/>
         <source>Green</source>
         <translation>Zaļš</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="372"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1774"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1831"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="374"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1776"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1833"/>
         <source>Blue</source>
         <translation>Zils</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="373"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="412"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1775"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1800"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1831"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1844"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1848"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="375"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="414"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1777"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1802"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1833"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1846"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1850"/>
         <source>Percent Transparent</source>
         <translation>Caurspīdīgums procentos</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="406"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1794"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1844"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="408"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1796"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1846"/>
         <source>Gray</source>
         <translation>Pelēks</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="410"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1798"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1848"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="412"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1800"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1850"/>
         <source>Indexed Value</source>
         <translation>Indeksēta vērtība</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="446"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="448"/>
         <source>Note: Minimum Maximum values are estimates, user defined, or calculated from the current extent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="629"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="738"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1526"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="631"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="740"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1528"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1531"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1530"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1533"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1732"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2943"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1535"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1734"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2945"/>
         <source>User Defined</source>
         <translation>Lietotāja definēts</translation>
     </message>
@@ -25484,64 +26077,64 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Bez mērogošanas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="828"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="830"/>
         <source>No-Data Value: Not Set</source>
         <translation>Nav datu vērība: Neiestatīta</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1816"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2690"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1818"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2692"/>
         <source>Save file</source>
         <translation>Saglabāt failu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1816"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2277"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2690"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2772"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1818"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2279"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2692"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2774"/>
         <source>Textfile (*.txt)</source>
         <translation>Teksta fails (*.txt)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1828"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1830"/>
         <source>QGIS Generated Transparent Pixel Value Export File</source>
         <translation>QGIS ģenerēts caurspīdīgo pikseļu vērtību eksporta fails</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2277"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2772"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2279"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2774"/>
         <source>Open file</source>
         <translation>Atvērt failu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2350"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2840"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2352"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2842"/>
         <source>Import Error</source>
         <translation>Importēšanas kļūda</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2840"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2842"/>
         <source>The following lines contained errors
 
 </source>
         <translation>Sekojošās rindās bija kļūdas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2355"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2845"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2357"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2847"/>
         <source>Read access denied</source>
         <translation>Lasīšanas pieeja ir liegta</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2355"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2845"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2357"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2847"/>
         <source>Read access denied. Adjust the file permissions and try again.
 
 </source>
         <translation>Lasīšanas pieeja ir liegta. Pārbaudiet faila piekļuves tiesības un mēģiniet vēlreiz.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2381"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2383"/>
         <source>Color Ramp</source>
         <translation>Krāsu rampa</translation>
     </message>
@@ -25551,22 +26144,22 @@ p, li { white-space: pre-wrap; }
         <translation>Neiestatīts</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3097"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3114"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3099"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3116"/>
         <source>Default Style</source>
         <translation>Noklusējuma stils</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3133"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3152"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3198"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3217"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3135"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3154"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3200"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3219"/>
         <source>QGIS Layer Style File (*.qml)</source>
         <translation>QGIS slāņa stila fails (*.qml)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3177"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3243"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3179"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3245"/>
         <source>QGIS</source>
         <translation>QGIS</translation>
     </message>
@@ -25575,39 +26168,39 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Nezināms stila formāts: </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="108"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="625"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1004"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1092"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1389"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1722"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="110"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="627"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1006"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1094"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1391"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1724"/>
         <source>Colormap</source>
         <translation>Krāsu karte</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="140"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="896"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1421"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2704"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2755"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2799"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="142"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="898"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1423"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2706"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2757"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2801"/>
         <source>Linear</source>
         <translation>Lineārs</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="141"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="904"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2807"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="143"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="906"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2809"/>
         <source>Exact</source>
         <translation>Precīzs</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="312"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="314"/>
         <source>Please note that building internal pyramids may alter the original data file and once created they cannot be removed!</source>
         <translation>Lūdzu ievērojiet, ka piramīdu veidošana ietekmē orģinālos datus un šo darbību vairs nav iespējams atdarīt!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="313"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="315"/>
         <source>Please note that building internal pyramids could corrupt your image - always make a backup of your data first!</source>
         <translation>Lūdzu ievērojiet, ka piramīdu veidošana ietekmē orģinālos datus un šo darbību vairs nav iespējams atdarīt!</translation>
     </message>
@@ -25616,28 +26209,28 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Noklusēts</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1585"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1587"/>
         <source>The file was not writeable. Some formats do not support pyramid overviews. Consult the GDAL documentation if in doubt.</source>
         <translation>Fails nav rakstāms. Daži formāti neatbalsta piramīdu veidošanu. Sīkāka informācija GDAL dokumentācijā.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2683"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2685"/>
         <source>Custom color map entry</source>
         <translation>Pielāgotas krāsu kartes entītija</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2702"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2704"/>
         <source>QGIS Generated Color Map Export File</source>
         <translation>QGIS generētās krāsu kartes eksporta fails</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2760"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2762"/>
         <source>Load Color Map</source>
         <translation>Ielādēt krāsu karti</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3170"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3236"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3172"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3238"/>
         <source>Saved Style</source>
         <translation>Saglabāt stilu</translation>
     </message>
@@ -25650,61 +26243,61 @@ p, li { white-space: pre-wrap; }
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="450"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="452"/>
         <source>Note: Minimum Maximum values are actual values computed from the band(s)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="587"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="589"/>
         <source>&lt;h3&gt;Multiband Image Notes&lt;/h3&gt;&lt;p&gt;This is a multiband image. You can choose to render it as grayscale or color (RGB). For color images, you can associate bands to colors arbitarily. For example, if you have a seven band landsat image, you may choose to render it as:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Visible Blue (0.45 to 0.52 microns) - not mapped&lt;/li&gt;&lt;li&gt;Visible Green (0.52 to 0.60 microns) - not mapped&lt;/li&gt;&lt;/li&gt;Visible Red (0.63 to 0.69 microns) - mapped to red in image&lt;/li&gt;&lt;li&gt;Near Infrared (0.76 to 0.90 microns) - mapped to green in image&lt;/li&gt;&lt;li&gt;Mid Infrared (1.55 to 1.75 microns) - not mapped&lt;/li&gt;&lt;li&gt;Thermal Infrared (10.4 to 12.5 microns) - not mapped&lt;/li&gt;&lt;li&gt;Mid Infrared (2.08 to 2.35 microns) - mapped to blue in image&lt;/li&gt;&lt;/ul&gt;</source>
         <comment>COMMENTED OUT</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="594"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="596"/>
         <source>&lt;h3&gt;Paletted Image Notes&lt;/h3&gt; &lt;p&gt;This image uses a fixed color palette. You can remap these colors in different combinations e.g.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Red - blue in image&lt;/li&gt;&lt;li&gt;Green - blue in image&lt;/li&gt;&lt;li&gt;Blue - green in image&lt;/li&gt;&lt;/ul&gt;</source>
         <comment>COMMENTED OUT</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="601"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="603"/>
         <source>&lt;h3&gt;Grayscale Image Notes&lt;/h3&gt; &lt;p&gt;You can remap these grayscale colors to a pseudocolor image using an automatically generated color ramp.&lt;/p&gt;</source>
         <comment>COMMENTED OUT</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="750"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2938"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="752"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2940"/>
         <source>Default R:%1 G:%2 B:%3</source>
         <translation>Noklusējuma R:%1 G:%2 B:%3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="820"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="822"/>
         <source>Columns: %1</source>
         <translation>Kolonnas: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="821"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="823"/>
         <source>Rows: %1</source>
         <translation>Rindas: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="824"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="826"/>
         <source>No-Data Value: %1</source>
         <translation>Nav-datu vērība: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1580"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1582"/>
         <source>Write access denied. Adjust the file permissions and try again.</source>
         <translation>Rakstīšana nav atļauta. Izmainiet faila tiesības un mēģiniet vēlreiz.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1596"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1598"/>
         <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression and your current libtiff library.</source>
         <translation>Iekšējo pārskatu veidošana nav atbalstīta rastra slāņiem ar JPEG kompresiju un jūsu pašreizējo libtiff bibliotēku.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2350"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2352"/>
         <source>The following lines contained errors
 
 %1</source>
@@ -25713,13 +26306,13 @@ p, li { white-space: pre-wrap; }
 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2760"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2762"/>
         <source>The color map for band %1 failed to load</source>
         <translation>Nebija iespējams ielādēt krāsu karti kanālam %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3177"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3243"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3179"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3245"/>
         <source>Unknown style format: %1</source>
         <translation>Nezināms stila formāts: %1</translation>
     </message>
@@ -25772,7 +26365,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Slāņa avots:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1669"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1655"/>
         <source>Thumbnail</source>
         <translation>Sīkatēls</translation>
     </message>
@@ -25814,12 +26407,12 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Transformācijas metode</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1869"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1855"/>
         <source>Average</source>
         <translation>Vidējs</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1874"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1860"/>
         <source>Nearest Neighbour</source>
         <translation>Tuvākais kaimiņš</translation>
     </message>
@@ -25836,18 +26429,16 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Maksimāli 1:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1575"/>
         <source>Maximum scale at which this layer will be displayed. </source>
-        <translation>Maksimālais mērogs pie kāda šis slānis tiks rādīts. </translation>
+        <translation type="obsolete">Maksimālais mērogs pie kāda šis slānis tiks rādīts. </translation>
     </message>
     <message>
         <source>Minimum 1:</source>
         <translation type="obsolete">Minimāli 1:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1595"/>
         <source>Minimum scale at which this layer will be displayed. </source>
-        <translation>Minimālais mērogs pie kāda šis slānis tiks rādīts.  </translation>
+        <translation type="obsolete">Minimālais mērogs pie kāda šis slānis tiks rādīts.  </translation>
     </message>
     <message>
         <source>Spatial Reference System</source>
@@ -25863,7 +26454,7 @@ p, li { white-space: pre-wrap; }
         <translation>Histogramma</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1969"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1955"/>
         <source>Options</source>
         <translation>Parametri</translation>
     </message>
@@ -25876,7 +26467,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Atļaut noapaļošanu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1940"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1926"/>
         <source>Chart Type</source>
         <translation>Grafika tips</translation>
     </message>
@@ -25889,7 +26480,7 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Līniju</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2051"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2037"/>
         <source>Refresh</source>
         <translation>Atsvaidzināt</translation>
     </message>
@@ -26348,12 +26939,12 @@ p, li { white-space: pre-wrap; }
         <translation>Mērogatkarīga redzamība</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1588"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1578"/>
         <source>Maximum</source>
         <translation>Maksimālais</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1608"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1588"/>
         <source>Minimum</source>
         <translation>Minimālais</translation>
     </message>
@@ -26368,73 +26959,86 @@ p, li { white-space: pre-wrap; }
         <translation>Attēlošanas nosaukums</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1627"/>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1630"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1613"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1616"/>
         <source>Specify the coordinate reference system of the layer&apos;s geometry.</source>
         <translation>Norādiet slāņa ģeometrijas koordinātu atskaites sistēmu.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1633"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1619"/>
         <source>Specify...</source>
         <translation>Norādīt...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1811"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1797"/>
         <source>Pyramid resolutions</source>
         <translation>Piramīdu izšķirtspējas</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1861"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1810"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1847"/>
         <source>Resampling method</source>
         <translation>Transformācijas metode</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1889"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1875"/>
         <source>Build pyramids</source>
         <translation>Veidot piramīdas</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1949"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1935"/>
         <source>Line graph</source>
         <translation>Līniju</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1959"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1945"/>
         <source>Bar chart</source>
         <translation>Stabiņu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1975"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1961"/>
         <source>Column count</source>
         <translation>Kolonnu skaits</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1998"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1984"/>
         <source>Out of range OK?</source>
         <translation>Iekļaut ārpusreģiona datus?</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2005"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1991"/>
         <source>Allow approximation</source>
         <translation>Atļaut noapaļošanu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2062"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2048"/>
         <source>Restore Default Style</source>
         <translation>Atjaunot noklusējuma stilu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2069"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2055"/>
         <source>Save As Default</source>
         <translation>Saglabāt kā noklusējumu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2076"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2062"/>
         <source>Load Style ...</source>
         <translation>Ielādēt stilu...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2083"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2069"/>
         <source>Save Style ...</source>
         <translation>Saglabāt stilu...</translation>
     </message>
@@ -26474,7 +27078,7 @@ p, li { white-space: pre-wrap; }
         <translation>Ģenerēt jaunu krāsu karti</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1618"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1604"/>
         <source>Coordinate reference system</source>
         <translation>Koordinātu sistēma</translation>
     </message>
@@ -26483,31 +27087,22 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Mainīt...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1706"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1692"/>
         <source>Legend</source>
         <translation>Leģenda</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1743"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1729"/>
         <source>Palette</source>
         <translation>Palete</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1804"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1790"/>
         <source>Notes</source>
         <translation>Piezīmes</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1824"/>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1854"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1840"/>
         <source>Build pyramids internally if possible</source>
         <translation>Ja ir iespējams veidot iekšējās piramīdas</translation>
     </message>
@@ -28756,17 +29351,17 @@ Do you want to overwrite the [%2] relation?</source>
 <context>
     <name>QgsUniqueValueDialog</name>
     <message>
-        <location filename="../src/app/qgsuniquevaluedialog.cpp" line="212"/>
+        <location filename="../src/app/qgsuniquevaluedialog.cpp" line="214"/>
         <source>default</source>
         <translation>noklusējuma</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsuniquevaluedialog.cpp" line="283"/>
+        <location filename="../src/app/qgsuniquevaluedialog.cpp" line="285"/>
         <source>Confirm Delete</source>
         <translation>Apstiprināt dzēšanu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsuniquevaluedialog.cpp" line="284"/>
+        <location filename="../src/app/qgsuniquevaluedialog.cpp" line="286"/>
         <source>The classification field was changed from &apos;%1&apos; to &apos;%2&apos;.
 Should the existing classes be deleted before classification?</source>
         <translation>Klasifikācijas lauks tika nomainīts no &apos;%1&apos; uz &apos;%2&apos;.
@@ -28879,12 +29474,12 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
 <context>
     <name>QgsVectorLayer</name>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3119"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3140"/>
         <source>ERROR: no provider</source>
         <translation>KĻŪDA: nav datu sniedzēju</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3125"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3146"/>
         <source>ERROR: layer not editable</source>
         <translation>KĻŪDA: slānis nav rediģējams</translation>
     </message>
@@ -28905,12 +29500,12 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         <translation type="obsolete">KĻŪDA: %1 atribūti nav dzēsti.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3208"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3229"/>
         <source>SUCCESS: attribute %1 was added.</source>
         <translation>IZDEVĀS: atribūts %1 pievienots.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3215"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3236"/>
         <source>ERROR: attribute %1 not added</source>
         <translation>KĻŪDA: atribūts  %1 nav pievienots</translation>
     </message>
@@ -28919,17 +29514,17 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         <translation type="obsolete">IZDEVĀS: %1 atribūta vērtības mainītas.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2636"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2657"/>
         <source>No renderer object</source>
         <translation>Nav renderēšanas objekta</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2640"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2661"/>
         <source>Classification field not found</source>
         <translation>Klasificēšanas lauks nav atrasts</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3139"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3160"/>
         <source>SUCCESS: %n attribute(s) deleted.</source>
         <comment>deleted attributes count</comment>
         <translation type="unfinished">
@@ -28940,7 +29535,7 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3145"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3166"/>
         <source>ERROR: %n attribute(s) not deleted.</source>
         <comment>not deleted attributes count</comment>
         <translation type="unfinished">
@@ -28951,7 +29546,7 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3161"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3182"/>
         <source>SUCCESS: %n attribute(s) added.</source>
         <comment>added attributes count</comment>
         <translation type="unfinished">
@@ -28962,7 +29557,7 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3167"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3188"/>
         <source>ERROR: %n new attribute(s) not added</source>
         <comment>not added attributes count</comment>
         <translation type="unfinished">
@@ -28973,7 +29568,7 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3277"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3298"/>
         <source>SUCCESS: %n attribute value(s) changed.</source>
         <comment>changed attribute values count</comment>
         <translation type="unfinished">
@@ -28984,7 +29579,7 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3282"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3303"/>
         <source>ERROR: %n attribute value change(s) not applied.</source>
         <comment>not changed attribute values count</comment>
         <translation type="unfinished">
@@ -28995,7 +29590,7 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3314"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3335"/>
         <source>SUCCESS: %n feature(s) added.</source>
         <comment>added features count</comment>
         <translation type="unfinished">
@@ -29006,7 +29601,7 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3319"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3340"/>
         <source>ERROR: %n feature(s) not added.</source>
         <comment>not added features count</comment>
         <translation type="unfinished">
@@ -29017,7 +29612,7 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3332"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3353"/>
         <source>SUCCESS: %n geometries were changed.</source>
         <comment>changed geometries count</comment>
         <translation type="unfinished">
@@ -29028,7 +29623,7 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3337"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3358"/>
         <source>ERROR: %n geometries not changed.</source>
         <comment>not changed geometries count</comment>
         <translation type="unfinished">
@@ -29039,7 +29634,7 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3349"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3370"/>
         <source>SUCCESS: %n feature(s) deleted.</source>
         <comment>deleted features count</comment>
         <translation type="unfinished">
@@ -29050,7 +29645,7 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3359"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3380"/>
         <source>ERROR: %n feature(s) not deleted.</source>
         <comment>not deleted features count</comment>
         <translation type="unfinished">
@@ -29061,7 +29656,7 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2630"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2651"/>
         <source>Unknown renderer</source>
         <translation>Nezināms renderētājs</translation>
     </message>
@@ -29074,25 +29669,25 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="414"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="486"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="488"/>
         <source>Single Symbol</source>
         <translation>Atsevišķs simbols</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="418"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="489"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="491"/>
         <source>Graduated Symbol</source>
         <translation>Graduēts simbols</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="422"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="490"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="492"/>
         <source>Continuous Color</source>
         <translation>Nepārtraukta krāsa</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="426"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="491"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="493"/>
         <source>Unique Value</source>
         <translation>Unikāla vērtība</translation>
     </message>
@@ -29106,8 +29701,8 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         <translation>Vaicājums, kas ir izmantots attēlojamo objektu izvēlei. Šī iespēja pagaitām ir pieejama tikai PostgreSQL slāņiem. Lai ievadītu vai rediģētu vaicājumu, nospiediet uz Vaicājumu veidotāja pogas</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="717"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="722"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="719"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="724"/>
         <source>Spatial Index</source>
         <translation>Telpiskais indekss</translation>
     </message>
@@ -29116,12 +29711,12 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         <translation type="obsolete">Telpiskā indeksa izveide sekmīgi pabeigta</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="722"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="724"/>
         <source>Creation of spatial index failed</source>
         <translation>Telpiskā indeksa izvede neveiksmīga</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="735"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="737"/>
         <source>General:</source>
         <translation>Vispārējs:</translation>
     </message>
@@ -29146,12 +29741,12 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         <translation type="obsolete">Slāņa labošanas iespējas : </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="787"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="789"/>
         <source>Extents:</source>
         <translation>Apjoms : </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="791"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="793"/>
         <source>In layer spatial reference system units : </source>
         <translation>Slāņa telpiskās norādes sistēmas vienībās : </translation>
     </message>
@@ -29164,38 +29759,38 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         <translation type="obsolete"> : xMax,yMax </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="805"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="843"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="807"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="845"/>
         <source>In project spatial reference system units : </source>
         <translation>Projekta telpiskās norādes sistēmas vienībās : </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="818"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="820"/>
         <source>Layer Spatial Reference System:</source>
         <translation>Slāņa telpisko norāžu sistēma:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="854"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="856"/>
         <source>Attribute field info:</source>
         <translation>Atribūtu lauka informācija: </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="861"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="863"/>
         <source>Field</source>
         <translation>Lauks</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="864"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="866"/>
         <source>Type</source>
         <translation>Tips</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="867"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="869"/>
         <source>Length</source>
         <translation>Garums</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="870"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="872"/>
         <source>Precision</source>
         <translation>Precizitāte</translation>
     </message>
@@ -29204,19 +29799,19 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         <translation type="obsolete">Slāņa komentārs: </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="873"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="875"/>
         <source>Comment</source>
         <translation>Komentārs</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="949"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="965"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="951"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="967"/>
         <source>Default Style</source>
         <translation>Noklusējuma stils</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="974"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1003"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="976"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1005"/>
         <source>QGIS Layer Style File (*.qml)</source>
         <translation>QGIS slāņa stila fails (*.qml)</translation>
     </message>
@@ -29325,13 +29920,13 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         <translation>Dzēsts atribūts</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="717"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="719"/>
         <source>Creation of spatial index successful</source>
         <translation>Telpiskā indeksa izveide sekmīgi pabeigta</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="990"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1027"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="992"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1029"/>
         <source>Saved Style</source>
         <translation>Saglabāts stils</translation>
     </message>
@@ -29346,133 +29941,133 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="531"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="533"/>
         <source>Line edit</source>
         <translation>Līnijas rediģēšana</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="532"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="534"/>
         <source>Unique values</source>
         <translation>Unikālas vērības</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="533"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="535"/>
         <source>Unique values editable</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="534"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="536"/>
         <source>Classification</source>
         <translation>Klasifikācija</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="535"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="537"/>
         <source>Value map</source>
         <translation>Vērtību karte</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="536"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="538"/>
         <source>Edit range</source>
         <translation>Rediģēt diapazonu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="537"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="539"/>
         <source>Slider range</source>
         <translation>Slīdņa diapazons</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="538"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="540"/>
         <source>File name</source>
         <translation>Faila nosaukums</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="539"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="541"/>
         <source>Enumeration</source>
         <translation>Pārskaitījums</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="540"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="542"/>
         <source>Immutable</source>
         <translation>Nerediģējams</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="541"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="543"/>
         <source>Hidden</source>
         <translation>Slēpts</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="542"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="544"/>
         <source>Checkbox</source>
         <translation>Izvēles rūtiņa</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="543"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="545"/>
         <source>Text edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="742"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="744"/>
         <source>Layer comment: %1</source>
         <translation>Slāņa komentārs: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="748"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="750"/>
         <source>Storage type of this layer: %1</source>
         <translation>Glabāšanas tips šim slānim: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="753"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="755"/>
         <source>Source for this layer: %1</source>
         <translation>Šī slāņa avots: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="769"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="771"/>
         <source>Geometry type of the features in this layer: %1</source>
         <translation>Šī slāņa objektu ģeometrijas tips: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="776"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="778"/>
         <source>The number of features in this layer: %1</source>
         <translation>Objektu skaits slānī: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="780"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="782"/>
         <source>Editing capabilities of this layer: %1</source>
         <translation>Šī slāņa rediģēšanas iespējas: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="792"/>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="806"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="794"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="808"/>
         <source>xMin,yMin %1,%2 : xMax,yMax %3,%4</source>
         <translation>xMin,yMin %1,%2 : xMaks,yMaks %3,%4</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="830"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="832"/>
         <source>Project (Output) Spatial Reference System:</source>
         <translation>Projekta (izvades) koordinātu sistēma:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="844"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="846"/>
         <source>(Invalid transformation of layer extents)</source>
         <translation>(Nederīga slāņa apjoma transformācija)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="974"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="976"/>
         <source>Load layer properties from style file (.qml)</source>
         <translation>Ielādē slāņa īpašības no stila faila (.qml)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1072"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1074"/>
         <source>Select edit form</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1072"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1074"/>
         <source>UI file (*.ui)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1128"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1126"/>
         <source>Symbology</source>
         <translation>Simboloģija</translation>
     </message>
@@ -29481,12 +30076,12 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         <translation type="obsolete">Nezināms stila formāts: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1003"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1005"/>
         <source>Save layer properties as style file (.qml)</source>
         <translation>Saglabāt slāņa īpašības kā stila failu (.qml)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1129"/>
+        <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1127"/>
         <source>Do you wish to use the new symbology implementation for this layer?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -29530,14 +30125,12 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         <translation type="obsolete">Minimālais mērogs 1:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="569"/>
         <source>Minimum scale at which this layer will be displayed. </source>
-        <translation>Minimālais mērogs pie kāda šis slānis tiks rādīts. </translation>
+        <translation type="obsolete">Minimālais mērogs pie kāda šis slānis tiks rādīts. </translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="582"/>
         <source>Maximum scale at which this layer will be displayed. </source>
-        <translation>Maksimālais mērogs pie kāda šis slānis tiks rādīts. </translation>
+        <translation type="obsolete">Maksimālais mērogs pie kāda šis slānis tiks rādīts. </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="440"/>
@@ -29573,12 +30166,12 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         <translation>Attēlošanas lauks</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="598"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="572"/>
         <source>Subset</source>
         <translation>Apakškopa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="636"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="610"/>
         <source>Query Builder</source>
         <translation>Vaicājumu veidotājs</translation>
     </message>
@@ -29616,22 +30209,22 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         <translation>Darbības</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="690"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="664"/>
         <source>Restore Default Style</source>
         <translation>Atjaunot noklusējuma stilu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="697"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="671"/>
         <source>Save As Default</source>
         <translation>Saglabāt kā noklusējumu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="704"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="678"/>
         <source>Load Style ...</source>
         <translation>Ielādēt stilu...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="711"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="685"/>
         <source>Save Style ...</source>
         <translation>Saglabāt stilu...</translation>
     </message>
@@ -29687,7 +30280,7 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         <translation>Maksimālais</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="559"/>
+        <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="556"/>
         <source>Minimum</source>
         <translation>Minimālais</translation>
     </message>
@@ -30817,14 +31410,14 @@ Tika mēģināts URL: %1</translation>
 <context>
     <name>SelectionFeature</name>
     <message>
-        <location filename="../src/app/qgsmaptoolnodetool.cpp" line="986"/>
-        <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1057"/>
+        <location filename="../src/app/qgsmaptoolnodetool.cpp" line="989"/>
+        <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1060"/>
         <source>Node tool</source>
         <translation>Mezglu rīks</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolnodetool.cpp" line="987"/>
-        <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1058"/>
+        <location filename="../src/app/qgsmaptoolnodetool.cpp" line="990"/>
+        <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1061"/>
         <source>Result geometry is invalid. Reverting last changes.
 </source>
         <translation>Rezultējošā ģeometrija nav derīga. Pēdējā darbība tiek atcelta.
@@ -30916,6 +31509,22 @@ Tika mēģināts URL: %1</translation>
     <message>
         <source>Please specify input vector layer</source>
         <translation>Lūdzu precizējiet ievades vektordatu slāni</translation>
+    </message>
+    <message>
+        <source>Error!</source>
+        <translation type="unfinished">Kļūda!</translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">Atcelt</translation>
+    </message>
+    <message>
+        <source>Parameter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Value</source>
+        <translation type="unfinished">Vērtība</translation>
     </message>
 </context>
 <context>
@@ -31623,307 +32232,307 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>eVisGenericEventBrowserGuiBase</name>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="41"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="34"/>
         <source>Display</source>
         <translation>Ekrāns</translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="70"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="63"/>
         <source>Use the Previous button to display the previous photo when more than one photo is available for display.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="73"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="66"/>
         <source>Previous</source>
         <translation>Iepriekšējais</translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="89"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="82"/>
         <source>Use the Next button to display the next photo when more than one photo is available for display.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="92"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="85"/>
         <source>Next</source>
         <translation>Nākamais</translation>
     </message>
     <message utf8="true">
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="108"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="113"/>
         <source>All of the attribute information for the point associated with the photo being viewed is displayed here. If the file type being referenced in the displayed record is not an image but is of a file type defined in the “Configure External Applications” tab then when you double-click on the value of the field containing the path to the file the application to open the file will be launched to view or hear the contents of the file. If the file extension is recognized the attribute data will be displayed in green.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="112"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="117"/>
         <source>1</source>
         <translation>1</translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="126"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="131"/>
         <source>Image display area</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="129"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="134"/>
         <source>Display area for the image.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="147"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="165"/>
         <source>Options</source>
         <translation>Parametri</translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="175"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="199"/>
         <source>Use the drop-down list to select the field containing a directory path to the image. This can be an absolute or relative path.</source>
         <translation type="unfinished"></translation>
     </message>
     <message utf8="true">
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="185"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="222"/>
         <source>If checked the path to the image will be defined appending the attribute in the field selected from the “Attribute Containing Path to Image” drop-down list to the “Base Path” defined below.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="198"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="248"/>
         <source>If checked, the relative path values will be saved for the next session.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="230"/>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="335"/>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="471"/>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="567"/>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="631"/>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="694"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="267"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="392"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="561"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="658"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="723"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="787"/>
         <source>Reset to default</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="236"/>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="338"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="273"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="395"/>
         <source>Resets the values on this line to the default setting.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="290"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="347"/>
         <source>If checked an arrow pointing in the direction defined by the attribute in the field selected from the drop-down list to the right will be displayed in the QGIS window on top of the point for this image.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="280"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="324"/>
         <source>Use the drop-down list to select the field containing the compass bearing for the image. This bearing usually references the direction the camera was pointing when the image was acquired. </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="303"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="373"/>
         <source>If checked, the Display Compass Bearing values will be saved for the next session.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="388"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="446"/>
         <source>A value to be added to the compass bearing. This allows you to compensate for declination (adjust bearings collected using magnetic bearings to true north bearings). East declinations should be entered using positive values and west declinations should use negative values. </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="410"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="481"/>
         <source>Define the compass offset using a field from the vector layer attribute table.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="413"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="484"/>
         <source> From Attribute</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="429"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="506"/>
         <source>Use the drop-down list to select the field containing the compass bearing offset. This allows you to compensate for declination (adjust bearings collected using magnetic bearings to true north bearings). East declinations should be entered using positive values and west declinations should use negative values. </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="369"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="427"/>
         <source>Define the compass offset manually.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="372"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="430"/>
         <source>Manual</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="439"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="542"/>
         <source>If checked, the compass offset values will be saved for the next session.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="474"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="564"/>
         <source>Resets the compass offset values to the default settings.</source>
         <translation type="unfinished"></translation>
     </message>
     <message utf8="true">
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="502"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="593"/>
         <source>The base path or url from which images and documents can be “relative”</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="522"/>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="535"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="613"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="626"/>
         <source>Base Path</source>
         <translation type="unfinished"></translation>
     </message>
     <message utf8="true">
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="570"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="661"/>
         <source>Enters the default “Base Path” which is the path to the directory of the vector layer containing the image information.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="662"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="755"/>
         <source>If checked, the same path rules that are defined for images will be used for non-image documents such as movies, text documents, and sound files. If not checked the path rules will only apply to images and other documents will ignore the Base Path parameter.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="538"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="629"/>
         <source>The Base Path onto which the relative path defined above will be appended.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="153"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="171"/>
         <source>File path</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="159"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="177"/>
         <source>Attribute containing path to file</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="188"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="225"/>
         <source>Path is relative</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="204"/>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="309"/>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="445"/>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="554"/>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="618"/>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="681"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="254"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="379"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="548"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="645"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="710"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="774"/>
         <source>Remember this</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="239"/>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="341"/>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="477"/>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="573"/>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="637"/>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="700"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="276"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="398"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="567"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="664"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="729"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="793"/>
         <source>Reset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="258"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="296"/>
         <source>Compass bearing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="264"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="302"/>
         <source>Attribute containing compass bearing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="293"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="350"/>
         <source>Display compass bearing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="360"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="418"/>
         <source>Compass offset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="496"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="587"/>
         <source>Relative paths</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="548"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="639"/>
         <source>If checked, the Base Path will be saved for the next session.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="598"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="690"/>
         <source>If checked, the Base Path will append only the file name instead of the entire relative path (defined above) to create the full directory path to the file. </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="601"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="693"/>
         <source>Replace entire path/url stored in image path attribute with user defined
 Base Path (i.e. keep only filename from attribute)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="612"/>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="675"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="704"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="768"/>
         <source>If checked, the  current check-box setting will be saved for the next session.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="634"/>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="697"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="726"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="790"/>
         <source>Clears the check-box on this line.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="665"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="758"/>
         <source>Apply Path to Image rules when loading docs in external applications</source>
         <translation type="unfinished"></translation>
     </message>
     <message utf8="true">
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="729"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="823"/>
         <source>Clicking on Save will save the settings without closing the Options pane. Clicking on Restore Defaults will reset all of the fields to their default settings. It has the same effect as clicking all of the “Reset to default” buttons. </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="740"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="834"/>
         <source>Configure External Applications</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="761"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="855"/>
         <source>File extension and external application in which to load a document of that type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="786"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="880"/>
         <source>A table containing file types that can be opened using eVis. Each file type needs a file extension and the path to an application that can open that type of file. This provides the capability of opening a broad range of files such as movies, sound recording, and text documents instead of only images. </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="790"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="884"/>
         <source>Extension</source>
         <translation>Paplašinājums</translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="795"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="889"/>
         <source>Application</source>
         <translation>Programma</translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="805"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="899"/>
         <source>Add new file type</source>
         <translation>Pievienot jaunu failu tipu</translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="808"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="902"/>
         <source>Add a new file type with a unique extension and the path for the application that can open the file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="821"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="916"/>
         <source>Delete current row</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="824"/>
+        <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="919"/>
         <source>Delete the file type highlighted in the table and defined by a file extension and a path to an associated application.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -32152,6 +32761,2097 @@ Spraudnis netiks ieslēgts.</translation>
     <message>
         <source>Singleparts to multipart</source>
         <translation>Vienu daļu sadalīt vairākās</translation>
+    </message>
+</context>
+<context>
+    <name>geometryThread</name>
+    <message>
+        <source>Polygon area</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polygon perimeter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Point x coordinate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Point y coordinate</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>grasslabel</name>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="7"/>
+        <source>(1-256)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="8"/>
+        <source>3D-Viewer (NVIZ)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="9"/>
+        <source>3d Visualization</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="10"/>
+        <source>Add a value to the current category values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="11"/>
+        <source>Add elements to layer (ALL elements of the selected layer type!)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="12"/>
+        <source>Add missing centroids to closed boundaries</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="13"/>
+        <source>Add one or more columns to attribute table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="14"/>
+        <source>Allocate network</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="15"/>
+        <source>Assign constant value to column</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="16"/>
+        <source>Assign new constant value to column only if the result of query is TRUE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="17"/>
+        <source>Assign new value as result of operation on columns to column in attribute table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="18"/>
+        <source>Assign new value to column as result of operation on columns only if the result of query is TRUE</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="19"/>
+        <source>Attribute field</source>
+        <translation type="unfinished">Atribūta lauks</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="20"/>
+        <source>Attribute field (interpolated values)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="21"/>
+        <source>Attribute field to join</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="22"/>
+        <source>Auto-balancing of colors for LANDSAT-TM raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="23"/>
+        <source>Bicubic or bilinear spline interpolation with Tykhonov regularization</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="24"/>
+        <source>Bilinear interpolation utility for raster maps</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="25"/>
+        <source>Blend color components for two rasters by given ratio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="26"/>
+        <source>Blend red, green, raster layers to obtain one color raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="27"/>
+        <source>Break (topologically clean) polygons (imported from non topological format, like ShapeFile). Boundaries are broken on each point shared between 2 and more polygons where angles of segments are different</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="28"/>
+        <source>Break lines at each intersection of vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="29"/>
+        <source>Brovey transform to merge multispectral and high-res panchromatic channels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="30"/>
+        <source>Buffer</source>
+        <translation type="unfinished">Buferis</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="31"/>
+        <source>Build polylines from lines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="32"/>
+        <source>Calculate average of raster within areas with the same category in a user-defined base map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="33"/>
+        <source>Calculate covariance/correlation matrix for user-defined rasters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="34"/>
+        <source>Calculate error matrix and kappa parameter for accuracy assessment of classification result</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="35"/>
+        <source>Calculate geometry statistics for vectors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="36"/>
+        <source>Calculate linear regression from two rasters: y = a + b*x</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="37"/>
+        <source>Calculate median of raster within areas with the same category in a user-defined base map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="38"/>
+        <source>Calculate mode of raster within areas with the same category in a user-defined base map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="39"/>
+        <source>Calculate optimal index factor table for LANDSAT-TM raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="40"/>
+        <source>Calculate raster surface area</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="41"/>
+        <source>Calculate shadow maps from exact sun position</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="42"/>
+        <source>Calculate shadow maps from sun position determinated by date/time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="43"/>
+        <source>Calculate statistics for raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="44"/>
+        <source>Calculate univariate statistics for numeric attributes in a data table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="45"/>
+        <source>Calculate univariate statistics from raster based on vector objects</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="46"/>
+        <source>Calculate univariate statistics from the non-null cells of raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="47"/>
+        <source>Calculate univariate statistics of vector map features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="48"/>
+        <source>Calculate volume of data clumps, and create vector with centroids of clumps</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="49"/>
+        <source>Category or object oriented statistics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="50"/>
+        <source>Cats</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="51"/>
+        <source>Change category values and labels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="52"/>
+        <source>Change field</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="53"/>
+        <source>Change layer number</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="54"/>
+        <source>Change resolution</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="55"/>
+        <source>Change the type of boundary dangle to line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="56"/>
+        <source>Change the type of bridges connecting area and island or 2 islands from boundary to line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="57"/>
+        <source>Change the type of geometry elements</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="58"/>
+        <source>Choose appropriate format</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="59"/>
+        <source>Columns management</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="60"/>
+        <source>Compares bit patterns with raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="61"/>
+        <source>Compress and decompress raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="62"/>
+        <source>Compress raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="63"/>
+        <source>Computes a coordinate transformation based on the control points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="64"/>
+        <source>Concentric circles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="65"/>
+        <source>Config</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="66"/>
+        <source>Connect nodes by shortest route (traveling salesman)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="67"/>
+        <source>Connect selected nodes by shortest tree (Steiner tree)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="68"/>
+        <source>Connect vector to database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="69"/>
+        <source>Convert 2D vector to 3D by sampling raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="70"/>
+        <source>Convert 2D vector to 3D vector by sampling of elevation raster. Default sampling by nearest neighbour</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="71"/>
+        <source>Convert GRASS binary vector to GRASS ASCII vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="72"/>
+        <source>Convert a raster to vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="73"/>
+        <source>Convert a vector to raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="74"/>
+        <source>Convert bearing and distance measurements to coordinates and vice versa</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="75"/>
+        <source>Convert boundaries to lines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="76"/>
+        <source>Convert centroids to points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="77"/>
+        <source>Convert coordinates</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="78"/>
+        <source>Convert coordinates from one projection to another (cs2cs frontend)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="79"/>
+        <source>Convert lines to boundaries</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="80"/>
+        <source>Convert points to centroids</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="81"/>
+        <source>Convert raster to vector areas</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="82"/>
+        <source>Convert raster to vector lines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="83"/>
+        <source>Convert raster to vector points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="84"/>
+        <source>Convert vector to raster using attribute values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="85"/>
+        <source>Convert vector to raster using constant</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="86"/>
+        <source>Convex hull</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="87"/>
+        <source>Copy a table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="88"/>
+        <source>Copy also attribute table (only the table of layer 1 is currently supported)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="89"/>
+        <source>Count of neighbouring points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="90"/>
+        <source>Create 3D volume map based on 2D elevation and value rasters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="91"/>
+        <source>Create a MASK for limiting raster operation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="92"/>
+        <source>Create a map containing concentric rings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="93"/>
+        <source>Create a raster plane</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="94"/>
+        <source>Create and add new table to vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="95"/>
+        <source>Create and/or modify raster support files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="96"/>
+        <source>Create aspect raster from DEM (digital elevation model)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="97"/>
+        <source>Create cross product of category values from multiple rasters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="98"/>
+        <source>Create fractal surface of given fractal dimension</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="99"/>
+        <source>Create grid in current region</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="100"/>
+        <source>Create new layer with category values based upon user&apos;s reclassification of categories in existing raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="101"/>
+        <source>Create new raster by combining other rasters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="102"/>
+        <source>Create new vector by combining other vectors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="103"/>
+        <source>Create new vector with current region extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="104"/>
+        <source>Create nodes on network</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="105"/>
+        <source>Create parallel line to input lines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="106"/>
+        <source>Create points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="107"/>
+        <source>Create points along input lines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="108"/>
+        <source>Create points/segments from input vector lines and positions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="109"/>
+        <source>Create quantization file for floating-point raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="110"/>
+        <source>Create random 2D/3D vector points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="111"/>
+        <source>Create random cell values with spatial dependence</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="112"/>
+        <source>Create random points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="113"/>
+        <source>Create random vector point contained in raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="114"/>
+        <source>Create raster images with textural features from raster (first serie of indices)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="115"/>
+        <source>Create raster of distance to features in input layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="116"/>
+        <source>Create raster of gaussian deviates with user-defined mean and standard deviation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="117"/>
+        <source>Create raster of uniform random deviates with user-defined range</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="118"/>
+        <source>Create raster with contiguous areas grown by one cell</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="119"/>
+        <source>Create raster with textural features from raster (second serie of indices)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="120"/>
+        <source>Create red, green and blue rasters combining hue, intensity, and saturation (his) values from rasters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="121"/>
+        <source>Create shaded map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="122"/>
+        <source>Create slope raster from DEM (digital elevation model)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="123"/>
+        <source>Create standard vectors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="124"/>
+        <source>Create surface from rasterized contours</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="125"/>
+        <source>Create vector contour from raster at specified levels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="126"/>
+        <source>Create vector contour from raster at specified steps</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="127"/>
+        <source>Create watershed basin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="128"/>
+        <source>Create watershed subbasins raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="129"/>
+        <source>Cut network by cost isolines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="130"/>
+        <source>DXF vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="131"/>
+        <source>Database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="132"/>
+        <source>Database connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="133"/>
+        <source>Database file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="134"/>
+        <source>Database management</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="135"/>
+        <source>Database parameters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="136"/>
+        <source>Delaunay triangulation (areas)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="137"/>
+        <source>Delaunay triangulation (lines)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="138"/>
+        <source>Delaunay triangulation, Voronoi diagram and convex hull</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="139"/>
+        <source>Delete category values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="140"/>
+        <source>Develop images and group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="141"/>
+        <source>Develop map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="142"/>
+        <source>Directory of rasters to be linked</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="143"/>
+        <source>Disconnect vector from database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="144"/>
+        <source>Display general DB connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="145"/>
+        <source>Display list of category values found in raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="146"/>
+        <source>Display projection information from PROJ.4 projection description file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="147"/>
+        <source>Display projection information from PROJ.4 projection description file and create a new location based on it</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="148"/>
+        <source>Display projection information from a georeferenced file (raster, vector or image) and create a new location based on it</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="149"/>
+        <source>Display projection information from georeferenced ASCII file containing WKT projection description</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="150"/>
+        <source>Display projection information from georeferenced ASCII file containing WKT projection description and create a new location based on it</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="151"/>
+        <source>Display projection information from georeferenced file (raster, vector or image)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="152"/>
+        <source>Display projection information of the current location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="153"/>
+        <source>Display raster category values and labels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="154"/>
+        <source>Display results of SQL selection from database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="155"/>
+        <source>Display the HTML manual pages of GRASS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="156"/>
+        <source>Display vector attributes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="157"/>
+        <source>Display vector map attributes with SQL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="158"/>
+        <source>Dissolves boundaries between adjacent areas sharing a common category number or attribute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="159"/>
+        <source>Download and import data from WMS server</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="160"/>
+        <source>Drop column from attribute table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="161"/>
+        <source>E00 vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="162"/>
+        <source>Execute any SQL statement</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="163"/>
+        <source>Export</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="164"/>
+        <source>Export 3 GRASS rasters (R,G,B) to PPM image at the resolution of the current region</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="165"/>
+        <source>Export raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="166"/>
+        <source>Export raster as non-georeferenced PNG image format</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="167"/>
+        <source>Export raster series to MPEG movie</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="168"/>
+        <source>Export raster to 8/24bit TIFF image at the resolution of the current region</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="169"/>
+        <source>Export raster to ASCII text file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="170"/>
+        <source>Export raster to ESRI ARCGRID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="171"/>
+        <source>Export raster to GRIDATB.FOR map file (TOPMODEL)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="172"/>
+        <source>Export raster to Geo TIFF</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="173"/>
+        <source>Export raster to POVRAY height-field file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="174"/>
+        <source>Export raster to PPM image at the resolution of the current region</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="175"/>
+        <source>Export raster to VTK-ASCII</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="176"/>
+        <source>Export raster to Virtual Reality Modeling Language (VRML)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="177"/>
+        <source>Export raster to binary MAT-File</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="178"/>
+        <source>Export raster to binary array</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="179"/>
+        <source>Export raster to text file as x,y,z values based on cell centers</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="180"/>
+        <source>Export raster to various formats (GDAL library)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="181"/>
+        <source>Export vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="182"/>
+        <source>Export vector table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="183"/>
+        <source>Export vector to DXF</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="184"/>
+        <source>Export vector to GML</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="185"/>
+        <source>Export vector to Mapinfo</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="186"/>
+        <source>Export vector to POV-Ray</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="187"/>
+        <source>Export vector to PostGIS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="188"/>
+        <source>Export vector to PostGIS (PostgreSQL) database table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="189"/>
+        <source>Export vector to SVG</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="190"/>
+        <source>Export vector to Shapefile</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="191"/>
+        <source>Export vector to VTK-ASCII</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="192"/>
+        <source>Export vector to various formats (OGR library)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="193"/>
+        <source>Exports attribute tables into various format</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="194"/>
+        <source>Extract features from vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="195"/>
+        <source>Extract selected features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="196"/>
+        <source>Extracts terrain parameters from DEM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="197"/>
+        <source>Fast fourier transform for image processing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="198"/>
+        <source>File</source>
+        <translation type="unfinished">Fails</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="199"/>
+        <source>Fill lake from seed at given level</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="200"/>
+        <source>Fill lake from seed point at given level</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="201"/>
+        <source>Fill no-data areas in raster using v.surf.rst splines interpolation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="202"/>
+        <source>Filter and create depressionless elevation map and flow direction map from elevation raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="203"/>
+        <source>Filter image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="204"/>
+        <source>Find nearest element in vector &apos;to&apos; for elements in vector &apos;from&apos;. Various information about this relation may be uploaded to attribute table of input vector &apos;from&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="205"/>
+        <source>Find shortest path on vector network</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="206"/>
+        <source>GDAL raster layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="207"/>
+        <source>GRASS MODULES</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="208"/>
+        <source>GRASS shell</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="209"/>
+        <source>Gaussian kernel density</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="210"/>
+        <source>Generalization</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="211"/>
+        <source>Generate raster of cumulative cost of moving between locations based on cost input raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="212"/>
+        <source>Generate surface</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="213"/>
+        <source>Generate vector contour lines</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="214"/>
+        <source>Georeferencing, rectification, and import Terra-ASTER imagery and DEM using gdalwarp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="215"/>
+        <source>Graphical raster map calculator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="216"/>
+        <source>Help</source>
+        <translation type="unfinished">Palīdzība</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="217"/>
+        <source>Hue Intensity Saturation (HIS) to Red Green Blue (RGB) raster color transform function</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="218"/>
+        <source>Hydrologic modelling</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="219"/>
+        <source>Imagery</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="220"/>
+        <source>Import</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="221"/>
+        <source>Import ASCII raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="222"/>
+        <source>Import DXF vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="223"/>
+        <source>Import ESRI ARC/INFO ASCII GRID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="224"/>
+        <source>Import ESRI E00 vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="225"/>
+        <source>Import GDAL supported raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="226"/>
+        <source>Import GDAL supported raster and create a fitted location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="227"/>
+        <source>Import GRIDATB.FOR (TOPMODEL)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="228"/>
+        <source>Import MapGen or MatLab vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="229"/>
+        <source>Import OGR vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="230"/>
+        <source>Import OGR vectors in a given data source combining them in a GRASS vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="231"/>
+        <source>Import OGR/PostGIS vector and create a fitted location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="232"/>
+        <source>Import SPOT VGT NDVI</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="233"/>
+        <source>Import SRTM HGT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="234"/>
+        <source>Import US-NGA GEOnet Names Server (GNS) country file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="235"/>
+        <source>Import all OGR/PostGIS vectors in a given data source and create a fitted location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="236"/>
+        <source>Import attribute tables in various formats</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="237"/>
+        <source>Import binary MAT-File(v4)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="238"/>
+        <source>Import binary raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="239"/>
+        <source>Import geonames.org country files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="240"/>
+        <source>Import loaded raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="241"/>
+        <source>Import loaded raster and create a fitted location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="242"/>
+        <source>Import loaded vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="243"/>
+        <source>Import loaded vector and create a fitted location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="244"/>
+        <source>Import loaded vector selecting some features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="245"/>
+        <source>Import only some layers of a DXF vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="246"/>
+        <source>Import raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="247"/>
+        <source>Import raster from ASCII polygon/line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="248"/>
+        <source>Import raster from coordinates using univariate statistics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="249"/>
+        <source>Import vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="250"/>
+        <source>Import vector from gps using gpsbabel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="251"/>
+        <source>Import vector from gps using gpstrans</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="252"/>
+        <source>Import vector points from database table containing coordinates</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="253"/>
+        <source>Input nodes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="254"/>
+        <source>Input table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="255"/>
+        <source>Interpolate surface</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="256"/>
+        <source>Inverse distance squared weighting raster interpolation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="257"/>
+        <source>Inverse distance squared weighting raster interpolation based on vector points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="258"/>
+        <source>Inverse fast fourier transform for image processing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="259"/>
+        <source>Join table to existing vector table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="260"/>
+        <source>Layers categories management</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="261"/>
+        <source>Line-of-sigth raster analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="262"/>
+        <source>Link GDAL supported raster layer to a binary raster map layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="263"/>
+        <source>Link GDAL supported raster to binary raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="264"/>
+        <source>Link all GDAL supported rasters in a directory to binary rasters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="265"/>
+        <source>Make each output cell function of the values assigned to the corresponding cells in the input rasters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="266"/>
+        <source>Manage features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="267"/>
+        <source>Manage image colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="268"/>
+        <source>Manage map colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="269"/>
+        <source>Manage raster cells value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="270"/>
+        <source>Manage training dataset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="271"/>
+        <source>Map algebra</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="272"/>
+        <source>Map type conversion</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="273"/>
+        <source>MapGen or MatLab vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="274"/>
+        <source>Mask</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="275"/>
+        <source>Metadata support</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="276"/>
+        <source>Mosaic up to 4 images</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="277"/>
+        <source>Name for new raster file (specify file extension)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="278"/>
+        <source>Name for new vector file (specify file extension)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="279"/>
+        <source>Name of the table to create</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="280"/>
+        <source>Neighborhood analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="281"/>
+        <source>Network analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="282"/>
+        <source>Network maintenance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="283"/>
+        <source>OGR file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="284"/>
+        <source>OGR vector layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="285"/>
+        <source>Others</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="286"/>
+        <source>Output GML file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="287"/>
+        <source>Output Shapefile</source>
+        <translation type="unfinished">Izejošais shapefile</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="288"/>
+        <source>Output layer name (used in GML file)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="289"/>
+        <source>Output raster values along user-defined transect line(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="290"/>
+        <source>Overlay</source>
+        <translation type="unfinished">Pārklāt</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="291"/>
+        <source>Overlay maps</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="292"/>
+        <source>Path to the OGR data source</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="293"/>
+        <source>Percentage of first layer (0-99)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="294"/>
+        <source>Perform affine transformation (shift, scale and rotate, or GPCs) on vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="295"/>
+        <source>Print projection information from a georeferenced file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="296"/>
+        <source>Print projection information from a georeferenced file and create a new location based on it</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="297"/>
+        <source>Print projection information of the current location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="298"/>
+        <source>Projection conversion of vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="299"/>
+        <source>Projection management</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="300"/>
+        <source>Put geometry variables in database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="301"/>
+        <source>Query rasters on their category values and labels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="302"/>
+        <source>Random location perturbations of vector points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="303"/>
+        <source>Randomly partition points into test/train sets</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="304"/>
+        <source>Raster</source>
+        <translation type="unfinished">Rastrs</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="305"/>
+        <source>Raster buffer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="306"/>
+        <source>Raster file matrix filter</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="307"/>
+        <source>Raster neighbours analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="308"/>
+        <source>Raster support</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="309"/>
+        <source>Re-project raster from a location to the current location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="310"/>
+        <source>Rebuild topology of all vectors in mapset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="311"/>
+        <source>Recategorize contiguous cells to unique categories</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="312"/>
+        <source>Reclass category values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="313"/>
+        <source>Reclass category values using a column attribute (integer positive)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="314"/>
+        <source>Reclass category values using a rules file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="315"/>
+        <source>Reclass raster using reclassification rules</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="316"/>
+        <source>Reclass raster with patches larger than user-defined area size (in hectares)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="317"/>
+        <source>Reclass raster with patches smaller than user-defined area size (in hectares)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="318"/>
+        <source>Reclassify raster greater or less than user-defined area size (in hectares)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="319"/>
+        <source>Recode categorical raster using reclassification rules</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="320"/>
+        <source>Recode raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="321"/>
+        <source>Reconnect vector to a new database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="322"/>
+        <source>Red Green Blue (RGB) to Hue Intensity Saturation (HIS) raster color transformation function</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="323"/>
+        <source>Region</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="324"/>
+        <source>Region settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="325"/>
+        <source>Regularized spline with tension raster interpolation based on vector points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="326"/>
+        <source>Reinterpolate and compute topographic analysis using regularized spline with tension and smoothing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="327"/>
+        <source>Remove all lines or boundaries of zero length</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="328"/>
+        <source>Remove bridges connecting area and island or 2 islands</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="329"/>
+        <source>Remove dangles</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="330"/>
+        <source>Remove duplicate area centroids</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="331"/>
+        <source>Remove duplicate lines (pay attention to categories!)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="332"/>
+        <source>Remove existing attribute table of vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="333"/>
+        <source>Remove outliers from vector point data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="334"/>
+        <source>Remove small angles between lines at nodes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="335"/>
+        <source>Remove small areas, the longest boundary with adjacent area is removed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="336"/>
+        <source>Remove vertices in threshold from lines and boundaries, boundary is pruned only if topology is not damaged (new intersection, changed attachement of centroid), first and last segment of the boundary is never changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="337"/>
+        <source>Rename column in attribute table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="338"/>
+        <source>Report and statistics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="339"/>
+        <source>Reports</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="340"/>
+        <source>Reports and statistics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="341"/>
+        <source>Reproject raster from another Location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="342"/>
+        <source>Reproject vector from another Location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="343"/>
+        <source>Resample raster using aggregation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="344"/>
+        <source>Resample raster using interpolation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="345"/>
+        <source>Resample raster. Set new resolution first</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="346"/>
+        <source>Rescale the range of category values in raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="347"/>
+        <source>Sample raster at site locations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="348"/>
+        <source>Save the current region as a named region</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="349"/>
+        <source>Select features by attributes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="350"/>
+        <source>Select features overlapped by features in another map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="351"/>
+        <source>Set PostgreSQL DB connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="352"/>
+        <source>Set boundary definitions by edge (n-s-e-w)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="353"/>
+        <source>Set boundary definitions for raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="354"/>
+        <source>Set boundary definitions from raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="355"/>
+        <source>Set boundary definitions from vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="356"/>
+        <source>Set boundary definitions to current or default region</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="357"/>
+        <source>Set color rules based on stddev from a map&apos;s mean value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="358"/>
+        <source>Set general DB connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="359"/>
+        <source>Set general DB connection with a schema (PostgreSQL only)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="360"/>
+        <source>Set raster color table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="361"/>
+        <source>Set raster color table from existing raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="362"/>
+        <source>Set raster color table from setted tables</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="363"/>
+        <source>Set raster color table from user-defined rules</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="364"/>
+        <source>Set region to align to raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="365"/>
+        <source>Set the region to match multiple rasters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="366"/>
+        <source>Set the region to match multiple vectors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="367"/>
+        <source>Set user/password for driver/database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="368"/>
+        <source>Set/Show database connection for vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="369"/>
+        <source>Sets the boundary definitions for a raster map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="370"/>
+        <source>Shrink current region until it meets non-NULL data from raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="371"/>
+        <source>Simple map algebra</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="372"/>
+        <source>Simplify vector</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="373"/>
+        <source>Snap lines to vertex in threshold</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="374"/>
+        <source>Solar and irradiation model</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="375"/>
+        <source>Spatial analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="376"/>
+        <source>Spatial models</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="377"/>
+        <source>Split lines to shorter segments</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="378"/>
+        <source>Statistics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="379"/>
+        <source>Sum raster cell values</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="380"/>
+        <source>Surface management</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="381"/>
+        <source>Tables management</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="382"/>
+        <source>Tabulate mutual occurrence (coincidence) of categories for two rasters</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="383"/>
+        <source>Take vector stream data, transform it to raster, and subtract depth from the output DEM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="384"/>
+        <source>Tasseled Cap (Kauth Thomas) transformation for LANDSAT-TM 4 raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="385"/>
+        <source>Tasseled Cap (Kauth Thomas) transformation for LANDSAT-TM 5 raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="386"/>
+        <source>Tasseled Cap (Kauth Thomas) transformation for LANDSAT-TM 7 raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="387"/>
+        <source>Tassled cap vegetation index</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="388"/>
+        <source>Terrain analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="389"/>
+        <source>Tests of normality on vector points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="390"/>
+        <source>Text file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="391"/>
+        <source>Thin no-zero cells that denote line features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="392"/>
+        <source>Toolset for cleaning topology of vector map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="393"/>
+        <source>Topology management</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="394"/>
+        <source>Trace a flow through an elevation model</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="395"/>
+        <source>Transform cells with value in null cells</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="396"/>
+        <source>Transform features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="397"/>
+        <source>Transform image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="398"/>
+        <source>Transform null cells in value cells</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="399"/>
+        <source>Transform value cells in null cells</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="400"/>
+        <source>Type in map names separated by a comma</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="401"/>
+        <source>Update raster statistics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="402"/>
+        <source>Update vector map metadata</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="403"/>
+        <source>Upload raster values at positions of vector points to the table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="404"/>
+        <source>Upload vector values at positions of vector points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="405"/>
+        <source>Vector</source>
+        <translation type="unfinished">Vektors</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="406"/>
+        <source>Vector buffer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="407"/>
+        <source>Vector geometry analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="408"/>
+        <source>Vector intersection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="409"/>
+        <source>Vector non-intersection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="410"/>
+        <source>Vector subtraction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="411"/>
+        <source>Vector union</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="412"/>
+        <source>Vector update by other maps</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="413"/>
+        <source>Visibility graph construction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="414"/>
+        <source>Voronoi diagram (area)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="415"/>
+        <source>Voronoi diagram (lines)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="416"/>
+        <source>Watershed Analysis</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="417"/>
+        <source>Work with vector points</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="418"/>
+        <source>Write only features link to a record</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="419"/>
+        <source>Zero-crossing edge detection raster function for image processing</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
