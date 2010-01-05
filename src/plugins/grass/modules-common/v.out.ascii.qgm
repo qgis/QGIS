@@ -5,4 +5,5 @@
 	<option key="input" />
 	<option key="format"/>
 	<file key="output" type="new" />
+	<option key="fs" advanced="yes" />
 </qgisgrassmodule>

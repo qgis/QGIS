@@ -372,7 +372,31 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
   //transfers frame ownership so no need to call delete
   mypScrollArea->setWidget( mypInnerFrame );
   mypScrollArea->setWidgetResizable( true );
-  QVBoxLayout *layout = new QVBoxLayout( mypInnerFrame );
+  QVBoxLayout *mypInnerFrameLayout = new QVBoxLayout( mypInnerFrame );
+  // Add frames for simple/advanced options
+  QFrame * mypSimpleFrame = new QFrame();
+  mypSimpleFrame->setFrameShape( QFrame::NoFrame );
+  mypSimpleFrame->setFrameShadow( QFrame::Plain );
+  mAdvancedFrame.setFrameShape( QFrame::NoFrame );
+  mAdvancedFrame.setFrameShadow( QFrame::Plain );
+
+  QFrame * mypAdvancedPushButtonFrame = new QFrame();
+  QHBoxLayout *mypAdvancedPushButtonFrameLayout = new QHBoxLayout( mypAdvancedPushButtonFrame );
+  connect( &mAdvancedPushButton, SIGNAL( clicked() ), this, SLOT( switchAdvanced() ) );
+  mypAdvancedPushButtonFrameLayout->addWidget( &mAdvancedPushButton );
+  mypAdvancedPushButtonFrameLayout->addStretch(1);
+
+  mypInnerFrameLayout->addWidget( mypSimpleFrame );
+  mypInnerFrameLayout->addWidget( mypAdvancedPushButtonFrame );
+  mypInnerFrameLayout->addWidget( &mAdvancedFrame );
+  mypInnerFrameLayout->addStretch(1);
+
+  // Hide advanced and set butto next
+  switchAdvanced();
+  
+  QVBoxLayout *mypSimpleLayout = new QVBoxLayout( mypSimpleFrame );
+  QVBoxLayout *mypAdvancedLayout = new QVBoxLayout( &mAdvancedFrame );
+  QVBoxLayout *layout;
   while ( !n.isNull() )
   {
     QDomElement e = n.toElement();
@@ -380,6 +404,13 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
     {
       QString optionType = e.tagName();
       QgsDebugMsg( "optionType = " + optionType );
+  
+      if ( e.attribute( "advanced", "no" ) == "yes" ) 
+      {
+        layout = mypAdvancedLayout;
+      } else {
+        layout = mypSimpleLayout;
+      }
 
       QString key = e.attribute( "key" );
       QgsDebugMsg( "key = " + key );
@@ -474,6 +505,11 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
     }
     n = n.nextSibling();
   }
+  
+  if ( mypAdvancedLayout->count() == 0 ) 
+  {
+    mypAdvancedPushButtonFrame->hide();
+  }
 
   // Create list of flags
   n = gDocElem.firstChild();
@@ -496,6 +532,17 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
   }
 
   layout->addStretch();
+}
+
+void QgsGrassModuleStandardOptions::switchAdvanced()
+{
+   if ( mAdvancedFrame.isHidden() ) {
+      mAdvancedFrame.show();
+      mAdvancedPushButton.setText ( tr("<< Hide advanced options") );
+   } else {
+      mAdvancedFrame.hide();
+      mAdvancedPushButton.setText ( tr("Show advanced options >>") );
+   }
 }
 
 QStringList QgsGrassModuleStandardOptions::arguments()
