@@ -31,6 +31,7 @@ class QgsSingleSymbolRenderer : QgsRenderer
     bool needsAttributes() const;
     /**Returns an empty list, since no classification attributes are used*/
     QList<int> classificationAttributes() const;
+    void updateSymbolAttributes();
     /**Returns the renderers name*/
     virtual QString name() const;
     /**Returns a list containing mSymbol*/

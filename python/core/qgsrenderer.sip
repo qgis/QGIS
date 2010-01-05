@@ -4,13 +4,34 @@ class QgsRenderer
 {
 %TypeHeaderCode
 #include <qgsrenderer.h>
+#include <qgssinglesymbolrenderer.h>
+#include <qgsuniquevaluerenderer.h>
+#include <qgsgraduatedsymbolrenderer.h>
+#include <qgscontinuouscolorrenderer.h>
 %End
+
+%ConvertToSubClassCode
+  if (dynamic_cast<QgsSingleSymbolRenderer*>(sipCpp) != NULL)
+    sipClass = sipClass_QgsSingleSymbolRenderer;
+  else if (dynamic_cast<QgsUniqueValueRenderer*>(sipCpp) != NULL)
+    sipClass = sipClass_QgsUniqueValueRenderer;
+  else if (dynamic_cast<QgsGraduatedSymbolRenderer*>(sipCpp) != NULL)
+    sipClass = sipClass_QgsGraduatedSymbolRenderer;
+  else if (dynamic_cast<QgsContinuousColorRenderer*>(sipCpp) != NULL)
+    sipClass = sipClass_QgsContinuousColorRenderer;
+  else
+    sipClass = 0;
+%End
+
   
  public:
     /** Default ctor sets up selection color from project properties */
     QgsRenderer();
     /** Virtual destructor because we have virtual methods... */
     virtual ~QgsRenderer();
+    /** Determines if a feature will be rendered or not
+    @param f a pointer to the feature to determine if rendering will happen*/
+    virtual bool willRenderFeature( QgsFeature *f );
     /**A vector layer passes features to a renderer object to change the brush and pen of the qpainter
      @param p the painter storing brush and pen
      @param f a pointer to the feature to be rendered
@@ -59,6 +80,9 @@ class QgsRenderer
     /**Returns true if this renderer uses its own transparency settings, e.g. differentiated by classification.
      This is a hint for QgsVectorLayer to not use the transparency setting on layer level in this cases*/
     virtual bool usesTransparency() const;
+
+    /**Scales a brush to a given raster scale factor (e.g. for printing)*/
+    static void scaleBrush( QBrush& b, double rasterScaleFactor );
    
 };
 
