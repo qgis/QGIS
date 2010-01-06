@@ -3,9 +3,9 @@
 
 <qgisgrassmodule label="Import OGR vectors in a given data source combining them in a GRASS vector" module="v.in.ogr">
 	<flag key="o" answer="on" hidden="yes" />
-	<flag key="z" answer="off" hidden="no" />
-	<flag key="e" answer="off" hidden="no" />
+	<flag key="z" answer="off" hidden="no" advanced="yes" />
+	<flag key="e" answer="off" hidden="no" advanced="yes" />
 	<file key="dsn" type="directory" label="Path to the OGR data source" />
 	<option key="output" />
-	<option key="type" />
+	<option key="type" advanced="yes" />
 </qgisgrassmodule>
