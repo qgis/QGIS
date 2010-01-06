@@ -256,6 +256,9 @@ class QgsGrassModuleStandardOptions: QWidget, public QgsGrassModuleOptions
     // ! Get item by ID
     QgsGrassModuleItem *item( QString id );
 
+    // ! Get item by key
+    QgsGrassModuleItem *itemByKey( QString key );
+
     // Reimplemented methods from QgsGrassModuleOptions
     QStringList checkOutput();
     void freezeOutput();
@@ -749,7 +752,7 @@ class QgsGrassModuleField: public QgsGrassModuleGroupBoxItem
     QgsGrassModuleStandardOptions *mModuleStandardOptions;
 
     //! Layer key
-    QString mLayerId;
+    QString mLayerKey;
 
     //! Pointer to layer input
     QgsGrassModuleInput *mLayerInput;

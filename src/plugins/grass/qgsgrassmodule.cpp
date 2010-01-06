@@ -562,6 +562,23 @@ QStringList QgsGrassModuleStandardOptions::arguments()
   return arg;
 }
 
+// id is not used in fact, was intended for field, but key is used instead
+QgsGrassModuleItem *QgsGrassModuleStandardOptions::itemByKey( QString key )
+{
+  QgsDebugMsg( "key = " + key );
+
+  for ( unsigned int i = 0; i < mItems.size(); i++ )
+  {
+    if ( mItems[i]->key() == key )
+    {
+      return mItems[i];
+    }
+  }
+
+  QMessageBox::warning( 0, tr( "Warning" ), tr( "Item with key %1 not found" ).arg( key ) );
+  return 0;
+}
+
 QgsGrassModuleItem *QgsGrassModuleStandardOptions::item( QString id )
 {
   QgsDebugMsg( "id = " + id );
@@ -2908,16 +2925,19 @@ QgsGrassModuleField::QgsGrassModuleField(
   QDomElement promptElem = promptNode.toElement();
   QString element = promptElem.attribute( "element" );
 
-  mLayerId = qdesc.attribute( "layerid" );
-
   mType = qdesc.attribute( "type" );
 
-  QgsGrassModuleItem *item = mModuleStandardOptions->item( mLayerId );
-  // TODO check type
-  if ( item )
-  {
-    mLayerInput = dynamic_cast<QgsGrassModuleInput *>( item );
-    connect( mLayerInput, SIGNAL( valueChanged() ), this, SLOT( updateFields() ) );
+  mLayerKey = qdesc.attribute( "layer" );
+  if ( mLayerKey.isNull() || mLayerKey.length() == 0 ) {
+    QMessageBox::warning( 0, tr( "Warning" ), tr( "'layer' attribute in field tag with key= %1 is missing." ).arg( mKey ) );
+  } else {
+    QgsGrassModuleItem *item = mModuleStandardOptions->itemByKey( mLayerKey );
+    // TODO check type
+    if ( item )
+    {
+      mLayerInput = dynamic_cast<QgsGrassModuleInput *>( item );
+      connect( mLayerInput, SIGNAL( valueChanged() ), this, SLOT( updateFields() ) );
+    }
   }
 
   QHBoxLayout *l = new QHBoxLayout( this );
