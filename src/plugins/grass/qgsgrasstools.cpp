@@ -166,17 +166,13 @@ void QgsGrassTools::runModule( QString name )
   QPixmap pixmap = QgsGrassModule::pixmap( path, height );
 
   // Icon size in QT4 does not seem to be variable
-  // -> put smaller icons in the middle
-  QPixmap pixmap2( mTabWidget->iconSize() );
-  QPalette pal;
-  pixmap2.fill( pal.color( QPalette::Window ) );
-  QPainter painter( &pixmap2 );
-  int x = ( int )(( mTabWidget->iconSize().width() - pixmap.width() ) / 2 );
-  painter.drawPixmap( x, 0, pixmap );
-  painter.end();
+  // -> reset the width to max icon width
+  if ( mTabWidget->iconSize().width() < pixmap.width() ) {
+    mTabWidget->setIconSize( QSize( pixmap.width(), mTabWidget->iconSize().height() )  );
+  }
 
   QIcon is;
-  is.addPixmap( pixmap2 );
+  is.addPixmap( pixmap );
   mTabWidget->addTab( m, is, "" );
 
 
