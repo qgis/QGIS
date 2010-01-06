@@ -173,6 +173,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
 
   public slots:
     virtual void setRotation( double r );
+    void repaint();
 
   protected:
 

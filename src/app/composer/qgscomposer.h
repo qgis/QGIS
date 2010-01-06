@@ -29,6 +29,7 @@ class QgsComposerMap;
 class QgsComposerPicture;
 class QgsComposerScaleBar;
 class QgsComposerShape;
+class QgsComposerTable;
 class QgsComposerView;
 class QgsComposition;
 class QgsMapCanvas;
@@ -150,6 +151,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Add ellipse shape item
     void on_mActionAddBasicShape_triggered();
 
+    //! Add attribute table
+    void on_mActionAddTable_triggered();
+
     //! Save composer as template
     void on_mActionSaveAsTemplate_triggered();
 
@@ -217,6 +221,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     /**Adds a composer shape to the item/widget map and creates a configuration widget*/
     void addComposerShape( QgsComposerShape* shape );
+
+    /**Adds a composer table to the item/widget map and creates a configuration widget*/
+    void addComposerTable( QgsComposerTable* table );
 
     /**Removes item from the item/widget map and deletes the configuration widget*/
     void deleteItem( QgsComposerItem* item );
