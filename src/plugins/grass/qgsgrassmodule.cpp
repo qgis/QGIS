@@ -1413,6 +1413,7 @@ void QgsGrassModule::readStdout()
     //line = QString::fromLocal8Bit( mProcess.readLineStdout().ascii() );
     QByteArray ba = mProcess.readLine();
     line = QString::fromUtf8( ba );
+    //QgsDebugMsg(QString("line: '%1'").arg(line));
 
     // GRASS_INFO_PERCENT is catched here only because of bugs in GRASS,
     // normaly it should be printed to stderr
@@ -1423,7 +1424,7 @@ void QgsGrassModule::readStdout()
     }
     else
     {
-      mOutputTextBrowser->append( line );
+      mOutputTextBrowser->append( "<pre>" + line + "</pre>" );
     }
   }
 }
@@ -1456,7 +1457,7 @@ void QgsGrassModule::readStderr()
     }
     else if ( rxmessage.indexIn( line ) != -1 )
     {
-      mOutputTextBrowser->append( rxmessage.cap( 1 ) );
+      mOutputTextBrowser->append( "<pre>" + rxmessage.cap( 1 ) + "</pre>" );
     }
     else if ( rxwarning.indexIn( line ) != -1 )
     {
