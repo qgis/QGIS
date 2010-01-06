@@ -1749,6 +1749,18 @@ bool QgsGrassProvider::lineAreas( int line, int *left, int *right )
   return true;
 }
 
+int QgsGrassProvider::isleArea( int isle )
+{
+  QgsDebugMsgLevel( "entered.", 3 );
+
+  if ( !Vect_isle_alive( mMap, isle ) )
+  {
+    return 0;
+  }
+
+  return ( Vect_get_isle_area( mMap, isle ) );
+}
+
 int QgsGrassProvider::centroidArea( int centroid )
 {
   QgsDebugMsgLevel( "entered.", 3 );
