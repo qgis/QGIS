@@ -280,6 +280,12 @@ class GRASS_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      */
     bool lineAreas( int line, int *left, int *right );
 
+    /** Get isle area
+     *   @param isle number
+     *   @return area number 
+     */
+    int isleArea( int isle );
+
     /** Get centroid area
      *   @param centroid line number
      *   @return area number (negative for island)
