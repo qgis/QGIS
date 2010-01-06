@@ -995,3 +995,8 @@ void QgsComposerItem::rotate( double angle, double& x, double& y ) const
   x = xRot;
   y = yRot;
 }
+
+void QgsComposerItem::repaint()
+{
+  update();
+}

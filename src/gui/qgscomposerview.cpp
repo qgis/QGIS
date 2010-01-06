@@ -28,6 +28,7 @@
 #include "qgscomposerpicture.h"
 #include "qgscomposerscalebar.h"
 #include "qgscomposershape.h"
+#include "qgscomposertable.h"
 
 QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags f ) :
     QGraphicsView( parent ), mShiftKeyPressed( false ), mRubberBandItem( 0 ), mRubberBandLineItem( 0 ), mMoveContentItem( 0 )
@@ -147,6 +148,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
       QgsComposerLegend* newLegend = new QgsComposerLegend( composition() );
       addComposerLegend( newLegend );
       newLegend->setSceneRect( QRectF( snappedScenePoint.x(), snappedScenePoint.y(), newLegend->rect().width(), newLegend->rect().height() ) );
+      emit actionFinished();
       break;
     }
     case AddPicture:
@@ -154,6 +156,13 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
       QgsComposerPicture* newPicture = new QgsComposerPicture( composition() );
       addComposerPicture( newPicture );
       newPicture->setSceneRect( QRectF( snappedScenePoint.x(), snappedScenePoint.y(), 30, 30 ) );
+      emit actionFinished();
+    }
+    case AddTable:
+    {
+      QgsComposerTable* newTable = new QgsComposerTable( composition() );
+      addComposerTable( newTable );
+      newTable->setSceneRect( QRectF( snappedScenePoint.x(), snappedScenePoint.y(), 50, 50 ) );
       emit actionFinished();
     }
 
@@ -499,7 +508,6 @@ void QgsComposerView::addComposerLegend( QgsComposerLegend* legend )
   scene()->clearSelection();
   legend->setSelected( true );
   emit selectedItemChanged( legend );
-  emit actionFinished();
 }
 
 void QgsComposerView::addComposerPicture( QgsComposerPicture* picture )
@@ -518,6 +526,15 @@ void QgsComposerView::addComposerShape( QgsComposerShape* shape )
   scene()->clearSelection();
   shape->setSelected( true );
   emit selectedItemChanged( shape );
+}
+
+void QgsComposerView::addComposerTable( QgsComposerTable* table )
+{
+  scene()->addItem( table );
+  emit composerTableAdded( table );
+  scene()->clearSelection();
+  table->setSelected( true );
+  emit selectedItemChanged( table );
 }
 
 void QgsComposerView::groupItems()
