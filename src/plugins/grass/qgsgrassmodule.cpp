@@ -994,7 +994,7 @@ QString QgsGrassModule::label( QString path )
 
 QPixmap QgsGrassModule::pixmap( QString path, int height )
 {
-  QgsDebugMsg( "called." );
+  QgsDebugMsg( QString( "path = %1" ).arg( path ) );
 
   std::vector<QPixmap> pixmaps;
 
