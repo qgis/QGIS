@@ -23,21 +23,21 @@
 */
 class QWT_POLAR_EXPORT QwtPolarFitter: public QwtCurveFitter
 {
-public:
-    QwtPolarFitter(int stepCount = 5);
+  public:
+    QwtPolarFitter( int stepCount = 5 );
     virtual ~QwtPolarFitter();
 
-    void setStepCount(int size);
+    void setStepCount( int size );
     int stepCount() const;
 
 #if QT_VERSION < 0x040000
     virtual QwtArray<QwtDoublePoint> fitCurve(
-        const QwtArray<QwtDoublePoint> &) const;
+      const QwtArray<QwtDoublePoint> & ) const;
 #else
-    virtual QPolygonF fitCurve(const QPolygonF &) const;
+    virtual QPolygonF fitCurve( const QPolygonF & ) const;
 #endif
 
-private:
+  private:
     class PrivateData;
     PrivateData *d_data;
 };

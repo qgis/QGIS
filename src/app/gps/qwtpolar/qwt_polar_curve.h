@@ -29,7 +29,7 @@ class QwtCurveFitter;
 
 class QWT_POLAR_EXPORT QwtPolarCurve: public QwtPolarItem
 {
-public:
+  public:
     /*!
         Curve styles.
 
@@ -44,73 +44,73 @@ public:
     */
     enum CurveStyle
     {
-        NoCurve,
-        Lines,
-        UserCurve = 100
+      NoCurve,
+      Lines,
+      UserCurve = 100
     };
 
     explicit QwtPolarCurve();
-    explicit QwtPolarCurve(const QwtText &title);
-    explicit QwtPolarCurve(const QString &title);
+    explicit QwtPolarCurve( const QwtText &title );
+    explicit QwtPolarCurve( const QString &title );
 
     virtual ~QwtPolarCurve();
 
     virtual int rtti() const;
 
-    void setData(const QwtData &data);
+    void setData( const QwtData &data );
     QwtData &data();
     const QwtData &data() const;
 
     int dataSize() const;
-    double radius(int i) const;
-    double azimuth(int i) const;
-    QwtPolarPoint sample(int i) const;
+    double radius( int i ) const;
+    double azimuth( int i ) const;
+    QwtPolarPoint sample( int i ) const;
 
-    void setPen(const QPen &);
+    void setPen( const QPen & );
     const QPen &pen() const;
 
-    void setStyle(CurveStyle style);
+    void setStyle( CurveStyle style );
     CurveStyle style() const;
 
-    void setSymbol(const QwtSymbol &s);
+    void setSymbol( const QwtSymbol &s );
     const QwtSymbol& symbol() const;
 
-    void setCurveFitter(QwtCurveFitter *);
+    void setCurveFitter( QwtCurveFitter * );
     QwtCurveFitter *curveFitter() const;
 
-    virtual void draw(QPainter *p, 
-        const QwtScaleMap &azimuthMap, const QwtScaleMap &radialMap,
-        const QwtDoublePoint &pole, double radius,
-        const QwtDoubleRect &canvasRect) const;
+    virtual void draw( QPainter *p,
+                       const QwtScaleMap &azimuthMap, const QwtScaleMap &radialMap,
+                       const QwtDoublePoint &pole, double radius,
+                       const QwtDoubleRect &canvasRect ) const;
 
-    virtual void draw(QPainter *p,
-        const QwtScaleMap &azimuthMap, const QwtScaleMap &radialMap,
-        const QwtDoublePoint &pole,
-        int from, int to) const;
+    virtual void draw( QPainter *p,
+                       const QwtScaleMap &azimuthMap, const QwtScaleMap &radialMap,
+                       const QwtDoublePoint &pole,
+                       int from, int to ) const;
 
-    virtual void updateLegend(QwtLegend *) const;
-    virtual QwtDoubleInterval boundingInterval(int scaleId) const;
+    virtual void updateLegend( QwtLegend * ) const;
+    virtual QwtDoubleInterval boundingInterval( int scaleId ) const;
 
-protected:
+  protected:
 
     void init();
 
-    virtual void drawCurve(QPainter *, int style,
-        const QwtScaleMap &azimuthMap, const QwtScaleMap &radialMap,
-        const QwtDoublePoint &pole,
-        int from, int to) const;
+    virtual void drawCurve( QPainter *, int style,
+                            const QwtScaleMap &azimuthMap, const QwtScaleMap &radialMap,
+                            const QwtDoublePoint &pole,
+                            int from, int to ) const;
 
-    virtual void drawSymbols(QPainter *, const QwtSymbol &,
-        const QwtScaleMap &azimuthMap, const QwtScaleMap &radialMap,
-        const QwtDoublePoint &pole,
-        int from, int to) const;
+    virtual void drawSymbols( QPainter *, const QwtSymbol &,
+                              const QwtScaleMap &azimuthMap, const QwtScaleMap &radialMap,
+                              const QwtDoublePoint &pole,
+                              int from, int to ) const;
 
-    void drawLines(QPainter *, 
-        const QwtScaleMap &azimuthMap, const QwtScaleMap &radialMap,
-        const QwtDoublePoint &pole,
-        int from, int to) const;
+    void drawLines( QPainter *,
+                    const QwtScaleMap &azimuthMap, const QwtScaleMap &radialMap,
+                    const QwtDoublePoint &pole,
+                    int from, int to ) const;
 
-private:
+  private:
     QwtData *d_points;
 
     class PrivateData;
@@ -120,40 +120,40 @@ private:
 //! \return the the curve data
 inline QwtData &QwtPolarCurve::data()
 {
-    return *d_points;
+  return *d_points;
 }
 
 //! \return the the curve data
 inline const QwtData &QwtPolarCurve::data() const
 {
-    return *d_points;
+  return *d_points;
 }
 
 /*!
     \param i index
     \return azimuth at position i
 */
-inline double QwtPolarCurve::azimuth(int i) const 
-{ 
-    return d_points->x(i); 
+inline double QwtPolarCurve::azimuth( int i ) const
+{
+  return d_points->x( i );
 }
 
 /*!
     \param i index
     \return radius at position i
 */
-inline double QwtPolarCurve::radius(int i) const 
-{ 
-    return d_points->y(i); 
+inline double QwtPolarCurve::radius( int i ) const
+{
+  return d_points->y( i );
 }
 
 /*!
     \param i index
     \return point at position i
 */
-inline QwtPolarPoint QwtPolarCurve::sample(int i) const
+inline QwtPolarPoint QwtPolarCurve::sample( int i ) const
 {
-    return QwtPolarPoint(azimuth(i), radius(i));
+  return QwtPolarPoint( azimuth( i ), radius( i ) );
 }
 
 #endif

@@ -3,7 +3,7 @@
     ---------------------
     begin                : 18 December 2009
     copyright            : (C) 2009 Tim Sutton
-    email                : tim at linfiniti com 
+    email                : tim at linfiniti com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *

@@ -27,31 +27,31 @@ class QwtColorMap;
 */
 class QWT_POLAR_EXPORT QwtPolarSpectrogram: public QwtPolarItem
 {
-public:
+  public:
     explicit QwtPolarSpectrogram();
     virtual ~QwtPolarSpectrogram();
 
-    void setData(const QwtRasterData &data);
+    void setData( const QwtRasterData &data );
     const QwtRasterData &data() const;
 
-    void setColorMap(const QwtColorMap &);
+    void setColorMap( const QwtColorMap & );
     const QwtColorMap &colorMap() const;
 
     virtual int rtti() const;
 
-    virtual void draw(QPainter *painter,
-        const QwtScaleMap &azimuthMap, const QwtScaleMap &radialMap,
-        const QwtDoublePoint &pole, double radius,
-        const QwtDoubleRect &canvasRect) const;
+    virtual void draw( QPainter *painter,
+                       const QwtScaleMap &azimuthMap, const QwtScaleMap &radialMap,
+                       const QwtDoublePoint &pole, double radius,
+                       const QwtDoubleRect &canvasRect ) const;
 
-    virtual QwtDoubleInterval boundingInterval(int scaleId) const;
+    virtual QwtDoubleInterval boundingInterval( int scaleId ) const;
 
-protected:
+  protected:
     virtual QImage renderImage(
-        const QwtScaleMap &azimuthMap, const QwtScaleMap &radialMap, 
-        const QwtDoublePoint &pole, const QRect &rect) const;
+      const QwtScaleMap &azimuthMap, const QwtScaleMap &radialMap,
+      const QwtDoublePoint &pole, const QRect &rect ) const;
 
-private:
+  private:
     class PrivateData;
     PrivateData *d_data;
 };

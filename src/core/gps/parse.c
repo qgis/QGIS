@@ -145,7 +145,7 @@ int nmea_find_tail( const char *buff, int buff_sz, int *res_crc )
 
   *res_crc = -1;
 
-  for ( ;buff < end_buff; ++buff, ++nread )
+  for ( ; buff < end_buff; ++buff, ++nread )
   {
     if (( '$' == *buff ) && nread )
     {

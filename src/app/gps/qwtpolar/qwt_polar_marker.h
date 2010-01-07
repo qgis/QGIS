@@ -37,37 +37,37 @@ class QwtSymbol;
 
 class QWT_POLAR_EXPORT QwtPolarMarker: public QwtPolarItem
 {
-public:
+  public:
     explicit QwtPolarMarker();
     virtual ~QwtPolarMarker();
 
     virtual int rtti() const;
 
-    void setPosition(const QwtPolarPoint &);
+    void setPosition( const QwtPolarPoint & );
     QwtPolarPoint position() const;
 
-    void setSymbol(const QwtSymbol &s);
+    void setSymbol( const QwtSymbol &s );
     const QwtSymbol &symbol() const;
 
-    void setLabel(const QwtText&);
+    void setLabel( const QwtText& );
     QwtText label() const;
 
 #if QT_VERSION < 0x040000
-    void setLabelAlignment(int align);
+    void setLabelAlignment( int align );
     int labelAlignment() const;
 #else
-    void setLabelAlignment(Qt::Alignment);
+    void setLabelAlignment( Qt::Alignment );
     Qt::Alignment labelAlignment() const;
 #endif
 
-    virtual void draw(QPainter *painter,
-        const QwtScaleMap &azimuthMap, const QwtScaleMap &radialMap,
-        const QwtDoublePoint &pole, double radius,
-        const QwtDoubleRect &canvasRect) const;
+    virtual void draw( QPainter *painter,
+                       const QwtScaleMap &azimuthMap, const QwtScaleMap &radialMap,
+                       const QwtDoublePoint &pole, double radius,
+                       const QwtDoubleRect &canvasRect ) const;
 
-    virtual QwtDoubleInterval boundingInterval(int scaleId) const;
+    virtual QwtDoubleInterval boundingInterval( int scaleId ) const;
 
-private:
+  private:
     class PrivateData;
     PrivateData *d_data;
 };

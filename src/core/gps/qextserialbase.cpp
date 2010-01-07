@@ -220,7 +220,7 @@ qint64 QextSerialBase::readLine( char * data, qint64 maxSize )
   *pData = '\0';
 
   /*return size of data read*/
-  return ( pData -data );
+  return ( pData - data );
 }
 
 /*!
