@@ -21,6 +21,7 @@
 #include "qgscomposermap.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
+#include <QColorDialog>
 #include <QFontDialog>
 
 QgsComposerTableWidget::QgsComposerTableWidget( QgsComposerTable* table ): QWidget( 0 ), mComposerTable( table )
@@ -167,6 +168,50 @@ void QgsComposerTableWidget::on_mContentFontPushButton_clicked()
   }
 }
 
+void QgsComposerTableWidget::on_mGridStrokeWidthSpinBox_valueChanged( double d )
+{
+  if ( !mComposerTable )
+  {
+    return;
+  }
+  mComposerTable->setGridStrokeWidth( d );
+  mComposerTable->update();
+}
+
+void QgsComposerTableWidget::on_mGridColorButton_clicked()
+{
+  if ( !mComposerTable )
+  {
+    return;
+  }
+
+  QColor newColor = QColorDialog::getColor( mComposerTable->gridColor(), 0, tr( "Select grid color" ) );
+  if ( !newColor.isValid() )
+  {
+    return;
+  }
+  mGridColorButton->setColor( newColor );
+  mComposerTable->setGridColor( newColor );
+  mComposerTable->update();
+}
+
+void QgsComposerTableWidget::on_mShowGridCheckBox_stateChanged( int state )
+{
+  if ( !mComposerTable )
+  {
+    return;
+  }
+
+  bool showGrid = false;
+  if ( state == Qt::Checked )
+  {
+    showGrid = true;
+  }
+  mComposerTable->setShowGrid( showGrid );
+  mComposerTable->update();
+}
+
+
 void QgsComposerTableWidget::updateGuiElements()
 {
   if ( !mComposerTable )
@@ -199,6 +244,16 @@ void QgsComposerTableWidget::updateGuiElements()
   }
   mMaximumColumnsSpinBox->setValue( mComposerTable->maximumNumberOfFeatures() );
   mMarginSpinBox->setValue( mComposerTable->lineTextDistance() );
+  mGridStrokeWidthSpinBox->setValue( mComposerTable->gridStrokeWidth() );
+  mGridColorButton->setColor( mComposerTable->gridColor() );
+  if ( mComposerTable->showGrid() )
+  {
+    mShowGridCheckBox->setCheckState( Qt::Checked );
+  }
+  else
+  {
+    mShowGridCheckBox->setCheckState( Qt::Unchecked );
+  }
   blockAllSignals( false );
 }
 
@@ -208,6 +263,9 @@ void QgsComposerTableWidget::blockAllSignals( bool b )
   mComposerMapComboBox->blockSignals( b );
   mMaximumColumnsSpinBox->blockSignals( b );
   mMarginSpinBox->blockSignals( b );
+  mGridColorButton->blockSignals( b );
+  mGridStrokeWidthSpinBox->blockSignals( b );
+  mShowGridCheckBox->blockSignals( b );
 }
 
 

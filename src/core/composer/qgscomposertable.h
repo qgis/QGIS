@@ -55,6 +55,15 @@ class QgsComposerTable: public QgsComposerItem
     void setContentFont( const QFont& f ) { mContentFont = f; }
     QFont contentFont() const { return mContentFont; }
 
+    void setShowGrid( bool show ) { mShowGrid = show;}
+    bool showGrid() const { return mShowGrid; }
+
+    void setGridStrokeWidth( double w ) { mGridStrokeWidth = w; }
+    double gridStrokeWidth() const { return mGridStrokeWidth; }
+
+    void setGridColor( const QColor& c ) { mGridColor = c; }
+    QColor gridColor() const { return mGridColor; }
+
   private:
     /**Associated vector layer*/
     QgsVectorLayer* mVectorLayer;
@@ -64,9 +73,13 @@ class QgsComposerTable: public QgsComposerItem
     int mMaximumNumberOfFeatures;
     /**Distance between table lines and text*/
     double mLineTextDistance;
-    QPen mGridPen;
+
     QFont mHeaderFont;
     QFont mContentFont;
+
+    bool mShowGrid;
+    double mGridStrokeWidth;
+    QColor mGridColor;
 
     /**Retrieves feature attributes*/
     bool getFeatureAttributes( QList<QgsAttributeMap>& attributes );
