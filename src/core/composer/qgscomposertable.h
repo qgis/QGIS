@@ -25,7 +25,7 @@ class QgsComposerMap;
 class QgsVectorLayer;
 
 /**A class to display feature attributes in the print composer*/
-class QgsComposerTable: public QgsComposerItem
+class CORE_EXPORT QgsComposerTable: public QgsComposerItem
 {
   public:
     QgsComposerTable( QgsComposition* composition );

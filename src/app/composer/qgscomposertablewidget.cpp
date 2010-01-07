@@ -185,7 +185,11 @@ void QgsComposerTableWidget::on_mGridColorButton_clicked()
     return;
   }
 
+#if QT_VERSION >= 0x040500
   QColor newColor = QColorDialog::getColor( mComposerTable->gridColor(), 0, tr( "Select grid color" ) );
+#else
+  QColor newColor = QColorDialog::getColor( mComposerTable->gridColor(), 0 );
+#endif
   if ( !newColor.isValid() )
   {
     return;
