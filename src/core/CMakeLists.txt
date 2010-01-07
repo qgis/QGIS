@@ -5,6 +5,20 @@
 
 SET(QGIS_CORE_SRCS
 
+  gps/qextserialport.cpp
+  gps/qextserialbase.cpp
+  gps/qgsgpsconnection.cpp
+  gps/qgsgpsconnectionregistry.cpp
+  gps/qgsgpstrackerthread.cpp
+  gps/qgsnmeaconnection.cpp
+  gps/parse.c
+  gps/sentence.c
+  gps/info.c
+  gps/time.c
+  gps/gmath.c
+  gps/tok.c
+  gps/context.c
+
   symbology-ng/qgssymbolv2.cpp
   symbology-ng/qgssymbollayerv2.cpp
   symbology-ng/qgssymbollayerv2registry.cpp
@@ -130,6 +144,16 @@ SET(QGIS_CORE_SRCS
   spatialindex/qgsspatialindex.cpp
   
   )
+  
+IF(WIN32)
+SET(QGIS_CORE_SRCS
+    ${QGIS_CORE_SRCS}
+    gps/win_qextserialport.cpp)
+ELSE(WIN32)
+    SET(QGIS_CORE_SRCS
+    ${QGIS_CORE_SRCS}
+    gps/posix_qextserialport.cpp)
+ENDIF(WIN32)
 
 IF (WITH_INTERNAL_SPATIALITE)
   IF (WIN32 OR APPLE)
@@ -206,6 +230,8 @@ composer/qgscomposeritemgroup.h
 composer/qgscomposershape.h
 composer/qgscomposition.h
 composer/qgslegendmodel.h
+gps/qgsgpsconnection.h
+gps/qgsnmeaconnection.h
 symbology/qgsmarkercatalogue.h
 raster/qgsrasterlayer.h
 )
