@@ -1412,7 +1412,7 @@ void QgsGrassModule::readStdout()
   {
     //line = QString::fromLocal8Bit( mProcess.readLineStdout().ascii() );
     QByteArray ba = mProcess.readLine();
-    line = QString::fromUtf8( ba );
+    line = QString::fromUtf8( ba ).replace('\n', "" );
     //QgsDebugMsg(QString("line: '%1'").arg(line));
 
     // GRASS_INFO_PERCENT is catched here only because of bugs in GRASS,
@@ -1447,7 +1447,7 @@ void QgsGrassModule::readStderr()
   {
     //line = QString::fromLocal8Bit( mProcess.readLineStderr().ascii() );
     QByteArray ba = mProcess.readLine();
-    line = QString::fromUtf8( ba );
+    line = QString::fromUtf8( ba ).replace('\n', "" );
     //QgsDebugMsg(QString("line: '%1'").arg(line));
 
     if ( rxpercent.indexIn( line ) != -1 )
@@ -1477,7 +1477,7 @@ void QgsGrassModule::readStderr()
     }
     else
     {
-      mOutputTextBrowser->append( line + "\n" );
+      mOutputTextBrowser->append( "<pre>" + line + "</pre>" );
     }
   }
 }
