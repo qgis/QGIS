@@ -70,6 +70,7 @@ class QDomDocument;
 #include "qgsconfig.h"
 #include "qgsfeature.h"
 #include "qgspoint.h"
+class QgsGPSInformationWidget;
 
 /*! \class QgisApp
  * \brief Main window for the Qgis application
@@ -274,6 +275,7 @@ class QgisApp : public QMainWindow
     QAction *actionLayerSaveAs() { return mActionLayerSaveAs; }
     QAction *actionLayerSelectionSaveAs() { return mActionLayerSelectionSaveAs; }
     QAction *actionRemoveLayer() { return mActionRemoveLayer; }
+    QAction *actionGpsTool() { return mActionGpsTool; }
     QAction *actionLayerProperties() { return mActionLayerProperties; }
     QAction *actionLayerSeparator2() { return mActionLayerSeparator2; }
     QAction *actionAddToOverview() { return mActionAddToOverview; }
@@ -420,6 +422,8 @@ class QgisApp : public QMainWindow
     void userCenter();
     //! Remove a layer from the map and legend
     void removeLayer();
+    //! Show GPS tool
+    void showGpsTool();
     //! zoom to extent of layer
     void zoomToLayerExtent();
     //! zoom to actual size of raster layer
@@ -591,8 +595,6 @@ class QgisApp : public QMainWindow
     void measure();
     //! Measure area
     void measureArea();
-    //! Measure angle
-    void measureAngle();
 
     //! show the attribute table for the currently selected layer
     void attributeTable();
@@ -710,8 +712,8 @@ class QgisApp : public QMainWindow
     //! check to see if file is dirty and if so, prompt the user th save it
     bool saveDirty();
     /** Helper function to union several geometries together (used in function mergeSelectedFeatures)
-      @return 0 in case of error or if canceled*/
-    QgsGeometry* unionGeometries( const QgsVectorLayer* vl, QgsFeatureList& featureList, bool& canceled );
+      @return 0 in case of error*/
+    QgsGeometry* unionGeometries( const QgsVectorLayer* vl, QgsFeatureList& featureList );
 
     /**Deletes all the composer objects and clears mPrintComposers*/
     void deletePrintComposers();
@@ -800,7 +802,6 @@ class QgisApp : public QMainWindow
     QAction *mActionDeselectAll;
     QAction *mActionIdentify;
     QAction *mActionMeasure;
-    QAction *mActionMeasureAngle;
     QAction *mActionMeasureArea;
     QAction *mActionViewSeparator1;
     QAction *mActionZoomFullExtent;
@@ -828,6 +829,7 @@ class QgisApp : public QMainWindow
     QAction *mActionLayerSaveAs;
     QAction *mActionLayerSelectionSaveAs;
     QAction *mActionRemoveLayer;
+    QAction *mActionGpsTool;
     QAction *mActionLayerProperties;
     QAction *mActionLayerSeparator2;
     QAction *mActionAddToOverview;
@@ -888,6 +890,7 @@ class QgisApp : public QMainWindow
     // docks ------------------------------------------
     QDockWidget *mLegendDock;
     QDockWidget *mOverviewDock;
+    QDockWidget *mpGpsDock;
 
 #ifdef Q_WS_MAC
     //! Window menu action to select this window
@@ -903,7 +906,6 @@ class QgisApp : public QMainWindow
         QgsMapTool* mIdentify;
         QgsMapTool* mMeasureDist;
         QgsMapTool* mMeasureArea;
-        QgsMapTool* mMeasureAngle;
         QgsMapTool* mCapturePoint;
         QgsMapTool* mCaptureLine;
         QgsMapTool* mCapturePolygon;
@@ -1034,6 +1036,9 @@ class QgisApp : public QMainWindow
     QgsUndoWidget* mUndoWidget;
 
     int mLastComposerId;
+
+    //! Persistent GPS toolbox
+    QgsGPSInformationWidget * mpGpsWidget;
 };
 
 #endif

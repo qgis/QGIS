@@ -1,0 +1,593 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsGPSInformationWidgetBase</class>
+ <widget class="QWidget" name="QgsGPSInformationWidgetBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>249</width>
+    <height>331</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_4">
+   <property name="margin">
+    <number>0</number>
+   </property>
+   <item row="0" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QToolButton" name="mBtnPosition">
+       <property name="text">
+        <string>...</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionToggleEditing.png</normaloff>:/images/themes/default/mActionToggleEditing.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mBtnSignal">
+       <property name="text">
+        <string>...</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/gpsicons/barchart.svg</normaloff>:/images/themes/default/gpsicons/barchart.svg</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mBtnSatellites">
+       <property name="text">
+        <string>...</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/gpsicons/polarchart.svg</normaloff>:/images/themes/default/gpsicons/polarchart.svg</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mBtnOptions">
+       <property name="text">
+        <string>...</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionOptions.png</normaloff>:/images/themes/default/mActionOptions.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="mBtnDebug">
+       <property name="text">
+        <string>...</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/gis/mActionCopySelected.png</normaloff>:/images/themes/gis/mActionCopySelected.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mConnectButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Connect</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
+    <widget class="QStackedWidget" name="mStackedWidget">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="stackedWidgetPage1">
+      <layout class="QGridLayout" name="gridLayout_2">
+       <property name="margin">
+        <number>0</number>
+       </property>
+       <item row="0" column="0">
+        <widget class="QDateTimeEdit" name="mDateTime">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QDoubleSpinBox" name="mSpinLatitude">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+         <property name="suffix">
+          <string> Latitude</string>
+         </property>
+         <property name="minimum">
+          <double>-90.000000000000000</double>
+         </property>
+         <property name="maximum">
+          <double>90.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QDoubleSpinBox" name="mSpinLongitude">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+         <property name="suffix">
+          <string> Longitude</string>
+         </property>
+         <property name="minimum">
+          <double>-180.000000000000000</double>
+         </property>
+         <property name="maximum">
+          <double>180.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QDoubleSpinBox" name="mSpinElevation">
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+         <property name="suffix">
+          <string> Elevation</string>
+         </property>
+         <property name="maximum">
+          <double>9999.989999999999782</double>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QProgressBar" name="mVerticalAccuracy">
+         <property name="maximum">
+          <number>10</number>
+         </property>
+         <property name="value">
+          <number>5</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="textDirection">
+          <enum>QProgressBar::BottomToTop</enum>
+         </property>
+         <property name="format">
+          <string>Vertical Accuracy</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QProgressBar" name="mHorizontalAccuracy">
+         <property name="maximum">
+          <number>10</number>
+         </property>
+         <property name="value">
+          <number>5</number>
+         </property>
+         <property name="format">
+          <string>Horizonal Accuracy</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="QPushButton" name="mBtnAddVertex">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Add vertex</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <widget class="QPushButton" name="mBtnCloseFeature">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Add feature</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QToolButton" name="mBtnResetFeature">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>32</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="toolTip">
+            <string>Reset current feature</string>
+           </property>
+           <property name="text">
+            <string>...</string>
+           </property>
+           <property name="icon">
+            <iconset resource="../../images/images.qrc">
+             <normaloff>:/images/themes/default/mActionRotatePointSymbols.png</normaloff>:/images/themes/default/mActionRotatePointSymbols.png</iconset>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="stackedWidgetPage2"/>
+     <widget class="QWidget" name="stackedWidgetPage3"/>
+     <widget class="QWidget" name="stackedWidgetPage4">
+      <layout class="QGridLayout" name="gridLayout_5">
+       <property name="margin">
+        <number>0</number>
+       </property>
+       <item row="0" column="0">
+        <widget class="QScrollArea" name="scrollArea">
+         <property name="widgetResizable">
+          <bool>true</bool>
+         </property>
+         <widget class="QWidget" name="scrollAreaWidgetContents">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>-233</y>
+            <width>226</width>
+            <height>531</height>
+           </rect>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_7">
+           <property name="margin">
+            <number>0</number>
+           </property>
+           <item row="0" column="0">
+            <widget class="QGroupBox" name="mDeviceGroupBox">
+             <property name="title">
+              <string>GPS device port</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout">
+              <item row="0" column="0">
+               <widget class="QRadioButton" name="mRadAutodetect">
+                <property name="text">
+                 <string>Autodetect</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QRadioButton" name="mRadUserPath">
+                <property name="text">
+                 <string>Use path / port below</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <layout class="QHBoxLayout" name="horizontalLayout">
+                <item>
+                 <widget class="QLabel" name="mPathLabel">
+                  <property name="enabled">
+                   <bool>false</bool>
+                  </property>
+                  <property name="text">
+                   <string>Path to serial device</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item row="3" column="0">
+               <layout class="QHBoxLayout" name="horizontalLayout_3">
+                <item>
+                 <widget class="QComboBox" name="mCboDevices"/>
+                </item>
+                <item>
+                 <widget class="QToolButton" name="mBtnRefreshDevices">
+                  <property name="text">
+                   <string>...</string>
+                  </property>
+                  <property name="icon">
+                   <iconset resource="../../images/images.qrc">
+                    <normaloff>:/images/themes/default/mActionRotatePointSymbols.png</normaloff>:/images/themes/default/mActionRotatePointSymbols.png</iconset>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QGroupBox" name="mGroupShowMarker">
+             <property name="title">
+              <string>GPS cursor size</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_3">
+              <item row="0" column="0" colspan="3">
+               <widget class="QSlider" name="mSliderMarkerSize">
+                <property name="minimum">
+                 <number>8</number>
+                </property>
+                <property name="maximum">
+                 <number>128</number>
+                </property>
+                <property name="singleStep">
+                 <number>4</number>
+                </property>
+                <property name="pageStep">
+                 <number>8</number>
+                </property>
+                <property name="sliderPosition">
+                 <number>10</number>
+                </property>
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="tickPosition">
+                 <enum>QSlider::TicksBelow</enum>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label">
+                <property name="text">
+                 <string>Small</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <spacer name="horizontalSpacer_2">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>207</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="1" column="2">
+               <widget class="QLabel" name="label_2">
+                <property name="text">
+                 <string>Large</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QGroupBox" name="groupBox_2">
+             <property name="title">
+              <string>GPS digitizing</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_9">
+              <item row="0" column="0">
+               <widget class="QCheckBox" name="mCbxAutoAddVertices">
+                <property name="text">
+                 <string>Auto-add vertices</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QGroupBox" name="groupBox">
+             <property name="title">
+              <string>GPS map recenter</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_8">
+              <item row="1" column="0">
+               <widget class="QRadioButton" name="radRecenterWhenNeeded">
+                <property name="text">
+                 <string>when leaving extents</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QRadioButton" name="radNeverRecenter">
+                <property name="text">
+                 <string>never</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QRadioButton" name="radRecenterMap">
+                <property name="text">
+                 <string>always</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <widget class="QGroupBox" name="groupBox_3">
+             <property name="title">
+              <string>Track</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_11">
+              <item row="0" column="0">
+               <widget class="QPushButton" name="mBtnTrackColour">
+                <property name="styleSheet">
+                 <string/>
+                </property>
+                <property name="text">
+                 <string>Color</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QSpinBox" name="mSpinTrackWidth">
+                <property name="suffix">
+                 <string> width</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="stackedWidgetPage5">
+      <layout class="QGridLayout" name="gridLayout_6">
+       <property name="margin">
+        <number>0</number>
+       </property>
+       <item row="0" column="0">
+        <widget class="QTextEdit" name="mGPSTextEdit"/>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>mBtnPosition</tabstop>
+  <tabstop>mBtnSignal</tabstop>
+  <tabstop>mBtnSatellites</tabstop>
+  <tabstop>mBtnOptions</tabstop>
+  <tabstop>mBtnDebug</tabstop>
+  <tabstop>mDateTime</tabstop>
+  <tabstop>mSpinLatitude</tabstop>
+  <tabstop>mSpinLongitude</tabstop>
+  <tabstop>mSpinElevation</tabstop>
+  <tabstop>mBtnAddVertex</tabstop>
+  <tabstop>mBtnCloseFeature</tabstop>
+  <tabstop>mRadAutodetect</tabstop>
+  <tabstop>mRadUserPath</tabstop>
+  <tabstop>mCboDevices</tabstop>
+  <tabstop>mGroupShowMarker</tabstop>
+  <tabstop>mSliderMarkerSize</tabstop>
+  <tabstop>radRecenterMap</tabstop>
+  <tabstop>radRecenterWhenNeeded</tabstop>
+  <tabstop>radNeverRecenter</tabstop>
+  <tabstop>mGPSTextEdit</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>mRadAutodetect</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mPathLabel</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>100</x>
+     <y>-176</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>86</x>
+     <y>-100</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mRadAutodetect</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mCboDevices</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>153</x>
+     <y>-176</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>142</x>
+     <y>-65</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mRadUserPath</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mPathLabel</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>194</x>
+     <y>-138</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>192</x>
+     <y>-100</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mRadUserPath</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mCboDevices</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>217</x>
+     <y>-138</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>188</x>
+     <y>-65</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>
