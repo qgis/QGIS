@@ -32,8 +32,8 @@ class QWT_POLAR_EXPORT QwtPolarPanner: public QwtPanner
 {
     Q_OBJECT
 
-public:
-    explicit QwtPolarPanner(QwtPolarCanvas *);
+  public:
+    explicit QwtPolarPanner( QwtPolarCanvas * );
     virtual ~QwtPolarPanner();
 
     QwtPolarPlot *plot();
@@ -42,11 +42,11 @@ public:
     QwtPolarCanvas *canvas();
     const QwtPolarCanvas *canvas() const;
 
-protected slots:
-    virtual void movePlot(int dx, int dy);
+  protected slots:
+    virtual void movePlot( int dx, int dy );
 
-protected:
-    virtual void widgetMousePressEvent(QMouseEvent *);
+  protected:
+    virtual void widgetMousePressEvent( QMouseEvent * );
 };
 
 #endif

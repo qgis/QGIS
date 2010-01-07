@@ -23,7 +23,7 @@
 
 class QWT_POLAR_EXPORT QwtPolarLayout
 {
-public:
+  public:
     /*!
       Options to configure the plot layout engine
 
@@ -41,26 +41,26 @@ public:
 
     enum Options
     {
-        IgnoreScrollbars = 1,
-        IgnoreFrames = 2,
-        IgnoreTitle = 4,
-        IgnoreLegend = 8
+      IgnoreScrollbars = 1,
+      IgnoreFrames = 2,
+      IgnoreTitle = 4,
+      IgnoreLegend = 8
     };
 
     explicit QwtPolarLayout();
     virtual ~QwtPolarLayout();
 
-    void setLegendPosition(QwtPolarPlot::LegendPosition pos, double ratio);
-    void setLegendPosition(QwtPolarPlot::LegendPosition pos);
+    void setLegendPosition( QwtPolarPlot::LegendPosition pos, double ratio );
+    void setLegendPosition( QwtPolarPlot::LegendPosition pos );
     QwtPolarPlot::LegendPosition legendPosition() const;
 
-    void setLegendRatio(double ratio);
+    void setLegendRatio( double ratio );
     double legendRatio() const;
 
-    virtual QSize minimumSizeHint(const QwtPolarPlot *) const;    
+    virtual QSize minimumSizeHint( const QwtPolarPlot * ) const;
 
-    virtual void activate(const QwtPolarPlot *, 
-        const QRect &rect, int options = 0);
+    virtual void activate( const QwtPolarPlot *,
+                           const QRect &rect, int options = 0 );
 
     virtual void invalidate();
 
@@ -70,10 +70,10 @@ public:
 
     class LayoutData;
 
-protected:
-    QRect layoutLegend(int options, const QRect &) const;
+  protected:
+    QRect layoutLegend( int options, const QRect & ) const;
 
-private:
+  private:
     class PrivateData;
     PrivateData *d_data;
 };

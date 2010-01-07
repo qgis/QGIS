@@ -11,31 +11,31 @@
 
 class QwtPolarFitter::PrivateData
 {
-public:
+  public:
     PrivateData():
-        stepCount(5)
+        stepCount( 5 )
     {
     }
 
     int stepCount;
 };
 
-/*! 
+/*!
    Constructor
 
    \param stepCount Number of points, that will be inserted between 2 points
    \sa setStepCount()
 */
-QwtPolarFitter::QwtPolarFitter(int stepCount)
+QwtPolarFitter::QwtPolarFitter( int stepCount )
 {
-    d_data = new PrivateData;
-    d_data->stepCount = stepCount;
+  d_data = new PrivateData;
+  d_data->stepCount = stepCount;
 }
 
 //! Destructor
 QwtPolarFitter::~QwtPolarFitter()
 {
-    delete d_data;
+  delete d_data;
 }
 
 /*!
@@ -46,18 +46,18 @@ QwtPolarFitter::~QwtPolarFitter()
 
    \sa stepCount()
 */
-void QwtPolarFitter::setStepCount(int stepCount)
+void QwtPolarFitter::setStepCount( int stepCount )
 {
-    d_data->stepCount = qwtMax(stepCount, 0);
+  d_data->stepCount = qwtMax( stepCount, 0 );
 }
 
-/*! 
+/*!
    \return Number of points, that will be inserted between 2 points
    \sa setStepCount()
 */
 int QwtPolarFitter::stepCount() const
 {
-    return d_data->stepCount;
+  return d_data->stepCount;
 }
 
 /*!
@@ -69,43 +69,43 @@ int QwtPolarFitter::stepCount() const
 */
 #if QT_VERSION < 0x040000
 QwtArray<QwtDoublePoint> QwtPolarFitter::fitCurve(
-    const QwtArray<QwtDoublePoint> &points) const
+  const QwtArray<QwtDoublePoint> &points ) const
 #else
 QPolygonF QwtPolarFitter::fitCurve(
-    const QPolygonF &points) const
+  const QPolygonF &points ) const
 #endif
 {
-    if ( d_data->stepCount <= 0 || points.size() <= 1 )
-        return points;
+  if ( d_data->stepCount <= 0 || points.size() <= 1 )
+    return points;
 
 #if QT_VERSION < 0x040000
-    QwtArray<QwtDoublePoint> fittedPoints;
+  QwtArray<QwtDoublePoint> fittedPoints;
 #else
-    QPolygonF fittedPoints;
+  QPolygonF fittedPoints;
 #endif
 
-    int numPoints = points.size() + (points.size() - 1) * d_data->stepCount;
+  int numPoints = points.size() + ( points.size() - 1 ) * d_data->stepCount;
 
-    fittedPoints.resize(numPoints);
+  fittedPoints.resize( numPoints );
 
-    int index = 0;
-    fittedPoints[index++] = points[0];
-    for ( int i = 1; i < (int)points.size(); i++ )
+  int index = 0;
+  fittedPoints[index++] = points[0];
+  for ( int i = 1; i < ( int )points.size(); i++ )
+  {
+    const QwtDoublePoint &p1 = points[i-1];
+    const QwtDoublePoint &p2 = points[i];
+
+    const double dx = ( p2.x() - p1.x() ) / d_data->stepCount;
+    const double dy = ( p2.y() - p1.y() ) / d_data->stepCount;
+    for ( int j = 1; j <= d_data->stepCount; j++ )
     {
-        const QwtDoublePoint &p1 = points[i-1];
-        const QwtDoublePoint &p2 = points[i];
+      const double x = p1.x() + j * dx;
+      const double y = p1.y() + j * dy;
 
-        const double dx = (p2.x() - p1.x()) / d_data->stepCount;
-        const double dy = (p2.y() - p1.y()) / d_data->stepCount;
-        for ( int j = 1; j <= d_data->stepCount; j++ )
-        {
-            const double x = p1.x() + j * dx;
-            const double y = p1.y() + j * dy;
-
-            fittedPoints[index++] = QwtDoublePoint(x, y);
-        }
+      fittedPoints[index++] = QwtDoublePoint( x, y );
     }
-    fittedPoints.resize(index);
+  }
+  fittedPoints.resize( index );
 
-    return fittedPoints;
+  return fittedPoints;
 }

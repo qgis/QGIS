@@ -35,7 +35,7 @@ class QwtScaleDiv;
 */
 class QWT_POLAR_EXPORT QwtPolarItem: public QwtLegendItemManager
 {
-public:
+  public:
     /*!
         \brief Runtime type information
 
@@ -43,80 +43,80 @@ public:
         having to enable runtime type information of the compiler.
      */
     enum RttiValues
-    { 
-        Rtti_PolarItem = 0,
+    {
+      Rtti_PolarItem = 0,
 
-        Rtti_PolarGrid,
-        Rtti_PolarScale,
-        Rtti_PolarMarker,
-        Rtti_PolarCurve,
-        Rtti_PolarSpectrogram,
+      Rtti_PolarGrid,
+      Rtti_PolarScale,
+      Rtti_PolarMarker,
+      Rtti_PolarCurve,
+      Rtti_PolarSpectrogram,
 
-        Rtti_PolarUserItem = 1000
+      Rtti_PolarUserItem = 1000
     };
 
     /*!
        \brief Plot Item Attributes
-    
+
        - Legend\n
          The item is represented on the legend.
        - AutoScale \n
          The boundingRect() of the item is included in the
          autoscaling calculation.
-  
+
        \sa setItemAttribute(), testItemAttribute()
      */
     enum ItemAttribute
     {
-        Legend = 1,
-        AutoScale = 2
+      Legend = 1,
+      AutoScale = 2
     };
 
 #if QT_VERSION >= 0x040000
     //! Render hints
     enum RenderHint
     {
-        RenderAntialiased = 1
+      RenderAntialiased = 1
     };
 #endif
 
-    explicit QwtPolarItem(const QwtText &title = QwtText());
+    explicit QwtPolarItem( const QwtText &title = QwtText() );
     virtual ~QwtPolarItem();
 
-    void attach(QwtPolarPlot *plot);
+    void attach( QwtPolarPlot *plot );
 
     /*!
-       \brief This method detaches a QwtPolarItem from any QwtPolarPlot it 
+       \brief This method detaches a QwtPolarItem from any QwtPolarPlot it
               has been associated with.
 
        detach() is equivalent to calling attach( NULL )
        \sa attach( QwtPolarPlot* plot )
     */
-    void detach() { attach(NULL); }
+    void detach() { attach( NULL ); }
 
     QwtPolarPlot *plot() const;
-    
-    void setTitle(const QString &title);
-    void setTitle(const QwtText &title);
+
+    void setTitle( const QString &title );
+    void setTitle( const QwtText &title );
     const QwtText &title() const;
 
     virtual int rtti() const;
 
-    void setItemAttribute(ItemAttribute, bool on = true);
-    bool testItemAttribute(ItemAttribute) const;
+    void setItemAttribute( ItemAttribute, bool on = true );
+    bool testItemAttribute( ItemAttribute ) const;
 
 #if QT_VERSION >= 0x040000
-    void setRenderHint(RenderHint, bool on = true);
-    bool testRenderHint(RenderHint) const;
+    void setRenderHint( RenderHint, bool on = true );
+    bool testRenderHint( RenderHint ) const;
 #endif
 
-    double z() const; 
-    void setZ(double z);
+    double z() const;
+    void setZ( double z );
 
     void show();
     void hide();
-    virtual void setVisible(bool);
-    bool isVisible () const;
+    virtual void setVisible( bool );
+    bool isVisible() const;
 
     virtual void itemChanged();
 
@@ -130,22 +130,22 @@ public:
       \param radius Radius of the complete plot area in painter coordinates
       \param canvasRect Contents rect of the canvas in painter coordinates
     */
-    virtual void draw(QPainter *painter, 
-        const QwtScaleMap &azimuthMap, const QwtScaleMap &radialMap,
-        const QwtDoublePoint &pole, double radius,
-        const QwtDoubleRect &canvasRect) const = 0;
+    virtual void draw( QPainter *painter,
+                       const QwtScaleMap &azimuthMap, const QwtScaleMap &radialMap,
+                       const QwtDoublePoint &pole, double radius,
+                       const QwtDoubleRect &canvasRect ) const = 0;
 
-    virtual QwtDoubleInterval boundingInterval(int scaleId) const;
+    virtual QwtDoubleInterval boundingInterval( int scaleId ) const;
 
     virtual QWidget *legendItem() const;
 
-    virtual void updateLegend(QwtLegend *) const;
-    virtual void updateScaleDiv(const QwtScaleDiv &,
-        const QwtScaleDiv &, const QwtDoubleInterval &);
+    virtual void updateLegend( QwtLegend * ) const;
+    virtual void updateScaleDiv( const QwtScaleDiv &,
+                                 const QwtScaleDiv &, const QwtDoubleInterval & );
 
     virtual int marginHint() const;
 
-private:
+  private:
     // Disabled copy constructor and operator=
     QwtPolarItem( const QwtPolarItem & );
     QwtPolarItem &operator=( const QwtPolarItem & );
@@ -153,5 +153,5 @@ private:
     class PrivateData;
     PrivateData *d_data;
 };
-            
+
 #endif

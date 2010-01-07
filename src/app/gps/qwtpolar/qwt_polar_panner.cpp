@@ -12,11 +12,11 @@
 #include "qwt_polar_panner.h"
 
 //! Create a plot panner for a polar plot canvas
-QwtPolarPanner::QwtPolarPanner(QwtPolarCanvas *canvas):
-    QwtPanner(canvas)
+QwtPolarPanner::QwtPolarPanner( QwtPolarCanvas *canvas ):
+    QwtPanner( canvas )
 {
-    connect(this, SIGNAL(panned(int, int)),
-        SLOT(movePlot(int, int)));
+  connect( this, SIGNAL( panned( int, int ) ),
+           SLOT( movePlot( int, int ) ) );
 }
 
 //! Destructor
@@ -26,77 +26,77 @@ QwtPolarPanner::~QwtPolarPanner()
 
 //! Return observed plot canvas
 QwtPolarCanvas *QwtPolarPanner::canvas()
-{   
-    QWidget *w = parentWidget();
-    if ( w && w->inherits("QwtPolarCanvas") )
-        return (QwtPolarCanvas *)w;
+{
+  QWidget *w = parentWidget();
+  if ( w && w->inherits( "QwtPolarCanvas" ) )
+    return ( QwtPolarCanvas * )w;
 
-    return NULL;
+  return NULL;
 }
 
 //! Return observed plot canvas
 const QwtPolarCanvas *QwtPolarPanner::canvas() const
-{   
-    return ((QwtPolarPanner *)this)->canvas();
+{
+  return (( QwtPolarPanner * )this )->canvas();
 }
 
-//! Return observed plot 
+//! Return observed plot
 QwtPolarPlot *QwtPolarPanner::plot()
 {
-    QwtPolarCanvas *c = canvas();
-    if ( c )
-        return c->plot();
+  QwtPolarCanvas *c = canvas();
+  if ( c )
+    return c->plot();
 
-    return NULL;
+  return NULL;
 }
 
-//! Return observed plot 
+//! Return observed plot
 const QwtPolarPlot *QwtPolarPanner::plot() const
 {
-    return ((QwtPolarPanner *)this)->plot();
+  return (( QwtPolarPanner * )this )->plot();
 }
 
 /*!
    Adjust the zoomed area according to dx/dy
-   
+
    \param dx Pixel offset in x direction
    \param dy Pixel offset in y direction
 
    \sa QwtPanner::panned(), QwtPolarPlot::zoom()
 */
-void QwtPolarPanner::movePlot(int dx, int dy)
+void QwtPolarPanner::movePlot( int dx, int dy )
 {
-    QwtPolarPlot *plot = QwtPolarPanner::plot();
-    if ( plot == NULL || ( dx == 0 && dy == 0 ) )
-        return;
+  QwtPolarPlot *plot = QwtPolarPanner::plot();
+  if ( plot == NULL || ( dx == 0 && dy == 0 ) )
+    return;
 
-    const QwtScaleMap map = plot->scaleMap(QwtPolar::Radius);
+  const QwtScaleMap map = plot->scaleMap( QwtPolar::Radius );
 
-    QwtPolarPoint pos = plot->zoomPos();
-    if ( map.s1() <= map.s2() )
-    {
-        pos.setRadius(
-            map.xTransform(map.s1() + pos.radius()) - map.p1());
-        pos.setPoint(pos.toPoint() - QwtDoublePoint(dx, -dy));
-        pos.setRadius(
-            map.invTransform(map.p1() + pos.radius()) - map.s1());
-    }
-    else
-    {
-        pos.setRadius(
-            map.xTransform(map.s1() - pos.radius()) - map.p1());
-        pos.setPoint(pos.toPoint() - QwtDoublePoint(dx, -dy));
-        pos.setRadius(
-            map.s1() - map.invTransform(map.p1() + pos.radius()));
-    }
-    
-    const bool doAutoReplot = plot->autoReplot();
-    plot->setAutoReplot(false);
+  QwtPolarPoint pos = plot->zoomPos();
+  if ( map.s1() <= map.s2() )
+  {
+    pos.setRadius(
+      map.xTransform( map.s1() + pos.radius() ) - map.p1() );
+    pos.setPoint( pos.toPoint() - QwtDoublePoint( dx, -dy ) );
+    pos.setRadius(
+      map.invTransform( map.p1() + pos.radius() ) - map.s1() );
+  }
+  else
+  {
+    pos.setRadius(
+      map.xTransform( map.s1() - pos.radius() ) - map.p1() );
+    pos.setPoint( pos.toPoint() - QwtDoublePoint( dx, -dy ) );
+    pos.setRadius(
+      map.s1() - map.invTransform( map.p1() + pos.radius() ) );
+  }
 
-    plot->zoom(pos, plot->zoomFactor());
+  const bool doAutoReplot = plot->autoReplot();
+  plot->setAutoReplot( false );
 
-    plot->setAutoReplot(doAutoReplot);
-    plot->replot();
+  plot->zoom( pos, plot->zoomFactor() );
+
+  plot->setAutoReplot( doAutoReplot );
+  plot->replot();
 }
 
 /*!
@@ -104,14 +104,14 @@ void QwtPolarPanner::movePlot(int dx, int dy)
 
   \param me Mouse event
 */
-void QwtPolarPanner::widgetMousePressEvent(QMouseEvent *me)
+void QwtPolarPanner::widgetMousePressEvent( QMouseEvent *me )
 {
-    const QwtPolarPlot *plot = QwtPolarPanner::plot();
-    if ( plot )
-    {
-        if ( plot->zoomFactor() < 1.0 )
-            QwtPanner::widgetMousePressEvent(me);
-    }
+  const QwtPolarPlot *plot = QwtPolarPanner::plot();
+  if ( plot )
+  {
+    if ( plot->zoomFactor() < 1.0 )
+      QwtPanner::widgetMousePressEvent( me );
+  }
 }
-        
+
 

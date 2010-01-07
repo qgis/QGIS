@@ -30,13 +30,14 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsattributedialog.h"
+
 //for avoid intersections static method
 #include "qgsmaptooladdfeature.h"
 
 // QWT Charting widget
 #include <qwt_array.h>
 #include <qwt_legend.h>
-#include <qwt_plot.h> 
+#include <qwt_plot.h>
 #include <qwt_plot_grid.h>
 // QWT Polar plot add on
 #include <qpen.h>
@@ -55,18 +56,18 @@
 #include <QColorDialog>
 
 
-QgsGPSInformationWidget::QgsGPSInformationWidget(QgsMapCanvas * thepCanvas, QWidget * parent, Qt::WindowFlags f): 
-  QWidget(parent, f), 
-  mSerialPort(0), 
-  mNmea(0), 
-  mThread(0) ,
-  mpCanvas( thepCanvas )
+QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWidget * parent, Qt::WindowFlags f ):
+    QWidget( parent, f ),
+    mSerialPort( 0 ),
+    mNmea( 0 ),
+    mThread( 0 ) ,
+    mpCanvas( thepCanvas )
 {
-  setupUi(this);
+  setupUi( this );
   mpMapMarker = 0;
   mpRubberBand = 0;
   populateDevices();
-  QWidget * mpHistogramWidget = mStackedWidget->widget(1);
+  QWidget * mpHistogramWidget = mStackedWidget->widget( 1 );
   //
   // Set up the graph for signal strength
   //
@@ -76,22 +77,22 @@ QgsGPSInformationWidget::QgsGPSInformationWidget(QgsMapCanvas * thepCanvas, QWid
   // Set axis titles
   //mpPlot->setAxisTitle(QwtPlot::xBottom, QObject::tr("Satellite"));
   //mpPlot->setAxisTitle(QwtPlot::yLeft, QObject::tr("Value"));
-  mpPlot->setAxisScale(QwtPlot::xBottom, 0, 20);
-  mpPlot->setAxisScale(QwtPlot::yLeft, 0, 100);
+  mpPlot->setAxisScale( QwtPlot::xBottom, 0, 20 );
+  mpPlot->setAxisScale( QwtPlot::yLeft, 0, 100 );
   // add a grid
   //QwtPlotGrid * mypGrid = new QwtPlotGrid();
   //mypGrid->attach( mpPlot );
   //display satellites first
   mpCurve = new QwtPlotCurve();
-  mpCurve->setRenderHint(QwtPlotItem::RenderAntialiased);
-  mpCurve->setPen(QPen(Qt::blue));
-  mpCurve->setBrush(QBrush(Qt::blue));
-  mpPlot->enableAxis( QwtPlot::yLeft, false);
-  mpPlot->enableAxis( QwtPlot::xBottom, false);
+  mpCurve->setRenderHint( QwtPlotItem::RenderAntialiased );
+  mpCurve->setPen( QPen( Qt::blue ) );
+  mpCurve->setBrush( QBrush( Qt::blue ) );
+  mpPlot->enableAxis( QwtPlot::yLeft, false );
+  mpPlot->enableAxis( QwtPlot::xBottom, false );
   mpCurve->attach( mpPlot );
   //ensure all children get removed
-  mpPlot->setAutoDelete(true);
-  QVBoxLayout *mpHistogramLayout = new QVBoxLayout ( mpHistogramWidget );
+  mpPlot->setAutoDelete( true );
+  QVBoxLayout *mpHistogramLayout = new QVBoxLayout( mpHistogramWidget );
   mpHistogramLayout->setContentsMargins( 0, 0, 0, 0 );
   mpHistogramLayout->addWidget( mpPlot );
   mpHistogramWidget->setLayout( mpHistogramLayout );
@@ -99,88 +100,88 @@ QgsGPSInformationWidget::QgsGPSInformationWidget(QgsMapCanvas * thepCanvas, QWid
   //
   // Set up the polar graph for satellite pos
   //
-  QWidget * mpPolarWidget = mStackedWidget->widget(2);
+  QWidget * mpPolarWidget = mStackedWidget->widget( 2 );
   //mpSatellitesWidget = new QwtPolarPlot(QwtText(tr("Satellite Positions")), myTab );
   mpSatellitesWidget = new QwtPolarPlot( mpPolarWidget );
-  mpSatellitesWidget->setAutoReplot(true);
-  mpSatellitesWidget->setPlotBackground(Qt::white);
-  // scales 
-  mpSatellitesWidget->setScale(QwtPolar::Azimuth,
-        0, //min
-        360, //max
-        30 //interval 
-        );
+  mpSatellitesWidget->setAutoReplot( true );
+  mpSatellitesWidget->setPlotBackground( Qt::white );
+  // scales
+  mpSatellitesWidget->setScale( QwtPolar::Azimuth,
+                                0, //min
+                                360, //max
+                                30 //interval
+                              );
 
-  mpSatellitesWidget->setScaleMaxMinor(QwtPolar::Azimuth, 10);
-  mpSatellitesWidget->setScale(QwtPolar::Radius, 
-        0, //min 
-        100 //max
-        );
+  mpSatellitesWidget->setScaleMaxMinor( QwtPolar::Azimuth, 10 );
+  mpSatellitesWidget->setScale( QwtPolar::Radius,
+                                0, //min
+                                100 //max
+                              );
 
-  // grids, axes 
+  // grids, axes
 
   QwtPolarGrid * mypSatellitesGrid = new QwtPolarGrid();
-  mypSatellitesGrid->setPen(QPen(Qt::black));
+  mypSatellitesGrid->setPen( QPen( Qt::black ) );
   for ( int scaleId = 0; scaleId < QwtPolar::ScaleCount; scaleId++ )
   {
-    mypSatellitesGrid->showGrid(scaleId);
+    mypSatellitesGrid->showGrid( scaleId );
     //mypSatellitesGrid->showMinorGrid(scaleId);
-    QPen minorPen(Qt::gray);
-    mypSatellitesGrid->setMinorGridPen(scaleId, minorPen);
+    QPen minorPen( Qt::gray );
+    mypSatellitesGrid->setMinorGridPen( scaleId, minorPen );
   }
-  mypSatellitesGrid->setAxisPen(QwtPolar::AxisAzimuth, QPen(Qt::black));
+  mypSatellitesGrid->setAxisPen( QwtPolar::AxisAzimuth, QPen( Qt::black ) );
 
-  mypSatellitesGrid->showAxis(QwtPolar::AxisAzimuth, true);
-  mypSatellitesGrid->showAxis(QwtPolar::AxisLeft, false); //alt axis
-  mypSatellitesGrid->showAxis(QwtPolar::AxisRight, false);//alt axis
-  mypSatellitesGrid->showAxis(QwtPolar::AxisTop, false);//alt axis
-  mypSatellitesGrid->showAxis(QwtPolar::AxisBottom, false );//alt axis
-  mypSatellitesGrid->showGrid(QwtPolar::Azimuth, true);
-  mypSatellitesGrid->showGrid(QwtPolar::Radius, true);
+  mypSatellitesGrid->showAxis( QwtPolar::AxisAzimuth, true );
+  mypSatellitesGrid->showAxis( QwtPolar::AxisLeft, false ); //alt axis
+  mypSatellitesGrid->showAxis( QwtPolar::AxisRight, false );//alt axis
+  mypSatellitesGrid->showAxis( QwtPolar::AxisTop, false );//alt axis
+  mypSatellitesGrid->showAxis( QwtPolar::AxisBottom, false );//alt axis
+  mypSatellitesGrid->showGrid( QwtPolar::Azimuth, true );
+  mypSatellitesGrid->showGrid( QwtPolar::Radius, true );
   mypSatellitesGrid->attach( mpSatellitesWidget );
 
   //QwtLegend *legend = new QwtLegend;
   //mpSatellitesWidget->insertLegend(legend,  QwtPolarPlot::BottomLegend);
-  QVBoxLayout *mpPolarLayout = new QVBoxLayout ( mpPolarWidget );
+  QVBoxLayout *mpPolarLayout = new QVBoxLayout( mpPolarWidget );
   mpPolarLayout->setContentsMargins( 0, 0, 0, 0 );
   mpPolarLayout->addWidget( mpSatellitesWidget );
   mpPolarWidget->setLayout( mpPolarLayout );
 
 
   // Restore state
-  QSettings mySettings;  
+  QSettings mySettings;
   mSliderMarkerSize->setValue( mySettings.value( "/gps/markerSize", "12" ).toInt() );
   mSpinTrackWidth->setValue( mySettings.value( "/gps/trackWidth", "2" ).toInt() );
-  QString myPortMode = mySettings.value( "/gps/portMode","scanPorts" ).toString();
+  QString myPortMode = mySettings.value( "/gps/portMode", "scanPorts" ).toString();
   //port mode
   if ( myPortMode == "scanPorts" )
   {
-    mRadAutodetect->setChecked( true ); 
+    mRadAutodetect->setChecked( true );
   }
   else
   {
     mRadUserPath->setChecked( true );
   }
   //auto digitising behaviour
-  bool myAutoAddVertexFlag = mySettings.value( "/gps/autoAddVertices","false" ).toBool();
+  bool myAutoAddVertexFlag = mySettings.value( "/gps/autoAddVertices", "false" ).toBool();
   mCbxAutoAddVertices->setChecked( myAutoAddVertexFlag );
   //pan mode
-  QString myPanMode = mySettings.value( "/gps/panMode","recenterWhenNeeded" ).toString();
-  if ( myPanMode=="none" ) 
+  QString myPanMode = mySettings.value( "/gps/panMode", "recenterWhenNeeded" ).toString();
+  if ( myPanMode == "none" )
   {
     radNeverRecenter->setChecked( true );
   }
-  else if ( myPanMode=="recenterAlways" ) 
+  else if ( myPanMode == "recenterAlways" )
   {
     radRecenterMap->setChecked( true );
   }
-  else 
+  else
   {
     radRecenterWhenNeeded->setChecked( true );
   }
   // Set up the rubber band to show digitising
   createRubberBand();
-  mWgs84CRS.createFromEpsg(4326);
+  mWgs84CRS.createFromEpsg( 4326 );
   //for now I am hiding accuracy and date widgets
   mDateTime->hide();
   mVerticalAccuracy->hide();
@@ -191,7 +192,7 @@ QgsGPSInformationWidget::QgsGPSInformationWidget(QgsMapCanvas * thepCanvas, QWid
 QgsGPSInformationWidget::~QgsGPSInformationWidget()
 {
   if ( mpMapMarker ) delete mpMapMarker;
-  QSettings mySettings;  
+  QSettings mySettings;
   mySettings.setValue( "/gps/lastPort", mCboDevices->currentText() );
   mySettings.setValue( "/gps/trackWidth", mSpinTrackWidth->value() );
   mySettings.setValue( "/gps/markerSize", mSliderMarkerSize->value() );
@@ -225,7 +226,7 @@ QgsGPSInformationWidget::~QgsGPSInformationWidget()
   }
 }
 
-void QgsGPSInformationWidget::on_mSpinTrackWidth_valueChanged(int theValue )
+void QgsGPSInformationWidget::on_mSpinTrackWidth_valueChanged( int theValue )
 {
   QSettings mySettings;
   mySettings.setValue( "/gps/trackWidth", theValue );
@@ -239,8 +240,8 @@ void QgsGPSInformationWidget::on_mBtnTrackColour_clicked( )
 {
   QSettings mySettings;
   QColor myColor( mySettings.value( "/qgis/gps/line_color_red", 255 ).toInt(),
-                   mySettings.value( "/qgis/gps/line_color_green", 0 ).toInt(),
-                   mySettings.value( "/qgis/gps/line_color_blue", 0 ).toInt() );
+                  mySettings.value( "/qgis/gps/line_color_green", 0 ).toInt(),
+                  mySettings.value( "/qgis/gps/line_color_blue", 0 ).toInt() );
   myColor = QColorDialog::getColor( myColor, this );
   mySettings.setValue( "/qgis/gps/line_color_red", myColor.red() );
   mySettings.setValue( "/qgis/gps/line_color_green", myColor.green() );
@@ -253,8 +254,8 @@ void QgsGPSInformationWidget::setTrackColour( )
 {
   QSettings mySettings;
   QColor myColor( mySettings.value( "/qgis/gps/line_color_red", 255 ).toInt(),
-                   mySettings.value( "/qgis/gps/line_color_green", 0 ).toInt(),
-                   mySettings.value( "/qgis/gps/line_color_blue", 0 ).toInt() );
+                  mySettings.value( "/qgis/gps/line_color_green", 0 ).toInt(),
+                  mySettings.value( "/qgis/gps/line_color_blue", 0 ).toInt() );
   if ( mpRubberBand )
   {
     mpRubberBand->setColor( myColor );
@@ -304,25 +305,25 @@ void QgsGPSInformationWidget::connectGps()
 {
   if ( mRadUserPath->isChecked() )
   {
-    if( !mCboDevices->currentText().isEmpty() ) 
+    if ( !mCboDevices->currentText().isEmpty() )
     {
       mSerialPort = new QextSerialPort( mCboDevices->currentText() );
-      mSerialPort->setBaudRate(BAUD4800);
-      mSerialPort->setFlowControl(FLOW_OFF);
-      mSerialPort->setParity(PAR_NONE);
-      mSerialPort->setDataBits(DATA_8);
-      mSerialPort->setStopBits(STOP_2);
-      mNmea = new QgsNMEAConnection(mSerialPort, 500);
-      QObject::connect(mNmea, SIGNAL(stateChanged(const QgsGPSInformation&)),
-          this, SLOT(displayGPSInformation(const QgsGPSInformation&)));
-      mThread = new QgsGPSTrackerThread(mNmea);
+      mSerialPort->setBaudRate( BAUD4800 );
+      mSerialPort->setFlowControl( FLOW_OFF );
+      mSerialPort->setParity( PAR_NONE );
+      mSerialPort->setDataBits( DATA_8 );
+      mSerialPort->setStopBits( STOP_2 );
+      mNmea = new QgsNMEAConnection( mSerialPort, 500 );
+      QObject::connect( mNmea, SIGNAL( stateChanged( const QgsGPSInformation& ) ),
+                        this, SLOT( displayGPSInformation( const QgsGPSInformation& ) ) );
+      mThread = new QgsGPSTrackerThread( mNmea );
       mThread->start();
-      mGPSTextEdit->append(tr ( "Connecting on %1" ).arg( mCboDevices->currentText() ) ); 
+      mGPSTextEdit->append( tr( "Connecting on %1" ).arg( mCboDevices->currentText() ) );
     }
-    else 
+    else
     {
-      QMessageBox::information( this, tr( "/gps" ),tr( "No path to the GPS port "
-            "is specified. Please enter a path then try again." ) );
+      QMessageBox::information( this, tr( "/gps" ), tr( "No path to the GPS port "
+                                "is specified. Please enter a path then try again." ) );
       //toggle the button back off
       mConnectButton->setChecked( false );
     }
@@ -330,22 +331,22 @@ void QgsGPSInformationWidget::connectGps()
   else //autdetect
   {
     mNmea = QgsGPSConnection::detectGPSConnection();
-    if(!mNmea)
+    if ( !mNmea )
     {
       mConnectButton->setChecked( false );
       return;
     }
-    mNmea->setPollInterval(1000);
-    QObject::connect(mNmea, SIGNAL(stateChanged(const QgsGPSInformation&)), this, SLOT(displayGPSInformation(const QgsGPSInformation&)));
+    mNmea->setPollInterval( 1000 );
+    QObject::connect( mNmea, SIGNAL( stateChanged( const QgsGPSInformation& ) ), this, SLOT( displayGPSInformation( const QgsGPSInformation& ) ) );
 
-    mThread = new QgsGPSTrackerThread(mNmea);
+    mThread = new QgsGPSTrackerThread( mNmea );
     mThread->start();
-    mGPSTextEdit->append(tr ( "Connected..." ) ); 
+    mGPSTextEdit->append( tr( "Connected..." ) );
   }
 }
 void QgsGPSInformationWidget::disconnectGps()
 {
-  if(mThread)
+  if ( mThread )
   {
     mThread->quit();
     mThread->wait();
@@ -353,7 +354,7 @@ void QgsGPSInformationWidget::disconnectGps()
     mThread = 0;
     mNmea = 0;
     mSerialPort = 0;
-    mGPSTextEdit->append(tr ( "Disconnected..." ) ); 
+    mGPSTextEdit->append( tr( "Disconnected..." ) );
   }
   //mGPSTextEdit->clear();
   //toggle the button back on
@@ -361,45 +362,45 @@ void QgsGPSInformationWidget::disconnectGps()
 }
 
 
-void QgsGPSInformationWidget::displayGPSInformation(const QgsGPSInformation& info)
+void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation& info )
 {
   mGPSTextEdit->clear();
 
   QwtArray<double> myXData;//qwtarray is just a wrapped qvector
   QwtArray<double> mySignalData;//qwtarray is just a wrapped qvector
-  mpPlot->setAxisScale(QwtPlot::xBottom, 0, info.satellitesInView.size());
-  while (!mMarkerList.isEmpty())
+  mpPlot->setAxisScale( QwtPlot::xBottom, 0, info.satellitesInView.size() );
+  while ( !mMarkerList.isEmpty() )
   {
     delete mMarkerList.takeFirst();
   }
-  for(int i = 0; i < info.satellitesInView.size(); ++i)
+  for ( int i = 0; i < info.satellitesInView.size(); ++i )
   {
-    QgsSatelliteInfo currentInfo = info.satellitesInView.at(i);
+    QgsSatelliteInfo currentInfo = info.satellitesInView.at( i );
 
     myXData.append( i );
     mySignalData.append( 0 );
     myXData.append( i );
     mySignalData.append( currentInfo.signal );
-    myXData.append( i+1 );
+    myXData.append( i + 1 );
     mySignalData.append( currentInfo.signal );
-    myXData.append( i+1 );
+    myXData.append( i + 1 );
     mySignalData.append( 0 );
-    mGPSTextEdit->append("Satellite");
-    if(currentInfo.inUse)
+    mGPSTextEdit->append( "Satellite" );
+    if ( currentInfo.inUse )
     {
-      mGPSTextEdit->append("In use");
+      mGPSTextEdit->append( "In use" );
     }
     else
     {
-      mGPSTextEdit->append("Not in use");
+      mGPSTextEdit->append( "Not in use" );
     }
-    mGPSTextEdit->append("id: " + QString::number(currentInfo.id));
-    mGPSTextEdit->append("elevation: " + QString::number(currentInfo.elevation));
-    mGPSTextEdit->append("azimuth: " + QString::number(currentInfo.azimuth));
-    mGPSTextEdit->append("signal: " + QString::number(currentInfo.signal));
+    mGPSTextEdit->append( "id: " + QString::number( currentInfo.id ) );
+    mGPSTextEdit->append( "elevation: " + QString::number( currentInfo.elevation ) );
+    mGPSTextEdit->append( "azimuth: " + QString::number( currentInfo.azimuth ) );
+    mGPSTextEdit->append( "signal: " + QString::number( currentInfo.signal ) );
     // Add a marker to the polar plot
     QwtPolarMarker *mypMarker = new QwtPolarMarker();
-    mypMarker->setPosition(QwtPolarPoint( currentInfo.azimuth, currentInfo.elevation ) );
+    mypMarker->setPosition( QwtPolarPoint( currentInfo.azimuth, currentInfo.elevation ) );
     QColor myColour;
     if ( currentInfo.signal < 30 ) //weak signal
     {
@@ -409,19 +410,19 @@ void QgsGPSInformationWidget::displayGPSInformation(const QgsGPSInformation& inf
     {
       myColour = Qt::black; //strong signal
     }
-    mypMarker->setSymbol( QwtSymbol(QwtSymbol::Ellipse,
-          QBrush(Qt::black), QPen(myColour), QSize(9, 9)) );
-    mypMarker->setLabelAlignment(Qt::AlignHCenter | Qt::AlignTop);
-    QwtText text(QString::number(currentInfo.id));
-    text.setColor(myColour);
-    QColor bg(Qt::white);
-    bg.setAlpha(200);
-    text.setBackgroundBrush( QBrush( bg ));
-    mypMarker->setLabel(text);
-    mypMarker->attach( mpSatellitesWidget  );
+    mypMarker->setSymbol( QwtSymbol( QwtSymbol::Ellipse,
+                                     QBrush( Qt::black ), QPen( myColour ), QSize( 9, 9 ) ) );
+    mypMarker->setLabelAlignment( Qt::AlignHCenter | Qt::AlignTop );
+    QwtText text( QString::number( currentInfo.id ) );
+    text.setColor( myColour );
+    QColor bg( Qt::white );
+    bg.setAlpha( 200 );
+    text.setBackgroundBrush( QBrush( bg ) );
+    mypMarker->setLabel( text );
+    mypMarker->attach( mpSatellitesWidget );
     mMarkerList << mypMarker;
   }
-  mpCurve->setData( myXData,mySignalData );
+  mpCurve->setData( myXData, mySignalData );
   mpPlot->replot();
   if ( mpMapMarker ) delete mpMapMarker;
   QgsPoint myNewCenter = QgsPoint( info.longitude, info.latitude );
@@ -441,20 +442,20 @@ void QgsGPSInformationWidget::displayGPSInformation(const QgsGPSInformation& inf
   mSpinElevation->setValue( info.elevation );
   mHorizontalAccuracy->setValue( 10 - info.hdop );
   mVerticalAccuracy->setValue( 10 - info.vdop );
-  mGPSTextEdit->append("longitude: " + QString::number(info.longitude));
-  mGPSTextEdit->append("latitude: " + QString::number(info.latitude));
-  mGPSTextEdit->append("elevation: " + QString::number(info.elevation));
-  mGPSTextEdit->append("pdop: " + QString::number(info.pdop));
-  mGPSTextEdit->append("hdop: " + QString::number(info.hdop));
-  mGPSTextEdit->append("vdop: " + QString::number(info.vdop)); 
+  mGPSTextEdit->append( "longitude: " + QString::number( info.longitude ) );
+  mGPSTextEdit->append( "latitude: " + QString::number( info.latitude ) );
+  mGPSTextEdit->append( "elevation: " + QString::number( info.elevation ) );
+  mGPSTextEdit->append( "pdop: " + QString::number( info.pdop ) );
+  mGPSTextEdit->append( "hdop: " + QString::number( info.hdop ) );
+  mGPSTextEdit->append( "vdop: " + QString::number( info.vdop ) );
 
 
 
-  
+
   // Avoid refreshing / panning if we havent moved
   if ( mLastGpsPosition != myNewCenter )
   {
-    mLastGpsPosition = myNewCenter;  
+    mLastGpsPosition = myNewCenter;
     if ( mCbxAutoAddVertices->isChecked() )
     {
       addVertex();
@@ -464,21 +465,21 @@ void QgsGPSInformationWidget::displayGPSInformation(const QgsGPSInformation& inf
     if ( radRecenterMap->isChecked() || radRecenterWhenNeeded->isChecked() )
     {
       QgsCoordinateReferenceSystem mypSRS = mpCanvas->mapRenderer( )->destinationSrs();
-      QgsCoordinateReferenceSystem myLatLongRefSys = QgsCoordinateReferenceSystem(4326);
-      QgsCoordinateTransform myTransform ( myLatLongRefSys, mypSRS );
-      
+      QgsCoordinateReferenceSystem myLatLongRefSys = QgsCoordinateReferenceSystem( 4326 );
+      QgsCoordinateTransform myTransform( myLatLongRefSys, mypSRS );
+
       QgsPoint myPoint = myTransform.transform( myNewCenter );
       //keep the extent the same just center the map canvas in the display so our feature is in the middle
-      QgsRectangle myRect( 
-          myPoint.x( ) - ( mpCanvas->extent( ).width( ) / 2 ), 
-          myPoint.y( ) - ( mpCanvas->extent( ).height( ) / 2 ), 
-          myPoint.x( ) + ( mpCanvas->extent( ).width( ) / 2 ), 
-          myPoint.y( ) + ( mpCanvas->extent( ).height( ) / 2 ) );
+      QgsRectangle myRect(
+        myPoint.x( ) - ( mpCanvas->extent( ).width( ) / 2 ),
+        myPoint.y( ) - ( mpCanvas->extent( ).height( ) / 2 ),
+        myPoint.x( ) + ( mpCanvas->extent( ).width( ) / 2 ),
+        myPoint.y( ) + ( mpCanvas->extent( ).height( ) / 2 ) );
 
       // only change the extents if the point is beyond the current extents to minimise repaints
-      if ( ( !mpCanvas->extent().contains( myPoint ) &&
-              radRecenterWhenNeeded->isChecked() ) || 
-              radRecenterMap->isChecked() )
+      if (( !mpCanvas->extent().contains( myPoint ) &&
+            radRecenterWhenNeeded->isChecked() ) ||
+          radRecenterMap->isChecked() )
       {
         mpCanvas->setExtent( myRect );
         mpCanvas->refresh( );
@@ -511,13 +512,13 @@ void QgsGPSInformationWidget::addVertex( )
   {
     createRubberBand( );
   }
-  
-  // we store the capture list in wgs84 and then transform to layer crs when 
+
+  // we store the capture list in wgs84 and then transform to layer crs when
   // calling close feature
   mCaptureList.push_back( mLastGpsPosition );
   // we store the rubber band points in map canvas CRS so transform to map crs
   QgsPoint myPoint;
-  if(mpCanvas && mpCanvas->mapRenderer())
+  if ( mpCanvas && mpCanvas->mapRenderer() )
   {
     QgsCoordinateTransform t( mWgs84CRS, mpCanvas->mapRenderer()->destinationSrs() );
     myPoint = t.transform( mLastGpsPosition );
@@ -550,7 +551,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked( )
   if ( !vlayer )
   {
     QMessageBox::information( 0, tr( "Not a vector layer" ),
-        tr( "The current layer is not a vector layer" ) );
+                              tr( "The current layer is not a vector layer" ) );
     connectGpsSlot();
     return;
   }
@@ -558,24 +559,24 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked( )
 
   //no support for adding features to 2.5D types yet
   if ( layerWKBType == QGis::WKBLineString25D || layerWKBType == QGis::WKBPolygon25D ||
-      layerWKBType == QGis::WKBMultiLineString25D || layerWKBType == QGis::WKBPoint25D || layerWKBType == QGis::WKBMultiPoint25D )
+       layerWKBType == QGis::WKBMultiLineString25D || layerWKBType == QGis::WKBPoint25D || layerWKBType == QGis::WKBMultiPoint25D )
   {
     QMessageBox::critical( 0, tr( "2.5D shape type not supported" ), tr(
-          "Adding features to 2.5D shapetypes is not supported yet. Please "
-          "select a different editable, non 2.5D layer and try again." ) );
+                             "Adding features to 2.5D shapetypes is not supported yet. Please "
+                             "select a different editable, non 2.5D layer and try again." ) );
     connectGpsSlot();
     return;
   }
 
-  // Multipart features not supported 
-  if (layerWKBType == QGis::WKBMultiLineString ||
-      layerWKBType == QGis::WKBMultiPoint ||
-      layerWKBType == QGis::WKBMultiLineString ||
-      layerWKBType == QGis::WKBMultiPolygon )
+  // Multipart features not supported
+  if ( layerWKBType == QGis::WKBMultiLineString ||
+       layerWKBType == QGis::WKBMultiPoint ||
+       layerWKBType == QGis::WKBMultiLineString ||
+       layerWKBType == QGis::WKBMultiPolygon )
   {
     QMessageBox::critical( 0, tr( "Multipart shape type not supported" ), tr(
-          "Adding features to multipart shapetypes is not supported yet. Please "
-          "select a different editable, non 2.5D layer and try again." ) );
+                             "Adding features to multipart shapetypes is not supported yet. Please "
+                             "select a different editable, non 2.5D layer and try again." ) );
     connectGpsSlot();
     return;
 
@@ -586,7 +587,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked( )
   if ( !( provider->capabilities() & QgsVectorDataProvider::AddFeatures ) )
   {
     QMessageBox::information( 0, tr( "Layer cannot be added to" ),
-        tr( "The data provider for this layer does not support the addition of features." ) );
+                              tr( "The data provider for this layer does not support the addition of features." ) );
     connectGpsSlot();
     return;
   }
@@ -594,8 +595,8 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked( )
   if ( !vlayer->isEditable() )
   {
     QMessageBox::information( 0, tr( "Layer not editable" ),
-        tr( "Cannot edit the vector layer. To make it editable, go to the file item "
-          "of the layer, right click and check 'Allow Editing'." ) );
+                              tr( "Cannot edit the vector layer. To make it editable, go to the file item "
+                                  "of the layer, right click and check 'Allow Editing'." ) );
     connectGpsSlot();
     return;
   }
@@ -604,7 +605,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked( )
   if ( layerWKBType == QGis::WKBLineString  && mCaptureList.size() < 2 )
   {
     QMessageBox::information( 0, tr( "Not enough vertices" ),
-      tr( "Cannot close a line feature until it has at least two vertices.") );
+                              tr( "Cannot close a line feature until it has at least two vertices." ) );
     connectGpsSlot();
     return;
   }
@@ -613,7 +614,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked( )
   if ( layerWKBType == QGis::WKBPolygon && mCaptureList.size() < 3 )
   {
     QMessageBox::information( 0, tr( "Not enough vertices" ),
-      tr( "Cannot close a polygon feature until it has at least three vertices.") );
+                              tr( "Cannot close a polygon feature until it has at least three vertices." ) );
     connectGpsSlot();
     return;
   }
@@ -714,7 +715,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked( )
         QgsPoint savePoint = *it;
         // transform the gps point into the layer crs
         QgsCoordinateTransform t( mWgs84CRS, vlayer->crs() );
-        QgsPoint myPoint = t.transform( savePoint);
+        QgsPoint myPoint = t.transform( savePoint );
         x = myPoint.x();
         y = myPoint.y();
 
@@ -745,7 +746,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked( )
         QgsPoint savePoint = *it;
         // transform the gps point into the layer crs
         QgsCoordinateTransform t( mWgs84CRS, vlayer->crs() );
-        QgsPoint myPoint = t.transform( savePoint);
+        QgsPoint myPoint = t.transform( savePoint );
         x = myPoint.x();
         y = myPoint.y();
 
@@ -790,7 +791,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked( )
     else //unknown type
     {
       QMessageBox::critical( 0, tr( "Error" ), tr( "Cannot add feature. "
-            "Unknown WKB type. Choose a different layer and try again." ) );
+                             "Unknown WKB type. Choose a different layer and try again." ) );
       connectGpsSlot();
       return; //unknown wkbtype
     }
@@ -851,7 +852,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked( )
 
 void QgsGPSInformationWidget::connectGpsSlot( )
 {
-  QObject::connect(mNmea, SIGNAL(stateChanged(const QgsGPSInformation&)), this, SLOT(displayGPSInformation(const QgsGPSInformation&)));
+  QObject::connect( mNmea, SIGNAL( stateChanged( const QgsGPSInformation& ) ), this, SLOT( displayGPSInformation( const QgsGPSInformation& ) ) );
 }
 
 void QgsGPSInformationWidget::on_mBtnRefreshDevices_clicked( )
@@ -974,10 +975,10 @@ QPointF QgsGPSInformationWidget::gpsToPixelPosition( const QgsPoint& point )
 {
   //transform to map crs
   QgsPoint myCenter;
-  if(mpCanvas && mpCanvas->mapRenderer())
+  if ( mpCanvas && mpCanvas->mapRenderer() )
   {
-    QgsCoordinateTransform t(mWgs84CRS, mpCanvas->mapRenderer()->destinationSrs());
-    myCenter = t.transform(point);
+    QgsCoordinateTransform t( mWgs84CRS, mpCanvas->mapRenderer()->destinationSrs() );
+    myCenter = t.transform( point );
   }
   else
   {

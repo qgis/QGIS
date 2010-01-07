@@ -1,7 +1,7 @@
 /* -*- mode: C++ ; c-file-style: "stroustrup" -*- *****************************
  * QwtPolar Widget Library
  * Copyright (C) 2008   Uwe Rathmann
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the Qwt License, Version 1.0
  *****************************************************************************/
@@ -13,15 +13,15 @@
 
 class QwtPolarItem::PrivateData
 {
-public:
+  public:
     PrivateData():
-        plot(NULL),
-        isVisible(true),
-        attributes(0),
+        plot( NULL ),
+        isVisible( true ),
+        attributes( 0 ),
 #if QT_VERSION >= 0x040000
-        renderHints(0),
+        renderHints( 0 ),
 #endif
-        z(0.0)
+        z( 0.0 )
     {
     }
 
@@ -37,32 +37,32 @@ public:
     QwtText title;
 };
 
-/*! 
+/*!
    Constructor
 
    \param title Item title, f.e used on a legend
 
    \sa setTitle()
 */
-QwtPolarItem::QwtPolarItem(const QwtText &title)
+QwtPolarItem::QwtPolarItem( const QwtText &title )
 {
-    d_data = new PrivateData;
-    d_data->title = title;
+  d_data = new PrivateData;
+  d_data->title = title;
 }
 
 //! Destroy the QwtPolarItem
 QwtPolarItem::~QwtPolarItem()
 {
-    attach(NULL);
-    delete d_data;
+  attach( NULL );
+  delete d_data;
 }
 
-/*! 
+/*!
   \brief Attach the item to a plot.
 
-  This method will attach a QwtPolarItem to the QwtPolarPlot argument. 
-  It will first detach the QwtPolarItem from any plot from a previous 
-  call to attach (if necessary). 
+  This method will attach a QwtPolarItem to the QwtPolarPlot argument.
+  It will first detach the QwtPolarItem from any plot from a previous
+  call to attach (if necessary).
   If a NULL argument is passed, it will detach from any QwtPolarPlot it
   was attached to.
 
@@ -70,53 +70,53 @@ QwtPolarItem::~QwtPolarItem()
 
   \sa QwtPolarItem::detach()
 */
-void QwtPolarItem::attach(QwtPolarPlot *plot)
+void QwtPolarItem::attach( QwtPolarPlot *plot )
 {
-    if ( plot == d_data->plot )
-        return;
+  if ( plot == d_data->plot )
+    return;
 
-    // remove the item from the previous plot
+  // remove the item from the previous plot
 
-    if ( d_data->plot )
-    {
-        d_data->plot->attachItem(this, false);
+  if ( d_data->plot )
+  {
+    d_data->plot->attachItem( this, false );
 
-        if ( d_data->plot->autoReplot() )
-            d_data->plot->update();
-    }
+    if ( d_data->plot->autoReplot() )
+      d_data->plot->update();
+  }
 
-    d_data->plot = plot;
+  d_data->plot = plot;
 
-    if ( d_data->plot )
-    {
-        // insert the item into the current plot
+  if ( d_data->plot )
+  {
+    // insert the item into the current plot
 
-        d_data->plot->attachItem(this, true);
-        itemChanged();
-    }
+    d_data->plot->attachItem( this, true );
+    itemChanged();
+  }
 }
 
-/*! 
+/*!
    Return rtti for the specific class represented. QwtPolarItem is simply
    a virtual interface class, and base classes will implement this method
    with specific rtti values so a user can differentiate them.
 
-   The rtti value is useful for environments, where the 
+   The rtti value is useful for environments, where the
    runtime type information is disabled and it is not possible
    to do a dynamic_cast<...>.
-   
+
    \return rtti value
    \sa RttiValues
 */
 int QwtPolarItem::rtti() const
 {
-    return Rtti_PolarItem;
+  return Rtti_PolarItem;
 }
 
 //! Return attached plot
-QwtPolarPlot *QwtPolarItem::plot() const 
-{ 
-    return d_data->plot; 
+QwtPolarPlot *QwtPolarItem::plot() const
+{
+  return d_data->plot;
 }
 
 /*!
@@ -124,9 +124,9 @@ QwtPolarPlot *QwtPolarItem::plot() const
 
    \return setZ(), QwtPolarItemDict::itemList()
 */
-double QwtPolarItem::z() const 
-{ 
-    return d_data->z; 
+double QwtPolarItem::z() const
+{
+  return d_data->z;
 }
 
 /*!
@@ -137,45 +137,45 @@ double QwtPolarItem::z() const
    \param z Z-value
    \sa z(), QwtPolarItemDict::itemList()
 */
-void QwtPolarItem::setZ(double z) 
-{ 
-    if ( d_data->z != z )
+void QwtPolarItem::setZ( double z )
+{
+  if ( d_data->z != z )
+  {
+    d_data->z = z;
+    if ( d_data->plot )
     {
-        d_data->z = z; 
-        if ( d_data->plot )
-        {
-            // update the z order
-            d_data->plot->attachItem(this, false);
-            d_data->plot->attachItem(this, true);
-        }
-        itemChanged();
+      // update the z order
+      d_data->plot->attachItem( this, false );
+      d_data->plot->attachItem( this, true );
     }
+    itemChanged();
+  }
 }
 
-/*! 
+/*!
    Set a new title
 
    \param title Title
-   \sa title() 
-*/  
-void QwtPolarItem::setTitle(const QString &title)
+   \sa title()
+*/
+void QwtPolarItem::setTitle( const QString &title )
 {
-    setTitle(QwtText(title));
+  setTitle( QwtText( title ) );
 }
 
-/*! 
+/*!
    Set a new title
 
    \param title Title
-   \sa title() 
-*/  
-void QwtPolarItem::setTitle(const QwtText &title)
+   \sa title()
+*/
+void QwtPolarItem::setTitle( const QwtText &title )
 {
-    if ( d_data->title != title )
-    {
-        d_data->title = title; 
-        itemChanged();
-    }
+  if ( d_data->title != title )
+  {
+    d_data->title = title;
+    itemChanged();
+  }
 }
 
 /*!
@@ -184,28 +184,28 @@ void QwtPolarItem::setTitle(const QwtText &title)
 */
 const QwtText &QwtPolarItem::title() const
 {
-    return d_data->title;
+  return d_data->title;
 }
 
 /*!
    Toggle an item attribute
- 
+
    \param attribute Attribute type
    \param on true/false
 
    \sa testItemAttribute(), ItemAttribute
 */
-void QwtPolarItem::setItemAttribute(ItemAttribute attribute, bool on)
+void QwtPolarItem::setItemAttribute( ItemAttribute attribute, bool on )
 {
-    if ( bool(d_data->attributes & attribute) != on )
-    {
-        if ( on )
-            d_data->attributes |= attribute;
-        else
-            d_data->attributes &= ~attribute;
+  if ( bool( d_data->attributes & attribute ) != on )
+  {
+    if ( on )
+      d_data->attributes |= attribute;
+    else
+      d_data->attributes &= ~attribute;
 
-        itemChanged();
-    }
+    itemChanged();
+  }
 }
 
 /*!
@@ -215,32 +215,32 @@ void QwtPolarItem::setItemAttribute(ItemAttribute attribute, bool on)
    \return true/false
    \sa setItemAttribute(), ItemAttribute
 */
-bool QwtPolarItem::testItemAttribute(ItemAttribute attribute) const
+bool QwtPolarItem::testItemAttribute( ItemAttribute attribute ) const
 {
-    return d_data->attributes & attribute;
+  return d_data->attributes & attribute;
 }
 
 #if QT_VERSION >= 0x040000
 
 /*!
    Toggle an render hint
- 
+
    \param hint Render hint
    \param on true/false
 
    \sa testRenderHint(), RenderHint
 */
-void QwtPolarItem::setRenderHint(RenderHint hint, bool on)
+void QwtPolarItem::setRenderHint( RenderHint hint, bool on )
 {
-    if ( ((d_data->renderHints & hint) != 0) != on )
-    {
-        if ( on )
-            d_data->renderHints |= hint;
-        else
-            d_data->renderHints &= ~hint;
+  if ((( d_data->renderHints & hint ) != 0 ) != on )
+  {
+    if ( on )
+      d_data->renderHints |= hint;
+    else
+      d_data->renderHints &= ~hint;
 
-        itemChanged();
-    }
+    itemChanged();
+  }
 }
 
 /*!
@@ -250,9 +250,9 @@ void QwtPolarItem::setRenderHint(RenderHint hint, bool on)
    \return true/false
    \sa setRenderHint(), RenderHint
 */
-bool QwtPolarItem::testRenderHint(RenderHint hint) const
+bool QwtPolarItem::testRenderHint( RenderHint hint ) const
 {
-    return (d_data->renderHints & hint);
+  return ( d_data->renderHints & hint );
 }
 
 #endif
@@ -260,54 +260,54 @@ bool QwtPolarItem::testRenderHint(RenderHint hint) const
 //! Show the item
 void QwtPolarItem::show()
 {
-    setVisible(true);
+  setVisible( true );
 }
 
 //! Hide the item
 void QwtPolarItem::hide()
 {
-    setVisible(false);
+  setVisible( false );
 }
 
-/*! 
+/*!
     Show/Hide the item
 
     \param on Show if true, otherwise hide
     \sa isVisible(), show(), hide()
 */
-void QwtPolarItem::setVisible(bool on) 
-{ 
-    if ( on != d_data->isVisible )
-    {
-        d_data->isVisible = on; 
-        itemChanged(); 
-    }
+void QwtPolarItem::setVisible( bool on )
+{
+  if ( on != d_data->isVisible )
+  {
+    d_data->isVisible = on;
+    itemChanged();
+  }
 }
 
-/*! 
+/*!
     \return true if visible
     \sa setVisible(), show(), hide()
 */
 bool QwtPolarItem::isVisible() const
-{ 
-    return d_data->isVisible; 
+{
+  return d_data->isVisible;
 }
 
-/*! 
-   Update the legend and call QwtPolarPlot::autoRefresh for the 
+/*!
+   Update the legend and call QwtPolarPlot::autoRefresh for the
    parent plot.
 
    \sa updateLegend()
 */
 void QwtPolarItem::itemChanged()
 {
-    if ( d_data->plot )
-    {
-        if ( d_data->plot->legend() )
-            updateLegend(d_data->plot->legend());
+  if ( d_data->plot )
+  {
+    if ( d_data->plot->legend() )
+      updateLegend( d_data->plot->legend() );
 
-        d_data->plot->autoRefresh();
-    }
+    d_data->plot->autoRefresh();
+  }
 }
 
 /*!
@@ -319,9 +319,9 @@ void QwtPolarItem::itemChanged()
 
    \param scaleId Scale id ( QwtPolar::Scale )
 */
-QwtDoubleInterval QwtPolarItem::boundingInterval(int /*scaleId*/) const
+QwtDoubleInterval QwtPolarItem::boundingInterval( int /*scaleId*/ ) const
 {
-    return QwtDoubleInterval(); // invalid
+  return QwtDoubleInterval(); // invalid
 }
 
 /*!
@@ -334,15 +334,15 @@ QwtDoubleInterval QwtPolarItem::boundingInterval(int /*scaleId*/) const
 
    \param azimuthScaleDiv Scale division of the azimuth-scale
    \param radialScaleDiv Scale division of the radius-axis
-   \param interval The interval of the radius-axis, that is 
+   \param interval The interval of the radius-axis, that is
                    visible on the canvas
 
    \sa QwtPolarPlot::updateAxes()
 */
-void QwtPolarItem::updateScaleDiv(const QwtScaleDiv & /* azimuthScaleDiv */,
-    const QwtScaleDiv & /* radialScaleDiv */, 
-    const QwtDoubleInterval & /*interval */ ) 
-{ 
+void QwtPolarItem::updateScaleDiv( const QwtScaleDiv & /* azimuthScaleDiv */,
+                                   const QwtScaleDiv & /* radialScaleDiv */,
+                                   const QwtDoubleInterval & /*interval */ )
+{
 }
 
 /*!
@@ -357,46 +357,46 @@ void QwtPolarItem::updateScaleDiv(const QwtScaleDiv & /* azimuthScaleDiv */,
 
    \sa legendItem(), itemChanged(), QwtLegend()
 */
-void QwtPolarItem::updateLegend(QwtLegend *legend) const
+void QwtPolarItem::updateLegend( QwtLegend *legend ) const
 {
-    if ( !legend )
-        return;
+  if ( !legend )
+    return;
 
-    QWidget *lgdItem = legend->find(this);
-    if ( testItemAttribute(QwtPolarItem::Legend) )
+  QWidget *lgdItem = legend->find( this );
+  if ( testItemAttribute( QwtPolarItem::Legend ) )
+  {
+    if ( lgdItem == NULL )
     {
-        if ( lgdItem == NULL )
+      lgdItem = legendItem();
+      if ( lgdItem )
+      {
+        if ( lgdItem->inherits( "QwtLegendItem" ) )
         {
-            lgdItem = legendItem();
-            if ( lgdItem )
-            {
-                if ( lgdItem->inherits("QwtLegendItem") )
-                {
-                    QwtLegendItem *label = (QwtLegendItem *)lgdItem;
-                    label->setItemMode(legend->itemMode());
+          QwtLegendItem *label = ( QwtLegendItem * )lgdItem;
+          label->setItemMode( legend->itemMode() );
 
-                    if ( d_data->plot )
-                    {
-                        QObject::connect(label, SIGNAL(clicked()),
-                            d_data->plot, SLOT(legendItemClicked()));
-                        QObject::connect(label, SIGNAL(checked(bool)),
-                            d_data->plot, SLOT(legendItemChecked(bool)));
-                    }
-                }
-                legend->insert(this, lgdItem);
-            }
+          if ( d_data->plot )
+          {
+            QObject::connect( label, SIGNAL( clicked() ),
+                              d_data->plot, SLOT( legendItemClicked() ) );
+            QObject::connect( label, SIGNAL( checked( bool ) ),
+                              d_data->plot, SLOT( legendItemChecked( bool ) ) );
+          }
         }
-        if ( lgdItem && lgdItem->inherits("QwtLegendItem") )
-        {
-            QwtLegendItem* label = (QwtLegendItem*)lgdItem;
-            if ( label )
-                label->setText(d_data->title);
-        }
+        legend->insert( this, lgdItem );
+      }
     }
-    else
+    if ( lgdItem && lgdItem->inherits( "QwtLegendItem" ) )
     {
-        delete lgdItem;
+      QwtLegendItem* label = ( QwtLegendItem* )lgdItem;
+      if ( label )
+        label->setText( d_data->title );
     }
+  }
+  else
+  {
+    delete lgdItem;
+  }
 }
 
 /*!
@@ -412,18 +412,18 @@ void QwtPolarItem::updateLegend(QwtLegend *legend) const
 QWidget *QwtPolarItem::legendItem() const
 {
 #if QWT_VERSION >= 0x050300
-    return new QwtLegendCurveItem;
+  return new QwtLegendCurveItem;
 #else
-    return new QwtLegendItem;
+  return new QwtLegendItem;
 #endif
 }
 
 /*!
    Some items like to display something (f.e. the azimuth axis) outside
-   of the area of the interval of the radial scale. 
+   of the area of the interval of the radial scale.
    The default implementation returns 0 pixels
 */
 int QwtPolarItem::marginHint() const
 {
-    return 0;
+  return 0;
 }

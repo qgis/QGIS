@@ -18,16 +18,16 @@ static const int LabelDist = 2;
 
 class QwtPolarMarker::PrivateData
 {
-public:
+  public:
     PrivateData():
-        align(Qt::AlignCenter)
+        align( Qt::AlignCenter )
     {
-        symbol = new QwtSymbol();
+      symbol = new QwtSymbol();
     }
 
     ~PrivateData()
     {
-        delete symbol;
+      delete symbol;
     }
 
     QwtText label;
@@ -44,40 +44,40 @@ public:
 
 //! Sets alignment to Qt::AlignCenter, and style to NoLine
 QwtPolarMarker::QwtPolarMarker():
-    QwtPolarItem(QwtText("Marker"))
+    QwtPolarItem( QwtText( "Marker" ) )
 {
-    d_data = new PrivateData;
+  d_data = new PrivateData;
 
-    setItemAttribute(QwtPolarItem::AutoScale);
-    setZ(30.0);
+  setItemAttribute( QwtPolarItem::AutoScale );
+  setZ( 30.0 );
 }
 
 //! Destructor
 QwtPolarMarker::~QwtPolarMarker()
 {
-    delete d_data;
+  delete d_data;
 }
 
 //! \return QwtPolarItem::Rtti_PlotMarker
 int QwtPolarMarker::rtti() const
 {
-    return QwtPolarItem::Rtti_PolarMarker;
+  return QwtPolarItem::Rtti_PolarMarker;
 }
 
 //! \return Position of the marker
 QwtPolarPoint QwtPolarMarker::position() const
 {
-    return d_data->pos;
+  return d_data->pos;
 }
 
 //! Change the position of the marker
-void QwtPolarMarker::setPosition(const QwtPolarPoint &pos)
+void QwtPolarMarker::setPosition( const QwtPolarPoint &pos )
 {
-    if ( d_data->pos != pos )
-    {
-        d_data->pos = pos;
-        itemChanged();
-    }
+  if ( d_data->pos != pos )
+  {
+    d_data->pos = pos;
+    itemChanged();
+  }
 }
 
 /*!
@@ -90,80 +90,80 @@ void QwtPolarMarker::setPosition(const QwtPolarPoint &pos)
   \param radius Radius of the complete plot area in painter coordinates
   \param canvasRect Contents rect of the canvas in painter coordinates
 */
-void QwtPolarMarker::draw(QPainter *painter,
-    const QwtScaleMap &azimuthMap, const QwtScaleMap &radialMap,
-    const QwtDoublePoint &pole, double /* radius */,
-    const QwtDoubleRect & /* canvasRect */) const
+void QwtPolarMarker::draw( QPainter *painter,
+                           const QwtScaleMap &azimuthMap, const QwtScaleMap &radialMap,
+                           const QwtDoublePoint &pole, double /* radius */,
+                           const QwtDoubleRect & /* canvasRect */ ) const
 {
-    const double r = radialMap.xTransform(d_data->pos.radius());
-    const double a = azimuthMap.xTransform(d_data->pos.azimuth());
+  const double r = radialMap.xTransform( d_data->pos.radius() );
+  const double a = azimuthMap.xTransform( d_data->pos.azimuth() );
 
-    const QPoint pos = qwtPolar2Pos(pole, r, a).toPoint();
+  const QPoint pos = qwtPolar2Pos( pole, r, a ).toPoint();
 
 
-    // draw symbol
-    QSize sSym(0, 0);
-    if (d_data->symbol->style() != QwtSymbol::NoSymbol)
-    {
-        sSym = d_data->symbol->size();
-        d_data->symbol->draw(painter, pos.x(), pos.y());
-    }
+  // draw symbol
+  QSize sSym( 0, 0 );
+  if ( d_data->symbol->style() != QwtSymbol::NoSymbol )
+  {
+    sSym = d_data->symbol->size();
+    d_data->symbol->draw( painter, pos.x(), pos.y() );
+  }
 
-    // draw label
-    if (!d_data->label.isEmpty())
-    {
-        int xlw = qwtMax(int(d_data->pen.width()), 1);
-        int ylw = xlw;
+  // draw label
+  if ( !d_data->label.isEmpty() )
+  {
+    int xlw = qwtMax( int( d_data->pen.width() ), 1 );
+    int ylw = xlw;
 
-        int xlw1 = qwtMax((xlw + 1) / 2, (sSym.width() + 1) / 2) + LabelDist;
-        xlw = qwtMax(xlw / 2, (sSym.width() + 1) / 2) + LabelDist;
-        int ylw1 = qwtMax((ylw + 1) / 2, (sSym.height() + 1) / 2) + LabelDist;
-        ylw = qwtMax(ylw / 2, (sSym. height() + 1) / 2) + LabelDist;
+    int xlw1 = qwtMax(( xlw + 1 ) / 2, ( sSym.width() + 1 ) / 2 ) + LabelDist;
+    xlw = qwtMax( xlw / 2, ( sSym.width() + 1 ) / 2 ) + LabelDist;
+    int ylw1 = qwtMax(( ylw + 1 ) / 2, ( sSym.height() + 1 ) / 2 ) + LabelDist;
+    ylw = qwtMax( ylw / 2, ( sSym. height() + 1 ) / 2 ) + LabelDist;
 
-        QRect tr(QPoint(0, 0), d_data->label.textSize(painter->font()));
-        tr.moveCenter(QPoint(0, 0));
+    QRect tr( QPoint( 0, 0 ), d_data->label.textSize( painter->font() ) );
+    tr.moveCenter( QPoint( 0, 0 ) );
 
-        int dx = pos.x();
-        int dy = pos.y();
+    int dx = pos.x();
+    int dy = pos.y();
 
-        if (d_data->align & (int) Qt::AlignTop)
-            dy += tr.y() - ylw1;
-        else if (d_data->align & (int) Qt::AlignBottom)
-            dy -= tr.y() - ylw1;
+    if ( d_data->align & ( int ) Qt::AlignTop )
+      dy += tr.y() - ylw1;
+    else if ( d_data->align & ( int ) Qt::AlignBottom )
+      dy -= tr.y() - ylw1;
 
-        if (d_data->align & (int) Qt::AlignLeft)
-            dx += tr.x() - xlw1;
-        else if (d_data->align & (int) Qt::AlignRight)
-            dx -= tr.x() - xlw1;
+    if ( d_data->align & ( int ) Qt::AlignLeft )
+      dx += tr.x() - xlw1;
+    else if ( d_data->align & ( int ) Qt::AlignRight )
+      dx -= tr.x() - xlw1;
 
 #if QT_VERSION < 0x040000
-        tr.moveBy(dx, dy);
+    tr.moveBy( dx, dy );
 #else
-        tr.translate(dx, dy);
+    tr.translate( dx, dy );
 #endif
-        d_data->label.draw(painter, tr);
-    }
+    d_data->label.draw( painter, tr );
+  }
 }
 
 /*!
   \brief Assign a symbol
-  \param s New symbol 
+  \param s New symbol
   \sa symbol()
 */
-void QwtPolarMarker::setSymbol(const QwtSymbol &s)
+void QwtPolarMarker::setSymbol( const QwtSymbol &s )
 {
-    delete d_data->symbol;
-    d_data->symbol = s.clone();
-    itemChanged();
+  delete d_data->symbol;
+  d_data->symbol = s.clone();
+  itemChanged();
 }
 
 /*!
   \return the symbol
   \sa setSymbol(), QwtSymbol
 */
-const QwtSymbol &QwtPolarMarker::symbol() const 
-{ 
-    return *d_data->symbol; 
+const QwtSymbol &QwtPolarMarker::symbol() const
+{
+  return *d_data->symbol;
 }
 
 /*!
@@ -171,22 +171,22 @@ const QwtSymbol &QwtPolarMarker::symbol() const
   \param label label text
   \sa label()
 */
-void QwtPolarMarker::setLabel(const QwtText& label)
+void QwtPolarMarker::setLabel( const QwtText& label )
 {
-    if ( label != d_data->label )
-    {
-        d_data->label = label;
-        itemChanged();
-    }
+  if ( label != d_data->label )
+  {
+    d_data->label = label;
+    itemChanged();
+  }
 }
 
 /*!
   \return the label
   \sa setLabel()
 */
-QwtText QwtPolarMarker::label() const 
-{ 
-    return d_data->label; 
+QwtText QwtPolarMarker::label() const
+{
+  return d_data->label;
 }
 
 /*!
@@ -197,20 +197,20 @@ QwtText QwtPolarMarker::label() const
 
   \param align Alignment. A combination of AlignTop, AlignBottom,
     AlignLeft, AlignRight, AlignCenter, AlgnHCenter,
-    AlignVCenter.  
+    AlignVCenter.
   \sa labelAlignment()
 */
 #if QT_VERSION < 0x040000
-void QwtPolarMarker::setLabelAlignment(int align)
+void QwtPolarMarker::setLabelAlignment( int align )
 #else
-void QwtPolarMarker::setLabelAlignment(Qt::Alignment align)
+void QwtPolarMarker::setLabelAlignment( Qt::Alignment align )
 #endif
 {
-    if ( align == d_data->align )
-        return;
-    
-    d_data->align = align;
-    itemChanged();
+  if ( align == d_data->align )
+    return;
+
+  d_data->align = align;
+  itemChanged();
 }
 
 /*!
@@ -218,15 +218,15 @@ void QwtPolarMarker::setLabelAlignment(Qt::Alignment align)
   \sa setLabelAlignment()
 */
 #if QT_VERSION < 0x040000
-int QwtPolarMarker::labelAlignment() const 
+int QwtPolarMarker::labelAlignment() const
 #else
-Qt::Alignment QwtPolarMarker::labelAlignment() const 
+Qt::Alignment QwtPolarMarker::labelAlignment() const
 #endif
-{ 
-    return d_data->align; 
+{
+  return d_data->align;
 }
 
-/*! 
+/*!
    Interval, that is necessary to display the item
    This interval can be useful for operations like clipping or autoscaling
 
@@ -235,10 +235,10 @@ Qt::Alignment QwtPolarMarker::labelAlignment() const
 
    \sa position()
 */
-QwtDoubleInterval QwtPolarMarker::boundingInterval(int scaleId) const
+QwtDoubleInterval QwtPolarMarker::boundingInterval( int scaleId ) const
 {
-    const double v = ( scaleId == QwtPolar::ScaleRadius ) 
-        ? d_data->pos.radius() : d_data-> pos.azimuth();
+  const double v = ( scaleId == QwtPolar::ScaleRadius )
+                   ? d_data->pos.radius() : d_data-> pos.azimuth();
 
-    return QwtDoubleInterval(v, v);
+  return QwtDoubleInterval( v, v );
 }

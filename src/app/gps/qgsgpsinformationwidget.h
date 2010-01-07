@@ -23,7 +23,7 @@
 #include <qgsmapcanvas.h>
 #include <qgsgpsmarker.h>
 #include <qgsmaptoolcapture.h>
-#include <qwt_plot_curve.h> 
+#include <qwt_plot_curve.h>
 #include <qwt_polar_plot.h>
 #include <qwt_polar_marker.h>
 class QextSerialPort;
@@ -32,14 +32,14 @@ class QgsGPSTrackerThread;
 struct QgsGPSInformation;
 class QPointF;
 
-/**A dock widget that displays information from a GPS device and 
- * allows the user to capture features using gps readings to 
+/**A dock widget that displays information from a GPS device and
+ * allows the user to capture features using gps readings to
  * specify the geometry.*/
 class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidgetBase
 {
-  Q_OBJECT
+    Q_OBJECT
   public:
-    QgsGPSInformationWidget(QgsMapCanvas * thepCanvas, QWidget * parent = 0, Qt::WindowFlags f = 0);
+    QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWidget * parent = 0, Qt::WindowFlags f = 0 );
     ~QgsGPSInformationWidget();
 
   private slots:
@@ -47,7 +47,7 @@ class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidg
     void displayGPSInformation( const QgsGPSInformation& info );
     void setTrackColour( );
     void on_mBtnTrackColour_clicked( );
-    void on_mSpinTrackWidth_valueChanged(int theValue );
+    void on_mSpinTrackWidth_valueChanged( int theValue );
     void on_mBtnPosition_clicked( );
     void on_mBtnSignal_clicked( );
     void on_mBtnSatellites_clicked( );

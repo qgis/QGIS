@@ -211,7 +211,7 @@ double nmea_distance_ellipsoid(
     *to_azimuth = atan( tan_alpha_2 );
   }
 
-  return b * A * ( sigma - delta_sigma );
+  return b * A *( sigma - delta_sigma );
 }
 
 /**
