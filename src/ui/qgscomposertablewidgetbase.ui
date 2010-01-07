@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>287</width>
-    <height>238</height>
+    <width>239</width>
+    <height>281</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,8 +24,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>269</width>
-        <height>194</height>
+        <width>221</width>
+        <height>237</height>
        </rect>
       </property>
       <attribute name="label">
@@ -74,7 +74,7 @@
          </item>
         </layout>
        </item>
-       <item row="3" column="0">
+       <item row="3" column="0" colspan="2">
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
           <widget class="QLabel" name="mMarginLabel">
@@ -88,14 +88,55 @@
          </item>
         </layout>
        </item>
-       <item row="4" column="0">
+       <item row="4" column="0" colspan="2">
+        <widget class="QCheckBox" name="mShowGridCheckBox">
+         <property name="text">
+          <string>Show grid</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0" colspan="2">
+        <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <item>
+          <widget class="QLabel" name="mGridStrokeWidthLabel">
+           <property name="text">
+            <string>Grid stroke width</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="mGridStrokeWidthSpinBox"/>
+         </item>
+        </layout>
+       </item>
+       <item row="6" column="0">
+        <widget class="QLabel" name="mGridColorLabel">
+         <property name="text">
+          <string>Grid color</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1">
+        <widget class="QgsColorButton" name="mGridColorButton">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="0">
         <widget class="QPushButton" name="mHeaderFontPushButton">
          <property name="text">
           <string>Header Font...</string>
          </property>
         </widget>
        </item>
-       <item row="4" column="1">
+       <item row="7" column="1">
         <widget class="QPushButton" name="mContentFontPushButton">
          <property name="text">
           <string>Content Font...</string>
@@ -103,18 +144,18 @@
         </widget>
        </item>
       </layout>
-      <zorder>mHeaderFontPushButton</zorder>
-      <zorder>mContentFontPushButton</zorder>
-      <zorder></zorder>
-      <zorder></zorder>
-      <zorder></zorder>
-      <zorder></zorder>
-      <zorder></zorder>
      </widget>
     </widget>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

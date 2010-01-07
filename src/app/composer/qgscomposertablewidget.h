@@ -42,8 +42,11 @@ class QgsComposerTableWidget: public QWidget, private Ui::QgsComposerTableWidget
     void on_mComposerMapComboBox_currentIndexChanged( int index );
     void on_mMaximumColumnsSpinBox_valueChanged( int i );
     void on_mMarginSpinBox_valueChanged( double d );
+    void on_mGridStrokeWidthSpinBox_valueChanged( double d );
+    void on_mGridColorButton_clicked();
     void on_mHeaderFontPushButton_clicked();
     void on_mContentFontPushButton_clicked();
+    void on_mShowGridCheckBox_stateChanged( int state );
 };
 
 #endif // QGSCOMPOSERTABLEWIDGET_H
