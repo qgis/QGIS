@@ -123,7 +123,7 @@
       </sizepolicy>
      </property>
      <property name="text">
-      <string>Colour of bar</string>
+      <string>Color of bar</string>
      </property>
      <property name="buddy">
       <cstring>pbnChangeColor</cstring>
@@ -139,10 +139,10 @@
       </sizepolicy>
      </property>
      <property name="toolTip">
-      <string>Click to select the colour</string>
+      <string>Click to select the color</string>
      </property>
      <property name="whatsThis">
-      <string>Click to select the colour</string>
+      <string>Click to select the color</string>
      </property>
      <property name="text">
       <string/>

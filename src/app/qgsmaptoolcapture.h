@@ -39,7 +39,7 @@ class QgsMapToolCapture : public QgsMapToolEdit
     };
 
     //! constructor
-    QgsMapToolCapture( QgsMapCanvas* canvas, enum CaptureTool tool );
+    QgsMapToolCapture( QgsMapCanvas* canvas, CaptureTool tool );
 
     //! destructor
     virtual ~QgsMapToolCapture();

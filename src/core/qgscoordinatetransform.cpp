@@ -193,13 +193,13 @@ void QgsCoordinateTransform::initialise()
     // If the source and destination projection are the same, set the short
     // circuit flag (no transform takes place)
     mShortCircuit = true;
-    QgsDebugMsg( "Source/Dest CRS equal, shortcircuit is set." );
+    QgsDebugMsgLevel( "Source/Dest CRS equal, shortcircuit is set.", 3 );
   }
   else
   {
     // Transform must take place
     mShortCircuit = false;
-    QgsDebugMsg( "Source/Dest CRS UNequal, shortcircuit is NOt set." );
+    QgsDebugMsgLevel( "Source/Dest CRS UNequal, shortcircuit is NOt set.", 3 );
   }
 
 }
@@ -472,18 +472,18 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
     {
       if ( direction == ForwardTransform )
       {
-        points += QString("(%1, %2)\n").arg( x[i] ).arg( y[i] );
+        points += QString( "(%1, %2)\n" ).arg( x[i] ).arg( y[i] );
       }
       else
       {
-        points += QString("(%1, %2)\n").arg( x[i]*RAD_TO_DEG ).arg( y[i]*RAD_TO_DEG );
+        points += QString( "(%1, %2)\n" ).arg( x[i] * RAD_TO_DEG ).arg( y[i] * RAD_TO_DEG );
       }
     }
 
-    QString msg = tr("%1 of\n%2\nfailed with error: %3\n")
-	                  .arg( dir )
-	                  .arg( points )
-	                  .arg( QString::fromUtf8( pj_strerrno( projResult ) ) );
+    QString msg = tr( "%1 of\n%2\nfailed with error: %3\n" )
+                  .arg( dir )
+                  .arg( points )
+                  .arg( QString::fromUtf8( pj_strerrno( projResult ) ) );
 
     QgsDebugMsg( "Projection failed emitting invalid transform signal: " + msg );
 

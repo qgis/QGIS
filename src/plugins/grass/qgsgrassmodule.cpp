@@ -294,8 +294,8 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
   QgisInterface *iface,
   QString xname, QDomElement qDocElem,
   QWidget * parent, Qt::WFlags f )
-    : QgsGrassModuleOptions( tools, module, iface ),
-    QWidget( parent, f )
+    : QWidget( parent, f ),
+    QgsGrassModuleOptions( tools, module, iface )
 {
   QgsDebugMsg( "called." );
   QgsDebugMsg( QString( "PATH = %1" ).arg( getenv( "PATH" ) ) );

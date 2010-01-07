@@ -31,7 +31,7 @@
 #include <QMouseEvent>
 #include <QSettings>
 
-QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas* canvas, enum CaptureTool tool ): QgsMapToolCapture( canvas, tool )
+QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas* canvas, CaptureTool tool ): QgsMapToolCapture( canvas, tool )
 {
 
 }
