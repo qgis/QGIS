@@ -74,7 +74,7 @@ void QgsNMEAConnection::parseData()
     mStringBuffer.append( mSource->read( numBytes ) );
     processStringBuffer();
     emit stateChanged( mLastGPSInformation );
-    qWarning( mStringBuffer.toLocal8Bit().data() );
+    QgsDebugMsg( mStringBuffer );
   }
 }
 
@@ -102,35 +102,35 @@ void QgsNMEAConnection::processStringBuffer()
         QByteArray ba = substring.toLocal8Bit();
         if ( substring.startsWith( "$GPGGA" ) )
         {
-          qWarning( substring.toLocal8Bit().data() );
+          QgsDebugMsg( substring );
           processGGASentence( ba.data(), ba.length() );
           mStatus = GPSDataReceived;
           QgsDebugMsg( "*******************GPS data received****************" );
         }
         else if ( substring.startsWith( "$GPRMC" ) )
         {
-          qWarning( substring.toLocal8Bit().data() );
+          QgsDebugMsg( substring );
           processRMCSentence( ba.data(), ba.length() );
           mStatus = GPSDataReceived;
           QgsDebugMsg( "*******************GPS data received****************" );
         }
         else if ( substring.startsWith( "$GPGSV" ) )
         {
-          qWarning( substring.toLocal8Bit().data() );
+          QgsDebugMsg( substring );
           processGSVSentence( ba.data(), ba.length() );
           mStatus = GPSDataReceived;
           QgsDebugMsg( "*******************GPS data received****************" );
         }
         else if ( substring.startsWith( "$GPVTG" ) )
         {
-          qWarning( substring.toLocal8Bit().data() );
+          QgsDebugMsg( substring );
           processVTGSentence( ba.data(), ba.length() );
           mStatus = GPSDataReceived;
           QgsDebugMsg( "*******************GPS data received****************" );
         }
         else if ( substring.startsWith( "$GPGSA" ) )
         {
-          qWarning( substring.toLocal8Bit().data() );
+          QgsDebugMsg( substring );
           processGSASentence( ba.data(), ba.length() );
           mStatus = GPSDataReceived;
           QgsDebugMsg( "*******************GPS data received****************" );
