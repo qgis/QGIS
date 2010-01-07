@@ -8,9 +8,9 @@
  *
  */
 
-/*! \file time.h */
+/*! \file nmeatime.h */
 
-#include "time.h"
+#include "nmeatime.h"
 
 #ifdef NMEA_WIN
 #   pragma warning(disable: 4201)
