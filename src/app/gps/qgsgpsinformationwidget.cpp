@@ -767,7 +767,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked( )
       memcpy( &wkb[position], &y, sizeof( double ) );
       f->setGeometryAndOwnership( &wkb[0], size );
 
-      int avoidIntersectionsReturn = QgsMapToolAddFeature::avoidIntersectons( f->geometry() );
+      int avoidIntersectionsReturn = QgsMapToolAddFeature::avoidIntersections( f->geometry() );
       if ( avoidIntersectionsReturn == 1 )
       {
         //not a polygon type. Impossible to get there

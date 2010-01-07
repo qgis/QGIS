@@ -31,5 +31,5 @@ class QgsMapToolAddFeature: public QgsMapToolCapture
     @return 2 if avoid intersection would change the geometry type, \
     3 other error during intersection removal
     @note Consider moving this into analysis lib since it is now used by QgsGpsInformation too. */
-    static int avoidIntersectons( QgsGeometry* g );
+    static int avoidIntersections( QgsGeometry* g );
 };

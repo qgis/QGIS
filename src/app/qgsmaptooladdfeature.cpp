@@ -443,7 +443,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
         }
         f->setGeometryAndOwnership( &wkb[0], size );
 
-        int avoidIntersectionsReturn = avoidIntersectons( f->geometry() );
+        int avoidIntersectionsReturn = avoidIntersections( f->geometry() );
         if ( avoidIntersectionsReturn == 1 )
         {
           //not a polygon type. Impossible to get there
@@ -520,7 +520,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
   }
 }
 
-int QgsMapToolAddFeature::avoidIntersectons( QgsGeometry* g )
+int QgsMapToolAddFeature::avoidIntersections( QgsGeometry* g )
 {
   int returnValue = 0;
 
