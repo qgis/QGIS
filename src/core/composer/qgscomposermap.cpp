@@ -365,9 +365,9 @@ void QgsComposerMap::moveContent( double dx, double dy )
     mExtent.setXMaximum( mExtent.xMaximum() + dx );
     mExtent.setYMinimum( mExtent.yMinimum() + dy );
     mExtent.setYMaximum( mExtent.yMaximum() + dy );
-    emit extentChanged();
     cache();
     update();
+    emit extentChanged();
   }
 }
 
@@ -433,9 +433,9 @@ void QgsComposerMap::zoomContent( int delta, double x, double y )
   mExtent.setYMaximum( centerY + newIntervalY / 2 );
   mExtent.setYMinimum( centerY - newIntervalY / 2 );
 
-  emit extentChanged();
   cache();
   update();
+  emit extentChanged();
 }
 
 void QgsComposerMap::setSceneRect( const QRectF& rectangle )
@@ -450,13 +450,14 @@ void QgsComposerMap::setSceneRect( const QRectF& rectangle )
   double newHeight = mExtent.width() * h / w ;
   mExtent = QgsRectangle( mExtent.xMinimum(), mExtent.yMinimum(), mExtent.xMaximum(), mExtent.yMinimum() + newHeight );
   mCacheUpdated = false;
-  emit extentChanged();
+
   if ( mPreviewMode != Rectangle )
   {
     cache();
   }
   updateBoundingRect();
   update();
+  emit extentChanged();
 }
 
 void QgsComposerMap::setNewExtent( const QgsRectangle& extent )
@@ -487,9 +488,9 @@ void QgsComposerMap::setNewScale( double scaleDenominator )
   double scaleRatio = scaleDenominator / currentScaleDenominator;
   mExtent.scale( scaleRatio );
   mCacheUpdated = false;
-  emit extentChanged();
   cache();
   update();
+  emit extentChanged();
 }
 
 void QgsComposerMap::setOffset( double xOffset, double yOffset )
