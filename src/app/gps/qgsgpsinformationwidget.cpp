@@ -30,6 +30,7 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsattributedialog.h"
+#include "qgsgeometry.h"
 
 //for avoid intersections static method
 #include "qgsmaptooladdfeature.h"
@@ -449,9 +450,6 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation& in
   mGPSTextEdit->append( "hdop: " + QString::number( info.hdop ) );
   mGPSTextEdit->append( "vdop: " + QString::number( info.vdop ) );
 
-
-
-
   // Avoid refreshing / panning if we havent moved
   if ( mLastGpsPosition != myNewCenter )
   {
@@ -768,7 +766,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked( )
       memcpy( &wkb[position], &y, sizeof( double ) );
       f->setGeometryAndOwnership( &wkb[0], size );
 
-      int avoidIntersectionsReturn = QgsMapToolAddFeature::avoidIntersections( f->geometry() );
+      int avoidIntersectionsReturn = f->geometry()->avoidIntersections();
       if ( avoidIntersectionsReturn == 1 )
       {
         //not a polygon type. Impossible to get there

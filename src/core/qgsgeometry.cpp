@@ -27,6 +27,10 @@ email                : morb at ozemail dot com dot au
 #include "qgsrectangle.h"
 #include "qgslogger.h"
 
+#include "qgsmaplayerregistry.h"
+#include "qgsvectorlayer.h"
+#include "qgsproject.h"
+
 #define DEFAULT_QUADRANT_SEGMENTS 8
 
 #define CATCH_GEOS(r) \
@@ -6209,4 +6213,48 @@ bool QgsGeometry::deletePart( int partNum )
   }
 
   return TRUE;
+}
+
+int QgsGeometry::avoidIntersections()
+{
+  int returnValue = 0;
+
+  //check if g has polygon type
+  if ( type() != QGis::Polygon )
+  {
+    return 1;
+  }
+
+  QGis::WkbType geomTypeBeforeModification = wkbType();
+
+  //read avoid intersections list from project properties
+  bool listReadOk;
+  QStringList avoidIntersectionsList = QgsProject::instance()->readListEntry( "Digitizing", "/AvoidIntersectionsList", &listReadOk );
+  if ( !listReadOk )
+  {
+    return true; //no intersections stored in project does not mean error
+  }
+
+  //go through list, convert each layer to vector layer and call QgsVectorLayer::removePolygonIntersections for each
+  QgsVectorLayer* currentLayer = 0;
+  QStringList::const_iterator aIt = avoidIntersectionsList.constBegin();
+  for ( ; aIt != avoidIntersectionsList.constEnd(); ++aIt )
+  {
+    currentLayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( *aIt ) );
+    if ( currentLayer )
+    {
+      if ( currentLayer->removePolygonIntersections( this ) != 0 )
+      {
+        returnValue = 3;
+      }
+    }
+  }
+
+  //make sure the geometry still has the same type (e.g. no change from polygon to multipolygon)
+  if ( wkbType() != geomTypeBeforeModification )
+  {
+    return 2;
+  }
+
+  return returnValue;
 }

@@ -21,15 +21,7 @@ class QgsMapToolAddFeature: public QgsMapToolCapture
 {
     Q_OBJECT
   public:
-    QgsMapToolAddFeature( QgsMapCanvas* canvas, enum CaptureMode tool );
+    QgsMapToolAddFeature( QgsMapCanvas* canvas, CaptureMode mode );
     virtual ~QgsMapToolAddFeature();
     void canvasReleaseEvent( QMouseEvent * e );
-    
-    /**Modifies geometry to avoid intersections with the layers specified in project properties
-    @return 0 in case of success, 
-    @return 1 if geometry is not of polygon type, 
-    @return 2 if avoid intersection would change the geometry type, \
-    3 other error during intersection removal
-    @note Consider moving this into analysis lib since it is now used by QgsGpsInformation too. */
-    static int avoidIntersections( QgsGeometry* g );
 };
