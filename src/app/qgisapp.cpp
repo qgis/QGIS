@@ -140,6 +140,7 @@
 #include "ogr/qgsopenvectorlayerdialog.h"
 #include "qgsattributetabledialog.h"
 #include "qgsvectorfilewriter.h"
+#include "qgsgpsinformationwidget.h"
 
 //
 // Gdal/Ogr includes
@@ -326,7 +327,8 @@ QgisApp::QgisApp( QSplashScreen *splash, QWidget * parent, Qt::WFlags fl )
     : QMainWindow( parent, fl ),
     mSplash( splash ),
     mPythonConsole( NULL ),
-    mPythonUtils( NULL )
+    mPythonUtils( NULL ),
+    mpGpsWidget(NULL)
 {
   if ( smInstance )
   {
@@ -554,6 +556,11 @@ void QgisApp::readSettings()
 
   // Add the recently accessed project file paths to the File menu
   mRecentProjectPaths = settings.value( "/UI/recentProjectsList" ).toStringList();
+  // Restore state of GPS Tracker
+  if ( settings.value( "/gps/widgetEnabled", false ).toBool() )
+  {
+    showGpsTool();   
+  }
 }
 
 
@@ -945,6 +952,13 @@ void QgisApp::createActions()
   connect( mActionRemoveLayer, SIGNAL( triggered() ), this, SLOT( removeLayer() ) );
   mActionRemoveLayer->setEnabled( false );
 
+  mActionGpsTool = new QAction( getThemeIcon( "mActionGpsTool.png" ), tr( "Live GPS tracking" ), this );
+  shortcuts->registerAction( mActionGpsTool, tr( "", "Live GPS tracking" ) );
+  mActionGpsTool->setStatusTip( tr( "Show GPS tool" ) );
+  connect( mActionGpsTool, SIGNAL( triggered() ), this, SLOT( showGpsTool() ) );
+  mActionGpsTool->setEnabled( true );
+  
+
   mActionLayerProperties = new QAction( tr( "Properties..." ), this );
   shortcuts->registerAction( mActionLayerProperties );
   mActionLayerProperties->setStatusTip( tr( "Set properties of the current layer" ) );
@@ -1302,6 +1316,7 @@ void QgisApp::createMenus()
     mViewMenu->addMenu( mToolbarMenu );
     mViewMenu->addAction( mActionToggleFullScreen );
   }
+  mViewMenu->addAction( mActionGpsTool );
 
   // Layers Menu
 
@@ -2056,6 +2071,15 @@ void QgisApp::saveRecentProjectPath( QString projectPath, QSettings & settings )
   // Persist the list
   settings.setValue( "/UI/recentProjectsList", mRecentProjectPaths );
 
+  // Persist state of GPS Tracker
+  if ( mpGpsWidget )
+  {
+      settings.setValue( "/gps/widgetEnabled", true );
+  }
+  else
+  {
+      settings.setValue( "/gps/widgetEnabled", false );
+  }
   // Update menu list of paths
   updateRecentProjectPaths();
 
@@ -2099,6 +2123,16 @@ void QgisApp::restoreWindowState()
   if ( !restoreGeometry( settings.value( "/UI/geometry", QByteArray::fromRawData(( char * )defaultUIgeometry, sizeof defaultUIgeometry ) ).toByteArray() ) )
   {
     QgsDebugMsg( "restore of UI geometry failed" );
+  }
+  // Persist state of GPS Tracker
+  if ( mpGpsWidget )
+  {
+      settings.setValue( "/gps/widgetEnabled", true );
+      delete mpGpsWidget;
+  }
+  else
+  {
+      settings.setValue( "/gps/widgetEnabled", false );
   }
 }
 ///////////// END OF GUI SETUP ROUTINES ///////////////
@@ -4365,6 +4399,27 @@ void QgisApp::removeAllLayers()
   QgsProject::instance()->dirty( true );
 } //remove all layers
 
+void QgisApp::showGpsTool()
+{
+  if(!mpGpsWidget)
+  {
+    mpGpsWidget = new QgsGPSInformationWidget( mMapCanvas );
+    //create the dock widget
+    mpGpsDock = new QDockWidget( tr( "GPS Information" ), this );
+    mpGpsDock->setObjectName( "GPSInformation" );
+    mpGpsDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+    addDockWidget( Qt::LeftDockWidgetArea, mpGpsDock );
+    // add to the Panel submenu
+    mPanelMenu->addAction( mpGpsDock->toggleViewAction() );
+    // now add our widget to the dock - ownership of the widget is passed to the dock
+    mpGpsDock->setWidget( mpGpsWidget );
+    mpGpsWidget->show();
+  }
+  else
+  {
+    mpGpsDock->toggleViewAction();
+  }
+}
 
 void QgisApp::zoomToLayerExtent()
 {

@@ -111,6 +111,22 @@ SET(QGIS_APP_SRCS
   attributetable/qgsattributetablefiltermodel.cpp
   attributetable/qgsattributetableidcolumnpair.cpp
   attributetable/qgsattributetabledelegate.cpp
+
+  gps/qgsgpsinformationwidget.cpp
+  gps/qgsgpsmarker.cpp
+  gps/qwtpolar/qwt_polar_canvas.cpp  
+  gps/qwtpolar/qwt_polar_curve.cpp
+  gps/qwtpolar/qwt_polar_fitter.cpp  
+  gps/qwtpolar/qwt_polar_grid.cpp   
+  gps/qwtpolar/qwt_polar_itemdict.cpp  
+  gps/qwtpolar/qwt_polar_item.cpp
+  gps/qwtpolar/qwt_polar_layout.cpp    
+  gps/qwtpolar/qwt_polar_magnifier.cpp
+  gps/qwtpolar/qwt_polar_marker.cpp     
+  gps/qwtpolar/qwt_polar_panner.cpp
+  gps/qwtpolar/qwt_polar_plot.cpp 
+  gps/qwtpolar/qwt_polar_point.cpp
+  gps/qwtpolar/qwt_polar_spectrogram.cpp
   )
 
 
@@ -202,6 +218,24 @@ SET (QGIS_APP_MOC_HDRS
   attributetable/qgsattributetablememorymodel.h
   attributetable/qgsattributetabledialog.h
   attributetable/qgsattributetabledelegate.h
+
+  gps/qgsgpsinformationwidget.h
+  gps/qgsgpsmarker.h
+  gps/qwtpolar/qwt_polar_canvas.h  
+  gps/qwtpolar/qwt_polar_curve.h
+  gps/qwtpolar/qwt_polar_fitter.h  
+  gps/qwtpolar/qwt_polar_global.h
+  gps/qwtpolar/qwt_polar_grid.h   
+  gps/qwtpolar/qwt_polar.h
+  gps/qwtpolar/qwt_polar_itemdict.h  
+  gps/qwtpolar/qwt_polar_item.h
+  gps/qwtpolar/qwt_polar_layout.h    
+  gps/qwtpolar/qwt_polar_magnifier.h
+  gps/qwtpolar/qwt_polar_marker.h     
+  gps/qwtpolar/qwt_polar_panner.h
+  gps/qwtpolar/qwt_polar_plot.h 
+  gps/qwtpolar/qwt_polar_point.h
+  gps/qwtpolar/qwt_polar_spectrogram.h
   )
 
 IF (POSTGRES_FOUND)
@@ -268,14 +302,18 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}/../ui
   ${QT_QTUITOOLS_INCLUDE_DIR}
+  ${QWT_INCLUDE_DIR}
+  ${PROJ_INCLUDE_DIR}
+  ${GEOS_INCLUDE_DIR}
+  ${GDAL_INCLUDE_DIR}
   ../core
+  ../core/gps
   ../core/composer ../core/raster ../core/renderer ../core/symbology ../core/symbology-ng
   ../gui ../gui/symbology-ng
   ../plugins
   ../python
-  ${PROJ_INCLUDE_DIR}
-  ${GEOS_INCLUDE_DIR}
-  ${GDAL_INCLUDE_DIR}
+  gps
+  gps/qwtpolar
   )
 
 IF (WITH_INTERNAL_SPATIALITE)
@@ -310,6 +348,7 @@ TARGET_LINK_LIBRARIES(qgis
   ${QT_QTUITOOLS_LIBRARY}
   #should only be needed for win
   ${QT_QTMAIN_LIBRARY} 
+  ${QWT_LIBRARY}
   qgis_core
   qgis_gui
 )

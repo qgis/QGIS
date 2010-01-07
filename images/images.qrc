@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="/images" >
+    <file>north_arrows/gpsarrow.svg</file>
+    <file>north_arrows/gpsarrow2.svg</file>
     <file>themes/default/mActionAddArrow.png</file>
     <file>themes/newgis/mActionAddGPSLayer.png</file>
     <file>themes/newgis/mActionAddImage.png</file>
@@ -156,7 +158,6 @@
     <file>themes/default/mActionLowerItems.png</file>
     <file>themes/default/mActionMapTips.png</file>
     <file>themes/default/mActionMeasure.png</file>
-    <file>themes/default/mActionMeasureAngle.png</file>
     <file>themes/default/mActionMeasureArea.png</file>
     <file>themes/default/mActionMergeFeatures.png</file>
     <file>themes/default/mActionMoveFeature.png</file>
@@ -241,6 +242,8 @@
     <file>themes/default/symbologyUp.png</file>
     <file>themes/default/tracking.png</file>
     <file>themes/default/qgis.xpm</file>
+    <file>themes/default/gpsicons/barchart.svg</file>
+    <file>themes/default/gpsicons/polarchart.svg</file>
     <file>themes/default/propertyicons/action.png</file>
     <file>themes/default/propertyicons/attributes.png</file>
     <file>themes/default/propertyicons/colormap.png</file>
