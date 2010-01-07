@@ -443,7 +443,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
         }
         f->setGeometryAndOwnership( &wkb[0], size );
 
-        int avoidIntersectionsReturn = avoidIntersections( f->geometry() );
+        int avoidIntersectionsReturn = f->geometry()->avoidIntersections();
         if ( avoidIntersectionsReturn == 1 )
         {
           //not a polygon type. Impossible to get there
@@ -518,48 +518,4 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
       mCanvas->refresh();
     }
   }
-}
-
-int QgsMapToolAddFeature::avoidIntersections( QgsGeometry* g )
-{
-  int returnValue = 0;
-
-  //check if g has polygon type
-  if ( !g || g->type() != QGis::Polygon )
-  {
-    return 1;
-  }
-
-  QGis::WkbType geomTypeBeforeModification = g->wkbType();
-
-  //read avoid intersections list from project properties
-  bool listReadOk;
-  QStringList avoidIntersectionsList = QgsProject::instance()->readListEntry( "Digitizing", "/AvoidIntersectionsList", &listReadOk );
-  if ( !listReadOk )
-  {
-    return true; //no intersections stored in project does not mean error
-  }
-
-  //go through list, convert each layer to vector layer and call QgsVectorLayer::removePolygonIntersections for each
-  QgsVectorLayer* currentLayer = 0;
-  QStringList::const_iterator aIt = avoidIntersectionsList.constBegin();
-  for ( ; aIt != avoidIntersectionsList.constEnd(); ++aIt )
-  {
-    currentLayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( *aIt ) );
-    if ( currentLayer )
-    {
-      if ( currentLayer->removePolygonIntersections( g ) != 0 )
-      {
-        returnValue = 3;
-      }
-    }
-  }
-
-  //make sure the geometry still has the same type (e.g. no change from polygon to multipolygon)
-  if ( g->wkbType() != geomTypeBeforeModification )
-  {
-    return 2;
-  }
-
-  return returnValue;
 }
