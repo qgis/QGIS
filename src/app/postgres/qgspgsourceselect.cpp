@@ -23,7 +23,7 @@ email                : sherman at mrcc.com
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgscontexthelp.h"
-#include "qgsnewconnection.h"
+#include "qgspgnewconnection.h"
 #include "qgsquerybuilder.h"
 #include "qgsdatasourceuri.h"
 #include "qgsvectorlayer.h"
@@ -96,7 +96,7 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WFlags fl )
 // Slot for adding a new connection
 void QgsPgSourceSelect::on_btnNew_clicked()
 {
-  QgsNewConnection *nc = new QgsNewConnection( this );
+  QgsPgNewConnection *nc = new QgsPgNewConnection( this );
   nc->exec();
   delete nc;
 
@@ -129,7 +129,7 @@ void QgsPgSourceSelect::on_btnDelete_clicked()
 // Slot for editing a connection
 void QgsPgSourceSelect::on_btnEdit_clicked()
 {
-  QgsNewConnection *nc = new QgsNewConnection( this, cmbConnections->currentText() );
+  QgsPgNewConnection *nc = new QgsPgNewConnection( this, cmbConnections->currentText() );
   nc->exec();
   delete nc;
 
@@ -412,21 +412,21 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
   {
     QString password = QString::null;
 
-    while( PQstatus( pd ) != CONNECTION_OK )
+    while ( PQstatus( pd ) != CONNECTION_OK )
     {
       bool ok = true;
       password = QInputDialog::getText( this,
                                         tr( "Enter password" ),
-                                        tr( "Error: %1Enter password for %2")
-                                          .arg( QString::fromUtf8( PQerrorMessage( pd ) ) )
-                                          .arg( uri.connectionInfo() ),
+                                        tr( "Error: %1Enter password for %2" )
+                                        .arg( QString::fromUtf8( PQerrorMessage( pd ) ) )
+                                        .arg( uri.connectionInfo() ),
                                         QLineEdit::Password,
                                         password,
                                         &ok );
 
       ::PQfinish( pd );
 
-      if( !ok )
+      if ( !ok )
         break;
 
       pd = PQconnectdb( QString( "%1 password='%2'" ).arg( uri.connectionInfo() ).arg( password ).toLocal8Bit() );

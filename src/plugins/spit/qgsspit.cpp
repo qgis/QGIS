@@ -36,7 +36,7 @@
 
 #include "qgspgutil.h"
 #include "qgsspit.h"
-#include "qgsnewconnection.h"
+#include "qgspgnewconnection.h"
 #include "qgsdatasourceuri.h"
 #include "qgsmessageviewer.h"
 #include "qgslogger.h"
@@ -125,7 +125,7 @@ void QgsSpit::populateConnectionList()
 
 void QgsSpit::newConnection()
 {
-  QgsNewConnection *nc = new QgsNewConnection( this );
+  QgsPgNewConnection *nc = new QgsPgNewConnection( this );
   nc->exec();
   delete nc;
 
@@ -134,7 +134,7 @@ void QgsSpit::newConnection()
 
 void QgsSpit::editConnection()
 {
-  QgsNewConnection *nc = new QgsNewConnection( this, cmbConnections->currentText() );
+  QgsPgNewConnection *nc = new QgsPgNewConnection( this, cmbConnections->currentText() );
   nc->exec();
   delete nc;
 

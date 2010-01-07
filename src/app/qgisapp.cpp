@@ -100,7 +100,6 @@
 #include "qgscursors.h"
 #include "qgscustomprojectiondialog.h"
 #include "qgsencodingfiledialog.h"
-#include "qgsogrsublayersdialog.h"
 #include "qgsexception.h"
 #include "qgsfeature.h"
 #include "qgsnewvectorlayerdialog.h"
@@ -137,6 +136,7 @@
 #include "qgsundowidget.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "ogr/qgsogrsublayersdialog.h"
 #include "ogr/qgsopenvectorlayerdialog.h"
 #include "qgsattributetabledialog.h"
 #include "qgsvectorfilewriter.h"
@@ -188,7 +188,7 @@
 // Conditional Includes
 //
 #ifdef HAVE_POSTGRESQL
-#include "qgspgsourceselect.h"
+#include "postgres/qgspgsourceselect.h"
 #endif
 #ifdef HAVE_SPATIALITE
 #include "qgsspatialitesourceselect.h"
@@ -328,7 +328,7 @@ QgisApp::QgisApp( QSplashScreen *splash, QWidget * parent, Qt::WFlags fl )
     mSplash( splash ),
     mPythonConsole( NULL ),
     mPythonUtils( NULL ),
-    mpGpsWidget(NULL)
+    mpGpsWidget( NULL )
 {
   if ( smInstance )
   {
@@ -559,7 +559,7 @@ void QgisApp::readSettings()
   // Restore state of GPS Tracker
   if ( settings.value( "/gps/widgetEnabled", false ).toBool() )
   {
-    showGpsTool();   
+    showGpsTool();
   }
 }
 
@@ -957,7 +957,7 @@ void QgisApp::createActions()
   mActionGpsTool->setStatusTip( tr( "Show GPS tool" ) );
   connect( mActionGpsTool, SIGNAL( triggered() ), this, SLOT( showGpsTool() ) );
   mActionGpsTool->setEnabled( true );
-  
+
 
   mActionLayerProperties = new QAction( tr( "Properties..." ), this );
   shortcuts->registerAction( mActionLayerProperties );
@@ -2074,11 +2074,11 @@ void QgisApp::saveRecentProjectPath( QString projectPath, QSettings & settings )
   // Persist state of GPS Tracker
   if ( mpGpsWidget )
   {
-      settings.setValue( "/gps/widgetEnabled", true );
+    settings.setValue( "/gps/widgetEnabled", true );
   }
   else
   {
-      settings.setValue( "/gps/widgetEnabled", false );
+    settings.setValue( "/gps/widgetEnabled", false );
   }
   // Update menu list of paths
   updateRecentProjectPaths();
@@ -2127,12 +2127,12 @@ void QgisApp::restoreWindowState()
   // Persist state of GPS Tracker
   if ( mpGpsWidget )
   {
-      settings.setValue( "/gps/widgetEnabled", true );
-      delete mpGpsWidget;
+    settings.setValue( "/gps/widgetEnabled", true );
+    delete mpGpsWidget;
   }
   else
   {
-      settings.setValue( "/gps/widgetEnabled", false );
+    settings.setValue( "/gps/widgetEnabled", false );
   }
 }
 ///////////// END OF GUI SETUP ROUTINES ///////////////
@@ -4401,7 +4401,7 @@ void QgisApp::removeAllLayers()
 
 void QgisApp::showGpsTool()
 {
-  if(!mpGpsWidget)
+  if ( !mpGpsWidget )
   {
     mpGpsWidget = new QgsGPSInformationWidget( mMapCanvas );
     //create the dock widget

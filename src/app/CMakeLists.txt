@@ -53,7 +53,6 @@ SET(QGIS_APP_SRCS
   qgsmergeattributesdialog.cpp
   qgsnewhttpconnection.cpp
   qgsnumericsortlistviewitem.cpp
-  qgsogrsublayersdialog.cpp
   qgsoptions.cpp
   qgspastetransformations.cpp
   qgspointrotationitem.cpp
@@ -103,6 +102,7 @@ SET(QGIS_APP_SRCS
   ogr/qgsogrhelperfunctions.cpp
   ogr/qgsopenvectorlayerdialog.cpp
   ogr/qgsnewogrconnection.cpp
+  ogr/qgsogrsublayersdialog.cpp
   
   attributetable/qgsattributetabledialog.cpp
   attributetable/qgsattributetablemodel.cpp
@@ -175,7 +175,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsmergeattributesdialog.h
   qgsnewhttpconnection.h
   qgsoptions.h
-  qgsogrsublayersdialog.h
   qgspastetransformations.h
   qgspluginmanager.h
   qgspythondialog.h
@@ -212,6 +211,7 @@ SET (QGIS_APP_MOC_HDRS
   
   ogr/qgsopenvectorlayerdialog.h
   ogr/qgsnewogrconnection.h
+  ogr/qgsogrsublayersdialog.h
   
   attributetable/qgsattributetableview.h
   attributetable/qgsattributetablemodel.h
@@ -220,22 +220,10 @@ SET (QGIS_APP_MOC_HDRS
   attributetable/qgsattributetabledelegate.h
 
   gps/qgsgpsinformationwidget.h
-  gps/qgsgpsmarker.h
   gps/qwtpolar/qwt_polar_canvas.h  
-  gps/qwtpolar/qwt_polar_curve.h
-  gps/qwtpolar/qwt_polar_fitter.h  
-  gps/qwtpolar/qwt_polar_global.h
-  gps/qwtpolar/qwt_polar_grid.h   
-  gps/qwtpolar/qwt_polar.h
-  gps/qwtpolar/qwt_polar_itemdict.h  
-  gps/qwtpolar/qwt_polar_item.h
-  gps/qwtpolar/qwt_polar_layout.h    
   gps/qwtpolar/qwt_polar_magnifier.h
-  gps/qwtpolar/qwt_polar_marker.h     
   gps/qwtpolar/qwt_polar_panner.h
   gps/qwtpolar/qwt_polar_plot.h 
-  gps/qwtpolar/qwt_polar_point.h
-  gps/qwtpolar/qwt_polar_spectrogram.h
   )
 
 IF (POSTGRES_FOUND)
@@ -244,12 +232,12 @@ IF (POSTGRES_FOUND)
   ENDIF(HAVE_PGCONFIG)
 
   SET (QGIS_APP_SRCS ${QGIS_APP_SRCS}
-    qgspgsourceselect.cpp
-    qgsnewconnection.cpp
+    postgres/qgspgsourceselect.cpp
+    postgres/qgspgnewconnection.cpp
     )
   SET (QGIS_APP_MOC_HDRS ${QGIS_APP_MOC_HDRS}
-    qgspgsourceselect.h
-    qgsnewconnection.h
+    postgres/qgspgsourceselect.h
+    postgres/qgspgnewconnection.h
     )
 ENDIF (POSTGRES_FOUND)
 
@@ -275,6 +263,7 @@ IF (WIN32)
 
   IF (MSVC)
     SET (QGIS_APP_SRCS ${QGIS_APP_SRCS} ${CMAKE_CURRENT_SOURCE_DIR}/qgis_win32.rc)
+    ADD_DEFINITIONS(-DQWT_DLL)
   ELSE(MSVC)
 
     # Icon for windows MINGW

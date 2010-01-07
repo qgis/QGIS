@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsquerybuilder.h - Subclassed PostgreSQL query builder
+    qgsquerybuilder.h - query builder
      --------------------------------------
     Date                 : 2004-11-19
     Copyright            : (C) 2004 by Gary E.Sherman
@@ -12,8 +12,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef QGSPGQUERYBUILDER_H
-#define QGSPGQUERYBUILDER_H
+#ifndef QGSQUERYBUILDER_H
+#define QGSQUERYBUILDER_H
 #include <map>
 #include <vector>
 #include <QStandardItemModel>
@@ -28,7 +28,7 @@ class QgsVectorLayer;
 
 /*!
  * \class QgsQueryBuilder
- * \brief Query Builder for PostgreSQL layers.
+ * \brief Query Builder for layers.
  *
  * The query builder allows interactive creation of a SQL for limiting the
  * features displayed in a database layer.  The fields in the table are
@@ -44,25 +44,21 @@ class QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBase
     //! Default constructor - not very useful
     QgsQueryBuilder( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
 
-    /*! Constructor which also takes the table name and PG connection pointer.
-    * This constructor is used when adding layers to the map from a PG database since
-    * the query builder can use the same connection as the layer selection dialog.
+    /*! Constructor which also takes the table name.
+    * This constructor is used when adding layers to the map since
+    * the query builder connection as the layer selection dialog.
     * @param tableName Name of the table being queried
-    * @param con PostgreSQL connection from the Add PostGIS Layer dialog
     * @param parent Parent widget
-    * @param name Name of the widget
+    * @param fl dialog flags
     */
     QgsQueryBuilder( QString tableName, QWidget *parent = 0,
                      Qt::WFlags fl = QgisGui::ModalDialogFlags );
 
-    /*! Constructor that uses a data source URI to create its own connection to the
-    * PG database. This constructor should be used when a layer's own PG connection
-    * cannot. Using the same connection as that of the layer typically causes problems
-    * and crashes. This constructor is used when the query builder is called from the
-    * vector layer properties dialog
-    * @param uri Reference to a fully populates QgsDataSourceURI structure
+    /*! This constructor is used when the query builder is called from the
+     * vector layer properties dialog
+     * @param layer existing vector layer
      * @param parent Parent widget
-     * @param name Name of the widget
+     * @param fl dialog flags
      */
     QgsQueryBuilder( QgsVectorLayer *layer, QWidget *parent = 0,
                      Qt::WFlags fl = QgisGui::ModalDialogFlags );
@@ -143,4 +139,4 @@ class QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBase
     //! original subset string
     QString mOrigSubsetString;
 };
-#endif //QGSPGQUERYBUILDER_H
+#endif //QGSQUERYBUILDER_H

@@ -1,5 +1,5 @@
 /***************************************************************************
-                          qgsnewconnection.h  -  description
+                          qgspgnewconnection.h  -  description
                              -------------------
     begin                : Sat Jun 22 2002
     copyright            : (C) 2002 by Gary E.Sherman
@@ -15,23 +15,24 @@
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
-#ifndef QGSNEWCONNECTION_H
-#define QGSNEWCONNECTION_H
-#include "ui_qgsnewconnectionbase.h"
+#ifndef QGSPGNEWCONNECTION_H
+#define QGSPGNEWCONNECTION_H
+#include "ui_qgspgnewconnectionbase.h"
 #include "qgisgui.h"
 #include "qgscontexthelp.h"
-/*! \class QgsNewConnection
+
+/*! \class QgsPgNewConnection
  * \brief Dialog to allow the user to configure and save connection
- * information for a PostgresQl database
+ * information for a PostgreSQL database
  */
-class QgsNewConnection : public QDialog, private Ui::QgsNewConnectionBase
+class QgsPgNewConnection : public QDialog, private Ui::QgsPgNewConnectionBase
 {
     Q_OBJECT
   public:
     //! Constructor
-    QgsNewConnection( QWidget *parent = 0, const QString& connName = QString::null, Qt::WFlags fl = QgisGui::ModalDialogFlags );
+    QgsPgNewConnection( QWidget *parent = 0, const QString& connName = QString::null, Qt::WFlags fl = QgisGui::ModalDialogFlags );
     //! Destructor
-    ~QgsNewConnection();
+    ~QgsPgNewConnection();
     //! Tests the connection using the parameters supplied
     void testConnection();
   public slots:
@@ -43,4 +44,4 @@ class QgsNewConnection : public QDialog, private Ui::QgsNewConnectionBase
     QString mOriginalConnName; //store initial name to delete entry in case of rename
 };
 
-#endif //  QGSNEWCONNECTIONBASE_H
+#endif //  QGSPGNEWCONNECTIONBASE_H
