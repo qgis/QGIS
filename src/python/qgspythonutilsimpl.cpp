@@ -424,23 +424,11 @@ QString QgsPythonUtilsImpl::homePluginsPath()
 
 QStringList QgsPythonUtilsImpl::pluginList()
 {
-  QDir pluginDir( QgsPythonUtilsImpl::pluginsPath(), "*",
-                  QDir::Name | QDir::IgnoreCase, QDir::Dirs | QDir::NoDotAndDotDot );
+  runString( "qgis.utils.updateAvailablePlugins()" );
 
-  QDir homePluginDir( QgsPythonUtilsImpl::homePluginsPath(), "*",
-                      QDir::Name | QDir::IgnoreCase, QDir::Dirs | QDir::NoDotAndDotDot );
-
-  QStringList pluginList = pluginDir.entryList();
-
-  for ( uint i = 0; i < homePluginDir.count(); i++ )
-  {
-    QString packageName = homePluginDir[i];
-    if ( !pluginList.contains( packageName ) )
-      pluginList.append( packageName );
-
-  }
-
-  return pluginList;
+  QString output;
+  evalString( "'\\n'.join(qgis.utils.available_plugins)", output );
+  return output.split( QChar( '\n' ) );
 }
 
 QString QgsPythonUtilsImpl::getPluginMetadata( QString pluginName, QString function )
