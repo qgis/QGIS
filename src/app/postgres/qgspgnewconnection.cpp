@@ -1,5 +1,5 @@
 /***************************************************************************
-                    qgsnewconnection.cpp  -  description
+                    qgspgnewconnection.cpp  -  description
                              -------------------
     begin                : Sat Jun 22 2002
     copyright            : (C) 2002 by Gary E.Sherman
@@ -20,7 +20,7 @@
 #include <QMessageBox>
 #include <QInputDialog>
 
-#include "qgsnewconnection.h"
+#include "qgspgnewconnection.h"
 #include "qgscontexthelp.h"
 #include "qgsdatasourceuri.h"
 #include "qgslogger.h"
@@ -30,7 +30,7 @@ extern "C"
 #include <libpq-fe.h>
 }
 
-QgsNewConnection::QgsNewConnection( QWidget *parent, const QString& connName, Qt::WFlags fl )
+QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString& connName, Qt::WFlags fl )
     : QDialog( parent, fl ), mOriginalConnName( connName )
 {
   setupUi( this );
@@ -78,7 +78,7 @@ QgsNewConnection::QgsNewConnection( QWidget *parent, const QString& connName, Qt
   }
 }
 /** Autoconnected SLOTS **/
-void QgsNewConnection::accept()
+void QgsPgNewConnection::accept()
 {
   QSettings settings;
   QString baseKey = "/PostgreSQL/connections/";
@@ -116,12 +116,12 @@ void QgsNewConnection::accept()
   QDialog::accept();
 }
 
-void QgsNewConnection::on_btnConnect_clicked()
+void QgsPgNewConnection::on_btnConnect_clicked()
 {
   testConnection();
 }
 
-void QgsNewConnection::on_cb_geometryColumnsOnly_clicked()
+void QgsPgNewConnection::on_cb_geometryColumnsOnly_clicked()
 {
   if ( cb_geometryColumnsOnly->checkState() == Qt::Checked )
     cb_publicSchemaOnly->setEnabled( false );
@@ -131,11 +131,11 @@ void QgsNewConnection::on_cb_geometryColumnsOnly_clicked()
 
 /** end  Autoconnected SLOTS **/
 
-QgsNewConnection::~QgsNewConnection()
+QgsPgNewConnection::~QgsPgNewConnection()
 {
 }
 
-void QgsNewConnection::testConnection()
+void QgsPgNewConnection::testConnection()
 {
   QgsDataSourceURI uri;
   uri.setConnection( txtHost->text(), txtPort->text(), txtDatabase->text(), txtUsername->text(), txtPassword->text(), ( QgsDataSourceURI::SSLmode ) cbxSSLmode->itemData( cbxSSLmode->currentIndex() ).toInt() );
@@ -148,28 +148,28 @@ void QgsNewConnection::testConnection()
   {
     QString password = QString::null;
 
-    while( PQstatus( pd ) != CONNECTION_OK )
+    while ( PQstatus( pd ) != CONNECTION_OK )
     {
       bool ok = true;
       password = QInputDialog::getText( this,
                                         tr( "Enter password" ),
-                                        tr( "Error: %1Enter password for %2")
-                                          .arg( QString::fromUtf8( PQerrorMessage( pd ) ) )
-                                          .arg( uri.connectionInfo() ),
+                                        tr( "Error: %1Enter password for %2" )
+                                        .arg( QString::fromUtf8( PQerrorMessage( pd ) ) )
+                                        .arg( uri.connectionInfo() ),
                                         QLineEdit::Password,
                                         password,
                                         &ok );
 
       ::PQfinish( pd );
 
-      if( !ok )
+      if ( !ok )
         break;
 
       pd = PQconnectdb( QString( "%1 password='%2'" ).arg( uri.connectionInfo() ).arg( password ).toLocal8Bit() );
     }
   }
 
-  if ( PQstatus( pd ) == CONNECTION_OK  )
+  if ( PQstatus( pd ) == CONNECTION_OK )
   {
     // Database successfully opened; we can now issue SQL commands.
     QMessageBox::information( this, tr( "Test connection" ), tr( "Connection to %1 was successful" ).arg( txtDatabase->text() ) );

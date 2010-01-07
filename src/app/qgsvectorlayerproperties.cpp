@@ -452,8 +452,7 @@ void QgsVectorLayerProperties::reset( void )
                                      "builder and allows you to create a subset of features to display on "
                                      "the map canvas rather than displaying all features in the layer" ) );
   txtSubsetSQL->setWhatsThis( tr( "The query used to limit the features in the "
-                                  "layer is shown here. This is currently only supported for PostgreSQL "
-                                  "layers. To enter or modify the query, click on the Query Builder button" ) );
+                                  "layer is shown here. To enter or modify the query, click on the Query Builder button" ) );
 
   //see if we are dealing with a pg layer here
   grpSubset->setEnabled( true );
@@ -683,9 +682,7 @@ void QgsVectorLayerProperties::apply()
 
 void QgsVectorLayerProperties::on_pbnQueryBuilder_clicked()
 {
-  // launch the query builder using the PostgreSQL connection
-  // from the provider
-
+  // launch the query builder
   QgsQueryBuilder *qb = new QgsQueryBuilder( layer, this );
 
   // Set the sql in the query builder to the same in the prop dialog
