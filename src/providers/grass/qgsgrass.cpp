@@ -90,6 +90,10 @@ void GRASS_EXPORT QgsGrass::init( void )
   // Init GRASS libraries (required)
   G_no_gisinit();  // Doesn't check write permissions for mapset compare to G_gisinit("libgrass++");
 
+  // I think that mask should not be used in QGIS as it can only confuse people, 
+  // anyway, I don't think anybody is using MASK
+  G_suppress_masking();
+
   // Set program name
   G_set_program_name( "QGIS" );
 
@@ -594,9 +598,15 @@ QString QgsGrass::closeMapset( )
 
     // Reinitialize GRASS
     G__setenv(( char * ) "GISRC", ( char * ) "" );
-    G__setenv(( char * ) "GISDBASE", ( char * ) "" );
-    G__setenv(( char * ) "LOCATION_NAME", ( char * ) "" );
-    G__setenv(( char * ) "MAPSET", ( char * ) "" );
+
+    // Temporarily commented because of 
+    //   http://trac.osgeo.org/qgis/ticket/1900
+    //   http://trac.osgeo.org/gdal/ticket/3313
+    // it can be uncommented once GDAL with patch gets depoyed (probably GDAL 1.8) 
+    //G__setenv(( char * ) "GISDBASE", ( char * ) "" );
+    //G__setenv(( char * ) "LOCATION_NAME", ( char * ) "" );
+    //G__setenv(( char * ) "MAPSET", ( char * ) "" );
+
     defaultGisdbase = "";
     defaultLocation = "";
     defaultMapset = "";
