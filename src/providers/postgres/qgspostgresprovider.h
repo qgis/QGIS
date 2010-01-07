@@ -660,6 +660,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
         static QMap<QString, Conn *> connectionsRW;
         static QMap<QString, Conn *> connectionsRO;
+        static QMap<QString, QString> passwordCache;
     };
 
     class Result

@@ -51,6 +51,7 @@ const QString POSTGRES_DESCRIPTION = "PostgreSQL/PostGIS data provider";
 
 QMap<QString, QgsPostgresProvider::Conn *> QgsPostgresProvider::Conn::connectionsRO;
 QMap<QString, QgsPostgresProvider::Conn *> QgsPostgresProvider::Conn::connectionsRW;
+QMap<QString, QString> QgsPostgresProvider::Conn::passwordCache;
 int QgsPostgresProvider::providerIds = 0;
 
 QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
@@ -310,25 +311,36 @@ QgsPostgresProvider::Conn *QgsPostgresProvider::Conn::connectDb( const QString &
   {
     QString password = QString::null;
 
-    while( PQstatus( pd ) != CONNECTION_OK )
+    while ( PQstatus( pd ) != CONNECTION_OK )
     {
       bool ok = true;
-      password = QInputDialog::getText( 0,
-                                        tr( "Enter password" ),
-                                        tr( "Error: %1Enter password for %2")
+
+      if ( passwordCache.contains( conninfo ) )
+      {
+        password = passwordCache.take( conninfo );
+      }
+      else
+      {
+        password = QInputDialog::getText( 0,
+                                          tr( "Enter password" ),
+                                          tr( "Error: %1Enter password for %2" )
                                           .arg( QString::fromUtf8( PQerrorMessage( pd ) ) )
                                           .arg( conninfo ),
-                                        QLineEdit::Password,
-                                        password,
-                                        &ok );
+                                          QLineEdit::Password,
+                                          password,
+                                          &ok );
+      }
+
+      if ( !ok )
+        break;
 
       ::PQfinish( pd );
 
-      if( !ok )
-        break;
-
       pd = PQconnectdb( QString( "%1 password='%2'" ).arg( conninfo ).arg( password ).toLocal8Bit() );
     }
+
+    if ( PQstatus( pd ) == CONNECTION_OK )
+      passwordCache[ conninfo ] = password;
   }
 
   if ( PQstatus( pd ) != CONNECTION_OK )
