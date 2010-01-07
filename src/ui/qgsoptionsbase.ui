@@ -699,7 +699,7 @@
           <item row="1" column="0">
            <widget class="QLabel" name="mLineColorTextLabel">
             <property name="text">
-             <string>Line colour</string>
+             <string>Line color</string>
             </property>
            </widget>
           </item>

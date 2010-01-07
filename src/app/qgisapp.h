@@ -595,6 +595,8 @@ class QgisApp : public QMainWindow
     void measure();
     //! Measure area
     void measureArea();
+    //! Measure angle
+    void measureAngle();
 
     //! show the attribute table for the currently selected layer
     void attributeTable();
@@ -712,8 +714,8 @@ class QgisApp : public QMainWindow
     //! check to see if file is dirty and if so, prompt the user th save it
     bool saveDirty();
     /** Helper function to union several geometries together (used in function mergeSelectedFeatures)
-      @return 0 in case of error*/
-    QgsGeometry* unionGeometries( const QgsVectorLayer* vl, QgsFeatureList& featureList );
+      @return 0 in case of error or if canceled */
+    QgsGeometry* unionGeometries( const QgsVectorLayer* vl, QgsFeatureList& featureList, bool &canceled );
 
     /**Deletes all the composer objects and clears mPrintComposers*/
     void deletePrintComposers();
@@ -802,6 +804,7 @@ class QgisApp : public QMainWindow
     QAction *mActionDeselectAll;
     QAction *mActionIdentify;
     QAction *mActionMeasure;
+    QAction *mActionMeasureAngle;
     QAction *mActionMeasureArea;
     QAction *mActionViewSeparator1;
     QAction *mActionZoomFullExtent;
@@ -906,6 +909,7 @@ class QgisApp : public QMainWindow
         QgsMapTool* mIdentify;
         QgsMapTool* mMeasureDist;
         QgsMapTool* mMeasureArea;
+        QgsMapTool* mMeasureAngle;
         QgsMapTool* mCapturePoint;
         QgsMapTool* mCaptureLine;
         QgsMapTool* mCapturePolygon;
