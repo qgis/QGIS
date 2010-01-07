@@ -31,7 +31,7 @@
 #include <QMouseEvent>
 #include <QSettings>
 
-QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas* canvas, CaptureTool tool ): QgsMapToolCapture( canvas, tool )
+QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas* canvas, CaptureMode tool ): QgsMapToolCapture( canvas, tool )
 {
 
 }
@@ -85,7 +85,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
   }
 
   // POINT CAPTURING
-  if ( mTool == CapturePoint )
+  if ( mCaptureMode == CapturePoint )
   {
     //check we only use this tool for point/multipoint layers
     if ( vlayer->geometryType() != QGis::Point )
@@ -209,10 +209,10 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
     }
 
   }
-  else if ( mTool == CaptureLine || mTool == CapturePolygon )
+  else if ( mCaptureMode == CaptureLine || mCaptureMode == CapturePolygon )
   {
     //check we only use the line tool for line/multiline layers
-    if ( mTool == CaptureLine && vlayer->geometryType() != QGis::Line )
+    if ( mCaptureMode == CaptureLine && vlayer->geometryType() != QGis::Line )
     {
       QMessageBox::information( 0, tr( "Wrong editing tool" ),
                                 tr( "Cannot apply the 'capture line' tool on this vector layer" ) );
@@ -220,7 +220,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
     }
 
     //check we only use the polygon tool for polygon/multipolygon layers
-    if ( mTool == CapturePolygon && vlayer->geometryType() != QGis::Polygon )
+    if ( mCaptureMode == CapturePolygon && vlayer->geometryType() != QGis::Polygon )
     {
       QMessageBox::information( 0, tr( "Wrong editing tool" ),
                                 tr( "Cannot apply the 'capture polygon' tool on this vector layer" ) );
@@ -253,7 +253,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
       mCapturing = FALSE;
 
       //lines: bail out if there are not at least two vertices
-      if ( mTool == CaptureLine && mCaptureList.size() < 2 )
+      if ( mCaptureMode == CaptureLine && mCaptureList.size() < 2 )
       {
         delete mRubberBand;
         mRubberBand = NULL;
@@ -262,7 +262,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
       }
 
       //polygons: bail out if there are not at least two vertices
-      if ( mTool == CapturePolygon && mCaptureList.size() < 3 )
+      if ( mCaptureMode == CapturePolygon && mCaptureList.size() < 3 )
       {
         delete mRubberBand;
         mRubberBand = NULL;
@@ -276,7 +276,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
       int size;
       char end = QgsApplication::endian();
 
-      if ( mTool == CaptureLine )
+      if ( mCaptureMode == CaptureLine )
       {
         if ( layerWKBType == QGis::WKBLineString )
         {
