@@ -31,7 +31,7 @@ class QgsMapToolCapture : public QgsMapToolEdit
 {
   public:
 
-    enum CaptureTool
+    enum CaptureMode
     {
       CapturePoint,
       CaptureLine,
@@ -39,7 +39,7 @@ class QgsMapToolCapture : public QgsMapToolEdit
     };
 
     //! constructor
-    QgsMapToolCapture( QgsMapCanvas* canvas, CaptureTool tool );
+    QgsMapToolCapture( QgsMapCanvas* canvas, CaptureMode tool );
 
     //! destructor
     virtual ~QgsMapToolCapture();
@@ -71,7 +71,7 @@ class QgsMapToolCapture : public QgsMapToolEdit
   protected:
 
     /** which capturing tool is being used */
-    enum CaptureTool mTool;
+    enum CaptureMode mCaptureMode;
 
     /** Flag to indicate a map canvas capture operation is taking place */
     bool mCapturing;

@@ -36,8 +36,8 @@
 #include <QMouseEvent>
 
 
-QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas* canvas, enum CaptureTool tool )
-    : QgsMapToolEdit( canvas ), mTool( tool ), mRubberBand( 0 )
+QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas* canvas, enum CaptureMode tool )
+    : QgsMapToolEdit( canvas ), mCaptureMode( tool ), mRubberBand( 0 )
 {
   mCapturing = FALSE;
 
@@ -98,7 +98,7 @@ int QgsMapToolCapture::addVertex( const QPoint& p )
 
   if ( !mRubberBand )
   {
-    mRubberBand = createRubberBand( mTool == CapturePolygon );
+    mRubberBand = createRubberBand( mCaptureMode == CapturePolygon );
   }
 
   QgsPoint digitisedPoint;
