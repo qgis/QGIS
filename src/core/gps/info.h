@@ -13,7 +13,7 @@
 #ifndef __NMEA_INFO_H__
 #define __NMEA_INFO_H__
 
-#include "time.h"
+#include "nmeatime.h"
 
 #define NMEA_SIG_BAD        (0)
 #define NMEA_SIG_LOW        (1)
