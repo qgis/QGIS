@@ -1115,6 +1115,9 @@
 		729288B60F71FEE2006D9489 /* qgsopenvectorlayerdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 726979A70F71369A00AFA402 /* qgsopenvectorlayerdialog.h */; };
 		729288ED0F7293DB006D9489 /* qgshelpserver.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E77B0F39E57A003DC336 /* qgshelpserver.h */; };
 		729288EE0F7293DB006D9489 /* qgshelpviewer.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E77D0F39E57A003DC336 /* qgshelpviewer.h */; };
+		7295BC7510F57D50005D1408 /* qgscomposertable.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7295BC7310F57CE8005D1408 /* qgscomposertable.cpp */; };
+		7295BC7910F57D9E005D1408 /* qgscomposertablewidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7295BC7710F57D8C005D1408 /* qgscomposertablewidget.cpp */; };
+		7295BC7A10F57D9E005D1408 /* qgscomposertablewidget.h in Sources */ = {isa = PBXBuildFile; fileRef = 7295BC7810F57D8C005D1408 /* qgscomposertablewidget.h */; };
 		7296CD9E10C2ED18001EAD92 /* qgscomposershape.h in Sources */ = {isa = PBXBuildFile; fileRef = 72C93CE110B58AD2003A618E /* qgscomposershape.h */; };
 		7296CE1A10C2FE91001EAD92 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		7299E8BA0F90F06C002F58DE /* AUTHORS in Copy - doc */ = {isa = PBXBuildFile; fileRef = 7256F2E50F4147890022BE1F /* AUTHORS */; };
@@ -5627,6 +5630,11 @@
 		7289F9BB10E016260027BCEA /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../resources/context_help/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
 		7289FAA910E0166F0027BCEA /* qgssymbologyv2conversion.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgssymbologyv2conversion.cpp; path = "../../src/core/symbology-ng/qgssymbologyv2conversion.cpp"; sourceTree = SOURCE_ROOT; };
 		7289FAAA10E0166F0027BCEA /* qgssymbologyv2conversion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgssymbologyv2conversion.h; path = "../../src/core/symbology-ng/qgssymbologyv2conversion.h"; sourceTree = SOURCE_ROOT; };
+		7295BC7310F57CE8005D1408 /* qgscomposertable.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgscomposertable.cpp; path = ../../src/core/composer/qgscomposertable.cpp; sourceTree = SOURCE_ROOT; };
+		7295BC7410F57CE8005D1408 /* qgscomposertable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgscomposertable.h; path = ../../src/core/composer/qgscomposertable.h; sourceTree = SOURCE_ROOT; };
+		7295BC7610F57D70005D1408 /* qgscomposertablewidgetbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgscomposertablewidgetbase.ui; path = ../../src/ui/qgscomposertablewidgetbase.ui; sourceTree = SOURCE_ROOT; };
+		7295BC7710F57D8C005D1408 /* qgscomposertablewidget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgscomposertablewidget.cpp; path = ../../src/app/composer/qgscomposertablewidget.cpp; sourceTree = SOURCE_ROOT; };
+		7295BC7810F57D8C005D1408 /* qgscomposertablewidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgscomposertablewidget.h; path = ../../src/app/composer/qgscomposertablewidget.h; sourceTree = SOURCE_ROOT; };
 		7296CD8610C2E667001EAD92 /* chstroke.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = chstroke.sh; path = ../../scripts/chstroke.sh; sourceTree = SOURCE_ROOT; };
 		7299396A0FE3037600244D1A /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = "../../src/plugins/grass/modules-6.3/CMakeLists.txt"; sourceTree = SOURCE_ROOT; };
 		7299396B0FE3037600244D1A /* r.surf.fractal.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.surf.fractal.1.png; path = "../../src/plugins/grass/modules-6.3/r.surf.fractal.1.png"; sourceTree = SOURCE_ROOT; };
@@ -7702,6 +7710,8 @@
 				7209E5CD0F39E57A003DC336 /* qgscomposerscalebarwidget.h */,
 				72C93CDC10B58A07003A618E /* qgscomposershapewidget.cpp */,
 				72C93CDD10B58A07003A618E /* qgscomposershapewidget.h */,
+				7295BC7710F57D8C005D1408 /* qgscomposertablewidget.cpp */,
+				7295BC7810F57D8C005D1408 /* qgscomposertablewidget.h */,
 				7209E5CE0F39E57A003DC336 /* qgscompositionwidget.cpp */,
 				7209E5CF0F39E57A003DC336 /* qgscompositionwidget.h */,
 				72EBC9640F49D49D0016BA3C /* qgsitempositiondialog.cpp */,
@@ -7880,6 +7890,8 @@
 				7209E6710F39E57A003DC336 /* qgscomposerscalebar.h */,
 				72C93CE010B58AD2003A618E /* qgscomposershape.cpp */,
 				72C93CE110B58AD2003A618E /* qgscomposershape.h */,
+				7295BC7310F57CE8005D1408 /* qgscomposertable.cpp */,
+				7295BC7410F57CE8005D1408 /* qgscomposertable.h */,
 				7209E6720F39E57A003DC336 /* qgscomposition.cpp */,
 				7209E6730F39E57A003DC336 /* qgscomposition.h */,
 				7209E6740F39E57A003DC336 /* qgsdoubleboxscalebarstyle.cpp */,
@@ -8970,6 +8982,7 @@
 				7209EC960F39E57B003DC336 /* qgscomposerpicturewidgetbase.ui */,
 				7209EC970F39E57B003DC336 /* qgscomposerscalebarwidgetbase.ui */,
 				72C93CDB10B589B7003A618E /* qgscomposershapewidgetbase.ui */,
+				7295BC7610F57D70005D1408 /* qgscomposertablewidgetbase.ui */,
 				7209EC980F39E57B003DC336 /* qgscomposervectorlegendbase.ui */,
 				7209EC990F39E57B003DC336 /* qgscompositionbase.ui */,
 				7209EC9A0F39E57B003DC336 /* qgscompositionwidget.h */,
@@ -14189,6 +14202,7 @@
 				7289FAAB10E016A60027BCEA /* qgssymbologyv2conversion.cpp in Sources */,
 				7225EF9710B229FA00D23EA2 /* qgssymbolv2.cpp in Sources */,
 				7225EF9810B229FA00D23EA2 /* qgsvectorcolorrampv2.cpp in Sources */,
+				7295BC7510F57D50005D1408 /* qgscomposertable.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -14973,6 +14987,8 @@
 				7216329510EFCE9100588EAD /* qgsdisplayangle.cpp in Sources */,
 				7216329610EFCE9100588EAD /* qgsmaptoolmeasureangle.cpp in Sources */,
 				7216329710EFCE9100588EAD /* qgsmaptoolmeasureangle.h in Sources */,
+				7295BC7910F57D9E005D1408 /* qgscomposertablewidget.cpp in Sources */,
+				7295BC7A10F57D9E005D1408 /* qgscomposertablewidget.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -18110,7 +18126,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 12646;
+				QGIS_VERSION_BUILD = 12682;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -18121,7 +18137,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 12646;
+				QGIS_VERSION_BUILD = 12682;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
