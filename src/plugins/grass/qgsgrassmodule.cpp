@@ -384,19 +384,19 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
   QHBoxLayout *mypAdvancedPushButtonFrameLayout = new QHBoxLayout( mypAdvancedPushButtonFrame );
   connect( &mAdvancedPushButton, SIGNAL( clicked() ), this, SLOT( switchAdvanced() ) );
   mypAdvancedPushButtonFrameLayout->addWidget( &mAdvancedPushButton );
-  mypAdvancedPushButtonFrameLayout->addStretch(1);
+  mypAdvancedPushButtonFrameLayout->addStretch( 1 );
 
   mypInnerFrameLayout->addWidget( mypSimpleFrame );
   mypInnerFrameLayout->addWidget( mypAdvancedPushButtonFrame );
   mypInnerFrameLayout->addWidget( &mAdvancedFrame );
-  mypInnerFrameLayout->addStretch(1);
+  mypInnerFrameLayout->addStretch( 1 );
 
   // Hide advanced and set butto next
   switchAdvanced();
-  
+
   QVBoxLayout *mypSimpleLayout = new QVBoxLayout( mypSimpleFrame );
   QVBoxLayout *mypAdvancedLayout = new QVBoxLayout( &mAdvancedFrame );
-  QVBoxLayout *layout;
+  QVBoxLayout *layout = 0;
   while ( !n.isNull() )
   {
     QDomElement e = n.toElement();
@@ -404,11 +404,13 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
     {
       QString optionType = e.tagName();
       QgsDebugMsg( "optionType = " + optionType );
-  
-      if ( e.attribute( "advanced", "no" ) == "yes" ) 
+
+      if ( e.attribute( "advanced", "no" ) == "yes" )
       {
         layout = mypAdvancedLayout;
-      } else {
+      }
+      else
+      {
         layout = mypSimpleLayout;
       }
 
@@ -505,8 +507,8 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
     }
     n = n.nextSibling();
   }
-  
-  if ( mypAdvancedLayout->count() == 0 ) 
+
+  if ( mypAdvancedLayout->count() == 0 )
   {
     mypAdvancedPushButtonFrame->hide();
   }
@@ -531,18 +533,22 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
     n = n.nextSibling();
   }
 
-  layout->addStretch();
+  if ( layout )
+    layout->addStretch();
 }
 
 void QgsGrassModuleStandardOptions::switchAdvanced()
 {
-   if ( mAdvancedFrame.isHidden() ) {
-      mAdvancedFrame.show();
-      mAdvancedPushButton.setText ( tr("<< Hide advanced options") );
-   } else {
-      mAdvancedFrame.hide();
-      mAdvancedPushButton.setText ( tr("Show advanced options >>") );
-   }
+  if ( mAdvancedFrame.isHidden() )
+  {
+    mAdvancedFrame.show();
+    mAdvancedPushButton.setText( tr( "<< Hide advanced options" ) );
+  }
+  else
+  {
+    mAdvancedFrame.hide();
+    mAdvancedPushButton.setText( tr( "Show advanced options >>" ) );
+  }
 }
 
 QStringList QgsGrassModuleStandardOptions::arguments()
@@ -1412,7 +1418,7 @@ void QgsGrassModule::readStdout()
   {
     //line = QString::fromLocal8Bit( mProcess.readLineStdout().ascii() );
     QByteArray ba = mProcess.readLine();
-    line = QString::fromUtf8( ba ).replace('\n', "" );
+    line = QString::fromUtf8( ba ).replace( '\n', "" );
     //QgsDebugMsg(QString("line: '%1'").arg(line));
 
     // GRASS_INFO_PERCENT is catched here only because of bugs in GRASS,
@@ -1447,7 +1453,7 @@ void QgsGrassModule::readStderr()
   {
     //line = QString::fromLocal8Bit( mProcess.readLineStderr().ascii() );
     QByteArray ba = mProcess.readLine();
-    line = QString::fromUtf8( ba ).replace('\n', "" );
+    line = QString::fromUtf8( ba ).replace( '\n', "" );
     //QgsDebugMsg(QString("line: '%1'").arg(line));
 
     if ( rxpercent.indexIn( line ) != -1 )
@@ -2654,7 +2660,7 @@ QgsGrassModuleGdalInput::QgsGrassModuleGdalInput(
 {
   if ( mTitle.isEmpty() )
   {
-    mTitle = tr("OGR/PostGIS/GDAL Input");
+    mTitle = tr( "OGR/PostGIS/GDAL Input" );
   }
   adjustTitle();
 
@@ -2929,9 +2935,12 @@ QgsGrassModuleField::QgsGrassModuleField(
   mType = qdesc.attribute( "type" );
 
   mLayerKey = qdesc.attribute( "layer" );
-  if ( mLayerKey.isNull() || mLayerKey.length() == 0 ) {
+  if ( mLayerKey.isNull() || mLayerKey.length() == 0 )
+  {
     QMessageBox::warning( 0, tr( "Warning" ), tr( "'layer' attribute in field tag with key= %1 is missing." ).arg( mKey ) );
-  } else {
+  }
+  else
+  {
     QgsGrassModuleItem *item = mModuleStandardOptions->itemByKey( mLayerKey );
     // TODO check type
     if ( item )
