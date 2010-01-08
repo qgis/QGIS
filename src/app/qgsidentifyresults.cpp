@@ -293,7 +293,8 @@ void QgsIdentifyResults::show()
 // (saves the current window size/position)
 void QgsIdentifyResults::close()
 {
-  clearRubberbands();
+  clear(); 
+
   delete mActionPopup;
   mActionPopup = 0;
 
