@@ -275,7 +275,9 @@ class QgisApp : public QMainWindow
     QAction *actionLayerSaveAs() { return mActionLayerSaveAs; }
     QAction *actionLayerSelectionSaveAs() { return mActionLayerSelectionSaveAs; }
     QAction *actionRemoveLayer() { return mActionRemoveLayer; }
+#ifdef HAVE_QWT
     QAction *actionGpsTool() { return mActionGpsTool; }
+#endif
     QAction *actionLayerProperties() { return mActionLayerProperties; }
     QAction *actionLayerSeparator2() { return mActionLayerSeparator2; }
     QAction *actionAddToOverview() { return mActionAddToOverview; }
@@ -834,7 +836,9 @@ class QgisApp : public QMainWindow
     QAction *mActionLayerSaveAs;
     QAction *mActionLayerSelectionSaveAs;
     QAction *mActionRemoveLayer;
+#ifdef HAVE_QWT
     QAction *mActionGpsTool;
+#endif
     QAction *mActionLayerProperties;
     QAction *mActionLayerSeparator2;
     QAction *mActionAddToOverview;
