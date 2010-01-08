@@ -73,6 +73,7 @@ SET(QGIS_APP_SRCS
   qgsvectorlayerproperties.cpp
   qgsquerybuilder.cpp
 
+  composer/qgsattributeselectiondialog.cpp
   composer/qgscomposer.cpp
   composer/qgscomposerarrowwidget.cpp
   composer/qgscomposeritemwidget.cpp

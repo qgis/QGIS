@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgscomposertablewidget.h"
+#include "qgsattributeselectiondialog.h"
 #include "qgscomposeritemwidget.h"
 #include "qgscomposertable.h"
 #include "qgscomposermap.h"
@@ -92,6 +93,23 @@ void QgsComposerTableWidget::on_mLayerComboBox_currentIndexChanged( int index )
       mComposerTable->setVectorLayer( vl );
       mComposerTable->update();
     }
+  }
+}
+
+void QgsComposerTableWidget::on_mAttributesPushButton_clicked()
+{
+  if ( !mComposerTable )
+  {
+    return;
+  }
+
+  QgsAttributeSelectionDialog d( mComposerTable->vectorLayer(), mComposerTable->displayAttributes(), mComposerTable->fieldAliasMap(), 0 );
+  if ( d.exec() == QDialog::Accepted )
+  {
+    //change displayAttributes and aliases
+    mComposerTable->setDisplayAttributes( d.enabledAttributes() );
+    mComposerTable->setFieldAliasMap( d.aliasMap() );
+    mComposerTable->update();
   }
 }
 

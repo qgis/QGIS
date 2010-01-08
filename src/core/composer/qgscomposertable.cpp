@@ -33,6 +33,24 @@ QgsComposerTable::~QgsComposerTable()
 
 }
 
+void QgsComposerTable::initializeAliasMap()
+{
+  mFieldAliasMap.clear();
+  if ( mVectorLayer )
+  {
+    QgsFieldMap fieldMap = mVectorLayer->pendingFields();
+    QgsFieldMap::const_iterator it = fieldMap.constBegin();
+    for ( ; it != fieldMap.constEnd(); ++it )
+    {
+      QString currentAlias = mVectorLayer->attributeAlias( it.key() );
+      if ( !currentAlias.isEmpty() )
+      {
+        mFieldAliasMap.insert( it.key(), currentAlias );
+      }
+    }
+  }
+}
+
 void QgsComposerTable::setComposerMap( const QgsComposerMap* map )
 {
   if ( mComposerMap )
@@ -43,6 +61,16 @@ void QgsComposerTable::setComposerMap( const QgsComposerMap* map )
   if ( mComposerMap )
   {
     QObject::connect( mComposerMap, SIGNAL( extentChanged() ), this, SLOT( repaint() ) );
+  }
+}
+
+void QgsComposerTable::setVectorLayer( QgsVectorLayer* vl )
+{
+  if ( vl != mVectorLayer )
+  {
+    mDisplayAttributes.clear();
+    mVectorLayer = vl;
+    initializeAliasMap();
   }
 }
 
@@ -81,11 +109,15 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   QgsFieldMap::const_iterator fieldIt = vectorFields.constBegin();
   for ( ; fieldIt != vectorFields.constEnd(); ++fieldIt )
   {
+    if ( mDisplayAttributes.size() > 0 && !mDisplayAttributes.contains( fieldIt.key() ) )
+    {
+      continue;
+    }
     currentY = mGridStrokeWidth;
     currentY += mLineTextDistance;
     currentY += fontAscentMillimeters( mHeaderFont );
     currentX += mLineTextDistance;
-    drawText( painter, currentX, currentY, fieldIt.value().name(), mHeaderFont );
+    drawText( painter, currentX, currentY, attributeDisplayName( fieldIt.key(), fieldIt.value().name() ), mHeaderFont );
 
     currentY += mLineTextDistance;
     currentY += mGridStrokeWidth;
@@ -156,8 +188,32 @@ bool QgsComposerTable::writeXML( QDomElement& elem, QDomDocument & doc ) const
   {
     composerTableElem.setAttribute( "vectorLayer", mVectorLayer->getLayerID() );
   }
+
+  //display attributes
+  QDomElement displayAttributesElem = doc.createElement( "displayAttributes" );
+  QSet<int>::const_iterator attIt = mDisplayAttributes.constBegin();
+  for ( ; attIt != mDisplayAttributes.constEnd(); ++attIt )
+  {
+    QDomElement attributeIndexElem = doc.createElement( "attributeEntry" );
+    attributeIndexElem.setAttribute( "index", *attIt );
+    displayAttributesElem.appendChild( attributeIndexElem );
+  }
+  composerTableElem.appendChild( displayAttributesElem );
+
+  //alias map
+  QDomElement aliasMapElem = doc.createElement( "attributeAliasMap" );
+  QMap<int, QString>::const_iterator aliasIt = mFieldAliasMap.constBegin();
+  for ( ; aliasIt != mFieldAliasMap.constEnd(); ++aliasIt )
+  {
+    QDomElement mapEntryElem = doc.createElement( "aliasEntry" );
+    mapEntryElem.setAttribute( "key", aliasIt.key() );
+    mapEntryElem.setAttribute( "value", aliasIt.value() );
+    aliasMapElem.appendChild( mapEntryElem );
+  }
+  composerTableElem.appendChild( aliasMapElem );
+
   elem.appendChild( composerTableElem );
-  return _writeXML( composerTableElem, doc );;
+  return _writeXML( composerTableElem, doc );
 }
 
 bool QgsComposerTable::readXML( const QDomElement& itemElem, const QDomDocument& doc )
@@ -211,6 +267,40 @@ bool QgsComposerTable::readXML( const QDomElement& itemElem, const QDomDocument&
     }
   }
 
+  //restore display attribute map
+  mDisplayAttributes.clear();
+  QDomNodeList displayAttributeList = itemElem.elementsByTagName( "displayAttributes" );
+  if ( displayAttributeList.size() > 0 )
+  {
+    QDomElement displayAttributesElem =  displayAttributeList.at( 0 ).toElement();
+    QDomNodeList attributeEntryList = displayAttributesElem.elementsByTagName( "attributeEntry" );
+    for ( int i = 0; i < attributeEntryList.size(); ++i )
+    {
+      QDomElement attributeEntryElem = attributeEntryList.at( i ).toElement();
+      int index = attributeEntryElem.attribute( "index", "-1" ).toInt();
+      if ( index != -1 )
+      {
+        mDisplayAttributes.insert( index );
+      }
+    }
+  }
+
+  //restore alias map
+  mFieldAliasMap.clear();
+  QDomNodeList aliasMapNodeList = itemElem.elementsByTagName( "attributeAliasMap" );
+  if ( aliasMapNodeList.size() > 0 )
+  {
+    QDomElement attributeAliasMapElem = aliasMapNodeList.at( 0 ).toElement();
+    QDomNodeList aliasMepEntryList = attributeAliasMapElem.elementsByTagName( "aliasEntry" );
+    for ( int i = 0; i < aliasMepEntryList.size(); ++i )
+    {
+      QDomElement aliasEntryElem = aliasMepEntryList.at( i ).toElement();
+      int key = aliasEntryElem.attribute( "key", "-1" ).toInt();
+      QString value = aliasEntryElem.attribute( "value", "" );
+      mFieldAliasMap.insert( key, value );
+    }
+  }
+
   //restore general composer item properties
   QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
   if ( composerItemList.size() > 0 )
@@ -235,7 +325,14 @@ bool QgsComposerTable::getFeatureAttributes( QList<QgsAttributeMap>& attributes 
     selectionRect = mComposerMap->extent();
   }
 
-  mVectorLayer->select( mVectorLayer->pendingAllAttributesList(), selectionRect, false, true );
+  if ( mDisplayAttributes.size() < 1 )
+  {
+    mVectorLayer->select( mVectorLayer->pendingAllAttributesList(), selectionRect, false, true );
+  }
+  else
+  {
+    mVectorLayer->select( mDisplayAttributes.toList(), selectionRect, false, true );
+  }
   QgsFeature f;
   int counter = 0;
   while ( mVectorLayer->nextFeature( f ) && counter < mMaximumNumberOfFeatures )
@@ -260,7 +357,10 @@ bool QgsComposerTable::calculateMaxColumnWidths( QMap<int, double>& maxWidthMap,
   QgsFieldMap::const_iterator fieldIt = vectorFields.constBegin();
   for ( ; fieldIt != vectorFields.constEnd(); ++fieldIt )
   {
-    maxWidthMap.insert( fieldIt.key(), textWidthMillimeters( mHeaderFont, fieldIt.value().name() ) );
+    if ( mDisplayAttributes.size() < 1 || mDisplayAttributes.contains( fieldIt.key() ) )
+    {
+      maxWidthMap.insert( fieldIt.key(), textWidthMillimeters( mHeaderFont, attributeDisplayName( fieldIt.key(), fieldIt.value().name() ) ) );
+    }
   }
 
   //go through all the attributes and adapt the max width values
@@ -334,6 +434,19 @@ void QgsComposerTable::drawVerticalGridLines( QPainter* p, const QMap<int, doubl
     currentX += ( maxColWidthIt.value() + 2 * mLineTextDistance );
     p->drawLine( QPointF( currentX, halfGridStrokeWidth ), QPointF( currentX, rect().height() - halfGridStrokeWidth ) );
     currentX += mGridStrokeWidth;
+  }
+}
+
+QString QgsComposerTable::attributeDisplayName( int attributeIndex, const QString& name ) const
+{
+  QMap<int, QString>::const_iterator it = mFieldAliasMap.find( attributeIndex );
+  if ( it != mFieldAliasMap.constEnd() )
+  {
+    return it.value();
+  }
+  else
+  {
+    return name;
   }
 }
 
