@@ -330,8 +330,11 @@ QgisApp::QgisApp( QSplashScreen *splash, QWidget * parent, Qt::WFlags fl )
     : QMainWindow( parent, fl ),
     mSplash( splash ),
     mPythonConsole( NULL ),
-    mPythonUtils( NULL ),
+    mPythonUtils( NULL )
+#ifdef HAVE_QWT
+    ,
     mpGpsWidget( NULL )
+#endif
 {
   if ( smInstance )
   {
@@ -2080,15 +2083,7 @@ void QgisApp::saveRecentProjectPath( QString projectPath, QSettings & settings )
   // Persist the list
   settings.setValue( "/UI/recentProjectsList", mRecentProjectPaths );
 
-  // Persist state of GPS Tracker
-  if ( mpGpsWidget )
-  {
-    settings.setValue( "/gps/widgetEnabled", true );
-  }
-  else
-  {
-    settings.setValue( "/gps/widgetEnabled", false );
-  }
+
   // Update menu list of paths
   updateRecentProjectPaths();
 
@@ -2103,6 +2098,19 @@ void QgisApp::saveWindowState()
 
   // store window geometry
   settings.setValue( "/UI/geometry", saveGeometry() );
+
+#if HAVE_QWT
+  // Persist state of GPS Tracker
+  if ( mpGpsWidget )
+  {
+    settings.setValue( "/gps/widgetEnabled", true );
+    delete mpGpsWidget;
+  }
+  else
+  {
+    settings.setValue( "/gps/widgetEnabled", false );
+  }
+#endif
 
   QgsPluginRegistry::instance()->unloadAll();
 }
@@ -2134,18 +2142,6 @@ void QgisApp::restoreWindowState()
     QgsDebugMsg( "restore of UI geometry failed" );
   }
 
-#ifdef HAVE_QWT
-  // Persist state of GPS Tracker
-  if ( mpGpsWidget )
-  {
-    settings.setValue( "/gps/widgetEnabled", true );
-    delete mpGpsWidget;
-  }
-  else
-  {
-    settings.setValue( "/gps/widgetEnabled", false );
-  }
-#endif
 }
 ///////////// END OF GUI SETUP ROUTINES ///////////////
 
