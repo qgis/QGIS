@@ -39,6 +39,7 @@ class QgsComposerTableWidget: public QWidget, private Ui::QgsComposerTableWidget
 
   private slots:
     void on_mLayerComboBox_currentIndexChanged( int index );
+    void on_mAttributesPushButton_clicked();
     void on_mComposerMapComboBox_currentIndexChanged( int index );
     void on_mMaximumColumnsSpinBox_valueChanged( int i );
     void on_mMarginSpinBox_valueChanged( double d );

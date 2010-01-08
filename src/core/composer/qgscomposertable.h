@@ -20,6 +20,7 @@
 
 #include "qgscomposeritem.h"
 #include "qgsfeature.h"
+#include <QSet>
 
 class QgsComposerMap;
 class QgsVectorLayer;
@@ -37,7 +38,7 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
     bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
-    void setVectorLayer( QgsVectorLayer* vl ) { mVectorLayer = vl; }
+    void setVectorLayer( QgsVectorLayer* vl );// { mVectorLayer = vl; }
     const QgsVectorLayer* vectorLayer() const { return mVectorLayer; }
 
     void setComposerMap( const QgsComposerMap* map );
@@ -64,6 +65,12 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
     void setGridColor( const QColor& c ) { mGridColor = c; }
     QColor gridColor() const { return mGridColor; }
 
+    QSet<int> displayAttributes() const { return mDisplayAttributes; }
+    void setDisplayAttributes( const QSet<int>& attr ) { mDisplayAttributes = attr;}
+
+    QMap<int, QString> fieldAliasMap() const { return mFieldAliasMap; }
+    void setFieldAliasMap( const QMap<int, QString>& map ) { mFieldAliasMap = map; }
+
   private:
     /**Associated vector layer*/
     QgsVectorLayer* mVectorLayer;
@@ -81,6 +88,11 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
     double mGridStrokeWidth;
     QColor mGridColor;
 
+    /**List of attribute indices to display (or all attributes if list is empty)*/
+    QSet<int> mDisplayAttributes;
+    /**Map of attribute name aliases. The aliases might be different to those of QgsVectorLayer (but those from the vector layer are the default)*/
+    QMap<int, QString> mFieldAliasMap;
+
     /**Retrieves feature attributes*/
     bool getFeatureAttributes( QList<QgsAttributeMap>& attributes );
     /**Calculate the maximum width values of the vector attributes*/
@@ -89,6 +101,10 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
     void adaptItemFrame( const QMap<int, double>& maxWidthMap, const QList<QgsAttributeMap>& attributeList );
     void drawHorizontalGridLines( QPainter* p, int nAttributes );
     void drawVerticalGridLines( QPainter* p, const QMap<int, double>& maxWidthMap );
+    /**Inserts aliases from vector layer as starting configuration to the alias map*/
+    void initializeAliasMap();
+    /**Returns the attribute name to display in the item (attribute name or an alias if present)*/
+    QString attributeDisplayName( int attributeIndex, const QString& name ) const;
 };
 
 #endif // QGSCOMPOSERTABLE_H
