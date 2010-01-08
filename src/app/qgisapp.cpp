@@ -140,7 +140,10 @@
 #include "ogr/qgsopenvectorlayerdialog.h"
 #include "qgsattributetabledialog.h"
 #include "qgsvectorfilewriter.h"
+
+#ifdef HAVE_QWT
 #include "qgsgpsinformationwidget.h"
+#endif
 
 //
 // Gdal/Ogr includes
@@ -556,11 +559,14 @@ void QgisApp::readSettings()
 
   // Add the recently accessed project file paths to the File menu
   mRecentProjectPaths = settings.value( "/UI/recentProjectsList" ).toStringList();
+
+#if HAVE_QWT
   // Restore state of GPS Tracker
   if ( settings.value( "/gps/widgetEnabled", false ).toBool() )
   {
     showGpsTool();
   }
+#endif
 }
 
 
@@ -2124,6 +2130,8 @@ void QgisApp::restoreWindowState()
   {
     QgsDebugMsg( "restore of UI geometry failed" );
   }
+
+#ifdef HAVE_QWT
   // Persist state of GPS Tracker
   if ( mpGpsWidget )
   {
@@ -2134,6 +2142,7 @@ void QgisApp::restoreWindowState()
   {
     settings.setValue( "/gps/widgetEnabled", false );
   }
+#endif
 }
 ///////////// END OF GUI SETUP ROUTINES ///////////////
 
@@ -4399,6 +4408,7 @@ void QgisApp::removeAllLayers()
   QgsProject::instance()->dirty( true );
 } //remove all layers
 
+#ifdef HAVE_QWT
 void QgisApp::showGpsTool()
 {
   if ( !mpGpsWidget )
@@ -4420,6 +4430,7 @@ void QgisApp::showGpsTool()
     mpGpsDock->toggleViewAction();
   }
 }
+#endif
 
 void QgisApp::zoomToLayerExtent()
 {

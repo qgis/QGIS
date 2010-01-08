@@ -422,8 +422,10 @@ class QgisApp : public QMainWindow
     void userCenter();
     //! Remove a layer from the map and legend
     void removeLayer();
+#ifdef HAVE_QWT
     //! Show GPS tool
     void showGpsTool();
+#endif
     //! zoom to extent of layer
     void zoomToLayerExtent();
     //! zoom to actual size of raster layer
