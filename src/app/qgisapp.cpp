@@ -958,12 +958,13 @@ void QgisApp::createActions()
   connect( mActionRemoveLayer, SIGNAL( triggered() ), this, SLOT( removeLayer() ) );
   mActionRemoveLayer->setEnabled( false );
 
+#ifdef HAVE_QWT
   mActionGpsTool = new QAction( getThemeIcon( "mActionGpsTool.png" ), tr( "Live GPS tracking" ), this );
   shortcuts->registerAction( mActionGpsTool, tr( "", "Live GPS tracking" ) );
   mActionGpsTool->setStatusTip( tr( "Show GPS tool" ) );
   connect( mActionGpsTool, SIGNAL( triggered() ), this, SLOT( showGpsTool() ) );
   mActionGpsTool->setEnabled( true );
-
+#endif
 
   mActionLayerProperties = new QAction( tr( "Properties..." ), this );
   shortcuts->registerAction( mActionLayerProperties );
@@ -1322,7 +1323,9 @@ void QgisApp::createMenus()
     mViewMenu->addMenu( mToolbarMenu );
     mViewMenu->addAction( mActionToggleFullScreen );
   }
+#ifdef HAVE_QWT
   mViewMenu->addAction( mActionGpsTool );
+#endif
 
   // Layers Menu
 
@@ -2157,9 +2160,9 @@ void QgisApp::about()
                             .arg( QGis::QGIS_VERSION )
                             .arg( QGis::QGIS_SVN_VERSION );
 #ifdef HAVE_POSTGRESQL
-    versionString += tr( " This copy of QGIS has been built with PostgreSQL support." );
+    versionString += tr( "\nThis copy of QGIS has been built with PostgreSQL support." );
 #else
-    versionString += tr( " This copy of QGIS has been built without PostgreSQL support." );
+    versionString += tr( "\nThis copy of QGIS has been built without PostgreSQL support." );
 #endif
 
 #ifdef HAVE_SPATIALITE
@@ -2168,15 +2171,20 @@ void QgisApp::about()
     versionString += tr( "\nThis copy of QGIS has been built without SpatiaLite support." );
 #endif
 
+#ifdef HAVE_QWT
+    versionString += tr( "\nThis copy of QGIS has been built with QWT support (%1)." ).arg( QWT_VERSION_STR );
+#else
+    versionString += tr( "\nThis copy of QGIS has been built without QWT support." );
+#endif
+
+#ifdef QGISDEBUG
+    versionString += tr( "\nThis copy of QGIS writes debugging output." );
+#endif
+
     versionString += tr( "\nThis binary was compiled against Qt %1,"
                          "and is currently running against Qt %2" )
                      .arg( QT_VERSION_STR )
                      .arg( qVersion() );
-
-#ifdef WIN32
-    // special version stuff for windows (if required)
-    //  versionString += "\nThis is a Windows preview release - not for production use";
-#endif
 
     abt->setVersion( versionString );
     QString whatsNew = "<html><body>" ;
