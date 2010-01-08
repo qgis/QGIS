@@ -386,6 +386,12 @@ class QgisApp : public QMainWindow
     /**Deletes the selected attributes for the currently selected vector layer*/
     void deleteSelected( QgsMapLayer *layer = 0 );
 
+    //! project was written
+    void writeProject( QDomDocument & );
+
+    //! project was read
+    void readProject( const QDomDocument & );
+
   protected:
 
     //! Handle state changes (WindowTitleChange)
@@ -646,9 +652,6 @@ class QgisApp : public QMainWindow
     void stopRendering();
 
     void showStyleManagerV2();
-
-    //! project changed
-    void projectChanged( const QDomDocument & );
 
   signals:
     /** emitted when a key is pressed and we want non widget sublasses to be able
@@ -1049,6 +1052,9 @@ class QgisApp : public QMainWindow
 
     //! Persistent GPS toolbox
     QgsGPSInformationWidget * mpGpsWidget;
+
+    //! project changed
+    void projectChanged( const QDomDocument & );
 };
 
 #endif

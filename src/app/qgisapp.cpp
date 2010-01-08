@@ -1840,9 +1840,9 @@ void QgisApp::setupConnections()
 
   // Monitor change of project path
   connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ),
-           this, SLOT( projectChanged( const QDomDocument & ) ) );
+           this, SLOT( readProject( const QDomDocument & ) ) );
   connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ),
-           this, SLOT( projectChanged( const QDomDocument & ) ) );
+           this, SLOT( writeProject( QDomDocument & ) ) );
 }
 
 void QgisApp::createCanvas()
@@ -6066,4 +6066,14 @@ void QgisApp::projectChanged( const QDomDocument &doc )
   expr += QString( "sys.path.append('%1')" ).arg( prevProjectDir );
 
   runPythonString( expr );
+}
+
+void QgisApp::writeProject( QDomDocument &doc )
+{
+  projectChanged( doc );
+}
+
+void QgisApp::readProject( const QDomDocument &doc )
+{
+  projectChanged( doc );
 }
