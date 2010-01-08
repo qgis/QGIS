@@ -70,7 +70,9 @@ class QDomDocument;
 #include "qgsconfig.h"
 #include "qgsfeature.h"
 #include "qgspoint.h"
+#ifdef HAVE_QWT
 class QgsGPSInformationWidget;
+#endif
 
 /*! \class QgisApp
  * \brief Main window for the Qgis application
@@ -902,7 +904,9 @@ class QgisApp : public QMainWindow
     // docks ------------------------------------------
     QDockWidget *mLegendDock;
     QDockWidget *mOverviewDock;
+#ifdef HAVE_QWT
     QDockWidget *mpGpsDock;
+#endif
 
 #ifdef Q_WS_MAC
     //! Window menu action to select this window
@@ -1050,9 +1054,10 @@ class QgisApp : public QMainWindow
 
     int mLastComposerId;
 
+#ifdef HAVE_QWT
     //! Persistent GPS toolbox
     QgsGPSInformationWidget * mpGpsWidget;
-
+#endif
     //! project changed
     void projectChanged( const QDomDocument & );
 };
