@@ -231,6 +231,7 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineNoOffset( const QPolygonF& points
   QPointF lastPt = points[0];
   double lengthLeft = 0; // how much is left until next marker
   bool first = true;
+  double origAngle = mMarker->angle();
 
   for ( int i = 1; i < points.count(); ++i )
   {
@@ -252,7 +253,7 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineNoOffset( const QPolygonF& points
     // rotate marker (if desired)
     if ( mRotateMarker )
     {
-      mMarker->setAngle( l.angle() * 180 / M_PI );
+      mMarker->setAngle( origAngle + ( l.angle() * 180 / M_PI ) );
       mMarker->startRender( context );
     }
 
@@ -278,6 +279,9 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineNoOffset( const QPolygonF& points
     if ( mRotateMarker )
       mMarker->stopRender( context );
   }
+
+  // restore original rotation
+  mMarker->setAngle( origAngle );
 
 }
 
