@@ -10,7 +10,7 @@
 \b0\fs24 \cf0 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\i \cf0 2.3.0	2009-12-28\
+\i \cf0 2.4.0	2010-1-9\
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
 \i0 \cf0 \
@@ -66,6 +66,8 @@ See the Qgis {\field{\*\fldinst{HYPERLINK "http://wiki.qgis.org/qgiswiki/Buildin
 \ul Python 2.5 or 2.6\ulnone  - the system Python on Leopard and Snow Leopard will work.  Or install Python 2.5 from {\field{\*\fldinst{HYPERLINK "http://www.python.org/"}}{\fldrslt python.org}} (required for Tiger).\
 \
 \ul SIP\ulnone  and \ul PyQt\ulnone  - make sure that they fully support the installed Qt version.  Development versions may cause trouble for QGIS.  See the QGIS install instructions for info about how to compile and install these.\
+\
+\ul [Py]Qwt\ulnone  - Qwt needed for GPS tracking function.  PyQwt used for some 3rd-party plugins.  Since PyQwt installs inside PyQt, it must be bundled along with PyQt.  The PyQwt sources can be used, but extra steps are needed to compile Qwt and PyQwt separately.\
 \
 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
@@ -201,7 +203,7 @@ See detailed dependency notes below.\
 \f1\fs20 static
 \f0\fs24  forms in the settings.\
 \
-- GRASS - GRASS.app \ul must\ulnone  be installed as it was built.  If it was moved or renamed after installation, GRASS support in Qgis won't work.  This goes for building Qgis as well as running it to use full GRASS support.\
+- GRASS - GRASS.app \ul must\ulnone  be installed as it was built.  If it was moved or renamed after installation, GRASS support in Qgis won't work.  This goes for building Qgis as well as running it to use full GRASS support.  Also, make sure to set the GRASS version in the config, as this is not detectable.\
 \
 - Python/SIP/PyQt - this is a complex installation.  Python can be either in the system or separately installed in 
 \f1\fs20 /Library/Frameworks
@@ -212,6 +214,8 @@ See detailed dependency notes below.\
 SIP/PyQt programs are found with the 
 \f1\fs20 PYTHON_USRBIN
 \f0\fs24  setting.  This is automatic if you follow the Qgis SIP/PyQt install instructions.\
+\
+- Qwt/PyQwt - Qwt version must be set.\
 \
 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
