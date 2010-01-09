@@ -13,6 +13,7 @@ warnings) in the project.  Note that _TTY_NOWARN_ will also turn off portability
 
 #include <stdio.h>
 #include "posix_qextserialport.h"
+#include "qgslogger.h"
 
 /*!
 \fn Posix_QextSerialPort::Posix_QextSerialPort()
@@ -858,10 +859,10 @@ bool Posix_QextSerialPort::open( OpenMode mode )
   {
     /*open the port*/
     Posix_File->setFileName( port );
-    qDebug( "Trying to open File" );
+    QgsDebugMsg( "Trying to open File" );
     if ( Posix_File->open( QIODevice::ReadWrite | QIODevice::Unbuffered ) )
     {
-      qDebug( "Opened File successfully" );
+      QgsDebugMsg( "Opened File successfully" );
       /*set open mode*/
       QIODevice::open( mode );
 
@@ -889,7 +890,7 @@ bool Posix_QextSerialPort::open( OpenMode mode )
     }
     else
     {
-      qDebug( "Could not open File! Error code : %d", Posix_File->error() );
+      QgsDebugMsg( QString( "Could not open File! Error code: %1" ).arg( Posix_File->error() ) );
     }
   }
   UNLOCK_MUTEX();

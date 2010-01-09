@@ -39,7 +39,7 @@ class QgsMapToolCapture : public QgsMapToolEdit
     };
 
     //! constructor
-    QgsMapToolCapture( QgsMapCanvas* canvas, CaptureMode tool );
+    QgsMapToolCapture( QgsMapCanvas* canvas, CaptureMode mode );
 
     //! destructor
     virtual ~QgsMapToolCapture();
