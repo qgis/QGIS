@@ -65,6 +65,10 @@
 //PYTHON_FORM = $(PYTHON_FORM_$(SDKSYS)) // fw, system or disabled
 //PYTHON_VERSION = $(PYTHON_VERSION_$(SDKSYS))
 
+// qwt can't be compiled into pyqwt as is the default with pyqwt
+//QWT_FORM = shared // shared or static
+//QWT_VERSION = 5.2.1-svn // default in pyqwt package
+
 //////////////////////////////////////////////////////////////////////
 // whether to bundle some external libs in the app package
 //   some checking is done, so /Library frameworks (except Qt) and
@@ -74,6 +78,7 @@
 
 //BUNDLE_PGSQL = YES
 //BUNDLE_GPSBABEL = YES
+//BUNDLE_QWT = YES
 
 // frameworks not bundled
 //BUNDLE_GSL = YES
@@ -119,6 +124,9 @@
 // used to link static libs, defaults based on kyngchaos dist
 //PGSQL_LIBADD = -lintl -framework CoreFoundation -liconv -lxml2 -lssl -lcrypto -lpam -lkrb5 -lldap -lz
 
+//QWT_PREFIX_shared = /usr/local/qwt-$(QWT_VERSION)
+//QWT_PREFIX_static = $(QWT_PREFIX_shared)
+
 //////////////////////////////////////////////////////////////////////
 // do not change these unless you have a very odd layout for them
 // or they just aren't coming out right in Xcode
@@ -150,6 +158,9 @@
 //SQLITE_INC = $(SQLITE_INC_$(SQLITE_FORM))
 //SQLITE_LIB = $(SQLITE_LIB_$(SQLITE_FORM))
 //SPATIALITE_LIBADD = $(GEOS_LIB) $(PROJ_LIB)
+
+//QWT_INC = $(QWT_PREFIX)/include
+//QWT_LIB = -L$(QWT_PREFIX)/lib -lqwt
 
 //PYTHON_PREFIX = $(PYTHON_PREFIX_$(PYTHON_FORM))/Versions/$(PYTHON_VERSION)
 //PYTHON_BIN = $(PYTHON_BIN_$(PYTHON_FORM)) // Python executables

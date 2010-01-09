@@ -1,6 +1,6 @@
 // QGIS Xcode project common build settings
 
-CURRENT_PROJECT_VERSION = 2.3.0
+CURRENT_PROJECT_VERSION = 2.4.0
 
 // SDKSYS must be set to valid value
 SDKSYS = leo // tig (Tiger), leo (Leopard), snow (Snow Leopard)
@@ -81,6 +81,10 @@ GRASS_VERSION = 6.4
 PYTHON_FORM = $(PYTHON_FORM_$(SDKSYS)) // fw, system or disabled
 PYTHON_VERSION = $(PYTHON_VERSION_$(SDKSYS))
 
+// qwt can't be compiled into pyqwt as is the default with pyqwt
+QWT_FORM = shared // shared or static
+QWT_VERSION = 5.2.1-svn // default in pyqwt package
+
 //////////////////////////////////////////////////////////////////////
 // whether to bundle some external libs in the app package
 //   some checking is done, so /Library frameworks (except Qt) and
@@ -93,6 +97,8 @@ PYTHON_VERSION = $(PYTHON_VERSION_$(SDKSYS))
 
 BUNDLE_PGSQL = YES
 BUNDLE_GPSBABEL = YES
+BUNDLE_QWT = YES
+
 // frameworks not bundled
 BUNDLE_GSL = YES
 BUNDLE_GDAL = YES
@@ -129,6 +135,9 @@ SQLITE_PREFIX_shared = /usr/local
 PGSQL_PREFIX = /usr/local/pgsql
 // used to link static libs, defaults based on kyngchaos dist
 PGSQL_LIBADD = -lintl -framework CoreFoundation -liconv -lxml2 -lssl -lcrypto -lpam -lkrb5 -lldap -lz
+
+QWT_PREFIX_shared = /usr/local/qwt-$(QWT_VERSION)
+QWT_PREFIX_static = $(QWT_PREFIX_shared)
 
 //////////////////////////////////////////////////////////////////////
 // DO NOT CHANGE THESE
@@ -330,6 +339,11 @@ SPATIALITE_INC_internal = ../../src/core/spatialite/headers
 SPATIALITE_INC = $(SPATIALITE_INC_$(SQLITE_FORM))
 SPATIALITE_LIBADD_internal = -liconv -ldl
 SPATIALITE_LIBADD = $(SPATIALITE_GEOS_$(SPATIALITE_GEOS)_$(SQLITE_FORM)) $(SPATIALITE_PROJ_$(SPATIALITE_PROJ)_$(SQLITE_FORM)) $(SPATIALITE_LIBADD_$(SQLITE_FORM))
+
+QWT_PREFIX = $(QWT_PREFIX_$(QWT_FORM))
+QWT_INC = $(QWT_PREFIX)/include
+QWT_LIB = -L$(QWT_PREFIX)/lib -lqwt
+QWT_DEFS = HAVE_QWT
 
 // defaults by system
 PYTHON_VERSION_tig = 2.5
