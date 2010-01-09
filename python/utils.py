@@ -101,14 +101,21 @@ active_plugins = []
 # list of plugins in plugin directory and home plugin directory
 available_plugins = []
 
+def findPlugins(path):
+  plugins = []
+  for plugin in glob.glob(path + "/plugins/*"):
+    if os.path.isdir(plugin):
+      plugins.append( os.path.basename(plugin) )
+ 
+  return plugins
 
 def updateAvailablePlugins():
   from qgis.core import QgsApplication
   pythonPath = unicode(QgsApplication.pkgDataPath()) + "/python"
   homePythonPath = unicode(QgsApplication.qgisSettingsDirPath()) + "/python"
 
-  plugins = map(os.path.basename, glob.glob(pythonPath + "/plugins/*"))
-  homePlugins = map(os.path.basename, glob.glob(homePythonPath + "/plugins/*"))
+  plugins = findPlugins( pythonPath )
+  homePlugins = findPlugins( homePythonPath )
 
   # merge the lists
   for p in homePlugins:
