@@ -36,7 +36,6 @@ class QgsAbout : public QDialog, private Ui::QgsAbout
     void openUrl( QString url );
 
   private slots:
-    void on_buttonCancel_clicked();
     void on_btnQgisUser_clicked();
     void on_btnQgisHome_clicked();
 };
