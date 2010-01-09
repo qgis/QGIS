@@ -401,7 +401,7 @@ void QgsComposerTable::adaptItemFrame( const QMap<int, double>& maxWidthMap, con
   totalWidth += ( 2 * maxWidthMap.size() * mLineTextDistance );
   totalWidth += ( maxWidthMap.size() + 1 ) * mGridStrokeWidth;
   QTransform t = transform();
-  setSceneRect( QRectF( t.dx(), t.dy(), totalWidth, totalHeight ) );
+  QgsComposerItem::setSceneRect( QRectF( t.dx(), t.dy(), totalWidth, totalHeight ) );
 }
 
 void QgsComposerTable::drawHorizontalGridLines( QPainter* p, int nAttributes )
@@ -448,5 +448,21 @@ QString QgsComposerTable::attributeDisplayName( int attributeIndex, const QStrin
   {
     return name;
   }
+}
+
+void QgsComposerTable::setSceneRect( const QRectF& rectangle )
+{
+  double titleHeight =  2 * mGridStrokeWidth + 2 * mLineTextDistance + fontAscentMillimeters( mHeaderFont );
+  double attributeHeight = mGridStrokeWidth + 2 * mLineTextDistance + fontAscentMillimeters( mContentFont );
+  if (( rectangle.height() - titleHeight ) > 0 )
+  {
+    mMaximumNumberOfFeatures = ( rectangle.height() - titleHeight ) / attributeHeight;
+  }
+  else
+  {
+    mMaximumNumberOfFeatures = 0;
+  }
+  QgsComposerItem::setSceneRect( rectangle );
+  emit maximumNumerOfFeaturesChanged( mMaximumNumberOfFeatures );
 }
 
