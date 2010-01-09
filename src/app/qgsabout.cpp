@@ -310,11 +310,6 @@ void QgsAbout::setPluginInfo()
   txtProviders->setText( myString );
 }
 
-void QgsAbout::on_buttonCancel_clicked()
-{
-  reject();
-}
-
 void QgsAbout::on_btnQgisUser_clicked()
 {
   // find a browser
