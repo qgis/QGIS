@@ -62,6 +62,11 @@ QgsComposerTableWidget::QgsComposerTableWidget( QgsComposerTable* table ): QWidg
   }
 
   updateGuiElements();
+
+  if ( mComposerTable )
+  {
+    QObject::connect( mComposerTable, SIGNAL( maximumNumerOfFeaturesChanged( int ) ), this, SLOT( setMaximumNumberOfFeatures( int ) ) );
+  }
 }
 
 QgsComposerTableWidget::~QgsComposerTableWidget()
@@ -288,6 +293,13 @@ void QgsComposerTableWidget::blockAllSignals( bool b )
   mGridColorButton->blockSignals( b );
   mGridStrokeWidthSpinBox->blockSignals( b );
   mShowGridCheckBox->blockSignals( b );
+}
+
+void QgsComposerTableWidget::setMaximumNumberOfFeatures( int n )
+{
+  mMaximumColumnsSpinBox->blockSignals( true );
+  mMaximumColumnsSpinBox->setValue( n );
+  mMaximumColumnsSpinBox->blockSignals( false );
 }
 
 

@@ -28,6 +28,7 @@ class QgsVectorLayer;
 /**A class to display feature attributes in the print composer*/
 class CORE_EXPORT QgsComposerTable: public QgsComposerItem
 {
+    Q_OBJECT
   public:
     QgsComposerTable( QgsComposition* composition );
     ~QgsComposerTable();
@@ -71,6 +72,9 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
     QMap<int, QString> fieldAliasMap() const { return mFieldAliasMap; }
     void setFieldAliasMap( const QMap<int, QString>& map ) { mFieldAliasMap = map; }
 
+    /**Adapts mMaximumNumberOfFeatures depending on the rectangle height*/
+    void setSceneRect( const QRectF& rectangle );
+
   private:
     /**Associated vector layer*/
     QgsVectorLayer* mVectorLayer;
@@ -105,6 +109,10 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
     void initializeAliasMap();
     /**Returns the attribute name to display in the item (attribute name or an alias if present)*/
     QString attributeDisplayName( int attributeIndex, const QString& name ) const;
+
+  signals:
+    /**This signal is emitted if the maximum number of feature changes (interactively)*/
+    void maximumNumerOfFeaturesChanged( int n );
 };
 
 #endif // QGSCOMPOSERTABLE_H

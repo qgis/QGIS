@@ -228,6 +228,7 @@ composer/qgscomposerscalebar.h
 composer/qgscomposeritem.h
 composer/qgscomposeritemgroup.h
 composer/qgscomposershape.h
+composer/qgscomposertable.h
 composer/qgscomposition.h
 composer/qgslegendmodel.h
 gps/qgsgpsconnection.h
