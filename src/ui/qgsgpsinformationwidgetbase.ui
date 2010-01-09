@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>249</width>
+    <width>273</width>
     <height>331</height>
    </rect>
   </property>
@@ -14,7 +14,16 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_4">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>3</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item row="0" column="0">
@@ -273,9 +282,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-233</y>
-            <width>226</width>
-            <height>531</height>
+            <y>0</y>
+            <width>190</width>
+            <height>532</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_7">
