@@ -99,12 +99,7 @@ ELSE (BINDINGS_GLOBAL_INSTALL)
 ENDIF (BINDINGS_GLOBAL_INSTALL)
 
 
-# python console
-PYQT4_WRAP_UI(PYUI_FILE ${CMAKE_SOURCE_DIR}/src/ui/qgspythondialog.ui)
-
-ADD_CUSTOM_TARGET(pythonconsole ALL DEPENDS ${PYUI_FILE})
-
 
 # Step 4: install built libs to python's site packages
-INSTALL(FILES __init__.py utils.py console.py ${PYUI_FILE} ${CMAKE_CURRENT_BINARY_DIR}/qgisconfig.py ${BINDINGS_LIBS} DESTINATION ${SITE_PKG_PATH}/qgis)
+INSTALL(FILES __init__.py utils.py console.py ${CMAKE_CURRENT_BINARY_DIR}/qgisconfig.py ${BINDINGS_LIBS} DESTINATION ${SITE_PKG_PATH}/qgis)
 
