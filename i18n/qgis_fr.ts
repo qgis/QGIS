@@ -1229,47 +1229,47 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Random selection</source>
-        <translation type="unfinished">Sélection aléatoire</translation>
+        <translation>Sélection aléatoire</translation>
     </message>
     <message>
         <source>Export to new projection</source>
-        <translation type="unfinished">Exporter vers une nouvelle projection</translation>
+        <translation>Exporter vers une nouvelle projection</translation>
     </message>
     <message>
         <source>Define current projection</source>
-        <translation type="unfinished">Définir la projection courante</translation>
+        <translation>Définir la projection courante</translation>
     </message>
     <message>
         <source>Vector grid</source>
-        <translation type="unfinished">Grille vecteur</translation>
+        <translation>Grille vecteur</translation>
     </message>
     <message>
         <source>Split vector layer</source>
-        <translation type="unfinished">Séparer une couche vectorielle</translation>
+        <translation>Séparer une couche vectorielle</translation>
     </message>
     <message>
         <source>Random selection within subsets</source>
-        <translation type="unfinished">Sélection aléatoire dans les sous-parties</translation>
+        <translation>Sélection aléatoire dans les sous-parties</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="unfinished">Veuillez spécifier la couche vecteur en entrée</translation>
+        <translation>Veuillez spécifier la couche vecteur en entrée</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
-        <translation type="unfinished">Joindre les attributs par localisation</translation>
+        <translation>Joindre les attributs par localisation</translation>
     </message>
     <message>
         <source>Join attributes</source>
-        <translation type="unfinished">Joindre les attributs</translation>
+        <translation>Joindre les attributs</translation>
     </message>
     <message>
         <source>Regular points</source>
-        <translation type="unfinished">Points réguliers</translation>
+        <translation>Points réguliers</translation>
     </message>
     <message>
         <source>Line intersections</source>
-        <translation type="unfinished">Intersections de lignes</translation>
+        <translation>Intersections de lignes</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="16"/>
@@ -1458,48 +1458,48 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>creating new selection</source>
-        <translation type="unfinished">Créer une nouvelle sélection</translation>
+        <translation>Créer une nouvelle sélection</translation>
     </message>
     <message>
         <source>adding to current selection</source>
-        <translation type="unfinished">Ajouter à la sélection actuelle</translation>
+        <translation>Ajouter à la sélection actuelle</translation>
     </message>
     <message>
         <source>removing from current selection</source>
-        <translation type="unfinished">Enlever de la sélection actuelle</translation>
+        <translation>Enlever de la sélection actuelle</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="unfinished">Sélection par localisation</translation>
+        <translation>Sélection par localisation</translation>
     </message>
     <message>
         <source>Select features in:</source>
-        <translation type="unfinished">Sélection d&apos;entités dans :</translation>
+        <translation>Sélection d&apos;entités dans :</translation>
     </message>
     <message>
         <source>that intersect features in:</source>
-        <translation type="unfinished">qui intersecte les entités dans :</translation>
+        <translation>qui intersecte les entités dans :</translation>
     </message>
     <message>
         <source>Modify current selection by:</source>
-        <translation type="unfinished">Modifier la sélection avec :</translation>
+        <translation>Modifier la sélection avec :</translation>
     </message>
     <message>
         <source>Please specify input layer</source>
-        <translation type="unfinished">Veuillez spécifier une couche en entrée</translation>
+        <translation>Veuillez spécifier une couche en entrée</translation>
     </message>
     <message>
         <source>Please specify select layer</source>
-        <translation type="unfinished">Veuillez spécifier la couche de sélection</translation>
+        <translation>Veuillez spécifier la couche de sélection</translation>
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation type="unfinished">Matrice des distances</translation>
+        <translation>Matrice des distances</translation>
     </message>
     <message>
         <source>Created output matrix:
 </source>
-        <translation type="unfinished">Matrice créée :
+        <translation>Matrice créée :
 </translation>
     </message>
     <message>
@@ -1513,11 +1513,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Vector layer is not valid</source>
-        <translation type="unfinished">Couche vecteur non valide</translation>
+        <translation>Couche vecteur non valide</translation>
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation type="unfinished">Total des longueurs de ligne</translation>
+        <translation>Total des longueurs de ligne</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="241"/>
@@ -1532,19 +1532,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Please specify input line layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Veuillez spécifier la couche de lignes en entrée</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Veuillez spécifier le shapefile créé</translation>
     </message>
     <message>
         <source>Please specify line intersect layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Veuillez spécifier la couche d&apos;intersections des lignes</translation>
     </message>
     <message>
         <source>Please specify input unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>Veuillez spécifier le champ de saisie de l&apos;identifiant unique</translation>
     </message>
     <message>
         <source>Please specify intersect unique ID field</source>
@@ -1555,26 +1555,32 @@ p, li { white-space: pre-wrap; }
 %1
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier de point créé :
+%1
+
+Voulez-vous ajouter cette nouvelle couche à la carte ?</translation>
     </message>
     <message>
         <source>No input layer specified</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas de couche spécifiée en entrée</translation>
     </message>
     <message>
         <source>Please specify spatial reference system</source>
-        <translation type="unfinished"></translation>
+        <translation>Veuillez spécifier le système de référence spatial</translation>
     </message>
     <message>
         <source>Created projected shapefile:
 %1
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation>Le shapefile projeté est créé :
+%1
+
+Voulez-vous ajouter cette nouvelle couche à la carte ?</translation>
     </message>
     <message>
         <source>Choose output CRS:</source>
-        <translation type="unfinished"></translation>
+        <translation>Choisissez le SCR :</translation>
     </message>
     <message>
         <source>Please select the projection system to be used by the output layer.</source>
@@ -2353,23 +2359,23 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     <name>GeometryDialog</name>
     <message>
         <source>Merge all</source>
-        <translation type="unfinished">Tout fusionner</translation>
+        <translation>Tout fusionner</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="unfinished">Veuillez spécifier la couche vecteur en entrée</translation>
+        <translation>Veuillez spécifier la couche vecteur en entrée</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="unfinished">Veuillez spécifier le fichier shapefile en entrée</translation>
+        <translation>Veuillez spécifier le fichier shapefile en entrée</translation>
     </message>
     <message>
         <source>Please specify valid tolerance value</source>
-        <translation type="unfinished">Veuillez indiquer une valeur de tolérance valide</translation>
+        <translation>Veuillez indiquer une valeur de tolérance valide</translation>
     </message>
     <message>
         <source>Please specify valid UID field</source>
-        <translation type="unfinished">Veuillez spécifier un champ d&apos;identifiant unique valide</translation>
+        <translation>Veuillez spécifier un champ d&apos;identifiant unique valide</translation>
     </message>
     <message>
         <source>Would you like to add the new layer to the TOC?</source>
@@ -2377,47 +2383,47 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     </message>
     <message>
         <source>Singleparts to multipart</source>
-        <translation type="unfinished">Morceau unique vers morceaux multiples</translation>
+        <translation>Morceau unique vers morceaux multiples</translation>
     </message>
     <message>
         <source>Output shapefile</source>
-        <translation type="unfinished">Fichier de sortie (.shp)</translation>
+        <translation>Fichier de sortie (.shp)</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
-        <translation type="unfinished">Morceaux multiples vers morceau unique</translation>
+        <translation>Morceaux multiples vers morceau unique</translation>
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation type="unfinished">Extraction de nœuds</translation>
+        <translation>Extraction de nœuds</translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation type="unfinished">Polygones vers lignes</translation>
+        <translation>Polygones vers lignes</translation>
     </message>
     <message>
         <source>Input polygon vector layer</source>
-        <translation type="unfinished">Couche vecteur de polygones en entrée</translation>
+        <translation>Couche vecteur de polygones en entrée</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="unfinished">Exporter/ajouter des colonnes de géométrie</translation>
+        <translation>Exporter/ajouter des colonnes de géométrie</translation>
     </message>
     <message>
         <source>Input vector layer</source>
-        <translation type="unfinished">Couche vectorielle en entrée</translation>
+        <translation>Couche vectorielle en entrée</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation type="unfinished">Simplifier la géométrie</translation>
+        <translation>Simplifier la géométrie</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation type="unfinished">Centroïdes de polygones</translation>
+        <translation>Centroïdes de polygones</translation>
     </message>
     <message>
         <source>Output point shapefile</source>
-        <translation type="unfinished">FIchier de points en sortie</translation>
+        <translation>FIchier de points en sortie</translation>
     </message>
     <message>
         <source>Error processing specified tolerance!</source>
@@ -2429,31 +2435,31 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     </message>
     <message>
         <source>Delaunay triangulation</source>
-        <translation type="unfinished">Triangulation de Delaunay</translation>
+        <translation>Triangulation de Delaunay</translation>
     </message>
     <message>
         <source>Input point vector layer</source>
-        <translation type="unfinished">Couche vecteur de points en entrée</translation>
+        <translation>Couche vecteur de points en entrée</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
-        <translation type="unfinished">Créer un polygone à partir de l&apos;étendue de la couche</translation>
+        <translation>Créer un polygone à partir de l&apos;étendue de la couche</translation>
     </message>
     <message>
         <source>Input layer</source>
-        <translation type="unfinished">Couche en entrée</translation>
+        <translation>Couche en entrée</translation>
     </message>
     <message>
         <source>Output polygon shapefile</source>
-        <translation type="unfinished">FIchier de polygones en sortie</translation>
+        <translation>FIchier de polygones en sortie</translation>
     </message>
     <message>
         <source>Unable to delete existing shapefile.</source>
-        <translation type="unfinished">Impossible d&apos;effacer le fichier shapefile existant.</translation>
+        <translation>Impossible d&apos;effacer le fichier shapefile existant.</translation>
     </message>
     <message>
         <source>Unable to delete incomplete shapefile.</source>
-        <translation type="unfinished">Impossible d&apos;effacer le fichier incomplet.</translation>
+        <translation>Impossible d&apos;effacer le fichier incomplet.</translation>
     </message>
     <message>
         <source>Created output shapefile:</source>
@@ -2461,19 +2467,19 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     </message>
     <message>
         <source>Error writing output shapefile.</source>
-        <translation type="unfinished">Erreur lors de la création du fichier.</translation>
+        <translation>Erreur lors de la création du fichier.</translation>
     </message>
     <message>
         <source>Geometry</source>
-        <translation type="unfinished">Géométrie</translation>
+        <translation>Géométrie</translation>
     </message>
     <message>
         <source>Geoprocessing</source>
-        <translation type="unfinished">Géotraitement</translation>
+        <translation>Géotraitement</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Annuler</translation>
+        <translation>Annuler</translation>
     </message>
     <message>
         <source>Error processing specified tolerance!
@@ -2515,108 +2521,108 @@ Would you like to add the new layer to the TOC?</source>
     <name>GeoprocessingDialog</name>
     <message>
         <source>Dissolve all</source>
-        <translation type="unfinished">Tout décomposer</translation>
+        <translation>Tout décomposer</translation>
     </message>
     <message>
         <source>Please specify an input layer</source>
-        <translation type="unfinished">Veuillez spécifier une couche en entrée</translation>
+        <translation>Veuillez spécifier une couche en entrée</translation>
     </message>
     <message>
         <source>Please specify a difference/intersect/union layer</source>
-        <translation type="unfinished">Veuillez spécifier une couche d&apos;intersection/union/différenciation</translation>
+        <translation>Veuillez spécifier une couche d&apos;intersection/union/différenciation</translation>
     </message>
     <message>
         <source>Please specify valid buffer value</source>
-        <translation type="unfinished">Veuillez spécifier une valeur tampon valide</translation>
+        <translation>Veuillez spécifier une valeur tampon valide</translation>
     </message>
     <message>
         <source>Please specify dissolve field</source>
-        <translation type="unfinished">Veuillez spécifier un champ de décomposition</translation>
+        <translation>Veuillez spécifier un champ de décomposition</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="unfinished">Veuillez spécifier un fichier de sortie</translation>
+        <translation>Veuillez spécifier un fichier de sortie</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="unfinished">Tampon (s)</translation>
+        <translation>Tampon (s)</translation>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="unfinished">Décomposer</translation>
+        <translation>Décomposer</translation>
     </message>
     <message>
         <source>Difference</source>
-        <translation type="unfinished">Différencier</translation>
+        <translation>Différencier</translation>
     </message>
     <message>
         <source>Intersect layer</source>
-        <translation type="unfinished">Couche d&apos;intersection</translation>
+        <translation>Couche d&apos;intersection</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation type="unfinished">Intersection</translation>
+        <translation>Intersection</translation>
     </message>
     <message>
         <source>Difference layer</source>
-        <translation type="unfinished">Couche de différenciation</translation>
+        <translation>Couche de différenciation</translation>
     </message>
     <message>
         <source>Geoprocessing</source>
-        <translation type="unfinished">Géotraitement</translation>
+        <translation>Géotraitement</translation>
     </message>
     <message>
         <source>No features selected, please uncheck &apos;Use selected&apos; or make a selection</source>
-        <translation type="unfinished">Pas d&apos;entités sélectionnées, veuillez décocher &apos;Utiliser la sélection&apos; ou faire une sélection</translation>
+        <translation>Pas d&apos;entités sélectionnées, veuillez décocher &apos;Utiliser la sélection&apos; ou faire une sélection</translation>
     </message>
     <message>
         <source>Create single minimum convex hull</source>
-        <translation type="unfinished">Créer une enveloppe convexe unique minimale</translation>
+        <translation>Créer une enveloppe convexe unique minimale</translation>
     </message>
     <message>
         <source>Create convex hulls based on input field</source>
-        <translation type="unfinished">Créer des enveloppes convexes basées sur un champs de saisie</translation>
+        <translation>Créer des enveloppes convexes basées sur un champs de saisie</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation type="unfinished">Enveloppe(s) convexe(s)</translation>
+        <translation>Enveloppe(s) convexe(s)</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="unfinished">Différenciation symétrique</translation>
+        <translation>Différenciation symétrique</translation>
     </message>
     <message>
         <source>Clip layer</source>
-        <translation type="unfinished">Couche de découpage</translation>
+        <translation>Couche de découpage</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="unfinished">Découper</translation>
+        <translation>Découper</translation>
     </message>
     <message>
         <source>Union layer</source>
-        <translation type="unfinished">Couche d&apos;union</translation>
+        <translation>Couche d&apos;union</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="unfinished">Union</translation>
+        <translation>Union</translation>
     </message>
     <message>
         <source>Unable to delete existing shapefile.</source>
-        <translation type="unfinished">Impossible d&apos;effacer le fichier existant.</translation>
+        <translation>Impossible d&apos;effacer le fichier existant.</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Annuler</translation>
+        <translation>Annuler</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">Fermer</translation>
+        <translation>Fermer</translation>
     </message>
     <message>
         <source>
 Warnings:</source>
-        <translation type="unfinished">
+        <translation>
 Avertissements :</translation>
     </message>
     <message>
@@ -2624,7 +2630,7 @@ Avertissements :</translation>
 Some output geometries may be missing or invalid.
 
 Would you like to add the new layer anyway?</source>
-        <translation type="unfinished">
+        <translation>
 Certaines géométries produites sont manquantes ou invalides.
 
 Voulez-vous quand même ajouter la nouvelle couche ?</translation>
@@ -2633,25 +2639,25 @@ Voulez-vous quand même ajouter la nouvelle couche ?</translation>
         <source>
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished">
+        <translation>
 
 Voulez-vous la nouvelle couche au projet actuel ?</translation>
     </message>
     <message>
         <source>
 Input CRS error: Different input coordinate reference systems detected, results may not be as expected.</source>
-        <translation type="unfinished">
+        <translation>
 Erreur de SCR : Des systèmes de coordonnées différents ont été détecté.</translation>
     </message>
     <message>
         <source>
 Feature geometry error: One or more output features ignored due to invalid geometry.</source>
-        <translation type="unfinished">Erreur de géométrie d&apos;entité : Une ou plusieurs entités ont été ignorées du fait d&apos;une géométrie invalide.</translation>
+        <translation>Erreur de géométrie d&apos;entité : Une ou plusieurs entités ont été ignorées du fait d&apos;une géométrie invalide.</translation>
     </message>
     <message>
         <source>
 GEOS geoprocessing error: One or more input features have invalid geometry.</source>
-        <translation type="unfinished">Erreur de géotraitement GEOS : Une ou plusieurs entités ont une géométrie invalide.</translation>
+        <translation>Erreur de géotraitement GEOS : Une ou plusieurs entités ont une géométrie invalide.</translation>
     </message>
     <message>
         <source>Created output shapefile:</source>
@@ -2662,7 +2668,10 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
 %1
 
 %2%3</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier shapefile créé :
+%1
+
+%2%3</translation>
     </message>
 </context>
 <context>
@@ -3293,7 +3302,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>OSM Information</source>
-        <translation type="unfinished">Information OSM</translation>
+        <translation>Information OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="78"/>
@@ -3458,51 +3467,51 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <name>OsmDownloadDlg</name>
     <message>
         <source>OSM Download</source>
-        <translation type="unfinished">Téléchargement OSM</translation>
+        <translation>Téléchargement OSM</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="unfinished">Impossible de sauvegarder le fichier %1 : %2.</translation>
+        <translation>Impossible de sauvegarder le fichier %1 : %2.</translation>
     </message>
     <message>
         <source>Waiting for OpenStreetMap server ...</source>
-        <translation type="unfinished">En attente du serveur OpenStreetMap...</translation>
+        <translation>En attente du serveur OpenStreetMap...</translation>
     </message>
     <message>
         <source>Download process failed. OpenStreetMap server response: %1 - %2</source>
-        <translation type="unfinished">Échec du processus de téléchargement. La réponse du serveur OSM est : %1 - %2</translation>
+        <translation>Échec du processus de téléchargement. La réponse du serveur OSM est : %1 - %2</translation>
     </message>
     <message>
         <source>OSM Download Error</source>
-        <translation type="unfinished">Erreur de téléchargement OSM</translation>
+        <translation>Erreur de téléchargement OSM</translation>
     </message>
     <message>
         <source>Download failed: %1.</source>
-        <translation type="unfinished">Échec du téléchargement : %1.</translation>
+        <translation>Échec du téléchargement : %1.</translation>
     </message>
     <message>
         <source>Getting data</source>
-        <translation type="unfinished">Obtention des données</translation>
+        <translation>Obtention des données</translation>
     </message>
     <message>
         <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
-        <translation type="unfinished">Le serveur OpenStreetMap d&apos;où vous téléchargez vos données (~ api.openstreetmap.org) a un quota fixe sz téléchargement. Comme expliqué à &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt;, l&apos;étendue de la latitude ou de la longitude de la région voulue ne doivent être supérieurs à 0.25 degrés. QGIS vous permet de spécifier n&apos;importe quelle étendue mais le serveur OpenStreetMap rejetera toutes les requêtes qui ne satisferont pas aux limites de téléchargements.</translation>
+        <translation>Le serveur OpenStreetMap d&apos;où vous téléchargez vos données (~ api.openstreetmap.org) a un quota fixe sz téléchargement. Comme expliqué à &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt;, l&apos;étendue de la latitude ou de la longitude de la région voulue ne doivent être supérieurs à 0.25 degrés. QGIS vous permet de spécifier n&apos;importe quelle étendue mais le serveur OpenStreetMap rejetera toutes les requêtes qui ne satisferont pas aux limites de téléchargements.</translation>
     </message>
     <message>
         <source>Both extents are too large!</source>
-        <translation type="unfinished">L&apos;ensemble des étendues est trop large !</translation>
+        <translation>L&apos;ensemble des étendues est trop large !</translation>
     </message>
     <message>
         <source>Latitude extent is too large!</source>
-        <translation type="unfinished">L&apos;étendue de la latitude est trop large !</translation>
+        <translation>L&apos;étendue de la latitude est trop large !</translation>
     </message>
     <message>
         <source>Longitude extent is too large!</source>
-        <translation type="unfinished">L&apos;étendue de la longitude est trop large !</translation>
+        <translation>L&apos;étendue de la longitude est trop large !</translation>
     </message>
     <message>
         <source>OK! Area is probably acceptable to server.</source>
-        <translation type="unfinished">Ok ! L&apos;aire est probablement acceptable pour le serveur.</translation>
+        <translation>Ok ! L&apos;aire est probablement acceptable pour le serveur.</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="19"/>
@@ -3739,23 +3748,23 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>OSM Plugin</source>
-        <translation type="unfinished">Extension OSM</translation>
+        <translation>Extension OSM</translation>
     </message>
     <message>
         <source>The &apos;Create OSM Relation&apos; dialog was closed automatically because current OSM database was changed.</source>
-        <translation type="unfinished">Le dialogue &apos;Créer une relation OSM&quot; a été fermé automatiquement car la base de données OSM actuelle a été modifiée.</translation>
+        <translation>Le dialogue &apos;Créer une relation OSM&quot; a été fermé automatiquement car la base de données OSM actuelle a été modifiée.</translation>
     </message>
     <message>
         <source>OSM Feature Dock Widget</source>
-        <translation type="unfinished">OSM Entité Dock Widget</translation>
+        <translation>OSM Entité Dock Widget</translation>
     </message>
     <message>
         <source>Choose OSM feature first.</source>
-        <translation type="unfinished">Sélectionnez d&apos;abord une entité OSM.</translation>
+        <translation>Sélectionnez d&apos;abord une entité OSM.</translation>
     </message>
     <message>
         <source>Choose relation for editing first.</source>
-        <translation type="unfinished">Sélectionnez d&apos;abord une relation pour éditer.</translation>
+        <translation>Sélectionnez d&apos;abord une relation pour éditer.</translation>
     </message>
     <message>
         <source>Property &apos;%1&apos; cannot be added twice.</source>
@@ -3843,31 +3852,31 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <name>OsmSaveDlg</name>
     <message>
         <source>Save OSM to file</source>
-        <translation type="unfinished">Enregistrer OSM vers un fichier</translation>
+        <translation>Enregistrer OSM vers un fichier</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="unfinished">Impossible de sauvegarder le fichier %1 : %2.</translation>
+        <translation>Impossible de sauvegarder le fichier %1 : %2.</translation>
     </message>
     <message>
         <source>Initializing...</source>
-        <translation type="unfinished">Installation...</translation>
+        <translation>Installation...</translation>
     </message>
     <message>
         <source>Saving nodes...</source>
-        <translation type="unfinished">Sauvegarde des nœuds...</translation>
+        <translation>Sauvegarde des nœuds...</translation>
     </message>
     <message>
         <source>Saving lines...</source>
-        <translation type="unfinished">Sauvegarde des lignes...</translation>
+        <translation>Sauvegarde des lignes...</translation>
     </message>
     <message>
         <source>Saving polygons...</source>
-        <translation type="unfinished">Sauvegarde des polygones...</translation>
+        <translation>Sauvegarde des polygones...</translation>
     </message>
     <message>
         <source>Saving relations...</source>
-        <translation type="unfinished">Sauvegarde des relations...</translation>
+        <translation>Sauvegarde des relations...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="16"/>
@@ -3978,7 +3987,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <name>OsmUploadDlg</name>
     <message>
         <source>Uploading data...</source>
-        <translation type="unfinished">Envoi des données...</translation>
+        <translation>Envoi des données...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="22"/>
@@ -4047,46 +4056,46 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>OSM Upload</source>
-        <translation type="unfinished">Envoi OSM</translation>
+        <translation>Envoi OSM</translation>
     </message>
 </context>
 <context>
     <name>Python</name>
     <message>
         <source>An error has occured while executing Python code:</source>
-        <translation type="unfinished">Une erreur est apparue lors de l&apos;exécution du code python :</translation>
+        <translation>Une erreur est apparue lors de l&apos;exécution du code python :</translation>
     </message>
     <message>
         <source>Python version:</source>
-        <translation type="unfinished">Version de Python :</translation>
+        <translation>Version de Python :</translation>
     </message>
     <message>
         <source>Python path:</source>
-        <translation type="unfinished">Chemin vers Python :</translation>
+        <translation>Chemin vers Python :</translation>
     </message>
     <message>
         <source>Python error</source>
-        <translation type="unfinished">Erreur Python</translation>
+        <translation>Erreur Python</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin &apos;%1&apos; from [&apos;%2&apos;]</source>
-        <translation type="unfinished">Impossible de charger l&apos;extension &apos;%1&apos; depuis [&apos;%2&apos;]</translation>
+        <translation>Impossible de charger l&apos;extension &apos;%1&apos; depuis [&apos;%2&apos;]</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin %1</source>
-        <translation type="unfinished">Impossible de charger l&apos;extension %1</translation>
+        <translation>Impossible de charger l&apos;extension %1</translation>
     </message>
     <message>
         <source>%1 due an error when calling its classFactory() method</source>
-        <translation type="unfinished">%1 provoque une erreur lors de l&apos;appel de sa méthode classFactory()</translation>
+        <translation>%1 provoque une erreur lors de l&apos;appel de sa méthode classFactory()</translation>
     </message>
     <message>
         <source>%1 due an error when calling its initGui() method</source>
-        <translation type="unfinished">%1 provoque une erreur lors de l&apos;appel de sa méthode initGui()</translation>
+        <translation>%1 provoque une erreur lors de l&apos;appel de sa méthode initGui()</translation>
     </message>
     <message>
         <source>Error while unloading plugin %1</source>
-        <translation type="unfinished">Erreur lors du déchargement de l&apos;extension %1</translation>
+        <translation>Erreur lors du déchargement de l&apos;extension %1</translation>
     </message>
 </context>
 <context>
@@ -7843,7 +7852,7 @@ Erreurs : %2
         <location filename="../src/app/qgisapp.cpp" line="828"/>
         <location filename="../src/app/qgisapp.cpp" line="829"/>
         <source>Measure Angle</source>
-        <translation type="unfinished"></translation>
+        <translation>Mesurer un angle</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="833"/>
@@ -9230,12 +9239,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="32"/>
         <source>Attribute</source>
-        <translation type="unfinished">Attribut</translation>
+        <translation>Attribut</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="35"/>
         <source>Alias</source>
-        <translation type="unfinished"></translation>
+        <translation>Alias</translation>
     </message>
 </context>
 <context>
@@ -9793,7 +9802,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/attributetable/qgsattributetableview.cpp" line="98"/>
         <source>Run action</source>
-        <translation type="unfinished"></translation>
+        <translation>Exécuter l&apos;action</translation>
     </message>
 </context>
 <context>
@@ -10463,7 +10472,7 @@ L&apos;erreur est : %2</translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="723"/>
         <source>&lt;p&gt;The SVG export function in Qgis has several problems due to bugs and deficiencies in the </source>
-        <translation>&lt;p&gt; La fonction d&apos;export SVG de Qgis a plusieurs problèmes dûs à des déficiences de</translation>
+        <translation>&lt;p&gt; La fonction d&apos;export SVG de Qgis a plusieurs problèmes dus à des déficiences de</translation>
     </message>
     <message>
         <source>To create image %1 x %2 required circa %3 MB of memory</source>
@@ -10481,7 +10490,7 @@ L&apos;erreur est : %2</translation>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="725"/>
         <source>Qt4 svg code. In particular, there are problems with layers not being clipped to the map bounding box.&lt;/p&gt;</source>
-        <translation>Code svg de Qt4.  EN particulier, il y a des problèmes avec les couches qui ne sont par incluses dans l&apos;emprise de la carte.&lt;/p&gt;</translation>
+        <translation> code svg de Qt4.  En particulier, il y a des problèmes avec les couches qui ne sont par incluses dans l&apos;emprise de la carte.&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&lt;p&gt;If you require a vector-based output file from Qgis it is suggested that you try printing to PostScript if the SVG output is not satisfactory.&lt;/p&gt;</source>
@@ -10939,12 +10948,12 @@ L&apos;erreur est : %2</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="470"/>
         <source>Add table</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter une table</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="473"/>
         <source>Adds attribute table</source>
-        <translation type="unfinished"></translation>
+        <translation>Ajouter une table d&apos;attributs</translation>
     </message>
 </context>
 <context>
@@ -12305,24 +12314,24 @@ L&apos;erreur est : %2</translation>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="33"/>
         <source>General options</source>
-        <translation type="unfinished">Options globales</translation>
+        <translation>Options globales</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="59"/>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="261"/>
         <source>Map %1</source>
-        <translation type="unfinished">Carte %1</translation>
+        <translation>Carte %1</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="167"/>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="182"/>
         <source>Select Font</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner un police</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="207"/>
         <source>Select grid color</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner la couleur de la grille</translation>
     </message>
 </context>
 <context>
@@ -12330,62 +12339,62 @@ L&apos;erreur est : %2</translation>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Formulaire</translation>
+        <translation>Formulaire</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="32"/>
         <source>Table</source>
-        <translation type="unfinished">Table</translation>
+        <translation>Table</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="40"/>
         <source>Layer</source>
-        <translation type="unfinished">Couche</translation>
+        <translation>Couche</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="52"/>
         <source>Attributes...</source>
-        <translation type="unfinished"></translation>
+        <translation>Attributs...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="61"/>
         <source>Composer map</source>
-        <translation type="unfinished"></translation>
+        <translation>Composeur de carte</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="75"/>
         <source>Maximum columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Maximum de colonnes</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="89"/>
         <source>Margin</source>
-        <translation type="unfinished"></translation>
+        <translation>Marge</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="101"/>
         <source>Show grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher le graticule</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="110"/>
         <source>Grid stroke width</source>
-        <translation type="unfinished"></translation>
+        <translation>Epaisseur de la grille</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="122"/>
         <source>Grid color</source>
-        <translation type="unfinished">Couleur de la grille</translation>
+        <translation>Couleur de la grille</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="142"/>
         <source>Header Font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Poluce de l&apos;en-tête...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="149"/>
         <source>Content Font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Police du contenu...</translation>
     </message>
 </context>
 <context>
@@ -20087,7 +20096,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="165"/>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="275"/>
         <source>Break lines</source>
-        <translation>Briser les lignes</translation>
+        <translation>Lignes de rupture</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="169"/>
@@ -24778,7 +24787,7 @@ Par défaut QGIS utilise la valeur 5. Augmentez la valeur si vous avez des erreu
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="633"/>
         <source>Placement algorithm:</source>
-        <translation>Algorythme de placement :</translation>
+        <translation>Algorithme de placement :</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="828"/>
@@ -26425,43 +26434,43 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerInstallingDialog</name>
     <message>
         <source>Installing...</source>
-        <translation type="unfinished">Installation...</translation>
+        <translation>Installation...</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="unfinished">Résolution du nom d&apos;hôte...</translation>
+        <translation>Résolution du nom d&apos;hôte...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="unfinished">Connexion...</translation>
+        <translation>Connexion...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="unfinished">Hôte connecté. Envoi de requête...</translation>
+        <translation>Hôte connecté. Envoi de requête...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation type="unfinished">Chargement des données...</translation>
+        <translation>Chargement des données...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="unfinished">En attente</translation>
+        <translation>En attente</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="unfinished">Fermeture de la connexion...</translation>
+        <translation>Fermeture de la connexion...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Erreur</translation>
+        <translation>Erreur</translation>
     </message>
     <message>
         <source>Failed to unzip the plugin package. Probably it&apos;s broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:</source>
-        <translation type="unfinished">Échec de la décompression de l&apos;extension. Soit elle est corrompue, soit elle est manquante sur le dépôt. Vous pouvez vérifier si vous avez les droits d&apos;accès en écriture pour le répertoire des dépôts :</translation>
+        <translation>Échec de la décompression de l&apos;extension. Soit elle est corrompue, soit elle est manquante sur le dépôt. Vous pouvez vérifier si vous avez les droits d&apos;accès en écriture pour le répertoire des dépôts :</translation>
     </message>
     <message>
         <source>Aborted by user</source>
-        <translation type="unfinished">Annulé par l&apos;utilisateur</translation>
+        <translation>Annulé par l&apos;utilisateur</translation>
     </message>
 </context>
 <context>
@@ -26486,7 +26495,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerPluginErrorDialog</name>
     <message>
         <source>no error message received</source>
-        <translation type="unfinished">Pas de message d&apos;erreur reçu</translation>
+        <translation>Pas de message d&apos;erreur reçu</translation>
     </message>
 </context>
 <context>
@@ -27584,12 +27593,12 @@ SQL : %3</translation>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="325"/>
         <source>Enter password</source>
-        <translation type="unfinished"></translation>
+        <translation>Saisir un mot de passe</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="326"/>
         <source>Error: %1Enter password for %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur : %1Saisir un mot de passe pour %2</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="393"/>
@@ -29509,7 +29518,11 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1955"/>
@@ -29836,12 +29849,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="972"/>
         <source>Save current contrast enhancement algorithm as default. This setting will be persistent between QGIS sessions.</source>
-        <translation>Enregistrer l&apos;algorythme d&apos;amélioration de constraste actuel par défaut. Ce choix sera appliqué aux prochaines sessions de travail QGIS.</translation>
+        <translation>Enregistrer l&apos;algorithme d&apos;amélioration de constraste actuel par défaut. Ce choix sera appliqué aux prochaines sessions de travail QGIS.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="975"/>
         <source>Saves current contrast enhancement algorithm as a default. This setting will be persistent between QGIS sessions.</source>
-        <translation>Enregistrer l&apos;algorythme d&apos;amélioration de constraste actuel par défaut. Ce choix sera appliqué aux prochaines sessions de travail QGIS.</translation>
+        <translation>Enregistrer l&apos;algorithme d&apos;amélioration de constraste actuel par défaut. Ce choix sera appliqué aux prochaines sessions de travail QGIS.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="989"/>
@@ -30606,13 +30619,13 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="126"/>
         <source>Color of bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Couleur de la barre</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="142"/>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="145"/>
         <source>Click to select the color</source>
-        <translation type="unfinished"></translation>
+        <translation>Cliquez pour sélectionner la couleur</translation>
     </message>
     <message>
         <source>Colour of bar</source>
@@ -33181,7 +33194,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="454"/>
         <source>The query used to limit the features in the layer is shown here. To enter or modify the query, click on the Query Builder button</source>
-        <translation type="unfinished"></translation>
+        <translation>Se trouve ici la requête utilisée afin de limiter les entitéss affichées dans la couche. Pour modifier la requête, cliquez sur le bouton &quot;Constructeur de Requête&quot;</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="532"/>
@@ -34836,67 +34849,67 @@ URL Éprouvé : %1</translation>
     <name>VisualDialog</name>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="unfinished">Veuillez spécifier la couche vecteur en entrée</translation>
+        <translation>Veuillez spécifier la couche vecteur en entrée</translation>
     </message>
     <message>
         <source>Please specify input field</source>
-        <translation type="unfinished">Veuillez spécifier une couche en entrée</translation>
+        <translation>Veuillez spécifier une couche en entrée</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation type="unfinished">Vérifier la validité de la géométrie</translation>
+        <translation>Vérifier la validité de la géométrie</translation>
     </message>
     <message>
         <source>Geometry errors</source>
-        <translation type="unfinished">Erreurs de géométrie</translation>
+        <translation>Erreurs de géométrie</translation>
     </message>
     <message>
         <source>Total encountered errors</source>
-        <translation type="unfinished">Nombre total d&apos;erreurs rencontrées</translation>
+        <translation>Nombre total d&apos;erreurs rencontrées</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation type="unfinished">Lister les valeurs uniques</translation>
+        <translation>Lister les valeurs uniques</translation>
     </message>
     <message>
         <source>Basics statistics</source>
-        <translation type="unfinished">Statistiques basiques</translation>
+        <translation>Statistiques basiques</translation>
     </message>
     <message>
         <source>Statistics output</source>
-        <translation type="unfinished">Sortie de statistiques</translation>
+        <translation>Sortie de statistiques</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation type="unfinished">Analyse du plus proche voisin </translation>
+        <translation>Analyse du plus proche voisin </translation>
     </message>
     <message>
         <source>Nearest neighbour statistics</source>
-        <translation type="unfinished">Stastistiques au plus proche voisin </translation>
+        <translation>Stastistiques au plus proche voisin </translation>
     </message>
     <message>
         <source>Unique values</source>
-        <translation type="unfinished">Valeurs Uniques</translation>
+        <translation>Valeurs Uniques</translation>
     </message>
     <message>
         <source>Total unique values</source>
-        <translation type="unfinished">Total des valeurs uniques</translation>
+        <translation>Total des valeurs uniques</translation>
     </message>
     <message>
         <source>Error!</source>
-        <translation type="unfinished">Erreur !</translation>
+        <translation>Erreur !</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Annuler</translation>
+        <translation>Annuler</translation>
     </message>
     <message>
         <source>Value</source>
-        <translation type="unfinished">Valeur</translation>
+        <translation>Valeur</translation>
     </message>
     <message>
         <source>Parameter</source>
-        <translation type="unfinished"></translation>
+        <translation>Paramètres</translation>
     </message>
 </context>
 <context>
@@ -36089,7 +36102,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>fTools</name>
     <message>
         <source>Quantum GIS version detected: </source>
-        <translation type="unfinished">Version détectée de Quantum GIS :</translation>
+        <translation>Version détectée de Quantum GIS :</translation>
     </message>
     <message>
         <source>&amp;Tools</source>
@@ -36097,208 +36110,208 @@ Base Path (i.e. keep only filename from attribute)</source>
     </message>
     <message>
         <source>&amp;Analysis Tools</source>
-        <translation type="unfinished">Outils d&apos;&amp;analyse</translation>
+        <translation>Outils d&apos;&amp;analyse</translation>
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation type="unfinished">Matrice des distances</translation>
+        <translation>Matrice des distances</translation>
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation type="unfinished">Total des longueurs de ligne</translation>
+        <translation>Total des longueurs de ligne</translation>
     </message>
     <message>
         <source>Points in polygon</source>
-        <translation type="unfinished">Points dans un polygone</translation>
+        <translation>Points dans un polygone</translation>
     </message>
     <message>
         <source>Basic statistics</source>
-        <translation type="unfinished">Statistiques basiques</translation>
+        <translation>Statistiques basiques</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation type="unfinished">Lister les valeurs uniques</translation>
+        <translation>Lister les valeurs uniques</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
-        <translation type="unfinished">Analyse du plus proche voisin </translation>
+        <translation>Analyse du plus proche voisin </translation>
     </message>
     <message>
         <source>Mean coordinate(s)</source>
-        <translation type="unfinished">Coordonnée(s) moyenne(s)</translation>
+        <translation>Coordonnée(s) moyenne(s)</translation>
     </message>
     <message>
         <source>Line intersections</source>
-        <translation type="unfinished">Intersections de lignes</translation>
+        <translation>Intersections de lignes</translation>
     </message>
     <message>
         <source>Random selection</source>
-        <translation type="unfinished">Sélection aléatoire</translation>
+        <translation>Sélection aléatoire</translation>
     </message>
     <message>
         <source>Random selection within subsets</source>
-        <translation type="unfinished">Sélection aléatoire dans les sous-parties</translation>
+        <translation>Sélection aléatoire dans les sous-parties</translation>
     </message>
     <message>
         <source>Random points</source>
-        <translation type="unfinished">Points aléatoires</translation>
+        <translation>Points aléatoires</translation>
     </message>
     <message>
         <source>Regular points</source>
-        <translation type="unfinished">Points réguliers</translation>
+        <translation>Points réguliers</translation>
     </message>
     <message>
         <source>Vector grid</source>
-        <translation type="unfinished">Grille vecteur</translation>
+        <translation>Grille vecteur</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="unfinished">Sélection par localisation</translation>
+        <translation>Sélection par localisation</translation>
     </message>
     <message>
         <source>&amp;Geoprocessing Tools</source>
-        <translation type="unfinished">Outils de &amp;géotraitement</translation>
+        <translation>Outils de &amp;géotraitement</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation type="unfinished">Enveloppe(s) convexe(s)</translation>
+        <translation>Enveloppe(s) convexe(s)</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="unfinished">Tampon(s)</translation>
+        <translation>Tampon(s)</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation type="unfinished">Intersection</translation>
+        <translation>Intersection</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="unfinished">Union</translation>
+        <translation>Union</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="unfinished">Différenciation symétrique</translation>
+        <translation>Différenciation symétrique</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="unfinished">Découper</translation>
+        <translation>Découper</translation>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="unfinished">Décomposer</translation>
+        <translation>Décomposer</translation>
     </message>
     <message>
         <source>Difference</source>
-        <translation type="unfinished">Différencier</translation>
+        <translation>Différencier</translation>
     </message>
     <message>
         <source>G&amp;eometry Tools</source>
-        <translation type="unfinished">Outils géométriqu&amp;e</translation>
+        <translation>Outils géométriqu&amp;e</translation>
     </message>
     <message>
         <source>Export/Add geometry columns</source>
-        <translation type="unfinished">Exporter/ajouter des colonnes de géométries</translation>
+        <translation>Exporter/ajouter des colonnes de géométries</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation type="unfinished">Vérifier la validité de la géométrie</translation>
+        <translation>Vérifier la validité de la géométrie</translation>
     </message>
     <message>
         <source>Polygon centroids</source>
-        <translation type="unfinished">Centroïdes de polygones</translation>
+        <translation>Centroïdes de polygones</translation>
     </message>
     <message>
         <source>Extract nodes</source>
-        <translation type="unfinished">Extraction de nœuds</translation>
+        <translation>Extraction de nœuds</translation>
     </message>
     <message>
         <source>Simplify geometries</source>
-        <translation type="unfinished">Simplifier la géométrie</translation>
+        <translation>Simplifier la géométrie</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
-        <translation type="unfinished">Morceaux multiples vers morceau unique</translation>
+        <translation>Morceaux multiples vers morceau unique</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
-        <translation type="unfinished">Morceau unique vers morceaux multiples</translation>
+        <translation>Morceau unique vers morceaux multiples</translation>
     </message>
     <message>
         <source>Polygons to lines</source>
-        <translation type="unfinished">Polygones vers lignes</translation>
+        <translation>Polygones vers lignes</translation>
     </message>
     <message>
         <source>&amp;Data Management Tools</source>
-        <translation type="unfinished">Outil de gestion de &amp;données</translation>
+        <translation>Outil de gestion de &amp;données</translation>
     </message>
     <message>
         <source>Export to new projection</source>
-        <translation type="unfinished">Exporter vers une nouvelle projection</translation>
+        <translation>Exporter vers une nouvelle projection</translation>
     </message>
     <message>
         <source>Define current projection</source>
-        <translation type="unfinished">Définir la projection courante</translation>
+        <translation>Définir la projection courante</translation>
     </message>
     <message>
         <source>Join attributes</source>
-        <translation type="unfinished">Joindre les attributs</translation>
+        <translation>Joindre les attributs</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
-        <translation type="unfinished">Joindre les attributs par localisation</translation>
+        <translation>Joindre les attributs par localisation</translation>
     </message>
     <message>
         <source>Split vector layer</source>
-        <translation type="unfinished">Séparer une couche vectorielle</translation>
+        <translation>Séparer une couche vectorielle</translation>
     </message>
     <message>
         <source>This version of fTools requires at least QGIS version 1.0.0
 Plugin will not be enabled.</source>
-        <translation type="unfinished">Cette version de fTools requiert au moins QGIS 1.0.0
+        <translation>Cette version de fTools requiert au moins QGIS 1.0.0
 L&apos;extension ne sera pas activée.</translation>
     </message>
     <message>
         <source>&amp;Vector</source>
-        <translation type="unfinished">&amp;Vecteur</translation>
+        <translation>&amp;Vecteur</translation>
     </message>
     <message>
         <source>&amp;Research Tools</source>
-        <translation type="unfinished">Outils de &amp;recherche</translation>
+        <translation>Outils de &amp;recherche</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
-        <translation type="unfinished">Créer un polygone à partir de l&apos;étendue de la couche</translation>
+        <translation>Créer un polygone à partir de l&apos;étendue de la couche</translation>
     </message>
     <message>
         <source>Delaunay triangulation</source>
-        <translation type="unfinished">Triangulation de Delaunay</translation>
+        <translation>Triangulation de Delaunay</translation>
     </message>
     <message>
         <source>fTools Information</source>
-        <translation type="unfinished">fTools</translation>
+        <translation>fTools</translation>
     </message>
 </context>
 <context>
     <name>geometryThread</name>
     <message>
         <source>Polygon area</source>
-        <translation type="unfinished"></translation>
+        <translation>Surface du polygone</translation>
     </message>
     <message>
         <source>Polygon perimeter</source>
-        <translation type="unfinished"></translation>
+        <translation>Périmètre du polygone</translation>
     </message>
     <message>
         <source>Line length</source>
-        <translation type="unfinished"></translation>
+        <translation>Longueur de la ligne</translation>
     </message>
     <message>
         <source>Point x coordinate</source>
-        <translation type="unfinished"></translation>
+        <translation>Coordonnée en X du point</translation>
     </message>
     <message>
         <source>Point y coordinate</source>
-        <translation type="unfinished"></translation>
+        <translation>Coordonnée en Y du point</translation>
     </message>
 </context>
 <context>
@@ -36321,7 +36334,7 @@ L&apos;extension ne sera pas activée.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="7"/>
         <source>(1-256)</source>
-        <translation type="unfinished"></translation>
+        <translation>(1-256)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="8"/>
@@ -38311,7 +38324,7 @@ L&apos;extension ne sera pas activée.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="405"/>
         <source>Vector</source>
-        <translation type="unfinished">Vecteur</translation>
+        <translation>Vecteur</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="406"/>
@@ -38433,75 +38446,75 @@ L&apos;extension ne sera pas activée.</translation>
     <name>visualThread</name>
     <message>
         <source>Max. len:</source>
-        <translation type="unfinished">Long. max. :</translation>
+        <translation>Long. max. :</translation>
     </message>
     <message>
         <source>Min. len:</source>
-        <translation type="unfinished">Long. min. :</translation>
+        <translation>Long. min. :</translation>
     </message>
     <message>
         <source>Mean. len:</source>
-        <translation type="unfinished">Long. moy. :</translation>
+        <translation>Long. moy. :</translation>
     </message>
     <message>
         <source>Filled:</source>
-        <translation type="unfinished">Remplissage :</translation>
+        <translation>Remplissage :</translation>
     </message>
     <message>
         <source>Empty:</source>
-        <translation type="unfinished">Vider :</translation>
+        <translation>Vider :</translation>
     </message>
     <message>
         <source>Mean:</source>
-        <translation type="unfinished">Moyenne :</translation>
+        <translation>Moyenne :</translation>
     </message>
     <message>
         <source>StdDev:</source>
-        <translation type="unfinished">Dev. Strd. :</translation>
+        <translation>Dev. Strd. :</translation>
     </message>
     <message>
         <source>Sum:</source>
-        <translation type="unfinished">Somme :</translation>
+        <translation>Somme :</translation>
     </message>
     <message>
         <source>Min:</source>
-        <translation type="unfinished">Min :</translation>
+        <translation>Min :</translation>
     </message>
     <message>
         <source>Max:</source>
-        <translation type="unfinished">Max :</translation>
+        <translation>Max :</translation>
     </message>
     <message>
         <source>CV:</source>
-        <translation type="unfinished">CV :</translation>
+        <translation>CV :</translation>
     </message>
     <message>
         <source>Number of unique values:</source>
-        <translation type="unfinished">Nombre de valeurs uniques :</translation>
+        <translation>Nombre de valeurs uniques :</translation>
     </message>
     <message>
         <source>Range:</source>
-        <translation type="unfinished">Portée :</translation>
+        <translation>Portée :</translation>
     </message>
     <message>
         <source>Median:</source>
-        <translation type="unfinished">Médianne :</translation>
+        <translation>Médianne :</translation>
     </message>
     <message>
         <source>Observed mean distance:</source>
-        <translation type="unfinished">Distance moyenne observée :</translation>
+        <translation>Distance moyenne observée :</translation>
     </message>
     <message>
         <source>Expected mean distance:</source>
-        <translation type="unfinished">Distance moyenne attendue :</translation>
+        <translation>Distance moyenne attendue :</translation>
     </message>
     <message>
         <source>Nearest neighbour index:</source>
-        <translation type="unfinished">Index du plus proche voisin :</translation>
+        <translation>Index du plus proche voisin :</translation>
     </message>
     <message>
         <source>Z-Score:</source>
-        <translation type="unfinished">Score Z :</translation>
+        <translation>Score Z :</translation>
     </message>
     <message>
         <source>Observed mean distance : </source>
@@ -38517,23 +38530,23 @@ L&apos;extension ne sera pas activée.</translation>
     </message>
     <message>
         <source>Feature %1 contains an unnested hole</source>
-        <translation type="unfinished">L&apos;entité %1 contient un trou non-inclus</translation>
+        <translation>L&apos;entité %1 contient un trou non-inclus</translation>
     </message>
     <message>
         <source>Feature %1 is not closed</source>
-        <translation type="unfinished">L&apos;entité %1 n&apos;est pas fermée</translation>
+        <translation>L&apos;entité %1 n&apos;est pas fermée</translation>
     </message>
     <message>
         <source>Feature %1 is self intersecting</source>
-        <translation type="unfinished">L&apos;entité %1 s&apos;intersecte elle-même</translation>
+        <translation>L&apos;entité %1 s&apos;intersecte elle-même</translation>
     </message>
     <message>
         <source>Feature %1 has incorrect node ordering</source>
-        <translation type="unfinished">l&apos;entité %1 a l&apos;ordre de ses sommets incorrect</translation>
+        <translation>l&apos;entité %1 a l&apos;ordre de ses sommets incorrect</translation>
     </message>
     <message>
         <source>N:</source>
-        <translation type="unfinished">N :</translation>
+        <translation>N :</translation>
     </message>
 </context>
 </TS>
