@@ -357,27 +357,29 @@ on qgis.nsi and choose the option 'Compile NSIS Script'.
 % ----Please leave this break marker here for clarity - it wont be rendered ---
 % -----------------------------------------------------------------------------
 
-= Building on Mac OSX using frameworks and cmake (QGIS > 0.8) =
+= Building on Mac OSX using frameworks and cmake or Xcode =
 
 
 In this approach I will try to avoid as much as possible building dependencies
 from source and rather use frameworks wherever possible.
 
-Included are a few notes for building on Mac OS X 10.5 (__Leopard__) and 10.6 
-(__Snow Leopard__). 
+The base system here is Mac OS X 10.4 (__Tiger__) and below. Included are a few notes
+for building on Mac OS X 10.5 (__Leopard__) and 10.6 (__Snow Leopard__). 
 
 __Snow Leopard note:__ A cmake/qt/sip bug currently exists where a 32-bit
 cmake build fails to provide python bindings. This means that python plugin support
 is currently lacking for 32-bit builds using cmake in Snow Leopard. See the Xcode
 build method to if you require python support.
 
-== Install XCODE ==
+== Install Xcode ==
 
-I recommend to get the latest xcode dmg from the Apple XDC Web site. Install
-XCODE after the ~1gb download is complete.
+I recommend to get the latest Xcode dmg from the Apple XDC Web site 
+(http:/developer.apple.com). The Mac system install disks come with a copy of
+Xcode, but it's likely out of date.
+Install Xcode after the ~1gb download is complete.
 
 /!\ Note: It may be that you need to create some symlinks after installing 
-the XCODE SDK (in particular if you are using XCODE 2.5 on tiger):
+Xcode (in particular if you are using Xcode 2.5 on Tiger):
 
 ```
 cd /Developer/SDKs/MacOSX10.4u.sdk/usr/
@@ -392,8 +394,7 @@ You need a minimum of Qt-4.3.0. I suggest getting the latest.
 __Snow Leopard note:__ If you are building on Snow Leopard, you will need to
 decide between 32-bit support in the older, Qt Carbon branch, or 64-bit
 support in the Qt Cocoa branch. Appropriate installers are available for both
-as of Qt-4.5.2, and the release candidate of Qt-4.6.0-cocoa works fairly well
-with Qgis as tested with nightly snapshots of sip and pyqt.
+as of Qt-4.5.2.  Qt 4.6+ is recommended for Cocoa.
 
 ``` 
 http://qt.nokia.com/downloads
@@ -405,7 +406,10 @@ addition to the non-debug frameworks.
 Once downloaded open the dmg and run the installer. Note you need admin
 privileges to install.
 
-__Qt 4.4+ note:__ Starting in Qt 4.4 (?) libQtCLucene was added, and in 4.5 libQtUiTools was added, both in /usr/lib.  When using a system SDK (which will happen in the Xcode build), these libraries will not be found.  To fix this problem, add symlinks to /usr/local:
+__Qt 4.4+ note:__ Starting in Qt 4.4 (?) libQtCLucene was added, and in 4.5
+libQtUiTools was added, both in /usr/lib.  When using a system SDK (which will
+happen in the Xcode build), these libraries will not be found.  To fix this problem,
+add symlinks to /usr/local:
 
 ```
 sudo ln -s /usr/lib/libQtUiTools.a /usr/local/lib/
@@ -420,7 +424,9 @@ adding '/usr/local/lib' to LIBRARY_SEARCH_PATHS in the Xcode build.
 
 == Install development frameworks for QGIS dependencies ==
 
-Download William Kyngesburye's excellent GDAL Complete package that includes PROJ, GEOS, GDAL, SQLite3, and image libraries, as frameworks.
+Download William Kyngesburye's excellent GDAL Complete package that includes
+PROJ, GEOS, GDAL, SQLite3, and image libraries, as frameworks.  There is also
+a GSL framework.
 
 ``` 
 http://www.kyngchaos.com/wiki/software:frameworks
@@ -453,31 +459,6 @@ Likewise, for 32-bit support on Snow Leopard, you will need to override the
 default system architecture, which is 64-bit, according to instructions for
 individual dependency packages.
 
-=== Additional Dependencies : GSL ===
-
-Retrieve the current version of the Gnu Scientific Library from:
-
-``` 
-ftp://ftp.gnu.org/gnu/gsl/
-```
-
-Then extract it and build it to a prefix of /usr/local.  Double-click the source
-tarball to unpack it, then, in Terminal.app, cd to the source folder and:
-
-``` 
-./configure
-make
-sudo make install
-```
-
-__Snow Leopard note:__ Snow Leopard compiles 64bit by default.
-For explicit 32-bit support in gsl, substitute the standard configure line with:
-
-```
-./configure CFLAGS="-Os -arch i386"
-```
-
-
 === Additional Dependencies : Expat ===
 
 __Snow Leopard note:__ Snow Leopard includes a usable expat, so this step is 
@@ -508,7 +489,7 @@ __Leopard note:__ To compile for 64bit, substitute the standard configure line w
 
 __Leopard and Snow Leopard note:__ Leopard and Snow Leopard include a usable
 Python 2.5 and 2.6, respectively. So there is no need to install Python on
-Leopard and Snow Leopard You can still install Python from python.org if preferred.
+Leopard and Snow Leopard. You can still install Python from python.org if preferred.
 
 Make sure you install at least the latest Python 2.5 from 
 
@@ -619,6 +600,60 @@ python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin --
 ```
 
 
+=== Additional Dependencies : Qwt/PyQwt ===
+
+The GPS tracking feature uses Qwt.  Some popular 3rd-party plugins use PyQwt.
+You can take care of both with the PyQwt source from:
+
+```
+http://pyqwt.sourceforge.net/
+```
+
+Double-click the tarball to unpack it.
+
+Now, first edit qwtconfig.pri in the qwt-5.2 subdir and change some settings so
+you don't get a bloated debug static library (too bad they are configurable from
+qmake).  Scroll down to the 'release/debug mode' block.  Edit the last 'CONFIG +='
+line, within an 'else' block, and change 'debug' to 'release'.  Also uncomment
+(remove # prefix) the line 'CONFIG += QwtDll'.
+
+Save and close.
+
+Now, cd into the qwt-5.2 subdir in a Terminal.  Type these commands to build and install:
+
+```
+qmake -spec macx-g++
+make
+sudo make install
+```
+
+The Qwt shared library is now installed in /usr/local/qwt-5.x.x[-svn] (x.x is the 
+minor.point version, and it may be an SVN version).  Remember this for QGIS and PyQwt configuration.
+
+Now for PyQwt.  Still in the Terminal:
+
+```
+python configure.py --extra-include-dirs=/usr/local/qwt-5.2.1-svn/include \
+--extra-lib-dirs=/usr/local/qwt-5.2.1-svn/lib --extra-libs=qwt
+make
+sudo make install
+```
+
+Make sure to use the qwt install path from the Qwt build above.
+
+__Snow Leopard note__
+
+If using Qt Carbon, you need to specify which architectures to build, otherwise
+it will default to a combination that does not work (ie x86_64 for a Carbon Qt).
+This is not needed for Qt Cocoa. Configure as follows:
+
+```
+python configure.py --extra-cflags="-arch i386" --extra-cxxflags="-arch i386" \
+--extra-lflags="-arch i386" --extra-include-dirs=/usr/local/qwt-5.2.1-svn/include \
+--extra-lib-dirs=/usr/local/qwt-5.2.1-svn/lib --extra-libs=qwt
+```
+
+
 === Additional Dependencies : Bison ===
 
 __Leopard and Snow Leopard note:__ Leopard and Snow Leopard include Bison 2.3, so this step can be skipped on Leopard and Snow Leopard.
@@ -639,7 +674,7 @@ make
 sudo make install 
 ```
 
-== Install CMAKE for OSX ==
+== Install CMake for OSX ==
 
 Get the latest source release from here:
 
@@ -742,13 +777,13 @@ I suggest you press 'p' to accept the key permanently.
 
 == Configure the build ==
 
-There are 2 different methods to build QGIS: the traditional Cmake method,
+There are 2 different methods to build QGIS: the traditional CMake method,
 and the new Xcode project (starting with QGIS 1.1). The Xcode project has
-additional bundling steps, though some optional Qgis features must be explicitly
-stated in a user configuration file. The Cmake build handles optional features,
+additional bundling steps, though some optional QGIS features must be explicitly
+stated in a user configuration file. The CMake build handles optional features,
 and some bundling steps are available with scripts in the mac directory.
 
-=== Configure the Cmake build ===
+=== Configure the CMake build ===
 
 CMake supports out of source build so we will create a 'build' dir for the
 build process. OS X uses ${HOME}/Applications as a standard user app folder (it gives it the system app folder icon).
