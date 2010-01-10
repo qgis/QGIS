@@ -7,24 +7,7 @@
 #           Please don't remove this header.                                   #
 ################################################################################
 
-WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\Plugins" "coordinatecaptureplugin" "true"
-WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\Plugins" "copyrightlabelplugin" "true"
-WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\Plugins" "delimitedtextplugin" "true"
-WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\Plugins" "dxf2shpconverterplugin" "true"
-WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\Plugins" "georefplugin" "true"
-WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\Plugins" "gpsimporterplugin" "true"
-WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\Plugins" "gridmakerplugin" "true"
-WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\Plugins" "interpolationplugin" "true"
 WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\Plugins" "northarrowplugin" "true"
-WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\Plugins" "ogrconverterplugin" "true"
-WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\Plugins" "quickprintplugin" "true"
 WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\Plugins" "scalebarplugin" "true"
-WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\Plugins" "spitplugin" "true"
-WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\Plugins" "wfsplugin" "true"
-WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\Plugins" "grassplugin" "true"
-WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\Plugins" "diagramoverlay" "true"
-WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\Plugins" "oracleplugin" "true"
-WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\Plugins" "evis" "true"
-WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\Plugins" "rasterterrainplugin" "true"
 
 ###############################  reg2nsis end  #################################
