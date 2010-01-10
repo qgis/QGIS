@@ -53,7 +53,6 @@ class QgsMapTip;
 class QgsMapTool;
 class QgsPoint;
 class QgsProviderRegistry;
-class QgsPythonDialog;
 class QgsPythonUtils;
 class QgsRasterLayer;
 class QgsRectangle;
@@ -1045,7 +1044,6 @@ class QgisApp : public QMainWindow
     //!flag to indicate that the previous screen mode was 'maximised'
     bool mPrevScreenModeMaximized;
 
-    QgsPythonDialog* mPythonConsole;
     QgsPythonUtils* mPythonUtils;
 
     static QgisApp *smInstance;

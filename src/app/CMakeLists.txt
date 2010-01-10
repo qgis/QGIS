@@ -60,7 +60,6 @@ SET(QGIS_APP_SRCS
   qgspluginmanager.cpp
   qgspluginmetadata.cpp
   qgspluginregistry.cpp
-  qgspythondialog.cpp
   qgsprojectproperties.cpp
   qgsrasterlayerproperties.cpp
   qgssearchquerybuilder.cpp
@@ -162,7 +161,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsoptions.h
   qgspastetransformations.h
   qgspluginmanager.h
-  qgspythondialog.h
   qgsprojectproperties.h
   qgsrasterlayerproperties.h
   qgssearchquerybuilder.h
