@@ -127,7 +127,7 @@ QgsGPSConnection* QgsGPSConnection::detectGPSConnection()
 #ifdef WIN32
   devicesToTry << "COM1" << "COM2" << "COM3" << "COM4" << "COM5" << "COM6" << "COM7" << "COM8";
 #else
-  devicesToTry << "/dev/ttyS0" << "/dev/ttyS1" << "/dev/ttyS2" << "/dev/ttyS3" << "/dev/ttyUSB0" << "/dev/ttyUSB1";
+  devicesToTry << "/dev/ttyS0" << "/dev/ttyS1" << "/dev/ttyS2" << "/dev/ttyS3" << "/dev/ttyUSB0" << "/dev/ttyUSB1" << "/dev/rfcomm0" << "/dev/rfcomm1";
 #endif
   QList<BaudRateType> baudRatesToTry;
   baudRatesToTry << BAUD4800 << BAUD9600;
@@ -178,7 +178,7 @@ QgsGPSConnection* QgsGPSConnection::detectGPSConnection()
     }
   }
 
-  //todo: check usb connections
+  //todo: check usb connections and bluetooth gps devices
 
   return 0;
 }
