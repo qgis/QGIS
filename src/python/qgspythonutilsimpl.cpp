@@ -121,15 +121,6 @@ void QgsPythonUtilsImpl::uninstallErrorHook()
   runString( "qgis.utils.uninstallErrorHook()" );
 }
 
-void QgsPythonUtilsImpl::installConsoleHooks()
-{
-  runString( "qgis.utils.installConsoleHooks()" );
-}
-
-void QgsPythonUtilsImpl::uninstallConsoleHooks()
-{
-  runString( "qgis.utils.uninstallConsoleHooks()" );
-}
 
 
 bool QgsPythonUtilsImpl::runStringUnsafe( const QString& command, bool single )
@@ -299,14 +290,6 @@ bool QgsPythonUtilsImpl::getError( QString& errorClassName, QString& errorText )
   return true;
 }
 
-QString QgsPythonUtilsImpl::getResult()
-{
-  QString res;
-  evalString( "qgis.utils.console_output", res );
-  // clear output
-  runString( "qgis.utils.console_output = None" );
-  return res;
-}
 
 QString QgsPythonUtilsImpl::PyObjectToQString( PyObject* obj )
 {
@@ -368,24 +351,6 @@ QString QgsPythonUtilsImpl::PyObjectToQString( PyObject* obj )
   return "(qgis error)";
 }
 
-QString QgsPythonUtilsImpl::getVariableFromMain( QString name )
-{
-  PyObject* obj;
-  QString output;
-
-  // get the result
-  obj = PyDict_GetItemString( mMainDict, name.toUtf8() ); // obj is borrowed reference
-
-  if ( obj != NULL && obj != Py_None )
-  {
-    output = PyObjectToQString( obj );
-  }
-
-  // erase result
-  PyDict_SetItemString( mMainDict, name.toUtf8(), Py_None );
-
-  return output;
-}
 
 bool QgsPythonUtilsImpl::evalString( const QString& command, QString& result )
 {

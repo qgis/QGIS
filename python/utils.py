@@ -56,40 +56,6 @@ def initInterface(pointer):
 
 
 #######################
-# CONSOLE OUTPUT
-
-old_stdout = sys.stdout
-console_output = None
-
-# hook for python console so all output will be redirected
-# and then shown in console
-def console_displayhook(obj):
-  global console_output
-  console_output = obj
-
-class QgisOutputCatcher:
-  def __init__(self):
-    self.data = ''
-  def write(self, stuff):
-    self.data += stuff
-  def get_and_clean_data(self):
-    tmp = self.data
-    self.data = ''
-    return tmp
-  def flush(self):
-    pass
-  
-
-def installConsoleHooks():
-  sys.displayhook = console_displayhook
-  sys.stdout = QgisOutputCatcher()
-
-def uninstallConsoleHooks():
-  sys.displayhook = sys.__displayhook__
-  sys.stdout = old_stdout
-
-
-#######################
 # PLUGINS
 
 # dictionary of plugins

@@ -197,7 +197,6 @@
 #include "qgsspatialitesourceselect.h"
 #endif
 
-#include "qgspythondialog.h"
 #include "qgspythonutils.h"
 
 #ifndef WIN32
@@ -329,7 +328,6 @@ QgisApp *QgisApp::smInstance = 0;
 QgisApp::QgisApp( QSplashScreen *splash, QWidget * parent, Qt::WFlags fl )
     : QMainWindow( parent, fl ),
     mSplash( splash ),
-    mPythonConsole( NULL ),
     mPythonUtils( NULL )
 #ifdef HAVE_QWT
     ,
@@ -507,7 +505,6 @@ QgisApp::~QgisApp()
   delete mMapTools.mAddIsland;
   delete mMapTools.mNodeTool;
 
-  delete mPythonConsole;
   delete mPythonUtils;
 
   deletePrintComposers();
@@ -1110,12 +1107,16 @@ void QgisApp::showPythonDialog()
   if ( !mPythonUtils || !mPythonUtils->isEnabled() )
     return;
 
-  if ( mPythonConsole == NULL )
-    mPythonConsole = new QgsPythonDialog( mQgisInterface, mPythonUtils );
-  mPythonConsole->show();
-  mPythonConsole->raise();
-  mPythonConsole->setWindowState( mPythonConsole->windowState() & ~Qt::WindowMinimized );
-  mPythonConsole->activateWindow();
+  bool res = mPythonUtils->runStringUnsafe(
+               "import qgis.console\n"
+               "qgis.console.show_console()\n", false );
+
+  if ( !res )
+  {
+    QString className, text;
+    mPythonUtils->getError( className, text );
+    QMessageBox::critical( this, tr( "Error" ), tr( "Failed to open Python console:" ) + "\n" + className + ": " + text );
+  }
 }
 
 void QgisApp::createActionGroups()

@@ -56,17 +56,6 @@ class PYTHON_EXPORT QgsPythonUtils
 
     virtual bool evalString( const QString& command, QString& result ) = 0;
 
-    //! change displayhook and excepthook
-    //! our hooks will just save the result to special variables
-    //! and those can be used in the program
-    virtual void installConsoleHooks() = 0;
-
-    //! get back to the original settings (i.e. write output to stdout)
-    virtual void uninstallConsoleHooks() = 0;
-
-    //! get result from the last statement as a string
-    virtual QString getResult() = 0;
-
     //! get information about error to the supplied arguments
     //! @return false if there was no python error
     virtual bool getError( QString& errorClassName, QString& errorText ) = 0;
