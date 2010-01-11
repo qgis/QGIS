@@ -5,8 +5,9 @@
 
 SET(QGIS_CORE_SRCS
 
-  gps/qextserialport.cpp
-  gps/qextserialbase.cpp
+  gps/qextserialport/qextserialport.cpp
+  gps/qextserialport/qextserialenumerator.cpp
+
   gps/qgsgpsconnection.cpp
   gps/qgsgpsconnectionregistry.cpp
   gps/qgsgpstrackerthread.cpp
@@ -144,15 +145,25 @@ SET(QGIS_CORE_SRCS
   spatialindex/qgsspatialindex.cpp
   
   )
-  
+
 IF(WIN32)
-SET(QGIS_CORE_SRCS
-    ${QGIS_CORE_SRCS}
-    gps/win_qextserialport.cpp)
+    SET(QGIS_CORE_SRCS
+        ${QGIS_CORE_SRCS}
+        gps/qextserialport/win_qextserialport.cpp
+        )
+    ADD_DEFINITIONS(-D_TTY_WIN_)
+    TARGET_LINK_LIBRARIES(qgis_core setupapi)
 ELSE(WIN32)
     SET(QGIS_CORE_SRCS
-    ${QGIS_CORE_SRCS}
-    gps/posix_qextserialport.cpp)
+        ${QGIS_CORE_SRCS}
+        gps/qextserialport/posix_qextserialport.cpp
+    )
+    ADD_DEFINITIONS(-D_TTY_POSIX_)
+
+    IF(APPLE)
+      FIND_LIBRARY(IOKIT_LIBRARY IOKit)
+      TARGET_LINK_LIBRARIES(qgis_core ${IOKIT_LIBRARY))
+    ENDIF(APPLE)
 ENDIF(WIN32)
 
 IF (WITH_INTERNAL_SPATIALITE)
@@ -233,6 +244,8 @@ composer/qgscomposition.h
 composer/qgslegendmodel.h
 gps/qgsgpsconnection.h
 gps/qgsnmeaconnection.h
+gps/qextserialport/qextserialenumerator.h
+gps/qextserialport/qextserialport.h
 symbology/qgsmarkercatalogue.h
 raster/qgsrasterlayer.h
 )
@@ -248,6 +261,7 @@ INCLUDE_DIRECTORIES(
   symbology
   spatialindex/include
   symbology-ng
+  gps/qextserialport
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}

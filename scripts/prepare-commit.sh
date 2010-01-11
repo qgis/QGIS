@@ -34,7 +34,7 @@ ASTYLEDIFF=astyle.r$REV.diff
 # reformat
 for f in $MODIFIED; do
 	case "$f" in
-	src/core/spatialite/*)
+	src/core/spatialite/*|src/core/gps/qextserialport/*)
                 echo $f skipped
 		continue
 		;;
