@@ -219,13 +219,15 @@ QT_LIB_XML = -framework QtXml
 QT_LIB_SVG = -framework QtSvg
 QT_LIB_SQL = -framework QtSql
 QT_LIB_WEBKIT = -framework QtWebKit
+QT_LIB_DBUS = -framework QtDBus
+QT_LIB_PHONON = -framework phonon
 QT_LIB_UITOOLS = -lQtUiTools
 // convenience for all Qt:
 QT_LIB = $(QT_LIB_CORE) $(QT_LIB_GUI) $(QT_LIB_NET) $(QT_LIB_XML) $(QT_LIB_SVG) $(QT_LIB_SQL)
 // list of Qt frameworks used
-QTLISTQG = QtCore QtGui QtNetwork QtSql QtSvg QtXml QtWebKit
+QTLISTQG = QtCore QtGui QtNetwork QtSql QtSvg QtXml QtWebKit QtDBus phonon
 // list of PyQt modules used
-PYQTLIST = Qt QtCore QtGui QtNetwork QtSql QtSvg QtXml QtWebKit
+PYQTLIST = Qt QtCore QtGui QtNetwork QtSql QtSvg QtXml QtWebKit phonon
 
 // with a choice of system vs user unix libs, use full path to lib file
 // to avoid possible accidental linking to system lib (ie expat)
