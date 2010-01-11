@@ -21,6 +21,7 @@
 #include <QTime>
 #include <QIODevice>
 #include <QStringList>
+#include <QFileInfo>
 
 #include "qextserialport.h"
 #include "qextserialenumerator.h"
@@ -208,7 +209,7 @@ QStringList QgsGPSConnection::availablePorts()
     }
   }
 
-  mCboDevices->addItem( "usb:" );
+  devs << "usb:";
 #endif
 
 #ifdef __FreeBSD__ // freebsd
