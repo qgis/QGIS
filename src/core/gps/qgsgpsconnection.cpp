@@ -20,6 +20,7 @@
 #include <QCoreApplication>
 #include <QTime>
 #include <QIODevice>
+#include <QStringList>
 
 #include "qextserialport.h"
 #include "qextserialenumerator.h"
