@@ -491,8 +491,11 @@ void QgsGrassProvider::select( QgsAttributeList fetchAttributes,
 
     Polygon = Vect_new_line_struct();
 
-    Vect_append_point( Polygon, rect.xMinimum(), rect.yMinimum(), 0 );
-    Vect_append_point( Polygon, rect.xMaximum(), rect.yMinimum(), 0 );
+    // Using z coor -PORT_DOUBLE_MAX/PORT_DOUBLE_MAX we cover 3D, Vect_select_lines_by_polygon is 
+    // using dig_line_box to get the box, it is not perfect, Vect_select_lines_by_polygon
+    // should clarify better how 2D/3D is treated
+    Vect_append_point( Polygon, rect.xMinimum(), rect.yMinimum(), -PORT_DOUBLE_MAX );
+    Vect_append_point( Polygon, rect.xMaximum(), rect.yMinimum(), PORT_DOUBLE_MAX );
     Vect_append_point( Polygon, rect.xMaximum(), rect.yMaximum(), 0 );
     Vect_append_point( Polygon, rect.xMinimum(), rect.yMaximum(), 0 );
     Vect_append_point( Polygon, rect.xMinimum(), rect.yMinimum(), 0 );
