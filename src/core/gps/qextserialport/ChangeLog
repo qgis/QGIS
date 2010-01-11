@@ -1,0 +1,245 @@
+Change history for QextSerialPort (formerly QwSerialPort):
+(Lines beginning with + represent new functionality, * represent changed or
+fixed functionality, - represent removed or deprecated functionality)
+
+
+Current CVS (Michal Policht)
+  + Added QextSerialEnumerator pre-alpha. Works under W2k and later versions of Windows.
+  + Event driven mechanism (alternative to polling) is now available on Windows.
+  - Removed default (=0) parameter from open() functions.
+  * Fixed bug #1714917 in Win_QextSerialPort::close() method (by Kurt).
+  * Fixed problem with lack of proper blocking in readData() on win32 (by Brandon Fosdick).
+  * Removed QT_THREAD_SUPPORT option. Now QextSerialPort must be always compiled with threads support.
+  * Mutexes are not static.
+  * setTimeout() now accepts only one parameter.
+  * bytesAvailable() on POSIX now shows 0 bytes instead of -1 when no bytes are available.
+  * bytesAvailable() is const.
+  * native POSIX file descriptors instead of QFile->handle() calls
+  + POSIX: Save and restore original termios when opening and closing the device
+  * POSIX: Only disable special characters on systems that support it
+  * POSIX: Use cfmakeraw(3) to get a non-canonical termios
+  + POSIX: Call close(2) in close() to actually close the device
+
+Version 1.1 (official release)
+
+Version 1.0.1
+  * Minor changes (mostly in test application)
+
+Version 1.0.0e (by Micha³ Policht)
+  * Fixed bytesAvailable(). Includes buffered bytes to the result.
+  + Added isSequential() method.
+  + Provided test application
+
+Version 1.0.0d ( changes by Micha³ Policht )
+  - Removed isOpen() overriden declaration/implementation from qextserialport's classes. isOpen() relies on QIODevice now.
+  - Removed bool portOpen variable. Replaced by internal QIODevice.openMode.
+  - Removed getChar(), putChar() overriden declaration/implementation. QIODevice can handle this.
+  * Calling open() with specified OpenMode invokes QIODevice::open() which result in proper openMode setting.
+  * readData(), writeData() are protected as in QIODevice declaration.
+  * QIODevice:: read() and write() function are working now (use them instead of readData() writeData()).
+  * readData(), writeData() don't check if port is open any more (read() and write() assures that). The same behaviour can be found in QFile for example.
+  * Fixed readLine().
+
+  * Fixed randomly crash on deletion bug on Windows ( by Stuart Nixon )
+  http://lists.trolltech.com/qt-interest/2007-02/thread00340-0.html#msg00351
+
+Version 0.9 (March 3, 2005) Stefan Sander <stefan-sander@users.sf.net>:
+  + Added a new precompiler constant, _TTY_FREEBSD_
+    to support FreeBSD port names.
+  + Added _TTY_WIN_ constant in qextserialport.pro win32:DEFINES
+    to have Windows port names as default when compiling on it.
+  - Removed construct() call from QextSerialBase constructors,
+    it is called indirectly through Win_QextSerialPort::construct()
+    and Posix_QextSerialPort::construct().
+  + Added construct() call to Win_QextSerialPort constructors.
+  + Added setTimeout(0, 500) call to Win_QextSerialPort::construct().
+  - Removed setTimeout(0, 500) call from Win_QextSerialPort(const char* name).
+  * Fixed Posix_QextSerialPort::open(int) control flow, now the port settings
+    are only applied if the associated file could be opened.
+  * Fixed masking CR to NL, in Posix_CommConfig.c_iflag 
+
+Version 0.8 (, 2003) (Alpha release):
+  * Added code to set the port timeouts in Win_QextSerialPort's default 
+    constructor.
+  * Fixed Posix_QextSerialPort::construct() to set up the port correctly.
+  * Fixed syntax errors in 2 ioctl() calls in posix_QextSerialPort.
+  * lastError is now initialized to E_NO_ERROR in the QextSerialBase 
+    constructor.    
+  * The select() call in posix_QextSerialPort::bytesWaiting() is now 
+    properly coded.  Previously it would always time out.
+  * Fixed runtime errors in the ioctl() calls for 
+    Posix_QextSerialPort::setDtr() and Posix_QextSerialPort::setRts().
+    Thanks to Marc Pignat.
+    
+Version 0.7 (June 15, 2002) <Bugfix release>:
+  (0.61 - unofficial release)
+  * Fixed a small bug in the initializations of the static members when 
+    QT_THREAD_SUPPORT was defined.
+  * Fixed a  bug that caused Borland's compiler to choke on Windows platforms
+    (which perversely actually stemmed from a shortcoming of Visual C++ that 
+    Borland doesn't have).
+    
+  (0.62 - unofficial release)
+  * Fixed a bug that gave Q_LONG the wrong typedef for QT versions prior to 
+    3.0. 
+    
+  (0.63 - unofficial release)       
+  * Fixed 2 incorrect references to Posix_Comm_Config.
+  * Fixed scoping of Posix_QextSerialPort::operator=().
+  * Posix_QextSerialPort::construct should now be coded correctly.
+  * Fixed return type for Posix_QextSerialPort::size().
+  
+  (0.64 - unofficial release)
+  * Fixed all the port settings functions to work properly when opening the 
+    port for the first time - previously none of the settings were being 
+    applied when the port was opened.
+  * Fixed an oversight in Win_QextSerialPort::open() that caused the setting
+    of port parameters to fail on NT and 2000 systems.
+    
+  (0.7 - official release)
+  * Fixed some calls to QextSerialBase constructors that no longer exist on 
+    the POSIX side.
+  * Fixed the bad memcpy()'s in the POSIX copy constructor.
+  * Fixed the Offset scoping problem under gcc 2.95.
+  * The CBAUD flag has been deprecated on some POSIX systems.  Fixed 
+    Posix_QextSerialPort::setBaudRate() to reflect this.
+  * Added construct() calls to all of the Posix_QextSerialPort constructors.
+  * Fixed double (and conflicting) typedefs of Offset when using QT versions 
+    prior to 3.0
+  * Changed the call to CreateFile() to CreateFileA() in 
+    Win_QextSerialPort.cpp.  This should get rid of problems for those using
+    Unicode or other multibyte character sets for their string literals.
+  * A few tweaks to the documentation.
+    
+  - Removed the protected Posix_Handle variable from Posix_QextSerialPort.
+  
+Version 0.6 (March 11, 2002) <Bugfix release>:
+  + Added a new precompiler constant, QTVER_PRE_30.  QT3 changed the return
+    types of some QIODevice functions. Therefore, if compiling on versions
+    of QT prior to 3.0, you should always define QTVER_PRE_30 in your project.
+    Also had to add some preprocessor blocks to support both 3.0 and earlier 
+    versions of QT.
+  + Added implementations of 2 of the new constructors added in 0.5 to both 
+    Win_QextSerialPort and Posix_QextSerialPort.
+
+  * The scoping of the enums used in the PortSettings struct has been fixed.
+  * QObject inheritance has been removed.  This should not affect the 
+    functionality of the classes.
+  * Replaced a few stray references to mutex->unlock() with UNLOCK_MUTEX() in 
+    the Windows code.
+  * Fixed several runtime errors caused by calling nonexistent members of 
+    QextSerialBase.
+  * Fixed a whole bunch of little things that were causing MSVC to choke when
+    compiling for Windows.
+
+Version 0.5 (February 15, 2002):
+  + There are 4 new macros (LOCK_MUTEX, UNLOCK_MUTEX, TTY_WARNING, and 
+    TTY_PORTABILITY_WARNING) that replace most of those ugly #ifdef blocks in
+    the code.  
+  + In place of the old namingConvention stuff, there is a new function, 
+    setName().  It is used to set the name of the device to be associated with
+    the object.  The new name() function can be used to retrieve the device 
+    name, which is stored in the new member variable portName.
+  + There is a new version of open() that takes a const char* as a parameter.
+    It can be used to specify the name of the device when it is opened rather
+    than at construction time.
+
+  * 3 constructors have been removed and 3 more added.  There is now a copy
+    constructor (and operator=()) as well as a constructor that takes a
+    PortSettings structure as a parameter, and another that takes both a
+    device name and a PortSettings structure.  As a result of these changes
+    the PortSettings structure declaration is no longer local to the
+    QextSerialBase class.  All of the removed constructors had to do with
+    the setNamingConvention() system.
+  * The static mutex member should now be reference-counted and only deleted 
+    when it is no longer referenced.  
+  * Most of the object construction duties have been pushed back into
+    QextSerialBase
+  * Fixed a couple resource leaks, mostly to do with unlocking the mutex
+    properly
+
+  - Removed the setNamingConvention() nonsense.  
+  - Removed all QStrings and calls to sprintf() for thread compatibility.
+  - Removed setNumber() functions as well as the portNumber member variable,
+    as they were only necessary under the setNamingConvention() system.
+
+  I am grateful to Jorg Preiss (Preisz?  Sorry, American keyboards don't have
+  an ess-tset character ;)) for his invaluable input on most of the changes
+  that went into this version.
+
+Version 0.4 (March 20, 2001):
+  + All of the classes now derive from QObject as well as QIODevice.  This
+    is pretty much useless at the moment - signals and slots may be used
+    to implement asynchronous communications in a future version
+  + Added configurable timeouts via the setTimeout() function.  The default
+    timeout for read and write operations is now 500 milliseconds
+  + There is now a functional .pro file for the library (thanks to
+    Gunnstein Lye)
+  + The prefixes for all of the classes have changed from Qw to Qext, in
+    compliance with the qt-addons project standard
+
+  * Fixed a bug that caused port settings to be restored incorrectly when
+    switching ports with setNumber()
+  * Minor changes to QextSerialBase::setNumber().  Functionality should now
+    reflect the documentation, which has also been updated to reflect the
+    changes that went in on version 0.3.
+  * Some fixes to the documentation.  The Posix_QextSerialPort and
+    Win_QextSerialPort classes should no longer have any unnecessary
+    references to inapplicable platforms, and the documentation for open() has
+    been updated.
+  * Should now compile without QT_THREAD_SUPPORT defined (ie, in single-
+    threaded environments), although it will require slight changes to the
+    makefile (tmake "CONFIG-=thread" should work)
+  * Fixed a few compilation issues, especially on the POSIX side (should
+    compile under Linux now :))
+  * POSIX code is a little cleaner and more efficient
+  * Various small fixes to the documentation
+  * Constants now follow a consistent naming convention, with underscores at
+    the beginning and end of each.  For example TTY_POSIX has become
+    _TTY_POSIX_
+    
+Version 0.3 (Feb. 14, 2001):
+  + Added a warning that appears when QwSerialPort is compiled on a POSIX
+    platform that does not implement 76800 baud operation.  In this situation
+    QwSerialPort will also switch to 57600 baud.
+  + Major code reorganization - there are now 4 classes instead of 1.  This
+    should remove a lot of the #ifdef...#else...#endif constructs and
+    hopefully make the code easier to read.  Including the class in your
+    project is still done by including QwSerialPort.h and instantiating a
+    QwSerialPort object.
+
+  * The serial port associated with a QwSerialPort object is no longer
+    opened on construction, or upon calling the setNumber() function.  You
+    must now explicitly call open() to open the port.
+
+Version 0.2 (Jan. 3, 2001):
+  + Added lastError() function with rudimentary error codes
+  + Better documentation
+  + Added ability to examine the empty/not empty state of a port's input
+    buffer with atEnd()
+  + Added ability to retrieve the number of bytes in a port's input buffer
+    with size() (thanks to Olivier Tubach)
+  + Added ability to turn off portability warnings by defining
+    TTY_NOWARN_PORT in your project
+  + Added ability to turn off all warning messages by defining TTY_NOWARN
+    in your project
+  + Added ability to select POSIX serial functions in Windows NT/2000 by
+    defining TTY_POSIX in your project (untested)
+  + Added control over RTS and DTR lines with setRts() and setDtr()
+    respectively
+  + Added ability to query line status using lineStatus().
+  + Added readLine() functionality (thanks to Olivier Tubach)
+  + Added bytesWaiting(), a non-const/thread-safe version of size()
+  + The class should now be thread-safe through the use of a recursive
+    QMutex (untested)
+
+  * Fixed a bug that could cause hardware flow control not to work on some
+    POSIX systems
+  * Put in a few missing fileno() calls in the POSIX code
+  * Fixed a few syntax errors that caused compilation to fail on POSIX systems
+
+  - BAUD0 is no longer a valid baud rate setting - to drop the DTR line,
+    call setDtr(FALSE)
+
+Version 0.1 (Dec. 11, 2000):
+  Initial public release.

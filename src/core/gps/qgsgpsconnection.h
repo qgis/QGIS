@@ -46,7 +46,7 @@ struct CORE_EXPORT QgsGPSInformation
 };
 
 /**Abstract base class for connection to a GPS device*/
-class CORE_EXPORT QgsGPSConnection: public QObject
+class CORE_EXPORT QgsGPSConnection : public QObject
 {
     Q_OBJECT
   public:
@@ -63,6 +63,7 @@ class CORE_EXPORT QgsGPSConnection: public QObject
         @param dev input device for the connection (e.g. serial device). The class takes ownership of the object
         @param pollIntervall update intervall in milliseconds*/
     QgsGPSConnection( QIODevice* dev, int pollInterval = 1000 );
+    QgsGPSConnection( QString port, int pollInterval = 1000 );
     virtual ~QgsGPSConnection();
     /**Opens connection to device*/
     bool connect();
@@ -91,6 +92,8 @@ class CORE_EXPORT QgsGPSConnection: public QObject
     const QTimer* timer() const { return mPollTimer; }
     void setTimer( QTimer* t );
 
+    static QStringList availablePorts();
+
   signals:
     void stateChanged( const QgsGPSInformation& info );
 
@@ -108,6 +111,7 @@ class CORE_EXPORT QgsGPSConnection: public QObject
     /**Closes and deletes mSource*/
     void cleanupSource();
     void clearLastGPSInformation();
+    void init( int pollInterval );
 
   protected slots:
     /**Parse available data source content*/

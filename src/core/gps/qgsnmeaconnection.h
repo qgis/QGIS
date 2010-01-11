@@ -26,6 +26,7 @@ class CORE_EXPORT QgsNMEAConnection: public QgsGPSConnection
     Q_OBJECT
   public:
     QgsNMEAConnection( QIODevice* dev, int pollInterval = 1000 );
+    QgsNMEAConnection( QString port, int pollInterval = 1000 );
     ~QgsNMEAConnection();
 
     //bool poll( QgsGPSInformation& info, int maxTime );

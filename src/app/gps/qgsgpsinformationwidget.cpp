@@ -17,7 +17,6 @@
 /*  $Id: qgisapp.h 12390 2009-12-09 21:35:43Z jef $ */
 #include "qgsgpsinformationwidget.h"
 #include "qgsvectorlayer.h"
-#include "qextserialport.h"
 #include "qgsnmeaconnection.h"
 #include "qgsgpstrackerthread.h"
 #include "qgscoordinatetransform.h"
@@ -308,13 +307,7 @@ void QgsGPSInformationWidget::connectGps()
   {
     if ( !mCboDevices->currentText().isEmpty() )
     {
-      mSerialPort = new QextSerialPort( mCboDevices->currentText() );
-      mSerialPort->setBaudRate( BAUD4800 );
-      mSerialPort->setFlowControl( FLOW_OFF );
-      mSerialPort->setParity( PAR_NONE );
-      mSerialPort->setDataBits( DATA_8 );
-      mSerialPort->setStopBits( STOP_2 );
-      mNmea = new QgsNMEAConnection( mSerialPort, 500 );
+      mNmea = new QgsNMEAConnection( mCboDevices->currentText(), 500 );
       QObject::connect( mNmea, SIGNAL( stateChanged( const QgsGPSInformation& ) ),
                         this, SLOT( displayGPSInformation( const QgsGPSInformation& ) ) );
       mThread = new QgsGPSTrackerThread( mNmea );
@@ -329,7 +322,7 @@ void QgsGPSInformationWidget::connectGps()
       mConnectButton->setChecked( false );
     }
   }
-  else //autdetect
+  else //autodetect
   {
     mNmea = QgsGPSConnection::detectGPSConnection();
     if ( !mNmea )
@@ -861,86 +854,8 @@ void QgsGPSInformationWidget::on_mBtnRefreshDevices_clicked( )
 /* Copied from gps plugin */
 void QgsGPSInformationWidget::populateDevices()
 {
-
   mCboDevices->clear();
-#ifdef linux
-  // look for linux serial devices
-  QString linuxDev( "/dev/ttyS%1" );
-  for ( int i = 0; i < 10; ++i )
-  {
-    if ( QFileInfo( linuxDev.arg( i ) ).exists() )
-    {
-      mCboDevices->addItem( linuxDev.arg( i ) );
-    }
-    else
-      break;
-  }
-
-  // and the ttyUSB* devices (serial USB adaptor)
-  linuxDev = "/dev/ttyUSB%1";
-  for ( int i = 0; i < 10; ++i )
-  {
-    if ( QFileInfo( linuxDev.arg( i ) ).exists() )
-    {
-      mCboDevices->addItem( linuxDev.arg( i ) );
-    }
-    else
-      break;
-  }
-
-  mCboDevices->addItem( "usb:" );
-#endif
-
-#ifdef __FreeBSD__ // freebsd
-  // and freebsd devices (untested)
-  QString freebsdDev( "/dev/cuaa%1" );
-  for ( int i = 0; i < 10; ++i )
-  {
-    if ( QFileInfo( freebsdDev.arg( i ) ).exists() )
-    {
-      mCboDevices->addItem( freebsdDev.arg( i ) );
-    }
-    else
-      break;
-  }
-
-  // and the ucom devices (serial USB adaptors)
-  freebsdDev = "/dev/ucom%1";
-  for ( int i = 0; i < 10; ++i )
-  {
-    if ( QFileInfo( freebsdDev.arg( i ) ).exists() )
-    {
-      mCboDevices->addItem( freebsdDev.arg( i ) );
-    }
-    else
-      break;
-  }
-
-#endif
-
-#ifdef sparc
-  // and solaris devices (also untested)
-  QString solarisDev( "/dev/cua/%1" );
-  for ( int i = 'a'; i < 'k'; ++i )
-  {
-    if ( QFileInfo( solarisDev.arg( char( i ) ) ).exists() )
-    {
-      mCboDevices->addItem( solarisDev.arg( char( i ) ) );
-    }
-    else
-      break;
-  }
-#endif
-
-#ifdef WIN32
-  mCboDevices->addItem( "com1" );
-  mCboDevices->addItem( "com2" );
-  mCboDevices->addItem( "com3" );
-  mCboDevices->addItem( "com4" );
-  mCboDevices->addItem( "usb:" );
-#endif
-
-  // OSX, OpenBSD, NetBSD etc? Anyone?
+  mCboDevices->addItems( QgsGPSConnection::availablePorts() );
 
   // remember the last ports used
   QSettings settings;

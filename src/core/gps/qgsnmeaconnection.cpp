@@ -32,7 +32,10 @@
 
 QgsNMEAConnection::QgsNMEAConnection( QIODevice* dev, int pollInterval ): QgsGPSConnection( dev, pollInterval )
 {
+}
 
+QgsNMEAConnection::QgsNMEAConnection( QString port, int pollInterval ): QgsGPSConnection( port, pollInterval )
+{
 }
 
 QgsNMEAConnection::~QgsNMEAConnection()
@@ -83,7 +86,7 @@ void QgsNMEAConnection::processStringBuffer()
   int endSentenceIndex = 0;
   int dollarIndex;
 
-  while ( ( endSentenceIndex = mStringBuffer.indexOf( "\r\n" ) ) && endSentenceIndex != -1 )
+  while (( endSentenceIndex = mStringBuffer.indexOf( "\r\n" ) ) && endSentenceIndex != -1 )
   {
     endSentenceIndex = mStringBuffer.indexOf( "\r\n" );
 
