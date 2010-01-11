@@ -152,18 +152,12 @@ IF(WIN32)
         gps/qextserialport/win_qextserialport.cpp
         )
     ADD_DEFINITIONS(-D_TTY_WIN_)
-    TARGET_LINK_LIBRARIES(qgis_core setupapi)
 ELSE(WIN32)
     SET(QGIS_CORE_SRCS
         ${QGIS_CORE_SRCS}
         gps/qextserialport/posix_qextserialport.cpp
     )
     ADD_DEFINITIONS(-D_TTY_POSIX_)
-
-    IF(APPLE)
-      FIND_LIBRARY(IOKIT_LIBRARY IOKit)
-      TARGET_LINK_LIBRARIES(qgis_core ${IOKIT_LIBRARY))
-    ENDIF(APPLE)
 ENDIF(WIN32)
 
 IF (WITH_INTERNAL_SPATIALITE)
@@ -218,36 +212,38 @@ SET_SOURCE_FILES_PROPERTIES(
 ENDIF (MSVC AND PEDANTIC)
 
 SET(QGIS_CORE_MOC_HDRS
+  qgsapplication.h
+  qgscontexthelp.h
+  qgscoordinatetransform.h
+  qgsdataprovider.h
+  qgshttptransaction.h
+  qgsmaplayer.h
+  qgsmaplayerregistry.h
+  qgsmaprenderer.h
+  qgsmessageoutput.h
+  qgsproject.h
+  qgsrunprocess.h
+  qgsvectorlayer.h
+  qgsrasterdataprovider.h
 
-qgsapplication.h
-qgscontexthelp.h
-qgscoordinatetransform.h
-qgsdataprovider.h
-qgshttptransaction.h
-qgsmaplayer.h
-qgsmaplayerregistry.h
-qgsmaprenderer.h
-qgsmessageoutput.h
-qgsproject.h
-qgsrunprocess.h
-qgsvectorlayer.h
-qgsrasterdataprovider.h
-composer/qgscomposerlegend.h
-composer/qgscomposermap.h
-composer/qgscomposerpicture.h
-composer/qgscomposerscalebar.h
-composer/qgscomposeritem.h
-composer/qgscomposeritemgroup.h
-composer/qgscomposershape.h
-composer/qgscomposertable.h
-composer/qgscomposition.h
-composer/qgslegendmodel.h
-gps/qgsgpsconnection.h
-gps/qgsnmeaconnection.h
-gps/qextserialport/qextserialenumerator.h
-gps/qextserialport/qextserialport.h
-symbology/qgsmarkercatalogue.h
-raster/qgsrasterlayer.h
+  composer/qgscomposerlegend.h
+  composer/qgscomposermap.h
+  composer/qgscomposerpicture.h
+  composer/qgscomposerscalebar.h
+  composer/qgscomposeritem.h
+  composer/qgscomposeritemgroup.h
+  composer/qgscomposershape.h
+  composer/qgscomposertable.h
+  composer/qgscomposition.h
+
+  composer/qgslegendmodel.h
+  symbology/qgsmarkercatalogue.h
+  raster/qgsrasterlayer.h
+
+  gps/qgsgpsconnection.h
+  gps/qgsnmeaconnection.h
+  gps/qextserialport/qextserialport.h
+  gps/qextserialport/qextserialenumerator.h
 )
 
 QT4_WRAP_CPP(QGIS_CORE_MOC_SRCS ${QGIS_CORE_MOC_HDRS})
@@ -321,12 +317,14 @@ ADD_DEPENDENCIES(qgis_core svnversion)
 
 # because of htonl
 IF (WIN32)
-  TARGET_LINK_LIBRARIES(qgis_core wsock32)
-  IF (MSVC)
-    # needed for linking to gdal which needs odbc
-    # TARGET_LINK_LIBRARIES(qgis_core odbc32 odbccp32)
-  ENDIF (MSVC)
+  FIND_LIBRARY(SETUPAPI_LIBRARY setupapi)
+  TARGET_LINK_LIBRARIES(qgis_core wsock32 ${SETUPAPI_LIBRARY})
 ENDIF (WIN32)
+
+IF(APPLE)
+  FIND_LIBRARY(IOKIT_LIBRARY IOKit)
+  TARGET_LINK_LIBRARIES(qgis_core ${IOKIT_LIBRARY})
+ENDIF(APPLE)
 
 TARGET_LINK_LIBRARIES(qgis_core
   ${QT_QTMAIN_LIBRARY} 

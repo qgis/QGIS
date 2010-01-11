@@ -34,6 +34,8 @@ struct QextPortInfo {
     int productID;      ///< Product ID
 };
 
+#undef QT_GUI_LIB
+
 #ifdef Q_OS_WIN
 #ifdef QT_GUI_LIB
 #include <QWidget>
