@@ -1,4 +1,0 @@
-This is simple application using QextSerialPort library.
-
-Port settings are in QespTest constructor (QespTest.cpp)
-
