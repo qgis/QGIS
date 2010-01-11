@@ -114,6 +114,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
     }
   }
 
+  //wms search server
+  leWmsSearch->setText( settings.value( "/qgis/WMSSearchUrl", "http://geopole.org/wms/search?search=%1&type=rss" ).toString() );
+
+
   // set the current theme
   cmbTheme->setItemText( cmbTheme->currentIndex(), settings.value( "/Themes" ).toString() );
 
@@ -437,6 +441,9 @@ void QgsOptions::saveOptions()
     proxyExcludeString += mExcludeUrlListWidget->item( i )->text();
   }
   settings.setValue( "proxy/proxyExcludedUrls", proxyExcludeString );
+
+  //wms search url
+  settings.setValue( "/qgis/WMSSearchUrl", leWmsSearch->text() );
 
   //general settings
   settings.setValue( "/Map/identifyMode", cmbIdentifyMode->itemData( cmbIdentifyMode->currentIndex() ).toInt() );

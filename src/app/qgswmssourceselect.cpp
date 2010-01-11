@@ -821,7 +821,9 @@ bool QgsWMSSourceSelect::retrieveSearchResults( const QString& searchTerm, QByte
   }
   // Get username/password from settings for protected WMS
 
-  QUrl url( QString( "http://geopole.org/wms/search?search=%1&type=rss" ).arg( searchTerm ) );
+  QString mySearchUrl = settings.value("/qgis/WMSSearchUrl", "http://geopole.org/wms/search?search=%1&type=rss").toString();
+  QUrl url( mySearchUrl.arg( searchTerm ) );
+  QgsDebugMsg( url.toString() );
   QgsHttpTransaction http( url.toEncoded(),
                            proxyHost, proxyPort, proxyUser, proxyPassword, proxyType );
 
