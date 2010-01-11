@@ -15,6 +15,7 @@
 #include "qgsdataprovider.h"
 #include "qgscontexthelp.h"
 #include "qgslogger.h"
+#include "qgsgpsconnection.h"
 
 //qt includes
 #include <QFileDialog>
@@ -303,97 +304,11 @@ void QgsGPSPluginGui::on_pbnRefresh_clicked()
 
 void QgsGPSPluginGui::populatePortComboBoxes()
 {
-
+  QStringList devs = QgsGPSConnection::availablePorts() << "usb:";
   cmbDLPort->clear();
-#ifdef linux
-  // look for linux serial devices
-  QString linuxDev( "/dev/ttyS%1" );
-  for ( int i = 0; i < 10; ++i )
-  {
-    if ( QFileInfo( linuxDev.arg( i ) ).exists() )
-    {
-      cmbDLPort->addItem( linuxDev.arg( i ) );
-      cmbULPort->addItem( linuxDev.arg( i ) );
-    }
-    else
-      break;
-  }
-
-  // and the ttyUSB* devices (serial USB adaptor)
-  linuxDev = "/dev/ttyUSB%1";
-  for ( int i = 0; i < 10; ++i )
-  {
-    if ( QFileInfo( linuxDev.arg( i ) ).exists() )
-    {
-      cmbDLPort->addItem( linuxDev.arg( i ) );
-      cmbULPort->addItem( linuxDev.arg( i ) );
-    }
-    else
-      break;
-  }
-
-  cmbDLPort->addItem( "usb:" );
-  cmbULPort->addItem( "usb:" );
-#endif
-
-#ifdef __FreeBSD__ // freebsd
-  // and freebsd devices (untested)
-  QString freebsdDev( "/dev/cuaa%1" );
-  for ( int i = 0; i < 10; ++i )
-  {
-    if ( QFileInfo( freebsdDev.arg( i ) ).exists() )
-    {
-      cmbDLPort->addItem( freebsdDev.arg( i ) );
-      cmbULPort->addItem( freebsdDev.arg( i ) );
-    }
-    else
-      break;
-  }
-
-  // and the ucom devices (serial USB adaptors)
-  freebsdDev = "/dev/ucom%1";
-  for ( int i = 0; i < 10; ++i )
-  {
-    if ( QFileInfo( freebsdDev.arg( i ) ).exists() )
-    {
-      cmbDLPort->addItem( freebsdDev.arg( i ) );
-      cmbULPort->addItem( freebsdDev.arg( i ) );
-    }
-    else
-      break;
-  }
-
-#endif
-
-#ifdef sparc
-  // and solaris devices (also untested)
-  QString solarisDev( "/dev/cua/%1" );
-  for ( int i = 'a'; i < 'k'; ++i )
-  {
-    if ( QFileInfo( solarisDev.arg( char( i ) ) ).exists() )
-    {
-      cmbDLPort->addItem( solarisDev.arg( char( i ) ) );
-      cmbULPort->addItem( solarisDev.arg( char( i ) ) );
-    }
-    else
-      break;
-  }
-#endif
-
-#ifdef WIN32
-  cmbULPort->addItem( "com1" );
-  cmbULPort->addItem( "com2" );
-  cmbULPort->addItem( "com3" );
-  cmbULPort->addItem( "com4" );
-  cmbULPort->addItem( "usb:" );
-  cmbDLPort->addItem( "com1" );
-  cmbDLPort->addItem( "com2" );
-  cmbDLPort->addItem( "com3" );
-  cmbDLPort->addItem( "com4" );
-  cmbDLPort->addItem( "usb:" );
-#endif
-
-  // OSX, OpenBSD, NetBSD etc? Anyone?
+  cmbDLPort->addItems( devs );
+  cmbULPort->clear();
+  cmbULPort->addItems( devs );
 
   // remember the last ports used
   QSettings settings;

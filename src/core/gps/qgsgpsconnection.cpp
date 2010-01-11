@@ -208,8 +208,6 @@ QStringList QgsGPSConnection::availablePorts()
       }
     }
   }
-
-  devs << "usb:";
 #endif
 
 #ifdef __FreeBSD__ // freebsd
