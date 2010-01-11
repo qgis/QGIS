@@ -356,7 +356,6 @@
 		7209F4530F3A468C003DC336 /* qgspluginmetadata.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6490F39E57A003DC336 /* qgspluginmetadata.cpp */; };
 		7209F4540F3A468C003DC336 /* qgspluginregistry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E64B0F39E57A003DC336 /* qgspluginregistry.cpp */; };
 		7209F4550F3A468C003DC336 /* qgsprojectproperties.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E64D0F39E57A003DC336 /* qgsprojectproperties.cpp */; };
-		7209F4560F3A468C003DC336 /* qgspythondialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E64F0F39E57A003DC336 /* qgspythondialog.cpp */; };
 		7209F4570F3A468C003DC336 /* qgsrasterlayerproperties.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6510F39E57A003DC336 /* qgsrasterlayerproperties.cpp */; };
 		7209F4580F3A468C003DC336 /* qgssearchquerybuilder.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6530F39E57A003DC336 /* qgssearchquerybuilder.cpp */; };
 		7209F4590F3A468C003DC336 /* qgswmssourceselect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6550F39E57A003DC336 /* qgswmssourceselect.cpp */; };
@@ -943,6 +942,14 @@
 		7276104410A609D300C89AF0 /* NormVecDecorator.cc in Sources */ = {isa = PBXBuildFile; fileRef = 7276103C10A6099D00C89AF0 /* NormVecDecorator.cc */; };
 		7276104510A609D300C89AF0 /* ParametricLine.cc in Sources */ = {isa = PBXBuildFile; fileRef = 7276103E10A6099D00C89AF0 /* ParametricLine.cc */; };
 		7276104610A609D300C89AF0 /* TriDecorator.cc in Sources */ = {isa = PBXBuildFile; fileRef = 7276104010A6099D00C89AF0 /* TriDecorator.cc */; };
+		7278009510FB764700574B67 /* console.py in Copy - qgis */ = {isa = PBXBuildFile; fileRef = 7278009410FB763F00574B67 /* console.py */; };
+		727800F710FB77A400574B67 /* qextserialenumerator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 727800F110FB76E200574B67 /* qextserialenumerator.cpp */; };
+		727800F810FB77A400574B67 /* qextserialport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 727800F310FB76E200574B67 /* qextserialport.cpp */; };
+		727800FA10FB77BE00574B67 /* posix_qextserialport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 727800F010FB76E200574B67 /* posix_qextserialport.cpp */; };
+		727800FB10FB77DE00574B67 /* qextserialenumerator.h in Sources */ = {isa = PBXBuildFile; fileRef = 727800F210FB76E200574B67 /* qextserialenumerator.h */; };
+		727800FC10FB77DE00574B67 /* qextserialport.h in Sources */ = {isa = PBXBuildFile; fileRef = 727800F410FB76E200574B67 /* qextserialport.h */; };
+		7278010610FB785F00574B67 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7278010510FB785F00574B67 /* IOKit.framework */; };
+		727801BA10FB7B1D00574B67 /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F4B80F3A5434003DC336 /* CoreFoundation.framework */; };
 		727E6AF10FEA90E200DF6F64 /* x_sqlite3.c in Sources */ = {isa = PBXBuildFile; fileRef = 727E6AF00FEA90E200DF6F64 /* x_sqlite3.c */; };
 		727E6B040FEA9BC000DF6F64 /* x_spatialite.c in Sources */ = {isa = PBXBuildFile; fileRef = 727E6B030FEA9BC000DF6F64 /* x_spatialite.c */; };
 		727E6B110FEAA0CF00DF6F64 /* x_qgsspatialitesourceselect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 727E6B0C0FEAA06B00DF6F64 /* x_qgsspatialitesourceselect.cpp */; };
@@ -1096,7 +1103,6 @@
 		729288A30F71FE65006D9489 /* qgsquerybuilder.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6440F39E57A003DC336 /* qgsquerybuilder.h */; };
 		729288A40F71FE65006D9489 /* qgspluginmanager.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6480F39E57A003DC336 /* qgspluginmanager.h */; };
 		729288A50F71FE65006D9489 /* qgsprojectproperties.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E64E0F39E57A003DC336 /* qgsprojectproperties.h */; };
-		729288A60F71FE65006D9489 /* qgspythondialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6500F39E57A003DC336 /* qgspythondialog.h */; };
 		729288A70F71FE65006D9489 /* qgsrasterlayerproperties.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6520F39E57A003DC336 /* qgsrasterlayerproperties.h */; };
 		729288A80F71FE65006D9489 /* qgssearchquerybuilder.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6540F39E57A003DC336 /* qgssearchquerybuilder.h */; };
 		729288A90F71FE65006D9489 /* qgswmssourceselect.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6560F39E57A003DC336 /* qgswmssourceselect.h */; };
@@ -1262,8 +1268,6 @@
 		72A892CE0FAF7B9400108152 /* qgsconfigureshortcutsdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72A892CB0FAF7B6100108152 /* qgsconfigureshortcutsdialog.h */; };
 		72AA0BE9107394D900D00B43 /* qgsfieldcalculator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72AA0BE71073949C00D00B43 /* qgsfieldcalculator.cpp */; };
 		72AA0BEA107394D900D00B43 /* qgsfieldcalculator.h in Sources */ = {isa = PBXBuildFile; fileRef = 72AA0BE81073949C00D00B43 /* qgsfieldcalculator.h */; };
-		72AF7B1310F8EC6300BD549A /* qextserialbase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72AF7AFF10F8EC1600BD549A /* qextserialbase.cpp */; };
-		72AF7B1410F8EC6300BD549A /* qextserialport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72AF7B0110F8EC1600BD549A /* qextserialport.cpp */; };
 		72AF7B1510F8EC6300BD549A /* qgsgpsconnectionregistry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72AF7B0510F8EC1600BD549A /* qgsgpsconnectionregistry.cpp */; };
 		72AF7B1610F8EC6300BD549A /* qgsgpstrackerthread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72AF7B0710F8EC1600BD549A /* qgsgpstrackerthread.cpp */; };
 		72AF7B1710F8EC6300BD549A /* qgsnmeaconnection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72AF7B0910F8EC1600BD549A /* qgsnmeaconnection.cpp */; };
@@ -1274,7 +1278,6 @@
 		72AF7B1C10F8EC8800BD549A /* sentence.c in Sources */ = {isa = PBXBuildFile; fileRef = 72AF7B0B10F8EC1600BD549A /* sentence.c */; };
 		72AF7B1D10F8EC8800BD549A /* time.c in Sources */ = {isa = PBXBuildFile; fileRef = 72AF7B0D10F8EC1600BD549A /* time.c */; };
 		72AF7B1E10F8EC8800BD549A /* tok.c in Sources */ = {isa = PBXBuildFile; fileRef = 72AF7B0E10F8EC1600BD549A /* tok.c */; };
-		72AF7B1F10F8EC9500BD549A /* posix_qextserialport.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72AF7AFD10F8EC1600BD549A /* posix_qextserialport.cpp */; };
 		72AF7B2010F8ECB100BD549A /* qgsgpsconnection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72AF7B0310F8EC1600BD549A /* qgsgpsconnection.cpp */; };
 		72AF7B2110F8ECBA00BD549A /* qgsgpsconnection.h in Sources */ = {isa = PBXBuildFile; fileRef = 72AF7B0410F8EC1600BD549A /* qgsgpsconnection.h */; };
 		72AF7B2210F8ECBA00BD549A /* qgsnmeaconnection.h in Sources */ = {isa = PBXBuildFile; fileRef = 72AF7B0A10F8EC1600BD549A /* qgsnmeaconnection.h */; };
@@ -2972,6 +2975,7 @@
 			dstSubfolderSpec = 0;
 			files = (
 				72E707040F42691B00142011 /* __init__.py in Copy - qgis */,
+				7278009510FB764700574B67 /* console.py in Copy - qgis */,
 				72C83D5210A5D22600B97B43 /* utils.py in Copy - qgis */,
 			);
 			name = "Copy - qgis";
@@ -3481,8 +3485,6 @@
 		7209E64C0F39E57A003DC336 /* qgspluginregistry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgspluginregistry.h; path = ../../src/app/qgspluginregistry.h; sourceTree = SOURCE_ROOT; };
 		7209E64D0F39E57A003DC336 /* qgsprojectproperties.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsprojectproperties.cpp; path = ../../src/app/qgsprojectproperties.cpp; sourceTree = SOURCE_ROOT; };
 		7209E64E0F39E57A003DC336 /* qgsprojectproperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsprojectproperties.h; path = ../../src/app/qgsprojectproperties.h; sourceTree = SOURCE_ROOT; };
-		7209E64F0F39E57A003DC336 /* qgspythondialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgspythondialog.cpp; path = ../../src/app/qgspythondialog.cpp; sourceTree = SOURCE_ROOT; };
-		7209E6500F39E57A003DC336 /* qgspythondialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgspythondialog.h; path = ../../src/app/qgspythondialog.h; sourceTree = SOURCE_ROOT; };
 		7209E6510F39E57A003DC336 /* qgsrasterlayerproperties.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsrasterlayerproperties.cpp; path = ../../src/app/qgsrasterlayerproperties.cpp; sourceTree = SOURCE_ROOT; };
 		7209E6520F39E57A003DC336 /* qgsrasterlayerproperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsrasterlayerproperties.h; path = ../../src/app/qgsrasterlayerproperties.h; sourceTree = SOURCE_ROOT; };
 		7209E6530F39E57A003DC336 /* qgssearchquerybuilder.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgssearchquerybuilder.cpp; path = ../../src/app/qgssearchquerybuilder.cpp; sourceTree = SOURCE_ROOT; };
@@ -4221,7 +4223,6 @@
 		7209ECB00F39E57B003DC336 /* qgspluginmanagerbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgspluginmanagerbase.ui; path = ../../src/ui/qgspluginmanagerbase.ui; sourceTree = SOURCE_ROOT; };
 		7209ECB10F39E57B003DC336 /* qgsprojectionselectorbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsprojectionselectorbase.ui; path = ../../src/ui/qgsprojectionselectorbase.ui; sourceTree = SOURCE_ROOT; };
 		7209ECB20F39E57B003DC336 /* qgsprojectpropertiesbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsprojectpropertiesbase.ui; path = ../../src/ui/qgsprojectpropertiesbase.ui; sourceTree = SOURCE_ROOT; };
-		7209ECB30F39E57B003DC336 /* qgspythondialog.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgspythondialog.ui; path = ../../src/ui/qgspythondialog.ui; sourceTree = SOURCE_ROOT; };
 		7209ECB40F39E57B003DC336 /* qgsrasterlayerpropertiesbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsrasterlayerpropertiesbase.ui; path = ../../src/ui/qgsrasterlayerpropertiesbase.ui; sourceTree = SOURCE_ROOT; };
 		7209ECB50F39E57B003DC336 /* qgswmssourceselectbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgswmssourceselectbase.ui; path = ../../src/ui/qgswmssourceselectbase.ui; sourceTree = SOURCE_ROOT; };
 		7209ECB60F39E57B003DC336 /* qgssinglesymboldialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgssinglesymboldialogbase.ui; path = ../../src/ui/qgssinglesymboldialogbase.ui; sourceTree = SOURCE_ROOT; };
@@ -5644,6 +5645,98 @@
 		7276104B10A60AC300C89AF0 /* qgsgeometryanalyzer.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsgeometryanalyzer.sip; path = ../../python/analysis/qgsgeometryanalyzer.sip; sourceTree = SOURCE_ROOT; };
 		72779E9D1040614100CA9DE5 /* mActionAddMap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionAddMap.png; path = ../../images/themes/default/mActionAddMap.png; sourceTree = SOURCE_ROOT; };
 		72779E9E1040614100CA9DE5 /* mActionAddImage.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionAddImage.png; path = ../../images/themes/default/mActionAddImage.png; sourceTree = SOURCE_ROOT; };
+		7278009410FB763F00574B67 /* console.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = console.py; path = ../../python/console.py; sourceTree = SOURCE_ROOT; };
+		7278009710FB76E200574B67 /* ChangeLog */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = ChangeLog; path = ../../src/core/gps/qextserialport/ChangeLog; sourceTree = SOURCE_ROOT; };
+		7278009910FB76E200574B67 /* mainpage.dox */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = mainpage.dox; path = ../../src/core/gps/qextserialport/doc/mainpage.dox; sourceTree = SOURCE_ROOT; };
+		7278009A10FB76E200574B67 /* qextbasetype.dox */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qextbasetype.dox; path = ../../src/core/gps/qextserialport/doc/qextbasetype.dox; sourceTree = SOURCE_ROOT; };
+		7278009B10FB76E200574B67 /* qiodevice.tag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qiodevice.tag; path = ../../src/core/gps/qextserialport/doc/qiodevice.tag; sourceTree = SOURCE_ROOT; };
+		7278009C10FB76E200574B67 /* Doxyfile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Doxyfile; path = ../../src/core/gps/qextserialport/Doxyfile; sourceTree = SOURCE_ROOT; };
+		7278009F10FB76E200574B67 /* enumerator.pro */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = enumerator.pro; path = ../../src/core/gps/qextserialport/examples/enumerator/enumerator.pro; sourceTree = SOURCE_ROOT; };
+		727800A010FB76E200574B67 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../../src/core/gps/qextserialport/examples/enumerator/main.cpp; sourceTree = SOURCE_ROOT; };
+		727800A210FB76E200574B67 /* event.pro */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = event.pro; path = ../../src/core/gps/qextserialport/examples/event/event.pro; sourceTree = SOURCE_ROOT; };
+		727800A310FB76E200574B67 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../../src/core/gps/qextserialport/examples/event/main.cpp; sourceTree = SOURCE_ROOT; };
+		727800A410FB76E200574B67 /* PortListener.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PortListener.cpp; path = ../../src/core/gps/qextserialport/examples/event/PortListener.cpp; sourceTree = SOURCE_ROOT; };
+		727800A510FB76E200574B67 /* PortListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PortListener.h; path = ../../src/core/gps/qextserialport/examples/event/PortListener.h; sourceTree = SOURCE_ROOT; };
+		727800A710FB76E200574B67 /* defs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = defs.h; path = ../../src/core/gps/qextserialport/examples/qespta/defs.h; sourceTree = SOURCE_ROOT; };
+		727800A810FB76E200574B67 /* main.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = ../../src/core/gps/qextserialport/examples/qespta/main.cpp; sourceTree = SOURCE_ROOT; };
+		727800A910FB76E200574B67 /* MainWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MainWindow.cpp; path = ../../src/core/gps/qextserialport/examples/qespta/MainWindow.cpp; sourceTree = SOURCE_ROOT; };
+		727800AA10FB76E200574B67 /* MainWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MainWindow.h; path = ../../src/core/gps/qextserialport/examples/qespta/MainWindow.h; sourceTree = SOURCE_ROOT; };
+		727800AB10FB76E200574B67 /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; name = Makefile; path = ../../src/core/gps/qextserialport/examples/qespta/Makefile; sourceTree = SOURCE_ROOT; };
+		727800AC10FB76E200574B67 /* Makefile.Debug */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Makefile.Debug; path = ../../src/core/gps/qextserialport/examples/qespta/Makefile.Debug; sourceTree = SOURCE_ROOT; };
+		727800AD10FB76E200574B67 /* Makefile.Release */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Makefile.Release; path = ../../src/core/gps/qextserialport/examples/qespta/Makefile.Release; sourceTree = SOURCE_ROOT; };
+		727800AE10FB76E200574B67 /* MessageWindow.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MessageWindow.cpp; path = ../../src/core/gps/qextserialport/examples/qespta/MessageWindow.cpp; sourceTree = SOURCE_ROOT; };
+		727800AF10FB76E200574B67 /* MessageWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MessageWindow.h; path = ../../src/core/gps/qextserialport/examples/qespta/MessageWindow.h; sourceTree = SOURCE_ROOT; };
+		727800B010FB76E200574B67 /* QESPTA.pro */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = QESPTA.pro; path = ../../src/core/gps/qextserialport/examples/qespta/QESPTA.pro; sourceTree = SOURCE_ROOT; };
+		727800B110FB76E200574B67 /* QespTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = QespTest.cpp; path = ../../src/core/gps/qextserialport/examples/qespta/QespTest.cpp; sourceTree = SOURCE_ROOT; };
+		727800B210FB76E200574B67 /* QespTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = QespTest.h; path = ../../src/core/gps/qextserialport/examples/qespta/QespTest.h; sourceTree = SOURCE_ROOT; };
+		727800B310FB76E200574B67 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README; path = ../../src/core/gps/qextserialport/examples/qespta/README; sourceTree = SOURCE_ROOT; };
+		727800B510FB76E200574B67 /* annotated.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = annotated.html; path = ../../src/core/gps/qextserialport/html/annotated.html; sourceTree = SOURCE_ROOT; };
+		727800B610FB76E200574B67 /* classes.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = classes.html; path = ../../src/core/gps/qextserialport/html/classes.html; sourceTree = SOURCE_ROOT; };
+		727800B710FB76E200574B67 /* classPosix__QextSerialPort-members.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = "classPosix__QextSerialPort-members.html"; path = "../../src/core/gps/qextserialport/html/classPosix__QextSerialPort-members.html"; sourceTree = SOURCE_ROOT; };
+		727800B810FB76E200574B67 /* classPosix__QextSerialPort.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = classPosix__QextSerialPort.html; path = ../../src/core/gps/qextserialport/html/classPosix__QextSerialPort.html; sourceTree = SOURCE_ROOT; };
+		727800B910FB76E200574B67 /* classPosix__QextSerialPort.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = classPosix__QextSerialPort.png; path = ../../src/core/gps/qextserialport/html/classPosix__QextSerialPort.png; sourceTree = SOURCE_ROOT; };
+		727800BA10FB76E200574B67 /* classQextBaseType-members.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = "classQextBaseType-members.html"; path = "../../src/core/gps/qextserialport/html/classQextBaseType-members.html"; sourceTree = SOURCE_ROOT; };
+		727800BB10FB76E200574B67 /* classQextBaseType.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = classQextBaseType.html; path = ../../src/core/gps/qextserialport/html/classQextBaseType.html; sourceTree = SOURCE_ROOT; };
+		727800BC10FB76E200574B67 /* classQextBaseType.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = classQextBaseType.png; path = ../../src/core/gps/qextserialport/html/classQextBaseType.png; sourceTree = SOURCE_ROOT; };
+		727800BD10FB76E200574B67 /* classQextSerialBase-members.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = "classQextSerialBase-members.html"; path = "../../src/core/gps/qextserialport/html/classQextSerialBase-members.html"; sourceTree = SOURCE_ROOT; };
+		727800BE10FB76E200574B67 /* classQextSerialBase.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = classQextSerialBase.html; path = ../../src/core/gps/qextserialport/html/classQextSerialBase.html; sourceTree = SOURCE_ROOT; };
+		727800BF10FB76E200574B67 /* classQextSerialBase.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = classQextSerialBase.png; path = ../../src/core/gps/qextserialport/html/classQextSerialBase.png; sourceTree = SOURCE_ROOT; };
+		727800C010FB76E200574B67 /* classQextSerialPort-members.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = "classQextSerialPort-members.html"; path = "../../src/core/gps/qextserialport/html/classQextSerialPort-members.html"; sourceTree = SOURCE_ROOT; };
+		727800C110FB76E200574B67 /* classQextSerialPort.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = classQextSerialPort.html; path = ../../src/core/gps/qextserialport/html/classQextSerialPort.html; sourceTree = SOURCE_ROOT; };
+		727800C210FB76E200574B67 /* classQextSerialPort.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = classQextSerialPort.png; path = ../../src/core/gps/qextserialport/html/classQextSerialPort.png; sourceTree = SOURCE_ROOT; };
+		727800C310FB76E200574B67 /* classWin__QextSerialPort-members.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = "classWin__QextSerialPort-members.html"; path = "../../src/core/gps/qextserialport/html/classWin__QextSerialPort-members.html"; sourceTree = SOURCE_ROOT; };
+		727800C410FB76E200574B67 /* classWin__QextSerialPort.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = classWin__QextSerialPort.html; path = ../../src/core/gps/qextserialport/html/classWin__QextSerialPort.html; sourceTree = SOURCE_ROOT; };
+		727800C510FB76E200574B67 /* classWin__QextSerialPort.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = classWin__QextSerialPort.png; path = ../../src/core/gps/qextserialport/html/classWin__QextSerialPort.png; sourceTree = SOURCE_ROOT; };
+		727800C610FB76E200574B67 /* doxygen.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = doxygen.css; path = ../../src/core/gps/qextserialport/html/doxygen.css; sourceTree = SOURCE_ROOT; };
+		727800C710FB76E200574B67 /* doxygen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = doxygen.png; path = ../../src/core/gps/qextserialport/html/doxygen.png; sourceTree = SOURCE_ROOT; };
+		727800C810FB76E200574B67 /* files.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = files.html; path = ../../src/core/gps/qextserialport/html/files.html; sourceTree = SOURCE_ROOT; };
+		727800C910FB76E200574B67 /* ftv2blank.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ftv2blank.png; path = ../../src/core/gps/qextserialport/html/ftv2blank.png; sourceTree = SOURCE_ROOT; };
+		727800CA10FB76E200574B67 /* ftv2doc.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ftv2doc.png; path = ../../src/core/gps/qextserialport/html/ftv2doc.png; sourceTree = SOURCE_ROOT; };
+		727800CB10FB76E200574B67 /* ftv2folderclosed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ftv2folderclosed.png; path = ../../src/core/gps/qextserialport/html/ftv2folderclosed.png; sourceTree = SOURCE_ROOT; };
+		727800CC10FB76E200574B67 /* ftv2folderopen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ftv2folderopen.png; path = ../../src/core/gps/qextserialport/html/ftv2folderopen.png; sourceTree = SOURCE_ROOT; };
+		727800CD10FB76E200574B67 /* ftv2lastnode.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ftv2lastnode.png; path = ../../src/core/gps/qextserialport/html/ftv2lastnode.png; sourceTree = SOURCE_ROOT; };
+		727800CE10FB76E200574B67 /* ftv2link.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ftv2link.png; path = ../../src/core/gps/qextserialport/html/ftv2link.png; sourceTree = SOURCE_ROOT; };
+		727800CF10FB76E200574B67 /* ftv2mlastnode.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ftv2mlastnode.png; path = ../../src/core/gps/qextserialport/html/ftv2mlastnode.png; sourceTree = SOURCE_ROOT; };
+		727800D010FB76E200574B67 /* ftv2mnode.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ftv2mnode.png; path = ../../src/core/gps/qextserialport/html/ftv2mnode.png; sourceTree = SOURCE_ROOT; };
+		727800D110FB76E200574B67 /* ftv2node.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ftv2node.png; path = ../../src/core/gps/qextserialport/html/ftv2node.png; sourceTree = SOURCE_ROOT; };
+		727800D210FB76E200574B67 /* ftv2plastnode.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ftv2plastnode.png; path = ../../src/core/gps/qextserialport/html/ftv2plastnode.png; sourceTree = SOURCE_ROOT; };
+		727800D310FB76E200574B67 /* ftv2pnode.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ftv2pnode.png; path = ../../src/core/gps/qextserialport/html/ftv2pnode.png; sourceTree = SOURCE_ROOT; };
+		727800D410FB76E200574B67 /* ftv2vertline.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ftv2vertline.png; path = ../../src/core/gps/qextserialport/html/ftv2vertline.png; sourceTree = SOURCE_ROOT; };
+		727800D510FB76E200574B67 /* functions.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = functions.html; path = ../../src/core/gps/qextserialport/html/functions.html; sourceTree = SOURCE_ROOT; };
+		727800D610FB76E200574B67 /* functions_func.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = functions_func.html; path = ../../src/core/gps/qextserialport/html/functions_func.html; sourceTree = SOURCE_ROOT; };
+		727800D710FB76E200574B67 /* functions_vars.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = functions_vars.html; path = ../../src/core/gps/qextserialport/html/functions_vars.html; sourceTree = SOURCE_ROOT; };
+		727800D810FB76E200574B67 /* globals.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = globals.html; path = ../../src/core/gps/qextserialport/html/globals.html; sourceTree = SOURCE_ROOT; };
+		727800D910FB76E200574B67 /* globals_enum.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = globals_enum.html; path = ../../src/core/gps/qextserialport/html/globals_enum.html; sourceTree = SOURCE_ROOT; };
+		727800DA10FB76E200574B67 /* globals_eval.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = globals_eval.html; path = ../../src/core/gps/qextserialport/html/globals_eval.html; sourceTree = SOURCE_ROOT; };
+		727800DB10FB76E200574B67 /* hierarchy.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = hierarchy.html; path = ../../src/core/gps/qextserialport/html/hierarchy.html; sourceTree = SOURCE_ROOT; };
+		727800DC10FB76E200574B67 /* index.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = index.html; path = ../../src/core/gps/qextserialport/html/index.html; sourceTree = SOURCE_ROOT; };
+		727800DD10FB76E200574B67 /* installdox */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.perl; name = installdox; path = ../../src/core/gps/qextserialport/html/installdox; sourceTree = SOURCE_ROOT; };
+		727800DE10FB76E200574B67 /* main.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = main.html; path = ../../src/core/gps/qextserialport/html/main.html; sourceTree = SOURCE_ROOT; };
+		727800DF10FB76E200574B67 /* mainpage_8dox.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = mainpage_8dox.html; path = ../../src/core/gps/qextserialport/html/mainpage_8dox.html; sourceTree = SOURCE_ROOT; };
+		727800E010FB76E200574B67 /* posix__qextserialport_8cpp.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = posix__qextserialport_8cpp.html; path = ../../src/core/gps/qextserialport/html/posix__qextserialport_8cpp.html; sourceTree = SOURCE_ROOT; };
+		727800E110FB76E200574B67 /* posix__qextserialport_8h.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = posix__qextserialport_8h.html; path = ../../src/core/gps/qextserialport/html/posix__qextserialport_8h.html; sourceTree = SOURCE_ROOT; };
+		727800E210FB76E200574B67 /* qextbasetype_8dox.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = qextbasetype_8dox.html; path = ../../src/core/gps/qextserialport/html/qextbasetype_8dox.html; sourceTree = SOURCE_ROOT; };
+		727800E310FB76E200574B67 /* qextserialbase_8cpp.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = qextserialbase_8cpp.html; path = ../../src/core/gps/qextserialport/html/qextserialbase_8cpp.html; sourceTree = SOURCE_ROOT; };
+		727800E410FB76E200574B67 /* qextserialbase_8h.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = qextserialbase_8h.html; path = ../../src/core/gps/qextserialport/html/qextserialbase_8h.html; sourceTree = SOURCE_ROOT; };
+		727800E510FB76E200574B67 /* qextserialport_8cpp.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = qextserialport_8cpp.html; path = ../../src/core/gps/qextserialport/html/qextserialport_8cpp.html; sourceTree = SOURCE_ROOT; };
+		727800E610FB76E200574B67 /* qextserialport_8h.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = qextserialport_8h.html; path = ../../src/core/gps/qextserialport/html/qextserialport_8h.html; sourceTree = SOURCE_ROOT; };
+		727800E710FB76E200574B67 /* structPortSettings-members.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = "structPortSettings-members.html"; path = "../../src/core/gps/qextserialport/html/structPortSettings-members.html"; sourceTree = SOURCE_ROOT; };
+		727800E810FB76E200574B67 /* structPortSettings.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = structPortSettings.html; path = ../../src/core/gps/qextserialport/html/structPortSettings.html; sourceTree = SOURCE_ROOT; };
+		727800E910FB76E200574B67 /* tab_b.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = tab_b.gif; path = ../../src/core/gps/qextserialport/html/tab_b.gif; sourceTree = SOURCE_ROOT; };
+		727800EA10FB76E200574B67 /* tab_l.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = tab_l.gif; path = ../../src/core/gps/qextserialport/html/tab_l.gif; sourceTree = SOURCE_ROOT; };
+		727800EB10FB76E200574B67 /* tab_r.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; name = tab_r.gif; path = ../../src/core/gps/qextserialport/html/tab_r.gif; sourceTree = SOURCE_ROOT; };
+		727800EC10FB76E200574B67 /* tabs.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; name = tabs.css; path = ../../src/core/gps/qextserialport/html/tabs.css; sourceTree = SOURCE_ROOT; };
+		727800ED10FB76E200574B67 /* tree.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = tree.html; path = ../../src/core/gps/qextserialport/html/tree.html; sourceTree = SOURCE_ROOT; };
+		727800EE10FB76E200574B67 /* win__qextserialport_8cpp.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = win__qextserialport_8cpp.html; path = ../../src/core/gps/qextserialport/html/win__qextserialport_8cpp.html; sourceTree = SOURCE_ROOT; };
+		727800EF10FB76E200574B67 /* win__qextserialport_8h.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; name = win__qextserialport_8h.html; path = ../../src/core/gps/qextserialport/html/win__qextserialport_8h.html; sourceTree = SOURCE_ROOT; };
+		727800F010FB76E200574B67 /* posix_qextserialport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = posix_qextserialport.cpp; path = ../../src/core/gps/qextserialport/posix_qextserialport.cpp; sourceTree = SOURCE_ROOT; };
+		727800F110FB76E200574B67 /* qextserialenumerator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qextserialenumerator.cpp; path = ../../src/core/gps/qextserialport/qextserialenumerator.cpp; sourceTree = SOURCE_ROOT; };
+		727800F210FB76E200574B67 /* qextserialenumerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qextserialenumerator.h; path = ../../src/core/gps/qextserialport/qextserialenumerator.h; sourceTree = SOURCE_ROOT; };
+		727800F310FB76E200574B67 /* qextserialport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qextserialport.cpp; path = ../../src/core/gps/qextserialport/qextserialport.cpp; sourceTree = SOURCE_ROOT; };
+		727800F410FB76E200574B67 /* qextserialport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qextserialport.h; path = ../../src/core/gps/qextserialport/qextserialport.h; sourceTree = SOURCE_ROOT; };
+		727800F510FB76E200574B67 /* qextserialport.pro */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qextserialport.pro; path = ../../src/core/gps/qextserialport/qextserialport.pro; sourceTree = SOURCE_ROOT; };
+		727800F610FB76E200574B67 /* win_qextserialport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = win_qextserialport.cpp; path = ../../src/core/gps/qextserialport/win_qextserialport.cpp; sourceTree = SOURCE_ROOT; };
+		7278010510FB785F00574B67 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = ../../../../../../../../System/Library/Frameworks/IOKit.framework; sourceTree = SOURCE_ROOT; };
 		727903F310A1EC29006254DF /* mActionNewComposer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionNewComposer.png; path = ../../images/themes/default/mActionNewComposer.png; sourceTree = SOURCE_ROOT; };
 		727CEC210FBAFF6000F5B88C /* mIconLock.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mIconLock.png; path = ../../images/themes/default/mIconLock.png; sourceTree = SOURCE_ROOT; };
 		727E6AF00FEA90E200DF6F64 /* x_sqlite3.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = x_sqlite3.c; sourceTree = "<group>"; };
@@ -6622,12 +6715,6 @@
 		72AF7AFA10F8EC1600BD549A /* parse.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = parse.c; path = ../../src/core/gps/parse.c; sourceTree = SOURCE_ROOT; };
 		72AF7AFB10F8EC1600BD549A /* parse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = parse.h; path = ../../src/core/gps/parse.h; sourceTree = SOURCE_ROOT; };
 		72AF7AFC10F8EC1600BD549A /* parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = parser.h; path = ../../src/core/gps/parser.h; sourceTree = SOURCE_ROOT; };
-		72AF7AFD10F8EC1600BD549A /* posix_qextserialport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = posix_qextserialport.cpp; path = ../../src/core/gps/posix_qextserialport.cpp; sourceTree = SOURCE_ROOT; };
-		72AF7AFE10F8EC1600BD549A /* posix_qextserialport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = posix_qextserialport.h; path = ../../src/core/gps/posix_qextserialport.h; sourceTree = SOURCE_ROOT; };
-		72AF7AFF10F8EC1600BD549A /* qextserialbase.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qextserialbase.cpp; path = ../../src/core/gps/qextserialbase.cpp; sourceTree = SOURCE_ROOT; };
-		72AF7B0010F8EC1600BD549A /* qextserialbase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qextserialbase.h; path = ../../src/core/gps/qextserialbase.h; sourceTree = SOURCE_ROOT; };
-		72AF7B0110F8EC1600BD549A /* qextserialport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qextserialport.cpp; path = ../../src/core/gps/qextserialport.cpp; sourceTree = SOURCE_ROOT; };
-		72AF7B0210F8EC1600BD549A /* qextserialport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qextserialport.h; path = ../../src/core/gps/qextserialport.h; sourceTree = SOURCE_ROOT; };
 		72AF7B0310F8EC1600BD549A /* qgsgpsconnection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsgpsconnection.cpp; path = ../../src/core/gps/qgsgpsconnection.cpp; sourceTree = SOURCE_ROOT; };
 		72AF7B0410F8EC1600BD549A /* qgsgpsconnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsgpsconnection.h; path = ../../src/core/gps/qgsgpsconnection.h; sourceTree = SOURCE_ROOT; };
 		72AF7B0510F8EC1600BD549A /* qgsgpsconnectionregistry.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsgpsconnectionregistry.cpp; path = ../../src/core/gps/qgsgpsconnectionregistry.cpp; sourceTree = SOURCE_ROOT; };
@@ -6642,8 +6729,6 @@
 		72AF7B0E10F8EC1600BD549A /* tok.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = tok.c; path = ../../src/core/gps/tok.c; sourceTree = SOURCE_ROOT; };
 		72AF7B0F10F8EC1600BD549A /* tok.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = tok.h; path = ../../src/core/gps/tok.h; sourceTree = SOURCE_ROOT; };
 		72AF7B1010F8EC1600BD549A /* units.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = units.h; path = ../../src/core/gps/units.h; sourceTree = SOURCE_ROOT; };
-		72AF7B1110F8EC1600BD549A /* win_qextserialport.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = win_qextserialport.cpp; path = ../../src/core/gps/win_qextserialport.cpp; sourceTree = SOURCE_ROOT; };
-		72AF7B1210F8EC1600BD549A /* win_qextserialport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = win_qextserialport.h; path = ../../src/core/gps/win_qextserialport.h; sourceTree = SOURCE_ROOT; };
 		72AF7B2410F8ED3500BD549A /* FindQWT.cmake */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = FindQWT.cmake; path = ../../cmake/FindQWT.cmake; sourceTree = SOURCE_ROOT; };
 		72AF7B2510F8ED7F00BD549A /* gpsarrow.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = gpsarrow.svg; path = ../../images/north_arrows/gpsarrow.svg; sourceTree = SOURCE_ROOT; };
 		72AF7B2610F8ED7F00BD549A /* gpsarrow2.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = gpsarrow2.svg; path = ../../images/north_arrows/gpsarrow2.svg; sourceTree = SOURCE_ROOT; };
@@ -7074,6 +7159,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				727801BA10FB7B1D00574B67 /* CoreFoundation.framework in Frameworks */,
+				7278010610FB785F00574B67 /* IOKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7513,6 +7600,7 @@
 		20286C32FDCF999611CA2CEA /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				7278010510FB785F00574B67 /* IOKit.framework */,
 				7209F4B80F3A5434003DC336 /* CoreFoundation.framework */,
 				7209F4B90F3A5434003DC336 /* CoreServices.framework */,
 				7209F03A0F39E6A1003DC336 /* ApplicationServices.framework */,
@@ -7743,8 +7831,6 @@
 				7209E64C0F39E57A003DC336 /* qgspluginregistry.h */,
 				7209E64D0F39E57A003DC336 /* qgsprojectproperties.cpp */,
 				7209E64E0F39E57A003DC336 /* qgsprojectproperties.h */,
-				7209E64F0F39E57A003DC336 /* qgspythondialog.cpp */,
-				7209E6500F39E57A003DC336 /* qgspythondialog.h */,
 				7209E6510F39E57A003DC336 /* qgsrasterlayerproperties.cpp */,
 				7209E6520F39E57A003DC336 /* qgsrasterlayerproperties.h */,
 				7209E6530F39E57A003DC336 /* qgssearchquerybuilder.cpp */,
@@ -9129,7 +9215,6 @@
 				7209ECB00F39E57B003DC336 /* qgspluginmanagerbase.ui */,
 				7209ECB10F39E57B003DC336 /* qgsprojectionselectorbase.ui */,
 				7209ECB20F39E57B003DC336 /* qgsprojectpropertiesbase.ui */,
-				7209ECB30F39E57B003DC336 /* qgspythondialog.ui */,
 				7209ECB40F39E57B003DC336 /* qgsrasterlayerpropertiesbase.ui */,
 				7209ECB50F39E57B003DC336 /* qgswmssourceselectbase.ui */,
 				7209ECB60F39E57B003DC336 /* qgssinglesymboldialogbase.ui */,
@@ -9387,6 +9472,7 @@
 				7209ED860F39E5D9003DC336 /* __init__.py */,
 				7209ED870F39E5D9003DC336 /* CMakeLists.txt */,
 				7209ED880F39E5D9003DC336 /* configure.py.in */,
+				7278009410FB763F00574B67 /* console.py */,
 				7209ED890F39E5D9003DC336 /* core */,
 				7209EDBD0F39E5D9003DC336 /* gui */,
 				7276104910A60AC300C89AF0 /* analysis */,
@@ -11003,6 +11089,158 @@
 			path = ../../python/analysis;
 			sourceTree = SOURCE_ROOT;
 		};
+		7278009610FB76E200574B67 /* qextserialport */ = {
+			isa = PBXGroup;
+			children = (
+				7278009710FB76E200574B67 /* ChangeLog */,
+				7278009810FB76E200574B67 /* doc */,
+				7278009C10FB76E200574B67 /* Doxyfile */,
+				7278009D10FB76E200574B67 /* examples */,
+				727800B410FB76E200574B67 /* html */,
+				727800F010FB76E200574B67 /* posix_qextserialport.cpp */,
+				727800F110FB76E200574B67 /* qextserialenumerator.cpp */,
+				727800F210FB76E200574B67 /* qextserialenumerator.h */,
+				727800F310FB76E200574B67 /* qextserialport.cpp */,
+				727800F410FB76E200574B67 /* qextserialport.h */,
+				727800F510FB76E200574B67 /* qextserialport.pro */,
+				727800F610FB76E200574B67 /* win_qextserialport.cpp */,
+			);
+			name = qextserialport;
+			path = ../../src/core/gps/qextserialport;
+			sourceTree = SOURCE_ROOT;
+		};
+		7278009810FB76E200574B67 /* doc */ = {
+			isa = PBXGroup;
+			children = (
+				7278009910FB76E200574B67 /* mainpage.dox */,
+				7278009A10FB76E200574B67 /* qextbasetype.dox */,
+				7278009B10FB76E200574B67 /* qiodevice.tag */,
+			);
+			name = doc;
+			path = ../../src/core/gps/qextserialport/doc;
+			sourceTree = SOURCE_ROOT;
+		};
+		7278009D10FB76E200574B67 /* examples */ = {
+			isa = PBXGroup;
+			children = (
+				7278009E10FB76E200574B67 /* enumerator */,
+				727800A110FB76E200574B67 /* event */,
+				727800A610FB76E200574B67 /* qespta */,
+			);
+			name = examples;
+			path = ../../src/core/gps/qextserialport/examples;
+			sourceTree = SOURCE_ROOT;
+		};
+		7278009E10FB76E200574B67 /* enumerator */ = {
+			isa = PBXGroup;
+			children = (
+				7278009F10FB76E200574B67 /* enumerator.pro */,
+				727800A010FB76E200574B67 /* main.cpp */,
+			);
+			name = enumerator;
+			path = ../../src/core/gps/qextserialport/examples/enumerator;
+			sourceTree = SOURCE_ROOT;
+		};
+		727800A110FB76E200574B67 /* event */ = {
+			isa = PBXGroup;
+			children = (
+				727800A210FB76E200574B67 /* event.pro */,
+				727800A310FB76E200574B67 /* main.cpp */,
+				727800A410FB76E200574B67 /* PortListener.cpp */,
+				727800A510FB76E200574B67 /* PortListener.h */,
+			);
+			name = event;
+			path = ../../src/core/gps/qextserialport/examples/event;
+			sourceTree = SOURCE_ROOT;
+		};
+		727800A610FB76E200574B67 /* qespta */ = {
+			isa = PBXGroup;
+			children = (
+				727800A710FB76E200574B67 /* defs.h */,
+				727800A810FB76E200574B67 /* main.cpp */,
+				727800A910FB76E200574B67 /* MainWindow.cpp */,
+				727800AA10FB76E200574B67 /* MainWindow.h */,
+				727800AB10FB76E200574B67 /* Makefile */,
+				727800AC10FB76E200574B67 /* Makefile.Debug */,
+				727800AD10FB76E200574B67 /* Makefile.Release */,
+				727800AE10FB76E200574B67 /* MessageWindow.cpp */,
+				727800AF10FB76E200574B67 /* MessageWindow.h */,
+				727800B010FB76E200574B67 /* QESPTA.pro */,
+				727800B110FB76E200574B67 /* QespTest.cpp */,
+				727800B210FB76E200574B67 /* QespTest.h */,
+				727800B310FB76E200574B67 /* README */,
+			);
+			name = qespta;
+			path = ../../src/core/gps/qextserialport/examples/qespta;
+			sourceTree = SOURCE_ROOT;
+		};
+		727800B410FB76E200574B67 /* html */ = {
+			isa = PBXGroup;
+			children = (
+				727800B510FB76E200574B67 /* annotated.html */,
+				727800B610FB76E200574B67 /* classes.html */,
+				727800B710FB76E200574B67 /* classPosix__QextSerialPort-members.html */,
+				727800B810FB76E200574B67 /* classPosix__QextSerialPort.html */,
+				727800B910FB76E200574B67 /* classPosix__QextSerialPort.png */,
+				727800BA10FB76E200574B67 /* classQextBaseType-members.html */,
+				727800BB10FB76E200574B67 /* classQextBaseType.html */,
+				727800BC10FB76E200574B67 /* classQextBaseType.png */,
+				727800BD10FB76E200574B67 /* classQextSerialBase-members.html */,
+				727800BE10FB76E200574B67 /* classQextSerialBase.html */,
+				727800BF10FB76E200574B67 /* classQextSerialBase.png */,
+				727800C010FB76E200574B67 /* classQextSerialPort-members.html */,
+				727800C110FB76E200574B67 /* classQextSerialPort.html */,
+				727800C210FB76E200574B67 /* classQextSerialPort.png */,
+				727800C310FB76E200574B67 /* classWin__QextSerialPort-members.html */,
+				727800C410FB76E200574B67 /* classWin__QextSerialPort.html */,
+				727800C510FB76E200574B67 /* classWin__QextSerialPort.png */,
+				727800C610FB76E200574B67 /* doxygen.css */,
+				727800C710FB76E200574B67 /* doxygen.png */,
+				727800C810FB76E200574B67 /* files.html */,
+				727800C910FB76E200574B67 /* ftv2blank.png */,
+				727800CA10FB76E200574B67 /* ftv2doc.png */,
+				727800CB10FB76E200574B67 /* ftv2folderclosed.png */,
+				727800CC10FB76E200574B67 /* ftv2folderopen.png */,
+				727800CD10FB76E200574B67 /* ftv2lastnode.png */,
+				727800CE10FB76E200574B67 /* ftv2link.png */,
+				727800CF10FB76E200574B67 /* ftv2mlastnode.png */,
+				727800D010FB76E200574B67 /* ftv2mnode.png */,
+				727800D110FB76E200574B67 /* ftv2node.png */,
+				727800D210FB76E200574B67 /* ftv2plastnode.png */,
+				727800D310FB76E200574B67 /* ftv2pnode.png */,
+				727800D410FB76E200574B67 /* ftv2vertline.png */,
+				727800D510FB76E200574B67 /* functions.html */,
+				727800D610FB76E200574B67 /* functions_func.html */,
+				727800D710FB76E200574B67 /* functions_vars.html */,
+				727800D810FB76E200574B67 /* globals.html */,
+				727800D910FB76E200574B67 /* globals_enum.html */,
+				727800DA10FB76E200574B67 /* globals_eval.html */,
+				727800DB10FB76E200574B67 /* hierarchy.html */,
+				727800DC10FB76E200574B67 /* index.html */,
+				727800DD10FB76E200574B67 /* installdox */,
+				727800DE10FB76E200574B67 /* main.html */,
+				727800DF10FB76E200574B67 /* mainpage_8dox.html */,
+				727800E010FB76E200574B67 /* posix__qextserialport_8cpp.html */,
+				727800E110FB76E200574B67 /* posix__qextserialport_8h.html */,
+				727800E210FB76E200574B67 /* qextbasetype_8dox.html */,
+				727800E310FB76E200574B67 /* qextserialbase_8cpp.html */,
+				727800E410FB76E200574B67 /* qextserialbase_8h.html */,
+				727800E510FB76E200574B67 /* qextserialport_8cpp.html */,
+				727800E610FB76E200574B67 /* qextserialport_8h.html */,
+				727800E710FB76E200574B67 /* structPortSettings-members.html */,
+				727800E810FB76E200574B67 /* structPortSettings.html */,
+				727800E910FB76E200574B67 /* tab_b.gif */,
+				727800EA10FB76E200574B67 /* tab_l.gif */,
+				727800EB10FB76E200574B67 /* tab_r.gif */,
+				727800EC10FB76E200574B67 /* tabs.css */,
+				727800ED10FB76E200574B67 /* tree.html */,
+				727800EE10FB76E200574B67 /* win__qextserialport_8cpp.html */,
+				727800EF10FB76E200574B67 /* win__qextserialport_8h.html */,
+			);
+			name = html;
+			path = ../../src/core/gps/qextserialport/html;
+			sourceTree = SOURCE_ROOT;
+		};
 		727E6AED0FEA909E00DF6F64 /* src */ = {
 			isa = PBXGroup;
 			children = (
@@ -12129,12 +12367,6 @@
 				72AF7AFA10F8EC1600BD549A /* parse.c */,
 				72AF7AFB10F8EC1600BD549A /* parse.h */,
 				72AF7AFC10F8EC1600BD549A /* parser.h */,
-				72AF7AFD10F8EC1600BD549A /* posix_qextserialport.cpp */,
-				72AF7AFE10F8EC1600BD549A /* posix_qextserialport.h */,
-				72AF7AFF10F8EC1600BD549A /* qextserialbase.cpp */,
-				72AF7B0010F8EC1600BD549A /* qextserialbase.h */,
-				72AF7B0110F8EC1600BD549A /* qextserialport.cpp */,
-				72AF7B0210F8EC1600BD549A /* qextserialport.h */,
 				72AF7B0310F8EC1600BD549A /* qgsgpsconnection.cpp */,
 				72AF7B0410F8EC1600BD549A /* qgsgpsconnection.h */,
 				72AF7B0510F8EC1600BD549A /* qgsgpsconnectionregistry.cpp */,
@@ -12149,8 +12381,7 @@
 				72AF7B0E10F8EC1600BD549A /* tok.c */,
 				72AF7B0F10F8EC1600BD549A /* tok.h */,
 				72AF7B1010F8EC1600BD549A /* units.h */,
-				72AF7B1110F8EC1600BD549A /* win_qextserialport.cpp */,
-				72AF7B1210F8EC1600BD549A /* win_qextserialport.h */,
+				7278009610FB76E200574B67 /* qextserialport */,
 			);
 			name = gps;
 			path = ../../src/core/gps;
@@ -14439,9 +14670,6 @@
 				7225EF9710B229FA00D23EA2 /* qgssymbolv2.cpp in Sources */,
 				7225EF9810B229FA00D23EA2 /* qgsvectorcolorrampv2.cpp in Sources */,
 				7295BC7510F57D50005D1408 /* qgscomposertable.cpp in Sources */,
-				72AF7B1310F8EC6300BD549A /* qextserialbase.cpp in Sources */,
-				72AF7B1410F8EC6300BD549A /* qextserialport.cpp in Sources */,
-				72AF7B1F10F8EC9500BD549A /* posix_qextserialport.cpp in Sources */,
 				72AF7B2010F8ECB100BD549A /* qgsgpsconnection.cpp in Sources */,
 				72AF7B1510F8EC6300BD549A /* qgsgpsconnectionregistry.cpp in Sources */,
 				72AF7B1610F8EC6300BD549A /* qgsgpstrackerthread.cpp in Sources */,
@@ -14453,8 +14681,13 @@
 				72AF7B1C10F8EC8800BD549A /* sentence.c in Sources */,
 				72AF7B1D10F8EC8800BD549A /* time.c in Sources */,
 				72AF7B1E10F8EC8800BD549A /* tok.c in Sources */,
+				727800F710FB77A400574B67 /* qextserialenumerator.cpp in Sources */,
+				727800F810FB77A400574B67 /* qextserialport.cpp in Sources */,
+				727800FA10FB77BE00574B67 /* posix_qextserialport.cpp in Sources */,
 				72AF7B2110F8ECBA00BD549A /* qgsgpsconnection.h in Sources */,
 				72AF7B2210F8ECBA00BD549A /* qgsnmeaconnection.h in Sources */,
+				727800FB10FB77DE00574B67 /* qextserialenumerator.h in Sources */,
+				727800FC10FB77DE00574B67 /* qextserialport.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15094,7 +15327,6 @@
 				7209F4530F3A468C003DC336 /* qgspluginmetadata.cpp in Sources */,
 				7209F4540F3A468C003DC336 /* qgspluginregistry.cpp in Sources */,
 				7209F4550F3A468C003DC336 /* qgsprojectproperties.cpp in Sources */,
-				7209F4560F3A468C003DC336 /* qgspythondialog.cpp in Sources */,
 				7209F4570F3A468C003DC336 /* qgsrasterlayerproperties.cpp in Sources */,
 				7209F4580F3A468C003DC336 /* qgssearchquerybuilder.cpp in Sources */,
 				7209F4590F3A468C003DC336 /* qgswmssourceselect.cpp in Sources */,
@@ -15179,7 +15411,6 @@
 				729288A30F71FE65006D9489 /* qgsquerybuilder.h in Sources */,
 				729288A40F71FE65006D9489 /* qgspluginmanager.h in Sources */,
 				729288A50F71FE65006D9489 /* qgsprojectproperties.h in Sources */,
-				729288A60F71FE65006D9489 /* qgspythondialog.h in Sources */,
 				729288A70F71FE65006D9489 /* qgsrasterlayerproperties.h in Sources */,
 				729288A80F71FE65006D9489 /* qgssearchquerybuilder.h in Sources */,
 				729288A90F71FE65006D9489 /* qgswmssourceselect.h in Sources */,
@@ -15605,6 +15836,7 @@
 					"../../src/core/symbology-ng",
 					../../src/core/spatialindex/include,
 					../../src/core/pal,
+					../../src/core/gps/qextserialport,
 					"$(GDAL_INC)",
 					"$(PROJ_INC)",
 					"$(GEOS_INC)",
@@ -15651,6 +15883,7 @@
 					"../../src/core/symbology-ng",
 					../../src/core/spatialindex/include,
 					../../src/core/pal,
+					../../src/core/gps/qextserialport,
 					"$(GDAL_INC)",
 					"$(PROJ_INC)",
 					"$(GEOS_INC)",
@@ -18411,7 +18644,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 12682;
+				QGIS_VERSION_BUILD = 12734;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -18422,7 +18655,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 12682;
+				QGIS_VERSION_BUILD = 12734;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
