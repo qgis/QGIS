@@ -20,10 +20,152 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout_3">
+   <item row="0" column="0">
+    <widget class="QListWidget" name="listWidget">
+     <property name="minimumSize">
+      <size>
+       <width>110</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>110</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="horizontalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOff</enum>
+     </property>
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+     <property name="showDropIndicator" stdset="0">
+      <bool>false</bool>
+     </property>
+     <property name="alternatingRowColors">
+      <bool>false</bool>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>64</width>
+       <height>64</height>
+      </size>
+     </property>
+     <property name="textElideMode">
+      <enum>Qt::ElideNone</enum>
+     </property>
+     <property name="flow">
+      <enum>QListView::TopToBottom</enum>
+     </property>
+     <property name="isWrapping" stdset="0">
+      <bool>false</bool>
+     </property>
+     <property name="resizeMode">
+      <enum>QListView::Adjust</enum>
+     </property>
+     <property name="spacing">
+      <number>9</number>
+     </property>
+     <property name="viewMode">
+      <enum>QListView::IconMode</enum>
+     </property>
+     <property name="uniformItemSizes">
+      <bool>false</bool>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+     <item>
+      <property name="text">
+       <string>General</string>
+      </property>
+      <property name="textAlignment">
+       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+      </property>
+      <property name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/general.png</normaloff>:/images/themes/default/propertyicons/general.png</iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Rendering &amp; SVG</string>
+      </property>
+      <property name="textAlignment">
+       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+      </property>
+      <property name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/rendering.png</normaloff>:/images/themes/default/propertyicons/rendering.png</iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Map tools</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/map_tools.png</normaloff>:/images/themes/default/propertyicons/map_tools.png</iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Overlay</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/overlay.png</normaloff>:/images/themes/default/propertyicons/overlay.png</iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Digitising</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/digitising.png</normaloff>:/images/themes/default/propertyicons/digitising.png</iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>CRS</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/CRS.png</normaloff>:/images/themes/default/propertyicons/CRS.png</iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Locale</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/locale.png</normaloff>:/images/themes/default/propertyicons/locale.png</iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Network &amp; Proxy</string>
+      </property>
+      <property name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/network_and_proxy.png</normaloff>:/images/themes/default/propertyicons/network_and_proxy.png</iconset>
+      </property>
+     </item>
+    </widget>
+   </item>
    <item row="0" column="1">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>7</number>
      </property>
      <widget class="QWidget" name="stackedWidgetPage1">
       <layout class="QGridLayout">
@@ -1255,6 +1397,23 @@
          </layout>
         </widget>
        </item>
+       <item row="2" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QLabel" name="label_9">
+           <property name="text">
+            <string>WMS search address</string>
+           </property>
+           <property name="buddy">
+            <cstring>leWmsSearch</cstring>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="leWmsSearch"/>
+         </item>
+        </layout>
+       </item>
       </layout>
      </widget>
     </widget>
@@ -1267,148 +1426,6 @@
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QListWidget" name="listWidget">
-     <property name="minimumSize">
-      <size>
-       <width>110</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>110</width>
-       <height>16777215</height>
-      </size>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::NoFrame</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Plain</enum>
-     </property>
-     <property name="horizontalScrollBarPolicy">
-      <enum>Qt::ScrollBarAlwaysOff</enum>
-     </property>
-     <property name="editTriggers">
-      <set>QAbstractItemView::NoEditTriggers</set>
-     </property>
-     <property name="showDropIndicator" stdset="0">
-      <bool>false</bool>
-     </property>
-     <property name="alternatingRowColors">
-      <bool>false</bool>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>64</width>
-       <height>64</height>
-      </size>
-     </property>
-     <property name="textElideMode">
-      <enum>Qt::ElideNone</enum>
-     </property>
-     <property name="flow">
-      <enum>QListView::TopToBottom</enum>
-     </property>
-     <property name="isWrapping" stdset="0">
-      <bool>false</bool>
-     </property>
-     <property name="resizeMode">
-      <enum>QListView::Adjust</enum>
-     </property>
-     <property name="spacing">
-      <number>9</number>
-     </property>
-     <property name="viewMode">
-      <enum>QListView::IconMode</enum>
-     </property>
-     <property name="uniformItemSizes">
-      <bool>false</bool>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
-     </property>
-     <item>
-      <property name="text">
-       <string>General</string>
-      </property>
-      <property name="textAlignment">
-       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-      </property>
-      <property name="icon">
-       <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/default/propertyicons/general.png</normaloff>:/images/themes/default/propertyicons/general.png</iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Rendering &amp; SVG</string>
-      </property>
-      <property name="textAlignment">
-       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-      </property>
-      <property name="icon">
-       <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/default/propertyicons/rendering.png</normaloff>:/images/themes/default/propertyicons/rendering.png</iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Map tools</string>
-      </property>
-      <property name="icon">
-       <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/default/propertyicons/map_tools.png</normaloff>:/images/themes/default/propertyicons/map_tools.png</iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Overlay</string>
-      </property>
-      <property name="icon">
-       <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/default/propertyicons/overlay.png</normaloff>:/images/themes/default/propertyicons/overlay.png</iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Digitising</string>
-      </property>
-      <property name="icon">
-       <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/default/propertyicons/digitising.png</normaloff>:/images/themes/default/propertyicons/digitising.png</iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>CRS</string>
-      </property>
-      <property name="icon">
-       <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/default/propertyicons/CRS.png</normaloff>:/images/themes/default/propertyicons/CRS.png</iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Locale</string>
-      </property>
-      <property name="icon">
-       <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/default/propertyicons/locale.png</normaloff>:/images/themes/default/propertyicons/locale.png</iconset>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Network &amp; Proxy</string>
-      </property>
-      <property name="icon">
-       <iconset resource="../../images/images.qrc">
-        <normaloff>:/images/themes/default/propertyicons/network_and_proxy.png</normaloff>:/images/themes/default/propertyicons/network_and_proxy.png</iconset>
-      </property>
-     </item>
     </widget>
    </item>
   </layout>
