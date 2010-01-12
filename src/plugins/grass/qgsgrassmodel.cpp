@@ -242,82 +242,91 @@ QString QgsGrassModelItem::info()
 
       QgsGrass::setLocation( mGisbase, mLocation );
 
-      struct Map_info Map;
-      int level = Vect_open_old_head( &Map, mMap.toLocal8Bit().data(),
-                                      mMapset.toLocal8Bit().data() );
-
-      if ( level >= 2 )
+      try
       {
-        int is3d = Vect_is_3d( &Map );
+        struct Map_info Map;
+        int level = Vect_open_old_head( &Map, mMap.toLocal8Bit().data(),
+                                        mMapset.toLocal8Bit().data() );
 
-        // Number of elements
-        str += htmlTableRow( QObject::tr( "Points" ), QString::number( Vect_get_num_primitives( &Map, GV_POINT ) ) );
-        str += htmlTableRow( QObject::tr( "Lines" ), QString::number( Vect_get_num_primitives( &Map, GV_LINE ) ) );
-        str += htmlTableRow( QObject::tr( "Boundaries" ), QString::number( Vect_get_num_primitives( &Map, GV_BOUNDARY ) ) );
-        str += htmlTableRow( QObject::tr( "Centroids" ), QString::number( Vect_get_num_primitives( &Map, GV_CENTROID ) ) );
-        if ( is3d )
+        if ( level >= 2 )
         {
-          str += htmlTableRow( QObject::tr( "Faces" ), QString::number( Vect_get_num_primitives( &Map, GV_FACE ) ) );
-          str += htmlTableRow( QObject::tr( "Kernels" ), QString::number( Vect_get_num_primitives( &Map, GV_KERNEL ) ) );
-        }
+          int is3d = Vect_is_3d( &Map );
 
-        str += htmlTableRow( QObject::tr( "Areas" ), QString::number( Vect_get_num_areas( &Map ) ) );
-        str += htmlTableRow( QObject::tr( "Islands" ), QString::number( Vect_get_num_islands( &Map ) ) );
-
-
-        // Box and dimension
-        BOUND_BOX box;
-        char buffer[100];
-
-        Vect_get_map_box( &Map, &box );
-
-        QgsGrass::setMapset( mGisbase, mLocation, mMapset );
-        struct Cell_head window;
-        G_get_window( &window );
-        int proj = window.proj;
-
-        G_format_northing( box.N, buffer, proj );
-        str += htmlTableRow( QObject::tr( "North" ), QString( buffer ) );
-        G_format_northing( box.S, buffer, proj );
-        str += htmlTableRow( QObject::tr( "South" ), QString( buffer ) );
-        G_format_easting( box.E, buffer, proj );
-        str += htmlTableRow( QObject::tr( "East" ), QString( buffer ) );
-        G_format_easting( box.W, buffer, proj );
-        str += htmlTableRow( QObject::tr( "West" ), QString( buffer ) );
-        if ( is3d )
-        {
-          str += htmlTableRow( QObject::tr( "Top" ), QString::number( box.T ) );
-          str += htmlTableRow( QObject::tr( "Bottom" ), QString::number( box.B ) );
-        }
-
-        str += htmlTableRow( "3D", is3d ? QObject::tr( "yes" ) : QObject::tr( "no" ) );
-
-        str += "</table>";
-
-        // History
-        Vect_hist_rewind( &Map );
-        char hbuffer[1001];
-        str += "<p>" + QObject::tr( "History<br>" );
-        QRegExp rx( "^-+$" );
-        while ( Vect_hist_read( hbuffer, 1000, &Map ) != NULL )
-        {
-          QString row = QString( hbuffer );
-          if ( rx.indexIn( row ) != -1 )
+          // Number of elements
+          str += htmlTableRow( QObject::tr( "Points" ), QString::number( Vect_get_num_primitives( &Map, GV_POINT ) ) );
+          str += htmlTableRow( QObject::tr( "Lines" ), QString::number( Vect_get_num_primitives( &Map, GV_LINE ) ) );
+          str += htmlTableRow( QObject::tr( "Boundaries" ), QString::number( Vect_get_num_primitives( &Map, GV_BOUNDARY ) ) );
+          str += htmlTableRow( QObject::tr( "Centroids" ), QString::number( Vect_get_num_primitives( &Map, GV_CENTROID ) ) );
+          if ( is3d )
           {
-            str += "<hr>";
+            str += htmlTableRow( QObject::tr( "Faces" ), QString::number( Vect_get_num_primitives( &Map, GV_FACE ) ) );
+            str += htmlTableRow( QObject::tr( "Kernels" ), QString::number( Vect_get_num_primitives( &Map, GV_KERNEL ) ) );
           }
-          else
+
+          str += htmlTableRow( QObject::tr( "Areas" ), QString::number( Vect_get_num_areas( &Map ) ) );
+          str += htmlTableRow( QObject::tr( "Islands" ), QString::number( Vect_get_num_islands( &Map ) ) );
+
+
+          // Box and dimension
+          BOUND_BOX box;
+          char buffer[100];
+
+          Vect_get_map_box( &Map, &box );
+
+          QgsGrass::setMapset( mGisbase, mLocation, mMapset );
+          struct Cell_head window;
+          G_get_window( &window );
+          int proj = window.proj;
+
+          G_format_northing( box.N, buffer, proj );
+          str += htmlTableRow( QObject::tr( "North" ), QString( buffer ) );
+          G_format_northing( box.S, buffer, proj );
+          str += htmlTableRow( QObject::tr( "South" ), QString( buffer ) );
+          G_format_easting( box.E, buffer, proj );
+          str += htmlTableRow( QObject::tr( "East" ), QString( buffer ) );
+          G_format_easting( box.W, buffer, proj );
+          str += htmlTableRow( QObject::tr( "West" ), QString( buffer ) );
+          if ( is3d )
           {
-            str += row + "<br>";
+            str += htmlTableRow( QObject::tr( "Top" ), QString::number( box.T ) );
+            str += htmlTableRow( QObject::tr( "Bottom" ), QString::number( box.B ) );
+          }
+
+          str += htmlTableRow( "3D", is3d ? QObject::tr( "yes" ) : QObject::tr( "no" ) );
+
+          str += "</table>";
+
+          // History
+          Vect_hist_rewind( &Map );
+          char hbuffer[1001];
+          str += "<p>" + QObject::tr( "History<br>" );
+          QRegExp rx( "^-+$" );
+          while ( Vect_hist_read( hbuffer, 1000, &Map ) != NULL )
+          {
+            QString row = QString( hbuffer );
+            if ( rx.indexIn( row ) != -1 )
+            {
+              str += "<hr>";
+            }
+            else
+            {
+              str += row + "<br>";
+            }
           }
         }
-      }
-      else
+        else
+        {
+          str += "</table>";
+        }
+        Vect_close( &Map );
+      } 
+      catch ( QgsGrass::Exception &e )
       {
+        QgsDebugMsg( QString( "Cannot open GRASS vector: %1" ).arg( e.what() ) );
         str += "</table>";
+        str += QString( "%1 <br>").arg( e.what() );
       }
 
-      Vect_close( &Map );
       return str;
     }
     break;
@@ -330,40 +339,49 @@ QString QgsGrassModelItem::info()
 
       QgsGrass::setLocation( mGisbase, mLocation );
 
-      struct Map_info Map;
-      int level = Vect_open_old_head( &Map, mMap.toLocal8Bit().data(),
-                                      mMapset.toLocal8Bit().data() );
-
-      if ( level >= 2 )
+      try
       {
-        struct field_info *fi;
+        struct Map_info Map;
+        int level = Vect_open_old_head( &Map, mMap.toLocal8Bit().data(),
+                                        mMapset.toLocal8Bit().data() );
 
-        int field = QgsGrassProvider::grassLayer( mLayer );
-        if ( field != -1 )
+        if ( level >= 2 )
         {
-          // Number of features
-          int type = QgsGrassProvider::grassLayerType( mLayer );
-          if ( type != -1 )
-          {
-            str += htmlTableRow( QObject::tr( "Features" ),
-                                 QString::number( Vect_cidx_get_type_count( &Map, field, type ) ) );
-          }
+          struct field_info *fi;
 
-          fi = Vect_get_field( &Map, field );
-
-          // Database link
-          if ( fi )
+          int field = QgsGrassProvider::grassLayer( mLayer );
+          if ( field != -1 )
           {
-            str += htmlTableRow( QObject::tr( "Driver" ), QString( fi->driver ) );
-            str += htmlTableRow( QObject::tr( "Database" ), QString( fi->database ) );
-            str += htmlTableRow( QObject::tr( "Table" ), QString( fi->table ) );
-            str += htmlTableRow( QObject::tr( "Key column" ), QString( fi->key ) );
+            // Number of features
+            int type = QgsGrassProvider::grassLayerType( mLayer );
+            if ( type != -1 )
+            {
+              str += htmlTableRow( QObject::tr( "Features" ),
+                                   QString::number( Vect_cidx_get_type_count( &Map, field, type ) ) );
+            }
+
+            fi = Vect_get_field( &Map, field );
+
+            // Database link
+            if ( fi )
+            {
+              str += htmlTableRow( QObject::tr( "Driver" ), QString( fi->driver ) );
+              str += htmlTableRow( QObject::tr( "Database" ), QString( fi->database ) );
+              str += htmlTableRow( QObject::tr( "Table" ), QString( fi->table ) );
+              str += htmlTableRow( QObject::tr( "Key column" ), QString( fi->key ) );
+            }
           }
         }
-      }
-      str += "</table>";
+        str += "</table>";
 
-      Vect_close( &Map );
+        Vect_close( &Map );
+      }
+      catch ( QgsGrass::Exception &e )
+      {
+        QgsDebugMsg( QString( "Cannot open GRASS vector: %1" ).arg( e.what() ) );
+        str += "</table>";
+        str += QString( "%1 <br>").arg( e.what() );
+      }
       return str;
     }
     break;
