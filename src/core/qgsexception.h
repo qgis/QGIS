@@ -18,6 +18,8 @@
 #ifndef QGSEXCEPTION_H
 #define QGSEXCEPTION_H
 
+#include <QString>
+
 /** \ingroup core
   * Defines a qgis exception class.
  */
