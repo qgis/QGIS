@@ -20,6 +20,7 @@
 
 #include <QObject>
 #include <QTimer>
+#include <QPair>
 
 class QIODevice;
 
@@ -92,7 +93,7 @@ class CORE_EXPORT QgsGPSConnection : public QObject
     const QTimer* timer() const { return mPollTimer; }
     void setTimer( QTimer* t );
 
-    static QStringList availablePorts();
+    static QList< QPair<QString, QString> > availablePorts();
 
   signals:
     void stateChanged( const QgsGPSInformation& info );
