@@ -2704,8 +2704,6 @@ void QgisApp::fileNew( bool thePromptToSaveFlag )
     return;
   }
 
-  deletePrintComposers();
-
   if ( thePromptToSaveFlag )
   {
     if ( !saveDirty() )
@@ -2714,7 +2712,7 @@ void QgisApp::fileNew( bool thePromptToSaveFlag )
     }
   }
 
-  //QgsDebugMsg("erasing project");
+  deletePrintComposers();
 
   mMapCanvas->freeze( true );
   removeAllLayers();
