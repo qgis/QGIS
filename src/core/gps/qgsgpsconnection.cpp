@@ -152,9 +152,11 @@ QgsGPSConnection* QgsGPSConnection::detectGPSConnection()
   QList<BaudRateType>::const_iterator baudIt = baudRatesToTry.constBegin();
   for ( ; baudIt != baudRatesToTry.constEnd(); ++baudIt )
   {
-    foreach( QString portname, availablePorts() )
+    QList< QPair<QString, QString> > ports = availablePorts();
+
+    for ( int i = 0; i < ports.size(); i++ )
     {
-      port = new QextSerialPort( portname );
+      port = new QextSerialPort( ports[i].first );
       port->setBaudRate( *baudIt );
       port->setFlowControl( FLOW_OFF );
       port->setParity( PAR_NONE );
@@ -192,9 +194,9 @@ QgsGPSConnection* QgsGPSConnection::detectGPSConnection()
   return 0;
 }
 
-QStringList QgsGPSConnection::availablePorts()
+QList< QPair<QString, QString> > QgsGPSConnection::availablePorts()
 {
-  QStringList devs;
+  QList< QPair<QString, QString> > devs;
 
 #ifdef linux
   // look for linux serial devices
@@ -204,7 +206,7 @@ QStringList QgsGPSConnection::availablePorts()
     {
       if ( QFileInfo( linuxDev.arg( i ) ).exists() )
       {
-        devs << linuxDev.arg( i );
+        devs << QPair<QString, QString>( linuxDev.arg( i ), linuxDev.arg( i ) );
       }
     }
   }
@@ -218,7 +220,7 @@ QStringList QgsGPSConnection::availablePorts()
     {
       if ( QFileInfo( freebsdDev.arg( i ) ).exists() )
       {
-        devs << freebsdDev.arg( i );
+        devs << QPair<QString, QString>( freebsdDev.arg( i ), freebsdDev.arg( i ) );
       }
     }
   }
@@ -231,7 +233,7 @@ QStringList QgsGPSConnection::availablePorts()
   {
     if ( QFileInfo( solarisDev.arg( i ) ).exists() )
     {
-      devs << solarisDev.arg( i );
+      devs << QPair<QString, QString>( solarisDev.arg( i ), solarisDev.arg( i ) );
     }
   }
 #endif
@@ -240,7 +242,7 @@ QStringList QgsGPSConnection::availablePorts()
   QList<QextPortInfo> ports = QextSerialEnumerator::getPorts();
   foreach( QextPortInfo port, ports )
   {
-    devs << port.portName;
+    devs << QPair<QString, QString>( port.portName, port.friendName );
   }
 #endif
 
