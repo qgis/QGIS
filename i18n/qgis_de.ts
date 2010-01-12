@@ -10110,7 +10110,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="425"/>
         <source>Auto-add vertices</source>
-        <translation>Stützpunkte autohinzfügen</translation>
+        <translation>Stützpunkte automatisch hinzufügen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="435"/>
