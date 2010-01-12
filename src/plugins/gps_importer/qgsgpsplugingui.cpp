@@ -113,7 +113,8 @@ void QgsGPSPluginGui::on_buttonBox_accepted()
         fileName += ".gpx";
       }
 
-      emit downloadFromGPS( cmbDLDevice->currentText(), cmbDLPort->currentText(),
+      emit downloadFromGPS( cmbDLDevice->currentText(),
+                            cmbDLPort->itemData( cmbDLPort->currentIndex() ).toString(),
                             featureType == 0, featureType == 1, featureType == 2,
                             fileName, leDLBasename->text() );
       break;
@@ -122,7 +123,8 @@ void QgsGPSPluginGui::on_buttonBox_accepted()
     case 3:
     {
       emit uploadToGPS( mGPXLayers[cmbULLayer->currentIndex()],
-                        cmbULDevice->currentText(), cmbULPort->currentText() );
+                        cmbULDevice->currentText(),
+                        cmbULPort->itemData( cmbULPort->currentIndex() ).toString() );
       break;
     }
     // or convert between waypoints/tracks=
@@ -304,32 +306,25 @@ void QgsGPSPluginGui::on_pbnRefresh_clicked()
 
 void QgsGPSPluginGui::populatePortComboBoxes()
 {
-  QStringList devs = QgsGPSConnection::availablePorts() << "usb:";
+  QList< QPair<QString, QString> > devs = QgsGPSConnection::availablePorts() << QPair<QString, QString>( "usb:", "usb:" );
+
   cmbDLPort->clear();
-  cmbDLPort->addItems( devs );
   cmbULPort->clear();
-  cmbULPort->addItems( devs );
+  for ( int i = 0; i < devs.size(); i++ )
+  {
+    cmbDLPort->addItem( devs[i].second, devs[i].first );
+    cmbULPort->addItem( devs[i].second, devs[i].first );
+  }
 
   // remember the last ports used
   QSettings settings;
   QString lastDLPort = settings.value( "/Plugin-GPS/lastdlport", "" ).toString();
   QString lastULPort = settings.value( "/Plugin-GPS/lastulport", "" ).toString();
-  for ( int i = 0; i < cmbDLPort->count(); ++i )
-  {
-    if ( cmbDLPort->itemText( i ) == lastDLPort )
-    {
-      cmbDLPort->setCurrentIndex( i );
-      break;
-    }
-  }
-  for ( int i = 0; i < cmbULPort->count(); ++i )
-  {
-    if ( cmbULPort->itemText( i ) == lastULPort )
-    {
-      cmbULPort->setCurrentIndex( i );
-      break;
-    }
-  }
+
+  int idx = cmbDLPort->findData( lastDLPort );
+  cmbDLPort->setCurrentIndex( idx < 0 ? 0 : idx );
+  idx = cmbULPort->findData( lastULPort );
+  cmbULPort->setCurrentIndex( idx < 0 ? 0 : idx );
 }
 
 

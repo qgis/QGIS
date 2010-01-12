@@ -318,9 +318,6 @@
                <layout class="QHBoxLayout" name="horizontalLayout">
                 <item>
                  <widget class="QLabel" name="mPathLabel">
-                  <property name="enabled">
-                   <bool>false</bool>
-                  </property>
                   <property name="text">
                    <string>Path to serial device</string>
                   </property>

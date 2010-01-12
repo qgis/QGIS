@@ -191,9 +191,11 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWi
 
 QgsGPSInformationWidget::~QgsGPSInformationWidget()
 {
-  if ( mpMapMarker ) delete mpMapMarker;
+  if ( mpMapMarker )
+    delete mpMapMarker;
+
   QSettings mySettings;
-  mySettings.setValue( "/gps/lastPort", mCboDevices->currentText() );
+  mySettings.setValue( "/gps/lastPort", mCboDevices->itemData( mCboDevices->currentIndex() ).toString() );
   mySettings.setValue( "/gps/trackWidth", mSpinTrackWidth->value() );
   mySettings.setValue( "/gps/markerSize", mSliderMarkerSize->value() );
   mySettings.setValue( "/gps/autoAddVertices", mCbxAutoAddVertices->isChecked() );
@@ -220,6 +222,7 @@ QgsGPSInformationWidget::~QgsGPSInformationWidget()
   {
     mySettings.setValue( "/gps/panMode", "none" );
   }
+
   if ( mpRubberBand )
   {
     delete mpRubberBand;
@@ -305,14 +308,14 @@ void QgsGPSInformationWidget::connectGps()
 {
   if ( mRadUserPath->isChecked() )
   {
-    if ( !mCboDevices->currentText().isEmpty() )
+    if ( !mCboDevices->itemData( mCboDevices->currentIndex() ).toString().isEmpty() )
     {
-      mNmea = new QgsNMEAConnection( mCboDevices->currentText(), 500 );
+      mNmea = new QgsNMEAConnection( mCboDevices->itemData( mCboDevices->currentIndex() ).toString(), 500 );
       QObject::connect( mNmea, SIGNAL( stateChanged( const QgsGPSInformation& ) ),
                         this, SLOT( displayGPSInformation( const QgsGPSInformation& ) ) );
       mThread = new QgsGPSTrackerThread( mNmea );
       mThread->start();
-      mGPSTextEdit->append( tr( "Connecting on %1" ).arg( mCboDevices->currentText() ) );
+      mGPSTextEdit->append( tr( "Connecting on %1" ).arg( mCboDevices->itemData( mCboDevices->currentIndex() ).toString() ) );
     }
     else
     {
@@ -418,7 +421,8 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation& in
   }
   mpCurve->setData( myXData, mySignalData );
   mpPlot->replot();
-  if ( mpMapMarker ) delete mpMapMarker;
+  if ( mpMapMarker )
+    delete mpMapMarker;
   QgsPoint myNewCenter = QgsPoint( info.longitude, info.latitude );
   if ( mGroupShowMarker->isChecked() )
   {
@@ -854,31 +858,30 @@ void QgsGPSInformationWidget::on_mBtnRefreshDevices_clicked( )
 /* Copied from gps plugin */
 void QgsGPSInformationWidget::populateDevices()
 {
+  QList< QPair<QString, QString> > ports = QgsGPSConnection::availablePorts();
+
   mCboDevices->clear();
-  mCboDevices->addItems( QgsGPSConnection::availablePorts() );
+  for ( int i = 0; i < ports.size(); i++ )
+  {
+    mCboDevices->addItem( ports[i].second, ports[i].first );
+  }
 
   // remember the last ports used
   QSettings settings;
   QString lastPort = settings.value( "/gps/lastPort", "" ).toString();
-  for ( int i = 0; i < mCboDevices->count(); ++i )
-  {
-    if ( mCboDevices->itemText( i ) == lastPort )
-    {
-      mCboDevices->setCurrentIndex( i );
-      break;
-    }
-  }
+
+  int idx = mCboDevices->findData( lastPort );
+  mCboDevices->setCurrentIndex( idx < 0 ? 0 : idx );
 }
 
 void QgsGPSInformationWidget::createRubberBand( )
 {
-  if ( mpRubberBand == 0 )
+  if ( mpRubberBand )
   {
     delete mpRubberBand;
   }
   QSettings settings;
-  bool isPolygon = false;
-  mpRubberBand = new QgsRubberBand( mpCanvas, isPolygon );
+  mpRubberBand = new QgsRubberBand( mpCanvas, false );
   setTrackColour();
   mpRubberBand->setWidth( settings.value( "/gps/trackWidth", 2 ).toInt() );
   mpRubberBand->show();
