@@ -337,7 +337,7 @@ void QgsGrassPlugin::addVector()
     }
     catch ( QgsGrass::Exception &e )
     {
-      QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot open GRASS vector:\n %1" ).arg( QString::fromUtf8( e.what() ) ) );
+      QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot open GRASS vector:\n %1" ).arg( e.what() ) );
     }
 
     qGisInterface->addVectorLayer( uri, name, "grass" );
@@ -502,7 +502,7 @@ void QgsGrassPlugin::newVector()
   catch ( QgsGrass::Exception &e )
   {
     QMessageBox::warning( 0, tr( "Warning" ),
-                          tr( "Cannot create new vector: %1" ).arg( QString::fromUtf8( e.what() ) ) );
+                          tr( "Cannot create new vector: %1" ).arg( e.what() ) );
     return;
   }
 

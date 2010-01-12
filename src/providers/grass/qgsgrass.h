@@ -23,7 +23,7 @@ extern "C"
 #include <grass/form.h>
 }
 
-#include <stdexcept>
+#include "qgsexception.h"
 #include <QString>
 
 /*!
@@ -32,9 +32,9 @@ extern "C"
 class QgsGrass
 {
   public:
-    struct Exception : public std::runtime_error
+    struct Exception : public QgsException
     {
-      Exception( const std::string &msg ) : std::runtime_error( msg ) {}
+      Exception( const QString &msg ) : QgsException( msg ) {}
     };
 
     //! Get info about the mode
