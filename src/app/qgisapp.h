@@ -231,10 +231,11 @@ class QgisApp : public QMainWindow
     QAction *actionDeleteSelected() { return mActionDeleteSelected; }
     QAction *actionMoveFeature() { return mActionMoveFeature; }
     QAction *actionSplitFeatures() { return mActionSplitFeatures; }
-    //These three tools are deprecated - use node tool rather...
-    //QAction *actionAddVertex() { return mActionAddVertex; }
-    //QAction *actionDeleteVertex() { return mActionDeleteVertex; }
-    //QAction *actionMoveVertex() { return mActionMoveVertex; }
+#if 0 //These three tools are deprecated - use node tool rather...
+    QAction *actionAddVertex() { return mActionAddVertex; }
+    QAction *actionDeleteVertex() { return mActionDeleteVertex; }
+    QAction *actionMoveVertex() { return mActionMoveVertex; }
+#endif
     QAction *actionAddRing() { return mActionAddRing; }
     QAction *actionAddIsland() { return mActionAddIsland; }
     QAction *actionSimplifyFeature() { return mActionSimplifyFeature; }
@@ -431,10 +432,8 @@ class QgisApp : public QMainWindow
     void userCenter();
     //! Remove a layer from the map and legend
     void removeLayer();
-#ifdef HAVE_QWT
     //! Show GPS tool
     void showGpsTool();
-#endif
     //! zoom to extent of layer
     void zoomToLayerExtent();
     //! zoom to actual size of raster layer

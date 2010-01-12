@@ -18,7 +18,6 @@
  ***************************************************************************/
 /* $Id$ */
 
-
 //
 // QT4 includes make sure to use the new <CamelCase> style!
 //
@@ -494,10 +493,13 @@ QgisApp::~QgisApp()
   delete mMapTools.mReshapeFeatures;
   delete mMapTools.mSplitFeatures;
   delete mMapTools.mSelect;
-  //these three tools to be deprecated - use node tool rather
-  //delete mMapTools.mVertexAdd;
-  //delete mMapTools.mVertexMove;
-  //delete mMapTools.mVertexDelete;
+
+#if 0 //these three tools to be deprecated - use node tool rather
+  delete mMapTools.mVertexAdd;
+  delete mMapTools.mVertexMove;
+  delete mMapTools.mVertexDelete;
+#endif
+
   delete mMapTools.mAddRing;
   delete mMapTools.mSimplifyFeature;
   delete mMapTools.mDeleteRing;
@@ -711,8 +713,7 @@ void QgisApp::createActions()
   connect( mActionDeleteSelected, SIGNAL( triggered() ), this, SLOT( deleteSelected() ) );
   mActionDeleteSelected->setEnabled( false );
 
-  //these three tools to be deprecated - use node tool rather
-#if 0
+#if 0 //these three tools to be deprecated - use node tool rather
   mActionAddVertex = new QAction( getThemeIcon( "mActionAddVertex.png" ), tr( "Add Vertex" ), this );
   shortcuts->registerAction( mActionAddVertex );
   mActionAddVertex->setStatusTip( tr( "Add Vertex" ) );
@@ -1155,15 +1156,14 @@ void QgisApp::createActionGroups()
   mActionSplitFeatures->setCheckable( true );
   mMapToolGroup->addAction( mActionSplitFeatures );
   mMapToolGroup->addAction( mActionDeleteSelected );
-  //these three tools are deprecated - use node tool rather
-  /**
+#if 0 //these three tools are deprecated - use node tool rather
   mActionAddVertex->setCheckable( true );
   mMapToolGroup->addAction( mActionAddVertex );
   mActionDeleteVertex->setCheckable( true );
   mMapToolGroup->addAction( mActionDeleteVertex );
   mActionMoveVertex->setCheckable( true );
   mMapToolGroup->addAction( mActionMoveVertex );
-  */
+#endif
   mActionAddRing->setCheckable( true );
   mMapToolGroup->addAction( mActionAddRing );
   mActionAddIsland->setCheckable( true );
@@ -1260,10 +1260,11 @@ void QgisApp::createMenus()
   mEditMenu->addAction( mActionCapturePolygon );
   mEditMenu->addAction( mActionMoveFeature );
   mEditMenu->addAction( mActionDeleteSelected );
-  //these three tools are deprecated - use node tool rather
-  //mEditMenu->addAction( mActionAddVertex );
-  //mEditMenu->addAction( mActionMoveVertex );
-  //mEditMenu->addAction( mActionDeleteVertex );
+#if 0 //these three tools are deprecated - use node tool rather
+  mEditMenu->addAction( mActionAddVertex );
+  mEditMenu->addAction( mActionMoveVertex );
+  mEditMenu->addAction( mActionDeleteVertex );
+#endif
 
   mActionEditSeparator2 = mEditMenu->addSeparator();
 
@@ -1473,10 +1474,11 @@ void QgisApp::createToolBars()
   mDigitizeToolBar->addAction( mActionCapturePolygon );
   mDigitizeToolBar->addAction( mActionMoveFeature );
   mDigitizeToolBar->addAction( mActionNodeTool );
-  //these three tools are deprecated - use node tool rather
-  //mDigitizeToolBar->addAction( mActionMoveVertex );
-  //mDigitizeToolBar->addAction( mActionAddVertex );
-  //mDigitizeToolBar->addAction( mActionDeleteVertex );
+#if 0 //these three tools are deprecated - use node tool rather
+  mDigitizeToolBar->addAction( mActionMoveVertex );
+  mDigitizeToolBar->addAction( mActionAddVertex );
+  mDigitizeToolBar->addAction( mActionDeleteVertex );
+#endif
   mDigitizeToolBar->addAction( mActionDeleteSelected );
   mDigitizeToolBar->addAction( mActionCutFeatures );
   mDigitizeToolBar->addAction( mActionCopyFeatures );
@@ -1743,10 +1745,11 @@ void QgisApp::setTheme( QString theThemeName )
   mActionReshapeFeatures->setIcon( getThemeIcon( "/mActionReshape.png" ) );
   mActionSplitFeatures->setIcon( getThemeIcon( "/mActionSplitFeatures.png" ) );
   mActionDeleteSelected->setIcon( getThemeIcon( "/mActionDeleteSelected.png" ) );
-  //these three icons to be deprecated
-  //mActionAddVertex->setIcon( getThemeIcon( "/mActionAddVertex.png" ) );
-  //mActionMoveVertex->setIcon( getThemeIcon( "/mActionMoveVertex.png" ) );
-  //mActionDeleteVertex->setIcon( getThemeIcon( "/mActionDeleteVertex.png" ) );
+#if 0 //these three icons to be deprecated
+  mActionAddVertex->setIcon( getThemeIcon( "/mActionAddVertex.png" ) );
+  mActionMoveVertex->setIcon( getThemeIcon( "/mActionMoveVertex.png" ) );
+  mActionDeleteVertex->setIcon( getThemeIcon( "/mActionDeleteVertex.png" ) );
+#endif
   mActionNodeTool->setIcon( getThemeIcon( "/mActionNodeTool.png" ) );
   mActionSimplifyFeature->setIcon( getThemeIcon( "/mActionSimplify.png" ) );
   mActionUndo->setIcon( getThemeIcon( "/mActionUndo.png" ) );
@@ -1892,13 +1895,14 @@ void QgisApp::createCanvas()
   mMapTools.mSplitFeatures->setAction( mActionSplitFeatures );
   mMapTools.mSelect = new QgsMapToolSelect( mMapCanvas );
   mMapTools.mSelect->setAction( mActionSelect );
-  //these three tools to be deprecated - use node tool rather
-  //mMapTools.mVertexAdd = new QgsMapToolAddVertex( mMapCanvas );
-  //mMapTools.mVertexAdd->setAction( mActionAddVertex );
-  //mMapTools.mVertexMove = new QgsMapToolMoveVertex( mMapCanvas );
-  //mMapTools.mVertexMove->setAction( mActionMoveVertex );
-  //mMapTools.mVertexDelete = new QgsMapToolDeleteVertex( mMapCanvas );
-  //mMapTools.mVertexDelete->setAction( mActionDeleteVertex );
+#if 0 //these three tools to be deprecated - use node tool rather
+  mMapTools.mVertexAdd = new QgsMapToolAddVertex( mMapCanvas );
+  mMapTools.mVertexAdd->setAction( mActionAddVertex );
+  mMapTools.mVertexMove = new QgsMapToolMoveVertex( mMapCanvas );
+  mMapTools.mVertexMove->setAction( mActionMoveVertex );
+  mMapTools.mVertexDelete = new QgsMapToolDeleteVertex( mMapCanvas );
+  mMapTools.mVertexDelete->setAction( mActionDeleteVertex );
+#endif
   mMapTools.mAddRing = new QgsMapToolAddRing( mMapCanvas );
   mMapTools.mAddRing->setAction( mActionAddRing );
   mMapTools.mAddIsland = new QgsMapToolAddIsland( mMapCanvas );
@@ -4411,9 +4415,9 @@ void QgisApp::removeAllLayers()
   QgsProject::instance()->dirty( true );
 } //remove all layers
 
-#ifdef HAVE_QWT
 void QgisApp::showGpsTool()
 {
+#ifdef HAVE_QWT
   if ( !mpGpsWidget )
   {
     mpGpsWidget = new QgsGPSInformationWidget( mMapCanvas );
@@ -4432,8 +4436,8 @@ void QgisApp::showGpsTool()
   {
     mpGpsDock->toggleViewAction();
   }
-}
 #endif
+}
 
 void QgisApp::zoomToLayerExtent()
 {
@@ -5364,7 +5368,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionCapturePolygon->setEnabled( false );
         mActionCaptureLine->setVisible( false );
         mActionCapturePolygon->setVisible( false );
-#if 0   //these three tools to be deprecated - use node tool rather
+#if 0 //these three tools to be deprecated - use node tool rather
         mActionAddVertex->setEnabled( false );
         mActionDeleteVertex->setEnabled( false );
         mActionMoveVertex->setEnabled( false );
@@ -5457,10 +5461,11 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       //are add/delete/move vertex supported?
       if ( vlayer->isEditable() && dprovider->capabilities() & QgsVectorDataProvider::ChangeGeometries )
       {
-        //these three tools to be deprecated - use node tool rather
-        //mActionAddVertex->setEnabled( true );
-        //mActionMoveVertex->setEnabled( true );
-        //mActionDeleteVertex->setEnabled( true );
+#if 0 // these three tools to be deprecated - use node tool rather
+        mActionAddVertex->setEnabled( true );
+        mActionMoveVertex->setEnabled( true );
+        mActionDeleteVertex->setEnabled( true );
+#endif
         if ( vlayer->geometryType() == QGis::Polygon )
         {
           mActionAddRing->setEnabled( true );
@@ -5471,9 +5476,11 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       }
       else
       {
-        //mActionAddVertex->setEnabled( false );
-        //mActionMoveVertex->setEnabled( false );
-        //mActionDeleteVertex->setEnabled( false );
+#if 0
+        mActionAddVertex->setEnabled( false );
+        mActionMoveVertex->setEnabled( false );
+        mActionDeleteVertex->setEnabled( false );
+#endif
       }
       return;
     }
@@ -5493,10 +5500,11 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionDeleteSelected->setEnabled( false );
     mActionAddRing->setEnabled( false );
     mActionAddIsland->setEnabled( false );
-    //these three tools to be deprecated - use node tool rather
-    //mActionAddVertex->setEnabled( false );
-    //mActionDeleteVertex->setEnabled( false );
-    //mActionMoveVertex->setEnabled( false );
+#if 0 //these three tools to be deprecated - use node tool rather
+    mActionAddVertex->setEnabled( false );
+    mActionDeleteVertex->setEnabled( false );
+    mActionMoveVertex->setEnabled( false );
+#endif
     mActionNodeTool->setEnabled( false );
     mActionMoveFeature->setEnabled( false );
     mActionCopyFeatures->setEnabled( false );
