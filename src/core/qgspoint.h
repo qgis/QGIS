@@ -20,8 +20,39 @@
 #define QGSPOINT_H
 
 #include <iostream>
-
 #include <QString>
+
+/** \ingroup core
+ * A class to represent a vector.
+ * Currently no Z axis / 2.5D support is implemented.
+ */
+
+class CORE_EXPORT QgsVector
+{
+    double m_x, m_y;
+
+  public:
+    QgsVector();
+    QgsVector( double x, double y );
+
+    QgsVector operator-( void ) const;
+    QgsVector operator*( double scalar ) const;
+    QgsVector operator/( double scalar ) const;
+    double operator*( QgsVector v ) const;
+    double length() const;
+
+    double x() const;
+    double y() const;
+
+    // perpendicular vector (rotated 90° counter-clockwise)
+    QgsVector perpVector() const;
+
+    double angle( void ) const;
+    double angle( QgsVector v ) const;
+    QgsVector rotateBy( double rot ) const;
+    QgsVector normal() const;
+
+};
 
 /** \ingroup core
  * A class to represent a point geometry.
@@ -131,6 +162,12 @@ class CORE_EXPORT QgsPoint
     //! 3 if point is on open ray b.
     int onSegment( const QgsPoint& a, const QgsPoint& b ) const;
 
+    QgsVector operator-( QgsPoint p ) const { return QgsVector( m_x - p.m_x, m_y - p.m_y ); }
+    QgsPoint &operator+=( const QgsVector &v ) { *this = *this + v; return *this; }
+    QgsPoint &operator-=( const QgsVector &v ) { *this = *this - v; return *this; }
+    QgsPoint operator+( const QgsVector &v ) const { return QgsPoint( m_x + v.x(), m_y + v.y() ); }
+    QgsPoint operator-( const QgsVector &v ) const { return QgsPoint( m_x - v.x(), m_y - v.y() ); }
+
   private:
 
     //! x coordinate
@@ -158,6 +195,4 @@ inline std::ostream& operator << ( std::ostream& os, const QgsPoint &p )
   return os;
 }
 
-
 #endif //QGSPOINT_H
-

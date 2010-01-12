@@ -2360,7 +2360,7 @@ double QgsGeometry::closestVertexWithContext( const QgsPoint& point, int& atVert
       return -1;
 
     const GEOSGeometry *g = GEOSGetExteriorRing( mGeos );
-    if ( g == NULL )
+    if ( !g )
       return -1;
 
     const GEOSCoordSequence *sequence = GEOSGeom_getCoordSeq( g );
@@ -5442,7 +5442,7 @@ int QgsGeometry::topologicalTestPointsSplit( const GEOSGeometry* splitLine, QLis
 
   testPoints.clear();
   GEOSGeometry* intersectionGeom = GEOSIntersection( mGeos, splitLine );
-  if ( intersectionGeom == NULL )
+  if ( !intersectionGeom )
   {
     return 1;
   }
@@ -5853,17 +5853,17 @@ QgsMultiPolygon QgsGeometry::asMultiPolygon()
 
 double QgsGeometry::distance( QgsGeometry& geom )
 {
-  if ( mGeos == NULL )
+  if ( !mGeos )
   {
     exportWkbToGeos();
   }
 
-  if ( geom.mGeos == NULL )
+  if ( !geom.mGeos )
   {
     geom.exportWkbToGeos();
   }
 
-  if ( mGeos == NULL || geom.mGeos == NULL )
+  if ( !mGeos || !geom.mGeos )
     return -1.0;
 
   double dist = -1.0;
@@ -5880,7 +5880,7 @@ double QgsGeometry::distance( QgsGeometry& geom )
 
 QgsGeometry* QgsGeometry::buffer( double distance, int segments )
 {
-  if ( mGeos == NULL )
+  if ( !mGeos )
   {
     exportWkbToGeos();
   }
@@ -5898,7 +5898,7 @@ QgsGeometry* QgsGeometry::buffer( double distance, int segments )
 
 QgsGeometry* QgsGeometry::simplify( double tolerance )
 {
-  if ( mGeos == NULL )
+  if ( !mGeos )
   {
     exportWkbToGeos();
   }
@@ -5915,7 +5915,7 @@ QgsGeometry* QgsGeometry::simplify( double tolerance )
 
 QgsGeometry* QgsGeometry::centroid()
 {
-  if ( mGeos == NULL )
+  if ( !mGeos )
   {
     exportWkbToGeos();
   }
@@ -5932,7 +5932,7 @@ QgsGeometry* QgsGeometry::centroid()
 
 QgsGeometry* QgsGeometry::convexHull()
 {
-  if ( mGeos == NULL )
+  if ( !mGeos )
   {
     exportWkbToGeos();
   }
@@ -5950,15 +5950,15 @@ QgsGeometry* QgsGeometry::convexHull()
 
 QgsGeometry* QgsGeometry::intersection( QgsGeometry* geometry )
 {
-  if ( geometry == NULL )
+  if ( !geometry )
   {
     return NULL;
   }
-  if ( mGeos == NULL )
+  if ( !mGeos )
   {
     exportWkbToGeos();
   }
-  if ( geometry->mGeos == NULL )
+  if ( !geometry->mGeos )
   {
     geometry->exportWkbToGeos();
   }
@@ -5976,15 +5976,15 @@ QgsGeometry* QgsGeometry::intersection( QgsGeometry* geometry )
 
 QgsGeometry* QgsGeometry::combine( QgsGeometry* geometry )
 {
-  if ( geometry == NULL )
+  if ( !geometry )
   {
     return NULL;
   }
-  if ( mGeos == NULL )
+  if ( !mGeos )
   {
     exportWkbToGeos();
   }
-  if ( geometry->mGeos == NULL )
+  if ( !geometry->mGeos )
   {
     geometry->exportWkbToGeos();
   }
@@ -6015,15 +6015,15 @@ QgsGeometry* QgsGeometry::combine( QgsGeometry* geometry )
 
 QgsGeometry* QgsGeometry::difference( QgsGeometry* geometry )
 {
-  if ( geometry == NULL )
+  if ( !geometry )
   {
     return NULL;
   }
-  if ( mGeos == NULL )
+  if ( !mGeos )
   {
     exportWkbToGeos();
   }
-  if ( geometry->mGeos == NULL )
+  if ( !geometry->mGeos )
   {
     geometry->exportWkbToGeos();
   }
@@ -6041,15 +6041,15 @@ QgsGeometry* QgsGeometry::difference( QgsGeometry* geometry )
 
 QgsGeometry* QgsGeometry::symDifference( QgsGeometry* geometry )
 {
-  if ( geometry == NULL )
+  if ( !geometry )
   {
     return NULL;
   }
-  if ( mGeos == NULL )
+  if ( !mGeos )
   {
     exportWkbToGeos();
   }
-  if ( geometry->mGeos == NULL )
+  if ( !geometry->mGeos )
   {
     geometry->exportWkbToGeos();
   }
@@ -6067,10 +6067,10 @@ QgsGeometry* QgsGeometry::symDifference( QgsGeometry* geometry )
 
 QList<QgsGeometry*> QgsGeometry::asGeometryCollection()
 {
-  if ( mGeos == NULL )
+  if ( !mGeos )
   {
     exportWkbToGeos();
-    if ( mGeos == NULL )
+    if ( !mGeos )
       return QList<QgsGeometry*>();
   }
 
@@ -6257,4 +6257,229 @@ int QgsGeometry::avoidIntersections()
   }
 
   return returnValue;
+}
+
+//
+// distance of point q from line through p in direction v
+// return >0  => q lies left of the line
+//        <0  => q lies right of the line
+//
+static double distLine2Point( QgsPoint p, QgsVector v, QgsPoint q )
+{
+  if ( v.length() == 0 )
+  {
+    throw QgsException( QObject::tr( "invalid line" ) );
+  }
+
+  return ( v.x()*( q.y() - p.y() ) - v.y()*( q.x() - p.x() ) ) / v.length();
+}
+
+static bool intersectLines( QgsPoint p, QgsVector v, QgsPoint q, QgsVector w, QgsPoint &s )
+{
+  double d = v.y() * w.x() - v.x() * w.y();
+
+  if ( d == 0 )
+    return false;
+
+  double dx = q.x() - p.x();
+  double dy = q.y() - p.y();
+  double k = ( dy * w.x() - dx * w.y() ) / d;
+
+  s = p + v * k;
+
+  return true;
+}
+
+bool pointInRing( const QgsPolyline &ring, const QgsPoint &p )
+{
+  bool inside = false;
+  int j = ring.size() - 1;
+
+  for ( int i = 0; i < ring.size(); i++ )
+  {
+    if ( ring[i].x() == p.x() && ring[i].y() == p.y() )
+      return true;
+
+    if (( ring[i].y() < p.y() && ring[j].y() >= p.y() ) ||
+        ( ring[j].y() < p.y() && ring[i].y() >= p.y() ) )
+    {
+      if ( ring[i].x() + ( p.y() - ring[i].y() ) / ( ring[j].y() - ring[i].y() )*( ring[j].x() - ring[i].x() ) <= p.x() )
+        inside = !inside;
+    }
+
+    j = i;
+  }
+
+  return inside;
+}
+
+static bool ringInRing( const QgsPolyline &inside, const QgsPolyline &outside )
+{
+  for ( int i = 0; i < inside.size(); i++ )
+  {
+    if ( !pointInRing( outside, inside[i] ) )
+      return false;
+  }
+
+  return true;
+}
+
+bool ringIntersectsRing( const QgsPolyline &ring0, const QgsPolyline &ring1 )
+{
+  bool inside = false;
+  bool outside = false;
+
+  for ( int i = 0; i < ring0.size(); i++ )
+  {
+    if ( pointInRing( ring1, ring0[i] ) )
+    {
+      inside = true;
+    }
+    else
+    {
+      outside = true;
+    }
+
+    if ( outside && inside )
+      return true;
+  }
+
+  return false;
+}
+
+void QgsGeometry::validatePolyline( QList<Error> &errors, int i, const QgsPolyline &line )
+{
+  if ( line.size() < 2 )
+  {
+    QString msg = QObject::tr( "line %1 with less than two points" ).arg( i );
+    QgsDebugMsg( msg );
+    errors << Error( msg );
+    return;
+  }
+
+  bool closed = line[0] == line[ line.size()-1 ];
+
+  if ( closed && line.size() < 3 )
+  {
+    QString msg = QObject::tr( "ring %1 with less than three points" ).arg( i );
+    QgsDebugMsg( msg );
+    errors << Error( msg );
+    return;
+  }
+
+  for ( int j = 0; j < line.size() - 3; j++ )
+  {
+    QgsVector v = line[j+1] - line[j];
+
+    int n = j == 0 && closed ? line.size() - 2 : line.size() - 1;
+
+    for ( int k = j + 2; k < n; k++ )
+    {
+      QgsVector w = line[k+1] - line[k];
+
+      QgsPoint s;
+      if ( intersectLines( line[j], v, line[k], w, s ) )
+      {
+        double d = -distLine2Point( line[j], v.perpVector(), s );
+
+        if ( d >= 0 && d <= v.length() )
+        {
+          d = -distLine2Point( line[k], w.perpVector(), s );
+          if ( d >= 0 && d <= w.length() )
+          {
+            QString msg = QObject::tr( "segments %1 and %2 of line %3 intersect at %4" ).arg( j ).arg( k ).arg( i ).arg( s.toString() );
+            QgsDebugMsg( msg );
+            errors << Error( msg, s );
+            if ( errors.size() > 100 )
+            {
+              QString msg = QObject::tr( "stopping validation after more than 100 errors" );
+              QgsDebugMsg( msg );
+              errors << Error( msg );
+              return;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+void QgsGeometry::validatePolygon( QList<Error> &errors, int idx, const QgsPolygon &polygon )
+{
+  for ( int i = 1; i < polygon.size(); i++ )
+  {
+    if ( !ringInRing( polygon[i], polygon[0] ) )
+    {
+      QString msg = QObject::tr( "ring %1 of polygon %2 not in exterior ring" ).arg( i ).arg( idx );
+      QgsDebugMsg( msg );
+      errors << Error( msg );
+    }
+  }
+
+  for ( int i = 1; i < polygon.size(); i++ )
+  {
+    for ( int j = i + 1; j < polygon.size(); j++ )
+    {
+      if ( ringIntersectsRing( polygon[i], polygon[j] ) )
+      {
+        QString msg = QObject::tr( "interior rings %1 and %2 of polygon %3 intersect" ).arg( i ).arg( j ).arg( idx );
+        QgsDebugMsg( msg );
+        errors << Error( msg );
+      }
+    }
+  }
+
+  for ( int i = 0; i < polygon.size(); i++ )
+  {
+    validatePolyline( errors, i, polygon[i] );
+  }
+}
+
+void QgsGeometry::validateGeometry( QList<Error> &errors )
+{
+  errors.clear();
+
+  switch ( wkbType() )
+  {
+    case QGis::WKBPoint:
+    case QGis::WKBPoint25D:
+    case QGis::WKBMultiPoint:
+    case QGis::WKBMultiPoint25D:
+      break;
+
+    case QGis::WKBLineString:
+    case QGis::WKBLineString25D:
+      validatePolyline( errors, 0, asPolyline() );
+      break;
+
+    case QGis::WKBMultiLineString:
+    case QGis::WKBMultiLineString25D:
+    {
+      QgsMultiPolyline mp = asMultiPolyline();
+      for ( int i = 0; i < mp.size(); i++ )
+        validatePolyline( errors, i, mp[i] );
+    }
+    break;
+
+    case QGis::WKBPolygon:
+    case QGis::WKBPolygon25D:
+    {
+      validatePolygon( errors, 0, asPolygon() );
+    }
+    break;
+
+    case QGis::WKBMultiPolygon:
+    case QGis::WKBMultiPolygon25D:
+    {
+      QgsMultiPolygon mp = asMultiPolygon();
+      for ( int i = 0; i < mp.size(); i++ )
+        validatePolygon( errors, i, mp[i] );
+    }
+    break;
+
+    case QGis::WKBUnknown:
+      QgsDebugMsg( QObject::tr( "Unknown geometry type" ) );
+      errors << Error( QObject::tr( "Unknown geometry type" ) );
+      break;
+  }
 }

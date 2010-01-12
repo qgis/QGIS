@@ -22,6 +22,95 @@
 #include <QTextStream>
 #include <QObject> // for tr()
 
+#include "qgsexception.h"
+
+//
+// QgsVector
+//
+
+QgsVector::QgsVector() : m_x( 0.0 ), m_y( 0.0 )
+{
+}
+
+QgsVector::QgsVector( double x, double y ) : m_x( x ), m_y( y )
+{
+}
+
+QgsVector QgsVector::operator-( void ) const
+{
+  return QgsVector( -m_x, -m_y );
+}
+
+QgsVector QgsVector::operator*( double scalar ) const
+{
+  return QgsVector( m_x*scalar, m_y*scalar );
+}
+
+QgsVector QgsVector::operator/( double scalar ) const
+{
+  return *this * ( 1.0 / scalar );
+}
+
+double QgsVector::operator*( QgsVector v ) const
+{
+  return m_x*v.m_x + m_y*v.m_y;
+}
+
+double QgsVector::length() const
+{
+  return sqrt( m_x*m_x + m_y*m_y );
+}
+
+double QgsVector::x() const
+{
+  return m_x;
+}
+
+double QgsVector::y() const
+{
+  return m_y;
+}
+
+// perpendicular vector (rotated 90° counter-clockwise)
+QgsVector QgsVector::perpVector() const
+{
+  return QgsVector( -m_y, m_x );
+}
+
+double QgsVector::angle( void ) const
+{
+  double ang = atan2( m_y, m_x );
+  return ang < 0.0 ? ang + 2.0*M_PI : ang;
+}
+
+double QgsVector::angle( QgsVector v ) const
+{
+  return v.angle() - angle();
+}
+
+QgsVector QgsVector::rotateBy( double rot ) const
+{
+  double ang = atan2( m_y, m_x ) + rot;
+  double len = length();
+  return QgsVector( len*cos( ang ), len*sin( ang ) );
+}
+
+QgsVector QgsVector::normal() const
+{
+  double len = length();
+
+  if ( len == 0.0 )
+  {
+    throw QgsException( "normal vector of null vector undefined" );
+  }
+
+  return *this / len;
+}
+
+
+//
+// QgsPoint
+//
 
 QgsPoint::QgsPoint( const QgsPoint& p )
 {
