@@ -161,7 +161,7 @@ class SelectionFeature: public QObject
      * @param center center of marker
      * @return created vertex marker
      */
-    QgsVertexMarker* createVertexMarker( QgsPoint center );
+    QgsVertexMarker* createVertexMarker( QgsPoint center, QgsVertexMarker::IconType type = QgsVertexMarker::ICON_BOX );
 
     /**
      * Getter for getting vector layer which selection is working
@@ -171,7 +171,6 @@ class SelectionFeature: public QObject
 
 
   private:
-
     /**
      * Deletes whole vertex map.
      */
@@ -198,9 +197,14 @@ class SelectionFeature: public QObject
     void createVertexMapPoint();
 
     /**
-     * Updates stored feauture to actual one loaded from layer
+     * Updates stored feature to actual one loaded from layer
      */
     void updateFeature();
+
+    /**
+     * Validates the geometry
+     */
+    void validateGeometry( QgsGeometry *g = NULL );
 
     QgsFeature* mFeature;
     int mFeatureId;
@@ -209,6 +213,9 @@ class SelectionFeature: public QObject
     QgsRubberBand* mRubberBand;
     QList<VertexEntry> mVertexMap;
     QgsMapCanvas* mCanvas;
+
+    QList< QgsGeometry::Error > mGeomErrors;
+    QList< QgsVertexMarker * > mGeomErrorMarkers;
 };
 
 /**A maptool to move/deletes/adds vertices of line or polygon features*/
@@ -367,7 +374,6 @@ class QgsMapToolNodeTool: public QgsMapToolVertexEdit
 
     /** flag to tell if edition points */
     bool mIsPoint;
-
 };
 
 

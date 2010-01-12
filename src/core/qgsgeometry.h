@@ -362,6 +362,23 @@ class CORE_EXPORT QgsGeometry
      */
     int avoidIntersections();
 
+
+    class Error
+    {
+        QString message;
+        QgsPoint location;
+        bool hasLocation;
+      public:
+        Error( QString m ) : message( m ), hasLocation( false ) {}
+        Error( QString m, QgsPoint p ) : message( m ), location( p ), hasLocation( true ) {}
+
+        QString what() { return message; };
+        QgsPoint where() { return location; }
+        bool hasWhere() { return hasLocation; }
+    };
+
+    void validateGeometry( QList<Error> &errors );
+
   private:
     // Private variables
 
@@ -493,6 +510,9 @@ class CORE_EXPORT QgsGeometry
 
     /** return polygon from wkb */
     QgsPolygon asPolygon( unsigned char*& ptr, bool hasZValue );
+
+    void validatePolyline( QList<Error> &errors, int i, const QgsPolyline &polygon );
+    void validatePolygon( QList<Error> &errors, int i, const QgsPolygon &polygon );
 
     static int refcount;
 }; // class QgsGeometry
