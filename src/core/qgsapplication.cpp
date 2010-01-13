@@ -225,6 +225,9 @@ const QString QgsApplication::developerPath()
 const QString QgsApplication::helpAppPath()
 {
   QString helpAppPath = applicationDirPath();
+#ifdef Q_OS_MACX
+  helpAppPath += "/bin/qgis_help.app/Contents/MacOS";
+#endif
   helpAppPath += "/qgis_help";
   return helpAppPath;
 }
