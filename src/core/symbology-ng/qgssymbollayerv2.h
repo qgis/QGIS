@@ -31,14 +31,14 @@ class CORE_EXPORT QgsSymbolLayerV2
 
     virtual QString layerType() const = 0;
 
-    virtual void startRender( QgsRenderContext& context ) = 0;
-    virtual void stopRender( QgsRenderContext& context ) = 0;
+    virtual void startRender( QgsSymbolV2RenderContext& context ) = 0;
+    virtual void stopRender( QgsSymbolV2RenderContext& context ) = 0;
 
     virtual QgsSymbolLayerV2* clone() const = 0;
 
     virtual QgsStringMap properties() const = 0;
 
-    virtual void drawPreviewIcon( QPainter* painter, QSize size ) = 0;
+    virtual void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size ) = 0;
 
     virtual QgsSymbolV2* subSymbol() { return NULL; }
     // set layer's subsymbol. takes ownership of the passed symbol
@@ -68,9 +68,9 @@ class CORE_EXPORT QgsSymbolLayerV2
 class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
 {
   public:
-    virtual void renderPoint( const QPointF& point, QgsRenderContext& context ) = 0;
+    virtual void renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context ) = 0;
 
-    void drawPreviewIcon( QPainter* painter, QSize size );
+    void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size );
 
     void setAngle( double angle ) { mAngle = angle; }
     double angle() const { return mAngle; }
@@ -92,12 +92,12 @@ class CORE_EXPORT QgsMarkerSymbolLayerV2 : public QgsSymbolLayerV2
 class CORE_EXPORT QgsLineSymbolLayerV2 : public QgsSymbolLayerV2
 {
   public:
-    virtual void renderPolyline( const QPolygonF& points, QgsRenderContext& context ) = 0;
+    virtual void renderPolyline( const QPolygonF& points, QgsSymbolV2RenderContext& context ) = 0;
 
     void setWidth( double width ) { mWidth = width; }
     double width() const { return mWidth; }
 
-    void drawPreviewIcon( QPainter* painter, QSize size );
+    void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size );
 
   protected:
     QgsLineSymbolLayerV2( bool locked = false );
@@ -108,9 +108,9 @@ class CORE_EXPORT QgsLineSymbolLayerV2 : public QgsSymbolLayerV2
 class CORE_EXPORT QgsFillSymbolLayerV2 : public QgsSymbolLayerV2
 {
   public:
-    virtual void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsRenderContext& context ) = 0;
+    virtual void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context ) = 0;
 
-    void drawPreviewIcon( QPainter* painter, QSize size );
+    void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size );
 
   protected:
     QgsFillSymbolLayerV2( bool locked = false );

@@ -105,7 +105,7 @@ QgsSimpleMarkerSymbolLayerV2Widget::QgsSimpleMarkerSymbolLayerV2Widget( QWidget*
   for ( int i = 0; i < names.count(); ++i )
   {
     QgsSimpleMarkerSymbolLayerV2* lyr = new QgsSimpleMarkerSymbolLayerV2( names[i], QColor( 200, 200, 200 ), QColor( 0, 0, 0 ), markerSize );
-    QIcon icon = QgsSymbolLayerV2Utils::symbolLayerPreviewIcon( lyr, size );
+    QIcon icon = QgsSymbolLayerV2Utils::symbolLayerPreviewIcon( lyr, QgsSymbolV2::MM, size ); //todo: unit needs to be a parameter
     QListWidgetItem* item = new QListWidgetItem( icon, QString(), lstNames );
     item->setData( Qt::UserRole, names[i] );
     delete lyr;

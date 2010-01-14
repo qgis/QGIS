@@ -7,6 +7,8 @@
 #include <QPointF>
 #include <QPolygonF>
 
+
+
 QgsMarkerSymbolLayerV2::QgsMarkerSymbolLayerV2( bool locked )
     : QgsSymbolLayerV2( QgsSymbolV2::Marker, locked )
 {
@@ -22,39 +24,28 @@ QgsFillSymbolLayerV2::QgsFillSymbolLayerV2( bool locked )
 {
 }
 
-
-void QgsMarkerSymbolLayerV2::drawPreviewIcon( QPainter* painter, QSize size )
+void QgsMarkerSymbolLayerV2::drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size )
 {
-  QgsRenderContext context;
-  context.setPainter( painter );
-
   startRender( context );
   renderPoint( QPointF( size.width() / 2, size.height() / 2 ), context );
   stopRender( context );
 }
 
-void QgsLineSymbolLayerV2::drawPreviewIcon( QPainter* painter, QSize size )
+void QgsLineSymbolLayerV2::drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size )
 {
   QPolygonF points;
   // we're adding 0.5 to get rid of blurred preview:
   // drawing antialiased lines of width 1 at (x,0)-(x,100) creates 2px line
   points << QPointF( 0, size.height() / 2 + 0.5 ) << QPointF( size.width(), size.height() / 2 + 0.5 );
 
-  QgsRenderContext context;
-  context.setPainter( painter );
-
   startRender( context );
   renderPolyline( points, context );
   stopRender( context );
 }
 
-void QgsFillSymbolLayerV2::drawPreviewIcon( QPainter* painter, QSize size )
+void QgsFillSymbolLayerV2::drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size )
 {
   QPolygonF poly = QRectF( QPointF( 0, 0 ), QPointF( size.width() - 1, size.height() - 1 ) );
-
-  QgsRenderContext context;
-  context.setPainter( painter );
-
   startRender( context );
   renderPolygon( poly, NULL, context );
   stopRender( context );

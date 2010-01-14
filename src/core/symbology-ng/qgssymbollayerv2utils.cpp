@@ -7,6 +7,7 @@
 #include "qgsvectorcolorrampv2.h"
 
 #include "qgslogger.h"
+#include "qgsrendercontext.h"
 
 #include <QColor>
 #include <QDomNode>
@@ -165,14 +166,17 @@ QPixmap QgsSymbolLayerV2Utils::symbolPreviewPixmap( QgsSymbolV2* symbol, QSize s
 }
 
 
-QIcon QgsSymbolLayerV2Utils::symbolLayerPreviewIcon( QgsSymbolLayerV2* layer, QSize size )
+QIcon QgsSymbolLayerV2Utils::symbolLayerPreviewIcon( QgsSymbolLayerV2* layer, QgsSymbolV2::OutputUnit u, QSize size )
 {
   QPixmap pixmap( size );
   QPainter painter;
   painter.begin( &pixmap );
   painter.setRenderHint( QPainter::Antialiasing );
   painter.eraseRect( QRect( QPoint( 0, 0 ), size ) );
-  layer->drawPreviewIcon( &painter, size );
+  QgsRenderContext renderContext;
+  renderContext.setPainter( &painter );
+  QgsSymbolV2RenderContext symbolContext( &renderContext, u );
+  layer->drawPreviewIcon( symbolContext, size );
   painter.end();
   return QIcon( pixmap );
 }
@@ -339,17 +343,30 @@ QgsSymbolV2* QgsSymbolLayerV2Utils::loadSymbol( QDomElement& element )
   }
 
   QString symbolType = element.attribute( "type" );
+  QString unitString = element.attribute( "outputUnit", "MM" );
+
+  QgsSymbolV2* symbol = 0;
   if ( symbolType == "line" )
-    return new QgsLineSymbolV2( layers );
+    symbol = new QgsLineSymbolV2( layers );
   else if ( symbolType == "fill" )
-    return new QgsFillSymbolV2( layers );
+    symbol = new QgsFillSymbolV2( layers );
   else if ( symbolType == "marker" )
-    return new QgsMarkerSymbolV2( layers );
+    symbol = new QgsMarkerSymbolV2( layers );
   else
   {
     QgsDebugMsg( "unknown symbol type " + symbolType );
     return NULL;
   }
+
+  if ( unitString == "MM" )
+  {
+    symbol->setOutputUnit( QgsSymbolV2::MM );
+  }
+  else
+  {
+    symbol->setOutputUnit( QgsSymbolV2::MapUnit );
+  }
+  return symbol;
 }
 
 QgsSymbolLayerV2* QgsSymbolLayerV2Utils::loadSymbolLayer( QDomElement& element )
@@ -392,7 +409,12 @@ QDomElement QgsSymbolLayerV2Utils::saveSymbol( QString name, QgsSymbolV2* symbol
   QDomElement symEl = doc.createElement( "symbol" );
   symEl.setAttribute( "type", _nameForSymbolType( symbol->type() ) );
   symEl.setAttribute( "name", name );
-
+  QString unitString = "MM";
+  if ( symbol->outputUnit() == QgsSymbolV2::MapUnit )
+  {
+    unitString = "MapUnit";
+  }
+  symEl.setAttribute( "outputUnit", unitString );
   QgsDebugMsg( "num layers " + QString::number( symbol->symbolLayerCount() ) );
   for ( int i = 0; i < symbol->symbolLayerCount(); i++ )
   {
@@ -588,4 +610,46 @@ QDomElement QgsSymbolLayerV2Utils::saveColorRamp( QString name, QgsVectorColorRa
 
   QgsSymbolLayerV2Utils::saveProperties( ramp->properties(), doc, rampEl );
   return rampEl;
+}
+
+double QgsSymbolLayerV2Utils::lineWidthScaleFactor( QgsRenderContext* c, QgsSymbolV2::OutputUnit u )
+{
+  if ( !c )
+  {
+    return 1.0;
+  }
+
+  if ( u == QgsSymbolV2::MM )
+  {
+    return c->scaleFactor();
+  }
+  else //QgsSymbol::MapUnit
+  {
+    double mup = c->mapToPixel().mapUnitsPerPixel();
+    if ( mup > 0 )
+    {
+      return 1.0 / mup;
+    }
+    else
+    {
+      return 1.0;
+    }
+  }
+}
+
+double QgsSymbolLayerV2Utils::pixelSizeScaleFactor( QgsRenderContext* c, QgsSymbolV2::OutputUnit u )
+{
+  if ( !c )
+  {
+    return 1.0;
+  }
+
+  if ( u == QgsSymbolV2::MM )
+  {
+    return ( c->scaleFactor() * c->rasterScaleFactor() );
+  }
+  else //QgsSymbol::MapUnit
+  {
+    return c->rasterScaleFactor() / c->mapToPixel().mapUnitsPerPixel();
+  }
 }

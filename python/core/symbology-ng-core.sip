@@ -350,14 +350,14 @@ public:
 
   virtual QString layerType() const = 0;
 
-  virtual void startRender(QgsRenderContext& context) = 0;
-  virtual void stopRender(QgsRenderContext& context) = 0;
+  virtual void startRender(QgsSymbolV2RenderContext& context) = 0;
+  virtual void stopRender(QgsSymbolV2RenderContext& context) = 0;
 
   virtual QgsSymbolLayerV2* clone() const = 0 /Factory/;
 
   virtual QgsStringMap properties() const = 0;
 
-  virtual void drawPreviewIcon(QPainter* painter, QSize size) = 0;
+  virtual void drawPreviewIcon(QgsSymbolV2RenderContext& context, QSize size) = 0;
 
   virtual QgsSymbolV2* subSymbol();
   virtual bool setSubSymbol(QgsSymbolV2* symbol /Transfer/);
@@ -385,9 +385,9 @@ class QgsMarkerSymbolLayerV2 : QgsSymbolLayerV2
 %End
 
 public:
-  virtual void renderPoint(const QPointF& point, QgsRenderContext& context) = 0;
+  virtual void renderPoint(const QPointF& point, QgsSymbolV2RenderContext& context) = 0;
 
-  void drawPreviewIcon(QPainter* painter, QSize size);
+  void drawPreviewIcon(QgsSymbolV2RenderContext& context, QSize size);
 
   void setAngle(double angle);
   double angle() const;
@@ -407,12 +407,12 @@ class QgsLineSymbolLayerV2 : QgsSymbolLayerV2
 %End
 
 public:
-  virtual void renderPolyline(const QPolygonF& points, QgsRenderContext& context) = 0;
+  virtual void renderPolyline(const QPolygonF& points, QgsSymbolV2RenderContext& context) = 0;
 
   void setWidth(double width);
   double width() const;
   	
-  void drawPreviewIcon(QPainter* painter, QSize size);
+  void drawPreviewIcon(QgsSymbolV2RenderContext& context, QSize size);
 
 protected:
   QgsLineSymbolLayerV2(bool locked = false);
@@ -426,14 +426,33 @@ class QgsFillSymbolLayerV2 : QgsSymbolLayerV2
 %End
 
 public:
-  virtual void renderPolygon(const QPolygonF& points, QList<QPolygonF>* rings, QgsRenderContext& context) = 0;
+  virtual void renderPolygon(const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context) = 0;
 
-  void drawPreviewIcon(QPainter* painter, QSize size);
+  void drawPreviewIcon(QgsSymbolV2RenderContext& context, QSize size);
 
 protected:
   QgsFillSymbolLayerV2(bool locked = false);
 };
 
+
+///////////////
+
+class QgsSymbolV2RenderContext
+{
+%TypeHeaderCode
+#include <qgssymbolv2.h>
+%End
+
+    public:
+    QgsSymbolV2RenderContext( QgsRenderContext* c, QgsSymbolV2::OutputUnit u);
+    ~QgsSymbolV2RenderContext();
+
+    QgsRenderContext* renderContext();
+    void setRenderContext( QgsRenderContext* c );
+
+    QgsSymbolV2::OutputUnit outputUnit() const;
+    void setOutputUnit( QgsSymbolV2::OutputUnit u );
+};
 
 ///////////////
 
@@ -457,6 +476,12 @@ class QgsSymbolV2
 %End
 
 public:
+
+    enum OutputUnit
+    {
+      MM,
+      MapUnit
+    };
 
   enum SymbolType
   {
@@ -507,6 +532,9 @@ public:
   QString dump();
 
   virtual QgsSymbolV2* clone() const = 0 /Factory/;
+
+    OutputUnit outputUnit() const;
+    void setOutputUnit( OutputUnit u );
 
 protected:
   QgsSymbolV2(SymbolType type, QgsSymbolLayerV2List layers /Transfer/); // can't be instantiated

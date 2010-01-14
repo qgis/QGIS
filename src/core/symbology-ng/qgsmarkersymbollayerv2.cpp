@@ -63,14 +63,16 @@ QString QgsSimpleMarkerSymbolLayerV2::layerType() const
   return "SimpleMarker";
 }
 
-void QgsSimpleMarkerSymbolLayerV2::startRender( QgsRenderContext& context )
+void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
 {
   mBrush = QBrush( mColor );
   mPen = QPen( mBorderColor );
+  mPen.setWidthF( mPen.widthF() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), context.outputUnit() ) );
 
   mPolygon.clear();
 
-  double half = mSize / 2.0;
+  double scaledSize = mSize * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( context.renderContext(), context.outputUnit() );
+  double half = scaledSize / 2.0;
 
   if ( mName == "rectangle" )
   {
@@ -157,8 +159,8 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsRenderContext& context )
   // TODO: decide whether to use QImage or QPixmap - based on the render context
 
   // calculate necessary image size for the cache
-  int pw = (( mPen.width() == 0 ? 1 : mPen.width() ) + 1 ) / 2 * 2; // make even (round up); handle cosmetic pen
-  int imageSize = (( int ) mSize + pw ) / 2 * 2 + 1; //  make image width, height odd; account for pen width
+  double pw = (( mPen.widthF() == 0 ? 1 : mPen.widthF() ) + 1 ) / 2 * 2; // make even (round up); handle cosmetic pen
+  int imageSize = (( int ) scaledSize + pw ) / 2 * 2 + 1; //  make image width, height odd; account for pen width
 
   double center = (( double ) imageSize / 2 ) + 0.5; // add 1/2 pixel for proper rounding when the figure's coordinates are added
 
@@ -171,17 +173,27 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsRenderContext& context )
   p.setBrush( mBrush );
   p.setPen( mPen );
   p.translate( QPointF( center, center ) );
-  drawMarker( &p );
+  drawMarker( &p, context );
   p.end();
 }
 
-void QgsSimpleMarkerSymbolLayerV2::stopRender( QgsRenderContext& context )
+void QgsSimpleMarkerSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
 {
 }
 
-void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsRenderContext& context )
+void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context )
 {
-  QPainter* p = context.painter();
+  QgsRenderContext* rc = context.renderContext();
+  if ( !rc )
+  {
+    return;
+  }
+  QPainter* p = rc->painter();
+  if ( !p )
+  {
+    return;
+  }
+
   //p->setBrush(mBrush);
   //p->setPen(mPen);
 
@@ -189,10 +201,11 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsRenderC
   //p->translate(point);
 
   //drawMarker(p);
-  double s = mCache.width();
-  //if (mCache.isValid())
-  p->drawImage( point + QPointF( -s / 2.0, -s / 2.0 ) + mOffset, mCache );
-
+  //mCache.save("/home/marco/tmp/marker.png", "PNG");
+  double s = mCache.width() / context.renderContext()->rasterScaleFactor();
+  p->drawImage( QRectF( point.x() - s / 2.0 + mOffset.x() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), context.outputUnit() ), \
+                        point.y() - s / 2.0 + mOffset.y() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), context.outputUnit() ), \
+                        s, s ), mCache );
   //p->restore();
 }
 
@@ -216,7 +229,7 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::clone() const
   return m;
 }
 
-void QgsSimpleMarkerSymbolLayerV2::drawMarker( QPainter* p )
+void QgsSimpleMarkerSymbolLayerV2::drawMarker( QPainter* p, QgsSymbolV2RenderContext& context )
 {
   if ( mPolygon.count() != 0 )
   {
@@ -224,7 +237,8 @@ void QgsSimpleMarkerSymbolLayerV2::drawMarker( QPainter* p )
   }
   else
   {
-    double half = mSize / 2.0;
+    double scaledSize = mSize * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( context.renderContext(), context.outputUnit() );
+    double half = scaledSize / 2.0;
     // TODO: rotate
 
     if ( mName == "circle" )
@@ -283,24 +297,51 @@ QString QgsSvgMarkerSymbolLayerV2::layerType() const
   return "SvgMarker";
 }
 
-void QgsSvgMarkerSymbolLayerV2::startRender( QgsRenderContext& context )
+void QgsSvgMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
 {
-  QRectF rect( QPointF( -mSize / 2.0, -mSize / 2.0 ), QSizeF( mSize, mSize ) );
+  double pictureSize = 0;
+  QgsRenderContext* rc = context.renderContext();
+  if ( !rc )
+  {
+    return;
+  }
+
+  if ( rc->painter() && rc->painter()->device() )
+  {
+    //correct QPictures DPI correction
+    pictureSize = mSize * QgsSymbolLayerV2Utils::lineWidthScaleFactor( rc, context.outputUnit() ) \
+                  / rc->painter()->device()->logicalDpiX() * mPicture.logicalDpiX();
+  }
+  else
+  {
+    pictureSize = mSize * QgsSymbolLayerV2Utils::lineWidthScaleFactor( rc, context.outputUnit() );
+  }
+  QRectF rect( QPointF( -pictureSize / 2.0, -pictureSize / 2.0 ), QSizeF( pictureSize, pictureSize ) );
   QSvgRenderer renderer( mPath );
   QPainter painter( &mPicture );
   renderer.render( &painter, rect );
 }
 
-void QgsSvgMarkerSymbolLayerV2::stopRender( QgsRenderContext& context )
+void QgsSvgMarkerSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
 {
 }
 
 
-void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsRenderContext& context )
+void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context )
 {
-  QPainter* p = context.painter();
+  QgsRenderContext* rc = context.renderContext();
+  if ( !rc )
+  {
+    return;
+  }
+  QPainter* p = rc->painter();
+  if ( !p )
+  {
+    return;
+  }
+
   p->save();
-  p->translate( point + mOffset );
+  p->translate( point + mOffset * QgsSymbolLayerV2Utils::lineWidthScaleFactor( rc, context.outputUnit() ) );
 
   if ( mAngle != 0 )
     p->rotate( mAngle );

@@ -32,11 +32,11 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 
     QString layerType() const;
 
-    void startRender( QgsRenderContext& context );
+    void startRender( QgsSymbolV2RenderContext& context );
 
-    void stopRender( QgsRenderContext& context );
+    void stopRender( QgsSymbolV2RenderContext& context );
 
-    void renderPoint( const QPointF& point, QgsRenderContext& context );
+    void renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context );
 
     QgsStringMap properties() const;
 
@@ -50,7 +50,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 
   protected:
 
-    void drawMarker( QPainter* p );
+    void drawMarker( QPainter* p, QgsSymbolV2RenderContext& context );
 
     QColor mBorderColor;
     QPen mPen;
@@ -90,11 +90,11 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 
     QString layerType() const;
 
-    void startRender( QgsRenderContext& context );
+    void startRender( QgsSymbolV2RenderContext& context );
 
-    void stopRender( QgsRenderContext& context );
+    void stopRender( QgsSymbolV2RenderContext& context );
 
-    void renderPoint( const QPointF& point, QgsRenderContext& context );
+    void renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context );
 
     QgsStringMap properties() const;
 

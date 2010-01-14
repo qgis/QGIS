@@ -6,15 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>452</width>
+    <width>331</width>
     <height>404</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Symbol selector</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
+  <layout class="QGridLayout" name="gridLayout_3">
+   <item row="0" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
       <widget class="QLabel" name="lblPreview">
@@ -164,7 +164,7 @@
      </item>
     </layout>
    </item>
-   <item>
+   <item row="1" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QPushButton" name="btnSymbolProperties">
@@ -195,14 +195,28 @@
      </item>
     </layout>
    </item>
-   <item>
+   <item row="2" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <item>
+      <widget class="QLabel" name="mSymbolUnitLabel">
+       <property name="text">
+        <string>Symbol Unit:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="mSymbolUnitComboBox"/>
+     </item>
+    </layout>
+   </item>
+   <item row="3" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
       <string>Symbols from style:</string>
      </property>
     </widget>
    </item>
-   <item>
+   <item row="4" column="0">
     <widget class="QListView" name="viewSymbols">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -230,7 +244,7 @@
      </property>
     </widget>
    </item>
-   <item>
+   <item row="5" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>

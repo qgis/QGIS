@@ -17,7 +17,7 @@
 #include <cmath>
 
 QgsSymbolV2::QgsSymbolV2( SymbolType type, QgsSymbolLayerV2List layers )
-    : mType( type ), mLayers( layers )
+    : mType( type ), mLayers( layers ), mOutputUnit( MM )
 {
 
   // check they're all correct symbol layers
@@ -126,14 +126,16 @@ bool QgsSymbolV2::changeSymbolLayer( int index, QgsSymbolLayerV2* layer )
 
 void QgsSymbolV2::startRender( QgsRenderContext& context )
 {
+  QgsSymbolV2RenderContext symbolContext( &context, mOutputUnit );
   for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
-    ( *it )->startRender( context );
+    ( *it )->startRender( symbolContext );
 }
 
 void QgsSymbolV2::stopRender( QgsRenderContext& context )
 {
+  QgsSymbolV2RenderContext symbolContext( &context, mOutputUnit );
   for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
-    ( *it )->stopRender( context );
+    ( *it )->stopRender( symbolContext );
 }
 
 void QgsSymbolV2::setColor( const QColor& color )
@@ -158,9 +160,12 @@ QColor QgsSymbolV2::color()
 
 void QgsSymbolV2::drawPreviewIcon( QPainter* painter, QSize size )
 {
+  QgsRenderContext context;
+  context.setPainter( painter );
+  QgsSymbolV2RenderContext symbolContext( &context, mOutputUnit );
   for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
-    ( *it )->drawPreviewIcon( painter, size );
+    ( *it )->drawPreviewIcon( symbolContext, size );
   }
 }
 
@@ -240,6 +245,18 @@ QgsSymbolLayerV2List QgsSymbolV2::cloneLayers() const
   return lst;
 }
 
+////////////////////
+
+QgsSymbolV2RenderContext::QgsSymbolV2RenderContext( QgsRenderContext* c, QgsSymbolV2::OutputUnit u ): mRenderContext( c ), mOutputUnit( u )
+{
+
+}
+
+QgsSymbolV2RenderContext::~QgsSymbolV2RenderContext()
+{
+
+}
+
 
 ///////////////////
 
@@ -306,23 +323,26 @@ double QgsMarkerSymbolV2::size()
 
 void QgsMarkerSymbolV2::renderPoint( const QPointF& point, QgsRenderContext& context, int layer )
 {
+  QgsSymbolV2RenderContext symbolContext( &context, mOutputUnit );
   if ( layer != -1 )
   {
     if ( layer >= 0 && layer < mLayers.count() )
-      (( QgsMarkerSymbolLayerV2* ) mLayers[layer] )->renderPoint( point, context );
+      (( QgsMarkerSymbolLayerV2* ) mLayers[layer] )->renderPoint( point, symbolContext );
     return;
   }
 
   for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
     QgsMarkerSymbolLayerV2* layer = ( QgsMarkerSymbolLayerV2* ) * it;
-    layer->renderPoint( point, context );
+    layer->renderPoint( point, symbolContext );
   }
 }
 
 QgsSymbolV2* QgsMarkerSymbolV2::clone() const
 {
-  return new QgsMarkerSymbolV2( cloneLayers() );
+  QgsSymbolV2* cloneSymbol = new QgsMarkerSymbolV2( cloneLayers() );
+  cloneSymbol->setOutputUnit( mOutputUnit );
+  return cloneSymbol;
 }
 
 
@@ -371,24 +391,27 @@ double QgsLineSymbolV2::width()
 
 void QgsLineSymbolV2::renderPolyline( const QPolygonF& points, QgsRenderContext& context, int layer )
 {
+  QgsSymbolV2RenderContext symbolContext( &context, mOutputUnit );
   if ( layer != -1 )
   {
     if ( layer >= 0 && layer < mLayers.count() )
-      (( QgsLineSymbolLayerV2* ) mLayers[layer] )->renderPolyline( points, context );
+      (( QgsLineSymbolLayerV2* ) mLayers[layer] )->renderPolyline( points, symbolContext );
     return;
   }
 
   for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
     QgsLineSymbolLayerV2* layer = ( QgsLineSymbolLayerV2* ) * it;
-    layer->renderPolyline( points, context );
+    layer->renderPolyline( points, symbolContext );
   }
 }
 
 
 QgsSymbolV2* QgsLineSymbolV2::clone() const
 {
-  return new QgsLineSymbolV2( cloneLayers() );
+  QgsSymbolV2* cloneSymbol = new QgsLineSymbolV2( cloneLayers() );
+  cloneSymbol->setOutputUnit( mOutputUnit );
+  return cloneSymbol;
 }
 
 ///////////////////
@@ -403,22 +426,25 @@ QgsFillSymbolV2::QgsFillSymbolV2( QgsSymbolLayerV2List layers )
 
 void QgsFillSymbolV2::renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsRenderContext& context, int layer )
 {
+  QgsSymbolV2RenderContext symbolContext( &context, mOutputUnit );
   if ( layer != -1 )
   {
     if ( layer >= 0 && layer < mLayers.count() )
-      (( QgsFillSymbolLayerV2* ) mLayers[layer] )->renderPolygon( points, rings, context );
+      (( QgsFillSymbolLayerV2* ) mLayers[layer] )->renderPolygon( points, rings, symbolContext );
     return;
   }
 
   for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
     QgsFillSymbolLayerV2* layer = ( QgsFillSymbolLayerV2* ) * it;
-    layer->renderPolygon( points, rings, context );
+    layer->renderPolygon( points, rings, symbolContext );
   }
 }
 
 
 QgsSymbolV2* QgsFillSymbolV2::clone() const
 {
-  return new QgsFillSymbolV2( cloneLayers() );
+  QgsSymbolV2* cloneSymbol = new QgsFillSymbolV2( cloneLayers() );
+  cloneSymbol->setOutputUnit( mOutputUnit );
+  return cloneSymbol;
 }
