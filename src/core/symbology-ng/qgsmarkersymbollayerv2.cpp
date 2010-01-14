@@ -199,8 +199,8 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
   //drawMarker(p);
   //mCache.save("/home/marco/tmp/marker.png", "PNG");
   double s = mCache.width() / context.renderContext().rasterScaleFactor();
-  p->drawImage( QRectF( context.outputLineWidth( point.x() - s / 2.0 + mOffset.x() ),
-                        context.outputLineWidth( point.y() - s / 2.0 + mOffset.y() ),
+  p->drawImage( QRectF( point.x() - s / 2.0 + context.outputLineWidth( mOffset.x() ),
+                        point.y() - s / 2.0 + context.outputLineWidth( mOffset.y() ),
                         s, s ), mCache );
   //p->restore();
 }
