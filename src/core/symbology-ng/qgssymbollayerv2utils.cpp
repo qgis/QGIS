@@ -657,7 +657,15 @@ double QgsSymbolLayerV2Utils::pixelSizeScaleFactor( QgsRenderContext& c, QgsSymb
   }
   else //QgsSymbol::MapUnit
   {
-    return c.rasterScaleFactor() / c.mapToPixel().mapUnitsPerPixel();
+    double mup = c.mapToPixel().mapUnitsPerPixel();
+    if ( mup > 0 )
+    {
+      return c.rasterScaleFactor() / c.mapToPixel().mapUnitsPerPixel();
+    }
+    else
+    {
+      return 1.0;
+    }
   }
 }
 
