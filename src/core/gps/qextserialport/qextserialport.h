@@ -130,7 +130,6 @@ struct PortSettings
 #include <sys/select.h>
 #include <QSocketNotifier>
 typedef int HANDLE; // unused
-typedef 
 #elif defined (Q_OS_WIN)
 #include <windows.h>
 #include <QThread>
