@@ -187,7 +187,7 @@ bool QgsCoordinateReferenceSystem::createFromSrsId( long id )
 
 bool QgsCoordinateReferenceSystem::loadFromDb( QString db, QString field, long id )
 {
-  QgsDebugMsg( "load CRS from " + db + " where " + field + " is " + QString::number( id ) );
+  QgsDebugMsgLevel( "load CRS from " + db + " where " + field + " is " + QString::number( id ), 3 );
   mIsValidFlag = false;
 
   QFileInfo myInfo( db );
@@ -1133,7 +1133,7 @@ QString QgsCoordinateReferenceSystem::proj4FromSrsId( const int theSrsId )
 
 int QgsCoordinateReferenceSystem::openDb( QString path, sqlite3 **db )
 {
-  QgsDebugMsg( "path = " + path );
+  QgsDebugMsgLevel( "path = " + path, 3 );
   int myResult = sqlite3_open( path.toUtf8().data(), db );
 
   if ( myResult )
