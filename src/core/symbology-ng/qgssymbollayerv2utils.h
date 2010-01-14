@@ -44,6 +44,9 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     static QString encodePoint( QPointF point );
     static QPointF decodePoint( QString str );
 
+    static QString encodeOutputUnit( QgsSymbolV2::OutputUnit unit );
+    static QgsSymbolV2::OutputUnit decodeOutputUnit( QString str );
+
     static QIcon symbolPreviewIcon( QgsSymbolV2* symbol, QSize size );
     static QIcon symbolLayerPreviewIcon( QgsSymbolLayerV2* layer, QgsSymbolV2::OutputUnit u, QSize size );
     static QIcon colorRampPreviewIcon( QgsVectorColorRampV2* ramp, QSize size );

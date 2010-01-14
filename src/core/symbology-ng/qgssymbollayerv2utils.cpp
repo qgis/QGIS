@@ -148,6 +148,34 @@ QPointF QgsSymbolLayerV2Utils::decodePoint( QString str )
   return QPointF( lst[0].toDouble(), lst[1].toDouble() );
 }
 
+QString QgsSymbolLayerV2Utils::encodeOutputUnit( QgsSymbolV2::OutputUnit unit )
+{
+  switch ( unit )
+  {
+    case QgsSymbolV2::MM:
+      return "MM";
+    case QgsSymbolV2::MapUnit:
+      return "MapUnit";
+    default:
+      return "MM";
+  }
+}
+
+QgsSymbolV2::OutputUnit QgsSymbolLayerV2Utils::decodeOutputUnit( QString str )
+{
+  if ( str == "MM" )
+  {
+    return QgsSymbolV2::MM;
+  }
+  else if ( str == "MapUnit" )
+  {
+    return QgsSymbolV2::MapUnit;
+  }
+
+  // milimeters are default
+  return QgsSymbolV2::MM;
+}
+
 QIcon QgsSymbolLayerV2Utils::symbolPreviewIcon( QgsSymbolV2* symbol, QSize size )
 {
   return QIcon( symbolPreviewPixmap( symbol, size ) );
@@ -343,7 +371,6 @@ QgsSymbolV2* QgsSymbolLayerV2Utils::loadSymbol( QDomElement& element )
   }
 
   QString symbolType = element.attribute( "type" );
-  QString unitString = element.attribute( "outputUnit", "MM" );
 
   QgsSymbolV2* symbol = 0;
   if ( symbolType == "line" )
@@ -358,14 +385,8 @@ QgsSymbolV2* QgsSymbolLayerV2Utils::loadSymbol( QDomElement& element )
     return NULL;
   }
 
-  if ( unitString == "MM" )
-  {
-    symbol->setOutputUnit( QgsSymbolV2::MM );
-  }
-  else
-  {
-    symbol->setOutputUnit( QgsSymbolV2::MapUnit );
-  }
+  symbol->setOutputUnit( decodeOutputUnit( element.attribute( "outputUnit" ) ) );
+
   return symbol;
 }
 
@@ -409,12 +430,7 @@ QDomElement QgsSymbolLayerV2Utils::saveSymbol( QString name, QgsSymbolV2* symbol
   QDomElement symEl = doc.createElement( "symbol" );
   symEl.setAttribute( "type", _nameForSymbolType( symbol->type() ) );
   symEl.setAttribute( "name", name );
-  QString unitString = "MM";
-  if ( symbol->outputUnit() == QgsSymbolV2::MapUnit )
-  {
-    unitString = "MapUnit";
-  }
-  symEl.setAttribute( "outputUnit", unitString );
+  symEl.setAttribute( "outputUnit", encodeOutputUnit( symbol->outputUnit() ) );
   QgsDebugMsg( "num layers " + QString::number( symbol->symbolLayerCount() ) );
   for ( int i = 0; i < symbol->symbolLayerCount(); i++ )
   {
