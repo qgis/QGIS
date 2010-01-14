@@ -46,7 +46,7 @@ void QgsSimpleFillSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
   mBrush = QBrush( mColor, mBrushStyle );
   mPen = QPen( mBorderColor );
   mPen.setStyle( mBorderStyle );
-  mPen.setWidthF( mBorderWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), context.outputUnit() ) );
+  mPen.setWidthF( context.outputLineWidth( mBorderWidth ) );
 }
 
 void QgsSimpleFillSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
@@ -55,12 +55,7 @@ void QgsSimpleFillSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
 
 void QgsSimpleFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context )
 {
-  QgsRenderContext* rc = context.renderContext();
-  if ( !rc )
-  {
-    return;
-  }
-  QPainter* p = rc->painter();
+  QPainter* p = context.renderContext().painter();
   if ( !p )
   {
     return;
