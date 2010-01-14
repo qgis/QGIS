@@ -50,7 +50,7 @@ QString QgsSimpleLineSymbolLayerV2::layerType() const
 void QgsSimpleLineSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
 {
   mPen.setColor( mColor );
-  mPen.setWidthF( mWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), context.outputUnit() ) );
+  mPen.setWidthF( context.outputLineWidth( mWidth ) );
   mPen.setStyle( mPenStyle );
   mPen.setJoinStyle( mPenJoinStyle );
   mPen.setCapStyle( mPenCapStyle );
@@ -62,12 +62,7 @@ void QgsSimpleLineSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
 
 void QgsSimpleLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSymbolV2RenderContext& context )
 {
-  QgsRenderContext* rc = context.renderContext();
-  if ( !rc )
-  {
-    return;
-  }
-  QPainter* p = rc->painter();
+  QPainter* p = context.renderContext().painter();
   if ( !p )
   {
     return;
@@ -216,11 +211,7 @@ void QgsMarkerLineSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
   // if being rotated, it gets initialized with every line segment
   if ( !mRotateMarker )
   {
-    QgsRenderContext* rc = context.renderContext();
-    if ( rc )
-    {
-      mMarker->startRender( *rc );
-    }
+    mMarker->startRender( context.renderContext() );
   }
 }
 
@@ -228,11 +219,7 @@ void QgsMarkerLineSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
 {
   if ( !mRotateMarker )
   {
-    QgsRenderContext* rc = context.renderContext();
-    if ( rc )
-    {
-      mMarker->stopRender( *rc );
-    }
+    mMarker->stopRender( context.renderContext() );
   }
 }
 
@@ -244,7 +231,7 @@ void QgsMarkerLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
   }
   else
   {
-    QPolygonF points2 = ::offsetLine( points, mOffset * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), context.outputUnit() ) );
+    QPolygonF points2 = ::offsetLine( points, context.outputLineWidth( mOffset ) );
     renderPolylineNoOffset( points2, context );
   }
 }
@@ -256,13 +243,9 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineNoOffset( const QPolygonF& points
   bool first = true;
   double origAngle = mMarker->angle();
 
-  double painterUnitInterval = mInterval * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), context.outputUnit() );
+  double painterUnitInterval = context.outputLineWidth( mInterval );
 
-  QgsRenderContext* rc = context.renderContext();
-  if ( !rc )
-  {
-    return;
-  }
+  QgsRenderContext& rc = context.renderContext();
 
   for ( int i = 1; i < points.count(); ++i )
   {
@@ -285,13 +268,13 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineNoOffset( const QPolygonF& points
     if ( mRotateMarker )
     {
       mMarker->setAngle( origAngle + ( l.angle() * 180 / M_PI ) );
-      mMarker->startRender( *rc );
+      mMarker->startRender( rc );
     }
 
     // draw first marker
     if ( first )
     {
-      mMarker->renderPoint( lastPt, *rc );
+      mMarker->renderPoint( lastPt, rc );
       first = false;
     }
 
@@ -301,14 +284,14 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineNoOffset( const QPolygonF& points
       // "c" is 1 for regular point or in interval (0,1] for begin of line segment
       lastPt += c * diff;
       lengthLeft -= painterUnitInterval;
-      mMarker->renderPoint( lastPt, *rc );
+      mMarker->renderPoint( lastPt, rc );
       c = 1; // reset c (if wasn't 1 already)
     }
 
     lastPt = pt;
 
     if ( mRotateMarker )
-      mMarker->stopRender( *rc );
+      mMarker->stopRender( rc );
   }
 
   // restore original rotation
@@ -404,12 +387,7 @@ void QgsLineDecorationSymbolLayerV2::renderPolyline( const QPolygonF& points, Qg
 {
   // draw arrow at the end of line
 
-  QgsRenderContext* rc = context.renderContext();
-  if ( !rc )
-  {
-    return;
-  }
-  QPainter* p = rc->painter();
+  QPainter* p = context.renderContext().painter();
   if ( !p )
   {
     return;

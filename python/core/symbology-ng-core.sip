@@ -444,14 +444,17 @@ class QgsSymbolV2RenderContext
 %End
 
     public:
-    QgsSymbolV2RenderContext( QgsRenderContext* c, QgsSymbolV2::OutputUnit u);
+    QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u);
     ~QgsSymbolV2RenderContext();
 
-    QgsRenderContext* renderContext();
-    void setRenderContext( QgsRenderContext* c );
+    QgsRenderContext& renderContext();
+    //void setRenderContext( QgsRenderContext* c );
 
     QgsSymbolV2::OutputUnit outputUnit() const;
     void setOutputUnit( QgsSymbolV2::OutputUnit u );
+
+    double outputLineWidth(double width) const;
+    double outputPixelSize(double size) const;
 };
 
 ///////////////
@@ -605,6 +608,10 @@ typedef QMap<QString, QString> QgsStringMap;
 
 //////////
 
+//typedef QgsSymbolLayerV2 * ( * QgsSymbolLayerV2CreateFunc )( const QgsStringMap& );
+//typedef QgsSymbolLayerV2Widget*( *QgsSymbolLayerV2WidgetFunc )();
+
+
 class QgsSymbolLayerV2Metadata
 {
 %TypeHeaderCode
@@ -623,8 +630,8 @@ public:
 
   QString name() const;
   QgsSymbolV2::SymbolType type();
-  // TODO QgsSymbolLayerV2CreateFunc createFunction() const { return mCreateFunc; }
-  // TODO QgsSymbolLayerV2WidgetFunc widgetFunction() const { return mWidgetFunc; }
+  // TODO QgsSymbolLayerV2CreateFunc createFunction() const;
+  // TODO QgsSymbolLayerV2WidgetFunc widgetFunction() const;
 
 };
 

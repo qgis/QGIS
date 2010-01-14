@@ -67,9 +67,9 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     static QDomElement saveColorRamp( QString name, QgsVectorColorRampV2* ramp, QDomDocument& doc );
 
     /**Returns the line width scale factor depending on the unit and the paint device*/
-    static double lineWidthScaleFactor( QgsRenderContext* c, QgsSymbolV2::OutputUnit u );
+    static double lineWidthScaleFactor( QgsRenderContext& c, QgsSymbolV2::OutputUnit u );
     /**Returns scale factor painter units -> pixel dimensions*/
-    static double pixelSizeScaleFactor( QgsRenderContext* c, QgsSymbolV2::OutputUnit u );
+    static double pixelSizeScaleFactor( QgsRenderContext& c, QgsSymbolV2::OutputUnit u );
 };
 
 class QPolygonF;

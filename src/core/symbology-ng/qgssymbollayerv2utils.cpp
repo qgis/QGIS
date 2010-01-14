@@ -175,7 +175,7 @@ QIcon QgsSymbolLayerV2Utils::symbolLayerPreviewIcon( QgsSymbolLayerV2* layer, Qg
   painter.eraseRect( QRect( QPoint( 0, 0 ), size ) );
   QgsRenderContext renderContext;
   renderContext.setPainter( &painter );
-  QgsSymbolV2RenderContext symbolContext( &renderContext, u );
+  QgsSymbolV2RenderContext symbolContext( renderContext, u );
   layer->drawPreviewIcon( symbolContext, size );
   painter.end();
   return QIcon( pixmap );
@@ -612,20 +612,16 @@ QDomElement QgsSymbolLayerV2Utils::saveColorRamp( QString name, QgsVectorColorRa
   return rampEl;
 }
 
-double QgsSymbolLayerV2Utils::lineWidthScaleFactor( QgsRenderContext* c, QgsSymbolV2::OutputUnit u )
+double QgsSymbolLayerV2Utils::lineWidthScaleFactor( QgsRenderContext& c, QgsSymbolV2::OutputUnit u )
 {
-  if ( !c )
-  {
-    return 1.0;
-  }
 
   if ( u == QgsSymbolV2::MM )
   {
-    return c->scaleFactor();
+    return c.scaleFactor();
   }
   else //QgsSymbol::MapUnit
   {
-    double mup = c->mapToPixel().mapUnitsPerPixel();
+    double mup = c.mapToPixel().mapUnitsPerPixel();
     if ( mup > 0 )
     {
       return 1.0 / mup;
@@ -637,19 +633,14 @@ double QgsSymbolLayerV2Utils::lineWidthScaleFactor( QgsRenderContext* c, QgsSymb
   }
 }
 
-double QgsSymbolLayerV2Utils::pixelSizeScaleFactor( QgsRenderContext* c, QgsSymbolV2::OutputUnit u )
+double QgsSymbolLayerV2Utils::pixelSizeScaleFactor( QgsRenderContext& c, QgsSymbolV2::OutputUnit u )
 {
-  if ( !c )
-  {
-    return 1.0;
-  }
-
   if ( u == QgsSymbolV2::MM )
   {
-    return ( c->scaleFactor() * c->rasterScaleFactor() );
+    return ( c.scaleFactor() * c.rasterScaleFactor() );
   }
   else //QgsSymbol::MapUnit
   {
-    return c->rasterScaleFactor() / c->mapToPixel().mapUnitsPerPixel();
+    return c.rasterScaleFactor() / c.mapToPixel().mapUnitsPerPixel();
   }
 }

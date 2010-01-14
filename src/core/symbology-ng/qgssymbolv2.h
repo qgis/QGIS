@@ -97,17 +97,20 @@ class CORE_EXPORT QgsSymbolV2
 class CORE_EXPORT QgsSymbolV2RenderContext
 {
   public:
-    QgsSymbolV2RenderContext( QgsRenderContext* c, QgsSymbolV2::OutputUnit u );
+    QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u );
     ~QgsSymbolV2RenderContext();
 
-    QgsRenderContext* renderContext() { return mRenderContext; }
-    void setRenderContext( QgsRenderContext* c ) { mRenderContext = c;}
+    QgsRenderContext& renderContext() { return mRenderContext; }
+    //void setRenderContext( QgsRenderContext& c ) { mRenderContext = c;}
 
     QgsSymbolV2::OutputUnit outputUnit() const { return mOutputUnit; }
     void setOutputUnit( QgsSymbolV2::OutputUnit u ) { mOutputUnit = u; }
 
+    double outputLineWidth(double width) const;
+    double outputPixelSize(double size) const;
+
   private:
-    QgsRenderContext* mRenderContext;
+    QgsRenderContext& mRenderContext;
     QgsSymbolV2::OutputUnit mOutputUnit;
 };
 

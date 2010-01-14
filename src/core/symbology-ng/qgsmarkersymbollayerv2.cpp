@@ -67,11 +67,11 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
 {
   mBrush = QBrush( mColor );
   mPen = QPen( mBorderColor );
-  mPen.setWidthF( mPen.widthF() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), context.outputUnit() ) );
+  mPen.setWidthF( context.outputLineWidth( mPen.widthF() ) );
 
   mPolygon.clear();
 
-  double scaledSize = mSize * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( context.renderContext(), context.outputUnit() );
+  double scaledSize = context.outputPixelSize( mSize );
   double half = scaledSize / 2.0;
 
   if ( mName == "rectangle" )
@@ -183,12 +183,8 @@ void QgsSimpleMarkerSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context
 
 void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context )
 {
-  QgsRenderContext* rc = context.renderContext();
-  if ( !rc )
-  {
-    return;
-  }
-  QPainter* p = rc->painter();
+  QgsRenderContext& rc = context.renderContext();
+  QPainter* p = rc.painter();
   if ( !p )
   {
     return;
@@ -202,9 +198,9 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
 
   //drawMarker(p);
   //mCache.save("/home/marco/tmp/marker.png", "PNG");
-  double s = mCache.width() / context.renderContext()->rasterScaleFactor();
-  p->drawImage( QRectF( point.x() - s / 2.0 + mOffset.x() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), context.outputUnit() ), \
-                        point.y() - s / 2.0 + mOffset.y() * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), context.outputUnit() ), \
+  double s = mCache.width() / context.renderContext().rasterScaleFactor();
+  p->drawImage( QRectF( context.outputLineWidth( point.x() - s / 2.0 + mOffset.x() ),
+                        context.outputLineWidth( point.y() - s / 2.0 + mOffset.y() ),
                         s, s ), mCache );
   //p->restore();
 }
@@ -237,7 +233,7 @@ void QgsSimpleMarkerSymbolLayerV2::drawMarker( QPainter* p, QgsSymbolV2RenderCon
   }
   else
   {
-    double scaledSize = mSize * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( context.renderContext(), context.outputUnit() );
+    double scaledSize = context.outputPixelSize( mSize );
     double half = scaledSize / 2.0;
     // TODO: rotate
 
@@ -300,21 +296,16 @@ QString QgsSvgMarkerSymbolLayerV2::layerType() const
 void QgsSvgMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
 {
   double pictureSize = 0;
-  QgsRenderContext* rc = context.renderContext();
-  if ( !rc )
-  {
-    return;
-  }
+  QgsRenderContext& rc = context.renderContext();
 
-  if ( rc->painter() && rc->painter()->device() )
+  if ( rc.painter() && rc.painter()->device() )
   {
     //correct QPictures DPI correction
-    pictureSize = mSize * QgsSymbolLayerV2Utils::lineWidthScaleFactor( rc, context.outputUnit() ) \
-                  / rc->painter()->device()->logicalDpiX() * mPicture.logicalDpiX();
+    pictureSize = context.outputLineWidth( mSize ) / rc.painter()->device()->logicalDpiX() * mPicture.logicalDpiX();
   }
   else
   {
-    pictureSize = mSize * QgsSymbolLayerV2Utils::lineWidthScaleFactor( rc, context.outputUnit() );
+    pictureSize = context.outputLineWidth( mSize );
   }
   QRectF rect( QPointF( -pictureSize / 2.0, -pictureSize / 2.0 ), QSizeF( pictureSize, pictureSize ) );
   QSvgRenderer renderer( mPath );
@@ -329,19 +320,15 @@ void QgsSvgMarkerSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
 
 void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context )
 {
-  QgsRenderContext* rc = context.renderContext();
-  if ( !rc )
-  {
-    return;
-  }
-  QPainter* p = rc->painter();
+  QPainter* p = context.renderContext().painter();
   if ( !p )
   {
     return;
   }
 
   p->save();
-  p->translate( point + mOffset * QgsSymbolLayerV2Utils::lineWidthScaleFactor( rc, context.outputUnit() ) );
+  QPointF outputOffset = QPointF(context.outputLineWidth( mOffset.x() ), context.outputLineWidth( mOffset.y() ) );
+  p->translate( point + outputOffset );
 
   if ( mAngle != 0 )
     p->rotate( mAngle );

@@ -126,14 +126,14 @@ bool QgsSymbolV2::changeSymbolLayer( int index, QgsSymbolLayerV2* layer )
 
 void QgsSymbolV2::startRender( QgsRenderContext& context )
 {
-  QgsSymbolV2RenderContext symbolContext( &context, mOutputUnit );
+  QgsSymbolV2RenderContext symbolContext( context, mOutputUnit );
   for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
     ( *it )->startRender( symbolContext );
 }
 
 void QgsSymbolV2::stopRender( QgsRenderContext& context )
 {
-  QgsSymbolV2RenderContext symbolContext( &context, mOutputUnit );
+  QgsSymbolV2RenderContext symbolContext( context, mOutputUnit );
   for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
     ( *it )->stopRender( symbolContext );
 }
@@ -162,7 +162,7 @@ void QgsSymbolV2::drawPreviewIcon( QPainter* painter, QSize size )
 {
   QgsRenderContext context;
   context.setPainter( painter );
-  QgsSymbolV2RenderContext symbolContext( &context, mOutputUnit );
+  QgsSymbolV2RenderContext symbolContext( context, mOutputUnit );
   for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
     ( *it )->drawPreviewIcon( symbolContext, size );
@@ -247,7 +247,8 @@ QgsSymbolLayerV2List QgsSymbolV2::cloneLayers() const
 
 ////////////////////
 
-QgsSymbolV2RenderContext::QgsSymbolV2RenderContext( QgsRenderContext* c, QgsSymbolV2::OutputUnit u ): mRenderContext( c ), mOutputUnit( u )
+QgsSymbolV2RenderContext::QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u )
+  : mRenderContext( c ), mOutputUnit( u )
 {
 
 }
@@ -255,6 +256,16 @@ QgsSymbolV2RenderContext::QgsSymbolV2RenderContext( QgsRenderContext* c, QgsSymb
 QgsSymbolV2RenderContext::~QgsSymbolV2RenderContext()
 {
 
+}
+
+double QgsSymbolV2RenderContext::outputLineWidth(double width) const
+{
+  return width * QgsSymbolLayerV2Utils::lineWidthScaleFactor( mRenderContext, mOutputUnit );
+}
+
+double QgsSymbolV2RenderContext::outputPixelSize(double size) const
+{
+  return size * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( mRenderContext, mOutputUnit );
 }
 
 
@@ -323,7 +334,7 @@ double QgsMarkerSymbolV2::size()
 
 void QgsMarkerSymbolV2::renderPoint( const QPointF& point, QgsRenderContext& context, int layer )
 {
-  QgsSymbolV2RenderContext symbolContext( &context, mOutputUnit );
+  QgsSymbolV2RenderContext symbolContext( context, mOutputUnit );
   if ( layer != -1 )
   {
     if ( layer >= 0 && layer < mLayers.count() )
@@ -391,7 +402,7 @@ double QgsLineSymbolV2::width()
 
 void QgsLineSymbolV2::renderPolyline( const QPolygonF& points, QgsRenderContext& context, int layer )
 {
-  QgsSymbolV2RenderContext symbolContext( &context, mOutputUnit );
+  QgsSymbolV2RenderContext symbolContext( context, mOutputUnit );
   if ( layer != -1 )
   {
     if ( layer >= 0 && layer < mLayers.count() )
@@ -426,7 +437,7 @@ QgsFillSymbolV2::QgsFillSymbolV2( QgsSymbolLayerV2List layers )
 
 void QgsFillSymbolV2::renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsRenderContext& context, int layer )
 {
-  QgsSymbolV2RenderContext symbolContext( &context, mOutputUnit );
+  QgsSymbolV2RenderContext symbolContext( context, mOutputUnit );
   if ( layer != -1 )
   {
     if ( layer >= 0 && layer < mLayers.count() )
