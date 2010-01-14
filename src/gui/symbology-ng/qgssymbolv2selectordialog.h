@@ -33,6 +33,7 @@ class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog, private Ui::QgsSymb
     void setMarkerSize( double size );
     void setLineWidth( double width );
     void addSymbolToStyle();
+    void on_mSymbolUnitComboBox_currentIndexChanged( const QString & text );
 
   signals:
     void symbolModified();

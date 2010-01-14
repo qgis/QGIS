@@ -85,7 +85,10 @@
         <number>1</number>
        </property>
        <property name="minimum">
-        <double>-100.000000000000000</double>
+        <double>-100000.000000000000000</double>
+       </property>
+       <property name="maximum">
+        <double>100000.000000000000000</double>
        </property>
       </widget>
      </item>
@@ -102,6 +105,9 @@
        </property>
        <property name="decimals">
         <number>1</number>
+       </property>
+       <property name="maximum">
+        <double>100000.000000000000000</double>
        </property>
        <property name="value">
         <double>1.000000000000000</double>
@@ -167,6 +173,11 @@
  </widget>
  <customwidgets>
   <customwidget>
+   <class>QgsColorButtonV2</class>
+   <extends>QPushButton</extends>
+   <header>qgscolorbutton.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsPenStyleComboBox</class>
    <extends>QComboBox</extends>
    <header>qgspenstylecombobox.h</header>
@@ -180,11 +191,6 @@
    <class>QgsPenCapStyleComboBox</class>
    <extends>QComboBox</extends>
    <header>qgspenstylecombobox.h</header>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorButtonV2</class>
-   <extends>QPushButton</extends>
-   <header>qgscolorbutton.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

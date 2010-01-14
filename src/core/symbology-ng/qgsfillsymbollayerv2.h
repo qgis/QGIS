@@ -30,11 +30,11 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
 
     QString layerType() const;
 
-    void startRender( QgsRenderContext& context );
+    void startRender( QgsSymbolV2RenderContext& context );
 
-    void stopRender( QgsRenderContext& context );
+    void stopRender( QgsSymbolV2RenderContext& context );
 
-    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsRenderContext& context );
+    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context );
 
     QgsStringMap properties() const;
 

@@ -22,6 +22,12 @@ class CORE_EXPORT QgsSymbolV2
 {
   public:
 
+    enum OutputUnit
+    {
+      MM,
+      MapUnit
+    };
+
     enum SymbolType
     {
       Marker,
@@ -72,6 +78,9 @@ class CORE_EXPORT QgsSymbolV2
 
     virtual QgsSymbolV2* clone() const = 0;
 
+    OutputUnit outputUnit() const { return mOutputUnit; }
+    void setOutputUnit( OutputUnit u ) { mOutputUnit = u; }
+
   protected:
     QgsSymbolV2( SymbolType type, QgsSymbolLayerV2List layers ); // can't be instantiated
 
@@ -79,6 +88,27 @@ class CORE_EXPORT QgsSymbolV2
 
     SymbolType mType;
     QgsSymbolLayerV2List mLayers;
+
+    OutputUnit mOutputUnit;
+};
+
+///////////////////////
+
+class CORE_EXPORT QgsSymbolV2RenderContext
+{
+  public:
+    QgsSymbolV2RenderContext( QgsRenderContext* c, QgsSymbolV2::OutputUnit u );
+    ~QgsSymbolV2RenderContext();
+
+    QgsRenderContext* renderContext() { return mRenderContext; }
+    void setRenderContext( QgsRenderContext* c ) { mRenderContext = c;}
+
+    QgsSymbolV2::OutputUnit outputUnit() const { return mOutputUnit; }
+    void setOutputUnit( QgsSymbolV2::OutputUnit u ) { mOutputUnit = u; }
+
+  private:
+    QgsRenderContext* mRenderContext;
+    QgsSymbolV2::OutputUnit mOutputUnit;
 };
 
 

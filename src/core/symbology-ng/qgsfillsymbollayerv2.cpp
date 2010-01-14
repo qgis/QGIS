@@ -41,21 +41,31 @@ QString QgsSimpleFillSymbolLayerV2::layerType() const
   return "SimpleFill";
 }
 
-void QgsSimpleFillSymbolLayerV2::startRender( QgsRenderContext& context )
+void QgsSimpleFillSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
 {
   mBrush = QBrush( mColor, mBrushStyle );
   mPen = QPen( mBorderColor );
   mPen.setStyle( mBorderStyle );
-  mPen.setWidthF( mBorderWidth );
+  mPen.setWidthF( mBorderWidth * QgsSymbolLayerV2Utils::lineWidthScaleFactor( context.renderContext(), context.outputUnit() ) );
 }
 
-void QgsSimpleFillSymbolLayerV2::stopRender( QgsRenderContext& context )
+void QgsSimpleFillSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
 {
 }
 
-void QgsSimpleFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsRenderContext& context )
+void QgsSimpleFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context )
 {
-  QPainter* p = context.painter();
+  QgsRenderContext* rc = context.renderContext();
+  if ( !rc )
+  {
+    return;
+  }
+  QPainter* p = rc->painter();
+  if ( !p )
+  {
+    return;
+  }
+
   p->setBrush( mBrush );
   p->setPen( mPen );
 

@@ -12,6 +12,7 @@
 #include "qgsapplication.h"
 
 #include "qgssymbollayerv2widget.h"
+#include "qgssymbolv2.h" //for the unit
 
 static const int SymbolLayerItemType = QStandardItem::UserType + 1;
 
@@ -31,7 +32,7 @@ class SymbolLayerItem : public QStandardItem
 
     void updatePreview()
     {
-      QIcon icon = QgsSymbolLayerV2Utils::symbolLayerPreviewIcon( mLayer, QSize( 16, 16 ) );
+      QIcon icon = QgsSymbolLayerV2Utils::symbolLayerPreviewIcon( mLayer, QgsSymbolV2::MM, QSize( 16, 16 ) ); //todo: make unit a parameter
       setIcon( icon );
     }
 
@@ -335,7 +336,7 @@ void QgsSymbolV2PropertiesDialog::removeLayer()
 
 void QgsSymbolV2PropertiesDialog::moveLayerDown()
 {
-  moveLayerByOffset( +1 );
+  moveLayerByOffset( + 1 );
 }
 
 void QgsSymbolV2PropertiesDialog::moveLayerUp()

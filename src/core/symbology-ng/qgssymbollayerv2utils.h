@@ -5,6 +5,7 @@
 
 #include <QMap>
 #include <Qt>
+#include "qgssymbolv2.h"
 
 class QgsSymbolV2;
 class QgsSymbolLayerV2;
@@ -44,7 +45,7 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     static QPointF decodePoint( QString str );
 
     static QIcon symbolPreviewIcon( QgsSymbolV2* symbol, QSize size );
-    static QIcon symbolLayerPreviewIcon( QgsSymbolLayerV2* layer, QSize size );
+    static QIcon symbolLayerPreviewIcon( QgsSymbolLayerV2* layer, QgsSymbolV2::OutputUnit u, QSize size );
     static QIcon colorRampPreviewIcon( QgsVectorColorRampV2* ramp, QSize size );
 
     static QPixmap symbolPreviewPixmap( QgsSymbolV2* symbol, QSize size );
@@ -64,6 +65,11 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
 
     static QgsVectorColorRampV2* loadColorRamp( QDomElement& element );
     static QDomElement saveColorRamp( QString name, QgsVectorColorRampV2* ramp, QDomDocument& doc );
+
+    /**Returns the line width scale factor depending on the unit and the paint device*/
+    static double lineWidthScaleFactor( QgsRenderContext* c, QgsSymbolV2::OutputUnit u );
+    /**Returns scale factor painter units -> pixel dimensions*/
+    static double pixelSizeScaleFactor( QgsRenderContext* c, QgsSymbolV2::OutputUnit u );
 };
 
 class QPolygonF;

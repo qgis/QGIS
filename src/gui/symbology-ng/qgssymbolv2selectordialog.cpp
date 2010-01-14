@@ -41,6 +41,20 @@ QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsSt
   updateSymbolPreview();
   updateSymbolInfo();
 
+  //output unit
+  mSymbolUnitComboBox->blockSignals( true );
+  mSymbolUnitComboBox->addItem( tr( "Millimeter" ) );
+  mSymbolUnitComboBox->addItem( tr( "Map unit" ) );
+  if ( mSymbol && mSymbol->outputUnit() == QgsSymbolV2::MM )
+  {
+    mSymbolUnitComboBox->setCurrentIndex( mSymbolUnitComboBox->findText( tr( "Millimeter" ) ) );
+  }
+  else
+  {
+    mSymbolUnitComboBox->setCurrentIndex( mSymbolUnitComboBox->findText( tr( "Map unit" ) ) );
+  }
+  mSymbolUnitComboBox->blockSignals( false );
+
   // select correct page in stacked widget
   // there's a correspondence between symbol type number and page numbering => exploit it!
   stackedWidget->setCurrentIndex( symbol->type() );
@@ -223,4 +237,22 @@ void QgsSymbolV2SelectorDialog::keyPressEvent( QKeyEvent * e )
   {
     QDialog::keyPressEvent( e );
   }
+}
+
+void QgsSymbolV2SelectorDialog::on_mSymbolUnitComboBox_currentIndexChanged( const QString & text )
+{
+  if ( !mSymbol )
+  {
+    return;
+  }
+  if ( text == tr( "Millimeter" ) )
+  {
+    mSymbol->setOutputUnit( QgsSymbolV2::MM );
+  }
+  else //map unit
+  {
+    mSymbol->setOutputUnit( QgsSymbolV2::MapUnit );
+  }
+  updateSymbolPreview();
+  emit symbolModified();
 }
