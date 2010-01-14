@@ -1,4 +1,4 @@
-
+#include "qwineventnotifier.h"
 
 #include <QMutexLocker>
 #include <QDebug>

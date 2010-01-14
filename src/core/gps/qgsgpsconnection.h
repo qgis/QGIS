@@ -19,8 +19,6 @@
 #define QGSGPSCONNECTION_H
 
 #include <QObject>
-#include <QTimer>
-#include <QPair>
 
 class QIODevice;
 
@@ -63,25 +61,15 @@ class CORE_EXPORT QgsGPSConnection : public QObject
     /**Constructor
         @param dev input device for the connection (e.g. serial device). The class takes ownership of the object
         @param pollIntervall update intervall in milliseconds*/
-    QgsGPSConnection( QIODevice* dev, int pollInterval = 1000 );
-    QgsGPSConnection( QString port, int pollInterval = 1000 );
+    QgsGPSConnection( QIODevice* dev );
     virtual ~QgsGPSConnection();
     /**Opens connection to device*/
     bool connect();
     /**Closes connection to device*/
     bool close();
-    /**Starts polling and sending stateChanged signals*/
-    bool startPolling();
-    /**Stops polling*/
-    bool stopPolling();
-    /**Tries different interfaces and settings
-    @return true in case of success*/
-    static QgsGPSConnection* detectGPSConnection();
 
     /**Sets the GPS source. The class takes ownership of the device class*/
     void setSource( QIODevice* source );
-    void setPollInterval( int i ) { mPollTimer->setInterval( i ); }
-    int pollInterval() const { return mPollTimer->interval(); }
 
     /**Returns the status. Possible state are not connected, connected, data received*/
     Status status() const { return mStatus; }
@@ -89,20 +77,12 @@ class CORE_EXPORT QgsGPSConnection : public QObject
     /**Returns the current gps information (lat, lon, etc.)*/
     QgsGPSInformation currentGPSInformation() const { return mLastGPSInformation; }
 
-    /**Sets a new timer object*/
-    const QTimer* timer() const { return mPollTimer; }
-    void setTimer( QTimer* t );
-
-    static QList< QPair<QString, QString> > availablePorts();
-
   signals:
     void stateChanged( const QgsGPSInformation& info );
 
   protected:
     /**Data source (e.g. serial device, socket, file,...)*/
     QIODevice* mSource;
-    /**Timer that triggers polling*/
-    QTimer* mPollTimer;
     /**Last state of the gps related variables (e.g. position, time, ...)*/
     QgsGPSInformation mLastGPSInformation;
     /**Connection status*/
@@ -112,7 +92,6 @@ class CORE_EXPORT QgsGPSConnection : public QObject
     /**Closes and deletes mSource*/
     void cleanupSource();
     void clearLastGPSInformation();
-    void init( int pollInterval );
 
   protected slots:
     /**Parse available data source content*/

@@ -58,15 +58,17 @@ class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidg
     void on_mBtnCloseFeature_clicked( );
     void on_mBtnResetFeature_clicked( );
     void on_mCbxAutoAddVertices_toggled( bool theFlag );
+
+    void connected( QgsGPSConnection * );
+    void timedout();
+
   private:
     void addVertex( );
     void connectGps();
     void connectGpsSlot( );
     void disconnectGps();
     void populateDevices();
-    QextSerialPort* mSerialPort;
     QgsGPSConnection* mNmea;
-    QgsGPSTrackerThread* mThread;
     QgsMapCanvas * mpCanvas;
     QgsGpsMarker * mpMapMarker;
     QwtPlot * mpPlot;
