@@ -73,6 +73,8 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     static double lineWidthScaleFactor( QgsRenderContext& c, QgsSymbolV2::OutputUnit u );
     /**Returns scale factor painter units -> pixel dimensions*/
     static double pixelSizeScaleFactor( QgsRenderContext& c, QgsSymbolV2::OutputUnit u );
+    /**Creates a render context for a pixel based device*/
+    static QgsRenderContext createRenderContext( QPainter* p );
 };
 
 class QPolygonF;

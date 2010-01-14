@@ -160,8 +160,7 @@ QColor QgsSymbolV2::color()
 
 void QgsSymbolV2::drawPreviewIcon( QPainter* painter, QSize size )
 {
-  QgsRenderContext context;
-  context.setPainter( painter );
+  QgsRenderContext context = QgsSymbolLayerV2Utils::createRenderContext( painter );
   QgsSymbolV2RenderContext symbolContext( context, mOutputUnit );
   for ( QgsSymbolLayerV2List::iterator it = mLayers.begin(); it != mLayers.end(); ++it )
   {
@@ -186,9 +185,7 @@ QImage QgsSymbolV2::bigSymbolPreviewImage()
     p.drawLine( 50, 0, 50, 100 );
   }
 
-  QgsRenderContext context;
-  context.setPainter( &p );
-
+  QgsRenderContext context = QgsSymbolLayerV2Utils::createRenderContext( &p );
   startRender( context );
 
   if ( mType == QgsSymbolV2::Line )
@@ -248,7 +245,7 @@ QgsSymbolLayerV2List QgsSymbolV2::cloneLayers() const
 ////////////////////
 
 QgsSymbolV2RenderContext::QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u )
-  : mRenderContext( c ), mOutputUnit( u )
+    : mRenderContext( c ), mOutputUnit( u )
 {
 
 }
@@ -258,12 +255,12 @@ QgsSymbolV2RenderContext::~QgsSymbolV2RenderContext()
 
 }
 
-double QgsSymbolV2RenderContext::outputLineWidth(double width) const
+double QgsSymbolV2RenderContext::outputLineWidth( double width ) const
 {
   return width * QgsSymbolLayerV2Utils::lineWidthScaleFactor( mRenderContext, mOutputUnit );
 }
 
-double QgsSymbolV2RenderContext::outputPixelSize(double size) const
+double QgsSymbolV2RenderContext::outputPixelSize( double size ) const
 {
   return size * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( mRenderContext, mOutputUnit );
 }
