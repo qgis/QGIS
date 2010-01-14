@@ -660,3 +660,19 @@ double QgsSymbolLayerV2Utils::pixelSizeScaleFactor( QgsRenderContext& c, QgsSymb
     return c.rasterScaleFactor() / c.mapToPixel().mapUnitsPerPixel();
   }
 }
+
+QgsRenderContext QgsSymbolLayerV2Utils::createRenderContext( QPainter* p )
+{
+  QgsRenderContext context;
+  context.setPainter( p );
+  context.setRasterScaleFactor( 1.0 );
+  if ( p && p->device() )
+  {
+    context.setScaleFactor( p->device()->logicalDpiX() / 25.4 );
+  }
+  else
+  {
+    context.setScaleFactor( 3.465 ); //assume 88 dpi as standard value
+  }
+  return context;
+}
