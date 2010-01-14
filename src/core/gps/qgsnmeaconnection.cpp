@@ -30,11 +30,7 @@
 
 #define KNOTS_TO_KMH 1.852
 
-QgsNMEAConnection::QgsNMEAConnection( QIODevice* dev, int pollInterval ): QgsGPSConnection( dev, pollInterval )
-{
-}
-
-QgsNMEAConnection::QgsNMEAConnection( QString port, int pollInterval ): QgsGPSConnection( port, pollInterval )
+QgsNMEAConnection::QgsNMEAConnection( QIODevice* dev ): QgsGPSConnection( dev )
 {
 }
 
@@ -61,12 +57,9 @@ void QgsNMEAConnection::parseData()
     numBytes = mSource->bytesAvailable();
   }
 
-  QgsDebugMsg( "numBytes" );
-  QgsDebugMsg( QString::number( numBytes ) );
+  QgsDebugMsg( "numBytes:" + QString::number( numBytes ) );
 
-
-
-  if ( numBytes > 0 )
+  if ( numBytes >= 6 )
   {
     if ( mStatus != GPSDataReceived )
     {
@@ -77,7 +70,6 @@ void QgsNMEAConnection::parseData()
     mStringBuffer.append( mSource->read( numBytes ) );
     processStringBuffer();
     emit stateChanged( mLastGPSInformation );
-    QgsDebugMsg( mStringBuffer );
   }
 }
 

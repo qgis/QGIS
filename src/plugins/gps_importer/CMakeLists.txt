@@ -38,7 +38,8 @@ ADD_LIBRARY (gpsimporterplugin MODULE ${GPS_SRCS} ${GPS_MOC_SRCS} ${GPS_RCC_SRCS
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_SOURCE_DIR}
      ${CMAKE_CURRENT_BINARY_DIR}
-     ../../core ../../core/gps
+     ../../core ../../core/gps ../../core/gps/qextserialport
+
      ../../gui
      ..
      ${EXPAT_INCLUDE_DIR}

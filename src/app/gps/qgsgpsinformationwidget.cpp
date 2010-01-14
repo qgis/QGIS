@@ -18,7 +18,7 @@
 #include "qgsgpsinformationwidget.h"
 #include "qgsvectorlayer.h"
 #include "qgsnmeaconnection.h"
-#include "qgsgpstrackerthread.h"
+#include "qgsgpsdetector.h"
 #include "qgscoordinatetransform.h"
 #include <qgspoint.h>
 #include <qgsrubberband.h>
@@ -58,9 +58,7 @@
 
 QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWidget * parent, Qt::WindowFlags f ):
     QWidget( parent, f ),
-    mSerialPort( 0 ),
     mNmea( 0 ),
-    mThread( 0 ) ,
     mpCanvas( thepCanvas )
 {
   setupUi( this );
@@ -293,69 +291,62 @@ void QgsGPSInformationWidget::on_mConnectButton_toggled( bool theFlag )
 {
   if ( theFlag )
   {
-    mConnectButton->setText( tr( "Connecting..." ) );
     connectGps();
-    mConnectButton->setText( tr( "Disconnect" ) );
   }
   else
   {
     disconnectGps();
-    mConnectButton->setText( tr( "Connect" ) );
   }
 }
 
 void QgsGPSInformationWidget::connectGps()
 {
+  QString port;
+
   if ( mRadUserPath->isChecked() )
   {
-    if ( !mCboDevices->itemData( mCboDevices->currentIndex() ).toString().isEmpty() )
-    {
-      mNmea = new QgsNMEAConnection( mCboDevices->itemData( mCboDevices->currentIndex() ).toString(), 500 );
-      QObject::connect( mNmea, SIGNAL( stateChanged( const QgsGPSInformation& ) ),
-                        this, SLOT( displayGPSInformation( const QgsGPSInformation& ) ) );
-      mThread = new QgsGPSTrackerThread( mNmea );
-      mThread->start();
-      mGPSTextEdit->append( tr( "Connecting on %1" ).arg( mCboDevices->itemData( mCboDevices->currentIndex() ).toString() ) );
-    }
-    else
+    port = mCboDevices->itemData( mCboDevices->currentIndex() ).toString();
+
+    if ( port.isEmpty() )
     {
       QMessageBox::information( this, tr( "/gps" ), tr( "No path to the GPS port "
                                 "is specified. Please enter a path then try again." ) );
       //toggle the button back off
       mConnectButton->setChecked( false );
-    }
-  }
-  else //autodetect
-  {
-    mNmea = QgsGPSConnection::detectGPSConnection();
-    if ( !mNmea )
-    {
-      mConnectButton->setChecked( false );
       return;
     }
-    mNmea->setPollInterval( 1000 );
-    QObject::connect( mNmea, SIGNAL( stateChanged( const QgsGPSInformation& ) ), this, SLOT( displayGPSInformation( const QgsGPSInformation& ) ) );
-
-    mThread = new QgsGPSTrackerThread( mNmea );
-    mThread->start();
-    mGPSTextEdit->append( tr( "Connected..." ) );
   }
+
+  mGPSTextEdit->append( tr( "Connecting..." ) );
+
+  QgsGPSDetector *detector = new QgsGPSDetector( port );
+  connect( detector, SIGNAL( detected( QgsGPSConnection * ) ), this, SLOT( connected( QgsGPSConnection * ) ) );
+  connect( detector, SIGNAL( detectionFailed() ), this, SLOT( timedout() ) );
 }
+
+void QgsGPSInformationWidget::timedout()
+{
+  mConnectButton->setChecked( false );
+  mNmea = NULL;
+  mGPSTextEdit->append( tr( "Timed out!" ) );
+}
+
+void QgsGPSInformationWidget::connected( QgsGPSConnection *conn )
+{
+  mNmea = conn;
+  QObject::connect( mNmea, SIGNAL( stateChanged( const QgsGPSInformation& ) ),
+                    this, SLOT( displayGPSInformation( const QgsGPSInformation& ) ) );
+  mGPSTextEdit->append( tr( "Connected!" ) );
+  mConnectButton->setText( tr( "Disconnect" ) );
+}
+
 void QgsGPSInformationWidget::disconnectGps()
 {
-  if ( mThread )
-  {
-    mThread->quit();
-    mThread->wait();
-    delete mThread;
-    mThread = 0;
-    mNmea = 0;
-    mSerialPort = 0;
-    mGPSTextEdit->append( tr( "Disconnected..." ) );
-  }
-  //mGPSTextEdit->clear();
-  //toggle the button back on
+  delete mNmea;
+
+  mGPSTextEdit->append( tr( "Disconnected..." ) );
   mConnectButton->setChecked( false );
+  mConnectButton->setText( tr( "Connect" ) );
 }
 
 
@@ -370,6 +361,7 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation& in
   {
     delete mMarkerList.takeFirst();
   }
+
   for ( int i = 0; i < info.satellitesInView.size(); ++i )
   {
     QgsSatelliteInfo currentInfo = info.satellitesInView.at( i );
@@ -858,7 +850,7 @@ void QgsGPSInformationWidget::on_mBtnRefreshDevices_clicked( )
 /* Copied from gps plugin */
 void QgsGPSInformationWidget::populateDevices()
 {
-  QList< QPair<QString, QString> > ports = QgsGPSConnection::availablePorts();
+  QList< QPair<QString, QString> > ports = QgsGPSDetector::availablePorts();
 
   mCboDevices->clear();
   for ( int i = 0; i < ports.size(); i++ )

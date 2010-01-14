@@ -15,7 +15,7 @@
 #include "qgsdataprovider.h"
 #include "qgscontexthelp.h"
 #include "qgslogger.h"
-#include "qgsgpsconnection.h"
+#include "qgsgpsdetector.h"
 
 //qt includes
 #include <QFileDialog>
@@ -306,7 +306,7 @@ void QgsGPSPluginGui::on_pbnRefresh_clicked()
 
 void QgsGPSPluginGui::populatePortComboBoxes()
 {
-  QList< QPair<QString, QString> > devs = QgsGPSConnection::availablePorts() << QPair<QString, QString>( "usb:", "usb:" );
+  QList< QPair<QString, QString> > devs = QgsGPSDetector::availablePorts() << QPair<QString, QString>( "usb:", "usb:" );
 
   cmbDLPort->clear();
   cmbULPort->clear();

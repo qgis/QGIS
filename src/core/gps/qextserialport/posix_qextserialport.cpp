@@ -956,3 +956,7 @@ qint64 QextSerialPort::writeData(const char * data, qint64 maxSize)
 
     return (qint64)retVal;
 }
+
+void QextSerialPort::onWinEvent( HANDLE h )
+{
+}

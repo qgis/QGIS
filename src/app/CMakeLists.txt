@@ -303,7 +303,7 @@ INCLUDE_DIRECTORIES(
   ${GEOS_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
   ../core
-  ../core/gps
+  ../core/gps ../core/gps/qextserialport
   ../core/composer ../core/raster ../core/renderer ../core/symbology ../core/symbology-ng
   ../gui ../gui/symbology-ng
   ../plugins
