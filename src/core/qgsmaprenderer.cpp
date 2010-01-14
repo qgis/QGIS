@@ -647,9 +647,9 @@ void QgsMapRenderer::setDestinationSrs( const QgsCoordinateReferenceSystem& srs 
 
 const QgsCoordinateReferenceSystem& QgsMapRenderer::destinationSrs()
 {
-  QgsDebugMsg( "* Returning destCRS" );
-  QgsDebugMsg( "* DestCRS.srsid() = " + QString::number( mDestCRS->srsid() ) );
-  QgsDebugMsg( "* DestCRS.proj4() = " + mDestCRS->toProj4() );
+  QgsDebugMsgLevel( "* Returning destCRS", 3 );
+  QgsDebugMsgLevel( "* DestCRS.srsid() = " + QString::number( mDestCRS->srsid() ), 3 );
+  QgsDebugMsgLevel( "* DestCRS.proj4() = " + mDestCRS->toProj4(), 3 );
   return *mDestCRS;
 }
 
