@@ -39,10 +39,11 @@ class GUI_EXPORT QgsColorButton: public QToolButton
 };
 
 
-class QgsColorButtonV2 : public QPushButton
+class GUI_EXPORT QgsColorButtonV2 : public QPushButton
 {
   public:
     QgsColorButtonV2( QWidget* parent = 0 );
+    QgsColorButtonV2( QString text, QWidget* parent = 0 );
 
     void setColor( const QColor &color );
     QColor color() const { return mColor; }
