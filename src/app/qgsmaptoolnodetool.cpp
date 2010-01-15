@@ -899,6 +899,11 @@ SelectionFeature::SelectionFeature()
 SelectionFeature::~SelectionFeature()
 {
   deleteVertexMap();
+
+  while ( !mGeomErrorMarkers.isEmpty() )
+  {
+    delete mGeomErrorMarkers.takeFirst();
+  }
 }
 
 void SelectionFeature::updateFeature()
@@ -1040,6 +1045,7 @@ void SelectionFeature::deleteSelectedVertexes()
   if ( count != 0 && ( !wasValid || isValid ) )
   {
     mVlayer->endEditCommand();
+    validateGeometry( f.geometry() );
   }
   else
   {
@@ -1150,11 +1156,6 @@ void SelectionFeature::deleteVertexMap()
   {
     VertexEntry entry = mVertexMap.takeLast();
     delete entry.vertexMarker;
-  }
-
-  while ( !mGeomErrorMarkers.isEmpty() )
-  {
-    delete mGeomErrorMarkers.takeFirst();
   }
 }
 

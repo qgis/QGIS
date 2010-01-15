@@ -6324,27 +6324,46 @@ static bool ringInRing( const QgsPolyline &inside, const QgsPolyline &outside )
   return true;
 }
 
-bool ringIntersectsRing( const QgsPolyline &ring0, const QgsPolyline &ring1 )
+void QgsGeometry::checkRingIntersections( QList<Error> &errors,
+    int p0, int i0, const QgsPolyline &ring0,
+    int p1, int i1, const QgsPolyline &ring1 )
 {
-  bool inside = false;
-  bool outside = false;
-
-  for ( int i = 0; i < ring0.size(); i++ )
+  for ( int i = 0; i < ring0.size() - 1; i++ )
   {
-    if ( pointInRing( ring1, ring0[i] ) )
-    {
-      inside = true;
-    }
-    else
-    {
-      outside = true;
-    }
+    QgsVector v = ring0[i+1] - ring0[i];
 
-    if ( outside && inside )
-      return true;
+    for ( int j = 0; j < ring1.size() - 1; j++ )
+    {
+      QgsVector w = ring1[j+1] - ring1[j];
+
+      QgsPoint s;
+      if ( intersectLines( ring0[i], v, ring1[j], w, s ) )
+      {
+        double d = -distLine2Point( ring0[i], v.perpVector(), s );
+
+        if ( d >= 0 && d <= v.length() )
+        {
+          d = -distLine2Point( ring1[j], w.perpVector(), s );
+          if ( d >= 0 && d <= w.length() )
+          {
+            QString msg = QObject::tr( "segment %1 of ring %2 of polygon %3 intersects segment %4 of ring %5 of polygon %6 at %7" )
+                          .arg( i0 ).arg( i ).arg( p0 )
+                          .arg( i1 ).arg( j ).arg( p1 )
+                          .arg( s.toString() );
+            QgsDebugMsg( msg );
+            errors << Error( msg, s );
+            if ( errors.size() > 100 )
+            {
+              QString msg = QObject::tr( "stopping validation after more than 100 errors" );
+              QgsDebugMsg( msg );
+              errors << Error( msg );
+              return;
+            }
+          }
+        }
+      }
+    }
   }
-
-  return false;
 }
 
 void QgsGeometry::validatePolyline( QList<Error> &errors, int i, const QgsPolyline &line )
@@ -6406,6 +6425,7 @@ void QgsGeometry::validatePolyline( QList<Error> &errors, int i, const QgsPolyli
 
 void QgsGeometry::validatePolygon( QList<Error> &errors, int idx, const QgsPolygon &polygon )
 {
+  // check if holes are inside polygon
   for ( int i = 1; i < polygon.size(); i++ )
   {
     if ( !ringInRing( polygon[i], polygon[0] ) )
@@ -6416,19 +6436,16 @@ void QgsGeometry::validatePolygon( QList<Error> &errors, int idx, const QgsPolyg
     }
   }
 
+  // check holes for intersections
   for ( int i = 1; i < polygon.size(); i++ )
   {
     for ( int j = i + 1; j < polygon.size(); j++ )
     {
-      if ( ringIntersectsRing( polygon[i], polygon[j] ) )
-      {
-        QString msg = QObject::tr( "interior rings %1 and %2 of polygon %3 intersect" ).arg( i ).arg( j ).arg( idx );
-        QgsDebugMsg( msg );
-        errors << Error( msg );
-      }
+      checkRingIntersections( errors, idx, i, polygon[i], idx, j, polygon[j] );
     }
   }
 
+  // check if rings are self-intersecting
   for ( int i = 0; i < polygon.size(); i++ )
   {
     validatePolyline( errors, i, polygon[i] );
@@ -6473,7 +6490,28 @@ void QgsGeometry::validateGeometry( QList<Error> &errors )
     {
       QgsMultiPolygon mp = asMultiPolygon();
       for ( int i = 0; i < mp.size(); i++ )
+      {
         validatePolygon( errors, i, mp[i] );
+      }
+
+      for ( int i = 0; i < mp.size(); i++ )
+      {
+        for ( int j = i + 1;  j < mp.size(); j++ )
+        {
+          if ( ringInRing( mp[i][0], mp[j][0] ) )
+          {
+            errors << Error( QObject::tr( "polygon %1 inside polygon %2" ).arg( i ).arg( j ) );
+          }
+          else if ( ringInRing( mp[j][0], mp[i][0] ) )
+          {
+            errors << Error( QObject::tr( "polygon %1 inside polygon %2" ).arg( j ).arg( i ) );
+          }
+          else
+          {
+            checkRingIntersections( errors, i, 0, mp[i][0], j, 0, mp[j][0] );
+          }
+        }
+      }
     }
     break;
 
