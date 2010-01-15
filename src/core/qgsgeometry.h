@@ -511,6 +511,10 @@ class CORE_EXPORT QgsGeometry
     /** return polygon from wkb */
     QgsPolygon asPolygon( unsigned char*& ptr, bool hasZValue );
 
+    void checkRingIntersections( QList<Error> &errors,
+                                 int p0, int i0, const QgsPolyline &ring0,
+                                 int p1, int i1, const QgsPolyline &ring1 );
+
     void validatePolyline( QList<Error> &errors, int i, const QgsPolyline &polygon );
     void validatePolygon( QList<Error> &errors, int i, const QgsPolygon &polygon );
 
