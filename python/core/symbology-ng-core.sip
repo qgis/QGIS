@@ -3,6 +3,15 @@ typedef QList<QgsSymbolV2*> QgsSymbolV2List;
 
 typedef QList< QPair<QString, QPixmap> > QgsLegendSymbologyList;
 
+
+// this is a workaround for an error in generated code by SIP
+// to ensure it will recognize the class name
+%ModuleHeaderCode
+class QgsRendererV2Widget;
+class QgsSymbolLayerV2Widget;
+%End
+
+
 ///////////////
 
 /*
@@ -608,31 +617,25 @@ typedef QMap<QString, QString> QgsStringMap;
 
 //////////
 
-//typedef QgsSymbolLayerV2 * ( * QgsSymbolLayerV2CreateFunc )( const QgsStringMap& );
-//typedef QgsSymbolLayerV2Widget*( *QgsSymbolLayerV2WidgetFunc )();
+class QgsSymbolLayerV2Widget /External/;
 
-
-class QgsSymbolLayerV2Metadata
+class QgsSymbolLayerV2AbstractMetadata
 {
 %TypeHeaderCode
 #include <qgssymbollayerv2registry.h>
 %End
 
-public:
-  /** construct invalid metadata */
-  QgsSymbolLayerV2Metadata();
+  public:
+    /** construct metadata */
+    QgsSymbolLayerV2AbstractMetadata( QString name, QgsSymbolV2::SymbolType type );
 
-  /** construct metadata */
-  // TODO
-  //QgsSymbolLayerV2Metadata(QString name, QgsSymbolV2::SymbolType type,
-  //                         QgsSymbolLayerV2CreateFunc pfCreate,
-  //                         QgsSymbolLayerV2WidgetFunc pfWidget);
+    QString name() const;
+    QgsSymbolV2::SymbolType type() const;
 
-  QString name() const;
-  QgsSymbolV2::SymbolType type();
-  // TODO QgsSymbolLayerV2CreateFunc createFunction() const;
-  // TODO QgsSymbolLayerV2WidgetFunc widgetFunction() const;
-
+    /** create a symbol layer of this type given the map of properties. */
+    virtual QgsSymbolLayerV2* createSymbolLayer( const QgsStringMap& map ) = 0 /Factory/;
+    /** create widget for symbol layer of this type. Can return NULL if there's no GUI */
+    virtual QgsSymbolLayerV2Widget* createSymbolLayerWidget() /Factory/;
 };
 
 //////////
@@ -649,13 +652,16 @@ public:
   static QgsSymbolLayerV2Registry* instance();
 
   //! return metadata for specified symbol layer
-  QgsSymbolLayerV2Metadata symbolLayerMetadata(QString name) const;
+  QgsSymbolLayerV2AbstractMetadata* symbolLayerMetadata(QString name) const;
 
   //! register a new symbol layer type
-  void addSymbolLayerType(const QgsSymbolLayerV2Metadata& metadata);
+  void addSymbolLayerType(QgsSymbolLayerV2AbstractMetadata* metadata /Transfer/);
 
   //! create a new instance of symbol layer given symbol layer name and properties
-  QgsSymbolLayerV2* createSymbolLayer(QString name, const QgsStringMap& properties) const /Factory/;
+  // TODO: disabled in PyQGIS because if used with symbol layer from Python
+  //   the combination of /Factory/ annotation QgsSymbolLayerV2AbstractMetadata::createSymbolLayer()
+  //   and here is deadly: results in premature deallocation of the symbol layer -> segfaults
+  //QgsSymbolLayerV2* createSymbolLayer(QString name, const QgsStringMap& properties) const /Factory/;
 
   //! return a list of available symbol layers for a specified symbol type
   QStringList symbolLayersForType(QgsSymbolV2::SymbolType type);
@@ -665,6 +671,7 @@ public:
 
 protected:
   QgsSymbolLayerV2Registry();
+  ~QgsSymbolLayerV2Registry();
 
 };
 
@@ -786,4 +793,58 @@ public:
   //! @note not all properties will be preserved
   static void rendererV2toV1(QgsVectorLayer* layer);
 
+};
+
+////////////
+
+class QgsRendererV2Widget /External/;
+
+class QgsRendererV2AbstractMetadata
+{
+%TypeHeaderCode
+#include <qgsrendererv2registry.h>
+%End
+
+  public:
+    QgsRendererV2AbstractMetadata( QString name, QString visibleName, QString iconName = QString() );
+
+    QString name() const;
+    QString visibleName() const;
+    QString iconName() const;
+
+    /** Return new instance of the renderer given the DOM element. Returns NULL on error.
+     * Pure virtual function: must be implemented in derived classes.  */
+    virtual QgsFeatureRendererV2* createRenderer( QDomElement& elem ) = 0 /Factory/;
+    /** Return new instance of settings widget for the renderer. Returns NULL on error. */
+    virtual QgsRendererV2Widget* createRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer ) /Factory/;
+
+};
+
+
+class QgsRendererV2Registry
+{
+%TypeHeaderCode
+#include <qgsrendererv2registry.h>
+%End
+
+  public:
+
+    static QgsRendererV2Registry* instance();
+
+    //! add a renderer to registry. Takes ownership of the metadata object.
+    bool addRenderer( QgsRendererV2AbstractMetadata* metadata /Transfer/ );
+
+    //! remove renderer from registry
+    bool removeRenderer( QString rendererName );
+
+    //! get metadata for particular renderer. Returns NULL if not found in registry.
+    QgsRendererV2AbstractMetadata* rendererMetadata( QString rendererName );
+
+    //! return a list of available renderers
+    QStringList renderersList();
+
+  protected:
+    //! protected constructor
+    QgsRendererV2Registry();
+    ~QgsRendererV2Registry();
 };

@@ -311,13 +311,11 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::load( QDomElement& element )
   // load renderer
   QString rendererType = element.attribute( "type" );
 
-  QgsRendererV2CreateFunc pfCreate = QgsRendererV2Registry::instance()->rendererMetadata( rendererType ).createFunction();
-
-  // unknown renderer type?
-  if ( pfCreate == NULL )
+  QgsRendererV2AbstractMetadata* m = QgsRendererV2Registry::instance()->rendererMetadata( rendererType );
+  if (m == NULL)
     return NULL;
 
-  QgsFeatureRendererV2* r = pfCreate( element );
+  QgsFeatureRendererV2* r = m->createRenderer( element );
   if ( r )
     r->setUsingSymbolLevels( element.attribute( "symbollevels", "0" ).toInt() );
 
