@@ -10,9 +10,11 @@
 #include "qgssymbollayerv2registry.h"
 
 #include "qgsapplication.h"
+#include "qgslogger.h"
 
 #include "qgssymbollayerv2widget.h"
 #include "qgssymbolv2.h" //for the unit
+
 
 static const int SymbolLayerItemType = QStandardItem::UserType + 1;
 
@@ -68,6 +70,47 @@ static QString iconPath( QString iconFile )
 
 //////////
 
+static bool _initWidgetFunction( QString name, QgsSymbolLayerV2WidgetFunc f )
+{
+  QgsSymbolLayerV2Registry* reg = QgsSymbolLayerV2Registry::instance();
+
+  QgsSymbolLayerV2AbstractMetadata* abstractMetadata = reg->symbolLayerMetadata(name);
+  if (abstractMetadata == NULL)
+  {
+    QgsDebugMsg("Failed to find symbol layer's entry in registry: "+name);
+    return false;
+  }
+  QgsSymbolLayerV2Metadata* metadata = dynamic_cast<QgsSymbolLayerV2Metadata*>(abstractMetadata);
+  if (metadata == NULL)
+  {
+    QgsDebugMsg("Failed to cast symbol layer's metadata: "+name);
+    return false;
+  }
+  metadata->setWidgetFunction(f);
+  return true;
+}
+
+static void _initWidgetFunctions()
+{
+  static bool initialized = false;
+  if (initialized)
+    return;
+
+  _initWidgetFunction( "SimpleLine", QgsSimpleLineSymbolLayerV2Widget::create );
+  _initWidgetFunction( "MarkerLine", QgsMarkerLineSymbolLayerV2Widget::create );
+  _initWidgetFunction( "LineDecoration", QgsLineDecorationSymbolLayerV2Widget::create );
+
+  _initWidgetFunction( "SimpleMarker", QgsSimpleMarkerSymbolLayerV2Widget::create );
+  _initWidgetFunction( "SvgMarker", QgsSvgMarkerSymbolLayerV2Widget::create );
+
+  _initWidgetFunction( "SimpleFill", QgsSimpleFillSymbolLayerV2Widget::create );
+
+  initialized = true;
+}
+
+
+//////////
+
 QgsSymbolV2PropertiesDialog::QgsSymbolV2PropertiesDialog( QgsSymbolV2* symbol, QWidget* parent )
     : QDialog( parent ), mSymbol( symbol )
 {
@@ -82,14 +125,7 @@ QgsSymbolV2PropertiesDialog::QgsSymbolV2PropertiesDialog( QgsSymbolV2* symbol, Q
 
   // set widget functions
   // (should be probably moved somewhere else)
-  QgsSymbolLayerV2Registry::instance()->setLayerTypeWidgetFunction( "SimpleLine", QgsSimpleLineSymbolLayerV2Widget::create );
-  QgsSymbolLayerV2Registry::instance()->setLayerTypeWidgetFunction( "MarkerLine", QgsMarkerLineSymbolLayerV2Widget::create );
-  QgsSymbolLayerV2Registry::instance()->setLayerTypeWidgetFunction( "LineDecoration", QgsLineDecorationSymbolLayerV2Widget::create );
-
-  QgsSymbolLayerV2Registry::instance()->setLayerTypeWidgetFunction( "SimpleMarker", QgsSimpleMarkerSymbolLayerV2Widget::create );
-  QgsSymbolLayerV2Registry::instance()->setLayerTypeWidgetFunction( "SvgMarker", QgsSvgMarkerSymbolLayerV2Widget::create );
-
-  QgsSymbolLayerV2Registry::instance()->setLayerTypeWidgetFunction( "SimpleFill", QgsSimpleFillSymbolLayerV2Widget::create );
+  _initWidgetFunctions();
 
   loadSymbol();
 
@@ -198,11 +234,11 @@ void QgsSymbolV2PropertiesDialog::loadPropertyWidgets()
   for ( int i = 0; i < layerTypes.count(); i++ )
   {
     QString layerType = layerTypes[i];
-    QgsSymbolLayerV2WidgetFunc f = pReg->symbolLayerMetadata( layerType ).widgetFunction();
-    if ( f == NULL ) // check whether the function is assigned
+    QgsSymbolLayerV2AbstractMetadata* am = pReg->symbolLayerMetadata( layerType );
+    if ( am == NULL ) // check whether the metadata is assigned
       continue;
 
-    QgsSymbolLayerV2Widget* w = f();
+    QgsSymbolLayerV2Widget* w = am->createSymbolLayerWidget();
     if ( w == NULL ) // check whether the function returns correct widget
       continue;
 
@@ -288,12 +324,12 @@ void QgsSymbolV2PropertiesDialog::layerTypeChanged()
 
   // get creation function for new layer from registry
   QgsSymbolLayerV2Registry* pReg = QgsSymbolLayerV2Registry::instance();
-  QgsSymbolLayerV2CreateFunc f = pReg->symbolLayerMetadata( newLayerType ).createFunction();
-  if ( f == NULL ) // check whether the function is assigned
+  QgsSymbolLayerV2AbstractMetadata* am = pReg->symbolLayerMetadata( newLayerType );
+  if ( am == NULL ) // check whether the metadata is assigned
     return;
 
   // change layer to a new (with different type)
-  QgsSymbolLayerV2* newLayer = f( QgsStringMap() );
+  QgsSymbolLayerV2* newLayer = am->createSymbolLayer( QgsStringMap() );
   mSymbol->changeSymbolLayer( currentLayerIndex(), newLayer );
 
   updateSymbolLayerWidget( newLayer );

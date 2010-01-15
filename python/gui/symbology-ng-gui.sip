@@ -96,3 +96,38 @@ signals:
   void symbolModified();
 
 };
+
+
+
+class QgsSymbolLayerV2Widget : QWidget
+{
+%TypeHeaderCode
+#include <qgssymbollayerv2widget.h>
+%End
+
+  public:
+    QgsSymbolLayerV2Widget( QWidget* parent );
+    virtual ~QgsSymbolLayerV2Widget();
+
+    virtual void setSymbolLayer( QgsSymbolLayerV2* layer ) = 0;
+    virtual QgsSymbolLayerV2* symbolLayer() = 0;
+
+  signals:
+    void changed();
+};
+
+class QgsRendererV2Widget : QWidget
+{
+%TypeHeaderCode
+#include <qgsrendererv2widget.h>
+%End
+
+  public:
+    QgsRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style );
+
+    virtual ~QgsRendererV2Widget();
+
+    //! return pointer to the renderer (no transfer of ownership)
+    virtual QgsFeatureRendererV2* renderer() = 0;
+
+};
