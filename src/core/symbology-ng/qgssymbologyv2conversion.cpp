@@ -15,10 +15,6 @@
 #include "qgsgraduatedsymbolrendererv2.h"
 #include "qgscategorizedsymbolrendererv2.h"
 
-// some ad-hoc conversions
-#define MM2PIXELS(x) ((x)/0.26)
-#define PIXELS2MM(x) ((x)*0.26)
-
 
 QgsSymbolV2* QgsSymbologyV2Conversion::symbolV1toV2( const QgsSymbol* s )
 {
@@ -27,7 +23,7 @@ QgsSymbolV2* QgsSymbologyV2Conversion::symbolV1toV2( const QgsSymbol* s )
     case QGis::Point:
     {
       QgsMarkerSymbolLayerV2* sl = NULL;
-      double size = MM2PIXELS( s->pointSize() );
+      double size = s->pointSize();
       double angle = 0; // rotation only from classification field
       QString symbolName = s->pointSymbolName();
       if ( symbolName.startsWith( "hard:" ) )
@@ -52,7 +48,7 @@ QgsSymbolV2* QgsSymbologyV2Conversion::symbolV1toV2( const QgsSymbol* s )
     case QGis::Line:
     {
       QColor color = s->color();
-      double width = MM2PIXELS( s->lineWidth() );
+      double width = s->lineWidth();
       Qt::PenStyle penStyle = s->pen().style();
       QgsLineSymbolLayerV2* sl = new QgsSimpleLineSymbolLayerV2( color, width, penStyle );
 
@@ -67,7 +63,7 @@ QgsSymbolV2* QgsSymbologyV2Conversion::symbolV1toV2( const QgsSymbol* s )
       QColor borderColor = s->color();
       Qt::BrushStyle brushStyle = s->brush().style();
       Qt::PenStyle borderStyle = s->pen().style();
-      double borderWidth = MM2PIXELS( s->lineWidth() );
+      double borderWidth = s->lineWidth();
       QgsFillSymbolLayerV2* sl = new QgsSimpleFillSymbolLayerV2( color, brushStyle, borderColor, borderStyle, borderWidth );
 
       QgsSymbolLayerV2List layers;
@@ -96,7 +92,7 @@ QgsSymbol* QgsSymbologyV2Conversion::symbolV2toV1( QgsSymbolV2* s )
       QgsSymbol* sOld = new QgsSymbol( QGis::Point );
       sOld->setFillColor( sl->color() );
       sOld->setFillStyle( Qt::SolidPattern );
-      sOld->setPointSize( PIXELS2MM( msl->size() ) );
+      sOld->setPointSize( msl->size() );
       if ( sl->layerType() == "SimpleMarker" )
       {
         QgsSimpleMarkerSymbolLayerV2* smsl = static_cast<QgsSimpleMarkerSymbolLayerV2*>( sl );
@@ -117,7 +113,7 @@ QgsSymbol* QgsSymbologyV2Conversion::symbolV2toV1( QgsSymbolV2* s )
       QgsLineSymbolLayerV2* lsl = static_cast<QgsLineSymbolLayerV2*>( sl );
       QgsSymbol* sOld = new QgsSymbol( QGis::Line );
       sOld->setColor( sl->color() );
-      sOld->setLineWidth( PIXELS2MM( lsl->width() ) );
+      sOld->setLineWidth( lsl->width() );
       if ( sl->layerType() == "SimpleLine" )
       {
         // add specific settings
@@ -136,7 +132,7 @@ QgsSymbol* QgsSymbologyV2Conversion::symbolV2toV1( QgsSymbolV2* s )
         // add specifc settings
         QgsSimpleFillSymbolLayerV2* sfsl = static_cast<QgsSimpleFillSymbolLayerV2*>( sl );
         sOld->setColor( sfsl->borderColor() );
-        sOld->setLineWidth( PIXELS2MM( sfsl->borderWidth() ) );
+        sOld->setLineWidth( sfsl->borderWidth() );
         sOld->setLineStyle( sfsl->borderStyle() );
         sOld->setFillStyle( sfsl->brushStyle() );
       }
