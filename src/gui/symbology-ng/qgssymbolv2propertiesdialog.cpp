@@ -330,6 +330,8 @@ void QgsSymbolV2PropertiesDialog::layerTypeChanged()
 
   // change layer to a new (with different type)
   QgsSymbolLayerV2* newLayer = am->createSymbolLayer( QgsStringMap() );
+  if ( newLayer == NULL )
+    return;
   mSymbol->changeSymbolLayer( currentLayerIndex(), newLayer );
 
   updateSymbolLayerWidget( newLayer );

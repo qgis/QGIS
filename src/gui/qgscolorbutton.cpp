@@ -75,6 +75,11 @@ QgsColorButtonV2::QgsColorButtonV2( QWidget* parent )
 {
 }
 
+QgsColorButtonV2::QgsColorButtonV2( QString text, QWidget* parent )
+  : QPushButton( text, parent )
+{
+}
+
 void QgsColorButtonV2::setColor( const QColor &color )
 {
   mColor = color;

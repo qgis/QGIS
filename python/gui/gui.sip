@@ -7,6 +7,7 @@
 
 %Import core/core.sip
 
+%Include qgscolorbutton.sip
 %Include qgslegendinterface.sip
 %Include qgisinterface.sip
 %Include qgscomposerview.sip
