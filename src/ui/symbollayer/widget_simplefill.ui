@@ -90,7 +90,7 @@
      <item row="4" column="1">
       <widget class="QDoubleSpinBox" name="spinBorderWidth">
        <property name="decimals">
-        <number>1</number>
+        <number>2</number>
        </property>
        <property name="maximum">
         <double>100000.000000000000000</double>
