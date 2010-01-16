@@ -209,7 +209,8 @@ QgsProviderRegistry::QgsProviderRegistry( QString pluginPath )
       }
       else
       {
-        myMessage += "...invalid (lib not loadable)";
+        myMessage += "...invalid (lib not loadable): ";
+        myMessage += myLib->errorString ();
       }
 
       QgsDebugMsg( myMessage );
