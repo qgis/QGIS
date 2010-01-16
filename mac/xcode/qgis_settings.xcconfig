@@ -42,6 +42,8 @@ QTLREL = $(QTBIN)/lrelease
 SIP = $(PYTHON_USRBIN)/sip
 PYUIC4 = $(PYTHON_USRBIN)/pyuic4
 PYRCC4 = $(PYTHON_USRBIN)/pyrcc4
+// from sipconfig.py
+SIP_INC = /usr/local/include
 // from pyqtconfig.py
 PYQT_SIP_DIR = /usr/local/share/sip/PyQt4
 PYQT_SIP_FLAGS = -x VendorID -t WS_MACX -x PyQt_NoPrintRangeBug -t Qt_4_5_0 -x Py_v3 -g

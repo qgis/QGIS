@@ -27,6 +27,7 @@
 
 //QT_PLUGINS_DIR = /Developer/Applications/Qt/plugins
 //QTBIN = /Developer/Tools/Qt // bin dir
+//SIP_INC = /usr/local/include
 //PYQT_SIP_DIR = /usr/local/share/sip/PyQt4
 //PYQT_SIP_FLAGS = -x VendorID -t WS_MACX -x PyQt_NoPrintRangeBug -t Qt_4_5_0 -x Py_v3 -g
 //BISON = /usr/bin/bison // Tiger requires user-installed bison 2.3

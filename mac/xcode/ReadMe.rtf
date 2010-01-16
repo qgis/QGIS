@@ -215,13 +215,24 @@ See detailed dependency notes below.\
 \f1\fs20 /Library/Frameworks
 \f0\fs24  install.  But the system Python has a user location for Python modules, and programs should be installed elsewhere, like /usr/local/bin (follow the Qgis install instructions for SIP/PyQt).\
 \
-PYQT_SIP_DIR and PYQT_SIP_FLAGS are set for a system SIP/PyQt install as described in INSTALL.  They should be adjusted for other configurations.  These can be found by starting Python (the desired Python for the Qgis build) in a Terminal, then:\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+
+\f1\fs20 \cf0 SIP_INC
+\f0\fs24 , 
+\f1\fs20 PYQT_SIP_DIR
+\f0\fs24  and 
+\f1\fs20 PYQT_SIP_FLAGS
+\f0\fs24  are set for a system SIP/PyQt install as described in INSTALL.  They should be adjusted for other configurations.  These can be found by starting Python (the desired Python for the Qgis build) in a Terminal, then:\
 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\f1\fs20 \cf0 	import PyQt4.pyqtconfig\
+\f1\fs20 \cf0 	import sipconfig\
+	sipconfig.Configuration().sip_inc_dir\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+\cf0 	import PyQt4.pyqtconfig\
 	PyQt4.pyqtconfig.Configuration().pyqt_sip_dir\
-	PyQt4.pyqtconfig.Configuration().pyqt_sip_flags\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+\cf0 	PyQt4.pyqtconfig.Configuration().pyqt_sip_flags\
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
 \f0\fs24 \cf0 \
