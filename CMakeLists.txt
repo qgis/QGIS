@@ -157,13 +157,6 @@ IF (WITH_SPATIALITE AND NOT WITH_INTERNAL_SPATIALITE)
   FIND_PACKAGE(SPATIALITE)
 ENDIF (WITH_SPATIALITE AND NOT WITH_INTERNAL_SPATIALITE)
 
-IF (WITH_BINDINGS)
-  # python support:
-  # - mapserver export tool
-  # - bindings
-  INCLUDE (Python) # file cmake/Python.cmake
-ENDIF (WITH_BINDINGS)
-
 IF (NOT PROJ_FOUND OR NOT GEOS_FOUND OR NOT GDAL_FOUND)
   MESSAGE (SEND_ERROR "Some dependencies were not found!")
 ENDIF (NOT PROJ_FOUND OR NOT GEOS_FOUND OR NOT GDAL_FOUND)
@@ -351,6 +344,32 @@ IF (UNIX)
 ENDIF (UNIX)
 
 #############################################################
+# Python bindings
+
+IF (WITH_BINDINGS)
+
+  # python support: check for interpreter, sip, pyqt4
+  FIND_PACKAGE(PythonInterp REQUIRED)
+  FIND_PACKAGE(PythonLibrary REQUIRED)
+  FIND_PACKAGE(SIP REQUIRED)
+  FIND_PACKAGE(PyQt4 REQUIRED)
+  INCLUDE(PythonMacros)
+  INCLUDE(SIPMacros)
+  INCLUDE(PyQt4Macros)
+
+  # setup SIP variables
+  separate_arguments(PYQT4_SIP_FLAGS) # convert space separated values to a list
+  set(SIP_INCLUDES ${PYQT4_SIP_DIR} ${CMAKE_SOURCE_DIR}/python)
+  set(SIP_CONCAT_PARTS 4)
+  set(SIP_EXTRA_OPTIONS ${PYQT4_SIP_FLAGS})
+
+  IF (NOT BINDINGS_GLOBAL_INSTALL)
+    set(PYTHON_SITE_PACKAGES_DIR ${QGIS_DATA_DIR}/python)
+  ENDIF (NOT BINDINGS_GLOBAL_INSTALL)
+
+ENDIF (WITH_BINDINGS)
+
+#############################################################
 # create qgsconfig.h
 
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/cmake_templates/qgsconfig.h.in ${CMAKE_BINARY_DIR}/qgsconfig.h)
@@ -401,11 +420,9 @@ ADD_CUSTOM_TARGET(svnversion ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/qgssvnversi
 
 SUBDIRS(src doc images resources i18n)
 
-IF (HAVE_PYTHON AND WITH_BINDINGS)
+IF (WITH_BINDINGS)
   SUBDIRS (python)
-ELSE (HAVE_PYTHON AND WITH_BINDINGS)
-  MESSAGE (STATUS "Python not being built")
-ENDIF (HAVE_PYTHON AND WITH_BINDINGS)
+ENDIF (WITH_BINDINGS)
 
 IF (ENABLE_TESTS)
   #create a variable to specify where our test data is
