@@ -24,11 +24,13 @@ QgsSymbolLayerV2Registry::QgsSymbolLayerV2Registry()
 
   addSymbolLayerType( new QgsSymbolLayerV2Metadata( "SimpleFill", QgsSymbolV2::Fill,
                       QgsSimpleFillSymbolLayerV2::create ) );
+
+  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "SVGFill", QgsSymbolV2::Fill, QgsSVGFillSymbolLayer::create ) );
 }
 
 QgsSymbolLayerV2Registry::~QgsSymbolLayerV2Registry()
 {
-  foreach (QString name, mMetadata.keys())
+  foreach( QString name, mMetadata.keys() )
   {
     delete mMetadata[name];
   }
@@ -91,7 +93,7 @@ QStringList QgsSymbolLayerV2Registry::symbolLayersForType( QgsSymbolV2::SymbolTy
   QMap<QString, QgsSymbolLayerV2AbstractMetadata*>::ConstIterator it = mMetadata.begin();
   for ( ; it != mMetadata.end(); ++it )
   {
-    if ( (*it)->type() == type )
+    if (( *it )->type() == type )
       lst.append( it.key() );
   }
   return lst;

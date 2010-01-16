@@ -74,26 +74,26 @@ static bool _initWidgetFunction( QString name, QgsSymbolLayerV2WidgetFunc f )
 {
   QgsSymbolLayerV2Registry* reg = QgsSymbolLayerV2Registry::instance();
 
-  QgsSymbolLayerV2AbstractMetadata* abstractMetadata = reg->symbolLayerMetadata(name);
-  if (abstractMetadata == NULL)
+  QgsSymbolLayerV2AbstractMetadata* abstractMetadata = reg->symbolLayerMetadata( name );
+  if ( abstractMetadata == NULL )
   {
-    QgsDebugMsg("Failed to find symbol layer's entry in registry: "+name);
+    QgsDebugMsg( "Failed to find symbol layer's entry in registry: " + name );
     return false;
   }
-  QgsSymbolLayerV2Metadata* metadata = dynamic_cast<QgsSymbolLayerV2Metadata*>(abstractMetadata);
-  if (metadata == NULL)
+  QgsSymbolLayerV2Metadata* metadata = dynamic_cast<QgsSymbolLayerV2Metadata*>( abstractMetadata );
+  if ( metadata == NULL )
   {
-    QgsDebugMsg("Failed to cast symbol layer's metadata: "+name);
+    QgsDebugMsg( "Failed to cast symbol layer's metadata: " + name );
     return false;
   }
-  metadata->setWidgetFunction(f);
+  metadata->setWidgetFunction( f );
   return true;
 }
 
 static void _initWidgetFunctions()
 {
   static bool initialized = false;
-  if (initialized)
+  if ( initialized )
     return;
 
   _initWidgetFunction( "SimpleLine", QgsSimpleLineSymbolLayerV2Widget::create );
@@ -104,6 +104,7 @@ static void _initWidgetFunctions()
   _initWidgetFunction( "SvgMarker", QgsSvgMarkerSymbolLayerV2Widget::create );
 
   _initWidgetFunction( "SimpleFill", QgsSimpleFillSymbolLayerV2Widget::create );
+  _initWidgetFunction( "SVGFill", QgsSVGFillSymbolLayerWidget::create );
 
   initialized = true;
 }
