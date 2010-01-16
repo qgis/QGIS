@@ -7,7 +7,7 @@
 #define DEFAULT_SIMPLEMARKER_NAME         "circle"
 #define DEFAULT_SIMPLEMARKER_COLOR        QColor(255,0,0)
 #define DEFAULT_SIMPLEMARKER_BORDERCOLOR  QColor(0,0,0)
-#define DEFAULT_SIMPLEMARKER_SIZE         9
+#define DEFAULT_SIMPLEMARKER_SIZE         DEFAULT_POINT_SIZE
 #define DEFAULT_SIMPLEMARKER_ANGLE        0
 
 #include <QPen>
@@ -63,7 +63,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 //////////
 
 #define DEFAULT_SVGMARKER_NAME         "/symbol/Star1.svg"
-#define DEFAULT_SVGMARKER_SIZE         9
+#define DEFAULT_SVGMARKER_SIZE         2*DEFAULT_POINT_SIZE
 #define DEFAULT_SVGMARKER_ANGLE        0
 
 class CORE_EXPORT QgsSvgMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2

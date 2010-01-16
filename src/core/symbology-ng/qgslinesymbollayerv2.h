@@ -7,7 +7,7 @@
 #include <QPen>
 
 #define DEFAULT_SIMPLELINE_COLOR     QColor(0,0,0)
-#define DEFAULT_SIMPLELINE_WIDTH     1
+#define DEFAULT_SIMPLELINE_WIDTH     DEFAULT_LINE_WIDTH
 #define DEFAULT_SIMPLELINE_PENSTYLE  Qt::SolidLine
 #define DEFAULT_SIMPLELINE_JOINSTYLE Qt::BevelJoin
 #define DEFAULT_SIMPLELINE_CAPSTYLE  Qt::SquareCap
@@ -63,7 +63,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 /////////
 
 #define DEFAULT_MARKERLINE_ROTATE     true
-#define DEFAULT_MARKERLINE_INTERVAL   10
+#define DEFAULT_MARKERLINE_INTERVAL   3
 
 class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
 {
