@@ -400,16 +400,9 @@ QStringList QgsGrassSelect::vectorLayers( QString gisdbase,
 
   /* Open vector */
   QgsGrass::resetError();
-  Vect_set_open_level( 2 );
+  //Vect_set_open_level( 2 );
   struct Map_info map;
   int level = -1;
-
-  // Mechanism to recover from fatal errors in GRASS
-  // Since fatal error routine in GRASS >= 6.3 terminates the process,
-  // we use setjmp() to set recovery place in case of a fatal error.
-  // Call to setjmp() returns 0 first time. In case of fatal error,
-  // our error routine uses longjmp() to come back to this context,
-  // this time setjmp() will return non-zero value and we can continue...
 
   try
   {
@@ -422,10 +415,17 @@ QStringList QgsGrassSelect::vectorLayers( QString gisdbase,
     return list;
   }
 
-  if ( level < 2 )
+  if ( level == 1 )
   {
     QgsDebugMsg( "Cannot open vector on level 2" );
-    QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot open vector on level 2 (topology not available)." ) );
+    QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot open vector ") + mapName + tr(" in mapset ") + mapset + tr (" on level 2 (topology not available, try to rebuild tobopoly using v.build module)." ) );
+    Vect_close( &map );
+    return list;
+  } 
+  else if ( level < 1 )
+  {
+    QgsDebugMsg( "Cannot open vector" );
+    QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot open vector ") + mapName + tr(" in mapset ") + mapset );
     return list;
   }
 
