@@ -105,7 +105,7 @@
            <item row="1" column="1">
             <widget class="QDoubleSpinBox" name="spinSize">
              <property name="decimals">
-              <number>1</number>
+              <number>2</number>
              </property>
              <property name="value">
               <double>1.000000000000000</double>
@@ -166,7 +166,7 @@
            <item row="1" column="1">
             <widget class="QDoubleSpinBox" name="spinWidth">
              <property name="decimals">
-              <number>1</number>
+              <number>2</number>
              </property>
              <property name="value">
               <double>1.000000000000000</double>
