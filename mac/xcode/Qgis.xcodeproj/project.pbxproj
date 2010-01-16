@@ -16228,6 +16228,7 @@
 					../../src/core,
 					../../src/core/spatialindex,
 					"$(PYTHON_INC)",
+					"$(SIP_INC)",
 					"$(GEOS_INC)",
 				);
 				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
@@ -16260,6 +16261,7 @@
 					../../src/core,
 					../../src/core/spatialindex,
 					"$(PYTHON_INC)",
+					"$(SIP_INC)",
 					"$(GEOS_INC)",
 				);
 				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
@@ -16296,6 +16298,7 @@
 					../../src/core/symbology,
 					"../../src/core/symbology-ng",
 					"$(PYTHON_INC)",
+					"$(SIP_INC)",
 					"$(GDAL_INC)",
 					"$(GEOS_INC)",
 				);
@@ -16334,6 +16337,7 @@
 					../../src/core/symbology,
 					"../../src/core/symbology-ng",
 					"$(PYTHON_INC)",
+					"$(SIP_INC)",
 					"$(GDAL_INC)",
 					"$(GEOS_INC)",
 				);
@@ -16375,6 +16379,7 @@
 					../../src/core/symbology,
 					"../../src/core/symbology-ng",
 					"$(PYTHON_INC)",
+					"$(SIP_INC)",
 					"$(GDAL_INC)",
 					"$(GEOS_INC)",
 				);
@@ -16416,6 +16421,7 @@
 					../../src/core/symbology,
 					"../../src/core/symbology-ng",
 					"$(PYTHON_INC)",
+					"$(SIP_INC)",
 					"$(GDAL_INC)",
 					"$(GEOS_INC)",
 				);
