@@ -13,7 +13,7 @@
 #
 # SIP_VERSION_STR - The version of SIP found as a human readable string.
 #
-# SIP_EXECUTABLE - Path and filename of the SIP command line executable.
+# SIP_BINARY_PATH - Path and filename of the SIP command line executable.
 #
 # SIP_INCLUDE_DIR - Directory holding the SIP C++ header file.
 #
@@ -37,7 +37,7 @@ ELSE(SIP_VERSION)
   IF(sip_config)
     STRING(REGEX REPLACE "^sip_version:([^\n]+).*$" "\\1" SIP_VERSION ${sip_config})
     STRING(REGEX REPLACE ".*\nsip_version_str:([^\n]+).*$" "\\1" SIP_VERSION_STR ${sip_config})
-    STRING(REGEX REPLACE ".*\nsip_bin:([^\n]+).*$" "\\1" SIP_EXECUTABLE ${sip_config})
+    STRING(REGEX REPLACE ".*\nsip_bin:([^\n]+).*$" "\\1" SIP_BINARY_PATH ${sip_config})
     STRING(REGEX REPLACE ".*\ndefault_sip_dir:([^\n]+).*$" "\\1" SIP_DEFAULT_SIP_DIR ${sip_config})
     STRING(REGEX REPLACE ".*\nsip_inc_dir:([^\n]+).*$" "\\1" SIP_INCLUDE_DIR ${sip_config})
     SET(SIP_FOUND TRUE)
