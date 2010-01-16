@@ -2467,21 +2467,21 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 7268E88511023DF700B96374 /* python gui */;
+			remoteGlobalIDString = 7268E88511023DF700B96374;
 			remoteInfo = "python gui";
 		};
 		7268E8A6110241A400B96374 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 7268E80411021E6B00B96374 /* python analysis */;
+			remoteGlobalIDString = 7268E80411021E6B00B96374;
 			remoteInfo = "python analysis";
 		};
 		7268E8A8110241A400B96374 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 7268E86611023A8700B96374 /* python core */;
+			remoteGlobalIDString = 7268E86611023A8700B96374;
 			remoteInfo = "python core";
 		};
 		727E6B4B0FEABF3D00DF6F64 /* PBXContainerItemProxy */ = {
@@ -17509,6 +17509,8 @@
 					../../src/plugins,
 					../../src/plugins/gps_importer,
 					../../src/core,
+					../../src/core/gps,
+					../../src/core/gps/qextserialport,
 					../../src/core/raster,
 					../../src/core/renderer,
 					../../src/core/symbology,
@@ -17543,6 +17545,8 @@
 					../../src/plugins,
 					../../src/plugins/gps_importer,
 					../../src/core,
+					../../src/core/gps,
+					../../src/core/gps/qextserialport,
 					../../src/core/raster,
 					../../src/core/renderer,
 					../../src/core/symbology,
