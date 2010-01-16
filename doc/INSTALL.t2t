@@ -24,8 +24,8 @@ Building QGIS from source - step by step
 
 % To generate the text version of this document:
 % txt2tags -t txt -o INSTALL INSTALL.t2t
-% To generate the moinmoin version of this document:
-% txt2tags -t moin -o INSTALL.moin INSTALL.t2t
+% To generate the mediawiki version of this document:
+% txt2tags -t wiki --no-enum-title -o INSTALL.wiki INSTALL.t2t
 % To generate the html version of this document:
 % txt2tags -t html -o INSTALL.html INSTALL.t2t
 % To generate the LaTeX version of this document:
@@ -54,7 +54,7 @@ always welcome for indicating possible mistakes.
 You can download this document as part of the Quantum GIS 'User and 
 Installation Guide' in HTML and PDF format via http://www.qgis.org. A current 
 version is also available at the wiki, see:
-http://wiki.qgis.org/qgiswiki/BuildingFromSource 
+http://www.qgis.org/wiki/Installation_Guide 
 
 Translations of this document can also be downloaded at the documentation area 
 of the Quantum GIS project at http://www.qgis.org. More information is 
@@ -89,31 +89,30 @@ number of major projects (eg. KDE 4.0), now uses CMake (http://www.cmake.org)
 for building from source. The configure script in this directory simply checks
 for the existence of cmake and provides some clues to build QGIS.
 
-For complete information, see the wiki at:
-   http://wiki.qgis.org/qgiswiki/Building_with_CMake
-
 == An overview of the dependencies required for building ==
 
 '''Required build deps:'''
- * CMake >= 2.4.3
- * Flex, Bison
+* CMake >= 2.4.3
+* Flex, Bison
 
 '''Required runtime deps:'''
- * Qt >= 4.3.0
- * Proj >= ? (known to work with 4.4.x)
- * GEOS >= 2.2 (3.0 is supported, maybe 2.1.x works too)
- * Sqlite3 >= ? (probably 3.0.0)
- * GDAL/OGR >= 1.4.x
+* Qt >= 4.3.0
+* Proj >= 4.4.x
+* GEOS >= 3.0
+* Sqlite3 >= 3.0.0
+* GDAL/OGR >= 1.4.x
 
 '''Optional dependencies:'''
- * for GRASS plugin - GRASS >= 6.0.0
- * for georeferencer - GSL >= ? (works with 1.8)
- * for postgis support and SPIT plugin - PostgreSQL >= 8.0.x
- * for gps plugin - expat >= ? (1.95 is OK)
- * for mapserver export and PyQGIS - Python >= 2.3 (2.5+ preferred)
- * for PyQGIS - SIP >= 4.5, PyQt >= must match Qt version
+* for GRASS plugin - GRASS >= 6.0.0
+* for georeferencer - GSL >= 1.8
+* for postgis support and SPIT plugin - PostgreSQL >= 8.0.x
+* for gps plugin - expat >= 1.95
+* for mapserver export and PyQGIS - Python >= 2.3 (2.5+ preferred)
+* for PyQGIS - SIP >= 4.8, PyQt >= must match Qt version
+* for GPS tracking - Qwt >= 5.0
+
 '''Recommended runtime deps:'''
- * for gps plugin - gpsbabel
+* for gps plugin - gpsbabel
 
 
 
