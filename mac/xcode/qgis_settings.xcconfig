@@ -1,6 +1,6 @@
 // QGIS Xcode project common build settings
 
-CURRENT_PROJECT_VERSION = 2.4.0
+CURRENT_PROJECT_VERSION = 2.5.0
 
 // SDKSYS must be set to valid value
 SDKSYS = leo // tig (Tiger), leo (Leopard), snow (Snow Leopard)
@@ -27,8 +27,10 @@ QGIS_VERSION_INT = 10400
 //////////////////////////////////////////////////////////////////////
 
 // ***TODO*** - detect current version, only used in bundle script
-QT_MVER = 4 // the install_name version
-QT_FWVER = $(QT_MVER) // the Versions/ folder name, normally same as Qt ver
+QT_MVER = $(QT_VER_MAJOR) // keep for now so I don't have to change all scripts and deps
+QT_VER_MAJOR = 4 // the install_name/major version
+QT_VER_MINOR = 5 // minor version
+QT_FWVER = $(QT_VER_MAJOR) // the Versions/ folder name, normally same as Qt ver
 
 QT_PLUGINS_DIR = /Developer/Applications/Qt/plugins
 QTBIN = /Developer/Tools/Qt
@@ -36,8 +38,13 @@ QTMOC = $(QTBIN)/moc
 QTUIC = $(QTBIN)/uic
 QTRCC = $(QTBIN)/rcc
 QTLREL = $(QTBIN)/lrelease
+// defaults for system Python SIP/PyQt install as described in INSTALL
+SIP = $(PYTHON_USRBIN)/sip
 PYUIC4 = $(PYTHON_USRBIN)/pyuic4
 PYRCC4 = $(PYTHON_USRBIN)/pyrcc4
+// from pyqtconfig.py
+PYQT_SIP_DIR = /usr/local/share/sip/PyQt4
+PYQT_SIP_FLAGS = -x VendorID -t WS_MACX -x PyQt_NoPrintRangeBug -t Qt_4_5_0 -x Py_v3 -g
 
 BISON = /usr/bin/bison
 GPSBABEL = /usr/local/bin/gpsbabel

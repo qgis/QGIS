@@ -1,5 +1,7 @@
 // QGIS Xcode project common build settings
 
+// CURRENT_PROJECT_VERSION = 2.5.0
+
 // duplicate this file as qgis_user.xcconfig.
 // uncomment settings in qgis_user.xcconfig to override defaults
 //   in qgis_settings.xcconfig.
@@ -18,11 +20,15 @@
 // Qt and other support
 //////////////////////////////////////////////////////////////////////
 
-//QT_MVER = 4 // the install_name version
-//QT_FWVER = $(QT_MVER) // the Versions/ folder name, normally same as Qt ver
+//QT_MVER = $(QT_VER_MAJOR)
+//QT_VER_MAJOR = 4 // the install_name/major version
+//QT_VER_MINOR = 5 // minor version, currently unused
+//QT_FWVER = $(QT_VER_MAJOR) // the Versions/ folder name, normally same as Qt ver
 
 //QT_PLUGINS_DIR = /Developer/Applications/Qt/plugins
 //QTBIN = /Developer/Tools/Qt // bin dir
+//PYQT_SIP_DIR = /usr/local/share/sip/PyQt4
+//PYQT_SIP_FLAGS = -x VendorID -t WS_MACX -x PyQt_NoPrintRangeBug -t Qt_4_5_0 -x Py_v3 -g
 //BISON = /usr/bin/bison // Tiger requires user-installed bison 2.3
 //GPSBABEL = /usr/local/bin/gpsbabel
 
@@ -46,7 +52,7 @@
 // fw, shared and internal enable both, so spatial MUST be available
 //   (is avail for fw, use spatialite 2.3+ for shared sqlite+spatialite)
 //SQLITE_FORM = fw // system, fw, shared or internal
-// whether spatialite is built with GEOS and PROJ
+// whether spatialite is built with GEOS and PROJ, only for external spatialite
 // (must be same GEOS and PROJ used for Qgis)
 //SPATIALITE_GEOS = yes
 //SPATIALITE_PROJ = yes

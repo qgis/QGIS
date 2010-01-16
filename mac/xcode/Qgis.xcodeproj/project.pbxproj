@@ -22,10 +22,6 @@
 			isa = PBXAggregateTarget;
 			buildConfigurationList = 7256F1570F4105A40022BE1F /* Build configuration list for PBXAggregateTarget "python_modules" */;
 			buildPhases = (
-				7256F23F0F41370A0022BE1F /* setup */,
-				7256F1530F4105770022BE1F /* configure.py */,
-				7256F2760F413B400022BE1F /* make */,
-				727AD4FA0F7325CA002B9DCD /* install */,
 				72E707020F42685C00142011 /* Copy - qgis */,
 				72C535961038E22700A9CC02 /* Script - plugininstall ui+rc */,
 				72E707120F426AD500142011 /* Copy - plugininstall */,
@@ -43,6 +39,9 @@
 				72DB69751021DCFE00ED5F3A /* Copy - osm-styles */,
 			);
 			dependencies = (
+				7268E8A9110241A400B96374 /* PBXTargetDependency */,
+				7268E8A7110241A400B96374 /* PBXTargetDependency */,
+				7268E8A5110241A400B96374 /* PBXTargetDependency */,
 			);
 			name = python_modules;
 			productName = python;
@@ -800,12 +799,6 @@
 		72442AEC1095DD4C00B54796 /* qgsavoidintersectionsdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72442AEA1095DCFC00B54796 /* qgsavoidintersectionsdialog.h */; };
 		72448CD310E9A1C100D4586B /* qgsprojectbadlayerguihandler.h in Sources */ = {isa = PBXBuildFile; fileRef = 72A51A4B10CE05B000E202D7 /* qgsprojectbadlayerguihandler.h */; };
 		72448CD710E9A21500D4586B /* qgsattributetableview.h in Sources */ = {isa = PBXBuildFile; fileRef = 72A239480F74A62200AFC35B /* qgsattributetableview.h */; };
-		7249EBDC10E7BCDA00708435 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E7790F39E57A003DC336 /* main.cpp */; };
-		7249EBDD10E7BCDA00708435 /* qgshelpserver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E77A0F39E57A003DC336 /* qgshelpserver.cpp */; };
-		7249EBDE10E7BCDA00708435 /* qgshelpserver.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E77B0F39E57A003DC336 /* qgshelpserver.h */; };
-		7249EBDF10E7BCDA00708435 /* qgshelpviewer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E77C0F39E57A003DC336 /* qgshelpviewer.cpp */; };
-		7249EBE010E7BCDA00708435 /* qgshelpviewer.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E77D0F39E57A003DC336 /* qgshelpviewer.h */; };
-		7249EBE410E7BF5000708435 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		724D05C610A910F200F9680A /* north-arrow_10_with_map_layers.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 724D05BE10A910B400F9680A /* north-arrow_10_with_map_layers.svg */; };
 		724D05C710A910F200F9680A /* north-arrow_11_simple_corner.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 724D05BF10A910B400F9680A /* north-arrow_11_simple_corner.svg */; };
 		724D05C810A910F200F9680A /* north-arrow_12_triangular_arrows_with_worldmap.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 724D05C010A910B400F9680A /* north-arrow_12_triangular_arrows_with_worldmap.svg */; };
@@ -922,6 +915,17 @@
 		7268D7B80F9695AA00CA1705 /* qgsoverlayobjectpositionmanager.h in Headers */ = {isa = PBXBuildFile; fileRef = 720383060F8B8C2D0083B883 /* qgsoverlayobjectpositionmanager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7268D7B90F9695AA00CA1705 /* qgspalobjectpositionmanager.h in Headers */ = {isa = PBXBuildFile; fileRef = 720383040F8B8C2D0083B883 /* qgspalobjectpositionmanager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7268D7BA0F9695AA00CA1705 /* qgsvectoroverlay.h in Headers */ = {isa = PBXBuildFile; fileRef = 720383020F8B8C2D0083B883 /* qgsvectoroverlay.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		7268E80711021E6B00B96374 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
+		7268E83C110234D400B96374 /* analysis.sip in Sources */ = {isa = PBXBuildFile; fileRef = 7276104A10A60AC300C89AF0 /* analysis.sip */; };
+		7268E85B1102393600B96374 /* x_python_dummy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7268E8371102347B00B96374 /* x_python_dummy.cpp */; };
+		7268E86811023A8700B96374 /* x_python_dummy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7268E8371102347B00B96374 /* x_python_dummy.cpp */; };
+		7268E86B11023A8700B96374 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
+		7268E87311023AB000B96374 /* libqgis_analysis.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 721598191052B46D003D1610 /* libqgis_analysis.dylib */; };
+		7268E87411023ACF00B96374 /* core.sip in Sources */ = {isa = PBXBuildFile; fileRef = 7209ED8B0F39E5D9003DC336 /* core.sip */; };
+		7268E88711023DF700B96374 /* x_python_dummy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7268E8371102347B00B96374 /* x_python_dummy.cpp */; };
+		7268E88A11023DF700B96374 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
+		7268E89111023E1900B96374 /* gui.sip in Sources */ = {isa = PBXBuildFile; fileRef = 7209EDBE0F39E5D9003DC336 /* gui.sip */; };
+		7268E89211023E3700B96374 /* libqgis_gui.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F38E0F3A2F2B003DC336 /* libqgis_gui.dylib */; };
 		726979A80F7136D700AFA402 /* qgsnewogrconnection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726979A20F71369A00AFA402 /* qgsnewogrconnection.cpp */; };
 		726979A90F7136D800AFA402 /* qgsogrhelperfunctions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726979A40F71369A00AFA402 /* qgsogrhelperfunctions.cpp */; };
 		726979AA0F7136D800AFA402 /* qgsopenvectorlayerdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726979A60F71369A00AFA402 /* qgsopenvectorlayerdialog.cpp */; };
@@ -1652,17 +1656,6 @@
 			);
 			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
-		7249EBE310E7BDBA00708435 /* PBXBuildRule */ = {
-			isa = PBXBuildRule;
-			compilerSpec = com.apple.compilers.proxy.script;
-			filePatterns = "*.h";
-			fileType = pattern.proxy;
-			isEditable = 1;
-			outputFiles = (
-				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
-			);
-			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
-		};
 		7262ED980F7A770300498385 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.proxy.script;
@@ -1673,6 +1666,42 @@
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
 			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+		};
+		7268E80811021E6B00B96374 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.sip";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"$(DERIVED_FILES_DIR)/sip$(INPUT_FILE_BASE)part0.cpp",
+				"$(DERIVED_FILES_DIR)/sip$(INPUT_FILE_BASE)part1.cpp",
+			);
+			script = "$SIP $PYQT_SIP_FLAGS -j 2 -I $PYQT_SIP_DIR -I $PROJECT_DIR/../../python -c \"$DERIVED_FILES_DIR\" \"$INPUT_FILE_PATH\"";
+		};
+		7268E86D11023A8700B96374 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.sip";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"$(DERIVED_FILES_DIR)/sip$(INPUT_FILE_BASE)part0.cpp",
+				"$(DERIVED_FILES_DIR)/sip$(INPUT_FILE_BASE)part1.cpp",
+			);
+			script = "$SIP $PYQT_SIP_FLAGS -j 2 -I $PYQT_SIP_DIR -I $PROJECT_DIR/../../python -c \"$DERIVED_FILES_DIR\" \"$INPUT_FILE_PATH\"";
+		};
+		7268E88B11023DF700B96374 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.sip";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"$(DERIVED_FILES_DIR)/sip$(INPUT_FILE_BASE)part0.cpp",
+				"$(DERIVED_FILES_DIR)/sip$(INPUT_FILE_BASE)part1.cpp",
+			);
+			script = "$SIP $PYQT_SIP_FLAGS -j 2 -I $PYQT_SIP_DIR -I $PROJECT_DIR/../../python -c \"$DERIVED_FILES_DIR\" \"$INPUT_FILE_PATH\"";
 		};
 		726C673C1046030F00EFEDCC /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -2433,6 +2462,27 @@
 			proxyType = 1;
 			remoteGlobalIDString = 8D0C4E890486CD37000505A6;
 			remoteInfo = Qgis;
+		};
+		7268E8A4110241A400B96374 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7268E88511023DF700B96374 /* python gui */;
+			remoteInfo = "python gui";
+		};
+		7268E8A6110241A400B96374 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7268E80411021E6B00B96374 /* python analysis */;
+			remoteInfo = "python analysis";
+		};
+		7268E8A8110241A400B96374 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7268E86611023A8700B96374 /* python core */;
+			remoteInfo = "python core";
 		};
 		727E6B4B0FEABF3D00DF6F64 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -4337,7 +4387,6 @@
 		7209ED840F39E5D9003DC336 /* srs.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = srs.db; path = ../../resources/srs.db; sourceTree = SOURCE_ROOT; };
 		7209ED860F39E5D9003DC336 /* __init__.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = __init__.py; path = ../../python/__init__.py; sourceTree = SOURCE_ROOT; };
 		7209ED870F39E5D9003DC336 /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../python/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
-		7209ED880F39E5D9003DC336 /* configure.py.in */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = configure.py.in; path = ../../python/configure.py.in; sourceTree = SOURCE_ROOT; };
 		7209ED8A0F39E5D9003DC336 /* conversions.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = conversions.sip; path = ../../python/core/conversions.sip; sourceTree = SOURCE_ROOT; };
 		7209ED8B0F39E5D9003DC336 /* core.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = core.sip; path = ../../python/core/core.sip; sourceTree = SOURCE_ROOT; };
 		7209ED8C0F39E5D9003DC336 /* qgis.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgis.sip; path = ../../python/core/qgis.sip; sourceTree = SOURCE_ROOT; };
@@ -4441,7 +4490,6 @@
 		7209EDF50F39E5D9003DC336 /* resources_rc.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = resources_rc.py; path = ../../python/plugins/plugin_installer/resources_rc.py; sourceTree = SOURCE_ROOT; };
 		7209EDF60F39E5D9003DC336 /* unzip.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = unzip.py; path = ../../python/plugins/plugin_installer/unzip.py; sourceTree = SOURCE_ROOT; };
 		7209EDF70F39E5D9003DC336 /* version_compare.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = version_compare.py; path = ../../python/plugins/plugin_installer/version_compare.py; sourceTree = SOURCE_ROOT; };
-		7209EDF80F39E5D9003DC336 /* qgisconfig.py.in */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgisconfig.py.in; path = ../../python/qgisconfig.py.in; sourceTree = SOURCE_ROOT; };
 		7209EDFB0F39E5D9003DC336 /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../images/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
 		7209EDFD0F39E5D9003DC336 /* projectionselector.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = projectionselector.png; path = ../../images/designer_widget_icons/projectionselector.png; sourceTree = SOURCE_ROOT; };
 		7209EE000F39E5D9003DC336 /* Carl_Anderson.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = Carl_Anderson.jpg; path = ../../images/developers/Carl_Anderson.jpg; sourceTree = SOURCE_ROOT; };
@@ -4935,7 +4983,6 @@
 		7209F0090F39E5DA003DC336 /* FindProj.cmake */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = FindProj.cmake; path = ../../cmake/FindProj.cmake; sourceTree = SOURCE_ROOT; };
 		7209F00A0F39E5DA003DC336 /* FindSqlite3.cmake */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = FindSqlite3.cmake; path = ../../cmake/FindSqlite3.cmake; sourceTree = SOURCE_ROOT; };
 		7209F00B0F39E5DA003DC336 /* Flex.cmake */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Flex.cmake; path = ../../cmake/Flex.cmake; sourceTree = SOURCE_ROOT; };
-		7209F00C0F39E5DA003DC336 /* Python.cmake */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Python.cmake; path = ../../cmake/Python.cmake; sourceTree = SOURCE_ROOT; };
 		7209F00E0F39E5DA003DC336 /* cmake_uninstall.cmake.in */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = cmake_uninstall.cmake.in; path = ../../cmake_templates/cmake_uninstall.cmake.in; sourceTree = SOURCE_ROOT; };
 		7209F00F0F39E5DA003DC336 /* qgsconfig.h.in */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsconfig.h.in; path = ../../cmake_templates/qgsconfig.h.in; sourceTree = SOURCE_ROOT; };
 		7209F0140F39E5DA003DC336 /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../doc/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
@@ -5415,7 +5462,6 @@
 		72442AE81095DCD800B54796 /* qgsavoidintersectionsdialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsavoidintersectionsdialogbase.ui; path = ../../src/ui/qgsavoidintersectionsdialogbase.ui; sourceTree = SOURCE_ROOT; };
 		72442AE91095DCFC00B54796 /* qgsavoidintersectionsdialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsavoidintersectionsdialog.cpp; path = ../../src/app/qgsavoidintersectionsdialog.cpp; sourceTree = SOURCE_ROOT; };
 		72442AEA1095DCFC00B54796 /* qgsavoidintersectionsdialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsavoidintersectionsdialog.h; path = ../../src/app/qgsavoidintersectionsdialog.h; sourceTree = SOURCE_ROOT; };
-		7249EBD710E7BBEA00708435 /* qgis_help */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = qgis_help; sourceTree = BUILT_PRODUCTS_DIR; };
 		724C9FE11019EDE700A1E1D4 /* mActionSaveAsPDF.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionSaveAsPDF.png; path = ../../images/themes/default/mActionSaveAsPDF.png; sourceTree = SOURCE_ROOT; };
 		724C9FEC1019EE2500A1E1D4 /* mActionSaveAsPDF.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionSaveAsPDF.png; path = ../../images/themes/gis/mActionSaveAsPDF.png; sourceTree = SOURCE_ROOT; };
 		724D05B510A910B400F9680A /* north-arrow_1_simple_half_arrow.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = "north-arrow_1_simple_half_arrow.svg"; path = "../../images/svg/north_arrows/north-arrow_1_simple_half_arrow.svg"; sourceTree = SOURCE_ROOT; };
@@ -5589,6 +5635,22 @@
 		72683FFE0FD6B26E00D90FFC /* qgsmergeattributesdialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsmergeattributesdialogbase.ui; path = ../../src/ui/qgsmergeattributesdialogbase.ui; sourceTree = SOURCE_ROOT; };
 		72683FFF0FD6B29100D90FFC /* qgsmergeattributesdialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsmergeattributesdialog.h; path = ../../src/app/qgsmergeattributesdialog.h; sourceTree = SOURCE_ROOT; };
 		726840000FD6B29100D90FFC /* qgsmergeattributesdialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsmergeattributesdialog.cpp; path = ../../src/app/qgsmergeattributesdialog.cpp; sourceTree = SOURCE_ROOT; };
+		7268E7F61102157C00B96374 /* qgscolorbutton.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgscolorbutton.sip; path = ../../python/gui/qgscolorbutton.sip; sourceTree = SOURCE_ROOT; };
+		7268E7F7110215C900B96374 /* FindLibPython.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = FindLibPython.py; path = ../../cmake/FindLibPython.py; sourceTree = SOURCE_ROOT; };
+		7268E7F8110215C900B96374 /* FindPyQt.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = FindPyQt.py; path = ../../cmake/FindPyQt.py; sourceTree = SOURCE_ROOT; };
+		7268E7F9110215C900B96374 /* FindPyQt4.cmake */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = FindPyQt4.cmake; path = ../../cmake/FindPyQt4.cmake; sourceTree = SOURCE_ROOT; };
+		7268E7FA110215C900B96374 /* FindPythonLibrary.cmake */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = FindPythonLibrary.cmake; path = ../../cmake/FindPythonLibrary.cmake; sourceTree = SOURCE_ROOT; };
+		7268E7FB110215C900B96374 /* FindSIP.cmake */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = FindSIP.cmake; path = ../../cmake/FindSIP.cmake; sourceTree = SOURCE_ROOT; };
+		7268E7FC110215C900B96374 /* FindSIP.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = FindSIP.py; path = ../../cmake/FindSIP.py; sourceTree = SOURCE_ROOT; };
+		7268E7FD110215C900B96374 /* PyQt4Macros.cmake */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = PyQt4Macros.cmake; path = ../../cmake/PyQt4Macros.cmake; sourceTree = SOURCE_ROOT; };
+		7268E7FE110215C900B96374 /* PythonCompile.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = PythonCompile.py; path = ../../cmake/PythonCompile.py; sourceTree = SOURCE_ROOT; };
+		7268E7FF110215C900B96374 /* PythonMacros.cmake */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = PythonMacros.cmake; path = ../../cmake/PythonMacros.cmake; sourceTree = SOURCE_ROOT; };
+		7268E800110215C900B96374 /* SIPMacros.cmake */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = SIPMacros.cmake; path = ../../cmake/SIPMacros.cmake; sourceTree = SOURCE_ROOT; };
+		7268E8011102160900B96374 /* widget_svgfill.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = widget_svgfill.ui; path = ../../src/ui/symbollayer/widget_svgfill.ui; sourceTree = SOURCE_ROOT; };
+		7268E80C11021E6B00B96374 /* analysis.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = analysis.so; sourceTree = BUILT_PRODUCTS_DIR; };
+		7268E8371102347B00B96374 /* x_python_dummy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = x_python_dummy.cpp; sourceTree = "<group>"; };
+		7268E87111023A8700B96374 /* core.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = core.so; sourceTree = BUILT_PRODUCTS_DIR; };
+		7268E88F11023DF700B96374 /* gui.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = gui.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		726979A20F71369A00AFA402 /* qgsnewogrconnection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsnewogrconnection.cpp; path = ../../src/app/ogr/qgsnewogrconnection.cpp; sourceTree = SOURCE_ROOT; };
 		726979A30F71369A00AFA402 /* qgsnewogrconnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsnewogrconnection.h; path = ../../src/app/ogr/qgsnewogrconnection.h; sourceTree = SOURCE_ROOT; };
 		726979A40F71369A00AFA402 /* qgsogrhelperfunctions.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsogrhelperfunctions.cpp; path = ../../src/app/ogr/qgsogrhelperfunctions.cpp; sourceTree = SOURCE_ROOT; };
@@ -7118,19 +7180,37 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		7249EBD510E7BBEA00708435 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				7249EBE410E7BF5000708435 /* libqgis_core.dylib in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		7262ED960F7A770300498385 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				7262ED970F7A770300498385 /* libqgis_core.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7268E80611021E6B00B96374 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7268E80711021E6B00B96374 /* libqgis_core.dylib in Frameworks */,
+				7268E87311023AB000B96374 /* libqgis_analysis.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7268E86A11023A8700B96374 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7268E86B11023A8700B96374 /* libqgis_core.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7268E88911023DF700B96374 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7268E88A11023DF700B96374 /* libqgis_core.dylib in Frameworks */,
+				7268E89211023E3700B96374 /* libqgis_gui.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7450,7 +7530,9 @@
 				726C67411046030F00EFEDCC /* librasterterrainplugin.so */,
 				721598191052B46D003D1610 /* libqgis_analysis.dylib */,
 				7225EF2210B2265A00D23EA2 /* liblabelingplugin.so */,
-				7249EBD710E7BBEA00708435 /* qgis_help */,
+				7268E80C11021E6B00B96374 /* analysis.so */,
+				7268E87111023A8700B96374 /* core.so */,
+				7268E88F11023DF700B96374 /* gui.so */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -9391,13 +9473,11 @@
 			children = (
 				7209ED860F39E5D9003DC336 /* __init__.py */,
 				7209ED870F39E5D9003DC336 /* CMakeLists.txt */,
-				7209ED880F39E5D9003DC336 /* configure.py.in */,
 				7278009410FB763F00574B67 /* console.py */,
 				7209ED890F39E5D9003DC336 /* core */,
 				7209EDBD0F39E5D9003DC336 /* gui */,
 				7276104910A60AC300C89AF0 /* analysis */,
 				7209EDD00F39E5D9003DC336 /* plugins */,
-				7209EDF80F39E5D9003DC336 /* qgisconfig.py.in */,
 				72C83D4F10A5D08E00B97B43 /* utils.py */,
 			);
 			name = python;
@@ -9486,6 +9566,7 @@
 			children = (
 				7209EDBE0F39E5D9003DC336 /* gui.sip */,
 				7209EDBF0F39E5D9003DC336 /* qgisinterface.sip */,
+				7268E7F61102157C00B96374 /* qgscolorbutton.sip */,
 				72E9A3B50F5AE5BD00E78E3C /* qgscomposerview.sip */,
 				7209EDC00F39E5D9003DC336 /* qgsencodingfiledialog.sip */,
 				7209EDC10F39E5D9003DC336 /* qgsgenericprojectionselector.sip */,
@@ -10374,7 +10455,16 @@
 				7209F00A0F39E5DA003DC336 /* FindSqlite3.cmake */,
 				7262EDB90F7A99CE00498385 /* FindSPATIALITE.cmake */,
 				7209F00B0F39E5DA003DC336 /* Flex.cmake */,
-				7209F00C0F39E5DA003DC336 /* Python.cmake */,
+				7268E7F7110215C900B96374 /* FindLibPython.py */,
+				7268E7F8110215C900B96374 /* FindPyQt.py */,
+				7268E7F9110215C900B96374 /* FindPyQt4.cmake */,
+				7268E7FA110215C900B96374 /* FindPythonLibrary.cmake */,
+				7268E7FB110215C900B96374 /* FindSIP.cmake */,
+				7268E7FC110215C900B96374 /* FindSIP.py */,
+				7268E7FD110215C900B96374 /* PyQt4Macros.cmake */,
+				7268E7FE110215C900B96374 /* PythonCompile.py */,
+				7268E7FF110215C900B96374 /* PythonMacros.cmake */,
+				7268E800110215C900B96374 /* SIPMacros.cmake */,
 			);
 			name = cmake;
 			path = ../../cmake;
@@ -10755,6 +10845,7 @@
 				7225EFAD10B22C5000D23EA2 /* widget_simplefill.ui */,
 				7225EFAE10B22C5000D23EA2 /* widget_simpleline.ui */,
 				7225EFAF10B22C5000D23EA2 /* widget_simplemarker.ui */,
+				7268E8011102160900B96374 /* widget_svgfill.ui */,
 				7225EFB010B22C5000D23EA2 /* widget_svgmarker.ui */,
 			);
 			name = symbollayer;
@@ -11031,6 +11122,7 @@
 				727E6AF00FEA90E200DF6F64 /* x_sqlite3.c */,
 				727E6B0B0FEAA06B00DF6F64 /* x_qgsspatialitesourceselect.h */,
 				727E6B0C0FEAA06B00DF6F64 /* x_qgsspatialitesourceselect.cpp */,
+				7268E8371102347B00B96374 /* x_python_dummy.cpp */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -12957,24 +13049,6 @@
 			productReference = 7225EF2210B2265A00D23EA2 /* liblabelingplugin.so */;
 			productType = "com.apple.product-type.tool";
 		};
-		7249EBD610E7BBEA00708435 /* qgis_help */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 7249EBDB10E7BC1300708435 /* Build configuration list for PBXNativeTarget "qgis_help" */;
-			buildPhases = (
-				7249EBE210E7BCEC00708435 /* Script - ui */,
-				7249EBD410E7BBEA00708435 /* Sources */,
-				7249EBD510E7BBEA00708435 /* Frameworks */,
-			);
-			buildRules = (
-				7249EBE310E7BDBA00708435 /* PBXBuildRule */,
-			);
-			dependencies = (
-			);
-			name = qgis_help;
-			productName = qgis_help;
-			productReference = 7249EBD710E7BBEA00708435 /* qgis_help */;
-			productType = "com.apple.product-type.tool";
-		};
 		7262ED920F7A770300498385 /* spatialiteprovider */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7262ED990F7A770300498385 /* Build configuration list for PBXNativeTarget "spatialiteprovider" */;
@@ -12990,6 +13064,57 @@
 			name = spatialiteprovider;
 			productName = testprog;
 			productReference = 7262ED9C0F7A770300498385 /* libspatialiteprovider.so */;
+			productType = "com.apple.product-type.tool";
+		};
+		7268E80411021E6B00B96374 /* python analysis */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7268E80911021E6B00B96374 /* Build configuration list for PBXNativeTarget "python analysis" */;
+			buildPhases = (
+				7268E80511021E6B00B96374 /* Sources */,
+				7268E80611021E6B00B96374 /* Frameworks */,
+			);
+			buildRules = (
+				7268E80811021E6B00B96374 /* PBXBuildRule */,
+			);
+			dependencies = (
+			);
+			name = "python analysis";
+			productName = testprog;
+			productReference = 7268E80C11021E6B00B96374 /* analysis.so */;
+			productType = "com.apple.product-type.tool";
+		};
+		7268E86611023A8700B96374 /* python core */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7268E86E11023A8700B96374 /* Build configuration list for PBXNativeTarget "python core" */;
+			buildPhases = (
+				7268E86711023A8700B96374 /* Sources */,
+				7268E86A11023A8700B96374 /* Frameworks */,
+			);
+			buildRules = (
+				7268E86D11023A8700B96374 /* PBXBuildRule */,
+			);
+			dependencies = (
+			);
+			name = "python core";
+			productName = testprog;
+			productReference = 7268E87111023A8700B96374 /* core.so */;
+			productType = "com.apple.product-type.tool";
+		};
+		7268E88511023DF700B96374 /* python gui */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7268E88C11023DF700B96374 /* Build configuration list for PBXNativeTarget "python gui" */;
+			buildPhases = (
+				7268E88611023DF700B96374 /* Sources */,
+				7268E88911023DF700B96374 /* Frameworks */,
+			);
+			buildRules = (
+				7268E88B11023DF700B96374 /* PBXBuildRule */,
+			);
+			dependencies = (
+			);
+			name = "python gui";
+			productName = testprog;
+			productReference = 7268E88F11023DF700B96374 /* gui.so */;
 			productType = "com.apple.product-type.tool";
 		};
 		726C67361046030F00EFEDCC /* rasterterrain */ = {
@@ -13011,9 +13136,9 @@
 			productReference = 726C67411046030F00EFEDCC /* librasterterrainplugin.so */;
 			productType = "com.apple.product-type.tool";
 		};
-		729BBEFE0F40770B001BCB63 /* qgis_help app */ = {
+		729BBEFE0F40770B001BCB63 /* qgis_help */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 729BBF040F40770C001BCB63 /* Build configuration list for PBXNativeTarget "qgis_help app" */;
+			buildConfigurationList = 729BBF040F40770C001BCB63 /* Build configuration list for PBXNativeTarget "qgis_help" */;
 			buildPhases = (
 				729BBF0E0F407818001BCB63 /* Script - ui */,
 				729BBEFB0F40770B001BCB63 /* Resources */,
@@ -13026,7 +13151,7 @@
 			);
 			dependencies = (
 			);
-			name = "qgis_help app";
+			name = qgis_help;
 			productName = ggis_help;
 			productReference = 729BBEFF0F40770B001BCB63 /* qgis_help.app */;
 			productType = "com.apple.product-type.application";
@@ -13606,9 +13731,11 @@
 				721597EA1052B46D003D1610 /* qgis_analysis */,
 				7209F3120F3A2F2B003DC336 /* qgis_gui */,
 				8D0C4E890486CD37000505A6 /* Qgis */,
-				729BBEFE0F40770B001BCB63 /* qgis_help app */,
-				7249EBD610E7BBEA00708435 /* qgis_help */,
+				729BBEFE0F40770B001BCB63 /* qgis_help */,
 				729BBF320F407CBA001BCB63 /* qgispython */,
+				7268E86611023A8700B96374 /* python core */,
+				7268E80411021E6B00B96374 /* python analysis */,
+				7268E88511023DF700B96374 /* python gui */,
 				7256F1540F4105770022BE1F /* python_modules */,
 				72A07DB90F3BDFC8004FC2A4 /* provider template */,
 				72A07D140F3BD625004FC2A4 /* delimitedtextprovider */,
@@ -13753,66 +13880,6 @@
 			shellScript = "GUI_UI=\"$TARGET_TEMP_DIR/../qgis_gui.build/DerivedSources\"\n\nfor u in qgsdetaileditemwidgetbase qgsgenericprojectionselectorbase qgsmessageviewer qgsprojectionselectorbase\ndo\n\tcp -f \"$GUI_UI/ui_$u.h\" \"$QGIS_BUILD_PATH/Headers/qgis/\"\ndone\n";
 			showEnvVarsInLog = 0;
 		};
-		7249EBE210E7BCEC00708435 /* Script - ui */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Script - ui";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# generate ui headers in separate script because:\n#  1. Xcode will attempt to process generated *.h with moc rule\n#  2. parallel processing might not finish ui's before a cpp source needs it\n\n# derived sources dir created by Compile Sources phase, we need it NOW\nmkdir -p \"$DERIVED_FILES_DIR\"\n\ncd ../../src/helpviewer\n\nUIUI=`ls *.ui`\n\nfor u in $UIUI\ndo\n\tuh=`echo $u | sed 's,\\.ui$,.h,'`\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\tif [ ! -f \"$DERIVED_FILES_DIR/ui_$uh\" ] || [ $u -nt \"$DERIVED_FILES_DIR/ui_$uh\" ] ; then\n\t\trm -f \"$DERIVED_FILES_DIR/ui_$uh\"\n\t\techo \"$QTUIC -o \\\"$DERIVED_FILES_DIR/ui_$uh\\\" $u\"\n\t\t$QTUIC -o \"$DERIVED_FILES_DIR/ui_$uh\" $u\n\tfi\ndone\n\nexit 0\n";
-			showEnvVarsInLog = 0;
-		};
-		7256F1530F4105770022BE1F /* configure.py */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = configure.py;
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# generate and run configure.py\n\nif [ ! -f \"$TARGET_TEMP_DIR/python/python/configure.py\" ] || [ ../../python/configure.py.in -nt \"$TARGET_TEMP_DIR/python/python/configure.py\" ] ; then\n\nif [ \"$GDAL_FORM\" = \"fw\" ] ; then\n\tGDALPATH=\"$GDAL_PREFIX/unix/lib\"\nelse\n\tGDALPATH=\"$GDAL_PREFIX/lib\"\nfi\n\nif [ \"$GEOS_FORM\" = \"fw\" ] ; then\n\tGEOSPATH=\"$GEOS_PREFIX/unix/lib\"\nelse\n\tGEOSPATH=\"$GEOS_PREFIX/lib\"\nfi\n\nsed -e \"s,@CMAKE_SOURCE_DIR@,$PROJECT_DIR/../..,\" \\\n\t-e \"s,@CMAKE_BINARY_DIR@,$TARGET_TEMP_DIR/python,\" \\\n\t-e \"s,@GDAL_INCLUDE_DIR@,$GDAL_INC,\" \\\n\t-e \"s,@GEOS_INCLUDE_DIR@,$GEOS_INC,\" \\\n\t-e \"s,@GEOS_LIB_NAME@,geos,\" \\\n\t-e \"s,@GEOS_LIB_PATH@,$GEOSPATH,\" \\\n\t-e \"s,@GDAL_LIB_NAME@,gdal,\" \\\n\t-e \"s,@GDAL_LIB_PATH@,$GDALPATH,\" \\\n\t-e \"s,@CMAKE_OSX_ARCHITECTURES@,$ARCHS_P,\" \\\n\t-e \"s,@CMAKE_OSX_SYSROOT@,$SDKROOT,\" \\\n\t-e \"s,@CMAKE_MODULE_LINKER_FLAGS@,,\" \\\n\t../../python/configure.py.in > \"$TARGET_TEMP_DIR/python/python/configure.py\"\n\nfi\n\ncd \"$TARGET_TEMP_DIR/python/python\"\nif [ ! -f core/Makefile ] || [ ! -f gui/Makefile ] || [ configure.py -nt core/Makefile ] || [ configure.py -nt gui/Makefile ] ; then\n\t$PYTHON configure.py .\nfi\n\nif [ -f core/Makefile ] && [ -f gui/Makefile ] && [ -f analysis/Makefile ] ; then\n\texit 0\nelse\n\texit 1\nfi\n";
-			showEnvVarsInLog = 0;
-		};
-		7256F23F0F41370A0022BE1F /* setup */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = setup;
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "echo \"Setting up Python target...\"\n\n# setup dirs\n\nmkdir -p \"$TARGET_TEMP_DIR/python/python/core\"\nmkdir -p \"$TARGET_TEMP_DIR/python/python/gui\"\nmkdir -p \"$TARGET_TEMP_DIR/python/python/analysis\"\nmkdir -p \"$TARGET_TEMP_DIR/python/src/core\"\nmkdir -p \"$TARGET_TEMP_DIR/python/src/gui\"\nmkdir -p \"$TARGET_TEMP_DIR/python/src/analysis\"\n\n# setup some symlinks to make compilation happy\n\nln -sf \"$PROJECT_TARGET_DIR/include/qgsconfig.h\" \"$TARGET_TEMP_DIR/python/\"\nln -sf \"$PROJECT_TARGET_DIR/include/qgssvnversion.h\" \"$TARGET_TEMP_DIR/python/\"\n\nln -sf \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libqgis_core.dylib\" \"$TARGET_TEMP_DIR/python/src/core/\"\nln -sf \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libqgis_gui.dylib\" \"$TARGET_TEMP_DIR/python/src/gui/\"\nln -sf \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libqgis_analysis.dylib\" \"$TARGET_TEMP_DIR/python/src/analysis/\"\n\ncd \"$TARGET_TEMP_DIR/../qgis_gui.build/DerivedSources\"\nuih=`ls ui_*.h`\ncd \"$TARGET_TEMP_DIR/python/src/gui\"\nfor h in $uih\ndo\n\tln -sf ../../../../qgis_gui.build/DerivedSources/$h $h\ndone\n\n# workaround for broken arch command on Snow - we need to run python 32bit (from pyuic4)\n\nif [ \"$SDKSYS\" = \"snow\" ] && [ \"$PYTHON_FORM\" = \"system\" ] ; then\n\tmkdir -p \"$TARGET_TEMP_DIR/python/bin/\"\n\tditto -arch i386 /System/Library/Frameworks/Python.framework/Versions/2.6/bin/pythonw2.6 \"$TARGET_TEMP_DIR/python/bin/pythonw\"\nfi\n\nexit 0\n";
-			showEnvVarsInLog = 0;
-		};
-		7256F2760F413B400022BE1F /* make */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = make;
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cd \"$TARGET_TEMP_DIR/python/python/core\"\nif [ -f Makefile ] ; then\n\t/usr/bin/make\nfi\nif [ ! -f core.so ] ; then\n\texit 1\nfi\n\ncd ../gui\nif [ -f Makefile ] ; then\n\t/usr/bin/make\nfi\nif [ ! -f gui.so ] ; then\n\texit 1\nfi\n\ncd ../analysis\nif [ -f Makefile ] ; then\n\t/usr/bin/make\nfi\nif [ ! -f analysis.so ] ; then\n\texit 1\nfi\n\nexit 0\n";
-			showEnvVarsInLog = 0;
-		};
 		7256FA100F41D03B0022BE1F /* Script - qt.conf */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -13856,21 +13923,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# generate ui headers in separate script because:\n#  1. Xcode will attempt to process generated *.h with moc rule\n#  2. parallel processing might not finish ui's before a cpp source needs it\n\n# derived sources dir created by Compile Sources phase, we need it NOW\nmkdir -p \"$DERIVED_FILES_DIR\"\n\ncd ../../src/plugins/$TARGET_PLUGINDIR\n\nUIUI=`ls *.ui`\n\nfor u in $UIUI\ndo\n\tuh=`echo $u | sed 's,\\.ui$,.h,'`\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\tif [ ! -f \"$DERIVED_FILES_DIR/ui_$uh\" ] || [ $u -nt \"$DERIVED_FILES_DIR/ui_$uh\" ] ; then\n\t\trm -f \"$DERIVED_FILES_DIR/ui_$uh\"\n\t\techo \"$QTUIC -o \\\"$DERIVED_FILES_DIR/ui_$uh\\\" $u\"\n\t\t$QTUIC -o \"$DERIVED_FILES_DIR/ui_$uh\" $u\n\tfi\ndone\n\nexit 0\n";
-			showEnvVarsInLog = 0;
-		};
-		727AD4FA0F7325CA002B9DCD /* install */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = install;
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "mkdir -p \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/qgis/\"\nif [ -f \"$TARGET_TEMP_DIR/python/python/core/core.so\" ] ; then\n\tcp -f \"$TARGET_TEMP_DIR/python/python/core/core.so\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/qgis/\"\nfi\nif [ -f \"$TARGET_TEMP_DIR/python/python/gui/gui.so\" ] ; then\n\tcp -f \"$TARGET_TEMP_DIR/python/python/gui/gui.so\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/qgis/\"\nfi\nif [ -f \"$TARGET_TEMP_DIR/python/python/analysis/analysis.so\" ] ; then\n\tcp -f \"$TARGET_TEMP_DIR/python/python/analysis/analysis.so\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/qgis/\"\nfi\nif [ -f \"$TARGET_TEMP_DIR/python/python/qgisconfig.py\" ] ; then\n\tcp -f \"$TARGET_TEMP_DIR/python/python/qgisconfig.py\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/qgis/\"\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		727E6B3D0FEAAD0D00DF6F64 /* Script - optional moc */ = {
@@ -14620,24 +14672,39 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		7249EBD410E7BBEA00708435 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				7249EBDC10E7BCDA00708435 /* main.cpp in Sources */,
-				7249EBDD10E7BCDA00708435 /* qgshelpserver.cpp in Sources */,
-				7249EBDE10E7BCDA00708435 /* qgshelpserver.h in Sources */,
-				7249EBDF10E7BCDA00708435 /* qgshelpviewer.cpp in Sources */,
-				7249EBE010E7BCDA00708435 /* qgshelpviewer.h in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		7262ED950F7A770300498385 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				7262ED9E0F7A777700498385 /* qgsspatialiteprovider.cpp in Sources */,
 				7262ED9F0F7A777700498385 /* qgsspatialiteprovider.h in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7268E80511021E6B00B96374 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7268E85B1102393600B96374 /* x_python_dummy.cpp in Sources */,
+				7268E83C110234D400B96374 /* analysis.sip in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7268E86711023A8700B96374 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7268E86811023A8700B96374 /* x_python_dummy.cpp in Sources */,
+				7268E87411023ACF00B96374 /* core.sip in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7268E88611023DF700B96374 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7268E88711023DF700B96374 /* x_python_dummy.cpp in Sources */,
+				7268E89111023E1900B96374 /* gui.sip in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15297,7 +15364,7 @@
 		};
 		7217CEA410FE32330064D760 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 729BBEFE0F40770B001BCB63 /* qgis_help app */;
+			target = 729BBEFE0F40770B001BCB63 /* qgis_help */;
 			targetProxy = 7217CEA310FE32330064D760 /* PBXContainerItemProxy */;
 		};
 		7223B7A60F96AA6C00D905B4 /* PBXTargetDependency */ = {
@@ -15439,6 +15506,21 @@
 			isa = PBXTargetDependency;
 			target = 8D0C4E890486CD37000505A6 /* Qgis */;
 			targetProxy = 7256F1D00F411D080022BE1F /* PBXContainerItemProxy */;
+		};
+		7268E8A5110241A400B96374 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7268E88511023DF700B96374 /* python gui */;
+			targetProxy = 7268E8A4110241A400B96374 /* PBXContainerItemProxy */;
+		};
+		7268E8A7110241A400B96374 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7268E80411021E6B00B96374 /* python analysis */;
+			targetProxy = 7268E8A6110241A400B96374 /* PBXContainerItemProxy */;
+		};
+		7268E8A9110241A400B96374 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7268E86611023A8700B96374 /* python core */;
+			targetProxy = 7268E8A8110241A400B96374 /* PBXContainerItemProxy */;
 		};
 		727E6B4C0FEABF3D00DF6F64 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -15983,61 +16065,6 @@
 			};
 			name = Release;
 		};
-		7249EBD910E7BBEB00708435 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS";
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					../../src/core,
-					"$(SQLITE_INC)",
-				);
-				INSTALL_PATH = /usr/local/bin;
-				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
-				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"$(SQLITE_LIB)",
-					"$(QT_LIB_CORE)",
-					"$(QT_LIB_GUI)",
-					"$(QT_LIB_NET)",
-					"$(QT_LIB_SVG)",
-					"$(QT_LIB_XML)",
-					"$(QT_LIB_WEBKIT)",
-				);
-				PRODUCT_NAME = qgis_help;
-			};
-			name = Debug;
-		};
-		7249EBDA10E7BBEB00708435 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS";
-				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
-				HEADER_SEARCH_PATHS = (
-					"$(inherited)",
-					../../src/core,
-					"$(SQLITE_INC)",
-				);
-				INSTALL_PATH = /usr/local/bin;
-				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
-				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
-				OTHER_LDFLAGS = (
-					"$(inherited)",
-					"$(SQLITE_LIB)",
-					"$(QT_LIB_CORE)",
-					"$(QT_LIB_GUI)",
-					"$(QT_LIB_NET)",
-					"$(QT_LIB_SVG)",
-					"$(QT_LIB_XML)",
-					"$(QT_LIB_WEBKIT)",
-				);
-				PRODUCT_NAME = qgis_help;
-			};
-			name = Release;
-		};
 		7256F1550F4105770022BE1F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -16180,6 +16207,231 @@
 					"$(SQLITE_LIB)",
 				);
 				PRODUCT_NAME = spatialiteprovider.so;
+			};
+			name = Release;
+		};
+		7268E80A11021E6B00B96374 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_DATA_SUBDIR)/python/qgis/";
+				EXECUTABLE_PREFIX = "";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					python_module_qgis_analysis_EXPORTS,
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					../../src/analysis,
+					../../src/analysis/vector,
+					../../src/core,
+					../../src/core/spatialindex,
+					"$(PYTHON_INC)",
+					"$(GEOS_INC)",
+				);
+				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-undefined",
+					dynamic_lookup,
+					"$(QT_LIB_CORE)",
+				);
+				PRODUCT_NAME = analysis.so;
+			};
+			name = Debug;
+		};
+		7268E80B11021E6B00B96374 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_DATA_SUBDIR)/python/qgis/";
+				EXECUTABLE_PREFIX = "";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					python_module_qgis_analysis_EXPORTS,
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					../../src/analysis,
+					../../src/analysis/vector,
+					../../src/core,
+					../../src/core/spatialindex,
+					"$(PYTHON_INC)",
+					"$(GEOS_INC)",
+				);
+				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-undefined",
+					dynamic_lookup,
+					"$(QT_LIB_CORE)",
+				);
+				PRODUCT_NAME = analysis.so;
+			};
+			name = Release;
+		};
+		7268E86F11023A8700B96374 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_DATA_SUBDIR)/python/qgis/";
+				EXECUTABLE_PREFIX = "";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					python_module_qgis_core_EXPORTS,
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					../../src/core,
+					../../src/core/composer,
+					../../src/core/raster,
+					../../src/core/renderer,
+					../../src/core/spatialindex,
+					../../src/core/symbology,
+					"../../src/core/symbology-ng",
+					"$(PYTHON_INC)",
+					"$(GDAL_INC)",
+					"$(GEOS_INC)",
+				);
+				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-undefined",
+					dynamic_lookup,
+					"$(QT_LIB_CORE)",
+					"$(QT_LIB_GUI)",
+					"$(QT_LIB_XML)",
+				);
+				PRODUCT_NAME = core.so;
+			};
+			name = Debug;
+		};
+		7268E87011023A8700B96374 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_DATA_SUBDIR)/python/qgis/";
+				EXECUTABLE_PREFIX = "";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					python_module_qgis_core_EXPORTS,
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					../../src/core,
+					../../src/core/composer,
+					../../src/core/raster,
+					../../src/core/renderer,
+					../../src/core/spatialindex,
+					../../src/core/symbology,
+					"../../src/core/symbology-ng",
+					"$(PYTHON_INC)",
+					"$(GDAL_INC)",
+					"$(GEOS_INC)",
+				);
+				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-undefined",
+					dynamic_lookup,
+					"$(QT_LIB_CORE)",
+					"$(QT_LIB_GUI)",
+					"$(QT_LIB_XML)",
+				);
+				PRODUCT_NAME = core.so;
+			};
+			name = Release;
+		};
+		7268E88D11023DF700B96374 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_DATA_SUBDIR)/python/qgis/";
+				EXECUTABLE_PREFIX = "";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					python_module_qgis_gui_EXPORTS,
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					../../src/gui,
+					"../../src/gui/symbology-ng",
+					"$(HEADER_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					../../src/core,
+					../../src/core/composer,
+					../../src/core/raster,
+					../../src/core/renderer,
+					../../src/core/symbology,
+					"../../src/core/symbology-ng",
+					"$(PYTHON_INC)",
+					"$(GDAL_INC)",
+					"$(GEOS_INC)",
+				);
+				HEADER_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(TARGET_TEMP_DIR)/../qgis_gui.build/DerivedSources\"";
+				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-undefined",
+					dynamic_lookup,
+					"$(QT_LIB_CORE)",
+					"$(QT_LIB_GUI)",
+					"$(QT_LIB_XML)",
+				);
+				PRODUCT_NAME = gui.so;
+			};
+			name = Debug;
+		};
+		7268E88E11023DF700B96374 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_DATA_SUBDIR)/python/qgis/";
+				EXECUTABLE_PREFIX = "";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					python_module_qgis_gui_EXPORTS,
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					../../src/gui,
+					"../../src/gui/symbology-ng",
+					"$(HEADER_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					../../src/core,
+					../../src/core/composer,
+					../../src/core/raster,
+					../../src/core/renderer,
+					../../src/core/symbology,
+					"../../src/core/symbology-ng",
+					"$(PYTHON_INC)",
+					"$(GDAL_INC)",
+					"$(GEOS_INC)",
+				);
+				HEADER_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(TARGET_TEMP_DIR)/../qgis_gui.build/DerivedSources\"";
+				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-undefined",
+					dynamic_lookup,
+					"$(QT_LIB_CORE)",
+					"$(QT_LIB_GUI)",
+					"$(QT_LIB_XML)",
+				);
+				PRODUCT_NAME = gui.so;
 			};
 			name = Release;
 		};
@@ -18432,7 +18684,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 12767;
+				QGIS_VERSION_BUILD = 12778;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -18443,7 +18695,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 12767;
+				QGIS_VERSION_BUILD = 12778;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
@@ -18514,15 +18766,6 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		7249EBDB10E7BC1300708435 /* Build configuration list for PBXNativeTarget "qgis_help" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				7249EBD910E7BBEB00708435 /* Debug */,
-				7249EBDA10E7BBEB00708435 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		7256F1570F4105A40022BE1F /* Build configuration list for PBXAggregateTarget "python_modules" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -18568,6 +18811,33 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		7268E80911021E6B00B96374 /* Build configuration list for PBXNativeTarget "python analysis" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7268E80A11021E6B00B96374 /* Debug */,
+				7268E80B11021E6B00B96374 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7268E86E11023A8700B96374 /* Build configuration list for PBXNativeTarget "python core" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7268E86F11023A8700B96374 /* Debug */,
+				7268E87011023A8700B96374 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7268E88C11023DF700B96374 /* Build configuration list for PBXNativeTarget "python gui" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7268E88D11023DF700B96374 /* Debug */,
+				7268E88E11023DF700B96374 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		726C673E1046030F00EFEDCC /* Build configuration list for PBXNativeTarget "rasterterrain" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -18595,7 +18865,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		729BBF040F40770C001BCB63 /* Build configuration list for PBXNativeTarget "qgis_help app" */ = {
+		729BBF040F40770C001BCB63 /* Build configuration list for PBXNativeTarget "qgis_help" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				729BBF020F40770C001BCB63 /* Debug */,

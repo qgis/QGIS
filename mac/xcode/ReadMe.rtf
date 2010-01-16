@@ -10,7 +10,7 @@
 \b0\fs24 \cf0 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
-\i \cf0 2.4.0	2010-1-9\
+\i \cf0 2.5.0	2010-1-16\
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
 \i0 \cf0 \
@@ -142,14 +142,18 @@ ln -s /Users/Shared/unix /Developer/SDKs/MacOSX10.4u.sdk/Users/Shared/unix
 \
 \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
-\cf0 \ul Misc Support\
+\cf0 \ul Support\
 \ulnone \
 \pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
 
 \f1\fs20 \cf0 QT_PLUGINS_DIR
 \f0\fs24  is where the Qt plugins are installed.  
 \f1\fs20 QTBIN
-\f0\fs24  is where the Qt command-line programs are found.  The default is for a binary installation of Qt.  If built from source, you may need to change these.\
+\f0\fs24  is where the Qt command-line programs are found.  
+\f1\fs20 QT_VER_MAJOR
+\f0\fs24  and 
+\f1\fs20 QT_VER_MINOR
+\f0\fs24  are the major.minor version of Qt (currently only major version is used).  The default is for a binary installation of Qt 4.5.  If built from source, you may need to change these.\
 \
 
 \f1\fs20 BISON
@@ -211,7 +215,17 @@ See detailed dependency notes below.\
 \f1\fs20 /Library/Frameworks
 \f0\fs24  install.  But the system Python has a user location for Python modules, and programs should be installed elsewhere, like /usr/local/bin (follow the Qgis install instructions for SIP/PyQt).\
 \
-SIP/PyQt programs are found with the 
+PYQT_SIP_DIR and PYQT_SIP_FLAGS are set for a system SIP/PyQt install as described in INSTALL.  They should be adjusted for other configurations.  These can be found by starting Python (the desired Python for the Qgis build) in a Terminal, then:\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+
+\f1\fs20 \cf0 	import PyQt4.pyqtconfig\
+	PyQt4.pyqtconfig.Configuration().pyqt_sip_dir\
+	PyQt4.pyqtconfig.Configuration().pyqt_sip_flags\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural\pardirnatural
+
+\f0\fs24 \cf0 \
+SIP/PyQt utility programs are found with the 
 \f1\fs20 PYTHON_USRBIN
 \f0\fs24  setting.  This is automatic if you follow the Qgis SIP/PyQt install instructions.\
 \
