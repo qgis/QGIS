@@ -4,6 +4,7 @@
 #include "qgsrendercontext.h"
 
 #include <QSize>
+#include <QPainter>
 #include <QPointF>
 #include <QPolygonF>
 
@@ -49,4 +50,31 @@ void QgsFillSymbolLayerV2::drawPreviewIcon( QgsSymbolV2RenderContext& context, Q
   startRender( context );
   renderPolygon( poly, NULL, context );
   stopRender( context );
+}
+
+void QgsFillSymbolLayerV2::_renderPolygon( QPainter* p, const QPolygonF& points, const QList<QPolygonF>* rings )
+{
+  if ( !p )
+  {
+    return;
+  }
+
+  if ( rings == NULL )
+  {
+    // simple polygon without holes
+    p->drawPolygon( points );
+  }
+  else
+  {
+    // polygon with holes must be drawn using painter path
+    QPainterPath path;
+    path.addPolygon( points );
+    QList<QPolygonF>::const_iterator it = rings->constBegin();
+    for ( ; it != rings->constEnd(); ++it )
+    {
+      path.addPolygon( *it );
+    }
+
+    p->drawPath( path );
+  }
 }

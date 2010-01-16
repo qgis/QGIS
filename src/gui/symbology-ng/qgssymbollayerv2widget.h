@@ -206,5 +206,38 @@ class GUI_EXPORT QgsLineDecorationSymbolLayerV2Widget : public QgsSymbolLayerV2W
     QgsLineDecorationSymbolLayerV2* mLayer;
 };
 
+//////////
+
+#include "ui_widget_svgfill.h"
+
+class QgsSVGFillSymbolLayer;
+
+class GUI_EXPORT QgsSVGFillSymbolLayerWidget : public QgsSymbolLayerV2Widget, private Ui::WidgetSVGFill
+{
+    Q_OBJECT
+
+  public:
+    QgsSVGFillSymbolLayerWidget( QWidget* parent = NULL );
+
+    static QgsSymbolLayerV2Widget* create() { return new QgsSVGFillSymbolLayerWidget(); }
+
+    // from base class
+    virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
+    virtual QgsSymbolLayerV2* symbolLayer();
+
+  protected:
+    QgsSVGFillSymbolLayer* mLayer;
+    //sets new output unit. Is called on combo box or spin box change
+    void setOutputUnit();
+    void insertIcons();
+
+  private slots:
+    void on_mBrowseToolButton_clicked();
+    void on_mTextureWidthSpinBox_valueChanged( double d );
+    void on_mSVGLineEdit_textChanged( const QString & text );
+    void on_mSvgListWidget_itemActivated( QListWidgetItem* item );
+    void on_mChangeOutlinePushButton_clicked();
+};
+
 
 #endif

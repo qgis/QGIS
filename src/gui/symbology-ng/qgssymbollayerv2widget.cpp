@@ -498,3 +498,116 @@ void QgsLineDecorationSymbolLayerV2Widget::colorChanged()
   btnChangeColor->setColor( mLayer->color() );
   emit changed();
 }
+
+/////////////
+
+#include <QFileDialog>
+
+QgsSVGFillSymbolLayerWidget::QgsSVGFillSymbolLayerWidget( QWidget* parent ): QgsSymbolLayerV2Widget( parent )
+{
+  mLayer = 0;
+  setupUi( this );
+  insertIcons();
+}
+
+void QgsSVGFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer )
+{
+  if ( !layer )
+  {
+    return;
+  }
+
+  if ( layer->layerType() != "SVGFill" )
+  {
+    return;
+  }
+
+  mLayer = dynamic_cast<QgsSVGFillSymbolLayer*>( layer );
+  if ( mLayer )
+  {
+    double width = mLayer->patternWidth();
+    mTextureWidthSpinBox->setValue( width );
+    mSVGLineEdit->setText( mLayer->svgFilePath() );
+  }
+}
+
+QgsSymbolLayerV2* QgsSVGFillSymbolLayerWidget::symbolLayer()
+{
+  return mLayer;
+}
+
+void QgsSVGFillSymbolLayerWidget::on_mBrowseToolButton_clicked()
+{
+  QString filePath = QFileDialog::getOpenFileName( 0, tr( "Select svg texture file" ) );
+  if ( !filePath.isNull() )
+  {
+    mSVGLineEdit->setText( filePath );
+    emit changed();
+  }
+}
+
+void QgsSVGFillSymbolLayerWidget::on_mTextureWidthSpinBox_valueChanged( double d )
+{
+  if ( mLayer )
+  {
+    mLayer->setPatternWidth( d );
+    emit changed();
+  }
+}
+
+void QgsSVGFillSymbolLayerWidget::on_mSVGLineEdit_textChanged( const QString & text )
+{
+  if ( !mLayer )
+  {
+    return;
+  }
+
+  QFileInfo fi( text );
+  if ( !fi.exists() )
+  {
+    return;
+  }
+  mLayer->setSvgFilePath( text );
+  emit changed();
+}
+
+void QgsSVGFillSymbolLayerWidget::on_mSvgListWidget_itemActivated( QListWidgetItem* item )
+{
+  mSVGLineEdit->setText( item->data( Qt::UserRole ).toString() );
+}
+
+void QgsSVGFillSymbolLayerWidget::insertIcons()
+{
+  mSvgListWidget->clear();
+
+  QStringList svgFiles = QgsSvgMarkerSymbolLayerV2::listSvgFiles();
+  QSvgRenderer renderer;
+  QPainter painter;
+
+  QStringList::const_iterator it = svgFiles.constBegin();
+  for ( ; it != svgFiles.constEnd(); ++it )
+  {
+    renderer.load( *it );
+    QPixmap pixmap( renderer.defaultSize() );
+    pixmap.fill();
+    painter.begin( &pixmap );
+    renderer.render( &painter );
+    painter.end();
+
+    QListWidgetItem* item = new QListWidgetItem( mSvgListWidget );
+    item->setData( Qt::UserRole, *it );
+    item->setIcon( QIcon( pixmap ) );
+    item->setToolTip( *it );
+  }
+}
+
+void QgsSVGFillSymbolLayerWidget::on_mChangeOutlinePushButton_clicked()
+{
+  QgsSymbolV2PropertiesDialog dlg( mLayer->subSymbol(), this );
+  if ( dlg.exec() == 0 )
+  {
+    return;
+  }
+
+  emit changed();
+}
