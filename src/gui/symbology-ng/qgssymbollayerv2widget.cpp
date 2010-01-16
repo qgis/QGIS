@@ -508,6 +508,7 @@ QgsSVGFillSymbolLayerWidget::QgsSVGFillSymbolLayerWidget( QWidget* parent ): Qgs
   mLayer = 0;
   setupUi( this );
   insertIcons();
+  updateOutlineIcon();
 }
 
 void QgsSVGFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer )
@@ -529,6 +530,7 @@ void QgsSVGFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer )
     mTextureWidthSpinBox->setValue( width );
     mSVGLineEdit->setText( mLayer->svgFilePath() );
   }
+  updateOutlineIcon();
 }
 
 QgsSymbolLayerV2* QgsSVGFillSymbolLayerWidget::symbolLayer()
@@ -604,10 +606,20 @@ void QgsSVGFillSymbolLayerWidget::insertIcons()
 void QgsSVGFillSymbolLayerWidget::on_mChangeOutlinePushButton_clicked()
 {
   QgsSymbolV2PropertiesDialog dlg( mLayer->subSymbol(), this );
-  if ( dlg.exec() == 0 )
+  if ( dlg.exec() == QDialog::Rejected )
   {
     return;
   }
 
+  updateOutlineIcon();
   emit changed();
+}
+
+void QgsSVGFillSymbolLayerWidget::updateOutlineIcon()
+{
+  if ( mLayer )
+  {
+    QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mLayer->subSymbol(), mChangeOutlinePushButton->iconSize() );
+    mChangeOutlinePushButton->setIcon( icon );
+  }
 }

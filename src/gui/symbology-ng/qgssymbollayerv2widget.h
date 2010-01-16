@@ -230,6 +230,7 @@ class GUI_EXPORT QgsSVGFillSymbolLayerWidget : public QgsSymbolLayerV2Widget, pr
     //sets new output unit. Is called on combo box or spin box change
     void setOutputUnit();
     void insertIcons();
+    void updateOutlineIcon();
 
   private slots:
     void on_mBrowseToolButton_clicked();
