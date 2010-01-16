@@ -391,6 +391,10 @@ int QgsGrass::error_routine( char *msg, int fatal )
 
 int QgsGrass::error_routine( const char *msg, int fatal )
 {
+  // Unfortunately the exceptions thrown here can only be caught if GRASS libraries are compiled 
+  // with -fexception option on Linux (works on Windows)
+  // GRASS developers are reluctant to add -fexception by default
+  // https://trac.osgeo.org/grass/ticket/869
   QgsDebugMsg( QString( "error_routine (fatal = %1): %2" ).arg( fatal ).arg( msg ) );
 
   error_message = msg;
