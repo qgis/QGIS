@@ -417,8 +417,7 @@ sudo ln -s /usr/lib/libQtCLucene.dylib /usr/local/lib/
 
 These should then be found automatically on Leopard and above.  Earlier systems
 may need some help by adding '-L/usr/local/lib' to CMAKE_SHARED_LINKER_FLAGS,
-CMAKE_MODULE_LINKER_FLAGS and CMAKE_EXE_LINKER_FLAGS in the cmake build, or
-adding '/usr/local/lib' to LIBRARY_SEARCH_PATHS in the Xcode build.
+CMAKE_MODULE_LINKER_FLAGS and CMAKE_EXE_LINKER_FLAGS in the cmake build.
 
 
 == Install development frameworks for QGIS dependencies ==
@@ -562,6 +561,17 @@ and (this installs by default into the Python framework, and is appropriate only
 export QTDIR=/Developer/Applications/Qt
 python configure.py 
 yes 
+```
+
+There is a problem with the configuration that needs to be fixed now (it affect PyQwt compilation later).  Edit pyqtconfig.py and change the qt_dir line to:
+
+```
+    'qt_dir': '/usr',
+```
+
+Then continue with compilation and installation:
+
+```
 make 
 sudo make install 
 ```
@@ -632,6 +642,7 @@ minor.point version, and it may be an SVN version).  Remember this for QGIS and 
 Now for PyQwt.  Still in the Terminal:
 
 ```
+cd ../configure
 python configure.py --extra-include-dirs=/usr/local/qwt-5.2.1-svn/include \
 --extra-lib-dirs=/usr/local/qwt-5.2.1-svn/lib --extra-libs=qwt
 make

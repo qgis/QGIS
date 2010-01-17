@@ -1,6 +1,6 @@
 // QGIS Xcode project common build settings
 
-CURRENT_PROJECT_VERSION = 2.5.0
+CURRENT_PROJECT_VERSION = 2.5.1
 
 // SDKSYS must be set to valid value
 SDKSYS = leo // tig (Tiger), leo (Leopard), snow (Snow Leopard)
@@ -31,6 +31,11 @@ QT_MVER = $(QT_VER_MAJOR) // keep for now so I don't have to change all scripts 
 QT_VER_MAJOR = 4 // the install_name/major version
 QT_VER_MINOR = 5 // minor version
 QT_FWVER = $(QT_VER_MAJOR) // the Versions/ folder name, normally same as Qt ver
+
+QT_DIR = /usr
+// this is to enable Qt libs in /usr/lib (QtUiTools, QtCLucene) to work in SDKs
+// -> create symlinks to these libs in /usr/local/lib
+QT_DIR_SDK = /usr/local
 
 QT_PLUGINS_DIR = /Developer/Applications/Qt/plugins
 QTBIN = /Developer/Tools/Qt
@@ -176,7 +181,6 @@ QGIS_LIB_SUBDIR = lib // qgispython lib MUST be in MacOS/lib
 QGIS_DATA_SUBDIR = ../Resources
 QGIS_PLUGIN_SUBDIR = ../PlugIns/qgis
 HEADER_SEARCH_PATHS = $(SYMROOT)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/include
-//LIBRARY_SEARCH_PATHS = $(PROJECT_TARGET_APP_DIR)/../Frameworks
 ALWAYS_SEARCH_USER_PATHS = NO
 USE_HEADERMAP = NO // else headers with same name cause confusion
 
@@ -217,7 +221,7 @@ DEFS_EXPORT = CORE_EXPORT= GUI_EXPORT= PYTHON_EXPORT= ANALYSIS_EXPORT=
 // use full flags instead of Xcode includes and defs,
 // since these are needed in scripts also
 QT_CXXFLAGS = -DQT_DLL -DQT_SVG_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_SQL_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -DQT_NO_CAST_TO_ASCII $(QTDEFS_$(CONFIGURATION)) -I/Library/Frameworks/QtCore.framework/Headers -I/Library/Frameworks/QtGui.framework/Headers -I/Library/Frameworks/QtNetwork.framework/Headers -I/Library/Frameworks/QtSql.framework/Headers -I/Library/Frameworks/QtSvg.framework/Headers -I/Library/Frameworks/QtXml.framework/Headers -I/Library/Frameworks/QtWebKit.framework/Headers
-QT_INC_UITOOLS = /usr/include/QtUiTools
+QT_INC_UITOOLS = $(QT_DIR)/include/QtUiTools
 QTDEFS_Debug = -DQT_DEBUG
 QTDEFS_Release = -DQT_NO_DEBUG
 QT_CXXFLAGS_APP = $(PGSQL_HAVE)
@@ -230,7 +234,7 @@ QT_LIB_SQL = -framework QtSql
 QT_LIB_WEBKIT = -framework QtWebKit
 QT_LIB_DBUS = -framework QtDBus
 QT_LIB_PHONON = -framework phonon
-QT_LIB_UITOOLS = -lQtUiTools
+QT_LIB_UITOOLS = -L$(QT_DIR_SDK)/lib -lQtUiTools
 // convenience for all Qt:
 QT_LIB = $(QT_LIB_CORE) $(QT_LIB_GUI) $(QT_LIB_NET) $(QT_LIB_XML) $(QT_LIB_SVG) $(QT_LIB_SQL)
 // list of Qt frameworks used
