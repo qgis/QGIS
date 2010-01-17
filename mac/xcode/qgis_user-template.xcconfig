@@ -25,6 +25,11 @@
 //QT_VER_MINOR = 5 // minor version, currently unused
 //QT_FWVER = $(QT_VER_MAJOR) // the Versions/ folder name, normally same as Qt ver
 
+//QT_DIR = /usr
+// this is to enable Qt libs in /usr/lib (QtUiTools, QtCLucene) to work in SDKs
+// -> create symlinks to these libs in /usr/local/lib
+//QT_DIR_SDK = /usr/local
+
 //QT_PLUGINS_DIR = /Developer/Applications/Qt/plugins
 //QTBIN = /Developer/Tools/Qt // bin dir
 //SIP_INC = /usr/local/include
