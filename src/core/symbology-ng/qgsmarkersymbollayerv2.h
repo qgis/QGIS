@@ -14,6 +14,7 @@
 #include <QBrush>
 #include <QPicture>
 #include <QPolygonF>
+#include <QFont>
 
 class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 {
@@ -110,5 +111,62 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     QString mPath;
     QPicture mPicture;
 };
+
+
+//////////
+
+#define POINT2MM(x) ( (x) * 25.4 / 72 ) // point is 1/72 of inch
+#define MM2POINT(x) ( (x) * 72 / 25.4 )
+
+#define DEFAULT_FONTMARKER_FONT   "Dingbats"
+#define DEFAULT_FONTMARKER_CHR    QChar('A')
+#define DEFAULT_FONTMARKER_SIZE   POINT2MM(12)
+#define DEFAULT_FONTMARKER_COLOR  QColor(Qt::black)
+#define DEFAULT_FONTMARKER_ANGLE  0
+
+class CORE_EXPORT QgsFontMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
+{
+  public:
+    QgsFontMarkerSymbolLayerV2( QString fontFamily = DEFAULT_FONTMARKER_FONT,
+                                QChar chr = DEFAULT_FONTMARKER_CHR,
+                                double pointSize = DEFAULT_FONTMARKER_SIZE,
+                                QColor color = DEFAULT_FONTMARKER_COLOR,
+                                double angle = DEFAULT_FONTMARKER_ANGLE );
+
+    // static stuff
+
+    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
+
+    // implemented from base classes
+
+    QString layerType() const;
+
+    void startRender( QgsSymbolV2RenderContext& context );
+
+    void stopRender( QgsSymbolV2RenderContext& context );
+
+    void renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context );
+
+    QgsStringMap properties() const;
+
+    QgsSymbolLayerV2* clone() const;
+
+    // new methods
+
+    QString fontFamily() const { return mFontFamily; }
+    void setFontFamily( QString family ) { mFontFamily = family; }
+
+    QChar character() const { return mChr; }
+    void setCharacter( QChar ch ) { mChr = ch; }
+
+  protected:
+
+    QString mFontFamily;
+    QChar mChr;
+
+    QPointF mChrOffset;
+    QFont mFont;
+};
+
 
 #endif
