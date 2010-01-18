@@ -235,7 +235,11 @@ void QgsSimpleMarkerSymbolLayerV2::drawMarker( QPainter* p, QgsSymbolV2RenderCon
   {
     double scaledSize = context.outputPixelSize( mSize );
     double half = scaledSize / 2.0;
-    // TODO: rotate
+    if ( mAngle != 0 )
+    {
+      p->save();
+      p->rotate( mAngle );
+    }
 
     if ( mName == "circle" )
     {
@@ -251,6 +255,13 @@ void QgsSimpleMarkerSymbolLayerV2::drawMarker( QPainter* p, QgsSymbolV2RenderCon
       p->drawLine( QPointF( -half, -half ), QPointF( half,  half ) );
       p->drawLine( QPointF( -half,  half ), QPointF( half, -half ) );
     }
+    else if ( mName == "line" )
+    {
+      p->drawLine( QPointF( 0, -half ), QPointF( 0, half ) ); // vertical line
+    }
+
+    if ( mAngle != 0 )
+      p->restore();
   }
 
 }
@@ -327,7 +338,7 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
   }
 
   p->save();
-  QPointF outputOffset = QPointF(context.outputLineWidth( mOffset.x() ), context.outputLineWidth( mOffset.y() ) );
+  QPointF outputOffset = QPointF( context.outputLineWidth( mOffset.x() ), context.outputLineWidth( mOffset.y() ) );
   p->translate( point + outputOffset );
 
   if ( mAngle != 0 )
