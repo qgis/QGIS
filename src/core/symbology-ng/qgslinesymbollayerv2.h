@@ -52,12 +52,22 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     double offset() const { return mOffset; }
     void setOffset( double offset ) { mOffset = offset; }
 
+    bool useCustomDashPattern() const { return mUseCustomDashPattern; }
+    void setUseCustomDashPattern( bool b ) { mUseCustomDashPattern = b; }
+
+    QVector<qreal> customDashVector() const { return mCustomDashVector; }
+    void setCustomDashVector( const QVector<qreal>& vector ) { mCustomDashVector = vector; }
+
   protected:
     Qt::PenStyle mPenStyle;
     Qt::PenJoinStyle mPenJoinStyle;
     Qt::PenCapStyle mPenCapStyle;
     QPen mPen;
     double mOffset;
+    //use a custom dash dot pattern instead of the predefined ones
+    bool mUseCustomDashPattern;
+    /**Vector with an even number of entries for the */
+    QVector<qreal> mCustomDashVector;
 };
 
 /////////

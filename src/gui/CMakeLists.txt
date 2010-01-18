@@ -2,6 +2,7 @@
 SET(QGIS_GUI_SRCS
 
 symbology-ng/qgsbrushstylecombobox.cpp
+symbology-ng/qgsdashspacedialog.cpp
 symbology-ng/qgspenstylecombobox.cpp
 symbology-ng/qgssymbollayerv2widget.cpp
 symbology-ng/qgssymbolv2propertiesdialog.cpp
@@ -50,6 +51,7 @@ qgsludialog.cpp
 
 SET(QGIS_GUI_MOC_HDRS
 
+symbology-ng/qgsdashspacedialog.h
 symbology-ng/qgssymbollayerv2widget.h
 symbology-ng/qgssymbolv2propertiesdialog.h
 symbology-ng/qgssinglesymbolrendererv2widget.h
