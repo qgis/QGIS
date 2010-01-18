@@ -78,6 +78,7 @@ QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2Widget::symbolLayer()
 void QgsSimpleLineSymbolLayerV2Widget::penWidthChanged()
 {
   mLayer->setWidth( spinWidth->value() );
+  updatePatternIcon();
   emit changed();
 }
 
@@ -88,6 +89,7 @@ void QgsSimpleLineSymbolLayerV2Widget::colorChanged()
     return;
   mLayer->setColor( color );
   btnChangeColor->setColor( mLayer->color() );
+  updatePatternIcon();
   emit changed();
 }
 
@@ -102,6 +104,7 @@ void QgsSimpleLineSymbolLayerV2Widget::penStyleChanged()
 void QgsSimpleLineSymbolLayerV2Widget::offsetChanged()
 {
   mLayer->setOffset( spinOffset->value() );
+  updatePatternIcon();
   emit changed();
 }
 
