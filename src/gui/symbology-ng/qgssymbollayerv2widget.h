@@ -46,9 +46,15 @@ class GUI_EXPORT QgsSimpleLineSymbolLayerV2Widget : public QgsSymbolLayerV2Widge
     void colorChanged();
     void penStyleChanged();
     void offsetChanged();
+    void on_mCustomCheckBox_stateChanged( int state );
+    void on_mChangePatternButton_clicked();
+
 
   protected:
     QgsSimpleLineSymbolLayerV2* mLayer;
+
+    //creates a new icon for the 'change pattern' button
+    void updatePatternIcon();
 };
 
 ///////////

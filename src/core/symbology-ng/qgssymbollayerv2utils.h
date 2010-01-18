@@ -44,6 +44,9 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     static QString encodePoint( QPointF point );
     static QPointF decodePoint( QString str );
 
+    static QString encodeRealVector( const QVector<qreal>& v );
+    static QVector<qreal> decodeRealVector( const QString& s );
+
     static QString encodeOutputUnit( QgsSymbolV2::OutputUnit unit );
     static QgsSymbolV2::OutputUnit decodeOutputUnit( QString str );
 
@@ -75,6 +78,8 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     static double pixelSizeScaleFactor( QgsRenderContext& c, QgsSymbolV2::OutputUnit u );
     /**Creates a render context for a pixel based device*/
     static QgsRenderContext createRenderContext( QPainter* p );
+
+    static QString iconPath( QString iconFile );
 };
 
 class QPolygonF;

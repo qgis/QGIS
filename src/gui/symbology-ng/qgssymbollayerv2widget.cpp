@@ -5,6 +5,7 @@
 #include "qgsmarkersymbollayerv2.h"
 #include "qgsfillsymbollayerv2.h"
 
+#include "qgsdashspacedialog.h"
 #include "qgssymbolv2propertiesdialog.h"
 
 #include "qgsapplication.h"
@@ -31,6 +32,7 @@ QgsSimpleLineSymbolLayerV2Widget::QgsSimpleLineSymbolLayerV2Widget( QWidget* par
   connect( spinOffset, SIGNAL( valueChanged( double ) ), this, SLOT( offsetChanged() ) );
   connect( cboCapStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( penStyleChanged() ) );
   connect( cboJoinStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( penStyleChanged() ) );
+  updatePatternIcon();
 
 }
 
@@ -49,6 +51,23 @@ void QgsSimpleLineSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   spinOffset->setValue( mLayer->offset() );
   cboJoinStyle->setPenJoinStyle( mLayer->penJoinStyle() );
   cboCapStyle->setPenCapStyle( mLayer->penCapStyle() );
+
+  //use a custom dash pattern?
+  bool useCustomDashPattern = mLayer->useCustomDashPattern();
+  mChangePatternButton->setEnabled( useCustomDashPattern );
+  label_3->setEnabled( !useCustomDashPattern );
+  cboPenStyle->setEnabled( !useCustomDashPattern );
+  mCustomCheckBox->blockSignals( true );
+  if ( useCustomDashPattern )
+  {
+    mCustomCheckBox->setCheckState( Qt::Checked );
+  }
+  else
+  {
+    mCustomCheckBox->setCheckState( Qt::Unchecked );
+  }
+  mCustomCheckBox->blockSignals( false );
+  updatePatternIcon();
 }
 
 QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2Widget::symbolLayer()
@@ -84,6 +103,45 @@ void QgsSimpleLineSymbolLayerV2Widget::offsetChanged()
 {
   mLayer->setOffset( spinOffset->value() );
   emit changed();
+}
+
+void QgsSimpleLineSymbolLayerV2Widget::on_mCustomCheckBox_stateChanged( int state )
+{
+  bool checked = ( state == Qt::Checked );
+  mChangePatternButton->setEnabled( checked );
+  label_3->setEnabled( !checked );
+  cboPenStyle->setEnabled( !checked );
+
+  mLayer->setUseCustomDashPattern( checked );
+  emit changed();
+}
+
+void QgsSimpleLineSymbolLayerV2Widget::on_mChangePatternButton_clicked()
+{
+  QgsDashSpaceDialog d( mLayer->customDashVector() );
+  if ( d.exec() == QDialog::Accepted )
+  {
+    mLayer->setCustomDashVector( d.dashDotVector() );
+    updatePatternIcon();
+    emit changed();
+  }
+}
+
+void QgsSimpleLineSymbolLayerV2Widget::updatePatternIcon()
+{
+  if ( !mLayer )
+  {
+    return;
+  }
+  QgsSimpleLineSymbolLayerV2* layerCopy = dynamic_cast<QgsSimpleLineSymbolLayerV2*>( mLayer->clone() );
+  if ( !layerCopy )
+  {
+    return;
+  }
+  layerCopy->setUseCustomDashPattern( true );
+  QIcon buttonIcon = QgsSymbolLayerV2Utils::symbolLayerPreviewIcon( layerCopy, QgsSymbolV2::MM, mChangePatternButton->iconSize() );
+  mChangePatternButton->setIcon( buttonIcon );
+  delete layerCopy;
 }
 
 

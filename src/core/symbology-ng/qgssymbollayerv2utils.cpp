@@ -176,6 +176,35 @@ QgsSymbolV2::OutputUnit QgsSymbolLayerV2Utils::decodeOutputUnit( QString str )
   return QgsSymbolV2::MM;
 }
 
+QString QgsSymbolLayerV2Utils::encodeRealVector( const QVector<qreal>& v )
+{
+  QString vectorString;
+  QVector<qreal>::const_iterator it = v.constBegin();
+  for ( ; it != v.constEnd(); ++it )
+  {
+    if ( it != v.constBegin() )
+    {
+      vectorString.append( ";" );
+    }
+    vectorString.append( QString::number( *it ) );
+  }
+  return vectorString;
+}
+
+QVector<qreal> QgsSymbolLayerV2Utils::decodeRealVector( const QString& s )
+{
+  QVector<qreal> resultVector;
+
+  QStringList realList = s.split( ";" );
+  QStringList::const_iterator it = realList.constBegin();
+  for ( ; it != realList.constEnd(); ++it )
+  {
+    resultVector.append( it->toDouble() );
+  }
+
+  return resultVector;
+}
+
 QIcon QgsSymbolLayerV2Utils::symbolPreviewIcon( QgsSymbolV2* symbol, QSize size )
 {
   return QIcon( symbolPreviewPixmap( symbol, size ) );
@@ -201,8 +230,7 @@ QIcon QgsSymbolLayerV2Utils::symbolLayerPreviewIcon( QgsSymbolLayerV2* layer, Qg
   painter.begin( &pixmap );
   painter.setRenderHint( QPainter::Antialiasing );
   painter.eraseRect( QRect( QPoint( 0, 0 ), size ) );
-  QgsRenderContext renderContext;
-  renderContext.setPainter( &painter );
+  QgsRenderContext renderContext = createRenderContext( &painter );
   QgsSymbolV2RenderContext symbolContext( renderContext, u );
   layer->drawPreviewIcon( symbolContext, size );
   painter.end();

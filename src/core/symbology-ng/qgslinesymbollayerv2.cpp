@@ -9,10 +9,11 @@
 #include <cmath>
 
 QgsSimpleLineSymbolLayerV2::QgsSimpleLineSymbolLayerV2( QColor color, double width, Qt::PenStyle penStyle )
-    : mPenStyle( penStyle ), mPenJoinStyle( DEFAULT_SIMPLELINE_JOINSTYLE ), mPenCapStyle( DEFAULT_SIMPLELINE_CAPSTYLE ), mOffset( 0 )
+    : mPenStyle( penStyle ), mPenJoinStyle( DEFAULT_SIMPLELINE_JOINSTYLE ), mPenCapStyle( DEFAULT_SIMPLELINE_CAPSTYLE ), mOffset( 0 ), mUseCustomDashPattern( false )
 {
   mColor = color;
   mWidth = width;
+  mCustomDashVector << 5 << 2;
 }
 
 
@@ -37,6 +38,15 @@ QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2::create( const QgsStringMap& props 
     l->setPenJoinStyle( QgsSymbolLayerV2Utils::decodePenJoinStyle( props["joinstyle"] ) );
   if ( props.contains( "capstyle" ) )
     l->setPenCapStyle( QgsSymbolLayerV2Utils::decodePenCapStyle( props["capstyle"] ) );
+
+  if ( props.contains( "use_custom_dash" ) )
+  {
+    l->setUseCustomDashPattern( props["use_custom_dash"].toInt() );
+  }
+  if ( props.contains( "customdash" ) )
+  {
+    l->setCustomDashVector( QgsSymbolLayerV2Utils::decodeRealVector( props["customdash"] ) );
+  }
   return l;
 }
 
@@ -50,8 +60,26 @@ QString QgsSimpleLineSymbolLayerV2::layerType() const
 void QgsSimpleLineSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
 {
   mPen.setColor( mColor );
-  mPen.setWidthF( context.outputLineWidth( mWidth ) );
-  mPen.setStyle( mPenStyle );
+  double scaledWidth = context.outputLineWidth( mWidth );
+  mPen.setWidthF( scaledWidth );
+  if ( mUseCustomDashPattern )
+  {
+    mPen.setStyle( Qt::CustomDashLine );
+
+    //scale pattern vector
+    QVector<qreal> scaledVector;
+    QVector<qreal>::const_iterator it = mCustomDashVector.constBegin();
+    for ( ; it != mCustomDashVector.constEnd(); ++it )
+    {
+      //the dash is specified in terms of pen widths, therefore the division
+      scaledVector << context.outputLineWidth(( *it ) / scaledWidth );
+    }
+    mPen.setDashPattern( scaledVector );
+  }
+  else
+  {
+    mPen.setStyle( mPenStyle );
+  }
   mPen.setJoinStyle( mPenJoinStyle );
   mPen.setCapStyle( mPenCapStyle );
 }
@@ -88,6 +116,15 @@ QgsStringMap QgsSimpleLineSymbolLayerV2::properties() const
   map["joinstyle"] = QgsSymbolLayerV2Utils::encodePenJoinStyle( mPenJoinStyle );
   map["capstyle"] = QgsSymbolLayerV2Utils::encodePenCapStyle( mPenCapStyle );
   map["offset"] = QString::number( mOffset );
+  if ( mUseCustomDashPattern )
+  {
+    map["use_custom_dash"] = "1";
+  }
+  else
+  {
+    map["use_custom_dash"] = "0";
+  }
+  map["customdash"] = QgsSymbolLayerV2Utils::encodeRealVector( mCustomDashVector );
   return map;
 }
 
@@ -97,6 +134,8 @@ QgsSymbolLayerV2* QgsSimpleLineSymbolLayerV2::clone() const
   l->setOffset( mOffset );
   l->setPenJoinStyle( mPenJoinStyle );
   l->setPenCapStyle( mPenCapStyle );
+  l->setUseCustomDashPattern( mUseCustomDashPattern );
+  l->setCustomDashVector( mCustomDashVector );
   return l;
 }
 
