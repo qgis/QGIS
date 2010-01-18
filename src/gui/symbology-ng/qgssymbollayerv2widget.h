@@ -246,5 +246,38 @@ class GUI_EXPORT QgsSVGFillSymbolLayerWidget : public QgsSymbolLayerV2Widget, pr
     void on_mChangeOutlinePushButton_clicked();
 };
 
+//////////
+
+
+#include "ui_widget_fontmarker.h"
+
+class QgsFontMarkerSymbolLayerV2;
+class CharacterWidget;
+
+class GUI_EXPORT QgsFontMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Widget, private Ui::WidgetFontMarker
+{
+    Q_OBJECT
+
+  public:
+    QgsFontMarkerSymbolLayerV2Widget( QWidget* parent = NULL );
+
+    static QgsSymbolLayerV2Widget* create() { return new QgsFontMarkerSymbolLayerV2Widget(); }
+
+    // from base class
+    virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
+    virtual QgsSymbolLayerV2* symbolLayer();
+
+  public slots:
+    void setFontFamily( const QFont& font );
+    void setColor();
+    void setSize( double size );
+    void setAngle( double angle );
+    void setCharacter( const QChar& chr );
+
+  protected:
+    QgsFontMarkerSymbolLayerV2* mLayer;
+    CharacterWidget* widgetChar;
+};
+
 
 #endif

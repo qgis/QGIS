@@ -467,3 +467,85 @@ QString QgsSvgMarkerSymbolLayerV2::symbolPathToName( QString path )
 
   return path;
 }
+
+
+//////////
+
+QgsFontMarkerSymbolLayerV2::QgsFontMarkerSymbolLayerV2( QString fontFamily, QChar chr, double pointSize, QColor color, double angle )
+{
+  mFontFamily = fontFamily;
+  mChr = chr;
+  mColor = color;
+  mAngle = angle;
+  mSize = pointSize;
+}
+
+QgsSymbolLayerV2* QgsFontMarkerSymbolLayerV2::create( const QgsStringMap& props )
+{
+  QString fontFamily = DEFAULT_FONTMARKER_FONT;
+  QChar chr = DEFAULT_FONTMARKER_CHR;
+  double pointSize = DEFAULT_FONTMARKER_SIZE;
+  QColor color = DEFAULT_FONTMARKER_COLOR;
+  double angle = DEFAULT_FONTMARKER_ANGLE;
+
+  if ( props.contains( "font" ) )
+    fontFamily = props["font"];
+  if ( props.contains( "chr" ) && props["chr"].length() > 0 )
+    chr = props["chr"].at( 0 );
+  if ( props.contains( "size" ) )
+    pointSize = props["size"].toDouble();
+  if ( props.contains( "color" ) )
+    color = QgsSymbolLayerV2Utils::decodeColor( props["color"] );
+  if ( props.contains( "angle" ) )
+    angle = props["angle"].toDouble();
+
+  return new QgsFontMarkerSymbolLayerV2( fontFamily, chr, pointSize, color, angle );
+}
+
+QString QgsFontMarkerSymbolLayerV2::layerType() const
+{
+  return "FontMarker";
+}
+
+void QgsFontMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
+{
+  mFont = QFont( mFontFamily, MM2POINT( mSize ) );
+  QFontMetrics fm( mFont );
+  mChrOffset = QPointF( fm.width( mChr ) / 2, -fm.ascent() / 2 );
+}
+
+void QgsFontMarkerSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
+{
+}
+
+void QgsFontMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context )
+{
+  QPainter* p = context.renderContext().painter();
+  p->setPen( mColor );
+  p->setFont( mFont );
+
+  if ( mAngle != 0 )
+  {
+    p->save();
+    p->rotate( mAngle );
+  }
+  p->drawText( point - mChrOffset, mChr );
+  if ( mAngle != 0 )
+    p->restore();
+}
+
+QgsStringMap QgsFontMarkerSymbolLayerV2::properties() const
+{
+  QgsStringMap props;
+  props["font"] = mFontFamily;
+  props["chr"] = mChr;
+  props["size"] = QString::number( mSize );
+  props["color"] = QgsSymbolLayerV2Utils::encodeColor( mColor );
+  props["angle"] = QString::number( mAngle );
+  return props;
+}
+
+QgsSymbolLayerV2* QgsFontMarkerSymbolLayerV2::clone() const
+{
+  return new QgsFontMarkerSymbolLayerV2( mFontFamily, mChr, mSize, mColor, mAngle );
+}

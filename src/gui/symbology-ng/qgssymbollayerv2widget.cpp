@@ -5,6 +5,7 @@
 #include "qgsmarkersymbollayerv2.h"
 #include "qgsfillsymbollayerv2.h"
 
+#include "characterwidget.h"
 #include "qgsdashspacedialog.h"
 #include "qgssymbolv2propertiesdialog.h"
 
@@ -683,4 +684,78 @@ void QgsSVGFillSymbolLayerWidget::updateOutlineIcon()
     QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mLayer->subSymbol(), mChangeOutlinePushButton->iconSize() );
     mChangeOutlinePushButton->setIcon( icon );
   }
+}
+
+/////////////
+
+QgsFontMarkerSymbolLayerV2Widget::QgsFontMarkerSymbolLayerV2Widget( QWidget* parent )
+    : QgsSymbolLayerV2Widget( parent )
+{
+  mLayer = NULL;
+
+  setupUi( this );
+  widgetChar = new CharacterWidget;
+  scrollArea->setWidget( widgetChar );
+
+  connect( cboFont, SIGNAL( currentFontChanged( const QFont & ) ), this, SLOT( setFontFamily( const QFont& ) ) );
+  connect( spinSize, SIGNAL( valueChanged( double ) ), this, SLOT( setSize( double ) ) );
+  connect( btnColor, SIGNAL( clicked() ), this, SLOT( setColor() ) );
+  connect( spinAngle, SIGNAL( valueChanged( double ) ), this, SLOT( setAngle( double ) ) );
+  connect( widgetChar, SIGNAL( characterSelected( const QChar & ) ), this, SLOT( setCharacter( const QChar & ) ) );
+}
+
+void QgsFontMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
+{
+  if ( layer->layerType() != "FontMarker" )
+    return;
+
+  // layer type is correct, we can do the cast
+  mLayer = static_cast<QgsFontMarkerSymbolLayerV2*>( layer );
+
+  // set values
+  cboFont->setCurrentFont( QFont( mLayer->fontFamily() ) );
+  spinSize->setValue( mLayer->size() );
+  btnColor->setColor( mLayer->color() );
+  spinAngle->setValue( mLayer->angle() );
+}
+
+QgsSymbolLayerV2* QgsFontMarkerSymbolLayerV2Widget::symbolLayer()
+{
+  return mLayer;
+}
+
+void QgsFontMarkerSymbolLayerV2Widget::setFontFamily( const QFont& font )
+{
+  mLayer->setFontFamily( font.family() );
+  widgetChar->updateFont( font );
+  emit changed();
+}
+
+void QgsFontMarkerSymbolLayerV2Widget::setColor()
+{
+  QColor color = QColorDialog::getColor( mLayer->color(), this );
+  if ( !color.isValid() )
+    return;
+  mLayer->setColor( color );
+  btnColor->setColor( mLayer->color() );
+  emit changed();
+}
+
+void QgsFontMarkerSymbolLayerV2Widget::setSize( double size )
+{
+  mLayer->setSize( size );
+  //widgetChar->updateSize(size);
+  emit changed();
+}
+
+void QgsFontMarkerSymbolLayerV2Widget::setAngle( double angle )
+{
+  mLayer->setAngle( angle );
+  emit changed();
+}
+
+void QgsFontMarkerSymbolLayerV2Widget::setCharacter( const QChar& chr )
+{
+  mLayer->setCharacter( chr );
+  emit changed();
 }

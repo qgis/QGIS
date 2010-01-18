@@ -180,7 +180,7 @@ QImage QgsSymbolV2::bigSymbolPreviewImage()
 
   if ( mType == QgsSymbolV2::Marker )
   {
-    p.setPen( QPen( QColor( 230, 230, 230 ) ) );
+    p.setPen( QPen( Qt::gray ) );
     p.drawLine( 0, 50, 100, 50 );
     p.drawLine( 50, 0, 50, 100 );
   }

@@ -21,10 +21,11 @@ QgsSymbolLayerV2Registry::QgsSymbolLayerV2Registry()
                       QgsSimpleMarkerSymbolLayerV2::create ) );
   addSymbolLayerType( new QgsSymbolLayerV2Metadata( "SvgMarker", QgsSymbolV2::Marker,
                       QgsSvgMarkerSymbolLayerV2::create ) );
+  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "FontMarker", QgsSymbolV2::Marker,
+                      QgsFontMarkerSymbolLayerV2::create ) );
 
   addSymbolLayerType( new QgsSymbolLayerV2Metadata( "SimpleFill", QgsSymbolV2::Fill,
                       QgsSimpleFillSymbolLayerV2::create ) );
-
   addSymbolLayerType( new QgsSymbolLayerV2Metadata( "SVGFill", QgsSymbolV2::Fill, QgsSVGFillSymbolLayer::create ) );
 }
 
