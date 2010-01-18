@@ -1351,6 +1351,8 @@
 		72DB69731021DCE000ED5F3A /* medium_scale.style in Copy - osm-styles */ = {isa = PBXBuildFile; fileRef = 72DB69411021D98600ED5F3A /* medium_scale.style */; };
 		72DB69741021DCE000ED5F3A /* small_scale.style in Copy - osm-styles */ = {isa = PBXBuildFile; fileRef = 72DB69421021D98600ED5F3A /* small_scale.style */; };
 		72DBAB500FFD744400E587DC /* DONORS in Copy - doc */ = {isa = PBXBuildFile; fileRef = 72FDF1640FB4720400580178 /* DONORS */; };
+		72E35C921104C02A00B0EA85 /* qgsdashspacedialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72E35C901104BFFE00B0EA85 /* qgsdashspacedialog.cpp */; };
+		72E35C931104C02A00B0EA85 /* qgsdashspacedialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72E35C911104BFFE00B0EA85 /* qgsdashspacedialog.h */; };
 		72E707040F42691B00142011 /* __init__.py in Copy - qgis */ = {isa = PBXBuildFile; fileRef = 7209ED860F39E5D9003DC336 /* __init__.py */; };
 		72E7070A0F426A5C00142011 /* __init__.py in Copy - mapserver */ = {isa = PBXBuildFile; fileRef = 7209EDD30F39E5D9003DC336 /* __init__.py */; };
 		72E7070B0F426A5C00142011 /* mapserver_export.png in Copy - mapserver */ = {isa = PBXBuildFile; fileRef = 7209EDD50F39E5D9003DC336 /* mapserver_export.png */; };
@@ -6865,6 +6867,9 @@
 		72DB694B1021D98600ED5F3A /* OsmFeatureDW.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = OsmFeatureDW.ui; path = ../../python/plugins/osm/ui_files/OsmFeatureDW.ui; sourceTree = SOURCE_ROOT; };
 		72E29CA810739A8000D33C64 /* mActionCalculateField.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionCalculateField.png; path = ../../images/themes/default/mActionCalculateField.png; sourceTree = SOURCE_ROOT; };
 		72E2D9FB10B240B2002E8663 /* context_help_id.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = context_help_id.py; path = ../../scripts/context_help_id.py; sourceTree = SOURCE_ROOT; };
+		72E35C8F1104BFD500B0EA85 /* qgsdashspacedialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgsdashspacedialogbase.ui; path = ../../src/ui/symbollayer/qgsdashspacedialogbase.ui; sourceTree = SOURCE_ROOT; };
+		72E35C901104BFFE00B0EA85 /* qgsdashspacedialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsdashspacedialog.cpp; path = "../../src/gui/symbology-ng/qgsdashspacedialog.cpp"; sourceTree = SOURCE_ROOT; };
+		72E35C911104BFFE00B0EA85 /* qgsdashspacedialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsdashspacedialog.h; path = "../../src/gui/symbology-ng/qgsdashspacedialog.h"; sourceTree = SOURCE_ROOT; };
 		72E4DF0C0FE00FAD00D3505D /* v.out.ogr.pg.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = v.out.ogr.pg.py; path = ../../src/plugins/grass/scripts/v.out.ogr.pg.py; sourceTree = SOURCE_ROOT; };
 		72E9A3B50F5AE5BD00E78E3C /* qgscomposerview.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = qgscomposerview.sip; sourceTree = "<group>"; };
 		72E9A3BE0F5AE63500E78E3C /* qgsscalebarstyle.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsscalebarstyle.sip; path = ../../python/core/qgsscalebarstyle.sip; sourceTree = SOURCE_ROOT; };
@@ -10767,6 +10772,8 @@
 				7225EF3310B2275E00D23EA2 /* qgsbrushstylecombobox.h */,
 				7225EF3410B2275E00D23EA2 /* qgscategorizedsymbolrendererv2widget.cpp */,
 				7225EF3510B2275E00D23EA2 /* qgscategorizedsymbolrendererv2widget.h */,
+				72E35C901104BFFE00B0EA85 /* qgsdashspacedialog.cpp */,
+				72E35C911104BFFE00B0EA85 /* qgsdashspacedialog.h */,
 				7225EF3610B2275E00D23EA2 /* qgsgraduatedsymbolrendererv2widget.cpp */,
 				7225EF3710B2275E00D23EA2 /* qgsgraduatedsymbolrendererv2widget.h */,
 				7225EF3810B2275E00D23EA2 /* qgspenstylecombobox.cpp */,
@@ -10840,6 +10847,7 @@
 		7225EFAA10B22C5000D23EA2 /* symbollayer */ = {
 			isa = PBXGroup;
 			children = (
+				72E35C8F1104BFD500B0EA85 /* qgsdashspacedialogbase.ui */,
 				7225EFAB10B22C5000D23EA2 /* widget_linedecoration.ui */,
 				7225EFAC10B22C5000D23EA2 /* widget_markerline.ui */,
 				7225EFAD10B22C5000D23EA2 /* widget_simplefill.ui */,
@@ -14604,6 +14612,8 @@
 				72EB310110B9997A002A971B /* qgsludialog.h in Sources */,
 				72A51A5210CE065B00E202D7 /* qgslegendinterface.cpp in Sources */,
 				72A51A5310CE065B00E202D7 /* qgslegendinterface.h in Sources */,
+				72E35C921104C02A00B0EA85 /* qgsdashspacedialog.cpp in Sources */,
+				72E35C931104C02A00B0EA85 /* qgsdashspacedialog.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -18694,7 +18704,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 12778;
+				QGIS_VERSION_BUILD = 12789;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -18705,7 +18715,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 12778;
+				QGIS_VERSION_BUILD = 12789;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
