@@ -1533,6 +1533,15 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
   myRasterViewPort->drawableAreaXDim = static_cast<int>( fabs(( myRasterViewPort->clippedWidth / theQgsMapToPixel.mapUnitsPerPixel() * mGeoTransform[1] ) ) + 0.5 );
   myRasterViewPort->drawableAreaYDim = static_cast<int>( fabs(( myRasterViewPort->clippedHeight / theQgsMapToPixel.mapUnitsPerPixel() * mGeoTransform[5] ) ) + 0.5 );
 
+  //the drawable area can start to get very very large when you get down displaying 2x2 or smaller, this is becasue
+  //theQgsMapToPixel.mapUnitsPerPixel() is less then 1,
+  //so we will just get the pixel data and then render these special cases differently in paintImageToCanvas()
+  if( 2 >= myRasterViewPort->clippedWidth && 2 >= myRasterViewPort->clippedHeight )
+  {
+    myRasterViewPort->drawableAreaXDim = myRasterViewPort->clippedWidth;
+    myRasterViewPort->drawableAreaYDim = myRasterViewPort->clippedHeight;
+  }
+
   QgsDebugMsg( QString( "mapUnitsPerPixel = %1" ).arg( theQgsMapToPixel.mapUnitsPerPixel() ) );
   QgsDebugMsg( QString( "mWidth = %1" ).arg( mWidth ) );
   QgsDebugMsg( QString( "mHeight = %1" ).arg( mHeight ) );
@@ -5064,6 +5073,8 @@ void QgsRasterLayer::paintImageToCanvas( QPainter* theQPainter, QgsRasterViewPor
                    );
   }
 
+
+
   QgsDebugMsg( "painting image to canvas from "
                + QString::number( paintXoffset ) + ", " + QString::number( paintYoffset )
                + " to "
@@ -5072,11 +5083,107 @@ void QgsRasterLayer::paintImageToCanvas( QPainter* theQPainter, QgsRasterViewPor
                + QString::number( static_cast<int>( theRasterViewPort->topLeftPoint.y() + 0.5 ) )
                + "." );
 
-  theQPainter->drawImage( static_cast<int>( theRasterViewPort->topLeftPoint.x() + 0.5 ),
-                          static_cast<int>( theRasterViewPort->topLeftPoint.y() + 0.5 ),
-                          *theImage,
-                          paintXoffset,
-                          paintYoffset );
+  //Catch special rendering cases
+  //INSTANCE: 1x1
+  if( 1 == theRasterViewPort->clippedWidth && 1 == theRasterViewPort->clippedHeight )
+  {
+    QColor myColor( theImage->pixel( 0, 0 ) );
+    myColor.setAlpha( qAlpha( theImage->pixel( 0, 0 ) ) );
+    theQPainter->fillRect( static_cast<int>( theRasterViewPort->topLeftPoint.x() + 0.5 ),
+                           static_cast<int>( theRasterViewPort->topLeftPoint.y() + 0.5 ),
+                           static_cast<int>( theRasterViewPort->bottomRightPoint.x() ),
+                           static_cast<int>( theRasterViewPort->bottomRightPoint.y() ),
+                           QBrush( myColor ) );
+  }
+  //1x2, 2x1 or 2x2
+  else if( 2 >= theRasterViewPort->clippedWidth && 2 >= theRasterViewPort->clippedHeight )
+  {
+    int myPixelBoundaryX = 0;
+    int myPixelBoundaryY = 0;
+    if( theQgsMapToPixel ) {
+      myPixelBoundaryX = static_cast<int>( theRasterViewPort->topLeftPoint.x() + 0.5 ) + static_cast<int>( fabs ( mGeoTransform[1] / theQgsMapToPixel->mapUnitsPerPixel() ) ) - paintXoffset;
+      myPixelBoundaryY = static_cast<int>( theRasterViewPort->topLeftPoint.y() + 0.5 ) + static_cast<int>( fabs(mGeoTransform[5] / theQgsMapToPixel->mapUnitsPerPixel() )) - paintYoffset;
+    }
+
+    //INSTANCE: 1x2
+    if( 1 == theRasterViewPort->clippedWidth ) {
+      QColor myColor( theImage->pixel( 0, 0 ) );
+      myColor.setAlpha( qAlpha( theImage->pixel( 0, 0 ) ) );
+      theQPainter->fillRect( static_cast<int>( theRasterViewPort->topLeftPoint.x() + 0.5 ),
+                             static_cast<int>( theRasterViewPort->topLeftPoint.y() + 0.5 ),
+                             static_cast<int>( theRasterViewPort->bottomRightPoint.x() ),
+                             static_cast<int>( myPixelBoundaryY ),
+                             QBrush( myColor ) );
+      myColor = QColor( theImage->pixel( 0, 1) );
+      myColor.setAlpha( qAlpha( theImage->pixel( 0, 1 ) ) );
+      theQPainter->fillRect( static_cast<int>( theRasterViewPort->topLeftPoint.x() + 0.5 ),
+                             static_cast<int>( myPixelBoundaryY ),
+                             static_cast<int>( theRasterViewPort->bottomRightPoint.x() ),
+                             static_cast<int>( theRasterViewPort->bottomRightPoint.y() ),
+                             QBrush( myColor ) );
+    }
+    else {
+      //INSTANCE: 2x1
+      if( 1 == theRasterViewPort->clippedHeight )
+      {
+        QColor myColor( theImage->pixel( 0, 0 ) );
+        myColor.setAlpha( qAlpha( theImage->pixel( 0,0 ) ) );
+        theQPainter->fillRect( static_cast<int>( theRasterViewPort->topLeftPoint.x() + 0.5 ),
+                               static_cast<int>( theRasterViewPort->topLeftPoint.y() + 0.5 ),
+                               static_cast<int>( myPixelBoundaryX ),
+                               static_cast<int>( theRasterViewPort->bottomRightPoint.y() ),
+                               QBrush( myColor ) );
+        myColor = QColor( theImage->pixel( 1, 0 ) );
+        myColor.setAlpha( qAlpha( theImage->pixel( 1, 0 ) ) );
+        theQPainter->fillRect( static_cast<int>( myPixelBoundaryX ),
+                               static_cast<int>( theRasterViewPort->topLeftPoint.y() + 0.5 ),
+                               static_cast<int>( theRasterViewPort->bottomRightPoint.x() ),
+                               static_cast<int>( theRasterViewPort->bottomRightPoint.y() ),
+                               QBrush( myColor ) );
+      }
+      //INSTANCE: 2x2
+      else
+      {
+        QColor myColor( theImage->pixel( 0, 0 ) );
+        myColor.setAlpha( qAlpha( theImage->pixel( 0, 0 ) ) );
+        theQPainter->fillRect( static_cast<int>( theRasterViewPort->topLeftPoint.x() + 0.5 ),
+                               static_cast<int>( theRasterViewPort->topLeftPoint.y() + 0.5 ),
+                               static_cast<int>(myPixelBoundaryX ),
+                               static_cast<int>( myPixelBoundaryY ),
+                               QBrush( myColor ) );
+        myColor = QColor( theImage->pixel( 1, 0  ) );
+        myColor.setAlpha( qAlpha( theImage->pixel( 1, 0 ) ) );
+        theQPainter->fillRect( static_cast<int>( myPixelBoundaryX ),
+                               static_cast<int>( theRasterViewPort->topLeftPoint.y() + 0.5 ),
+                               static_cast<int>( theRasterViewPort->bottomRightPoint.x() ),
+                               static_cast<int>( myPixelBoundaryY ),
+                               QBrush( myColor ) );
+        myColor = QColor( theImage->pixel( 0, 1 ) );
+        myColor.setAlpha( qAlpha( theImage->pixel( 0, 1 ) ) );
+        theQPainter->fillRect( static_cast<int>( theRasterViewPort->topLeftPoint.x() + 0.5 ),
+                               static_cast<int>( myPixelBoundaryY ),
+                               static_cast<int>( myPixelBoundaryX ),
+                               static_cast<int>( theRasterViewPort->bottomRightPoint.y() ),
+                               QBrush( myColor ) );
+        myColor = QColor( theImage->pixel( 1, 1 ) );
+        myColor.setAlpha( qAlpha( theImage->pixel( 1, 1 ) ) );
+        theQPainter->fillRect( static_cast<int>( myPixelBoundaryX ),
+                               static_cast<int>( myPixelBoundaryY ),
+                               static_cast<int>( theRasterViewPort->bottomRightPoint.x() ),
+                               static_cast<int>( theRasterViewPort->bottomRightPoint.y() ),
+                               QBrush( myColor ) );
+      }
+    }
+
+  }
+  // INSTANCE: > 2x2, so just use the image filled by GDAL
+  else {
+    theQPainter->drawImage( static_cast<int>( theRasterViewPort->topLeftPoint.x() + 0.5 ),
+                            static_cast<int>( theRasterViewPort->topLeftPoint.y() + 0.5 ),
+                            *theImage,
+                            paintXoffset,
+                            paintYoffset );
+  }
 }
 
 QString QgsRasterLayer::projectionWkt()
