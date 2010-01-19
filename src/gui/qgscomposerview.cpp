@@ -241,8 +241,12 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
     {
       if ( !mRubberBandItem || mRubberBandItem->rect().width() < 0.1 || mRubberBandItem->rect().width() < 0.1 )
       {
-        scene()->removeItem( mRubberBandItem );
-        delete mRubberBandItem;
+        if ( mRubberBandItem )
+        {
+          scene()->removeItem( mRubberBandItem );
+          delete mRubberBandItem;
+          mRubberBandItem = 0;
+        }
         return;
       }
 
