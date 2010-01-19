@@ -273,6 +273,16 @@ int QgsAttributeDialog::exec()
   }
 }
 
+void QgsAttributeDialog::show()
+{
+  if ( mDialog )
+  {
+    mDialog->setAttribute( Qt::WA_DeleteOnClose );
+    mDialog->show();
+    mDialog = 0;
+  }
+}
+
 void QgsAttributeDialog::saveGeometry()
 {
   if ( mDialog )
