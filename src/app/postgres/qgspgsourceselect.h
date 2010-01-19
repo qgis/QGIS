@@ -175,7 +175,8 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsPgSourceSelectBase
     QStringList mColumnLabels;
     // Our thread for doing long running queries
     QgsGeomColumnTypeThread* mColumnTypeThread;
-    QString m_connectionInfo;
+    QString m_connInfo;
+    QString m_privConnInfo;
     QStringList m_selectedTables;
     // Storage for the range of layer type icons
     QMap<QString, QPair<QString, QIcon> > mLayerIcons;

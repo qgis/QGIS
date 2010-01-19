@@ -321,7 +321,7 @@ QString QgsPgSourceSelect::layerURI( const QModelIndex &index )
     }
   }
 
-  QString uri = m_connectionInfo;
+  QString uri = m_connInfo;
 
   if ( !pkColumnName.isEmpty() )
   {
@@ -400,13 +400,15 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
 
   QgsDebugMsg( "Connection info: " + uri.connectionInfo() );
 
-  m_connectionInfo = uri.connectionInfo();
-  //qDebug(m_connectionInfo);
+  m_connInfo = uri.connectionInfo();
+
   // Tidy up an existing connection if one exists.
   if ( pd != 0 )
     PQfinish( pd );
 
-  pd = PQconnectdb( uri.connectionInfo().toLocal8Bit() );  // use what is set based on locale; after connecting, use Utf8
+  m_privConnInfo = m_connInfo;
+
+  pd = PQconnectdb( m_privConnInfo.toLocal8Bit() );  // use what is set based on locale; after connecting, use Utf8
   // check the connection status
   if ( PQstatus( pd ) != CONNECTION_OK && QString::fromUtf8( PQerrorMessage( pd ) ) == PQnoPasswordSupplied )
   {
@@ -419,7 +421,7 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
                                         tr( "Enter password" ),
                                         tr( "Error: %1Enter password for %2" )
                                         .arg( QString::fromUtf8( PQerrorMessage( pd ) ) )
-                                        .arg( uri.connectionInfo() ),
+                                        .arg( m_connInfo ),
                                         QLineEdit::Password,
                                         password,
                                         &ok );
@@ -429,7 +431,8 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
       if ( !ok )
         break;
 
-      pd = PQconnectdb( QString( "%1 password='%2'" ).arg( uri.connectionInfo() ).arg( password ).toLocal8Bit() );
+      m_privConnInfo = QString( "%1 password='%2'" ).arg( m_connInfo ).arg( password );
+      pd = PQconnectdb( m_privConnInfo.toLocal8Bit() );
     }
   }
 
@@ -497,7 +500,7 @@ QStringList QgsPgSourceSelect::selectedTables()
 
 QString QgsPgSourceSelect::connectionInfo()
 {
-  return m_connectionInfo;
+  return m_connInfo;
 }
 
 void QgsPgSourceSelect::setSql( const QModelIndex &index )
@@ -533,7 +536,7 @@ void QgsPgSourceSelect::addSearchGeometryColumn( const QString &schema, const QS
   if ( mColumnTypeThread == NULL )
   {
     mColumnTypeThread = new QgsGeomColumnTypeThread();
-    mColumnTypeThread->setConnInfo( m_connectionInfo );
+    mColumnTypeThread->setConnInfo( m_privConnInfo );
   }
   mColumnTypeThread->addGeometryColumn( schema, table, column );
 }
