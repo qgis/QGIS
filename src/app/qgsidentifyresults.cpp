@@ -293,7 +293,7 @@ void QgsIdentifyResults::show()
 // (saves the current window size/position)
 void QgsIdentifyResults::close()
 {
-  clear(); 
+  clear();
 
   delete mActionPopup;
   mActionPopup = 0;
@@ -761,7 +761,9 @@ void QgsIdentifyResults::featureForm()
 
   QgsAttributeMap src = f.attributeMap();
 
-  vlayer->beginEditCommand( tr( "Attribute changed" ) );
+  if ( vlayer->isEditable() )
+    vlayer->beginEditCommand( tr( "Attribute changed" ) );
+
   QgsAttributeDialog *ad = new QgsAttributeDialog( vlayer, &f );
 
   if ( !vlayer->isEditable() && vlayer->actions()->size() > 0 )
@@ -789,25 +791,33 @@ void QgsIdentifyResults::featureForm()
     }
   }
 
-  if ( ad->exec() )
+  if ( vlayer->isEditable() )
   {
-    const QgsAttributeMap &dst = f.attributeMap();
-    for ( QgsAttributeMap::const_iterator it = dst.begin(); it != dst.end(); it++ )
+    if ( ad->exec() )
     {
-      if ( !src.contains( it.key() ) || it.value() != src[it.key()] )
+      const QgsAttributeMap &dst = f.attributeMap();
+      for ( QgsAttributeMap::const_iterator it = dst.begin(); it != dst.end(); it++ )
       {
-        vlayer->changeAttributeValue( f.id(), it.key(), it.value() );
+        if ( !src.contains( it.key() ) || it.value() != src[it.key()] )
+        {
+          vlayer->changeAttributeValue( f.id(), it.key(), it.value() );
+        }
       }
+      vlayer->endEditCommand();
     }
-    vlayer->endEditCommand();
+    else
+    {
+      vlayer->destroyEditCommand();
+    }
+
+    delete ad;
+
+    mCanvas->refresh();
   }
   else
   {
-    vlayer->destroyEditCommand();
+    ad->show();
   }
-
-  delete ad;
-  mCanvas->refresh();
 }
 
 void QgsIdentifyResults::highlightAll()
