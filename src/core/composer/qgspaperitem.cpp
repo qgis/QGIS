@@ -20,19 +20,17 @@
 
 QgsPaperItem::QgsPaperItem( QgsComposition* c ): QgsComposerItem( c, false )
 {
-  setFlag( QGraphicsItem::ItemIsSelectable, false );
-  setZValue( 0 );
+  initialize();
 }
 
 QgsPaperItem::QgsPaperItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition ): QgsComposerItem( x, y, width, height, composition, false )
 {
-  setFlag( QGraphicsItem::ItemIsSelectable, false );
-  setZValue( 0 );
+  initialize();
 }
 
 QgsPaperItem::QgsPaperItem(): QgsComposerItem( 0, false )
 {
-
+  initialize();
 }
 
 QgsPaperItem::~QgsPaperItem()
@@ -118,4 +116,11 @@ bool QgsPaperItem::writeXML( QDomElement& elem, QDomDocument & doc ) const
 bool QgsPaperItem::readXML( const QDomElement& itemElem, const QDomDocument& doc )
 {
   return true;
+}
+
+void QgsPaperItem::initialize()
+{
+  setFlag( QGraphicsItem::ItemIsSelectable, false );
+  setFlag( QGraphicsItem::ItemIsMovable, false );
+  setZValue( 0 );
 }
