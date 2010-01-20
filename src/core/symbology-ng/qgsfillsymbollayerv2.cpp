@@ -86,6 +86,7 @@ QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2::clone() const
 //QgsSVGFillSymbolLayer
 #include <QFile>
 #include <QSvgRenderer>
+#include "qgsproject.h" //for absolute/relative file paths
 
 QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QString& svgFilePath, double width ): mPatternWidth( width ), mOutline( 0 )
 {
@@ -130,7 +131,7 @@ QgsSymbolLayerV2* QgsSVGFillSymbolLayer::create( const QgsStringMap& properties 
   }
   if ( properties.contains( "svgFile" ) )
   {
-    svgFilePath = properties["svgFile"];
+    svgFilePath = QgsProject::instance()->readPath( properties["svgFile"] );
   }
 
   if ( !svgFilePath.isEmpty() )
@@ -224,7 +225,7 @@ QgsStringMap QgsSVGFillSymbolLayer::properties() const
   QgsStringMap map;
   if ( !mSvgFilePath.isEmpty() )
   {
-    map.insert( "svgFile", mSvgFilePath );
+    map.insert( "svgFile", QgsProject::instance()->writePath( mSvgFilePath ) );
   }
   else
   {
