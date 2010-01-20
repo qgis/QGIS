@@ -106,6 +106,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
       mRubberBandLineItem->setZValue( 100 );
       scene()->addItem( mRubberBandLineItem );
       scene()->update();
+      break;
     }
 
     //create rubber band for map and ellipse items
@@ -157,6 +158,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
       addComposerPicture( newPicture );
       newPicture->setSceneRect( QRectF( snappedScenePoint.x(), snappedScenePoint.y(), 30, 30 ) );
       emit actionFinished();
+      break;
     }
     case AddTable:
     {
@@ -164,6 +166,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
       addComposerTable( newTable );
       newTable->setSceneRect( QRectF( snappedScenePoint.x(), snappedScenePoint.y(), 50, 50 ) );
       emit actionFinished();
+      break;
     }
 
     default:
@@ -233,6 +236,7 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
       addComposerShape( composerShape );
       scene()->removeItem( mRubberBandItem );
       delete mRubberBandItem;
+      mRubberBandItem = 0;
       emit actionFinished();
       break;
     }
@@ -356,6 +360,11 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
         break;
     }
   }
+}
+
+void QgsComposerView::mouseDoubleClickEvent( QMouseEvent* e )
+{
+  e->ignore();
 }
 
 void QgsComposerView::keyPressEvent( QKeyEvent * e )
