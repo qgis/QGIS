@@ -524,14 +524,13 @@ void QgsFontMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2R
   p->setPen( mColor );
   p->setFont( mFont );
 
+  p->save();
+  p->translate(point);
   if ( mAngle != 0 )
-  {
-    p->save();
     p->rotate( mAngle );
-  }
-  p->drawText( point - mChrOffset, mChr );
-  if ( mAngle != 0 )
-    p->restore();
+
+  p->drawText(-mChrOffset, mChr );
+  p->restore();
 }
 
 QgsStringMap QgsFontMarkerSymbolLayerV2::properties() const
