@@ -56,13 +56,12 @@ QString QgsSimpleLineSymbolLayerV2::layerType() const
   return "SimpleLine";
 }
 
-
 void QgsSimpleLineSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
 {
   mPen.setColor( mColor );
   double scaledWidth = context.outputLineWidth( mWidth );
   mPen.setWidthF( scaledWidth );
-  if ( mUseCustomDashPattern )
+  if ( mUseCustomDashPattern && scaledWidth != 0 )
   {
     mPen.setStyle( Qt::CustomDashLine );
 
@@ -116,14 +115,7 @@ QgsStringMap QgsSimpleLineSymbolLayerV2::properties() const
   map["joinstyle"] = QgsSymbolLayerV2Utils::encodePenJoinStyle( mPenJoinStyle );
   map["capstyle"] = QgsSymbolLayerV2Utils::encodePenCapStyle( mPenCapStyle );
   map["offset"] = QString::number( mOffset );
-  if ( mUseCustomDashPattern )
-  {
-    map["use_custom_dash"] = "1";
-  }
-  else
-  {
-    map["use_custom_dash"] = "0";
-  }
+  map["use_custom_dash"] = ( mUseCustomDashPattern ? "1" : "0" );
   map["customdash"] = QgsSymbolLayerV2Utils::encodeRealVector( mCustomDashVector );
   return map;
 }

@@ -59,14 +59,7 @@ void QgsSimpleLineSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   label_3->setEnabled( !useCustomDashPattern );
   cboPenStyle->setEnabled( !useCustomDashPattern );
   mCustomCheckBox->blockSignals( true );
-  if ( useCustomDashPattern )
-  {
-    mCustomCheckBox->setCheckState( Qt::Checked );
-  }
-  else
-  {
-    mCustomCheckBox->setCheckState( Qt::Unchecked );
-  }
+  mCustomCheckBox->setCheckState( useCustomDashPattern ? Qt::Checked : Qt::Unchecked );
   mCustomCheckBox->blockSignals( false );
   updatePatternIcon();
 }
