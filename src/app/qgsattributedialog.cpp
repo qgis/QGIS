@@ -24,6 +24,7 @@
 #include "qgsuniquevaluerenderer.h"
 #include "qgssymbol.h"
 #include "qgsattributeeditor.h"
+#include "qgsrubberband.h"
 
 #include "qgisapp.h"
 
@@ -44,7 +45,8 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
     : mDialog( 0 ),
     mSettingsPath( "/Windows/AttributeDialog/" ),
     mLayer( vl ),
-    mpFeature( thepFeature )
+    mpFeature( thepFeature ),
+    mRubberBand( 0 )
 {
   if ( mpFeature == NULL || vl->dataProvider() == NULL )
     return;
@@ -237,6 +239,17 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
 
 QgsAttributeDialog::~QgsAttributeDialog()
 {
+  if ( mRubberBand )
+  {
+    mRubberBand->hide();
+    delete mRubberBand;
+  }
+
+  if ( mDialog )
+  {
+    delete mDialog;
+  }
+
   saveGeometry();
 }
 
@@ -275,12 +288,11 @@ int QgsAttributeDialog::exec()
 
 void QgsAttributeDialog::show()
 {
-  if ( mDialog )
-  {
-    mDialog->setAttribute( Qt::WA_DeleteOnClose );
-    mDialog->show();
-    mDialog = 0;
-  }
+  mDialog->setAttribute( Qt::WA_DeleteOnClose );
+  mDialog->show();
+  mDialog->raise();
+  mDialog->activateWindow();
+  mDialog->installEventFilter( this );
 }
 
 void QgsAttributeDialog::saveGeometry()
@@ -301,6 +313,17 @@ void QgsAttributeDialog::restoreGeometry()
   }
 }
 
+void QgsAttributeDialog::setHighlight( QgsRubberBand *rb )
+{
+  if ( mRubberBand )
+  {
+    delete mRubberBand;
+  }
+
+  mRubberBand = rb;
+}
+
+
 void QgsAttributeDialog::dialogDestroyed()
 {
 #if 0
@@ -308,5 +331,27 @@ void QgsAttributeDialog::dialogDestroyed()
   mLayer->setProperty( "featureForm.id", QVariant() );
 #endif
   QgisApp::instance()->runPythonString( QString( "del _qgis_featureform_%1" ).arg( mLayer->getLayerID() ) );
+
   mDialog = NULL;
+  deleteLater();
+}
+
+bool QgsAttributeDialog::eventFilter( QObject *obj, QEvent *e )
+{
+  if ( mRubberBand && obj == mDialog )
+  {
+    switch ( e->type() )
+    {
+      case QEvent::WindowActivate:
+        mRubberBand->show();
+        break;
+      case QEvent::WindowDeactivate:
+        mRubberBand->hide();
+        break;
+      default:
+        break;
+    }
+  }
+
+  return false;
 }

@@ -25,6 +25,7 @@ class QgsFeature;
 class QLayout;
 class QgsField;
 class QgsVectorLayer;
+class QgsRubberBand;
 
 class QgsAttributeDialog : public QObject
 {
@@ -45,6 +46,8 @@ class QgsAttributeDialog : public QObject
      */
     void restoreGeometry();
 
+    void setHighlight( QgsRubberBand *rb );
+
     QDialog *dialog() { return mDialog; }
 
   public slots:
@@ -59,6 +62,7 @@ class QgsAttributeDialog : public QObject
     void dialogDestroyed();
 
   private:
+    bool eventFilter( QObject *obj, QEvent *event );
 
     QDialog *mDialog;
     QString mSettingsPath;
@@ -66,6 +70,7 @@ class QgsAttributeDialog : public QObject
     QList<int> mpIndizes;
     QgsVectorLayer *mLayer;
     QgsFeature *mpFeature;
+    QgsRubberBand *mRubberBand;
 };
 
 #endif
