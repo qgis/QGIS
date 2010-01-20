@@ -268,7 +268,9 @@ void QgsIdentifyResults::show()
     QTreeWidgetItem *layItem = lstResults->topLevelItem( 0 );
     QTreeWidgetItem *featItem = layItem->child( 0 );
 
-    if ( lstResults->topLevelItemCount() == 1 && layItem->childCount() == 1 && QSettings().value( "/Map/identifyAutoFeatureForm", false ).toBool() )
+    if ( lstResults->topLevelItemCount() == 1 &&
+         layItem->childCount() == 1 &&
+         QSettings().value( "/Map/identifyAutoFeatureForm", false ).toBool() )
     {
       QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( layItem->data( 0, Qt::UserRole ).value<QObject *>() );
       if ( layer )
@@ -682,7 +684,7 @@ void QgsIdentifyResults::highlightFeature( QTreeWidgetItem *item )
   int fid = featItem->data( 0, Qt::UserRole ).toInt();
 
   QgsFeature feat;
-  if ( ! layer->featureAtId( fid, feat, true, false ) )
+  if ( !layer->featureAtId( fid, feat, true, false ) )
   {
     return;
   }
@@ -816,6 +818,8 @@ void QgsIdentifyResults::featureForm()
   }
   else
   {
+    QgsRubberBand *rb = mRubberBands.take( featItem );
+    ad->setHighlight( rb );
     ad->show();
   }
 }
