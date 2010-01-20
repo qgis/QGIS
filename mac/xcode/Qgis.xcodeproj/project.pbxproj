@@ -799,6 +799,8 @@
 		72442AEC1095DD4C00B54796 /* qgsavoidintersectionsdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72442AEA1095DCFC00B54796 /* qgsavoidintersectionsdialog.h */; };
 		72448CD310E9A1C100D4586B /* qgsprojectbadlayerguihandler.h in Sources */ = {isa = PBXBuildFile; fileRef = 72A51A4B10CE05B000E202D7 /* qgsprojectbadlayerguihandler.h */; };
 		72448CD710E9A21500D4586B /* qgsattributetableview.h in Sources */ = {isa = PBXBuildFile; fileRef = 72A239480F74A62200AFC35B /* qgsattributetableview.h */; };
+		72491FB711074E930035D7E5 /* characterwidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72491FB511074E700035D7E5 /* characterwidget.cpp */; };
+		72491FB811074E930035D7E5 /* characterwidget.h in Sources */ = {isa = PBXBuildFile; fileRef = 72491FB611074E700035D7E5 /* characterwidget.h */; };
 		724D05C610A910F200F9680A /* north-arrow_10_with_map_layers.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 724D05BE10A910B400F9680A /* north-arrow_10_with_map_layers.svg */; };
 		724D05C710A910F200F9680A /* north-arrow_11_simple_corner.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 724D05BF10A910B400F9680A /* north-arrow_11_simple_corner.svg */; };
 		724D05C810A910F200F9680A /* north-arrow_12_triangular_arrows_with_worldmap.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 724D05C010A910B400F9680A /* north-arrow_12_triangular_arrows_with_worldmap.svg */; };
@@ -5454,7 +5456,6 @@
 		72411D5610D884A400DA6DBB /* mActionMoveItemsToBottom.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionMoveItemsToBottom.png; path = ../../images/themes/gis/mActionMoveItemsToBottom.png; sourceTree = SOURCE_ROOT; };
 		72411D5710D884A400DA6DBB /* mActionMoveItemsToTop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionMoveItemsToTop.png; path = ../../images/themes/gis/mActionMoveItemsToTop.png; sourceTree = SOURCE_ROOT; };
 		72411D5810D884A400DA6DBB /* mActionNewComposer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionNewComposer.png; path = ../../images/themes/gis/mActionNewComposer.png; sourceTree = SOURCE_ROOT; };
-		72411D5910D884A400DA6DBB /* mActionPrintComposers.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionPrintComposers.png; path = ../../images/themes/gis/mActionPrintComposers.png; sourceTree = SOURCE_ROOT; };
 		72411D5A10D884A400DA6DBB /* mActionRaiseItems.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionRaiseItems.png; path = ../../images/themes/gis/mActionRaiseItems.png; sourceTree = SOURCE_ROOT; };
 		72411D5B10D884A400DA6DBB /* mActionReshape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionReshape.png; path = ../../images/themes/gis/mActionReshape.png; sourceTree = SOURCE_ROOT; };
 		72411D5C10D884A400DA6DBB /* mActionSelectedToTop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionSelectedToTop.png; path = ../../images/themes/gis/mActionSelectedToTop.png; sourceTree = SOURCE_ROOT; };
@@ -5464,6 +5465,9 @@
 		72442AE81095DCD800B54796 /* qgsavoidintersectionsdialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsavoidintersectionsdialogbase.ui; path = ../../src/ui/qgsavoidintersectionsdialogbase.ui; sourceTree = SOURCE_ROOT; };
 		72442AE91095DCFC00B54796 /* qgsavoidintersectionsdialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsavoidintersectionsdialog.cpp; path = ../../src/app/qgsavoidintersectionsdialog.cpp; sourceTree = SOURCE_ROOT; };
 		72442AEA1095DCFC00B54796 /* qgsavoidintersectionsdialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsavoidintersectionsdialog.h; path = ../../src/app/qgsavoidintersectionsdialog.h; sourceTree = SOURCE_ROOT; };
+		72491FB511074E700035D7E5 /* characterwidget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = characterwidget.cpp; path = "../../src/gui/symbology-ng/characterwidget.cpp"; sourceTree = SOURCE_ROOT; };
+		72491FB611074E700035D7E5 /* characterwidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = characterwidget.h; path = "../../src/gui/symbology-ng/characterwidget.h"; sourceTree = SOURCE_ROOT; };
+		72491FB911074EC20035D7E5 /* widget_fontmarker.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = widget_fontmarker.ui; path = ../../src/ui/symbollayer/widget_fontmarker.ui; sourceTree = SOURCE_ROOT; };
 		724C9FE11019EDE700A1E1D4 /* mActionSaveAsPDF.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionSaveAsPDF.png; path = ../../images/themes/default/mActionSaveAsPDF.png; sourceTree = SOURCE_ROOT; };
 		724C9FEC1019EE2500A1E1D4 /* mActionSaveAsPDF.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionSaveAsPDF.png; path = ../../images/themes/gis/mActionSaveAsPDF.png; sourceTree = SOURCE_ROOT; };
 		724D05B510A910B400F9680A /* north-arrow_1_simple_half_arrow.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = "north-arrow_1_simple_half_arrow.svg"; path = "../../images/svg/north_arrows/north-arrow_1_simple_half_arrow.svg"; sourceTree = SOURCE_ROOT; };
@@ -10308,7 +10312,6 @@
 				72411D5610D884A400DA6DBB /* mActionMoveItemsToBottom.png */,
 				72411D5710D884A400DA6DBB /* mActionMoveItemsToTop.png */,
 				72411D5810D884A400DA6DBB /* mActionNewComposer.png */,
-				72411D5910D884A400DA6DBB /* mActionPrintComposers.png */,
 				72411D5A10D884A400DA6DBB /* mActionRaiseItems.png */,
 				72411D5B10D884A400DA6DBB /* mActionReshape.png */,
 				72411D5C10D884A400DA6DBB /* mActionSelectedToTop.png */,
@@ -10768,6 +10771,8 @@
 		7225EF3110B2275E00D23EA2 /* symbology-ng */ = {
 			isa = PBXGroup;
 			children = (
+				72491FB511074E700035D7E5 /* characterwidget.cpp */,
+				72491FB611074E700035D7E5 /* characterwidget.h */,
 				7225EF3210B2275E00D23EA2 /* qgsbrushstylecombobox.cpp */,
 				7225EF3310B2275E00D23EA2 /* qgsbrushstylecombobox.h */,
 				7225EF3410B2275E00D23EA2 /* qgscategorizedsymbolrendererv2widget.cpp */,
@@ -10848,6 +10853,7 @@
 			isa = PBXGroup;
 			children = (
 				72E35C8F1104BFD500B0EA85 /* qgsdashspacedialogbase.ui */,
+				72491FB911074EC20035D7E5 /* widget_fontmarker.ui */,
 				7225EFAB10B22C5000D23EA2 /* widget_linedecoration.ui */,
 				7225EFAC10B22C5000D23EA2 /* widget_markerline.ui */,
 				7225EFAD10B22C5000D23EA2 /* widget_simplefill.ui */,
@@ -14614,6 +14620,8 @@
 				72A51A5310CE065B00E202D7 /* qgslegendinterface.h in Sources */,
 				72E35C921104C02A00B0EA85 /* qgsdashspacedialog.cpp in Sources */,
 				72E35C931104C02A00B0EA85 /* qgsdashspacedialog.h in Sources */,
+				72491FB711074E930035D7E5 /* characterwidget.cpp in Sources */,
+				72491FB811074E930035D7E5 /* characterwidget.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -18704,7 +18712,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 12789;
+				QGIS_VERSION_BUILD = 12803;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -18715,7 +18723,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 12789;
+				QGIS_VERSION_BUILD = 12803;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
