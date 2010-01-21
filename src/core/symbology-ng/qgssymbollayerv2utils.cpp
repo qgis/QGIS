@@ -414,6 +414,7 @@ QgsSymbolV2* QgsSymbolLayerV2Utils::loadSymbol( QDomElement& element )
   }
 
   symbol->setOutputUnit( decodeOutputUnit( element.attribute( "outputUnit" ) ) );
+  symbol->setAlpha( element.attribute( "alpha", "1.0" ).toDouble() );
 
   return symbol;
 }
@@ -459,6 +460,7 @@ QDomElement QgsSymbolLayerV2Utils::saveSymbol( QString name, QgsSymbolV2* symbol
   symEl.setAttribute( "type", _nameForSymbolType( symbol->type() ) );
   symEl.setAttribute( "name", name );
   symEl.setAttribute( "outputUnit", encodeOutputUnit( symbol->outputUnit() ) );
+  symEl.setAttribute( "alpha", symbol->alpha() );
   QgsDebugMsg( "num layers " + QString::number( symbol->symbolLayerCount() ) );
   for ( int i = 0; i < symbol->symbolLayerCount(); i++ )
   {
@@ -711,4 +713,29 @@ QgsRenderContext QgsSymbolLayerV2Utils::createRenderContext( QPainter* p )
     context.setScaleFactor( 3.465 ); //assume 88 dpi as standard value
   }
   return context;
+}
+
+void QgsSymbolLayerV2Utils::multiplyImageOpacity( QImage* image, qreal alpha )
+{
+  if ( !image )
+  {
+    return;
+  }
+
+  //change the alpha component of every pixel
+  int widthIndex = 0;
+  int heightIndex = 0;
+  QRgb* scanLine = 0;
+  QRgb myRgb;
+
+  for ( ; heightIndex < image->height(); ++heightIndex )
+  {
+    scanLine = ( QRgb* )image->scanLine( heightIndex );
+    widthIndex = 0;
+    for ( ; widthIndex < image->width(); ++widthIndex )
+    {
+      myRgb = image->pixel( widthIndex, heightIndex );
+      scanLine[widthIndex] = qRgba( qRed( myRgb ), qGreen( myRgb ), qBlue( myRgb ), qAlpha( myRgb ) * alpha );
+    }
+  }
 }
