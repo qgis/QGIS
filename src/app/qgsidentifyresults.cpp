@@ -289,6 +289,7 @@ void QgsIdentifyResults::show()
   }
 
   QDialog::show();
+  raise();
 }
 
 // Slot called when user clicks the Close button

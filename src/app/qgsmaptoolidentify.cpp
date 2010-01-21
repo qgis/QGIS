@@ -143,7 +143,6 @@ void QgsMapToolIdentify::canvasReleaseEvent( QMouseEvent * e )
   if ( res )
   {
     results()->show();
-    results()->raise();
   }
   else
   {
