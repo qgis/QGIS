@@ -895,7 +895,7 @@ class QPainter;*/
 class CORE_EXPORT QgsRasterImageBuffer
 {
   public:
-    QgsRasterImageBuffer( GDALRasterBandH rasterBand, QPainter* p, \
+    QgsRasterImageBuffer( GDALRasterBandH rasterBand, QPainter* p,
                           QgsRasterViewPort* viewPort, const QgsMapToPixel* mapToPixel, double* mGeoTransform );
     ~QgsRasterImageBuffer();
     void reset( int maxPixelsInVirtualMemory = 5000000 );

@@ -5605,7 +5605,7 @@ bool QgsRasterImageBuffer::nextScanLine( QRgb** imageScanLine, void** rasterScan
   }
   GDALDataType type = GDALGetRasterDataType( mRasterBand );
   int size = GDALGetDataTypeSize( type ) / 8;
-  *rasterScanLine = mCurrentGDALData + mCurrentPartImageRow * mViewPort->drawableAreaXDim * size;
+  *rasterScanLine = ( unsigned char * )mCurrentGDALData + mCurrentPartImageRow * mViewPort->drawableAreaXDim * size;
 
   ++mCurrentPartImageRow;
   ++mCurrentRow;
