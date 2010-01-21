@@ -59,6 +59,10 @@ class GUI_EXPORT QgsLegendInterface : public QObject
 
     //! Move a layer to a group
     virtual void moveLayer( QgsMapLayer * ml, int groupIndex ) = 0;
+
+    //! Show layer properties dialog
+    // @note added in 1.5
+    virtual void legendLayerShowProperties() = 0;
 };
 
 #endif

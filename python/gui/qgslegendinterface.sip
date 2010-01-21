@@ -33,5 +33,9 @@ class QgsLegendInterface : QObject
 
     //! Move a layer to a group
     virtual void moveLayer( QgsMapLayer * layer, int groupIndex ) =0;
+
+    //! show layer propeties
+    //! @note added in 1.5
+    virtual void legendLayerShowProperties() =0;
 };
 
