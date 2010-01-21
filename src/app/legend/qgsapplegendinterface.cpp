@@ -57,3 +57,8 @@ QStringList QgsAppLegendInterface::groups()
 {
   return mLegend->groups();
 }
+
+void QgsAppLegendInterface::legendLayerShowProperties()
+{
+  mLegend->legendLayerShowProperties();
+}

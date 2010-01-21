@@ -58,6 +58,9 @@ class QgsAppLegendInterface : public QgsLegendInterface
     //! Update an index
     void updateIndex( QModelIndex oldIndex, QModelIndex newIndex );
 
+    //! Show layer properties
+    void legendLayerShowProperties();
+
   private:
 
     //! Pointer to QgsLegend object
