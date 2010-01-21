@@ -248,6 +248,7 @@ QgsRasterLayer::~QgsRasterLayer()
       GDALClose( mGdalDataset );
     }
   }
+  delete mRasterShader;
 }
 
 
@@ -1536,7 +1537,7 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
   //the drawable area can start to get very very large when you get down displaying 2x2 or smaller, this is becasue
   //theQgsMapToPixel.mapUnitsPerPixel() is less then 1,
   //so we will just get the pixel data and then render these special cases differently in paintImageToCanvas()
-  if( 2 >= myRasterViewPort->clippedWidth && 2 >= myRasterViewPort->clippedHeight )
+  if ( 2 >= myRasterViewPort->clippedWidth && 2 >= myRasterViewPort->clippedHeight )
   {
     myRasterViewPort->drawableAreaXDim = myRasterViewPort->clippedWidth;
     myRasterViewPort->drawableAreaYDim = myRasterViewPort->clippedHeight;
@@ -1591,90 +1592,88 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
 
     mDataProvider->setDpi( rendererContext.rasterScaleFactor() * 25.4 * rendererContext.scaleFactor() );
 
-    QImage* image =
-      mDataProvider->draw(
-        myRasterExtent,
-        // Below should calculate to the actual pixel size of the
-        // part of the layer that's visible.
-        static_cast<int>( fabs(( myRasterViewPort->clippedXMax -  myRasterViewPort->clippedXMin )
-                               / theQgsMapToPixel.mapUnitsPerPixel() * mGeoTransform[1] ) + 1 ),
-        static_cast<int>( fabs(( myRasterViewPort->clippedYMax -  myRasterViewPort->clippedYMin )
-                               / theQgsMapToPixel.mapUnitsPerPixel() * mGeoTransform[5] ) + 1 )
-//                         myRasterViewPort->drawableAreaXDim,
-//                         myRasterViewPort->drawableAreaYDim
-      );
+    //fetch image in several parts if it is too memory consuming
+    //also some WMS servers have a pixel limit, so it's better to make several requests
+    int totalPixelWidth = fabs(( myRasterViewPort->clippedXMax -  myRasterViewPort->clippedXMin )
+                               / theQgsMapToPixel.mapUnitsPerPixel() * mGeoTransform[1] ) + 1;
+    int totalPixelHeight = fabs(( myRasterViewPort->clippedYMax -  myRasterViewPort->clippedYMin )
+                                / theQgsMapToPixel.mapUnitsPerPixel() * mGeoTransform[5] ) + 1;
+    int numParts = totalPixelWidth * totalPixelHeight / 5000000 + 1.0;
+    int numRowsPerPart = totalPixelHeight / numParts + 1.0;
 
-    if ( !image )
+
+    int currentPixelOffsetY = 0; //top y-coordinate of current raster part
+    //the width of a WMS image part
+    int pixelWidth = ( myRasterExtent.xMaximum() - myRasterExtent.xMinimum() ) / theQgsMapToPixel.mapUnitsPerPixel();
+    for ( int i = 0; i < numParts; ++i )
     {
-      // An error occurred.
-      mErrorCaption = mDataProvider->lastErrorTitle();
-      mError        = mDataProvider->lastError();
+      //fetch a small overlap of 2 pixels between two adjacent tiles to avoid white stripes
+      QgsRectangle rasterPartRect( myRasterExtent.xMinimum(), myRasterExtent.yMaximum() - ( currentPixelOffsetY + numRowsPerPart + 2 ) * theQgsMapToPixel.mapUnitsPerPixel(), \
+                                   myRasterExtent.xMaximum(), myRasterExtent.yMaximum() - currentPixelOffsetY * theQgsMapToPixel.mapUnitsPerPixel() );
 
-      delete myRasterViewPort;
-      return FALSE;
-    }
+      int pixelHeight = rasterPartRect.height() / theQgsMapToPixel.mapUnitsPerPixel();
+      QImage* image = mDataProvider->draw( rasterPartRect, pixelWidth, pixelHeight );
 
-    QgsDebugMsg( "Done mDataProvider->draw." );
-    QgsDebugMsg( "image stats: " );
-
-    QgsDebugMsg( QString( "depth=%1" ).arg( image->depth() ) );
-    QgsDebugMsg( QString( "bytes=%1" ).arg( image->numBytes() ) );
-    QgsDebugMsg( QString( "width=%1" ).arg( image->width() ) );
-    QgsDebugMsg( QString( "height=%1" ).arg( image->height() ) );
-
-    QgsDebugMsg( "Want to theQPainter->drawImage with" );
-
-    QgsDebugMsg( QString( "origin x: %1" ).arg( myRasterViewPort->topLeftPoint.x() ) );
-    QgsDebugMsg( QString( "(int)origin x: %1" ).arg( static_cast<int>( myRasterViewPort->topLeftPoint.x() ) ) );
-    QgsDebugMsg( QString( "origin y: %1" ).arg( myRasterViewPort->topLeftPoint.y() ) );
-    QgsDebugMsg( QString( "(int)origin y: %1" ).arg( static_cast<int>( myRasterViewPort->topLeftPoint.y() ) ) );
-
-    //Set the transparency for the whole layer
-    //QImage::setAlphaChannel does not work quite as expected so set each pixel individually
-    //Currently this is only done for WMS images, which should be small enough not to impact performance
-
-    if ( mTransparencyLevel != 255 ) //improve performance if layer transparency not altered
-    {
-      QImage* transparentImageCopy = new QImage( *image ); //copy image if there is user transparency
-      image = transparentImageCopy;
-      int myWidth = image->width();
-      int myHeight = image->height();
-      QRgb myRgb;
-      int newTransparency;
-      for ( int myHeightRunner = 0; myHeightRunner < myHeight; myHeightRunner++ )
+      if ( !image )
       {
-        QRgb* myLineBuffer = ( QRgb* ) transparentImageCopy->scanLine( myHeightRunner );
-        for ( int myWidthRunner = 0; myWidthRunner < myWidth; myWidthRunner++ )
+        // An error occurred.
+        mErrorCaption = mDataProvider->lastErrorTitle();
+        mError        = mDataProvider->lastError();
+
+        delete myRasterViewPort;
+        return FALSE;
+      }
+
+      QgsDebugMsg( "Done mDataProvider->draw." );
+      QgsDebugMsg( "image stats: " );
+
+      QgsDebugMsg( QString( "depth=%1" ).arg( image->depth() ) );
+      QgsDebugMsg( QString( "bytes=%1" ).arg( image->numBytes() ) );
+      QgsDebugMsg( QString( "width=%1" ).arg( image->width() ) );
+      QgsDebugMsg( QString( "height=%1" ).arg( image->height() ) );
+
+      QgsDebugMsg( "Want to theQPainter->drawImage with" );
+
+      QgsDebugMsg( QString( "origin x: %1" ).arg( myRasterViewPort->topLeftPoint.x() ) );
+      QgsDebugMsg( QString( "(int)origin x: %1" ).arg( static_cast<int>( myRasterViewPort->topLeftPoint.x() ) ) );
+      QgsDebugMsg( QString( "origin y: %1" ).arg( myRasterViewPort->topLeftPoint.y() ) );
+      QgsDebugMsg( QString( "(int)origin y: %1" ).arg( static_cast<int>( myRasterViewPort->topLeftPoint.y() ) ) );
+
+      //Set the transparency for the whole layer
+      //QImage::setAlphaChannel does not work quite as expected so set each pixel individually
+      //Currently this is only done for WMS images, which should be small enough not to impact performance
+
+      if ( mTransparencyLevel != 255 ) //improve performance if layer transparency not altered
+      {
+        QImage* transparentImageCopy = new QImage( *image ); //copy image if there is user transparency
+        image = transparentImageCopy;
+        int myWidth = image->width();
+        int myHeight = image->height();
+        QRgb myRgb;
+        int newTransparency;
+        for ( int myHeightRunner = 0; myHeightRunner < myHeight; myHeightRunner++ )
         {
-          myRgb = image->pixel( myWidthRunner, myHeightRunner );
-          //combine transparency from WMS and layer transparency
-          newTransparency = ( double ) mTransparencyLevel / 255.0 * ( double )( qAlpha( myRgb ) );
-          myLineBuffer[ myWidthRunner ] = qRgba( qRed( myRgb ), qGreen( myRgb ), qBlue( myRgb ), newTransparency );
+          QRgb* myLineBuffer = ( QRgb* ) transparentImageCopy->scanLine( myHeightRunner );
+          for ( int myWidthRunner = 0; myWidthRunner < myWidth; myWidthRunner++ )
+          {
+            myRgb = image->pixel( myWidthRunner, myHeightRunner );
+            //combine transparency from WMS and layer transparency
+            newTransparency = ( double ) mTransparencyLevel / 255.0 * ( double )( qAlpha( myRgb ) );
+            myLineBuffer[ myWidthRunner ] = qRgba( qRed( myRgb ), qGreen( myRgb ), qBlue( myRgb ), newTransparency );
+          }
         }
       }
+
+      theQPainter->drawImage( myRasterViewPort->topLeftPoint.x(), myRasterViewPort->topLeftPoint.y() + currentPixelOffsetY, *image );
+      currentPixelOffsetY += numRowsPerPart;
+
+      if ( mTransparencyLevel != 255 )
+      {
+        delete image;
+      }
+
+      emit statusChanged( tr( "%1 retrieved using %2" ).arg( name() ).arg( mProviderKey ) );
     }
-
-    // Since GDAL's RasterIO can't handle floating point, we have to round to
-    // the nearest pixel.  Add 0.5 to get rounding instead of truncation
-    // out of static_cast<int>.
-    theQPainter->drawImage( static_cast<int>(
-                              myRasterViewPort->topLeftPoint.x()
-                              + 0.5    // try simulating rounding instead of truncation, to avoid off-by-one errors
-                              // TODO: Check for rigorous correctness
-                            ),
-                            static_cast<int>(
-                              myRasterViewPort->topLeftPoint.y()
-                              + 0.5    // try simulating rounding instead of truncation, to avoid off-by-one errors
-                              // TODO: Check for rigorous correctness
-                            ),
-                            *image );
-
-    if ( mTransparencyLevel != 255 )
-    {
-      delete image;
-    }
-
-    emit statusChanged( tr( "%1 retrieved using %2" ).arg( name() ).arg( mProviderKey ) );
   }
   else
   {
@@ -4329,6 +4328,7 @@ void QgsRasterLayer::drawMultiBandColor( QPainter * theQPainter, QgsRasterViewPo
   {
     return;
   }
+
   GDALRasterBandH myGdalRedBand = GDALGetRasterBand( mGdalDataset, myRedBandNo );
   GDALRasterBandH myGdalGreenBand = GDALGetRasterBand( mGdalDataset, myGreenBandNo );
   GDALRasterBandH myGdalBlueBand = GDALGetRasterBand( mGdalDataset, myBlueBandNo );
@@ -4337,26 +4337,19 @@ void QgsRasterLayer::drawMultiBandColor( QPainter * theQPainter, QgsRasterViewPo
   GDALDataType myGreenType = GDALGetRasterDataType( myGdalGreenBand );
   GDALDataType myBlueType = GDALGetRasterDataType( myGdalBlueBand );
 
-  void *myGdalRedData = readData( myGdalRedBand, theRasterViewPort );
-  void *myGdalGreenData = readData( myGdalGreenBand, theRasterViewPort );
-  void *myGdalBlueData = readData( myGdalBlueBand, theRasterViewPort );
+  QRgb* redImageScanLine = 0;
+  void* redRasterScanLine = 0;
+  QRgb* greenImageScanLine = 0;
+  void* greenRasterScanLine = 0;
+  QRgb* blueImageScanLine = 0;
+  void* blueRasterScanLine = 0;
 
-  /* Check for out of memory error */
-  if ( myGdalRedData == NULL || myGdalGreenData == NULL || myGdalBlueData == NULL )
-  {
-    // Safe to free NULL-pointer */
-    VSIFree( myGdalRedData );
-    VSIFree( myGdalGreenData );
-    VSIFree( myGdalBlueData );
-    return;
-  }
-
-  QImage myQImage = QImage( theRasterViewPort->drawableAreaXDim, theRasterViewPort->drawableAreaYDim, QImage::Format_ARGB32 );
   QRgb myDefaultColor = qRgba( 255, 255, 255, 0 );
 
   QgsRasterBandStats myRedBandStats;
   QgsRasterBandStats myGreenBandStats;
   QgsRasterBandStats myBlueBandStats;
+
   /*
    * If a stetch is requested and there are no user defined Min Max values
    * we need to get these values from the bands themselves.
@@ -4408,35 +4401,40 @@ void QgsRasterLayer::drawMultiBandColor( QPainter * theQPainter, QgsRasterViewPo
   QgsContrastEnhancement* myGreenContrastEnhancement = contrastEnhancement( myGreenBandNo );
   QgsContrastEnhancement* myBlueContrastEnhancement = contrastEnhancement( myBlueBandNo );
 
-  QgsDebugMsg( "Starting main render loop" );
-  for ( int myRow = 0; myRow < theRasterViewPort->drawableAreaYDim; ++myRow )
+  QgsRasterImageBuffer redImageBuffer( myGdalRedBand, theQPainter, theRasterViewPort, theQgsMapToPixel, &mGeoTransform[0] );
+  redImageBuffer.reset();
+  QgsRasterImageBuffer greenImageBuffer( myGdalGreenBand, theQPainter, theRasterViewPort, theQgsMapToPixel, &mGeoTransform[0] );
+  greenImageBuffer.setWritingEnabled( false ); //only draw to redImageBuffer
+  greenImageBuffer.reset();
+  QgsRasterImageBuffer blueImageBuffer( myGdalGreenBand, theQPainter, theRasterViewPort, theQgsMapToPixel, &mGeoTransform[0] );
+  blueImageBuffer.setWritingEnabled( false ); //only draw to redImageBuffer
+  blueImageBuffer.reset();
+
+  while ( redImageBuffer.nextScanLine( &redImageScanLine, &redRasterScanLine ) && greenImageBuffer.nextScanLine( &greenImageScanLine, &greenRasterScanLine ) \
+          && blueImageBuffer.nextScanLine( &blueImageScanLine, &blueRasterScanLine ) )
   {
-    QRgb* myLineBuffer = ( QRgb* )myQImage.scanLine( myRow );
-    for ( int myColumn = 0; myColumn < theRasterViewPort->drawableAreaXDim; ++myColumn )
+    for ( int i = 0; i < theRasterViewPort->drawableAreaXDim; ++i )
     {
-      myRedValue   = readValue( myGdalRedData, ( GDALDataType )myRedType,
-                                myRow * theRasterViewPort->drawableAreaXDim + myColumn );
-      myGreenValue = readValue( myGdalGreenData, ( GDALDataType )myGreenType,
-                                myRow * theRasterViewPort->drawableAreaXDim + myColumn );
-      myBlueValue  = readValue( myGdalBlueData, ( GDALDataType )myBlueType,
-                                myRow * theRasterViewPort->drawableAreaXDim + myColumn );
+      myRedValue   = readValue( redImageScanLine, ( GDALDataType )myRedType, i );
+      myGreenValue = readValue( greenImageScanLine, ( GDALDataType )myGreenType, i );
+      myBlueValue  = readValue( blueImageScanLine, ( GDALDataType )myBlueType, i );
 
       if ( mValidNoDataValue && (( fabs( myRedValue - mNoDataValue ) <= TINY_VALUE || myRedValue != myRedValue ) || ( fabs( myGreenValue - mNoDataValue ) <= TINY_VALUE || myGreenValue != myGreenValue ) || ( fabs( myBlueValue - mNoDataValue ) <= TINY_VALUE || myBlueValue != myBlueValue ) ) )
       {
-        myLineBuffer[ myColumn ] = myDefaultColor;
+        redImageScanLine[ i ] = myDefaultColor;
         continue;
       }
 
       if ( !myRedContrastEnhancement->isValueInDisplayableRange( myRedValue ) || !myGreenContrastEnhancement->isValueInDisplayableRange( myGreenValue ) || !myBlueContrastEnhancement->isValueInDisplayableRange( myBlueValue ) )
       {
-        myLineBuffer[ myColumn ] = myDefaultColor;
+        redImageScanLine[ i ] = myDefaultColor;
         continue;
       }
 
       myAlphaValue = mRasterTransparency.alphaValue( myRedValue, myGreenValue, myBlueValue, mTransparencyLevel );
       if ( 0 == myAlphaValue )
       {
-        myLineBuffer[ myColumn ] = myDefaultColor;
+        redImageScanLine[ i ] = myDefaultColor;
         continue;
       }
 
@@ -4451,34 +4449,9 @@ void QgsRasterLayer::drawMultiBandColor( QPainter * theQPainter, QgsRasterViewPo
         myStretchedBlueValue = 255 - myStretchedBlueValue;
       }
 
-      myLineBuffer[ myColumn ] = qRgba( myStretchedRedValue, myStretchedGreenValue, myStretchedBlueValue, myAlphaValue );
+      redImageScanLine[ i ] = qRgba( myStretchedRedValue, myStretchedGreenValue, myStretchedBlueValue, myAlphaValue );
     }
   }
-  //free the scanline memory
-  CPLFree( myGdalRedData );
-  CPLFree( myGdalGreenData );
-  CPLFree( myGdalBlueData );
-
-#ifdef QGISDEBUG
-  QPixmap *pm = dynamic_cast<QPixmap *>( theQPainter->device() );
-  if ( pm )
-  {
-    QgsDebugMsg( "theQPainter stats: " );
-    QgsDebugMsg( "width = " + QString::number( pm->width() ) );
-    QgsDebugMsg( "height = " + QString::number( pm->height() ) );
-    pm->save( "/tmp/qgis-rasterlayer-drawmultibandcolor-test-a.png", "PNG" );
-  }
-#endif
-
-  paintImageToCanvas( theQPainter, theRasterViewPort, theQgsMapToPixel, &myQImage );
-
-#ifdef QGISDEBUG
-  QgsDebugMsg( "theQPainter->drawImage." );
-  if ( pm )
-  {
-    pm->save( "/tmp/qgis-rasterlayer-drawmultibandcolor-test-b.png", "PNG" );
-  }
-#endif
 }
 
 void QgsRasterLayer::drawMultiBandSingleBandGray( QPainter * theQPainter, QgsRasterViewPort * theRasterViewPort,
@@ -4518,69 +4491,58 @@ void QgsRasterLayer::drawPalettedSingleBandColor( QPainter * theQPainter, QgsRas
 
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
   GDALDataType myDataType = GDALGetRasterDataType( myGdalBand );
-  void *myGdalScanData = readData( myGdalBand, theRasterViewPort );
 
-  /* Check for out of memory error */
-  if ( myGdalScanData == NULL )
-  {
-    return;
-  }
+  QgsRasterImageBuffer imageBuffer( myGdalBand, theQPainter, theRasterViewPort, theQgsMapToPixel, &mGeoTransform[0] );
+  imageBuffer.reset();
 
-  QImage myQImage = QImage( theRasterViewPort->drawableAreaXDim, theRasterViewPort->drawableAreaYDim, QImage::Format_ARGB32 );
+  QRgb* imageScanLine = 0;
+  void* rasterScanLine = 0;
+
   QRgb myDefaultColor = qRgba( 255, 255, 255, 0 );
-
   double myPixelValue = 0.0;
   int myRedValue = 0;
   int myGreenValue = 0;
   int myBlueValue = 0;
   int myAlphaValue = 0;
 
-  QgsDebugMsg( "Starting main render loop" );
-  for ( int myRow = 0; myRow < theRasterViewPort->drawableAreaYDim; ++myRow )
+  while ( imageBuffer.nextScanLine( &imageScanLine, &rasterScanLine ) )
   {
-    QRgb* myLineBuffer = ( QRgb* )myQImage.scanLine( myRow );
-    for ( int myColumn = 0; myColumn < theRasterViewPort->drawableAreaXDim; ++myColumn )
+    for ( int i = 0; i < theRasterViewPort->drawableAreaXDim; ++i )
     {
-      myRedValue = 0;
-      myGreenValue = 0;
-      myBlueValue = 0;
-      myPixelValue = readValue( myGdalScanData, ( GDALDataType )myDataType,
-                                myRow * theRasterViewPort->drawableAreaXDim + myColumn );
+      myRedValue = 0; myGreenValue = 0; myBlueValue = 0;
+      myPixelValue = readValue( rasterScanLine, ( GDALDataType )myDataType, i );
 
       if ( mValidNoDataValue && ( fabs( myPixelValue - mNoDataValue ) <= TINY_VALUE || myPixelValue != myPixelValue ) )
       {
-        myLineBuffer[ myColumn ] = myDefaultColor;
+        imageScanLine[ i ] = myDefaultColor;
         continue;
       }
 
       myAlphaValue = mRasterTransparency.alphaValue( myPixelValue, mTransparencyLevel );
       if ( 0 == myAlphaValue )
       {
-        myLineBuffer[ myColumn ] = myDefaultColor;
+        imageScanLine[ i ] = myDefaultColor;
         continue;
       }
 
       if ( !mRasterShader->shade( myPixelValue, &myRedValue, &myGreenValue, &myBlueValue ) )
       {
-        myLineBuffer[ myColumn ] = myDefaultColor;
+        imageScanLine[ i ] = myDefaultColor;
         continue;
       }
 
       if ( mInvertColor )
       {
         //Invert flag, flip blue and read
-        myLineBuffer[ myColumn ] = qRgba( myBlueValue, myGreenValue, myRedValue, myAlphaValue );
+        imageScanLine[ i ] = qRgba( myBlueValue, myGreenValue, myRedValue, myAlphaValue );
       }
       else
       {
         //Normal
-        myLineBuffer[ myColumn ] = qRgba( myRedValue, myGreenValue, myBlueValue, myAlphaValue );
+        imageScanLine[ i ] = qRgba( myRedValue, myGreenValue, myBlueValue, myAlphaValue );
       }
     }
   }
-  CPLFree( myGdalScanData );
-
-  paintImageToCanvas( theQPainter, theRasterViewPort, theQgsMapToPixel, &myQImage );
 }
 
 /**
@@ -4606,51 +4568,45 @@ void QgsRasterLayer::drawPalettedSingleBandGray( QPainter * theQPainter, QgsRast
 
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
   GDALDataType myDataType = GDALGetRasterDataType( myGdalBand );
-  void *myGdalScanData = readData( myGdalBand, theRasterViewPort );
 
-  /* Check for out of memory error */
-  if ( myGdalScanData == NULL )
-  {
-    return;
-  }
+  QgsRasterImageBuffer imageBuffer( myGdalBand, theQPainter, theRasterViewPort, theQgsMapToPixel, &mGeoTransform[0] );
+  imageBuffer.reset();
 
-  QImage myQImage = QImage( theRasterViewPort->drawableAreaXDim, theRasterViewPort->drawableAreaYDim, QImage::Format_ARGB32 );
+  QRgb* imageScanLine = 0;
+  void* rasterScanLine = 0;
+
   QRgb myDefaultColor = qRgba( 255, 255, 255, 0 );
-
   double myPixelValue = 0.0;
   int myRedValue = 0;
   int myGreenValue = 0;
   int myBlueValue = 0;
   int myAlphaValue = 0;
 
-  QgsDebugMsg( "Starting main render loop" );
-  for ( int myRow = 0; myRow < theRasterViewPort->drawableAreaYDim; ++myRow )
+  while ( imageBuffer.nextScanLine( &imageScanLine, &rasterScanLine ) )
   {
-    QRgb* myLineBuffer = ( QRgb* )myQImage.scanLine( myRow );
-    for ( int myColumn = 0; myColumn < theRasterViewPort->drawableAreaXDim; ++myColumn )
+    for ( int i = 0; i < theRasterViewPort->drawableAreaXDim; ++i )
     {
       myRedValue = 0;
       myGreenValue = 0;
       myBlueValue = 0;
-      myPixelValue = readValue( myGdalScanData, ( GDALDataType )myDataType,
-                                myRow * theRasterViewPort->drawableAreaXDim + myColumn );
+      myPixelValue = readValue( rasterScanLine, ( GDALDataType )myDataType, i );
 
       if ( mValidNoDataValue && ( fabs( myPixelValue - mNoDataValue ) <= TINY_VALUE || myPixelValue != myPixelValue ) )
       {
-        myLineBuffer[ myColumn ] = myDefaultColor;
+        imageScanLine[ i ] = myDefaultColor;
         continue;
       }
 
       myAlphaValue = mRasterTransparency.alphaValue( myPixelValue, mTransparencyLevel );
       if ( 0 == myAlphaValue )
       {
-        myLineBuffer[ myColumn ] = myDefaultColor;
+        imageScanLine[ i ] = myDefaultColor;
         continue;
       }
 
       if ( !mRasterShader->shade( myPixelValue, &myRedValue, &myGreenValue, &myBlueValue ) )
       {
-        myLineBuffer[ myColumn ] = myDefaultColor;
+        imageScanLine[ i ] = myDefaultColor;
         continue;
       }
 
@@ -4658,19 +4614,16 @@ void QgsRasterLayer::drawPalettedSingleBandGray( QPainter * theQPainter, QgsRast
       {
         //Invert flag, flip blue and read
         double myGrayValue = ( 0.3 * ( double )myRedValue ) + ( 0.59 * ( double )myGreenValue ) + ( 0.11 * ( double )myBlueValue );
-        myLineBuffer[ myColumn ] = qRgba(( int )myGrayValue, ( int )myGrayValue, ( int )myGrayValue, myAlphaValue );
+        imageScanLine[ i ] = qRgba(( int )myGrayValue, ( int )myGrayValue, ( int )myGrayValue, myAlphaValue );
       }
       else
       {
         //Normal
         double myGrayValue = ( 0.3 * ( double )myBlueValue ) + ( 0.59 * ( double )myGreenValue ) + ( 0.11 * ( double )myRedValue );
-        myLineBuffer[ myColumn ] = qRgba(( int )myGrayValue, ( int )myGrayValue, ( int )myGrayValue, myAlphaValue );
+        imageScanLine[ i ] = qRgba(( int )myGrayValue, ( int )myGrayValue, ( int )myGrayValue, myAlphaValue );
       }
     }
   }
-  CPLFree( myGdalScanData );
-
-  paintImageToCanvas( theQPainter, theRasterViewPort, theQgsMapToPixel, &myQImage );
 }
 
 /**
@@ -4694,22 +4647,14 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor( QPainter * theQPainter, 
   QgsRasterBandStats myRasterBandStats = bandStatistics( theBandNo );
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
   GDALDataType myDataType = GDALGetRasterDataType( myGdalBand );
-  void *myGdalScanData = readData( myGdalBand, theRasterViewPort );
 
-  /* Check for out of memory error */
-  if ( myGdalScanData == NULL )
-  {
-    return;
-  }
+  QgsRasterImageBuffer imageBuffer( myGdalBand, theQPainter, theRasterViewPort, theQgsMapToPixel, &mGeoTransform[0] );
+  imageBuffer.reset();
 
-  QImage myQImage = QImage( theRasterViewPort->drawableAreaXDim, theRasterViewPort->drawableAreaYDim, QImage::Format_ARGB32 );
+  QRgb* imageScanLine = 0;
+  void* rasterScanLine = 0;
+
   QRgb myDefaultColor = qRgba( 255, 255, 255, 0 );
-
-  if ( NULL == mRasterShader )
-  {
-    return;
-  }
-
   double myMinimumValue = 0.0;
   double myMaximumValue = 0.0;
   //Use standard deviations if set, otherwise, use min max of band
@@ -4733,52 +4678,46 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor( QPainter * theQPainter, 
   int myBlueValue = 0;
   int myAlphaValue = 0;
 
-  QgsDebugMsg( "Starting main render loop" );
-  for ( int myRow = 0; myRow < theRasterViewPort->drawableAreaYDim; ++myRow )
+  while ( imageBuffer.nextScanLine( &imageScanLine, &rasterScanLine ) )
   {
-    QRgb* myLineBuffer = ( QRgb* )myQImage.scanLine( myRow );
-    for ( int myColumn = 0; myColumn < theRasterViewPort->drawableAreaXDim; ++myColumn )
+    for ( int i = 0; i < theRasterViewPort->drawableAreaXDim; ++i )
     {
       myRedValue = 0;
       myGreenValue = 0;
       myBlueValue = 0;
-      myPixelValue = readValue( myGdalScanData, ( GDALDataType )myDataType,
-                                myRow * theRasterViewPort->drawableAreaXDim + myColumn );
+      myPixelValue = readValue( rasterScanLine, ( GDALDataType )myDataType, i );
 
       if ( mValidNoDataValue && ( fabs( myPixelValue - mNoDataValue ) <= TINY_VALUE || myPixelValue != myPixelValue ) )
       {
-        myLineBuffer[ myColumn ] = myDefaultColor;
+        imageScanLine[ i ] = myDefaultColor;
         continue;
       }
 
       myAlphaValue = mRasterTransparency.alphaValue( myPixelValue, mTransparencyLevel );
       if ( 0 == myAlphaValue )
       {
-        myLineBuffer[ myColumn ] = myDefaultColor;
+        imageScanLine[ i ] = myDefaultColor;
         continue;
       }
 
       if ( !mRasterShader->shade( myPixelValue, &myRedValue, &myGreenValue, &myBlueValue ) )
       {
-        myLineBuffer[ myColumn ] = myDefaultColor;
+        imageScanLine[ i ] = myDefaultColor;
         continue;
       }
 
       if ( mInvertColor )
       {
         //Invert flag, flip blue and read
-        myLineBuffer[ myColumn ] = qRgba( myBlueValue, myGreenValue, myRedValue, myAlphaValue );
+        imageScanLine[ i ] = qRgba( myBlueValue, myGreenValue, myRedValue, myAlphaValue );
       }
       else
       {
         //Normal
-        myLineBuffer[ myColumn ] = qRgba( myRedValue, myGreenValue, myBlueValue, myAlphaValue );
+        imageScanLine[ i ] = qRgba( myRedValue, myGreenValue, myBlueValue, myAlphaValue );
       }
     }
   }
-  CPLFree( myGdalScanData );
-
-  paintImageToCanvas( theQPainter, theRasterViewPort, theQgsMapToPixel, &myQImage );
 }
 
 /**
@@ -4804,19 +4743,19 @@ void QgsRasterLayer::drawSingleBandGray( QPainter * theQPainter, QgsRasterViewPo
 
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
   GDALDataType myDataType = GDALGetRasterDataType( myGdalBand );
-  void *myGdalScanData = readData( myGdalBand, theRasterViewPort );
+  QgsRasterImageBuffer imageBuffer( myGdalBand, theQPainter, theRasterViewPort, theQgsMapToPixel, &mGeoTransform[0] );
+  imageBuffer.reset();
 
-  /* Check for out of memory error */
-  if ( myGdalScanData == NULL )
-  {
-    return;
-  }
+  QRgb* imageScanLine = 0;
+  void* rasterScanLine = 0;
 
-  QImage myQImage = QImage( theRasterViewPort->drawableAreaXDim, theRasterViewPort->drawableAreaYDim, QImage::Format_ARGB32 );
   QRgb myDefaultColor = qRgba( 255, 255, 255, 0 );
+  double myGrayValue = 0.0;
+  int myGrayVal = 0;
+  int myAlphaValue = 0;
+  QgsContrastEnhancement* myContrastEnhancement = contrastEnhancement( theBandNo );
 
   QgsRasterBandStats myGrayBandStats;
-
   if ( QgsContrastEnhancement::NoEnhancement != contrastEnhancementAlgorithm() && !mUserDefinedGrayMinimumMaximum && mStandardDeviations > 0 )
   {
     mGrayMinimumMaximumEstimated = false;
@@ -4836,41 +4775,28 @@ void QgsRasterLayer::drawSingleBandGray( QPainter * theQPainter, QgsRasterViewPo
 
   }
 
-  QgsDebugMsg( "Starting main render loop" );
-  // print each point in myGdalScanData with equal parts R, G, B or make it show as gray
-  double myGrayValue = 0.0;
-  int myGrayVal = 0;
-  int myAlphaValue = 0;
-  QgsContrastEnhancement* myContrastEnhancement = contrastEnhancement( theBandNo );
-  for ( int myRow = 0; myRow < theRasterViewPort->drawableAreaYDim; ++myRow )
+  while ( imageBuffer.nextScanLine( &imageScanLine, &rasterScanLine ) )
   {
-    QRgb* myLineBuffer = ( QRgb* )myQImage.scanLine( myRow );
-    for ( int myColumn = 0; myColumn < theRasterViewPort->drawableAreaXDim; ++myColumn )
+    for ( int i = 0; i < theRasterViewPort->drawableAreaXDim; ++i )
     {
-      myGrayValue = readValue( myGdalScanData, myDataType,
-                               myRow * theRasterViewPort->drawableAreaXDim + myColumn );
-
-      // If mNoDataValue is 'nan', the comparison
-      // against myGrayVal will always fail ( nan==nan always
-      // returns false, by design), hence the slightly odd comparison
-      // of myGrayVal against itself.
+      myGrayValue = readValue( rasterScanLine, ( GDALDataType )myDataType, i );
 
       if ( mValidNoDataValue && ( fabs( myGrayValue - mNoDataValue ) <= TINY_VALUE || myGrayValue != myGrayValue ) )
       {
-        myLineBuffer[ myColumn ] = myDefaultColor;
+        imageScanLine[ i ] = myDefaultColor;
         continue;
       }
 
       if ( !myContrastEnhancement->isValueInDisplayableRange( myGrayValue ) )
       {
-        myLineBuffer[ myColumn ] = myDefaultColor;
+        imageScanLine[ i ] = myDefaultColor;
         continue;
       }
 
       myAlphaValue = mRasterTransparency.alphaValue( myGrayValue, mTransparencyLevel );
       if ( 0 == myAlphaValue )
       {
-        myLineBuffer[ myColumn ] = myDefaultColor;
+        imageScanLine[ i ] = myDefaultColor;
         continue;
       }
 
@@ -4882,16 +4808,9 @@ void QgsRasterLayer::drawSingleBandGray( QPainter * theQPainter, QgsRasterViewPo
         myGrayVal = 255 - myGrayVal;
       }
 
-      myLineBuffer[ myColumn ] = qRgba( myGrayVal, myGrayVal, myGrayVal, myAlphaValue );
+      imageScanLine[ i ] = qRgba( myGrayVal, myGrayVal, myGrayVal, myAlphaValue );
     }
   }
-
-  CPLFree( myGdalScanData );
-
-  QgsDebugMsg( "Render done, preparing to copy to canvas" );
-
-  paintImageToCanvas( theQPainter, theRasterViewPort, theQgsMapToPixel, &myQImage );
-
 } // QgsRasterLayer::drawSingleBandGray
 
 void QgsRasterLayer::drawSingleBandPseudoColor( QPainter * theQPainter,
@@ -4909,17 +4828,14 @@ void QgsRasterLayer::drawSingleBandPseudoColor( QPainter * theQPainter,
   QgsRasterBandStats myRasterBandStats = bandStatistics( theBandNo );
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
   GDALDataType myDataType = GDALGetRasterDataType( myGdalBand );
-  void *myGdalScanData = readData( myGdalBand, theRasterViewPort );
 
-  /* Check for out of memory error */
-  if ( myGdalScanData == NULL )
-  {
-    return;
-  }
+  QgsRasterImageBuffer imageBuffer( myGdalBand, theQPainter, theRasterViewPort, theQgsMapToPixel, &mGeoTransform[0] );
+  imageBuffer.reset();
 
-  QImage myQImage = QImage( theRasterViewPort->drawableAreaXDim, theRasterViewPort->drawableAreaYDim, QImage::Format_ARGB32 );
+  QRgb* imageScanLine = 0;
+  void* rasterScanLine = 0;
+
   QRgb myDefaultColor = qRgba( 255, 255, 255, 0 );
-
   if ( NULL == mRasterShader )
   {
     return;
@@ -4942,57 +4858,50 @@ void QgsRasterLayer::drawSingleBandPseudoColor( QPainter * theQPainter,
   mRasterShader->setMinimumValue( myMinimumValue );
   mRasterShader->setMaximumValue( myMaximumValue );
 
-
   int myRedValue = 255;
   int myGreenValue = 255;
   int myBlueValue = 255;
 
   double myPixelValue = 0.0;
   int myAlphaValue = 0;
-  QgsDebugMsg( "Starting main render loop" );
-  for ( int myRow = 0; myRow < theRasterViewPort->drawableAreaYDim; ++myRow )
+
+  while ( imageBuffer.nextScanLine( &imageScanLine, &rasterScanLine ) )
   {
-    QRgb* myLineBuffer = ( QRgb* )myQImage.scanLine( myRow );
-    for ( int myColumn = 0; myColumn < theRasterViewPort->drawableAreaXDim; ++myColumn )
+    for ( int i = 0; i < theRasterViewPort->drawableAreaXDim; ++i )
     {
-      myPixelValue = readValue( myGdalScanData, myDataType,
-                                myRow * theRasterViewPort->drawableAreaXDim + myColumn );
+      myPixelValue = readValue( rasterScanLine, myDataType, i );
 
       if ( mValidNoDataValue && ( fabs( myPixelValue - mNoDataValue ) <= TINY_VALUE || myPixelValue != myPixelValue ) )
       {
-        myLineBuffer[ myColumn ] = myDefaultColor;
+        imageScanLine[ i ] = myDefaultColor;
         continue;
       }
 
       myAlphaValue = mRasterTransparency.alphaValue( myPixelValue, mTransparencyLevel );
       if ( 0 == myAlphaValue )
       {
-        myLineBuffer[ myColumn ] = myDefaultColor;
+        imageScanLine[ i ] = myDefaultColor;
         continue;
       }
 
       if ( !mRasterShader->shade( myPixelValue, &myRedValue, &myGreenValue, &myBlueValue ) )
       {
-        myLineBuffer[ myColumn ] = myDefaultColor;
+        imageScanLine[ i ] = myDefaultColor;
         continue;
       }
 
       if ( mInvertColor )
       {
         //Invert flag, flip blue and read
-        myLineBuffer[ myColumn ] = qRgba( myBlueValue, myGreenValue, myRedValue, myAlphaValue );
+        imageScanLine[ i ] = qRgba( myBlueValue, myGreenValue, myRedValue, myAlphaValue );
       }
       else
       {
         //Normal
-        myLineBuffer[ myColumn ] = qRgba( myRedValue, myGreenValue, myBlueValue, myAlphaValue );
+        imageScanLine[ i ] = qRgba( myRedValue, myGreenValue, myBlueValue, myAlphaValue );
       }
-    }                       //end of columnwise loop
-  }                           //end of rowwise loop
-
-  CPLFree( myGdalScanData );
-
-  paintImageToCanvas( theQPainter, theRasterViewPort, theQgsMapToPixel, &myQImage );
+    }
+  }
 }
 
 
@@ -5085,7 +4994,7 @@ void QgsRasterLayer::paintImageToCanvas( QPainter* theQPainter, QgsRasterViewPor
 
   //Catch special rendering cases
   //INSTANCE: 1x1
-  if( 1 == theRasterViewPort->clippedWidth && 1 == theRasterViewPort->clippedHeight )
+  if ( 1 == theRasterViewPort->clippedWidth && 1 == theRasterViewPort->clippedHeight )
   {
     QColor myColor( theImage->pixel( 0, 0 ) );
     myColor.setAlpha( qAlpha( theImage->pixel( 0, 0 ) ) );
@@ -5096,17 +5005,19 @@ void QgsRasterLayer::paintImageToCanvas( QPainter* theQPainter, QgsRasterViewPor
                            QBrush( myColor ) );
   }
   //1x2, 2x1 or 2x2
-  else if( 2 >= theRasterViewPort->clippedWidth && 2 >= theRasterViewPort->clippedHeight )
+  else if ( 2 >= theRasterViewPort->clippedWidth && 2 >= theRasterViewPort->clippedHeight )
   {
     int myPixelBoundaryX = 0;
     int myPixelBoundaryY = 0;
-    if( theQgsMapToPixel ) {
-      myPixelBoundaryX = static_cast<int>( theRasterViewPort->topLeftPoint.x() + 0.5 ) + static_cast<int>( fabs ( mGeoTransform[1] / theQgsMapToPixel->mapUnitsPerPixel() ) ) - paintXoffset;
-      myPixelBoundaryY = static_cast<int>( theRasterViewPort->topLeftPoint.y() + 0.5 ) + static_cast<int>( fabs(mGeoTransform[5] / theQgsMapToPixel->mapUnitsPerPixel() )) - paintYoffset;
+    if ( theQgsMapToPixel )
+    {
+      myPixelBoundaryX = static_cast<int>( theRasterViewPort->topLeftPoint.x() + 0.5 ) + static_cast<int>( fabs( mGeoTransform[1] / theQgsMapToPixel->mapUnitsPerPixel() ) ) - paintXoffset;
+      myPixelBoundaryY = static_cast<int>( theRasterViewPort->topLeftPoint.y() + 0.5 ) + static_cast<int>( fabs( mGeoTransform[5] / theQgsMapToPixel->mapUnitsPerPixel() ) ) - paintYoffset;
     }
 
     //INSTANCE: 1x2
-    if( 1 == theRasterViewPort->clippedWidth ) {
+    if ( 1 == theRasterViewPort->clippedWidth )
+    {
       QColor myColor( theImage->pixel( 0, 0 ) );
       myColor.setAlpha( qAlpha( theImage->pixel( 0, 0 ) ) );
       theQPainter->fillRect( static_cast<int>( theRasterViewPort->topLeftPoint.x() + 0.5 ),
@@ -5114,7 +5025,7 @@ void QgsRasterLayer::paintImageToCanvas( QPainter* theQPainter, QgsRasterViewPor
                              static_cast<int>( theRasterViewPort->bottomRightPoint.x() ),
                              static_cast<int>( myPixelBoundaryY ),
                              QBrush( myColor ) );
-      myColor = QColor( theImage->pixel( 0, 1) );
+      myColor = QColor( theImage->pixel( 0, 1 ) );
       myColor.setAlpha( qAlpha( theImage->pixel( 0, 1 ) ) );
       theQPainter->fillRect( static_cast<int>( theRasterViewPort->topLeftPoint.x() + 0.5 ),
                              static_cast<int>( myPixelBoundaryY ),
@@ -5122,12 +5033,13 @@ void QgsRasterLayer::paintImageToCanvas( QPainter* theQPainter, QgsRasterViewPor
                              static_cast<int>( theRasterViewPort->bottomRightPoint.y() ),
                              QBrush( myColor ) );
     }
-    else {
+    else
+    {
       //INSTANCE: 2x1
-      if( 1 == theRasterViewPort->clippedHeight )
+      if ( 1 == theRasterViewPort->clippedHeight )
       {
         QColor myColor( theImage->pixel( 0, 0 ) );
-        myColor.setAlpha( qAlpha( theImage->pixel( 0,0 ) ) );
+        myColor.setAlpha( qAlpha( theImage->pixel( 0, 0 ) ) );
         theQPainter->fillRect( static_cast<int>( theRasterViewPort->topLeftPoint.x() + 0.5 ),
                                static_cast<int>( theRasterViewPort->topLeftPoint.y() + 0.5 ),
                                static_cast<int>( myPixelBoundaryX ),
@@ -5148,10 +5060,10 @@ void QgsRasterLayer::paintImageToCanvas( QPainter* theQPainter, QgsRasterViewPor
         myColor.setAlpha( qAlpha( theImage->pixel( 0, 0 ) ) );
         theQPainter->fillRect( static_cast<int>( theRasterViewPort->topLeftPoint.x() + 0.5 ),
                                static_cast<int>( theRasterViewPort->topLeftPoint.y() + 0.5 ),
-                               static_cast<int>(myPixelBoundaryX ),
+                               static_cast<int>( myPixelBoundaryX ),
                                static_cast<int>( myPixelBoundaryY ),
                                QBrush( myColor ) );
-        myColor = QColor( theImage->pixel( 1, 0  ) );
+        myColor = QColor( theImage->pixel( 1, 0 ) );
         myColor.setAlpha( qAlpha( theImage->pixel( 1, 0 ) ) );
         theQPainter->fillRect( static_cast<int>( myPixelBoundaryX ),
                                static_cast<int>( theRasterViewPort->topLeftPoint.y() + 0.5 ),
@@ -5177,7 +5089,8 @@ void QgsRasterLayer::paintImageToCanvas( QPainter* theQPainter, QgsRasterViewPor
 
   }
   // INSTANCE: > 2x2, so just use the image filled by GDAL
-  else {
+  else
+  {
     theQPainter->drawImage( static_cast<int>( theRasterViewPort->topLeftPoint.x() + 0.5 ),
                             static_cast<int>( theRasterViewPort->topLeftPoint.y() + 0.5 ),
                             *theImage,
@@ -5616,4 +5529,298 @@ QString QgsRasterLayer::validateBandName( QString const & theBandName )
   //if no matches were found default to not set
   QgsDebugMsg( "All checks failed, returning '" + QSTRING_NOT_SET + "'" );
   return TRSTRING_NOT_SET;
+}
+
+QgsRasterImageBuffer::QgsRasterImageBuffer( GDALRasterBandH rasterBand, QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* mapToPixel, double* geoTransform ): \
+    mRasterBand( rasterBand ), mPainter( p ), mViewPort( viewPort ), mMapToPixel( mapToPixel ), mValid( false ), mWritingEnabled( true ), mDrawPixelRect( false ), mCurrentImage( 0 ), mCurrentGDALData( 0 ), mGeoTransform( geoTransform )
+{
+
+}
+
+QgsRasterImageBuffer::~QgsRasterImageBuffer()
+{
+  delete mCurrentImage;
+  CPLFree( mCurrentGDALData );
+}
+
+void QgsRasterImageBuffer::reset( int maxPixelsInVirtualMemory )
+{
+  if ( mRasterBand && mPainter && mViewPort && mMapToPixel )
+  {
+    mValid = true;
+  }
+  else
+  {
+    mValid = false;
+    return;
+  }
+
+  //decide on the partition of the image
+
+  int pixels = mViewPort->drawableAreaXDim * mViewPort->drawableAreaYDim;
+  int mNumPartImages = pixels / maxPixelsInVirtualMemory + 1.0;
+  mNumRasterRowsPerPart = ( double )mViewPort->clippedHeight / ( double )mNumPartImages + 0.5;
+
+  mCurrentPartRasterMin = -1;
+  mCurrentPartRasterMax = -1;
+  mCurrentPartImageRow = 0;
+  mNumCurrentImageRows = 0;
+
+  createNextPartImage();
+
+  if ( 2 >= mViewPort->clippedWidth && 2 >= mViewPort->clippedHeight )
+  {
+    //use Peter's fix for zoomed in rasters
+    mDrawPixelRect = true;
+  }
+}
+
+bool QgsRasterImageBuffer::nextScanLine( QRgb** imageScanLine, void** rasterScanLine )
+{
+  if ( !mValid )
+  {
+    return false;
+  }
+
+  if ( !mCurrentGDALData || ! mCurrentImage )
+  {
+    return false;
+  }
+
+  if ( mCurrentPartImageRow >= ( mNumCurrentImageRows ) )
+  {
+    if ( !createNextPartImage() )
+    {
+      return false;
+    }
+  }
+
+  if ( mWritingEnabled )
+  {
+    *imageScanLine = ( QRgb* )( mCurrentImage->scanLine( mCurrentPartImageRow ) );
+  }
+  else
+  {
+    *imageScanLine = 0;
+  }
+  GDALDataType type = GDALGetRasterDataType( mRasterBand );
+  int size = GDALGetDataTypeSize( type ) / 8;
+  *rasterScanLine = mCurrentGDALData + mCurrentPartImageRow * mViewPort->drawableAreaXDim * size;
+
+  ++mCurrentPartImageRow;
+  ++mCurrentRow;
+  return true;
+}
+
+bool QgsRasterImageBuffer::createNextPartImage()
+{
+  //draw the last image if mCurrentImage if it exists
+  if ( mCurrentImage )
+  {
+    if ( mWritingEnabled )
+    {
+      if ( 2 >= mViewPort->clippedWidth && 2 >= mViewPort->clippedHeight )
+      {
+        drawPixelRectangle();
+      }
+      else
+      {
+        double xLeft = mViewPort->topLeftPoint.x();
+        double yTop = mViewPort->topLeftPoint.y() + fabs( mGeoTransform[5] ) * mCurrentPartRasterMin / mMapToPixel->mapUnitsPerPixel();
+        mPainter->drawImage( QPointF( xLeft, yTop + 0.5 ), *mCurrentImage );
+      }
+    }
+  }
+
+  delete mCurrentImage; mCurrentImage = 0;
+  CPLFree( mCurrentGDALData ); mCurrentGDALData = 0;
+
+  if ( mCurrentPartRasterMax >= mViewPort->clippedHeight )
+  {
+    return false; //already at the end...
+  }
+
+  mCurrentPartRasterMin = mCurrentPartRasterMax + 1;
+  mCurrentPartRasterMax = mCurrentPartRasterMin + mNumRasterRowsPerPart;
+  if ( mCurrentPartRasterMax > mViewPort->clippedHeight )
+  {
+    mCurrentPartRasterMax = mViewPort->clippedHeight;
+  }
+  mCurrentRow = mCurrentPartRasterMin;
+  mCurrentPartImageRow = 0;
+
+  //read GDAL image data
+  GDALDataType type = GDALGetRasterDataType( mRasterBand );
+  int size = GDALGetDataTypeSize( type ) / 8;
+  int xSize = mViewPort->drawableAreaXDim;
+
+  //make the raster tiles overlap at least 2 pixels to avoid white stripes
+  int overlapRows = 0;
+  overlapRows = mMapToPixel->mapUnitsPerPixel() / fabs( mGeoTransform[5] ) + 2;
+  if ( mCurrentPartRasterMax + overlapRows >= mViewPort->clippedHeight )
+  {
+    overlapRows = 0;
+  }
+  int rasterYSize = mCurrentPartRasterMax - mCurrentPartRasterMin + overlapRows;
+
+  int ySize = 0;
+  if ( 2 >= mViewPort->clippedWidth && 2 >= mViewPort->clippedHeight ) //for zoomed in rasters
+  {
+    rasterYSize = mViewPort->clippedHeight;
+    ySize = mViewPort->drawableAreaYDim;
+  }
+  else //normal mode
+  {
+    ySize = fabs((( rasterYSize ) / mMapToPixel->mapUnitsPerPixel() * mGeoTransform[5] ) ) + 0.5;
+  }
+  if ( ySize == 0 )
+  {
+    return false;
+  }
+  mNumCurrentImageRows = ySize;
+  mCurrentGDALData = VSIMalloc( size * xSize * ySize );
+  CPLErr myErr = GDALRasterIO( mRasterBand, GF_Read, mViewPort->rectXOffset, \
+                               mViewPort->rectYOffset + mCurrentRow, mViewPort->clippedWidth, rasterYSize, \
+                               mCurrentGDALData, xSize, ySize, type, 0, 0 );
+
+  if ( myErr != CPLE_None )
+  {
+    CPLFree( mCurrentGDALData );
+    mCurrentGDALData = 0;
+    return false;
+  }
+
+  //create the QImage
+  if ( mWritingEnabled )
+  {
+    mCurrentImage = new QImage( xSize, ySize, QImage::Format_ARGB32 );
+    mCurrentImage->fill( qRgba( 255, 255, 255, 0 ) );
+  }
+  else
+  {
+    mCurrentImage = 0;
+  }
+  return true;
+}
+
+void QgsRasterImageBuffer::drawPixelRectangle()
+{
+  // Set up the initial offset into the myQImage we want to copy to the map canvas
+  // This is useful when the source image pixels are larger than the screen image.
+  int paintXoffset = 0;
+  int paintYoffset = 0;
+
+  if ( mMapToPixel )
+  {
+    paintXoffset = static_cast<int>(
+                     ( mViewPort->rectXOffsetFloat -
+                       mViewPort->rectXOffset )
+                     / mMapToPixel->mapUnitsPerPixel()
+                     * fabs( mGeoTransform[1] )
+                   );
+
+    paintYoffset = static_cast<int>(
+                     ( mViewPort->rectYOffsetFloat -
+                       mViewPort->rectYOffset )
+                     / mMapToPixel->mapUnitsPerPixel()
+                     * fabs( mGeoTransform[5] )
+                   );
+  }
+
+  //fix for zoomed in rasters
+  //Catch special rendering cases
+  //INSTANCE: 1x1
+  if ( 1 == mViewPort->clippedWidth && 1 == mViewPort->clippedHeight )
+  {
+    QColor myColor( mCurrentImage->pixel( 0, 0 ) );
+    myColor.setAlpha( qAlpha( mCurrentImage->pixel( 0, 0 ) ) );
+    mPainter->fillRect( static_cast<int>( mViewPort->topLeftPoint.x() + 0.5 ),
+                        static_cast<int>( mViewPort->topLeftPoint.y() + 0.5 ),
+                        static_cast<int>( mViewPort->bottomRightPoint.x() ),
+                        static_cast<int>( mViewPort->bottomRightPoint.y() ),
+                        QBrush( myColor ) );
+  }
+  //1x2, 2x1 or 2x2
+  else if ( 2 >= mViewPort->clippedWidth && 2 >= mViewPort->clippedHeight )
+  {
+    int myPixelBoundaryX = 0;
+    int myPixelBoundaryY = 0;
+    if ( mMapToPixel )
+    {
+      myPixelBoundaryX = static_cast<int>( mViewPort->topLeftPoint.x() + 0.5 ) + static_cast<int>( fabs( mGeoTransform[1] / mMapToPixel->mapUnitsPerPixel() ) ) - paintXoffset;
+      myPixelBoundaryY = static_cast<int>( mViewPort->topLeftPoint.y() + 0.5 ) + static_cast<int>( fabs( mGeoTransform[5] / mMapToPixel->mapUnitsPerPixel() ) ) - paintYoffset;
+    }
+
+    //INSTANCE: 1x2
+    if ( 1 == mViewPort->clippedWidth )
+    {
+      QColor myColor( mCurrentImage->pixel( 0, 0 ) );
+      myColor.setAlpha( qAlpha( mCurrentImage->pixel( 0, 0 ) ) );
+      mPainter->fillRect( static_cast<int>( mViewPort->topLeftPoint.x() + 0.5 ),
+                          static_cast<int>( mViewPort->topLeftPoint.y() + 0.5 ),
+                          static_cast<int>( mViewPort->bottomRightPoint.x() ),
+                          static_cast<int>( myPixelBoundaryY ),
+                          QBrush( myColor ) );
+      myColor = QColor( mCurrentImage->pixel( 0, 1 ) );
+      myColor.setAlpha( qAlpha( mCurrentImage->pixel( 0, 1 ) ) );
+      mPainter->fillRect( static_cast<int>( mViewPort->topLeftPoint.x() + 0.5 ),
+                          static_cast<int>( myPixelBoundaryY ),
+                          static_cast<int>( mViewPort->bottomRightPoint.x() ),
+                          static_cast<int>( mViewPort->bottomRightPoint.y() ),
+                          QBrush( myColor ) );
+    }
+    else
+    {
+      //INSTANCE: 2x1
+      if ( 1 == mViewPort->clippedHeight )
+      {
+        QColor myColor( mCurrentImage->pixel( 0, 0 ) );
+        myColor.setAlpha( qAlpha( mCurrentImage->pixel( 0, 0 ) ) );
+        mPainter->fillRect( static_cast<int>( mViewPort->topLeftPoint.x() + 0.5 ),
+                            static_cast<int>( mViewPort->topLeftPoint.y() + 0.5 ),
+                            static_cast<int>( myPixelBoundaryX ),
+                            static_cast<int>( mViewPort->bottomRightPoint.y() ),
+                            QBrush( myColor ) );
+        myColor = QColor( mCurrentImage->pixel( 1, 0 ) );
+        myColor.setAlpha( qAlpha( mCurrentImage->pixel( 1, 0 ) ) );
+        mPainter->fillRect( static_cast<int>( myPixelBoundaryX ),
+                            static_cast<int>( mViewPort->topLeftPoint.y() + 0.5 ),
+                            static_cast<int>( mViewPort->bottomRightPoint.x() ),
+                            static_cast<int>( mViewPort->bottomRightPoint.y() ),
+                            QBrush( myColor ) );
+      }
+      //INSTANCE: 2x2
+      else
+      {
+        QColor myColor( mCurrentImage->pixel( 0, 0 ) );
+        myColor.setAlpha( qAlpha( mCurrentImage->pixel( 0, 0 ) ) );
+        mPainter->fillRect( static_cast<int>( mViewPort->topLeftPoint.x() + 0.5 ),
+                            static_cast<int>( mViewPort->topLeftPoint.y() + 0.5 ),
+                            static_cast<int>( myPixelBoundaryX ),
+                            static_cast<int>( myPixelBoundaryY ),
+                            QBrush( myColor ) );
+        myColor = QColor( mCurrentImage->pixel( 1, 0 ) );
+        myColor.setAlpha( qAlpha( mCurrentImage->pixel( 1, 0 ) ) );
+        mPainter->fillRect( static_cast<int>( myPixelBoundaryX ),
+                            static_cast<int>( mViewPort->topLeftPoint.y() + 0.5 ),
+                            static_cast<int>( mViewPort->bottomRightPoint.x() ),
+                            static_cast<int>( myPixelBoundaryY ),
+                            QBrush( myColor ) );
+        myColor = QColor( mCurrentImage->pixel( 0, 1 ) );
+        myColor.setAlpha( qAlpha( mCurrentImage->pixel( 0, 1 ) ) );
+        mPainter->fillRect( static_cast<int>( mViewPort->topLeftPoint.x() + 0.5 ),
+                            static_cast<int>( myPixelBoundaryY ),
+                            static_cast<int>( myPixelBoundaryX ),
+                            static_cast<int>( mViewPort->bottomRightPoint.y() ),
+                            QBrush( myColor ) );
+        myColor = QColor( mCurrentImage->pixel( 1, 1 ) );
+        myColor.setAlpha( qAlpha( mCurrentImage->pixel( 1, 1 ) ) );
+        mPainter->fillRect( static_cast<int>( myPixelBoundaryX ),
+                            static_cast<int>( myPixelBoundaryY ),
+                            static_cast<int>( mViewPort->bottomRightPoint.x() ),
+                            static_cast<int>( mViewPort->bottomRightPoint.y() ),
+                            QBrush( myColor ) );
+      }
+    }
+  }
 }
