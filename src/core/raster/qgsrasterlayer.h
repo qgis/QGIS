@@ -881,4 +881,59 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     bool mValidNoDataValue;
 };
 
+/*#include <QColor>
+
+typedef void* GDALRasterBandH;
+class QgsMapToPixel;
+struct QgsRasterViewPort;
+class QImage;
+class QPainter;*/
+
+/**A class encapsulates reading from a raster band and drawing the pixels to a painter.
+   The class allows sequential reading of the scan lines and setting the image scan line pixels. It automatically decides
+   on how much of the band / image should stay in virtual memory at a time*/
+class CORE_EXPORT QgsRasterImageBuffer
+{
+  public:
+    QgsRasterImageBuffer( GDALRasterBandH rasterBand, QPainter* p, \
+                          QgsRasterViewPort* viewPort, const QgsMapToPixel* mapToPixel, double* mGeoTransform );
+    ~QgsRasterImageBuffer();
+    void reset( int maxPixelsInVirtualMemory = 5000000 );
+    /**Returns a pointer to the next scan line (or 0 if end)*/
+    bool nextScanLine( QRgb** imageScanLine, void** rasterScanLine );
+
+    void setWritingEnabled( bool enabled ) { mWritingEnabled = enabled; }
+
+  private:
+    QgsRasterImageBuffer(); //forbidden
+    /**Creates next part image. Returns false if at end*/
+    bool createNextPartImage();
+
+    /**Peter's fix for zoomed in rasters*/
+    void drawPixelRectangle();
+
+    GDALRasterBandH mRasterBand; //raster band
+    QPainter* mPainter;
+    QgsRasterViewPort* mViewPort;
+    const QgsMapToPixel* mMapToPixel;
+    double* mGeoTransform;
+
+    bool mValid;
+    /**True (default), if values are written to an image. If false, the class only reads the values, but does not create an image*/
+    bool mWritingEnabled;
+    /**Draws the raster pixels as rectangles. This is only used if the map units per pixel is very, very small*/
+    bool mDrawPixelRect;
+    int mCurrentRow;
+    int mNumPartImages; //number of part images
+    int mNumRasterRowsPerPart; //number of (raster source) rows per part
+    int mCurrentPartRasterMin; //minimum (raster source) row of current image
+    int mCurrentPartRasterMax; //maximum (raster source) row of current image
+    int mCurrentPartImageRow; //current image row
+    int mNumCurrentImageRows; //number of image rows for the current part
+
+    //current memory image and gdal scan data
+    QImage* mCurrentImage;
+    void* mCurrentGDALData;
+};
+
 #endif
