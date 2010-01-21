@@ -58,7 +58,9 @@ QString QgsSimpleLineSymbolLayerV2::layerType() const
 
 void QgsSimpleLineSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
 {
-  mPen.setColor( mColor );
+  QColor penColor = mColor;
+  penColor.setAlphaF( context.alpha() );
+  mPen.setColor( penColor );
   double scaledWidth = context.outputLineWidth( mWidth );
   mPen.setWidthF( scaledWidth );
   if ( mUseCustomDashPattern && scaledWidth != 0 )
@@ -242,6 +244,7 @@ void QgsMarkerLineSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
   // if being rotated, it gets initialized with every line segment
   if ( !mRotateMarker )
   {
+    mMarker->setAlpha( context.alpha() );
     mMarker->startRender( context.renderContext() );
   }
 }
@@ -298,6 +301,7 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineNoOffset( const QPolygonF& points
     // rotate marker (if desired)
     if ( mRotateMarker )
     {
+      mMarker->setAlpha( context.alpha() );
       mMarker->setAngle( origAngle + ( l.angle() * 180 / M_PI ) );
       mMarker->startRender( rc );
     }
@@ -394,7 +398,9 @@ QString QgsLineDecorationSymbolLayerV2::layerType() const
 
 void QgsLineDecorationSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
 {
-  mPen.setColor( mColor );
+  QColor penColor = mColor;
+  penColor.setAlphaF( context.alpha() );
+  mPen.setColor( penColor );
 }
 
 void QgsLineDecorationSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )

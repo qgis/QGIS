@@ -34,6 +34,7 @@ class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog, private Ui::QgsSymb
     void setLineWidth( double width );
     void addSymbolToStyle();
     void on_mSymbolUnitComboBox_currentIndexChanged( const QString & text );
+    void on_mOpacitySlider_valueChanged( int value );
 
   signals:
     void symbolModified();

@@ -41,10 +41,17 @@ QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsSt
   updateSymbolPreview();
   updateSymbolInfo();
 
-  // output unit
-  mSymbolUnitComboBox->blockSignals( true );
-  mSymbolUnitComboBox->setCurrentIndex( mSymbol->outputUnit() );
-  mSymbolUnitComboBox->blockSignals( false );
+  if ( mSymbol )
+  {
+    // output unit
+    mSymbolUnitComboBox->blockSignals( true );
+    mSymbolUnitComboBox->setCurrentIndex( mSymbol->outputUnit() );
+    mSymbolUnitComboBox->blockSignals( false );
+
+    mOpacitySlider->blockSignals( true );
+    mOpacitySlider->setValue( symbol->alpha() * 255 );
+    mOpacitySlider->blockSignals( false );
+  }
 
   // select correct page in stacked widget
   // there's a correspondence between symbol type number and page numbering => exploit it!
@@ -232,8 +239,21 @@ void QgsSymbolV2SelectorDialog::keyPressEvent( QKeyEvent * e )
 
 void QgsSymbolV2SelectorDialog::on_mSymbolUnitComboBox_currentIndexChanged( const QString & text )
 {
-  mSymbol->setOutputUnit( (QgsSymbolV2::OutputUnit) mSymbolUnitComboBox->currentIndex() );
+  if ( mSymbol )
+  {
+    mSymbol->setOutputUnit(( QgsSymbolV2::OutputUnit ) mSymbolUnitComboBox->currentIndex() );
 
-  updateSymbolPreview();
-  emit symbolModified();
+    updateSymbolPreview();
+    emit symbolModified();
+  }
+}
+
+void QgsSymbolV2SelectorDialog::on_mOpacitySlider_valueChanged( int value )
+{
+  if ( mSymbol )
+  {
+    mSymbol->setAlpha( value / 255.0 );
+    updateSymbolPreview();
+    emit symbolModified();
+  }
 }

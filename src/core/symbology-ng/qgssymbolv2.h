@@ -81,6 +81,9 @@ class CORE_EXPORT QgsSymbolV2
     OutputUnit outputUnit() const { return mOutputUnit; }
     void setOutputUnit( OutputUnit u ) { mOutputUnit = u; }
 
+    qreal alpha() const { return mAlpha; }
+    void setAlpha( qreal alpha ) { mAlpha = alpha; }
+
   protected:
     QgsSymbolV2( SymbolType type, QgsSymbolLayerV2List layers ); // can't be instantiated
 
@@ -90,6 +93,9 @@ class CORE_EXPORT QgsSymbolV2
     QgsSymbolLayerV2List mLayers;
 
     OutputUnit mOutputUnit;
+
+    /**Symbol opacity (in the range 0 - 1)*/
+    qreal mAlpha;
 };
 
 ///////////////////////
@@ -97,7 +103,7 @@ class CORE_EXPORT QgsSymbolV2
 class CORE_EXPORT QgsSymbolV2RenderContext
 {
   public:
-    QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u );
+    QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u , qreal alpha = 1.0 );
     ~QgsSymbolV2RenderContext();
 
     QgsRenderContext& renderContext() { return mRenderContext; }
@@ -106,12 +112,16 @@ class CORE_EXPORT QgsSymbolV2RenderContext
     QgsSymbolV2::OutputUnit outputUnit() const { return mOutputUnit; }
     void setOutputUnit( QgsSymbolV2::OutputUnit u ) { mOutputUnit = u; }
 
-    double outputLineWidth(double width) const;
-    double outputPixelSize(double size) const;
+    qreal alpha() const { return mAlpha; }
+    void setAlpha( qreal alpha ) { mAlpha = alpha; }
+
+    double outputLineWidth( double width ) const;
+    double outputPixelSize( double size ) const;
 
   private:
     QgsRenderContext& mRenderContext;
     QgsSymbolV2::OutputUnit mOutputUnit;
+    qreal mAlpha;
 };
 
 

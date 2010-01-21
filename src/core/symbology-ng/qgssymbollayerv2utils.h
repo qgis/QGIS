@@ -80,6 +80,9 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     static QgsRenderContext createRenderContext( QPainter* p );
 
     static QString iconPath( QString iconFile );
+
+    /**Multiplies opacity of image pixel values with a (global) transparency value*/
+    static void multiplyImageOpacity( QImage* image, qreal alpha );
 };
 
 class QPolygonF;

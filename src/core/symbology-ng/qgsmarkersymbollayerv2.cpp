@@ -164,7 +164,7 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
 
   double center = (( double ) imageSize / 2 ) + 0.5; // add 1/2 pixel for proper rounding when the figure's coordinates are added
 
-  mCache = QImage( QSize( imageSize, imageSize ), QImage::Format_ARGB32_Premultiplied );
+  mCache = QImage( QSize( imageSize, imageSize ), QImage::Format_ARGB32 );
   mCache.fill( 0 );
 
   QPainter p;
@@ -175,6 +175,12 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
   p.translate( QPointF( center, center ) );
   drawMarker( &p, context );
   p.end();
+
+  //opacity
+  if ( context.alpha() < 1.0 )
+  {
+    QgsSymbolLayerV2Utils::multiplyImageOpacity( &mCache, context.alpha() );
+  }
 }
 
 void QgsSimpleMarkerSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
@@ -512,6 +518,8 @@ void QgsFontMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
   mFont = QFont( mFontFamily, MM2POINT( mSize ) );
   QFontMetrics fm( mFont );
   mChrOffset = QPointF( fm.width( mChr ) / 2, -fm.ascent() / 2 );
+
+
 }
 
 void QgsFontMarkerSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
@@ -521,15 +529,17 @@ void QgsFontMarkerSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
 void QgsFontMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context )
 {
   QPainter* p = context.renderContext().painter();
-  p->setPen( mColor );
+  QColor penColor = mColor;
+  penColor.setAlphaF( context.alpha() );
+  p->setPen( penColor );
   p->setFont( mFont );
 
   p->save();
-  p->translate(point);
+  p->translate( point );
   if ( mAngle != 0 )
     p->rotate( mAngle );
 
-  p->drawText(-mChrOffset, mChr );
+  p->drawText( -mChrOffset, mChr );
   p->restore();
 }
 

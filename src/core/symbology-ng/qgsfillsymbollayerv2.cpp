@@ -43,7 +43,9 @@ QString QgsSimpleFillSymbolLayerV2::layerType() const
 
 void QgsSimpleFillSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
 {
+  mColor.setAlphaF( context.alpha() );
   mBrush = QBrush( mColor, mBrushStyle );
+  mBorderColor.setAlphaF( context.alpha() );
   mPen = QPen( mBorderColor );
   mPen.setStyle( mBorderStyle );
   mPen.setWidthF( context.outputLineWidth( mBorderWidth ) );
@@ -162,10 +164,10 @@ void QgsSVGFillSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
   }
 
   //create QImage with appropriate dimensions
-  int pixelWidth = context.outputPixelSize( mPatternWidth );//mPatternWidth.value( context, QgsOutputUnit::Pixel );
+  int pixelWidth = context.outputPixelSize( mPatternWidth );
   int pixelHeight = pixelWidth / mSvgViewBox.width() * mSvgViewBox.height();
 
-  QImage textureImage( pixelWidth, pixelHeight, QImage::Format_ARGB32_Premultiplied );
+  QImage textureImage( pixelWidth, pixelHeight, QImage::Format_ARGB32 );
   textureImage.fill( 0 ); // transparent background
 
   //rasterise byte array to image
@@ -176,6 +178,11 @@ void QgsSVGFillSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
     return;
   }
   r.render( &p );
+
+  if ( context.alpha() < 1.0 )
+  {
+    QgsSymbolLayerV2Utils::multiplyImageOpacity( &textureImage, context.alpha() );
+  }
 
   QTransform brushTransform;
   brushTransform.scale( 1.0 / context.renderContext().rasterScaleFactor(), 1.0 / context.renderContext().rasterScaleFactor() );
