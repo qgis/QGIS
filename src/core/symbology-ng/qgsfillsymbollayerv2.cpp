@@ -166,7 +166,7 @@ void QgsSVGFillSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
   int pixelHeight = pixelWidth / mSvgViewBox.width() * mSvgViewBox.height();
 
   QImage textureImage( pixelWidth, pixelHeight, QImage::Format_ARGB32_Premultiplied );
-  textureImage.fill( QColor( 255, 255, 255, 0 ).rgba() );
+  textureImage.fill( 0 ); // transparent background
 
   //rasterise byte array to image
   QPainter p( &textureImage );
