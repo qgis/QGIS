@@ -51,12 +51,16 @@ QgsOracleConnect::~QgsOracleConnect()
 {
 }
 
-void QgsOracleConnect::on_btnCancel_clicked()
+void QgsOracleConnect::on_buttonBox_rejected()
 {
-  helpInfo();
+  // cancel button mapped to context help - changed this to close the
+  // dialog instead. If context help is to be added, a Help button
+  // is required. - gsherman 
+  // helpInfo();
+  reject();
 }
 
-void QgsOracleConnect::on_btnOk_clicked()
+void QgsOracleConnect::on_buttonBox_accepted()
 {
   saveConnection();
 }
