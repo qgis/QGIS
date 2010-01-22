@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>278</width>
+    <width>489</width>
     <height>416</height>
    </rect>
   </property>
@@ -15,215 +15,185 @@
   </property>
   <layout class="QGridLayout" name="gridLayout_4">
    <item row="0" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout_5">
-     <item>
-      <widget class="QLabel" name="lblPreview">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>100</width>
-         <height>100</height>
-        </size>
-       </property>
-       <property name="frameShape">
-        <enum>QFrame::Box</enum>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Sunken</enum>
-       </property>
-       <property name="text">
-        <string/>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
+    <widget class="QLabel" name="lblPreview">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>100</width>
+       <height>100</height>
+      </size>
+     </property>
+     <property name="frameShape">
+      <enum>QFrame::Box</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Sunken</enum>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <layout class="QVBoxLayout" name="verticalLayout">
      <item>
       <layout class="QGridLayout" name="gridLayout_3">
        <item row="0" column="0">
-        <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <widget class="QLabel" name="mSymbolUnitLabel">
+         <property name="text">
+          <string>Unit</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QComboBox" name="mSymbolUnitComboBox">
          <item>
-          <widget class="QLabel" name="mSymbolUnitLabel">
-           <property name="text">
-            <string>Unit</string>
-           </property>
-          </widget>
+          <property name="text">
+           <string>Millimeter</string>
+          </property>
          </item>
          <item>
-          <widget class="QComboBox" name="mSymbolUnitComboBox">
-           <item>
-            <property name="text">
-             <string>Millimeter</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Map unit</string>
-            </property>
-           </item>
-          </widget>
+          <property name="text">
+           <string>Map unit</string>
+          </property>
          </item>
-        </layout>
+        </widget>
        </item>
        <item row="1" column="0">
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
-         <item>
-          <widget class="QLabel" name="mOpacityLabel">
-           <property name="text">
-            <string>Opacity</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QSlider" name="mOpacitySlider">
-           <property name="maximum">
-            <number>255</number>
-           </property>
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        <widget class="QLabel" name="mOpacityLabel">
+         <property name="text">
+          <string>Opacity</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QSlider" name="mOpacitySlider">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximum">
+          <number>255</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
        </item>
        <item row="2" column="0">
-        <widget class="QStackedWidget" name="stackedWidget">
-         <property name="currentIndex">
-          <number>0</number>
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string>Color</string>
          </property>
-         <widget class="QWidget" name="pageMarker">
-          <layout class="QGridLayout" name="gridLayout">
-           <property name="margin">
-            <number>0</number>
-           </property>
-           <item row="0" column="0">
-            <widget class="QLabel" name="label_5">
-             <property name="text">
-              <string>Color</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QgsColorButtonV2" name="btnColorMarker">
-             <property name="text">
-              <string>Change</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="label_2">
-             <property name="text">
-              <string>Size</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QDoubleSpinBox" name="spinSize">
-             <property name="decimals">
-              <number>2</number>
-             </property>
-             <property name="value">
-              <double>1.000000000000000</double>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="QLabel" name="label_3">
-             <property name="text">
-              <string>Rotation</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="1">
-            <widget class="QDoubleSpinBox" name="spinAngle">
-             <property name="suffix">
-              <string>°</string>
-             </property>
-             <property name="decimals">
-              <number>1</number>
-             </property>
-             <property name="maximum">
-              <double>360.000000000000000</double>
-             </property>
-             <property name="singleStep">
-              <double>5.000000000000000</double>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-         <widget class="QWidget" name="pageLine">
-          <layout class="QGridLayout" name="gridLayout_2">
-           <property name="margin">
-            <number>0</number>
-           </property>
-           <item row="0" column="0">
-            <widget class="QLabel" name="label_6">
-             <property name="text">
-              <string>Color</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QgsColorButtonV2" name="btnColorLine">
-             <property name="text">
-              <string>Change</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="label_4">
-             <property name="text">
-              <string>Width</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QDoubleSpinBox" name="spinWidth">
-             <property name="decimals">
-              <number>2</number>
-             </property>
-             <property name="value">
-              <double>1.000000000000000</double>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-         <widget class="QWidget" name="pageFill">
-          <layout class="QHBoxLayout" name="horizontalLayout_2">
-           <property name="margin">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="QLabel" name="label_7">
-             <property name="text">
-              <string>Color</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QgsColorButtonV2" name="btnColorFill">
-             <property name="text">
-              <string>Change</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QgsColorButtonV2" name="btnColor">
+         <property name="text">
+          <string>Change</string>
+         </property>
         </widget>
        </item>
       </layout>
      </item>
+     <item>
+      <widget class="QStackedWidget" name="stackedWidget">
+       <property name="currentIndex">
+        <number>2</number>
+       </property>
+       <widget class="QWidget" name="pageMarker">
+        <layout class="QGridLayout" name="gridLayout">
+         <property name="margin">
+          <number>0</number>
+         </property>
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>Size</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QDoubleSpinBox" name="spinSize">
+           <property name="decimals">
+            <number>2</number>
+           </property>
+           <property name="value">
+            <double>1.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>Rotation</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QDoubleSpinBox" name="spinAngle">
+           <property name="suffix">
+            <string>°</string>
+           </property>
+           <property name="decimals">
+            <number>1</number>
+           </property>
+           <property name="maximum">
+            <double>360.000000000000000</double>
+           </property>
+           <property name="singleStep">
+            <double>5.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="pageLine">
+        <layout class="QGridLayout" name="gridLayout_2">
+         <property name="margin">
+          <number>0</number>
+         </property>
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_4">
+           <property name="text">
+            <string>Width</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QDoubleSpinBox" name="spinWidth">
+           <property name="decimals">
+            <number>2</number>
+           </property>
+           <property name="value">
+            <double>1.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="pageFill">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <property name="margin">
+          <number>0</number>
+         </property>
+        </layout>
+       </widget>
+      </widget>
+     </item>
     </layout>
    </item>
-   <item row="1" column="0">
+   <item row="1" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QPushButton" name="btnSymbolProperties">
@@ -261,7 +231,7 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
+   <item row="3" column="0" colspan="2">
     <widget class="QListView" name="viewSymbols">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -289,7 +259,7 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
+   <item row="4" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -311,11 +281,9 @@
  <tabstops>
   <tabstop>btnSymbolProperties</tabstop>
   <tabstop>mSymbolUnitComboBox</tabstop>
-  <tabstop>btnColorFill</tabstop>
-  <tabstop>btnColorMarker</tabstop>
+  <tabstop>mOpacitySlider</tabstop>
   <tabstop>spinSize</tabstop>
   <tabstop>spinAngle</tabstop>
-  <tabstop>btnColorLine</tabstop>
   <tabstop>spinWidth</tabstop>
   <tabstop>btnAddToStyle</tabstop>
   <tabstop>viewSymbols</tabstop>
