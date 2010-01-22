@@ -722,20 +722,25 @@ void QgsSymbolLayerV2Utils::multiplyImageOpacity( QImage* image, qreal alpha )
     return;
   }
 
-  //change the alpha component of every pixel
-  int widthIndex = 0;
-  int heightIndex = 0;
-  QRgb* scanLine = 0;
   QRgb myRgb;
-
-  for ( ; heightIndex < image->height(); ++heightIndex )
+  QImage::Format format = image->format();
+  if ( format != QImage::Format_ARGB32_Premultiplied && format != QImage::Format_ARGB32 )
   {
-    scanLine = ( QRgb* )image->scanLine( heightIndex );
-    widthIndex = 0;
-    for ( ; widthIndex < image->width(); ++widthIndex )
+    QgsDebugMsg( "no alpha channel." );
+    return;
+  }
+
+  //change the alpha component of every pixel
+  for ( int heightIndex = 0; heightIndex < image->height(); ++heightIndex )
+  {
+    QRgb* scanLine = ( QRgb* )image->scanLine( heightIndex );
+    for ( int widthIndex = 0; widthIndex < image->width(); ++widthIndex )
     {
-      myRgb = image->pixel( widthIndex, heightIndex );
-      scanLine[widthIndex] = qRgba( qRed( myRgb ), qGreen( myRgb ), qBlue( myRgb ), qAlpha( myRgb ) * alpha );
+      myRgb = scanLine[widthIndex];
+      if ( format == QImage::Format_ARGB32_Premultiplied )
+        scanLine[widthIndex] = qRgba( alpha * qRed( myRgb ), alpha * qGreen( myRgb ), alpha * qBlue( myRgb ), alpha * qAlpha( myRgb ) );
+      else
+        scanLine[widthIndex] = qRgba( qRed( myRgb ), qGreen( myRgb ), qBlue( myRgb ), alpha * qAlpha( myRgb ) );
     }
   }
 }
