@@ -4406,7 +4406,7 @@ void QgsRasterLayer::drawMultiBandColor( QPainter * theQPainter, QgsRasterViewPo
   QgsRasterImageBuffer greenImageBuffer( myGdalGreenBand, theQPainter, theRasterViewPort, theQgsMapToPixel, &mGeoTransform[0] );
   greenImageBuffer.setWritingEnabled( false ); //only draw to redImageBuffer
   greenImageBuffer.reset();
-  QgsRasterImageBuffer blueImageBuffer( myGdalGreenBand, theQPainter, theRasterViewPort, theQgsMapToPixel, &mGeoTransform[0] );
+  QgsRasterImageBuffer blueImageBuffer( myGdalBlueBand, theQPainter, theRasterViewPort, theQgsMapToPixel, &mGeoTransform[0] );
   blueImageBuffer.setWritingEnabled( false ); //only draw to redImageBuffer
   blueImageBuffer.reset();
 
@@ -4415,9 +4415,9 @@ void QgsRasterLayer::drawMultiBandColor( QPainter * theQPainter, QgsRasterViewPo
   {
     for ( int i = 0; i < theRasterViewPort->drawableAreaXDim; ++i )
     {
-      myRedValue   = readValue( redImageScanLine, ( GDALDataType )myRedType, i );
-      myGreenValue = readValue( greenImageScanLine, ( GDALDataType )myGreenType, i );
-      myBlueValue  = readValue( blueImageScanLine, ( GDALDataType )myBlueType, i );
+      myRedValue   = readValue( redRasterScanLine, ( GDALDataType )myRedType, i );
+      myGreenValue = readValue( greenRasterScanLine, ( GDALDataType )myGreenType, i );
+      myBlueValue  = readValue( blueRasterScanLine, ( GDALDataType )myBlueType, i );
 
       if ( mValidNoDataValue && (( fabs( myRedValue - mNoDataValue ) <= TINY_VALUE || myRedValue != myRedValue ) || ( fabs( myGreenValue - mNoDataValue ) <= TINY_VALUE || myGreenValue != myGreenValue ) || ( fabs( myBlueValue - mNoDataValue ) <= TINY_VALUE || myBlueValue != myBlueValue ) ) )
       {
@@ -5582,7 +5582,7 @@ bool QgsRasterImageBuffer::nextScanLine( QRgb** imageScanLine, void** rasterScan
     return false;
   }
 
-  if ( !mCurrentGDALData || ! mCurrentImage )
+  if ( !mCurrentImage && !mCurrentGDALData )
   {
     return false;
   }
@@ -5614,7 +5614,7 @@ bool QgsRasterImageBuffer::nextScanLine( QRgb** imageScanLine, void** rasterScan
 
 bool QgsRasterImageBuffer::createNextPartImage()
 {
-  //draw the last image if mCurrentImage if it exists
+  //draw the last image if mCurrentImage exists
   if ( mCurrentImage )
   {
     if ( mWritingEnabled )
