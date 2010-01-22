@@ -453,7 +453,7 @@ class QgsSymbolV2RenderContext
 %End
 
     public:
-    QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u);
+    QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u , qreal alpha = 1.0 );
     ~QgsSymbolV2RenderContext();
 
     QgsRenderContext& renderContext();
@@ -461,6 +461,9 @@ class QgsSymbolV2RenderContext
 
     QgsSymbolV2::OutputUnit outputUnit() const;
     void setOutputUnit( QgsSymbolV2::OutputUnit u );
+
+    qreal alpha() const;
+    void setAlpha( qreal alpha );
 
     double outputLineWidth(double width) const;
     double outputPixelSize(double size) const;
