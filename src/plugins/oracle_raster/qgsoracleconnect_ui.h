@@ -38,8 +38,8 @@ class QgsOracleConnect : public QDialog, private Ui::OracleConnectGuiBase
     void helpInfo();
 
   public slots:
-    void on_btnOk_clicked();
-    void on_btnCancel_clicked();
+    void on_buttonBox_accepted();
+    void on_buttonBox_rejected();
 };
 
 #endif /* _ORACLECONNECTGUI_H */
