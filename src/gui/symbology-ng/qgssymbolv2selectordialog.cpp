@@ -57,9 +57,7 @@ QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsSt
   // there's a correspondence between symbol type number and page numbering => exploit it!
   stackedWidget->setCurrentIndex( symbol->type() );
 
-  connect( btnColorMarker, SIGNAL( clicked() ), this, SLOT( setSymbolColor() ) );
-  connect( btnColorLine, SIGNAL( clicked() ), this, SLOT( setSymbolColor() ) );
-  connect( btnColorFill, SIGNAL( clicked() ), this, SLOT( setSymbolColor() ) );
+  connect( btnColor, SIGNAL( clicked() ), this, SLOT( setSymbolColor() ) );
   connect( spinAngle, SIGNAL( valueChanged( double ) ), this, SLOT( setMarkerAngle( double ) ) );
   connect( spinSize, SIGNAL( valueChanged( double ) ), this, SLOT( setMarkerSize( double ) ) );
   connect( spinWidth, SIGNAL( valueChanged( double ) ), this, SLOT( setLineWidth( double ) ) );
@@ -130,10 +128,7 @@ void QgsSymbolV2SelectorDialog::updateSymbolPreview()
 
 void QgsSymbolV2SelectorDialog::updateSymbolColor()
 {
-  QColor c = mSymbol->color();
-  btnColorMarker->setColor( c );
-  btnColorLine->setColor( c );
-  btnColorFill->setColor( c );
+  btnColor->setColor( mSymbol->color() );
 }
 
 void QgsSymbolV2SelectorDialog::updateSymbolInfo()
