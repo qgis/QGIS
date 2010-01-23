@@ -1680,8 +1680,10 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/sip$(INPUT_FILE_BASE)part0.cpp",
 				"$(DERIVED_FILES_DIR)/sip$(INPUT_FILE_BASE)part1.cpp",
+				"$(DERIVED_FILES_DIR)/sip$(INPUT_FILE_BASE)part2.cpp",
+				"$(DERIVED_FILES_DIR)/sip$(INPUT_FILE_BASE)part3.cpp",
 			);
-			script = "$SIP $PYQT_SIP_FLAGS -j 2 -I $PYQT_SIP_DIR -I $PROJECT_DIR/../../python -c \"$DERIVED_FILES_DIR\" \"$INPUT_FILE_PATH\"";
+			script = "$SIP $PYQT_SIP_FLAGS -j 4 -I $PYQT_SIP_DIR -I $PROJECT_DIR/../../python -c \"$DERIVED_FILES_DIR\" \"$INPUT_FILE_PATH\"";
 		};
 		7268E86D11023A8700B96374 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -1692,8 +1694,10 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/sip$(INPUT_FILE_BASE)part0.cpp",
 				"$(DERIVED_FILES_DIR)/sip$(INPUT_FILE_BASE)part1.cpp",
+				"$(DERIVED_FILES_DIR)/sip$(INPUT_FILE_BASE)part2.cpp",
+				"$(DERIVED_FILES_DIR)/sip$(INPUT_FILE_BASE)part3.cpp",
 			);
-			script = "$SIP $PYQT_SIP_FLAGS -j 2 -I $PYQT_SIP_DIR -I $PROJECT_DIR/../../python -c \"$DERIVED_FILES_DIR\" \"$INPUT_FILE_PATH\"";
+			script = "$SIP $PYQT_SIP_FLAGS -j 4 -I $PYQT_SIP_DIR -I $PROJECT_DIR/../../python -c \"$DERIVED_FILES_DIR\" \"$INPUT_FILE_PATH\"";
 		};
 		7268E88B11023DF700B96374 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -1704,8 +1708,10 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/sip$(INPUT_FILE_BASE)part0.cpp",
 				"$(DERIVED_FILES_DIR)/sip$(INPUT_FILE_BASE)part1.cpp",
+				"$(DERIVED_FILES_DIR)/sip$(INPUT_FILE_BASE)part2.cpp",
+				"$(DERIVED_FILES_DIR)/sip$(INPUT_FILE_BASE)part3.cpp",
 			);
-			script = "$SIP $PYQT_SIP_FLAGS -j 2 -I $PYQT_SIP_DIR -I $PROJECT_DIR/../../python -c \"$DERIVED_FILES_DIR\" \"$INPUT_FILE_PATH\"";
+			script = "$SIP $PYQT_SIP_FLAGS -j 4 -I $PYQT_SIP_DIR -I $PROJECT_DIR/../../python -c \"$DERIVED_FILES_DIR\" \"$INPUT_FILE_PATH\"";
 		};
 		726C673C1046030F00EFEDCC /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -18712,7 +18718,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 12803;
+				QGIS_VERSION_BUILD = 12826;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -18723,7 +18729,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 12803;
+				QGIS_VERSION_BUILD = 12826;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
