@@ -100,8 +100,15 @@ class QgisInterface : QObject
     /** Remove specified dock widget from main window (doesn't delete it). Added in QGIS 1.1. */
     virtual void removeDockWidget ( QDockWidget * dockwidget )=0;
 
-    /** refresh legend of a layer */
+    /** refresh legend of a layer
+     \note deprecated - use QgsLegendInterface::refreshLayerSymbology()
+     */
     virtual void refreshLegend( QgsMapLayer * layer )=0;
+
+    /** open layer properties
+      \note added in 1.5
+     */
+    virtual void showLayerProperties( QgsMapLayer * layer )=0;
 
     /** Add window to Window menu. The action title is the window title
      * and the action should raise, unminimize and activate the window. */

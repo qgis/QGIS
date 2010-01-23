@@ -198,6 +198,14 @@ void QgisAppInterface::refreshLegend( QgsMapLayer *l )
   }
 }
 
+void QgisAppInterface::showLayerProperties( QgsMapLayer *l )
+{
+  if( l && qgis )
+  {
+    qgis->showLayerProperties( l );
+  }
+}
+
 void QgisAppInterface::addWindow( QAction *action ) { qgis->addWindow( action ); }
 void QgisAppInterface::removeWindow( QAction *action ) { qgis->removeWindow( action ); }
 

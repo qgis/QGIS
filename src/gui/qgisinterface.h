@@ -31,7 +31,6 @@ class QWidget;
 #include <map>
 
 
-class QgisApp;
 class QgsComposerView;
 class QgsMapLayer;
 class QgsMapCanvas;
@@ -135,8 +134,15 @@ class GUI_EXPORT QgisInterface : public QObject
     /** Remove specified dock widget from main window (doesn't delete it). Added in QGIS 1.1. */
     virtual void removeDockWidget( QDockWidget * dockwidget ) = 0;
 
-    /** refresh the legend of a layer */
+    /** refresh the legend of a layer
+     \note deprecated - use QgsLegendInterface::refreshLayerSymbology
+     */
     virtual void refreshLegend( QgsMapLayer *l ) = 0;
+
+    /** open layer properties dialog
+     \note added in 1.5
+     */
+    virtual void showLayerProperties( QgsMapLayer *l ) = 0;
 
     /** Add window to Window menu. The action title is the window title
      * and the action should raise, unminimize and activate the window. */
