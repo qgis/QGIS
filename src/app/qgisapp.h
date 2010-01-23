@@ -352,6 +352,9 @@ class QgisApp : public QMainWindow
     //! run python
     void runPythonString( const QString &expr );
 
+    //! show layer properties
+    void showLayerProperties( QgsMapLayer *ml );
+
   public slots:
     //! Zoom to full extent
     void zoomFull();

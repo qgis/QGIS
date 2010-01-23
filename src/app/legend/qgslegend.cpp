@@ -717,49 +717,7 @@ void QgsLegend::legendLayerShowProperties()
 
   //QgsDebugMsg("Showing layer properties dialog");
 
-  QgsMapLayer* ml = ll->layer();
-
-  /*
-  TODO: Consider reusing the property dialogs again.
-  Sometimes around mid 2005, the property dialogs were saved for later reuse;
-  this resulted in a time savings when reopening the dialog. The code below
-  cannot be used as is, however, simply by saving the dialog pointer here.
-  Either the map layer needs to be passed as an argument to sync or else
-  a separate copy of the dialog pointer needs to be stored with each layer.
-  */
-
-  if ( ml->type() == QgsMapLayer::RasterLayer )
-  {
-    QgsRasterLayerProperties *rlp = NULL; // See note above about reusing this
-    if ( rlp )
-    {
-      rlp->sync();
-    }
-    else
-    {
-      rlp = new QgsRasterLayerProperties( ml );
-      connect( rlp, SIGNAL( refreshLegend( QString, bool ) ), this, SLOT( refreshLayerSymbology( QString, bool ) ) );
-    }
-    rlp->exec();
-    delete rlp; // delete since dialog cannot be reused without updating code
-  }
-  else // VECTOR
-  {
-    QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( ml );
-
-    QgsVectorLayerProperties *vlp = NULL; // See note above about reusing this
-    if ( vlp )
-    {
-      vlp->reset();
-    }
-    else
-    {
-      vlp = new QgsVectorLayerProperties( vlayer );
-      connect( vlp, SIGNAL( refreshLegend( QString, bool ) ), this, SLOT( refreshLayerSymbology( QString, bool ) ) );
-    }
-    vlp->exec();
-    delete vlp; // delete since dialog cannot be reused without updating code
-  }
+  QgisApp::instance()->showLayerProperties( ll->layer() );
 
   ll->updateIcon();
 

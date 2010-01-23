@@ -53,13 +53,13 @@ class QgsAppLegendInterface : public QgsLegendInterface
     void removeGroup( int groupIndex );
 
     //! Move a layer to a group
-    void moveLayer( QgsMapLayer * ml, int groupIndex );
+    void moveLayer( QgsMapLayer *ml, int groupIndex );
 
     //! Update an index
     void updateIndex( QModelIndex oldIndex, QModelIndex newIndex );
 
-    //! Show layer properties
-    void legendLayerShowProperties();
+    //! refresh layer symbology
+    void refreshLayerSymbology( QgsMapLayer *ml );
 
   private:
 

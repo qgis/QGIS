@@ -18,7 +18,7 @@
 #include "qgsapplegendinterface.h"
 
 #include "qgslegend.h"
-
+#include "qgsmaplayer.h"
 
 QgsAppLegendInterface::QgsAppLegendInterface( QgsLegend * legend )
     : mLegend( legend )
@@ -58,7 +58,7 @@ QStringList QgsAppLegendInterface::groups()
   return mLegend->groups();
 }
 
-void QgsAppLegendInterface::legendLayerShowProperties()
+void QgsAppLegendInterface::refreshLayerSymbology( QgsMapLayer *ml )
 {
-  mLegend->legendLayerShowProperties();
+  mLegend->refreshLayerSymbology( ml->getLayerID() );
 }

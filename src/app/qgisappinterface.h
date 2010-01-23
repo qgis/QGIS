@@ -115,6 +115,8 @@ class QgisAppInterface : public QgisInterface
 
     virtual void refreshLegend( QgsMapLayer *l );
 
+    virtual void showLayerProperties( QgsMapLayer *l );
+
     /** Add window to Window menu. The action title is the window title
      * and the action should raise, unminimize and activate the window. */
     virtual void addWindow( QAction *action );
