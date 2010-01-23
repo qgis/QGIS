@@ -17,10 +17,10 @@ ARCHS_P = $(ARCHS_P_$(SDKSYS))
 // major-minor-patch must be integers for Mac OS X
 QGIS_RELEASE_NAME = Trunk
 QGIS_VERSION_MAJOR = 1
-QGIS_VERSION_MINOR = 4
+QGIS_VERSION_MINOR = 5
 QGIS_VERSION_PATCH = 0
 QGIS_VERSION_FULL = $(QGIS_VERSION_MAJOR).$(QGIS_VERSION_MINOR).$(QGIS_VERSION_PATCH)-$(QGIS_RELEASE_NAME)
-QGIS_VERSION_INT = 10400
+QGIS_VERSION_INT = 10500
 
 //////////////////////////////////////////////////////////////////////
 // Qt and other support
