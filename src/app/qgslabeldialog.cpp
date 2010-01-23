@@ -48,7 +48,7 @@ QgsLabelDialog::QgsLabelDialog( QgsLabel *label,  QWidget *parent )
 
   connect( btnDefaultFont, SIGNAL( clicked() ),
            this, SLOT( changeFont() ) );
-  connect( pbnDefaultBufferColor_2, SIGNAL( clicked() ),
+  connect( pbnDefaultBufferColor, SIGNAL( clicked() ),
            this, SLOT( changeBufferColor() ) );
   connect( pbnDefaultFontColor, SIGNAL( clicked() ),
            this, SLOT( changeFontColor() ) );
@@ -165,19 +165,12 @@ void QgsLabelDialog::init( )
     mFont.setPointSizeF( myLabelAttributes->size() );
 
     int myTypeInt = myLabelAttributes->sizeType();
-    if ( myTypeInt == QgsLabelAttributes::PointUnits )
-    {
-      radioFontSizeUnitsPoints->setChecked( true );
-    }
-    else //assume map units is checked
-    {
-      radioFontSizeUnitsMap->setChecked( true );
-    }
+    cboFontSizeUnits->setCurrentIndex( myTypeInt == QgsLabelAttributes::PointUnits ? 0 : 1 );
   }
   else //defaults for when no size has been set
   {
     mFont.setPointSizeF( myLabelAttributes->size() );
-    radioFontSizeUnitsPoints->setChecked( true );
+    cboFontSizeUnits->setCurrentIndex( 0 );
   }
 
   spinFontSize->setValue( myLabelAttributes->size() );
@@ -220,19 +213,13 @@ void QgsLabelDialog::init( )
   if ( myLabelAttributes->offsetIsSet() )
   {
     int myTypeInt = myLabelAttributes->offsetType();
-    if ( myTypeInt == QgsLabelAttributes::PointUnits )
-    {
-      radioOffsetUnitsPoints->setChecked( true );
-    }
-    else
-    {
-      radioOffsetUnitsMap->setChecked( true );
-    }
+    cboOffsetUnits->setCurrentIndex( myTypeInt == QgsLabelAttributes::PointUnits ? 0 : 1 );
     spinXOffset->setValue( myLabelAttributes->xOffset() );
     spinYOffset->setValue( myLabelAttributes->yOffset() );
   }
   else //defaults for when no offset is defined
   {
+    cboOffsetUnits->setCurrentIndex( 0 );
     spinXOffset->setValue( 0 );
     spinYOffset->setValue( 0 );
   }
@@ -267,18 +254,12 @@ void QgsLabelDialog::init( )
   if ( myLabelAttributes->bufferSizeIsSet() )
   {
     int myTypeInt = myLabelAttributes->bufferSizeType();
-    if ( myTypeInt == QgsLabelAttributes::PointUnits )
-    {
-      radioBufferUnitsPoints->setChecked( true );
-    }
-    else
-    {
-      radioBufferUnitsMap->setChecked( true );
-    }
+    cboBufferSizeUnits->setCurrentIndex( myTypeInt == QgsLabelAttributes::PointUnits ? 0 : 1 );
     spinBufferSize->setValue( myLabelAttributes->bufferSize() );
   }
   else //defaults for when no offset is defined
   {
+    cboBufferSizeUnits->setCurrentIndex( 0 );
     spinBufferSize->setValue( 1 );
   }
   //set the state of the multiline enabled checkbox
@@ -343,8 +324,7 @@ void QgsLabelDialog::changeBufferColor( void )
 
 int QgsLabelDialog::itemNoForField( QString theFieldName, QStringList theFieldList )
 {
-  int myItemInt = 0;
-  for ( QStringList::Iterator it = theFieldList.begin(); it != theFieldList.end(); ++it )
+  int myItemInt = 0; for ( QStringList::Iterator it = theFieldList.begin(); it != theFieldList.end(); ++it )
   {
     if ( theFieldName == *it ) return myItemInt;
     ++myItemInt;
@@ -367,30 +347,14 @@ void QgsLabelDialog::apply()
   QgsLabelAttributes * myLabelAttributes = mLabel->labelAttributes();
   myLabelAttributes->setText( leDefaultLabel->text() );
   myLabelAttributes->setFamily( mFont.family() );
-  int myTypeInt = 0;
-  if ( radioFontSizeUnitsPoints->isChecked() )
-  {
-    myTypeInt = QgsLabelAttributes::PointUnits;
-  }
-  else //assume map units is checked
-  {
-    myTypeInt = QgsLabelAttributes::MapUnits;
-  }
+  int myTypeInt = cboFontSizeUnits->currentIndex() == 0 ? QgsLabelAttributes::PointUnits : QgsLabelAttributes::MapUnits;
   myLabelAttributes->setSize( mFont.pointSizeF(), myTypeInt );
   myLabelAttributes->setBold( mFont.bold() );
   myLabelAttributes->setItalic( mFont.italic() );
   myLabelAttributes->setUnderline( mFont.underline() );
   myLabelAttributes->setStrikeOut( mFont.strikeOut() );
   myLabelAttributes->setColor( mFontColor );
-  myTypeInt = 0;
-  if ( radioOffsetUnitsPoints->isChecked() )
-  {
-    myTypeInt = QgsLabelAttributes::PointUnits;
-  }
-  else
-  {
-    myTypeInt = QgsLabelAttributes::MapUnits;
-  }
+  myTypeInt = cboOffsetUnits->currentIndex() == 0 ?  QgsLabelAttributes::PointUnits : QgsLabelAttributes::MapUnits;
   myLabelAttributes->setOffset( spinXOffset->value(), spinYOffset->value(), myTypeInt );
   myLabelAttributes->setAutoAngle( spinAngle->value() == -1 );
   myLabelAttributes->setAngle( spinAngle->value() );
@@ -411,15 +375,7 @@ void QgsLabelDialog::apply()
   myLabelAttributes->setMultilineEnabled( chkUseMultiline->isChecked() );
   myLabelAttributes->setBufferEnabled( chkUseBuffer->isChecked() );
   myLabelAttributes->setBufferColor( mBufferColor );
-  myTypeInt = 0;
-  if ( radioBufferUnitsPoints->isChecked() )
-  {
-    myTypeInt = QgsLabelAttributes::PointUnits;
-  }
-  else
-  {
-    myTypeInt = QgsLabelAttributes::MapUnits;
-  }
+  myTypeInt = cboBufferSizeUnits->currentIndex() == 0 ? QgsLabelAttributes::PointUnits : QgsLabelAttributes::MapUnits;
   myLabelAttributes->setBufferSize( spinBufferSize->value(), myTypeInt );
   //TODO - transparency attributes for buffers
 
