@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>662</width>
-    <height>561</height>
+    <width>567</width>
+    <height>479</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -42,8 +42,8 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-296</y>
-            <width>621</width>
+            <y>0</y>
+            <width>526</width>
             <height>740</height>
            </rect>
           </property>
@@ -289,12 +289,18 @@
                 <property name="text">
                  <string>Maximum</string>
                 </property>
+                <property name="buddy">
+                 <cstring>leMaximumScale</cstring>
+                </property>
                </widget>
               </item>
               <item row="0" column="0">
                <widget class="QLabel" name="textLabel1_1">
                 <property name="text">
                  <string>Minimum</string>
+                </property>
+                <property name="buddy">
+                 <cstring>leMinimumScale</cstring>
                 </property>
                </widget>
               </item>
@@ -327,6 +333,9 @@
                 <property name="text">
                  <string>Buffer size</string>
                 </property>
+                <property name="buddy">
+                 <cstring>spinBufferSize</cstring>
+                </property>
                </widget>
               </item>
               <item row="1" column="1">
@@ -356,6 +365,9 @@
                 </property>
                 <property name="alignment">
                  <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                </property>
+                <property name="buddy">
+                 <cstring>spinBufferTransparency</cstring>
                 </property>
                </widget>
               </item>
@@ -515,6 +527,9 @@
                 <property name="text">
                  <string>Placement</string>
                 </property>
+                <property name="buddy">
+                 <cstring>cboAlignmentField</cstring>
+                </property>
                </widget>
               </item>
               <item row="0" column="1">
@@ -530,6 +545,9 @@
                 </property>
                 <property name="text">
                  <string>Angle (deg)</string>
+                </property>
+                <property name="buddy">
+                 <cstring>cboAngleField</cstring>
                 </property>
                </widget>
               </item>
@@ -686,6 +704,9 @@
                 <property name="text">
                  <string>Strikeout</string>
                 </property>
+                <property name="buddy">
+                 <cstring>cboStrikeOutField</cstring>
+                </property>
                </widget>
               </item>
              </layout>
@@ -768,6 +789,9 @@
                 <property name="text">
                  <string>X Coordinate</string>
                 </property>
+                <property name="buddy">
+                 <cstring>cboXCoordinateField</cstring>
+                </property>
                </widget>
               </item>
               <item row="0" column="1">
@@ -783,6 +807,9 @@
                 </property>
                 <property name="text">
                  <string>Y Coordinate</string>
+                </property>
+                <property name="buddy">
+                 <cstring>cboYCoordinateField</cstring>
                 </property>
                </widget>
               </item>
@@ -800,6 +827,9 @@
                 <property name="text">
                  <string>X Offset (pts)</string>
                 </property>
+                <property name="buddy">
+                 <cstring>cboXOffsetField</cstring>
+                </property>
                </widget>
               </item>
               <item row="2" column="1">
@@ -815,6 +845,9 @@
                 </property>
                 <property name="text">
                  <string>Y Offset (pts)</string>
+                </property>
+                <property name="buddy">
+                 <cstring>cboYOffsetField</cstring>
                 </property>
                </widget>
               </item>
@@ -866,6 +899,58 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>scrollArea</tabstop>
+  <tabstop>cboLabelField</tabstop>
+  <tabstop>leDefaultLabel</tabstop>
+  <tabstop>btnDefaultFont</tabstop>
+  <tabstop>spinFontSize</tabstop>
+  <tabstop>pbnDefaultFontColor</tabstop>
+  <tabstop>spinAngle</tabstop>
+  <tabstop>chkUseMultiline</tabstop>
+  <tabstop>radioAboveLeft</tabstop>
+  <tabstop>radioAbove</tabstop>
+  <tabstop>radioAboveRight</tabstop>
+  <tabstop>radioLeft</tabstop>
+  <tabstop>radioOver</tabstop>
+  <tabstop>radioRight</tabstop>
+  <tabstop>radioBelowLeft</tabstop>
+  <tabstop>radioBelow</tabstop>
+  <tabstop>radioBelowRight</tabstop>
+  <tabstop>chkUseScaleDependentRendering</tabstop>
+  <tabstop>leMinimumScale</tabstop>
+  <tabstop>leMaximumScale</tabstop>
+  <tabstop>chkUseBuffer</tabstop>
+  <tabstop>pbnDefaultBufferColor_2</tabstop>
+  <tabstop>spinBufferSize</tabstop>
+  <tabstop>radioBufferUnitsPoints</tabstop>
+  <tabstop>radioBufferUnitsMap</tabstop>
+  <tabstop>spinBufferTransparency</tabstop>
+  <tabstop>radioFontSizeUnitsPoints</tabstop>
+  <tabstop>radioFontSizeUnitsMap</tabstop>
+  <tabstop>radioOffsetUnitsPoints</tabstop>
+  <tabstop>radioOffsetUnitsMap</tabstop>
+  <tabstop>spinXOffset</tabstop>
+  <tabstop>spinYOffset</tabstop>
+  <tabstop>scrollArea_2</tabstop>
+  <tabstop>cboAlignmentField</tabstop>
+  <tabstop>cboAngleField</tabstop>
+  <tabstop>cboFontField</tabstop>
+  <tabstop>cboBoldField</tabstop>
+  <tabstop>cboItalicField</tabstop>
+  <tabstop>cboUnderlineField</tabstop>
+  <tabstop>cboStrikeOutField</tabstop>
+  <tabstop>cboFontSizeField</tabstop>
+  <tabstop>cboFontSizeTypeField</tabstop>
+  <tabstop>cboFontColorField</tabstop>
+  <tabstop>cboBufferTransparencyField</tabstop>
+  <tabstop>cboBufferSizeField</tabstop>
+  <tabstop>cboXCoordinateField</tabstop>
+  <tabstop>cboYCoordinateField</tabstop>
+  <tabstop>cboXOffsetField</tabstop>
+  <tabstop>cboYOffsetField</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
