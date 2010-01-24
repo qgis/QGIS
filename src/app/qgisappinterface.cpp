@@ -200,7 +200,7 @@ void QgisAppInterface::refreshLegend( QgsMapLayer *l )
 
 void QgisAppInterface::showLayerProperties( QgsMapLayer *l )
 {
-  if( l && qgis )
+  if ( l && qgis )
   {
     qgis->showLayerProperties( l );
   }

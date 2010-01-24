@@ -1608,7 +1608,7 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
     for ( int i = 0; i < numParts; ++i )
     {
       //fetch a small overlap of 2 pixels between two adjacent tiles to avoid white stripes
-      QgsRectangle rasterPartRect( myRasterExtent.xMinimum(), myRasterExtent.yMaximum() - ( currentPixelOffsetY + numRowsPerPart + 2 ) * theQgsMapToPixel.mapUnitsPerPixel(), \
+      QgsRectangle rasterPartRect( myRasterExtent.xMinimum(), myRasterExtent.yMaximum() - ( currentPixelOffsetY + numRowsPerPart + 2 ) * theQgsMapToPixel.mapUnitsPerPixel(),
                                    myRasterExtent.xMaximum(), myRasterExtent.yMaximum() - currentPixelOffsetY * theQgsMapToPixel.mapUnitsPerPixel() );
 
       int pixelHeight = rasterPartRect.height() / theQgsMapToPixel.mapUnitsPerPixel();
@@ -4410,7 +4410,8 @@ void QgsRasterLayer::drawMultiBandColor( QPainter * theQPainter, QgsRasterViewPo
   blueImageBuffer.setWritingEnabled( false ); //only draw to redImageBuffer
   blueImageBuffer.reset();
 
-  while ( redImageBuffer.nextScanLine( &redImageScanLine, &redRasterScanLine ) && greenImageBuffer.nextScanLine( &greenImageScanLine, &greenRasterScanLine ) \
+  while ( redImageBuffer.nextScanLine( &redImageScanLine, &redRasterScanLine )
+          && greenImageBuffer.nextScanLine( &greenImageScanLine, &greenRasterScanLine )
           && blueImageBuffer.nextScanLine( &blueImageScanLine, &blueRasterScanLine ) )
   {
     for ( int i = 0; i < theRasterViewPort->drawableAreaXDim; ++i )
@@ -4419,13 +4420,21 @@ void QgsRasterLayer::drawMultiBandColor( QPainter * theQPainter, QgsRasterViewPo
       myGreenValue = readValue( greenRasterScanLine, ( GDALDataType )myGreenType, i );
       myBlueValue  = readValue( blueRasterScanLine, ( GDALDataType )myBlueType, i );
 
-      if ( mValidNoDataValue && (( fabs( myRedValue - mNoDataValue ) <= TINY_VALUE || myRedValue != myRedValue ) || ( fabs( myGreenValue - mNoDataValue ) <= TINY_VALUE || myGreenValue != myGreenValue ) || ( fabs( myBlueValue - mNoDataValue ) <= TINY_VALUE || myBlueValue != myBlueValue ) ) )
+      if ( mValidNoDataValue &&
+           (
+             ( fabs( myRedValue - mNoDataValue ) <= TINY_VALUE || myRedValue != myRedValue ) ||
+             ( fabs( myGreenValue - mNoDataValue ) <= TINY_VALUE || myGreenValue != myGreenValue ) ||
+             ( fabs( myBlueValue - mNoDataValue ) <= TINY_VALUE || myBlueValue != myBlueValue )
+           )
+         )
       {
         redImageScanLine[ i ] = myDefaultColor;
         continue;
       }
 
-      if ( !myRedContrastEnhancement->isValueInDisplayableRange( myRedValue ) || !myGreenContrastEnhancement->isValueInDisplayableRange( myGreenValue ) || !myBlueContrastEnhancement->isValueInDisplayableRange( myBlueValue ) )
+      if ( !myRedContrastEnhancement->isValueInDisplayableRange( myRedValue ) ||
+           !myGreenContrastEnhancement->isValueInDisplayableRange( myGreenValue ) ||
+           !myBlueContrastEnhancement->isValueInDisplayableRange( myBlueValue ) )
       {
         redImageScanLine[ i ] = myDefaultColor;
         continue;
@@ -5531,8 +5540,8 @@ QString QgsRasterLayer::validateBandName( QString const & theBandName )
   return TRSTRING_NOT_SET;
 }
 
-QgsRasterImageBuffer::QgsRasterImageBuffer( GDALRasterBandH rasterBand, QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* mapToPixel, double* geoTransform ): \
-    mRasterBand( rasterBand ), mPainter( p ), mViewPort( viewPort ), mMapToPixel( mapToPixel ), mValid( false ), mWritingEnabled( true ), mDrawPixelRect( false ), mCurrentImage( 0 ), mCurrentGDALData( 0 ), mGeoTransform( geoTransform )
+QgsRasterImageBuffer::QgsRasterImageBuffer( GDALRasterBandH rasterBand, QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* mapToPixel, double* geoTransform ):
+    mRasterBand( rasterBand ), mPainter( p ), mViewPort( viewPort ), mMapToPixel( mapToPixel ), mGeoTransform( geoTransform ), mValid( false ), mWritingEnabled( true ), mDrawPixelRect( false ), mCurrentImage( 0 ), mCurrentGDALData( 0 )
 {
 
 }
@@ -5679,8 +5688,8 @@ bool QgsRasterImageBuffer::createNextPartImage()
   }
   mNumCurrentImageRows = ySize;
   mCurrentGDALData = VSIMalloc( size * xSize * ySize );
-  CPLErr myErr = GDALRasterIO( mRasterBand, GF_Read, mViewPort->rectXOffset, \
-                               mViewPort->rectYOffset + mCurrentRow, mViewPort->clippedWidth, rasterYSize, \
+  CPLErr myErr = GDALRasterIO( mRasterBand, GF_Read, mViewPort->rectXOffset,
+                               mViewPort->rectYOffset + mCurrentRow, mViewPort->clippedWidth, rasterYSize,
                                mCurrentGDALData, xSize, ySize, type, 0, 0 );
 
   if ( myErr != CPLE_None )

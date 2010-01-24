@@ -21,7 +21,6 @@
 #include "qgsvectoroverlayplugin.h"
 #include <QObject>
 
-class QgisApp;
 class QgisInterface;
 class QgsApplyDialog;
 

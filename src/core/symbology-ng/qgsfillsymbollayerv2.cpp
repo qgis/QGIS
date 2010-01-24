@@ -1,10 +1,12 @@
-
 #include "qgsfillsymbollayerv2.h"
 #include "qgssymbollayerv2utils.h"
 
 #include "qgsrendercontext.h"
+#include "qgsproject.h"
 
 #include <QPainter>
+#include <QFile>
+#include <QSvgRenderer>
 
 QgsSimpleFillSymbolLayerV2::QgsSimpleFillSymbolLayerV2( QColor color, Qt::BrushStyle style, QColor borderColor, Qt::PenStyle borderStyle, double borderWidth )
     : mBrushStyle( style ), mBorderColor( borderColor ), mBorderStyle( borderStyle ), mBorderWidth( borderWidth )
@@ -86,9 +88,6 @@ QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2::clone() const
 }
 
 //QgsSVGFillSymbolLayer
-#include <QFile>
-#include <QSvgRenderer>
-#include "qgsproject.h" //for absolute/relative file paths
 
 QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QString& svgFilePath, double width ): mPatternWidth( width ), mOutline( 0 )
 {
@@ -97,7 +96,7 @@ QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QString& svgFilePath, double
   setSubSymbol( new QgsLineSymbolV2() );
 }
 
-QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QByteArray& svgData, double width ): mSvgData( svgData ), mPatternWidth( width ), mOutline( 0 )
+QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QByteArray& svgData, double width ): mPatternWidth( width ), mSvgData( svgData ), mOutline( 0 )
 {
   storeViewBox();
   mOutlineWidth = 0.3;
@@ -280,13 +279,11 @@ void QgsSVGFillSymbolLayer::storeViewBox()
 
 bool QgsSVGFillSymbolLayer::setSubSymbol( QgsSymbolV2* symbol )
 {
-
   if ( !symbol || symbol->type() != QgsSymbolV2::Line )
   {
     delete symbol;
     return false;
   }
-
 
   QgsLineSymbolV2* lineSymbol = dynamic_cast<QgsLineSymbolV2*>( symbol );
   if ( lineSymbol )
