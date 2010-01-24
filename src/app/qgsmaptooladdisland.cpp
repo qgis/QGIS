@@ -70,9 +70,7 @@ void QgsMapToolAddIsland::canvasReleaseEvent( QMouseEvent * e )
   if ( !selectionErrorMsg.isEmpty() )
   {
     QMessageBox::critical( 0, tr( "Error, could not add island" ), selectionErrorMsg );
-    mCaptureList.clear();
-    delete mRubberBand;
-    mRubberBand = 0;
+    stopCapturing();
     return;
   }
 
@@ -94,18 +92,15 @@ void QgsMapToolAddIsland::canvasReleaseEvent( QMouseEvent * e )
 
   if ( e->button() == Qt::LeftButton )
   {
-    mCapturing = TRUE;
+    startCapturing();
   }
   else if ( e->button() == Qt::RightButton )
   {
-    mCapturing = FALSE;
-    delete mRubberBand;
-    mRubberBand = 0;
-
     //close polygon
-    mCaptureList.push_back( *mCaptureList.begin() );
+    closePolygon();
+
     vlayer->beginEditCommand( tr( "Part added" ) );
-    int errorCode = vlayer->addIsland( mCaptureList );
+    int errorCode = vlayer->addIsland( points() );
     QString errorMessage;
 
     if ( errorCode != 0 )
@@ -144,13 +139,12 @@ void QgsMapToolAddIsland::canvasReleaseEvent( QMouseEvent * e )
       int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
       if ( topologicalEditing )
       {
-        addTopologicalPoints( mCaptureList );
+        addTopologicalPoints( points() );
       }
 
       vlayer->endEditCommand();
     }
 
-    mCaptureList.clear();
-    mCanvas->refresh();
+    stopCapturing();
   }
 }

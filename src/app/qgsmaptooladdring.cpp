@@ -70,19 +70,14 @@ void QgsMapToolAddRing::canvasReleaseEvent( QMouseEvent * e )
 
   if ( e->button() == Qt::LeftButton )
   {
-    mCapturing = TRUE;
+    startCapturing();
   }
   else if ( e->button() == Qt::RightButton )
   {
-    mCapturing = FALSE;
-    delete mRubberBand;
-    mRubberBand = 0;
-
-    //close polygon
-    mCaptureList.push_back( *mCaptureList.begin() );
+    closePolygon();
 
     vlayer->beginEditCommand( tr( "Ring added" ) );
-    int addRingReturnCode = vlayer->addRing( mCaptureList );
+    int addRingReturnCode = vlayer->addRing( points() );
     if ( addRingReturnCode != 0 )
     {
       QString errorMessage;
@@ -118,7 +113,7 @@ void QgsMapToolAddRing::canvasReleaseEvent( QMouseEvent * e )
     {
       vlayer->endEditCommand();
     }
-    mCaptureList.clear();
-    mCanvas->refresh();
+
+    stopCapturing();
   }
 }

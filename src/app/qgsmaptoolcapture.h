@@ -20,9 +20,11 @@
 #include "qgsmapcanvassnapper.h"
 #include "qgsmaptooledit.h"
 #include "qgspoint.h"
+#include "qgsgeometry.h"
 
 class QgsGeometry;
 class QgsRubberBand;
+class QgsVertexMarker;
 
 #include <QPoint>
 #include <QList>
@@ -69,7 +71,26 @@ class QgsMapToolCapture : public QgsMapToolEdit
     */
 
   protected:
+    /**Adds a point to the rubber band (in map coordinates) and to the capture list (in layer coordinates)
+     @return 0 in case of success, 1 if current layer is not a vector layer, 2 if coordinate transformation failed*/
+    int addVertex( const QPoint& p );
 
+    /**Removes the last vertex from mRubberBand and mCaptureList*/
+    void undo();
+
+    void startCapturing();
+    void stopCapturing();
+
+    CaptureMode mode() { return mCaptureMode; }
+
+
+    int size() { return mCaptureList.size(); }
+    QList<QgsPoint>::iterator begin() { return mCaptureList.begin(); }
+    QList<QgsPoint>::iterator end() { return mCaptureList.end(); }
+    const QList<QgsPoint> &points() { return mCaptureList; }
+    void closePolygon();
+
+  private:
     /** which capturing tool is being used */
     enum CaptureMode mCaptureMode;
 
@@ -82,13 +103,9 @@ class QgsMapToolCapture : public QgsMapToolEdit
     /** List to store the points of digitised lines and polygons (in layer coordinates)*/
     QList<QgsPoint> mCaptureList;
 
-    /**Adds a point to the rubber band (in map coordinates) and to the capture list (in layer coordinates)
-     @return 0 in case of success, 1 if current layer is not a vector layer, 2 if coordinate transformation failed*/
-    int addVertex( const QPoint& p );
-
-    /**Removes the last vertex from mRubberBand and mCaptureList*/
-    void undo();
-
+    void validateGeometry();
+    QList< QgsGeometry::Error > mGeomErrors;
+    QList< QgsVertexMarker * > mGeomErrorMarkers;
 };
 
 #endif

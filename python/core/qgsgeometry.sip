@@ -90,6 +90,16 @@ class QgsGeometry
     /** Returns true if wkb of the geometry is of WKBMulti* type */
     bool isMultipart();
 
+    /** compare geometries using GEOS
+      @note added in 1.5
+     */
+    bool isGeosEqual( QgsGeometry & );
+
+    /** check validity using GEOS
+      @note added in 1.5
+     */
+    bool isGeosValid();
+
     /**
        Set the geometry, feeding in a geometry in GEOS format.
     */

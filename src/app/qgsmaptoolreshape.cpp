@@ -69,24 +69,21 @@ void QgsMapToolReshape::canvasReleaseEvent( QMouseEvent * e )
 
   if ( e->button() == Qt::LeftButton )
   {
-    mCapturing = TRUE;
+    startCapturing();
   }
   else if ( e->button() == Qt::RightButton )
   {
-    mCapturing = FALSE;
-    delete mRubberBand;
-    mRubberBand = 0;
-
     //find out bounding box of mCaptureList
-    if ( mCaptureList.size() < 1 )
+    if ( size() < 1 )
     {
+      stopCapturing();
       return;
     }
-    QgsPoint firstPoint = mCaptureList.at( 0 );
+    QgsPoint firstPoint = points().at( 0 );
     QgsRectangle bbox( firstPoint.x(), firstPoint.y(), firstPoint.x(), firstPoint.y() );
-    for ( int i = 1; i < mCaptureList.size(); ++i )
+    for ( int i = 1; i < size(); ++i )
     {
-      bbox.combineExtentWith( mCaptureList.at( i ).x(), mCaptureList.at( i ).y() );
+      bbox.combineExtentWith( points().at( i ).x(), points().at( i ).y() );
     }
 
     //query all the features that intersect bounding box of capture line
@@ -104,7 +101,7 @@ void QgsMapToolReshape::canvasReleaseEvent( QMouseEvent * e )
       QgsGeometry* geom = f.geometry();
       if ( geom )
       {
-        reshapeReturn = geom->reshapeGeometry( mCaptureList );
+        reshapeReturn = geom->reshapeGeometry( points() );
         if ( reshapeReturn == 0 )
         {
           vlayer->changeGeometry( f.id(), geom );
@@ -122,7 +119,6 @@ void QgsMapToolReshape::canvasReleaseEvent( QMouseEvent * e )
       vlayer->destroyEditCommand();
     }
 
-    mCaptureList.clear();
-    mCanvas->refresh();
+    stopCapturing();
   }
 }
