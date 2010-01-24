@@ -69,18 +69,14 @@ void QgsMapToolSplitFeatures::canvasReleaseEvent( QMouseEvent * e )
 
   if ( e->button() == Qt::LeftButton )
   {
-    mCapturing = TRUE;
+    startCapturing();
   }
   else if ( e->button() == Qt::RightButton )
   {
-    mCapturing = FALSE;
-    delete mRubberBand;
-    mRubberBand = 0;
-
     //bring up dialog if a split was not possible (polygon) or only done once (line)
     int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
     vlayer->beginEditCommand( tr( "Features split" ) );
-    int returnCode = vlayer->splitFeatures( mCaptureList, topologicalEditing );
+    int returnCode = vlayer->splitFeatures( points(), topologicalEditing );
     vlayer->endEditCommand();
     if ( returnCode == 4 )
     {
@@ -92,7 +88,6 @@ void QgsMapToolSplitFeatures::canvasReleaseEvent( QMouseEvent * e )
       QMessageBox::warning( 0, tr( "Split error" ), tr( "An error occured during feature splitting" ) );
     }
 
-    mCaptureList.clear();
-    mCanvas->refresh();
+    stopCapturing();
   }
 }

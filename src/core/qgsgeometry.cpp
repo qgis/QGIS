@@ -44,14 +44,11 @@ email                : morb at ozemail dot com dot au
 class GEOSException
 {
   public:
-    GEOSException( const char *theMsg )
+    GEOSException( QString theMsg )
     {
-      if ( strcmp( theMsg, "Unknown exception thrown" ) == 0 && lastMsg )
+      if ( theMsg == "Unknown exception thrown"  && lastMsg.isNull() )
       {
-        delete [] theMsg;
-        char *aMsg = new char[strlen( lastMsg )+1];
-        strcpy( aMsg, lastMsg );
-        msg = aMsg;
+        msg = theMsg;
       }
       else
       {
@@ -69,47 +66,46 @@ class GEOSException
     ~GEOSException()
     {
       if ( lastMsg == msg )
-        lastMsg = NULL;
-      delete [] msg;
+        lastMsg = QString::null;
     }
 
-    const char *what()
+    QString what()
     {
       return msg;
     }
 
   private:
-    const char *msg;
-    static const char *lastMsg;
+    QString msg;
+    static QString lastMsg;
 };
 
-const char *GEOSException::lastMsg = NULL;
+QString GEOSException::lastMsg;
 
 static void throwGEOSException( const char *fmt, ... )
 {
   va_list ap;
+  char buffer[1024];
+
   va_start( ap, fmt );
-  size_t buflen = vsnprintf( NULL, 0, fmt, ap );
-  char *msg = new char[buflen+1];
-  vsnprintf( msg, buflen + 1, fmt, ap );
+  vsnprintf( buffer, sizeof buffer, fmt, ap );
   va_end( ap );
 
-  QgsDebugMsg( QString( "GEOS exception encountered: %1" ).arg( msg ) );
+  QgsDebugMsg( QString( "GEOS exception encountered: %1" ).arg( buffer ) );
 
-  throw GEOSException( msg );
+  throw GEOSException( QString::fromUtf8( buffer ) );
 }
 
 static void printGEOSNotice( const char *fmt, ... )
 {
 #if defined(QGISDEBUG)
   va_list ap;
+  char buffer[1024];
+
   va_start( ap, fmt );
-  size_t buflen = vsnprintf( NULL, 0, fmt, ap );
-  char *msg = new char[buflen+1];
-  vsnprintf( msg, buflen + 1, fmt, ap );
+  vsnprintf( buffer, sizeof buffer, fmt, ap );
   va_end( ap );
-  QgsDebugMsg( QString( "GEOS notice: " ).arg( msg ) );
-  delete [] msg;
+
+  QgsDebugMsg( QString( "GEOS notice: %1" ).arg( QString::fromUtf8( buffer ) ) );
 #endif
 }
 
@@ -3157,7 +3153,7 @@ int QgsGeometry::transform( const QgsCoordinateTransform& ct )
   return 0;
 }
 
-int QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeometry*>& newGeometries, bool topological, QList<QgsPoint>& topologyTestPoints )
+int QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeometry*>& newGeometries, bool topological, QList<QgsPoint> &topologyTestPoints )
 {
   int returnCode = 0;
 
@@ -6366,9 +6362,27 @@ void QgsGeometry::checkRingIntersections( QList<Error> &errors,
   }
 }
 
-void QgsGeometry::validatePolyline( QList<Error> &errors, int i, const QgsPolyline &line )
+void QgsGeometry::validatePolyline( QList<Error> &errors, int i, QgsPolyline line, bool ring )
 {
-  if ( line.size() < 2 )
+  if ( ring )
+  {
+    if ( line.size() < 3 )
+    {
+      QString msg = QObject::tr( "ring %1 with less than three points" ).arg( i );
+      QgsDebugMsg( msg );
+      errors << Error( msg );
+      return;
+    }
+
+    if ( line[0] != line[ line.size()-1 ] )
+    {
+      QString msg = QObject::tr( "ring %1 not closed" ).arg( i );
+      QgsDebugMsg( msg );
+      errors << Error( msg );
+      return;
+    }
+  }
+  else if ( line.size() < 2 )
   {
     QString msg = QObject::tr( "line %1 with less than two points" ).arg( i );
     QgsDebugMsg( msg );
@@ -6376,48 +6390,58 @@ void QgsGeometry::validatePolyline( QList<Error> &errors, int i, const QgsPolyli
     return;
   }
 
-  bool closed = line[0] == line[ line.size()-1 ];
-
-  if ( closed && line.size() < 3 )
+  int j = 0;
+  while ( j < line.size() - 1 )
   {
-    QString msg = QObject::tr( "ring %1 with less than three points" ).arg( i );
-    QgsDebugMsg( msg );
-    errors << Error( msg );
-    return;
+    int n = 0;
+    while ( j < line.size() && line[j] == line[j+1] )
+    {
+      line.remove( j );
+      n++;
+    }
+
+    if ( n > 0 )
+    {
+      QString msg = QObject::tr( "line %1 contains %n duplicate node(s) at %2", "number of duplicate nodes", n ).arg( i ).arg( j );
+      QgsDebugMsg( msg );
+      errors << Error( msg, line[j] );
+    }
+
+    j++;
   }
 
-  for ( int j = 0; j < line.size() - 3; j++ )
+  for ( j = 0; j < line.size() - 3; j++ )
   {
     QgsVector v = line[j+1] - line[j];
+    double vl = v.length();
 
-    int n = j == 0 && closed ? line.size() - 2 : line.size() - 1;
+    int n = ( j == 0 && ring ) ? line.size() - 2 : line.size() - 1;
 
     for ( int k = j + 2; k < n; k++ )
     {
       QgsVector w = line[k+1] - line[k];
 
       QgsPoint s;
-      if ( intersectLines( line[j], v, line[k], w, s ) )
-      {
-        double d = -distLine2Point( line[j], v.perpVector(), s );
+      if ( !intersectLines( line[j], v, line[k], w, s ) )
+        continue;
 
-        if ( d >= 0 && d <= v.length() )
-        {
-          d = -distLine2Point( line[k], w.perpVector(), s );
-          if ( d >= 0 && d <= w.length() )
-          {
-            QString msg = QObject::tr( "segments %1 and %2 of line %3 intersect at %4" ).arg( j ).arg( k ).arg( i ).arg( s.toString() );
-            QgsDebugMsg( msg );
-            errors << Error( msg, s );
-            if ( errors.size() > 100 )
-            {
-              QString msg = QObject::tr( "stopping validation after more than 100 errors" );
-              QgsDebugMsg( msg );
-              errors << Error( msg );
-              return;
-            }
-          }
-        }
+      double d = -distLine2Point( line[j], v.perpVector(), s );
+      if ( d < 0 || d > vl )
+        continue;
+
+      d = -distLine2Point( line[k], w.perpVector(), s );
+      if ( d < 0 || d > w.length() )
+        continue;
+
+      QString msg = QObject::tr( "segments %1 and %2 of line %3 intersect at %4" ).arg( j ).arg( k ).arg( i ).arg( s.toString() );
+      QgsDebugMsg( msg );
+      errors << Error( msg, s );
+      if ( errors.size() > 100 )
+      {
+        QString msg = QObject::tr( "stopping validation after more than 100 errors" );
+        QgsDebugMsg( msg );
+        errors << Error( msg );
+        return;
       }
     }
   }
@@ -6448,7 +6472,7 @@ void QgsGeometry::validatePolygon( QList<Error> &errors, int idx, const QgsPolyg
   // check if rings are self-intersecting
   for ( int i = 0; i < polygon.size(); i++ )
   {
-    validatePolyline( errors, i, polygon[i] );
+    validatePolyline( errors, i, polygon[i], true );
   }
 }
 
@@ -6519,5 +6543,43 @@ void QgsGeometry::validateGeometry( QList<Error> &errors )
       QgsDebugMsg( QObject::tr( "Unknown geometry type" ) );
       errors << Error( QObject::tr( "Unknown geometry type" ) );
       break;
+  }
+}
+
+bool QgsGeometry::isGeosValid()
+{
+  try
+  {
+    GEOSGeometry *g = asGeos();
+
+    if ( !g )
+      return false;
+
+    return GEOSisValid( g );
+  }
+  catch ( GEOSException &e )
+  {
+    // looks like geometry is fubar
+    Q_UNUSED( e );
+    QgsDebugMsg( QString( "GEOS exception caught: %1" ).arg( e.what() ) );
+    return false;
+  }
+}
+
+bool QgsGeometry::isGeosEqual( QgsGeometry &g )
+{
+  try
+  {
+    GEOSGeometry *g0 = asGeos();
+    GEOSGeometry *g1 = g.asGeos();
+
+    return g0 && g1 && GEOSEquals( g0, g1 );
+  }
+  catch ( GEOSException &e )
+  {
+    // looks like geometry is fubar
+    Q_UNUSED( e );
+    QgsDebugMsg( QString( "GEOS exception caught: %1" ).arg( e.what() ) );
+    return false;
   }
 }

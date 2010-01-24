@@ -131,6 +131,15 @@ class CORE_EXPORT QgsGeometry
     /** Returns true if wkb of the geometry is of WKBMulti* type */
     bool isMultipart();
 
+    /** compare geometries using GEOS
+      @note added in 1.5
+     */
+    bool isGeosEqual( QgsGeometry & );
+
+    /** check validity using GEOS
+      @note added in 1.5
+     */
+    bool isGeosValid();
 
     double distance( QgsGeometry& geom );
 
@@ -250,7 +259,7 @@ class CORE_EXPORT QgsGeometry
     int splitGeometry( const QList<QgsPoint>& splitLine,
                        QList<QgsGeometry*>&newGeometries,
                        bool topological,
-                       QList<QgsPoint>& topologyTestPoints );
+                       QList<QgsPoint> &topologyTestPoints );
 
     /**Replaces a part of this geometry with another line
       @return 0 in case of success
@@ -378,6 +387,9 @@ class CORE_EXPORT QgsGeometry
     };
 
     void validateGeometry( QList<Error> &errors );
+
+    static void validatePolyline( QList<Error> &errors, int i, QgsPolyline polyline, bool ring = false );
+    static void validatePolygon( QList<Error> &errors, int i, const QgsPolygon &polygon );
 
   private:
     // Private variables
@@ -511,12 +523,9 @@ class CORE_EXPORT QgsGeometry
     /** return polygon from wkb */
     QgsPolygon asPolygon( unsigned char*& ptr, bool hasZValue );
 
-    void checkRingIntersections( QList<Error> &errors,
-                                 int p0, int i0, const QgsPolyline &ring0,
-                                 int p1, int i1, const QgsPolyline &ring1 );
-
-    void validatePolyline( QList<Error> &errors, int i, const QgsPolyline &polygon );
-    void validatePolygon( QList<Error> &errors, int i, const QgsPolygon &polygon );
+    static void checkRingIntersections( QList<Error> &errors,
+                                        int p0, int i0, const QgsPolyline &ring0,
+                                        int p1, int i1, const QgsPolyline &ring1 );
 
     static int refcount;
 }; // class QgsGeometry

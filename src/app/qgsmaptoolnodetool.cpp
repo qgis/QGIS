@@ -53,8 +53,6 @@ QgsRubberBand* QgsMapToolNodeTool::createRubberBandMarker( QgsPoint center, QgsV
   return marker;
 }
 
-
-
 QgsMapToolNodeTool::QgsMapToolNodeTool( QgsMapCanvas* canvas ): QgsMapToolVertexEdit( canvas )
 {
   mSelectionFeature = NULL;
@@ -121,20 +119,10 @@ void QgsMapToolNodeTool::layerModified( bool onlyGeometry )
   QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
   if ( mSelectionFeature != NULL && !mChangingGeometry && ( vlayer->featureAtId( mSelectionFeature->featureId(), feat, true, false ) ) )
   {
-    try
+    if ( !feat.geometry()->isGeosEqual( *mSelectionFeature->feature()->geometry() ) )
     {
-      if ( !GEOSEquals( feat.geometry()->asGeos(), mSelectionFeature->feature()->geometry()->asGeos() ) )
-      {
-        mSelectionFeature->updateFromFeature();
-        //throw error
-      }
-    }
-    catch ( ... )
-    {
-      //GEOS is throwing exception when polygon is not valid to be able to edit it
-      //Only possibility to fix this operation since node tool doesn't allow to store invalid geometry after editing
       mSelectionFeature->updateFromFeature();
-      //if it does update markers just to be sure of correctness
+      //throw error
     }
   }
 }
@@ -474,7 +462,7 @@ bool QgsMapToolNodeTool::checkCorrectnessOfFeature( QgsVectorLayer *vlayer )
   }
   try
   {
-    if ( !GEOSEquals( feat.geometry()->asGeos(), mSelectionFeature->feature()->geometry()->asGeos() ) )
+    if ( !feat.geometry()->isGeosEqual( *mSelectionFeature->feature()->geometry() ) )
     {
       //update markers when geometries are not valid
       mSelectionFeature->updateFromFeature();
@@ -1032,7 +1020,7 @@ void SelectionFeature::deleteSelectedVertexes()
   mVlayer->featureAtId( mFeatureId, f, true, false );
 
   bool wasValid = false; // mGeomErrors.isEmpty();
-  bool isValid = GEOSisValid( f.geometry()->asGeos() );
+  bool isValid = f.geometry()->isGeosValid();
   if ( wasValid && !isValid )
   {
     QMessageBox::warning( NULL,
@@ -1106,7 +1094,7 @@ void SelectionFeature::moveSelectedVertexes( double changeX, double changeY )
   QgsFeature f;
   mVlayer->featureAtId( mFeatureId, f, true, false );
   bool wasValid = false; // mGeomErrors.isEmpty();
-  bool isValid = GEOSisValid( f.geometry()->asGeos() );
+  bool isValid = f.geometry()->isGeosValid();
   if ( wasValid && !isValid )
   {
     QMessageBox::warning( NULL,
