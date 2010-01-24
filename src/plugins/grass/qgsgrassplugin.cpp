@@ -311,14 +311,14 @@ void QgsGrassPlugin::addVector()
       if ( level == 1 ) 
       {
         QgsDebugMsg( "Cannot open vector on level 2" );
-        QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot open vector ") + sel->map + tr(" in mapset ") + sel->mapset + tr (" on level 2 (topology not available, try to rebuild tobopoly using v.build module)." ) );
+        QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot open vector %1 in mapset %2 on level 2 (topology not available, try to rebuild topology using v.build module).").arg( sel->map ).arg( sel->mapset ) );
         Vect_close( &map );
         return;
       }
       else if ( level < 1 )
       {
         QgsDebugMsg( "Cannot open vector" );
-        QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot open vector ") + sel->map + tr(" in mapset ") + sel->mapset );
+        QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot open vector %1 in mapset %2").arg( sel->map ).arg( sel->mapset ) );
         return;
       }
 
