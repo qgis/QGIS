@@ -439,15 +439,6 @@ unsigned char *QgsVectorLayer::drawLineString( unsigned char *feature, QgsRender
     pa[i].setY( y[i] );
   }
 
-#ifdef QGISDEBUGVERBOSE
-  // this is only used for verbose debug output
-  for ( int i = 0; i < pa.size(); ++i )
-  {
-    QgsDebugMsgLevel( "pa" + QString::number( pa.point( i ).x() ), 2 );
-    QgsDebugMsgLevel( "pa" + QString::number( pa.point( i ).y() ), 2 );
-  }
-#endif
-
   // The default pen gives bevelled joins between segements of the
   // polyline, which is good enough for the moment.
   //preserve a copy of the pen before we start fiddling with it
@@ -581,52 +572,6 @@ unsigned char *QgsVectorLayer::drawPolygon( unsigned char *feature, QgsRenderCon
   // Only try to draw polygons if there is something to draw
   if ( total_points > 0 )
   {
-    // Store size here and use it in the loop to avoid penalty of
-    // multiple calls to size()
-    int numRings = rings.size();
-    for ( register int i = 0; i < numRings; ++i )
-    {
-      // Store the pointer in a variable with a short name so as to make
-      // the following code easier to type and read.
-      ringTypePtr r = rings[i];
-      // only do this once to avoid penalty of additional calls
-      unsigned ringSize = r->first.size();
-
-      // Transfer points to the array of QPointF
-      QPolygonF pa( ringSize );
-      for ( register unsigned int j = 0; j != ringSize; ++j )
-      {
-        pa[j].setX( r->first[j] );
-        pa[j].setY( r->second[j] );
-      }
-
-      path.addPolygon( pa );
-
-      // Tidy up the pointed to pairs of vectors as we finish with them
-      delete rings[i];
-    }
-
-#if 0
-    // A bit of code to aid in working out what values of
-    // QgsClipper::minX, etc cause the X11 zoom bug.
-    int largestX  = -std::numeric_limits<int>::max();
-    int smallestX = std::numeric_limits<int>::max();
-    int largestY  = -std::numeric_limits<int>::max();
-    int smallestY = std::numeric_limits<int>::max();
-
-    for ( int i = 0; i < pa.size(); ++i )
-    {
-      largestX  = std::max( largestX,  pa.point( i ).x() );
-      smallestX = std::min( smallestX, pa.point( i ).x() );
-      largestY  = std::max( largestY,  pa.point( i ).y() );
-      smallestY = std::min( smallestY, pa.point( i ).y() );
-    }
-    QgsDebugMsg( QString( "Largest  X coordinate was %1" ).arg( largestX ) );
-    QgsDebugMsg( QString( "Smallest X coordinate was %1" ).arg( smallestX ) );
-    QgsDebugMsg( QString( "Largest  Y coordinate was %1" ).arg( largestY ) );
-    QgsDebugMsg( QString( "Smallest Y coordinate was %1" ).arg( smallestY ) );
-#endif
-
     //preserve a copy of the brush and pen before we start fiddling with it
     QBrush brush = p->brush(); //to be kept as original
     QPen pen = p->pen(); // to be kept original
@@ -658,19 +603,91 @@ unsigned char *QgsVectorLayer::drawPolygon( unsigned char *feature, QgsRenderCon
     p->setBrush( myTransparentBrush );
     p->setPen( myTransparentPen );
 
-    //
-    // draw the polygon
-    //
-    p->drawPath( path );
-
-
-    // draw vertex markers if in editing mode, but only to the main canvas
-    if ( mEditable && renderContext.drawEditingInformation() )
+    if ( numRings == 1 )
     {
-      for ( int i = 0; i < path.elementCount(); ++i )
+      ringTypePtr r = rings[0];
+      unsigned ringSize = r->first.size();
+
+      QPolygonF pa( ringSize );
+      for ( register unsigned int j = 0; j != ringSize; ++j )
       {
-        const QPainterPath::Element & e = path.elementAt( i );
-        drawVertexMarker( e.x, e.y, *p, mCurrentVertexMarkerType, mCurrentVertexMarkerSize );
+        pa[j].setX( r->first[j] );
+        pa[j].setY( r->second[j] );
+      }
+      p->drawPolygon( pa );
+
+      // draw vertex markers if in editing mode, but only to the main canvas
+      if ( mEditable && renderContext.drawEditingInformation() )
+      {
+        for ( register unsigned int j = 0; j != ringSize; ++j )
+        {
+          drawVertexMarker( r->first[j], r->second[j], *p, mCurrentVertexMarkerType, mCurrentVertexMarkerSize );
+        }
+      }
+
+      delete rings[0];
+    }
+    else
+    {
+      // Store size here and use it in the loop to avoid penalty of
+      // multiple calls to size()
+      int numRings = rings.size();
+      for ( register int i = 0; i < numRings; ++i )
+      {
+        // Store the pointer in a variable with a short name so as to make
+        // the following code easier to type and read.
+        ringTypePtr r = rings[i];
+        // only do this once to avoid penalty of additional calls
+        unsigned ringSize = r->first.size();
+
+        // Transfer points to the array of QPointF
+        QPolygonF pa( ringSize );
+        for ( register unsigned int j = 0; j != ringSize; ++j )
+        {
+          pa[j].setX( r->first[j] );
+          pa[j].setY( r->second[j] );
+        }
+
+        path.addPolygon( pa );
+
+        // Tidy up the pointed to pairs of vectors as we finish with them
+        delete rings[i];
+      }
+
+#if 0
+      // A bit of code to aid in working out what values of
+      // QgsClipper::minX, etc cause the X11 zoom bug.
+      int largestX  = -std::numeric_limits<int>::max();
+      int smallestX = std::numeric_limits<int>::max();
+      int largestY  = -std::numeric_limits<int>::max();
+      int smallestY = std::numeric_limits<int>::max();
+
+      for ( int i = 0; i < pa.size(); ++i )
+      {
+        largestX  = std::max( largestX,  pa.point( i ).x() );
+        smallestX = std::min( smallestX, pa.point( i ).x() );
+        largestY  = std::max( largestY,  pa.point( i ).y() );
+        smallestY = std::min( smallestY, pa.point( i ).y() );
+      }
+      QgsDebugMsg( QString( "Largest  X coordinate was %1" ).arg( largestX ) );
+      QgsDebugMsg( QString( "Smallest X coordinate was %1" ).arg( smallestX ) );
+      QgsDebugMsg( QString( "Largest  Y coordinate was %1" ).arg( largestY ) );
+      QgsDebugMsg( QString( "Smallest Y coordinate was %1" ).arg( smallestY ) );
+#endif
+
+      //
+      // draw the polygon
+      //
+      p->drawPath( path );
+
+      // draw vertex markers if in editing mode, but only to the main canvas
+      if ( mEditable && renderContext.drawEditingInformation() )
+      {
+        for ( int i = 0; i < path.elementCount(); ++i )
+        {
+          const QPainterPath::Element & e = path.elementAt( i );
+          drawVertexMarker( e.x, e.y, *p, mCurrentVertexMarkerType, mCurrentVertexMarkerSize );
+        }
       }
     }
 
