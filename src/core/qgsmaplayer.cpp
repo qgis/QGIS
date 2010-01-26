@@ -850,3 +850,12 @@ void QgsMapLayer::setCacheImage( QImage * thepImage )
   mpCacheImage = thepImage;
 }
 
+bool QgsMapLayer::isEditable() const
+{
+  return false;
+}
+
+void QgsMapLayer::setValid( bool valid )
+{
+  mValid = valid;
+}

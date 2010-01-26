@@ -118,6 +118,8 @@
 #include "qgsoptions.h"
 #include "qgspastetransformations.h"
 #include "qgspluginitem.h"
+#include "qgspluginlayer.h"
+#include "qgspluginlayerregistry.h"
 #include "qgspluginmanager.h"
 #include "qgspluginmetadata.h"
 #include "qgspluginregistry.h"
@@ -6108,7 +6110,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
     rlp->exec();
     delete rlp; // delete since dialog cannot be reused without updating code
   }
-  else // VECTOR
+  else if ( ml->type() == QgsMapLayer::VectorLayer ) // VECTOR
   {
     QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( ml );
 
@@ -6124,5 +6126,21 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
     }
     vlp->exec();
     delete vlp; // delete since dialog cannot be reused without updating code
+  }
+  else if ( ml->type() == QgsMapLayer::PluginLayer )
+  {
+    QgsPluginLayer* pl = qobject_cast<QgsPluginLayer *>( ml );
+    if ( !pl )
+      return;
+
+    QgsPluginLayerType* plt = QgsPluginLayerRegistry::instance()->pluginLayerType( pl->pluginLayerType() );
+    if ( !plt )
+      return;
+
+    if ( !plt->showLayerProperties( pl ) )
+    {
+      QMessageBox::information( this, tr( "Warning" ), tr( "This layer doesn't have a properties dialog." ) );
+    }
+
   }
 }

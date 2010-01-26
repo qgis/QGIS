@@ -48,7 +48,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
     enum LayerType
     {
       VectorLayer,
-      RasterLayer
+      RasterLayer,
+      PluginLayer
     };
 
     /** Constructor
@@ -126,7 +127,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
 
     /** True if the layer can be edited */
-    virtual bool isEditable() const = 0;
+    virtual bool isEditable() const;
 
     /** sets state from Dom document
        @param layer_node is Dom node corresponding to ``maplayer'' tag
@@ -342,6 +343,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void recalculateExtents();
 
   protected:
+
+    /** set whether layer is valid or not - should be used in constructor */
+    void setValid( bool valid );
 
     /** called by readXML(), used by children to read state specific to them from
         project files.
