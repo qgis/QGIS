@@ -30,6 +30,8 @@
 #include "qgslogger.h"
 #include "qgsprojectfiletransform.h"
 #include "qgsprojectversion.h"
+#include "qgspluginlayer.h"
+#include "qgspluginlayerregistry.h"
 
 #include <QApplication>
 #include <QFileInfo>
@@ -695,6 +697,11 @@ QPair< bool, QList<QDomNode> > QgsProject::_getMapLayers( QDomDocument const &do
     {
       mapLayer = new QgsRasterLayer;
     }
+    else if ( type == "plugin" )
+    {
+      QString typeName = element.attribute( "name" );
+      mapLayer = QgsPluginLayerRegistry::instance()->createLayer( typeName );
+    }
 
     Q_CHECK_PTR( mapLayer );
 
@@ -873,7 +880,7 @@ bool QgsProject::read( QDomNode & layerNode )
 {
   QString type = layerNode.toElement().attribute( "type" );
 
-  QgsMapLayer *mapLayer;
+  QgsMapLayer *mapLayer = NULL;
 
   if ( type == "vector" )
   {
@@ -882,6 +889,11 @@ bool QgsProject::read( QDomNode & layerNode )
   else if ( type == "raster" )
   {
     mapLayer = new QgsRasterLayer;
+  }
+  else if ( type == "plugin" )
+  {
+    QString typeName = layerNode.toElement().attribute( "name" );
+    mapLayer = QgsPluginLayerRegistry::instance()->createLayer( typeName );
   }
   else
   {

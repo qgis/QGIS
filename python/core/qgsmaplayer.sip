@@ -22,6 +22,10 @@ class QgsMapLayer : QObject
     {
       sipClass = sipClass_QgsRasterLayer;
     }
+    else if (layer->type() == QgsMapLayer::PluginLayer)
+    {
+      sipClass = sipClass_QgsPluginLayer;
+    }
   }
   else
   {
@@ -35,7 +39,8 @@ public:
     enum LayerType
     {
         VectorLayer,
-        RasterLayer
+        RasterLayer,
+        PluginLayer
     };
 
     /** Constructor
@@ -109,7 +114,7 @@ public:
 
 
     /** True if the layer can be edited */
-    virtual bool isEditable() const = 0;
+    virtual bool isEditable() const;
 
     /** sets state from Dom document
        @param layer_node is Dom node corresponding to ``maplayer'' tag
@@ -322,6 +327,9 @@ signals:
     void recalculateExtents();
 
 protected:
+
+    /** set whether layer is valid or not - should be used in constructor */
+    void setValid( bool valid );
 
     /** called by readXML(), used by children to read state specific to them from
         project files.

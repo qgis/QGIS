@@ -165,7 +165,7 @@ void QgsLegendLayer::refreshSymbology( const QString& key, double widthScale )
     else
       vectorLayerSymbology( vlayer, widthScale ); // get and change symbology
   }
-  else // RASTER
+  else if ( theMapLayer->type() == QgsMapLayer::RasterLayer ) // RASTER
   {
     QgsRasterLayer* rlayer = qobject_cast<QgsRasterLayer *>( theMapLayer );
     rasterLayerSymbology( rlayer ); // get and change symbology
