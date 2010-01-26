@@ -49,7 +49,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     {
       VectorLayer,
       RasterLayer,
-      PluginLayer
+      PluginLayer // added in 1.5
     };
 
     /** Constructor
@@ -344,7 +344,8 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
   protected:
 
-    /** set whether layer is valid or not - should be used in constructor */
+    /** set whether layer is valid or not - should be used in constructor.
+        \note added in v1.5 */
     void setValid( bool valid );
 
     /** called by readXML(), used by children to read state specific to them from
