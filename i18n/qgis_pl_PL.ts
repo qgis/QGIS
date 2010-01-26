@@ -935,7 +935,7 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>No input layer specified</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie podano warstwy wejściowej</translation>
     </message>
     <message>
         <source>Please specify spatial reference system</source>
@@ -950,7 +950,7 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Choose output CRS:</source>
-        <translation type="unfinished">Wybiersz wyjściowy układ współrzędnych:</translation>
+        <translation>Wybierz wyjściowy układ współrzędnych:</translation>
     </message>
     <message>
         <source>Please select the projection system to be used by the output layer.</source>
@@ -966,15 +966,15 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Output spatial reference system is not valid</source>
-        <translation type="unfinished"></translation>
+        <translation>Niepoprawny wyjściowy układ współrzędnych</translation>
     </message>
     <message>
         <source>Identical output spatial reference system chosen</source>
-        <translation type="unfinished"></translation>
+        <translation>Wybrano identyczne układy współrzędnych</translation>
     </message>
     <message>
         <source>Please specify target vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Podaj wyjściową warstwę wektorową</translation>
     </message>
     <message>
         <source>Please specify join vector layer</source>
@@ -990,7 +990,7 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Please specify input table</source>
-        <translation type="unfinished"></translation>
+        <translation>Podaj tabelę wejściową</translation>
     </message>
     <message>
         <source>Created output shapefile:
@@ -1009,7 +1009,7 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>joined fields</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">złączone pola</translation>
     </message>
     <message>
         <source>Mean coordinates</source>
@@ -1138,7 +1138,7 @@ Please reload layer manually for projection definition to take effect.</source>
     </message>
     <message>
         <source>Random Points</source>
-        <translation type="unfinished"></translation>
+        <translation>Losowe punkty</translation>
     </message>
     <message>
         <source>unstratified</source>
@@ -1154,11 +1154,11 @@ Please reload layer manually for projection definition to take effect.</source>
     </message>
     <message>
         <source>field</source>
-        <translation type="unfinished"></translation>
+        <translation>pole</translation>
     </message>
     <message>
         <source>Unknown layer type...</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieznany typ warstwy...</translation>
     </message>
     <message>
         <source>Please properly specify extent coordinates</source>
@@ -1175,11 +1175,11 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Count Points in Polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Policz punkty w poligonie</translation>
     </message>
     <message>
         <source>Count Points In Polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Policz punkty w poligonie</translation>
     </message>
     <message>
         <source>Please specify input point vector layer</source>
@@ -4916,7 +4916,7 @@ Prosimy o kontakt z autorami.
         <location filename="../src/app/qgisapp.cpp" line="828"/>
         <location filename="../src/app/qgisapp.cpp" line="829"/>
         <source>Measure Angle</source>
-        <translation>Pomiar powierzchni</translation>
+        <translation>Pomiar kąta</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="842"/>
