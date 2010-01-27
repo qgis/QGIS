@@ -11,7 +11,7 @@
 	<key>CFBundleIdentifier</key>
 	<string>org.qgis.qgis</string>
 	<key>CFBundleGetInfoString</key>
-	<string>QGIS ${QGIS_VERSION_MAJOR}.${QGIS_VERSION_MINOR}.${QGIS_VERSION_PATCH}-${QGIS_RELEASE_NAME} (${QGIS_VERSION_BUILD}), © 2002-2009 QGIS Development Team</string>
+	<string>QGIS ${QGIS_VERSION_MAJOR}.${QGIS_VERSION_MINOR}.${QGIS_VERSION_PATCH}-${QGIS_RELEASE_NAME} (${QGIS_VERSION_BUILD}), © 2002-2010 QGIS Development Team</string>
 	<key>CFBundleShortVersionString</key>
 	<string>${QGIS_VERSION_MAJOR}.${QGIS_VERSION_MINOR}.${QGIS_VERSION_PATCH}</string>
 	<key>CFBundleInfoDictionaryVersion</key>
