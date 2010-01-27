@@ -1539,6 +1539,11 @@
 		72EBCB3B0F49E8240016BA3C /* favicon.ico in Copy - doc */ = {isa = PBXBuildFile; fileRef = 7209F0160F39E5DA003DC336 /* favicon.ico */; };
 		72EBCB3C0F49E8240016BA3C /* index.html in Copy - doc */ = {isa = PBXBuildFile; fileRef = 7209F01B0F39E5DA003DC336 /* index.html */; };
 		72EBCB3D0F49E8240016BA3C /* qgisdoc.css in Copy - doc */ = {isa = PBXBuildFile; fileRef = 7209F0370F39E5DA003DC336 /* qgisdoc.css */; };
+		72ED33A6110FD64F00526CF5 /* qgspluginlayer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72ED33A2110FCB4D00526CF5 /* qgspluginlayer.cpp */; };
+		72ED33A7110FD64F00526CF5 /* qgspluginlayer.h in Sources */ = {isa = PBXBuildFile; fileRef = 72ED33A3110FCB4D00526CF5 /* qgspluginlayer.h */; };
+		72ED33A8110FD64F00526CF5 /* qgspluginlayerregistry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72ED33A4110FCB4D00526CF5 /* qgspluginlayerregistry.cpp */; };
+		72ED33A9110FD66D00526CF5 /* qgspluginlayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 72ED33A3110FCB4D00526CF5 /* qgspluginlayer.h */; };
+		72ED33AA110FD66D00526CF5 /* qgspluginlayerregistry.h in Headers */ = {isa = PBXBuildFile; fileRef = 72ED33A5110FCB4D00526CF5 /* qgspluginlayerregistry.h */; };
 		72EFB924105068590050AC82 /* osmprovider.h in Sources */ = {isa = PBXBuildFile; fileRef = 72DB68D41021D06C00ED5F3A /* osmprovider.h */; };
 		72F22FB70FDAC209000E8CB0 /* qgsmaptoolnodetool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72F22FB50FDAC1F4000E8CB0 /* qgsmaptoolnodetool.cpp */; };
 		72F4862210AB755200E7BFEE /* qgscomposermanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72F4862010AB753D00E7BFEE /* qgscomposermanager.cpp */; };
@@ -7061,6 +7066,12 @@
 		72EBCA630F49DC130016BA3C /* frmVectorSplit.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = frmVectorSplit.ui; path = ../../python/plugins/fTools/tools/frmVectorSplit.ui; sourceTree = SOURCE_ROOT; };
 		72EBCA650F49DC130016BA3C /* frmVisual.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = frmVisual.ui; path = ../../python/plugins/fTools/tools/frmVisual.ui; sourceTree = SOURCE_ROOT; };
 		72EBCA660F49DC130016BA3C /* ftools_utils.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = ftools_utils.py; path = ../../python/plugins/fTools/tools/ftools_utils.py; sourceTree = SOURCE_ROOT; };
+		72ED33A0110FCB1E00526CF5 /* qgspluginlayer.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgspluginlayer.sip; path = ../../python/core/qgspluginlayer.sip; sourceTree = SOURCE_ROOT; };
+		72ED33A1110FCB1E00526CF5 /* qgspluginlayerregistry.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgspluginlayerregistry.sip; path = ../../python/core/qgspluginlayerregistry.sip; sourceTree = SOURCE_ROOT; };
+		72ED33A2110FCB4D00526CF5 /* qgspluginlayer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgspluginlayer.cpp; path = ../../src/core/qgspluginlayer.cpp; sourceTree = SOURCE_ROOT; };
+		72ED33A3110FCB4D00526CF5 /* qgspluginlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgspluginlayer.h; path = ../../src/core/qgspluginlayer.h; sourceTree = SOURCE_ROOT; };
+		72ED33A4110FCB4D00526CF5 /* qgspluginlayerregistry.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgspluginlayerregistry.cpp; path = ../../src/core/qgspluginlayerregistry.cpp; sourceTree = SOURCE_ROOT; };
+		72ED33A5110FCB4D00526CF5 /* qgspluginlayerregistry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgspluginlayerregistry.h; path = ../../src/core/qgspluginlayerregistry.h; sourceTree = SOURCE_ROOT; };
 		72EEBE0010BCE23000003328 /* action.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = action.png; path = ../../images/themes/default/propertyicons/action.png; sourceTree = SOURCE_ROOT; };
 		72EEBE0110BCE23000003328 /* attributes.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = attributes.png; path = ../../images/themes/default/propertyicons/attributes.png; sourceTree = SOURCE_ROOT; };
 		72EEBE0210BCE23000003328 /* colormap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = colormap.png; path = ../../images/themes/default/propertyicons/colormap.png; sourceTree = SOURCE_ROOT; };
@@ -8072,6 +8083,10 @@
 				720383080F8B8C2D0083B883 /* qgsoverlayobject.cpp */,
 				7216ADEE0FE571C000552832 /* qgsvectorlayerundocommand.cpp */,
 				7216ADEA0FE5714E00552832 /* qgsvectorlayerundocommand.h */,
+				72ED33A2110FCB4D00526CF5 /* qgspluginlayer.cpp */,
+				72ED33A3110FCB4D00526CF5 /* qgspluginlayer.h */,
+				72ED33A4110FCB4D00526CF5 /* qgspluginlayerregistry.cpp */,
+				72ED33A5110FCB4D00526CF5 /* qgspluginlayerregistry.h */,
 				7209E6630F39E57A003DC336 /* composer */,
 				72AF7AF110F8EC1600BD549A /* gps */,
 				720382E10F8B8B540083B883 /* pal */,
@@ -9529,6 +9544,8 @@
 				7209EDA10F39E5D9003DC336 /* qgsmaptopixel.sip */,
 				7209EDA20F39E5D9003DC336 /* qgsmarkercatalogue.sip */,
 				7209EDA30F39E5D9003DC336 /* qgsmessageoutput.sip */,
+				72ED33A0110FCB1E00526CF5 /* qgspluginlayer.sip */,
+				72ED33A1110FCB1E00526CF5 /* qgspluginlayerregistry.sip */,
 				7209EDA40F39E5D9003DC336 /* qgspoint.sip */,
 				7209EDA50F39E5D9003DC336 /* qgsproject.sip */,
 				7209EDA60F39E5D9003DC336 /* qgsprovidermetadata.sip */,
@@ -12951,6 +12968,8 @@
 				7238DB6610AA191E00963E09 /* qgsidwinterpolator.h in Headers */,
 				7238DB6710AA191E00963E09 /* qgsinterpolator.h in Headers */,
 				7238DB6810AA191E00963E09 /* qgstininterpolator.h in Headers */,
+				72ED33A9110FD66D00526CF5 /* qgspluginlayer.h in Headers */,
+				72ED33AA110FD66D00526CF5 /* qgspluginlayerregistry.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -14546,6 +14565,9 @@
 				72AF7B2210F8ECBA00BD549A /* qgsnmeaconnection.h in Sources */,
 				727800FB10FB77DE00574B67 /* qextserialenumerator.h in Sources */,
 				727800FC10FB77DE00574B67 /* qextserialport.h in Sources */,
+				72ED33A6110FD64F00526CF5 /* qgspluginlayer.cpp in Sources */,
+				72ED33A7110FD64F00526CF5 /* qgspluginlayer.h in Sources */,
+				72ED33A8110FD64F00526CF5 /* qgspluginlayerregistry.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -18718,7 +18740,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 12826;
+				QGIS_VERSION_BUILD = 12836;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -18729,7 +18751,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 12826;
+				QGIS_VERSION_BUILD = 12836;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
