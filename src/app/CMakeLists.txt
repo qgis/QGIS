@@ -174,6 +174,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsundowidget.h
   qgsquerybuilder.h
 
+  composer/qgsattributeselectiondialog.h
   composer/qgscomposer.h
   composer/qgscomposerarrowwidget.h
   composer/qgscomposeritemwidget.h
