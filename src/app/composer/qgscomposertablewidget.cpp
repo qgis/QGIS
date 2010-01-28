@@ -281,6 +281,15 @@ void QgsComposerTableWidget::updateGuiElements()
   {
     mShowGridCheckBox->setCheckState( Qt::Unchecked );
   }
+
+  if ( mComposerTable->displayOnlyVisibleFeatures() )
+  {
+    mShowOnlyVisibleFeaturesCheckBox->setCheckState( Qt::Checked );
+  }
+  else
+  {
+    mShowOnlyVisibleFeaturesCheckBox->setCheckState( Qt::Unchecked );
+  }
   blockAllSignals( false );
 }
 
@@ -293,6 +302,7 @@ void QgsComposerTableWidget::blockAllSignals( bool b )
   mGridColorButton->blockSignals( b );
   mGridStrokeWidthSpinBox->blockSignals( b );
   mShowGridCheckBox->blockSignals( b );
+  mShowOnlyVisibleFeaturesCheckBox->blockSignals( b );
 }
 
 void QgsComposerTableWidget::setMaximumNumberOfFeatures( int n )
@@ -302,5 +312,16 @@ void QgsComposerTableWidget::setMaximumNumberOfFeatures( int n )
   mMaximumColumnsSpinBox->blockSignals( false );
 }
 
+void QgsComposerTableWidget::on_mShowOnlyVisibleFeaturesCheckBox_stateChanged( int state )
+{
+  if ( !mComposerTable )
+  {
+    return;
+  }
+
+  bool showOnlyVisibleFeatures = ( state == Qt::Checked );
+  mComposerTable->setDisplayOnlyVisibleFeatures( showOnlyVisibleFeatures );
+  mComposerTable->update();
+}
 
 

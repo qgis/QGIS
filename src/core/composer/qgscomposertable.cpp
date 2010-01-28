@@ -23,7 +23,7 @@
 #include <QPainter>
 
 QgsComposerTable::QgsComposerTable( QgsComposition* composition ): QgsComposerItem( composition ), mVectorLayer( 0 ), mComposerMap( 0 ), \
-    mMaximumNumberOfFeatures( 5 ), mLineTextDistance( 1.0 ), mShowGrid( true ), mGridStrokeWidth( 0.5 ), mGridColor( QColor( 0, 0, 0 ) )
+    mMaximumNumberOfFeatures( 5 ), mLineTextDistance( 1.0 ), mShowGrid( true ), mGridStrokeWidth( 0.5 ), mGridColor( QColor( 0, 0, 0 ) ), mShowOnlyVisibleFeatures( true )
 {
 
 }
@@ -175,6 +175,7 @@ bool QgsComposerTable::writeXML( QDomElement& elem, QDomDocument & doc ) const
   composerTableElem.setAttribute( "gridColorGreen", mGridColor.green() );
   composerTableElem.setAttribute( "gridColorBlue", mGridColor.blue() );
   composerTableElem.setAttribute( "showGrid", mShowGrid );
+  composerTableElem.setAttribute( "showOnlyVisibleFeatures", mShowOnlyVisibleFeatures );
 
   if ( mComposerMap )
   {
@@ -229,6 +230,7 @@ bool QgsComposerTable::readXML( const QDomElement& itemElem, const QDomDocument&
   mLineTextDistance = itemElem.attribute( "lineTextDist", "1.0" ).toDouble();
   mGridStrokeWidth = itemElem.attribute( "gridStrokeWidth", "0.5" ).toDouble();
   mShowGrid = itemElem.attribute( "showGrid", "1" ).toInt();
+  mShowOnlyVisibleFeatures = itemElem.attribute( "showOnlyVisibleFeatures", "1" ).toInt();
 
   //grid color
   int gridRed = itemElem.attribute( "gridColorRed", "0" ).toInt();
@@ -320,7 +322,7 @@ bool QgsComposerTable::getFeatureAttributes( QList<QgsAttributeMap>& attributes 
   attributes.clear();
 
   QgsRectangle selectionRect;
-  if ( mComposerMap )
+  if ( mComposerMap && mShowOnlyVisibleFeatures )
   {
     selectionRect = mComposerMap->extent();
   }
