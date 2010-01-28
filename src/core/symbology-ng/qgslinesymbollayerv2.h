@@ -5,6 +5,7 @@
 #include "qgssymbollayerv2.h"
 
 #include <QPen>
+#include <QVector>
 
 #define DEFAULT_SIMPLELINE_COLOR     QColor(0,0,0)
 #define DEFAULT_SIMPLELINE_WIDTH     DEFAULT_LINE_WIDTH
