@@ -24,22 +24,33 @@
 
 class QGridLayout;
 class QgsVectorLayer;
+class QPushButton;
 
 /**A dialog to select what attributes to display (in the table item) and with the possibility to set different aliases*/
 class QgsAttributeSelectionDialog: public QDialog
 {
-    public:
-        QgsAttributeSelectionDialog(const QgsVectorLayer* vLayer, const QSet<int>& enabledAttributes, const QMap<int, QString>& aliasMap, QWidget * parent = 0, Qt::WindowFlags f = 0);
-        ~QgsAttributeSelectionDialog();
+    Q_OBJECT
+  public:
+    QgsAttributeSelectionDialog( const QgsVectorLayer* vLayer, const QSet<int>& enabledAttributes, const QMap<int, QString>& aliasMap, QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    ~QgsAttributeSelectionDialog();
 
-        /**Returns indices of selected attributes*/
-        QSet<int> enabledAttributes() const;
-        /**Returns alias map (alias might be different than for vector layer)*/
-        QMap<int, QString> aliasMap() const;
+    /**Returns indices of selected attributes*/
+    QSet<int> enabledAttributes() const;
+    /**Returns alias map (alias might be different than for vector layer)*/
+    QMap<int, QString> aliasMap() const;
 
-    private:
-        const QgsVectorLayer* mVectorLayer;
-        QGridLayout* mGridLayout;
+  private slots:
+    void selectAllAttributes();
+    void clearAttributes();
+
+  private:
+    const QgsVectorLayer* mVectorLayer;
+    QGridLayout* mAttributeGridLayout;
+    QPushButton* mSelectAllButton;
+    QPushButton* mClearButton;
+
+    /**Enables / disables all check boxes in one go*/
+    void setAllEnabled( bool enabled );
 };
 
 #endif // QGSATTRIBUTESELECTIONDIALOG_H

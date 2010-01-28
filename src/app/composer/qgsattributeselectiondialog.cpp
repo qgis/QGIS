@@ -22,19 +22,24 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QLineEdit>
+#include <QPushButton>
+#include <QScrollArea>
 
 QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( const QgsVectorLayer* vLayer, const QSet<int>& enabledAttributes, const QMap<int, QString>& aliasMap,
     QWidget * parent, Qt::WindowFlags f ): QDialog( parent, f ), mVectorLayer( vLayer )
 {
   if ( vLayer )
   {
-    mGridLayout = new QGridLayout( this );
+    QScrollArea* attributeScrollArea = new QScrollArea( this );
+    QWidget* attributeWidget = new QWidget();
+
+    mAttributeGridLayout = new QGridLayout( attributeWidget );
     QLabel* attributeLabel = new QLabel( QString( "<b>" ) + tr( "Attribute" ) + QString( "</b>" ), this );
     attributeLabel->setTextFormat( Qt::RichText );
-    mGridLayout->addWidget( attributeLabel, 0, 0 );
+    mAttributeGridLayout->addWidget( attributeLabel, 0, 0 );
     QLabel* aliasLabel = new QLabel( QString( "<b>" ) + tr( "Alias" ) + QString( "</b>" ), this );
     aliasLabel->setTextFormat( Qt::RichText );
-    mGridLayout->addWidget( aliasLabel, 0, 1 );
+    mAttributeGridLayout->addWidget( aliasLabel, 0, 1 );
 
     QgsFieldMap fieldMap = vLayer->pendingFields();
     QgsFieldMap::const_iterator fieldIt = fieldMap.constBegin();
@@ -50,7 +55,7 @@ QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( const QgsVectorLayer* 
       {
         attributeCheckBox->setCheckState( Qt::Unchecked );
       }
-      mGridLayout->addWidget( attributeCheckBox, layoutRowCounter, 0 );
+      mAttributeGridLayout->addWidget( attributeCheckBox, layoutRowCounter, 0 );
 
       QLineEdit* attributeLineEdit = new QLineEdit( this );
       QMap<int, QString>::const_iterator aliasIt = aliasMap.find( fieldIt.key() );
@@ -58,14 +63,29 @@ QgsAttributeSelectionDialog::QgsAttributeSelectionDialog( const QgsVectorLayer* 
       {
         attributeLineEdit->setText( aliasIt.value() );
       }
-      mGridLayout->addWidget( attributeLineEdit, layoutRowCounter, 1 );
+      mAttributeGridLayout->addWidget( attributeLineEdit, layoutRowCounter, 1 );
       ++layoutRowCounter;
     }
+
+    attributeScrollArea->setWidget( attributeWidget );
+
+    QVBoxLayout* verticalLayout = new QVBoxLayout( this );
+    verticalLayout->addWidget( attributeScrollArea );
+
+    QHBoxLayout* selectClearLayout = new QHBoxLayout( this );
+    QPushButton* mSelectAllButton = new QPushButton( tr( "Select all" ), this );
+    QObject::connect( mSelectAllButton, SIGNAL( clicked() ), this, SLOT( selectAllAttributes() ) );
+    QPushButton* mClearButton = new QPushButton( tr( "Clear" ), this );
+    QObject::connect( mClearButton, SIGNAL( clicked() ), this, SLOT( clearAttributes() ) );
+    selectClearLayout->addWidget( mSelectAllButton );
+    selectClearLayout->addWidget( mClearButton );
+    verticalLayout->addLayout( selectClearLayout );
+
 
     QDialogButtonBox* buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this );
     QObject::connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
     QObject::connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
-    mGridLayout->addWidget( buttonBox, layoutRowCounter, 0, 3, 1 );
+    verticalLayout->addWidget( buttonBox );
   }
 }
 
@@ -77,14 +97,14 @@ QgsAttributeSelectionDialog::~QgsAttributeSelectionDialog()
 QSet<int> QgsAttributeSelectionDialog::enabledAttributes() const
 {
   QSet<int> result;
-  if ( !mGridLayout || !mVectorLayer )
+  if ( !mAttributeGridLayout || !mVectorLayer )
   {
     return result;
   }
 
-  for ( int i = 1; i < mGridLayout->rowCount(); ++i )
+  for ( int i = 1; i < mAttributeGridLayout->rowCount(); ++i )
   {
-    QLayoutItem *checkBoxItem = mGridLayout->itemAtPosition( i, 0 );
+    QLayoutItem *checkBoxItem = mAttributeGridLayout->itemAtPosition( i, 0 );
     if ( checkBoxItem )
     {
       QCheckBox *checkBox = qobject_cast< QCheckBox * >( checkBoxItem->widget() );
@@ -101,15 +121,15 @@ QSet<int> QgsAttributeSelectionDialog::enabledAttributes() const
 QMap<int, QString> QgsAttributeSelectionDialog::aliasMap() const
 {
   QMap<int, QString> result;
-  if ( !mGridLayout || !mVectorLayer )
+  if ( !mAttributeGridLayout || !mVectorLayer )
   {
     return result;
   }
 
-  for ( int i = 1; i < mGridLayout->rowCount(); ++i )
+  for ( int i = 1; i < mAttributeGridLayout->rowCount(); ++i )
   {
-    QLayoutItem* lineEditItem = mGridLayout->itemAtPosition( i, 1 );
-    QLayoutItem* checkBoxItem = mGridLayout->itemAtPosition( i, 0 );
+    QLayoutItem* lineEditItem = mAttributeGridLayout->itemAtPosition( i, 1 );
+    QLayoutItem* checkBoxItem = mAttributeGridLayout->itemAtPosition( i, 0 );
     if ( lineEditItem && checkBoxItem )
     {
       QLineEdit *lineEdit = qobject_cast<QLineEdit*>( lineEditItem->widget() );
@@ -127,5 +147,39 @@ QMap<int, QString> QgsAttributeSelectionDialog::aliasMap() const
     }
   }
   return result;
+}
+
+void QgsAttributeSelectionDialog::selectAllAttributes()
+{
+  setAllEnabled( true );
+}
+
+void QgsAttributeSelectionDialog::clearAttributes()
+{
+  setAllEnabled( false );
+}
+
+void QgsAttributeSelectionDialog::setAllEnabled( bool enabled )
+{
+  if ( mAttributeGridLayout )
+  {
+    int nRows = mAttributeGridLayout->rowCount();
+    for ( int i = 0; i < nRows; ++i )
+    {
+      QLayoutItem* checkBoxItem = mAttributeGridLayout->itemAtPosition( i, 0 );
+      if ( checkBoxItem )
+      {
+        QWidget* checkBoxWidget = checkBoxItem->widget();
+        if ( checkBoxWidget )
+        {
+          QCheckBox* checkBox = dynamic_cast<QCheckBox*>( checkBoxWidget );
+          if ( checkBox )
+          {
+            checkBox->setCheckState( enabled ? Qt::Checked : Qt::Unchecked );
+          }
+        }
+      }
+    }
+  }
 }
 
