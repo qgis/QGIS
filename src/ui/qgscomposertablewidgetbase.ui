@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>258</width>
-    <height>317</height>
+    <width>269</width>
+    <height>346</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -24,8 +24,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>240</width>
-        <height>273</height>
+        <width>251</width>
+        <height>302</height>
        </rect>
       </property>
       <attribute name="label">
@@ -53,7 +53,27 @@
          </property>
         </widget>
        </item>
+       <item row="1" column="1">
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
        <item row="2" column="0" colspan="2">
+        <widget class="QCheckBox" name="mShowOnlyVisibleFeaturesCheckBox">
+         <property name="text">
+          <string>Show only visible features</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0" colspan="2">
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
           <widget class="QLabel" name="mComposerMapLabel">
@@ -67,7 +87,7 @@
          </item>
         </layout>
        </item>
-       <item row="3" column="0" colspan="2">
+       <item row="4" column="0" colspan="2">
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
           <widget class="QLabel" name="mMaxNumFeaturesLabel">
@@ -81,7 +101,7 @@
          </item>
         </layout>
        </item>
-       <item row="4" column="0" colspan="2">
+       <item row="5" column="0" colspan="2">
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
           <widget class="QLabel" name="mMarginLabel">
@@ -95,14 +115,14 @@
          </item>
         </layout>
        </item>
-       <item row="5" column="0">
+       <item row="6" column="0" colspan="2">
         <widget class="QCheckBox" name="mShowGridCheckBox">
          <property name="text">
           <string>Show grid</string>
          </property>
         </widget>
        </item>
-       <item row="6" column="0" colspan="2">
+       <item row="7" column="0" colspan="2">
         <layout class="QHBoxLayout" name="horizontalLayout_5">
          <item>
           <widget class="QLabel" name="mGridStrokeWidthLabel">
@@ -116,14 +136,14 @@
          </item>
         </layout>
        </item>
-       <item row="7" column="0">
+       <item row="8" column="0">
         <widget class="QLabel" name="mGridColorLabel">
          <property name="text">
           <string>Grid color</string>
          </property>
         </widget>
        </item>
-       <item row="7" column="1">
+       <item row="8" column="1">
         <widget class="QgsColorButton" name="mGridColorButton">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -136,32 +156,19 @@
          </property>
         </widget>
        </item>
-       <item row="8" column="0">
+       <item row="9" column="0">
         <widget class="QPushButton" name="mHeaderFontPushButton">
          <property name="text">
           <string>Header Font...</string>
          </property>
         </widget>
        </item>
-       <item row="8" column="1">
+       <item row="9" column="1">
         <widget class="QPushButton" name="mContentFontPushButton">
          <property name="text">
           <string>Content Font...</string>
          </property>
         </widget>
-       </item>
-       <item row="1" column="1">
-        <spacer name="horizontalSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
        </item>
       </layout>
      </widget>

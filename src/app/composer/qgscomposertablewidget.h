@@ -48,6 +48,7 @@ class QgsComposerTableWidget: public QWidget, private Ui::QgsComposerTableWidget
     void on_mHeaderFontPushButton_clicked();
     void on_mContentFontPushButton_clicked();
     void on_mShowGridCheckBox_stateChanged( int state );
+    void on_mShowOnlyVisibleFeaturesCheckBox_stateChanged( int state );
 
     /**Inserts a new maximum number of features into the spin box (without the spinbox emitting a signal)*/
     void setMaximumNumberOfFeatures( int n );

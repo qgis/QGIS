@@ -66,6 +66,9 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
     void setGridColor( const QColor& c ) { mGridColor = c; }
     QColor gridColor() const { return mGridColor; }
 
+    void setDisplayOnlyVisibleFeatures( bool b ) { mShowOnlyVisibleFeatures = b; }
+    bool displayOnlyVisibleFeatures() const { return mShowOnlyVisibleFeatures; }
+
     QSet<int> displayAttributes() const { return mDisplayAttributes; }
     void setDisplayAttributes( const QSet<int>& attr ) { mDisplayAttributes = attr;}
 
@@ -91,6 +94,8 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
     bool mShowGrid;
     double mGridStrokeWidth;
     QColor mGridColor;
+    /**Shows only the features that are visible in the associated composer map (true by default)*/
+    bool mShowOnlyVisibleFeatures;
 
     /**List of attribute indices to display (or all attributes if list is empty)*/
     QSet<int> mDisplayAttributes;
