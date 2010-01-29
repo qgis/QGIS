@@ -25,6 +25,10 @@ class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog, private Ui::QgsSymb
     //! Reimplements dialog keyPress event so we can ignore it
     void keyPressEvent( QKeyEvent * event );
 
+  private:
+    /**Displays alpha value as transparency in mTransparencyLabel*/
+    void displayTransparency( double alpha );
+
   public slots:
     void changeSymbolProperties();
     void setSymbolFromStyle( const QModelIndex & index );
@@ -34,7 +38,7 @@ class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog, private Ui::QgsSymb
     void setLineWidth( double width );
     void addSymbolToStyle();
     void on_mSymbolUnitComboBox_currentIndexChanged( const QString & text );
-    void on_mOpacitySlider_valueChanged( int value );
+    void on_mTransparencySlider_valueChanged( int value );
 
   signals:
     void symbolModified();

@@ -48,9 +48,11 @@ QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsSt
     mSymbolUnitComboBox->setCurrentIndex( mSymbol->outputUnit() );
     mSymbolUnitComboBox->blockSignals( false );
 
-    mOpacitySlider->blockSignals( true );
-    mOpacitySlider->setValue( symbol->alpha() * 255 );
-    mOpacitySlider->blockSignals( false );
+    mTransparencySlider->blockSignals( true );
+    double transparency = 1 - symbol->alpha();
+    mTransparencySlider->setValue( transparency * 255 );
+    displayTransparency( symbol->alpha() );
+    mTransparencySlider->blockSignals( false );
   }
 
   // select correct page in stacked widget
@@ -243,12 +245,20 @@ void QgsSymbolV2SelectorDialog::on_mSymbolUnitComboBox_currentIndexChanged( cons
   }
 }
 
-void QgsSymbolV2SelectorDialog::on_mOpacitySlider_valueChanged( int value )
+void QgsSymbolV2SelectorDialog::on_mTransparencySlider_valueChanged( int value )
 {
   if ( mSymbol )
   {
-    mSymbol->setAlpha( value / 255.0 );
+    double alpha = 1 - ( value / 255.0 );
+    mSymbol->setAlpha( alpha );
+    displayTransparency( alpha );
     updateSymbolPreview();
     emit symbolModified();
   }
+}
+
+void QgsSymbolV2SelectorDialog::displayTransparency( double alpha )
+{
+  double transparencyPercent = ( 1 - alpha ) * 100;
+  mTransparencyLabel->setText( tr( "Transparency: %1%" ).arg( transparencyPercent ) );
 }
