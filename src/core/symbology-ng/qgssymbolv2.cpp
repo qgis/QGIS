@@ -265,6 +265,15 @@ double QgsSymbolV2RenderContext::outputPixelSize( double size ) const
   return size * QgsSymbolLayerV2Utils::pixelSizeScaleFactor( mRenderContext, mOutputUnit );
 }
 
+QgsSymbolV2RenderContext& QgsSymbolV2RenderContext::operator=( const QgsSymbolV2RenderContext& )
+{
+  // This is just a dummy implementation of assignment.
+  // sip 4.7 generates a piece of code that needs this function to exist.
+  // It's not generated automatically by the compiler because of
+  // mRenderContext member which is a reference (and thus can't be changed).
+  Q_ASSERT(false);
+  return *this;
+}
 
 ///////////////////
 

@@ -118,6 +118,9 @@ class CORE_EXPORT QgsSymbolV2RenderContext
     double outputLineWidth( double width ) const;
     double outputPixelSize( double size ) const;
 
+    // workaround for sip 4.7. Don't use assignment - will fail with assertion error
+    QgsSymbolV2RenderContext& operator=( const QgsSymbolV2RenderContext& );
+
   private:
     QgsRenderContext& mRenderContext;
     QgsSymbolV2::OutputUnit mOutputUnit;
