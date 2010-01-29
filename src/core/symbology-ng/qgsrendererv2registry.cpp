@@ -13,16 +13,13 @@ QgsRendererV2Registry::QgsRendererV2Registry()
   // add default renderers
   addRenderer( new QgsRendererV2Metadata( "singleSymbol",
                                       QObject::tr( "Single Symbol" ),
-                                      QgsSingleSymbolRendererV2::create,
-                                      "rendererSingleSymbol.png" ) );
+                                      QgsSingleSymbolRendererV2::create ) );
   addRenderer( new QgsRendererV2Metadata( "categorizedSymbol",
                                       QObject::tr( "Categorized" ),
-                                      QgsCategorizedSymbolRendererV2::create,
-                                      "rendererCategorizedSymbol.png" ) );
+                                      QgsCategorizedSymbolRendererV2::create ) );
   addRenderer( new QgsRendererV2Metadata( "graduatedSymbol",
                                       QObject::tr( "Graduated" ),
-                                      QgsGraduatedSymbolRendererV2::create,
-                                      "rendererGraduatedSymbol.png" ) );
+                                      QgsGraduatedSymbolRendererV2::create ) );
 }
 
 QgsRendererV2Registry::~QgsRendererV2Registry()

@@ -1,6 +1,7 @@
 #ifndef QGSRENDERERV2REGISTRY_H
 #define QGSRENDERERV2REGISTRY_H
 
+#include <QIcon>
 #include <QMap>
 #include <QStringList>
 
@@ -19,12 +20,14 @@ class QgsRendererV2Widget;
 class CORE_EXPORT QgsRendererV2AbstractMetadata
 {
   public:
-    QgsRendererV2AbstractMetadata( QString name, QString visibleName, QString iconName = QString() )
-        : mName( name ), mVisibleName( visibleName ), mIconName( iconName ) {}
+    QgsRendererV2AbstractMetadata( QString name, QString visibleName, QIcon icon = QIcon() )
+        : mName( name ), mVisibleName( visibleName ), mIcon( icon ) {}
 
     QString name() const { return mName; }
     QString visibleName() const { return mVisibleName; }
-    QString iconName() const { return mIconName; }
+
+    QIcon icon() const { return mIcon; }
+    void setIcon(const QIcon& icon) { mIcon = icon; }
 
     /** Return new instance of the renderer given the DOM element. Returns NULL on error.
      * Pure virtual function: must be implemented in derived classes.  */
@@ -39,7 +42,7 @@ class CORE_EXPORT QgsRendererV2AbstractMetadata
     //! name visible for users (translatable)
     QString mVisibleName;
     //! icon to be shown in the renderer properties dialog
-    QString mIconName;
+    QIcon mIcon;
 };
 
 
@@ -57,9 +60,9 @@ class CORE_EXPORT QgsRendererV2Metadata : public QgsRendererV2AbstractMetadata
     QgsRendererV2Metadata( QString name,
                            QString visibleName,
                            QgsRendererV2CreateFunc pfCreate,
-                           QString iconName = QString(),
+                           QIcon icon = QIcon(),
                            QgsRendererV2WidgetFunc pfWidget = NULL )
-        : QgsRendererV2AbstractMetadata( name, visibleName, iconName ), mCreateFunc( pfCreate ), mWidgetFunc( pfWidget ) {}
+        : QgsRendererV2AbstractMetadata( name, visibleName, icon ), mCreateFunc( pfCreate ), mWidgetFunc( pfWidget ) {}
 
     virtual QgsFeatureRendererV2* createRenderer( QDomElement& elem ) { return mCreateFunc ? mCreateFunc(elem):NULL; }
     virtual QgsRendererV2Widget* createRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
