@@ -18,7 +18,7 @@
 #include <QKeyEvent>
 #include <QMessageBox>
 
-static bool _initRendererWidgetFunction(QString name, QgsRendererV2WidgetFunc f )
+static bool _initRenderer(QString name, QgsRendererV2WidgetFunc f, QString iconName )
 {
   QgsRendererV2Registry* reg = QgsRendererV2Registry::instance();
   QgsRendererV2AbstractMetadata* am = reg->rendererMetadata( name );
@@ -29,6 +29,12 @@ static bool _initRendererWidgetFunction(QString name, QgsRendererV2WidgetFunc f 
     return false;
 
   m->setWidgetFunction(f);
+
+  QString iconPath = QgsApplication::defaultThemePath() + iconName;
+  QPixmap pix;
+  if ( pix.load( iconPath, "png" ) )
+    m->setIcon(pix);
+
   QgsDebugMsg("Set for "+name);
   return true;
 }
@@ -39,9 +45,9 @@ static void _initRendererWidgetFunctions()
   if (initialized)
     return;
 
-  _initRendererWidgetFunction( "singleSymbol", QgsSingleSymbolRendererV2Widget::create );
-  _initRendererWidgetFunction( "categorizedSymbol", QgsCategorizedSymbolRendererV2Widget::create );
-  _initRendererWidgetFunction( "graduatedSymbol", QgsGraduatedSymbolRendererV2Widget::create );
+  _initRenderer( "singleSymbol", QgsSingleSymbolRendererV2Widget::create, "rendererSingleSymbol.png" );
+  _initRenderer( "categorizedSymbol", QgsCategorizedSymbolRendererV2Widget::create, "rendererCategorizedSymbol.png" );
+  _initRenderer( "graduatedSymbol", QgsGraduatedSymbolRendererV2Widget::create, "rendererGraduatedSymbol.png" );
   initialized = true;
 }
 
@@ -70,12 +76,7 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog( QgsVectorLayer* la
   foreach( QString name, renderers )
   {
     QgsRendererV2AbstractMetadata* m = reg->rendererMetadata( name );
-
-    QString iconPath = QgsApplication::defaultThemePath() + m->iconName();
-    if ( !pix.load( iconPath, "png" ) )
-      pix = QPixmap();
-
-    cboRenderers->addItem( QIcon( pix ), m->visibleName(), name );
+    cboRenderers->addItem( m->icon(), m->visibleName(), name );
   }
 
   cboRenderers->setCurrentIndex( -1 ); // set no current renderer

@@ -809,11 +809,13 @@ class QgsRendererV2AbstractMetadata
 %End
 
   public:
-    QgsRendererV2AbstractMetadata( QString name, QString visibleName, QString iconName = QString() );
+    QgsRendererV2AbstractMetadata( QString name, QString visibleName, QIcon icon = QIcon() );
 
     QString name() const;
     QString visibleName() const;
-    QString iconName() const;
+
+    QIcon icon() const;
+    void setIcon(const QIcon& icon);
 
     /** Return new instance of the renderer given the DOM element. Returns NULL on error.
      * Pure virtual function: must be implemented in derived classes.  */
