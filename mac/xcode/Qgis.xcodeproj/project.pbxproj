@@ -1312,6 +1312,7 @@
 		72AF7B7410F8F67E00BD549A /* qgscomposertable.h in Sources */ = {isa = PBXBuildFile; fileRef = 7295BC7410F57CE8005D1408 /* qgscomposertable.h */; };
 		72BD9FE510A499D700FEA70F /* qgszonalstatistics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72BD9FE310A4998600FEA70F /* qgszonalstatistics.cpp */; };
 		72BD9FE610A499FA00FEA70F /* qgszonalstatistics.h in Headers */ = {isa = PBXBuildFile; fileRef = 72BD9FE410A4998600FEA70F /* qgszonalstatistics.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		72C77407111327B800BCB559 /* qgsattributeselectiondialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72AF7B7210F8F5F600BD549A /* qgsattributeselectiondialog.h */; };
 		72C83D5210A5D22600B97B43 /* utils.py in Copy - qgis */ = {isa = PBXBuildFile; fileRef = 72C83D4F10A5D08E00B97B43 /* utils.py */; };
 		72C93CDE10B58A79003A618E /* qgscomposershapewidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72C93CDC10B58A07003A618E /* qgscomposershapewidget.cpp */; };
 		72C93CDF10B58A84003A618E /* qgscomposershapewidget.h in Sources */ = {isa = PBXBuildFile; fileRef = 72C93CDD10B58A07003A618E /* qgscomposershapewidget.h */; };
@@ -15372,6 +15373,7 @@
 				7295BC7910F57D9E005D1408 /* qgscomposertablewidget.cpp in Sources */,
 				7295BC7A10F57D9E005D1408 /* qgscomposertablewidget.h in Sources */,
 				72AF7B7310F8F62400BD549A /* qgsattributeselectiondialog.cpp in Sources */,
+				72C77407111327B800BCB559 /* qgsattributeselectiondialog.h in Sources */,
 				72AF7B5210F8F11000BD549A /* qgsgpsinformationwidget.cpp in Sources */,
 				72AF7B5310F8F11000BD549A /* qgsgpsmarker.cpp in Sources */,
 				72AF7B5410F8F14200BD549A /* qwt_polar_canvas.cpp in Sources */,
@@ -18740,7 +18742,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 12836;
+				QGIS_VERSION_BUILD = 12849;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -18751,7 +18753,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 12836;
+				QGIS_VERSION_BUILD = 12849;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
