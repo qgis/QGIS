@@ -47,7 +47,7 @@ INCLUDE_DIRECTORIES(
 
 # gui module
 FILE(GLOB sip_files_gui gui/*.sip)
-set(SIP_EXTRA_FILES_DEPEND ${sip_files_gui})
+set(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_gui})
 ADD_SIP_PYTHON_MODULE(qgis.gui gui/gui.sip qgis_core qgis_gui)
 
 # additional analysis includes
@@ -58,7 +58,7 @@ INCLUDE_DIRECTORIES(
 
 # analysis module
 FILE(GLOB sip_files_analysis analysis/*.sip)
-set(SIP_EXTRA_FILES_DEPEND ${sip_files_analysis})
+set(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_analysis})
 ADD_SIP_PYTHON_MODULE(qgis.analysis analysis/analysis.sip qgis_core qgis_analysis)
 
 
