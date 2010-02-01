@@ -28,9 +28,9 @@ public:
    *
    */  
   /** \brief generates and new RGB value based on one input value */
-  bool shade(double, int*, int*, int*);
+  bool shade(double, int* /Out/, int* /Out/, int* /Out/);
   /** \brief generates and new RGB value based on original RGB value */
-  bool shade(double, double, double, int*, int*, int*);
+  bool shade(double, double, double, int* /Out/, int* /Out/, int* /Out/);
   /** \brief A public method that allows the user to set their own shader function */
   void setRasterShaderFunction(QgsRasterShaderFunction*);
   /** \brief Set the maximum value */
