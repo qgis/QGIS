@@ -502,6 +502,8 @@
 		720FC8E50F3D5A430069492F /* dialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EBFB0F39E57B003DC336 /* dialog.cpp */; };
 		720FC8E60F3D5A450069492F /* format.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EBFD0F39E57B003DC336 /* format.cpp */; };
 		720FC8E70F3D5A470069492F /* translator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC050F39E57B003DC336 /* translator.cpp */; };
+		721362EF111720350088753A /* qgsmanageconnectionsdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 721362ED111720130088753A /* qgsmanageconnectionsdialog.cpp */; };
+		721362F0111720350088753A /* qgsmanageconnectionsdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 721362EE111720130088753A /* qgsmanageconnectionsdialog.h */; };
 		721598141052B46D003D1610 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		721598281052B8C9003D1610 /* DualEdgeTriangulation.cc in Sources */ = {isa = PBXBuildFile; fileRef = 721597BC1052B2B0003D1610 /* DualEdgeTriangulation.cc */; };
 		721598291052B8C9003D1610 /* HalfEdge.cc in Sources */ = {isa = PBXBuildFile; fileRef = 721597BE1052B2B0003D1610 /* HalfEdge.cc */; };
@@ -5034,6 +5036,9 @@
 		7209F38E0F3A2F2B003DC336 /* libqgis_gui.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libqgis_gui.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		7209F4B80F3A5434003DC336 /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
 		7209F4B90F3A5434003DC336 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
+		721362EC11171FF90088753A /* qgsmanageconnectionsdialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgsmanageconnectionsdialogbase.ui; path = ../../src/ui/qgsmanageconnectionsdialogbase.ui; sourceTree = SOURCE_ROOT; };
+		721362ED111720130088753A /* qgsmanageconnectionsdialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsmanageconnectionsdialog.cpp; path = ../../src/app/qgsmanageconnectionsdialog.cpp; sourceTree = SOURCE_ROOT; };
+		721362EE111720130088753A /* qgsmanageconnectionsdialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsmanageconnectionsdialog.h; path = ../../src/app/qgsmanageconnectionsdialog.h; sourceTree = SOURCE_ROOT; };
 		7214353E0FA15C0A00B0B7BC /* mActionAddSpatiaLiteLayer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionAddSpatiaLiteLayer.png; path = ../../images/themes/gis/mActionAddSpatiaLiteLayer.png; sourceTree = SOURCE_ROOT; };
 		721597BA1052B2B0003D1610 /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../src/analysis/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
 		721597BC1052B2B0003D1610 /* DualEdgeTriangulation.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DualEdgeTriangulation.cc; path = ../../src/analysis/interpolation/DualEdgeTriangulation.cc; sourceTree = SOURCE_ROOT; };
@@ -7900,6 +7905,8 @@
 				7216329210EFCE6C00588EAD /* qgsdisplayangle.h */,
 				7216329310EFCE6C00588EAD /* qgsmaptoolmeasureangle.cpp */,
 				7216329410EFCE6C00588EAD /* qgsmaptoolmeasureangle.h */,
+				721362ED111720130088753A /* qgsmanageconnectionsdialog.cpp */,
+				721362EE111720130088753A /* qgsmanageconnectionsdialog.h */,
 				72A239420F74A62200AFC35B /* attributetable */,
 				7209E5BD0F39E57A003DC336 /* composer */,
 				72AF7B3010F8F02100BD549A /* gps */,
@@ -9236,6 +9243,7 @@
 				7209ECA50F39E57B003DC336 /* qgsidentifyresultsbase.ui */,
 				7209ECA60F39E57B003DC336 /* qgslabeldialogbase.ui */,
 				7209ECA70F39E57B003DC336 /* qgsludialogbase.ui */,
+				721362EC11171FF90088753A /* qgsmanageconnectionsdialogbase.ui */,
 				7209ECA80F39E57B003DC336 /* qgsmapserverexportbase.ui */,
 				7209ECA90F39E57B003DC336 /* qgsmeasurebase.ui */,
 				72683FFE0FD6B26E00D90FFC /* qgsmergeattributesdialogbase.ui */,
@@ -15394,6 +15402,8 @@
 				72AF7B6410F8F1EB00BD549A /* qwt_polar_magnifier.h in Sources */,
 				72AF7B6510F8F1EB00BD549A /* qwt_polar_panner.h in Sources */,
 				72AF7B6610F8F1EB00BD549A /* qwt_polar_plot.h in Sources */,
+				721362EF111720350088753A /* qgsmanageconnectionsdialog.cpp in Sources */,
+				721362F0111720350088753A /* qgsmanageconnectionsdialog.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -18742,7 +18752,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 12849;
+				QGIS_VERSION_BUILD = 12856;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -18753,7 +18763,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 12849;
+				QGIS_VERSION_BUILD = 12856;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
