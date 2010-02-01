@@ -72,6 +72,8 @@ SET(QGIS_APP_SRCS
   qgsvectorlayerproperties.cpp
   qgsquerybuilder.cpp
 
+  qgsmanageconnectionsdialog.cpp
+
   composer/qgsattributeselectiondialog.cpp
   composer/qgscomposer.cpp
   composer/qgscomposerarrowwidget.cpp
@@ -137,6 +139,8 @@ SET (QGIS_APP_MOC_HDRS
   qgshelpviewer.h
   qgsidentifyresults.h
   qgslabeldialog.h
+
+  qgsmanageconnectionsdialog.h
 
   qgsmaptoolidentify.h
   qgsmaptoolsplitfeatures.h

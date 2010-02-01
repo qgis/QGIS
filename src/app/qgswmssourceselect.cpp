@@ -27,6 +27,7 @@
 #include "qgsgenericprojectionselector.h"
 #include "qgshttptransaction.h"
 #include "qgslogger.h"
+#include "qgsmanageconnectionsdialog.h"
 #include "qgsmessageviewer.h"
 #include "qgsnewhttpconnection.h"
 #include "qgsnumericsortlistviewitem.h"
@@ -34,7 +35,6 @@
 #include "qgsproviderregistry.h"
 #include "qgswmssourceselect.h"
 #include <qgisinterface.h>
-
 
 #include <QButtonGroup>
 #include <QDomDocument>
@@ -203,9 +203,23 @@ void QgsWMSSourceSelect::on_btnDelete_clicked()
   if ( result == QMessageBox::Ok )
   {
     settings.remove( key );
+    settings.remove( "/Qgis/WMS/" + cmbConnections->currentText() );
     cmbConnections->removeItem( cmbConnections->currentIndex() );  // populateConnectionList();
     setConnectionListPosition();
   }
+}
+
+void QgsWMSSourceSelect::on_btnSave_clicked()
+{
+  QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Save, QgsManageConnectionsDialog::WMS );
+  dlg.exec();
+}
+
+void QgsWMSSourceSelect::on_btnLoad_clicked()
+{
+  QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Load, QgsManageConnectionsDialog::WMS );
+  dlg.exec();
+  populateConnectionList();
 }
 
 QgsNumericSortTreeWidgetItem *QgsWMSSourceSelect::createItem(
@@ -821,7 +835,7 @@ bool QgsWMSSourceSelect::retrieveSearchResults( const QString& searchTerm, QByte
   }
   // Get username/password from settings for protected WMS
 
-  QString mySearchUrl = settings.value("/qgis/WMSSearchUrl", "http://geopole.org/wms/search?search=%1&type=rss").toString();
+  QString mySearchUrl = settings.value( "/qgis/WMSSearchUrl", "http://geopole.org/wms/search?search=%1&type=rss" ).toString();
   QUrl url( mySearchUrl.arg( searchTerm ) );
   QgsDebugMsg( url.toString() );
   QgsHttpTransaction http( url.toEncoded(),

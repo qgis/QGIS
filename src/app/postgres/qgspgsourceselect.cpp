@@ -24,6 +24,7 @@ email                : sherman at mrcc.com
 #include "qgsapplication.h"
 #include "qgscontexthelp.h"
 #include "qgspgnewconnection.h"
+#include "qgsmanageconnectionsdialog.h"
 #include "qgsquerybuilder.h"
 #include "qgsdatasourceuri.h"
 #include "qgsvectorlayer.h"
@@ -123,6 +124,19 @@ void QgsPgSourceSelect::on_btnDelete_clicked()
   settings.remove( key + "/geometryColumnsOnly" );
   settings.remove( key + "/save" );
 
+  populateConnectionList();
+}
+
+void QgsPgSourceSelect::on_btnSave_clicked()
+{
+  QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Save, QgsManageConnectionsDialog::PostGIS );
+  dlg.exec();
+}
+
+void QgsPgSourceSelect::on_btnLoad_clicked()
+{
+  QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Load, QgsManageConnectionsDialog::PostGIS );
+  dlg.exec();
   populateConnectionList();
 }
 
