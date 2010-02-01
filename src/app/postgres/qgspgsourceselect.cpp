@@ -28,6 +28,7 @@ email                : sherman at mrcc.com
 #include "qgsquerybuilder.h"
 #include "qgsdatasourceuri.h"
 #include "qgsvectorlayer.h"
+#include "qgscredentials.h"
 
 #include <QInputDialog>
 #include <QMessageBox>
@@ -122,6 +123,8 @@ void QgsPgSourceSelect::on_btnDelete_clicked()
   settings.remove( key + "/sslmode" );
   settings.remove( key + "/publicOnly" );
   settings.remove( key + "/geometryColumnsOnly" );
+  settings.remove( key + "/saveUsername" );
+  settings.remove( key + "/savePassword" );
   settings.remove( key + "/save" );
 
   populateConnectionList();
@@ -403,7 +406,7 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
   uri.setConnection( settings.value( key + "/host" ).toString(),
                      settings.value( key + "/port" ).toString(),
                      database,
-                     settings.value( key + "/username" ).toString(),
+                     username,
                      password,
                      ( QgsDataSourceURI::SSLmode ) settings.value( key + "/sslmode", QgsDataSourceURI::SSLprefer ).toInt() );
 
@@ -426,27 +429,29 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
   // check the connection status
   if ( PQstatus( pd ) != CONNECTION_OK && QString::fromUtf8( PQerrorMessage( pd ) ) == PQnoPasswordSupplied )
   {
-    QString password = QString::null;
-
     while ( PQstatus( pd ) != CONNECTION_OK )
     {
-      bool ok = true;
-      password = QInputDialog::getText( this,
-                                        tr( "Enter password" ),
-                                        tr( "Error: %1Enter password for %2" )
-                                        .arg( QString::fromUtf8( PQerrorMessage( pd ) ) )
-                                        .arg( m_connInfo ),
-                                        QLineEdit::Password,
-                                        password,
-                                        &ok );
-
-      ::PQfinish( pd );
-
+      bool ok = QgsCredentials::instance()->get( m_connInfo, username, password, QString::fromUtf8( PQerrorMessage( pd ) ) );
       if ( !ok )
         break;
 
-      m_privConnInfo = QString( "%1 password='%2'" ).arg( m_connInfo ).arg( password );
+      ::PQfinish( pd );
+
+      QgsDataSourceURI uri( m_connInfo );
+      if ( !username.isEmpty() )
+        uri.setUsername( username );
+
+      if ( !password.isEmpty() )
+        uri.setPassword( password );
+
+      m_privConnInfo = uri.connectionInfo();
+      QgsDebugMsg( "connecting " + m_privConnInfo );
       pd = PQconnectdb( m_privConnInfo.toLocal8Bit() );
+    }
+
+    if ( PQstatus( pd ) == CONNECTION_OK )
+    {
+      QgsCredentials::instance()->put( m_connInfo, username, password );
     }
   }
 

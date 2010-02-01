@@ -289,10 +289,23 @@ QDomDocument QgsManageConnectionsDialog::savePgConnections( const QStringList &c
     el.setAttribute( "name", connections[ i ] );
     el.setAttribute( "host", settings.value( path + "/host", "" ).toString() );
     el.setAttribute( "port", settings.value( path + "/port", "" ).toString() );
-    el.setAttribute( "db", settings.value( path + "/database", "" ).toString() );
-    el.setAttribute( "username", settings.value( path + "/username", "" ).toString() );
-    el.setAttribute( "password", settings.value( path + "/password", "" ).toString() );
+    el.setAttribute( "database", settings.value( path + "/database", "" ).toString() );
     el.setAttribute( "sslmode", settings.value( path + "/sslmode", "1" ).toString() );
+
+    el.setAttribute( "saveUsername", settings.value( path + "/saveUsername", "false" ).toString() );
+
+    if ( settings.value( path + "/saveUsername", "false" ).toString() == "true" )
+    {
+      el.setAttribute( "username", settings.value( path + "/username", "" ).toString() );
+    }
+
+    el.setAttribute( "savePassword", settings.value( path + "/savePassword", "false" ).toString() );
+
+    if ( settings.value( path + "/savePassword", "false" ).toString() == "true" )
+    {
+      el.setAttribute( "password", settings.value( path + "/password", "" ).toString() );
+    }
+
     root.appendChild( el );
   }
 
@@ -359,7 +372,8 @@ void QgsManageConnectionsDialog::loadPgConnections( const QDomDocument &doc, con
   QDomElement root = doc.documentElement();
   if ( root.tagName() != "qgsPgConnections" )
   {
-    QMessageBox::information( this, tr( "Loading connections" ),
+    QMessageBox::information( this,
+                              tr( "Loading connections" ),
                               tr( "The file is not an PostGIS connections exchange file." ) );
     return;
   }
@@ -382,7 +396,8 @@ void QgsManageConnectionsDialog::loadPgConnections( const QDomDocument &doc, con
     // check for duplicates
     if ( keys.contains( connectionName ) )
     {
-      int res = QMessageBox::warning( this, tr( "Loading conections" ),
+      int res = QMessageBox::warning( this,
+                                      tr( "Loading connections" ),
                                       tr( "Connection with name %1 already exists. Overwrite?" )
                                       .arg( connectionName ),
                                       QMessageBox::Yes | QMessageBox::No );
@@ -395,19 +410,17 @@ void QgsManageConnectionsDialog::loadPgConnections( const QDomDocument &doc, con
 
     //no dups detected or overwrite is allowed
     settings.beginGroup( "/PostgreSQL/connections/" + connectionName );
+
     settings.setValue( "/host", child.attribute( "host" ) );
     settings.setValue( "/port", child.attribute( "port" ) );
-    settings.setValue( "/database", child.attribute( "db" ) );
+    settings.setValue( "/database", child.attribute( "database" ) );
     settings.setValue( "/sslmode", child.attribute( "sslmode" ) );
-    if ( !child.attribute( "username" ).isEmpty() )
-    {
-      settings.setValue( "/username", child.attribute( "username" ) );
-      settings.setValue( "/password", child.attribute( "password" ) );
-      settings.setValue( "/save", "true" );
-    }
+		settings.setValue( "/saveUsername", child.attribute( "saveUsername" ) );
+    settings.setValue( "/username", child.attribute( "username" ) );
+		settings.setValue( "/savePassword", child.attribute( "savePassword" ) );
+    settings.setValue( "/password", child.attribute( "password" ) );
     settings.endGroup();
 
     child = child.nextSiblingElement();
   }
 }
-

@@ -24,6 +24,7 @@
 #include "qgscontexthelp.h"
 #include "qgsdatasourceuri.h"
 #include "qgslogger.h"
+#include "qgscredentialdialog.h"
 
 extern "C"
 {
@@ -55,7 +56,6 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString& connName
       port = "5432";
     }
     txtPort->setText( port );
-    txtUsername->setText( settings.value( key + "/username" ).toString() );
     Qt::CheckState s = Qt::Checked;
     if ( ! settings.value( key + "/publicOnly", false ).toBool() )
       s = Qt::Unchecked;
@@ -69,11 +69,30 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString& connName
 
     cbxSSLmode->setCurrentIndex( cbxSSLmode->findData( settings.value( key + "/sslmode", QgsDataSourceURI::SSLprefer ).toInt() ) );
 
-    if ( settings.value( key + "/save" ).toString() == "true" )
+    if ( settings.value( key + "/saveUsername" ).toString() == "true" )
+    {
+      txtUsername->setText( settings.value( key + "/username" ).toString() );
+      chkStoreUsername->setChecked( true );
+    }
+
+    if ( settings.value( key + "/savePassword" ).toString() == "true" )
     {
       txtPassword->setText( settings.value( key + "/password" ).toString() );
       chkStorePassword->setChecked( true );
     }
+
+    // Old save setting
+    if ( settings.contains( key + "/save" ) )
+    {
+      txtUsername->setText( settings.value( key + "/username" ).toString() );
+      chkStoreUsername->setChecked( !txtUsername->text().isEmpty() );
+
+      if ( settings.value( key + "/save" ).toString() == "true" )
+        txtPassword->setText( settings.value( key + "/password" ).toString() );
+
+      chkStorePassword->setChecked( true );
+    }
+
     txtName->setText( connName );
   }
 }
@@ -106,12 +125,16 @@ void QgsPgNewConnection::accept()
   settings.setValue( baseKey + "/host", txtHost->text() );
   settings.setValue( baseKey + "/database", txtDatabase->text() );
   settings.setValue( baseKey + "/port", txtPort->text() );
-  settings.setValue( baseKey + "/username", txtUsername->text() );
+  settings.setValue( baseKey + "/username", chkStoreUsername->isChecked() ? txtUsername->text() : "" );
   settings.setValue( baseKey + "/password", chkStorePassword->isChecked() ? txtPassword->text() : "" );
   settings.setValue( baseKey + "/publicOnly", cb_publicSchemaOnly->isChecked() );
   settings.setValue( baseKey + "/geometryColumnsOnly", cb_geometryColumnsOnly->isChecked() );
-  settings.setValue( baseKey + "/save", chkStorePassword->isChecked() ? "true" : "false" );
   settings.setValue( baseKey + "/sslmode", cbxSSLmode->itemData( cbxSSLmode->currentIndex() ).toInt() );
+  settings.setValue( baseKey + "/saveUsername", chkStoreUsername->isChecked() ? "true" : "false" );
+  settings.setValue( baseKey + "/savePassword", chkStorePassword->isChecked() ? "true" : "false" );
+
+  // remove old save setting
+  settings.remove( baseKey + "/save" );
 
   QDialog::accept();
 }
@@ -138,45 +161,67 @@ QgsPgNewConnection::~QgsPgNewConnection()
 void QgsPgNewConnection::testConnection()
 {
   QgsDataSourceURI uri;
-  uri.setConnection( txtHost->text(), txtPort->text(), txtDatabase->text(), txtUsername->text(), txtPassword->text(), ( QgsDataSourceURI::SSLmode ) cbxSSLmode->itemData( cbxSSLmode->currentIndex() ).toInt() );
+  uri.setConnection( txtHost->text(), txtPort->text(), txtDatabase->text(),
+                     chkStoreUsername->isChecked() ? txtUsername->text() : "",
+                     chkStorePassword->isChecked() ? txtPassword->text() : "",
+                     ( QgsDataSourceURI::SSLmode ) cbxSSLmode->itemData( cbxSSLmode->currentIndex() ).toInt() );
+  QString conninfo = uri.connectionInfo();
+  QgsDebugMsg( "PQconnectdb(\"" + conninfo + "\");" );
 
-  QgsDebugMsg( "PQconnectdb(\"" + uri.connectionInfo() + "\");" );
-
-  PGconn *pd = PQconnectdb( uri.connectionInfo().toLocal8Bit() );  // use what is set based on locale; after connecting, use Utf8
+  PGconn *pd = PQconnectdb( conninfo.toLocal8Bit() );  // use what is set based on locale; after connecting, use Utf8
   // check the connection status
   if ( PQstatus( pd ) != CONNECTION_OK && QString::fromUtf8( PQerrorMessage( pd ) ) == PQnoPasswordSupplied )
   {
-    QString password = QString::null;
+    QString username = txtUsername->text();
+    QString password = txtPassword->text();
+
+    uri.setUsername( "" );
+    uri.setPassword( "" );
 
     while ( PQstatus( pd ) != CONNECTION_OK )
     {
-      bool ok = true;
-      password = QInputDialog::getText( this,
-                                        tr( "Enter password" ),
-                                        tr( "Error: %1Enter password for %2" )
-                                        .arg( QString::fromUtf8( PQerrorMessage( pd ) ) )
-                                        .arg( uri.connectionInfo() ),
-                                        QLineEdit::Password,
-                                        password,
-                                        &ok );
-
-      ::PQfinish( pd );
-
+      bool ok = QgsCredentials::instance()->get( conninfo, username, password, QString::fromUtf8( PQerrorMessage( pd ) ) );
       if ( !ok )
         break;
 
-      pd = PQconnectdb( QString( "%1 password='%2'" ).arg( uri.connectionInfo() ).arg( password ).toLocal8Bit() );
+      ::PQfinish( pd );
+
+      QgsDataSourceURI uri( conninfo );
+
+      if ( !username.isEmpty() )
+        uri.setUsername( username );
+
+      if ( !password.isEmpty() )
+        uri.setPassword( password );
+
+      QgsDebugMsg( "PQconnectdb(\"" + uri.connectionInfo() + "\");" );
+      pd = PQconnectdb( uri.connectionInfo().toLocal8Bit() );
+    }
+
+    if ( PQstatus( pd ) == CONNECTION_OK )
+    {
+      if ( chkStoreUsername->isChecked() )
+        txtUsername->setText( username );
+      if ( chkStorePassword->isChecked() )
+        txtPassword->setText( password );
+
+      QgsCredentials::instance()->put( conninfo, username, password );
     }
   }
 
   if ( PQstatus( pd ) == CONNECTION_OK )
   {
     // Database successfully opened; we can now issue SQL commands.
-    QMessageBox::information( this, tr( "Test connection" ), tr( "Connection to %1 was successful" ).arg( txtDatabase->text() ) );
+    QMessageBox::information( this,
+                              tr( "Test connection" ),
+                              tr( "Connection to %1 was successful" ).arg( txtDatabase->text() ) );
   }
   else
   {
-    QMessageBox::information( this, tr( "Test connection" ), tr( "Connection failed - Check settings and try again.\n\nExtended error information:\n%1" ).arg( QString::fromUtf8( PQerrorMessage( pd ) ) ) );
+    QMessageBox::information( this,
+                              tr( "Test connection" ),
+                              tr( "Connection failed - Check settings and try again.\n\nExtended error information:\n%1" )
+                              .arg( QString::fromUtf8( PQerrorMessage( pd ) ) ) );
   }
   // free pg connection resources
   PQfinish( pd );

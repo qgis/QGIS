@@ -68,6 +68,14 @@ class CORE_EXPORT QgsDataSourceURI
                         const QString& aSql = QString(),
                         const QString& aKeyColumn = QString() );
 
+    //! set username
+    // added in 1.5
+    void setUsername( QString username );
+
+    //! set password
+    // added in 1.5
+    void setPassword( QString password );
+
     //! Removes password element from uris
     static QString removePassword( const QString& aUri );
 

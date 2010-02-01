@@ -142,6 +142,7 @@
 #include "ogr/qgsopenvectorlayerdialog.h"
 #include "qgsattributetabledialog.h"
 #include "qgsvectorfilewriter.h"
+#include "qgscredentialdialog.h"
 
 #ifdef HAVE_QWT
 #include "qgsgpsinformationwidget.h"
@@ -265,11 +266,10 @@ static void setTitleBarText_( QWidget & qgisApp )
 /**
  Creator function for output viewer
 */
-static QgsMessageOutput* messageOutputViewer_()
+static QgsMessageOutput *messageOutputViewer_()
 {
-  return new QgsMessageViewer();
+  return new QgsMessageViewer( QgisApp::instance() );
 }
-
 
 /**
  * This function contains forced validation of CRS used in QGIS.
@@ -400,8 +400,12 @@ QgisApp::QgisApp( QSplashScreen *splash, QWidget * parent, Qt::WFlags fl )
 
   // set QGIS specific srs validation
   QgsCoordinateReferenceSystem::setCustomSrsValidation( customSrsValidation_ );
+
   // set graphical message output
   QgsMessageOutput::setMessageOutputCreator( messageOutputViewer_ );
+
+  // set graphical credential requester
+  new QgsCredentialDialog( this );
 
   fileNew(); // prepare empty project
   qApp->processEvents();

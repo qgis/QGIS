@@ -42,6 +42,7 @@ qgsmaptoolemitpoint.cpp
 qgsmaptoolpan.cpp
 qgsmaptoolzoom.cpp
 qgsmessageviewer.cpp
+qgscredentialdialog.cpp
 qgsprojectbadlayerguihandler.cpp
 qgsprojectionselector.cpp
 qgsquickprint.cpp
@@ -78,6 +79,7 @@ qgsmapcanvas.h
 qgsmapoverviewcanvas.h
 qgsmaptoolemitpoint.h
 qgsmessageviewer.h
+qgscredentialdialog.h
 qgsprojectionselector.h
 qgsquickprint.h
 qgsludialog.h
@@ -155,6 +157,7 @@ qgsmaptoolemitpoint.h
 qgsmaptoolpan.h
 qgsmaptoolzoom.h
 qgsmessageviewer.h
+qgscredentialdialog.h
 qgsprojectionselector.h
 qgsrubberband.h
 qgsvertexmarker.h
@@ -163,6 +166,7 @@ qgsmaptip.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsdetaileditemwidgetbase.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsgenericprojectionselectorbase.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessageviewer.h
+${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscredentialdialog.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprojectionselectorbase.h
 )
 

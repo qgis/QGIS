@@ -121,7 +121,7 @@ class CORE_EXPORT QgsPoint
     //! String representation of the point (x,y)
     QString toString() const;
 
-    //! As above but with precision for string representaiton of a point
+    //! As above but with precision for string representation of a point
     QString toString( int thePrecision ) const;
 
     /** Return a string representation as degrees minutes seconds.
@@ -177,7 +177,7 @@ class CORE_EXPORT QgsPoint
     double m_y;
 
 
-}; // class QgsPOint
+}; // class QgsPoint
 
 
 inline bool operator==( const QgsPoint &p1, const QgsPoint &p2 )
