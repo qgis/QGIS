@@ -216,6 +216,11 @@ QString QgsDataSourceURI::username() const
   return mUsername;
 }
 
+void QgsDataSourceURI::setUsername( QString username )
+{
+  mUsername = username;
+}
+
 QString QgsDataSourceURI::host() const
 {
   return mHost;
@@ -229,6 +234,11 @@ QString QgsDataSourceURI::database() const
 QString QgsDataSourceURI::password() const
 {
   return mPassword;
+}
+
+void QgsDataSourceURI::setPassword( QString password )
+{
+  mPassword = password;
 }
 
 QString QgsDataSourceURI::port() const

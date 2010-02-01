@@ -44,7 +44,7 @@
 #include "qgspostgisbox3d.h"
 #include "qgslogger.h"
 
-#include <QInputDialog>
+#include "qgscredentials.h"
 
 const QString POSTGRES_KEY = "postgres";
 const QString POSTGRES_DESCRIPTION = "PostgreSQL/PostGIS data provider";
@@ -291,7 +291,7 @@ QgsPostgresProvider::~QgsPostgresProvider()
   //pLog.flush();
 }
 
-QgsPostgresProvider::Conn *QgsPostgresProvider::Conn::connectDb( const QString & conninfo, bool readonly )
+QgsPostgresProvider::Conn *QgsPostgresProvider::Conn::connectDb( const QString &conninfo, bool readonly )
 {
   QMap<QString, QgsPostgresProvider::Conn *> &connections =
     readonly ? QgsPostgresProvider::Conn::connectionsRO : QgsPostgresProvider::Conn::connectionsRW;
@@ -309,38 +309,30 @@ QgsPostgresProvider::Conn *QgsPostgresProvider::Conn::connectDb( const QString &
   // check the connection status
   if ( PQstatus( pd ) != CONNECTION_OK && QString::fromUtf8( PQerrorMessage( pd ) ) == PQnoPasswordSupplied )
   {
-    QString password = QString::null;
+    QgsDataSourceURI uri( conninfo );
+    QString username = uri.username();
+    QString password = uri.password();
 
     while ( PQstatus( pd ) != CONNECTION_OK )
     {
-      bool ok = true;
-
-      if ( passwordCache.contains( conninfo ) )
-      {
-        password = passwordCache.take( conninfo );
-      }
-      else
-      {
-        password = QInputDialog::getText( 0,
-                                          tr( "Enter password" ),
-                                          tr( "Error: %1Enter password for %2" )
-                                          .arg( QString::fromUtf8( PQerrorMessage( pd ) ) )
-                                          .arg( conninfo ),
-                                          QLineEdit::Password,
-                                          password,
-                                          &ok );
-      }
-
+      bool ok = QgsCredentials::instance()->get( conninfo, username, password, QString::fromUtf8( PQerrorMessage( pd ) ) );
       if ( !ok )
         break;
 
       ::PQfinish( pd );
 
-      pd = PQconnectdb( QString( "%1 password='%2'" ).arg( conninfo ).arg( password ).toLocal8Bit() );
+      if ( !username.isEmpty() )
+        uri.setUsername( username );
+
+      if ( !password.isEmpty() )
+        uri.setPassword( password );
+
+      QgsDebugMsg( "Connecting to " + uri.connectionInfo() );
+      pd = PQconnectdb( uri.connectionInfo().toLocal8Bit() );
     }
 
     if ( PQstatus( pd ) == CONNECTION_OK )
-      passwordCache[ conninfo ] = password;
+      QgsCredentials::instance()->put( conninfo, username, password );
   }
 
   if ( PQstatus( pd ) != CONNECTION_OK )

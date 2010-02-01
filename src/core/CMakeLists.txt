@@ -57,6 +57,7 @@ SET(QGIS_CORE_SRCS
   qgsmaprenderer.cpp
   qgsmaptopixel.cpp
   qgsmessageoutput.cpp
+  qgscredentials.cpp
   qgsoverlayobject.cpp
   qgspalgeometry.cpp
   qgspalobjectpositionmanager.cpp
@@ -223,6 +224,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsmaplayerregistry.h
   qgsmaprenderer.h
   qgsmessageoutput.h
+  qgscredentials.h
   qgspluginlayer.h
   qgsproject.h
   qgsrunprocess.h
@@ -389,6 +391,7 @@ SET(QGIS_CORE_HDRS
   qgsmaprenderer.h
   qgsmaptopixel.h
   qgsmessageoutput.h
+  qgscredentials.h
   qgsoverlayobjectpositionmanager.h
   qgspalobjectpositionmanager.h
   qgspluginlayer.h

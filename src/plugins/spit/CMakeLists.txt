@@ -23,6 +23,7 @@ SET (SPIT_UIS
      ../../ui/qgspgnewconnectionbase.ui
      qgsspitbase.ui
      ../../ui/qgsmessageviewer.ui
+     ../../ui/qgscredentialdialog.ui
 )
 
 SET (SPIT_EXE_MOC_HDRS
