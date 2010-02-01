@@ -179,7 +179,7 @@ class PythonEdit(QTextEdit, code.InteractiveInterpreter):
         self.cursor = self.textCursor()
         # if the cursor isn't in the edition zone, don't do anything except Ctrl+C
         if not self.isCursorInEditionZone():
-            if e.modifiers() == Qt.ControlModifier or e.modifiers() == Qt.MetaModifier:
+            if e.modifiers() & Qt.ControlModifier or e.modifiers() & Qt.MetaModifier:
                 if e.key() == Qt.Key_C or e.key() == Qt.Key_A:
                     QTextEdit.keyPressEvent(self, e)
             else:
@@ -201,38 +201,22 @@ class PythonEdit(QTextEdit, code.InteractiveInterpreter):
                 QTextEdit.keyPressEvent(self, e)
             # if the left key is pressed, move left until we get to the prompt
             elif e.key() == Qt.Key_Left and self.cursor.position() > self.document().lastBlock().position() + self.currentPromptLength:
-                if e.modifiers() == Qt.ShiftModifier:
-                    anchor = QTextCursor.KeepAnchor
-                else:
-                    anchor = QTextCursor.MoveAnchor
-                if (e.modifiers() == Qt.ControlModifier or e.modifiers() == Qt.MetaModifier):
-                    self.cursor.movePosition(QTextCursor.WordLeft, anchor)
-                else:
-                    self.cursor.movePosition(QTextCursor.Left, anchor)
+                anchor = QTextCursor.KeepAnchor if e.modifiers() & Qt.ShiftModifier else QTextCursor.MoveAnchor
+                move = QTextCursor.WordLeft if e.modifiers() & Qt.ControlModifier or e.modifiers() & Qt.MetaModifier else QTextCursor.Left
+                self.cursor.movePosition(move, anchor)
             # use normal operation for right key
             elif e.key() == Qt.Key_Right:
-                if e.modifiers() == Qt.ShiftModifier:
-                    anchor = QTextCursor.KeepAnchor
-                else:
-                    anchor = QTextCursor.MoveAnchor
-                if (e.modifiers() == Qt.ControlModifier or e.modifiers() == Qt.MetaModifier):
-                    self.cursor.movePosition(QTextCursor.WordRight, anchor)
-                else:
-                    self.cursor.movePosition(QTextCursor.Right, anchor)
+                anchor = QTextCursor.KeepAnchor if e.modifiers() & Qt.ShiftModifier else QTextCursor.MoveAnchor
+                move = QTextCursor.WordRight if e.modifiers() & Qt.ControlModifier or e.modifiers() & Qt.MetaModifier else QTextCursor.Right
+                self.cursor.movePosition(move, anchor)
             # if home is pressed, move cursor to right of prompt
             elif e.key() == Qt.Key_Home:
-                if e.modifiers() == Qt.ShiftModifier:
-                    anchor = QTextCursor.KeepAnchor
-                else:
-                    anchor = QTextCursor.MoveAnchor
+                anchor = QTextCursor.KeepAnchor if e.modifiers() & Qt.ShiftModifier else QTextCursor.MoveAnchor
                 self.cursor.movePosition(QTextCursor.StartOfBlock, anchor, 1)
                 self.cursor.movePosition(QTextCursor.Right, anchor, self.currentPromptLength)
             # use normal operation for end key
             elif e.key() == Qt.Key_End:
-                if e.modifiers() == Qt.ShiftModifier:
-                    anchor = QTextCursor.KeepAnchor
-                else:
-                    anchor = QTextCursor.MoveAnchor
+                anchor = QTextCursor.KeepAnchor if e.modifiers() & Qt.ShiftModifier else QTextCursor.MoveAnchor
                 self.cursor.movePosition(QTextCursor.EndOfBlock, anchor, 1)
             # use normal operation for all remaining keys
             else:
@@ -253,6 +237,7 @@ class PythonEdit(QTextEdit, code.InteractiveInterpreter):
 
   def entered(self):
     self.cursor.movePosition(QTextCursor.End, QTextCursor.MoveAnchor)
+    self.setTextCursor(self.cursor)
     self.runCommand( unicode(self.currentCommand()) )
 
   def runCommand(self, cmd):
