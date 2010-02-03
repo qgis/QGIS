@@ -180,7 +180,7 @@ void QgsNMEAConnection::processRMCSentence( const char* data, int len )
     mLastGPSInformation.direction = result.direction;
 
     //date and time
-    QDate date( result.utc.year, result.utc.mon + 1, result.utc.day );
+    QDate date( result.utc.year + 1900, result.utc.mon + 1, result.utc.day );
     QTime time( result.utc.hour, result.utc.min, result.utc.sec );
     if ( date.isValid() && time.isValid() )
     {
