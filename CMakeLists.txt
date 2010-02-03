@@ -110,9 +110,6 @@ ENDIF (NOT BISON_EXECUTABLE)
 #############################################################
 # search for dependencies
 
-# we use cblas for the Helmert transformation
-SET(DONT_LINK_CBLAS FALSE)
-
 IF(NOT WIN32)
   INCLUDE(CheckFunctionExists)
   CHECK_FUNCTION_EXISTS(openpty OPENPTY_IN_LIBC)
