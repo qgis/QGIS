@@ -110,8 +110,8 @@ ENDIF (NOT BISON_EXECUTABLE)
 #############################################################
 # search for dependencies
 
-# we don't use cblas
-SET(DONT_LINK_CBLAS TRUE)
+# we use cblas for the Helmert transformation
+SET(DONT_LINK_CBLAS FALSE)
 
 IF(NOT WIN32)
   INCLUDE(CheckFunctionExists)
