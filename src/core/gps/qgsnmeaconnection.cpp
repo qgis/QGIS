@@ -180,11 +180,18 @@ void QgsNMEAConnection::processRMCSentence( const char* data, int len )
     mLastGPSInformation.direction = result.direction;
 
     //date and time
-    QDate date( result.utc.year, result.utc.day, result.utc.sec );
+    QDate date( result.utc.year, result.utc.mon + 1, result.utc.day );
     QTime time( result.utc.hour, result.utc.min, result.utc.sec );
-    mLastGPSInformation.utcDateTime.setTimeSpec( Qt::UTC );
-    mLastGPSInformation.utcDateTime.setDate( date );
-    mLastGPSInformation.utcDateTime.setTime( time );
+    if ( date.isValid() && time.isValid() )
+    {
+      mLastGPSInformation.utcDateTime.setTimeSpec( Qt::UTC );
+      mLastGPSInformation.utcDateTime.setDate( date );
+      mLastGPSInformation.utcDateTime.setTime( time );
+      QgsDebugMsg( "utc time:" );
+      QgsDebugMsg( mLastGPSInformation.utcDateTime.toString() );
+      QgsDebugMsg( "local time:" );
+      QgsDebugMsg( mLastGPSInformation.utcDateTime.toLocalTime().toString() );
+    }
   }
 }
 
