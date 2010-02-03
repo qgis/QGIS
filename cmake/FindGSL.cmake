@@ -38,20 +38,12 @@ IF(WIN32)
     ${GSL_MSVC_PREFIX}/lib
     )
 
-  IF (DONT_LINK_CBLAS)
-    IF (GSL_LIB)
-      SET (GSL_LIBRARIES ${GSL_LIB} )
-    ENDIF (GSL_LIB)
-  ELSE (DONT_LINK_CBLAS)
-    FIND_LIBRARY(GSLCBLAS_LIB gslcblas cblas PATHS 
-      ${GSL_MINGW_PREFIX}/lib 
-      ${GSL_MSVC_PREFIX}/lib
-      )
-    IF (GSL_LIB AND GSLCBLAS_LIB)
-      SET (GSL_LIBRARIES ${GSL_LIB} ${GSLCBLAS_LIB})
-    ENDIF (GSL_LIB AND GSLCBLAS_LIB)
-  ENDIF (DONT_LINK_CBLAS)
-  
+  FIND_LIBRARY(GSLCBLAS_LIB gslcblas cblas PATHS 
+    ${GSL_MINGW_PREFIX}/lib 
+    ${GSL_MSVC_PREFIX}/lib
+  )
+
+  SET (GSL_LIBRARIES ${GSL_LIB} ${GSLCBLAS_LIB})
 ELSE(WIN32)
   IF(UNIX) 
     SET(GSL_CONFIG_PREFER_PATH "$ENV{GSL_HOME}/bin" CACHE STRING "preferred path to GSL (gsl-config)")
@@ -63,12 +55,6 @@ ELSE(WIN32)
     # MESSAGE("DBG GSL_CONFIG ${GSL_CONFIG}")
 
     IF (GSL_CONFIG) 
-      IF (DONT_LINK_CBLAS)
-        SET(LIBS_ARG "--libs-without-cblas")
-      ELSE (DONT_LINK_CBLAS)
-        SET(LIBS_ARG "--libs")
-      ENDIF (DONT_LINK_CBLAS)
-    
       # set CXXFLAGS to be fed into CXX_FLAGS by the user:
       SET(GSL_CXX_FLAGS "`${GSL_CONFIG} --cflags`")
       
@@ -80,7 +66,7 @@ ELSE(WIN32)
 
       # set link libraries and link flags
       EXEC_PROGRAM(${GSL_CONFIG}
-          ARGS ${LIBS_ARG}
+          ARGS --libs
           OUTPUT_VARIABLE GSL_LIBRARIES)
       
       ## extract link dirs for rpath  
