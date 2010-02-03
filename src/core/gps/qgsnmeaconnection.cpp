@@ -178,6 +178,13 @@ void QgsNMEAConnection::processRMCSentence( const char* data, int len )
     mLastGPSInformation.latitude = nmea_ndeg2degree( latitude );
     mLastGPSInformation.speed = KNOTS_TO_KMH * result.speed;
     mLastGPSInformation.direction = result.direction;
+
+    //date and time
+    QDate date( result.utc.year, result.utc.day, result.utc.sec );
+    QTime time( result.utc.hour, result.utc.min, result.utc.sec );
+    mLastGPSInformation.utcDateTime.setTimeSpec( Qt::UTC );
+    mLastGPSInformation.utcDateTime.setDate( date );
+    mLastGPSInformation.utcDateTime.setTime( time );
   }
 }
 

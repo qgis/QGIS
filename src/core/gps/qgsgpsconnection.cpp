@@ -94,4 +94,6 @@ void QgsGPSConnection::clearLastGPSInformation()
   mLastGPSInformation.satellitesInView.clear();
   mLastGPSInformation.speed = 0;
   mLastGPSInformation.vdop = 0;
+  mLastGPSInformation.utcDateTime.setDate( QDate() );
+  mLastGPSInformation.utcDateTime.setTime( QTime() );
 }

@@ -18,6 +18,7 @@
 #ifndef QGSGPSCONNECTION_H
 #define QGSGPSCONNECTION_H
 
+#include <QDateTime>
 #include <QObject>
 
 class QIODevice;
@@ -42,6 +43,7 @@ struct CORE_EXPORT QgsGPSInformation
   double pdop;
   double hdop;
   double vdop;
+  QDateTime utcDateTime;
 };
 
 /**Abstract base class for connection to a GPS device*/
