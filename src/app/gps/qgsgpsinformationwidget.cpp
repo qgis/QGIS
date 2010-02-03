@@ -18,6 +18,7 @@
 #include "qgsgpsinformationwidget.h"
 #include "qgsvectorlayer.h"
 #include "qgsnmeaconnection.h"
+#include "qgsgpsconnectionregistry.h"
 #include "qgsgpsdetector.h"
 #include "qgscoordinatetransform.h"
 #include <qgspoint.h>
@@ -338,12 +339,14 @@ void QgsGPSInformationWidget::connected( QgsGPSConnection *conn )
                     this, SLOT( displayGPSInformation( const QgsGPSInformation& ) ) );
   mGPSTextEdit->append( tr( "Connected!" ) );
   mConnectButton->setText( tr( "Disconnect" ) );
+  //insert connection into registry such that it can also be used by other dialogs or plugins
+  QgsGPSConnectionRegistry::instance()->registerConnection( mNmea );
 }
 
 void QgsGPSInformationWidget::disconnectGps()
 {
+  QgsGPSConnectionRegistry::instance()->unregisterConnection( mNmea );
   delete mNmea;
-
   mGPSTextEdit->append( tr( "Disconnected..." ) );
   mConnectButton->setChecked( false );
   mConnectButton->setText( tr( "Connect" ) );
