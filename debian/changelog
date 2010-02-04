@@ -1,8 +1,12 @@
 qgis (1.5.0) UNRELEASED; urgency=low
 
   * new development version after 1.5 branch
+  * adapted Francesco Paolo Lovergine's updates to Debian qgis 1.4 package
+  * require CMake >2.6 and Qt 4.4 for sid
+  * remove circular dependencies
+  * integrate new GRASS raster provider
 
- -- Jürgen E. Fischer <jef@norbit.de>  Mon, 28 Dec 2009 23:44:41 +0100
+ -- Jürgen E. Fischer <jef@norbit.de>  Thu, 04 Feb 2010 23:20:29 +0100
 
 qgis (1.4.0) UNRELEASED; urgency=low
 

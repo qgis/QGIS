@@ -4,11 +4,43 @@ Wed, 31 Dec 2003 10:07:40 -0500.
 It was downloaded from:
  https://svn.osgeo.org/qgis/trunk/qgis
 
-The upstream contributors are listed in the AUTHORS file.
+The upstream contributors are listed in the AUTHORS file and here
+reported:
+
+	Gary E.Sherman	<sherman at mrcc dot com>
+	Steve Halasz	<stevehalasz at users.sourceforge.net>
+	Marco Hugentobler	<mhugent at users.sourceforge.net>
+	Tim Sutton	<tim at linfiniti.com>
+	Denis Antipov	<rawbytes at users.sourceforge.net>
+	Mark Coletti	<mcoletti at users.sourceforge.net>
+	Lars Luthman	<larsl at users.sourceforge.net>
+	Jens Oberender	<j.obi at troja.net>
+	Christoph Spoerri	<spoerri at users.sourceforge.net>
+	Carl Anderson	<>
+	Gavin Macaulay	<g_j_m at users.sourceforge.net>
+	Masaru Hoshi	<hoshi at users.sourceforge.net>
+	Peter Brewer	<p.w.brewer at rdg dot ac dot uk>
+	Radim Blazek	<blazek at itc.it>
+	Tom Elwertowski	<telwertowski at users.sourceforge.net>
+	Godofredo Contreras	      <frdcn athotmail.com>
+	Martin Dobias	<wonder.sk at gmail.com>
+	Brendan Morley	<morb at beagle.com.au>
+	Magnus Homann	<magnus at homann.se>
+	Jürgen E. Fischer	<jef@norbit.de>
+	Tisham Dhar	<tisham at apogee.com.au>
+	Leonardo Lami	<lami@faunalia.it>
+	Marco Pasetti	<marco.pasetti@alice.it>
+	Mateusz Loskot	<mateusz at loskot dot net>
+	Peter Ersts	<ersts at amnh.org>
+	Borys Jurgiel	<borysiasty at aster.pl>
+	Paolo Cavallini	<cavallini at faunalia.it>
+	Carson J. Q. Farmer	<carson dot farmer at gmail dot com>
+	Lorenzo Masini	<lorenxo86@gmail.com>
+	Werner Macho	<werner.macho@gmail.com>
 
 Copyright:
 
-  (C) 2008 the authors
+  Copyright (C) 2003-2010 the authors
                                                                                 
   This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU General Public License as
@@ -21,4 +53,4 @@ Copyright:
   GNU General Public License for more details.
                                                                                 
   On Debian systems, the complete text of the GNU General Public
-  License can be found in the /usr/share/common-licenses/GPL-2 file.
+  License can be found in the /usr/share/common-licenses/GPL file.

@@ -6,4 +6,7 @@ if [ "$1" = "install" -o "$1" = "upgrade" ]; then
 	dpkg-divert --package qgis-plugin-grass --add --rename --divert /usr/bin/qgis.bin /usr/bin/qgis
 fi
 
+#DEBHELPER#
+
 exit 0
+
