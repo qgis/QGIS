@@ -1434,7 +1434,7 @@ bool QgsVectorLayer::setSubsetString( QString subset )
   return res;
 }
 
-void QgsVectorLayer::updateFeatureAttributes( QgsFeature &f )
+void QgsVectorLayer::updateFeatureAttributes( QgsFeature &f, bool all )
 {
   // do not update when we aren't in editing mode
   if ( !mEditable )
@@ -1455,7 +1455,7 @@ void QgsVectorLayer::updateFeatureAttributes( QgsFeature &f )
 
   // null/add all attributes that were added, but don't exist in the feature yet
   for ( QgsFieldMap::const_iterator it = mUpdatedFields.begin(); it != mUpdatedFields.end(); it++ )
-    if ( !map.contains( it.key() ) )
+    if ( !map.contains( it.key() ) && ( all || mFetchAttributes.contains( it.key() ) ) )
       f.changeAttribute( it.key(), QVariant( QString::null ) );
 }
 
@@ -1490,16 +1490,16 @@ void QgsVectorLayer::select( QgsAttributeList attributes, QgsRectangle rect, boo
     if ( mEditable )
     {
       // fetch only available field from provider
-      QgsAttributeList provAttributes;
+      mFetchProvAttributes.clear();
       for ( QgsAttributeList::iterator it = mFetchAttributes.begin(); it != mFetchAttributes.end(); it++ )
       {
         if ( !mUpdatedFields.contains( *it ) || mAddedAttributeIds.contains( *it ) )
           continue;
 
-        provAttributes << *it;
+        mFetchProvAttributes << *it;
       }
 
-      mDataProvider->select( provAttributes, rect, fetchGeometries, useIntersect );
+      mDataProvider->select( mFetchProvAttributes, rect, fetchGeometries, useIntersect );
     }
     else
       mDataProvider->select( mFetchAttributes, rect, fetchGeometries, useIntersect );
@@ -1564,7 +1564,7 @@ bool QgsVectorLayer::nextFeature( QgsFeature &f )
           {
             // retrieve attributes from provider
             QgsFeature tmp;
-            mDataProvider->featureAtId( fid, tmp, false, mDataProvider->attributeIndexes() );
+            mDataProvider->featureAtId( fid, tmp, false, mFetchProvAttributes );
             updateFeatureAttributes( tmp );
             f.setAttributeMap( tmp.attributeMap() );
           }
@@ -1666,10 +1666,9 @@ bool QgsVectorLayer::featureAtId( int featureId, QgsFeature& f, bool fetchGeomet
         // retrieve attributes from provider
         QgsFeature tmp;
         mDataProvider->featureAtId( featureId, tmp, false, mDataProvider->attributeIndexes() );
-        updateFeatureAttributes( tmp );
         f.setAttributeMap( tmp.attributeMap() );
       }
-      updateFeatureAttributes( f );
+      updateFeatureAttributes( f, true );
     }
     return true;
   }
@@ -1696,7 +1695,7 @@ bool QgsVectorLayer::featureAtId( int featureId, QgsFeature& f, bool fetchGeomet
   {
     if ( mDataProvider->featureAtId( featureId, f, fetchGeometries, mDataProvider->attributeIndexes() ) )
     {
-      updateFeatureAttributes( f );
+      updateFeatureAttributes( f, true );
       return true;
     }
   }

@@ -258,6 +258,8 @@ bool QgsSpatiaLiteProvider::featureAtId( int featureId, QgsFeature & feature, bo
       feature.setGeometryAndOwnership( 0, 0 );
     }
 
+    feature.clearAttributeMap();
+
     int ic;
     int n_columns = sqlite3_column_count( stmt );
     for ( ic = 0; ic < n_columns; ic++ )
@@ -379,6 +381,8 @@ bool QgsSpatiaLiteProvider::nextFeature( QgsFeature & feature )
       // no geometry was required
       feature.setGeometryAndOwnership( 0, 0 );
     }
+
+    feature.clearAttributeMap();
 
     int ic;
     int n_columns = sqlite3_column_count( sqliteStatement );

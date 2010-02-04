@@ -387,6 +387,7 @@ bool QgsOgrProvider::featureAtId( int featureId,
     return false;
 
   feature.setFeatureId( OGR_F_GetFID( fet ) );
+  feature.clearAttributeMap();
   // skip features without geometry
   if ( OGR_F_GetGeometryRef( fet ) == NULL && !mFetchFeaturesWithoutGeom )
   {
@@ -451,6 +452,7 @@ bool QgsOgrProvider::nextFeature( QgsFeature& feature )
     OGRFeatureDefnH featureDefinition = OGR_F_GetDefnRef( fet );
     QString featureTypeName = featureDefinition ? QString( OGR_FD_GetName( featureDefinition ) ) : QString( "" );
     feature.setFeatureId( OGR_F_GetFID( fet ) );
+    feature.clearAttributeMap();
     feature.setTypeName( featureTypeName );
 
     /* fetch geometry */

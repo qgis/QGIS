@@ -32,16 +32,12 @@
 QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayer *theLayer, QObject *parent )
     : QAbstractTableModel( parent )
 {
-  mLastRowId = -1;
-  mLastRow = NULL;
   mLayer = theLayer;
   mFeatureCount = mLayer->pendingFeatureCount();
   loadAttributes();
 
 
   connect( mLayer, SIGNAL( layerModified( bool ) ), this, SLOT( layerModified( bool ) ) );
-  //connect(mLayer, SIGNAL(attributeAdded(int)), this, SLOT( attributeAdded(int)));
-  //connect(mLayer, SIGNAL(attributeDeleted(int)), this, SLOT( attributeDeleted(int)));
   //connect(mLayer, SIGNAL(attributeValueChanged(int, int, const QVariant&)), this, SLOT( attributeValueChanged(int, int, const QVariant&)));
   //connect(mLayer, SIGNAL(featureDeleted(int)), this, SLOT( featureDeleted(int)));
   //connect(mLayer, SIGNAL(featureAdded(int)), this, SLOT( featureAdded(int)));
@@ -49,7 +45,7 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayer *theLayer, QObjec
   loadLayer();
 }
 
-bool QgsAttributeTableModel::featureAtId( int fid )
+bool QgsAttributeTableModel::featureAtId( int fid ) const
 {
   return mLayer->featureAtId( fid, mFeat, false, true );
 }
@@ -201,14 +197,12 @@ void QgsAttributeTableModel::loadLayer()
     QgsDebugMsg( "ins" );
     ins = true;
     beginInsertRows( QModelIndex(), mFeatureCount, pendingFeatureCount - 1 );
-// QgsDebugMsg(QString("%1, %2").arg(mFeatureCount).arg(mLayer->pendingFeatureCount() - 1));
   }
   else if ( mFeatureCount > pendingFeatureCount )
   {
     QgsDebugMsg( "rm" );
     rm = true;
     beginRemoveRows( QModelIndex(), pendingFeatureCount, mFeatureCount - 1 );
-// QgsDebugMsg(QString("%1, %2").arg(mFeatureCount).arg(mLayer->pendingFeatureCount() -1));
   }
 
   mLayer->select( mAttributes, QgsRectangle(), false );
@@ -369,15 +363,12 @@ void QgsAttributeTableModel::sort( int column, Qt::SortOrder order )
 
 QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) const
 {
-  return (( QgsAttributeTableModel * ) this )->data( index, role );
-}
-
-QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role )
-{
   if ( !index.isValid() || ( role != Qt::TextAlignmentRole && role != Qt::DisplayRole && role != Qt::EditRole ) )
     return QVariant();
 
-  QVariant::Type fldType = mLayer->pendingFields()[ mAttributes[index.column()] ].type();
+  int fieldId = mAttributes[ index.column()];
+
+  QVariant::Type fldType = mLayer->pendingFields()[ fieldId ].type();
   bool fldNumeric = ( fldType == QVariant::Int || fldType == QVariant::Double );
 
   if ( role == Qt::TextAlignmentRole )
@@ -389,21 +380,17 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role )
   }
 
   // if we don't have the row in current cache, load it from layer first
-  if ( mLastRowId != rowToId( index.row() ) )
+  int rowId = rowToId( index.row() );
+  if ( mFeat.id() != rowId )
   {
-    bool res = featureAtId( rowToId( index.row() ) );
-
-    if ( !res )
+    if ( !featureAtId( rowId ) )
       return QVariant( "ERROR" );
-
-    mLastRowId = rowToId( index.row() );
-    mLastRow = ( QgsAttributeMap * ) & mFeat.attributeMap();
   }
 
-  if ( !mLastRow )
+  if ( mFeat.id() != rowId )
     return QVariant( "ERROR" );
 
-  const QVariant &val = ( *mLastRow )[ mAttributes[index.column()] ];
+  const QVariant &val = mFeat.attributeMap()[ fieldId ];
 
   if ( val.isNull() )
   {
@@ -428,26 +415,21 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role )
 
 bool QgsAttributeTableModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
-  if ( !index.isValid() || role != Qt::EditRole )
+  if ( !index.isValid() || role != Qt::EditRole || !mLayer->isEditable() )
     return false;
 
-  if ( !mLayer->isEditable() )
-    return false;
-
-  bool res = featureAtId( rowToId( index.row() ) );
-
-  if ( res )
+  int rowId = rowToId( index.row() );
+  if ( mFeat.id() == rowId || featureAtId( rowId ) )
   {
-    mLastRowId = rowToId( index.row() );
-    mLastRow = ( QgsAttributeMap * ) & mFeat.attributeMap();
+    int fieldId = mAttributes[ index.column()];
 
     disconnect( mLayer, SIGNAL( layerModified( bool ) ), this, SLOT( layerModified( bool ) ) );
 
     mLayer->beginEditCommand( tr( "Attribute changed" ) );
-    mLayer->changeAttributeValue( rowToId( index.row() ), mAttributes[ index.column()], value, true );
+    mLayer->changeAttributeValue( rowId, fieldId, value, true );
     mLayer->endEditCommand();
 
-    ( *mLastRow )[ mAttributes[index.column()] ] = value;
+    mFeat.changeAttribute( fieldId, value );
 
     connect( mLayer, SIGNAL( layerModified( bool ) ), this, SLOT( layerModified( bool ) ) );
   }
@@ -456,6 +438,7 @@ bool QgsAttributeTableModel::setData( const QModelIndex &index, const QVariant &
     return false;
 
   emit dataChanged( index, index );
+
   return true;
 }
 
@@ -466,7 +449,8 @@ Qt::ItemFlags QgsAttributeTableModel::flags( const QModelIndex &index ) const
 
   Qt::ItemFlags flags = QAbstractItemModel::flags( index );
 
-  if ( mLayer->isEditable() )
+  if ( mLayer->isEditable() &&
+       mLayer->editType( mAttributes[ index.column()] ) != QgsVectorLayer::Immutable )
     flags |= Qt::ItemIsEditable;
 
   return flags;

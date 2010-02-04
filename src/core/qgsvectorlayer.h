@@ -643,7 +643,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     static int currentVertexMarkerSize();
 
     /**Update feature with uncommited attribute updates*/
-    void updateFeatureAttributes( QgsFeature &f );
+    void updateFeatureAttributes( QgsFeature &f, bool all = false );
 
     /**Update feature with uncommited geometry updates*/
     void updateFeatureGeometry( QgsFeature &f );
@@ -774,6 +774,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     bool mFetching;
     QgsRectangle mFetchRect;
     QgsAttributeList mFetchAttributes;
+    QgsAttributeList mFetchProvAttributes;
     bool mFetchGeometry;
 
     QSet<int> mFetchConsidered;

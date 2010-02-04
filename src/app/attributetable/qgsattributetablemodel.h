@@ -185,10 +185,9 @@ class QgsAttributeTableModel: public QAbstractTableModel
     QgsVectorLayer *mLayer;
     int mFeatureCount;
     int mFieldCount;
-    mutable int mLastRowId;
+
     mutable QgsFeature mFeat;
 
-    mutable QgsAttributeMap *mLastRow;
     QgsAttributeList mAttributes;
     QMap< int, const QMap<QString, QVariant> * > mValueMaps;
 
@@ -200,6 +199,7 @@ class QgsAttributeTableModel: public QAbstractTableModel
      * Initializes id <-> row maps
      */
     void initIdMaps();
+
     /**
      * Loads the layer into the model
      */
@@ -215,9 +215,7 @@ class QgsAttributeTableModel: public QAbstractTableModel
      * @param fid feature id
      * @return feature exists
      */
-    virtual bool featureAtId( int fid );
-
-    QVariant data( const QModelIndex &index, int role );
+    virtual bool featureAtId( int fid ) const;
 };
 
 

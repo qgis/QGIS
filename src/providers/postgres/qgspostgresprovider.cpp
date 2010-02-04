@@ -553,6 +553,7 @@ bool QgsPostgresProvider::getFeature( PGresult *queryResult, int row, bool fetch
     }
 
     feature.setFeatureId( oid );
+    feature.clearAttributeMap();
 
     int col;  // first attribute column after geometry
 

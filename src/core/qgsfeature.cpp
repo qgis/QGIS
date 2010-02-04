@@ -109,6 +109,12 @@ void QgsFeature::setAttributeMap( const QgsAttributeMap& attributes )
   mAttributes = attributes;
 }
 
+/**Clear attribute map for this feature*/
+void QgsFeature::clearAttributeMap()
+{
+  mAttributes.clear();
+}
+
 /**
  * Add an attribute to the map
  */
