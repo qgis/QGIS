@@ -7,6 +7,23 @@ class QgsVectorDataProvider : QgsDataProvider
 
     public:
 
+  QgsVectorDataProvider* __iter__();
+%MethodCode
+    sipRes = sipCpp;
+%End
+
+  SIP_PYOBJECT __next__();
+%MethodCode
+    QgsFeature* f = new QgsFeature;
+    if (sipCpp->nextFeature(*f))
+      sipRes = sipConvertFromInstance(f, sipClass_QgsFeature, Py_None);
+    else
+    {
+      delete f;
+      PyErr_SetString(PyExc_StopIteration,"");
+    }
+%End
+
       // If you add to this, please also add to capabilitiesString()
       /**
        * enumeration with capabilities that providers might implement

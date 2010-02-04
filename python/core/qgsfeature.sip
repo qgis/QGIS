@@ -8,6 +8,32 @@ class QgsFeature
     
   public:
 
+    SIP_PYOBJECT __getitem__(int key);
+%MethodCode
+  const QgsAttributeMap& attrMap = sipCpp->attributeMap();
+  QgsAttributeMap::const_iterator it = attrMap.find(a0);
+  if (it == attrMap.end())
+    PyErr_SetString(PyExc_KeyError, QByteArray::number(a0));
+  else
+  {
+    QVariant* v = new QVariant(it.value());
+    sipRes = sipConvertFromInstance(v, sipClass_QVariant, Py_None);
+  }
+%End
+
+    void __setitem__(int key, QVariant value);
+%MethodCode
+  sipCpp->addAttribute(a0, *a1);
+%End
+
+    void __delitem__(int key);
+%MethodCode
+  if (sipCpp->attributeMap().contains(a0))
+    sipCpp->deleteAttribute(a0);
+  else
+    PyErr_SetString(PyExc_KeyError, QByteArray::number(a0));
+%End
+
     //! Constructor
     QgsFeature(int id = 0, QString typeName = "" );
 
