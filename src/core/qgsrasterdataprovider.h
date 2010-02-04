@@ -115,6 +115,9 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
      */
     virtual QString metadata() = 0;
 
+    /** \brief Identify raster value(s) found on the point position */
+    virtual bool identify( const QgsPoint & point, QMap<QString, QString>& results );
+
     /**
      * \brief Identify details from a server (e.g. WMS) from the last screen update
      *

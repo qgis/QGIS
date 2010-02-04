@@ -490,58 +490,6 @@ QDateTime QgsRasterLayer::lastModified( QString const & name )
 
   t = fi.lastModified();
 
-  // Check also color table for GRASS
-  if ( name.contains( "cellhd" ) > 0 )
-  { // most probably GRASS
-    QString dir = fi.path();
-    QString map = fi.fileName();
-    fi.setFile( dir + "/../colr/" + map );
-
-    if ( fi.exists() )
-    {
-      if ( fi.lastModified() > t ) t = fi.lastModified();
-    }
-  }
-
-  // Check GRASS group members (bands)
-  if ( name.contains( "group" ) > 0 )
-  { // probably GRASS group
-    fi.setFile( name + "/REF" );
-
-    if ( fi.exists() )
-    {  // most probably GRASS group
-      QFile f( name + "/REF" );
-      if ( f.open( QIODevice::ReadOnly ) )
-      {
-        QString dir = fi.path() + "/../../../";
-
-        char buf[101];
-        while ( f.readLine( buf, 100 ) != -1 )
-        {
-          QString ln = QString( buf );
-          QStringList sl = ln.trimmed().split( ' ', QString::SkipEmptyParts );
-          QString map = sl.first();
-          sl.pop_front();
-          QString mapset = sl.first();
-
-          // header
-          fi.setFile( dir + mapset + "/cellhd/" +  map );
-          if ( fi.exists() )
-          {
-            if ( fi.lastModified() > t ) t = fi.lastModified();
-          }
-
-          // color
-          fi.setFile( dir + mapset + "/colr/" +  map );
-          if ( fi.exists() )
-          {
-            if ( fi.lastModified() > t ) t = fi.lastModified();
-          }
-        }
-      }
-    }
-  }
-
   QgsDebugMsg( "last modified = " + t.toString() );
 
   return t;
@@ -1170,6 +1118,9 @@ QgsRasterLayer::RasterPyramidList  QgsRasterLayer::buildPyramidList()
   int myWidth = mWidth;
   int myHeight = mHeight;
   int myDivisor = 2;
+  
+  if ( mDataProvider ) return mPyramidList;
+
   GDALRasterBandH myGDALBand = GDALGetRasterBand( mGdalDataset, 1 ); //just use the first band
 
   mPyramidList.clear();
@@ -1927,6 +1878,12 @@ bool QgsRasterLayer::identify( const QgsPoint& thePoint, QMap<QString, QString>&
   }
 
   QgsDebugMsg( thePoint.toString() );
+
+  if ( !mProviderKey.isEmpty() )
+  {
+    QgsDebugMsg( "identify provider : " + mProviderKey ) ;
+    return ( mDataProvider->identify( thePoint, theResults ) );
+  }
 
   if ( !mLayerExtent.contains( thePoint ) )
   {
@@ -3270,8 +3227,15 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
           mDrawingStyle = MultiBandColor;  //sensible default
 
           // Setup source CRS
-          *mCRS = QgsCoordinateReferenceSystem();
-          mCRS->createFromOgcWmsCrs( crs );
+          if ( mProviderKey == "wms" ) 
+          {
+            *mCRS = QgsCoordinateReferenceSystem();
+            mCRS->createFromOgcWmsCrs( crs );
+          }
+          else
+          {
+            *mCRS = QgsCoordinateReferenceSystem( mDataProvider->crs() );
+          }
         }
       }
       else
@@ -5453,9 +5417,11 @@ bool QgsRasterLayer::update()
 
   if ( mLastModified < QgsRasterLayer::lastModified( source() ) )
   {
-    QgsDebugMsg( "Outdated -> reload" );
-    closeDataset();
-    return readFile( source() );
+    if ( !usesProvider() ) {
+      QgsDebugMsg( "Outdated -> reload" );
+      closeDataset();
+      return readFile( source() );
+    }
   }
   return true;
 }

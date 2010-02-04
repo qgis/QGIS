@@ -19,6 +19,8 @@
 #include "qgsrasterdataprovider.h"
 #include "qgslogger.h"
 
+#include <QMap>
+
 QgsRasterDataProvider::QgsRasterDataProvider(): mDpi( -1 )
 {
 }
@@ -45,5 +47,10 @@ QString QgsRasterDataProvider::capabilitiesString() const
   return abilitiesList.join( ", " );
 }
 
+bool QgsRasterDataProvider::identify( const QgsPoint& thePoint, QMap<QString, QString>& theResults )
+{
+  theResults.clear();
+  return false;
+}
 
 // ENDS
