@@ -10,6 +10,8 @@
  *               License (>=v2).
  *
  *****************************************************************************/
+#define PACKAGE "grassmods"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -21,8 +23,6 @@
 
 int main(int argc, char **argv)
 {
-    char *mapset;
-    char *name;
     struct GModule *module;
     struct Option *info_opt, *rast_opt, *vect_opt, *coor_opt;
     struct Cell_head window;
@@ -96,8 +96,8 @@ int main(int argc, char **argv)
           G_get_cellhd( rast_opt->answer, "", &window);
           G_set_window(&window);
           fd = G_open_cell_old( rast_opt->answer, "");
-          col = G_easting_to_col( x, &window);
-          row = G_northing_to_row( y, &window);
+          col = (int) G_easting_to_col( x, &window);
+          row = (int) G_northing_to_row( y, &window);
           if (col == window.cols) col--;
           if (row == window.rows) row--;
 

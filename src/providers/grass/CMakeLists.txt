@@ -77,12 +77,14 @@ ADD_EXECUTABLE(qgis.d.rast ${QGIS_D_RAST_SRCS})
 
 TARGET_LINK_LIBRARIES (qgis.d.rast
   ${GRASS_LIBRARY_gis}
+  ${GRASS_LIBRARY_datetime}
 )
 
 ADD_EXECUTABLE(qgis.g.info ${QGIS_G_INFO_SRCS})
 
 TARGET_LINK_LIBRARIES (qgis.g.info
   ${GRASS_LIBRARY_gis}
+  ${GRASS_LIBRARY_datetime}
   ${GRASS_LIBRARY_gproj}
 )
 

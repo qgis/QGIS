@@ -10,6 +10,8 @@
  *               License (>=v2).
  *
  *****************************************************************************/
+#define PACKAGE "grassmods"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -25,13 +27,9 @@ int main(int argc, char **argv)
     char *mapset;
     char *name;
     int fp;
-    int cols, rows;
     struct GModule *module;
     struct Option *map;
     struct Option *win;
-    struct Flag *flag_o;
-    struct Flag *flag_i;
-    struct Flag *flag_x;
     struct Cell_head window;
 
     /* Initialize the GIS calls */
@@ -89,7 +87,6 @@ int display(char *name,
 	    RASTER_MAP_TYPE data_type)
 {
     struct Colors colors;
-    int r, g, b;
 
     if (G_read_colors(name, mapset, &colors) == -1)
 	G_fatal_error(_("Color file for <%s> not available"), name);
@@ -113,7 +110,6 @@ static int cell_draw(char *name,
     int cellfile;
     void *xarray;
     int row;
-    int t, b, l, r;
     int ncols, nrows;
     static unsigned char *red, *grn, *blu, *set;
     int i;
