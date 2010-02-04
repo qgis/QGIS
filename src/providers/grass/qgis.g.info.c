@@ -31,7 +31,7 @@ int main(int argc, char **argv)
     G_gisinit(argv[0]);
 
     module = G_define_module();
-    module->description = _("Get info about locations,mapsets,maps");
+    module->description = ("Get info about locations,mapsets,maps");
 
     info_opt = G_define_option();
     info_opt->key = "info";
@@ -109,7 +109,7 @@ int main(int argc, char **argv)
           {
             if (G_get_c_raster_row(fd, cell, row) < 0) 
             {
-              G_fatal_error(_("Unable to read raster map <%s> row %d"),
+              G_fatal_error(("Unable to read raster map <%s> row %d"),
                                     rast_opt->answer, row);
             }
             fprintf (stdout, "value:%d\n", cell[col] );
@@ -118,7 +118,7 @@ int main(int argc, char **argv)
           { 
             if (G_get_d_raster_row(fd, dcell, row) < 0) 
             {
-              G_fatal_error(_("Unable to read raster map <%s> row %d"),
+              G_fatal_error(("Unable to read raster map <%s> row %d"),
                                     rast_opt->answer, row);
             }
             fprintf (stdout, "value:%f\n", dcell[col] );

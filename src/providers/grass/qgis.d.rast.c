@@ -36,11 +36,11 @@ int main(int argc, char **argv)
     G_gisinit(argv[0]);
 
     module = G_define_module();
-    module->keywords = _("display, raster");
-    module->description = _("Output raster map layers in a format suitable for display in QGIS");
+    module->keywords = ("display, raster");
+    module->description = ("Output raster map layers in a format suitable for display in QGIS");
 
     map = G_define_standard_option(G_OPT_R_MAP);
-    map->description = _("Raster map to be displayed");
+    map->description = ("Raster map to be displayed");
 
     win = G_define_option();
     win->key = "window";
@@ -66,7 +66,7 @@ int main(int argc, char **argv)
     /* Make sure map is available */
     mapset = G_find_cell2(name, "");
     if (mapset == NULL)
-	G_fatal_error(_("Raster map <%s> not found"), name);
+	G_fatal_error(("Raster map <%s> not found"), name);
 
 
     fp = G_raster_map_is_fp(name, mapset);
@@ -89,7 +89,7 @@ int display(char *name,
     struct Colors colors;
 
     if (G_read_colors(name, mapset, &colors) == -1)
-	G_fatal_error(_("Color file for <%s> not available"), name);
+	G_fatal_error(("Color file for <%s> not available"), name);
 
     //G_set_null_value_color(r, g, b, &colors);
 
@@ -124,7 +124,7 @@ static int cell_draw(char *name,
 
     /* Make sure map is available */
     if ((cellfile = G_open_cell_old(name, mapset)) == -1)
-	G_fatal_error(_("Unable to open raster map <%s>"), name);
+	G_fatal_error(("Unable to open raster map <%s>"), name);
 
     /* Allocate space for cell buffer */
     xarray = G_allocate_raster_buf(data_type);
