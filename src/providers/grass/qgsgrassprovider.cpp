@@ -327,6 +327,7 @@ bool QgsGrassProvider::nextFeature( QgsFeature& feature )
 #endif
 
   feature.setFeatureId( id );
+  feature.clearAttributeMap();
 
   // TODO int may be 64 bits (memcpy)
   if ( type & ( GV_POINTS | GV_LINES ) ) /* points or lines */
@@ -491,7 +492,7 @@ void QgsGrassProvider::select( QgsAttributeList fetchAttributes,
 
     Polygon = Vect_new_line_struct();
 
-    // Using z coor -PORT_DOUBLE_MAX/PORT_DOUBLE_MAX we cover 3D, Vect_select_lines_by_polygon is 
+    // Using z coor -PORT_DOUBLE_MAX/PORT_DOUBLE_MAX we cover 3D, Vect_select_lines_by_polygon is
     // using dig_line_box to get the box, it is not perfect, Vect_select_lines_by_polygon
     // should clarify better how 2D/3D is treated
     Vect_append_point( Polygon, rect.xMinimum(), rect.yMinimum(), -PORT_DOUBLE_MAX );

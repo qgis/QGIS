@@ -93,6 +93,11 @@ class CORE_EXPORT QgsFeature
     /**Sets all the attributes in one go*/
     void setAttributeMap( const QgsAttributeMap& attributeMap );
 
+    /** Clear attribute map
+     * added in 1.5
+     */
+    void clearAttributeMap();
+
     /**
      * Add an attribute to the map
      */
