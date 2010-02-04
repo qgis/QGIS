@@ -109,24 +109,24 @@ extern "C"
 # define _NEW_TTY_CTRL
 #endif
 
-#if defined (__FreeBSD__) || defined (__NetBSD__) || defined (__OpenBSD__) || defined (__bsdi__) || defined(__APPLE__) || defined (__DragonFly__)
+#if defined(HAVE_TCGETATTR)
+# define _tcgetattr(fd, ttmode) tcgetattr(fd, ttmode)
+#elif defined(TIOCGETA)
 # define _tcgetattr(fd, ttmode) ioctl(fd, TIOCGETA, (char *)ttmode)
+#elif defined(TCGETS)
+# define _tcgetattr(fd, ttmode) ioctl(fd, TCGETS, (char *)ttmode)
 #else
-# if defined(_HPUX_SOURCE) || defined(__Lynx__) || defined (__CYGWIN__)
-#  define _tcgetattr(fd, ttmode) tcgetattr(fd, ttmode)
-# else
-#  define _tcgetattr(fd, ttmode) ioctl(fd, TCGETS, (char *)ttmode)
-# endif
+# error HAVE_TCGETATTR || TIOCGETA || TCGETS required
 #endif
 
-#if defined (__FreeBSD__) || defined (__NetBSD__) || defined (__OpenBSD__) || defined (__bsdi__) || defined(__APPLE__) || defined (__DragonFly__)
+#if defined(HAVE_TCSETATTR) && defined(TCSANOW)
+# define _tcsetattr(fd, ttmode) tcsetattr(fd, TCSANOW, ttmode)
+#elif defined(TIOCSETA)
 # define _tcsetattr(fd, ttmode) ioctl(fd, TIOCSETA, (char *)ttmode)
+#elif defined(TCSETS)
+# define _tcsetattr(fd, ttmode) ioctl(fd, TCSETS, (char *)ttmode)
 #else
-# if defined(_HPUX_SOURCE) || defined(__CYGWIN__)
-#  define _tcsetattr(fd, ttmode) tcsetattr(fd, TCSANOW, ttmode)
-# else
-#  define _tcsetattr(fd, ttmode) ioctl(fd, TCSETS, (char *)ttmode)
-# endif
+# error (HAVE_TCSETATTR && TCSANOW) || TIOCSETA || TCSETS required
 #endif
 
 //#include <kdebug.h>

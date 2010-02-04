@@ -19,6 +19,7 @@ QGIS_MINOR=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_MINOR "\([0-9]*\)")/\1/p
 QGIS_PATCH=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_PATCH "\([0-9]*\)")/\1/p' CMakeLists.txt)
 QGIS_ABI=$(QGIS_MAJOR).$(QGIS_MINOR).$(QGIS_PATCH)
 GRASS_ABI=$(subst .,,$(shell pkg-config --modversion grass|sed -e "s/\.//g" -e "s/RC/-/"))
+GRASS=grass$(subst .,,$(shell pkg-config --modversion grass|cut -d. -f1,2))
 
 CMAKE_OPTS := \
 	-Wno-dev \
@@ -31,7 +32,7 @@ CMAKE_OPTS := \
 	-D WITH_INTERNAL_SPATIALITE=TRUE
 
 ifeq ($(DISTRIBUTION),sid)
-# depend on python 2.5 while transition to python 2.6 is on
+# use on python 2.5 while transition to python 2.6 is on
 CMAKE_OPTS += -D PYTHON_EXECUTABLE=/usr/bin/python2.5
 endif
 
@@ -64,6 +65,7 @@ define gentemplate
 $(2): $(1)
 	sed \
 		-e "s/{QGIS_ABI}/$(QGIS_ABI)/g" \
+		-e "s/{GRASS}/$(GRASS)/g" \
 		-e "s/{GRASS_ABI}/$(GRASS_ABI)/g" $$^ >$$@
 endef
 
@@ -105,7 +107,11 @@ clean: $(TEMPLATES)
 install: build
 	dh_testdir
 	dh_testroot
+ifneq (,$(findstring $(DISTRIBUTION),"lenny hardy"))
 	dh_clean -k 
+else
+	dh_prep
+endif
 	dh_installdirs
 
 	# Add here commands to install the package into debian/tmp.
@@ -152,7 +158,7 @@ endif
 	dh_fixperms
 	dh_makeshlibs
 	dh_installdeb
-	LD_LIBRARY_PATH=$(LD_LIBRARY_PATH):/usr/lib/grass/lib:/usr/lib/grass64/lib dh_shlibdeps
+	dh_shlibdeps -l/usr/lib/$(GRASS)/lib
 	dh_gencontrol
 	dh_md5sums
 	dh_builddeb
