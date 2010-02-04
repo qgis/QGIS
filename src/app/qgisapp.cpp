@@ -3810,6 +3810,7 @@ bool QgisApp::loadComposersFromProject( const QString& projectFilePath )
     {
       composer->close();
     }
+    emit composerAdded( composer->view() );
   }
   return true;
 }
@@ -3819,6 +3820,7 @@ void QgisApp::deletePrintComposers()
   QSet<QgsComposer*>::iterator it = mPrintComposers.begin();
   for ( ; it != mPrintComposers.end(); ++it )
   {
+    emit composerWillBeRemoved(( *it )->view() );
     delete( *it );
   }
   mPrintComposers.clear();
