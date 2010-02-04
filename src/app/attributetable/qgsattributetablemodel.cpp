@@ -24,6 +24,7 @@
 
 #include <QtGui>
 #include <QVariant>
+#include <limits>
 
 ////////////////////////////
 // QgsAttributeTableModel //
@@ -32,6 +33,7 @@
 QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayer *theLayer, QObject *parent )
     : QAbstractTableModel( parent )
 {
+  mFeat.setFeatureId( std::numeric_limits<int>::min() );
   mLayer = theLayer;
   mFeatureCount = mLayer->pendingFeatureCount();
   loadAttributes();
@@ -273,7 +275,7 @@ int QgsAttributeTableModel::rowToId( const int id ) const
   {
     QgsDebugMsg( QString( "rowToId: row %1 not in the map" ).arg( id ) );
     // return negative infinite (to avoid collision with newly added features)
-    return -999999;
+    return std::numeric_limits<int>::min();
   }
 
   return mRowIdMap[id];
