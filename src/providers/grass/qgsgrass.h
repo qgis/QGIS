@@ -25,6 +25,9 @@ extern "C"
 
 #include "qgsexception.h"
 #include <QString>
+#include <QMap>
+class QgsCoordinateReferenceSystem;
+class QgsRectangle;
 
 /*!
    Methods for C library initialization and error handling.
@@ -74,7 +77,7 @@ class QgsGrass
               };
 
     //! Map type
-    enum MapType { Raster, Vector, Region };
+    enum MapType { None, Raster, Vector, Region };
 
     //! Reset error code (to OK). Call this before a piece of code where an error is expected
     static GRASS_EXPORT void resetError( void );  // reset error status
@@ -156,6 +159,24 @@ class QgsGrass
 
     // ! Get the lock file
     static GRASS_EXPORT QString lockFilePath();
+
+    // ! Run a GRASS module in any gisdbase/location
+    static GRASS_EXPORT QByteArray runModule( QString gisdbase, QString location, QString module, QStringList arguments );
+
+    // ! Get info string from qgis.g.info module
+    static GRASS_EXPORT QString getInfo( QString info, QString gisdbase, 
+                            QString location, QString mapset=0, QString map=0, MapType type = None, double x=0, double y=0 );
+
+    // ! Get location projection 
+    static GRASS_EXPORT QgsCoordinateReferenceSystem crs( QString gisdbase, QString location);
+
+    // ! Get map extent
+   static GRASS_EXPORT QgsRectangle extent( QString gisdbase, QString location, 
+                      QString mapset, QString map, MapType type = None );
+
+    // ! Get map value / feautre info
+   static GRASS_EXPORT QMap<QString, QString> query( QString gisdbase, QString location, 
+                      QString mapset, QString map, MapType type, double x, double y);
 
     //! Library version
     static GRASS_EXPORT int versionMajor();
