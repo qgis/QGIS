@@ -1330,6 +1330,10 @@
 		72D2486F1100CD7400923469 /* qgsgpsdetector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72D2486D1100CD2300923469 /* qgsgpsdetector.cpp */; };
 		72D248701100CD7400923469 /* qgsgpsdetector.h in Sources */ = {isa = PBXBuildFile; fileRef = 72D2486E1100CD2300923469 /* qgsgpsdetector.h */; };
 		72D84C1F1044BC3A009F8F39 /* qgsmaptoolreshape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72D84C1D1044BBFD009F8F39 /* qgsmaptoolreshape.cpp */; };
+		72DAAF3F111A6090000DC8B7 /* qgscredentials.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72DAAF3D111A6064000DC8B7 /* qgscredentials.cpp */; };
+		72DAAF40111A6090000DC8B7 /* qgscredentials.h in Sources */ = {isa = PBXBuildFile; fileRef = 72DAAF3E111A6064000DC8B7 /* qgscredentials.h */; };
+		72DAAF43111A60EF000DC8B7 /* qgscredentialdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72DAAF41111A60D2000DC8B7 /* qgscredentialdialog.cpp */; };
+		72DAAF44111A60EF000DC8B7 /* qgscredentialdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72DAAF42111A60D2000DC8B7 /* qgscredentialdialog.h */; };
 		72DB68DE1021D08400ED5F3A /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		72DB68ED1021D0BD00ED5F3A /* osmhandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72DB68D11021D06C00ED5F3A /* osmhandler.cpp */; };
 		72DB68EF1021D0BD00ED5F3A /* osmprovider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72DB68D31021D06C00ED5F3A /* osmprovider.cpp */; };
@@ -1688,10 +1692,8 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/sip$(INPUT_FILE_BASE)part0.cpp",
 				"$(DERIVED_FILES_DIR)/sip$(INPUT_FILE_BASE)part1.cpp",
-				"$(DERIVED_FILES_DIR)/sip$(INPUT_FILE_BASE)part2.cpp",
-				"$(DERIVED_FILES_DIR)/sip$(INPUT_FILE_BASE)part3.cpp",
 			);
-			script = "$SIP $PYQT_SIP_FLAGS -j 4 -I $PYQT_SIP_DIR -I $PROJECT_DIR/../../python -c \"$DERIVED_FILES_DIR\" \"$INPUT_FILE_PATH\"";
+			script = "$SIP $PYQT_SIP_FLAGS -j 2 -I $PYQT_SIP_DIR -I $PROJECT_DIR/../../python -c \"$DERIVED_FILES_DIR\" \"$INPUT_FILE_PATH\"";
 		};
 		7268E86D11023A8700B96374 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -4267,7 +4269,6 @@
 		7209EC970F39E57B003DC336 /* qgscomposerscalebarwidgetbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgscomposerscalebarwidgetbase.ui; path = ../../src/ui/qgscomposerscalebarwidgetbase.ui; sourceTree = SOURCE_ROOT; };
 		7209EC980F39E57B003DC336 /* qgscomposervectorlegendbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgscomposervectorlegendbase.ui; path = ../../src/ui/qgscomposervectorlegendbase.ui; sourceTree = SOURCE_ROOT; };
 		7209EC990F39E57B003DC336 /* qgscompositionbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgscompositionbase.ui; path = ../../src/ui/qgscompositionbase.ui; sourceTree = SOURCE_ROOT; };
-		7209EC9A0F39E57B003DC336 /* qgscompositionwidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgscompositionwidget.h; path = ../../src/ui/qgscompositionwidget.h; sourceTree = SOURCE_ROOT; };
 		7209EC9B0F39E57B003DC336 /* qgscompositionwidgetbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgscompositionwidgetbase.ui; path = ../../src/ui/qgscompositionwidgetbase.ui; sourceTree = SOURCE_ROOT; };
 		7209EC9C0F39E57B003DC336 /* qgscontinuouscolordialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgscontinuouscolordialogbase.ui; path = ../../src/ui/qgscontinuouscolordialogbase.ui; sourceTree = SOURCE_ROOT; };
 		7209EC9D0F39E57B003DC336 /* qgscustomprojectiondialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgscustomprojectiondialogbase.ui; path = ../../src/ui/qgscustomprojectiondialogbase.ui; sourceTree = SOURCE_ROOT; };
@@ -6828,6 +6829,11 @@
 		72D84C131044BBB7009F8F39 /* mActionReshape.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionReshape.png; path = ../../images/themes/default/mActionReshape.png; sourceTree = SOURCE_ROOT; };
 		72D84C1D1044BBFD009F8F39 /* qgsmaptoolreshape.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsmaptoolreshape.cpp; path = ../../src/app/qgsmaptoolreshape.cpp; sourceTree = SOURCE_ROOT; };
 		72D84C1E1044BBFD009F8F39 /* qgsmaptoolreshape.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsmaptoolreshape.h; path = ../../src/app/qgsmaptoolreshape.h; sourceTree = SOURCE_ROOT; };
+		72DAAF3D111A6064000DC8B7 /* qgscredentials.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgscredentials.cpp; path = ../../src/core/qgscredentials.cpp; sourceTree = SOURCE_ROOT; };
+		72DAAF3E111A6064000DC8B7 /* qgscredentials.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgscredentials.h; path = ../../src/core/qgscredentials.h; sourceTree = SOURCE_ROOT; };
+		72DAAF41111A60D2000DC8B7 /* qgscredentialdialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgscredentialdialog.cpp; path = ../../src/gui/qgscredentialdialog.cpp; sourceTree = SOURCE_ROOT; };
+		72DAAF42111A60D2000DC8B7 /* qgscredentialdialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgscredentialdialog.h; path = ../../src/gui/qgscredentialdialog.h; sourceTree = SOURCE_ROOT; };
+		72DAAF45111A610B000DC8B7 /* qgscredentialdialog.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgscredentialdialog.ui; path = ../../src/ui/qgscredentialdialog.ui; sourceTree = SOURCE_ROOT; };
 		72DB68D01021D06C00ED5F3A /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../src/providers/osm/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
 		72DB68D11021D06C00ED5F3A /* osmhandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = osmhandler.cpp; path = ../../src/providers/osm/osmhandler.cpp; sourceTree = SOURCE_ROOT; };
 		72DB68D21021D06C00ED5F3A /* osmhandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = osmhandler.h; path = ../../src/providers/osm/osmhandler.h; sourceTree = SOURCE_ROOT; };
@@ -8003,6 +8009,8 @@
 				7209E68C0F39E57A003DC336 /* qgscoordinatereferencesystem.h */,
 				7209E68D0F39E57A003DC336 /* qgscoordinatetransform.cpp */,
 				7209E68E0F39E57A003DC336 /* qgscoordinatetransform.h */,
+				72DAAF3D111A6064000DC8B7 /* qgscredentials.cpp */,
+				72DAAF3E111A6064000DC8B7 /* qgscredentials.h */,
 				7209E68F0F39E57A003DC336 /* qgscsexception.h */,
 				7209E6900F39E57A003DC336 /* qgsdataprovider.h */,
 				7209E6910F39E57A003DC336 /* qgsdatasourceuri.cpp */,
@@ -8398,6 +8406,8 @@
 				7209E7730F39E57A003DC336 /* qgsrubberband.h */,
 				7209E7740F39E57A003DC336 /* qgsvertexmarker.cpp */,
 				7209E7750F39E57A003DC336 /* qgsvertexmarker.h */,
+				72DAAF41111A60D2000DC8B7 /* qgscredentialdialog.cpp */,
+				72DAAF42111A60D2000DC8B7 /* qgscredentialdialog.h */,
 				7225EF3110B2275E00D23EA2 /* symbology-ng */,
 			);
 			name = gui;
@@ -9226,9 +9236,9 @@
 				7295BC7610F57D70005D1408 /* qgscomposertablewidgetbase.ui */,
 				7209EC980F39E57B003DC336 /* qgscomposervectorlegendbase.ui */,
 				7209EC990F39E57B003DC336 /* qgscompositionbase.ui */,
-				7209EC9A0F39E57B003DC336 /* qgscompositionwidget.h */,
 				7209EC9B0F39E57B003DC336 /* qgscompositionwidgetbase.ui */,
 				7209EC9C0F39E57B003DC336 /* qgscontinuouscolordialogbase.ui */,
+				72DAAF45111A610B000DC8B7 /* qgscredentialdialog.ui */,
 				7209EC9D0F39E57B003DC336 /* qgscustomprojectiondialogbase.ui */,
 				7209EC9E0F39E57B003DC336 /* qgspgsourceselectbase.ui */,
 				7209EC9F0F39E57B003DC336 /* qgsdelattrdialogbase.ui */,
@@ -14577,6 +14587,8 @@
 				72ED33A6110FD64F00526CF5 /* qgspluginlayer.cpp in Sources */,
 				72ED33A7110FD64F00526CF5 /* qgspluginlayer.h in Sources */,
 				72ED33A8110FD64F00526CF5 /* qgspluginlayerregistry.cpp in Sources */,
+				72DAAF3F111A6090000DC8B7 /* qgscredentials.cpp in Sources */,
+				72DAAF40111A6090000DC8B7 /* qgscredentials.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -14659,6 +14671,8 @@
 				72E35C931104C02A00B0EA85 /* qgsdashspacedialog.h in Sources */,
 				72491FB711074E930035D7E5 /* characterwidget.cpp in Sources */,
 				72491FB811074E930035D7E5 /* characterwidget.h in Sources */,
+				72DAAF43111A60EF000DC8B7 /* qgscredentialdialog.cpp in Sources */,
+				72DAAF44111A60EF000DC8B7 /* qgscredentialdialog.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
