@@ -5,6 +5,25 @@ class QgsVectorLayer : QgsMapLayer
 %End
 
 public:
+
+  QgsVectorLayer* __iter__();
+%MethodCode
+    sipRes = sipCpp;
+%End
+
+  SIP_PYOBJECT __next__();
+%MethodCode
+    QgsFeature* f = new QgsFeature;
+    if (sipCpp->nextFeature(*f))
+      sipRes = sipConvertFromInstance(f, sipClass_QgsFeature, Py_None);
+    else
+    {
+      delete f;
+      PyErr_SetString(PyExc_StopIteration,"");
+    }
+%End
+
+
   enum EditType { 
     LineEdit,
     UniqueValues,
