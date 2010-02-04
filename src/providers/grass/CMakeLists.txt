@@ -5,7 +5,13 @@ ADD_DEFINITIONS(-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\")
 
 SET(GRASS_PROVIDER_SRCS provider.cpp)
 
+SET(GRASS_RASTER_PROVIDER_SRCS qgsgrassrasterprovider.cpp)
+
 SET(GRASS_LIB_SRCS qgsgrassprovider.cpp qgsgrass.cpp)
+
+SET(QGIS_D_RAST_SRCS qgis.d.rast.c)
+
+SET(QGIS_G_INFO_SRCS qgis.g.info.c)
 
 ########################################################
 # Build
@@ -54,6 +60,32 @@ TARGET_LINK_LIBRARIES (grassprovider
   qgisgrass
 )
 
+ADD_LIBRARY (grassrasterprovider MODULE ${GRASS_RASTER_PROVIDER_SRCS})
+
+IF (WIN32)
+  SET_TARGET_PROPERTIES(grassrasterprovider PROPERTIES COMPILE_FLAGS "\"-DGRASS_EXPORT=__declspec(dllimport)\"" )
+ELSE (WIN32)
+  SET_TARGET_PROPERTIES(grassrasterprovider PROPERTIES COMPILE_FLAGS "-DGRASS_EXPORT=" )
+ENDIF (WIN32)
+
+TARGET_LINK_LIBRARIES (grassrasterprovider
+  qgisgrass
+  qgis_core
+)
+
+ADD_EXECUTABLE(qgis.d.rast ${QGIS_D_RAST_SRCS})
+
+TARGET_LINK_LIBRARIES (qgis.d.rast
+  ${GRASS_LIBRARY_gis}
+)
+
+ADD_EXECUTABLE(qgis.g.info ${QGIS_G_INFO_SRCS})
+
+TARGET_LINK_LIBRARIES (qgis.g.info
+  ${GRASS_LIBRARY_gis}
+  ${GRASS_LIBRARY_gproj}
+)
+
 ########################################################
 # Install
 
@@ -64,3 +96,12 @@ INSTALL(TARGETS qgisgrass
 INSTALL(TARGETS grassprovider
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
+
+INSTALL(TARGETS grassrasterprovider
+  RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
+  LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
+
+INSTALL(TARGETS qgis.d.rast qgis.g.info
+        RUNTIME DESTINATION ${QGIS_DATA_DIR}/grass/modules 
+        PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+)

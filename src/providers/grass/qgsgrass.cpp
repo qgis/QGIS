@@ -19,12 +19,15 @@
 
 #include "qgslogger.h"
 #include "qgsapplication.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgsrectangle.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QProcess>
 #include <QSettings>
 #include <QTextStream>
+#include <QTemporaryFile>
 
 #include <QTextCodec>
 
@@ -1027,6 +1030,157 @@ bool GRASS_EXPORT QgsGrass::mapRegion( int type, QString gisbase,
     }
   }
   return true;
+}
+
+QByteArray GRASS_EXPORT QgsGrass::runModule(  QString gisdbase, QString location, 
+                                      QString module, QStringList arguments )
+{
+  QgsDebugMsg( QString( "gisdbase = %1 location = %2" ).arg( gisdbase ).arg( location ) );
+
+#ifdef WIN32
+  module += ".exe";
+#endif
+
+  // We have to set GISRC file, uff
+  QTemporaryFile gisrcFile;
+  if ( !gisrcFile.open() ) 
+  {
+    // TODO Exception
+    return QByteArray();
+  }
+ 
+  QTextStream out(&gisrcFile);
+  out << "GISDBASE: " << gisdbase << "\n";
+  out << "LOCATION_NAME: " << location << "\n";
+  out << "MAPSET: PERMANENT\n";
+  out.flush ();
+  QgsDebugMsg( gisrcFile.fileName() );
+
+  QStringList environment = QProcess::systemEnvironment();
+  environment.append("GISRC=" + gisrcFile.fileName() );
+
+  QProcess process;
+  process.setEnvironment( environment );
+
+  QgsDebugMsg( module + " " + arguments.join (" ") );
+  process.start( module, arguments );
+  if ( !process.waitForFinished()
+       || ( process.exitCode() != 0 && process.exitCode() != 255 ) )
+  {
+    QgsDebugMsg( "process.exitCode() = " + QString::number( process.exitCode() ) );
+/*
+    QMessageBox::warning( 0, QObject::tr( "Warning" ),
+                          QObject::tr( "Cannot start module" )
+                          + QObject::tr( "<br>command: %1 %2<br>%3<br>%4" )
+                          .arg( module ).arg( arguments.join( " " ) )
+                          .arg( process.readAllStandardOutput().constData() )
+                          .arg( process.readAllStandardError().constData() ) );
+*/
+    throw QgsGrass::Exception( QObject::tr( "Cannot start module" ) + "\n"
+                          + QObject::tr( "command: %1 %2<br>%3<br>%4" )
+                          .arg( module ).arg( arguments.join( " " ) )
+                          .arg( process.readAllStandardOutput().constData() )
+                          .arg( process.readAllStandardError().constData() ) );
+  }
+  QByteArray data = process.readAllStandardOutput();
+
+  return data;
+}
+
+QString GRASS_EXPORT QgsGrass::getInfo(  QString info, QString gisdbase, QString location, 
+                                      QString mapset, QString map, MapType type, double x, double y)
+{
+  QgsDebugMsg( QString( "gisdbase = %1 location = %2" ).arg( gisdbase ).arg( location ) );
+
+  QStringList arguments; 
+
+  QString cmd = QgsApplication::pkgDataPath() + "/grass/modules/qgis.g.info";
+  
+  arguments.append( "info=" + info );
+  if ( !map.isNull() ) 
+  { 
+      QString opt;
+      switch (type)
+      {
+        case Raster:
+          opt = "rast";
+          break;
+        case Vector:
+          opt = "vect";
+          break;
+      }
+      arguments.append( opt + "=" +  map + "@" + mapset );
+  }
+  if ( info == "query" ) 
+  {
+    arguments.append( QString("coor=%1,%2").arg(x).arg(y) );
+  }
+  
+  QByteArray data =  QgsGrass::runModule ( gisdbase, location, cmd, arguments );
+  QgsDebugMsg( data );
+  return QString( data );
+}
+
+QgsCoordinateReferenceSystem GRASS_EXPORT QgsGrass::crs(  QString gisdbase, QString location )
+{
+  QgsDebugMsg( QString( "gisdbase = %1 location = %2" ).arg( gisdbase ).arg( location ) );
+  QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem();
+  try 
+  {
+    QString wkt = QgsGrass::getInfo ( "proj", gisdbase, location );
+    crs.createFromWkt( wkt );
+
+  } 
+  catch ( QgsException &e )
+  {
+    QMessageBox::warning( 0, QObject::tr( "Warning" ), 
+        QObject::tr( "Cannot get projection " ) + "\n"+ e.what() );
+  }
+
+  return crs;
+}
+
+QgsRectangle GRASS_EXPORT QgsGrass::extent(  QString gisdbase, QString location, QString mapset, QString map, MapType type )
+{
+  QgsDebugMsg( QString( "gisdbase = %1 location = %2" ).arg( gisdbase ).arg( location ) );
+
+  try 
+  {
+    QString str = QgsGrass::getInfo ( "window", gisdbase, location, mapset, map, type );
+    QStringList list = str.split(",");
+    if ( list.size() != 4 ) {
+      throw QgsGrass::Exception( "Cannot parse GRASS map extent: " + str );
+    }
+    return QgsRectangle ( list[0].toDouble(), list[1].toDouble(), list[2].toDouble(), list[3].toDouble() ) ;
+  }
+  catch ( QgsException &e )
+  {
+    QMessageBox::warning( 0, QObject::tr( "Warning" ), 
+        QObject::tr( "Cannot get raster extent" ) + "\n"+ e.what() );
+  }
+  return QgsRectangle( 0, 0, 0, 0 );
+}
+
+QMap<QString, QString> GRASS_EXPORT QgsGrass::query (  QString gisdbase, QString location, QString mapset, QString map, MapType type, double x, double y )
+{
+  QgsDebugMsg( QString( "gisdbase = %1 location = %2" ).arg( gisdbase ).arg( location ) );
+
+  QMap<QString, QString> result;
+  // TODO: multiple values (more rows)
+  try 
+  {
+    QString str = QgsGrass::getInfo ( "query", gisdbase, location, mapset, map, type, x, y  );
+    QStringList list = str.trimmed().split(":");
+    if ( list.size() == 2 ) {
+      result[list[0]] = list[1];
+    }
+  }
+  catch ( QgsException &e )
+  {
+    QMessageBox::warning( 0, QObject::tr( "Warning" ), 
+        QObject::tr( "Cannot query raster " ) + "\n"+ e.what() );
+  }
+  return result;
 }
 
 // GRASS version constants have been changed on 26.4.2007
