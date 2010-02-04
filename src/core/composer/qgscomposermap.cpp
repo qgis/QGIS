@@ -899,7 +899,7 @@ void QgsComposerMap::drawCoordinateAnnotation( QPainter* p, const QPointF& pos, 
     {
       if ( mGridAnnotationDirection == Vertical || mGridAnnotationDirection == BoundaryDirection )
       {
-        xpos -= textHeight + mAnnotationFrameDistance;
+        xpos += textHeight + mAnnotationFrameDistance;
         ypos += textWidth / 2.0;
         rotation = 270;
       }
