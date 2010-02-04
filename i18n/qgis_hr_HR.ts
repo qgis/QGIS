@@ -1741,7 +1741,7 @@ Pogreška GEOS geoprocesiranja: Jedan ili više ulaznih elemenata nemaju valjanu
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="55"/>
         <source>Welcome to your automatically generated plugin!</source>
-        <translation>Dobro došli u vaš automatski stvoreni plugin!</translation>
+        <translation>Dobro došli u vaš automatski stvoreni dodatak!</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="56"/>
@@ -1766,17 +1766,17 @@ Pogreška GEOS geoprocesiranja: Jedan ili više ulaznih elemenata nemaju valjanu
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="62"/>
         <source>QgsPlugin is an ABC that defines required behaviour your plugin must provide. See below for more details.</source>
-        <translation>QgsPlugin je ABC koji definira ponašanje koje vaš plugin mora pružiti. Pogledaj dolje za više detalja.</translation>
+        <translation>QgsPlugin je ABC koji definira ponašanje koje vaš dodatak mora pružiti. Pogledaj dolje za više detalja.</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="63"/>
         <source>What are all the files in my generated plugin directory for?</source>
-        <translation>Za što su sve datoteke u stvorenoj plugin mapi?</translation>
+        <translation>Za što su sve datoteke u stvorenoj mapi dodataka?</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="64"/>
         <source>This is the generated CMake file that builds the plugin. You should add you application specific dependencies and source files to this file.</source>
-        <translation>Ovo je stvorena CMake datoteka za izgradnju plugina. Ovoj datoteci trebate dodati specifične ovisnosti i izvorne datoteke.</translation>
+        <translation>Ovo je stvorena CMake datoteka za izgradnju dodatka. Ovoj datoteci trebate dodati specifične ovisnosti i izvorne datoteke.</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="65"/>
@@ -1816,7 +1816,7 @@ Pogreška GEOS geoprocesiranja: Jedan ili više ulaznih elemenata nemaju valjanu
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="72"/>
         <source>For Questions and Comments regarding the plugin builder template and creating your features in QGIS using the plugin interface please contact us via:</source>
-        <translation>Za pitanja i komentare o predlošku za izgradnju plugina i kreiranja vlastitih funkcija u QGIS-u kroz sučelje plugina kontaktirajte nas preko:</translation>
+        <translation>Za pitanja i komentare o predlošku za izgradnju dodatka i kreiranja vlastitih funkcija u QGIS-u kroz sučelje dodataka kontaktirajte nas preko:</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="73"/>
@@ -1826,7 +1826,7 @@ Pogreška GEOS geoprocesiranja: Jedan ili više ulaznih elemenata nemaju valjanu
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="74"/>
         <source>QGIS is distributed under the Gnu Public License. If you create a useful plugin please consider contributing it back to the community.</source>
-        <translation>QGIS se distribuira pod GNU Javnom licencom. Ako stvarate korisni plugin, molimo vas da razmotrite doprinošenje zajednici.</translation>
+        <translation>QGIS se distribuira pod GNU Javnom licencom. Ako stvarate korisni dodatak, molimo vas da razmotrite doprinošenje zajednici.</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="75"/>
@@ -1844,7 +1844,7 @@ Pogreška GEOS geoprocesiranja: Jedan ili više ulaznih elemenata nemaju valjanu
     <message>
         <location filename="../src/plugins/labeling/labeling.cpp" line="113"/>
         <source>Replace this with a short description of what the plugin does</source>
-        <translation>Zamijenite ovo sa specifičnim opisom plugina</translation>
+        <translation>Zamijenite ovo sa specifičnim opisom dodatka</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labeling.cpp" line="118"/>
@@ -2449,7 +2449,7 @@ Pogreška GEOS geoprocesiranja: Jedan ili više ulaznih elemenata nemaju valjanu
     <name>OsmFeatureDW</name>
     <message>
         <source>OSM Plugin</source>
-        <translation>OSM Plugin</translation>
+        <translation>OSM dodatak</translation>
     </message>
     <message>
         <source>The &apos;Create OSM Relation&apos; dialog was closed automatically because current OSM database was changed.</source>
@@ -2898,11 +2898,11 @@ Pogreška GEOS geoprocesiranja: Jedan ili više ulaznih elemenata nemaju valjanu
     </message>
     <message>
         <source>Couldn&apos;t load plugin &apos;%1&apos; from [&apos;%2&apos;]</source>
-        <translation>Ne mogu učitati plugin &apos;%1&apos; iz [&apos;%2&apos;]</translation>
+        <translation>Ne mogu učitati dodatak &apos;%1&apos; iz [&apos;%2&apos;]</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin %1</source>
-        <translation>Ne mogu učitati plugin %1</translation>
+        <translation>Ne mogu učitati dodatak %1</translation>
     </message>
     <message>
         <source>%1 due an error when calling its classFactory() method</source>
@@ -2914,7 +2914,7 @@ Pogreška GEOS geoprocesiranja: Jedan ili više ulaznih elemenata nemaju valjanu
     </message>
     <message>
         <source>Error while unloading plugin %1</source>
-        <translation>Pogreška pri gašenju plugina %1</translation>
+        <translation>Pogreška pri gašenju dodatka %1</translation>
     </message>
 </context>
 <context>
@@ -2971,13 +2971,13 @@ Pogreška GEOS geoprocesiranja: Jedan ili više ulaznih elemenata nemaju valjanu
     <message>
         <location filename="../src/app/qgspluginregistry.cpp" line="313"/>
         <source>Error Loading Plugin</source>
-        <translation>Pogreška pri učitavanju plugina</translation>
+        <translation>Pogreška pri učitavanju dodatka</translation>
     </message>
     <message>
         <location filename="../src/app/qgspluginregistry.cpp" line="314"/>
         <source>There was an error loading a plugin.The following diagnostic information may help the QGIS developers resolve the issue:
 %1.</source>
-        <translation>Došlo je do pogreške pri učitavanju plugina. Slijedeća dijagnostička informacija može pomoći GGIS razvijateljima da isprave problem:
+        <translation>Došlo je do pogreške pri učitavanju dodatka. Slijedeća dijagnostička informacija može pomoći GGIS razvijateljima da isprave problem:
 %1.</translation>
     </message>
     <message>
@@ -2989,7 +2989,7 @@ Pogreška GEOS geoprocesiranja: Jedan ili više ulaznih elemenata nemaju valjanu
     <message>
         <location filename="../src/app/qgspluginregistry.cpp" line="445"/>
         <source>Error when reading metadata of plugin %1</source>
-        <translation>Pogreška pri učitavanju metapodataka plugina %1</translation>
+        <translation>Pogreška pri učitavanju metapodataka dodatka %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsspatialitesourceselect.cpp" line="303"/>
@@ -3142,7 +3142,7 @@ Pogreška GEOS geoprocesiranja: Jedan ili više ulaznih elemenata nemaju valjanu
     <message>
         <location filename="../src/core/qgsproviderregistry.cpp" line="274"/>
         <source>No data provider plugins are available. No vector layers can be loaded</source>
-        <translation>Nisu dostupni pluginovi pružatelji podataka. Ne mogu se učitati vektorski slojevi</translation>
+        <translation>Nisu dostupni pružatelji podataka dodatka. Ne mogu se učitati vektorski slojevi</translation>
     </message>
     <message>
         <location filename="../src/core/qgssearchtreenode.cpp" line="279"/>
@@ -3243,7 +3243,7 @@ Pogreška GEOS geoprocesiranja: Jedan ili više ulaznih elemenata nemaju valjanu
     <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramoverlayplugin.cpp" line="35"/>
         <source>A plugin for placing diagrams on vector layers</source>
-        <translation>Plugin za postavljanje dijagrama na vektorske slojeve</translation>
+        <translation>Dodatak za postavljanje dijagrama na vektorske slojeve</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramoverlayplugin.cpp" line="36"/>
@@ -3633,12 +3633,12 @@ Pogreška GEOS geoprocesiranja: Jedan ili više ulaznih elemenata nemaju valjanu
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationplugin.cpp" line="25"/>
         <source>Interpolation plugin</source>
-        <translation>Interpolacijski plugin</translation>
+        <translation>Interpolacijski dodatak</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationplugin.cpp" line="26"/>
         <source>A plugin for interpolation based on vertices of a vector layer</source>
-        <translation>Plugin za interpolaciju temeljenu na vrhovima iz vektorskog sloja</translation>
+        <translation>Dodatak za interpolaciju temeljenu na vrhovima iz vektorskog sloja</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationplugin.cpp" line="27"/>
@@ -3693,7 +3693,7 @@ Pogreška GEOS geoprocesiranja: Jedan ili više ulaznih elemenata nemaju valjanu
     <message>
         <location filename="../src/plugins/plugin_template/plugin.cpp" line="39"/>
         <source>[plugindescription]</source>
-        <translation>[opisplugina]</translation>
+        <translation>[opisdodatak]</translation>
     </message>
     <message>
         <location filename="../src/plugins/quick_print/quickprintplugin.cpp" line="39"/>
@@ -3703,17 +3703,17 @@ Pogreška GEOS geoprocesiranja: Jedan ili više ulaznih elemenata nemaju valjanu
     <message>
         <location filename="../src/plugins/quick_print/quickprintplugin.cpp" line="40"/>
         <source>Quick Print is a plugin to quickly print a map with minimal effort.</source>
-        <translation>Brzi Ispis je plugin za brzo ispisivanje mape uz minimalni napor.</translation>
+        <translation>Brzi Ispis je dodatak za brzo ispisivanje mape uz minimalni napor.</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="31"/>
         <source>Raster Terrain Analysis plugin</source>
-        <translation>Plugin za rastersku analizu terena</translation>
+        <translation>Dodatak za rastersku analizu terena</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="32"/>
         <source>A plugin for raster based terrain analysis</source>
-        <translation>Plugin za rastersku analizu terena</translation>
+        <translation>Dodatak za rastersku analizu terena</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="63"/>
@@ -3738,7 +3738,7 @@ Pogreška GEOS geoprocesiranja: Jedan ili više ulaznih elemenata nemaju valjanu
     <message>
         <location filename="../src/plugins/wfs/qgswfsplugin.cpp" line="31"/>
         <source>WFS plugin</source>
-        <translation>WFS plugin</translation>
+        <translation>WFS dodatak</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfsplugin.cpp" line="32"/>
@@ -3764,7 +3764,7 @@ Pogreška GEOS geoprocesiranja: Jedan ili više ulaznih elemenata nemaju valjanu
         <location filename="../src/providers/grass/qgsgrass.cpp" line="144"/>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="176"/>
         <source>GRASS plugin</source>
-        <translation>GRASS plugin</translation>
+        <translation>GRASS dodatak</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="145"/>
@@ -4083,7 +4083,7 @@ Molimo kontaktirajte razvijatelje.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="414"/>
         <source>Checking provider plugins</source>
-        <translation>Provjeravam pružatelje pluginova</translation>
+        <translation>Provjeravam pružatelje dodataka</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="418"/>
@@ -4093,7 +4093,7 @@ Molimo kontaktirajte razvijatelje.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="425"/>
         <source>Restoring loaded plugins</source>
-        <translation>Vraćanje učitanih pluginova</translation>
+        <translation>Vraćanje učitanih dodataka</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="430"/>
@@ -4671,7 +4671,7 @@ Molimo kontaktirajte razvijatelje.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="879"/>
-        <location filename="../src/app/qgisapp.cpp" line="5936"/>
+        <location filename="../src/app/qgisapp.cpp" line="5938"/>
         <source>New Bookmark</source>
         <translation>Nova zabilješka</translation>
     </message>
@@ -4942,12 +4942,12 @@ Molimo kontaktirajte razvijatelje.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1011"/>
         <source>Manage Plugins...</source>
-        <translation>Upravljanje pluginovima...</translation>
+        <translation>Upravljanje dodacima...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1013"/>
         <source>Open the plugin manager</source>
-        <translation>Otvori upravljanje pluginovima</translation>
+        <translation>Otvori upravljanje dodacima</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1018"/>
@@ -5164,7 +5164,7 @@ Molimo kontaktirajte razvijatelje.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1398"/>
         <source>&amp;Plugins</source>
-        <translation>&amp;Pluginovi</translation>
+        <translation>&amp;Dodaci</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1407"/>
@@ -5209,7 +5209,7 @@ Molimo kontaktirajte razvijatelje.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1545"/>
         <source>Plugins</source>
-        <translation>Pluginovi</translation>
+        <translation>Dodaci</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1551"/>
@@ -5228,7 +5228,7 @@ Molimo kontaktirajte razvijatelje.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1595"/>
-        <location filename="../src/app/qgisapp.cpp" line="5092"/>
+        <location filename="../src/app/qgisapp.cpp" line="5094"/>
         <source>Coordinate:</source>
         <translation>Koordinate:</translation>
     </message>
@@ -5347,12 +5347,12 @@ Molimo kontaktirajte razvijatelje.</translation>
         <translation>Koristite GQIS verziju %1 sagrađenu iz koda revizije %2.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6146"/>
+        <location filename="../src/app/qgisapp.cpp" line="6148"/>
         <source>Warning</source>
         <translation>Upozorenje</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6146"/>
+        <location filename="../src/app/qgisapp.cpp" line="6148"/>
         <source>This layer doesn&apos;t have a properties dialog.</source>
         <translation>Ovaj sloj nema dijalog s osobinama.</translation>
     </message>
@@ -5469,7 +5469,7 @@ This binary was compiled against Qt %1,and is currently running against Qt %2</s
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2407"/>
-        <location filename="../src/app/qgisapp.cpp" line="5673"/>
+        <location filename="../src/app/qgisapp.cpp" line="5675"/>
         <source>Invalid Data Source</source>
         <translation>Nevaljani izvor podataka</translation>
     </message>
@@ -5586,7 +5586,7 @@ This binary was compiled against Qt %1,and is currently running against Qt %2</s
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3651"/>
-        <location filename="../src/app/qgisapp.cpp" line="3845"/>
+        <location filename="../src/app/qgisapp.cpp" line="3847"/>
         <source>Layer not editable</source>
         <translation>Sloj se ne može uređivati</translation>
     </message>
@@ -5642,94 +5642,94 @@ This binary was compiled against Qt %1,and is currently running against Qt %2</s
         <translation>Kompozitor %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3834"/>
+        <location filename="../src/app/qgisapp.cpp" line="3836"/>
         <source>No active layer</source>
         <translation>Nema aktivnog sloja</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3834"/>
+        <location filename="../src/app/qgisapp.cpp" line="3836"/>
         <source>No active layer found. Please select a layer in the layer list</source>
         <translation>Nije pronađen aktivni sloj. Odaberite sloj s popisa slojeva</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3840"/>
+        <location filename="../src/app/qgisapp.cpp" line="3842"/>
         <source>Active layer is not vector</source>
         <translation>Aktivni sloj nije vektorski</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3840"/>
+        <location filename="../src/app/qgisapp.cpp" line="3842"/>
         <source>The merge features tool only works on vector layers. Please select a vector layer from the layer list</source>
         <translation>Alat za spajanje elemenata radi samo na vektorskim slojevima. Odaberite vektorski sloj s popisa slojeva</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3845"/>
+        <location filename="../src/app/qgisapp.cpp" line="3847"/>
         <source>Merging features can only be done for layers in editing mode. To use the merge tool, go to  Layer-&gt;Toggle editing</source>
         <translation>Spajanje elemenata može se izvršiti samo za slojeve u modu uređivanja. Za korištenje odite na Sloj -&gt; Uklj/isklj uređivanje</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3860"/>
-        <location filename="../src/app/qgisapp.cpp" line="3899"/>
+        <location filename="../src/app/qgisapp.cpp" line="3862"/>
+        <location filename="../src/app/qgisapp.cpp" line="3901"/>
         <source>The merge tool requires at least two selected features</source>
         <translation>Alat za spajanje zahtjeva barem dva odabrana elementa</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3872"/>
-        <location filename="../src/app/qgisapp.cpp" line="3914"/>
+        <location filename="../src/app/qgisapp.cpp" line="3874"/>
+        <location filename="../src/app/qgisapp.cpp" line="3916"/>
         <source>Merge failed</source>
         <translation>Spajanje nije uspjelo</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3872"/>
-        <location filename="../src/app/qgisapp.cpp" line="3914"/>
+        <location filename="../src/app/qgisapp.cpp" line="3874"/>
+        <location filename="../src/app/qgisapp.cpp" line="3916"/>
         <source>An error occured during the merge operation</source>
         <translation>Došlo je do pogreške pri operaciji spajanja</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3882"/>
-        <location filename="../src/app/qgisapp.cpp" line="3923"/>
+        <location filename="../src/app/qgisapp.cpp" line="3884"/>
+        <location filename="../src/app/qgisapp.cpp" line="3925"/>
         <source>The union operation would result in a geometry type that is not compatible with the current layer and therefore is canceled</source>
         <translation>Operacija ujedinjavanja (union) rezultirala bi tipom geometrije koji nije kompatibilan s trenunim slojem, te je prekinuta</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3929"/>
+        <location filename="../src/app/qgisapp.cpp" line="3931"/>
         <source>Merged features</source>
         <translation>Spojeni elementi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4101"/>
+        <location filename="../src/app/qgisapp.cpp" line="4103"/>
         <source>Features cut</source>
         <translation>Izrezani elementi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4153"/>
+        <location filename="../src/app/qgisapp.cpp" line="4155"/>
         <source>Features pasted</source>
         <translation>Zalijepljeni elementi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4231"/>
+        <location filename="../src/app/qgisapp.cpp" line="4233"/>
         <source>Start editing failed</source>
         <translation>Neuspješno započeto uređivanje</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4231"/>
+        <location filename="../src/app/qgisapp.cpp" line="4233"/>
         <source>Provider cannot be opened for editing</source>
         <translation>Pružatelj se ne može otvoriti za uređivanje</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4239"/>
+        <location filename="../src/app/qgisapp.cpp" line="4241"/>
         <source>Stop editing</source>
         <translation>Zaustavi uređivanje</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4240"/>
+        <location filename="../src/app/qgisapp.cpp" line="4242"/>
         <source>Do you want to save the changes to layer %1?</source>
         <translation>Želite li spremiti izmjene sloja %1?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1126"/>
-        <location filename="../src/app/qgisapp.cpp" line="4248"/>
-        <location filename="../src/app/qgisapp.cpp" line="4261"/>
-        <location filename="../src/app/qgisapp.cpp" line="5954"/>
+        <location filename="../src/app/qgisapp.cpp" line="4250"/>
+        <location filename="../src/app/qgisapp.cpp" line="4263"/>
+        <location filename="../src/app/qgisapp.cpp" line="5956"/>
         <source>Error</source>
         <translation>Pogreška</translation>
     </message>
@@ -5747,7 +5747,7 @@ This copy of QGIS has been built without PostgreSQL support.</source>
 Ova kopija QGIS-a izgrađena je bez podrške za PostgreSQL.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4249"/>
+        <location filename="../src/app/qgisapp.cpp" line="4251"/>
         <source>Could not commit changes to layer %1
 
 Errors: %2
@@ -5757,182 +5757,182 @@ Pogreške: %2
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4261"/>
+        <location filename="../src/app/qgisapp.cpp" line="4263"/>
         <source>Problems during roll back</source>
         <translation>Problemi tokom vraćanja (roll back)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4333"/>
+        <location filename="../src/app/qgisapp.cpp" line="4335"/>
         <source>Invalid scale</source>
         <translation>Nevaljano mjerilo</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4432"/>
+        <location filename="../src/app/qgisapp.cpp" line="4434"/>
         <source>GPS Information</source>
         <translation>GPS informacije</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4529"/>
+        <location filename="../src/app/qgisapp.cpp" line="4531"/>
         <source>Python Console</source>
         <translation>Python konzola</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4586"/>
+        <location filename="../src/app/qgisapp.cpp" line="4588"/>
         <source>There is a new version of QGIS available</source>
         <translation>Dostupna je nova verzija QGIS-a</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4592"/>
+        <location filename="../src/app/qgisapp.cpp" line="4594"/>
         <source>You are running a development version of QGIS</source>
         <translation>Vi koristite razvojnu verziju QGIS-a</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4596"/>
+        <location filename="../src/app/qgisapp.cpp" line="4598"/>
         <source>You are running the current version of QGIS</source>
         <translation>Vi koristite najnoviju verziju QGIS-a</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4601"/>
+        <location filename="../src/app/qgisapp.cpp" line="4603"/>
         <source>Would you like more information?</source>
         <translation>Želite li više informacija?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4604"/>
-        <location filename="../src/app/qgisapp.cpp" line="4617"/>
-        <location filename="../src/app/qgisapp.cpp" line="4622"/>
-        <location filename="../src/app/qgisapp.cpp" line="4650"/>
+        <location filename="../src/app/qgisapp.cpp" line="4606"/>
+        <location filename="../src/app/qgisapp.cpp" line="4619"/>
+        <location filename="../src/app/qgisapp.cpp" line="4624"/>
+        <location filename="../src/app/qgisapp.cpp" line="4652"/>
         <source>QGIS Version Information</source>
         <translation>Informacije o verziji QGIS-a</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4610"/>
+        <location filename="../src/app/qgisapp.cpp" line="4612"/>
         <source>QGIS - Changes in SVN since last release</source>
         <translation>QGIS - promjene u SVN od prošlog izdanja</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4622"/>
+        <location filename="../src/app/qgisapp.cpp" line="4624"/>
         <source>Unable to get current version information from server</source>
         <translation>Ne mogu dohvatiti najnoviju verziju sa servera</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4636"/>
+        <location filename="../src/app/qgisapp.cpp" line="4638"/>
         <source>Connection refused - server may be down</source>
         <translation>Veza odbijena - server je možda pao</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4639"/>
+        <location filename="../src/app/qgisapp.cpp" line="4641"/>
         <source>QGIS server was not found</source>
         <translation>QGIS server nije pronađen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4642"/>
+        <location filename="../src/app/qgisapp.cpp" line="4644"/>
         <source>Network error while communicating with server</source>
         <translation>Mrežna pogreška pri komunikaciji sa serverom</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4645"/>
+        <location filename="../src/app/qgisapp.cpp" line="4647"/>
         <source>Unknown network socket error</source>
         <translation>Pogreška nepoznatog mrežnog socketa</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4650"/>
+        <location filename="../src/app/qgisapp.cpp" line="4652"/>
         <source>Unable to communicate with QGIS Version server
 %1</source>
         <translation>Nije moguće komunicirati s QGIS Version serverom
 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4792"/>
-        <location filename="../src/app/qgisapp.cpp" line="4837"/>
-        <location filename="../src/app/qgisapp.cpp" line="5753"/>
+        <location filename="../src/app/qgisapp.cpp" line="4794"/>
+        <location filename="../src/app/qgisapp.cpp" line="4839"/>
+        <location filename="../src/app/qgisapp.cpp" line="5755"/>
         <source>Layer is not valid</source>
         <translation>Sloj nije valjan</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4793"/>
-        <location filename="../src/app/qgisapp.cpp" line="4838"/>
-        <location filename="../src/app/qgisapp.cpp" line="5754"/>
+        <location filename="../src/app/qgisapp.cpp" line="4795"/>
+        <location filename="../src/app/qgisapp.cpp" line="4840"/>
+        <location filename="../src/app/qgisapp.cpp" line="5756"/>
         <source>The layer is not a valid layer and can not be added to the map</source>
         <translation>Sloj nije valjan i ne može se dodati na mapu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4882"/>
+        <location filename="../src/app/qgisapp.cpp" line="4884"/>
         <source>Save?</source>
         <translation>Spremiti?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4883"/>
+        <location filename="../src/app/qgisapp.cpp" line="4885"/>
         <source>Do you want to save the current project?</source>
         <translation>Želite li spremiti trenutačni projekt?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5082"/>
+        <location filename="../src/app/qgisapp.cpp" line="5084"/>
         <source>Map coordinates for the current view extents</source>
         <translation>Koordinate mape za trenutačni opseg prikaza</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5090"/>
+        <location filename="../src/app/qgisapp.cpp" line="5092"/>
         <source>Map coordinates at mouse cursor position</source>
         <translation>Koordinate mape na poziciji kursora</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5105"/>
+        <location filename="../src/app/qgisapp.cpp" line="5107"/>
         <source>Extents:</source>
         <translation>Opseg (extents):</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5178"/>
+        <location filename="../src/app/qgisapp.cpp" line="5180"/>
         <source>Maptips require an active layer</source>
         <translation>Natuknice (maptips) zahtjevaju aktivni sloj</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5580"/>
+        <location filename="../src/app/qgisapp.cpp" line="5582"/>
         <source>Open a GDAL Supported Raster Data Source</source>
         <translation>Otvorite GDAL podržani rasterski izvor podataka</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5672"/>
+        <location filename="../src/app/qgisapp.cpp" line="5674"/>
         <source>%1 is not a valid or recognized raster data source</source>
         <translation>%1 nije valjani ili prepoznati rasterski izvor podataka</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5835"/>
+        <location filename="../src/app/qgisapp.cpp" line="5837"/>
         <source>%1 is not a supported raster data source</source>
         <translation>%1 nije podržani rasterski izvor podataka</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5840"/>
+        <location filename="../src/app/qgisapp.cpp" line="5842"/>
         <source>Unsupported Data Source</source>
         <translation>Nepodržani izvor podataka</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5937"/>
+        <location filename="../src/app/qgisapp.cpp" line="5939"/>
         <source>Enter a name for the new bookmark:</source>
         <translation>Upišite naziv za novu zabilješku:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5954"/>
+        <location filename="../src/app/qgisapp.cpp" line="5956"/>
         <source>Unable to create the bookmark. Your user database may be missing or corrupted</source>
         <translation>Nemoguće kreirati zabilješku. Vaša korisnička baza podataka možda ne postoji ili je pokvarena</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5968"/>
+        <location filename="../src/app/qgisapp.cpp" line="5970"/>
         <source>Project file is older</source>
         <translation>Datoteka projekta je starija</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5969"/>
+        <location filename="../src/app/qgisapp.cpp" line="5971"/>
         <source>&lt;p&gt;This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.&lt;p&gt;Even though QGIS developers try to maintain backwards compatibility, some of the information from the old project file might be lost. To improve the quality of QGIS, we appreciate if you file a bug report at %3. Be sure to include the old project file, and state the version of QGIS you used to discover the error.&lt;p&gt;To remove this warning when opening an older project file, uncheck the box &apos;%5&apos; in the %4 menu.&lt;p&gt;Version of the project file: %1&lt;br&gt;Current version of QGIS: %2</source>
         <translation>&lt;p&gt;Ova datoteka projekta snimljena je starijom verzijom QGIS-a. Pri snimanju QGIS će ju osvježiti na najnoviju verziju, i moguće je da neće biti čitljiva za starije verzije.&lt;p&gt;Iako razvojni inženjeri pokušavaju održati kompatibilnost neke informacije iz starije datoteke mogu se izgubiti. Kako bismo unaprijedili kvalitetu QGIS-a molimo da ispuniti izvješće o bugu na %3. Priložite staru projektnu datoteku i navedite verziju QGIS-a s kojom ste otkrili pogrešku.&lt;p&gt;Kako biste uklonili ovo upozorenje prilikom otvaranja starije datoteke uklonite oznaku iz kvadratića &apos;%5&apos; u izborniku %4.&lt;p&gt;Verzija projektne datoteke: %1&lt;br&gt;Trenutna verzija QGIS-a: %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5985"/>
+        <location filename="../src/app/qgisapp.cpp" line="5987"/>
         <source>&lt;tt&gt;Settings:Options:General&lt;/tt&gt;</source>
         <comment>Menu path to setting options</comment>
         <translation>&lt;tt&gt;Postavke:Opcije:Općenito&lt;/tt&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5986"/>
+        <location filename="../src/app/qgisapp.cpp" line="5988"/>
         <source>Warn me when opening a project file saved with an older version of QGIS</source>
         <translation>Upozori me pri otvaranju projektne datoteke spremljene starijom verzijom QGIS-a</translation>
     </message>
@@ -5987,22 +5987,22 @@ Pogreške: %2
     <message>
         <location filename="../src/app/qgsabout.cpp" line="284"/>
         <source>Available QGIS Data Provider Plugins</source>
-        <translation>Dostupni pluginovi za QGIS pružatelja podataka</translation>
+        <translation>Dostupni dodaci za QGIS pružatelja podataka</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="287"/>
         <source>Available Qt Database Plugins</source>
-        <translation>Dostupni pluginovi za QT bazu podataka</translation>
+        <translation>Dostupni dodaci za QT bazu podataka</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="293"/>
         <source>Available Qt Image Plugins</source>
-        <translation>Dostupni Qt slikovni pluginovi</translation>
+        <translation>Dostupni Qt slikovni dodaci</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="294"/>
         <source>Qt Image Plugin Search Paths	&lt;br&gt;</source>
-        <translation>Putanje pretraživanja Qt slikovnog plugina	&lt;br&gt;</translation>
+        <translation>Putanje pretraživanja Qt slikovnog dodatka	&lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="13"/>
@@ -6633,7 +6633,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsAttributeTableModel</name>
     <message>
-        <location filename="../src/app/attributetable/qgsattributetablemodel.cpp" line="446"/>
+        <location filename="../src/app/attributetable/qgsattributetablemodel.cpp" line="430"/>
         <source>Attribute changed</source>
         <translation>Atribut izmijenjen</translation>
     </message>
@@ -9036,7 +9036,7 @@ su neuspješni s pogreškomr: %3
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="14"/>
         <source>Copyright Label Plugin</source>
-        <translation>Copyright oznaka plugin</translation>
+        <translation>Copyright oznaka dodatak</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="25"/>
@@ -9112,28 +9112,28 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgscredentialdialog.ui" line="14"/>
         <source>Enter Credentials</source>
-        <translation type="unfinished"></translation>
+        <translation>Unesi isprave</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscredentialdialog.ui" line="23"/>
         <source>Username</source>
-        <translation type="unfinished">Korisničko ime</translation>
+        <translation>Korisničko ime</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscredentialdialog.ui" line="33"/>
         <source>Password</source>
-        <translation type="unfinished">Lozinka</translation>
+        <translation>Lozinka</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscredentialdialog.ui" line="57"/>
         <location filename="../src/ui/qgscredentialdialog.ui" line="64"/>
         <source>TextLabel</source>
-        <translation type="unfinished">TekstOznaka</translation>
+        <translation>TekstOznaka</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscredentialdialog.ui" line="71"/>
         <source>Realm</source>
-        <translation type="unfinished"></translation>
+        <translation>Oblast</translation>
     </message>
 </context>
 <context>
@@ -10137,137 +10137,137 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsGPSInformationWidget</name>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="320"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="321"/>
         <source>Connecting...</source>
         <translation>Povezivanje...</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="331"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="332"/>
         <source>Timed out!</source>
         <translation>Vrijeme isteklo!</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="339"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="340"/>
         <source>Connected!</source>
         <translation>Povezano!</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="340"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="341"/>
         <source>Disconnect</source>
         <translation>Prekini vezu</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="349"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="352"/>
         <source>Connect</source>
         <translation>Spoji</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="312"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="313"/>
         <source>/gps</source>
         <translation>/gps</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="312"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="313"/>
         <source>No path to the GPS port is specified. Please enter a path then try again.</source>
         <translation>Nije određena putanja do GPS porta. Unesite putanju i pokušajte ponovno.</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="347"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="350"/>
         <source>Disconnected...</source>
         <translation>Prekinuta veza...</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="540"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="543"/>
         <source>Not a vector layer</source>
         <translation>Nije vektorski sloj</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="541"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="544"/>
         <source>The current layer is not a vector layer</source>
         <translation>Trenutni sloj nije vektorski</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="551"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="554"/>
         <source>2.5D shape type not supported</source>
         <translation>2.5D shape tip nije podržan</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="551"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="554"/>
         <source>Adding features to 2.5D shapetypes is not supported yet. Please select a different editable, non 2.5D layer and try again.</source>
         <translation>Dodavanje elemenata tipa 2.5D shape nije još podržano. Odaberite drugi sloj koji se može uređivati, a da nije 2.5D sloj.</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="564"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="567"/>
         <source>Multipart shape type not supported</source>
         <translation>Tip vošestrukog shape objekta nije podržan</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="564"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="567"/>
         <source>Adding features to multipart shapetypes is not supported yet. Please select a different editable, non 2.5D layer and try again.</source>
         <translation>Dodavanje elemenata tipa višestruki shape nije još podržano. Odaberite drugi sloj koji se može uređivati, a da nije višestruki shape sloj.</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="576"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="579"/>
         <source>Layer cannot be added to</source>
         <translation>Sloj se ne može dodati na</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="577"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="580"/>
         <source>The data provider for this layer does not support the addition of features.</source>
         <translation>Pružatelj podataka za ovaj sloj ne podržava dodavanje elemenata.</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="584"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="587"/>
         <source>Layer not editable</source>
         <translation>Sloj se ne može uređivati</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="585"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="588"/>
         <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
         <translation>Ne mogu uređivati vektorski sloj. Kako biste omogućili uređivanje idite na stavku datoteke sloja, desni klik i označite &apos;Dopusti uređivanje&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="594"/>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="603"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="597"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="606"/>
         <source>Not enough vertices</source>
         <translation>Nema dovoljno verteksa</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="595"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="598"/>
         <source>Cannot close a line feature until it has at least two vertices.</source>
         <translation>Ne mogu zatvoriti element liniju ako nema barem dva verteksa.</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="604"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="607"/>
         <source>Cannot close a polygon feature until it has at least three vertices.</source>
         <translation>Ne mogu zatvoriti element poligon ako nema barem tri verteksa.</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="648"/>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="797"/>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="814"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="651"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="800"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="817"/>
         <source>Feature added</source>
         <translation>Dodan element</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="766"/>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="773"/>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="780"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="769"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="776"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="783"/>
         <source>Error</source>
         <translation>Pogreška</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="766"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="769"/>
         <source>The feature could not be added because removing the polygon intersections would change the geometry type</source>
         <translation>Element se ne može dodati budući bi se uklanjanjem presjeka poligona izmjenio tip geometrije</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="773"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="776"/>
         <source>An error was reported during intersection removal</source>
         <translation>Prijavljena je pogrešak pri uklanjanju presjeka</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="780"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="783"/>
         <source>Cannot add feature. Unknown WKB type. Choose a different layer and try again.</source>
         <translation>Ne mogu dodati element. Nepoznat WKB tip. Odaberite drugi sloj i pokušajte ponovno.</translation>
     </message>
@@ -10869,7 +10869,7 @@ Molim odaberite valjanu datoteku.</translation>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugin.cpp" line="132"/>
         <source>    Based on original Georeferencer Plugin</source>
-        <translation>    Temeljeno na originalnom Georeferencer pluginu</translation>
+        <translation>    Temeljeno na originalnom Georeferencer dodatku</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugin.cpp" line="133"/>
@@ -13268,7 +13268,7 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsGrassProvider</name>
     <message>
-        <location filename="../src/providers/grass/qgsgrassprovider.cpp" line="1048"/>
+        <location filename="../src/providers/grass/qgsgrassprovider.cpp" line="1049"/>
         <source>GRASS vector map %1 does not have topology. Build topology?</source>
         <translation>GRASS vektorska mapa %1 nema topologiju. Izgraditi topologiju?</translation>
     </message>
@@ -13974,7 +13974,7 @@ Ovo može biti problem u vašoj mrežnoj vezi ili na WMS serveru.</numerusform>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="20"/>
         <source>Interpolation plugin</source>
-        <translation>Interpolacijski plugin</translation>
+        <translation>Interpolacijski dodatak</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="32"/>
@@ -14710,48 +14710,48 @@ Ovo može biti problem u vašoj mrežnoj vezi ili na WMS serveru.</numerusform>
     <message>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="33"/>
         <source>Load from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Učitaj iz datoteke</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="34"/>
         <source>Load</source>
-        <translation type="unfinished">Učitaj</translation>
+        <translation>Učitaj</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="38"/>
         <source>Save</source>
-        <translation type="unfinished">Spremi</translation>
+        <translation>Spremi</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="50"/>
         <source>Save connections</source>
-        <translation type="unfinished"></translation>
+        <translation>Spremi veze</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="50"/>
         <source>XML files (*.xml *.XML)</source>
-        <translation type="unfinished"></translation>
+        <translation>XML datoteke (*.xml *.XML)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="54"/>
         <source>Load connections</source>
-        <translation type="unfinished"></translation>
+        <translation>Učitaj veze</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="54"/>
         <source>XML files (*.xml *XML)</source>
-        <translation type="unfinished"></translation>
+        <translation>XML datoteke (*.xml *.XML)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="108"/>
         <source>Saving connections</source>
-        <translation type="unfinished"></translation>
+        <translation>Spremanje veza</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="109"/>
         <source>Cannot write file %1:
 %2.</source>
-        <translation type="unfinished">Ne mogu zapisati datoteku %1:
+        <translation>Ne mogu zapisati datoteku %1:
 %2.</translation>
     </message>
     <message>
@@ -14766,14 +14766,14 @@ Ovo može biti problem u vašoj mrežnoj vezi ili na WMS serveru.</numerusform>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="376"/>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="400"/>
         <source>Loading connections</source>
-        <translation type="unfinished"></translation>
+        <translation>Učitavanje veza</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="124"/>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="193"/>
         <source>Cannot read file %1:
 %2.</source>
-        <translation type="unfinished">Ne mogu pročitati datoteku %1:
+        <translation>Ne mogu pročitati datoteku %1:
 %2.</translation>
     </message>
     <message>
@@ -14781,26 +14781,26 @@ Ovo može biti problem u vašoj mrežnoj vezi ili na WMS serveru.</numerusform>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="207"/>
         <source>Parse error at line %1, column %2:
 %3</source>
-        <translation type="unfinished">Pogreška u parsiranju u liniji %1, kolona %2:
+        <translation>Pogreška u parsiranju u liniji %1, kolona %2:
 %3</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="220"/>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="321"/>
         <source>The file is not an WMS connections exchange file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Datoteka nije u obliku datoteke za razmjenu WMS veza.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="232"/>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="377"/>
         <source>The file is not an PostGIS connections exchange file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Datoteka nije u obliku datoteke za razmjenu OPostGIS veza.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="344"/>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="401"/>
         <source>Connection with name %1 already exists. Overwrite?</source>
-        <translation type="unfinished"></translation>
+        <translation>Veza s nazivom %1 več postoji. Želite li pisati preko nje?</translation>
     </message>
 </context>
 <context>
@@ -14808,17 +14808,17 @@ Ovo može biti problem u vašoj mrežnoj vezi ili na WMS serveru.</numerusform>
     <message>
         <location filename="../src/ui/qgsmanageconnectionsdialogbase.ui" line="14"/>
         <source>Manage connections</source>
-        <translation type="unfinished"></translation>
+        <translation>Upravljanje vezama</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmanageconnectionsdialogbase.ui" line="22"/>
         <source>Save to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Spremi u datoteku</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmanageconnectionsdialogbase.ui" line="32"/>
         <source>Browse</source>
-        <translation type="unfinished">Traži</translation>
+        <translation>Traži</translation>
     </message>
 </context>
 <context>
@@ -16356,7 +16356,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/north_arrow/pluginguibase.ui" line="14"/>
         <source>North Arrow Plugin</source>
-        <translation>Plugin za strelicu smjera sjevera</translation>
+        <translation>Dodatak za strelicu smjera sjevera</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/pluginguibase.ui" line="35"/>
@@ -17506,7 +17506,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="194"/>
         <source>The connection to %1 failed. Please verify your connection parameters. Make sure you have the GDAL GeoRaster plugin installed.</source>
-        <translation>Neuspješno povezivanje na %1. Provjerite parametre veze. Provjerite da imate instaliran GDAL GeoRaster plugin.</translation>
+        <translation>Neuspješno povezivanje na %1. Provjerite parametre veze. Provjerite da imate instaliran GDAL GeoRaster dodatak.</translation>
     </message>
 </context>
 <context>
@@ -17780,7 +17780,7 @@ Više informacija o pogrešci:
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="211"/>
         <source>Save Username</source>
-        <translation type="unfinished"></translation>
+        <translation>Spremi korisničko ime</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="225"/>
@@ -18012,12 +18012,12 @@ geometriju.</translation>
     <message>
         <location filename="../src/ui/qgspgsourceselectbase.ui" line="79"/>
         <source>Save connections</source>
-        <translation type="unfinished"></translation>
+        <translation>Spremi veze</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgsourceselectbase.ui" line="86"/>
         <source>Load connections</source>
-        <translation type="unfinished"></translation>
+        <translation>Učitaj veze</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgsourceselectbase.ui" line="105"/>
@@ -18049,7 +18049,7 @@ geometriju.</translation>
     <name>QgsPluginInstaller</name>
     <message>
         <source>Nothing to remove! Plugin directory doesn&apos;t exist:</source>
-        <translation>Nema ništa za uklanjanje! Plugin mapa ne postoji:</translation>
+        <translation>Nema ništa za uklanjanje! Mapa dodatka ne postoji:</translation>
     </message>
     <message>
         <source>Failed to remove the directory:</source>
@@ -18065,39 +18065,39 @@ geometriju.</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the local plugin directory</source>
-        <translation>Ne mogu otvoriti lokalnu plugin mapu</translation>
+        <translation>Ne mogu otvoriti lokalnu mapu dodataka</translation>
     </message>
     <message>
         <source>Fetch Python Plugins...</source>
-        <translation>Dohvati Python pluginove...</translation>
+        <translation>Dohvati Python dodatke...</translation>
     </message>
     <message>
         <source>Install more plugins from remote repositories</source>
-        <translation>Instaliraj više pluginova iz udaljenih repozitorija</translation>
+        <translation>Instaliraj više dodataka iz udaljenih repozitorija</translation>
     </message>
     <message>
         <source>Looking for new plugins...</source>
-        <translation>Traženje novih plugina...</translation>
+        <translation>Traženje novih dodataka...</translation>
     </message>
     <message>
         <source>QGIS Plugin Conflict:</source>
-        <translation>QGIS Plugin konflikt:</translation>
+        <translation>QGIS dodatak konflikt:</translation>
     </message>
     <message>
         <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. This is likely due to files associated with a previous installation of QGIS. Please use the Plugin Installer to remove that older plugin in order to unmask the newer version shipped with this copy of QGIS.</source>
-        <translation>Plugin instaler detektirao je zastarjeli plugin koji maskira noviju inačicu koja se isporučuje s ovom inačicom QGIS-a. Ovo je vjerojatno zbog datoteka povezanih s prethodnom instalacijom QGIS-a. Uz pomoć Plugin instalera uklonite stari plugin kako bi se prikazala novija inačica isporučena s ovom kopijom QGIS-a.</translation>
+        <translation>Instaler dodatka detektirao je zastarjeli dodatak koji maskira noviju inačicu koja se isporučuje s ovom inačicom QGIS-a. Ovo je vjerojatno zbog datoteka povezanih s prethodnom instalacijom QGIS-a. Uz pomoć Instalera dodataka uklonite stari dodatak kako bi se prikazala novija inačica isporučena s ovom kopijom QGIS-a.</translation>
     </message>
     <message>
         <source>There is a new plugin available</source>
-        <translation>Dostupan je novi plugin</translation>
+        <translation>Dostupan je novi dodatak</translation>
     </message>
     <message>
         <source>There is a plugin update available</source>
-        <translation>Dostupno je osvježenje plugina</translation>
+        <translation>Dostupno je osvježenje dodatka</translation>
     </message>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation>QGIS PYthon plugin instaler</translation>
+        <translation>QGIS PYthon instaler dodataka</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
@@ -18108,7 +18108,7 @@ geometriju.</translation>
     <name>QgsPluginInstallerDialog</name>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation>QGIS PYthon plugin instaler</translation>
+        <translation>QGIS PYthon instaler dodataka</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
@@ -18168,31 +18168,31 @@ geometriju.</translation>
     </message>
     <message>
         <source>This plugin is not installed</source>
-        <translation>Ovaj plugin nije instaliran</translation>
+        <translation>Ovaj dodatak nije instaliran</translation>
     </message>
     <message>
         <source>This plugin is installed</source>
-        <translation>Ovaj je plugin instaliran</translation>
+        <translation>Ovaj je dodatak instaliran</translation>
     </message>
     <message>
         <source>This plugin is installed, but there is an updated version available</source>
-        <translation>Ovaj je plugin instaliran, ali je dostupna novija verzija</translation>
+        <translation>Ovaj je dodatak instaliran, ali je dostupna novija verzija</translation>
     </message>
     <message>
         <source>This plugin is installed, but I can&apos;t find it in any enabled repository</source>
-        <translation>Ovaj je plugin instaliran, ali ga ne mogu pronaći niti u jednom od omogućenih repozitorija</translation>
+        <translation>Ovaj je dodatak instaliran, ali ga ne mogu pronaći niti u jednom od omogućenih repozitorija</translation>
     </message>
     <message>
         <source>This plugin is not installed and is seen for the first time</source>
-        <translation>Ovaj plugin nije instaliran i pregledava se prvi put</translation>
+        <translation>Ovaj dodatak nije instaliran i pregledava se prvi put</translation>
     </message>
     <message>
         <source>This plugin is installed and is newer than its version available in a repository</source>
-        <translation>Ovaj je plugin instaliran i noviji je od verzije dostupne u repozitoriju</translation>
+        <translation>Ovaj je dodatak instaliran i noviji je od verzije dostupne u repozitoriju</translation>
     </message>
     <message>
         <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
-        <translation>Ovaj je plugin nekompatibilan s vašom QGIS verzijom i vjerojatno neće raditi.</translation>
+        <translation>Ovaj je dodatak nekompatibilan s vašom QGIS verzijom i vjerojatno neće raditi.</translation>
     </message>
     <message>
         <source>The required Python module is not installed.
@@ -18204,7 +18204,7 @@ Za više informacija posjetite njegovu web stranicu, ili QGIS wiki.</translation
         <source>This plugin seems to be broken.
 It has been installed but can&apos;t be loaded.
 Here is the error message:</source>
-        <translation>Ovaj plugin izgleda pokvaren.
+        <translation>Ovaj dodatak izgleda pokvaren.
 Instaliran je ali se ne može učitati.
 Ovo je poruka o pogrešci:</translation>
     </message>
@@ -18222,7 +18222,7 @@ Ovo je poruka o pogrešci:</translation>
     </message>
     <message>
         <source>Note that it&apos;s an uninstallable core plugin</source>
-        <translation>Obratite pažnju da je to osnovni plugin koji se ne može ukloniti</translation>
+        <translation>Obratite pažnju da je to osnovni dodatak koji se ne može ukloniti</translation>
     </message>
     <message>
         <source>installed version</source>
@@ -18242,11 +18242,11 @@ Ovo je poruka o pogrešci:</translation>
     </message>
     <message>
         <source>This plugin is broken</source>
-        <translation>Plugin je pokvaren</translation>
+        <translation>Dodatak je pokvaren</translation>
     </message>
     <message>
         <source>This plugin requires a newer version of Quantum GIS</source>
-        <translation>Ovaj plugin zahtjeva noviju verziju Quantum GIS-a</translation>
+        <translation>Ovaj dodatak zahtjeva noviju verziju Quantum GIS-a</translation>
     </message>
     <message>
         <source>at least</source>
@@ -18254,7 +18254,7 @@ Ovo je poruka o pogrešci:</translation>
     </message>
     <message>
         <source>This plugin requires a missing module</source>
-        <translation>Ovaj plugin zahtjeva modul koji nedostaje</translation>
+        <translation>Ovaj dodatak zahtjeva modul koji nedostaje</translation>
     </message>
     <message>
         <source>only locally available</source>
@@ -18262,97 +18262,97 @@ Ovo je poruka o pogrešci:</translation>
     </message>
     <message>
         <source>Install plugin</source>
-        <translation>Instaliraj plugin</translation>
+        <translation>Instaliraj dodatak</translation>
     </message>
     <message>
         <source>Reinstall plugin</source>
-        <translation>Reinstaliraj plugin</translation>
+        <translation>Reinstaliraj dodatak</translation>
     </message>
     <message>
         <source>Upgrade plugin</source>
-        <translation>Nadogradi plugin</translation>
+        <translation>Nadogradi dodatak</translation>
     </message>
     <message>
         <source>Install/upgrade plugin</source>
-        <translation>instaliraj/nadogradi plugin</translation>
+        <translation>Instaliraj/nadogradi dodatak</translation>
     </message>
     <message>
         <source>Downgrade plugin</source>
-        <translation>Skini plugin na stariju verziju</translation>
+        <translation>Skini dodatak na stariju verziju</translation>
     </message>
     <message>
         <source>Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!</source>
-        <translation>Sigurno želite skinuti plugin na poslednju dostupnu verziju? Instalirana verzija je novija!</translation>
+        <translation>Sigurno želite skinuti dodatak na poslednju dostupnu verziju? Instalirana verzija je novija!</translation>
     </message>
     <message>
         <source>Plugin installation failed</source>
-        <translation>Nije uspjela instalacija plugina</translation>
+        <translation>Nije uspjela instalacija dodatka</translation>
     </message>
     <message>
         <source>Plugin has disappeared</source>
-        <translation>Plugin je nestao</translation>
+        <translation>Dodatak je nestao</translation>
     </message>
     <message>
         <source>The plugin seems to have been installed but I don&apos;t know where. Probably the plugin package contained a wrong named directory.
 Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll find the plugin there, but I just can&apos;t determine which of them it is. It also means that I won&apos;t be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue.</source>
-        <translation>Pluin je izgleda bio instaliran, ali na nepoznatu lokaciju. Vjerojatno je paket sadržavao krivo imenovanu mapu.
-Pretražite popis instaliranih pluginova. Gotovo sam siguran da ćete tamo pronaći plugin, samo ne mogu drediti koji je točno. Ovo također znači da ne mogu odrediti je li plugin instaliran i informirati vas o dostupnim nadogradnjama. No, plugin može raditi. Kontaktirajte autora plugina i objasnite situaciju.</translation>
+        <translation>Dodatak je izgleda bio instaliran, ali na nepoznatu lokaciju. Vjerojatno je paket sadržavao krivo imenovanu mapu.
+Pretražite popis instaliranih dodataka. Gotovo sam siguran da ćete tamo pronaći dodatak, samo ne mogu drediti koji je točno. Ovo također znači da ne mogu odrediti je li dodatak instaliran i informirati vas o dostupnim nadogradnjama. No, dodatak može raditi. Kontaktirajte autora dodatka i objasnite situaciju.</translation>
     </message>
     <message>
         <source>Plugin installed successfully</source>
-        <translation>Plugin uspješno instaliran</translation>
+        <translation>Dodatak uspješno instaliran</translation>
     </message>
     <message>
         <source>Python plugin installed.
 Now you need to enable it in Plugin Manager.</source>
-        <translation>Python plugin je instliran.
-Sada ga trebate uključiti u Upravljaču pluginova.</translation>
+        <translation>Python dodatak je instliran.
+Sada ga trebate uključiti u Upravljaču dodataka.</translation>
     </message>
     <message>
         <source>Plugin reinstalled successfully</source>
-        <translation>Plugin je uspješno reinstaliran</translation>
+        <translation>Dodatak je uspješno reinstaliran</translation>
     </message>
     <message>
         <source>Python plugin reinstalled.
 You need to restart Quantum GIS in order to reload it.</source>
-        <translation>Python plugin je reinstaliran.
+        <translation>Python dodatak je reinstaliran.
 Morate ponovno pokrenuti Quantum GIS za ponovno učitavanje.</translation>
     </message>
     <message>
         <source>The plugin is designed for a newer version of Quantum GIS. The minimum required version is:</source>
-        <translation>Plugin je dizajniran za noviju verziju Quantum GIS-a. Minimalna potrebna verzija je:</translation>
+        <translation>Dodatak je dizajniran za noviju verziju Quantum GIS-a. Minimalna potrebna verzija je:</translation>
     </message>
     <message>
         <source>The plugin depends on some components missing on your system. You need to install the following Python module in order to enable it:</source>
-        <translation>Plugin ovisi o nekim komponentama koje nedostaju na vašem sustavu. Morate instalirati slijedeće Python module kako biste ga omogućili:</translation>
+        <translation>Dodatak ovisi o nekim komponentama koje nedostaju na vašem sustavu. Morate instalirati slijedeće Python module kako biste ga omogućili:</translation>
     </message>
     <message>
         <source>The plugin is broken. Python said:</source>
-        <translation>Plugin je pokvaren. Python je rekao:</translation>
+        <translation>Dodatak je pokvaren. Python je rekao:</translation>
     </message>
     <message>
         <source>Plugin uninstall failed</source>
-        <translation>Neuspješna deinstalacija plugina</translation>
+        <translation>Neuspješna deinstalacija dodatka</translation>
     </message>
     <message>
         <source>Are you sure you want to uninstall the following plugin?</source>
-        <translation>Sigurno želite deinstalirati slijedeći plugin?</translation>
+        <translation>Sigurno želite deinstalirati slijedeći dodatak?</translation>
     </message>
     <message>
         <source>Warning: this plugin isn&apos;t available in any accessible repository!</source>
-        <translation>Upozorenje: ovaj plugin nije dostupan niti u jednom dostupnom repozitoriju!</translation>
+        <translation>Upozorenje: ovaj dodatak nije dostupan niti u jednom dostupnom repozitoriju!</translation>
     </message>
     <message>
         <source>Plugin uninstalled successfully</source>
-        <translation>Plugin je uspješno deinstaliran</translation>
+        <translation>Dodatak je uspješno deinstaliran</translation>
     </message>
     <message>
         <source>Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely.</source>
-        <translation>Python plugin je deinstaliran. Možda će te morati ponovno pokrenuti QGIS kako biste ga u potpunosti uklonili.</translation>
+        <translation>Python dodatak je deinstaliran. Možda će te morati ponovno pokrenuti QGIS kako biste ga u potpunosti uklonili.</translation>
     </message>
     <message>
         <source>You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.</source>
-        <translation>Upravo dodajete nekoliko plugin repozitorija koji nisu autorizirani niti podržani od QGIS tima. Autori pluginova se obično trude da je njihov uradak koristan i siguran, no mi ne možemo preuzeti odgovornost za njih.</translation>
+        <translation>Upravo dodajete nekoliko repozitorija dodataka koji nisu autorizirani niti podržani od QGIS tima. Autori dodataka se obično trude da je njihov uradak koristan i siguran, no mi ne možemo preuzeti odgovornost za njih.</translation>
     </message>
     <message>
         <source>Unable to add another repository with the same URL!</source>
@@ -18369,7 +18369,7 @@ Morate ponovno pokrenuti Quantum GIS za ponovno učitavanje.</translation>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="15"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="22"/>
         <source>QGIS Python Plugin Installer</source>
-        <translation>QGIS PYthon plugin instaler</translation>
+        <translation>QGIS PYthon instaler dodataka</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="30"/>
@@ -18379,7 +18379,7 @@ Morate ponovno pokrenuti Quantum GIS za ponovno učitavanje.</translation>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="56"/>
         <source>The plugins will be installed to ~/.qgis/python/plugins</source>
-        <translation>Pluginovi će se instalirati u ~/.qgis/python/plugins</translation>
+        <translation>Dodaci će se instalirati u ~/.qgis/python/plugins</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="82"/>
@@ -18395,12 +18395,12 @@ Morate ponovno pokrenuti Quantum GIS za ponovno učitavanje.</translation>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="107"/>
         <source>Plugins</source>
-        <translation>Pluginovi</translation>
+        <translation>Dodaci</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="110"/>
         <source>List of available and installed plugins</source>
-        <translation>Popis dostupnih i instaliranih pluginova</translation>
+        <translation>Popis dostupnih i instaliranih dodataka</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="121"/>
@@ -18411,13 +18411,13 @@ Morate ponovno pokrenuti Quantum GIS za ponovno učitavanje.</translation>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="134"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="137"/>
         <source>Display only plugins containing this word in their metadata</source>
-        <translation>Prikaži samo pluginove koji sadržavaju ovu riječ u njihovim metapodacima</translation>
+        <translation>Prikaži samo dodatke koji sadržavaju ovu riječ u njihovim metapodacima</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="153"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="159"/>
         <source>Display only plugins from given repository</source>
-        <translation>Prikaži samo pluginove iz danog repozitorija</translation>
+        <translation>Prikaži samo dodatke iz danog repozitorija</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="163"/>
@@ -18428,7 +18428,7 @@ Morate ponovno pokrenuti Quantum GIS za ponovno učitavanje.</translation>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="180"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="183"/>
         <source>Display only plugins with matching status</source>
-        <translation>Prikaži samo pluginove s odgovarajućim  statusom</translation>
+        <translation>Prikaži samo dodatke s odgovarajućim  statusom</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="208"/>
@@ -18466,23 +18466,23 @@ Morate ponovno pokrenuti Quantum GIS za ponovno učitavanje.</translation>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="268"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="271"/>
         <source>Install, reinstall or upgrade the selected plugin</source>
-        <translation>Instaliraj, reinstaliraj ili osvježi odabrani plugin</translation>
+        <translation>Instaliraj, reinstaliraj ili osvježi odabrani dodatak</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="274"/>
         <source>Install/upgrade plugin</source>
-        <translation>Instalira/osvježi plugin</translation>
+        <translation>Instaliraj/osvježi dodatak</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="284"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="287"/>
         <source>Uninstall the selected plugin</source>
-        <translation>Deinstaliraj odabrani plugin</translation>
+        <translation>Deinstaliraj odabrani dodatak</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="290"/>
         <source>Uninstall plugin</source>
-        <translation>Deinstaliraj plugin</translation>
+        <translation>Deinstaliraj dodatak</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="300"/>
@@ -18492,7 +18492,7 @@ Morate ponovno pokrenuti Quantum GIS za ponovno učitavanje.</translation>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="303"/>
         <source>List of plugin repositories</source>
-        <translation>Popis repozitorija pluginova</translation>
+        <translation>Popis repozitorija dodataka</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="326"/>
@@ -18503,7 +18503,7 @@ Morate ponovno pokrenuti Quantum GIS za ponovno učitavanje.</translation>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="353"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="356"/>
         <source>Add third party plugin repositories to the list</source>
-        <translation>Dodaj na popis repozitorij pluginova treće strane</translation>
+        <translation>Dodaj na popis repozitorij dodataka treće strane</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="359"/>
@@ -18514,7 +18514,7 @@ Morate ponovno pokrenuti Quantum GIS za ponovno učitavanje.</translation>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="379"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="382"/>
         <source>Add a new plugin repository</source>
-        <translation>dodaj novi plugin repozitorij</translation>
+        <translation>dodaj novi repozitorij dodataka</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="385"/>
@@ -18551,7 +18551,7 @@ Morate ponovno pokrenuti Quantum GIS za ponovno učitavanje.</translation>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="422"/>
         <source>Configuration of the plugin installer</source>
-        <translation>Konfiguracija instalacije plugina</translation>
+        <translation>Konfiguracija instalacije dodatka</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="437"/>
@@ -18599,27 +18599,27 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt;Ako je ova funkcija omogućena QGIS će vas informirati kad god je dostupna novija verzija plugina ili novi plugin. U drugom slučaju do dohvaćanaj repozitorija dolazi tijekom otvaranja Plugin Instalacije&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt;Ako je ova funkcija omogućena QGIS će vas informirati kad god je dostupna novija verzija dodatka ili novi dodatak. U drugom slučaju do dohvaćanaj repozitorija dolazi tijekom otvaranja Instalacije dodatka&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="528"/>
         <source>Allowed plugins</source>
-        <translation>Dopušteni pluginovi</translation>
+        <translation>Dopušteni dodaci</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="537"/>
         <source>Only show plugins from the official repository</source>
-        <translation>Prikazuj samo pluginove iz službenog repozitorija</translation>
+        <translation>Prikazuj samo dodatke iz službenog repozitorija</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="550"/>
         <source>Show all plugins except those marked as experimental</source>
-        <translation>Prikaži sve pluginove osim onih obilježenih kao eksperimentalni</translation>
+        <translation>Prikaži sve dodatke osim onih obilježenih kao eksperimentalni</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="563"/>
         <source>Show all plugins, even those marked as experimental</source>
-        <translation>Prikaži sve pluginove, čak i one koji su prikazani kao eksperimentalni</translation>
+        <translation>Prikaži sve dodatke, čak i one koji su prikazani kao eksperimentalni</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="582"/>
@@ -18632,7 +18632,7 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt; Ekperimentalni pluginovi općenito su neprikladni za upotrebu na radnim sustavima. Oni su u ranim stupnjevima razvoja. i treba ih smatrati nekompletnima ili &apos;dokazima koncepta&apos;. QGIS vam ne preporuča instaliranje ovih pluginova osim ako ih planirate testirati.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt; Ekperimentalni dodaci općenito su neprikladni za upotrebu na radnim sustavima. Oni su u ranim stupnjevima razvoja. i treba ih smatrati nekompletnima ili &apos;dokazima koncepta&apos;. QGIS vam ne preporuča instaliranje ovih dodataka osim ako ih planirate testirati.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -18734,7 +18734,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Failed to unzip the plugin package. Probably it&apos;s broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:</source>
-        <translation>Neuspješno raspakiravanje paketa plugina. Vjerojatno je pokvaren ili nije u repozitoriju. Također, trebate imati dozvolu za pisanje po plugin mapi datoteka:</translation>
+        <translation>Neuspješno raspakiravanje paketa dodatka. Vjerojatno je pokvaren ili nije u repozitoriju. Također, trebate imati dozvolu za pisanje po mapi datoteka dodatka:</translation>
     </message>
     <message>
         <source>Aborted by user</source>
@@ -18746,12 +18746,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerinstallingbase.ui" line="14"/>
         <source>QGIS Python Plugin Installer</source>
-        <translation>QGIS PYthon plugin instaler</translation>
+        <translation>QGIS PYthon instaler dodataka</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerinstallingbase.ui" line="41"/>
         <source>Installing plugin:</source>
-        <translation>Instaliranje plugina:</translation>
+        <translation>Instaliranje dodatka:</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerinstallingbase.ui" line="63"/>
@@ -18771,17 +18771,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerpluginerrorbase.ui" line="20"/>
         <source>Error loading plugin</source>
-        <translation>Pogreška pri učitavanju plugina</translation>
+        <translation>Pogreška pri učitavanju dodataka</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerpluginerrorbase.ui" line="35"/>
         <source>The plugin seems to be invalid or have unfulfilled dependencies. It has been installed, but can&apos;t be loaded. If you really need this plugin, you can contact its author or &lt;a href=&quot;http://lists.osgeo.org/mailman/listinfo/qgis-user&quot;&gt;QGIS users group&lt;/a&gt; and try to solve the problem. If not, you can just uninstall it. Here is the error message below:</source>
-        <translation>Plugin izgleda nevaljan ili ima neispunjene ovisnosti. Instaliran je ali ne može se učitati. Ako vam je zaista potreban kontaktirajte autora ili &lt;a href=&quot;http://lists.osgeo.org/mailman/listinfo/qgis-user&quot;&gt;QGIS users group&lt;/a&gt; i pokušajte riješiti problem. Ako ne, možete ga jednostavno deinstalirati. Ovo je poruka o pogrešci:</translation>
+        <translation>Dodatak izgleda nevaljan ili ima neispunjene ovisnosti. Instaliran je ali ne može se učitati. Ako vam je zaista potreban kontaktirajte autora ili &lt;a href=&quot;http://lists.osgeo.org/mailman/listinfo/qgis-user&quot;&gt;QGIS users group&lt;/a&gt; i pokušajte riješiti problem. Ako ne, možete ga jednostavno deinstalirati. Ovo je poruka o pogrešci:</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerpluginerrorbase.ui" line="83"/>
         <source>Do you want to uninstall this plugin now? If you&apos;re unsure, probably you would like to do this.</source>
-        <translation>Želite li sada deinstalirati plugin? Ako ste nesigurni, vjerojatno želite to napraviti.</translation>
+        <translation>Želite li sada deinstalirati dodatak? Ako ste nesigurni, vjerojatno želite to napraviti.</translation>
     </message>
 </context>
 <context>
@@ -18845,12 +18845,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgspluginmanager.cpp" line="236"/>
         <source>No Plugins</source>
-        <translation>Nema plugina</translation>
+        <translation>Nema dodatka</translation>
     </message>
     <message>
         <location filename="../src/app/qgspluginmanager.cpp" line="236"/>
         <source>No QGIS plugins found in %1</source>
-        <translation>Nisu pronađeni QGIS plugini u %1</translation>
+        <translation>Nisu pronađeni QGIS dodaci u %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgspluginmanager.cpp" line="566"/>
@@ -18860,7 +18860,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgspluginmanager.cpp" line="566"/>
         <source>Failed to open plugin installer!</source>
-        <translation>Neuspješno otvaranje instalera plugina!</translation>
+        <translation>Neuspješno otvaranje instalera dodataka!</translation>
     </message>
 </context>
 <context>
@@ -18868,12 +18868,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="16"/>
         <source>QGIS Plugin Manager</source>
-        <translation>QGIS upravljanje pluginovima</translation>
+        <translation>QGIS upravljanje dodacima</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="25"/>
         <source>To enable / disable a plugin, click its checkbox or description</source>
-        <translation>Kliknite n kućicu za označavanje ili opis plugina za uključivanje/isključivanje</translation>
+        <translation>Kliknite na kućicu za označavanje ili opis dodatka za uključivanje/isključivanje</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="45"/>
@@ -18883,7 +18883,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="58"/>
         <source>Plugin Directory:</source>
-        <translation>Plugin mapa datoteka:</translation>
+        <translation>Mapa datoteka dodataka:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="71"/>
@@ -18893,7 +18893,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="84"/>
         <source>Plugin Installer</source>
-        <translation>Plugin Instaler</translation>
+        <translation>Instaleer dodataka</translation>
     </message>
 </context>
 <context>
@@ -19333,12 +19333,12 @@ SQL: %3</translation>
         <translation>Tekst, neograničena dužina (text)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1091"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1092"/>
         <source>No suitable key column in table</source>
         <translation>Nema adekvatne ključne kolone u tablici</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1092"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1093"/>
         <source>The table has no column suitable for use as a key.
 
 Qgis requires that the table either has a column of type
@@ -19355,63 +19355,63 @@ ima PostgreSQL OID kolonu ili da ima CTID kolonu s
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1167"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1168"/>
         <source>The unique index on column &apos;%1&apos; is unsuitable because Qgis does not currently support non-int4 type columns as a key into the table.
 </source>
         <translation>Jedinstveni indeks na koloni &apos;%1&apos; nije prikladan jer Qgis trenutačno ne podržava tipove kolona koji nisu int4 kao ključne u tablici.
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1189"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1190"/>
         <source>and </source>
         <translation>i </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1195"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1196"/>
         <source>The unique index based on columns %1 is unsuitable because Qgis does not currently support multiple columns as a key into the table.
 </source>
         <translation>Jedinstveni indeks zasnovan na kolonama %1 nije prikladan jer Qgis trenutno ne podržava višestruke kolone kao ključne u tablici.
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1238"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1239"/>
         <source>Unable to find a key column</source>
         <translation>Ne mogu pronaći ključnu kolonu</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1375"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1376"/>
         <source>&apos;%1&apos; derives from &apos;%2.%3.%4&apos; </source>
         <translation>&apos;%1&apos; proizlazi iz &apos;%2.%3.%4&apos; </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1379"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1380"/>
         <source>and is suitable.</source>
         <translation>i prikladno je.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1383"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1384"/>
         <source>and is not suitable (type is %1)</source>
         <translation>i nije prikladno (tip je %1)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1385"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1386"/>
         <source> and has a suitable constraint)</source>
         <translation> i ima prikladno ograničenje)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1387"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1388"/>
         <source> and does not have a suitable constraint)</source>
         <translation> i nema prikladno ograničenje)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1471"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1472"/>
         <source>Note: &apos;%1&apos; initially appeared suitable but does not contain unique data, so is not suitable.
 </source>
         <translation>Napomena: &apos;%1&apos; je inicijalno izgledalo prikladno, no ne sadržava jedinstvene vrijednosti, pa je neprikladno.
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1482"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1483"/>
         <source>The view &apos;%1.%2&apos; has no column suitable for use as a unique key.
 Qgis requires that the view has a column that can be used as a unique key. Such a column should be derived from a table column of type int4 and be a primary key, have a unique constraint on it, or be a PostgreSQL oid column. To improve performance the column should also be indexed.
 The view you selected has the following columns, none of which satisfy the above conditions:</source>
@@ -19420,59 +19420,59 @@ Qgis zahtjeva da pogled ima kolonu koja se može koristiti kao jedinstveni klju�
 Pogled koji ste odabrali ima slijedeće kolone, niti jedna od njih ne zadovoljava gore navedene uvjete:</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1490"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1491"/>
         <source>No suitable key column in view</source>
         <translation>Nema prikladne ključne kolone u pogledu</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2293"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2294"/>
         <source>Error while adding features</source>
         <translation>Pogreška pri dodavanju elemenata</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2333"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2334"/>
         <source>Error while deleting features</source>
         <translation>Pogreška pri brisanju elemenata</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2393"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2394"/>
         <source>Error while adding attributes</source>
         <translation>Pogreška pri dodavanju atributa</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2438"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2439"/>
         <source>Error while deleting attributes</source>
         <translation>Pogreška pri brisanju atributa</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2506"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2507"/>
         <source>Error while changing attributes</source>
         <translation>Pogreška pri izmjeni atributa</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2592"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2593"/>
         <source>Error while changing geometry values</source>
         <translation>Pogreška pri izmjeni vrijednosti geometrije</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2996"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2997"/>
         <source>Unknown geometry type</source>
         <translation>Nepoznat geometrijski tip</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2997"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2998"/>
         <source>Column %1 in %2 has a geometry type of %3, which Qgis does not currently support.</source>
         <translation>Kolona %1 u %2 ima geometriju tipa %3, koju Qgis trenutačno ne podržava.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3004"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3005"/>
         <source>Qgis was unable to determine the type and srid of column %1 in %2. The database communication log was:
 %3</source>
         <translation>Qgis ne može odrediti tip i SRID kolone %1 u %2. Zapis komunikacije s bazom:
 %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3008"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3009"/>
         <source>Unable to get feature type and srid</source>
         <translation>Ne mogu dohvatiti tip i SRID elementa</translation>
     </message>
@@ -21782,7 +21782,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="14"/>
         <source>Scale Bar Plugin</source>
-        <translation>Plugin trake mjerila</translation>
+        <translation>Dodatak trake mjerila</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="31"/>
@@ -22132,11 +22132,11 @@ Pogreška je:
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="240"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="617"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="847"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="965"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1101"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1342"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="621"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="851"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="969"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1105"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1346"/>
         <source>SQLite error: %1
 
 SQL: %2</source>
@@ -22148,8 +22148,8 @@ SQL: %2</translation>
 <context>
     <name>QgsSpatiaLiteProvider::SqliteHandles</name>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1472"/>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1483"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1476"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1487"/>
         <source>Failure while connecting to: %1
 
 %2</source>
@@ -22158,7 +22158,7 @@ SQL: %2</translation>
 %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1482"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1486"/>
         <source>invalid metadata tables</source>
         <translation>nevaljane metadata tablice</translation>
     </message>
@@ -23134,32 +23134,32 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
 <context>
     <name>QgsVectorLayer</name>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2668"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2667"/>
         <source>Unknown renderer</source>
         <translation>Nepoznati renderer</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2674"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2673"/>
         <source>No renderer object</source>
         <translation>Nema renderer objekta</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2678"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2677"/>
         <source>Classification field not found</source>
         <translation>Nije pronađeno klasifikacijsko polje</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3157"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3156"/>
         <source>ERROR: no provider</source>
         <translation>POGREŠKA: nema pružatelja</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3163"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3162"/>
         <source>ERROR: layer not editable</source>
         <translation>POGREŠKA: sloj se ne može uređivati</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3177"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3176"/>
         <source>SUCCESS: %n attribute(s) deleted.</source>
         <comment>deleted attributes count</comment>
         <translation>
@@ -23169,7 +23169,7 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3183"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3182"/>
         <source>ERROR: %n attribute(s) not deleted.</source>
         <comment>not deleted attributes count</comment>
         <translation>
@@ -23179,7 +23179,7 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3199"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3198"/>
         <source>SUCCESS: %n attribute(s) added.</source>
         <comment>added attributes count</comment>
         <translation>
@@ -23189,7 +23189,7 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3205"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3204"/>
         <source>ERROR: %n new attribute(s) not added</source>
         <comment>not added attributes count</comment>
         <translation>
@@ -23199,17 +23199,17 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
         </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3246"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3245"/>
         <source>SUCCESS: attribute %1 was added.</source>
         <translation>USPJEH: dodan %1 atribut.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3253"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3252"/>
         <source>ERROR: attribute %1 not added</source>
         <translation>POGREŠKA: atribut %1 nije dodan</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3315"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3314"/>
         <source>SUCCESS: %n attribute value(s) changed.</source>
         <comment>changed attribute values count</comment>
         <translation>
@@ -23219,7 +23219,7 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3320"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3319"/>
         <source>ERROR: %n attribute value change(s) not applied.</source>
         <comment>not changed attribute values count</comment>
         <translation>
@@ -23229,7 +23229,7 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3352"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3351"/>
         <source>SUCCESS: %n feature(s) added.</source>
         <comment>added features count</comment>
         <translation>
@@ -23239,7 +23239,7 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3357"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3356"/>
         <source>ERROR: %n feature(s) not added.</source>
         <comment>not added features count</comment>
         <translation>
@@ -23249,7 +23249,7 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3370"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3369"/>
         <source>SUCCESS: %n geometries were changed.</source>
         <comment>changed geometries count</comment>
         <translation>
@@ -23259,7 +23259,7 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3375"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3374"/>
         <source>ERROR: %n geometries not changed.</source>
         <comment>not changed geometries count</comment>
         <translation>
@@ -23269,7 +23269,7 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3387"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3386"/>
         <source>SUCCESS: %n feature(s) deleted.</source>
         <comment>deleted features count</comment>
         <translation>
@@ -23279,7 +23279,7 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3397"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3396"/>
         <source>ERROR: %n feature(s) not deleted.</source>
         <comment>not deleted features count</comment>
         <translation>
@@ -24201,12 +24201,12 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="142"/>
         <source>Save</source>
-        <translation type="unfinished">Spremi</translation>
+        <translation>Spremi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="149"/>
         <source>Load</source>
-        <translation type="unfinished">Učitaj</translation>
+        <translation>Učitaj</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="170"/>
@@ -24619,7 +24619,7 @@ Pokušani URL: %1</translation>
     <message>
         <location filename="../src/plugins/quick_print/quickprintguibase.ui" line="14"/>
         <source>QGIS Quick Print Plugin</source>
-        <translation>QGIS Quick Print Plugin</translation>
+        <translation>QGIS Quick Print dodatak</translation>
     </message>
     <message>
         <location filename="../src/plugins/quick_print/quickprintguibase.ui" line="24"/>
@@ -25165,12 +25165,12 @@ Pokušani URL: %1</translation>
     <message>
         <location filename="../src/plugins/plugin_template/pluginguibase.ui" line="13"/>
         <source>QGIS Plugin Template</source>
-        <translation>QGIS Plugin predložak</translation>
+        <translation>QGIS predložak dodatka</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/pluginguibase.ui" line="47"/>
         <source>Plugin Template</source>
-        <translation>Plugin predložak</translation>
+        <translation>Predložak dodatka</translation>
     </message>
 </context>
 <context>
@@ -26017,7 +26017,7 @@ Base Path (i.e. keep only filename from attribute)</source>
         <source>This version of fTools requires at least QGIS version 1.0.0
 Plugin will not be enabled.</source>
         <translation>Ova verzija fTools zahtjeva QGIS barem verzije 1.0.0
-Plugin neće biti omogućen.</translation>
+Dodatak neće biti omogućen.</translation>
     </message>
     <message>
         <source>&amp;Vector</source>
@@ -26349,7 +26349,7 @@ Plugin neće biti omogućen.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="32"/>
         <source>Calculate average of raster within areas with the same category in a user-defined base map</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="33"/>
@@ -28297,7 +28297,7 @@ Plugin neće biti omogućen.</translation>
     <message>
         <location filename="../src/plugins/plugin_template/plugin.cpp" line="75"/>
         <source>Replace this with a short description of what the plugin does</source>
-        <translation>Zamijenite ovo sa specifičnim opisom plugina</translation>
+        <translation>Zamijenite ovo sa specifičnim opisom dodatka</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugin.cpp" line="80"/>
