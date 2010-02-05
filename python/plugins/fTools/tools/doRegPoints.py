@@ -76,7 +76,7 @@ class Dialog(QDialog, Ui_Dialog):
 				mLayer = self.getMapLayerByName(unicode(inName))
 				boundBox = mLayer.extent()
 			else:
-				boundBox = QgsRect(float(self.xMin.text()), float(self.yMin.text()), float(self.xMax.text()), float(self.yMax.text()))
+				boundBox = QgsRectangle(float(self.xMin.text()), float(self.yMin.text()), float(self.xMax.text()), float(self.yMax.text()))
 			self.regularize(boundBox, outPath, offset, value, self.rdoSpacing.isChecked(), self.spnInset.value(), self.progressBar)
 			addToTOC = QMessageBox.question(self, self.tr("Generate Regular Points"), self.tr("Created output point shapefile:\n%1\n\nNote: Layer has no associated coordinate system, please use the Projection Management Tool to specify spatial reference system.\n\nWould you like to add the new layer to the TOC?").arg( outPath ), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
 			if addToTOC == QMessageBox.Yes:
