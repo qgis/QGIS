@@ -101,28 +101,36 @@ int main(int argc, char **argv)
           if (col == window.cols) col--;
           if (row == window.rows) row--;
 
-          rast_type = G_get_raster_map_type(fd);
-          cell = G_allocate_c_raster_buf();
-          dcell = G_allocate_d_raster_buf();
-
-          if (rast_type == CELL_TYPE) 
+          if ( col < 0 || col > window.cols || row < 0 || row > window.rows  )
           {
-            if (G_get_c_raster_row(fd, cell, row) < 0) 
-            {
-              G_fatal_error(("Unable to read raster map <%s> row %d"),
-                                    rast_opt->answer, row);
-            }
-            fprintf (stdout, "value:%d\n", cell[col] );
-          } 
-          else 
-          { 
-            if (G_get_d_raster_row(fd, dcell, row) < 0) 
-            {
-              G_fatal_error(("Unable to read raster map <%s> row %d"),
-                                    rast_opt->answer, row);
-            }
-            fprintf (stdout, "value:%f\n", dcell[col] );
+            fprintf (stdout, "value:null\n");
           }
+          else 
+          {
+            rast_type = G_get_raster_map_type(fd);
+            cell = G_allocate_c_raster_buf();
+            dcell = G_allocate_d_raster_buf();
+
+            if (rast_type == CELL_TYPE) 
+            {
+              if (G_get_c_raster_row(fd, cell, row) < 0) 
+              {
+                G_fatal_error(("Unable to read raster map <%s> row %d"),
+                                      rast_opt->answer, row);
+              }
+              fprintf (stdout, "value:%d\n", cell[col] );
+            } 
+            else 
+            { 
+              if (G_get_d_raster_row(fd, dcell, row) < 0) 
+              {
+                G_fatal_error(("Unable to read raster map <%s> row %d"),
+                                      rast_opt->answer, row);
+              }
+              fprintf (stdout, "value:%f\n", dcell[col] );
+            }
+          }
+          G_close_cell( fd );
         }
         else if ( vect_opt->answer )
         {
