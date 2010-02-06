@@ -574,43 +574,18 @@ void QgsLegendLayer::saveAsShapefileGeneral( bool saveOnlySelection )
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   QgsVectorFileWriter::WriterError error;
-  error = QgsVectorFileWriter::writeAsShapefile( vlayer, shapefileName, encoding, &destCRS, saveOnlySelection );
+  QString errorMessage;
+  error = QgsVectorFileWriter::writeAsShapefile( vlayer, shapefileName, encoding, &destCRS, saveOnlySelection, &errorMessage );
 
   QApplication::restoreOverrideCursor();
 
-  switch ( error )
+  if ( error == QgsVectorFileWriter::NoError )
   {
-    case QgsVectorFileWriter::NoError:
-      QMessageBox::information( 0, tr( "Saving done" ), tr( "Export to Shapefile has been completed" ) );
-      break;
-
-    case QgsVectorFileWriter::ErrDriverNotFound:
-      QMessageBox::warning( 0, tr( "Driver not found" ), tr( "ESRI Shapefile driver is not available" ) );
-      break;
-
-    case QgsVectorFileWriter::ErrCreateDataSource:
-      QMessageBox::warning( 0, tr( "Error creating shapefile" ),
-                            tr( "The shapefile could not be created (%1)" ).arg( shapefileName ) );
-      break;
-
-    case QgsVectorFileWriter::ErrCreateLayer:
-      QMessageBox::warning( 0, tr( "Error" ), tr( "Layer creation failed" ) );
-      break;
-
-    case QgsVectorFileWriter::ErrAttributeTypeUnsupported:
-      QMessageBox::warning( 0, tr( "Error" ),
-                            tr( "Layer attribute table contains unsupported datatype(s)" ) );
-      break;
-
-    case QgsVectorFileWriter::ErrAttributeCreationFailed:
-      QMessageBox::warning( 0, tr( "Error" ),
-                            tr( "Creation of an attribute failed" ) );
-      break;
-
-    case QgsVectorFileWriter::ErrProjection:
-      QMessageBox::warning( 0, tr( "Error" ),
-                            tr( "Reprojection failed" ) );
-      break;
+    QMessageBox::information( 0, tr( "Saving done" ), tr( "Export to Shapefile has been completed" ) );
+  }
+  else
+  {
+    QMessageBox::warning( 0, tr( "Save error" ), errorMessage );
   }
 }
 
