@@ -229,10 +229,10 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
     currentLayer = it.value();
 
     QTableWidgetItem *twi = new QTableWidgetItem( QString::number( i ) );
-    twi->setData( Qt::UserRole, it.key() );
     twIdentifyLayers->setVerticalHeaderItem( i, twi );
 
     twi = new QTableWidgetItem( currentLayer->name() );
+    twi->setData( Qt::UserRole, it.key() );
     twi->setFlags( twi->flags() & ~Qt::ItemIsEditable );
     twIdentifyLayers->setItem( i, 0, twi );
 
@@ -468,7 +468,7 @@ void QgsProjectProperties::apply()
     QCheckBox *cb = qobject_cast<QCheckBox *>( twIdentifyLayers->cellWidget( i, 2 ) );
     if ( cb && !cb->isChecked() )
     {
-      QString id = twIdentifyLayers->verticalHeaderItem( i )->data( Qt::UserRole ).toString();
+      QString id = twIdentifyLayers->item( i, 0 )->data( Qt::UserRole ).toString();
       noIdentifyLayerList << id;
     }
   }
