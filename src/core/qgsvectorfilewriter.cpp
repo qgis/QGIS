@@ -24,7 +24,6 @@
 #include "qgslogger.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectorfilewriter.h"
-#include "qgsvectordataprovider.h"
 
 #include <QFile>
 #include <QSettings>
@@ -39,6 +38,7 @@
 
 #include <ogr_api.h>
 #include <ogr_srs_api.h>
+#include <cpl_error.h>
 
 
 QgsVectorFileWriter::QgsVectorFileWriter( const QString& shapefileName,
@@ -58,6 +58,9 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString& shapefileName,
 
   if ( poDriver == NULL )
   {
+    mErrorMessage = QObject::tr( "OGR driver for '%1' not found (OGR error: %2)" )
+                    .arg( driverName )
+                    .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
     mError = ErrDriverNotFound;
     return;
   }
@@ -69,9 +72,11 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString& shapefileName,
     QgsFieldMap::const_iterator fldIt;
     for ( fldIt = fields.begin(); fldIt != fields.end(); ++fldIt )
     {
-      QString name = fldIt.value().name().left( 10 );
+      QString name = fldIt.value().name().left(10);
       if ( fieldNames.contains( name ) )
       {
+        mErrorMessage = QObject::tr( "trimming attribute name '%1' to ten significant characters produces duplicate column name." )
+                        .arg( fldIt.value().name() );
         mError = ErrAttributeCreationFailed;
         return;
       }
@@ -84,6 +89,8 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString& shapefileName,
   if ( mDS == NULL )
   {
     mError = ErrCreateDataSource;
+    mErrorMessage = QObject::tr( "creation of data source failed (OGR error:%1)" )
+                    .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
     return;
   }
 
@@ -140,6 +147,8 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString& shapefileName,
 
   if ( mLayer == NULL )
   {
+    mErrorMessage = QObject::tr( "creation of layer failed (OGR error:%1)" )
+                    .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
     mError = ErrCreateLayer;
     return;
   }
@@ -187,6 +196,8 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString& shapefileName,
 
       default:
         //assert(0 && "invalid variant type!");
+        mErrorMessage = QObject::tr( "unsupported type for field %1" )
+                        .arg( attrField.name() );
         mError = ErrAttributeTypeUnsupported;
         return;
     }
@@ -211,6 +222,9 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString& shapefileName,
     if ( OGR_L_CreateField( mLayer, fld, TRUE ) != OGRERR_NONE )
     {
       QgsDebugMsg( "error creating field " + attrField.name() );
+      mErrorMessage = QObject::tr( "creation of field %1 failed (OGR error: %2)" )
+                      .arg( attrField.name() )
+                      .arg( QString::fromUtf8( CPLGetLastErrorMsg() ) );
       mError = ErrAttributeCreationFailed;
       return;
     }
@@ -234,6 +248,11 @@ OGRGeometryH QgsVectorFileWriter::createEmptyGeometry( QGis::WkbType wkbType )
 QgsVectorFileWriter::WriterError QgsVectorFileWriter::hasError()
 {
   return mError;
+}
+
+QString QgsVectorFileWriter::errorMessage()
+{
+  return mErrorMessage;
 }
 
 bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
@@ -364,13 +383,12 @@ QgsVectorFileWriter::writeAsShapefile( QgsVectorLayer* layer,
                                        const QString& shapefileName,
                                        const QString& fileEncoding,
                                        const QgsCoordinateReferenceSystem* destCRS,
-                                       bool onlySelected )
+                                       bool onlySelected,
+                                       QString *errorMessage )
 {
 
   const QgsCoordinateReferenceSystem* outputCRS;
   QgsCoordinateTransform* ct = 0;
-
-  QgsVectorDataProvider* provider = layer->dataProvider();
   int shallTransform = false;
 
   if ( destCRS && destCRS->isValid() )
@@ -385,20 +403,22 @@ QgsVectorFileWriter::writeAsShapefile( QgsVectorLayer* layer,
     outputCRS = &layer->srs();
   }
   QgsVectorFileWriter* writer =
-    new QgsVectorFileWriter( shapefileName, fileEncoding, provider->fields(), provider->geometryType(), outputCRS );
+    new QgsVectorFileWriter( shapefileName, fileEncoding, layer->pendingFields(), layer->wkbType(), outputCRS );
 
   // check whether file creation was successful
   WriterError err = writer->hasError();
   if ( err != NoError )
   {
+    if ( errorMessage )
+      *errorMessage = writer->errorMessage();
     delete writer;
     return err;
   }
 
-  QgsAttributeList allAttr = provider->attributeIndexes();
+  QgsAttributeList allAttr = layer->pendingAllAttributesList();
   QgsFeature fet;
 
-  provider->select( allAttr, QgsRectangle(), true );
+  layer->select( allAttr, QgsRectangle(), true );
 
   const QgsFeatureIds& ids = layer->selectedFeaturesIds();
 
@@ -415,7 +435,7 @@ QgsVectorFileWriter::writeAsShapefile( QgsVectorLayer* layer,
   }
 
   // write all features
-  while ( provider->nextFeature( fet ) )
+  while ( layer->nextFeature( fet ) )
   {
     if ( onlySelected && !ids.contains( fet.id() ) )
       continue;
@@ -431,10 +451,11 @@ QgsVectorFileWriter::writeAsShapefile( QgsVectorLayer* layer,
         delete ct;
         delete writer;
 
-        QString msg( "Failed to transform a point while drawing a feature of type '"
-                     + fet.typeName() + "'. Writing stopped." );
-        msg += e.what();
+	QString msg = QObject::tr("Failed to transform a point while drawing a feature of type '%1'. Writing stopped.")
+                        .arg( fet.typeName() );
         QgsLogger::warning( msg );
+	if( errorMessage )
+          *errorMessage = msg;
 
         return ErrProjection;
       }

@@ -31,7 +31,6 @@ public:
                                         const QgsCoordinateReferenceSystem*,
                                         bool onlySelected = FALSE);
 
-
     /** create shapefile and initialize it */
     QgsVectorFileWriter(const QString& shapefileName,
                         const QString& fileEncoding,
@@ -42,7 +41,12 @@ public:
     
     /** checks whether there were any errors in constructor */
     WriterError hasError();
-    
+
+    /** retrieves error message
+      * @note added in 1.5
+      */
+    QString errorMessage();
+	       
     /** add feature to the currently opened shapefile */
     bool addFeature(QgsFeature& feature);
     

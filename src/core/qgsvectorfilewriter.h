@@ -58,8 +58,8 @@ class CORE_EXPORT QgsVectorFileWriter
                                          const QString& shapefileName,
                                          const QString& fileEncoding,
                                          const QgsCoordinateReferenceSystem *destCRS,
-                                         bool onlySelected = FALSE );
-
+                                         bool onlySelected = FALSE,
+                                         QString *errorMessage = 0 );
 
     /** create shapefile and initialize it */
     QgsVectorFileWriter( const QString& shapefileName,
@@ -71,6 +71,11 @@ class CORE_EXPORT QgsVectorFileWriter
 
     /** checks whether there were any errors in constructor */
     WriterError hasError();
+
+    /** retrieves error message
+     * @note added in 1.5
+     */
+    QString errorMessage();
 
     /** add feature to the currently opened shapefile */
     bool addFeature( QgsFeature& feature );
@@ -95,8 +100,9 @@ class CORE_EXPORT QgsVectorFileWriter
 
     /** contains error value if construction was not successful */
     WriterError mError;
+    QString mErrorMessage;
 
-    QTextCodec* mCodec;
+    QTextCodec *mCodec;
 
     /** geometry type which is being used */
     QGis::WkbType mWkbType;
