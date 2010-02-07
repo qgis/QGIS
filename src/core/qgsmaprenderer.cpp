@@ -279,7 +279,7 @@ void QgsMapRenderer::render( QPainter* painter )
 
   mRenderContext.setLabelingEngine( mLabelingEngine );
   if ( mLabelingEngine )
-    mLabelingEngine->init();
+    mLabelingEngine->init( this );
 
   // know we know if this render is just a repeat of the last time, we
   // can clear caches if it has changed

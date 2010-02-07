@@ -105,7 +105,7 @@ class LabelingTool : public QgsMapTool
  */
 void Labeling::initGui()
 {
-  mLBL = new PalLabeling( mQGisIface->mapCanvas()->mapRenderer() );
+  mLBL = new PalLabeling();
 
   // Create the action for tool
   mQActionPointer = new QAction( QIcon( ":/labeling/labeling.png" ), tr( "Labeling" ), this );
