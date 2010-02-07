@@ -1,161 +1,162 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>Dialog</class>
- <widget class="QDialog" name="Dialog" >
-  <property name="windowModality" >
+ <widget class="QDialog" name="Dialog">
+  <property name="windowModality">
    <enum>Qt::NonModal</enum>
   </property>
-  <property name="geometry" >
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>369</width>
+    <width>377</width>
     <height>459</height>
    </rect>
   </property>
-  <property name="windowTitle" >
-   <string>Generate Regular Points</string>
+  <property name="windowTitle">
+   <string>Generate Vector Grid</string>
   </property>
-  <property name="sizeGripEnabled" >
+  <property name="sizeGripEnabled">
    <bool>true</bool>
   </property>
-  <layout class="QGridLayout" name="gridLayout_2" >
-   <item row="0" column="0" colspan="2" >
-    <widget class="QGroupBox" name="groupBox" >
-     <property name="title" >
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="0" colspan="2">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
       <string>Grid extent</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout" >
-      <item row="0" column="0" colspan="2" >
-       <widget class="QComboBox" name="inShape" />
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0" colspan="2">
+       <widget class="QComboBox" name="inShape"/>
       </item>
-      <item row="1" column="0" >
-       <widget class="QToolButton" name="btnUpdate" >
-        <property name="minimumSize" >
+      <item row="1" column="0">
+       <widget class="QToolButton" name="btnUpdate">
+        <property name="minimumSize">
          <size>
           <width>0</width>
           <height>30</height>
          </size>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>Update extents from layer</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="1" >
-       <widget class="QToolButton" name="btnCanvas" >
-        <property name="minimumSize" >
+      <item row="1" column="1">
+       <widget class="QToolButton" name="btnCanvas">
+        <property name="minimumSize">
          <size>
           <width>0</width>
           <height>30</height>
          </size>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>Update extents from canvas</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="0" >
-       <layout class="QHBoxLayout" >
+      <item row="2" column="0">
+       <layout class="QHBoxLayout">
         <item>
-         <widget class="QLabel" name="label" >
-          <property name="enabled" >
+         <widget class="QLabel" name="label">
+          <property name="enabled">
            <bool>true</bool>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>X Min</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="xMin" >
-          <property name="enabled" >
+         <widget class="QLineEdit" name="xMin">
+          <property name="enabled">
            <bool>true</bool>
           </property>
-          <property name="inputMask" >
+          <property name="inputMask">
            <string/>
           </property>
-          <property name="text" >
+          <property name="text">
            <string/>
           </property>
          </widget>
         </item>
        </layout>
       </item>
-      <item row="2" column="1" >
-       <layout class="QHBoxLayout" >
+      <item row="2" column="1">
+       <layout class="QHBoxLayout">
         <item>
-         <widget class="QLabel" name="label_4" >
-          <property name="enabled" >
+         <widget class="QLabel" name="label_4">
+          <property name="enabled">
            <bool>true</bool>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>Y Min</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="yMin" >
-          <property name="enabled" >
+         <widget class="QLineEdit" name="yMin">
+          <property name="enabled">
            <bool>true</bool>
           </property>
-          <property name="inputMask" >
+          <property name="inputMask">
            <string/>
           </property>
-          <property name="text" >
+          <property name="text">
            <string/>
           </property>
          </widget>
         </item>
        </layout>
       </item>
-      <item row="3" column="0" >
-       <layout class="QHBoxLayout" >
+      <item row="3" column="0">
+       <layout class="QHBoxLayout">
         <item>
-         <widget class="QLabel" name="label_3" >
-          <property name="enabled" >
+         <widget class="QLabel" name="label_3">
+          <property name="enabled">
            <bool>true</bool>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>X Max</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="xMax" >
-          <property name="enabled" >
+         <widget class="QLineEdit" name="xMax">
+          <property name="enabled">
            <bool>true</bool>
           </property>
-          <property name="inputMask" >
+          <property name="inputMask">
            <string/>
           </property>
-          <property name="text" >
+          <property name="text">
            <string/>
           </property>
          </widget>
         </item>
        </layout>
       </item>
-      <item row="3" column="1" >
-       <layout class="QHBoxLayout" >
+      <item row="3" column="1">
+       <layout class="QHBoxLayout">
         <item>
-         <widget class="QLabel" name="label_5" >
-          <property name="enabled" >
+         <widget class="QLabel" name="label_5">
+          <property name="enabled">
            <bool>true</bool>
           </property>
-          <property name="text" >
+          <property name="text">
            <string>Y Max</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="yMax" >
-          <property name="enabled" >
+         <widget class="QLineEdit" name="yMax">
+          <property name="enabled">
            <bool>true</bool>
           </property>
-          <property name="inputMask" >
+          <property name="inputMask">
            <string/>
           </property>
-          <property name="text" >
+          <property name="text">
            <string/>
           </property>
          </widget>
@@ -165,18 +166,18 @@
      </layout>
     </widget>
    </item>
-   <item row="1" column="0" colspan="2" >
-    <widget class="QGroupBox" name="gridBox" >
-     <property name="title" >
+   <item row="1" column="0" colspan="2">
+    <widget class="QGroupBox" name="gridBox">
+     <property name="title">
       <string>Parameters</string>
      </property>
-     <layout class="QGridLayout" >
-      <item row="0" column="0" >
+     <layout class="QGridLayout">
+      <item row="0" column="0">
        <spacer>
-        <property name="orientation" >
+        <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" stdset="0" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>40</width>
           <height>20</height>
@@ -184,45 +185,45 @@
         </property>
        </spacer>
       </item>
-      <item row="0" column="1" >
-       <widget class="QLabel" name="label_7" >
-        <property name="text" >
+      <item row="0" column="1">
+       <widget class="QLabel" name="label_7">
+        <property name="text">
          <string>X</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="2" >
-       <widget class="QDoubleSpinBox" name="spnX" >
-        <property name="decimals" >
+      <item row="0" column="2">
+       <widget class="QDoubleSpinBox" name="spnX">
+        <property name="decimals">
          <number>4</number>
         </property>
-        <property name="minimum" >
+        <property name="minimum">
          <double>0.000100000000000</double>
         </property>
-        <property name="maximum" >
-         <double>999999999.000000000000000</double>
+        <property name="maximum">
+         <double>1000000000.000000000000000</double>
         </property>
-        <property name="singleStep" >
+        <property name="singleStep">
          <double>0.000100000000000</double>
         </property>
        </widget>
       </item>
-      <item rowspan="2" row="0" column="3" >
-       <widget class="QCheckBox" name="chkLock" >
-        <property name="text" >
+      <item row="0" column="3" rowspan="2">
+       <widget class="QCheckBox" name="chkLock">
+        <property name="text">
          <string>Lock 1:1 ratio</string>
         </property>
-        <property name="checked" >
+        <property name="checked">
          <bool>true</bool>
         </property>
        </widget>
       </item>
-      <item row="0" column="4" >
+      <item row="0" column="4">
        <spacer>
-        <property name="orientation" >
+        <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" stdset="0" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>40</width>
           <height>20</height>
@@ -230,12 +231,12 @@
         </property>
        </spacer>
       </item>
-      <item row="1" column="0" >
+      <item row="1" column="0">
        <spacer>
-        <property name="orientation" >
+        <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
-        <property name="sizeHint" stdset="0" >
+        <property name="sizeHint" stdset="0">
          <size>
           <width>40</width>
           <height>20</height>
@@ -243,48 +244,48 @@
         </property>
        </spacer>
       </item>
-      <item row="1" column="1" >
-       <widget class="QLabel" name="label_8" >
-        <property name="enabled" >
+      <item row="1" column="1">
+       <widget class="QLabel" name="label_8">
+        <property name="enabled">
          <bool>false</bool>
         </property>
-        <property name="text" >
+        <property name="text">
          <string>Y</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="2" >
-       <widget class="QDoubleSpinBox" name="spnY" >
-        <property name="enabled" >
+      <item row="1" column="2">
+       <widget class="QDoubleSpinBox" name="spnY">
+        <property name="enabled">
          <bool>false</bool>
         </property>
-        <property name="decimals" >
+        <property name="decimals">
          <number>4</number>
         </property>
-        <property name="minimum" >
+        <property name="minimum">
          <double>0.000100000000000</double>
         </property>
-        <property name="maximum" >
-         <double>999999999.000000000000000</double>
+        <property name="maximum">
+         <double>1000000000.000000000000000</double>
         </property>
-        <property name="singleStep" >
+        <property name="singleStep">
          <double>0.000100000000000</double>
         </property>
        </widget>
       </item>
-      <item row="2" column="0" colspan="3" >
-       <widget class="QRadioButton" name="rdoPolygons" >
-        <property name="text" >
+      <item row="2" column="0" colspan="3">
+       <widget class="QRadioButton" name="rdoPolygons">
+        <property name="text">
          <string>Output grid as polygons</string>
         </property>
-        <property name="checked" >
+        <property name="checked">
          <bool>true</bool>
         </property>
        </widget>
       </item>
-      <item row="3" column="0" colspan="3" >
-       <widget class="QRadioButton" name="rdoLines" >
-        <property name="text" >
+      <item row="3" column="0" colspan="3">
+       <widget class="QRadioButton" name="rdoLines">
+        <property name="text">
          <string>Output grid as lines</string>
         </property>
        </widget>
@@ -292,56 +293,56 @@
      </layout>
     </widget>
    </item>
-   <item row="2" column="0" >
-    <widget class="QLabel" name="label_2" >
-     <property name="sizePolicy" >
-      <sizepolicy vsizetype="Fixed" hsizetype="Fixed" >
+   <item row="2" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="text" >
+     <property name="text">
       <string>Output shapefile</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="0" colspan="2" >
-    <layout class="QHBoxLayout" >
+   <item row="3" column="0" colspan="2">
+    <layout class="QHBoxLayout">
      <item>
-      <widget class="QLineEdit" name="outShape" >
-       <property name="readOnly" >
+      <widget class="QLineEdit" name="outShape">
+       <property name="readOnly">
         <bool>true</bool>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="toolOut" >
-       <property name="text" >
+      <widget class="QToolButton" name="toolOut">
+       <property name="text">
         <string>Browse</string>
        </property>
       </widget>
      </item>
     </layout>
    </item>
-   <item row="4" column="0" >
-    <widget class="QProgressBar" name="progressBar" >
-     <property name="value" >
+   <item row="4" column="0">
+    <widget class="QProgressBar" name="progressBar">
+     <property name="value">
       <number>0</number>
      </property>
-     <property name="alignment" >
+     <property name="alignment">
       <set>Qt::AlignCenter</set>
      </property>
-     <property name="textVisible" >
+     <property name="textVisible">
       <bool>true</bool>
      </property>
     </widget>
    </item>
-   <item row="4" column="1" >
-    <widget class="QDialogButtonBox" name="buttonBox_2" >
-     <property name="orientation" >
+   <item row="4" column="1">
+    <widget class="QDialogButtonBox" name="buttonBox_2">
+     <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <property name="standardButtons" >
+     <property name="standardButtons">
       <set>QDialogButtonBox::Close|QDialogButtonBox::Ok</set>
      </property>
     </widget>
@@ -356,11 +357,11 @@
    <receiver>Dialog</receiver>
    <slot>accept()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>330</x>
      <y>449</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>215</x>
      <y>290</y>
     </hint>
@@ -372,11 +373,11 @@
    <receiver>Dialog</receiver>
    <slot>close()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>256</x>
      <y>449</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>132</x>
      <y>239</y>
     </hint>
@@ -388,11 +389,11 @@
    <receiver>spnY</receiver>
    <slot>setDisabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>279</x>
      <y>244</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>164</x>
      <y>280</y>
     </hint>
@@ -404,11 +405,11 @@
    <receiver>label_8</receiver>
    <slot>setDisabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>302</x>
      <y>261</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>73</x>
      <y>280</y>
     </hint>
