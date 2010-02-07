@@ -112,6 +112,8 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
   QgsMapRenderer theMapRenderer;
   theMapRenderer.setExtent( extent );
   theMapRenderer.setOutputSize( size, dpi );
+  if ( mMapRenderer->labelingEngine() )
+    theMapRenderer.setLabelingEngine( mMapRenderer->labelingEngine()->clone() );
 
   //use stored layer set or read current set from main canvas
   if ( mKeepLayerSet )

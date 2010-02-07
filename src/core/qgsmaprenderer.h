@@ -30,6 +30,7 @@ class QPainter;
 
 class QgsMapToPixel;
 class QgsMapLayer;
+class QgsMapRenderer;
 class QgsScaleCalculator;
 class QgsCoordinateReferenceSystem;
 class QgsDistanceArea;
@@ -46,7 +47,7 @@ class QgsLabelingEngineInterface
     virtual ~QgsLabelingEngineInterface() {}
 
     //! called when we're going to start with rendering
-    virtual void init() = 0;
+    virtual void init( QgsMapRenderer* mp ) = 0;
     //! called to find out whether the layer is used for labeling
     virtual bool willUseLayer( QgsVectorLayer* layer ) = 0;
     //! called when starting rendering of a layer
@@ -58,6 +59,8 @@ class QgsLabelingEngineInterface
     //! called when we're done with rendering
     virtual void exit() = 0;
 
+    //! called when passing engine among map renderers
+    virtual QgsLabelingEngineInterface* clone() = 0;
 };
 
 

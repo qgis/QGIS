@@ -99,7 +99,7 @@ class LabelCandidate
 class PalLabeling : public QgsLabelingEngineInterface
 {
   public:
-    PalLabeling( QgsMapRenderer* renderer );
+    PalLabeling();
     ~PalLabeling();
 
     LayerSettings& layer( const char* layerName );
@@ -122,7 +122,7 @@ class PalLabeling : public QgsLabelingEngineInterface
     // implemented methods from labeling engine interface
 
     //! called when we're going to start with rendering
-    virtual void init();
+    virtual void init( QgsMapRenderer* mr );
     //! called to find out whether the layer is used for labeling
     virtual bool willUseLayer( QgsVectorLayer* layer );
     //! hook called when drawing layer before issuing select()
@@ -134,6 +134,8 @@ class PalLabeling : public QgsLabelingEngineInterface
     //! called when we're done with rendering
     virtual void exit();
 
+    //! called when passing engine among map renderers
+    virtual QgsLabelingEngineInterface* clone();
 
     void drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform );
     void drawLabel( pal::LabelPosition* label, QPainter* painter, const QgsMapToPixel* xform, bool drawBuffer = false );

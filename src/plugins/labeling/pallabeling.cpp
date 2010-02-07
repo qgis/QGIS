@@ -257,8 +257,8 @@ void LayerSettings::registerFeature( QgsFeature& f )
 
 // -------------
 
-PalLabeling::PalLabeling( QgsMapRenderer* mapRenderer )
-    : mMapRenderer( mapRenderer ), mPal( NULL )
+PalLabeling::PalLabeling()
+    : mMapRenderer( NULL ), mPal( NULL )
 {
 
   // find out engine defaults
@@ -298,6 +298,8 @@ bool PalLabeling::willUseLayer( QgsVectorLayer* layer )
 
 int PalLabeling::prepareLayer( QgsVectorLayer* layer, int& attrIndex )
 {
+  Q_ASSERT( mMapRenderer != NULL );
+
   // start with a temporary settings class, find out labeling info
   LayerSettings lyrTmp;
   lyrTmp.readFromLayer( layer );
@@ -374,8 +376,10 @@ void PalLabeling::registerFeature( QgsVectorLayer* layer, QgsFeature& f )
 }
 
 
-void PalLabeling::init()
+void PalLabeling::init( QgsMapRenderer* mr )
 {
+  mMapRenderer = mr;
+
   // delete if exists already
   if ( mPal )
     delete mPal;
@@ -404,6 +408,7 @@ void PalLabeling::exit()
 {
   delete mPal;
   mPal = NULL;
+  mMapRenderer = NULL;
 }
 
 LayerSettings& PalLabeling::layer( const char* layerName )
@@ -421,6 +426,7 @@ LayerSettings& PalLabeling::layer( const char* layerName )
 
 void PalLabeling::drawLabeling( QgsRenderContext& context )
 {
+  Q_ASSERT( mMapRenderer != NULL );
   QPainter* painter = context.painter();
   QgsRectangle extent = context.extent();
 
@@ -610,4 +616,9 @@ void PalLabeling::drawLabelBuffer( QPainter* p, QString text, const QFont& font,
   p->setPen( QPen( color, size ) );
   p->setBrush( color );
   p->drawPath( path );
+}
+
+QgsLabelingEngineInterface* PalLabeling::clone()
+{
+  return new PalLabeling();
 }
