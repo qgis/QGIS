@@ -116,6 +116,7 @@ static int cell_draw(char *name,
     void *ptr;
     int big_endian;
     long one= 1;
+    FILE *fo;
 
     big_endian = !(*((char *)(&one)));
 
@@ -132,6 +133,10 @@ static int cell_draw(char *name,
     grn = G_malloc(ncols);
     blu = G_malloc(ncols);
     set = G_malloc(ncols);
+
+    /* some buggy C libraries require BOTH setmode() and fdopen(bin) ? */
+    //setmode(fileno(stdin), O_BINARY);
+    fo = fdopen (fileno(stdout), "wb");
     
     /* loop for array rows */
     for ( row = 0; row < nrows; row++ ) {
@@ -155,9 +160,9 @@ static int cell_draw(char *name,
             // consider byte order (well, middle endian ignored)
             if ( big_endian ) {
                 // I have never tested this 
-                fprintf(stdout, "%c%c%c%c", alpha, red[i],grn[i],blu[i]);
+                fprintf(fo, "%c%c%c%c", alpha, red[i],grn[i],blu[i]);
             } else {
-                fprintf(stdout, "%c%c%c%c", blu[i],grn[i],red[i],alpha);
+                fprintf(fo, "%c%c%c%c", blu[i],grn[i],red[i],alpha);
             }
         }
     }
