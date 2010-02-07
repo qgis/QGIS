@@ -31,11 +31,6 @@ CMAKE_OPTS := \
 	-D WITH_SPATIALITE=TRUE \
 	-D WITH_INTERNAL_SPATIALITE=TRUE
 
-ifeq ($(DISTRIBUTION),sid)
-# use on python 2.5 while transition to python 2.6 is on
-CMAKE_OPTS += -D PYTHON_EXECUTABLE=/usr/bin/python2.5
-endif
-
 ifneq (,$(findstring $(DISTRIBUTION),"hardy intrepid"))
 LDFLAGS += -Wl,--as-needed -Wl,--no-undefined
 endif
