@@ -1198,6 +1198,9 @@ bool QgsSpatiaLiteProvider::addAttributes( const QList<QgsField> &attributes )
     goto abort;
   }
 
+  // reload columns
+  rewind();
+
   return true;
 
 abort:
