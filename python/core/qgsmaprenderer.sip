@@ -13,11 +13,11 @@ public:
   virtual ~QgsLabelingEngineInterface();
 
   //! called when we're going to start with rendering
-  virtual void init() = 0;
+  virtual void init( QgsMapRenderer* mr ) = 0;
   //! called to find out whether the layer is used for labeling
   virtual bool willUseLayer( QgsVectorLayer* layer ) = 0;
   //! called when starting rendering of a layer
-  virtual int prepareLayer(QgsVectorLayer* layer, int& attrIndex) = 0;
+  virtual int prepareLayer(QgsVectorLayer* layer, int& attrIndex, QgsRenderContext& ctx ) = 0;
   //! called for every feature
   virtual void registerFeature( QgsVectorLayer* layer, QgsFeature& feat ) = 0;
   //! called when the map is drawn and labels should be placed
@@ -25,6 +25,8 @@ public:
   //! called when we're done with rendering
   virtual void exit() = 0;
 
+  //! called when passing engine among map renderers
+  virtual QgsLabelingEngineInterface* clone() = 0;
 };
 
 
