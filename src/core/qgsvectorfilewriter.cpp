@@ -72,7 +72,7 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString& shapefileName,
     QgsFieldMap::const_iterator fldIt;
     for ( fldIt = fields.begin(); fldIt != fields.end(); ++fldIt )
     {
-      QString name = fldIt.value().name().left(10);
+      QString name = fldIt.value().name().left( 10 );
       if ( fieldNames.contains( name ) )
       {
         mErrorMessage = QObject::tr( "trimming attribute name '%1' to ten significant characters produces duplicate column name." )
@@ -451,10 +451,10 @@ QgsVectorFileWriter::writeAsShapefile( QgsVectorLayer* layer,
         delete ct;
         delete writer;
 
-	QString msg = QObject::tr("Failed to transform a point while drawing a feature of type '%1'. Writing stopped.")
-                        .arg( fet.typeName() );
+        QString msg = QObject::tr( "Failed to transform a point while drawing a feature of type '%1'. Writing stopped. (Exception: %2)" )
+                      .arg( fet.typeName() ).arg( e.what() );
         QgsLogger::warning( msg );
-	if( errorMessage )
+        if ( errorMessage )
           *errorMessage = msg;
 
         return ErrProjection;
