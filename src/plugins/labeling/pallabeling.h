@@ -126,7 +126,7 @@ class PalLabeling : public QgsLabelingEngineInterface
     //! called to find out whether the layer is used for labeling
     virtual bool willUseLayer( QgsVectorLayer* layer );
     //! hook called when drawing layer before issuing select()
-    virtual int prepareLayer( QgsVectorLayer* layer, int& attrIndex );
+    virtual int prepareLayer( QgsVectorLayer* layer, int& attrIndex, QgsRenderContext& ctx );
     //! hook called when drawing for every feature in a layer
     virtual void registerFeature( QgsVectorLayer* layer, QgsFeature& feat );
     //! called when the map is drawn and labels should be placed

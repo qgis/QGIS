@@ -28,6 +28,7 @@
 #include <qgsgeometry.h>
 #include <qgsmaprenderer.h>
 
+
 using namespace pal;
 
 
@@ -296,7 +297,7 @@ bool PalLabeling::willUseLayer( QgsVectorLayer* layer )
 }
 
 
-int PalLabeling::prepareLayer( QgsVectorLayer* layer, int& attrIndex )
+int PalLabeling::prepareLayer( QgsVectorLayer* layer, int& attrIndex, QgsRenderContext& ctx )
 {
   Q_ASSERT( mMapRenderer != NULL );
 
@@ -352,6 +353,10 @@ int PalLabeling::prepareLayer( QgsVectorLayer* layer, int& attrIndex )
 
   // set whether adjacent lines should be merged
   l->setMergeConnectedLines( lyr.mergeLines );
+
+  // set font size from points to output size
+  double size = 0.3527 * lyr.textFont.pointSizeF() * ctx.scaleFactor(); //* ctx.rasterScaleFactor();
+  lyr.textFont.setPixelSize((int)size);
 
   // save the pal layer to our layer context (with some additional info)
   lyr.palLayer = l;
@@ -620,5 +625,8 @@ void PalLabeling::drawLabelBuffer( QPainter* p, QString text, const QFont& font,
 
 QgsLabelingEngineInterface* PalLabeling::clone()
 {
-  return new PalLabeling();
+  PalLabeling* lbl = new PalLabeling();
+  lbl->mShowingAllLabels = mShowingAllLabels;
+  lbl->mShowingCandidates = mShowingCandidates;
+  return lbl;
 }
