@@ -898,7 +898,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     if ( rendererContext.labelingEngine() )
     {
       int attrIndex;
-      if ( rendererContext.labelingEngine()->prepareLayer( this, attrIndex ) )
+      if ( rendererContext.labelingEngine()->prepareLayer( this, attrIndex, rendererContext ) )
       {
         if ( !attributes.contains( attrIndex ) )
           attributes << attrIndex;
@@ -958,7 +958,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     if ( rendererContext.labelingEngine() )
     {
       int attrIndex;
-      if ( rendererContext.labelingEngine()->prepareLayer( this, attrIndex ) )
+      if ( rendererContext.labelingEngine()->prepareLayer( this, attrIndex, rendererContext ) )
       {
         if ( !attributes.contains( attrIndex ) )
           attributes << attrIndex;
