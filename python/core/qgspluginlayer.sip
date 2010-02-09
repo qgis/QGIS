@@ -11,4 +11,5 @@ class QgsPluginLayer : QgsMapLayer
     /** return plugin layer type (the same as used in QgsPluginLayerRegistry) */
     QString pluginLayerType();
 
+    void setExtent(const QgsRectangle& extent);
 };
