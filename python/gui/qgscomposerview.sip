@@ -22,6 +22,7 @@ class QgsComposerView: QGraphicsView
       AddLabel,        // add label
       AddScalebar,     // add scalebar
       AddPicture,       // add raster/vector picture
+      AddShape, //add shape item (ellipse, rectangle, triangle)
       MoveItemContent //move content of item (e.g. content of map)
     };
 
@@ -51,6 +52,8 @@ class QgsComposerView: QGraphicsView
     void addComposerLegend( QgsComposerLegend* legend );
     /**Adds picture to the graphics scene and advices composer to create a widget for it (through signal)*/
     void addComposerPicture( QgsComposerPicture* picture );
+    /**Adds a composer shape to the graphics scene and advices composer to create a widget for it (through signal)*/
+    void addComposerShape( QgsComposerShape* shape );
 
     /**Returns the composer main window*/
     QMainWindow* composerWindow();
