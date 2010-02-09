@@ -17,6 +17,7 @@
 %Include qgscomposermap.sip
 %Include qgscomposerpicture.sip
 %Include qgscomposerscalebar.sip
+%Include qgscomposershape.sip
 %Include qgscomposition.sip
 %Include qgslegendmodel.sip
 %Include qgspaperitem.sip
