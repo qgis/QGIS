@@ -17,15 +17,26 @@
 
 QString QgsSymbolLayerV2Utils::encodeColor( QColor color )
 {
-  return QString( "%1,%2,%3" ).arg( color.red() ).arg( color.green() ).arg( color.blue() );
+  return QString( "%1,%2,%3,%4" ).arg( color.red() ).arg( color.green() ).arg( color.blue() ).arg( color.alpha() );
 }
 
 QColor QgsSymbolLayerV2Utils::decodeColor( QString str )
 {
   QStringList lst = str.split( "," );
-  if ( lst.count() != 3 )
+  if ( lst.count() < 3 )
+  {
     return QColor();
-  return QColor( lst[0].toInt(), lst[1].toInt(), lst[2].toInt() );
+  }
+  int red, green, blue, alpha;
+  red = lst[0].toInt();
+  green = lst[1].toInt();
+  blue = lst[2].toInt();
+  alpha = 255;
+  if ( lst.count() > 3 )
+  {
+    alpha = lst[3].toInt();
+  }
+  return QColor( red, green, blue, alpha );
 }
 
 QString QgsSymbolLayerV2Utils::encodePenStyle( Qt::PenStyle style )
