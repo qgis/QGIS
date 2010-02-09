@@ -1,5 +1,5 @@
 /**A composer items that draws common shapes (ellipse, triangle, rectangle)*/
-class QgsComposerShape: public QgsComposerItem
+class QgsComposerShape: QgsComposerItem
 {
 %TypeHeaderCode
 #include "qgscomposershape.h"
