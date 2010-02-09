@@ -13,6 +13,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#ifdef WIN32
+#include <fcntl.h>
+#include <io.h>
+#endif
 #include <grass/gis.h>
 #include <grass/raster.h>
 #include <grass/display.h>
@@ -131,10 +135,14 @@ static int cell_draw( char *name,
   blu = G_malloc( ncols );
   set = G_malloc( ncols );
 
-  /* some buggy C libraries require BOTH setmode() and fdopen(bin) ? */
-  //setmode(fileno(stdin), O_BINARY);
-  fo = fdopen( fileno( stdout ), "wb" );
-
+  /* some buggy C libraries require BOTH setmode() and fdopen(bin) */
+#ifdef WIN32
+  if ( _setmode( _fileno( stdout ), _O_BINARY ) == -1 )
+      G_fatal_error( "Cannot set stdout mode" );
+#endif
+  // Unfortunately this is not sufficient on Windows to switch stdout to binary mode
+  fo = fdopen (fileno(stdout), "wb");
+    
   /* loop for array rows */
   for ( row = 0; row < nrows; row++ )
   {
