@@ -242,6 +242,7 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
   QFile manFile( manPath );
   if ( manFile.exists() )
   {
+    mManualTextBrowser->setOpenExternalLinks ( true );
     mManualTextBrowser->setSource( QUrl::fromLocalFile( manPath ) );
   }
   else
