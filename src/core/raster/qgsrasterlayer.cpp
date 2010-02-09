@@ -1118,7 +1118,7 @@ QgsRasterLayer::RasterPyramidList  QgsRasterLayer::buildPyramidList()
   int myWidth = mWidth;
   int myHeight = mHeight;
   int myDivisor = 2;
-  
+
   if ( mDataProvider ) return mPyramidList;
 
   GDALRasterBandH myGDALBand = GDALGetRasterBand( mGdalDataset, 1 ); //just use the first band
@@ -3227,7 +3227,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
           mDrawingStyle = MultiBandColor;  //sensible default
 
           // Setup source CRS
-          if ( mProviderKey == "wms" ) 
+          if ( mProviderKey == "wms" )
           {
             *mCRS = QgsCoordinateReferenceSystem();
             mCRS->createFromOgcWmsCrs( crs );
@@ -5417,7 +5417,8 @@ bool QgsRasterLayer::update()
 
   if ( mLastModified < QgsRasterLayer::lastModified( source() ) )
   {
-    if ( !usesProvider() ) {
+    if ( !usesProvider() )
+    {
       QgsDebugMsg( "Outdated -> reload" );
       closeDataset();
       return readFile( source() );
@@ -5600,9 +5601,25 @@ bool QgsRasterImageBuffer::createNextPartImage()
       }
       else
       {
-        double xLeft = mViewPort->topLeftPoint.x();
-        double yTop = mViewPort->topLeftPoint.y() + fabs( mGeoTransform[5] ) * mCurrentPartRasterMin / mMapToPixel->mapUnitsPerPixel();
-        mPainter->drawImage( QPointF( xLeft, yTop + 0.5 ), *mCurrentImage );
+        int paintXoffset = static_cast<int>(
+                             ( mViewPort->rectXOffsetFloat -
+                               mViewPort->rectXOffset )
+                             / mMapToPixel->mapUnitsPerPixel()
+                             * fabs( mGeoTransform[1] )
+                           );
+
+        int paintYoffset = static_cast<int>(
+                             ( mViewPort->rectYOffsetFloat -
+                               mViewPort->rectYOffset )
+                             / mMapToPixel->mapUnitsPerPixel()
+                             * fabs( mGeoTransform[5] )
+                           );
+
+        mPainter->drawImage( static_cast<int>( mViewPort->topLeftPoint.x() + 0.5 ),
+                             static_cast<int>( mViewPort->topLeftPoint.y() + 0.5 +  fabs( mGeoTransform[5] ) * mCurrentPartRasterMin / mMapToPixel->mapUnitsPerPixel() ),
+                             *mCurrentImage,
+                             paintXoffset,
+                             paintYoffset );
       }
     }
   }
