@@ -24,6 +24,7 @@
 QString createDatabaseURI( QString connectionType, QString host, QString database, QString port, QString user, QString password )
 {
   QString uri = "";
+
   //todo:add default ports for all kind of databases
   if ( connectionType == "ESRI Personal GeoDatabase" )
   {
@@ -31,28 +32,58 @@ QString createDatabaseURI( QString connectionType, QString host, QString databas
   }
   else if ( connectionType == "ESRI ArcSDE" )
   {
-    if ( port.isNull() || port.isEmpty() )
+    if ( port.isEmpty() )
       port = "5151";
+
     uri = "SDE:" + host + ",PORT:" + port + "," + database + "," + user + "," + password;
   }
   else if ( connectionType == "Informix DataBlade" )
   {
     //not tested
-    uri = "IDB:dbname=" + database + " server=" + host
-          + " user=" + user
-          + " pass=" + password + " ";
+    uri = "IDB:dbname=" + database;
 
+    if ( !host.isEmpty() )
+      uri += QString( " server=%1" ).arg( host );
+
+    if ( !user.isEmpty() )
+    {
+      uri += QString( " user=%1" ).arg( user );
+
+      if ( !password.isEmpty() )
+        uri += QString( " pass=%1" ).arg( password );
+    }
   }
   else if ( connectionType == "INGRES" )
   {
     //not tested
-    uri = "@driver=ingres,dbname=" + database + ",userid=" + user + ", password=" + password + " ";
+    uri = "@driver=ingres,dbname=" + database;
+    if ( !user.isEmpty() )
+    {
+      uri += QString( ",userid=%1" ).arg( user );
+
+      if ( !password.isEmpty() )
+        uri += QString( ",password=%1" ).arg( password );
+    }
   }
   else if ( connectionType == "MySQL" )
   {
-    uri = "MySQL:" + database + ",host=" + host
-          + ",port=" + port + ",user=" + user
-          + ", password=" + password + " ";
+    uri = "MySQL:" + database;
+
+    if ( !host.isEmpty() )
+    {
+      uri += QString( ",host=%1" ).arg( host );
+
+      if ( !port.isEmpty() )
+        uri += QString( ",port=%1" ).arg( port );
+    }
+
+    if ( !user.isEmpty() )
+    {
+      uri += QString( ",user=%1" ).arg( user );
+
+      if ( !password.isEmpty() )
+        uri += QString( ",password=%1" ).arg( password );
+    }
   }
   else if ( connectionType == "Oracle Spatial" )
   {
@@ -97,11 +128,27 @@ QString createDatabaseURI( QString connectionType, QString host, QString databas
   }
   else if ( connectionType == "PostgreSQL" )
   {
-    uri = "PG:dbname='" + database + "' host='" + host
-          + "' port='" + port + "' user='" + user
-          + "' password='" + password + "' ";
+    uri = "PG:dbname='" + database + "'";
 
+    if ( !host.isEmpty() )
+    {
+      uri += QString( " host='%1'" ).arg( host );
+
+      if ( !port.isEmpty() )
+        uri += QString( " port='%1'" ).arg( port );
+    }
+
+    if ( !user.isEmpty() )
+    {
+      uri += QString( " user='%1'" ).arg( user );
+
+      if ( !password.isEmpty() )
+        uri += QString( " password='%1'" ).arg( password );
+    }
+
+    uri += " ";
   }
+
   QgsDebugMsg( "Connection type is=" + connectionType + " and uri=" + uri );
   return uri;
 }
