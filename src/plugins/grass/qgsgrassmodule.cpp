@@ -2441,13 +2441,13 @@ QStringList QgsGrassModuleInput::options()
   // TODO: this is hack for network nodes, do it somehow better
   if ( mMapId.isEmpty() )
   {
-    opt = mKey + "=";
-
     if ( current <  mMaps.size() )
     {
-      opt.append( mMaps[current] );
+      if ( ! mMaps[current].isEmpty() )
+      {
+        list.push_back( mKey + "=" + mMaps[current] );
+      }
     }
-    list.push_back( opt );
   }
 
   if ( !mGeometryTypeOption.isNull() && current < mGeometryTypes.size() )
