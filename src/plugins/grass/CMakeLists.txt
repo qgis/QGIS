@@ -110,6 +110,7 @@ ENDIF(NOT WIN32)
 
 SET (GRASS_PLUGIN_RCCS  qgsgrass_plugin.qrc)
 
+SET (GRASS_BROWSER_SRCS qgis.g.browser.cpp)
 
 ########################################################
 # Build
@@ -153,6 +154,12 @@ TARGET_LINK_LIBRARIES(grassplugin
   ${OPENPTY_LIBRARY}
 )
 
+ADD_EXECUTABLE(qgis.g.browser ${GRASS_BROWSER_SRCS})
+
+TARGET_LINK_LIBRARIES (qgis.g.browser
+  ${QT_QTGUI_LIBRARY}
+  ${QT_QTCORE_LIBRARY}
+)
 
 ########################################################
 # Install
@@ -165,3 +172,8 @@ INSTALL(TARGETS grassplugin
 FILE (GLOB GMLS *.gml)
 INSTALL (FILES ${GMLS} images/world.png
          DESTINATION ${QGIS_DATA_DIR}/grass)
+
+INSTALL(TARGETS qgis.g.browser 
+        RUNTIME DESTINATION ${QGIS_DATA_DIR}/grass/bin
+        PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+)
