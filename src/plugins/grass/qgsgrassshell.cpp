@@ -17,6 +17,7 @@
 #include <QShortcut>
 #include <QKeySequence>
 
+#include "qgslogger.h"
 #include "qtermwidget/qtermwidget.h"
 #include "qgsgrass.h"
 
@@ -53,6 +54,29 @@ QgsGrassShell::QgsGrassShell( QgsGrassTools *tools, QTabWidget *parent, const ch
 
   mTerminal->setSize( 80, 25 );
   mTerminal->startShellProgram();
+  // using -text option GRASS_GUI is owerridden so we have to reset it 
+  QgsDebugMsg ( "gisrc = " + QgsGrass::gisrcFilePath() );
+  QFile in( QgsGrass::gisrcFilePath() );
+  if ( in.open( QIODevice::ReadOnly ) ) 
+  {
+    char buf[1000];
+    QString oldGui;
+    while ( in.readLine( buf, 1000 ) != -1 )
+    {
+      QString line = buf;
+      QStringList kv = line.split ( ':' );
+      if ( kv.length() == 2 &&  kv.at(0) == "GRASS_GUI" ) 
+      {
+        oldGui = kv.at(1).trimmed ();
+        break;
+      }
+    }
+    if ( ! oldGui.isEmpty() ) 
+    {
+      QString cmd = QString("g.gisenv set=GRASS_GUI=") + oldGui + "\n";
+      mTerminal->sendText( cmd );
+    }
+  }
   mTerminal->setFocus( Qt::MouseFocusReason );
 }
 

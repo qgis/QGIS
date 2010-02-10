@@ -1242,3 +1242,17 @@ QString GRASS_EXPORT QgsGrass::lockFilePath()
 {
   return mMapsetLock;
 }
+
+QString GRASS_EXPORT QgsGrass::gisrcFilePath()
+{
+  if ( mGisrc.isEmpty() )
+  {
+    // Started from GRASS shell
+    if ( getenv( "GISRC" ) )
+    {
+      return QString ( getenv( "GISRC" ) );
+    }
+  }
+  return mGisrc;
+}
+
