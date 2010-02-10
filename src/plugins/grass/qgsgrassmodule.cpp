@@ -1273,13 +1273,14 @@ void QgsGrassModule::run()
     commandHtml.replace( ">", "&gt;" );
     mOutputTextBrowser->append( "<B>" +  commandHtml + "</B>" );
 
+    QStringList environment = QProcess::systemEnvironment();
+    environment.append( "GRASS_HTML_BROWSER=" + QgsApplication::pkgDataPath() + "/grass/bin/qgis.g.browser" );
+
     // Warning: it is not useful to write requested region to WIND file and
     //          reset then to original beacuse it is reset before
     //          the region is read by a module even if waitForStarted() is used
     //          -> necessary to pass region as environment variable
     //             but the feature is available in GRASS 6.1 only since 23.3.2006
-
-    QStringList environment = QProcess::systemEnvironment();
     if ( resetRegion )
     {
       QString reg = QgsGrass::regionString( &tempWindow );
