@@ -18,7 +18,7 @@ Has +- the same behaviour as command-line interactive console:
 
 TODO:
 - configuration - init commands, font, ...
-- syntax highlighting
+- python code highlighting
 
 """
 
@@ -92,6 +92,29 @@ class PythonConsole(QWidget):
     QWidget.closeEvent(self, event)
 
 
+class ConsoleHighlighter(QSyntaxHighlighter):
+  EDIT_LINE, ERROR, OUTPUT, INIT = range(4)
+  def __init__(self, doc):
+    QSyntaxHighlighter.__init__(self,doc)
+    formats = { self.OUTPUT    : Qt.black,
+		self.ERROR     : Qt.red,
+		self.EDIT_LINE : Qt.darkGreen,
+		self.INIT      : Qt.gray }
+    self.f = {}
+    for tag, color in formats.iteritems():
+      self.f[tag] = QTextCharFormat()
+      self.f[tag].setForeground(color)
+
+  def highlightBlock(self, txt):
+    size = txt.length()
+    state = self.currentBlockState()
+    if state == self.OUTPUT or state == self.ERROR or state == self.INIT:
+      self.setFormat(0,size, self.f[state])
+    # highlight prompt only
+    if state == self.EDIT_LINE:
+      self.setFormat(0,3, self.f[self.EDIT_LINE])
+
+
 class PythonEdit(QTextEdit, code.InteractiveInterpreter):
 
   def __init__(self,parent=None):
@@ -108,9 +131,9 @@ class PythonEdit(QTextEdit, code.InteractiveInterpreter):
 
     self.buffer = []
 
-    self.insertPlainText("To access Quantum GIS environment from this console\n"
-                         "use qgis.utils.iface object (instance of QgisInterface class).\n"
-			 "\n")
+    self.insertTaggedText("To access Quantum GIS environment from this console\n"
+                          "use qgis.utils.iface object (instance of QgisInterface class).\n"
+			  "\n", ConsoleHighlighter.INIT)
 
     for line in _init_commands:
       self.runsource(line)
@@ -120,13 +143,12 @@ class PythonEdit(QTextEdit, code.InteractiveInterpreter):
     self.history = QStringList()
     self.historyIndex = 0
 
-    #from pythonhigh import PythonHighlighter
-    #self.high = PythonHighlighter(self)
+    self.high = ConsoleHighlighter(self)
 
   def displayPrompt(self, more=False):
     self.currentPrompt = "... " if more else ">>> "
     self.currentPromptLength = len(self.currentPrompt)
-    self.insertPlainText(self.currentPrompt)
+    self.insertTaggedLine(self.currentPrompt, ConsoleHighlighter.EDIT_LINE)
     self.moveCursor(QTextCursor.End, QTextCursor.MoveAnchor)
 
   def isCursorInEditionZone(self):
@@ -240,6 +262,24 @@ class PythonEdit(QTextEdit, code.InteractiveInterpreter):
     self.setTextCursor(self.cursor)
     self.runCommand( unicode(self.currentCommand()) )
 
+  def insertTaggedText(self, txt, tag):
+
+    if len(txt) > 0 and txt[-1] == '\n': # remove trailing newline to avoid one more empty line
+      txt = txt[0:-1]
+
+    c = self.textCursor()
+    for line in txt.split('\n'):
+      b = c.block()
+      b.setUserState(tag)
+      c.insertText(line)
+      c.insertBlock()
+
+  def insertTaggedLine(self, txt, tag):
+    c = self.textCursor()
+    b = c.block()
+    b.setUserState(tag)
+    c.insertText(txt)
+
   def runCommand(self, cmd):
 
     self.updateHistory(cmd)
@@ -254,13 +294,12 @@ class PythonEdit(QTextEdit, code.InteractiveInterpreter):
 
     output = sys.stdout.get_and_clean_data()
     if output:
-      self.insertPlainText(output)
+      self.insertTaggedText(output, ConsoleHighlighter.OUTPUT)
     self.displayPrompt(more)
 
   def write(self, txt):
     """ reimplementation from code.InteractiveInterpreter """
-    self.insertPlainText(txt)
-
+    self.insertTaggedText(txt, ConsoleHighlighter.ERROR)
 
 if __name__ == '__main__':
   a = QApplication(sys.argv)
