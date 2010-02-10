@@ -434,15 +434,13 @@ void QgsGrassMapcalc::mouseReleaseEvent( QMouseEvent* e )
 QStringList QgsGrassMapcalc::arguments()
 {
   QString cmd = "";
-  //cmd.append("'");
+  // Attention with quotes and spaces!
+  //cmd.append("\"");
 
   cmd.append( mOutputLineEdit->text() );
-  cmd.append( "=" );
+  cmd.append( " = " );
   cmd.append( mOutput->expression() );
-  //cmd.append("'");
-
-  //cmd = "\"pok=1\"";
-  //cmd = mOutputLineEdit->text();
+  //cmd.append("\"");
 
   return QStringList( cmd );
 }
