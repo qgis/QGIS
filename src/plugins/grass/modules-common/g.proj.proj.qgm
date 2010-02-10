@@ -8,5 +8,5 @@
 	<flag key="w" />
 	<flag key="e" />
 	<flag key="f" />
-	<file key="proj4" type="new"/>
+	<file key="proj4"/>
 </qgisgrassmodule>
