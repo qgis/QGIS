@@ -160,6 +160,9 @@ class QgsGrass
     // ! Get the lock file
     static GRASS_EXPORT QString lockFilePath();
 
+    // ! Get current gisrc path
+    static QString gisrcFilePath();
+
     // ! Run a GRASS module in any gisdbase/location
     static GRASS_EXPORT QByteArray runModule( QString gisdbase, QString location, QString module, QStringList arguments );
 
