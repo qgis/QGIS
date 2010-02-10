@@ -316,6 +316,7 @@
     <file>themes/gis/mActionLowerItems.png</file>
     <file>themes/gis/mActionMapTips.png</file>
     <file>themes/gis/mActionMeasure.png</file>
+    <file>themes/gis/mActionMeasureAngle.png</file>
     <file>themes/gis/mActionMeasureArea.png</file>
     <file>themes/gis/mActionMergeFeatures.png</file>
     <file>themes/gis/mActionMoveFeature.png</file>
@@ -362,6 +363,7 @@
     <file>themes/gis/plugins/georeferencer.png</file>
     <file>themes/gis/plugins/gps_importer.png</file>
     <file>themes/gis/plugins/interpolation.png</file>
+    <file>themes/gis/plugins/mapserver_export.png</file>
     <file>themes/gis/plugins/north_arrow.png</file>
     <file>themes/gis/plugins/ogr_converter.png</file>
     <file>themes/gis/plugins/quick_print.png</file>
