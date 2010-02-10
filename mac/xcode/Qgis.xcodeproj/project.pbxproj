@@ -804,6 +804,7 @@
 		72442AEC1095DD4C00B54796 /* qgsavoidintersectionsdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72442AEA1095DCFC00B54796 /* qgsavoidintersectionsdialog.h */; };
 		72448CD310E9A1C100D4586B /* qgsprojectbadlayerguihandler.h in Sources */ = {isa = PBXBuildFile; fileRef = 72A51A4B10CE05B000E202D7 /* qgsprojectbadlayerguihandler.h */; };
 		72448CD710E9A21500D4586B /* qgsattributetableview.h in Sources */ = {isa = PBXBuildFile; fileRef = 72A239480F74A62200AFC35B /* qgsattributetableview.h */; };
+		72463E511122FF7300BE5F17 /* qgis.g.browser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72463E3C1122FEC500BE5F17 /* qgis.g.browser.cpp */; };
 		72491FB711074E930035D7E5 /* characterwidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72491FB511074E700035D7E5 /* characterwidget.cpp */; };
 		72491FB811074E930035D7E5 /* characterwidget.h in Sources */ = {isa = PBXBuildFile; fileRef = 72491FB611074E700035D7E5 /* characterwidget.h */; };
 		724D05C610A910F200F9680A /* north-arrow_10_with_map_layers.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 724D05BE10A910B400F9680A /* north-arrow_10_with_map_layers.svg */; };
@@ -2313,21 +2314,21 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 72FEE3C1111D378800D28C1A /* qgis.g.info */;
+			remoteGlobalIDString = 72FEE3C1111D378800D28C1A;
 			remoteInfo = qgis.g.info;
 		};
 		7230E4A8111D385900F256EB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 72FEE3A6111D353300D28C1A /* qgis.d.rast */;
+			remoteGlobalIDString = 72FEE3A6111D353300D28C1A;
 			remoteInfo = qgis.d.rast;
 		};
 		7230E4AA111D385900F256EB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 72FEE385111D31AC00D28C1A /* grassrasterprovider */;
+			remoteGlobalIDString = 72FEE385111D31AC00D28C1A;
 			remoteInfo = grassrasterprovider;
 		};
 		7256F18F0F411B110022BE1F /* PBXContainerItemProxy */ = {
@@ -5519,6 +5520,8 @@
 		72442AE81095DCD800B54796 /* qgsavoidintersectionsdialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsavoidintersectionsdialogbase.ui; path = ../../src/ui/qgsavoidintersectionsdialogbase.ui; sourceTree = SOURCE_ROOT; };
 		72442AE91095DCFC00B54796 /* qgsavoidintersectionsdialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsavoidintersectionsdialog.cpp; path = ../../src/app/qgsavoidintersectionsdialog.cpp; sourceTree = SOURCE_ROOT; };
 		72442AEA1095DCFC00B54796 /* qgsavoidintersectionsdialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsavoidintersectionsdialog.h; path = ../../src/app/qgsavoidintersectionsdialog.h; sourceTree = SOURCE_ROOT; };
+		72463E3C1122FEC500BE5F17 /* qgis.g.browser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgis.g.browser.cpp; path = ../../src/plugins/grass/qgis.g.browser.cpp; sourceTree = SOURCE_ROOT; };
+		72463E451122FEF200BE5F17 /* qgis.g.browser */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = qgis.g.browser; sourceTree = BUILT_PRODUCTS_DIR; };
 		72491FB511074E700035D7E5 /* characterwidget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = characterwidget.cpp; path = "../../src/gui/symbology-ng/characterwidget.cpp"; sourceTree = SOURCE_ROOT; };
 		72491FB611074E700035D7E5 /* characterwidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = characterwidget.h; path = "../../src/gui/symbology-ng/characterwidget.h"; sourceTree = SOURCE_ROOT; };
 		72491FB911074EC20035D7E5 /* widget_fontmarker.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = widget_fontmarker.ui; path = ../../src/ui/symbollayer/widget_fontmarker.ui; sourceTree = SOURCE_ROOT; };
@@ -7261,6 +7264,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		72463E411122FEF200BE5F17 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7262ED960F7A770300498385 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -7640,6 +7650,7 @@
 				72FEE38F111D31AC00D28C1A /* libgrassrasterprovider.so */,
 				72FEE3B1111D353300D28C1A /* qgis.d.rast */,
 				72FEE3C8111D378800D28C1A /* qgis.g.info */,
+				72463E451122FEF200BE5F17 /* qgis.g.browser */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -8800,6 +8811,7 @@
 				7209EB240F39E57B003DC336 /* qgsgrassattributes.cpp */,
 				7209EB250F39E57B003DC336 /* qgsgrassattributes.h */,
 				7209EB260F39E57B003DC336 /* qgsgrassattributesbase.ui */,
+				72463E3C1122FEC500BE5F17 /* qgis.g.browser.cpp */,
 				7209EB270F39E57B003DC336 /* qgsgrassbrowser.cpp */,
 				7209EB280F39E57B003DC336 /* qgsgrassbrowser.h */,
 				7209EB290F39E57B003DC336 /* qgsgrassedit.cpp */,
@@ -13180,6 +13192,22 @@
 			productReference = 7225EF2210B2265A00D23EA2 /* liblabelingplugin.so */;
 			productType = "com.apple.product-type.tool";
 		};
+		72463E3E1122FEF200BE5F17 /* qgis.g.browser */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 72463E421122FEF200BE5F17 /* Build configuration list for PBXNativeTarget "qgis.g.browser" */;
+			buildPhases = (
+				72463E3F1122FEF200BE5F17 /* Sources */,
+				72463E411122FEF200BE5F17 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = qgis.g.browser;
+			productName = testprog;
+			productReference = 72463E451122FEF200BE5F17 /* qgis.g.browser */;
+			productType = "com.apple.product-type.tool";
+		};
 		7262ED920F7A770300498385 /* spatialiteprovider */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7262ED990F7A770300498385 /* Build configuration list for PBXNativeTarget "spatialiteprovider" */;
@@ -13950,6 +13978,7 @@
 				72A56B430F3C822800BA32A1 /* georefplugin */,
 				72A56B4E0F3C823800BA32A1 /* gpsimporterplugin */,
 				72A56B580F3C823800BA32A1 /* grassplugin */,
+				72463E3E1122FEF200BE5F17 /* qgis.g.browser */,
 				72A56B940F3C824900BA32A1 /* spitplugin */,
 				72A56B9E0F3C824900BA32A1 /* wfsplugin */,
 			);
@@ -14863,6 +14892,14 @@
 				7225EF2B10B2269A00D23EA2 /* labeling.h in Sources */,
 				7225EF2C10B2269A00D23EA2 /* labelinggui.h in Sources */,
 				7225EF2D10B226A300D23EA2 /* labeling.qrc in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		72463E3F1122FEF200BE5F17 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				72463E511122FF7300BE5F17 /* qgis.g.browser.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16303,6 +16340,51 @@
 				);
 				PRODUCT_NAME = labelingplugin.so;
 				TARGET_PLUGINDIR = labeling;
+			};
+			name = Release;
+		};
+		72463E431122FEF200BE5F17 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_DATA_SUBDIR)/grass/bin";
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					../../src/plugins/grass,
+					"$(QT_INC)",
+				);
+				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
+				MACH_O_TYPE = mh_execute;
+				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"$(QT_LIB_CORE)",
+					"$(QT_LIB_GUI)",
+				);
+				PRODUCT_NAME = qgis.g.browser;
+			};
+			name = Debug;
+		};
+		72463E441122FEF200BE5F17 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_DATA_SUBDIR)/grass/bin";
+				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					../../src/plugins/grass,
+					"$(QT_INC)",
+				);
+				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
+				MACH_O_TYPE = mh_execute;
+				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"$(QT_LIB_CORE)",
+					"$(QT_LIB_GUI)",
+				);
+				PRODUCT_NAME = qgis.g.browser;
 			};
 			name = Release;
 		};
@@ -19120,7 +19202,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 12888;
+				QGIS_VERSION_BUILD = 12917;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -19131,7 +19213,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 12888;
+				QGIS_VERSION_BUILD = 12917;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
@@ -19198,6 +19280,15 @@
 			buildConfigurations = (
 				7225EF2010B2265A00D23EA2 /* Debug */,
 				7225EF2110B2265A00D23EA2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		72463E421122FEF200BE5F17 /* Build configuration list for PBXNativeTarget "qgis.g.browser" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				72463E431122FEF200BE5F17 /* Debug */,
+				72463E441122FEF200BE5F17 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
