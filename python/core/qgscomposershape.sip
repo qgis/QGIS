@@ -14,7 +14,7 @@ class QgsComposerShape: QgsComposerItem
     };
 
     QgsComposerShape( QgsComposition* composition /TransferThis/);
-    QgsComposerShape( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition );
+    QgsComposerShape( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition /TransferThis/);
     ~QgsComposerShape();
 
     /** \brief Reimplementation of QCanvasItem::paint - draw on canvas */
