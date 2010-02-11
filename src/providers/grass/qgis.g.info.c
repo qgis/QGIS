@@ -108,6 +108,8 @@ int main( int argc, char **argv )
         rast_type = G_get_raster_map_type( fd );
         cell = G_allocate_c_raster_buf();
         dcell = G_allocate_d_raster_buf();
+        void *ptr;
+        double val;
 
         if ( rast_type == CELL_TYPE )
         {
@@ -116,7 +118,8 @@ int main( int argc, char **argv )
             G_fatal_error(( "Unable to read raster map <%s> row %d" ),
                           rast_opt->answer, row );
           }
-          fprintf( stdout, "value:%d\n", cell[col] );
+          val = cell[col];
+          ptr = &(cell[col]);
         }
         else
         {
@@ -125,7 +128,16 @@ int main( int argc, char **argv )
             G_fatal_error(( "Unable to read raster map <%s> row %d" ),
                           rast_opt->answer, row );
           }
-          fprintf( stdout, "value:%f\n", dcell[col] );
+          val = dcell[col];
+          ptr = &(dcell[col]);
+        }
+        if ( G_is_null_value( ptr, rast_type ) )
+        {
+          fprintf( stdout, "value:null\n" );
+        }
+        else
+        {
+          fprintf( stdout, "value:%f\n", val );
         }
       }
       G_close_cell( fd );
