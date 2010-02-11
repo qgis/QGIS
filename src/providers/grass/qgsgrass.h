@@ -161,25 +161,25 @@ class QgsGrass
     static GRASS_EXPORT QString lockFilePath();
 
     // ! Get current gisrc path
-    static QString gisrcFilePath();
+    static GRASS_EXPORT QString gisrcFilePath();
 
     // ! Run a GRASS module in any gisdbase/location
     static GRASS_EXPORT QByteArray runModule( QString gisdbase, QString location, QString module, QStringList arguments );
 
     // ! Get info string from qgis.g.info module
-    static GRASS_EXPORT QString getInfo( QString info, QString gisdbase, 
-                            QString location, QString mapset=0, QString map=0, MapType type = None, double x=0, double y=0 );
+    static GRASS_EXPORT QString getInfo( QString info, QString gisdbase,
+                                         QString location, QString mapset = 0, QString map = 0, MapType type = None, double x = 0, double y = 0 );
 
-    // ! Get location projection 
-    static GRASS_EXPORT QgsCoordinateReferenceSystem crs( QString gisdbase, QString location);
+    // ! Get location projection
+    static GRASS_EXPORT QgsCoordinateReferenceSystem crs( QString gisdbase, QString location );
 
     // ! Get map extent
-   static GRASS_EXPORT QgsRectangle extent( QString gisdbase, QString location, 
-                      QString mapset, QString map, MapType type = None );
+    static GRASS_EXPORT QgsRectangle extent( QString gisdbase, QString location,
+        QString mapset, QString map, MapType type = None );
 
     // ! Get map value / feautre info
-   static GRASS_EXPORT QMap<QString, QString> query( QString gisdbase, QString location, 
-                      QString mapset, QString map, MapType type, double x, double y);
+    static GRASS_EXPORT QMap<QString, QString> query( QString gisdbase, QString location,
+        QString mapset, QString map, MapType type, double x, double y );
 
     //! Library version
     static GRASS_EXPORT int versionMajor();
