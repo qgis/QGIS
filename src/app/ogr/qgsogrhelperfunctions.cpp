@@ -97,11 +97,23 @@ QString createDatabaseURI( QString connectionType, QString host, QString databas
         uri += password;
     }
 
-    if ( !host.isEmpty() )
+    if ( !host.isEmpty() || !database.isEmpty() )
     {
-      uri += "@" + host;
+      uri += "@";
+
+      if ( !host.isEmpty() )
+      {
+        uri += host;
+        if ( !port.isEmpty() )
+          uri += ":" + port;
+      }
+
       if ( !database.isEmpty() )
-        uri += "/" + database;
+      {
+        if ( !host.isEmpty() )
+          uri += "/";
+        uri += database;
+      }
     }
   }
   else if ( connectionType == "ODBC" )
