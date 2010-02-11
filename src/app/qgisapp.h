@@ -365,6 +365,9 @@ class QgisApp : public QMainWindow
     //! Zoom to selected features
     void zoomToSelected();
 
+    //! mark project dirty
+    void markDirty();
+
     void updateUndoActions();
 
     //! cuts selected features on the active layer to the clipboard
