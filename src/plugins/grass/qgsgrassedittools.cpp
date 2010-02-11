@@ -893,9 +893,11 @@ void QgsGrassEditAttributes::mouseClick( QgsPoint & point, Qt::MouseButton butto
     e->mAttributes->setLine( 0 );
     e->mAttributes->clear();
     e->mAttributes->raise();
+    // Just to disable new button 
+    e->mAttributes->setCategoryMode( QgsGrassEdit::CAT_MODE_NOCAT, QString() );
   }
 
-  if ( e->mSelectedLine )   // highlite
+  if ( e->mSelectedLine > 0 )   // highlite
   {
     e->displayElement( e->mSelectedLine, e->mSymb[QgsGrassEdit::SYMB_HIGHLIGHT], e->mSize );
 
@@ -915,7 +917,6 @@ void QgsGrassEditAttributes::mouseClick( QgsPoint & point, Qt::MouseButton butto
     }
     e->mAttributes->show();
     e->mAttributes->raise();
+    e->mAttributes->setCategoryMode( static_cast<QgsGrassEdit::CatMode>( e->mCatModeBox->currentIndex() ), e->mCatEntry->text() );
   }
-
-  e->mAttributes->setCategoryMode( static_cast<QgsGrassEdit::CatMode>( e->mCatModeBox->currentIndex() ), e->mCatEntry->text() );
 }
