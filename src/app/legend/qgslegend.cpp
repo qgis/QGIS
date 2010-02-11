@@ -161,6 +161,8 @@ void QgsLegend::selectAll( bool select )
 
   // Turn on rendering (if it was on previously)
   mMapCanvas->setRenderFlag( renderFlagState );
+
+  QgsProject::instance()->dirty( true );
 }
 
 void QgsLegend::removeGroup( int groupIndex )
@@ -1619,9 +1621,6 @@ void QgsLegend::legendLayerZoom()
   //zoom to bounding box
   mMapCanvas->setExtent( extent );
   mMapCanvas->refresh();
-
-  // notify the project we've made a change
-  QgsProject::instance()->dirty( true );
 }
 
 void QgsLegend::legendLayerZoomNative()
@@ -1641,9 +1640,6 @@ void QgsLegend::legendLayerZoomNative()
     mMapCanvas->refresh();
 
     QgsDebugMsg( "MapUnitsPerPixel after  : " + QString::number( mMapCanvas->mapUnitsPerPixel() ) );
-
-    // notify the project we've made a change
-    QgsProject::instance()->dirty( true );
   }
 }
 

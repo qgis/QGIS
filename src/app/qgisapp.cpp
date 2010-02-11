@@ -1831,6 +1831,10 @@ void QgisApp::setupConnections()
   connect( mMapCanvas, SIGNAL( selectionChanged( QgsMapLayer * ) ),
            this, SLOT( activateDeactivateLayerRelatedActions( QgsMapLayer * ) ) );
 
+  // track of canvas layers and extents and mark project dirty on changes
+  connect( mMapCanvas, SIGNAL( extentsChanged() ), this, SLOT( markDirty() ) );
+  connect( mMapCanvas, SIGNAL( layersChanged() ), this, SLOT( markDirty() ) );
+
   connect( mRenderSuppressionCBox, SIGNAL( toggled( bool ) ), mMapCanvas, SLOT( setRenderFlag( bool ) ) );
   //
   // Do we really need this ??? - its already connected to the esc key...TS
@@ -2397,8 +2401,6 @@ bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QS
         layer->setLayerName( elements.at( 1 ) );
         // Register this layer with the layers registry
         QgsMapLayerRegistry::instance()->addMapLayer( layer );
-        // notify the project we've made a change
-        QgsProject::instance()->dirty( true );
       }
     }
     else
@@ -2553,8 +2555,6 @@ void QgisApp::addDatabaseLayer()
       {
         // register this layer with the central layers registry
         QgsMapLayerRegistry::instance()->addMapLayer( layer );
-        // notify the project we've made a change
-        QgsProject::instance()->dirty( true );
       }
       else
       {
@@ -2635,8 +2635,6 @@ void QgisApp::addSpatiaLiteLayer()
       {
         // register this layer with the central layers registry
         QgsMapLayerRegistry::instance()->addMapLayer( layer );
-        // notify the project we've made a change
-        QgsProject::instance()->dirty( true );
       }
       else
       {
@@ -3362,8 +3360,7 @@ void QgisApp::addAllToOverview()
     mMapLegend->enableOverviewModeAllLayers( true );
   }
 
-  // notify the project we've made a change
-  QgsProject::instance()->dirty( true );
+  markDirty();
 }
 
 //reimplements method from base (gui) class
@@ -3374,8 +3371,7 @@ void QgisApp::removeAllFromOverview()
     mMapLegend->enableOverviewModeAllLayers( false );
   }
 
-  // notify the project we've made a change
-  QgsProject::instance()->dirty( true );
+  markDirty();
 }
 
 void QgisApp::toggleFullScreen()
@@ -3506,26 +3502,17 @@ void QgisApp::zoomIn()
   QgsDebugMsg( "Setting map tool to zoomIn" );
 
   mMapCanvas->setMapTool( mMapTools.mZoomIn );
-
-  // notify the project we've made a change
-  QgsProject::instance()->dirty( true );
 }
 
 
 void QgisApp::zoomOut()
 {
   mMapCanvas->setMapTool( mMapTools.mZoomOut );
-
-  // notify the project we've made a change
-  QgsProject::instance()->dirty( true );
 }
 
 void QgisApp::zoomToSelected()
 {
   mMapCanvas->zoomToSelected();
-
-  // notify the project we've made a change
-  QgsProject::instance()->dirty( true );
 }
 
 void QgisApp::pan()
@@ -3536,25 +3523,16 @@ void QgisApp::pan()
 void QgisApp::zoomFull()
 {
   mMapCanvas->zoomToFullExtent();
-  // notify the project we've made a change
-  QgsProject::instance()->dirty( true );
-
 }
 
 void QgisApp::zoomToPrevious()
 {
   mMapCanvas->zoomToPreviousExtent();
-  // notify the project we've made a change
-  QgsProject::instance()->dirty( true );
-
 }
 
 void QgisApp::zoomToNext()
 {
   mMapCanvas->zoomToNextExtent();
-  // notify the project we've made a change
-  QgsProject::instance()->dirty( true );
-
 }
 
 void QgisApp::zoomActualSize()
@@ -3668,8 +3646,6 @@ void QgisApp::deleteSelected( QgsMapLayer *layer )
   }
 
   vlayer->endEditCommand();
-  // notify the project we've made a change
-  QgsProject::instance()->dirty( true );
 }
 
 void QgisApp::moveFeature()
@@ -4396,8 +4372,6 @@ void QgisApp::isInOverview()
 void QgisApp::removeLayer()
 {
   mMapLegend->removeCurrentLayer();
-  // notify the project we've made a change
-  QgsProject::instance()->dirty( true );
 }
 
 
@@ -4420,8 +4394,6 @@ void QgisApp::removeAllLayers()
   }
 
   mMapCanvas->refresh();
-  // notify the project we've made a change
-  QgsProject::instance()->dirty( true );
 } //remove all layers
 
 void QgisApp::showGpsTool()
@@ -4783,9 +4755,6 @@ QgsVectorLayer* QgisApp::addVectorLayer( QString vectorLayerPath, QString baseNa
   {
     // Register this layer with the layers registry
     QgsMapLayerRegistry::instance()->addMapLayer( layer );
-    // notify the project we've made a change
-    QgsProject::instance()->dirty( true );
-
     statusBar()->showMessage( mMapCanvas->extent().toString( 2 ) );
 
   }
@@ -4830,9 +4799,6 @@ void QgisApp::addMapLayer( QgsMapLayer *theMapLayer )
     // not necessary since adding to registry adds to canvas mMapCanvas->addLayer(theMapLayer);
 
     statusBar()->showMessage( mMapCanvas->extent().toString( 2 ) );
-    // notify the project we've made a change
-    QgsProject::instance()->dirty( true );
-
   }
   else
   {
@@ -4877,7 +4843,8 @@ bool QgisApp::saveDirty()
   {
     // flag project as dirty since dirty state of canvas is reset if "dirty"
     // is based on a zoom or pan
-    QgsProject::instance()->dirty( true );
+    markDirty();
+
     // old code: mProjectIsDirtyFlag = true;
 
     // prompt user to save
@@ -5093,6 +5060,12 @@ void QgisApp::extentsViewToggled( bool theFlag )
     mCoordsEdit->setEnabled( true );
     mCoordsLabel->setText( tr( "Coordinate:" ) );
   }
+}
+
+void QgisApp::markDirty()
+{
+  // notify the project that there was a change
+  QgsProject::instance()->dirty( true );
 }
 
 void QgisApp::showExtents()
@@ -5634,8 +5607,6 @@ bool QgisApp::addRasterLayer( QgsRasterLayer * theRasterLayer )
                     SIGNAL( statusChanged( QString ) ),
                     this,
                     SLOT( showStatusMessage( QString ) ) );
-  // notify the project we've made a change
-  QgsProject::instance()->dirty( true );
 
   return true;
 }
