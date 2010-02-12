@@ -1834,6 +1834,7 @@ void QgisApp::setupConnections()
   // track of canvas layers and extents and mark project dirty on changes
   connect( mMapCanvas, SIGNAL( extentsChanged() ), this, SLOT( markDirty() ) );
   connect( mMapCanvas, SIGNAL( layersChanged() ), this, SLOT( markDirty() ) );
+  connect( mMapLegend, SIGNAL( zOrderChanged() ), this, SLOT( markDirty() ) );
 
   connect( mRenderSuppressionCBox, SIGNAL( toggled( bool ) ), mMapCanvas, SLOT( setRenderFlag( bool ) ) );
   //
