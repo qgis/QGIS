@@ -185,6 +185,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! return number of layers on the map
     int layerCount() const;
 
+    //! return list of layers within map canvas. Added in v1.5
+    QList<QgsMapLayer*> layers() const;
+
     /*! Freeze/thaw the map canvas. This is used to prevent the canvas from
      * responding to events while layers are being added/removed etc.
      * @param frz Boolean specifying if the canvas should be frozen (true) or
