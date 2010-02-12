@@ -192,6 +192,9 @@ class QgsGrassModuleOptions
     //! Get list of current output maps
     virtual QStringList output( int type ) { return QStringList() ; }
 
+    //! Has any output
+    virtual bool hasOutput ( int type ) { return true; }
+
     //! Has raster input or output
     virtual bool usesRegion() { return false; }
 
@@ -265,6 +268,7 @@ class QgsGrassModuleStandardOptions: QWidget, public QgsGrassModuleOptions
     void thawOutput();
     QStringList ready() ;
     QStringList output( int type );
+    bool hasOutput ( int type );
     QStringList checkRegion();
     bool usesRegion();
     bool requestsRegion();

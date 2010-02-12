@@ -66,6 +66,7 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     QStringList checkRegion();
     bool inputRegion( struct Cell_head *window, bool all );
     QStringList output( int type );
+    bool hasOutput ( int type ) { return true; }
 
     /** \brief recieves contentsMousePressEvent from view */
     void mousePressEvent( QMouseEvent* );

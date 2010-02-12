@@ -229,8 +229,8 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
   }
 
   // Hide display if there is no output
-  if ( mOptions->output( QgsGrassModuleOption::Vector ).size() == 0
-       && mOptions->output( QgsGrassModuleOption::Raster ).size() == 0 )
+  if ( !mOptions->hasOutput( QgsGrassModuleOption::Vector )
+       && !mOptions->hasOutput( QgsGrassModuleOption::Raster ) )
   {
     mViewButton->hide();
   }
@@ -766,7 +766,6 @@ void QgsGrassModuleStandardOptions::thawOutput()
 #endif
 }
 
-
 QStringList QgsGrassModuleStandardOptions::output( int type )
 {
   QgsDebugMsg( "called." );
@@ -785,12 +784,36 @@ QStringList QgsGrassModuleStandardOptions::output( int type )
       if ( opt->outputType() == type )
       {
         QString out = opt->value();
-        list.append( out );
+        if ( !out.isEmpty() ) {
+          list.append( out );
+        }
       }
     }
   }
 
   return list;
+}
+
+bool QgsGrassModuleStandardOptions::hasOutput( int type )
+{
+  QgsDebugMsg( "called." );
+  QStringList list;
+
+  for ( unsigned int i = 0; i < mItems.size(); i++ )
+  {
+    QgsGrassModuleOption *opt = dynamic_cast<QgsGrassModuleOption *>( mItems[i] );
+    if ( !opt )
+      continue;
+
+    QgsDebugMsg( "opt->key() = " + opt->key() );
+
+    if ( opt->isOutput() )
+    {
+      if ( opt->outputType() == type ) return true;
+    }
+  }
+
+  return false;
 }
 
 QStringList QgsGrassModuleStandardOptions::ready()
