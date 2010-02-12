@@ -188,7 +188,7 @@ void QgsCategorizedSymbolRendererV2Widget::populateColorRamps()
 
 void QgsCategorizedSymbolRendererV2Widget::categoryColumnChanged()
 {
-  deleteAllCategories();
+  mRenderer->setClassAttribute( cboCategorizedColumn->currentText() );
 }
 
 void QgsCategorizedSymbolRendererV2Widget::categoriesDoubleClicked( const QModelIndex & idx )

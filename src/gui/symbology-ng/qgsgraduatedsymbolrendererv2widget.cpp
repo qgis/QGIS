@@ -54,6 +54,7 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
 
   mGraduatedSymbol = QgsSymbolV2::defaultSymbol( mLayer->geometryType() );
 
+  connect( cboGraduatedColumn, SIGNAL( currentIndexChanged( int ) ), this, SLOT( graduatedColumnChanged() ) );
   connect( viewGraduated, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( rangesDoubleClicked( const QModelIndex & ) ) );
   connect( viewGraduated, SIGNAL( clicked( const QModelIndex & ) ), this, SLOT( rangesClicked( const QModelIndex & ) ) );
   connect( mg, SIGNAL( itemChanged( QStandardItem * ) ), this, SLOT( changeCurrentValue( QStandardItem * ) ) );
@@ -92,11 +93,11 @@ void QgsGraduatedSymbolRendererV2Widget::updateUiFromRenderer()
     spinGraduatedClasses->setValue( mRenderer->ranges().count() );
 
   // set column
-  //disconnect(cboGraduatedColumn, SIGNAL(currentIndexChanged(int)), this, SLOT(graduatedColumnChanged()));
+  disconnect( cboGraduatedColumn, SIGNAL( currentIndexChanged( int ) ), this, SLOT( graduatedColumnChanged() ) );
   QString attrName = mRenderer->classAttribute();
   int idx = cboGraduatedColumn->findText( attrName, Qt::MatchExactly );
   cboGraduatedColumn->setCurrentIndex( idx >= 0 ? idx : 0 );
-  //connect(cboGraduatedColumn, SIGNAL(currentIndexChanged(int)), this, SLOT(graduatedColumnChanged()));
+  connect( cboGraduatedColumn, SIGNAL( currentIndexChanged( int ) ), this, SLOT( graduatedColumnChanged() ) );
 
   // set source symbol
   if ( mRenderer->sourceSymbol() )
@@ -132,6 +133,11 @@ void QgsGraduatedSymbolRendererV2Widget::populateColumns()
     if ( it->type() == QVariant::Double || it->type() == QVariant::Int )
       cboGraduatedColumn->addItem( it->name() );
   }
+}
+
+void QgsGraduatedSymbolRendererV2Widget::graduatedColumnChanged()
+{
+  mRenderer->setClassAttribute( cboGraduatedColumn->currentText() );
 }
 
 
