@@ -1164,6 +1164,18 @@ int QgsMapCanvas::layerCount() const
 } // layerCount
 
 
+QList<QgsMapLayer*> QgsMapCanvas::layers() const
+{
+  QList<QgsMapLayer*> lst;
+  foreach ( QString layerID, mMapRenderer->layerSet() )
+  {
+    QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerID );
+    if ( layer )
+      lst.append(layer);
+  }
+  return lst;
+}
+
 
 void QgsMapCanvas::layerStateChange()
 {
