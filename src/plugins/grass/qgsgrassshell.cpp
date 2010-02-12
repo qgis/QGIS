@@ -18,6 +18,7 @@
 #include <QKeySequence>
 
 #include "qgslogger.h"
+#include "qgsapplication.h"
 #include "qtermwidget/qtermwidget.h"
 #include "qgsgrass.h"
 
@@ -108,6 +109,8 @@ void QgsGrassShell::initTerminal( QTermWidget *terminal )
   terminal->setShellProgram( shellProgram );
   env << "TERM=vt100";
   env << "GISRC_MODE_MEMORY";
+  // This is also overriden by Init.sh, it should not be run at all, either QGIS is started from shell or a mapset is open from QGIS, Init.sh opens the session second time
+  env << "GRASS_HTML_BROWSER=" + QgsApplication::pkgDataPath() + "/grass/bin/qgis.g.browser";
 
   args << "-text";
   args << QString( "%1/%2/%3" ).arg( QgsGrass::getDefaultGisdbase() ).arg( QgsGrass::getDefaultLocation() ).arg( QgsGrass::getDefaultMapset() );
