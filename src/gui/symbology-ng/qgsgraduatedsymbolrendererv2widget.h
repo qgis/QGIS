@@ -23,6 +23,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
 
   public slots:
     void changeGraduatedSymbol();
+    void graduatedColumnChanged();
     void classifyGraduated();
     void rangesDoubleClicked( const QModelIndex & idx );
     void rangesClicked( const QModelIndex & idx );
