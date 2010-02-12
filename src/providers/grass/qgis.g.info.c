@@ -105,11 +105,12 @@ int main( int argc, char **argv )
       }
       else
       {
+        void *ptr;
+        double val;
+
         rast_type = G_get_raster_map_type( fd );
         cell = G_allocate_c_raster_buf();
         dcell = G_allocate_d_raster_buf();
-        void *ptr;
-        double val;
 
         if ( rast_type == CELL_TYPE )
         {
