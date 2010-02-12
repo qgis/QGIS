@@ -1712,6 +1712,7 @@ bool QgsLegend::checkLayerOrderUpdate()
   {
     // z-order has changed - update layer set
     updateMapCanvasLayerSet();
+    emit zOrderChanged();
     return true;
   }
   return false;

@@ -473,7 +473,7 @@ class QgsLegend : public QTreeWidget
   signals:
     void itemMoved( QModelIndex oldIndex, QModelIndex newIndex );
 
-    void zOrderChanged( QgsLegend * lv );
+    void zOrderChanged();
 
     //! Emited whenever current (selected) layer changes
     //  the pointer to layer can be null if no layer is selected
