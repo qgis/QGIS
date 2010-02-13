@@ -5516,6 +5516,7 @@
 		72442AEA1095DCFC00B54796 /* qgsavoidintersectionsdialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsavoidintersectionsdialog.h; path = ../../src/app/qgsavoidintersectionsdialog.h; sourceTree = SOURCE_ROOT; };
 		72463E3C1122FEC500BE5F17 /* qgis.g.browser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgis.g.browser.cpp; path = ../../src/plugins/grass/qgis.g.browser.cpp; sourceTree = SOURCE_ROOT; };
 		72463E451122FEF200BE5F17 /* qgis.g.browser */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = qgis.g.browser; sourceTree = BUILT_PRODUCTS_DIR; };
+		7247F738112628A400533A28 /* qgis.v.kernel.rast.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = qgis.v.kernel.rast.py; path = ../../src/plugins/grass/scripts/qgis.v.kernel.rast.py; sourceTree = SOURCE_ROOT; };
 		72491FB511074E700035D7E5 /* characterwidget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = characterwidget.cpp; path = "../../src/gui/symbology-ng/characterwidget.cpp"; sourceTree = SOURCE_ROOT; };
 		72491FB611074E700035D7E5 /* characterwidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = characterwidget.h; path = "../../src/gui/symbology-ng/characterwidget.h"; sourceTree = SOURCE_ROOT; };
 		72491FB911074EC20035D7E5 /* widget_fontmarker.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = widget_fontmarker.ui; path = ../../src/ui/symbollayer/widget_fontmarker.ui; sourceTree = SOURCE_ROOT; };
@@ -11001,6 +11002,7 @@
 			children = (
 				723FD0660FBCB94600EFA55D /* CMakeLists.txt */,
 				723FD0670FBCB94600EFA55D /* db.connect-login.pg.py */,
+				7247F738112628A400533A28 /* qgis.v.kernel.rast.py */,
 				72A6A4591005990500855EA6 /* r.external.all.py */,
 				72E4DF0C0FE00FAD00D3505D /* v.out.ogr.pg.py */,
 			);
@@ -19206,7 +19208,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 12930;
+				QGIS_VERSION_BUILD = 12940;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -19217,7 +19219,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 12930;
+				QGIS_VERSION_BUILD = 12940;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
