@@ -12,30 +12,53 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+/* $Id$ */
 #include "qgsmapcanvasitem.h"
 
 class QgsGCPCanvasItem;
 
-class QgsGeorefDataPoint
+class QgsGeorefDataPoint : public QObject
 {
-  public:
+  Q_OBJECT
 
-    //! constructor
-    QgsGeorefDataPoint( QgsMapCanvas *srcCanvas, QgsMapCanvas *dstCanvas, int id,
-                        const QgsPoint& pixelCoords,
-                        const QgsPoint& mapCoords );
+public:
+  //! constructor
+  QgsGeorefDataPoint( QgsMapCanvas *srcCanvas, QgsMapCanvas *dstCanvas,
+                      const QgsPoint& pixelCoords, const QgsPoint& mapCoords,
+                      bool enable );
+  QgsGeorefDataPoint(const QgsGeorefDataPoint &p);
+  ~QgsGeorefDataPoint();
 
-    ~QgsGeorefDataPoint();
+  //! returns coordinates of the point
+  QgsPoint pixelCoords() const { return mPixelCoords; }
+  void setPixelCoords(const QgsPoint &p);
 
+  QgsPoint mapCoords() const { return mMapCoords; }
+  void setMapCoords(const QgsPoint &p);
 
-    //! returns coordinates of the point
-    QgsPoint pixelCoords() const { return mPixelCoords; }
-    QgsPoint mapCoords()   const { return mMapCoords; }
+  bool isEnabled() const { return mEnabled; };
+  void setEnabled(bool enabled);
 
-  private:
-    QgsGCPCanvasItem *mGCPSourceItem;
-    QgsGCPCanvasItem *mGCPDestinationItem;
-    int mId;
-    QgsPoint mPixelCoords;
-    QgsPoint mMapCoords;
+  int id() { return mId; }
+  void setId(int id);
+
+  bool contains(const QPoint &p);
+
+  QgsMapCanvas *srcCanvas() const { return mSrcCanvas; }
+  QgsMapCanvas *dstCanvas() const { return mDstCanvas; }
+
+public slots:
+  void moveTo(const QPoint &);
+  void updateCoords();
+
+private:
+  QgsMapCanvas *mSrcCanvas;
+  QgsMapCanvas *mDstCanvas;
+  QgsGCPCanvasItem *mGCPSourceItem;
+  QgsGCPCanvasItem *mGCPDestinationItem;
+  QgsPoint mPixelCoords;
+  QgsPoint mMapCoords;
+
+  int mId;
+  bool mEnabled;
 };

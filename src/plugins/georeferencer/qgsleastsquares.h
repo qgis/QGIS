@@ -12,7 +12,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-
+/* $Id$ */
 #ifndef QGSLEASTSQUARES_H
 #define QGSLEASTSQUARES_H
 

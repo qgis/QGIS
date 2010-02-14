@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+/* $Id$ */
 
 #ifndef QGSGEOREFDESCRIPTIONDIALOG_H
 #define QGSGEOREFDESCRIPTIONDIALOG_H
@@ -24,6 +25,8 @@
 /**Dialog that shows logo and description of the georef plugin*/
 class QgsGeorefDescriptionDialog: public QDialog, private Ui::QgsGeorefDescriptionDialogBase
 {
+  Q_OBJECT
+
   public:
     QgsGeorefDescriptionDialog( QWidget* parent );
 };

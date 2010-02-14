@@ -421,7 +421,7 @@ bool QgsGDALGeorefTransform::updateParametersFromGCPs(const std::vector<QgsPoint
 {
   assert(mapCoords.size() == pixelCoords.size());
   if (mapCoords.size() != pixelCoords.size()) return false;
-  uint n = mapCoords.size();
+  int n = mapCoords.size();
 
   GDAL_GCP *GCPList = new GDAL_GCP[n];
   for (int i = 0; i < n; i++) {

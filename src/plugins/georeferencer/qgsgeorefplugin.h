@@ -18,7 +18,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id: plugin.h 9138 2008-08-23 21:37:31Z jef $ */
+/*  $Id:$ */
 
 /***************************************************************************
  *   QGIS Programming conventions:
@@ -46,11 +46,13 @@
 //
 #include <qgisplugin.h>
 class QgisInterface;
+class QgsGeorefPluginGui;
 
 //
 //QT Includes
 //
 #include <QWidget>
+#include <QIcon>
 
 /**
 * \class Plugin
@@ -84,12 +86,11 @@ class QgsGeorefPlugin: public QObject, public QgisPlugin
     void run();
     //! unload the plugin
     void unload();
-    //! show the help document
-    void help();
     //! update the plugins theme when the app tells us its theme is changed
     void setCurrentTheme( QString theThemeName );
+    QIcon getThemeIcon( const QString &theThemeName );
+    void about();
 
-    void about( );
     //////////////////////////////////////////////////////////////////////
     //
     //                  END OF MANDATORY PLUGIN METHODS
@@ -108,14 +109,14 @@ class QgsGeorefPlugin: public QObject, public QgisPlugin
     //! Pointer to the QGIS interface object
     QgisInterface *mQGisIface;
     //!pointer to the qaction for this plugin
-    QAction * mQActionPointer;
-    QAction * mQActionPointerAbout;
-    QAction * mQActionPointerHelp;
+    QAction * mActionRunGeoref;
+    QAction *mActionAbout;
     ////////////////////////////////////////////////////////////////////
     //
     // ADD YOUR OWN MEMBER DECLARATIONS AFTER THIS POINT.....
     //
     ////////////////////////////////////////////////////////////////////
+    QgsGeorefPluginGui *mPluginGui;
 };
 
 #endif

@@ -9,6 +9,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  ***************************************************************************/
+/* $Id$ */
 #ifndef QGSGEOREFWARPOPTIONSDIALOG_H
 #define QGSGEOREFWARPOPTIONSDIALOG_H
 
@@ -21,23 +22,13 @@
 
 class QgsGeorefWarpOptionsDialog : public QDialog, private Ui::QgsGeorefWarpOptionsDialogBase
 {
-    Q_OBJECT
-  public:
+  Q_OBJECT
 
-    QgsGeorefWarpOptionsDialog( QWidget* parent );
-    void getWarpOptions( QgsImageWarper::ResamplingMethod& resampling,
-                         bool& useZeroForTransparency, QString& compression );
+public:
 
-  public slots:
-
-    void on_buttonBox_accepted();
-    void on_buttonBox_rejected();
-
-  private:
-
-    QgsImageWarper::ResamplingMethod resampling;
-    bool useZeroAsTransparency;
-
+  QgsGeorefWarpOptionsDialog( QWidget* parent );
+  void getWarpOptions( QgsImageWarper::ResamplingMethod& resampling,
+                       bool& useZeroForTransparency, QString& compression );
 };
 
 #endif

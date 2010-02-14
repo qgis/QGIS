@@ -12,35 +12,41 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+/* $Id$ */
 #include <QPainter>
-#include "qgsgeorefdatapoint.h"
+
 #include "qgsmapcanvas.h"
+#include "qgsgcpcanvasitem.h"
 
-class QgsGCPCanvasItem : public QgsMapCanvasItem {
-public:
-  QgsGCPCanvasItem( QgsMapCanvas* mapCanvas, const QgsPoint& rasterCoords, const QgsPoint& worldCoords, bool isGCPSource = true );
-  
-  //! draws point information
-  virtual void paint( QPainter* p );
+#include "qgsgeorefdatapoint.h"
 
-  //! handler for manual updating of position and size
-  virtual QRectF boundingRect() const;
-
-  virtual void updatePosition();
-private:
-  bool mIsGCPSource;
-  QSizeF mTextBounds;
-  QgsPoint mRasterCoords, mWorldCoords;
-};
-
-QgsGeorefDataPoint::QgsGeorefDataPoint( QgsMapCanvas* srcCanvas, QgsMapCanvas *dstCanvas, int id,
-                                        const QgsPoint& pixelCoords, const QgsPoint& mapCoords )
-    : mId( id ), mPixelCoords( pixelCoords ), mMapCoords( mapCoords )
+QgsGeorefDataPoint::QgsGeorefDataPoint( QgsMapCanvas* srcCanvas, QgsMapCanvas *dstCanvas,
+                                        const QgsPoint& pixelCoords, const QgsPoint& mapCoords,
+                                        bool enable )
+    : mSrcCanvas(srcCanvas)
+    , mDstCanvas(dstCanvas)
+    , mPixelCoords( pixelCoords )
+    , mMapCoords( mapCoords )
+    , mId(-1)
+    , mEnabled(enable)
 {
   mGCPSourceItem = new QgsGCPCanvasItem(srcCanvas, pixelCoords, mapCoords, true);
   mGCPDestinationItem = new QgsGCPCanvasItem(dstCanvas, pixelCoords, mapCoords, false);
+
+  mGCPSourceItem->setEnabled(enable);
+  mGCPDestinationItem->setEnabled(enable);
   mGCPSourceItem->show();
   mGCPDestinationItem->show();
+}
+
+QgsGeorefDataPoint::QgsGeorefDataPoint(const QgsGeorefDataPoint &p)
+{
+  // we share item representation on canvas between all points
+//  mGCPSourceItem = new QgsGCPCanvasItem(p.srcCanvas(), p.pixelCoords(), p.mapCoords(), p.isEnabled());
+//  mGCPDestinationItem = new QgsGCPCanvasItem(p.dstCanvas(), p.pixelCoords(), p.mapCoords(), p.isEnabled());
+  mPixelCoords = p.pixelCoords();
+  mMapCoords = p.mapCoords();
+  mEnabled = p.isEnabled();
 }
 
 QgsGeorefDataPoint::~QgsGeorefDataPoint()
@@ -49,46 +55,49 @@ QgsGeorefDataPoint::~QgsGeorefDataPoint()
   delete mGCPDestinationItem;
 }
 
-
-QgsGCPCanvasItem::QgsGCPCanvasItem(QgsMapCanvas* mapCanvas, const QgsPoint& rasterCoords, const QgsPoint& worldCoords, 
-                                   bool isGCPSource ) : QgsMapCanvasItem( mapCanvas )
+void QgsGeorefDataPoint::setPixelCoords(const QgsPoint &p)
 {
-  mRasterCoords = rasterCoords;
-  mWorldCoords = worldCoords; 
-  mIsGCPSource = isGCPSource;
-  updatePosition();
+  mPixelCoords = p;
+  mGCPSourceItem->setRasterCoords(p);
+  mGCPDestinationItem->setRasterCoords(p);
 }
 
-
-
-void QgsGCPCanvasItem::paint( QPainter* p )
+void QgsGeorefDataPoint::setMapCoords(const QgsPoint &p)
 {
-  // draw the point
-  p->setPen( Qt::black );
-  p->setBrush( Qt::red );
-  p->drawRect( -2, -2, 5, 5 );
-  
-  if (mIsGCPSource) 
-  {
-    QString msg = QString( "X %1\nY %2" ).arg( QString::number( mWorldCoords.x(), 'f' ) ).arg( QString::number( mWorldCoords.y(), 'f' ) );
-    QFont font;
-    p->setFont( QFont( "helvetica", 9 ) );
-    QRect textBounds = p->boundingRect( 4, 4, 10, 10, Qt::AlignLeft, msg );
-    p->setBrush( Qt::yellow );
-    p->drawRect( 2, 2, textBounds.width() + 4, textBounds.height() + 4 );
-    p->drawText( textBounds, Qt::AlignLeft, msg );
-    mTextBounds = QSizeF(textBounds.width() + 4, textBounds.height() + 4);
-  }
-  else
-    mTextBounds = QSizeF(0, 0);
+  mMapCoords = p;
+  mGCPSourceItem->setWorldCoords(p);
+  mGCPDestinationItem->setWorldCoords(p);
 }
 
-QRectF QgsGCPCanvasItem::boundingRect() const
+void QgsGeorefDataPoint::setEnabled(bool enabled)
 {
-  return QRectF( -2, -2, mTextBounds.width() + 2, mTextBounds.height() + 2 );
+  mGCPSourceItem->setEnabled(enabled);
+  mEnabled = enabled;
 }
 
-void QgsGCPCanvasItem::updatePosition()
+void QgsGeorefDataPoint::setId(int id) {
+  mId = id;
+  mGCPSourceItem->setId(id);
+  mGCPDestinationItem->setId(id);
+}
+
+void QgsGeorefDataPoint::updateCoords()
 {
-  setPos( toCanvasCoordinates( mIsGCPSource ? mRasterCoords : mWorldCoords) );
+  mGCPSourceItem->updatePosition();
+  mGCPDestinationItem->updatePosition();
+  mGCPSourceItem->update();
+  mGCPDestinationItem->update();
+}
+
+bool QgsGeorefDataPoint::contains(const QPoint &p)
+{
+  QPointF pnt = mGCPSourceItem->mapFromScene(p);
+  return mGCPSourceItem->shape().contains(pnt);
+}
+
+void QgsGeorefDataPoint::moveTo(const QPoint &p)
+{
+  QgsPoint pnt = mGCPSourceItem->toMapCoordinates(p);
+  setPixelCoords(pnt);
+  updateCoords();
 }

@@ -14,6 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+/* $Id$ */
 
 #include "qgsgeorefdescriptiondialog.h"
 
@@ -22,8 +23,8 @@ QgsGeorefDescriptionDialog::QgsGeorefDescriptionDialog( QWidget* parent ): QDial
   setupUi( this );
 
   textEdit->setText( "<h2>Description</h2>"
-                     "<p>This plugin can generate world files "
-                     "for rasters. You select points on the "
+                     "<p>This plugin can georeference raster files "
+                     "and set projection. You select points on the "
                      "raster and give their world "
                      "coordinates, and the plugin will "
                      "compute the world file parameters. "

@@ -12,35 +12,68 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id */
+/* $Id$ */
 #ifndef QGS_GCP_LIST_WIDGET_H
 #define QGS_GCP_LIST_WIDGET_H
 
-#include <QWidget>
-#include "ui_qgsgcplistwidgetbase.h"
-#include "qgsgcplist.h"
+#include <QTableView>
 
-//class QgsGCPList;
+class QgsDoubleSpinBoxDelegate;
+class QgsNonEditableDelegate;
+class QgsDmsAndDdDelegate;
+class QgsCoordDelegate;
+
+class QgsGCPList;
 class QgsGCPListModel;
 class QgsGeorefTransform;
+class QgsGeorefDataPoint;
+class QgsPoint;
 
-class QgsGCPListWidget : public QWidget, private Ui::QgsGCPListWidgetBase {
+class QgsGCPListWidget : public QTableView
+{
   Q_OBJECT
 public:
   QgsGCPListWidget(QWidget *parent = 0);
 
   void setGCPList(QgsGCPList *theGCPList);
   void setGeorefTransform(QgsGeorefTransform *theGeorefTransform);
+  QgsGCPList *gcpList() { return mGCPList; }
+  void updateGCPList();
+
 public slots:
   // This slot is called by the list view if an item is double-clicked
-  void itemDoubleClicked(const QModelIndex &);
+  void itemDoubleClicked(QModelIndex index);
+  void itemClicked(QModelIndex index);
+
 signals:
   void jumpToGCP(uint theGCPIndex);
-private:
-  void initialize();
+//  void replaceDataPoint(QgsGeorefDataPoint *pnt, int row);
+  void pointEnabled(QgsGeorefDataPoint *pnt, int i);
+  void deleteDataPoint(int index);
 
-  QgsGCPList      *mGCPList;
-  QgsGCPListModel *mGCPListModel;
+private slots:
+  void updateItemCoords(QWidget *editor);
+  void showContextMenu(QPoint);
+  void removeRow();
+  void editCell();
+  void jumpToPoint();
+
+private:
+  void createActions();
+  void createItemContextMenu();
+  void adjustTableContent();
+
+  QMenu *mItemContextMenu;
+
+  QgsGCPList               *mGCPList;
+  QgsGCPListModel          *mGCPListModel;
+
+  QgsNonEditableDelegate   *mNonEditableDelegate;
+  QgsDmsAndDdDelegate      *mDmsAndDdDelegate;
+  QgsCoordDelegate         *mCoordDelegate;
+
+  int mPrevRow;
+  int mPrevColumn;
 };
 
 #endif
