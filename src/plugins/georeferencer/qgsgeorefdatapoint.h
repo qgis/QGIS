@@ -14,32 +14,28 @@
  ***************************************************************************/
 #include "qgsmapcanvasitem.h"
 
+class QgsGCPCanvasItem;
 
-class QgsGeorefDataPoint : public QgsMapCanvasItem
+class QgsGeorefDataPoint
 {
   public:
 
     //! constructor
-    QgsGeorefDataPoint( QgsMapCanvas* mapCanvas, int id,
+    QgsGeorefDataPoint( QgsMapCanvas *srcCanvas, QgsMapCanvas *dstCanvas, int id,
                         const QgsPoint& pixelCoords,
                         const QgsPoint& mapCoords );
 
-    //! draws point information
-    virtual void paint( QPainter* p );
+    ~QgsGeorefDataPoint();
 
-    //! handler for manual updating of position and size
-    virtual QRectF boundingRect() const;
-
-    virtual void updatePosition();
 
     //! returns coordinates of the point
-    QgsPoint pixelCoords() { return mPixelCoords; }
-    QgsPoint mapCoords() { return mMapCoords; }
+    QgsPoint pixelCoords() const { return mPixelCoords; }
+    QgsPoint mapCoords()   const { return mMapCoords; }
 
   private:
+    QgsGCPCanvasItem *mGCPSourceItem;
+    QgsGCPCanvasItem *mGCPDestinationItem;
     int mId;
     QgsPoint mPixelCoords;
     QgsPoint mMapCoords;
-    QSizeF mTextBounds;
 };
-

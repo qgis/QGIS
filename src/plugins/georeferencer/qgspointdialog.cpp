@@ -37,8 +37,10 @@
 #include "qgsmaptoolzoom.h"
 #include "qgsmaptoolpan.h"
 #include "qgsgeorefdatapoint.h"
+#include "qgsgcplistwidget.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
+#include <cassert>
 
 #include <QDebug>
 class QgsGeorefTool : public QgsMapTool
@@ -70,7 +72,7 @@ class QgsGeorefTool : public QgsMapTool
 
   private:
     QgsPointDialog* mDlg;
-    bool mAddPoint;
+    const bool mAddPoint;
 };
 
 
@@ -100,19 +102,10 @@ QgsPointDialog::~QgsPointDialog()
   delete mToolPan;
   delete mToolAddPoint;
   delete mToolDeletePoint;
-
 }
 
 void QgsPointDialog::openImageFile( QString layerPath )
 {
-  //delete old points
-  for ( std::vector<QgsGeorefDataPoint*>::iterator it = mPoints.begin(); it != mPoints.end(); ++it )
-  {
-    delete *it;
-  }
-  mPoints.clear();
-  mAcetateCounter = 0;
-
   //delete any old rasterlayers
   if ( mLayer )
   {
@@ -144,21 +137,28 @@ void QgsPointDialog::openImageFile( QString layerPath )
   pbnGenerateWorldFile->setEnabled( true );
   pbnGenerateAndLoad->setEnabled( true );
   mCanvas->refresh();
+
+  enableControls(true);
 }
 
 void QgsPointDialog::addPoint( const QgsPoint& pixelCoords, const QgsPoint& mapCoords )
 {
-  QgsGeorefDataPoint* pnt = new QgsGeorefDataPoint( mCanvas,
-      mAcetateCounter++, pixelCoords, mapCoords );
-  pnt->show();
-  mPoints.push_back( pnt );
-
+  addPointWithoutRefresh(pixelCoords, mapCoords);
   mCanvas->refresh();
+  mIface->mapCanvas()->refresh();
 }
 
-void QgsPointDialog::on_leSelectModifiedRaster_textChanged( const QString &name )
+void QgsPointDialog::addPointWithoutRefresh( const QgsPoint& pixelCoords, const QgsPoint& mapCoords )
 {
-  leSelectWorldFile->setText( guessWorldFileName( name ) );
+  QgsGeorefDataPoint* pnt = new QgsGeorefDataPoint( mCanvas, mIface->mapCanvas(), mAcetateCounter++, pixelCoords, mapCoords );
+  mPoints.push_back( pnt );
+  mGCPsDirty = true;
+}
+
+void QgsPointDialog::on_leSelectModifiedRaster_textChanged(const QString &name)
+{
+  leSelectWorldFile->setText( guessWorldFileName(name) );
+//  if (name.length() == 0) enableControls(false);
 }
 
 void QgsPointDialog::on_pbnSelectWorldFile_clicked()
@@ -195,16 +195,76 @@ void QgsPointDialog::on_pbnLoadGCPs_clicked()
   loadGCPs( fileName );
 }
 
-void QgsPointDialog::on_pbnSaveGCPs_clicked()
+void QgsPointDialog::createGCPVectors(std::vector<QgsPoint> &mapCoords, std::vector<QgsPoint> &pixelCoords) const
 {
-  // create arrays with points from mPoints
-  std::vector<QgsPoint> pixelCoords, mapCoords;
-  for ( unsigned int i = 0; i < mPoints.size(); i++ )
+  mapCoords   = std::vector<QgsPoint>(mPoints.size());
+  pixelCoords = std::vector<QgsPoint>(mPoints.size());
+  for (unsigned int i = 0; i < mPoints.size(); i++)
   {
     QgsGeorefDataPoint* pt = mPoints[i];
-    pixelCoords.push_back( pt->pixelCoords() );
-    mapCoords.push_back( pt->mapCoords() );
+    mapCoords[i] = pt->mapCoords();
+    pixelCoords[i] = pt->pixelCoords();
   }
+}
+
+QgsGeorefTransform::TransformParametrisation QgsPointDialog::convertTransformStringToEnum(const QString &transformName) const throw(std::invalid_argument)
+{
+  if (transformName == tr("Linear"))
+  {
+    return QgsGeorefTransform::Linear;
+  }
+  else if (transformName == tr("Helmert"))
+  {
+    return QgsGeorefTransform::Helmert;
+  }
+  else if (transformName == tr("Polynomial 1"))
+  {
+    return QgsGeorefTransform::PolynomialOrder1;
+  }
+  else if (transformName == tr("Polynomial 2"))
+  {
+    return QgsGeorefTransform::PolynomialOrder2;
+  }
+  else if (transformName == tr("Polynomial 3"))
+  {
+    return QgsGeorefTransform::PolynomialOrder3;
+  }
+  else if (transformName == tr("Thin plate spline (TPS)"))
+  {
+    return QgsGeorefTransform::ThinPlateSpline;
+  }
+  else 
+    throw std::invalid_argument((transformName+" does not match a known transform type.").toStdString());
+}
+
+void QgsPointDialog::jumpToGCP(uint theGCPIndex)
+{
+  if (theGCPIndex >= mPoints.size())
+  {
+    return;
+  }
+
+  // qgsmapcanvas doesn't seem to have a method for recentering the map
+  QgsRectangle ext = mCanvas->extent();
+
+  QgsPoint center = ext.center();
+  QgsPoint new_center = mPoints[theGCPIndex]->pixelCoords();
+
+  QgsPoint diff(new_center.x() - center.x(), new_center.y() - center.y());
+  QgsRectangle new_extent(ext.xMinimum() + diff.x(), ext.yMinimum() + diff.y(),
+                          ext.xMaximum() + diff.x(), ext.yMaximum() + diff.y());
+  mCanvas->setExtent(new_extent); 
+  mCanvas->refresh();
+}
+
+
+void QgsPointDialog::on_pbnSaveGCPs_clicked()
+{
+	// create arrays with points from mPoints
+  std::vector<QgsPoint> mapCoords, pixelCoords;
+  createGCPVectors(mapCoords, pixelCoords);
+  if (mapCoords.empty())
+    return;
   saveGCPs( mapCoords, pixelCoords );
 }
 
@@ -215,14 +275,15 @@ void QgsPointDialog::on_pbnGenerateAndLoad_clicked()
     QString source = mLayer->source();
 
     // delete layer before it's loaded again (otherwise it segfaults)
-    QgsMapLayerRegistry::instance()->removeMapLayer( mLayer->getLayerID(), FALSE );
-    mLayer = 0;
+//     QgsMapLayerRegistry::instance()->removeMapLayer( mLayer->getLayerID(), FALSE );
+ //    mLayer = 0;
 
     // load raster to the main map canvas of QGIS
     if ( cmbTransformType->currentText() == tr( "Linear" ) )
-      mIface->addRasterLayer( source );
+       mIface->mapCanvas()->setExtent(mIface->addRasterLayer( source )->extent());
     else
-      mIface->addRasterLayer( leSelectModifiedRaster->text() );
+       mIface->mapCanvas()->setExtent(mIface->addRasterLayer( leSelectModifiedRaster->text() )->extent());
+    mIface->mapCanvas()->refresh();
   }
 }
 
@@ -267,281 +328,180 @@ void QgsPointDialog::on_cmbTransformType_currentIndexChanged( const QString& val
       leSelectWorldFile->setText( guessWorldFileName( fileName ) );
     }
   }
+
+  QgsGeorefTransform::TransformParametrisation parametrisation;
+  try 
+  {
+    parametrisation = convertTransformStringToEnum(cmbTransformType->currentText());
+  }
+  catch (std::exception &arg) 
+  {
+    QMessageBox::critical( this, tr( "Error" ), QString( arg.what() ) );
+    return;
+  }
+  mGeorefTransform.selectTransformParametrisation(parametrisation);
 }
 
+void QgsPointDialog::onLinkGeorefToQgisChanged(int state)
+{
+  if (state)
+  {
+    extentsChangedMainCanvas();
+  }
+}
+
+void QgsPointDialog::onLinkQgisToGeorefChanged(int state)
+{
+  if (state)
+  {
+      extentsChangedGeorefCanvas();
+  }
+}
 
 bool QgsPointDialog::generateWorldFileAndWarp()
 {
-  QgsPoint origin( 0, 0 );
-  double pixelXSize = 1;
-  double pixelYSize = 1;
-  double rotation = 0;
-  int nReqOrder = 0;
-  bool bUseTPS = false;
-
   QString outputFileName = leSelectModifiedRaster->text();
   QString worldFileName = leSelectWorldFile->text();
 
-  if ( !outputFileName.isEmpty() )
-  {
-    if ( QFile::exists( outputFileName ) )
-    {
-      int r = QMessageBox::question( this, tr( "Error!" ),
-                                     tr( "<p>Modified raster file exists! Overwrite it?</p>" ),
-                                     QMessageBox::Yes | QMessageBox::Default,
-                                     QMessageBox::No | QMessageBox::Escape );
-      if ( r == QMessageBox::No )
-        return false;
-      else
-        QFile::remove( outputFileName );
-    }
-  }
-
-  if ( !worldFileName.isEmpty() )
-  {
-    if ( QFile::exists( worldFileName ) )
-    {
-      int r = QMessageBox::question( this, tr( "World file exists" ),
-                                     tr( "<p>The selected file already seems to have a world file! Do you want to replace it with the new world file?</p>" ),
-                                     QMessageBox::Yes | QMessageBox::Default,
-                                     QMessageBox::No | QMessageBox::Escape );
-      if ( r == QMessageBox::No )
-        return false;
-      else
-        QFile::remove( worldFileName );
-    }
-  }
-
   // create arrays with points from mPoints
   std::vector<QgsPoint> pixelCoords, mapCoords;
-  for ( unsigned int i = 0; i < mPoints.size(); i++ )
+  createGCPVectors(mapCoords, pixelCoords);
+  if (mapCoords.size() < mGeorefTransform.getMinimumGCPCount())
   {
-    QgsGeorefDataPoint* pt = mPoints[i];
-    pixelCoords.push_back( pt->pixelCoords() );
-    mapCoords.push_back( pt->mapCoords() );
-  }
-
-  // compute the parameters using the least squares method
-  // (might throw std::domain_error)
-
-  try
-  {
-    if ( cmbTransformType->currentText() == tr( "Linear" ) )
-    {
-      QgsLeastSquares::linear( mapCoords, pixelCoords, origin, pixelXSize, pixelYSize );
-    }
-    else if ( cmbTransformType->currentText() == tr( "Helmert" ) )
-    {
-      QMessageBox::StandardButton res = QMessageBox::warning( this, tr( "Warning" ),
-                                        tr( "<p>A Helmert transform requires modifications in "
-                                            "the raster layer.</p><p>The modified raster will be "
-                                            "saved in a new file and a world file will be "
-                                            "generated for this new file instead.</p><p>Are you "
-                                            "sure that this is what you want?</p>" ) +
-                                        "<p><i>" + tr( "Currently all modified files will be written in TIFF format." ) +
-                                        "</i><p>", QMessageBox::Ok | QMessageBox::Cancel );
-      if ( res == QMessageBox::Cancel )
-        return false;
-
-      QgsLeastSquares::helmert( mapCoords, pixelCoords, origin, pixelXSize, rotation );
-      pixelYSize = pixelXSize;
-
-    }
-    else if ( cmbTransformType->currentText() == tr( "Affine" ) )
-    {
-      QMessageBox::critical( this, tr( "Not implemented!" ),
-                             tr( "<p>An affine transform requires changing the "
-                                 "original raster file. This is not yet "
-                                 "supported.</p>" ) );
-      return false;
-    }
-    else if ( cmbTransformType->currentText() == tr( "Polynomial 1" ) )
-    {
-      QMessageBox::StandardButton res = QMessageBox::warning( this, tr( "Warning" ),
-                                        tr( "<p>A Polynomial transform requires changing "
-                                            "the raster layer.</p><p>The changed raster will be "
-                                            "saved in a new file and a world file will be "
-                                            "generated for this new file instead.</p><p>Are you "
-                                            "sure that this is what you want?</p>" ) +
-                                        "<p><i>" + tr( "Currently all modified files will be written in TIFF format." ) +
-                                        "</i><p>", QMessageBox::Ok | QMessageBox::Cancel );
-      if ( res == QMessageBox::Cancel )
-        return false;
-
-      if ( mPoints.size() < 3 )
-      {
-        QMessageBox::critical( this, tr( "Error" ), tr( "Requires at least 3 points" ) );
-        return false;
-      }
-
-      nReqOrder = 1;
-    }
-    else if ( cmbTransformType->currentText() == tr( "Polynomial 2" ) )
-    {
-      QMessageBox::StandardButton res = QMessageBox::warning( this, tr( "Warning" ),
-                                        tr( "<p>A Polynomial transform requires changing "
-                                            "the raster layer.</p><p>The changed raster will be "
-                                            "saved in a new file and a world file will be "
-                                            "generated for this new file instead.</p><p>Are you "
-                                            "sure that this is what you want?</p>" ) +
-                                        "<p><i>" + tr( "Currently all modified files will be written in TIFF format." ) +
-                                        "</i><p>", QMessageBox::Ok | QMessageBox::Cancel );
-      if ( res == QMessageBox::Cancel )
-        return false;
-
-      if ( mPoints.size() < 6 )
-      {
-        QMessageBox::critical( this, tr( "Error" ), tr( "Requires at least 6 points" ) );
-        return false;
-      }
-
-      nReqOrder = 2;
-    }
-    else if ( cmbTransformType->currentText() == tr( "Polynomial 3" ) )
-    {
-      QMessageBox::StandardButton res = QMessageBox::warning( this, tr( "Warning" ),
-                                        tr( "<p>A Polynomial transform requires changing "
-                                            "the raster layer.</p><p>The changed raster will be "
-                                            "saved in a new file and a world file will be "
-                                            "generated for this new file instead.</p><p>Are you "
-                                            "sure that this is what you want?</p>" ) +
-                                        "<p><i>" + tr( "Currently all modified files will be written in TIFF format." ) +
-                                        "</i><p>", QMessageBox::Ok | QMessageBox::Cancel );
-      if ( res == QMessageBox::Cancel )
-        return false;
-
-      if ( mPoints.size() < 10 )
-      {
-        QMessageBox::critical( this, tr( "Error" ), tr( "Requires at least 10 points" ) );
-        return false;
-      }
-
-      nReqOrder = 3;
-    }
-    else if ( cmbTransformType->currentText() == tr( "Thin plate spline (TPS)" ) )
-    {
-      QMessageBox::StandardButton res = QMessageBox::warning( this, tr( "Warning" ),
-                                        tr( "<p>A Polynomial transform requires changing "
-                                            "the raster layer.</p><p>The changed raster will be "
-                                            "saved in a new file and a world file will be "
-                                            "generated for this new file instead.</p><p>Are you "
-                                            "sure that this is what you want?</p>" ) +
-                                        "<p><i>" + tr( "Currently all modified files will be written in TIFF format." ) +
-                                        "</i><p>", QMessageBox::Ok | QMessageBox::Cancel );
-      if ( res == QMessageBox::Cancel )
-        return false;
-
-      bUseTPS = true;
-    }
-    else
-    {
-      QMessageBox::critical( this, tr( "Not implemented!" ),
-                             tr( "<p>The %1 transform is not yet supported.</p>" )
-                             .arg( cmbTransformType->currentText() ) );
-      return false;
-    }
-  }
-  catch ( std::domain_error& e )
-  {
-    QMessageBox::critical( this, tr( "Error" ), QString( e.what() ) );
+    QMessageBox::critical(this, tr("Error"), tr("%1 transform requires at least %2 ground control points").arg(cmbTransformType->currentText()).arg(mGeorefTransform.getMinimumGCPCount()));
     return false;
   }
-
-  bool useZeroForTrans;
-  QString compressionMethod;
-  QgsImageWarper::ResamplingMethod resampling;
-
-  if ( rotation != 0 )
+  
+  // Update the transform if necessary
+  if (!updateGeorefTransform())
   {
-    // warp the raster if needed
-    double xOffset = 0;
-    double yOffset = 0;
-
-    QgsGeorefWarpOptionsDialog d( this );
-//     d.move(0, 0);
-    d.exec();
-    QgsImageWarper warper( -rotation );
-    d.getWarpOptions( resampling, useZeroForTrans, compressionMethod );
-    //Closing the dialog by pressing the X button rather than clicking the OK button causes GDAL to barf and QGIS
-    //to crash because reasampling is not a valid option
-    //**not sure exactly what is going on in the case as the other two options are still correct but that could be coincidence
-    if ( resampling != QgsImageWarper::NearestNeighbour && resampling != QgsImageWarper::Bilinear && resampling != QgsImageWarper::Cubic )
+    QMessageBox::critical( this, tr( "Error" ), tr( "Failed to compute GCP transform: Transform is not solvable." ) );
+    return false;
+  }
+  
+  if (mGeorefTransform.transformParametrisation() == QgsGeorefTransform::Linear)
+  {
+    QgsPoint origin;
+    double pixelXSize, pixelYSize;
+    if (!mGeorefTransform.getLinearOriginScale(origin, pixelXSize, pixelYSize))
     {
+    
+      QMessageBox::critical( this, tr( "Error" ),
+                             tr( "Failed to get linear transform parameters." ));
       return false;
     }
-    warper.warp( mLayer->source(), outputFileName,
-                 xOffset, yOffset, resampling, useZeroForTrans, compressionMethod );
 
+    if ( !worldFileName.isEmpty() )
+    {
+      if ( QFile::exists( worldFileName ) )
+      {
+        int r = QMessageBox::question( this, tr( "World file exists" ),
+                                      tr( "<p>The selected file already seems to have a " ) +
+                                      tr( "world file! Do you want to replace it with the " ) +
+                                      tr( "new world file?</p>" ),
+                                      QMessageBox::Yes | QMessageBox::Default,
+                                      QMessageBox::No | QMessageBox::Escape );
+        if ( r == QMessageBox::No )
+          return false;
+        else
+          QFile::remove( worldFileName );
+      }
+    }
+    else {
+      QMessageBox::critical( this, tr( "Error!" ),
+                             tr( "<p>Please enter an output filename.</p>" )); 
+      return false;
+    }
+
+    
     // write the world file
     QFile file( worldFileName );
     if ( !file.open( QIODevice::WriteOnly ) )
     {
       QMessageBox::critical( this, tr( "Error" ),
-                             tr( "Could not write to %1" ).arg( worldFileName ) );
+                             tr( "Could not write to " ) + worldFileName );
       return false;
     }
     QTextStream stream( &file );
     stream << QString::number( pixelXSize, 'f', 15 ) << endl
-    << 0 << endl
-    << 0 << endl
-    << QString::number( -pixelYSize, 'f', 15 ) << endl
-    << QString::number(( origin.x() - xOffset * pixelXSize ), 'f', 15 ) << endl
-    << QString::number(( origin.y() + yOffset * pixelYSize ), 'f', 15 ) << endl;
+           << 0 << endl
+           << 0 << endl
+           << QString::number( -pixelYSize, 'f', 15 ) << endl
+           << QString::number(  origin.x(), 'f', 15 ) << endl
+           << QString::number(  origin.y(), 'f', 15 ) << endl;
   }
-  else if ( nReqOrder != 0 || bUseTPS )
+  else 
   {
-    QgsGeorefWarpOptionsDialog d( this );
-//     d.move(0, 0);
-    d.exec();
-    QgsImageWarper warper;
-    d.getWarpOptions( resampling, useZeroForTrans, compressionMethod );
-    //Closing the dialog by pressing the X button rather than clicking the OK button causes GDAL to barf and QGIS
-    //to crash because reasampling is not a valid option
-    //**not sure exactly what is going on in the case as the other two options are still correct but that could be coincidence
-    if ( resampling != QgsImageWarper::NearestNeighbour && resampling != QgsImageWarper::Bilinear && resampling != QgsImageWarper::Cubic )
+    QMessageBox::StandardButton res = QMessageBox::warning( this, tr( "Warning" ),
+                                        tr( "<p>A %1 transform requires modifications in "
+                                            "the raster layer.</p><p>The modified raster will be "
+                                            "saved in a new file and a world file will be "
+                                            "generated for this new file instead.</p><p>Are you "
+                                            "sure that this is what you want?</p>" ).arg("polynomial") +
+                                        "<p><i>" + tr( "Currently all modified files will be written in TIFF format." ) +
+                                        "</i><p>", QMessageBox::Ok | QMessageBox::Cancel );
+    if ( res == QMessageBox::Cancel )
+      return false;
+
+    if ( !outputFileName.isEmpty() )
     {
+      if ( QFile::exists( outputFileName ) )
+      {
+        int r = QMessageBox::question( this, tr( "Error!" ),
+                                      tr( "<p>Modified raster file exists! Overwrite it?</p>" ),
+                                      QMessageBox::Yes | QMessageBox::Default,
+                                      QMessageBox::No | QMessageBox::Escape );
+        if ( r == QMessageBox::No )
+          return false;
+        else
+          QFile::remove( outputFileName );
+      }
+    }
+    else {
+      QMessageBox::critical( this, tr( "Error!" ),
+                             tr( "<p>Please enter an output filename.</p>" )); 
       return false;
     }
 
-    QByteArray worldExt = worldFileName.mid( worldFileName.lastIndexOf( '.' ) + 1, worldFileName.length() ).toAscii();
+    bool useZeroForTrans;
+    QString compressionMethod;
+    QgsImageWarper::ResamplingMethod resampling;
 
-    if ( !warper.warpgcp( mLayer->source(), outputFileName, worldExt.data(),
-                          mapCoords, pixelCoords, nReqOrder, resampling, useZeroForTrans,
-                          compressionMethod, bUseTPS ) )
+    QgsGeorefWarpOptionsDialog d( this );   
+    if (!d.exec()) 
     {
+      // The options dialog was canceled by the user
+      return false;
+    }
+     
+    d.getWarpOptions( resampling, useZeroForTrans, compressionMethod );
+
+    QgsImageWarper warper(this);
+    if (!warper.warpFile( mLayer->source(), outputFileName, mGeorefTransform, resampling, useZeroForTrans, compressionMethod))
+    {
+      //TODO: be more specific in the error message
       QMessageBox::critical( this, tr( "Error" ), tr( "Failed to compute GCP transform: Transform is not solvable." ) );
       return false;
     }
+    // write the data points in case we need them later
+//     saveGCPs( mapCoords, pixelCoords );
   }
-  else //MH: don't forget the linear transformation ;-)
-  {
-    double xOffset = 0;
-    double yOffset = 0;
-    QFile file( worldFileName );
-    if ( !file.open( QIODevice::WriteOnly ) )
-    {
-      return false;
-    }
-    QTextStream stream( &file );
-    stream << QString::number( pixelXSize, 'f', 15 ) << endl
-    << 0 << endl
-    << 0 << endl
-    << QString::number( -pixelYSize, 'f', 15 ) << endl
-    << QString::number(( origin.x() - xOffset * pixelXSize ), 'f', 15 ) << endl
-    << QString::number(( origin.y() + yOffset * pixelYSize ), 'f', 15 ) << endl;
-  }
-
-  // write the data points in case we need them later
-//  saveGCPs( mapCoords, pixelCoords );
   return true;
 }
 
 void QgsPointDialog::loadGCPs( QString &fileName )
 {
-
   QFile pointFile( fileName );
   if ( pointFile.open( QIODevice::ReadOnly ) )
   {
+    //delete old points
+    for ( std::vector<QgsGeorefDataPoint*>::iterator it = mPoints.begin(); it != mPoints.end(); ++it )
+    {
+      delete *it;
+    }
+    mPoints.clear();
+    mAcetateCounter = 0;
+ 
     QTextStream points( &pointFile );
     QString tmp;
     // read the header
@@ -553,11 +513,13 @@ void QgsPointDialog::loadGCPs( QString &fileName )
     {
       QgsPoint mapCoords( mapX, mapY );
       QgsPoint pixelCoords( pixelX, pixelY );
-      addPoint( pixelCoords, mapCoords );
+      addPointWithoutRefresh( pixelCoords, mapCoords );
       // read the next line
       points >> mapX >> mapY >> pixelX >> pixelY;
     }
   }
+  mGCPsDirty = true;
+  mGCPListWidget->setGCPList(&mPoints); //TODO: use signal slot mechanism to update model
   mCanvas->refresh();
 }
 
@@ -635,6 +597,8 @@ void QgsPointDialog::on_pbnSelectRaster_clicked()
 
   if ( fileName.isNull() )
   {
+	leSelectRaster->setText("");
+	enableControls(false);
     return;
   }
   leSelectRaster->setText( fileName );
@@ -644,6 +608,8 @@ void QgsPointDialog::on_pbnSelectRaster_clicked()
   {
     QMessageBox::critical( this, tr( "Error" ),
                            tr( "The selected file is not a valid raster file." ) );
+	leSelectRaster->setText("");
+	enableControls(false);
     return;
   }
 
@@ -653,25 +619,6 @@ void QgsPointDialog::on_pbnSelectRaster_clicked()
     QFileInfo fileInfo( leSelectRaster->text() );
     settings.setValue( "/Plugin-GeoReferencer/rasterdirectory",
                        fileInfo.path() );
-  }
-
-  // guess the world file name
-  QString worldfile = guessWorldFileName( leSelectRaster->text() );
-
-  // check if there already is a world file
-  if ( !worldfile.isEmpty() )
-  {
-    if ( QFile::exists( worldfile ) )
-    {
-      int r = QMessageBox::question( this, tr( "World file exists" ),
-                                     tr( "<p>The selected file already seems to have a world file! Do you want to replace it with the new world file?</p>" ),
-                                     QMessageBox::Yes | QMessageBox::Default,
-                                     QMessageBox::No | QMessageBox::Escape );
-      if ( r == QMessageBox::No )
-        return;
-      else
-        QFile::remove( worldfile );
-    }
   }
 
   // XXX This is horrible, but it works and I'm tired / ll
@@ -712,6 +659,14 @@ QWidget* QgsPointDialog::findMainWindow()
   return result;
 }
 
+void QgsPointDialog::on_pbnShowGCPList_clicked()
+{
+  mGCPListWidget->setGCPList(&mPoints);
+  mGCPListWidget->setGeorefTransform(&mGeorefTransform);
+  mGCPListWidget->show();
+  mGCPListWidget->raise();
+}
+
 void QgsPointDialog::showCoordDialog( QgsPoint& pixelCoords )
 {
   MapCoordsDialog* mcd = new MapCoordsDialog( pixelCoords, mIface->mapCanvas(), this );
@@ -737,6 +692,8 @@ void QgsPointDialog::deleteDataPoint( QgsPoint& coords )
       delete *it;
       mPoints.erase( it );
       --mAcetateCounter;
+      mGCPsDirty = true;
+
       mCanvas->refresh();
       break;
     }
@@ -749,7 +706,7 @@ QString QgsPointDialog::guessWorldFileName( const QString& raster )
   int point = raster.lastIndexOf( '.' );
   QString worldfile = "";
   if ( point != -1 && point != raster.length() - 1 )
-    worldfile = raster.left( point + 1 ) + "wld";
+      worldfile = raster.left( point + 2) + raster[raster.length() - 1] + "w";
   return worldfile;
 }
 
@@ -758,6 +715,18 @@ void QgsPointDialog::enableModifiedRasterControls( bool state )
   lblSelectModifiedRaster->setEnabled( state );
   pbnSelectModifiedRaster->setEnabled( state );
   leSelectModifiedRaster->setEnabled( state );
+}
+
+void QgsPointDialog::enableControls(bool state)
+{
+  lblSelectWorldFile->setEnabled(state);
+  leSelectWorldFile->setEnabled( state );
+  pbnSelectWorldFile->setEnabled( state );
+
+  pbnGenerateWorldFile->setEnabled(state);
+  pbnGenerateAndLoad->setEnabled( state );
+  pbnLoadGCPs->setEnabled(state);
+  pbnSaveGCPs->setEnabled(state);
 }
 
 void QgsPointDialog::initialize()
@@ -852,11 +821,142 @@ void QgsPointDialog::initialize()
   cmbTransformType->addItem( tr( "Polynomial 3" ) );
   cmbTransformType->addItem( tr( "Thin plate spline (TPS)" ) );
 
+
+  // Connect main canvas and georef canvas signals so we are aware if any of the viewports change
+  // (used by the map follow mode)
+  connect( mCanvas, SIGNAL( extentsChanged() ), this, SLOT( extentsChangedGeorefCanvas() ) );
+  connect( mIface->mapCanvas(), SIGNAL( extentsChanged() ), this, SLOT( extentsChangedMainCanvas() ) );
+
+  connect( cbLinkQgisToGeoref, SIGNAL( stateChanged( int )), this, SLOT( onLinkQgisToGeorefChanged( int ) ));
+  connect( cbLinkGeorefToQgis, SIGNAL( stateChanged( int )), this, SLOT( onLinkGeorefToQgisChanged( int ) ));
+
+  mExtentsChangedRecursionGuard = false;
+
+  mGeorefTransform.selectTransformParametrisation(QgsGeorefTransform::Linear);
+  mGCPsDirty = true;
+
   enableModifiedRasterControls( false );
+  enableControls(false);
   addPoint();
 
-  pbnGenerateAndLoad->setEnabled( false );
+  mGCPListWidget = new QgsGCPListWidget(0);
+  mGCPListWidget->setGCPList(&mPoints);
+  mGCPListWidget->setGeorefTransform(&mGeorefTransform);
+  connect( mGCPListWidget, SIGNAL( jumpToGCP( uint )), this, SLOT( jumpToGCP( uint )));
 }
+
+bool QgsPointDialog::updateGeorefTransform()
+{
+  if (mGCPsDirty || !mGeorefTransform.parametersInitialized()) 
+  {
+    // Store gcp source and destination coordinates in vectors
+    std::vector<QgsPoint> pixelCoords, mapCoords;
+    createGCPVectors(mapCoords, pixelCoords);
+
+    // Parametrize the transform with GCPs
+    if (!mGeorefTransform.updateParametersFromGCPs(mapCoords, pixelCoords))
+    {
+      return false;
+    }
+
+    mGCPsDirty = false;
+  }
+  return true;
+}
+
+// Samples the given rectangle at numSamples per edge.
+// Returns an axis aligned bounding box which contains the transformed samples.
+QgsRectangle transformViewportBoundingBox(const QgsRectangle &canvasExtent, const QgsGeorefTransform &t, bool rasterToWorld = true, uint numSamples = 4)
+{
+  double minX, minY;
+  double maxX, maxY;
+  minX = minY =  std::numeric_limits<double>::max();
+  maxX = maxY = -std::numeric_limits<double>::max();
+
+  double oX = canvasExtent.xMinimum();
+  double oY = canvasExtent.yMinimum();
+  double dX = canvasExtent.xMaximum();
+  double dY = canvasExtent.yMaximum();
+  double stepX = numSamples ? (dX-oX)/(numSamples-1) : 0.0;  
+  double stepY = numSamples ? (dY-oY)/(numSamples-1) : 0.0;  
+  for (uint s = 0u;  s < numSamples; s++)
+  {
+    for (uint edge = 0; edge < 4; edge++) {
+      QgsPoint src, raster;
+      switch (edge) {
+        case 0: src = QgsPoint(oX + (double)s*stepX, oY); break;
+        case 1: src = QgsPoint(oX + (double)s*stepX, dY); break;
+        case 2: src = QgsPoint(oX, oY + (double)s*stepY); break;
+        case 3: src = QgsPoint(dX, oY + (double)s*stepY); break;
+      }
+      t.transform(src, raster, rasterToWorld);
+      minX = std::min(raster.x(), minX);
+      maxX = std::max(raster.x(), maxX);
+      minY = std::min(raster.y(), minY);
+      maxY = std::max(raster.y(), maxY);
+    }
+  }
+  return QgsRectangle(minX, minY, maxX, maxY);
+}
+
+// This slot is called whenever the georeference canvas changes the displayed extent
+void QgsPointDialog::extentsChangedGeorefCanvas()
+{
+  // Guard against endless recursion by ping-pong updates
+  if (mExtentsChangedRecursionGuard) 
+  {
+    return;
+  }
+
+  if (cbLinkQgisToGeoref->isChecked()) 
+  {
+    if (!updateGeorefTransform()) 
+    {
+      return;
+    }
+
+    // Reproject the georeference plugin canvas into world coordinates and fit axis aligned bounding box
+    QgsRectangle boundingBox = transformViewportBoundingBox(mCanvas->extent(), mGeorefTransform, true);
+
+    mExtentsChangedRecursionGuard = true;
+    // Just set the whole extent for now
+    // TODO: better fitting function which acounts for differing aspect ratios etc.
+    mIface->mapCanvas()->setExtent(boundingBox);
+    mIface->mapCanvas()->refresh();
+    mExtentsChangedRecursionGuard = false;   
+  }
+}
+
+// This slot is called whenever the qgis main canvas changes the displayed extent
+void QgsPointDialog::extentsChangedMainCanvas()
+{
+  // Guard against endless recursion by ping-pong updates
+  if (mExtentsChangedRecursionGuard) 
+  {
+    return;
+  }
+
+  if (cbLinkGeorefToQgis->isChecked()) 
+  {
+    // Update transform if necessary
+    if (!updateGeorefTransform())
+    { 
+      return;
+    }
+
+    // Reproject the canvas into raster coordinates and fit axis aligned bounding box
+    QgsRectangle boundingBox = transformViewportBoundingBox(mIface->mapCanvas()->extent(), mGeorefTransform, false);
+    
+    mExtentsChangedRecursionGuard = true;
+    // Just set the whole extent for now
+    // TODO: better fitting function which acounts for differing aspect ratios etc.
+    mCanvas->setExtent(boundingBox);
+    mCanvas->refresh();
+    mExtentsChangedRecursionGuard = false;
+  }
+}
+
+
 
 // Note this code is duplicated from qgisapp.cpp because
 // I didnt want to make plugins on qgsapplication [TS]

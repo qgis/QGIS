@@ -16,37 +16,79 @@
 #include "qgsgeorefdatapoint.h"
 #include "qgsmapcanvas.h"
 
-QgsGeorefDataPoint::QgsGeorefDataPoint( QgsMapCanvas* mapCanvas, int id,
+class QgsGCPCanvasItem : public QgsMapCanvasItem {
+public:
+  QgsGCPCanvasItem( QgsMapCanvas* mapCanvas, const QgsPoint& rasterCoords, const QgsPoint& worldCoords, bool isGCPSource = true );
+  
+  //! draws point information
+  virtual void paint( QPainter* p );
+
+  //! handler for manual updating of position and size
+  virtual QRectF boundingRect() const;
+
+  virtual void updatePosition();
+private:
+  bool mIsGCPSource;
+  QSizeF mTextBounds;
+  QgsPoint mRasterCoords, mWorldCoords;
+};
+
+QgsGeorefDataPoint::QgsGeorefDataPoint( QgsMapCanvas* srcCanvas, QgsMapCanvas *dstCanvas, int id,
                                         const QgsPoint& pixelCoords, const QgsPoint& mapCoords )
-    : QgsMapCanvasItem( mapCanvas ), mId( id ),
-    mPixelCoords( pixelCoords ), mMapCoords( mapCoords )
+    : mId( id ), mPixelCoords( pixelCoords ), mMapCoords( mapCoords )
 {
+  mGCPSourceItem = new QgsGCPCanvasItem(srcCanvas, pixelCoords, mapCoords, true);
+  mGCPDestinationItem = new QgsGCPCanvasItem(dstCanvas, pixelCoords, mapCoords, false);
+  mGCPSourceItem->show();
+  mGCPDestinationItem->show();
+}
+
+QgsGeorefDataPoint::~QgsGeorefDataPoint()
+{
+  delete mGCPSourceItem;
+  delete mGCPDestinationItem;
+}
+
+
+QgsGCPCanvasItem::QgsGCPCanvasItem(QgsMapCanvas* mapCanvas, const QgsPoint& rasterCoords, const QgsPoint& worldCoords, 
+                                   bool isGCPSource ) : QgsMapCanvasItem( mapCanvas )
+{
+  mRasterCoords = rasterCoords;
+  mWorldCoords = worldCoords; 
+  mIsGCPSource = isGCPSource;
   updatePosition();
 }
 
 
-void QgsGeorefDataPoint::paint( QPainter* p )
+
+void QgsGCPCanvasItem::paint( QPainter* p )
 {
-  QString msg = QString( "X %1\nY %2" ).arg( QString::number( mMapCoords.x(), 'f' ) ).arg( QString::number( mMapCoords.y(), 'f' ) );
-  QFont font;
-  p->setFont( QFont( "helvetica", 9 ) );
+  // draw the point
   p->setPen( Qt::black );
   p->setBrush( Qt::red );
   p->drawRect( -2, -2, 5, 5 );
-  QRect textBounds = p->boundingRect( 4, 4, 10, 10, Qt::AlignLeft, msg );
-  p->setBrush( Qt::yellow );
-  p->drawRect( 2, 2, textBounds.width() + 4, textBounds.height() + 4 );
-  p->drawText( textBounds, Qt::AlignLeft, msg );
-
-  mTextBounds = QSizeF( textBounds.width(), textBounds.height() );
+  
+  if (mIsGCPSource) 
+  {
+    QString msg = QString( "X %1\nY %2" ).arg( QString::number( mWorldCoords.x(), 'f' ) ).arg( QString::number( mWorldCoords.y(), 'f' ) );
+    QFont font;
+    p->setFont( QFont( "helvetica", 9 ) );
+    QRect textBounds = p->boundingRect( 4, 4, 10, 10, Qt::AlignLeft, msg );
+    p->setBrush( Qt::yellow );
+    p->drawRect( 2, 2, textBounds.width() + 4, textBounds.height() + 4 );
+    p->drawText( textBounds, Qt::AlignLeft, msg );
+    mTextBounds = QSizeF(textBounds.width() + 4, textBounds.height() + 4);
+  }
+  else
+    mTextBounds = QSizeF(0, 0);
 }
 
-QRectF QgsGeorefDataPoint::boundingRect() const
+QRectF QgsGCPCanvasItem::boundingRect() const
 {
-  return QRectF( -2, -2, mTextBounds.width() + 6, mTextBounds.height() + 6 );
+  return QRectF( -2, -2, mTextBounds.width() + 2, mTextBounds.height() + 2 );
 }
 
-void QgsGeorefDataPoint::updatePosition()
+void QgsGCPCanvasItem::updatePosition()
 {
-  setPos( toCanvasCoordinates( mPixelCoords ) );
+  setPos( toCanvasCoordinates( mIsGCPSource ? mRasterCoords : mWorldCoords) );
 }
