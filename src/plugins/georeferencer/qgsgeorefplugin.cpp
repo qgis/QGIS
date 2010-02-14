@@ -18,7 +18,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
+/*  $Id: plugin.cpp 9231 2008-08-31 16:56:09Z timlinux $ */
 
 /***************************************************************************
  *   QGIS Programming conventions:
@@ -57,7 +57,7 @@
 #include "qgspointdialog.h"
 #include "qgsgeorefdescriptiondialog.h"
 
-static const char * const sIdent = "$Id$";
+static const char * const sIdent = "$Id: plugin.cpp 9231 2008-08-31 16:56:09Z timlinux $";
 static const QString sName = QObject::tr( "Georeferencer GDAL" );
 static const QString sDescription = QObject::tr( "Adding projection info to rasters using GDAL" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
@@ -105,15 +105,15 @@ void QgsGeorefPlugin::initGui()
   mQGisIface->addToolBarIcon( mQActionPointer );
   mQGisIface->addPluginToMenu( tr( "&Georeferencer" ), mQActionPointer );
 
-  mQActionPointer = new QAction( QIcon( ":/about.png" ), tr( "&Georeferencer" ), this );
-  mQActionPointer = new QAction( "About", this );
-  connect( mQActionPointer, SIGNAL( triggered() ), SLOT( about() ) );
-  mQGisIface->addPluginToMenu( tr( "&Georeferencer" ), mQActionPointer );
+  mQActionPointerAbout = new QAction( QIcon( ":/about.png" ), tr( "&About" ), this );
+//  mQActionPointer = new QAction("About", this);
+  connect(mQActionPointerAbout, SIGNAL(triggered()), this, SLOT(about()));
+  mQGisIface->addPluginToMenu(tr ("&Georeferencer"), mQActionPointerAbout);
 
-  mQActionPointer = new QAction( QIcon( ":/help.png" ), tr( "&Georeferencer" ), this );
-  mQActionPointer = new QAction( "Help", this );
-  connect( mQActionPointer, SIGNAL( triggered() ), SLOT( help() ) );
-  mQGisIface->addPluginToMenu( tr( "&Georeferencer" ), mQActionPointer );
+  mQActionPointerHelp = new QAction( QIcon( ":/help.png" ), tr( "&Help" ), this );
+//  mQActionPointer = new QAction("Help", this);
+  connect(mQActionPointerHelp, SIGNAL(triggered()), this, SLOT(help()));
+  mQGisIface->addPluginToMenu(tr ("&Georeferencer"), mQActionPointerHelp);
 }
 //method defined in interface
 void QgsGeorefPlugin::help()
@@ -158,9 +158,17 @@ void QgsGeorefPlugin::run()
 void QgsGeorefPlugin::unload()
 {
   // remove the GUI
+  disconnect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
+  disconnect(mQActionPointerAbout, SIGNAL(triggered()), this, SLOT(about()));
+  disconnect(mQActionPointerHelp, SIGNAL(triggered()), this, SLOT(help()));
   mQGisIface->removePluginMenu( tr( "&Georeferencer" ), mQActionPointer );
+  mQGisIface->removePluginMenu( tr( "&About" ), mQActionPointerAbout );
+  mQGisIface->removePluginMenu( tr( "&Help" ), mQActionPointerHelp );
   mQGisIface->removeToolBarIcon( mQActionPointer );
+
   delete mQActionPointer;
+  delete mQActionPointerAbout;
+  delete mQActionPointerHelp;
 }
 
 //! Set icons to the current theme

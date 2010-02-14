@@ -44,6 +44,16 @@
        <string>Cubic</string>
       </property>
      </item>
+     <item>
+      <property name="text" >
+       <string>Cubic Spline</string>
+      </property>
+     </item>
+     <item>
+      <property name="text" >
+       <string>Lanczos</string>
+      </property>
+     </item>
     </widget>
    </item>
    <item row="1" column="0">

@@ -22,53 +22,60 @@
 #include <vector>
 #include "qgspoint.h"
 
+class QgsGeorefTransform;
+class QProgressDialog;
+class QWidget;
+
 class QgsImageWarper
 {
   public:
+    QgsImageWarper(QWidget *theParent);
 
     enum ResamplingMethod
     {
       NearestNeighbour = GRA_NearestNeighbour,
-      Bilinear = GRA_Bilinear,
-      Cubic = GRA_Cubic,
+      Bilinear         = GRA_Bilinear,
+      Cubic            = GRA_Cubic,
+      CubicSpline      = GRA_CubicSpline,
+      Lanczos          = GRA_Lanczos
     };
 
-
-    QgsImageWarper() { };
-    QgsImageWarper( double angle ) : mAngle( angle ) { };
-
-    void warp( const QString& input, const QString& output,
-               double& xOffset, double& yOffset,
-               ResamplingMethod resampling = Bilinear,
-               bool useZeroAsTrans = true,
-               const QString& compression = "NONE" );
-
-    bool warpgcp( const QString& input, const QString& output,
-                  const char *worldExt,
-                  std::vector<QgsPoint> mapCoords,
-                  std::vector<QgsPoint> pixelCoords,
-                  const int nReqOrder = 1, ResamplingMethod resampling = Bilinear,
-                  bool useZeroAsTrans = true, const QString& compression = "NONE",
-                  bool bUseTPS = false );
-
+    bool warpFile( const QString& input, const QString& output, const QgsGeorefTransform &georefTransform,
+                   ResamplingMethod resampling = Bilinear, bool useZeroAsTrans = true, const QString& compression = "NONE");
   private:
-
-    struct TransformParameters
-    {
-      double angle;
-      double x0;
-      double y0;
+    struct TransformChain {
+      GDALTransformerFunc GDALTransformer;
+      void *              GDALTransformerArg;
+      double              adfGeotransform[6];
+      double              adfInvGeotransform[6];
     };
 
-    bool openSrcDSAndGetWarpOpt( const QString &input, const QString &output,
-                                 const ResamplingMethod &resampling, const GDALTransformerFunc &pfnTransform,
-                                 GDALDatasetH &hSrcDS, GDALWarpOptions *&psWarpOptions );
+    //! \sa addGeoToPixelTransform
+    static int GeoToPixelTransform( void *pTransformerArg, int bDstToSrc, int nPointCount,
+                                    double *x, double *y, double *z, int *panSuccess   );
 
-    static int transform( void *pTransformerArg, int bDstToSrc, int nPointCount,
-                          double *x, double *y, double *z, int *panSuccess );
+    /**
+     * \brief Appends a transform from geocoordinates to pixel/line coordinates to the given GDAL transformer.
+     *
+     * The resulting transform is the functional composition of the given GDAL transformer and the
+     * inverse geo transform. 
+     * \sa destroyGeoToPixelTransform
+     * \returns Argument to use with the static GDAL callback \ref GeoToPixelTransform
+     */
+    void *addGeoToPixelTransform(GDALTransformerFunc GDALTransformer, void *GDALTransformerArg, double *padfGeotransform) const;
+    void destroyGeoToPixelTransform(void *GeoToPixelTransfomArg) const;
 
-    double mAngle;
+    bool openSrcDSAndGetWarpOpt(const QString &input, const QString &output,
+                                const ResamplingMethod &resampling, const GDALTransformerFunc &pfnTransform,
+                                GDALDatasetH &hSrcDS, GDALWarpOptions *&psWarpOptions);
 
+    bool createDestinationDataset(const QString &outputName, GDALDatasetH hSrcDS, GDALDatasetH &hDstDS, uint resX, uint resY,       
+                                  double *adfGeoTransform, bool useZeroAsTrans, const QString& compression);
+
+    QWidget *mParent;
+    void      *createWarpProgressArg(QProgressDialog *progressDialog) const;
+    //! \brief GDAL progress callback, used to display warping progress via a QProgressDialog
+    static int CPL_STDCALL updateWarpProgress(double dfComplete, const char *pszMessage, void *pProgressArg);
 };
 
 

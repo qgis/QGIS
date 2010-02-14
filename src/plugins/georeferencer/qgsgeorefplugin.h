@@ -18,7 +18,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
+/*  $Id: plugin.h 9138 2008-08-23 21:37:31Z jef $ */
 
 /***************************************************************************
  *   QGIS Programming conventions:
@@ -109,6 +109,8 @@ class QgsGeorefPlugin: public QObject, public QgisPlugin
     QgisInterface *mQGisIface;
     //!pointer to the qaction for this plugin
     QAction * mQActionPointer;
+    QAction * mQActionPointerAbout;
+    QAction * mQActionPointerHelp;
     ////////////////////////////////////////////////////////////////////
     //
     // ADD YOUR OWN MEMBER DECLARATIONS AFTER THIS POINT.....
