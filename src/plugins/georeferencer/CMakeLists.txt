@@ -2,36 +2,58 @@
 # Files
 
 SET (GEOREF_SRCS
-     qgsgeorefplugin.cpp
-     qgsgcplistmodel.cpp
+     qgsgcpcanvasitem.cpp
+     qgsgeorefconfigdialog.cpp
      qgsgeorefdatapoint.cpp
-     qgsimagewarper.cpp
-     qgsleastsquares.cpp
-     qgspointdialog.cpp
+     qgsgeorefdelegates.cpp
      qgsgeorefdescriptiondialog.cpp
-     qgsgeorefwarpoptionsdialog.cpp
+     qgsgeorefplugin.cpp
+     qgsgeorefplugingui.cpp
+     qgsgeoreftooladdpoint.cpp
+     qgsgeoreftooldeletepoint.cpp
+     qgsgeoreftoolmovepoint.cpp
+     qgsgeorefvalidators.cpp
+     qgsleastsquares.cpp
+     qgsmapcoordsdialog.cpp
+     qgstransformsettingsdialog.cpp
+
+     qgsgcplist.cpp
+     qgsgcplistmodel.cpp
+     qgsimagewarper.cpp
      qgsgeoreftransform.cpp
-     mapcoordsdialog.cpp
      qgsgcplistwidget.cpp
 )
 
 SET (GEOREF_UIS
-     qgspointdialogbase.ui
-     mapcoordsdialogbase.ui
+     qgsgeorefconfigdialogbase.ui
      qgsgeorefdescriptiondialogbase.ui
-     qgsgeorefwarpoptionsdialogbase.ui
-     qgsgcplistwidgetbase.ui
+     qgsgeorefpluginguibase.ui
+     qgsmapcoordsdialogbase.ui
+     qgstransformsettingsdialogbase.ui
+     ../../ui/qgsprojectionselectorbase.ui
+     ../../ui/qgsrasterlayerpropertiesbase.ui
 )
 
 SET (GEOREF_MOC_HDRS
-#     qgsgcplistmodel.h
+     qgsgcpcanvasitem.h
+     qgsgeorefconfigdialog.h
+     qgsgeorefdatapoint.h
+     qgsgeorefdelegates.h
+     qgsgeorefdescriptiondialog.h
      qgsgeorefplugin.h
-     qgspointdialog.h
-     mapcoordsdialog.h
-     qgsgeorefwarpoptionsdialog.h
+     qgsgeorefplugingui.h
+     qgsgeoreftooladdpoint.h
+     qgsgeoreftooldeletepoint.h
+     qgsgeoreftoolmovepoint.h
+     qgsgeorefvalidators.h
+     qgsleastsquares.h
+     qgsmapcoordsdialog.h
+     qgstransformsettingsdialog.h
+     
+     qgsgcplist.h
+     qgsgcplistmodel.h
      qgsgcplistwidget.h
 )
-
 SET (GEOREF_RCCS  georeferencer.qrc)
 
 

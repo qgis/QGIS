@@ -12,29 +12,40 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+/* $Id$ */
 
 #include "qgsgeorefwarpoptionsdialog.h"
 
 
 QgsGeorefWarpOptionsDialog::QgsGeorefWarpOptionsDialog( QWidget* parent )
-    : QDialog( parent ) //QgsGeorefWarpOptionsDialogBase()
+  : QDialog( parent ) //QgsGeorefWarpOptionsDialogBase()
 {
   setupUi( this );
-  QStringList compressionMethods;
-  compressionMethods << "NONE";
-  compressionMethods << "LZW";
-  compressionMethods << "PACKBITS";
-  compressionMethods << "DEFLATE";
-  mCompressionComboBox->addItems( compressionMethods );
+
+  textBrowser->setHtml(tr("<p>A %1 transform requires modifications in "
+                          "the raster layer.</p><p>The modified raster will be "
+                          "saved in a new file and a world file will be "
+                          "generated for this new file instead.</p><p>Are you "
+                          "sure that this is what you want?</p>" ).arg("polynomial") +
+                       "<p><i>" + tr( "Currently all modified files will be written in TIFF format." ) +
+                       "</i><p>");
+  adjustSize();
 }
 
-
 void QgsGeorefWarpOptionsDialog::
-getWarpOptions( QgsImageWarper::ResamplingMethod& resampling,
-                bool& useZeroForTransparency, QString& compression )
+    getWarpOptions( QgsImageWarper::ResamplingMethod& resampling,
+                    bool& useZeroForTransparency, QString& compression )
 {
-  resampling = this->resampling;
-  useZeroForTransparency = this->useZeroAsTransparency;
+  QgsImageWarper::ResamplingMethod methods[] =
+  {
+    QgsImageWarper::NearestNeighbour,
+    QgsImageWarper::Bilinear,
+    QgsImageWarper::Cubic,
+    QgsImageWarper::CubicSpline,
+    QgsImageWarper::Lanczos
+  };
+  resampling = methods[cmbResampling->currentIndex()];
+  useZeroForTransparency = cbxZeroAsTrans->isChecked();
 
   QString compressionString = mCompressionComboBox->currentText();
   if ( compressionString.startsWith( "NONE" ) )
@@ -55,23 +66,3 @@ getWarpOptions( QgsImageWarper::ResamplingMethod& resampling,
   }
 }
 
-
-void QgsGeorefWarpOptionsDialog::on_buttonBox_accepted()
-{
-  QgsImageWarper::ResamplingMethod methods[] =
-  {
-    QgsImageWarper::NearestNeighbour,
-    QgsImageWarper::Bilinear,
-    QgsImageWarper::Cubic,
-    QgsImageWarper::CubicSpline,
-    QgsImageWarper::Lanczos
-  };
-  resampling = methods[cmbResampling->currentIndex()];
-  useZeroAsTransparency = cbxZeroAsTrans->isChecked();
-  accept();
-}
-
-void QgsGeorefWarpOptionsDialog::on_buttonBox_rejected()
-{
-  close();
-}
