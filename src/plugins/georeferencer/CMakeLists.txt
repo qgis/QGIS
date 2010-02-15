@@ -35,7 +35,6 @@ SET (GEOREF_UIS
 )
 
 SET (GEOREF_MOC_HDRS
-     qgsgcpcanvasitem.h
      qgsgeorefconfigdialog.h
      qgsgeorefdatapoint.h
      qgsgeorefdelegates.h
@@ -45,12 +44,9 @@ SET (GEOREF_MOC_HDRS
      qgsgeoreftooladdpoint.h
      qgsgeoreftooldeletepoint.h
      qgsgeoreftoolmovepoint.h
-     qgsgeorefvalidators.h
-     qgsleastsquares.h
      qgsmapcoordsdialog.h
      qgstransformsettingsdialog.h
      
-     qgsgcplist.h
      qgsgcplistmodel.h
      qgsgcplistwidget.h
 )
