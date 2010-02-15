@@ -364,25 +364,35 @@ void QgsGeorefPluginGui::zoomToNext()
   mCanvas->zoomToNextExtent();
 }
 
-void QgsGeorefPluginGui::linkGeorefToQGis( bool link )
-{
-  if ( link )
-  {
-    if (QgsGeorefTransform::InvalidTransform != mTransformParam)
-      extentsChangedGeorefCanvas();
-    else
-      mActionLinkGeorefToQGis->setEnabled(false);
-  }
-}
-
 void QgsGeorefPluginGui::linkQGisToGeoref( bool link )
 {
   if ( link )
   {
     if (QgsGeorefTransform::InvalidTransform != mTransformParam)
-      extentsChangedQGisCanvas();
+    {
+      // Indicate that georeferencer canvas extent has changed
+      extentsChangedGeorefCanvas();
+    }
     else
+    {
+      mActionLinkGeorefToQGis->setEnabled(false);
+    }
+  }
+}
+
+void QgsGeorefPluginGui::linkGeorefToQGis( bool link )
+{
+  if ( link )
+  {
+    if (QgsGeorefTransform::InvalidTransform != mTransformParam)
+    {
+      // Indicate that qgis main canvas extent has changed
+      extentsChangedQGisCanvas();
+    }
+    else
+    {
       mActionLinkQGisToGeoref->setEnabled(false);
+    }
   }
 }
 
@@ -565,7 +575,7 @@ void QgsGeorefPluginGui::extentsChangedGeorefCanvas()
     return;
   }
 
-  if (mActionLinkGeorefToQGis->isChecked())
+  if (mActionLinkQGisToGeoref->isChecked())
   {
     if (!updateGeorefTransform())
     {
@@ -593,7 +603,7 @@ void QgsGeorefPluginGui::extentsChangedQGisCanvas()
     return;
   }
 
-  if (mActionLinkQGisToGeoref->isChecked())
+  if (mActionLinkGeorefToQGis->isChecked())
   {
     // Update transform if necessary
     if (!updateGeorefTransform())
