@@ -231,7 +231,7 @@ public:
      * @return a QString with any status messages
      * @see also loadNamedStyle ();
      */
-    virtual QString loadDefaultStyle( bool & theResultFlag );
+    virtual QString loadDefaultStyle( bool & theResultFlag /Out/ );
 
     /** Retrieve a named style for this layer if one
      * exists (either as a .qml file on disk or as a
@@ -246,9 +246,9 @@ public:
      * @return a QString with any status messages
      * @see also loadDefaultStyle ();
      */
-    virtual QString loadNamedStyle( const QString theURI, bool & theResultFlag );
+    virtual QString loadNamedStyle( const QString theURI, bool & theResultFlag /Out/ );
 
-    virtual bool loadNamedStyleFromDb( const QString db, const QString theURI, QString &qml );
+    virtual bool loadNamedStyleFromDb( const QString db, const QString theURI, QString &qml /Out/ );
 
     /** Save the properties of this layer as the default style
      * (either as a .qml file on disk or as a
@@ -258,7 +258,7 @@ public:
      * @return a QString with any status messages
      * @see also loadNamedStyle () and saveNamedStyle()
      */
-    virtual QString saveDefaultStyle( bool & theResultFlag );
+    virtual QString saveDefaultStyle( bool & theResultFlag /Out/ );
 
     /** Save the properties of this layer as a named style
      * (either as a .qml file on disk or as a
@@ -273,7 +273,7 @@ public:
      * @return a QString with any status messages
      * @see also saveDefaultStyle ();
      */
-    virtual QString saveNamedStyle( const QString theURI, bool & theResultFlag );	
+    virtual QString saveNamedStyle( const QString theURI, bool & theResultFlag /Out/ );
     
     /** Return pointer to layer's undo stack */
     QUndoStack* undoStack();
