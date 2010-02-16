@@ -74,7 +74,7 @@ class Dialog(QDialog, Ui_Dialog):
     if inputLayer != "":
       changedLayer = self.getVectorLayerByName(unicode(inputLayer))
       changedField = self.getFieldList(changedLayer)
-      self.jonField.clear()
+      self.joinField.clear()
       for i in changedField:
         self.joinField.addItem(unicode(changedField[i].name()))
   
