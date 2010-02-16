@@ -2,7 +2,7 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <!-- TODO: this is bad -->
-<qgisgrassmodule label="Line-of-sigth raster analysis" module="r.los">
+<qgisgrassmodule label="Line-of-sight raster analysis" module="r.los">
 	<option key="input"/>
 	<option key="coordinate" />
 	<option key="obs_elev" answer="1.75" hidden="no" />
