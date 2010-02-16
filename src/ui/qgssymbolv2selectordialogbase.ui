@@ -128,6 +128,9 @@
            <property name="decimals">
             <number>2</number>
            </property>
+           <property name="maximum">
+            <double>99999.000000000000000</double>
+           </property>
            <property name="value">
             <double>1.000000000000000</double>
            </property>
@@ -174,6 +177,9 @@
           <widget class="QDoubleSpinBox" name="spinWidth">
            <property name="decimals">
             <number>2</number>
+           </property>
+           <property name="maximum">
+            <double>99999.000000000000000</double>
            </property>
            <property name="value">
             <double>1.000000000000000</double>
