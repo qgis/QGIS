@@ -97,7 +97,7 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
 
   //add the new count, sum, mean fields to the provider
   QList<QgsField> newFieldList;
-  QgsField countField( mAttributePrefix + "count", QVariant::Int );
+  QgsField countField( mAttributePrefix + "count", QVariant::Double );
   QgsField sumField( mAttributePrefix + "sum", QVariant::Double );
   QgsField meanField( mAttributePrefix + "mean", QVariant::Double );
   newFieldList.push_back( countField );
@@ -133,12 +133,7 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
   double count = 0;
   double sum = 0;
   double mean = 0;
-  float* scanLine;
   int featureCounter = 0;
-  //x- and y- coordinate of current cell
-  double cellCenterX = 0;
-  double cellCenterY = 0;
-  QgsPoint currentCellCenter;
 
   while ( vectorProvider->nextFeature( f ) )
   {
@@ -166,30 +161,16 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
       continue;
     }
 
-    scanLine = ( float * ) CPLMalloc( sizeof( float ) * nCellsX );
-    cellCenterY = rasterBBox.yMaximum() - offsetY * cellsizeY - cellsizeY / 2;
-    count = 0;
-    sum = 0;
+    statisticsFromMiddlePointTest( rasterBand, featureGeometry, offsetX, offsetY, nCellsX, nCellsY, cellsizeX, cellsizeY, \
+                                   rasterBBox, sum, count );
 
-    for ( int i = 0; i < nCellsY; ++i )
+    if ( count <= 1 )
     {
-      GDALRasterIO( rasterBand, GF_Read, offsetX, offsetY + i, nCellsX, 1, scanLine, nCellsX, 1, GDT_Float32, 0, 0 );
-      cellCenterX = rasterBBox.xMinimum() + offsetX * cellsizeX + cellsizeX / 2;
-      for ( int j = 0; j < nCellsX; ++j )
-      {
-        currentCellCenter = QgsPoint( cellCenterX, cellCenterY );
-        if ( featureGeometry->contains( &currentCellCenter ) )
-        {
-          if ( scanLine[j] != mInputNodataValue ) //don't consider nodata values
-          {
-            sum += scanLine[j];
-            ++count;
-          }
-        }
-        cellCenterX += cellsizeX;
-      }
-      cellCenterY -= cellsizeY;
+      //the cell resolution is probably larger than the polygon area. We switch to precise pixel - polygon intersection in this case
+      statisticsFromPreciseIntersection( rasterBand, featureGeometry, offsetX, offsetY, nCellsX, nCellsY, cellsizeX, cellsizeY, \
+                                         rasterBBox, sum, count );
     }
+
 
     if ( count == 0 )
     {
@@ -200,7 +181,7 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
       mean = sum / count;
     }
 
-    //write the new AEY value to the vector data provider
+    //write the statistics value to the vector data provider
     QgsChangedAttributesMap changeMap;
     QgsAttributeMap changeAttributeMap;
     changeAttributeMap.insert( countIndex, QVariant( count ) );
@@ -209,7 +190,6 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
     changeMap.insert( f.id(), changeAttributeMap );
     vectorProvider->changeAttributeValues( changeMap );
 
-    CPLFree( scanLine );
     ++featureCounter;
   }
 
@@ -244,6 +224,84 @@ int QgsZonalStatistics::cellInfoForBBox( const QgsRectangle& rasterBBox, const Q
   nCellsY = maxRow - offsetY;
 
   return 0;
+}
+
+void QgsZonalStatistics::statisticsFromMiddlePointTest( void* band, QgsGeometry* poly, int pixelOffsetX, \
+    int pixelOffsetY, int nCellsX, int nCellsY, double cellSizeX, double cellSizeY, const QgsRectangle& rasterBBox, double& sum, double& count )
+{
+  double cellCenterX, cellCenterY;
+  QgsPoint currentCellCenter;
+
+  float* scanLine = ( float * ) CPLMalloc( sizeof( float ) * nCellsX );
+  cellCenterY = rasterBBox.yMaximum() - pixelOffsetY * cellSizeY - cellSizeY / 2;
+  count = 0;
+  sum = 0;
+
+  for ( int i = 0; i < nCellsY; ++i )
+  {
+    GDALRasterIO( band, GF_Read, pixelOffsetX, pixelOffsetY + i, nCellsX, 1, scanLine, nCellsX, 1, GDT_Float32, 0, 0 );
+    cellCenterX = rasterBBox.xMinimum() + pixelOffsetX * cellSizeX + cellSizeX / 2;
+    for ( int j = 0; j < nCellsX; ++j )
+    {
+      currentCellCenter = QgsPoint( cellCenterX, cellCenterY );
+      if ( poly->contains( &currentCellCenter ) )
+      {
+        if ( scanLine[j] != mInputNodataValue ) //don't consider nodata values
+        {
+          sum += scanLine[j];
+          ++count;
+        }
+      }
+      cellCenterX += cellSizeX;
+    }
+    cellCenterY -= cellSizeY;
+  }
+  CPLFree( scanLine );
+}
+
+void QgsZonalStatistics::statisticsFromPreciseIntersection( void* band, QgsGeometry* poly, int pixelOffsetX, \
+    int pixelOffsetY, int nCellsX, int nCellsY, double cellSizeX, double cellSizeY, const QgsRectangle& rasterBBox, double& sum, double& count )
+{
+  sum = 0;
+  count = 0;
+  double currentY = rasterBBox.yMaximum() - pixelOffsetY * cellSizeY - cellSizeY / 2;
+  float* pixelData = ( float * ) CPLMalloc( sizeof( float ) );
+  QgsGeometry* pixelRectGeometry = 0;
+  QgsGeometry* intersectGeometry = 0;
+
+  double hCellSizeX = cellSizeX / 2.0;
+  double hCellSizeY = cellSizeY / 2.0;
+  double pixelArea = cellSizeX * cellSizeY;
+  double intersectionArea = 0;
+  double weight = 0;
+
+  for ( int row = 0; row < nCellsY; ++row )
+  {
+    double currentX = rasterBBox.xMinimum() + cellSizeX / 2.0 + pixelOffsetX * cellSizeX;
+    for ( int col = 0; col < nCellsX; ++col )
+    {
+      GDALRasterIO( band, GF_Read, pixelOffsetX + col, pixelOffsetY + row, nCellsX, 1, pixelData, 1, 1, GDT_Float32, 0, 0 );
+      pixelRectGeometry = QgsGeometry::fromRect( QgsRectangle( currentX - hCellSizeX, currentY - hCellSizeY, currentX + hCellSizeX, currentY + hCellSizeY ) );
+      if ( pixelRectGeometry )
+      {
+        //intersecton
+        intersectGeometry = pixelRectGeometry->intersection( poly );
+        if ( intersectGeometry )
+        {
+          if ( GEOSArea( intersectGeometry->asGeos(), &intersectionArea ) )
+          {
+            weight = intersectionArea / pixelArea;
+            count += weight;
+            sum += *pixelData * weight;
+          }
+          delete intersectGeometry;
+        }
+      }
+      currentX += cellSizeX;
+    }
+    currentY -= cellSizeY;
+  }
+  CPLFree( pixelData );
 }
 
 

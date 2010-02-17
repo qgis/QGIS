@@ -21,6 +21,7 @@
 #include "qgsrectangle.h"
 #include <QString>
 
+class QgsGeometry;
 class QgsVectorLayer;
 class QProgressDialog;
 
@@ -41,6 +42,15 @@ class ANALYSIS_EXPORT QgsZonalStatistics
       @return 0 in case of success*/
     int cellInfoForBBox( const QgsRectangle& rasterBBox, const QgsRectangle& featureBBox, double cellSizeX, double cellSizeY,
                          int& offsetX, int& offsetY, int& nCellsX, int& nCellsY ) const;
+
+    /**Returns statistics by considering the pixels where the center point is within the polygon (fast)*/
+    void statisticsFromMiddlePointTest( void* band, QgsGeometry* poly, int pixelOffsetX, int pixelOffsetY, int nCellsX, int nCellsY, \
+                                        double cellSizeX, double cellSizeY, const QgsRectangle& rasterBBox, double& sum, double& count );
+
+    /**Returns statistics with precise pixel - polygon intersection test (slow) */
+    void statisticsFromPreciseIntersection( void* band, QgsGeometry* poly, int pixelOffsetX, int pixelOffsetY, int nCellsX, int nCellsY, \
+                                            double cellSizeX, double cellSizeY, const QgsRectangle& rasterBBox, double& sum, double& count );
+
 
     QString mRasterFilePath;
     /**Raster band to calculate statistics from (defaults to 1)*/
