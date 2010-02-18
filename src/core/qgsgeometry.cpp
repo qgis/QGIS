@@ -6394,7 +6394,7 @@ void QgsGeometry::validatePolyline( QList<Error> &errors, int i, QgsPolyline lin
   while ( j < line.size() - 1 )
   {
     int n = 0;
-    while ( j < line.size() && line[j] == line[j+1] )
+    while ( j < line.size() - 1 && line[j] == line[j+1] )
     {
       line.remove( j );
       n++;
