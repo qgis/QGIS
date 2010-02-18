@@ -366,6 +366,9 @@ void QgsMapCanvas::refresh()
 
     // Tell the user we're going to be a while
     QApplication::setOverrideCursor( Qt::WaitCursor );
+
+    emit renderStarting();
+
     mMap->render();
 
     mDirty = false;

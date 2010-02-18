@@ -250,7 +250,11 @@ class QgsMapCanvas : QGraphicsView
 
     */
     void renderComplete(QPainter *);
-    
+
+    /** Emitted when the canvas is about to be rendered.
+      \note Added in 1.5 */
+    void renderStarting();
+
     //! Emitted when a new set of layers has been received
     void layersChanged();
 
