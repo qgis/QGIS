@@ -26,15 +26,15 @@
    <item row="0" column="0">
     <widget class="QToolBox" name="toolBox">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="page">
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-68</y>
-        <width>386</width>
-        <height>419</height>
+        <y>0</y>
+        <width>377</width>
+        <height>455</height>
        </rect>
       </property>
       <attribute name="label">
@@ -195,8 +195,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>386</width>
-        <height>352</height>
+        <width>394</width>
+        <height>347</height>
        </rect>
       </property>
       <attribute name="label">
@@ -311,9 +311,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-448</y>
-        <width>386</width>
-        <height>805</height>
+        <y>-54</y>
+        <width>377</width>
+        <height>789</height>
        </rect>
       </property>
       <attribute name="label">
@@ -370,7 +370,7 @@
              <number>5</number>
             </property>
             <property name="maximum">
-             <double>999999.000000000000000</double>
+             <double>9999999.000000000000000</double>
             </property>
            </widget>
           </item>
