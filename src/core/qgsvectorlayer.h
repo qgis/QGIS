@@ -44,6 +44,7 @@ class QgsRenderer;
 class QgsUndoCommand;
 class QgsVectorDataProvider;
 class QgsVectorOverlay;
+class QgsSingleSymbolRendererV2;
 
 class QgsRectangle;
 
@@ -660,6 +661,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** Record changed attribute, store in active command (if any) */
     void editAttributeChange( int featureId, int field, QVariant value );
 
+    /** Stop version 2 renderer and selected renderer (if required) */
+    void stopRendererV2( QgsRenderContext& rendererContext, QgsSingleSymbolRendererV2* selRenderer );
 
   private:                       // Private attributes
 
