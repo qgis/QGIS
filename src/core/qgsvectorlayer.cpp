@@ -718,11 +718,35 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
     selRenderer->startRender( rendererContext, this );
   }
 
+#ifndef Q_WS_MAC
+  int totalFeatures = pendingFeatureCount();
+  int featureCount = 0;
+#endif //Q_WS_MAC
+
   QgsFeature fet;
   while ( nextFeature( fet ) )
   {
     try
     {
+      if ( rendererContext.renderingStopped() )
+      {
+        break;
+      }
+
+#ifndef Q_WS_MAC //MH: disable this on Mac for now to avoid problems with resizing
+      if ( mUpdateThreshold > 0 && 0 == featureCount % mUpdateThreshold )
+      {
+        emit screenUpdateRequested();
+        emit drawingProgress( featureCount, totalFeatures );
+        qApp->processEvents();
+      }
+      else if ( featureCount % 1000 == 0 )
+      {
+        emit drawingProgress( featureCount, totalFeatures );
+        qApp->processEvents();
+      }
+#endif //Q_WS_MAC
+
       bool sel = mSelectedFeatureIds.contains( fet.id() );
       bool drawMarker = ( mEditable && ( !vertexMarkerOnlyForSelection || sel ) );
 
@@ -749,15 +773,12 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
       msg += cse.what();
       QgsLogger::warning( msg );
     }
+#ifndef Q_WS_MAC
+    ++featureCount;
+#endif //Q_WS_MAC
   }
 
-  mRendererV2->stopRender( rendererContext );
-
-  if ( selRenderer )
-  {
-    selRenderer->stopRender( rendererContext );
-    delete selRenderer;
-  }
+  stopRendererV2( rendererContext, selRenderer );
 }
 
 void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bool labeling )
@@ -781,8 +802,22 @@ void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bo
 
   // 1. fetch features
   QgsFeature fet;
+#ifndef Q_WS_MAC
+  int featureCount = 0;
+#endif //Q_WS_MAC
   while ( nextFeature( fet ) )
   {
+    if ( rendererContext.renderingStopped() )
+    {
+      stopRendererV2( rendererContext, selRenderer );
+      return;
+    }
+#ifndef Q_WS_MAC
+    if ( featureCount % 1000 == 0 )
+    {
+      qApp->processEvents();
+    }
+#endif //Q_WS_MAC
     QgsSymbolV2* sym = mRendererV2->symbolForFeature( fet );
     if ( !features.contains( sym ) )
     {
@@ -798,6 +833,9 @@ void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bo
       // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
       mCachedGeometries[fet.id()] = *fet.geometry();
     }
+#ifndef Q_WS_MAC
+    ++featureCount;
+#endif //Q_WS_MAC
   }
 
   // find out the order
@@ -831,8 +869,22 @@ void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bo
       int layer = item.layer();
       QList<QgsFeature>& lst = features[item.symbol()];
       QList<QgsFeature>::iterator fit;
+#ifndef Q_WS_MAC
+      featureCount = 0;
+#endif //Q_WS_MAC
       for ( fit = lst.begin(); fit != lst.end(); ++fit )
       {
+        if ( rendererContext.renderingStopped() )
+        {
+          stopRendererV2( rendererContext, selRenderer );
+          return;
+        }
+#ifndef Q_WS_MAC
+        if ( featureCount % 1000 == 0 )
+        {
+          qApp->processEvents();
+        }
+#endif //Q_WS_MAC
         bool sel = mSelectedFeatureIds.contains( fit->id() );
         // maybe vertex markers should be drawn only during the last pass...
         bool drawMarker = ( mEditable && ( !vertexMarkerOnlyForSelection || sel ) );
@@ -851,21 +903,22 @@ void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bo
           msg += cse.what();
           QgsLogger::warning( msg );
         }
+#ifndef Q_WS_MAC
+        ++featureCount;
+#endif //Q_WS_MAC
       }
     }
   }
 
-  mRendererV2->stopRender( rendererContext );
-
-  if ( selRenderer )
-  {
-    selRenderer->stopRender( rendererContext );
-    delete selRenderer;
-  }
+  stopRendererV2( rendererContext, selRenderer );
 }
 
 bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
 {
+  //set update threshold before each draw to make sure the current setting is picked up
+  QSettings settings;
+  mUpdateThreshold = settings.value( "Map/updateThreshold", 0 ).toInt();
+
   if ( mUsingRendererV2 )
   {
     if ( mRendererV2 == NULL )
@@ -916,9 +969,6 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     return TRUE;
   }
 
-  //set update threshold before each draw to make sure the current setting is picked up
-  QSettings settings;
-  mUpdateThreshold = settings.value( "Map/updateThreshold", 0 ).toInt();
   //draw ( p, viewExtent, theMapToPixelTransform, ct, drawingToEditingCanvas, 1., 1.);
 
   if ( mRenderer )
@@ -4539,4 +4589,14 @@ int QgsVectorLayer::fieldNameIndex( const QString& fieldName ) const
     }
   }
   return -1;
+}
+
+void QgsVectorLayer::stopRendererV2( QgsRenderContext& rendererContext, QgsSingleSymbolRendererV2* selRenderer )
+{
+  mRendererV2->stopRender( rendererContext );
+  if ( selRenderer )
+  {
+    selRenderer->stopRender( rendererContext );
+    delete selRenderer;
+  }
 }
