@@ -1042,9 +1042,13 @@ int QgsComposerMap::xGridLines( QList< QPair< double, QLineF > >& lines ) const
     return 1;
   }
 
+
   QPolygonF mapPolygon = transformedMapPolygon();
   QRectF mapBoundingRect = mapPolygon.boundingRect();
-  double currentLevel = ( int )(( mapBoundingRect.top() - mGridOffsetY ) / mGridIntervalY + 1.0 ) * mGridIntervalY + mGridOffsetY;
+
+  //consider to round up to the next step in case the left boundary is > 0
+  double roundCorrection = mapBoundingRect.top() > 0 ? 1.0 : 0.0;
+  double currentLevel = ( int )(( mapBoundingRect.top() - mGridOffsetY ) / mGridIntervalY + roundCorrection ) * mGridIntervalY + mGridOffsetY;
 
   if ( mRotation <= 0.0 )
   {
@@ -1109,7 +1113,10 @@ int QgsComposerMap::yGridLines( QList< QPair< double, QLineF > >& lines ) const
 
   QPolygonF mapPolygon = transformedMapPolygon();
   QRectF mapBoundingRect = mapPolygon.boundingRect();
-  double currentLevel = ( int )(( mapBoundingRect.left() - mGridOffsetX ) / mGridIntervalX + 1.0 ) * mGridIntervalX + mGridOffsetX;
+
+  //consider to round up to the next step in case the left boundary is > 0
+  double roundCorrection = mapBoundingRect.left() > 0 ? 1.0 : 0.0;
+  double currentLevel = ( int )(( mapBoundingRect.left() - mGridOffsetX ) / mGridIntervalX + roundCorrection ) * mGridIntervalX + mGridOffsetX;
 
   if ( mRotation <= 0.0 )
   {
