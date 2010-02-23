@@ -157,7 +157,17 @@ void QgsTransformSettingsDialog::on_tbnTargetSRS_clicked()
 
   if (srsSelector.exec())
   {
-    QString srs = QString("EPSG: %1").arg(projSelector->selectedEpsg());
+    QString srs;
+    // If the selected target SRS has an EPSG ID, use this as identification
+    if (projSelector->selectedEpsg()) 
+    {
+      srs = QString("EPSG: %1").arg(projSelector->selectedEpsg());
+    }
+    else
+    {
+      // Describe target SRS by its proj4 string
+      srs = projSelector->selectedProj4String();
+    }
     leTargetSRS->setText(srs);
   }
 }
