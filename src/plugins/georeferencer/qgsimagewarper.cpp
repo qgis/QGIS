@@ -17,6 +17,7 @@
 #include <cmath>
 #include <iostream>
 #include <cstdio>
+#include <assert.h>
 
 #include <cpl_conv.h>
 #include <cpl_string.h>
@@ -149,7 +150,8 @@ int QgsImageWarper::warpFile( const QString& input,
                               ResamplingMethod resampling,
                               bool useZeroAsTrans,
                               const QString& compression,
-                              const QString &projection)
+                              const QString &projection,
+                              double destResX, double destResY)
 {
   if (!georefTransform.parametersInitialized())
     return false;
@@ -173,6 +175,35 @@ int QgsImageWarper::warpFile( const QString& input,
     GDALClose( hSrcDS );
     GDALDestroyWarpOptions( psWarpOptions );
     return false;
+  }
+  
+  // If specified, override the suggested resolution with user values
+  if (destResX != 0.0 || destResY != 0.0)
+  {
+    // If only one scale has been specified, fill in the other from the GDAL suggestion
+    if (destResX == 0.0) destResX = adfGeoTransform[1];
+    if (destResY == 0.0) destResY = adfGeoTransform[5];
+
+    // Make sure user-specified coordinate system has canonical orientation
+    if (destResX < 0.0) destResX = -destResX;
+    if (destResY > 0.0) destResY = -destResY;
+
+    // Assert that the north-up convention is fullfiled by GDALSuggestedWarpOutput (should always be the case)
+    assert(adfGeoTransform[0] > 0.0);
+    assert(adfGeoTransform[5] < 0.0);
+    // Find suggested output image extent (in georeferenced units)
+    double minX = adfGeoTransform[0];
+    double maxX = adfGeoTransform[0] + adfGeoTransform[1]*destPixels;
+    double maxY = adfGeoTransform[3];
+    double minY = adfGeoTransform[3] + adfGeoTransform[5]*destLines;
+
+    // Update line and pixel count to match extent at user-specified resolution
+    destPixels = (int)(((maxX - minX) / destResX) + 0.5);
+    destLines  = (int)(((minY - maxY) / destResY) + 0.5);
+    adfGeoTransform[0] = minX;
+    adfGeoTransform[3] = maxY;
+    adfGeoTransform[1] = destResX;
+    adfGeoTransform[5] = destResY;
   }
 
   if (!createDestinationDataset(output, hSrcDS, hDstDS, destPixels, destLines,

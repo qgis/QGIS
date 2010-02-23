@@ -32,7 +32,8 @@ public:
                              int countGCPpoints, QWidget *parent = 0);
   void getTransformSettings(QgsGeorefTransform::TransformParametrisation &tp,
                             QgsImageWarper::ResamplingMethod &rm, QString &comprMethod,
-                            QString &raster, QString &proj, bool &zt, bool &loadInQgis);
+                            QString &raster, QString &proj, bool &zt, bool &loadInQgis,
+                            double& resX, double& resY);
   static void resetSettings();
 
 protected:
