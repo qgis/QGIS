@@ -297,17 +297,24 @@ void QgsGeorefPluginGui::generateGDALScript()
   if (QgsGeorefTransform::Linear != mTransformParam
       && QgsGeorefTransform::Helmert != mTransformParam)
   {
+    // CAVEAT: gdalwarpCommand*() rely on some member variables being set
+    // by gdal_translateCommand(), so this method must be called before
+    // gdalwarpCommand*()!
+    QString translateCommand = gdal_translateCommand();
     QString gdalwarpCommand;
     QString resamplingStr = convertResamplingEnumToString(mResamplingMethod);
     if (QgsGeorefTransform::ThinPlateSpline == mTransformParam)
+    {
       gdalwarpCommand = gdalwarpCommandTPS(resamplingStr, mCompressionMethod, mUseZeroForTrans, 
                                            mUserResX, mUserResY);
+    }
     else
+    {
       gdalwarpCommand = gdalwarpCommandGCP(resamplingStr, mCompressionMethod, mUseZeroForTrans,
                                            polynomeOrder(mTransformParam),
                                            mUserResX, mUserResY);
-
-    showGDALScript(2, gdal_translateCommand().toAscii().data(), gdalwarpCommand.toAscii().data());
+    }
+    showGDALScript(2, translateCommand.toAscii().data(), gdalwarpCommand.toAscii().data());
   }
   else
   {
