@@ -136,9 +136,10 @@ private:
   // gdal script
   void showGDALScript(int argNum...);
   QString gdal_translateCommand(bool generateTFW = true);
-  QString gdalwarpCommandGCP(QString resampling, QString compress, bool useZeroForTrans,
-                             int order);
-  QString gdalwarpCommandTPS(QString resampling, QString compress, bool useZeroForTrans);
+  QString gdalwarpCommandGCP(QString resampling, QString compress, bool useZeroForTrans, int order,
+                             double targetResX, double targetResY);
+  QString gdalwarpCommandTPS(QString resampling, QString compress, bool useZeroForTrans,
+                             double targetResX, double targetResY);
 
   // log
   void showMessageInLog(const QString &description, const QString &msg);
@@ -180,6 +181,7 @@ private:
   QString mTranslatedRasterFileName;
   QString mGCPpointsFileName;
   QString mProjection;
+  double  mUserResX, mUserResY;  // User specified target scale
 
   QgsGeorefTransform::TransformParametrisation mTransformParam;
   QgsImageWarper::ResamplingMethod mResamplingMethod;

@@ -43,13 +43,22 @@ class QgsImageWarper
       Lanczos          = GRA_Lanczos
     };
 
+    /**
+     * Warp the file specified by "input" and write the resulting raster to the file "output".
+     * \param georefTransform Specified the warp transformation which should be applied to "input".
+     * \param resampling Specifies image resampling algorithm to use.
+     * \param useZeroAsTrans Specifies whether to mark transparent areas with a value of "zero".
+     * \param destResX The desired horizontal resolution of the output file, in target georeferenced units. A value of zero means automatic selection.
+     * \param destResY The desired vertical resolution of the output file, in target georeferenced units. A value of zero means automatic selection.
+     */
     int warpFile( const QString& input,
                   const QString& output,
                   const QgsGeorefTransform &georefTransform,
                   ResamplingMethod resampling,
                   bool useZeroAsTrans,
                   const QString& compression,
-                  const QString &projection);
+                  const QString& projection,
+                  double destResX = 0.0, double destResY = 0.0);
   private:
     struct TransformChain {
       GDALTransformerFunc GDALTransformer;

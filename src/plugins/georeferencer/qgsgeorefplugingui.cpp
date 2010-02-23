@@ -264,7 +264,7 @@ bool QgsGeorefPluginGui::getTransformSettings()
   }
 
   d.getTransformSettings(mTransformParam, mResamplingMethod, mCompressionMethod,
-                         mModifiedRasterFileName, mProjection, mUseZeroForTrans, mLoadInQgis);
+                         mModifiedRasterFileName, mProjection, mUseZeroForTrans, mLoadInQgis, mUserResX, mUserResY);
   mTransformParamLabel->setText(tr("Transform: ") + convertTransformEnumToString(mTransformParam));
   mGeorefTransform.selectTransformParametrisation(mTransformParam);
   mGCPListWidget->setGeorefTransform(&mGeorefTransform);
@@ -300,9 +300,12 @@ void QgsGeorefPluginGui::generateGDALScript()
     QString gdalwarpCommand;
     QString resamplingStr = convertResamplingEnumToString(mResamplingMethod);
     if (QgsGeorefTransform::ThinPlateSpline == mTransformParam)
-      gdalwarpCommand = gdalwarpCommandTPS(resamplingStr, mCompressionMethod, mUseZeroForTrans);
+      gdalwarpCommand = gdalwarpCommandTPS(resamplingStr, mCompressionMethod, mUseZeroForTrans, 
+                                           mUserResX, mUserResY);
     else
-      gdalwarpCommand = gdalwarpCommandGCP(resamplingStr, mCompressionMethod, mUseZeroForTrans, polynomeOrder(mTransformParam));
+      gdalwarpCommand = gdalwarpCommandGCP(resamplingStr, mCompressionMethod, mUseZeroForTrans,
+                                           polynomeOrder(mTransformParam),
+                                           mUserResX, mUserResY);
 
     showGDALScript(2, gdal_translateCommand().toAscii().data(), gdalwarpCommand.toAscii().data());
   }
@@ -1072,7 +1075,7 @@ bool QgsGeorefPluginGui::georeference()
   {
     QgsImageWarper warper(this);
     int res = warper.warpFile( mRasterFileName, mModifiedRasterFileName, mGeorefTransform,
-                               mResamplingMethod, mUseZeroForTrans, mCompressionMethod, mProjection);
+                               mResamplingMethod, mUseZeroForTrans, mCompressionMethod, mProjection, mUserResX, mUserResY);
     if (res == 0) // fault to compute GCP transform
     {
       //TODO: be more specific in the error message
@@ -1177,22 +1180,36 @@ QString QgsGeorefPluginGui::gdal_translateCommand(bool generateTFW)
 }
 
 QString QgsGeorefPluginGui::gdalwarpCommandGCP(QString resampling, QString compress,
-                                               bool useZeroForTrans, int order)
+                                               bool useZeroForTrans, int order,
+                                               double targetResX, double targetResY)
 {
   QStringList gdalCommand;
   gdalCommand << "gdalwarp" << "-r" << resampling << "-order" << QString::number(order)
-      << "-co COMPRESS" << compress << (useZeroForTrans ? "-dstalpha" : "")
-      << mTranslatedRasterFileName << mModifiedRasterFileName;
+      << "-co COMPRESS="+compress << (useZeroForTrans ? "-dstalpha" : "");
+
+  if (targetResX != 0.0 && targetResY != 0.0)
+  {
+    gdalCommand << "-tr" << QString::number(targetResX, 'f') << QString::number(targetResY, 'f');
+  }
+
+  gdalCommand << mTranslatedRasterFileName << mModifiedRasterFileName;
 
   return gdalCommand.join(" ");
 }
 
-QString QgsGeorefPluginGui::gdalwarpCommandTPS(QString resampling, QString compress, bool useZeroForTrans)
+QString QgsGeorefPluginGui::gdalwarpCommandTPS(QString resampling, QString compress, bool useZeroForTrans,
+                                               double targetResX, double targetResY)
 {
   QStringList gdalCommand;
   gdalCommand << "gdalwarp" << "-r" << resampling << "-tps"
-      << "-co COMPRESS" << compress << (useZeroForTrans ? "-dstalpha" : "")
-      << mTranslatedRasterFileName << mModifiedRasterFileName;
+      << "-co COMPRESS="+compress << (useZeroForTrans ? "-dstalpha" : "");
+
+  if (targetResX != 0.0 && targetResY != 0.0)
+  {
+    gdalCommand << "-tr" << QString::number(targetResX, 'f') << QString::number(targetResY, 'f');
+  }
+
+  gdalCommand << mTranslatedRasterFileName << mModifiedRasterFileName;
 
   return gdalCommand.join(" ");
 }

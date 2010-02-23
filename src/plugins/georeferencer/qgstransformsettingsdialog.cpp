@@ -50,8 +50,22 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog(const QString &raster, co
   cmbResampling->setCurrentIndex(s.value("/Plugin-GeoReferencer/lastresampling", 0).toInt());
   cmbCompressionComboBox->setCurrentIndex(s.value("/Plugin-GeoReferencer/lastcompression", 0).toInt());
   leTargetSRS->setText(s.value("/Plugin-GeoReferencer/targetsrs").toString());
+
+  cbxUserResolution->setChecked(s.value("/Plugin-Georeferencer/user_specified_resolution", false).toBool());
+  bool ok;
+  dsbHorizRes->setValue(s.value("/Plugin-GeoReferencer/user_specified_resx",     1.0).toDouble(&ok));
+  if (!ok) dsbHorizRes->setValue( 1.0);
+  dsbVerticalRes->setValue(s.value("/Plugin-GeoReferencer/user_specified_resy", -1.0).toDouble(&ok));
+  if (!ok) dsbHorizRes->setValue(-1.0);
+  // Activate spin boxes for vertical/horizontal resolution, if the option is checked
+  dsbHorizRes->setEnabled(cbxUserResolution->isChecked());
+  dsbVerticalRes->setEnabled(cbxUserResolution->isChecked());
+  // Update activation of spinboxes, if the user specified resolution is checked/unchecked
+  connect( cbxUserResolution, SIGNAL( toggled( bool ) ), dsbHorizRes, SLOT( setEnabled( bool ) ) );
+  connect( cbxUserResolution, SIGNAL( toggled( bool ) ), dsbVerticalRes, SLOT( setEnabled( bool ) ) );
+
   cbxZeroAsTrans->setChecked(s.value("/Plugin-GeoReferencer/zeroastrans", false).toBool());
-  cbxLoadInQgisWhenDone->setChecked(s.value("/Plugin-GeoReferencer/loadinqgis", false).toBool());;;
+  cbxLoadInQgisWhenDone->setChecked(s.value("/Plugin-GeoReferencer/loadinqgis", false).toBool());
 
   tbnOutputRaster->setIcon(getThemeIcon("/mPushButtonFileOpen.png"));
   tbnTargetSRS->setIcon(getThemeIcon("/mPushButtonTargetSRSDisabled.png"));
@@ -60,7 +74,8 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog(const QString &raster, co
 void QgsTransformSettingsDialog::getTransformSettings(QgsGeorefTransform::TransformParametrisation &tp,
                                                       QgsImageWarper::ResamplingMethod &rm,
                                                       QString &comprMethod, QString &raster,
-                                                      QString &proj, bool &zt, bool &loadInQgis)
+                                                      QString &proj, bool &zt, bool &loadInQgis,
+                                                      double& resX, double& resY)
 {
   if (cmbTransformType->currentIndex() == -1)
     tp = QgsGeorefTransform::InvalidTransform;
@@ -73,6 +88,13 @@ void QgsTransformSettingsDialog::getTransformSettings(QgsGeorefTransform::Transf
   proj = leTargetSRS->text();
   zt = cbxZeroAsTrans->isChecked();
   loadInQgis = cbxLoadInQgisWhenDone->isChecked();
+  resX = 0.0;
+  resY = 0.0;
+  if (cbxUserResolution->isChecked())
+  {
+    resX = dsbHorizRes->value();
+    resY = dsbVerticalRes->value();
+  }
 }
 
 void QgsTransformSettingsDialog::resetSettings()
@@ -84,6 +106,9 @@ void QgsTransformSettingsDialog::resetSettings()
   s.setValue("/Plugin-GeoReferencer/targetsrs", QString());
   s.setValue("/Plugin-GeoReferencer/zeroastrans", false);
   s.setValue("/Plugin-GeoReferencer/loadinqgis", false);
+  s.setValue("/Plugin-GeoReferencer/user_specified_resolution", false);
+  s.setValue("/Plugin-GeoReferencer/user_specified_resx",  1.0);
+  s.setValue("/Plugin-GeoReferencer/user_specified_resy", -1.0);
 }
 
 void QgsTransformSettingsDialog::changeEvent(QEvent *e)
@@ -126,6 +151,9 @@ void QgsTransformSettingsDialog::accept()
   s.setValue("/Plugin-GeoReferencer/targetsrs", leTargetSRS->text());
   s.setValue("/Plugin-GeoReferencer/zeroastrans", cbxZeroAsTrans->isChecked());
   s.setValue("/Plugin-GeoReferencer/loadinqgis", cbxLoadInQgisWhenDone->isChecked());
+  s.setValue("/Plugin-GeoReferencer/user_specified_resolution", cbxUserResolution->isChecked());
+  s.setValue("/Plugin-GeoReferencer/user_specified_resx", dsbHorizRes->value());
+  s.setValue("/Plugin-GeoReferencer/user_specified_resy", dsbVerticalRes->value());
 }
 
 void QgsTransformSettingsDialog::on_tbnOutputRaster_clicked()
