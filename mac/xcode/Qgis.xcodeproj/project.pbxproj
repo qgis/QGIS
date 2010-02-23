@@ -5510,6 +5510,7 @@
 		72442AEA1095DCFC00B54796 /* qgsavoidintersectionsdialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsavoidintersectionsdialog.h; path = ../../src/app/qgsavoidintersectionsdialog.h; sourceTree = SOURCE_ROOT; };
 		72463E3C1122FEC500BE5F17 /* qgis.g.browser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgis.g.browser.cpp; path = ../../src/plugins/grass/qgis.g.browser.cpp; sourceTree = SOURCE_ROOT; };
 		72463E451122FEF200BE5F17 /* qgis.g.browser */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = qgis.g.browser; sourceTree = BUILT_PRODUCTS_DIR; };
+		724723DA11342BB3004B93DA /* qgsvalidateddoublespinbox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsvalidateddoublespinbox.h; path = ../../src/plugins/georeferencer/qgsvalidateddoublespinbox.h; sourceTree = SOURCE_ROOT; };
 		7247F738112628A400533A28 /* qgis.v.kernel.rast.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = qgis.v.kernel.rast.py; path = ../../src/plugins/grass/scripts/qgis.v.kernel.rast.py; sourceTree = SOURCE_ROOT; };
 		72491FB511074E700035D7E5 /* characterwidget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = characterwidget.cpp; path = "../../src/gui/symbology-ng/characterwidget.cpp"; sourceTree = SOURCE_ROOT; };
 		72491FB611074E700035D7E5 /* characterwidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = characterwidget.h; path = "../../src/gui/symbology-ng/characterwidget.h"; sourceTree = SOURCE_ROOT; };
@@ -6980,9 +6981,6 @@
 		72DCB86A112ADEE4000F1C25 /* qgsgeoreftransform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsgeoreftransform.h; path = ../../src/plugins/georeferencer/qgsgeoreftransform.h; sourceTree = SOURCE_ROOT; };
 		72DCB86B112ADEE4000F1C25 /* qgsgeorefvalidators.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsgeorefvalidators.cpp; path = ../../src/plugins/georeferencer/qgsgeorefvalidators.cpp; sourceTree = SOURCE_ROOT; };
 		72DCB86C112ADEE4000F1C25 /* qgsgeorefvalidators.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsgeorefvalidators.h; path = ../../src/plugins/georeferencer/qgsgeorefvalidators.h; sourceTree = SOURCE_ROOT; };
-		72DCB86D112ADEE4000F1C25 /* qgsgeorefwarpoptionsdialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsgeorefwarpoptionsdialog.cpp; path = ../../src/plugins/georeferencer/qgsgeorefwarpoptionsdialog.cpp; sourceTree = SOURCE_ROOT; };
-		72DCB86E112ADEE4000F1C25 /* qgsgeorefwarpoptionsdialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsgeorefwarpoptionsdialog.h; path = ../../src/plugins/georeferencer/qgsgeorefwarpoptionsdialog.h; sourceTree = SOURCE_ROOT; };
-		72DCB86F112ADEE4000F1C25 /* qgsgeorefwarpoptionsdialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgsgeorefwarpoptionsdialogbase.ui; path = ../../src/plugins/georeferencer/qgsgeorefwarpoptionsdialogbase.ui; sourceTree = SOURCE_ROOT; };
 		72DCB870112ADEE4000F1C25 /* qgsimagewarper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsimagewarper.cpp; path = ../../src/plugins/georeferencer/qgsimagewarper.cpp; sourceTree = SOURCE_ROOT; };
 		72DCB871112ADEE4000F1C25 /* qgsimagewarper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsimagewarper.h; path = ../../src/plugins/georeferencer/qgsimagewarper.h; sourceTree = SOURCE_ROOT; };
 		72DCB872112ADEE4000F1C25 /* qgsleastsquares.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsleastsquares.cpp; path = ../../src/plugins/georeferencer/qgsleastsquares.cpp; sourceTree = SOURCE_ROOT; };
@@ -8846,9 +8844,6 @@
 				72DCB86A112ADEE4000F1C25 /* qgsgeoreftransform.h */,
 				72DCB86B112ADEE4000F1C25 /* qgsgeorefvalidators.cpp */,
 				72DCB86C112ADEE4000F1C25 /* qgsgeorefvalidators.h */,
-				72DCB86D112ADEE4000F1C25 /* qgsgeorefwarpoptionsdialog.cpp */,
-				72DCB86E112ADEE4000F1C25 /* qgsgeorefwarpoptionsdialog.h */,
-				72DCB86F112ADEE4000F1C25 /* qgsgeorefwarpoptionsdialogbase.ui */,
 				72DCB870112ADEE4000F1C25 /* qgsimagewarper.cpp */,
 				72DCB871112ADEE4000F1C25 /* qgsimagewarper.h */,
 				72DCB872112ADEE4000F1C25 /* qgsleastsquares.cpp */,
@@ -8863,6 +8858,7 @@
 				72DCB87B112ADEE4000F1C25 /* qgstransformsettingsdialog.h */,
 				72DCB87C112ADEE4000F1C25 /* qgstransformsettingsdialogbase.ui */,
 				72DCB87D112ADEE4000F1C25 /* qgstransformtypedialogbase.ui */,
+				724723DA11342BB3004B93DA /* qgsvalidateddoublespinbox.h */,
 			);
 			name = georeferencer;
 			path = ../../src/plugins/georeferencer;
@@ -19363,7 +19359,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 12950;
+				QGIS_VERSION_BUILD = 12965;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -19374,7 +19370,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 12950;
+				QGIS_VERSION_BUILD = 12965;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
