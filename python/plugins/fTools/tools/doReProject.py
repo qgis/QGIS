@@ -149,6 +149,9 @@ class Dialog(QDialog, Ui_Dialog):
 #Output: Reprojected shapefile with attributes...
 	def pointReproject(self, vlayer, xform, writer, progressBar):
 		provider = vlayer.dataProvider()
+		if provider.featureCount() == 0:
+		  return
+
 		allAttrs = provider.attributeIndexes()
 		provider.select(allAttrs)
 		feat = QgsFeature()
