@@ -1548,7 +1548,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Please specify intersect unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>Veuillez spécifier le champ d&apos;identifant unique pour l&apos;intersections</translation>
     </message>
     <message>
         <source>Created output point shapefile:
@@ -1584,115 +1584,119 @@ Voulez-vous ajouter cette nouvelle couche à la carte ?</translation>
     </message>
     <message>
         <source>Please select the projection system to be used by the output layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Veulliez spécifier le système de projection à utiliser pour la couche produite.</translation>
     </message>
     <message>
         <source>Output layer will be projected from it&apos;s current CRS to the output CRS.</source>
-        <translation type="unfinished"></translation>
+        <translation>La couche produite sera projetée depuis son SCR actuel vers le SCR de destination.</translation>
     </message>
     <message>
         <source>No Valid CRS selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Aucune SCR valide sélectionné</translation>
     </message>
     <message>
         <source>Output spatial reference system is not valid</source>
-        <translation type="unfinished"></translation>
+        <translation>Le Système de Référence Spatial n&apos;est pas valide</translation>
     </message>
     <message>
         <source>Identical output spatial reference system chosen</source>
-        <translation type="unfinished"></translation>
+        <translation>Le SCR choisi est identique à la destination.</translation>
     </message>
     <message>
         <source>Please specify target vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Veuillez spécifier la couche vectorielle cible</translation>
     </message>
     <message>
         <source>Please specify join vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Veuillez spécifier la couche vectorielle de jointure</translation>
     </message>
     <message>
         <source>Please specify target join field</source>
-        <translation type="unfinished"></translation>
+        <translation>Veuillez spécifier le champ de destination pour la jointure </translation>
     </message>
     <message>
         <source>Please specify join field</source>
-        <translation type="unfinished"></translation>
+        <translation>Veuillez spécifier le champ de jointure</translation>
     </message>
     <message>
         <source>Please specify input table</source>
-        <translation type="unfinished"></translation>
+        <translation>Veuillez spécifier une table en entrée</translation>
     </message>
     <message>
         <source>Created output shapefile:
 %1
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation>Shapefile créé:
+%1
+
+Voulez-vous ajouter la nouvelle couche à la liste actuelle ?</translation>
     </message>
     <message>
         <source>Join Table</source>
-        <translation type="unfinished"></translation>
+        <translation>Jointure de table</translation>
     </message>
     <message>
         <source>Input table does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>La table en entrée n&apos;existe pas</translation>
     </message>
     <message>
         <source>joined fields</source>
-        <translation type="unfinished"></translation>
+        <translation>champs joints</translation>
     </message>
     <message>
         <source>Mean coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>Coordonnées moyennes</translation>
     </message>
     <message>
         <source>Standard distance</source>
-        <translation type="unfinished"></translation>
+        <translation>Distance standard</translation>
     </message>
     <message>
         <source>(Optional) Weight field</source>
-        <translation type="unfinished"></translation>
+        <translation>Champ de pondération [Optionnel]</translation>
     </message>
     <message>
         <source>(Optional) Unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>Identifiant unique [Optionnel]</translation>
     </message>
     <message>
         <source>Coordinate statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>Statistiques de coordonnées</translation>
     </message>
     <message>
         <source>No input vector layer specified</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas de couche vectorielle spécifiée en entrée</translation>
     </message>
     <message>
         <source>Please specify at least one summary statistic</source>
-        <translation type="unfinished"></translation>
+        <translation>Veuillez spécifier au moins une statistique résumée</translation>
     </message>
     <message>
         <source>CRS warning!</source>
-        <translation type="unfinished"></translation>
+        <translation>avertissement SCR !</translation>
     </message>
     <message>
         <source>Warning: Input layers have non-matching CRS.
 This may cause unexpected results.</source>
-        <translation type="unfinished"></translation>
+        <translation>Avertissement : Les couches en entrée n&apos;ont pas un SCR identique.
+Cela peut causer des résultats inattendus.</translation>
     </message>
     <message>
         <source>Summary field</source>
-        <translation type="unfinished"></translation>
+        <translation>Champ de résumé</translation>
     </message>
     <message>
         <source>Please specify valid extent coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>Veuillez spécifier des coordonnées d&apos;étendues valides</translation>
     </message>
     <message>
         <source>Invalid extent coordinates entered</source>
-        <translation type="unfinished"></translation>
+        <translation>Les coordonnées de l&apos;étendue sont invalides</translation>
     </message>
     <message>
         <source>Generate Vector Grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Générer une grille vectorielle</translation>
     </message>
     <message>
         <source>Created output shapefile:
@@ -7950,7 +7954,7 @@ Erreurs : %2
         <location filename="../src/app/qgisapp.cpp" line="1582"/>
         <location filename="../src/app/qgisapp.cpp" line="5086"/>
         <source>Coordinate:</source>
-        <translation>Coordonnée :</translation>
+        <translation>Coordonnées :</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1583"/>
@@ -11658,7 +11662,7 @@ L&apos;erreur est : %2</translation>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="288"/>
         <source>Set to map canvas extent</source>
-        <translation>Fixer sur l&apos;emprise courante de la carte</translation>
+        <translation>Fixer sur l&apos;emprise courante</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="320"/>
@@ -15160,7 +15164,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="301"/>
         <source>Connect</source>
-        <translation type="unfinished">Connecter</translation>
+        <translation>Connecter</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="322"/>
@@ -15195,7 +15199,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="552"/>
         <source>The current layer is not a vector layer</source>
-        <translation type="unfinished">La couche active n&apos;est pas une couche vectorielle</translation>
+        <translation>La couche active n&apos;est pas une couche vectorielle</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="562"/>
@@ -15220,7 +15224,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="587"/>
         <source>Layer cannot be added to</source>
-        <translation type="unfinished">La couche ne peut être ajoutée à</translation>
+        <translation>La couche ne peut être ajoutée à</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="588"/>
@@ -15230,7 +15234,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="595"/>
         <source>Layer not editable</source>
-        <translation type="unfinished">Couche non éditable</translation>
+        <translation>Couche non éditable</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="596"/>
@@ -15258,24 +15262,24 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="808"/>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="825"/>
         <source>Feature added</source>
-        <translation type="unfinished">Entité ajoutée</translation>
+        <translation>Entité ajoutée</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="777"/>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="784"/>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="791"/>
         <source>Error</source>
-        <translation type="unfinished">Erreur</translation>
+        <translation>Erreur</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="777"/>
         <source>The feature could not be added because removing the polygon intersections would change the geometry type</source>
-        <translation type="unfinished">Cette entité n&apos;a pu être ajouté car la suppression des intersections du polygone aurait changé le type de géométrie</translation>
+        <translation>Cette entité n&apos;a pu être ajouté car la suppression des intersections du polygone aurait changé le type de géométrie</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="784"/>
         <source>An error was reported during intersection removal</source>
-        <translation type="unfinished">Une erreur s&apos;est produite durant la suppression de l&apos;intersection</translation>
+        <translation>Une erreur s&apos;est produite durant la suppression de l&apos;intersection</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="791"/>
@@ -15288,7 +15292,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Formulaire</translation>
+        <translation>Formulaire</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="25"/>
@@ -15299,12 +15303,12 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="248"/>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="330"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="99"/>
         <source>Connect</source>
-        <translation type="unfinished">Connecter</translation>
+        <translation>Connecter</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="131"/>
@@ -15334,7 +15338,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="211"/>
         <source>Add vertex</source>
-        <translation type="unfinished">Ajouter un sommet</translation>
+        <translation>Ajouter un sommet</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="226"/>
@@ -15414,17 +15418,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="459"/>
         <source>Track</source>
-        <translation type="unfinished"></translation>
+        <translation>Voies</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="468"/>
         <source>Color</source>
-        <translation type="unfinished">Couleur</translation>
+        <translation>Couleur</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="475"/>
         <source> width</source>
-        <translation type="unfinished"></translation>
+        <translation> largeur</translation>
     </message>
 </context>
 <context>
@@ -15435,12 +15439,12 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="203"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="204"/>
         <source>&amp;Gps</source>
-        <translation>&amp;Gps</translation>
+        <translation>&amp;GPS</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="90"/>
         <source>&amp;Gps Tools</source>
-        <translation>Outils &amp;Gps</translation>
+        <translation>Outils &amp;GPS</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="91"/>
@@ -15838,7 +15842,7 @@ Veuillez sélectionner un fichier valide.</translation>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="397"/>
         <source>Upload to GPS</source>
-        <translation>Uploader vers le GPS</translation>
+        <translation>Envoyer vers le GPS</translation>
     </message>
     <message>
         <source>Data layer:</source>
@@ -18016,7 +18020,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2940"/>
         <source>Warning</source>
-        <translation type="unfinished">Attention</translation>
+        <translation>Attention</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2940"/>
@@ -24546,7 +24550,7 @@ Par défaut QGIS utilise la valeur 5. Augmentez la valeur si vous avez des erreu
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="702"/>
         <source>Line color</source>
-        <translation type="unfinished">Couleur de ligne</translation>
+        <translation>Couleur de ligne</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1378"/>
@@ -25084,32 +25088,32 @@ Les fonctions de Géotraitement sont seulement disponibles pour des couches de P
     <message>
         <location filename="../src/app/postgres/qgspgnewconnection.cpp" line="38"/>
         <source>disable</source>
-        <translation type="unfinished">désactive</translation>
+        <translation>désactive</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgnewconnection.cpp" line="39"/>
         <source>allow</source>
-        <translation type="unfinished">permet</translation>
+        <translation>permet</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgnewconnection.cpp" line="40"/>
         <source>prefer</source>
-        <translation type="unfinished">préfère</translation>
+        <translation>préfère</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgnewconnection.cpp" line="41"/>
         <source>require</source>
-        <translation type="unfinished">requiert</translation>
+        <translation>requiert</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgnewconnection.cpp" line="91"/>
         <source>Save connection</source>
-        <translation type="unfinished">Sauvegarder la connexion</translation>
+        <translation>Sauvegarder la connexion</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgnewconnection.cpp" line="92"/>
         <source>Should the existing connection %1 be overwritten?</source>
-        <translation type="unfinished">La connexion existante %1 doit-elle être écrasée ?</translation>
+        <translation>La connexion existante %1 doit-elle être écrasée ?</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgnewconnection.cpp" line="155"/>
@@ -25125,12 +25129,12 @@ Les fonctions de Géotraitement sont seulement disponibles pour des couches de P
         <location filename="../src/app/postgres/qgspgnewconnection.cpp" line="175"/>
         <location filename="../src/app/postgres/qgspgnewconnection.cpp" line="179"/>
         <source>Test connection</source>
-        <translation type="unfinished">Test de connexion</translation>
+        <translation>Test de connexion</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgnewconnection.cpp" line="175"/>
         <source>Connection to %1 was successful</source>
-        <translation type="unfinished">Connection à %1 réussie</translation>
+        <translation>Connection à %1 réussie</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgnewconnection.cpp" line="179"/>
@@ -25146,97 +25150,97 @@ Extended error information:
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="20"/>
         <source>Create a New PostGIS connection</source>
-        <translation type="unfinished">Créer une nouvelle connexion PostGIS</translation>
+        <translation>Créer une nouvelle connexion PostGIS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="38"/>
         <source>Connection Information</source>
-        <translation type="unfinished">Information de connexion</translation>
+        <translation>Information de connexion</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="66"/>
         <source>Name</source>
-        <translation type="unfinished">Nom</translation>
+        <translation>Nom</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="76"/>
         <source>Host</source>
-        <translation type="unfinished">Hôte</translation>
+        <translation>Hôte</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="86"/>
         <source>Database</source>
-        <translation type="unfinished"></translation>
+        <translation>Base de données</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="96"/>
         <source>Port</source>
-        <translation type="unfinished">Port</translation>
+        <translation>Port</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="106"/>
         <source>Username</source>
-        <translation type="unfinished">Nom d&apos;utilisateur</translation>
+        <translation>Nom d&apos;utilisateur</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="116"/>
         <source>Password</source>
-        <translation type="unfinished">Mot de Passe</translation>
+        <translation>Mot de Passe</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="126"/>
         <source>SSL mode</source>
-        <translation type="unfinished">mode SSL</translation>
+        <translation>mode SSL</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="143"/>
         <source>Name of the new connection</source>
-        <translation type="unfinished">Nom de la nouvelle connexion</translation>
+        <translation>Nom de la nouvelle connexion</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="156"/>
         <source>5432</source>
-        <translation type="unfinished">5432</translation>
+        <translation>5432</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="188"/>
         <source>Save Password</source>
-        <translation type="unfinished">Sauvegarder le mot de passe</translation>
+        <translation>Sauvegarder le mot de passe</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="195"/>
         <source>&amp;Test Connect</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tester la connexion</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="204"/>
         <source>Restrict the displayed tables to those that are in the geometry_columns table</source>
-        <translation type="unfinished">Restreindre l&apos;affichage des tables géométriques à celles présentes dans la table &apos;geometry_columns&apos;</translation>
+        <translation>Restreindre l&apos;affichage des tables géométriques à celles présentes dans la table &apos;geometry_columns&apos;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="207"/>
         <source>Restricts the displayed tables to those that are in the geometry_columns table. This can speed up the initial display of spatial tables.</source>
-        <translation type="unfinished">Restreindre l&apos;affichage des tables géométriques à celles présente dans la table &apos;geometry_columns&apos;. Ceci peut améliorer la vitesse d&apos;affichage des tables spatiales.</translation>
+        <translation>Restreindre l&apos;affichage des tables géométriques à celles présente dans la table &apos;geometry_columns&apos;. Ceci peut améliorer la vitesse d&apos;affichage des tables spatiales.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="210"/>
         <source>Only look in the geometry_columns table</source>
-        <translation type="unfinished">Uniquement regarder la table &apos;geometry_columns&apos;</translation>
+        <translation>Uniquement regarder la table &apos;geometry_columns&apos;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="217"/>
         <source>Restrict the search to the public schema for spatial tables not in the geometry_columns table</source>
-        <translation type="unfinished">Restreindre la recherche des tables spatiales ne se trouvant pas dans la table &apos;geometry_columns&apos; au schéma &apos;public&apos;</translation>
+        <translation>Restreindre la recherche des tables spatiales ne se trouvant pas dans la table &apos;geometry_columns&apos; au schéma &apos;public&apos;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="220"/>
         <source>When searching for spatial tables that are not in the geometry_columns tables, restrict the search to tables that are in the public schema (for some databases this can save lots of time)</source>
-        <translation type="unfinished">Lors de la recherche de tables spatiales qui ne sont pas listées dans la table &apos;geometry_columns&apos;, restreindre la recherche au schéma &apos;public&apos; (pour certaine base de donnée cette option peut épargner beacoup de temps)</translation>
+        <translation>Lors de la recherche de tables spatiales qui ne sont pas listées dans la table &apos;geometry_columns&apos;, restreindre la recherche au schéma &apos;public&apos; (pour certaine base de donnée cette option peut épargner beacoup de temps)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="223"/>
         <source>Only look in the &apos;public&apos; schema</source>
-        <translation type="unfinished">Uniquement regarder dans le schéma &apos;public&apos;</translation>
+        <translation>Uniquement regarder dans le schéma &apos;public&apos;</translation>
     </message>
 </context>
 <context>
@@ -25553,12 +25557,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="419"/>
         <source>Enter password</source>
-        <translation type="unfinished"></translation>
+        <translation>Saisir un mot de passe</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="420"/>
         <source>Error: %1Enter password for %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur : %1Saisir un mot de passe pour %2</translation>
     </message>
     <message>
         <source>Password for </source>
@@ -25702,7 +25706,7 @@ Veuillez vérifier si vous avez le droit d&apos;effectuer une commande SELECT su
     <name>QgsPluginInstaller</name>
     <message>
         <source>Couldn&apos;t parse output from the repository</source>
-        <translation type="unfinished">Échec de l&apos;analyse de la sortie depuis le répertoire</translation>
+        <translation>Échec de l&apos;analyse de la sortie depuis le répertoire</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the system plugin directory</source>
@@ -25710,51 +25714,51 @@ Veuillez vérifier si vous avez le droit d&apos;effectuer une commande SELECT su
     </message>
     <message>
         <source>Couldn&apos;t open the local plugin directory</source>
-        <translation type="unfinished">Échec de l&apos;ouverture du répertoire local d&apos;extension</translation>
+        <translation>Échec de l&apos;ouverture du répertoire local d&apos;extension</translation>
     </message>
     <message>
         <source>Fetch Python Plugins...</source>
-        <translation type="unfinished">Récupération des extensions python...</translation>
+        <translation>Récupération des extensions python...</translation>
     </message>
     <message>
         <source>Install more plugins from remote repositories</source>
-        <translation type="unfinished">Installer plus d&apos;extensions depuis un répertoire distant</translation>
+        <translation>Installer plus d&apos;extensions depuis un répertoire distant</translation>
     </message>
     <message>
         <source>Looking for new plugins...</source>
-        <translation type="unfinished">Recherche de nouvelles extensions...</translation>
+        <translation>Recherche de nouvelles extensions...</translation>
     </message>
     <message>
         <source>There is a new plugin available</source>
-        <translation type="unfinished">Il y a une nouvelle extension disponible</translation>
+        <translation>Il y a une nouvelle extension disponible</translation>
     </message>
     <message>
         <source>There is a plugin update available</source>
-        <translation type="unfinished">Il y a une mise à jour d&apos;extension disponible</translation>
+        <translation>Il y a une mise à jour d&apos;extension disponible</translation>
     </message>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="unfinished">Installateur d&apos;extensions python pour QGIS</translation>
+        <translation>Installateur d&apos;extensions python pour QGIS</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
-        <translation type="unfinished">Erreur de lecture du répertoire :</translation>
+        <translation>Erreur de lecture du répertoire :</translation>
     </message>
     <message>
         <source>Nothing to remove! Plugin directory doesn&apos;t exist:</source>
-        <translation type="unfinished">Rien à supprimer ! Le répertoire d&apos;extension n&apos;existe pas :</translation>
+        <translation>Rien à supprimer ! Le répertoire d&apos;extension n&apos;existe pas :</translation>
     </message>
     <message>
         <source>Failed to remove the directory:</source>
-        <translation type="unfinished">Échec de la suppression du répertoire :</translation>
+        <translation>Échec de la suppression du répertoire :</translation>
     </message>
     <message>
         <source>Check permissions or remove it manually</source>
-        <translation type="unfinished">Vérifiez les permissions ou effacez les manuellement</translation>
+        <translation>Vérifiez les permissions ou effacez les manuellement</translation>
     </message>
     <message>
         <source>QGIS Plugin Conflict:</source>
-        <translation type="unfinished">Conflit d&apos;extension QGIS :</translation>
+        <translation>Conflit d&apos;extension QGIS :</translation>
     </message>
     <message>
         <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. Probably it is a remainder of an older QGIS installation. Please use the Plugin Installer to remove it in order to unmask the instance shipped with this version of QGIS.</source>
@@ -25762,58 +25766,58 @@ Veuillez vérifier si vous avez le droit d&apos;effectuer une commande SELECT su
     </message>
     <message>
         <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. This is likely due to files associated with a previous installation of QGIS. Please use the Plugin Installer to remove that older plugin in order to unmask the newer version shipped with this copy of QGIS.</source>
-        <translation type="unfinished">L&apos;installateur d&apos;extension a détecté une extension obsolète qui cache la version plus récente embarquée par QGIS. Il s&apos;agit probablement du reste d&apos;une installation antérieure de QGIS. Veuillez utiliser l&apos;installateur d&apos;extensions pour effacer l&apos;extension la plus ancienne afin de permettre l&apos;affichage de la version plus récente jointe à cette copie de QGIS.</translation>
+        <translation>L&apos;installateur d&apos;extension a détecté une extension obsolète qui cache la version plus récente embarquée par QGIS. Il s&apos;agit probablement du reste d&apos;une installation antérieure de QGIS. Veuillez utiliser l&apos;installateur d&apos;extensions pour effacer l&apos;extension la plus ancienne afin de permettre l&apos;affichage de la version plus récente jointe à cette copie de QGIS.</translation>
     </message>
 </context>
 <context>
     <name>QgsPluginInstallerDialog</name>
     <message>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="unfinished">Installateur d&apos;extension python pour QGIS</translation>
+        <translation>Installateur d&apos;extension python pour QGIS</translation>
     </message>
     <message>
         <source>Error reading repository:</source>
-        <translation type="unfinished">Erreur de lecture du dépôt :</translation>
+        <translation>Erreur de lecture du dépôt :</translation>
     </message>
     <message>
         <source>all repositories</source>
-        <translation type="unfinished">Tout les dépôts</translation>
+        <translation>Tout les dépôts</translation>
     </message>
     <message>
         <source>connected</source>
-        <translation type="unfinished">connecté</translation>
+        <translation>connecté</translation>
     </message>
     <message>
         <source>This repository is connected</source>
-        <translation type="unfinished">Ce dépôt est connecté</translation>
+        <translation>Ce dépôt est connecté</translation>
     </message>
     <message>
         <source>unavailable</source>
-        <translation type="unfinished">Indisponible</translation>
+        <translation>Indisponible</translation>
     </message>
     <message>
         <source>This repository is enabled, but unavailable</source>
-        <translation type="unfinished">Ce dépôt est activé mais n&apos;est pas disponible</translation>
+        <translation>Ce dépôt est activé mais n&apos;est pas disponible</translation>
     </message>
     <message>
         <source>disabled</source>
-        <translation type="unfinished">désactivé</translation>
+        <translation>désactivé</translation>
     </message>
     <message>
         <source>This repository is disabled</source>
-        <translation type="unfinished">Ce dépôt est désactivé</translation>
+        <translation>Ce dépôt est désactivé</translation>
     </message>
     <message>
         <source>This repository is blocked due to incompatibility with your Quantum GIS version</source>
-        <translation type="unfinished">Ce dépôt est bloqué du fait d&apos;une incompatibilité avec votre version de Quantum GIS</translation>
+        <translation>Ce dépôt est bloqué du fait d&apos;une incompatibilité avec votre version de Quantum GIS</translation>
     </message>
     <message>
         <source>orphans</source>
-        <translation type="unfinished">orphelins</translation>
+        <translation>orphelins</translation>
     </message>
     <message>
         <source>any status</source>
-        <translation type="unfinished">tout les statuts</translation>
+        <translation>tout les statuts</translation>
     </message>
     <message>
         <source>not installed</source>
@@ -25827,31 +25831,31 @@ Veuillez vérifier si vous avez le droit d&apos;effectuer une commande SELECT su
     </message>
     <message>
         <source>upgradeable and news</source>
-        <translation type="unfinished">mises à jour et nouvelles</translation>
+        <translation>mises à jour et nouvelles</translation>
     </message>
     <message>
         <source>This plugin is not installed</source>
-        <translation type="unfinished">Cette extension n&apos;est pas installée</translation>
+        <translation>Cette extension n&apos;est pas installée</translation>
     </message>
     <message>
         <source>This plugin is installed</source>
-        <translation type="unfinished">Cette extension est installée</translation>
+        <translation>Cette extension est installée</translation>
     </message>
     <message>
         <source>This plugin is installed, but there is an updated version available</source>
-        <translation type="unfinished">Cette extension est installée, mais une mise à jour est disponible</translation>
+        <translation>Cette extension est installée, mais une mise à jour est disponible</translation>
     </message>
     <message>
         <source>This plugin is installed, but I can&apos;t find it in any enabled repository</source>
-        <translation type="unfinished">Cette extension est installée, mais impossible de le trouver dans les dépôts activés</translation>
+        <translation>Cette extension est installée, mais impossible de le trouver dans les dépôts activés</translation>
     </message>
     <message>
         <source>This plugin is not installed and is seen for the first time</source>
-        <translation type="unfinished">Cette extension n&apos;est pas installée et est vue pour la première fois</translation>
+        <translation>Cette extension n&apos;est pas installée et est vue pour la première fois</translation>
     </message>
     <message>
         <source>This plugin is installed and is newer than its version available in a repository</source>
-        <translation type="unfinished">Cette extension est installée et est plus récente que celle disponible dans le dépôt</translation>
+        <translation>Cette extension est installée et est plus récente que celle disponible dans le dépôt</translation>
     </message>
     <message>
         <source>not installed</source>
@@ -25880,65 +25884,65 @@ Veuillez vérifier si vous avez le droit d&apos;effectuer une commande SELECT su
     </message>
     <message>
         <source>installed version</source>
-        <translation type="unfinished">version installée</translation>
+        <translation>version installée</translation>
     </message>
     <message>
         <source>available version</source>
-        <translation type="unfinished">version disponible</translation>
+        <translation>version disponible</translation>
     </message>
     <message>
         <source>That&apos;s the newest available version</source>
-        <translation type="unfinished">Il s&apos;agit de la version la plus récente</translation>
+        <translation>Il s&apos;agit de la version la plus récente</translation>
     </message>
     <message>
         <source>There is no version available for download</source>
-        <translation type="unfinished">Il n&apos;y a pas de version disponible pour le téléchargement</translation>
+        <translation>Il n&apos;y a pas de version disponible pour le téléchargement</translation>
     </message>
     <message>
         <source>only locally available</source>
-        <translation type="unfinished">disponible uniquement localement</translation>
+        <translation>disponible uniquement localement</translation>
     </message>
     <message>
         <source>Install plugin</source>
-        <translation type="unfinished">Installer l&apos;extension</translation>
+        <translation>Installer l&apos;extension</translation>
     </message>
     <message>
         <source>Reinstall plugin</source>
-        <translation type="unfinished">Ré-installer l&apos;extension</translation>
+        <translation>Ré-installer l&apos;extension</translation>
     </message>
     <message>
         <source>Upgrade plugin</source>
-        <translation type="unfinished">Mise à jour de l&apos;extension</translation>
+        <translation>Mise à jour de l&apos;extension</translation>
     </message>
     <message>
         <source>Install/upgrade plugin</source>
-        <translation type="unfinished">Installer/Mettre à jour l&apos;extension</translation>
+        <translation>Installer/Mettre à jour l&apos;extension</translation>
     </message>
     <message>
         <source>Downgrade plugin</source>
-        <translation type="unfinished">Rétrograder la version</translation>
+        <translation>Rétrograder la version</translation>
     </message>
     <message>
         <source>Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!</source>
-        <translation type="unfinished">Êtes-vous sûr de vouloir remettre la dernière version disponible ? La version installée est plus récente !</translation>
+        <translation>Êtes-vous sûr de vouloir remettre la dernière version disponible ? La version installée est plus récente !</translation>
     </message>
     <message>
         <source>Plugin installation failed</source>
-        <translation type="unfinished">Échec de l&apos;installation</translation>
+        <translation>Échec de l&apos;installation</translation>
     </message>
     <message>
         <source>Plugin has disappeared</source>
-        <translation type="unfinished">Disparition de l&apos;extension</translation>
+        <translation>Disparition de l&apos;extension</translation>
     </message>
     <message>
         <source>The plugin seems to have been installed but I don&apos;t know where. Probably the plugin package contained a wrong named directory.
 Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll find the plugin there, but I just can&apos;t determine which of them it is. It also means that I won&apos;t be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue.</source>
-        <translation type="unfinished">L&apos;extension semble havoir été installé mais je ne sais pas où. Il est probable que l&apos;extension devait contenir un répertoire mal nommé.
+        <translation>L&apos;extension semble havoir été installé mais je ne sais pas où. Il est probable que l&apos;extension devait contenir un répertoire mal nommé.
 Veulliez chercher dans la liste des extensions installées. Vous ne pourrez bénéficier des notifications de mise à jours. Raportez ce problème à l&apos;auteur de l&apos;extension.</translation>
     </message>
     <message>
         <source>Plugin installed successfully</source>
-        <translation type="unfinished">Extension installée avec succès</translation>
+        <translation>Extension installée avec succès</translation>
     </message>
     <message>
         <source>Python plugin installed.
@@ -25954,19 +25958,19 @@ Vous devez relancer Quantum GIS pour la charger de nouveau.</translation>
     </message>
     <message>
         <source>Plugin uninstall failed</source>
-        <translation type="unfinished">Échec de la désinstallation</translation>
+        <translation>Échec de la désinstallation</translation>
     </message>
     <message>
         <source>Are you sure you want to uninstall the following plugin?</source>
-        <translation type="unfinished">Êtes-vous sûr de vouloir désinstaller l&apos;extension suivante ?</translation>
+        <translation>Êtes-vous sûr de vouloir désinstaller l&apos;extension suivante ?</translation>
     </message>
     <message>
         <source>Warning: this plugin isn&apos;t available in any accessible repository!</source>
-        <translation type="unfinished">Avertissement : cet extension n&apos;est pas  disponible dans aucun des dépôts accessibles !</translation>
+        <translation>Avertissement : cet extension n&apos;est pas  disponible dans aucun des dépôts accessibles !</translation>
     </message>
     <message>
         <source>Plugin uninstalled successfully</source>
-        <translation type="unfinished">Extension désinstallée avec succès</translation>
+        <translation>Extension désinstallée avec succès</translation>
     </message>
     <message>
         <source>You are going to add some plugin repositories neither authorized nor supported by the Quantum GIS team, however provided by folks associated with us. Plugin authors generally make efforts to make their works useful and safe, but we can&apos;t assume any responsibility for them. FEEL WARNED!</source>
@@ -25974,15 +25978,15 @@ Vous devez relancer Quantum GIS pour la charger de nouveau.</translation>
     </message>
     <message>
         <source>Unable to add another repository with the same URL!</source>
-        <translation type="unfinished">Impossible d&apos;ajouter un autre dépôt avec la même adresse ! </translation>
+        <translation>Impossible d&apos;ajouter un autre dépôt avec la même adresse ! </translation>
     </message>
     <message>
         <source>Are you sure you want to remove the following repository?</source>
-        <translation type="unfinished">Êtes-vous sûr de vouloir désinstaller le dépot ?</translation>
+        <translation>Êtes-vous sûr de vouloir désinstaller le dépot ?</translation>
     </message>
     <message>
         <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
-        <translation type="unfinished">Cette extension n&apos;est pas compatible avec votre version de Quantum GIS et ne fonctionnera certainement pas.</translation>
+        <translation>Cette extension n&apos;est pas compatible avec votre version de Quantum GIS et ne fonctionnera certainement pas.</translation>
     </message>
     <message>
         <source>The required Python module is not installed.
@@ -25994,58 +25998,58 @@ Pour plus d&apos;information, visitez son site.</translation>
         <source>This plugin seems to be broken.
 It has been installed but can&apos;t be loaded.
 Here is the error message:</source>
-        <translation type="unfinished">Cette extension semble corrompue.
+        <translation>Cette extension semble corrompue.
 Elle a pu être installée mais ne peut être chargée.
 Voici le message d&apos;erreur :</translation>
     </message>
     <message>
         <source>Note that it&apos;s an uninstallable core plugin</source>
-        <translation type="unfinished">Veuillez remarquer que c&apos;est une extension système non-installable</translation>
+        <translation>Veuillez remarquer que c&apos;est une extension système non-installable</translation>
     </message>
     <message>
         <source>This plugin is broken</source>
-        <translation type="unfinished">Cette extension est corrompue</translation>
+        <translation>Cette extension est corrompue</translation>
     </message>
     <message>
         <source>This plugin requires a newer version of Quantum GIS</source>
-        <translation type="unfinished">Cette extension requiert une version plus récente de Quantum GIS</translation>
+        <translation>Cette extension requiert une version plus récente de Quantum GIS</translation>
     </message>
     <message>
         <source>This plugin requires a missing module</source>
-        <translation type="unfinished">Cette extension requiert un module manquant</translation>
+        <translation>Cette extension requiert un module manquant</translation>
     </message>
     <message>
         <source>Plugin reinstalled successfully</source>
-        <translation type="unfinished">Extension ré-installée avec succès</translation>
+        <translation>Extension ré-installée avec succès</translation>
     </message>
     <message>
         <source>The plugin is designed for a newer version of Quantum GIS. The minimum required version is:</source>
-        <translation type="unfinished">Cette extension requiert une version plus récente de Quantum GIS. La version minimale requise est : </translation>
+        <translation>Cette extension requiert une version plus récente de Quantum GIS. La version minimale requise est : </translation>
     </message>
     <message>
         <source>The plugin depends on some components missing on your system. You need to install the following Python module in order to enable it:</source>
-        <translation type="unfinished">Cette extension dépend de composants manquants à votre système. Vous devez installer les modules python suivant pour l&apos;utiliser :</translation>
+        <translation>Cette extension dépend de composants manquants à votre système. Vous devez installer les modules python suivant pour l&apos;utiliser :</translation>
     </message>
     <message>
         <source>The plugin is broken. Python said:</source>
-        <translation type="unfinished">Cette extension est corrompue. Python dit :</translation>
+        <translation>Cette extension est corrompue. Python dit :</translation>
     </message>
     <message>
         <source>The required Python module is not installed.
 For more information, please visit its homepage and Quantum GIS wiki.</source>
-        <translation type="unfinished">Le module python requis n&apos;est pas installé.
+        <translation>Le module python requis n&apos;est pas installé.
 Pour plus d&apos;information, visitez son site ou le wiki de QGIS.</translation>
     </message>
     <message>
         <source>Python plugin installed.
 Now you need to enable it in Plugin Manager.</source>
-        <translation type="unfinished">Extension python installée.
+        <translation>Extension python installée.
 Vous devez l&apos;activer dans le Gestionnaire d&apos;Extension.</translation>
     </message>
     <message>
         <source>Python plugin reinstalled.
 You need to restart Quantum GIS in order to reload it.</source>
-        <translation type="unfinished">Extension python ré-installée.
+        <translation>Extension python ré-installée.
 Vous devez relancer Quantum GIS pour la charger de nouveau.</translation>
     </message>
     <message>
@@ -26055,36 +26059,36 @@ Vous devez relancer Quantum GIS pour l&apos;effacer complétement.</translation>
     </message>
     <message>
         <source>Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely.</source>
-        <translation type="unfinished">Extension python désinstallée.
+        <translation>Extension python désinstallée.
 Vous devez relancer Quantum GIS pour l&apos;effacer complétement.</translation>
     </message>
     <message>
         <source>You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.</source>
-        <translation type="unfinished">Vous allez ajouter des dépôts d&apos;extension qui ne sont ni contrôlés ni supportés par l&apos;équipe de QGIS. Les auteurs font de leur mieux pour fournir des extensions stables et utiles, mais nous ne pouvons vous donner aucune garantie. A vos risques et périls donc !</translation>
+        <translation>Vous allez ajouter des dépôts d&apos;extension qui ne sont ni contrôlés ni supportés par l&apos;équipe de QGIS. Les auteurs font de leur mieux pour fournir des extensions stables et utiles, mais nous ne pouvons vous donner aucune garantie. A vos risques et périls donc.</translation>
     </message>
     <message>
         <source>not installed</source>
-        <translation type="unfinished">non installé</translation>
+        <translation>non installé</translation>
     </message>
     <message>
         <source>installed</source>
-        <translation type="unfinished">installé</translation>
+        <translation>installé</translation>
     </message>
     <message>
         <source>upgradeable</source>
-        <translation type="unfinished">mise à jour disponible</translation>
+        <translation>mise à jour disponible</translation>
     </message>
     <message>
         <source>new!</source>
-        <translation type="unfinished">nouveau !</translation>
+        <translation>nouveau !</translation>
     </message>
     <message>
         <source>invalid</source>
-        <translation type="unfinished">invalide</translation>
+        <translation>invalide</translation>
     </message>
     <message>
         <source>at least</source>
-        <translation type="unfinished">au moins</translation>
+        <translation>au moins</translation>
     </message>
 </context>
 <context>
@@ -26371,35 +26375,35 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerFetchingDialog</name>
     <message>
         <source>Success</source>
-        <translation type="unfinished">Succès</translation>
+        <translation>Succès</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="unfinished">Résolution du nom d&apos;hôte...</translation>
+        <translation>Résolution du nom d&apos;hôte...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="unfinished">Connection...</translation>
+        <translation>Connection...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="unfinished">Hôte connecté. Envoi de requête...</translation>
+        <translation>Hôte connecté. Envoi de requête...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation type="unfinished">Chargement des données...</translation>
+        <translation>Chargement des données...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="unfinished">En attente</translation>
+        <translation>En attente</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="unfinished">Fermeture de la connection...</translation>
+        <translation>Fermeture de la connection...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Erreur</translation>
+        <translation>Erreur</translation>
     </message>
 </context>
 <context>
@@ -35269,17 +35273,17 @@ Dévelopé par Paolo L. Scala, Barbara Rita Barricelli, Marco PadulaCNR, Milan U
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="105"/>
         <source>eVis Database Connection</source>
-        <translation>Connexion eVis à une base de données</translation>
+        <translation>Connexion à une base de données</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="106"/>
         <source>eVis Event Id Tool</source>
-        <translation>Outil eVis Id Evenement</translation>
+        <translation>Outil Id</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="107"/>
         <source>eVis Event Browser</source>
-        <translation>Navigateur eVis d&apos;évenement</translation>
+        <translation>Navigateur d&apos;évenement eVis</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="110"/>
@@ -35716,7 +35720,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="34"/>
         <source>Display</source>
-        <translation>Affiché</translation>
+        <translation>Affichage</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="63"/>
@@ -36075,7 +36079,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="52"/>
         <source>Zoom in to see more detail.</source>
-        <translation>Zoomez en avant pour voir plus en détail.</translation>
+        <translation>Zoomer en avant pour voir plus en détail.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="53"/>
@@ -36090,7 +36094,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="55"/>
         <source>Zoom to full extent</source>
-        <translation>Zoomez sur l&apos;emprise maximale</translation>
+        <translation>Zoomer sur l&apos;emprise maximale</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="56"/>
@@ -36339,12 +36343,12 @@ L&apos;extension ne sera pas activée.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="8"/>
         <source>3D-Viewer (NVIZ)</source>
-        <translation type="unfinished"></translation>
+        <translation>Visionneur 3D (NVIZ)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="9"/>
         <source>3d Visualization</source>
-        <translation type="unfinished"></translation>
+        <translation>Visionnage 3D</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="10"/>
@@ -36394,7 +36398,7 @@ L&apos;extension ne sera pas activée.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="19"/>
         <source>Attribute field</source>
-        <translation type="unfinished">Champs d&apos;attribut</translation>
+        <translation>Champs d&apos;attribut</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="20"/>
@@ -36449,7 +36453,7 @@ L&apos;extension ne sera pas activée.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="30"/>
         <source>Buffer</source>
-        <translation type="unfinished">Buffer</translation>
+        <translation>Buffer</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="31"/>
@@ -37289,7 +37293,7 @@ L&apos;extension ne sera pas activée.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="198"/>
         <source>File</source>
-        <translation type="unfinished">Fichier</translation>
+        <translation>Fichier</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="199"/>
