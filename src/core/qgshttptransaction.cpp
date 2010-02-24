@@ -220,6 +220,7 @@ bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int red
     QgsDebugMsg( "Starting get of '" +  httpredirecturl + "'." );
 
     QgsHttpTransaction httprecurse( httpredirecturl, httphost, httpport );
+    httprecurse.setCredentials( mUserName, mPassword );
 
     // Do a passthrough for the status bar text
     connect(
