@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
@@ -69,6 +70,7 @@ class Dialog(QDialog, Ui_Dialog):
 					provider = vLayer.dataProvider()
 					self.progressBar.setValue(35)
 					inPath = provider.dataSourceUri()
+					inPath = inPath.remove( QRegExp( "\|.*" ) )
 					self.progressBar.setValue(40)
 					if inPath.endsWith(".shp"):
 						inPath = inPath.left(inPath.length() - 4)
