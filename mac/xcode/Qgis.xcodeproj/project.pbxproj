@@ -16313,6 +16313,7 @@
 					"$(QT_LIB_CORE)",
 					"$(QT_LIB_GUI)",
 					"$(GDAL_LIB)",
+					"$(GEOS_LIB)",
 				);
 				PRODUCT_NAME = qgis_analysis;
 			};
@@ -16345,6 +16346,7 @@
 					"$(QT_LIB_CORE)",
 					"$(QT_LIB_GUI)",
 					"$(GDAL_LIB)",
+					"$(GEOS_LIB)",
 				);
 				PRODUCT_NAME = qgis_analysis;
 			};
@@ -19359,7 +19361,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 12965;
+				QGIS_VERSION_BUILD = 12967;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -19370,7 +19372,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 12965;
+				QGIS_VERSION_BUILD = 12967;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
