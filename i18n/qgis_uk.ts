@@ -120,29 +120,29 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="16"/>
         <source>Extract Nodes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Витягування вузлів</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="27"/>
         <source>Input line or polygon vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Вхідний лінійний чи полігональний векторний шар</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="41"/>
         <source>Tolerance</source>
-        <translation type="unfinished">Радіус</translation>
+        <translation>Толерантність</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="86"/>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="55"/>
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="35"/>
         <source>Unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Поле унікального ідентифікатора</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="110"/>
         <source>Output point shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Вихідний точковий шейп-файл</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="126"/>
@@ -179,27 +179,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Please specify input layer</source>
-        <translation type="unfinished">Буль ласка вкажіть вхідний шар</translation>
+        <translation>Буль ласка, вкажіть вхідний шар</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="48"/>
         <source>Intersect layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Шар перетину</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="71"/>
         <source>Buffer distance</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ширина буфера</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="111"/>
         <source>Buffer distance field</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Поле ширини буфера</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="118"/>
         <source>Dissolve field</source>
-        <translation type="unfinished"></translation>
+        <translation>Поле класифікації</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="166"/>
@@ -211,35 +211,35 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="93"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="304"/>
         <source>Output shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Вихідний шейп-файл</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="239"/>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="250"/>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="122"/>
         <source>Use only selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>Використовувати тільки виділені об&apos;єкти</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="16"/>
         <source>Locate Line Intersections</source>
-        <translation type="unfinished"></translation>
+        <translation>Визначення перетину ліній</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="27"/>
         <source>Input line layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Вхідний лінійний шар</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="41"/>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="41"/>
         <source>Input unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>Вхідне поле унікального ідентифікатора</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="55"/>
         <source>Intersect line layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Шар перетинів ліній</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="69"/>
@@ -260,7 +260,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="16"/>
         <source>Join Attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Об&apos;єднання атрибутів</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="27"/>
@@ -276,7 +276,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="53"/>
         <source>Join data</source>
-        <translation type="unfinished"></translation>
+        <translation>Об&apos;єднання даних</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="61"/>
@@ -319,11 +319,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>creating new selection</source>
-        <translation type="unfinished"></translation>
+        <translation>створення нового виділення</translation>
     </message>
     <message>
         <source>adding to current selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати до поточного виділення</translation>
     </message>
     <message>
         <source>removing from current selection</source>
@@ -387,7 +387,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Cannot overwrite existing shapefile...</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдається перезаписати існуючий шейп-файл...</translation>
     </message>
     <message>
         <source>Random Points</source>
@@ -403,11 +403,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>density</source>
-        <translation type="unfinished"></translation>
+        <translation>Щільність</translation>
     </message>
     <message>
         <source>field</source>
-        <translation type="unfinished"></translation>
+        <translation>поле</translation>
     </message>
     <message>
         <source>Unknown layer type...</source>
@@ -443,17 +443,22 @@ p, li { white-space: pre-wrap; }
 Note: Layer has no associated coordinate system, please use the Projection Management Tool to specify spatial reference system.
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Створений вихідний точковий шейп-файл:
+%1
+
+Примітка: Не обрана координатна система шару, будь ласка, використовуйте Інструмент управління проекцією, щоб визначити просторову систему координат.
+
+Чи бажаєте додати новий шар в TOC?</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="16"/>
         <source>Create Distance Matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Створити матрицю відстаней</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="27"/>
         <source>Input point layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Вхідний точковий шар</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="55"/>
@@ -498,11 +503,11 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="16"/>
         <source>Count Points In Polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Кількість точок в полігонах</translation>
     </message>
     <message>
         <source>Line intersections</source>
-        <translation type="unfinished"></translation>
+        <translation>Перетини ліній</translation>
     </message>
     <message>
         <source>Please specify input line layer</source>
@@ -529,7 +534,10 @@ Would you like to add the new layer to the TOC?</source>
 %1
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Створений вихідний точковий шейп-файл:
+%1
+
+Чи бажаєте додати новий шар в TOC?</translation>
     </message>
     <message>
         <source>Vector layer is not valid</source>
@@ -537,7 +545,7 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Export to new projection</source>
-        <translation type="unfinished"></translation>
+        <translation>Експорт в нову проекцію</translation>
     </message>
     <message>
         <source>No input layer specified</source>
@@ -545,7 +553,7 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Define current projection</source>
-        <translation type="unfinished"></translation>
+        <translation>Визначити поточну проекцію</translation>
     </message>
     <message>
         <source>Please specify spatial reference system</source>
@@ -556,11 +564,14 @@ Would you like to add the new layer to the TOC?</source>
 %1
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Створений шейп-файл з проекцією:
+%1
+
+Чи бажаєте додати новий шар в TOC?</translation>
     </message>
     <message>
         <source>Choose output CRS:</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть вихідну систему координат:</translation>
     </message>
     <message>
         <source>Please select the projection system to be used by the output layer.</source>
@@ -580,11 +591,11 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Identical output spatial reference system chosen</source>
-        <translation type="unfinished"></translation>
+        <translation>Ідентична вихідна просторова система координат вибрана</translation>
     </message>
     <message>
         <source>Join attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Об&apos;єднання атрибутів</translation>
     </message>
     <message>
         <source>Please specify target vector layer</source>
@@ -611,7 +622,10 @@ Would you like to add the new layer to the TOC?</source>
 %1
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Створений вихідний шейп-файл:
+%1
+
+Чи бажаєте додати новий шар в TOC?</translation>
     </message>
     <message>
         <source>Join Table</source>
@@ -619,7 +633,7 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Input table does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>Вхідна таблиця не існує</translation>
     </message>
     <message>
         <source>joined fields</source>
@@ -635,15 +649,16 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>(Optional) Weight field</source>
-        <translation type="unfinished"></translation>
+        <translation>(Необов&apos;язковий) Ширина поля</translation>
     </message>
     <message>
         <source>(Optional) Unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>ключа</translatorcomment>
+        <translation>(Необов&apos;язковий) Поле унікального ідентифікатора</translation>
     </message>
     <message>
         <source>Coordinate statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>Координатна статистика</translation>
     </message>
     <message>
         <source>No input vector layer specified</source>
@@ -651,7 +666,7 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Join attributes by location</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Об&apos;єднання атрибутів по разташуванні</translation>
     </message>
     <message>
         <source>Please specify at least one summary statistic</source>
@@ -659,7 +674,7 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>CRS warning!</source>
-        <translation type="unfinished"></translation>
+        <translation>Попередження СК (CRS)!</translation>
     </message>
     <message>
         <source>Warning: Input layers have non-matching CRS.
@@ -684,7 +699,7 @@ This may cause unexpected results.</source>
     </message>
     <message>
         <source>Generate Vector Grid</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Генерувати векторну сітку</translation>
     </message>
     <message>
         <source>Created output shapefile:
@@ -693,18 +708,23 @@ This may cause unexpected results.</source>
 Note: Layer has no associated coordinate system, please use the Projection Management Tool to specify spatial reference system.
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Створений вихідний шейп-файл:
+%1
+
+Примітка: Не обрана координатна система шару, будь ласка, використовуйте Інструмент управління проекцією, щоб визначити просторову систему координат.
+
+Чи бажаєте додати новий шар в TOC?</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="27"/>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="90"/>
         <source>Input polygon vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Вхідний полігональний шар</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="41"/>
         <source>Input point vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Вхідний точковий шар</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="55"/>
@@ -719,13 +739,13 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="16"/>
         <source>Generate Random Points</source>
-        <translation type="unfinished"></translation>
+        <translation>Генерувати випадкові точки</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="31"/>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="25"/>
         <source>Input Boundary Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Вхідний шар границь</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="46"/>
@@ -770,7 +790,7 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Cannot define projection for PostGIS data...yet!</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдається визначити проекцію для даних PostGIS!</translation>
     </message>
     <message>
         <source>Unable to dynamically define projection.
@@ -780,7 +800,8 @@ Please reload layer manually for projection definition to take effect.</source>
     <message>
         <source>Defined Projection For:
 %1.shp</source>
-        <translation type="unfinished"></translation>
+        <translation>Визначити проекція для:
+%1.shp</translation>
     </message>
     <message>
         <source>Please select the projection system that defines the current layer.</source>
@@ -797,7 +818,8 @@ Please reload layer manually for projection definition to take effect.</source>
     <message>
         <source>Created output shapefiles in folder:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Створені вихідні шейп-файли в каталозі:
+%1</translation>
     </message>
     <message>
         <source>Random selection</source>
@@ -810,11 +832,11 @@ Please reload layer manually for projection definition to take effect.</source>
     </message>
     <message>
         <source>Count Points in Polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Кількість точок в полігоні</translation>
     </message>
     <message>
         <source>Count Points In Polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Кількість точок в полігоні</translation>
     </message>
     <message>
         <source>Please specify input point vector layer</source>
@@ -830,15 +852,15 @@ Please reload layer manually for projection definition to take effect.</source>
     </message>
     <message>
         <source>Counts Points In Polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Кількість точок в полігоні</translation>
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Матриця відстаней</translation>
     </message>
     <message>
         <source>Create Point Distance Matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Створити матрицю міжточкових відстаней</translation>
     </message>
     <message>
         <source>Please specify input point layer</source>
@@ -859,7 +881,8 @@ Please reload layer manually for projection definition to take effect.</source>
     <message>
         <source>Created output matrix:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Створена вихідна матриця:
+</translation>
     </message>
     <message>
         <source>
@@ -902,7 +925,7 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="27"/>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="28"/>
         <source>Input Vector Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Вхідний векторний шар</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandom.ui" line="35"/>
@@ -936,7 +959,7 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="35"/>
         <source>Input spatial reference system</source>
-        <translation type="unfinished"></translation>
+        <translation>Вхідна просторова система координат</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="49"/>
@@ -956,23 +979,23 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="83"/>
         <source>Import spatial reference system from existing layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Імпорт просторової системи координат з існуючого шару</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="100"/>
         <source>Import spatial reference system:</source>
-        <translation type="unfinished"></translation>
+        <translation>Імпорт просторової системи координат:</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="16"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="16"/>
         <source>Generate Regular Points</source>
-        <translation type="unfinished"></translation>
+        <translation>Генерувати регулярні точки</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="38"/>
         <source>Input Coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>Вхідні координати</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="47"/>
@@ -1011,7 +1034,9 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="158"/>
         <source>Apply random offset to point spacing</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Примените случайное смещение, чтобы указать интервал
+</translatorcomment>
+        <translation type="unfinished">Застосувати випадковий зсув міжточкової відстані</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="178"/>
@@ -1026,7 +1051,8 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="53"/>
         <source>Attribute Summary</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>РЕЗЮМЕ, невідм. - Стислий виклад суті, Стислий висновок.</translatorcomment>
+        <translation>Резюме атрибута</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="59"/>
@@ -1056,7 +1082,7 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="125"/>
         <source>Sum</source>
-        <translation type="unfinished">Сума</translation>
+        <translation>Сума</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="150"/>
@@ -1071,7 +1097,7 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     <message>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="41"/>
         <source>Input subset field (unique ID field)</source>
-        <translation type="unfinished"></translation>
+        <translation>Вхідна підмножина поля (поле унікального ідентифікатора)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="16"/>
@@ -1091,12 +1117,12 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     <message>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="127"/>
         <source>Input line vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Вхідний лінійний шар</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="25"/>
         <source>Grid extent</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Межі сітки</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="40"/>
@@ -1183,7 +1209,7 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="193"/>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="423"/>
         <source>Could not establish connection to: &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося встановити з&apos;єднання з: &apos;% 1&apos;</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="216"/>
@@ -1204,12 +1230,12 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="242"/>
         <source>Input OGR dataset is missing!</source>
-        <translation type="unfinished"></translation>
+        <translation>Відсутній вхідний набір даних OGR!</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="250"/>
         <source>Input OGR layer name is missing!</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вказано ім&apos;я шару OGR!</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="265"/>
@@ -1234,7 +1260,7 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="310"/>
         <source>Failed to translate layer &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося перетворити шар &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="419"/>
@@ -1244,7 +1270,7 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="435"/>
         <source>Choose a file name to save to</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть ім&apos;я файлу для збереження</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="241"/>
@@ -1259,7 +1285,7 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="unfinished">Будь ласка, вкажіть вхідний векторний шар</translation>
+        <translation>Будь ласка, вкажіть вхідний векторний шар</translation>
     </message>
 </context>
 <context>
@@ -1669,7 +1695,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="57"/>
         <source>Documentation:</source>
-        <translation type="unfinished"></translation>
+        <translation>Документація:</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="58"/>
@@ -1679,7 +1705,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="59"/>
         <source>In particular look at the following classes:</source>
-        <translation type="unfinished"></translation>
+        <translation>Зокрема подивіться на наступні класи:</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="62"/>
@@ -1729,27 +1755,27 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="71"/>
         <source>Getting developer help:</source>
-        <translation type="unfinished"></translation>
+        <translation>Отримання допомоги розробника:</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="72"/>
         <source>For Questions and Comments regarding the plugin builder template and creating your features in QGIS using the plugin interface please contact us via:</source>
-        <translation type="unfinished"></translation>
+        <translation>Для питань і коментарів щодо шаблону побудови плагіну і створення ваших функцій в QGIS, використовуючи інтерфейс плагіну, будь ласка, зв&apos;яжіться з нами по:</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="73"/>
         <source>&lt;li&gt; the QGIS developers mailing list, or &lt;/li&gt;&lt;li&gt; IRC (#qgis on freenode.net)&lt;/li&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;li&gt; список розсилки розробників QGISt, чи &lt;/li&gt;&lt;li&gt; IRC (#qgis на freenode.net)&lt;/li&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="74"/>
         <source>QGIS is distributed under the Gnu Public License. If you create a useful plugin please consider contributing it back to the community.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">QGIS розповсюджується під Ліцензією на Публіку Гну. Якщо ви створюєте корисне доповнення до програми розглядайте внесок цього назад до суспільства.</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="75"/>
         <source>Have fun and thank you for choosing QGIS.</source>
-        <translation type="unfinished"></translation>
+        <translation>Веселого настрою і дякуємо Вам за вибір QGIS.</translation>
     </message>
 </context>
 <context>
@@ -1757,17 +1783,17 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/labeling/labeling.cpp" line="111"/>
         <source>Labeling</source>
-        <translation type="unfinished"></translation>
+        <translation>Нанесення міток</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labeling.cpp" line="113"/>
         <source>Replace this with a short description of what the plugin does</source>
-        <translation type="unfinished">Впишіть сюди короткий опис модуля</translation>
+        <translation>Замініть це коротким описом модуля</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labeling.cpp" line="118"/>
         <source>&amp;Labeling</source>
-        <translation type="unfinished"></translation>
+        <translation>Нанесення м&amp;іток</translation>
     </message>
 </context>
 <context>
@@ -1775,226 +1801,226 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="14"/>
         <source>Layer labeling settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Установки міток шару</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="25"/>
         <source>Label this layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Мітити цей шар</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="34"/>
         <source>Field with labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Поле з мітками</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="62"/>
         <source>Placement</source>
-        <translation type="unfinished">Розміщення</translation>
+        <translation>Розміщення</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="87"/>
         <source>around point</source>
-        <translation type="unfinished"></translation>
+        <translation>навколо точки</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="97"/>
         <source>over point</source>
-        <translation type="unfinished"></translation>
+        <translation>над точкою</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="108"/>
         <source>parallel</source>
-        <translation type="unfinished"></translation>
+        <translation>паралельно</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="118"/>
         <source>curved</source>
-        <translation type="unfinished"></translation>
+        <translation>викривлено</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="125"/>
         <source>horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>Горизонтально</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="136"/>
         <source>over centroid</source>
-        <translation type="unfinished"></translation>
+        <translation>над центроїдом</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="146"/>
         <source>around centroid</source>
-        <translation type="unfinished"></translation>
+        <translation>навколо центроїда</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="153"/>
         <source>horizontal (slow)</source>
-        <translation type="unfinished"></translation>
+        <translation>Горизонтально (повільно)</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="160"/>
         <source>free (slow)</source>
-        <translation type="unfinished"></translation>
+        <translation>Вільно (повільно)</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="167"/>
         <source>using perimeter</source>
-        <translation type="unfinished"></translation>
+        <translation>по периметру</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="192"/>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="298"/>
         <source>Label distance</source>
-        <translation type="unfinished"></translation>
+        <translation>Відступ міток</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="209"/>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="315"/>
         <source>pixels</source>
-        <translation type="unfinished">пікселі</translation>
+        <translation>пікселі</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="216"/>
         <source>Rotation</source>
-        <translation type="unfinished">Обертання</translation>
+        <translation>Обертання</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="233"/>
         <source>degrees</source>
-        <translation type="unfinished"></translation>
+        <translation>градусів</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="244"/>
         <source>above line</source>
-        <translation type="unfinished"></translation>
+        <translation>над лініями</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="254"/>
         <source>on line</source>
-        <translation type="unfinished"></translation>
+        <translation>на лінії</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="261"/>
         <source>below line</source>
-        <translation type="unfinished"></translation>
+        <translation>під лініями</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="270"/>
         <source>Orientation</source>
-        <translation type="unfinished">Орієнтація</translation>
+        <translation>Орієнтація</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="277"/>
         <source>map</source>
-        <translation type="unfinished"></translation>
+        <translation>карта</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="287"/>
         <source>line</source>
-        <translation type="unfinished"></translation>
+        <translation>лінія</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="334"/>
         <source>Text style</source>
-        <translation type="unfinished"></translation>
+        <translation>Стиль текста</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="346"/>
         <source>Font</source>
-        <translation type="unfinished">Шрифт</translation>
+        <translation>Шрифт</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="364"/>
         <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <translation>Напис</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="384"/>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="500"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="399"/>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="484"/>
         <source>Color</source>
-        <translation type="unfinished">Колір</translation>
+        <translation>Колір</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="442"/>
         <source>Buffer</source>
-        <translation type="unfinished"></translation>
+        <translation>Буфер</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="467"/>
         <source>Size</source>
-        <translation type="unfinished">Розмір</translation>
+        <translation>Розмір</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="515"/>
         <source>Sample</source>
-        <translation type="unfinished"></translation>
+        <translation>Зразок</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="531"/>
         <source>Lorem Ipsum</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Lorem Ipsum</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="551"/>
         <source>Priority</source>
-        <translation type="unfinished"></translation>
+        <translation>Пріоритет</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="557"/>
         <source>Low</source>
-        <translation type="unfinished"></translation>
+        <translation>Низький</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="583"/>
         <source>High</source>
-        <translation type="unfinished"></translation>
+        <translation>Високий</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="593"/>
         <source>Scale-based visibility</source>
-        <translation type="unfinished"></translation>
+        <translation>Видимість, основана на масштабі</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="599"/>
         <source>Enabled</source>
-        <translation type="unfinished">Активний</translation>
+        <translation>Активний</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="606"/>
         <source>Minimum</source>
-        <translation type="unfinished">Мінімум</translation>
+        <translation>Мінімум</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="626"/>
         <source>Maximum</source>
-        <translation type="unfinished">Максимум</translation>
+        <translation>Максимум</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="654"/>
         <source>label every part of multi-part features</source>
-        <translation type="unfinished"></translation>
+        <translation>Мітити кожну частину складених об&apos;єктів</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="661"/>
         <source>merge connected lines to avoid duplicate labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Об&apos;єднати зв&apos;язані лінії для уникнення дублювання міток</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="673"/>
         <source>features don&apos;t act as obstacles for labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Об&apos;єкти не являються перешкодами для міток</translation>
     </message>
     <message>
         <location filename="../src/plugins/labeling/labelingguibase.ui" line="696"/>
         <source>Engine settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Установки алгоритма</translation>
     </message>
 </context>
 <context>
@@ -2041,17 +2067,17 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <location filename="../src/plugins/ogr_converter/ogrconverterguibase.ui" line="121"/>
         <location filename="../src/plugins/ogr_converter/ogrconverterguibase.ui" line="205"/>
         <source>Format</source>
-        <translation type="unfinished">Формат</translation>
+        <translation>Формат</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/ogrconverterguibase.ui" line="136"/>
         <source>File</source>
-        <translation type="unfinished">Файл</translation>
+        <translation>Файл</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/ogrconverterguibase.ui" line="150"/>
         <source>Directory</source>
-        <translation type="unfinished">Каталог</translation>
+        <translation>Каталог</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/ogrconverterguibase.ui" line="143"/>
@@ -2074,7 +2100,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <location filename="../src/plugins/ogr_converter/ogrconverterguibase.ui" line="55"/>
         <location filename="../src/plugins/ogr_converter/ogrconverterguibase.ui" line="261"/>
         <source>Layer</source>
-        <translation type="unfinished">Шар</translation>
+        <translation>Шар</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/ogrconverterguibase.ui" line="193"/>
@@ -3019,7 +3045,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="762"/>
         <source> degrees</source>
-        <translation> градусы</translation>
+        <translation> градуси</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="766"/>
@@ -3107,7 +3133,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/copyright_label/plugin.cpp" line="52"/>
         <source>Draws copyright information</source>
-        <translation>Відображає нак авторського права</translation>
+        <translation>Відображає знак авторського права</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="44"/>
@@ -3186,7 +3212,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugin.cpp" line="62"/>
         <source>Adding projection info to rasters using GDAL</source>
-        <translation>Підключення інформації про проекцію до растрів, з використанням GDAL</translation>
+        <translation>Підключення інформації про проекцію до растрів використовуючи GDAL</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsleastsquares.cpp" line="33"/>
@@ -3537,7 +3563,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/ogr_converter/plugin.cpp" line="36"/>
         <source>Translates vector layers between formats supported by OGR library</source>
-        <translation>Конвертація веторних шарів у між форматами, що підтримуються бібліотекою OGR</translation>
+        <translation>Конвертація веторних шарів між форматами, що підтримуються бібліотекою OGR</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="21"/>
@@ -4916,7 +4942,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1231"/>
         <source>Print Composers</source>
-        <translation>Компонувальники карт</translation>
+        <translation>Компоновки карт</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1238"/>
@@ -5855,7 +5881,7 @@ Errors: %2
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4426"/>
         <source>GPS Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Інформація GPS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4523"/>
@@ -6088,7 +6114,7 @@ Errors: %2
     <message>
         <location filename="../src/app/qgsabout.cpp" line="294"/>
         <source>Qt Image Plugin Search Paths	&lt;br&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Шлях пошуку плагіну Qt для завантаження зображення&lt;br&gt;</translation>
     </message>
     <message>
         <source>Qt Image Plugin Search Paths&lt;br&gt;</source>
@@ -6155,7 +6181,8 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsabout.ui" line="202"/>
         <source>Contributors</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Помічники</translatorcomment>
+        <translation>Ассистенти</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="230"/>
@@ -6249,7 +6276,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsattributeactiondialog.cpp" line="190"/>
         <source>To create an attribute action, you must provide both a name and the action to perform.</source>
-        <translation>Для створення атрибутивної дії необхідно вказати його ім&apos;я і виконувану дію.</translation>
+        <translation>Для створення атрибутивної дії необхідно вказати її ім&apos;я і виконувану дію.</translation>
     </message>
 </context>
 <context>
@@ -6356,13 +6383,13 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="29"/>
         <source>Action list</source>
-        <translation type="unfinished"></translation>
+        <translation>Список дій</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="54"/>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="265"/>
         <source>Type</source>
-        <translation type="unfinished">Тип</translation>
+        <translation>Тип</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="69"/>
@@ -6422,27 +6449,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="237"/>
         <source>Generic</source>
-        <translation type="unfinished"></translation>
+        <translation>Загальний</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="242"/>
         <source>Python</source>
-        <translation type="unfinished"></translation>
+        <translation>Python</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="247"/>
         <source>Windows</source>
-        <translation type="unfinished"></translation>
+        <translation>Windows</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="252"/>
         <source>Mac</source>
-        <translation type="unfinished"></translation>
+        <translation>Mac</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="257"/>
         <source>Unix</source>
-        <translation type="unfinished"></translation>
+        <translation>Unix</translation>
     </message>
 </context>
 <context>
@@ -6465,7 +6492,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsattributedialog.cpp" line="187"/>
         <source>Attributes - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Атрибути - %1</translation>
     </message>
 </context>
 <context>
@@ -6528,12 +6555,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="32"/>
         <source>Attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Атрибут</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="35"/>
         <source>Alias</source>
-        <translation type="unfinished"></translation>
+        <translation>Псевдонім</translation>
     </message>
 </context>
 <context>
@@ -6707,7 +6734,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="330"/>
         <source>Looks for the given value in the given attribute column</source>
-        <translation type="unfinished"></translation>
+        <translation>Шукати дане значення в даному полі</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="333"/>
@@ -6727,7 +6754,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="56"/>
         <source>Opens the search query builder</source>
-        <translation type="unfinished"></translation>
+        <translation>Відкрити конструктор пошукових запитів</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="59"/>
@@ -6737,12 +6764,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="72"/>
         <source>Help</source>
-        <translation type="unfinished">Довідка</translation>
+        <translation>Довідка</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="230"/>
         <source>Delete selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити виділені об&apos;єкти</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="233"/>
@@ -6770,7 +6797,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/attributetable/qgsattributetableview.cpp" line="98"/>
         <source>Run action</source>
-        <translation type="unfinished"></translation>
+        <translation>Виконати дію</translation>
     </message>
 </context>
 <context>
@@ -6862,12 +6889,12 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="66"/>
         <source>Checkbox</source>
-        <translation type="unfinished"></translation>
+        <translation>Перемикач</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="71"/>
         <source>Text edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Текстове поле</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="92"/>
@@ -6973,17 +7000,17 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="521"/>
         <source>Representation for checked state</source>
-        <translation type="unfinished"></translation>
+        <translation>Представлення для вибраного стану</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="528"/>
         <source>Representation for unchecked state</source>
-        <translation type="unfinished"></translation>
+        <translation>Представлення для невибраного стану</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="557"/>
         <source>A text edit field that accepts multiple lines will be used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Текстове поле, що дозволяє введення багаторядкового тексту.</translation>
     </message>
     <message>
         <source>Immutable attribute is read-only - user is not able to modify the contents.</source>
@@ -6995,7 +7022,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgsavoidintersectionsdialogbase.ui" line="13"/>
         <source>Remove intersections of new polygons with layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Запобігати перетину нових полігонів в шарах</translation>
     </message>
 </context>
 <context>
@@ -7067,57 +7094,57 @@ Error was:%2</source>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="264"/>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="266"/>
         <source>Error</source>
-        <translation type="unfinished">Помилка</translation>
+        <translation>Помилка</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="264"/>
         <source>There are no available color ramps. You can add them in Style Manager.</source>
-        <translation type="unfinished"></translation>
+        <translation>Немає доступних кольорових шкал. Ви можете додати їх в Менеджері стилів.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="266"/>
         <source>The selected color ramp is not available.</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибрана кольорова шкала не доступна.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="19"/>
         <source>Column:</source>
-        <translation type="unfinished"></translation>
+        <translation>Поле:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="56"/>
         <source>Symbol:</source>
-        <translation type="unfinished"></translation>
+        <translation>Символ:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="69"/>
         <source>change</source>
-        <translation type="unfinished"></translation>
+        <translation>змінити</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="76"/>
         <source>Color ramp:</source>
-        <translation type="unfinished"></translation>
+        <translation>Колірна шкала:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="113"/>
         <source>Classify</source>
-        <translation type="unfinished">Класифікувати</translation>
+        <translation>Класифікувати</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="120"/>
         <source>Delete</source>
-        <translation type="unfinished">Видалити</translation>
+        <translation>Видалити</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="127"/>
         <source>Delete all</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити все</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="150"/>
         <source>Join</source>
-        <translation type="unfinished"></translation>
+        <translation>Об&apos;єднати</translation>
     </message>
 </context>
 <context>
@@ -7304,7 +7331,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1125"/>
         <source>Composer</source>
-        <translation type="unfinished"></translation>
+        <translation>Компонувальник карт</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1447"/>
@@ -7322,22 +7349,22 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/composer/qgscomposerarrowwidget.cpp" line="39"/>
         <source>General options</source>
-        <translation type="unfinished"></translation>
+        <translation>Загальні параметри</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerarrowwidget.cpp" line="79"/>
         <source>Arrow color</source>
-        <translation type="unfinished"></translation>
+        <translation>Колір стрілки</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerarrowwidget.cpp" line="207"/>
         <source>Start marker svg file</source>
-        <translation type="unfinished"></translation>
+        <translation>SVG-файл початкового маркера</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerarrowwidget.cpp" line="217"/>
         <source>End marker svg file</source>
-        <translation type="unfinished"></translation>
+        <translation>SVG-файл кінцевого маркера</translation>
     </message>
 </context>
 <context>
@@ -7345,63 +7372,63 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="32"/>
         <source>Arrow</source>
-        <translation type="unfinished"></translation>
+        <translation>Стрілка</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="38"/>
         <source>Arrow color...</source>
-        <translation type="unfinished"></translation>
+        <translation>Колір стрілки...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="45"/>
         <source>Outline width </source>
-        <translation type="unfinished"></translation>
+        <translation>Товщина контуру</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="52"/>
         <source>Arrow head width </source>
-        <translation type="unfinished"></translation>
+        <translation>Розмір голови стрілки</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="59"/>
         <source>Arrow markers</source>
-        <translation type="unfinished"></translation>
+        <translation>Маркери стрілки</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="65"/>
         <source>Default marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Маркер за умовчанням</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="72"/>
         <source>No marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Без маркерів</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="79"/>
         <source>SVG markers</source>
-        <translation type="unfinished"></translation>
+        <translation>Маркери SVG</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="86"/>
         <source>Start marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Маркер початку</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="96"/>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="113"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="103"/>
         <source>End marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Маркер кінця</translation>
     </message>
 </context>
 <context>
@@ -7688,22 +7715,22 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="454"/>
         <source>Add Basic Shape</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати базову фігуру</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="462"/>
         <source>Add arrow</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати стрілку</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="470"/>
         <source>Add table</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати таблицю</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="473"/>
         <source>Adds attribute table</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати атрибутивну таблицю</translation>
     </message>
 </context>
 <context>
@@ -7724,17 +7751,17 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="20"/>
         <source>Frame color...</source>
-        <translation type="unfinished"></translation>
+        <translation>Колір рамки...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="27"/>
         <source>Background color...</source>
-        <translation type="unfinished"></translation>
+        <translation>Колір фону...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="34"/>
         <source>Opacity</source>
-        <translation type="unfinished"></translation>
+        <translation>Непрозорість</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="57"/>
@@ -7781,7 +7808,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="31"/>
         <source>General options</source>
-        <translation type="unfinished"></translation>
+        <translation>Загальні параметри</translation>
     </message>
 </context>
 <context>
@@ -7789,12 +7816,12 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="20"/>
         <source>Label Options</source>
-        <translation>Параметри текста</translation>
+        <translation>Параметри підписа</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="38"/>
         <source>Label</source>
-        <translation type="unfinished">Підпис</translation>
+        <translation>Підпис</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="57"/>
@@ -7804,7 +7831,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="64"/>
         <source>Font color...</source>
-        <translation type="unfinished"></translation>
+        <translation>Колір шрифту...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="71"/>
@@ -7846,7 +7873,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="30"/>
         <source>Item Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметри елемента</translation>
     </message>
 </context>
 <context>
@@ -7864,27 +7891,27 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="62"/>
         <source>&amp;Title</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Заголовок</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="81"/>
         <source>Title Font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Шрифт заголовка...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="88"/>
         <source>Layer Font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Шрифт шара...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="95"/>
         <source>Item Font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Шрифт елементу...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="102"/>
         <source>Symbol width </source>
-        <translation type="unfinished"></translation>
+        <translation>Ширина символа</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="105"/>
@@ -7894,57 +7921,57 @@ Error was:%2</source>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="145"/>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="155"/>
         <source> mm</source>
-        <translation type="unfinished"> мм</translation>
+        <translation> мм</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="112"/>
         <source>Symbol height </source>
-        <translation type="unfinished"></translation>
+        <translation>Висота символа </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="122"/>
         <source>Layer space </source>
-        <translation type="unfinished"></translation>
+        <translation>Відступ шара</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="132"/>
         <source>Symbol space </source>
-        <translation type="unfinished"></translation>
+        <translation>Відступ символа</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="142"/>
         <source>Icon label space </source>
-        <translation type="unfinished"></translation>
+        <translation>Відступ мітки знака</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="152"/>
         <source>Box space </source>
-        <translation type="unfinished"></translation>
+        <translation>Відступ рамки</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="203"/>
         <source>v</source>
-        <translation type="unfinished"></translation>
+        <translation>Y</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="210"/>
         <source>^</source>
-        <translation type="unfinished"></translation>
+        <translation>^</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="217"/>
         <source>X</source>
-        <translation type="unfinished">X</translation>
+        <translation>X</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="224"/>
         <source>Edit</source>
-        <translation type="unfinished">Правка</translation>
+        <translation>Правка</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="238"/>
         <source>All</source>
-        <translation type="unfinished">Все</translation>
+        <translation>Все</translation>
     </message>
     <message>
         <source>Title:</source>
@@ -7981,7 +8008,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="231"/>
         <source>Update</source>
-        <translation type="unfinished">Оновити</translation>
+        <translation>Оновити</translation>
     </message>
     <message>
         <source>Symbol width: </source>
@@ -8042,22 +8069,22 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="83"/>
         <source>Remove composer</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити компоновку</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="83"/>
         <source>Do you really want to remove the map composer &apos;%1&apos;?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ви впевнені, що бажаєте видалити компоновку карти &quot;%1&quot;?</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="143"/>
         <source>Change title</source>
-        <translation type="unfinished"></translation>
+        <translation>Змінити заголовок</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="143"/>
         <source>Title</source>
-        <translation type="unfinished">Заголовок</translation>
+        <translation>Заголовок</translation>
     </message>
 </context>
 <context>
@@ -8065,27 +8092,27 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposermanagerbase.ui" line="13"/>
         <source>Composer manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Управління компоновками</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermanagerbase.ui" line="43"/>
         <source>Add</source>
-        <translation type="unfinished">Додати</translation>
+        <translation>Додати</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermanagerbase.ui" line="29"/>
         <source>Remove</source>
-        <translation type="unfinished">Видалити</translation>
+        <translation>Видалити</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermanagerbase.ui" line="36"/>
         <source>Rename</source>
-        <translation type="unfinished"></translation>
+        <translation>Перейменувати</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermanagerbase.ui" line="22"/>
         <source>Show</source>
-        <translation type="unfinished"></translation>
+        <translation>Показати</translation>
     </message>
 </context>
 <context>
@@ -8094,7 +8121,7 @@ Error was:%2</source>
         <location filename="../src/core/composer/qgscomposermap.cpp" line="69"/>
         <location filename="../src/core/composer/qgscomposermap.cpp" line="90"/>
         <source>Map %1</source>
-        <translation>Карти %1</translation>
+        <translation>Карта %1</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposermap.cpp" line="228"/>
@@ -8107,7 +8134,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="31"/>
         <source>General options</source>
-        <translation type="unfinished"></translation>
+        <translation>Загальні параметри</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="43"/>
@@ -8121,7 +8148,7 @@ Error was:%2</source>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="124"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="264"/>
         <source>Render</source>
-        <translation type="unfinished">Render</translation>
+        <translation>Викреслити</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="45"/>
@@ -8134,41 +8161,41 @@ Error was:%2</source>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="47"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="317"/>
         <source>Solid</source>
-        <translation type="unfinished">Solid</translation>
+        <translation type="unfinished">Лінії</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="48"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="313"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="559"/>
         <source>Cross</source>
-        <translation type="unfinished"></translation>
+        <translation>Перехрестя</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="50"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="325"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="621"/>
         <source>Inside frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Всередині рамки</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="51"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="329"/>
         <source>Outside frame</source>
-        <translation type="unfinished"></translation>
+        <translation>За рамкою</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="53"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="346"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="659"/>
         <source>Horizontal</source>
-        <translation type="unfinished">Горизонтальна</translation>
+        <translation>Горизонтально</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="54"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="350"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="663"/>
         <source>Vertical</source>
-        <translation type="unfinished">Вертикальна</translation>
+        <translation>Вертикально</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="55"/>
@@ -8181,7 +8208,7 @@ Error was:%2</source>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="56"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="358"/>
         <source>Boundary direction</source>
-        <translation type="unfinished"></translation>
+        <translation>У напрямку рамки</translation>
     </message>
 </context>
 <context>
@@ -8199,7 +8226,7 @@ Error was:%2</source>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="41"/>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="73"/>
         <source>Map</source>
-        <translation type="unfinished">Карта</translation>
+        <translation>Карта</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="79"/>
@@ -8214,107 +8241,108 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="117"/>
         <source>Scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Масштаб</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="137"/>
         <source>Rotation</source>
-        <translation type="unfinished">Обертання</translation>
+        <translation>Обертання</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="203"/>
         <source>Extents</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Екстенти</translatorcomment>
+        <translation>Границі</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="218"/>
         <source>X min</source>
-        <translation type="unfinished"></translation>
+        <translation>Мін. X</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="250"/>
         <source>Y min</source>
-        <translation type="unfinished"></translation>
+        <translation>Y мін</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="320"/>
         <source>Grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Сітка</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="326"/>
         <source>Show grid?</source>
-        <translation type="unfinished"></translation>
+        <translation>Показувати сітку?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="341"/>
         <source>Grid &amp;type</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип &amp;сітки</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="357"/>
         <source>Interval X</source>
-        <translation type="unfinished"></translation>
+        <translation>Інтервал X</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="380"/>
         <source>Offset X</source>
-        <translation type="unfinished"></translation>
+        <translation>Зміщення по X</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="403"/>
         <source>Line width</source>
-        <translation type="unfinished">Ширина лінії</translation>
+        <translation>Ширина лінії</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="430"/>
         <source>Annotation position</source>
-        <translation type="unfinished"></translation>
+        <translation>Положення анотації</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="449"/>
         <source>Annotation direction</source>
-        <translation type="unfinished"></translation>
+        <translation>Напрямок анотації</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="465"/>
         <source>Line color</source>
-        <translation type="unfinished"></translation>
+        <translation>Колір лінії</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="547"/>
         <source>Interval Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Інтервал Y</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="570"/>
         <source>Offset Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Зміщення по Y</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="583"/>
         <source>Cross width</source>
-        <translation type="unfinished"></translation>
+        <translation>Ширина перехрестя</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="234"/>
         <source>X max</source>
-        <translation type="unfinished"></translation>
+        <translation>Макс. X</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="266"/>
         <source>Y max</source>
-        <translation type="unfinished"></translation>
+        <translation>Y макс</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="288"/>
         <source>Set to map canvas extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Встановити по екстенту полотна карти</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="166"/>
         <source>Lock layers for map item</source>
-        <translation type="unfinished"></translation>
+        <translation>Заблокувати шари карти</translation>
     </message>
     <message>
         <source>Line width:</source>
@@ -8323,22 +8351,22 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="423"/>
         <source>Draw annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Відображати аннотацію</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="491"/>
         <source>Font...</source>
-        <translation type="unfinished">Шрифт...</translation>
+        <translation>Шрифт...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="498"/>
         <source>Distance to map frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Відстань до рамки карти</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="514"/>
         <source>Coordinate precision</source>
-        <translation type="unfinished"></translation>
+        <translation>Точність координат</translation>
     </message>
     <message>
         <source>Scale:</source>
@@ -8397,7 +8425,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="38"/>
         <source>General options</source>
-        <translation type="unfinished"></translation>
+        <translation>Загальні параметри</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="69"/>
@@ -8431,7 +8459,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="41"/>
         <source>Picture options</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметри зображення</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="53"/>
@@ -8486,7 +8514,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="263"/>
         <source>Sync from map</source>
-        <translation type="unfinished"></translation>
+        <translation>Синхронізація з картою</translation>
     </message>
     <message>
         <source>Browse...</source>
@@ -8510,7 +8538,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="31"/>
         <source>General options</source>
-        <translation type="unfinished"></translation>
+        <translation>Загальні параметри</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="34"/>
@@ -8610,27 +8638,27 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="41"/>
         <source>Scale bar</source>
-        <translation type="unfinished"></translation>
+        <translation>Масштабна лінійка</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="47"/>
         <source>Segment size (map units)</source>
-        <translation type="unfinished"></translation>
+        <translation>Розмір сегмента (одиниці карти)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="70"/>
         <source>Map units per bar unit</source>
-        <translation type="unfinished"></translation>
+        <translation>Одиниць карти в поділці</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="90"/>
         <source> Right segments</source>
-        <translation type="unfinished"></translation>
+        <translation> Сегменти праворуч</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="97"/>
         <source> Left segments</source>
-        <translation type="unfinished"></translation>
+        <translation> Сегменти ліворуч</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="149"/>
@@ -8638,37 +8666,37 @@ Error was:%2</source>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="187"/>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="197"/>
         <source> mm</source>
-        <translation type="unfinished"> мм</translation>
+        <translation> мм</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="152"/>
         <source>Height </source>
-        <translation type="unfinished"></translation>
+        <translation>Висота</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="165"/>
         <source>Line width </source>
-        <translation type="unfinished"></translation>
+        <translation>Ширина лінії </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="184"/>
         <source>Label space </source>
-        <translation type="unfinished"></translation>
+        <translation>Відступ мітки </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="194"/>
         <source>Box space </source>
-        <translation type="unfinished"></translation>
+        <translation>Відступ рамки</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="104"/>
         <source>Style</source>
-        <translation type="unfinished"></translation>
+        <translation>Стиль</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="123"/>
         <source>Map</source>
-        <translation type="unfinished">Карта</translation>
+        <translation>Карта</translation>
     </message>
     <message>
         <source>Line width</source>
@@ -8677,7 +8705,7 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="204"/>
         <source>Unit label</source>
-        <translation type="unfinished"></translation>
+        <translation>Позначення одиниць</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="226"/>
@@ -8695,38 +8723,38 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="29"/>
         <source>General options</source>
-        <translation type="unfinished"></translation>
+        <translation>Загальні параметри</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="34"/>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="68"/>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="107"/>
         <source>Ellipse</source>
-        <translation type="unfinished"></translation>
+        <translation>Еліпс</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="35"/>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="72"/>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="111"/>
         <source>Rectangle</source>
-        <translation type="unfinished">Прямокутник</translation>
+        <translation>Прямокутник</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="36"/>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="76"/>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="115"/>
         <source>Triangle</source>
-        <translation type="unfinished"></translation>
+        <translation>Трикутник</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="130"/>
         <source>Select outline color</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибрати колір контуру</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="179"/>
         <source>Select fill color</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибрати колір заливки</translation>
     </message>
 </context>
 <context>
@@ -8734,39 +8762,39 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="32"/>
         <source>Shape</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Фігура</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="41"/>
         <source>Shape outline color...</source>
-        <translation type="unfinished"></translation>
+        <translation>Колір контурів фігури...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="48"/>
         <source>Outline width </source>
-        <translation type="unfinished"></translation>
+        <translation>Ширина контура</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="55"/>
         <source>Transparent fill</source>
-        <translation type="unfinished"></translation>
+        <translation>Прозора заливка</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="62"/>
         <source>Shape fill Color...</source>
-        <translation type="unfinished"></translation>
+        <translation>Колір заливки фігури...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="69"/>
         <source>Rotation </source>
         <comment>Rotation</comment>
         <extracomment>Rotation</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>Обертання</translation>
     </message>
 </context>
 <context>
@@ -8774,24 +8802,24 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="33"/>
         <source>General options</source>
-        <translation type="unfinished"></translation>
+        <translation>Загальні параметри</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="59"/>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="261"/>
         <source>Map %1</source>
-        <translation type="unfinished"></translation>
+        <translation>.Карта %1</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="167"/>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="182"/>
         <source>Select Font</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибрати шрифт</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="207"/>
         <source>Select grid color</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибрати колір сітки</translation>
     </message>
 </context>
 <context>
@@ -9269,29 +9297,30 @@ Error was:%2</source>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="76"/>
         <source>Save shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Зберегти комбінації клавіш</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="76"/>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="128"/>
         <source>XML file (*.xml);; All files (*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>XML-файли (*.xml);; Всі файли (*.*)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="90"/>
         <source>Saving shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Збереження комбінацій клавіш</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="91"/>
         <source>Cannot write file %1:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося записати файл %1:
+%2.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="128"/>
         <source>Load shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Завантажити комбінації клавіш</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="138"/>
@@ -9299,13 +9328,14 @@ Error was:%2</source>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="163"/>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="183"/>
         <source>Loading shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Завантаження комбінацій клавіш</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="139"/>
         <source>Cannot read file %1:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося прочитати файл %1:
+%2.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="153"/>
@@ -9382,12 +9412,12 @@ Error was:%2</source>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="82"/>
         <source>Load...</source>
-        <translation type="unfinished"></translation>
+        <translation>Завантажити...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="92"/>
         <source>Save...</source>
-        <translation type="unfinished"></translation>
+        <translation>Зберегти...</translation>
     </message>
 </context>
 <context>
@@ -9461,12 +9491,12 @@ Error was:%2</source>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="456"/>
         <source>inverse transform</source>
-        <translation type="unfinished"></translation>
+        <translation>Попереднє перетворення</translation>
     </message>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="463"/>
         <source>forward transform</source>
-        <translation type="unfinished"></translation>
+        <translation>Наступне перетворення</translation>
     </message>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="483"/>
@@ -9602,7 +9632,11 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Verdana&apos;;&quot;&gt;© QGIS 2009&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Verdana&apos;;&quot;&gt;© QGIS 2009&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="56"/>
@@ -10258,17 +10292,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="112"/>
         <source>Delimiter string</source>
-        <translation type="unfinished"></translation>
+        <translation>Роздільник рядків</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="150"/>
         <source>Type</source>
-        <translation type="unfinished">Тип</translation>
+        <translation>Тип</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="189"/>
         <source>Geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>Геометрія</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="268"/>
@@ -10283,7 +10317,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="65"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="134"/>
@@ -10379,7 +10413,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/diagram_overlay/qgsdiagramdialog.cpp" line="83"/>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramdialog.cpp" line="319"/>
         <source>linearly scaling</source>
-        <translation type="unfinished"></translation>
+        <translation>Лінійне масштабування</translation>
     </message>
 </context>
 <context>
@@ -10427,17 +10461,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsdisplayangle.cpp" line="41"/>
         <source>%1 degrees</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 градусів</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdisplayangle.cpp" line="45"/>
         <source>%1 radians</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 радіанів</translation>
     </message>
     <message>
         <location filename="../src/app/qgsdisplayangle.cpp" line="49"/>
         <source>%1 gon</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 град</translation>
     </message>
 </context>
 <context>
@@ -10445,7 +10479,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdisplayanglebase.ui" line="14"/>
         <source>Angle</source>
-        <translation type="unfinished"></translation>
+        <translation>Кут</translation>
     </message>
 </context>
 <context>
@@ -10537,7 +10571,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsfieldcalculator.cpp" line="73"/>
         <source>Syntax error</source>
-        <translation>Ситаксична помилка</translation>
+        <translation>Синтаксична помилка</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldcalculator.cpp" line="109"/>
@@ -10565,167 +10599,167 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="14"/>
         <source>Field calculator</source>
-        <translation type="unfinished"></translation>
+        <translation>Калькулятор полів</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="20"/>
         <source>Update existing field</source>
-        <translation type="unfinished"></translation>
+        <translation>Оновлити існуюче поле</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="30"/>
         <source>Only update selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>Оновити тільки вибрані об&apos;єкти</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="37"/>
         <source>New field</source>
-        <translation type="unfinished"></translation>
+        <translation>Нове поле</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="43"/>
         <source>Output field name</source>
-        <translation type="unfinished"></translation>
+        <translation>Ім&apos;я результуючого поля</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="56"/>
         <source>Output field type</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип результуючого поля</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="69"/>
         <source>Output field width</source>
-        <translation type="unfinished"></translation>
+        <translation>Ширина результуючого поля</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="82"/>
         <source>Output field precision</source>
-        <translation type="unfinished"></translation>
+        <translation>Точність результуючого поля</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="98"/>
         <source>Fields</source>
-        <translation type="unfinished"></translation>
+        <translation>Поля</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="110"/>
         <source>Values</source>
-        <translation type="unfinished"></translation>
+        <translation>Значення</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="119"/>
         <source>Sample</source>
-        <translation type="unfinished"></translation>
+        <translation>Зразок</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="126"/>
         <source>All</source>
-        <translation type="unfinished">Все</translation>
+        <translation>Все</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="136"/>
         <source>Operators</source>
-        <translation type="unfinished"></translation>
+        <translation>Оператори</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="142"/>
         <source>+</source>
-        <translation type="unfinished"></translation>
+        <translation>+</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="149"/>
         <source>*</source>
-        <translation type="unfinished">*</translation>
+        <translation>*</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="156"/>
         <source>sqrt</source>
-        <translation type="unfinished"></translation>
+        <translation>sqrt</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="163"/>
         <source>sin</source>
-        <translation type="unfinished"></translation>
+        <translation>sin</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="170"/>
         <source>tan</source>
-        <translation type="unfinished"></translation>
+        <translation>tan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="177"/>
         <source>acos</source>
-        <translation type="unfinished"></translation>
+        <translation>acos</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="184"/>
         <source>(</source>
-        <translation type="unfinished"></translation>
+        <translation>(</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="191"/>
         <source>-</source>
-        <translation type="unfinished"></translation>
+        <translation>-</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="198"/>
         <source>/</source>
-        <translation type="unfinished"></translation>
+        <translation>/</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="205"/>
         <source>^</source>
-        <translation type="unfinished"></translation>
+        <translation>^</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="212"/>
         <source>cos</source>
-        <translation type="unfinished"></translation>
+        <translation>cos</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="219"/>
         <source>asin</source>
-        <translation type="unfinished"></translation>
+        <translation>asin</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="226"/>
         <source>atan</source>
-        <translation type="unfinished"></translation>
+        <translation>atan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="233"/>
         <source>)</source>
-        <translation type="unfinished"></translation>
+        <translation>)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="240"/>
         <source>to real</source>
-        <translation type="unfinished"></translation>
+        <translation>дійсне</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="247"/>
         <source>to int</source>
-        <translation type="unfinished"></translation>
+        <translation>ціле</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="254"/>
         <source>to string</source>
-        <translation type="unfinished"></translation>
+        <translation>рядок</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="261"/>
         <source>length</source>
-        <translation type="unfinished"></translation>
+        <translation>довжина</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="268"/>
         <source>area</source>
-        <translation type="unfinished"></translation>
+        <translation>площа</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="278"/>
         <source>Field calculator expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Вираз калькулятора поля</translation>
     </message>
 </context>
 <context>
@@ -10838,22 +10872,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsdevicedialogbase.ui" line="165"/>
         <source>Route upload</source>
-        <translation type="unfinished"></translation>
+        <translation>Вивантаження маршрутів</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsdevicedialogbase.ui" line="175"/>
         <source>Waypoint download</source>
-        <translation type="unfinished"></translation>
+        <translation>Завантаження точок</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsdevicedialogbase.ui" line="192"/>
         <source>Route download</source>
-        <translation type="unfinished"></translation>
+        <translation>Завантаження маршрутів</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsdevicedialogbase.ui" line="209"/>
         <source>Track upload</source>
-        <translation type="unfinished"></translation>
+        <translation>Вивантаження треків</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsdevicedialogbase.ui" line="219"/>
@@ -10878,7 +10912,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsdevicedialogbase.ui" line="247"/>
         <source>Waypoint upload</source>
-        <translation type="unfinished"></translation>
+        <translation>Вивантаження точок</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsdevicedialogbase.ui" line="272"/>
@@ -10887,7 +10921,12 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;In the download and upload commands there can be special words that will be replaced by QGIS when the commands are used. These words are:&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;%babel&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt; - the path to GPSBabel&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;%in&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt; - the GPX filename when uploading or the port when downloading&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;%out&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt; - the port when uploading or the GPX filename when downloading&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt; В командах завантаження та вивантаження можут бути спеціальні слова, які будуть замінені QGIS при виконанні команд. Цими словами є:&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;%babel&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt; - шлях до програми GPSBabel&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;%in&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt; - ім&apos;я GPX-файлу при вивантаженні чи порт при завантаженні
+&lt;br /&gt;&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;%out&lt;/span&gt;&lt;span style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt; -  порт при вивантаженні чи  назва GPX-файлу при завантаженні&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <source>Waypoint upload:</source>
@@ -10909,27 +10948,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="294"/>
         <source>Connecting...</source>
-        <translation type="unfinished">Підключення...</translation>
+        <translation>Підключення...</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="296"/>
         <source>Disconnect</source>
-        <translation type="unfinished"></translation>
+        <translation>Відключити</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="301"/>
         <source>Connect</source>
-        <translation type="unfinished">Підключитися</translation>
+        <translation>Підключитися</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="322"/>
         <source>Connecting on %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Підключення на %1</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="326"/>
         <source>/gps</source>
-        <translation type="unfinished"></translation>
+        <translation>/gps</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="326"/>
@@ -10939,12 +10978,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="345"/>
         <source>Connected...</source>
-        <translation type="unfinished"></translation>
+        <translation>Підключено...</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="358"/>
         <source>Disconnected...</source>
-        <translation type="unfinished"></translation>
+        <translation>Відключено...</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="551"/>
@@ -10959,7 +10998,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="562"/>
         <source>2.5D shape type not supported</source>
-        <translation type="unfinished"></translation>
+        <translation>2.5-вимірний тип фігур не підтримується</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="562"/>
@@ -10994,7 +11033,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="596"/>
         <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося змінити векторний шар. Для редагування перейдіть на пункт Файл шару, клацніть правою кнопкою миші і виберіть прапорець &quot;Дозволити редагування&quot;.</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="605"/>
@@ -11017,14 +11056,14 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="808"/>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="825"/>
         <source>Feature added</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Доданий об&apos;єкт</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="777"/>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="784"/>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="791"/>
         <source>Error</source>
-        <translation type="unfinished">Помилка</translation>
+        <translation>Помилка</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="777"/>
@@ -11034,12 +11073,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="784"/>
         <source>An error was reported during intersection removal</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка під час  видалення перетину</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="791"/>
         <source>Cannot add feature. Unknown WKB type. Choose a different layer and try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдається додати об&apos;єкт. Невідомий WKB-тип. Виберіть інший шар і спробуйте ще раз.</translation>
     </message>
 </context>
 <context>
@@ -11957,7 +11996,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="171"/>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="173"/>
         <source>Error</source>
-        <translation type="unfinished">Помилка</translation>
+        <translation>Помилка</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="171"/>
@@ -12002,7 +12041,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="93"/>
         <source>Equal Interval</source>
-        <translation type="unfinished">Рівні інтервали</translation>
+        <translation>Рівні інтервали</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="98"/>
@@ -12012,17 +12051,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="130"/>
         <source>Classify</source>
-        <translation type="unfinished">Класифікувати</translation>
+        <translation>Класифікувати</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="137"/>
         <source>Add class</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати клас</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="144"/>
         <source>Delete class</source>
-        <translation type="unfinished">Видалити клас</translation>
+        <translation>Видалити клас</translation>
     </message>
 </context>
 <context>
@@ -13155,7 +13194,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="146"/>
         <source>Module: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Модуль: %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="160"/>
@@ -13170,23 +13209,23 @@ at line %2 column %3</source>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1301"/>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1372"/>
         <source>Warning</source>
-        <translation type="unfinished">Попередження</translation>
+        <translation>Попередження</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="160"/>
         <source>The module file (%1) not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл модуля (%1) не знайдено.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="165"/>
         <source>Cannot open module file (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося відкрити файл модуля (%1)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="173"/>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1005"/>
         <source>Cannot read module file (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося прочитати файл модуля (%1)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="174"/>
@@ -13194,96 +13233,96 @@ at line %2 column %3</source>
         <source>
 %1
 at line %2 column %3</source>
-        <translation type="unfinished">
+        <translation>
 %1
 в рядку %2, стоппці %3</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="207"/>
         <source>Module %1 not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Модуль %1 не знайдено</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="251"/>
         <source>Cannot find man page %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося знайти сторінку керівництва %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="252"/>
         <source>Please ensure you have the GRASS documentation installed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Будь ласка, впевніться, що документація GRASS встановлена.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="994"/>
         <source>Not available, description not found (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Модуль не доступний, опис не знайдено (%1)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="998"/>
         <source>Not available, cannot open description (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Модуль не доступний, не вдалося відкрити опис (%1)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1010"/>
         <source>Not available, incorrect description (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Модуль не доступний, неправильний опис (%1)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1141"/>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1406"/>
         <source>Run</source>
-        <translation type="unfinished"></translation>
+        <translation>Виконати</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1172"/>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1199"/>
         <source>Cannot get input region</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося отримати вихідний регіон</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1183"/>
         <source>Input %1 outside current region!</source>
-        <translation type="unfinished"></translation>
+        <translation>Вихідний файл %1 знаходиться за межами поточного регіону!</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1188"/>
         <source>Use Input Region</source>
-        <translation type="unfinished"></translation>
+        <translation>Використовувати вихідний регіон</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1211"/>
         <source>Output %1 exists! Overwrite?</source>
-        <translation type="unfinished"></translation>
+        <translation>Файл виводу %1 вже існує. Перезаписати?</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1301"/>
         <source>Cannot find module %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося знайти модуль %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1372"/>
         <source>Cannot start module: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося запустити модуль: %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1377"/>
         <source>Stop</source>
-        <translation type="unfinished"></translation>
+        <translation>Зупинити</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1390"/>
         <source>&lt;B&gt;Successfully finished&lt;/B&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;B&gt;Успішне завершення&lt;/B&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1399"/>
         <source>&lt;B&gt;Finished with error&lt;/B&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;B&gt;Закінчено з помилкою&lt;/B&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1404"/>
         <source>&lt;B&gt;Module crashed or killed&lt;/B&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;B&gt;Модуль потерпів крах або убитий&lt;/B&gt;</translation>
     </message>
 </context>
 <context>
@@ -13291,42 +13330,42 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="13"/>
         <source>GRASS Module</source>
-        <translation type="unfinished"></translation>
+        <translation>Модуль GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="20"/>
         <source>Options</source>
-        <translation type="unfinished">Параметри</translation>
+        <translation>Параметри</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="25"/>
         <source>Output</source>
-        <translation type="unfinished">Вивід</translation>
+        <translation>Вивід</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="47"/>
         <source>Manual</source>
-        <translation type="unfinished"></translation>
+        <translation>Довідка</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="78"/>
         <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <translation>Мітка</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="116"/>
         <source>Run</source>
-        <translation type="unfinished"></translation>
+        <translation>Виконати</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="139"/>
         <source>View output</source>
-        <translation type="unfinished"></translation>
+        <translation>Показати вивід</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="159"/>
         <source>Close</source>
-        <translation type="unfinished">Закрити</translation>
+        <translation>Закрити</translation>
     </message>
 </context>
 <context>
@@ -13339,12 +13378,12 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2940"/>
         <source>Warning</source>
-        <translation type="unfinished">Попередження</translation>
+        <translation>Попередження</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2940"/>
         <source>&apos;layer&apos; attribute in field tag with key= %1 is missing.</source>
-        <translation type="unfinished"></translation>
+        <translation>Атрибут &apos;шар&apos; в тегі поля з ключем =  %1 пропущений.</translation>
     </message>
 </context>
 <context>
@@ -13377,17 +13416,17 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2663"/>
         <source>OGR/PostGIS/GDAL Input</source>
-        <translation type="unfinished"></translation>
+        <translation>OGR/PostGIS/GDAL Ввід</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2683"/>
         <source>Cannot find layeroption %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося знайти параметр шару %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2698"/>
         <source>Cannot find whereoption %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Не вдалося знайти параметр where %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2744"/>
@@ -13397,12 +13436,12 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2880"/>
         <source>PostGIS driver in OGR does not support schemas!&lt;br&gt;Only the table name will be used.&lt;br&gt;It can result in wrong input if more tables of the same name&lt;br&gt;are present in the database.</source>
-        <translation type="unfinished"></translation>
+        <translation>PostGIS-драйвер в OGR не підтримує схеми! &lt;br&gt; Буде використовуватися тільки ім&apos;я таблиці.&lt;br&gt;Це може вплинути на правильність введення,&lt;br&gt;якщо в базі даних є більше однієї таблиці&lt;br&gt;з однаковими іменами.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2907"/>
         <source>%1:&amp;nbsp;no input</source>
-        <translation type="unfinished"></translation>
+        <translation>%1:&amp;nbsp; параметр не задано</translation>
     </message>
 </context>
 <context>
@@ -13410,7 +13449,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2034"/>
         <source>Input</source>
-        <translation type="unfinished"></translation>
+        <translation>Вихідні дані</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2058"/>
@@ -13418,42 +13457,42 @@ at line %2 column %3</source>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2140"/>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2157"/>
         <source>Warning</source>
-        <translation type="unfinished">Попередження</translation>
+        <translation>Попередження</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2058"/>
         <source>Cannot find typeoption %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдається знайти параметр type %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2067"/>
         <source>Cannot find values for typeoption %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдається знайти значення для параметра type %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2140"/>
         <source>Cannot find layeroption %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося знайти параметр шару %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2157"/>
         <source>GRASS element %1 not supported</source>
-        <translation type="unfinished"></translation>
+        <translation>Елемент GRASS %1 не підтримується</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2181"/>
         <source>Use region of this map</source>
-        <translation type="unfinished"></translation>
+        <translation>Використовувати регіон цієї карти</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2256"/>
         <source>Select a layer</source>
-        <translation type="unfinished">Виберіть шар</translation>
+        <translation>Виберіть шар</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2541"/>
         <source>%1:&amp;nbsp;no input</source>
-        <translation type="unfinished"></translation>
+        <translation>%1:&amp;nbsp; параметр не задано</translation>
     </message>
 </context>
 <context>
@@ -13469,7 +13508,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3013"/>
         <source>Selected categories</source>
-        <translation type="unfinished"></translation>
+        <translation>Вибрані категорії</translation>
     </message>
 </context>
 <context>
@@ -13501,62 +13540,63 @@ at line %2 column %3</source>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="877"/>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="914"/>
         <source>Warning</source>
-        <translation type="unfinished">Попередження</translation>
+        <translation>Попередження</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="316"/>
         <source>Cannot find module %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося знайти модуль %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="334"/>
         <source>Cannot start module %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося запустити модуль: %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="335"/>
         <source>&lt;br&gt;command: %1 %2&lt;br&gt;%3&lt;br&gt;%4</source>
-        <translation type="unfinished">&lt;br&gt;команда: %1 %2&lt;br&gt;%3&lt;br&gt;%4</translation>
+        <translation>&lt;br&gt;команда: %1 %2&lt;br&gt;%3&lt;br&gt;%4</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="349"/>
         <source>Cannot read module description (%1):</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося прочитати опис модуля (%1):</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="350"/>
         <source>
 %1
 at line %2 column %3</source>
-        <translation type="unfinished">
+        <translation>
 %1
 в рядку %2, стоппці %3</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="423"/>
         <source>Cannot find key %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося знайти ключ %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="600"/>
         <source>Item with id %1 not found</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Елемент з ID %1 не знайдено</translatorcomment>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="822"/>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="877"/>
         <source>Cannot get current region</source>
-        <translation type="unfinished">Не вдалося отримати поточний регіон</translation>
+        <translation>Не вдалося отримати поточний регіон</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="854"/>
         <source>Cannot check region of map %1</source>
-        <translation type="unfinished">Не вдалося перевірити регіон карти %1</translation>
+        <translation>Не вдалося перевірити регіон карти %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="914"/>
         <source>Cannot set region of map %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Не вдалося отримати задати регіон карти %1</translation>
     </message>
 </context>
 <context>
@@ -13564,7 +13604,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="127"/>
         <source>Database</source>
-        <translation type="unfinished">База даних</translation>
+        <translation>База даних</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="130"/>
@@ -13632,7 +13672,7 @@ at line %2 column %3</source>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1063"/>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1072"/>
         <source>Warning</source>
-        <translation type="unfinished">Попередження</translation>
+        <translation>Попередження</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="518"/>
@@ -14526,7 +14566,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="139"/>
         <source>This help file is not available in your language %1. If you would like to translate it, please contact the QGIS  development team.</source>
-        <translation type="unfinished"></translation>
+        <translation>Цей файл довідки не доступний на вашій мові %1. Якщо ви хочете його перекласти, будь ласка, зв&apos;яжіться з командою розробників QGIS.</translation>
     </message>
     <message>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="144"/>
@@ -14553,7 +14593,7 @@ at line %2 column %3</source>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="197"/>
         <source>Failed to get the help text from the database:
   %1</source>
-        <translation>Під час отримання тексту довідки з бази даних виникла помилка:
+        <translation>Не вдалося отримати довідковий текст з бази даних:
   %1</translation>
     </message>
     <message>
@@ -19634,7 +19674,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerPluginErrorDialog</name>
     <message>
         <source>no error message received</source>
-        <translation type="unfinished"></translation>
+        <translation>повідомлення про помилку не отримано</translation>
     </message>
 </context>
 <context>
@@ -22945,7 +22985,7 @@ The error was:
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="135"/>
         <source>Label</source>
-        <translation type="unfinished">Підпис</translation>
+        <translation>Мітка</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="116"/>
@@ -25749,47 +25789,47 @@ Tried URL: %1</source>
     <name>VisualDialog</name>
     <message>
         <source>Error!</source>
-        <translation type="unfinished"></translation>
+        <translation>Помилка!</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="unfinished">Будь ласка, вкажіть вхідний векторний шар</translation>
+        <translation>Будь ласка, вкажіть вхідний векторний шар</translation>
     </message>
     <message>
         <source>Please specify input field</source>
-        <translation type="unfinished">Будь ласка, заповніть вхідне поле</translation>
+        <translation>Будь ласка, заповніть вхідне поле</translation>
     </message>
     <message>
         <source>Check geometry validity</source>
-        <translation type="unfinished">Перевірка геометрії</translation>
+        <translation>Перевірка геометрії</translation>
     </message>
     <message>
         <source>Geometry errors</source>
-        <translation type="unfinished">Помилки геометрії</translation>
+        <translation>Помилки геометрії</translation>
     </message>
     <message>
         <source>Total encountered errors</source>
-        <translation type="unfinished">Всього знайдено помилок</translation>
+        <translation>Всього знайдено помилок</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation type="unfinished">Список унікальних значень</translation>
+        <translation>Список унікальних значень</translation>
     </message>
     <message>
         <source>Unique values</source>
-        <translation type="unfinished">Унікальні значення</translation>
+        <translation>Унікальні значення</translation>
     </message>
     <message>
         <source>Total unique values</source>
-        <translation type="unfinished">Всього унікальних значень</translation>
+        <translation>Всього унікальних значень</translation>
     </message>
     <message>
         <source>Basics statistics</source>
-        <translation type="unfinished">Базова статистика</translation>
+        <translation>Базова статистика</translation>
     </message>
     <message>
         <source>Statistics output</source>
-        <translation type="unfinished">Вихідна статистика</translation>
+        <translation>Вихідна статистика</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
@@ -25801,15 +25841,15 @@ Tried URL: %1</source>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Скасувати</translation>
+        <translation>Скасувати</translation>
     </message>
     <message>
         <source>Parameter</source>
-        <translation type="unfinished"></translation>
+        <translation>Параметр</translation>
     </message>
     <message>
         <source>Value</source>
-        <translation type="unfinished">Значення</translation>
+        <translation>Значення</translation>
     </message>
 </context>
 <context>
@@ -25817,17 +25857,17 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_linedecoration.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_linedecoration.ui" line="22"/>
         <source>Color:</source>
-        <translation type="unfinished">Колір:</translation>
+        <translation>Колір:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_linedecoration.ui" line="35"/>
         <source>Change</source>
-        <translation type="unfinished">Змінити</translation>
+        <translation>Змінити</translation>
     </message>
 </context>
 <context>
@@ -25835,17 +25875,17 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Форма</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="22"/>
         <source>Marker:</source>
-        <translation type="unfinished"></translation>
+        <translation>Маркер:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="29"/>
         <source>Change</source>
-        <translation type="unfinished">Змінити</translation>
+        <translation>Змінити</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="52"/>
@@ -29173,19 +29213,19 @@ Plugin will not be enabled.</source>
     <name>visualThread</name>
     <message>
         <source>Max. len:</source>
-        <translation type="unfinished"></translation>
+        <translation>Макс. довжина:</translation>
     </message>
     <message>
         <source>Min. len:</source>
-        <translation type="unfinished"></translation>
+        <translation>Мін. довжина:</translation>
     </message>
     <message>
         <source>Mean. len:</source>
-        <translation type="unfinished"></translation>
+        <translation>Середня довжина:</translation>
     </message>
     <message>
         <source>Filled:</source>
-        <translation type="unfinished"></translation>
+        <translation>Заповнених значень:</translation>
     </message>
     <message>
         <source>Empty:</source>
@@ -29193,27 +29233,27 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>N:</source>
-        <translation type="unfinished"></translation>
+        <translation>N:</translation>
     </message>
     <message>
         <source>Mean:</source>
-        <translation type="unfinished"></translation>
+        <translation>Середнє:</translation>
     </message>
     <message>
         <source>StdDev:</source>
-        <translation type="unfinished"></translation>
+        <translation>Станд. відх.:</translation>
     </message>
     <message>
         <source>Sum:</source>
-        <translation type="unfinished"></translation>
+        <translation>Сума:</translation>
     </message>
     <message>
         <source>Min:</source>
-        <translation type="unfinished"></translation>
+        <translation>Мін.:</translation>
     </message>
     <message>
         <source>Max:</source>
-        <translation type="unfinished"></translation>
+        <translation>Макс.:</translation>
     </message>
     <message>
         <source>CV:</source>
@@ -29221,11 +29261,11 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Number of unique values:</source>
-        <translation type="unfinished"></translation>
+        <translation>Число унікальних значень:</translation>
     </message>
     <message>
         <source>Range:</source>
-        <translation type="unfinished"></translation>
+        <translation>Діапазон:</translation>
     </message>
     <message>
         <source>Median:</source>
@@ -29265,15 +29305,15 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Feature %1 is not closed</source>
-        <translation type="unfinished">Об&apos;єкт %1 не замкнутий</translation>
+        <translation>Об&apos;єкт %1 не замкнутий</translation>
     </message>
     <message>
         <source>Feature %1 is self intersecting</source>
-        <translation type="unfinished">Об&apos;єкт %1 перетинає сам себе</translation>
+        <translation>Об&apos;єкт %1 перетинає сам себе</translation>
     </message>
     <message>
         <source>Feature %1 has incorrect node ordering</source>
-        <translation type="unfinished">Об&apos;єкт %1 має невірний порядок вузлів</translation>
+        <translation>Об&apos;єкт %1 має невірний порядок вузлів</translation>
     </message>
 </context>
 </TS>
