@@ -259,7 +259,7 @@ void QgsIdentifyResults::editingToggled()
 // Call to show the dialog box.
 void QgsIdentifyResults::show()
 {
-  // Enfore a few things before showing the dialog box
+  // Enforce a few things before showing the dialog box
   lstResults->sortItems( 0, Qt::AscendingOrder );
   expandColumnsToFit();
 
@@ -279,6 +279,7 @@ void QgsIdentifyResults::show()
         // don't show the form dialog instead of the results window
         lstResults->setCurrentItem( featItem );
         featureForm();
+        clear();
         return;
       }
     }
