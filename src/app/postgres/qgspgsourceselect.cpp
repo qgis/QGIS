@@ -81,7 +81,6 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WFlags fl )
                                      QAbstractItemView::ExtendedSelection :
                                      QAbstractItemView::MultiSelection );
 
-  mSearchGroupBox->hide();
 
   //for Qt < 4.3.2, passing -1 to include all model columns
   //in search does not seem to work
@@ -93,6 +92,16 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WFlags fl )
   {
     mTablesTreeView->setColumnWidth( i, settings.value( QString( "/Windows/PgSourceSelect/columnWidths/%1" ).arg( i ), mTablesTreeView->columnWidth( i ) ).toInt() );
   }
+
+  //hide the search options by default
+  //they will be shown when the user ticks 
+  //the search options group box
+  mSearchLabel->setVisible( false );
+  mSearchColumnComboBox->setVisible( false );
+  mSearchColumnsLabel->setVisible( false );
+  mSearchModeComboBox->setVisible( false );
+  mSearchModeLabel->setVisible( false );
+  mSearchTableEdit->setVisible( false );
 }
 /** Autoconnected SLOTS **/
 // Slot for adding a new connection
@@ -183,18 +192,6 @@ void QgsPgSourceSelect::on_mTablesTreeView_doubleClicked( const QModelIndex &ind
   else
   {
     setSql( index );
-  }
-}
-
-void QgsPgSourceSelect::on_mSearchOptionsButton_clicked()
-{
-  if ( mSearchGroupBox->isVisible() )
-  {
-    mSearchGroupBox->hide();
-  }
-  else
-  {
-    mSearchGroupBox->show();
   }
 }
 
