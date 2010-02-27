@@ -135,7 +135,6 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsPgSourceSelectBase
     void on_btnSave_clicked();
     //! Loads the selected connections from the file
     void on_btnLoad_clicked();
-    void on_mSearchOptionsButton_clicked();
     void on_mSearchTableEdit_textChanged( const QString & text );
     void on_mSearchColumnComboBox_currentIndexChanged( const QString & text );
     void on_mSearchModeComboBox_currentIndexChanged( const QString & text );
