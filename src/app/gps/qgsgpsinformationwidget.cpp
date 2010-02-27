@@ -526,6 +526,7 @@ void QgsGPSInformationWidget::on_mBtnResetFeature_clicked( )
   if ( mpRubberBand )
   {
     delete mpRubberBand;
+    mpRubberBand = 0;
   }
   createRubberBand( );
   mCaptureList.clear();
