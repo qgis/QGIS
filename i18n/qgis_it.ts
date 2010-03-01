@@ -5096,7 +5096,7 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramoverlayplugin.cpp" line="35"/>
         <source>A plugin for placing diagrams on vector layers</source>
-        <translation>Un plugin che disegna un diagramma sopra un layer vettoriale</translation>
+        <translation>Un plugin che disegna una diagramma sopra un layer vettorial</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramoverlayplugin.cpp" line="36"/>
@@ -6508,7 +6508,7 @@ This copy of QGIS writes debugging output.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2195"/>
         <source>Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.3.0. If an unchanging user interface, programmatic API and long term support is more important to you then cool new and untested features, we recommend that you use a copy of QGIS from our Long Term Support (LTS)1.0.x release series. In all other cases we recommend that you use this version.</source>
-        <translation>Si prega di notare che questa è una versione &apos;cutting edge&apos; (all&apos;avanguardia). In quanto tale contiene nuove funzionalità e estende l&apos;interfaccia di programmazione su QGIS 1.0.x e QGIS 1.3.0. Se si ritiene che sia meglio avere un&apos;interfaccia utente immutabile, API di programmazione ed un supporto a lungo termine è più importante rinunciare alle nuove funzionalità e utilizzare una copia di QGIS di long term support (LTS) della serie 1.0.x. In tutti gli altri casi si consiglia di utilizzare questa versione.</translation>
+        <translation>Si prega di notare che questa è una versione &apos;cutting edge&apos; (all&apos;avanguardia). In quanto tale contiene nuove funzionalità e estende l&apos;interfaccia di programmazione su QGIS 1.0.x e QGIS 1.3.0. Se si ritiene che sia meglio avere un&apos;interfaccia utente immutabile, API di programmazione ed un supporto a lungo termine è più importante rinunciare alle nuove funzionalità e utilizzare una copia di QGIS di long term support (LTS) della serie 1.0.x serie. In tutti gli altri casi si consiglia di utilizzare questa versione.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2203"/>
@@ -19873,7 +19873,7 @@ p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot;
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="801"/>
         <source>Data defined position</source>
-        <translation>Posizione definita da attributo</translation>
+        <translation>Posizione definita daattributo</translation>
     </message>
     <message>
         <source>Font transparency</source>
@@ -19945,12 +19945,12 @@ p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot;
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="517"/>
         <source>Data defined placement</source>
-        <translation>Posizione definita da attributo</translation>
+        <translation>Definizione piazzamento dati</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="564"/>
         <source>Data defined properties</source>
-        <translation>Proprietà definita da attributo</translation>
+        <translation>Proprietà definizione data</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="576"/>
@@ -20019,7 +20019,7 @@ p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot;
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="293"/>
         <source>Use scale dependent rendering</source>
-        <translation>Visualizzare il tema in funzione della scala</translation>
+        <translation>Utilizzare un rendering in funzione della scala</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="305"/>
@@ -32419,7 +32419,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="532"/>
         <source>Line edit</source>
-        <translation>Modifica valore</translation>
+        <translation>Modifica linea</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="533"/>
@@ -32597,7 +32597,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="537"/>
         <source>Use scale dependent rendering</source>
-        <translation>Visualizzare il tema in funzione della scala</translation>
+        <translation>Utilizzare un render in funzione della scala</translation>
     </message>
     <message>
         <source>Maximum 1:</source>
