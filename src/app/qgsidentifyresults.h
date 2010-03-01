@@ -137,18 +137,16 @@ class QgsFeatureAction : public QAction
     Q_OBJECT
 
   public:
-    QgsFeatureAction( const QString &name, QgsIdentifyResults *results, QgsVectorLayer *vl, int action, QTreeWidgetItem *featItem ) :
-        QAction( name, results ), mResults( results ), mLayer( vl ), mAction( action ), mFeatItem( featItem )
-    {}
+    QgsFeatureAction( const QString &name, QgsIdentifyResults *results, QgsVectorLayer *vl, int action, QTreeWidgetItem *featItem );
 
   public slots:
     void execute();
 
   private:
-    QgsIdentifyResults *mResults;
     QgsVectorLayer *mLayer;
     int mAction;
-    QTreeWidgetItem *mFeatItem;
+    int mIdx;
+    QList< QPair<QString, QString> > mAttributes;
 };
 
 #endif

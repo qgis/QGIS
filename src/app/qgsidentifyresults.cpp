@@ -47,12 +47,18 @@ static void _runPythonString( const QString &expr )
   QgisApp::instance()->runPythonString( expr );
 }
 
+QgsFeatureAction::QgsFeatureAction( const QString &name, QgsIdentifyResults *results, QgsVectorLayer *vl, int action, QTreeWidgetItem *featItem )
+    : QAction( name, results )
+    , mLayer( vl )
+    , mAction( action )
+{
+  QList< QPair<QString, QString> > attributes;
+  results->retrieveAttributes( featItem, mAttributes, mIdx );
+}
+
 void QgsFeatureAction::execute()
 {
-  int idx;
-  QList< QPair<QString, QString> > attributes;
-  mResults->retrieveAttributes( mFeatItem, attributes, idx );
-  mLayer->actions()->doAction( mAction, attributes, idx, _runPythonString );
+  mLayer->actions()->doAction( mAction, mAttributes, mIdx, _runPythonString );
 }
 
 class QgsIdentifyResultsDock : public QDockWidget
