@@ -216,7 +216,7 @@ not disjoint with existing polygons of the feature*/
     @param topological true if topological editing is enabled
     @topologyTestPoints OUT: points that need to be tested for topological completeness in the dataset
     @return 0 in case of success, 1 if geometry has not been split, error else*/
-    int splitGeometry(const QList<QgsPoint>& splitLine, QList<QgsGeometry*>& newGeometries, bool topological, QList<QgsPoint>& topologyTestPoints);
+    int splitGeometry(const QList<QgsPoint>& splitLine, QList<QgsGeometry*>& newGeometries /Out/, bool topological, QList<QgsPoint>& topologyTestPoints /Out/);
 
 /**Replaces a part of this geometry with another line
       @return 0 in case of success
