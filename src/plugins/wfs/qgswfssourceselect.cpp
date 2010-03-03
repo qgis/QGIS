@@ -24,6 +24,7 @@
 #include "qgsproject.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgslogger.h"
+#include "qgsmapcanvas.h" //for current view extent
 #include <QDomDocument>
 #include <QListWidgetItem>
 #include <QMessageBox>
@@ -366,7 +367,15 @@ void QgsWFSSourceSelect::addLayer()
   //add a wfs layer to the map
   if ( mIface )
   {
-    mIface->addVectorLayer( uri + "SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=" + typeName + crsString, typeName, "WFS" );
+    //get current extent
+    QgsMapCanvas* canvas = mIface->mapCanvas();
+    QString bBoxString;
+    if ( canvas && mBboxCheckBox->isChecked() )
+    {
+      QgsRectangle currentExtent = canvas->extent();
+      bBoxString = QString( "&BBOX=%1,%2,%3,%4" ).arg( currentExtent.xMinimum() ).arg( currentExtent.yMinimum() ).arg( currentExtent.xMaximum() ).arg( currentExtent.yMaximum() );
+    }
+    mIface->addVectorLayer( uri + "SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=" + typeName + crsString + bBoxString, typeName, "WFS" );
   }
   accept();
 }
