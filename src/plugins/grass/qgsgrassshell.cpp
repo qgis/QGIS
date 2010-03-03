@@ -46,38 +46,18 @@ QgsGrassShell::QgsGrassShell( QgsGrassTools *tools, QTabWidget *parent, const ch
   connect( copyShortcut, SIGNAL( activated() ), mTerminal, SLOT( copyClipboard() ) );
 
   // TODO: find a better way to manage the lockfile.
+  // Locking should not be done here, a mapset is either locked by GRASS if QGIS is started from GRASS or it is created by QgsGrass::openMapset
+  /*
   mLockFilename = QgsGrass::lockFilePath();
   QFile::remove( mLockFilename + ".qgis" );
   if ( !QFile::rename( mLockFilename, mLockFilename + ".qgis" ) )
   {
     QMessageBox::warning( this, tr( "Warning" ), tr( "Cannot rename the lock file %1" ).arg( mLockFilename ) );
   }
+  */
 
   mTerminal->setSize( 80, 25 );
   mTerminal->startShellProgram();
-  // using -text option GRASS_GUI is owerridden so we have to reset it 
-  QgsDebugMsg ( "gisrc = " + QgsGrass::gisrcFilePath() );
-  QFile in( QgsGrass::gisrcFilePath() );
-  if ( in.open( QIODevice::ReadOnly ) ) 
-  {
-    char buf[1000];
-    QString oldGui;
-    while ( in.readLine( buf, 1000 ) != -1 )
-    {
-      QString line = buf;
-      QStringList kv = line.split ( ':' );
-      if ( kv.length() == 2 &&  kv.at(0) == "GRASS_GUI" ) 
-      {
-        oldGui = kv.at(1).trimmed ();
-        break;
-      }
-    }
-    if ( ! oldGui.isEmpty() ) 
-    {
-      QString cmd = QString("g.gisenv set=GRASS_GUI=") + oldGui + "\n";
-      mTerminal->sendText( cmd );
-    }
-  }
   mTerminal->setFocus( Qt::MouseFocusReason );
 }
 
@@ -91,11 +71,13 @@ void QgsGrassShell::closeShell()
   mTabWidget->removeTab( index );
 
   // TODO: find a better way to manage the lockfile.
+  // No locking should be done here, see above
+  /*
   if ( !QFile::rename( mLockFilename + ".qgis", mLockFilename ) )
   {
     QMessageBox::warning( this, tr( "Warning" ), tr( "Cannot rename the lock file %1" ).arg( mLockFilename ) );
   }
-
+  */
   this->deleteLater();
 }
 
@@ -104,18 +86,22 @@ void QgsGrassShell::initTerminal( QTermWidget *terminal )
   QStringList env( "" );
   QStringList args( "" );
 
-  QString shellProgram = QString( "%1/etc/Init.sh" ).arg( ::getenv( "GISBASE" ) );
+  // GRASS Init.sh should not be started here, it is either run when GRASS is started if QGIS is run from GRASS shell or everything (set environment variables and lock mapset) is done in QgsGrass::openMapset
+  //QString shellProgram = QString( "%1/etc/Init.sh" ).arg( ::getenv( "GISBASE" ) );
 
-  terminal->setShellProgram( shellProgram );
+  //terminal->setShellProgram( shellProgram );
   env << "TERM=vt100";
   env << "GISRC_MODE_MEMORY";
-  // This is also overriden by Init.sh, it should not be run at all, either QGIS is started from shell or a mapset is open from QGIS, Init.sh opens the session second time
+  // TODO: we should check if these environment variable were set by user before QGIS was started
   env << "GRASS_HTML_BROWSER=" + QgsApplication::pkgDataPath() + "/grass/bin/qgis.g.browser";
+  env << "GRASS_WISH=wish";
+  env << "GRASS_TCLSH=tclsh";
+  env << "GRASS_PYTHON=python";
 
-  args << "-text";
-  args << QString( "%1/%2/%3" ).arg( QgsGrass::getDefaultGisdbase() ).arg( QgsGrass::getDefaultLocation() ).arg( QgsGrass::getDefaultMapset() );
+  //args << "-text";
+  //args << QString( "%1/%2/%3" ).arg( QgsGrass::getDefaultGisdbase() ).arg( QgsGrass::getDefaultLocation() ).arg( QgsGrass::getDefaultMapset() );
 
-  terminal->setArgs( args );
+  //terminal->setArgs( args );
   terminal->setEnvironment( env );
 
   // Look & Feel
