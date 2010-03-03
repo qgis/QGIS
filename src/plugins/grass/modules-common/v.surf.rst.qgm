@@ -3,7 +3,7 @@
 
 <qgisgrassmodule label="Regularized spline with tension raster interpolation based on vector points" module="v.surf.rst">
 	<option key="input" layeroption="layer" typemask="point,line" id="input" />
-	<field key="zcolumn" layerid="input" type="integer,double" label="Attribute field (interpolated values)" />
+	<field key="zcolumn" layer="input" type="integer,double" label="Attribute field (interpolated values)" />
 	<option key="tension" />
 	<!--option key="smooth" /-->
 	<option key="elev" />
