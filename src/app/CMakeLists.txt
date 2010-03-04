@@ -6,7 +6,6 @@ SET(QGIS_APP_SRCS
   qgsaddattrdialog.cpp
   qgsattributeactiondialog.cpp
   qgsattributedialog.cpp
-  qgsattributeeditor.cpp
   qgsattributetypedialog.cpp
   qgsattributetypeloaddialog.cpp
   qgsavoidintersectionsdialog.cpp
@@ -123,7 +122,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsaddattrdialog.h
   qgsattributeactiondialog.h
   qgsattributedialog.h
-  qgsattributeeditor.h
   qgsattributetypedialog.h
   qgsattributetypeloaddialog.h
   qgsavoidintersectionsdialog.h
