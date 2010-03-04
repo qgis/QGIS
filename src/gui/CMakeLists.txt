@@ -21,6 +21,7 @@ symbology-ng/characterwidget.cpp
 
 qgisgui.cpp
 qgisinterface.cpp
+qgsattributeeditor.cpp
 qgslegendinterface.cpp
 qgscolorbutton.cpp
 qgscomposerview.cpp
@@ -68,6 +69,7 @@ symbology-ng/qgsvectorrandomcolorrampv2dialog.h
 symbology-ng/qgsvectorcolorbrewercolorrampv2dialog.h
 symbology-ng/characterwidget.h
 
+qgsattributeeditor.h
 qgscomposerview.h
 qgsdetaileditemdelegate.h
 qgsdetaileditemwidget.h
