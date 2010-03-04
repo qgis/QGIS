@@ -1310,8 +1310,6 @@
 		72D0A53C1018971A00EE6279 /* qgsattributetypeloaddialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72D0A537101896AA00EE6279 /* qgsattributetypeloaddialog.cpp */; };
 		72D0A53D1018971A00EE6279 /* qgsattributetypeloaddialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72D0A536101896AA00EE6279 /* qgsattributetypeloaddialog.h */; };
 		72D0A5431018980500EE6279 /* qgsmarkercatalogue.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E7380F39E57A003DC336 /* qgsmarkercatalogue.h */; };
-		72D0A5471018990100EE6279 /* qgsattributeeditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72D0A5451018989600EE6279 /* qgsattributeeditor.cpp */; };
-		72D0A5481018990100EE6279 /* qgsattributeeditor.h in Sources */ = {isa = PBXBuildFile; fileRef = 72D0A5441018989600EE6279 /* qgsattributeeditor.h */; };
 		72D2486F1100CD7400923469 /* qgsgpsdetector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72D2486D1100CD2300923469 /* qgsgpsdetector.cpp */; };
 		72D248701100CD7400923469 /* qgsgpsdetector.h in Sources */ = {isa = PBXBuildFile; fileRef = 72D2486E1100CD2300923469 /* qgsgpsdetector.h */; };
 		72D84C1F1044BC3A009F8F39 /* qgsmaptoolreshape.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72D84C1D1044BBFD009F8F39 /* qgsmaptoolreshape.cpp */; };
@@ -1570,6 +1568,8 @@
 		72ED33A9110FD66D00526CF5 /* qgspluginlayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 72ED33A3110FCB4D00526CF5 /* qgspluginlayer.h */; };
 		72ED33AA110FD66D00526CF5 /* qgspluginlayerregistry.h in Headers */ = {isa = PBXBuildFile; fileRef = 72ED33A5110FCB4D00526CF5 /* qgspluginlayerregistry.h */; };
 		72EFB924105068590050AC82 /* osmprovider.h in Sources */ = {isa = PBXBuildFile; fileRef = 72DB68D41021D06C00ED5F3A /* osmprovider.h */; };
+		72F02DFA113FFBEB00C54E76 /* qgsattributeeditor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72D0A5451018989600EE6279 /* qgsattributeeditor.cpp */; };
+		72F02DFB113FFBF300C54E76 /* qgsattributeeditor.h in Sources */ = {isa = PBXBuildFile; fileRef = 72D0A5441018989600EE6279 /* qgsattributeeditor.h */; };
 		72F22FB70FDAC209000E8CB0 /* qgsmaptoolnodetool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72F22FB50FDAC1F4000E8CB0 /* qgsmaptoolnodetool.cpp */; };
 		72F4862210AB755200E7BFEE /* qgscomposermanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72F4862010AB753D00E7BFEE /* qgscomposermanager.cpp */; };
 		72F4862310AB755200E7BFEE /* qgscomposermanager.h in Sources */ = {isa = PBXBuildFile; fileRef = 72F4862110AB753D00E7BFEE /* qgscomposermanager.h */; };
@@ -6849,8 +6849,8 @@
 		72D0A539101896AA00EE6279 /* qgsattributetypedialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsattributetypedialog.cpp; path = ../../src/app/qgsattributetypedialog.cpp; sourceTree = SOURCE_ROOT; };
 		72D0A53F1018975800EE6279 /* qgsattributetypeedit.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgsattributetypeedit.ui; path = ../../src/ui/qgsattributetypeedit.ui; sourceTree = SOURCE_ROOT; };
 		72D0A5401018975800EE6279 /* qgsattributeloadfrommap.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgsattributeloadfrommap.ui; path = ../../src/ui/qgsattributeloadfrommap.ui; sourceTree = SOURCE_ROOT; };
-		72D0A5441018989600EE6279 /* qgsattributeeditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsattributeeditor.h; path = ../../src/app/qgsattributeeditor.h; sourceTree = SOURCE_ROOT; };
-		72D0A5451018989600EE6279 /* qgsattributeeditor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsattributeeditor.cpp; path = ../../src/app/qgsattributeeditor.cpp; sourceTree = SOURCE_ROOT; };
+		72D0A5441018989600EE6279 /* qgsattributeeditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsattributeeditor.h; path = ../../src/gui/qgsattributeeditor.h; sourceTree = SOURCE_ROOT; };
+		72D0A5451018989600EE6279 /* qgsattributeeditor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsattributeeditor.cpp; path = ../../src/gui/qgsattributeeditor.cpp; sourceTree = SOURCE_ROOT; };
 		72D232D30F4A206E000B9039 /* qgis_user-template.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "qgis_user-template.xcconfig"; sourceTree = SOURCE_ROOT; };
 		72D2486D1100CD2300923469 /* qgsgpsdetector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsgpsdetector.cpp; path = ../../src/core/gps/qgsgpsdetector.cpp; sourceTree = SOURCE_ROOT; };
 		72D2486E1100CD2300923469 /* qgsgpsdetector.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsgpsdetector.h; path = ../../src/core/gps/qgsgpsdetector.h; sourceTree = SOURCE_ROOT; };
@@ -7929,8 +7929,6 @@
 				7209E5F40F39E57A003DC336 /* qgsattributeactiondialog.h */,
 				7209E5F50F39E57A003DC336 /* qgsattributedialog.cpp */,
 				7209E5F60F39E57A003DC336 /* qgsattributedialog.h */,
-				72D0A5451018989600EE6279 /* qgsattributeeditor.cpp */,
-				72D0A5441018989600EE6279 /* qgsattributeeditor.h */,
 				72D0A536101896AA00EE6279 /* qgsattributetypeloaddialog.h */,
 				72D0A537101896AA00EE6279 /* qgsattributetypeloaddialog.cpp */,
 				72D0A538101896AA00EE6279 /* qgsattributetypedialog.h */,
@@ -8504,6 +8502,8 @@
 				7209E7430F39E57A003DC336 /* qgisgui.h */,
 				7209E7440F39E57A003DC336 /* qgisinterface.cpp */,
 				7209E7450F39E57A003DC336 /* qgisinterface.h */,
+				72D0A5451018989600EE6279 /* qgsattributeeditor.cpp */,
+				72D0A5441018989600EE6279 /* qgsattributeeditor.h */,
 				7209E7460F39E57A003DC336 /* qgscolorbutton.cpp */,
 				7209E7470F39E57A003DC336 /* qgscolorbutton.h */,
 				7209E7480F39E57A003DC336 /* qgscomposerview.cpp */,
@@ -14885,6 +14885,7 @@
 			files = (
 				7209F38F0F3A2FC3003DC336 /* qgisgui.cpp in Sources */,
 				7209F3900F3A2FC3003DC336 /* qgisinterface.cpp in Sources */,
+				72F02DFA113FFBEB00C54E76 /* qgsattributeeditor.cpp in Sources */,
 				7209F3910F3A2FC3003DC336 /* qgscolorbutton.cpp in Sources */,
 				7209F3920F3A2FC3003DC336 /* qgscomposerview.cpp in Sources */,
 				7209F3930F3A2FC3003DC336 /* qgscursors.cpp in Sources */,
@@ -14911,6 +14912,7 @@
 				7209F3A70F3A2FC3003DC336 /* qgsrubberband.cpp in Sources */,
 				7209F3A80F3A2FC3003DC336 /* qgsvertexmarker.cpp in Sources */,
 				729287950F71D415006D9489 /* qgisinterface.h in Sources */,
+				72F02DFB113FFBF300C54E76 /* qgsattributeeditor.h in Sources */,
 				729287960F71D415006D9489 /* qgscomposerview.h in Sources */,
 				729287970F71D415006D9489 /* qgsdetaileditemdelegate.h in Sources */,
 				729287980F71D415006D9489 /* qgsdetaileditemwidget.h in Sources */,
@@ -15547,7 +15549,6 @@
 				7209F42B0F3A468C003DC336 /* qgsaddattrdialog.cpp in Sources */,
 				7209F42C0F3A468C003DC336 /* qgsattributeactiondialog.cpp in Sources */,
 				7209F42D0F3A468C003DC336 /* qgsattributedialog.cpp in Sources */,
-				72D0A5471018990100EE6279 /* qgsattributeeditor.cpp in Sources */,
 				7209F4300F3A468C003DC336 /* qgsbookmarkitem.cpp in Sources */,
 				7209F4310F3A468C003DC336 /* qgsbookmarks.cpp in Sources */,
 				7209F4320F3A468C003DC336 /* qgsclipboard.cpp in Sources */,
@@ -15629,7 +15630,6 @@
 				7292887E0F71FE65006D9489 /* qgsaddattrdialog.h in Sources */,
 				7292887F0F71FE65006D9489 /* qgsattributeactiondialog.h in Sources */,
 				729288800F71FE65006D9489 /* qgsattributedialog.h in Sources */,
-				72D0A5481018990100EE6279 /* qgsattributeeditor.h in Sources */,
 				729288830F71FE65006D9489 /* qgsbookmarks.h in Sources */,
 				729288840F71FE65006D9489 /* qgscomposer.h in Sources */,
 				721EED6A10BE0453006FF69B /* qgscomposerarrowwidget.h in Sources */,
@@ -19361,7 +19361,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 12967;
+				QGIS_VERSION_BUILD = 12997;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -19372,7 +19372,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 12967;
+				QGIS_VERSION_BUILD = 12997;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
