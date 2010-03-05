@@ -144,6 +144,8 @@ class CORE_EXPORT QgsPoint
     /**Returns the squared distance between this and other point*/
     double sqrDist( const QgsPoint& other ) const;
 
+    /**Returns the minimum distance between this point and a segment
+    @note added in QGIS 1.5*/
     double sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPoint& minDistPoint ) const;
 
     //! equality operator
