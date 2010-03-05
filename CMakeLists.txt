@@ -170,7 +170,8 @@ ENDIF (SPATIALITE_FOUND)
 
 #############################################################
 # search for Qt4
-FIND_PACKAGE(Qt4 4.4 COMPONENTS QtCore QtGui QtXml QtNetwork QtSvg QtSql QtWebKit REQUIRED)
+SET(QT_MIN_VERSION 4.4.0)
+FIND_PACKAGE(Qt4 ${QT_MIN_VERSION} COMPONENTS QtCore QtGui QtXml QtNetwork QtSvg QtSql QtWebKit REQUIRED)
 
 IF (NOT QT_QTXML_FOUND OR NOT QT_QTNETWORK_FOUND OR NOT QT_QTSVG_FOUND OR NOT QT_QTSQL_FOUND OR NOT QT_QTWEBKIT_FOUND)
   MESSAGE(SEND_ERROR "Some Qt4 modules haven't been found!")
