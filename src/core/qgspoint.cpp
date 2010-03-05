@@ -238,3 +238,32 @@ int QgsPoint::onSegment( const QgsPoint& a, const QgsPoint& b ) const
 
   return 2;
 }
+
+double QgsPoint::sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPoint& minDistPoint ) const
+{
+  double nx, ny; //normal vector
+
+  nx = y2 - y1;
+  ny = -( x2 - x1 );
+
+  double t;
+  t = ( m_x * ny - m_y * nx - x1 * ny + y1 * nx ) / (( x2 - x1 ) * ny - ( y2 - y1 ) * nx );
+
+  if ( t < 0.0 )
+  {
+    minDistPoint.setX( x1 );
+    minDistPoint.setY( y1 );
+  }
+  else if ( t > 1.0 )
+  {
+    minDistPoint.setX( x2 );
+    minDistPoint.setY( y2 );
+  }
+  else
+  {
+    minDistPoint.setX( x1 + t *( x2 - x1 ) );
+    minDistPoint.setY( y1 + t *( y2 - y1 ) );
+  }
+
+  return ( sqrDist( minDistPoint ) );
+}

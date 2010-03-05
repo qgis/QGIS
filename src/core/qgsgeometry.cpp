@@ -2453,7 +2453,7 @@ double QgsGeometry::closestSegmentWithContext(
 
         if ( index > 0 )
         {
-          if (( testdist = distanceSquaredPointToSegment( point, prevx, prevy, thisx, thisy, distPoint ) ) < sqrDist )
+          if (( testdist = point.sqrDistToSegment( *prevx, *prevy, *thisx, *thisy, distPoint ) ) < sqrDist )
           {
             closestSegmentIndex = index;
             sqrDist = testdist;
@@ -2497,7 +2497,7 @@ double QgsGeometry::closestSegmentWithContext(
           }
           if ( prevx && prevy )
           {
-            if (( testdist = distanceSquaredPointToSegment( point, prevx, prevy, thisx, thisy, distPoint ) ) < sqrDist )
+            if (( testdist = point.sqrDistToSegment( *prevx, *prevy, *thisx, *thisy, distPoint ) ) < sqrDist )
             {
               closestSegmentIndex = pointindex;
               sqrDist = testdist;
@@ -2539,7 +2539,7 @@ double QgsGeometry::closestSegmentWithContext(
           }
           if ( prevx && prevy )
           {
-            if (( testdist = distanceSquaredPointToSegment( point, prevx, prevy, thisx, thisy, distPoint ) ) < sqrDist )
+            if (( testdist = point.sqrDistToSegment( *prevx, *prevy, *thisx, *thisy, distPoint ) ) < sqrDist )
             {
               closestSegmentIndex = index;
               sqrDist = testdist;
@@ -2587,7 +2587,7 @@ double QgsGeometry::closestSegmentWithContext(
             }
             if ( prevx && prevy )
             {
-              if (( testdist = distanceSquaredPointToSegment( point, prevx, prevy, thisx, thisy, distPoint ) ) < sqrDist )
+              if (( testdist = point.sqrDistToSegment( *prevx, *prevy, *thisx, *thisy, distPoint ) ) < sqrDist )
               {
                 closestSegmentIndex = pointindex;
                 sqrDist = testdist;
@@ -4677,102 +4677,6 @@ bool QgsGeometry::exportGeosToWkb()
   } // switch (mGeos->getGeometryTypeId())
 
   return FALSE;
-}
-
-
-
-
-double QgsGeometry::distanceSquaredPointToSegment(
-  const QgsPoint& point,
-  double *x1, double *y1,
-  double *x2, double *y2,
-  QgsPoint& minDistPoint )
-{
-
-  double nx, ny; //normal vector
-
-  nx = *y2 - *y1;
-  ny = -( *x2 - *x1 );
-
-  double t;
-  t = ( point.x() * ny - point.y() * nx - *x1 * ny + *y1 * nx ) / (( *x2 - *x1 ) * ny - ( *y2 - *y1 ) * nx );
-
-  if ( t < 0.0 )
-  {
-    minDistPoint.setX( *x1 );
-    minDistPoint.setY( *y1 );
-  }
-  else if ( t > 1.0 )
-  {
-    minDistPoint.setX( *x2 );
-    minDistPoint.setY( *y2 );
-  }
-  else
-  {
-    minDistPoint.setX( *x1 + t *( *x2 - *x1 ) );
-    minDistPoint.setY( *y1 + t *( *y2 - *y1 ) );
-  }
-
-  return ( minDistPoint.sqrDist( point ) );
-#if 0
-  double d;
-
-  // Proportion along segment (0 to 1) the perpendicular of the point falls upon
-  double t;
-
-
-  // Projection of point on the segment
-  double xn;
-  double yn;
-
-  double segmentsqrdist = ( *x2 - *x1 ) * ( *x2 - *x1 ) +
-                          ( *y2 - *y1 ) * ( *y2 - *y1 );
-
-  // QgsDebugMsg(QString("Entered with (%1, %2) (%3, %4) %5.").arg(*x1).arg(*y1).arg(*x2).arg(*y2).arg(segmentsqrdist));
-
-
-  if ( segmentsqrdist == 0.0 )
-  {
-    // segment is a point
-    xn = *x1;
-    yn = *y1;
-  }
-  else
-  {
-
-    d =
-      ( point.x() - *x1 ) * ( *x2 - *x1 )
-      + ( point.y() - *y1 ) * ( *y2 - *y1 );
-
-    t = d / segmentsqrdist;
-
-    // Do not go beyond end of line
-    // (otherwise this would be a comparison to an infinite line)
-    if ( t < 0.0 )
-    {
-      xn = *x1;
-      yn = *y1;
-    }
-    else if ( t > 1.0 )
-    {
-      xn = *x2;
-      yn = *y2;
-    }
-    else
-    {
-      xn = *x1 + t * ( *x2 - *x1 );
-      yn = *y1 + t * ( *y2 - *y1 );
-    }
-
-  }
-
-  minDistPoint.set( xn, yn );
-
-  return (
-           ( xn - point.x() ) *( xn - point.x() ) +
-           ( yn - point.y() ) *( yn - point.y() )
-         );
-#endif //0
 }
 
 bool QgsGeometry::convertToMultiType()
