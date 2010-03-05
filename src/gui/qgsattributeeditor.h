@@ -25,7 +25,7 @@ class QWidget;
 class QgsVectorLayer;
 class QComboBox;
 
-class QgsAttributeEditor : public QObject
+class GUI_EXPORT QgsAttributeEditor : public QObject
 {
     Q_OBJECT
 
