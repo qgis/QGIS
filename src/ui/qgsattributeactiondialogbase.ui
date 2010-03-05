@@ -244,12 +244,12 @@
         </item>
         <item>
          <property name="text">
-          <string>Windows</string>
+          <string>Mac</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>Mac</string>
+          <string>Windows</string>
          </property>
         </item>
         <item>
