@@ -188,11 +188,7 @@ void GRASS_EXPORT QgsGrass::init( void )
   }
 
   QgsDebugMsg( QString( "Valid GRASS gisBase is: %1" ).arg( gisBase ) );
-  QString gisBaseEnv = "GISBASE=" + gisBase;
-  /* _Correct_ putenv() implementation is not making copy! */
-  char *gisBaseEnvChar = new char[gisBaseEnv.toUtf8().length()+1];
-  strcpy( gisBaseEnvChar, gisBaseEnv.toUtf8().constData() );
-  putenv( gisBaseEnvChar );
+  putEnv ( "GISBASE", gisBase );
 
   // Add path to GRASS modules
 #ifdef WIN32
@@ -200,7 +196,7 @@ void GRASS_EXPORT QgsGrass::init( void )
 #else
   QString sep = ":";
 #endif
-  QString path = "PATH=" + gisBase + "/bin";
+  QString path = gisBase + "/bin";
   path.append( sep + gisBase + "/scripts" );
   path.append( sep +  QgsApplication::pkgDataPath() + "/grass/scripts/" );
 
@@ -223,18 +219,14 @@ void GRASS_EXPORT QgsGrass::init( void )
   path.append( sep + p );
 
   QgsDebugMsg( QString( "set PATH: %1" ).arg( path ) );
-  char *pathEnvChar = new char[path.toUtf8().length()+1];
-  strcpy( pathEnvChar, path.toUtf8().constData() );
-  putenv( pathEnvChar );
+  putEnv ( "PATH", path );
 
   // Set PYTHONPATH
-  QString pythonpath = "PYTHONPATH=" + gisBase + "/etc/python";
+  QString pythonpath = gisBase + "/etc/python";
   QString pp = getenv( "PATH" );
   pythonpath.append( sep + pp );
   QgsDebugMsg( QString( "set PYTHONPATH: %1" ).arg( pythonpath ) );
-  char *pythonpathEnvChar = new char[pythonpath.toUtf8().length()+1];
-  strcpy( pythonpathEnvChar, pythonpath.toUtf8().constData() );
-  putenv( pythonpathEnvChar );
+  putEnv ( "PYTHONPATH", pythonpath );
 
   // Set GRASS_PAGER if not set, it is necessary for some
   // modules printing to terminal, e.g. g.list
@@ -273,10 +265,7 @@ void GRASS_EXPORT QgsGrass::init( void )
 
     if ( pager.length() > 0 )
     {
-      pager.prepend( "GRASS_PAGER=" );
-      char *pagerEnvChar = new char[pager.length()+1];
-      strcpy( pagerEnvChar, pager.toUtf8().constData() );
-      putenv( pagerEnvChar );
+      putEnv ( "GRASS_PAGER", pager );
     }
   }
 
@@ -558,13 +547,10 @@ QString GRASS_EXPORT QgsGrass::openMapset( QString gisdbase, QString location, Q
   // Set GISRC environment variable
 
   /* _Correct_ putenv() implementation is not making copy! */
-  QString gisrcEnv = "GISRC=" + mGisrc;
-  char *gisrcEnvChar = new char[gisrcEnv.toUtf8().length()+1];
-  strcpy( gisrcEnvChar, gisrcEnv.toLocal8Bit().constData() );
-  putenv( gisrcEnvChar );
+  putEnv ( "GISRC", mGisrc );
 
   // Reinitialize GRASS
-  G__setenv(( char * ) "GISRC", gisrcEnv.toUtf8().data() );
+  G__setenv(( char * ) "GISRC", mGisrc.toUtf8().data() );
 #if defined(WIN32)
   G__setenv(( char * ) "GISDBASE", shortPath( gisdbase ).toLocal8Bit().data() );
 #else
@@ -1258,3 +1244,11 @@ QString GRASS_EXPORT QgsGrass::gisrcFilePath()
   return mGisrc;
 }
 
+void GRASS_EXPORT QgsGrass::putEnv( QString name, QString value )
+{
+  QString env = name + "=" + value;
+  /* _Correct_ putenv() implementation is not making copy! */
+  char *envChar = new char[env.toUtf8().length()+1];
+  strcpy( envChar, env.toUtf8().constData() );
+  putenv( envChar );
+}
