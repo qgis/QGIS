@@ -419,14 +419,6 @@ class CORE_EXPORT QgsGeometry
 
     // Private functions
 
-    /** Squared distance from point to the given line segment
-     *  TODO: Perhaps move this to QgsPoint
-     */
-    double distanceSquaredPointToSegment( const QgsPoint& point,
-                                          double *x1, double *y1,
-                                          double *x2, double *y2,
-                                          QgsPoint& minDistPoint );
-
     /** Converts from the WKB geometry to the GEOS geometry.
         @return   true in case of success and false else
      */
