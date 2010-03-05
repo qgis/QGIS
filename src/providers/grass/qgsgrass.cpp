@@ -55,6 +55,8 @@ QString GRASS_EXPORT QgsGrass::shortPath( const QString &path )
   }
 
   QString res = QString::fromUtf8( buf );
+  // GRASS wxpyton GUI fails on paths with backslash, Windows do support forward slashesin paths
+  res.replace ("\\", "/");
   return res;
 }
 #endif
