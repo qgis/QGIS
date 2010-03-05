@@ -1,8 +1,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <iostream>
 #include <QUrl>
 #include <QDesktopServices>
+#include <QString>
 
 #ifdef Q_OS_WIN
 #include <windows.h>
@@ -16,7 +18,15 @@ int main( int argc, char **argv )
     fprintf( stderr, "URL argument missing\n" );
     exit( 1 );
   }
-  QDesktopServices::openUrl( QUrl( argv[1] ) );
+  QUrl url ( argv[1] );
+#ifdef Q_OS_WIN
+  // openUrl on windows fails to open 'file://c:...' it must be 'file:///c:...' (3 slashes)
+  if ( url.scheme() == "file" ) {
+    url.setPath ( "/" + url.path() );
+    std::cout << "path reset to: " << qPrintable(url.path()) << std::endl;
+  }
+#endif
+  QDesktopServices::openUrl( url );
 #ifdef Q_OS_WIN
   Sleep( 1000 );
 #else
