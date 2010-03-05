@@ -187,6 +187,9 @@ class QgsGrass
     static GRASS_EXPORT int versionRelease();
     static GRASS_EXPORT QString versionString();
 
+    // set environment variable
+    static GRASS_EXPORT void putEnv (QString name, QString value);
+
 #if defined(WIN32)
     static GRASS_EXPORT QString shortPath( const QString &path );
 #endif
