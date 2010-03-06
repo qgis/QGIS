@@ -47,6 +47,9 @@ class ANALYSIS_EXPORT QgsZonalStatistics
     void statisticsFromMiddlePointTest( void* band, QgsGeometry* poly, int pixelOffsetX, int pixelOffsetY, int nCellsX, int nCellsY, \
                                         double cellSizeX, double cellSizeY, const QgsRectangle& rasterBBox, double& sum, double& count );
 
+    void statisticsFromMiddlePointTest_improved( void* band, QgsGeometry* poly, int pixelOffsetX, int pixelOffsetY, int nCellsX, int nCellsY, \
+        double cellSizeX, double cellSizeY, const QgsRectangle& rasterBBox, double& sum, double& count );
+
     /**Returns statistics with precise pixel - polygon intersection test (slow) */
     void statisticsFromPreciseIntersection( void* band, QgsGeometry* poly, int pixelOffsetX, int pixelOffsetY, int nCellsX, int nCellsY, \
                                             double cellSizeX, double cellSizeY, const QgsRectangle& rasterBBox, double& sum, double& count );
