@@ -115,12 +115,26 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
     return;
   }
 
-  sql = QString( "SELECT "
-                 "has_table_privilege(%1,'DELETE'),"
-                 "has_table_privilege(%1,'UPDATE'),"
-                 "has_table_privilege(%1,'INSERT'),"
-                 "current_schema()" )
-        .arg( quotedValue( mSchemaTableName ) );
+  if ( connectionRO->pgVersion() >= 80400 )
+  {
+    sql = QString( "SELECT "
+                   "has_table_privilege(%1,'DELETE'),"
+                   "has_any_column_privilege(%1,'UPDATE'),"
+                   "has_column_privilege(%1,%2,'UPDATE'),"
+                   "has_table_privilege(%1,'INSERT'),"
+                   "current_schema()" )
+          .arg( quotedValue( mSchemaTableName ) ).arg( quotedValue( geometryColumn ) );
+  }
+  else
+  {
+    sql = QString( "SELECT "
+                   "has_table_privilege(%1,'DELETE'),"
+                   "has_table_privilege(%1,'UPDATE'),"
+                   "has_table_privilege(%1,'UPDATE'),"
+                   "has_table_privilege(%1,'INSERT'),"
+                   "current_schema()" )
+          .arg( quotedValue( mSchemaTableName ) );
+  }
 
   testAccess = connectionRO->PQexec( sql );
   if ( PQresultStatus( testAccess ) != PGRES_TUPLES_OK )
@@ -148,16 +162,22 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
   if ( QString::fromUtf8( PQgetvalue( testAccess, 0, 1 ) ) == "t" )
   {
     // UPDATE
-    enabledCapabilities |= QgsVectorDataProvider::ChangeGeometries | QgsVectorDataProvider::ChangeAttributeValues;
+    enabledCapabilities |= QgsVectorDataProvider::ChangeAttributeValues;
   }
 
   if ( QString::fromUtf8( PQgetvalue( testAccess, 0, 2 ) ) == "t" )
+  {
+    // UPDATE
+    enabledCapabilities |= QgsVectorDataProvider::ChangeGeometries;
+  }
+
+  if ( QString::fromUtf8( PQgetvalue( testAccess, 0, 3 ) ) == "t" )
   {
     // INSERT
     enabledCapabilities |= QgsVectorDataProvider::AddFeatures;
   }
 
-  mCurrentSchema = QString::fromUtf8( PQgetvalue( testAccess, 0, 3 ) );
+  mCurrentSchema = QString::fromUtf8( PQgetvalue( testAccess, 0, 4 ) );
   if ( mCurrentSchema == mSchemaName )
   {
     mUri.clearSchema();
@@ -2055,6 +2075,8 @@ bool QgsPostgresProvider::Conn::hasGEOS()
 /* Functions for determining available features in postGIS */
 QString QgsPostgresProvider::Conn::postgisVersion()
 {
+  postgresqlVersion = PQserverVersion( conn );
+
   Result result = PQexec( "select postgis_version()" );
   if ( PQntuples( result ) != 1 )
   {
@@ -2694,15 +2716,6 @@ void QgsPostgresProvider::calculateExtents()
 
   sql += QString( "not IsEmpty(%1) limit 5" ).arg( quotedIdentifier( geometryColumn ) );
 
-#if WASTE_TIME
-  sql = QString( "select "
-                 "xmax(extent(%1)) as xmax,"
-                 "xmin(extent(%1)) as xmin,"
-                 "ymax(extent(%1)) as ymax,"
-                 "ymin(extent(%1)) as ymin"
-                 " from %2" ).arg( quotedIdentifier( geometryColumn ) ).arg( mSchemaTableName );
-#endif
-
   QgsDebugMsg( "Getting approximate extent using: '" + sql + "'" );
 
   Result result = connectionRO->PQexec( sql );
@@ -2733,13 +2746,18 @@ void QgsPostgresProvider::calculateExtents()
   QString ext;
 
   // get the extents
-  if ( sqlWhereClause.isEmpty() )
+  if ( sqlWhereClause.isEmpty() && !connectionRO->hasNoExtentEstimate() )
   {
     result = connectionRO->PQexec( QString( "select estimated_extent(%1,%2,%3)" )
                                    .arg( quotedValue( mSchemaName ) )
                                    .arg( quotedValue( mTableName ) )
                                    .arg( quotedValue( geometryColumn ) ) );
-    if ( PQntuples( result ) == 1 )
+    if ( PQresultStatus( result ) != PGRES_TUPLES_OK )
+    {
+      connectionRO->PQexecNR( "ROLLBACK" );
+      connectionRO->setNoExtentEstimate();
+    }
+    else if ( PQntuples( result ) == 1 )
       ext = PQgetvalue( result, 0, 0 );
   }
 
@@ -2753,18 +2771,11 @@ void QgsPostgresProvider::calculateExtents()
       sql += QString( "where %1" ).arg( sqlWhereClause );
 
     result = connectionRO->PQexec( sql );
-    if ( PQntuples( result ) == 1 )
+    if ( PQresultStatus( result ) != PGRES_TUPLES_OK )
+      connectionRO->PQexecNR( "ROLLBACK" );
+    else if ( PQntuples( result ) == 1 )
       ext = PQgetvalue( result, 0, 0 );
   }
-
-#if WASTE_TIME
-  sql = QString( "select "
-                 "xmax(extent(%1)) as xmax,"
-                 "xmin(extent(%1)) as xmin,"
-                 "ymax(extent(%1)) as ymax,"
-                 "ymin(extent(%1)) as ymin"
-                 " from %2" ).arg( quotedIdentifier( geometryColumn ) ).arg( mSchemaTableName );
-#endif
 
   QgsDebugMsg( "Getting extents using schema.table: " + sql );
 
@@ -2784,19 +2795,6 @@ void QgsPostgresProvider::calculateExtents()
   }
 #endif
 
-#if 0
-#ifdef QGISDEBUG
-  QString xMsg;
-  QTextOStream( &xMsg ).precision( 18 );
-  QTextOStream( &xMsg ).width( 18 );
-  QTextOStream( &xMsg ) << "QgsPostgresProvider: Set extents to: "
-  << layerExtent.xMinimum() << ", "
-  << layerExtent.yMinimum() << " "
-  << layerExtent.xMaximum() << ", "
-  << layerExtent.yMaximum();
-  QgsDebugMsg( xMsg );
-#endif
-#endif
   QgsDebugMsg( "Set extents to: " + layerExtent.toString() );
 }
 
