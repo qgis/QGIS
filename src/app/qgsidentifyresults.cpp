@@ -356,11 +356,16 @@ void QgsIdentifyResults::contextMenuEvent( QContextMenuEvent* event )
 
   mActionPopup = new QMenu();
 
-  mActionPopup->addAction( vlayer->isEditable() ? tr( "Edit feature form" ) : tr( "View feature form" ), this, SLOT( featureForm() ) );
-  mActionPopup->addAction( tr( "Zoom to feature" ), this, SLOT( zoomToFeature() ) );
-  mActionPopup->addAction( tr( "Copy attribute value" ), this, SLOT( copyAttributeValue() ) );
-  mActionPopup->addAction( tr( "Copy feature attributes" ), this, SLOT( copyFeatureAttributes() ) );
-  mActionPopup->addSeparator();
+  QTreeWidgetItem *featItem = featureItem( item );
+  if ( featItem )
+  {
+    mActionPopup->addAction( vlayer->isEditable() ? tr( "Edit feature form" ) : tr( "View feature form" ), this, SLOT( featureForm() ) );
+    mActionPopup->addAction( tr( "Zoom to feature" ), this, SLOT( zoomToFeature() ) );
+    mActionPopup->addAction( tr( "Copy attribute value" ), this, SLOT( copyAttributeValue() ) );
+    mActionPopup->addAction( tr( "Copy feature attributes" ), this, SLOT( copyFeatureAttributes() ) );
+    mActionPopup->addSeparator();
+  }
+
   mActionPopup->addAction( tr( "Clear results" ), this, SLOT( clear() ) );
   mActionPopup->addAction( tr( "Clear highlights" ), this, SLOT( clearRubberbands() ) );
   mActionPopup->addAction( tr( "Highlight all" ), this, SLOT( highlightAll() ) );
@@ -558,6 +563,8 @@ QgsVectorLayer *QgsIdentifyResults::vectorLayer( QTreeWidgetItem *item )
 QTreeWidgetItem *QgsIdentifyResults::retrieveAttributes( QTreeWidgetItem *item, QList< QPair<QString, QString> > &attributes, int &idx )
 {
   QTreeWidgetItem *featItem = featureItem( item );
+  if ( !featItem )
+    return 0;
 
   idx = -1;
 
