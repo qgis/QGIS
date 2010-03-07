@@ -581,7 +581,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
             ref( 1 ),
             openCursors( 0 ),
             conn( connection ),
-            gotPostgisVersion( false )
+            gotPostgisVersion( false ),
+            mHasNoExtentEstimate( false )
         {
         }
 
@@ -603,10 +604,19 @@ class QgsPostgresProvider : public QgsVectorDataProvider
         //! major PostgreSQL version
         int majorVersion() { return postgisVersionMajor; }
 
-        // run a query and free result buffer
+        //! PostgreSQL version
+        int pgVersion() { return postgresqlVersion; }
+
+        //! has PostGIS no extent estimate?
+        bool hasNoExtentEstimate() { return mHasNoExtentEstimate; }
+
+        //! PostGIS does not have a extent estimate
+        void setNoExtentEstimate( bool flag = true ) { mHasNoExtentEstimate = flag; }
+
+        //! run a query and free result buffer
         bool PQexecNR( QString query );
 
-        // cursor handling
+        //! cursor handling
         bool openCursor( QString cursorName, QString declare );
         bool closeCursor( QString cursorName );
 
@@ -643,6 +653,9 @@ class QgsPostgresProvider : public QgsVectorDataProvider
         //! Are postgisVersionMajor, postgisVersionMinor, geosAvailable, gistAvailable, projAvailable valid?
         bool gotPostgisVersion;
 
+        //! PostgreSQL version
+        int postgresqlVersion;
+
         //! PostGIS major version
         int postgisVersionMajor;
 
@@ -657,6 +670,9 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
         //! encode wkb in hex
         bool mUseWkbHex;
+
+        //! PostGIS doesn't have extent estimates
+        bool mHasNoExtentEstimate;
 
         static QMap<QString, Conn *> connectionsRW;
         static QMap<QString, Conn *> connectionsRO;
