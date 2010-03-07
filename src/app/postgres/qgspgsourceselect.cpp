@@ -50,6 +50,16 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WFlags fl )
   buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
   connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addTables() ) );
 
+  QPushButton *pb = new QPushButton( tr( "&Save" ) );
+  pb->setToolTip( tr( "Save connections" ) );
+  buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
+  connect( pb, SIGNAL( clicked() ), this, SLOT( saveClicked() ) );
+
+  pb = new QPushButton( tr( "&Load" ) );
+  pb->setToolTip( tr( "Load connections" ) );
+  buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
+  connect( pb, SIGNAL( clicked() ), this, SLOT( loadClicked() ) );
+
   mAddButton->setEnabled( false );
   populateConnectionList();
 
@@ -94,7 +104,7 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WFlags fl )
   }
 
   //hide the search options by default
-  //they will be shown when the user ticks 
+  //they will be shown when the user ticks
   //the search options group box
   mSearchLabel->setVisible( false );
   mSearchColumnComboBox->setVisible( false );
@@ -139,13 +149,13 @@ void QgsPgSourceSelect::on_btnDelete_clicked()
   populateConnectionList();
 }
 
-void QgsPgSourceSelect::on_btnSave_clicked()
+void QgsPgSourceSelect::saveClicked()
 {
   QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Save, QgsManageConnectionsDialog::PostGIS );
   dlg.exec();
 }
 
-void QgsPgSourceSelect::on_btnLoad_clicked()
+void QgsPgSourceSelect::loadClicked()
 {
   QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Load, QgsManageConnectionsDialog::PostGIS );
   dlg.exec();
@@ -840,7 +850,6 @@ void QgsGeomColumnTypeThread::getLayerTypes()
       // Now tell the layer list dialog box...
       emit setLayerType( schemas[i], tables[i], columns[i], type );
     }
-
   }
 
   PQfinish( pd );

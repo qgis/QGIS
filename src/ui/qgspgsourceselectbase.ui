@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>406</width>
-    <height>500</height>
+    <width>362</width>
+    <height>476</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -72,24 +72,6 @@
     </widget>
    </item>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QPushButton" name="btnSave">
-       <property name="text">
-        <string>Save connections</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnLoad">
-       <property name="text">
-        <string>Load connections</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
     <widget class="QTreeView" name="mTablesTreeView">
      <property name="selectionMode">
       <enum>QAbstractItemView::ExtendedSelection</enum>
@@ -107,29 +89,18 @@
     </widget>
    </item>
    <item>
-    <spacer>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>271</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item>
-    <widget class="QPushButton" name="mSearchOptionsButton">
-     <property name="text">
-      <string>Search options...</string>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QGroupBox" name="mSearchGroupBox">
      <property name="title">
-      <string/>
+      <string>Search options</string>
+     </property>
+     <property name="flat">
+      <bool>true</bool>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
      </property>
      <layout class="QGridLayout">
       <property name="margin">
@@ -140,6 +111,9 @@
       </property>
       <item row="0" column="0">
        <widget class="QLabel" name="mSearchLabel">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
         <property name="text">
          <string>Search:</string>
         </property>
@@ -150,6 +124,9 @@
       </item>
       <item row="2" column="0" colspan="2">
        <widget class="QLabel" name="mSearchModeLabel">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
         <property name="text">
          <string>Search mode:</string>
         </property>
@@ -159,10 +136,17 @@
        </widget>
       </item>
       <item row="2" column="2">
-       <widget class="QComboBox" name="mSearchModeComboBox"/>
+       <widget class="QComboBox" name="mSearchModeComboBox">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
       <item row="1" column="0" colspan="2">
        <widget class="QLabel" name="mSearchColumnsLabel">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
         <property name="text">
          <string>Search in columns:</string>
         </property>
@@ -172,10 +156,18 @@
        </widget>
       </item>
       <item row="1" column="2">
-       <widget class="QComboBox" name="mSearchColumnComboBox"/>
+       <widget class="QComboBox" name="mSearchColumnComboBox">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
       <item row="0" column="1" colspan="2">
-       <widget class="QLineEdit" name="mSearchTableEdit"/>
+       <widget class="QLineEdit" name="mSearchTableEdit">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
@@ -198,7 +190,6 @@
   <tabstop>btnDelete</tabstop>
   <tabstop>mTablesTreeView</tabstop>
   <tabstop>btnBuildQuery</tabstop>
-  <tabstop>mSearchOptionsButton</tabstop>
   <tabstop>mSearchTableEdit</tabstop>
   <tabstop>mSearchColumnComboBox</tabstop>
   <tabstop>mSearchModeComboBox</tabstop>
@@ -213,12 +204,108 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>353</x>
-     <y>446</y>
+     <x>352</x>
+     <y>466</y>
     </hint>
     <hint type="destinationlabel">
-     <x>404</x>
+     <x>361</x>
      <y>421</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mSearchGroupBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mSearchTableEdit</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>85</x>
+     <y>324</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>177</x>
+     <y>360</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mSearchGroupBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mSearchColumnComboBox</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>88</x>
+     <y>325</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>254</x>
+     <y>381</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mSearchGroupBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mSearchModeComboBox</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>106</x>
+     <y>333</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>281</x>
+     <y>410</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mSearchGroupBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mSearchLabel</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>124</x>
+     <y>327</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>58</x>
+     <y>360</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mSearchGroupBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mSearchColumnsLabel</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>42</x>
+     <y>327</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>39</x>
+     <y>379</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mSearchGroupBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mSearchModeLabel</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>73</x>
+     <y>322</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>68</x>
+     <y>411</y>
     </hint>
    </hints>
   </connection>
