@@ -56,10 +56,11 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
   mMainDict = PyModule_GetDict( mMainModule ); // borrowed reference
 
   runString( "import sys" ); // import sys module (for display / exception hooks)
+  runString( "import os" ); // import os module (for user paths)
 
   // expect that bindings are installed locally, so add the path to modules
   // also add path to plugins
-  runString( "sys.path = [\"" + pythonPath() + "\", \"" + homePythonPath()  + "\", \"" + homePluginsPath()  + "\", \"" + pluginsPath() + "\"] + sys.path" );
+  runString( "sys.path = [\"" + pythonPath() + "\", os.path.expanduser(\"~/.qgis/python\"), os.path.expanduser(\"~/.qgis/python/plugins\"), \"" + pluginsPath() + "\" ] + sys.path" );
 
   // import SIP
   if ( !runString( "from sip import wrapinstance, unwrapinstance",
