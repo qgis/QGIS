@@ -237,6 +237,20 @@ bool QgsSearchTreeNode::checkAgainst( const QgsFieldMap& fields, const QgsAttrib
         return true;
       return mRight->checkAgainst( fields, attributes );
 
+    case opISNULL:
+    case opISNOTNULL:
+      if ( !getValue( value1, mLeft, fields, attributes ) )
+        return false;
+
+      if ( mOp == opISNULL )
+      {
+        return value1.isNull();
+      }
+      else if ( mOp == opISNOTNULL )
+      {
+        return !value1.isNull();
+      }
+
     case opEQ:
     case opNE:
     case opGT:
@@ -246,6 +260,12 @@ bool QgsSearchTreeNode::checkAgainst( const QgsFieldMap& fields, const QgsAttrib
 
       if ( !getValue( value1, mLeft, fields, attributes ) || !getValue( value2, mRight, fields, attributes ) )
         return false;
+
+      if ( value1.isNull() || value2.isNull() )
+      {
+        // NULL values never match
+        return false;
+      }
 
       res = QgsSearchTreeValue::compare( value1, value2 );
 
@@ -365,7 +385,12 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, c
 
       // get the value
       QVariant val = attributes[it.key()];
-      if ( val.type() == QVariant::Bool || val.type() == QVariant::Int || val.type() == QVariant::Double )
+      if ( val.isNull() )
+      {
+        QgsDebugMsgLevel( "   NULL", 2 );
+        return QgsSearchTreeValue();
+      }
+      else if ( val.type() == QVariant::Bool || val.type() == QVariant::Int || val.type() == QVariant::Double )
       {
         QgsDebugMsgLevel( "   number: " + QString::number( val.toDouble() ), 2 );
         return QgsSearchTreeValue( val.toDouble() );

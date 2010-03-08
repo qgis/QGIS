@@ -78,6 +78,8 @@ class CORE_EXPORT QgsSearchTreeNode
       opAREA,
 
       // comparison
+      opISNULL,  // IS NULL
+      opISNOTNULL,  // IS NOT NULL
       opEQ,   // =
       opNE,   // != resp. <>
       opGT,   // >
@@ -174,11 +176,12 @@ class CORE_EXPORT QgsSearchTreeValue
     {
       valError,
       valString,
-      valNumber
+      valNumber,
+      valNull
     };
 
-    QgsSearchTreeValue() { }
-    QgsSearchTreeValue( QString string ) { mType = valString; mString = string; }
+    QgsSearchTreeValue() { mType = valNull; }
+    QgsSearchTreeValue( QString string ) { mType = string.isNull() ? valNull : valString; mString = string; }
     QgsSearchTreeValue( double number ) { mType = valNumber; mNumber = number; }
     QgsSearchTreeValue( int error, QString errorMsg ) { mType = valError; mNumber = error; mString = errorMsg; }
 
@@ -187,6 +190,7 @@ class CORE_EXPORT QgsSearchTreeValue
 
     bool isNumeric() { return mType == valNumber; }
     bool isError() { return mType == valError; }
+    bool isNull() { return mType == valNull; }
 
     QString& string() { return mString; }
     double number() { return mNumber; }

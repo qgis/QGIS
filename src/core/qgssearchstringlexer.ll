@@ -59,6 +59,10 @@ string      "'"{str_char}*"'"
 "AND"   { return AND;  }
 "OR"    { return OR; }
 
+"NULL"	{ return NULLVALUE; }
+
+"IS"  {  return IS; }
+
 "="   {  yylval.op = QgsSearchTreeNode::opEQ; return COMPARISON; }
 "!="  {  yylval.op = QgsSearchTreeNode::opNE; return COMPARISON; }
 "<="  {  yylval.op = QgsSearchTreeNode::opLE; return COMPARISON; }
