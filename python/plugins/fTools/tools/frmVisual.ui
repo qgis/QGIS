@@ -34,6 +34,17 @@
      </item>
     </layout>
    </item>
+   <item row="3" column="0">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QCheckBox" name="useSelected">
+       <property name="text">
+        <string>Use only selected features</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
    <item row="4" column="0" colspan="2">
     <layout class="QVBoxLayout">
      <item>
@@ -114,16 +125,15 @@
      </item>
     </layout>
    </item>
-   <item row="3" column="0">
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
-      <widget class="QCheckBox" name="useSelected">
-       <property name="text">
-        <string>Use only selected features</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+   <item row="9" column="0">
+    <widget class="QProgressBar" name="progressBar">
+     <property name="value">
+      <number>24</number>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
    </item>
    <item row="8" column="1" rowspan="2">
     <widget class="QDialogButtonBox" name="buttonBox_2">
@@ -135,26 +145,10 @@
      </property>
     </widget>
    </item>
-   <item row="9" column="0">
-    <widget class="QProgressBar" name="progressBar">
-     <property name="value">
-      <number>24</number>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
    <item row="8" column="0">
     <widget class="QProgressBar" name="partProgressBar">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
      <property name="value">
       <number>24</number>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
      </property>
     </widget>
    </item>
