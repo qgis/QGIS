@@ -39,6 +39,7 @@ from PyQt4.QtGui import *
 from qgis.core import *
 from ui_frmPointDistance import Ui_Dialog
 import csv, codecs, cStringIO
+import ftools_utils
 from math import *
 
 class UnicodeWriter:
@@ -88,25 +89,26 @@ class Dialog(QDialog, Ui_Dialog):
         self.setWindowTitle(self.tr("Distance matrix"))
         self.progressBar.setValue(0)
         mapCanvas = self.iface.mapCanvas()
-        for i in range(mapCanvas.layerCount()):
-            layer = mapCanvas.layer(i)
-            if layer.type() == layer.VectorLayer:
-                if layer.geometryType() == QGis.Point:
-                    self.inPoint1.addItem(layer.name())
-                    self.inPoint2.addItem(layer.name())
+        layers = ftools_utils.getLayerNames( [ QGis.Point ] )
+        self.inPoint1.addItems(layers)
+        self.inPoint2.addItems(layers)
 
     def update1(self, inputLayer):
-        changedLayer = self.getVectorLayerByName(unicode(inputLayer))
-        changedField = self.getFieldList(changedLayer)
+        self.inField1.clear()
+        changedLayer = ftools_utils.getVectorLayerByName(unicode(inputLayer))
+        changedField = ftools_utils.getFieldList(changedLayer)
         for i in changedField:
-            if changedField[i].type() == QVariant.Int or changedField[i].type() == QVariant.String:
+            if changedField[i].type() == QVariant.Int or \
+            changedField[i].type() == QVariant.String:
                 self.inField1.addItem(unicode(changedField[i].name()))
 
     def update2(self, inputLayer):
-        changedLayer = self.getVectorLayerByName(unicode(inputLayer))
-        changedField = self.getFieldList(changedLayer)
+        self.inField2.clear()
+        changedLayer = ftools_utils.getVectorLayerByName(unicode(inputLayer))
+        changedField = ftools_utils.getFieldList(changedLayer)
         for i in changedField:
-            if changedField[i].type() == QVariant.Int or changedField[i].type() == QVariant.String:
+            if changedField[i].type() == QVariant.Int or \
+            changedField[i].type() == QVariant.String:
                 self.inField2.addItem(unicode(changedField[i].name()))
 
     def accept(self):
@@ -154,8 +156,8 @@ class Dialog(QDialog, Ui_Dialog):
             self.outFile.insert(filePath)
 
     def compute(self, line1, line2, field1, field2, outPath, matType, nearest, progressBar):
-        layer1 = self.getVectorLayerByName(line1)
-        layer2 = self.getVectorLayerByName(line2)
+        layer1 = ftools_utils.getVectorLayerByName(line1)
+        layer2 = ftools_utils.getVectorLayerByName(line2)
         provider1 = layer1.dataProvider()
         provider2 = layer2.dataProvider()
         allAttrs = provider1.attributeIndexes()
@@ -248,23 +250,3 @@ class Dialog(QDialog, Ui_Dialog):
             start = start + add
             progressBar.setValue(start)
         del writer
-
-    def getVectorLayerByName(self, myName):
-        mc = self.iface.mapCanvas()
-        nLayers = mc.layerCount()
-        for l in range(nLayers):
-            layer = mc.layer(l)
-            if layer.name() == unicode(myName):
-                vlayer = QgsVectorLayer(unicode(layer.source()),  unicode(myName),  unicode(layer.dataProvider().name()))
-                if vlayer.isValid():
-                    return vlayer
-                else:
-                    QMessageBox.information(self, self.tr("Locate Line Intersections"), self.tr("Vector layer is not valid"))
-
-    def getFieldList(self, vlayer):
-        fProvider = vlayer.dataProvider()
-        feat = QgsFeature()
-        allAttrs = fProvider.attributeIndexes()
-        fProvider.select(allAttrs)
-        myFields = fProvider.fields()
-        return myFields
