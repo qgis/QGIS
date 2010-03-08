@@ -62,20 +62,25 @@ class Dialog(QDialog, Ui_Dialog):
 		selectedSet = []
 		selectProvider.nextFeature(feat)
 		geomLayer = QgsGeometry(feat.geometry())
+
+		self.progressBar.setMaximum( inputProvider.featureCount() + selectProvider.featureCount() )
+
 		while selectProvider.nextFeature(feat):
 			geomLayer = geomLayer.combine(QgsGeometry(feat.geometry()))
+			self.progressBar.setValue( self.progressBarValue() + 1 )
 		while inputProvider.nextFeature(feat):
 			geom = QgsGeometry(feat.geometry())
 			if geom.intersects(geomLayer):
 				selectedSet.append(feat.id())
+			self.progressBar.setValue( self.progressBarValue() + 1 )
 		if modify == self.tr("adding to current selection"):
 			selectedSet = list(set(inputLayer.selectedFeaturesIds()).union(selectedSet))
 		elif modify == self.tr("removing from current selection"):
 			selectedSet = list(set(inputLayer.selectedFeaturesIds()).difference(selectedSet))
 		inputLayer.setSelectedFeatures(selectedSet)
-				
+
 #Gets vector layer by layername in canvas
-#Return: QgsVectorLayer            
+#Return: QgsVectorLayer
 	def getVectorLayerByName(self, myName):
 		mc = self.iface.mapCanvas()
 		nLayers = mc.layerCount()
