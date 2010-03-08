@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
@@ -17,7 +18,7 @@ class VisualDialog( QDialog, Ui_Dialog ):
     self.cancel_close = self.buttonBox_2.button( QDialogButtonBox.Close )
     self.progressBar.setValue( 0 )
     self.partProgressBar.setValue( 0 )
-    self.partProgressBar.setEnabled( False )
+    self.partProgressBar.setVisible( False )
     
   def keyPressEvent( self, e ):
     '''
@@ -27,11 +28,11 @@ class VisualDialog( QDialog, Ui_Dialog ):
       selection = self.lstUnique.selectedItems()
       items = QString()
       if self.myFunction in ( 1, 2 ):
-	for rec in range( self.tblUnique.rowCount() ):
-	  items.append( self.tblUnique.item( rec, 0 ).text() + "\n" )
+        for rec in range( self.tblUnique.rowCount() ):
+          items.append( self.tblUnique.item( rec, 0 ).text() + "\n" )
       else:
-	for rec in range( self.tblUnique.rowCount() ):
-	  items.append( self.tblUnique.item( rec, 0 ).text() + ":" + self.tblUnique.item( rec, 1 ).text() + "\n" )
+        for rec in range( self.tblUnique.rowCount() ):
+          items.append( self.tblUnique.item( rec, 0 ).text() + ":" + self.tblUnique.item( rec, 1 ).text() + "\n" )
       if not items.isEmpty():
         clip_board = QApplication.clipboard()
         clip_board.setText( items )
@@ -125,26 +126,25 @@ class VisualDialog( QDialog, Ui_Dialog ):
     
   def runFinishedFromThread( self, output ):
     self.testThread.stop()
-    
     result = output[ 0 ]
     numRows = len( result )
     self.tblUnique.setRowCount( numRows )
     if self.myFunction in ( 1, 2 ):
       self.tblUnique.setColumnCount( 1 )
       for rec in range( numRows ):
-	item = QTableWidgetItem( result[ rec ] )
-	self.tblUnique.setItem( rec, 0, item )
+        item = QTableWidgetItem( result[ rec ] )
+        self.tblUnique.setItem( rec, 0, item )
     else:
       self.tblUnique.setColumnCount( 2 )
       for rec in range( numRows ):
-	tmp = result[ rec ].split( ":" )
-	item = QTableWidgetItem( tmp[ 0 ] )
-	self.tblUnique.setItem( rec, 0, item )
-	item = QTableWidgetItem( tmp[ 1 ] )
-	self.tblUnique.setItem( rec, 1, item )
-	self.tblUnique.setHorizontalHeaderLabels( [ self.tr("Parameter"), self.tr("Value") ] )
-	self.tblUnique.horizontalHeader().setResizeMode( 1, QHeaderView.ResizeToContents )
-	self.tblUnique.horizontalHeader().show()
+        tmp = result[ rec ].split( ":" )
+        item = QTableWidgetItem( tmp[ 0 ] )
+        self.tblUnique.setItem( rec, 0, item )
+        item = QTableWidgetItem( tmp[ 1 ] )
+        self.tblUnique.setItem( rec, 1, item )
+      self.tblUnique.setHorizontalHeaderLabels( [ self.tr("Parameter"), self.tr("Value") ] )
+      self.tblUnique.horizontalHeader().setResizeMode( 1, QHeaderView.ResizeToContents )
+      self.tblUnique.horizontalHeader().show()
     self.tblUnique.horizontalHeader().setResizeMode( 0, QHeaderView.Stretch )
     self.tblUnique.resizeRowsToContents()
     
@@ -162,11 +162,11 @@ class VisualDialog( QDialog, Ui_Dialog ):
   def runPartStatusFromThread( self, status ):
     self.partProgressBar.setValue( status )
     if status >= self.part_max:
-      self.partProgressBar.setEnabled( False )
+      self.partProgressBar.setVisible( False )
         
   def runPartRangeFromThread( self, range_vals ):
     self.part_max = range_vals[ 1 ]
-    self.partProgressBar.setEnabled( True )
+    self.partProgressBar.setVisible( True )
     self.partProgressBar.setRange( range_vals[ 0 ], range_vals[ 1 ] )
     
 class visualThread( QThread ):
@@ -230,7 +230,8 @@ class visualThread( QThread ):
     first = True
     nElement = 0
     # determine selected field type
-    if ftools_utils.getFieldType( vlayer, myField ) == 'String':
+    if ftools_utils.getFieldType( vlayer, myField ) in (
+    'String', 'varchar', 'char', 'text'):
       fillVal = 0
       emptyVal = 0
       if self.mySelection: # only selected features
@@ -260,6 +261,7 @@ class visualThread( QThread ):
         nFeat = vprovider.featureCount()
         self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
         self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
+        vprovider.select( allAttrs )
         while vprovider.nextFeature( feat ):
           atMap = feat.attributeMap()
           lenVal = float( len( atMap[ index ].toString() ) )
@@ -290,14 +292,16 @@ class visualThread( QThread ):
       lstStats.append( self.tr( "N:" ) + unicode( nVal ) )
       return ( lstStats, [] )
     else: # numeric field
-      stdVal = 0
-      cvVal = 0
-      rangeVal = 0
-      medianVal = 0
+      stdVal = 0.00
+      cvVal = 0.00
+      rangeVal = 0.00
+      medianVal = 0.00
+      maxVal = 0.00
+      minVal = 0.00
       if self.mySelection: # only selected features
         selection = vlayer.selectedFeatures()
         nFeat = vlayer.selectedFeatureCount()
-	uniqueVal = ftools_utils.getUniqueValuesCount( vlayer, index, True )
+        uniqueVal = ftools_utils.getUniqueValuesCount( vlayer, index, True )
         self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
         self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
         for f in selection:
@@ -316,9 +320,10 @@ class visualThread( QThread ):
           self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
       else: # there is no selection, process the whole layer
         nFeat = vprovider.featureCount()
-	uniqueVal = ftools_utils.getUniqueValuesCount( vlayer, index, False )
+        uniqueVal = ftools_utils.getUniqueValuesCount( vlayer, index, False )
         self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
         self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
+        vprovider.select( allAttrs )
         while vprovider.nextFeature( feat ):
           atMap = feat.attributeMap()
           value = float( atMap[ index ].toDouble()[ 0 ] )
@@ -343,12 +348,12 @@ class visualThread( QThread ):
           stdVal = math.sqrt( stdVal / nVal )
           cvVal = stdVal / meanVal
       if nVal > 1:
-	  lstVal = values
-	  lstVal.sort()
-	  if ( nVal % 2 ) == 0:
-	    medianVal = 0.5 * ( lstVal[ int( ( nVal - 1 ) / 2 ) ] + lstVal[ int( ( nVal ) / 2 ) ] )
-	  else:
-	    medianVal = lstVal[ int( ( nVal + 1 ) / 2 ) ]
+        lstVal = values
+        lstVal.sort()
+        if ( nVal % 2 ) == 0:
+            medianVal = 0.5 * ( lstVal[ int( ( nVal - 1 ) / 2 ) ] + lstVal[ int( ( nVal ) / 2 ) ] )
+        else:
+            medianVal = lstVal[ int( ( nVal + 1 ) / 2 ) ]
       lstStats = []
       lstStats.append( self.tr( "Mean:" ) + unicode( meanVal ) )
       lstStats.append( self.tr( "StdDev:" ) + unicode( stdVal ) )
@@ -411,6 +416,7 @@ class visualThread( QThread ):
     nElement = 0
     self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
     self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
+
     while vprovider.nextFeature( feat ):
       geom = QgsGeometry( feat.geometry() )
       nElement += 1
