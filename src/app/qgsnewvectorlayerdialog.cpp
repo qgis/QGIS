@@ -120,7 +120,7 @@ void QgsNewVectorLayerDialog::on_mAddAttributeButton_clicked()
 {
   QString myName = mNameEdit->text();
   QString myWidth = mWidth->text();
-  QString myPrecision = mPrecision->text();
+  QString myPrecision = mPrecision->isEnabled() ? mPrecision->text() : "";
   //use userrole to avoid translated type string
   QString myType = mTypeBox->itemData( mTypeBox->currentIndex(), Qt::UserRole ).toString();
   mAttributeView->addTopLevelItem( new QTreeWidgetItem( QStringList() << myName << myType << myWidth << myPrecision ) );
@@ -133,7 +133,7 @@ void QgsNewVectorLayerDialog::on_mAddAttributeButton_clicked()
 
 void QgsNewVectorLayerDialog::on_mRemoveAttributeButton_clicked()
 {
-  delete( mAttributeView->currentItem() );
+  delete mAttributeView->currentItem();
   if ( mAttributeView->topLevelItemCount() == 0 )
   {
     mOkButton->setEnabled( false );
