@@ -1,8 +1,8 @@
 #-----------------------------------------------------------
-# 
+#
 # Random selection within subsets
 #
-# A QGIS plugin for randomly selecting features from 
+# A QGIS plugin for randomly selecting features from
 # within multiple user defined subsets based on an input field.
 #
 # Copyright (C) 2008  Carson Farmer
@@ -11,23 +11,23 @@
 # WEB  : www.geog.uvic.ca/spar/carson
 #
 #-----------------------------------------------------------
-# 
+#
 # licensed under the terms of GNU GPL 2
-# 
+#
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License along
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-# 
+#
 #--------------------------------------------------------------------
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -42,7 +42,7 @@ class Dialog(QDialog, Ui_Dialog):
 		self.iface = iface
 		# Set up the user interface from Designer.
 		self.setupUi(self)
-		QObject.connect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.update)		
+		QObject.connect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.update)
 		self.setWindowTitle(self.tr("Random selection within subsets"))
 		# populate layer list
 		self.progressBar.setValue(0)
@@ -58,6 +58,8 @@ class Dialog(QDialog, Ui_Dialog):
 		changedField = self.getFieldList(changedLayer)
 		for i in changedField:
 			self.inField.addItem(unicode(changedField[i].name()))
+		maxFeatures = changedLayer.dataProvider().featureCount()
+		self.spnNumber.setMaximum( maxFeatures )
 
 	def accept(self):
 		if self.inShape.currentText() == "":
@@ -158,7 +160,7 @@ class Dialog(QDialog, Ui_Dialog):
 		return myFields
 
 	def getUniqueValues(self, provider, index):
-		allAttrs = provider.attributeIndexes()    
+		allAttrs = provider.attributeIndexes()
 		provider.select(allAttrs)
 		feat = QgsFeature()
 		values = []
