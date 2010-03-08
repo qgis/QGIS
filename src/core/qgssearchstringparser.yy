@@ -62,8 +62,10 @@ void addToTmpNodes(QgsSearchTreeNode* node);
 %token <number> NUMBER
 %token <op> COMPARISON
 %token <op> FUNCTION
+%token IS
 %token AREA
 %token LENGTH
+%token NULLVALUE
 
 %token STRING
 %token COLUMN_REF
@@ -119,12 +121,14 @@ predicate:
     ;
 
 comp_predicate:
-    scalar_exp COMPARISON scalar_exp   { $$ = new QgsSearchTreeNode($2, $1, $3); joinTmpNodes($$,$1,$3); }
+      scalar_exp IS NULLVALUE           { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opISNULL, $1, 0); joinTmpNodes($$,$1,0); }
+    | scalar_exp IS NOT NULLVALUE       { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opISNOTNULL, $1, 0); joinTmpNodes($$,$1,0); }
+    | scalar_exp COMPARISON scalar_exp  { $$ = new QgsSearchTreeNode($2, $1, $3); joinTmpNodes($$,$1,$3); }
     ;
 
 scalar_exp:
-    FUNCTION '(' scalar_exp ')' {$$ = new QgsSearchTreeNode($1, $3, 0); joinTmpNodes($$, $3, 0);}
-    |  scalar_exp '^' scalar_exp   { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opPOW, $1, $3); joinTmpNodes($$, $1, $3); }
+      FUNCTION '(' scalar_exp ')' { $$ = new QgsSearchTreeNode($1, $3, 0); joinTmpNodes($$, $3, 0);}
+    | scalar_exp '^' scalar_exp   { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opPOW, $1, $3); joinTmpNodes($$, $1, $3); }
     | scalar_exp '*' scalar_exp   { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opMUL,  $1, $3); joinTmpNodes($$,$1,$3); }
     | scalar_exp '/' scalar_exp   { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opDIV,  $1, $3); joinTmpNodes($$,$1,$3); }
     | scalar_exp '+' scalar_exp   { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opPLUS, $1, $3); joinTmpNodes($$,$1,$3); }
@@ -134,7 +138,7 @@ scalar_exp:
     | '-' scalar_exp %prec UMINUS { $$ = $2; if ($$->type() == QgsSearchTreeNode::tNumber) $$->setNumber(- $$->number()); }
     | AREA                        { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opAREA, 0, 0); addToTmpNodes($$); }
     | LENGTH                      { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opLENGTH, 0, 0); addToTmpNodes($$); }
-    | NUMBER                      { $$ = new QgsSearchTreeNode($1);        addToTmpNodes($$); }
+    | NUMBER                      { $$ = new QgsSearchTreeNode($1); addToTmpNodes($$); }
     | STRING                      { $$ = new QgsSearchTreeNode(QString::fromUtf8(yytext), 0); addToTmpNodes($$); }
     | COLUMN_REF                  { $$ = new QgsSearchTreeNode(QString::fromUtf8(yytext), 1); addToTmpNodes($$); }
 ;
