@@ -237,8 +237,9 @@ class visualThread( QThread ):
       if self.mySelection: # only selected features
         selection = vlayer.selectedFeatures()
         nFeat = vlayer.selectedFeatureCount()
-        self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
-        self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
+        if nFeat > 0:
+          self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
+          self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
         for f in selection:
           atMap = f.attributeMap()
           lenVal = float( len( atMap[ index ].toString() ) )
@@ -281,16 +282,18 @@ class visualThread( QThread ):
           nElement += 1
           self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
       nVal= float( len( values ) )
-      if nVal > 0.00:
+      if nVal > 0:
         meanVal = sumVal / nVal
-      lstStats = []
-      lstStats.append( self.tr( "Max. len:" ) + unicode( maxVal ) )
-      lstStats.append( self.tr( "Min. len:" ) + unicode( minVal ) )
-      lstStats.append( self.tr( "Mean. len:" ) + unicode( meanVal ) )
-      lstStats.append( self.tr( "Filled:" ) + unicode( fillVal ) )
-      lstStats.append( self.tr( "Empty:" ) + unicode( emptyVal ) )
-      lstStats.append( self.tr( "N:" ) + unicode( nVal ) )
-      return ( lstStats, [] )
+        lstStats = []
+        lstStats.append( self.tr( "Max. len:" ) + unicode( maxVal ) )
+        lstStats.append( self.tr( "Min. len:" ) + unicode( minVal ) )
+        lstStats.append( self.tr( "Mean. len:" ) + unicode( meanVal ) )
+        lstStats.append( self.tr( "Filled:" ) + unicode( fillVal ) )
+        lstStats.append( self.tr( "Empty:" ) + unicode( emptyVal ) )
+        lstStats.append( self.tr( "N:" ) + unicode( nVal ) )
+        return ( lstStats, [] )
+      else:
+        return ( ["Error:No features selected!"], [] )
     else: # numeric field
       stdVal = 0.00
       cvVal = 0.00
@@ -302,8 +305,9 @@ class visualThread( QThread ):
         selection = vlayer.selectedFeatures()
         nFeat = vlayer.selectedFeatureCount()
         uniqueVal = ftools_utils.getUniqueValuesCount( vlayer, index, True )
-        self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
-        self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
+        if nFeat > 0:
+          self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
+          self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
         for f in selection:
           atMap = f.attributeMap()
           value = float( atMap[ index ].toDouble()[ 0 ] )
@@ -339,33 +343,35 @@ class visualThread( QThread ):
           nElement += 1
           self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
       nVal= float( len( values ) )
-      rangeVal = maxVal - minVal
       if nVal > 0.00:
+        rangeVal = maxVal - minVal
         meanVal = sumVal / nVal
         if meanVal != 0.00:
           for val in values:
             stdVal += ( ( val - meanVal ) * ( val - meanVal ) )
           stdVal = math.sqrt( stdVal / nVal )
           cvVal = stdVal / meanVal
-      if nVal > 1:
-        lstVal = values
-        lstVal.sort()
-        if ( nVal % 2 ) == 0:
-            medianVal = 0.5 * ( lstVal[ int( ( nVal - 1 ) / 2 ) ] + lstVal[ int( ( nVal ) / 2 ) ] )
-        else:
-            medianVal = lstVal[ int( ( nVal + 1 ) / 2 ) ]
-      lstStats = []
-      lstStats.append( self.tr( "Mean:" ) + unicode( meanVal ) )
-      lstStats.append( self.tr( "StdDev:" ) + unicode( stdVal ) )
-      lstStats.append( self.tr( "Sum:" ) + unicode( sumVal) )
-      lstStats.append( self.tr( "Min:" ) + unicode( minVal ) )
-      lstStats.append( self.tr( "Max:" ) + unicode( maxVal ) )
-      lstStats.append( self.tr( "N:" ) + unicode( nVal ) )
-      lstStats.append( self.tr( "CV:" ) + unicode( cvVal ) )
-      lstStats.append( self.tr( "Number of unique values:" ) + unicode( uniqueVal ) )
-      lstStats.append( self.tr( "Range:" ) + unicode( rangeVal ) )
-      lstStats.append( self.tr( "Median:" ) + unicode( medianVal ) )
-      return ( lstStats, [] )
+        if nVal > 1:
+            lstVal = values
+            lstVal.sort()
+            if ( nVal % 2 ) == 0:
+                medianVal = 0.5 * ( lstVal[ int( ( nVal - 1 ) / 2 ) ] + lstVal[ int( ( nVal ) / 2 ) ] )
+            else:
+                medianVal = lstVal[ int( ( nVal + 1 ) / 2 ) ]
+        lstStats = []
+        lstStats.append( self.tr( "Mean:" ) + unicode( meanVal ) )
+        lstStats.append( self.tr( "StdDev:" ) + unicode( stdVal ) )
+        lstStats.append( self.tr( "Sum:" ) + unicode( sumVal) )
+        lstStats.append( self.tr( "Min:" ) + unicode( minVal ) )
+        lstStats.append( self.tr( "Max:" ) + unicode( maxVal ) )
+        lstStats.append( self.tr( "N:" ) + unicode( nVal ) )
+        lstStats.append( self.tr( "CV:" ) + unicode( cvVal ) )
+        lstStats.append( self.tr( "Number of unique values:" ) + unicode( uniqueVal ) )
+        lstStats.append( self.tr( "Range:" ) + unicode( rangeVal ) )
+        lstStats.append( self.tr( "Median:" ) + unicode( medianVal ) )
+        return ( lstStats, [] )
+      else:
+        return ( ["Error:No features selected!"], [] )
 
   def nearest_neighbour_analysis( self, vlayer ):
     vprovider = vlayer.dataProvider()
