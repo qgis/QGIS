@@ -79,16 +79,14 @@ class Dialog(QDialog, Ui_Dialog):
                         self.progressBar.setValue(60)
                         outputWkt = srsDefine.toWkt()
                         self.progressBar.setValue(65)
-                        outputPrj = open(unicode("%s.prj" % inPath), "w")
+                        outputFile = QFile( inPath + ".prj" )
+                        outputFile.open( QIODevice.WriteOnly | QIODevice.Text )
+                        outputPrj = QTextStream( outputFile )
                         self.progressBar.setValue(70)
-                        outputPrj.write(outputWkt)
+                        outputPrj << outputWkt
                         self.progressBar.setValue(75)
-                        outputPrj.close()
-                        #mLayer = self.getMapLayerByName(inName)
-                        #self.progressBar.setValue(90)
-                        #if not mLayer.isValid():
-                            #QMessageBox.information(self, self.tr("Define current projection"), self.tr("Unable to dynamically define projection.\nPlease reload layer manually for projection definition to take effect."))
-                        #else:
+                        outputPrj.flush()
+                        outputFile.close()
                         self.progressBar.setValue(95)
                         vLayer.setCrs(srsDefine)
                         self.progressBar.setValue(100)
