@@ -408,6 +408,7 @@ class geoprocessingThread( QThread ):
     FEATURE_EXCEPT = True
     vproviderA = self.vlayerA.dataProvider()
     allAttrsA = vproviderA.attributeIndexes()
+    vproviderA.select(allAttrsA)
     fields = vproviderA.fields()
     writer = QgsVectorFileWriter( self.myName, self.myEncoding, 
     fields, QGis.WKBPolygon, vproviderA.crs() )
@@ -416,6 +417,7 @@ class geoprocessingThread( QThread ):
     inGeom = QgsGeometry()
     outGeom = QgsGeometry()
     nElement = 0
+    
     # there is selection in input layer
     if self.mySelectionA:
       nFeat = self.vlayerA.selectedFeatureCount()
@@ -473,6 +475,7 @@ class geoprocessingThread( QThread ):
           GEOS_EXCEPT = False
     # there is no selection in input layer
     else:
+      rect = self.vlayerA.extent()
       nFeat = vproviderA.featureCount()
       if useField:
         unique = ftools_utils.getUniqueValues( vproviderA, self.myParam )
@@ -483,7 +486,7 @@ class geoprocessingThread( QThread ):
           hull = []
           first = True
           outID = 0
-          vproviderA.select( allAttrsA )
+          vproviderA.select( allAttrsA )#, rect )
           vproviderA.rewind()
           while vproviderA.nextFeature( inFeat ):
             atMap = inFeat.attributeMap()
@@ -515,6 +518,7 @@ class geoprocessingThread( QThread ):
         self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
         hull = []
         vproviderA.rewind()
+        vproviderA.select(allAttrsA)
         while vproviderA.nextFeature( inFeat ):
           inGeom = QgsGeometry( inFeat.geometry() )
           points = ftools_utils.extractPoints( inGeom )
