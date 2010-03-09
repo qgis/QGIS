@@ -175,7 +175,8 @@ class GeometryDialog(QDialog, Ui_Dialog):
       if success:
         addToTOC = QMessageBox.question( self, self.tr("Geometry"), self.tr( "Created output shapefile:\n%1\n\nWould you like to add the new layer to the TOC?" ).arg( unicode( self.shapefileName ) ), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton )
         if addToTOC == QMessageBox.Yes:
-          ftools_utils.addShapeToCanvas( unicode( self.shapefileName ) )
+          if not ftools_utils.addShapeToCanvas( unicode( self.shapefileName ) ):
+            QMessageBox.warning( self, self.tr("Geoprocessing"), self.tr( "Error loading output shapefile:\n%1" ).arg( unicode( self.shapefileName ) ))
       else:
         QMessageBox.warning( self, self.tr("Geometry"), self.tr( "Error writing output shapefile." ) )
         
