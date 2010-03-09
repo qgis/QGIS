@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from qgis.core import *
@@ -402,7 +403,7 @@ class geometryThread( QThread ):
       self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
       inGeom = inFeat.geometry()
       atMap = inFeat.attributeMap()
-      outGeom = self.extractAsSimple( inGeom, tolerance )
+      outGeom = QgsGeometry(inGeom.simplify(tolerance))
       if outGeom is None:
         return "math_error"
       outFeat.setAttributeMap( atMap )
@@ -567,143 +568,6 @@ class geometryThread( QThread ):
     del writer
 
     return True
-
-  def extractAsSimple( self, geom, tolerance ):
-    temp_geom1 = []
-    temp_geom2 = []
-    if geom.type() == 1:
-      if geom.isMultipart():
-        multi_geom = geom.asMultiPolyline() 
-        for i in multi_geom:
-          simple = self.simplifyLine( i, 1, tolerance )
-          if simple is None:
-            return None
-          else:
-            temp_geom1.append( simple )
-        return QgsGeometry().fromMultiPolyline(temp_geom1)
-      else:
-        multi_geom = self.simplifyLine( geom.asPolyline(), 1, tolerance )
-        if multi_geom is None:
-          return None
-        else:
-          return QgsGeometry().fromPolyline(multi_geom)
-    elif geom.type() == 2:
-      if geom.isMultipart():
-        multi_geom = geom.asMultiPolygon()
-        for i in multi_geom:
-          temp_geom2 = []
-          for j in i:
-            simple = self.simplifyLine( j, 2, tolerance )
-            if simple is None:
-              return None
-            else:
-              temp_geom2.append( simple )
-          temp_geom1.append( temp_geom2 )
-        return QgsGeometry().fromMultiPolygon( temp_geom1 )
-      else:
-        multi_geom = geom.asPolygon()
-        for i in multi_geom:
-          simple = self.simplifyLine( i, 2, tolerance )
-          if simple is None:
-            return None
-          else:
-            temp_geom1.append( simple )
-        return QgsGeometry().fromPolygon(temp_geom1)
-
-  def simplifyLine( self, ln, typ, tol ):
-    newline = []
-    last = len(ln) - 1
-    if typ == 2:
-      tml = 0.00
-      mid = 1
-      for m in range(1 , last):
-        ml = self.measure.measureLine(ln[0], ln[m])
-        if ml > tml:
-          tml = ml
-          mid = m
-      keep = [0, mid, last]
-      try:
-        keep.extend( self.recursiveDouglasPeucker( ln, tol, 0, mid) )
-        keep.extend( self.recursiveDouglasPeucker( ln, tol, mid, last) )
-      except:
-        return None
-      if len(keep) <= 3:
-        return ln
-    else:
-      keep = [0, last]
-      keep.extend( self.recursiveDouglasPeucker( ln, tol, 0, last) )
-    keep.sort()
-    for i in keep:
-      newline.append(ln[i])
-    return newline
-
-  def recursiveDouglasPeucker( self, line, tol, j, k ):
-  # recursiveDouglasPeucker based on function
-  # by Schuyler Erle <schuyler@nocat.net> 
-  # Copyright (c) 2005, Frank Warmerdam <warmerdam@pobox.com>
-    keep = []
-    if k <= j+1: # there is nothing to simplify
-      return keep
-    # degenerate case
-    if self.measure.measureLine( line[ j ], line[ k ]) < tol:
-      return keep
-    # check for adequate approximation by segment S from v[j] to v[k]
-    maxi = j  # index of vertex farthest from S
-    maxd = 0  # distance squared of farthest vertex
-    tline = [ line[ j ], line[ k ] ]
-    # test each vertex v[i] for max distance from S
-    for i in range( j + 1, k ):
-        # compute distance
-      #dv = seg.Distance( pts[i] )
-      dv = self.shortestDistance( tline, line[ i ] )
-      if dv is None:
-        return None
-        # test with current max distance
-      if dv > maxd: 
-        # v[i] is a new max vertex
-        maxi = i
-        maxd = dv
-    if maxd > tol:         # error is worse than the tolerance
-        # split the polyline at the farthest vertex from S
-      keep.append( maxi ) # mark v[maxi] for the simplified polyline
-        # recursively simplify the two subpolylines at v[maxi]
-      keep.extend( self.recursiveDouglasPeucker( line, tol, j, maxi ) )  # v[j] to v[maxi]
-      keep.extend( self.recursiveDouglasPeucker( line, tol, maxi, k ) )  # v[maxi] to v[k]
-
-    # else the approximation is OK, so ignore intermediate vertices
-    return keep
-
-  def shortestDistance( self, tline, point):
-    try:
-      a = self.measure.measureLine( tline[ 1 ], point )
-      b = self.measure.measureLine( tline[ 0 ], point)
-      c = self.measure.measureLine( tline[ 0 ], tline[ 1 ] )
-      if a * b * c == 0.00:
-        return 0.00
-      x = ( ( a * a + b * b - c * c ) / ( 2.00 * b ) )
-      h = math.sqrt( ( a * a ) - ( x * x ) )
-      y = ( b - x )
-      a3 = ( math.atan( h / x ) )
-      if a3 < 0:
-        a3 = a3 + math.pi
-      elif a3 > math.pi:
-        a3 = a3 - math.pi
-      a1 = ( math.atan( h / y ) )
-      if a1 < 0:
-        a1 = a1 + math.pi
-      elif a1 > math.pi:
-        a1 = a1 - math.pi
-      a3 = a3 * ( 180 / math.pi )
-      a1 = a1 * (180 / math.pi)
-      a2 = ( ( math.pi ) * ( 180 / math.pi ) ) - a1 - a3
-      if a3 >= 90.00:
-        length = c
-      elif a2 >= 90.00:
-        length = b
-      length = math.sin( a1 ) * b
-      return math.fabs( length )
-    except:
-      return None
 
   def simpleMeasure( self, inGeom ):
     if inGeom.wkbType() == QGis.WKBPoint:
