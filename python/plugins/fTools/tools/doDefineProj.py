@@ -110,13 +110,3 @@ class Dialog(QDialog, Ui_Dialog):
                 self.txtProjection.insert(projString)
         else:
             return
-
-#Gets map layer by layername in canvas
-#Return: QgsMapLayer
-    def getMapLayerByName(self,myName):
-        mc = self.iface.mapCanvas()
-        nLayers = mc.layerCount()
-        for l in range(nLayers):
-            layer = mc.layer(l)
-            if layer.name() == unicode(myName):
-                return layer

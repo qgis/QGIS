@@ -212,7 +212,8 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
       out_text = ""
     addToTOC = QMessageBox.question( self, self.tr("Geoprocessing"), self.tr( "Created output shapefile:\n%1\n\n%2%3" ).arg( unicode( self.shapefileName ) ).arg( out_text ).arg( end_text ), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton )
     if addToTOC == QMessageBox.Yes:
-      ftools_utils.addShapeToCanvas( unicode( self.shapefileName ) )
+      if not ftools_utils.addShapeToCanvas( unicode( self.shapefileName ) ):
+          QMessageBox.warning( self, self.tr("Geoprocessing"), self.tr( "Error loading output shapefile:\n%1" ).arg( unicode( self.shapefileName ) ))
     
   def runStatusFromThread( self, status ):
     self.progressBar.setValue( status )
