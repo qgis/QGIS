@@ -60,6 +60,11 @@ public:
   QString table() const;
   QString sql() const;
   QString geometryColumn() const;
+  
+  //! set use Estimated Metadata
+  // added in 1.5
+  void setUseEstimatedMetadata( bool theFlag );
+  bool useEstimatedMetadata() const;
 
   // added in 1.1
   QString host() const;

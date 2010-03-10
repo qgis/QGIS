@@ -85,6 +85,11 @@ class CORE_EXPORT QgsDataSourceURI
     QString sql() const;
     QString geometryColumn() const;
 
+    //! set use Estimated Metadata
+    // added in 1.5
+    void setUseEstimatedMetadata( bool theFlag );
+    bool useEstimatedMetadata() const;
+
     void clearSchema();
     void setSql( QString sql );
 
@@ -128,6 +133,8 @@ class CORE_EXPORT QgsDataSourceURI
     enum SSLmode mSSLmode;
     //! key column
     QString mKeyColumn;
+    //Use estimated metadata flag
+    bool mUseEstimatedMetadata;
 };
 
 #endif //QGSDATASOURCEURI_H

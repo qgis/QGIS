@@ -41,6 +41,10 @@ email                : sherman at mrcc.com
 #include <pg_config.h>
 #endif
 
+// Note: Because the the geometry type select SQL is also in the qgspostgresprovider
+// code this parameter is duplicated there.
+static const int sGeomTypeSelectLimit = 100;
+
 QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WFlags fl )
     : QDialog( parent, fl ), mColumnTypeThread( NULL ), pd( 0 )
 {
@@ -142,6 +146,7 @@ void QgsPgSourceSelect::on_btnDelete_clicked()
   settings.remove( key + "/sslmode" );
   settings.remove( key + "/publicOnly" );
   settings.remove( key + "/geometryColumnsOnly" );
+  settings.remove( key + "/estimatedMetadata" );
   settings.remove( key + "/saveUsername" );
   settings.remove( key + "/savePassword" );
   settings.remove( key + "/save" );
@@ -352,6 +357,11 @@ QString QgsPgSourceSelect::layerURI( const QModelIndex &index )
     uri += QString( " key=\"%1\"" ).arg( pkColumnName );
   }
 
+  if ( mUseEstimatedMetadata )
+  {
+    uri += QString( " estimatedmetadata=true" );
+  }
+
   uri += QString( " table=\"%1\".\"%2\" (%3) sql=%4" )
          .arg( schemaName ).arg( tableName )
          .arg( geomColumnName )
@@ -419,7 +429,7 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
 
   bool searchPublicOnly = settings.value( key + "/publicOnly" ).toBool();
   bool searchGeometryColumnsOnly = settings.value( key + "/geometryColumnsOnly" ).toBool();
-
+  mUseEstimatedMetadata = settings.value( key + "/estimatedMetadata" ).toBool();
   // Need to escape the password to allow for single quotes and backslashes
 
   QgsDebugMsg( "Connection info: " + uri.connectionInfo() );
@@ -562,7 +572,7 @@ void QgsPgSourceSelect::addSearchGeometryColumn( const QString &schema, const QS
   if ( mColumnTypeThread == NULL )
   {
     mColumnTypeThread = new QgsGeomColumnTypeThread();
-    mColumnTypeThread->setConnInfo( m_privConnInfo );
+    mColumnTypeThread->setConnInfo( m_privConnInfo, mUseEstimatedMetadata );
   }
   mColumnTypeThread->addGeometryColumn( schema, table, column );
 }
@@ -794,9 +804,10 @@ void QgsPgSourceSelect::setSearchExpression( const QString& regexp )
 {
 }
 
-void QgsGeomColumnTypeThread::setConnInfo( QString s )
+void QgsGeomColumnTypeThread::setConnInfo( QString conninfo, bool useEstimatedMetadata )
 {
-  mConnInfo = s;
+  mConnInfo = conninfo;
+  mUseEstimatedMetadata = useEstimatedMetadata;
 }
 
 void QgsGeomColumnTypeThread::addGeometryColumn( QString schema, QString table, QString column )
@@ -828,8 +839,19 @@ void QgsGeomColumnTypeThread::getLayerTypes()
                                " when geometrytype(%1) IN ('LINESTRING','MULTILINESTRING') THEN 'LINESTRING'"
                                " when geometrytype(%1) IN ('POLYGON','MULTIPOLYGON') THEN 'POLYGON'"
                                " end "
-                               "from "
-                               "\"%2\".\"%3\"" ).arg( "\"" + columns[i] + "\"" ).arg( schemas[i] ).arg( tables[i] );
+                               "from " ).arg( "\"" + columns[i] + "\"" );
+      if ( mUseEstimatedMetadata )
+      {
+        query += QString( "(select %1 from %2 where %1 is not null limit %3) as t" )
+                 .arg( "\"" + columns[i] + "\"" )
+                 .arg( "\"" + schemas[i] + "\".\"" + tables[i] + "\"" )
+                 .arg( sGeomTypeSelectLimit );
+      }
+      else
+      {
+        query += "\"" + schemas[i] + "\".\"" + tables[i] + "\"";
+      }
+
       PGresult* gresult = PQexec( pd, query.toUtf8() );
       QString type;
       if ( PQresultStatus( gresult ) == PGRES_TUPLES_OK )

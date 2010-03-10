@@ -154,11 +154,6 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsPgSourceSelectBase
     typedef QPair<QString, QString> geomPair;
     typedef QList<geomPair> geomCol;
 
-    bool getGeometryColumnInfo( PGconn *pd,
-                                geomCol& details,
-                                bool searchGeometryColumnsOnly,
-                                bool searchPublicOnly );
-
     /**Inserts information about the spatial tables into mTableModel*/
     bool getTableInfo( PGconn *pg, bool searchGeometryColumnsOnly, bool searchPublicOnly );
 
@@ -181,6 +176,7 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsPgSourceSelectBase
     QString m_connInfo;
     QString m_privConnInfo;
     QStringList m_selectedTables;
+    bool mUseEstimatedMetadata;
     // Storage for the range of layer type icons
     QMap<QString, QPair<QString, QIcon> > mLayerIcons;
     PGconn *pd;
@@ -205,7 +201,7 @@ class QgsGeomColumnTypeThread : public QThread
     Q_OBJECT
   public:
 
-    void setConnInfo( QString s );
+    void setConnInfo( QString s, bool useEstimatedMetadata );
     void addGeometryColumn( QString schema, QString table, QString column );
 
     // These functions get the layer types and pass that information out
@@ -226,6 +222,7 @@ class QgsGeomColumnTypeThread : public QThread
 
   private:
     QString mConnInfo;
+    bool mUseEstimatedMetadata;
     bool mStopped;
     std::vector<QString> schemas, tables, columns;
 };

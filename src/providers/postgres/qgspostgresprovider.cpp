@@ -49,17 +49,23 @@
 const QString POSTGRES_KEY = "postgres";
 const QString POSTGRES_DESCRIPTION = "PostgreSQL/PostGIS data provider";
 
+// Note: Because the the geometry type select SQL is also in the qgspgsourceselect
+// code this parameter is duplicated there.
+static const int sGeomTypeSelectLimit = 100;
+
 QMap<QString, QgsPostgresProvider::Conn *> QgsPostgresProvider::Conn::connectionsRO;
 QMap<QString, QgsPostgresProvider::Conn *> QgsPostgresProvider::Conn::connectionsRW;
 QMap<QString, QString> QgsPostgresProvider::Conn::passwordCache;
 int QgsPostgresProvider::providerIds = 0;
 
 QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
-    : QgsVectorDataProvider( uri ),
-    mFetching( false ),
-    geomType( QGis::WKBUnknown ),
-    mFeatureQueueSize( 200 ),
-    mPrimaryKeyDefault( QString::null )
+    : QgsVectorDataProvider( uri )
+    , mFetching( false )
+    , mIsDbPrimaryKey( false )
+    , geomType( QGis::WKBUnknown )
+    , mFeatureQueueSize( 200 )
+    , mUseEstimatedMetadata( false )
+    , mPrimaryKeyDefault( QString::null )
 {
   // assume this is a valid layer until we determine otherwise
   valid = true;
@@ -77,6 +83,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
   geometryColumn = mUri.geometryColumn();
   sqlWhereClause = mUri.sql();
   primaryKey = mUri.keyColumn();
+  mUseEstimatedMetadata = mUri.useEstimatedMetadata();
 
   // Keep a schema qualified table name for convenience later on.
   mSchemaTableName = mUri.quotedTablename();
@@ -1029,6 +1036,10 @@ void QgsPostgresProvider::loadFields()
 
 QString QgsPostgresProvider::getPrimaryKey()
 {
+  // If we find a database primary key we will set this to true.  If it is a column which is serving
+  // as a primary key, then this will remain false.
+  mIsDbPrimaryKey = false;
+
   // check to see if there is an unique index on the relation, which
   // can be used as a key into the table. Primary keys are always
   // unique indices, so we catch them as well.
@@ -1079,6 +1090,7 @@ QString QgsPostgresProvider::getPrimaryKey()
         // primary key to the table)
         primaryKey = "oid";
         primaryKeyType = "int4";
+        mIsDbPrimaryKey = true;
       }
       else
       {
@@ -1102,6 +1114,7 @@ QString QgsPostgresProvider::getPrimaryKey()
               // fallback to ctid
               primaryKey = "ctid";
               primaryKeyType = "tid";
+              mIsDbPrimaryKey = true;
             }
           }
         }
@@ -1188,7 +1201,10 @@ QString QgsPostgresProvider::getPrimaryKey()
             log.append( tr( "The unique index on column '%1' is unsuitable because Qgis does not currently "
                             "support non-int4 type columns as a key into the table.\n" ).arg( columnName ) );
           else
+          {
+            mIsDbPrimaryKey = true;
             suitableKeyColumns.push_back( std::make_pair( columnName, columnType ) );
+          }
         }
         else
         {
@@ -2647,7 +2663,7 @@ bool QgsPostgresProvider::setSubsetString( QString theSQL )
 
   sqlWhereClause = theSQL;
 
-  if ( !uniqueData( mSchemaName, mTableName, primaryKey ) )
+  if ( !mIsDbPrimaryKey && !uniqueData( mSchemaName, mTableName, primaryKey ) )
   {
     sqlWhereClause = prevWhere;
     return false;
@@ -2672,18 +2688,21 @@ long QgsPostgresProvider::getFeatureCount()
 
   // First get an approximate count; then delegate to
   // a thread the task of getting the full count.
+  QString sql;
 
-#ifdef POSTGRESQL_THREADS
-  QString sql = QString( "select reltuples from pg_catalog.pg_class where relname=%1" ).arg( quotedValue( tableName ) );
-  QgsDebugMsg( "Running SQL: " + sql );
-#else
-  QString sql = QString( "select count(*) from %1" ).arg( mSchemaTableName );
-
-  if ( sqlWhereClause.length() > 0 )
+  if ( mUseEstimatedMetadata )
   {
-    sql += " where " + sqlWhereClause;
+    sql = QString( "select reltuples::int from pg_catalog.pg_class where oid=regclass(%1)::oid" ).arg( quotedValue( mSchemaTableName ) );
   }
-#endif
+  else
+  {
+    sql = QString( "select count(*) from %1" ).arg( mSchemaTableName );
+
+    if ( sqlWhereClause.length() > 0 )
+    {
+      sql += " where " + sqlWhereClause;
+    }
+  }
 
   Result result = connectionRO->PQexec( sql );
 
@@ -2746,7 +2765,7 @@ void QgsPostgresProvider::calculateExtents()
   QString ext;
 
   // get the extents
-  if ( sqlWhereClause.isEmpty() && !connectionRO->hasNoExtentEstimate() )
+  if (( mUseEstimatedMetadata || sqlWhereClause.isEmpty() ) && !connectionRO->hasNoExtentEstimate() )
   {
     result = connectionRO->PQexec( QString( "select estimated_extent(%1,%2,%3)" )
                                    .arg( quotedValue( mSchemaName ) )
@@ -2955,7 +2974,19 @@ bool QgsPostgresProvider::getGeometryDetails()
                      " when geometrytype(%1) IN ('LINESTRING','MULTILINESTRING') THEN 'LINESTRING'"
                      " when geometrytype(%1) IN ('POLYGON','MULTIPOLYGON') THEN 'POLYGON'"
                      " end "
-                     "from %2" ).arg( quotedIdentifier( geometryColumn ) ).arg( mSchemaTableName );
+                     "from " ).arg( quotedIdentifier( geometryColumn ) );
+      if ( mUseEstimatedMetadata )
+      {
+        sql += QString( "(select %1 from %2 where %1 is not null limit %3) as t" )
+               .arg( quotedIdentifier( geometryColumn ) )
+               .arg( mSchemaTableName )
+               .arg( sGeomTypeSelectLimit );
+      }
+      else
+      {
+        sql += mSchemaTableName;
+      }
+
       if ( mUri.sql() != "" )
         sql += " where " + mUri.sql();
 

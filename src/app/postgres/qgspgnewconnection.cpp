@@ -56,16 +56,12 @@ QgsPgNewConnection::QgsPgNewConnection( QWidget *parent, const QString& connName
       port = "5432";
     }
     txtPort->setText( port );
-    Qt::CheckState s = Qt::Checked;
-    if ( ! settings.value( key + "/publicOnly", false ).toBool() )
-      s = Qt::Unchecked;
-    cb_publicSchemaOnly->setCheckState( s );
-    s = Qt::Checked;
-    if ( ! settings.value( key + "/geometrycolumnsOnly", false ).toBool() )
-      s = Qt::Unchecked;
-    cb_geometryColumnsOnly->setCheckState( s );
+    cb_publicSchemaOnly->setChecked( settings.value( key + "/publicOnly", false ).toBool() );
+    cb_geometryColumnsOnly->setChecked( settings.value( key + "/geometrycolumnsOnly", false ).toBool() );
     // Ensure that cb_plublicSchemaOnly is set correctly
     on_cb_geometryColumnsOnly_clicked();
+
+    cb_useEstimatedMetadata->setChecked( settings.value( key + "/estimatedMetadata", false ).toBool() );
 
     cbxSSLmode->setCurrentIndex( cbxSSLmode->findData( settings.value( key + "/sslmode", QgsDataSourceURI::SSLprefer ).toInt() ) );
 
@@ -132,6 +128,7 @@ void QgsPgNewConnection::accept()
   settings.setValue( baseKey + "/sslmode", cbxSSLmode->itemData( cbxSSLmode->currentIndex() ).toInt() );
   settings.setValue( baseKey + "/saveUsername", chkStoreUsername->isChecked() ? "true" : "false" );
   settings.setValue( baseKey + "/savePassword", chkStorePassword->isChecked() ? "true" : "false" );
+  settings.setValue( baseKey + "/estimatedMetadata", cb_useEstimatedMetadata->isChecked() );
 
   // remove old save setting
   settings.remove( baseKey + "/save" );

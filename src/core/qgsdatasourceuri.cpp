@@ -23,12 +23,12 @@
 #include <QStringList>
 #include <QRegExp>
 
-QgsDataSourceURI::QgsDataSourceURI() : mSSLmode( SSLprefer ), mKeyColumn( "" )
+QgsDataSourceURI::QgsDataSourceURI() : mSSLmode( SSLprefer ), mKeyColumn( "" ), mUseEstimatedMetadata( false )
 {
   // do nothing
 }
 
-QgsDataSourceURI::QgsDataSourceURI( QString uri ) : mSSLmode( SSLprefer ), mKeyColumn( "" )
+QgsDataSourceURI::QgsDataSourceURI( QString uri ) : mSSLmode( SSLprefer ), mKeyColumn( "" ), mUseEstimatedMetadata( false )
 {
   int i = 0;
   while ( i < uri.length() )
@@ -107,6 +107,10 @@ QgsDataSourceURI::QgsDataSourceURI( QString uri ) : mSSLmode( SSLprefer ), mKeyC
       else if ( pname == "key" )
       {
         mKeyColumn = pval;
+      }
+      else if ( pname == "estimatedmetadata" )
+      {
+        mUseEstimatedMetadata = pval == "true";
       }
       else if ( pname == "service" )
       {
@@ -281,6 +285,17 @@ void QgsDataSourceURI::setKeyColumn( QString column )
   mKeyColumn = column;
 }
 
+
+void QgsDataSourceURI::setUseEstimatedMetadata( bool theFlag )
+{
+  mUseEstimatedMetadata = theFlag;
+}
+
+bool QgsDataSourceURI::useEstimatedMetadata() const
+{
+  return mUseEstimatedMetadata;
+}
+
 void QgsDataSourceURI::setSql( QString sql )
 {
   mSql = sql;
@@ -417,6 +432,11 @@ QString QgsDataSourceURI::uri() const
   if ( !mKeyColumn.isEmpty() )
   {
     theUri += QString( " key='%1'" ).arg( escape( mKeyColumn ) );
+  }
+
+  if ( mUseEstimatedMetadata )
+  {
+    theUri += QString( " estimatedmetadata=true" );
   }
 
   theUri += QString( " table=%1 (%2) sql=%3" )
