@@ -26,24 +26,24 @@ class QgsGCPList;
 
 class QgsGCPListModel : public QStandardItemModel
 {
-  Q_OBJECT
+    Q_OBJECT
 
-public:
-  QgsGCPListModel(QObject *parent = 0);
+  public:
+    QgsGCPListModel( QObject *parent = 0 );
 
-  void setGCPList(QgsGCPList *theGCPList);
-  void setGeorefTransform(QgsGeorefTransform *theGeorefTransform);
-  void updateModel();
+    void setGCPList( QgsGCPList *theGCPList );
+    void setGeorefTransform( QgsGeorefTransform *theGeorefTransform );
+    void updateModel();
 
-public slots:
-  void replaceDataPoint(QgsGeorefDataPoint *newDataPoint, int i);
+  public slots:
+    void replaceDataPoint( QgsGeorefDataPoint *newDataPoint, int i );
 
-  void onGCPListModified();
-  void onTransformationModified();
+    void onGCPListModified();
+    void onTransformationModified();
 
-private:
-  QgsGCPList         *mGCPList;
-  QgsGeorefTransform *mGeorefTransform;
+  private:
+    QgsGCPList         *mGCPList;
+    QgsGeorefTransform *mGeorefTransform;
 };
 
 #endif

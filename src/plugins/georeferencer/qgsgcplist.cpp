@@ -20,30 +20,30 @@
 #include "qgsgcplist.h"
 
 QgsGCPList::QgsGCPList()
-  : QList<QgsGeorefDataPoint *>()
+    : QList<QgsGeorefDataPoint *>()
 {
 }
 
-QgsGCPList::QgsGCPList(const QgsGCPList &list)
+QgsGCPList::QgsGCPList( const QgsGCPList &list )
 {
   clear();
   QgsGCPList::const_iterator it = list.constBegin();
-  for (; it != list.constEnd(); ++it)
+  for ( ; it != list.constEnd(); ++it )
   {
-    QgsGeorefDataPoint *pt = new QgsGeorefDataPoint(**it);
-    append(pt);
+    QgsGeorefDataPoint *pt = new QgsGeorefDataPoint( **it );
+    append( pt );
   }
 }
 
-void QgsGCPList::createGCPVectors(std::vector<QgsPoint> &mapCoords,
-                                  std::vector<QgsPoint> &pixelCoords)
+void QgsGCPList::createGCPVectors( std::vector<QgsPoint> &mapCoords,
+                                   std::vector<QgsPoint> &pixelCoords )
 {
-  mapCoords   = std::vector<QgsPoint>(size());
-  pixelCoords = std::vector<QgsPoint>(size());
-  for (int i = 0, j = 0; i < sizeAll(); i++)
+  mapCoords   = std::vector<QgsPoint>( size() );
+  pixelCoords = std::vector<QgsPoint>( size() );
+  for ( int i = 0, j = 0; i < sizeAll(); i++ )
   {
-    QgsGeorefDataPoint *pt = at(i);
-    if (pt->isEnabled())
+    QgsGeorefDataPoint *pt = at( i );
+    if ( pt->isEnabled() )
     {
       mapCoords[j] = pt->mapCoords();
       pixelCoords[j] = pt->pixelCoords();
@@ -54,14 +54,14 @@ void QgsGCPList::createGCPVectors(std::vector<QgsPoint> &mapCoords,
 
 int QgsGCPList::size() const
 {
-  if (QList<QgsGeorefDataPoint *>::isEmpty())
+  if ( QList<QgsGeorefDataPoint *>::isEmpty() )
     return 0;
 
   int s = 0;
   const_iterator it = begin();
-  while (it != end())
+  while ( it != end() )
   {
-    if ((*it)->isEnabled()) s++;
+    if (( *it )->isEnabled() ) s++;
     it++;
   }
   return s;
@@ -72,14 +72,14 @@ int QgsGCPList::sizeAll() const
   return QList<QgsGeorefDataPoint *>::size();
 }
 
-QgsGCPList &QgsGCPList::operator =(const QgsGCPList &list)
+QgsGCPList &QgsGCPList::operator =( const QgsGCPList & list )
 {
   clear();
   QgsGCPList::const_iterator it = list.constBegin();
-  for (; it != list.constEnd(); ++it)
+  for ( ; it != list.constEnd(); ++it )
   {
-    QgsGeorefDataPoint *pt = new QgsGeorefDataPoint(**it);
-    append(pt);
+    QgsGeorefDataPoint *pt = new QgsGeorefDataPoint( **it );
+    append( pt );
   }
   return *this;
 }

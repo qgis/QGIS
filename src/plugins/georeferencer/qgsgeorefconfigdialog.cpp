@@ -18,22 +18,24 @@
 
 #include "qgsgeorefconfigdialog.h"
 
-QgsGeorefConfigDialog::QgsGeorefConfigDialog(QWidget *parent) :
-    QDialog(parent){
-  setupUi(this);
+QgsGeorefConfigDialog::QgsGeorefConfigDialog( QWidget *parent ) :
+    QDialog( parent )
+{
+  setupUi( this );
 
   readSettings();
 }
 
-void QgsGeorefConfigDialog::changeEvent(QEvent *e)
+void QgsGeorefConfigDialog::changeEvent( QEvent *e )
 {
-  QDialog::changeEvent(e);
-  switch (e->type()) {
-  case QEvent::LanguageChange:
-    retranslateUi(this);
-    break;
-  default:
-    break;
+  QDialog::changeEvent( e );
+  switch ( e->type() )
+  {
+    case QEvent::LanguageChange:
+      retranslateUi( this );
+      break;
+    default:
+      break;
   }
 }
 
@@ -51,14 +53,14 @@ void QgsGeorefConfigDialog::on_buttonBox_rejected()
 void QgsGeorefConfigDialog::readSettings()
 {
   QSettings s;
-  if (s.value("/Plugin-GeoReferencer/Config/ShowId").toBool())
-    mShowIDsRadioButton->setChecked(true);
+  if ( s.value( "/Plugin-GeoReferencer/Config/ShowId" ).toBool() )
+    mShowIDsRadioButton->setChecked( true );
   else
-    mShowCoordsRadioButton->setChecked(true);
+    mShowCoordsRadioButton->setChecked( true );
 }
 
 void QgsGeorefConfigDialog::writeSettings()
 {
   QSettings s;
-  s.setValue("/Plugin-GeoReferencer/Config/ShowId", mShowIDsRadioButton->isChecked());
+  s.setValue( "/Plugin-GeoReferencer/Config/ShowId", mShowIDsRadioButton->isChecked() );
 }

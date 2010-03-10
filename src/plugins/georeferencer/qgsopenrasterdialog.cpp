@@ -24,17 +24,17 @@
 
 #include "qgsopenrasterdialog.h"
 
-QgsOpenRasterDialog::QgsOpenRasterDialog(QWidget *parent) :
-    QDialog(parent)
+QgsOpenRasterDialog::QgsOpenRasterDialog( QWidget *parent ) :
+    QDialog( parent )
 {
-  setupUi(this);
+  setupUi( this );
 
-  QPushButton *okPushButton = buttonBox->button(QDialogButtonBox::Ok);
+  QPushButton *okPushButton = buttonBox->button( QDialogButtonBox::Ok );
   okPushButton->setEnabled( false );
 }
 
 // ------------------------------- public ---------------------------------- //
-void QgsOpenRasterDialog::getRasterOptions(QString &rasterFileName, QString &modifiedFileName, QString &worldFileName)
+void QgsOpenRasterDialog::getRasterOptions( QString &rasterFileName, QString &modifiedFileName, QString &worldFileName )
 {
   rasterFileName = leRasterFileName->text();
   modifiedFileName = leModifiedRasterFileName->text();
@@ -42,15 +42,16 @@ void QgsOpenRasterDialog::getRasterOptions(QString &rasterFileName, QString &mod
 }
 
 // ------------------------------ protected -------------------------------- //
-void QgsOpenRasterDialog::changeEvent(QEvent *e)
+void QgsOpenRasterDialog::changeEvent( QEvent *e )
 {
-  QDialog::changeEvent(e);
-  switch (e->type()) {
-  case QEvent::LanguageChange:
-    retranslateUi(this);
-    break;
-  default:
-    break;
+  QDialog::changeEvent( e );
+  switch ( e->type() )
+  {
+    case QEvent::LanguageChange:
+      retranslateUi( this );
+      break;
+    default:
+      break;
   }
 }
 
@@ -62,13 +63,13 @@ void QgsOpenRasterDialog::on_tbnSelectRaster_clicked()
   if ( dir.isEmpty() )
     dir = ".";
 
-  QString lastUsedFilter = settings.value("/Plugin-GeoReferencer/lastusedfilter").toString();
+  QString lastUsedFilter = settings.value( "/Plugin-GeoReferencer/lastusedfilter" ).toString();
 
   QString filters;
   QgsRasterLayer::buildSupportedRasterFileFilter( filters );
-  filters.prepend("(*.*);;");
+  filters.prepend( "(*.*);;" );
   QString rasterFileName = QFileDialog::getOpenFileName( this, tr( "Choose a name of the raster" ), dir,
-                                                         filters, &lastUsedFilter );
+                           filters, &lastUsedFilter );
 
   if ( rasterFileName.isEmpty() )
   {
@@ -86,10 +87,10 @@ void QgsOpenRasterDialog::on_tbnSelectRaster_clicked()
 
   QFileInfo fileInfo( rasterFileName );
   settings.setValue( "/Plugin-GeoReferencer/rasterdirectory", fileInfo.path() );
-  settings.setValue("/Plugin-GeoReferencer/lastusedfilter", lastUsedFilter);
+  settings.setValue( "/Plugin-GeoReferencer/lastusedfilter", lastUsedFilter );
 
   QString modifiedFileName = generateModifiedRasterFileName();
-  leModifiedRasterFileName->setText(modifiedFileName);
+  leModifiedRasterFileName->setText( modifiedFileName );
 
   // What DOING this code?
   QgsProject* prj = QgsProject::instance();
@@ -109,8 +110,8 @@ void QgsOpenRasterDialog::on_tbnSelectRaster_clicked()
 void QgsOpenRasterDialog::on_tbnSelectModifiedRaster_clicked()
 {
   QSettings settings;
-  QString dir = settings.value("/Plugin-GeoReferencer/rasterdirectory").toString();
-  if (dir.isEmpty())
+  QString dir = settings.value( "/Plugin-GeoReferencer/rasterdirectory" ).toString();
+  if ( dir.isEmpty() )
     dir = ".";
 
   QString modifiedFileName = QFileDialog::getSaveFileName( this, tr( "Choose a name for the modified raster" ), dir );
@@ -131,12 +132,12 @@ void QgsOpenRasterDialog::on_tbnSelectModifiedRaster_clicked()
   leModifiedRasterFileName->setText( modifiedFileName );
 }
 
-void QgsOpenRasterDialog::on_leModifiedRasterFileName_textChanged(const QString name)
+void QgsOpenRasterDialog::on_leModifiedRasterFileName_textChanged( const QString name )
 {
-  mWorldFileName = guessWorldFileName(name);
+  mWorldFileName = guessWorldFileName( name );
 
-  bool enable = (leModifiedRasterFileName->text().size() != 0 && leRasterFileName->text().size() != 0);
-  QPushButton *okPushButton = buttonBox->button(QDialogButtonBox::Ok);
+  bool enable = ( leModifiedRasterFileName->text().size() != 0 && leRasterFileName->text().size() != 0 );
+  QPushButton *okPushButton = buttonBox->button( QDialogButtonBox::Ok );
   okPushButton->setEnabled( enable );
 }
 
@@ -144,7 +145,7 @@ void QgsOpenRasterDialog::on_leModifiedRasterFileName_textChanged(const QString 
 QString QgsOpenRasterDialog::generateModifiedRasterFileName()
 {
   QString modifiedFileName = leRasterFileName->text();
-  QFileInfo modifiedFileInfo(modifiedFileName);
+  QFileInfo modifiedFileInfo( modifiedFileName );
   int pos = modifiedFileName.size() - modifiedFileInfo.suffix().size() - 1;
   modifiedFileName.insert( pos, tr( "-modified", "Georeferencer:QgsOpenRasterDialog.cpp - used to modify a user given file name" ) );
 

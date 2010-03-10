@@ -18,50 +18,53 @@
 
 #include <QStyledItemDelegate>
 
-class QgsNonEditableDelegate : public QStyledItemDelegate {
-  Q_OBJECT
+class QgsNonEditableDelegate : public QStyledItemDelegate
+{
+    Q_OBJECT
 
-public:
-  QgsNonEditableDelegate(QWidget *parent = 0);
+  public:
+    QgsNonEditableDelegate( QWidget *parent = 0 );
 
-  QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
-                        const QModelIndex &index) const
-  {
-    Q_UNUSED(parent);
-    Q_UNUSED(option);
-    Q_UNUSED(index);
-    return 0;
-  }
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option,
+                           const QModelIndex &index ) const
+    {
+      Q_UNUSED( parent );
+      Q_UNUSED( option );
+      Q_UNUSED( index );
+      return 0;
+    }
 };
 
-class QgsDmsAndDdDelegate : public QStyledItemDelegate {
-  Q_OBJECT
+class QgsDmsAndDdDelegate : public QStyledItemDelegate
+{
+    Q_OBJECT
 
-public:
-  QgsDmsAndDdDelegate(QWidget *parent = 0);
+  public:
+    QgsDmsAndDdDelegate( QWidget *parent = 0 );
 
-  QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
-                        const QModelIndex &index) const;
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option,
+                           const QModelIndex &index ) const;
 
-  void setEditorData(QWidget *editor, const QModelIndex &index) const;
-  void setModelData(QWidget *editor, QAbstractItemModel *model,
-                    const QModelIndex &index) const;
+    void setEditorData( QWidget *editor, const QModelIndex &index ) const;
+    void setModelData( QWidget *editor, QAbstractItemModel *model,
+                       const QModelIndex &index ) const;
 
-  void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option,
-                            const QModelIndex &index) const;
+    void updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option,
+                               const QModelIndex &index ) const;
 
-private:
-  QString dmsToDD(QString dms) const;
+  private:
+    QString dmsToDD( QString dms ) const;
 };
 
-class QgsCoordDelegate : public QStyledItemDelegate {
-  Q_OBJECT
+class QgsCoordDelegate : public QStyledItemDelegate
+{
+    Q_OBJECT
 
-public:
-  QgsCoordDelegate(QWidget *parent = 0);
+  public:
+    QgsCoordDelegate( QWidget *parent = 0 );
 
-  QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option,
-                        const QModelIndex &index) const;
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option,
+                           const QModelIndex &index ) const;
 
 //  void setEditorData(QWidget *editor, const QModelIndex &index);
 //  void setModelData(QWidget *editor, QAbstractItemModel *model,

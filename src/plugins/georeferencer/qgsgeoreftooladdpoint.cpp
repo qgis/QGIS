@@ -19,7 +19,7 @@
 #include "qgsgeoreftooladdpoint.h"
 
 QgsGeorefToolAddPoint::QgsGeorefToolAddPoint( QgsMapCanvas* canvas )
-  : QgsMapToolEmitPoint( canvas )
+    : QgsMapToolEmitPoint( canvas )
 {
 }
 
