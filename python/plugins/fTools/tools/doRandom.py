@@ -1,8 +1,9 @@
+# -*- coding: utf-8 -*-
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 from qgis.core import *
-
+import ftools_utils
 from ui_frmRandom import Ui_Dialog
 import random
 class Dialog(QDialog, Ui_Dialog):
@@ -16,13 +17,11 @@ class Dialog(QDialog, Ui_Dialog):
         # populate layer list
         self.progressBar.setValue(0)
         mapCanvas = self.iface.mapCanvas()
-        for i in range(mapCanvas.layerCount()):
-            layer = mapCanvas.layer(i)
-            if layer.type() == layer.VectorLayer:
-                self.inShape.addItem(layer.name())
+        layers = ftools_utils.getLayerNames([QGis.Point, QGis.Line, QGis.Polygon])
+        self.inShape.addItems(layers)
         
     def changed(self, inputLayer):
-	changedLayer = self.getVectorLayerByName(inputLayer)
+	changedLayer = ftools_utils.getVectorLayerByName(inputLayer)
 	changedProvider = changedLayer.dataProvider()
 	upperVal = changedProvider.featureCount()
 	self.spnNumber.setMaximum(upperVal)
@@ -34,7 +33,7 @@ class Dialog(QDialog, Ui_Dialog):
             self.progressBar.setValue(10)
             inName = self.inShape.currentText()
 	    self.progressBar.setValue(20)
-    	    layer = self.getVectorLayerByName(inName)
+    	    layer = ftools_utils.getVectorLayerByName(inName)
     	    self.progressBar.setValue(30)
 	    if self.rdoNumber.isChecked():
 		value = self.spnNumber.value()
@@ -51,14 +50,3 @@ class Dialog(QDialog, Ui_Dialog):
 	    self.progressBar.setValue(100)
 	    layer.setSelectedFeatures(selran)
 	    self.progressBar.setValue(0)
-
-#Gets vector layer by layername in canvas
-#Return: QgsVectorLayer            
-    def getVectorLayerByName(self, myName):
- 	mc = self.iface.mapCanvas()
- 	nLayers = mc.layerCount()
- 	for l in range(nLayers):
- 	    layer = mc.layer(l)
- 	    if layer.name() == unicode(myName):
- 	        if layer.isValid():
- 	           return layer

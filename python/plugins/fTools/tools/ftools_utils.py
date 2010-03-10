@@ -170,6 +170,9 @@ def getLayerNames( vTypes ):
             if layer.type() == QgsMapLayer.VectorLayer:
                 if layer.geometryType() in vTypes:
                     layerlist.append( unicode( layer.name() ) )
+            elif layer.type() == QgsMapLayer.RasterLayer:
+                if "Raster" in vTypes:
+                    layerlist.append( unicode( layer.name() ) )
     return layerlist
 
 # Return list of names of all fields from input QgsVectorLayer

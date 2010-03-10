@@ -1,4 +1,5 @@
-﻿#-----------------------------------------------------------
+# -*- coding: utf-8 -*-
+#-----------------------------------------------------------
 # 
 # Sum Lines In Polygons
 #
@@ -38,130 +39,112 @@ from ui_frmSumLines import Ui_Dialog
 
 class Dialog(QDialog, Ui_Dialog):
 
-	def __init__(self, iface):
-		QDialog.__init__(self)
-		self.iface = iface
-		# Set up the user interface from Designer.
-		self.setupUi(self)
-		QObject.connect(self.toolOut, SIGNAL("clicked()"), self.outFile)
-		self.setWindowTitle(self.tr("Sum line lengths"))
-		# populate layer list
-		self.progressBar.setValue(0)
-		mapCanvas = self.iface.mapCanvas()
-		for i in range(mapCanvas.layerCount()):
-			layer = mapCanvas.layer(i)
-			if layer.type() == layer.VectorLayer:
-				if layer.geometryType() == QGis.Polygon:
-					self.inPolygon.addItem(layer.name())
-				elif layer.geometryType() == QGis.Line:
-					self.inPoint.addItem(layer.name())
-		
-	def accept(self):
-		if self.inPolygon.currentText() == "":
-			QMessageBox.information(self, self.tr("Sum Line Lengths In Polyons"), self.tr("Please specify input polygon vector layer"))
-		elif self.outShape.text() == "":
-			QMessageBox.information(self, self.tr("Sum Line Lengths In Polyons"), self.tr("Please specify output shapefile"))
-		elif self.inPoint.currentText() == "":
-			QMessageBox.information(self, self.tr("Sum Line Lengths In Polyons"), self.tr("Please specify input line vector layer"))
-		elif self.lnField.text() == "":
-			QMessageBox.information(self, self.tr("Sum Line Lengths In Polyons"), self.tr("Please specify output length field"))
-		else:
-			inPoly = self.inPolygon.currentText()
-			inLns = self.inPoint.currentText()
-			inField = self.lnField.text()
-			outPath = self.outShape.text()
-			if outPath.contains("\\"):
-				outName = outPath.right((outPath.length() - outPath.lastIndexOf("\\")) - 1)
-			else:
-				outName = outPath.right((outPath.length() - outPath.lastIndexOf("/")) - 1)
-			if outName.endsWith(".shp"):
-				outName = outName.left(outName.length() - 4)
-			self.compute(inPoly, inLns, inField, outPath, self.progressBar)
-			self.outShape.clear()
-			addToTOC = QMessageBox.question(self, self.tr("Sum line lengths"), self.tr("Created output shapefile:\n%1\n\nWould you like to add the new layer to the TOC?").arg(unicode(outPath)), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
-			if addToTOC == QMessageBox.Yes:
-				self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
-				QgsMapLayerRegistry.instance().addMapLayer(self.vlayer)
-		self.progressBar.setValue(0)
+    def __init__(self, iface):
+        QDialog.__init__(self)
+        self.iface = iface
+        # Set up the user interface from Designer.
+        self.setupUi(self)
+        QObject.connect(self.toolOut, SIGNAL("clicked()"), self.outFile)
+        self.setWindowTitle(self.tr("Sum line lengths"))
+        # populate layer list
+        self.progressBar.setValue(0)
+        mapCanvas = self.iface.mapCanvas()
+        layers = ftools_utils.getLayerNames([QGis.Line])
+        self.inPoint.addItems(layers)
+        layers = ftools_utils.getLayerNames([QGis.Polygon])
+        self.inPolygon.addItems(layers)
+    
+    def accept(self):
+        if self.inPolygon.currentText() == "":
+            QMessageBox.information(self, self.tr("Sum Line Lengths In Polyons"), self.tr("Please specify input polygon vector layer"))
+        elif self.outShape.text() == "":
+            QMessageBox.information(self, self.tr("Sum Line Lengths In Polyons"), self.tr("Please specify output shapefile"))
+        elif self.inPoint.currentText() == "":
+            QMessageBox.information(self, self.tr("Sum Line Lengths In Polyons"), self.tr("Please specify input line vector layer"))
+        elif self.lnField.text() == "":
+            QMessageBox.information(self, self.tr("Sum Line Lengths In Polyons"), self.tr("Please specify output length field"))
+        else:
+            inPoly = self.inPolygon.currentText()
+            inLns = self.inPoint.currentText()
+            inField = self.lnField.text()
+            outPath = self.outShape.text()
+            if outPath.contains("\\"):
+                outName = outPath.right((outPath.length() - outPath.lastIndexOf("\\")) - 1)
+            else:
+                outName = outPath.right((outPath.length() - outPath.lastIndexOf("/")) - 1)
+            if outName.endsWith(".shp"):
+                outName = outName.left(outName.length() - 4)
+            self.compute(inPoly, inLns, inField, outPath, self.progressBar)
+            self.outShape.clear()
+            addToTOC = QMessageBox.question(self, self.tr("Sum line lengths"), self.tr("Created output shapefile:\n%1\n\nWould you like to add the new layer to the TOC?").arg(unicode(outPath)), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
+            if addToTOC == QMessageBox.Yes:
+                self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
+                QgsMapLayerRegistry.instance().addMapLayer(self.vlayer)
+        self.progressBar.setValue(0)
 
-	def outFile(self):
-		self.outShape.clear()
-		( self.shapefileName, self.encoding ) = ftools_utils.saveDialog( self )
-		if self.shapefileName is None or self.encoding is None:
-			return
-		self.outShape.setText( QString( self.shapefileName ) )
+    def outFile(self):
+        self.outShape.clear()
+        ( self.shapefileName, self.encoding ) = ftools_utils.saveDialog( self )
+        if self.shapefileName is None or self.encoding is None:
+            return
+        self.outShape.setText( QString( self.shapefileName ) )
 
-	def compute(self, inPoly, inLns, inField, outPath, progressBar):
-		polyLayer = self.getVectorLayerByName(inPoly)
-		lineLayer = self.getVectorLayerByName(inLns)
-		polyProvider = polyLayer.dataProvider()
-		lineProvider = lineLayer.dataProvider()
-		if polyProvider.crs() <> lineProvider.crs():
-			QMessageBox.warning(self, self.tr("CRS warning!"), self.tr("Warning: Input layers have non-matching CRS.\nThis may cause unexpected results."))
-		allAttrs = polyProvider.attributeIndexes()
-		polyProvider.select(allAttrs)
-		allAttrs = lineProvider.attributeIndexes()
-		lineProvider.select(allAttrs)
-		fieldList = self.getFieldList(polyLayer)
-		index = polyProvider.fieldNameIndex(unicode(inField))
-		if index == -1:
-			index = polyProvider.fieldCount()
-			field = QgsField(unicode(inField), QVariant.Int, "real", 24, 15, self.tr("length field"))
-			fieldList[index] = field
-		sRs = polyProvider.crs()
-		inFeat = QgsFeature()
-		outFeat = QgsFeature()
-		inGeom = QgsGeometry()
-		outGeom = QgsGeometry()
-		distArea = QgsDistanceArea()
-		lineProvider.rewind()
-		start = 15.00
-		add = 85.00 / polyProvider.featureCount()
-		check = QFile(self.shapefileName)
-		if check.exists():
-			if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):
-				return
-		writer = QgsVectorFileWriter(self.shapefileName, self.encoding, fieldList, polyProvider.geometryType(), sRs)
-		#writer = QgsVectorFileWriter(outPath, "UTF-8", fieldList, polyProvider.geometryType(), sRs)
-		while polyProvider.nextFeature(inFeat):
-			inGeom = inFeat.geometry()
-			atMap = inFeat.attributeMap()
-			lineList = []
-			length = 0
-			#(check, lineList) = lineLayer.featuresInRectangle(inGeom.boundingBox(), True, False)
-			lineLayer.select(inGeom.boundingBox(), False)
-			lineList = lineLayer.selectedFeatures()
-			if len(lineList) > 0: check = 0
-			else: check = 1
-			if check == 0:
-				for i in lineList:
-					if inGeom.intersects(i.geometry()):
-						outGeom = inGeom.intersection(i.geometry())
-						length = length + distArea.measure(outGeom)
-			outFeat.setGeometry(inGeom)
-			outFeat.setAttributeMap(atMap)
-			outFeat.addAttribute(index, QVariant(length))
-			writer.addFeature(outFeat)
-			start = start + 1
-			progressBar.setValue(start)
-		del writer
-				
-	def getVectorLayerByName(self, myName):
-		mc = self.iface.mapCanvas()
-		nLayers = mc.layerCount()
-		for l in range(nLayers):
-			layer = mc.layer(l)
-			if layer.name() == unicode(myName):
-				vlayer = QgsVectorLayer(unicode(layer.source()),  unicode(myName),  unicode(layer.dataProvider().name()))
-				if vlayer.isValid():
-					return vlayer
-				else:
-					QMessageBox.information(self, self.tr("Sum Line Lengths In Polyons"), self.tr("Vector layer is not valid"))
-
-	def getFieldList(self, vlayer):
-		fProvider = vlayer.dataProvider()
-		feat = QgsFeature()
-		allAttrs = fProvider.attributeIndexes()
-		fProvider.select(allAttrs)
-		myFields = fProvider.fields()
-		return myFields
+    def compute(self, inPoly, inLns, inField, outPath, progressBar):
+        polyLayer = ftools_utils.getVectorLayerByName(inPoly)
+        lineLayer = ftools_utils.getVectorLayerByName(inLns)
+        polyProvider = polyLayer.dataProvider()
+        lineProvider = lineLayer.dataProvider()
+        if polyProvider.crs() <> lineProvider.crs():
+            QMessageBox.warning(self, self.tr("CRS warning!"), self.tr("Warning: Input layers have non-matching CRS.\nThis may cause unexpected results."))
+        allAttrs = polyProvider.attributeIndexes()
+        polyProvider.select(allAttrs)
+        allAttrs = lineProvider.attributeIndexes()
+        lineProvider.select(allAttrs)
+        fieldList = ftools_utils.getFieldList(polyLayer)
+        index = polyProvider.fieldNameIndex(unicode(inField))
+        if index == -1:
+            index = polyProvider.fieldCount()
+            field = QgsField(unicode(inField), QVariant.Double, "real", 24, 15, self.tr("length field"))
+            fieldList[index] = field
+        sRs = polyProvider.crs()
+        inFeat = QgsFeature()
+        inFeatB = QgsFeature()
+        outFeat = QgsFeature()
+        inGeom = QgsGeometry()
+        outGeom = QgsGeometry()
+        distArea = QgsDistanceArea()
+        lineProvider.rewind()
+        start = 15.00
+        add = 85.00 / polyProvider.featureCount()
+        check = QFile(self.shapefileName)
+        if check.exists():
+            if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):
+                return
+        writer = QgsVectorFileWriter(self.shapefileName, self.encoding, fieldList, polyProvider.geometryType(), sRs)
+        #writer = QgsVectorFileWriter(outPath, "UTF-8", fieldList, polyProvider.geometryType(), sRs)
+        spatialIndex = ftools_utils.createIndex( lineProvider )
+        while polyProvider.nextFeature(inFeat):
+            inGeom = QgsGeometry(inFeat.geometry())
+            atMap = inFeat.attributeMap()
+            lineList = []
+            length = 0
+            #(check, lineList) = lineLayer.featuresInRectangle(inGeom.boundingBox(), True, False)
+            #lineLayer.select(inGeom.boundingBox(), False)
+            #lineList = lineLayer.selectedFeatures()
+            lineList = spatialIndex.intersects(inGeom.boundingBox())
+            if len(lineList) > 0: check = 0
+            else: check = 1
+            if check == 0:
+                for i in lineList:
+                    lineProvider.featureAtId( int( i ), inFeatB , True, allAttrs )
+                    tmpGeom = QgsGeometry( inFeatB.geometry() )
+                    if inGeom.intersects(tmpGeom):
+                        outGeom = inGeom.intersection(tmpGeom)
+                        length = length + distArea.measure(outGeom)
+            outFeat.setGeometry(inGeom)
+            outFeat.setAttributeMap(atMap)
+            outFeat.addAttribute(index, QVariant(length))
+            writer.addFeature(outFeat)
+            start = start + 1
+            progressBar.setValue(start)
+        del writer
