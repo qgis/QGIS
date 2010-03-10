@@ -152,8 +152,8 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
       myListA = ftools_utils.getLayerNames( [ QGis.Point, QGis.Line, QGis.Polygon ] )
       myListB = ftools_utils.getLayerNames( [ QGis.Polygon ] )
     elif self.myFunction == 7 or self.myFunction == 6:
-      myListA = ftools_utils.getLayerNames( [ QGis.Polygon ] )
-      myListB = ftools_utils.getLayerNames( [ QGis.Polygon ] )
+      myListA = ftools_utils.getLayerNames( [ QGis.Point, QGis.Line, QGis.Polygon ] ) # added points and lines to test
+      myListB = ftools_utils.getLayerNames( [ QGis.Point, QGis.Line, QGis.Polygon ] ) # added points and lines to test
     elif self.myFunction == 4:
       myListA = ftools_utils.getLayerNames( [ QGis.Polygon ] )
       myListB = []
