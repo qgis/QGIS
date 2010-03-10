@@ -1001,7 +1001,7 @@ void QgsGeorefPluginGui::saveGCPs()
   }
   else
   {
-    QMessageBox::information( this, tr( "Info" ), tr( "Enable to open GCP points file %1" ).arg( mGCPpointsFileName ) );
+    QMessageBox::information( this, tr( "Info" ), tr( "Unable to open GCP points file %1" ).arg( mGCPpointsFileName ) );
     return;
   }
 
@@ -1109,7 +1109,7 @@ bool QgsGeorefPluginGui::writeWorldFile( QgsPoint origin, double pixelXSize, dou
   if ( !file.open( QIODevice::WriteOnly ) )
   {
     QMessageBox::critical( this, tr( "Error" ),
-                           tr( "Could not write to " ) + mWorldFileName );
+                           tr( "Could not write to %1" ).arg( mWorldFileName ) );
     return false;
   }
   QTextStream stream( &file );
