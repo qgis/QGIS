@@ -291,6 +291,7 @@ QDomDocument QgsManageConnectionsDialog::savePgConnections( const QStringList &c
     el.setAttribute( "port", settings.value( path + "/port", "" ).toString() );
     el.setAttribute( "database", settings.value( path + "/database", "" ).toString() );
     el.setAttribute( "sslmode", settings.value( path + "/sslmode", "1" ).toString() );
+    el.setAttribute( "estimatedMetadata", settings.value( path + "/estimatedMetadata", "0" ).toString() );
 
     el.setAttribute( "saveUsername", settings.value( path + "/saveUsername", "false" ).toString() );
 
@@ -415,9 +416,10 @@ void QgsManageConnectionsDialog::loadPgConnections( const QDomDocument &doc, con
     settings.setValue( "/port", child.attribute( "port" ) );
     settings.setValue( "/database", child.attribute( "database" ) );
     settings.setValue( "/sslmode", child.attribute( "sslmode" ) );
-		settings.setValue( "/saveUsername", child.attribute( "saveUsername" ) );
+    settings.setValue( "/estimatedMetadata", child.attribute( "estimatedMetadata" ) );
+    settings.setValue( "/saveUsername", child.attribute( "saveUsername" ) );
     settings.setValue( "/username", child.attribute( "username" ) );
-		settings.setValue( "/savePassword", child.attribute( "savePassword" ) );
+    settings.setValue( "/savePassword", child.attribute( "savePassword" ) );
     settings.setValue( "/password", child.attribute( "password" ) );
     settings.endGroup();
 

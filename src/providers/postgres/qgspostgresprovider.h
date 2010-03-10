@@ -372,7 +372,6 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     //! Data source URI struct for this layer
     QgsDataSourceURI mUri;
 
-
     //! Child thread for calculating extents.
     QgsPostgresExtentThread mExtentThread;
 
@@ -408,6 +407,10 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * the oid is used to fetch features.
      */
     QString primaryKey;
+    /**
+     * Primary key column is "real" primary key
+     */
+    bool mIsDbPrimaryKey;
     /**
      * Data type for the primary key
      */
@@ -461,10 +464,13 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     bool deduceEndian();
     bool getGeometryDetails();
 
+    /* Use estimated metadata. Uses fast table counts, geometry type and extent determination */
+    bool mUseEstimatedMetadata;
+
     // Produces a QMessageBox with the given title and text. Doesn't
     // return until the user has dismissed the dialog box.
-    static void showMessageBox( const QString& title, const QString& text );
-    static void showMessageBox( const QString& title, const QStringList& text );
+    static void showMessageBox( const QString& title, const QString &text );
+    static void showMessageBox( const QString& title, const QStringList &text );
 
     // A simple class to store the rows of the sql executed in the
     // findColumns() function.

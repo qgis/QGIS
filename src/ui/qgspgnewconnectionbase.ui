@@ -228,6 +228,27 @@
         </item>
        </layout>
       </item>
+      <item row="4" column="0">
+       <widget class="QCheckBox" name="cb_useEstimatedMetadata">
+        <property name="toolTip">
+         <string>Use estimated table statistics for the layer metadata.</string>
+        </property>
+        <property name="whatsThis">
+         <string>&lt;html&gt;
+&lt;body&gt;
+&lt;p&gt;When the layer is setup various metadata is required for the PostGIS table. This includes information such as the table row count, geometry type and spatial extents of the data in the geometry column. If the table contains a large number of rows determining this metadata is time consuming.&lt;/p&gt;
+&lt;p&gt;By activating this option the following fast table metadata operations are done:&lt;/p&gt;
+&lt;p&gt;1) Row count is determined from table statistics obtained from running the PostgreSQL table analyse function.&lt;/p&gt;
+&lt;p&gt;2) Table extents are always determined with the estimated_extent PostGIS function even if a layer filter is applied.&lt;/p&gt;
+&lt;p&gt;3) If the table geometry type is unknown and is not exclusively taken from the geometry_columns table, then it is determined from the first 100 non-null geometry rows in the table.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>Use estimated table metadata</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -246,10 +267,15 @@
   <tabstop>txtHost</tabstop>
   <tabstop>txtDatabase</tabstop>
   <tabstop>txtPort</tabstop>
+  <tabstop>cbxSSLmode</tabstop>
   <tabstop>txtUsername</tabstop>
   <tabstop>txtPassword</tabstop>
+  <tabstop>chkStoreUsername</tabstop>
+  <tabstop>chkStorePassword</tabstop>
   <tabstop>cb_geometryColumnsOnly</tabstop>
   <tabstop>cb_publicSchemaOnly</tabstop>
+  <tabstop>cb_useEstimatedMetadata</tabstop>
+  <tabstop>btnConnect</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
