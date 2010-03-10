@@ -40,9 +40,7 @@ QgsAttributeActionDialog::QgsAttributeActionDialog( QgsAttributeAction* actions,
   header->setStretchLastSection( true );
   attributeActionTable->setColumnWidth( 0, 100 );
   attributeActionTable->setColumnWidth( 1, 230 );
-#if QT_VERSION >= 0x040300
   attributeActionTable->setCornerButtonEnabled( false );
-#endif
 
   connect( attributeActionTable, SIGNAL( itemSelectionChanged() ),
            this, SLOT( itemSelectionChanged() ) );
@@ -271,16 +269,6 @@ void QgsAttributeActionDialog::itemSelectionChanged()
   QList<QTableWidgetItem *> selection = attributeActionTable->selectedItems();
   if ( !selection.isEmpty() )
   {
-#if QT_VERSION < 0x040400
-    // Supress multiple selection and select row where mouse release occurs.
-    // Workaround for Qt 4.3 bug which allows multiple rows to be selected if
-    // the user presses the mouse in one row header and releases in another.
-    if ( attributeActionTable->row( selection.first() ) != attributeActionTable->row( selection.last() ) )
-    {
-      attributeActionTable->selectRow( attributeActionTable->currentRow() );
-      selection = attributeActionTable->selectedItems();
-    }
-#endif
     rowSelected( attributeActionTable->row( selection.first() ) );
   }
 }

@@ -59,10 +59,6 @@
 #include "qgsstylev2.h"
 #include "qgssymbologyv2conversion.h"
 
-#if QT_VERSION < 0x040300
-#define toPlainText() text()
-#endif
-
 
 QgsVectorLayerProperties::QgsVectorLayerProperties(
   QgsVectorLayer *lyr,

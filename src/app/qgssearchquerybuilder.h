@@ -55,9 +55,6 @@ class QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBase
     void on_btnOk_clicked();
     void on_btnLessThan_clicked();
     void on_btnGreaterThan_clicked();
-    void on_btnPct_clicked();
-    void on_btnIn_clicked();
-    void on_btnNotIn_clicked();
     void on_btnLike_clicked();
     void on_btnILike_clicked();
 

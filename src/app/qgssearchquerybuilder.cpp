@@ -26,11 +26,6 @@
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
 
-#if QT_VERSION < 0x040300
-#define toPlainText() text()
-#endif
-
-
 QgsSearchQueryBuilder::QgsSearchQueryBuilder( QgsVectorLayer* layer,
     QWidget *parent, Qt::WFlags fl )
     : QDialog( parent, fl ), mLayer( layer )
@@ -49,9 +44,9 @@ QgsSearchQueryBuilder::QgsSearchQueryBuilder( QgsVectorLayer* layer,
   connect( pbn, SIGNAL( clicked() ), this, SLOT( on_btnClear_clicked() ) );
 
   // disable unsupported operators
-  btnIn->setEnabled( false );
-  btnNotIn->setEnabled( false );
-  btnPct->setEnabled( false );
+  btnIn->setHidden( true );
+  btnNotIn->setHidden( true );
+  btnPct->setHidden( true );
 
   // change to ~
   btnILike->setText( "~" );
@@ -262,21 +257,6 @@ void QgsSearchQueryBuilder::on_btnLessThan_clicked()
 void QgsSearchQueryBuilder::on_btnGreaterThan_clicked()
 {
   txtSQL->insertPlainText( " > " );
-}
-
-void QgsSearchQueryBuilder::on_btnPct_clicked()
-{
-  txtSQL->insertPlainText( " % " );
-}
-
-void QgsSearchQueryBuilder::on_btnIn_clicked()
-{
-  txtSQL->insertPlainText( " IN " );
-}
-
-void QgsSearchQueryBuilder::on_btnNotIn_clicked()
-{
-  txtSQL->insertPlainText( " NOT IN " );
 }
 
 void QgsSearchQueryBuilder::on_btnLike_clicked()
