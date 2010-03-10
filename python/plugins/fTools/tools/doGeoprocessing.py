@@ -196,6 +196,7 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
     self.testThread.stop()
     self.cancel_close.setText( self.tr("Close") )
     QObject.disconnect( self.cancel_close, SIGNAL( "clicked()" ), self.cancelThread )
+    out_text = ""
     if not results[2] or not results[1] or not results [0]:
       out_text = self.tr( "\nWarnings:" )
       end_text = self.tr( "\nSome output geometries may be missing or invalid.\n\nWould you like to add the new layer anyway?" )
@@ -208,9 +209,7 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
       out_text = out_text + self.tr( "\nFeature geometry error: One or more output features ignored due to invalid geometry.")
     if not results[0]:
       out_text = out_text + self.tr( "\nGEOS geoprocessing error: One or more input features have invalid geometry.")
-    else:
-      out_text = ""
-    addToTOC = QMessageBox.question( self, self.tr("Geoprocessing"), self.tr( "Created output shapefile:\n%1\n\n%2%3" ).arg( unicode( self.shapefileName ) ).arg( out_text ).arg( end_text ), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton )
+    addToTOC = QMessageBox.question( self, self.tr("Geoprocessing"), self.tr( "Created output shapefile:\n%1\n%2%3" ).arg( unicode( self.shapefileName ) ).arg( out_text ).arg( end_text ), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton )
     if addToTOC == QMessageBox.Yes:
       if not ftools_utils.addShapeToCanvas( unicode( self.shapefileName ) ):
           QMessageBox.warning( self, self.tr("Geoprocessing"), self.tr( "Error loading output shapefile:\n%1" ).arg( unicode( self.shapefileName ) ))
@@ -834,8 +833,7 @@ class geoprocessingThread( QThread ):
     vproviderB = self.vlayerB.dataProvider()
     allAttrsB = vproviderB.attributeIndexes()
     vproviderB.select( allAttrsB )
-    if vproviderA.crs() == vproviderB.crs(): crs_match = True
-    else: crs_match = False
+    crs_match = vproviderA.crs() == vproviderB.crs()
     fields = ftools_utils.combineVectorFields( self.vlayerA, self.vlayerB )
     writer = QgsVectorFileWriter( self.myName, self.myEncoding, 
     fields, vproviderA.geometryType(), vproviderA.crs() )
@@ -968,7 +966,9 @@ class geoprocessingThread( QThread ):
                   int_geom = QgsGeometry( int_com.difference( int_sym ) )
                 try:
                   outFeat.setGeometry( int_geom )
+                  print outFeat.isValid()
                   outFeat.setAttributeMap( ftools_utils.combineVectorAttributes( atMapA, atMapB ) )
+                  print outFeat.isValid()
                   writer.addFeature( outFeat )
                 except:
                   FEATURE_EXCEPT = False
@@ -977,6 +977,7 @@ class geoprocessingThread( QThread ):
               GEOS_EXCEPT = False
               break
     del writer
+    print crs_match
     return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match
   
   def union( self ):
