@@ -120,11 +120,10 @@ class Dialog(QDialog, Ui_Dialog):
     self.outShape.clear()
     fileDialog = QFileDialog()
     fileDialog.setConfirmOverwrite(False)
-    outName = fileDialog.getOpenFileName(self, self.tr("Join Table"), ".", "DBase Files (*.dbf)")
+    outName = fileDialog.getOpenFileName(self, self.tr("Join Table"), ".", "Tables (*.dbf *.csv)")
     fileCheck = QFile(outName)
     if fileCheck.exists():
       filePath = QFileInfo(outName).absoluteFilePath()
-      if filePath.right(4).toLower() != ".dbf": filePath = filePath + ".dbf"
       if not outName.isEmpty():
         self.inTable.clear()
         self.inTable.insert(filePath)
@@ -135,13 +134,18 @@ class Dialog(QDialog, Ui_Dialog):
   def updateTableFields(self):
     if self.inTable.text() != "":
       filePath = self.inTable.text()
-      f = open(unicode(filePath), 'rb')
-      table = list(self.dbfreader(f))
-      f.close()
+      joinInfo = QFileInfo(filePath)
+      joinPath = joinInfo.absoluteFilePath()
+      joinName = joinInfo.completeBaseName()
       self.joinField.clear()
-      for i in table[0]:
-        self.joinField.addItem(unicode(i))
-      table = None
+      changedLayer = QgsVectorLayer(joinPath, joinName, 'ogr')
+      try:
+        changedField = ftools_utils.getFieldList(changedLayer)
+      except:
+        QMessageBox.warning(self, self.tr("Join Attributes"), self.tr("Unable to read input table!"))
+        return
+      for i in changedField:
+        self.joinField.addItem(unicode(changedField[i].name()))
 
   def compute(self, inName, inField, joinName, joinField, outName, keep, useTable, progressBar):
     layer1 = ftools_utils.getVectorLayerByName(inName)
@@ -151,21 +155,18 @@ class Dialog(QDialog, Ui_Dialog):
     fieldList1 = ftools_utils.getFieldList(layer1).values()
     index1 = provider1.fieldNameIndex(inField)
     if useTable:
-      f = open(unicode(joinName), 'rb')
-      table = list(self.dbfreader(f))
-      f.close()
-      (fieldList2, index2) = self.createFieldList(table, joinField)
-      table = table[2:]
-      func = lambda x: (unicode(type(x)) != "<type 'str'>" and QVariant(float(x))) or (QVariant(x))
-      table = map(lambda f: map(func, f), table)
-
+      joinInfo = QFileInfo(joinName)
+      joinPath = joinInfo.absoluteFilePath()
+      joinName = joinInfo.completeBaseName()
+      layer2 = QgsVectorLayer(joinPath, joinName, 'ogr')
+      useTable = False
     else:
       layer2 = ftools_utils.getVectorLayerByName(joinName)
-      provider2 = layer2.dataProvider()
-      allAttrs = provider2.attributeIndexes()
-      provider2.select(allAttrs)
-      fieldList2 = ftools_utils.getFieldList(layer2)
-      index2 = provider2.fieldNameIndex(joinField)
+    provider2 = layer2.dataProvider()
+    allAttrs = provider2.attributeIndexes()
+    provider2.select(allAttrs, QgsRectangle(), False, False)
+    fieldList2 = ftools_utils.getFieldList(layer2)
+    index2 = provider2.fieldNameIndex(joinField)
     fieldList2 = self.testForUniqueness(fieldList1, fieldList2.values())
     seq = range(0, len(fieldList1) + len(fieldList2))
     fieldList1.extend(fieldList2)
@@ -192,21 +193,8 @@ class Dialog(QDialog, Ui_Dialog):
       outFeat.setAttributeMap(atMap1)
       outFeat.setGeometry(inGeom)
       none = True
-      if useTable:
-        for i in table:
-          #sequence = range(0, len(table[0]))
-          #atMap2 = dict(zip(sequence, i))
-          if atMap1[index1].toString().trimmed() == i[index2].toString().trimmed():
-            count = count + 1
-            none = False
-            atMap = atMap1.values()
-            atMap2 = i
-            atMap.extend(atMap2)
-            atMap = dict(zip(seq, atMap))
-            break
-      else:
-        provider2.rewind()
-        while provider2.nextFeature(joinFeat):
+      provider2.select(allAttrs, QgsRectangle(), False, False)
+      while provider2.nextFeature(joinFeat):
           atMap2 = joinFeat.attributeMap()
           if atMap1[index1] == atMap2[index2]:
             none = False
@@ -259,55 +247,3 @@ class Dialog(QDialog, Ui_Dialog):
             j = ftools_utils.createUniqueFieldName(j)
             changed = True
     return fieldList2
-
-  def dbfreader(self, f):
-      """Returns an iterator over records in a Xbase DBF file.
-
-      The first row returned contains the field names.
-      The second row contains field specs: (type, size, decimal places).
-      Subsequent rows contain the data records.
-      If a record is marked as deleted, it is skipped.
-
-      File should be opened for binary reads.
-
-      """
-      numrec, lenheader = struct.unpack('<xxxxLH22x', f.read(32))
-      numfields = (lenheader - 33) // 32
-
-      fields = []
-      for fieldno in xrange(numfields):
-          name, typ, size, deci = struct.unpack('<11sc4xBB14x', f.read(32))
-          name = name.replace('\0', '')       # eliminate NULs from string
-          fields.append((name, typ, size, deci))
-      yield [field[0] for field in fields]
-      yield [tuple(field[1:]) for field in fields]
-
-      terminator = f.read(1)
-      assert terminator == '\r'
-
-      fields.insert(0, ('DeletionFlag', 'C', 1, 0))
-      fmt = ''.join(['%ds' % fieldinfo[2] for fieldinfo in fields])
-      fmtsiz = struct.calcsize(fmt)
-      for i in xrange(numrec):
-          record = struct.unpack(fmt, f.read(fmtsiz))
-          if record[0] != ' ':
-              continue                        # deleted record
-          result = []
-          for (name, typ, size, deci), value in itertools.izip(fields, record):
-              if name == 'DeletionFlag':
-                  continue
-              if typ == "N":
-                  value = value.replace('\0', '').lstrip()
-                  if value == '':
-                      value = 0
-                  elif deci:
-                      value = decimal.Decimal(value)
-                  else:
-                      value = int(value)
-              elif typ == 'D':
-                  y, m, d = int(value[:4]), int(value[4:6]), int(value[6:8])
-                  value = datetime.date(y, m, d)
-              elif typ == 'L':
-                  value = (value in 'YyTt' and 'T') or (value in 'NnFf' and 'F') or '?'
-              result.append(value)
-          yield result
