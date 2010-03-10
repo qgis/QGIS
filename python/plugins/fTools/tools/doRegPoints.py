@@ -48,9 +48,8 @@ class Dialog(QDialog, Ui_Dialog):
         self.setWindowTitle( self.tr("Regular points") )
         self.progressBar.setValue(0)
         self.mapCanvas = self.iface.mapCanvas()
-        for i in range(self.mapCanvas.layerCount()):
-            layer = self.mapCanvas.layer(i)
-            self.inShape.addItem(layer.name())
+        layers = ftools_utils.getLayerNames("all")
+        self.inShape.addItems(layers)
 
     def accept(self):
         if not self.rdoCoordinates.isChecked() and self.inShape.currentText() == "":
@@ -74,7 +73,7 @@ class Dialog(QDialog, Ui_Dialog):
             if self.chkRandom.isChecked(): offset = True
             else: offset = False
             if self.rdoBoundary.isChecked():
-                mLayer = self.getMapLayerByName(unicode(inName))
+                mLayer = ftools_utils.getMapLayerByName(unicode(inName))
                 boundBox = mLayer.extent()
                 crs = mLayer.crs()
             else:
@@ -106,32 +105,8 @@ class Dialog(QDialog, Ui_Dialog):
             if pGeom.intersects(bound):
                 points.append(pGeom)
                 i = i + 1
-        return points
-    
-# Get vector layer by name from TOC     
-    def getVectorLayerByName(self, myName):
-        mc = self.mapCanvas
-        nLayers = mc.layerCount()
-        for l in range(nLayers):
-            layer = mc.layer(l)
-            if layer.name() == unicode(myName):
-                vlayer = QgsVectorLayer(unicode(layer.source()),  unicode(myName),  unicode(layer.dataProvider().name()))
-                if vlayer.isValid():
-                    return vlayer
-                else:
-                    QMessageBox.information(self, self.tr("Generate Regular Points"), self.tr("Vector layer is not valid"))
-    
-# Get map layer by name from TOC     
-    def getMapLayerByName(self, myName):
-        mc = self.mapCanvas
-        nLayers = mc.layerCount()
-        for l in range(nLayers):
-            layer = mc.layer(l)
-            if layer.name() == unicode(myName):
-                if layer.isValid():
-                    return layer
-    
- 
+        return points    
+
     def regularize(self, bound, outPath, offset, value, gridType, inset, crs):
         area = bound.width() * bound.height()
         if offset:

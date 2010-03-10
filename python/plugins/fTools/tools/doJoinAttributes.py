@@ -56,15 +56,13 @@ class Dialog(QDialog, Ui_Dialog):
     # populate layer list
     self.progressBar.setValue(0)
     mapCanvas = self.iface.mapCanvas()
-    for i in range(mapCanvas.layerCount()):
-      layer = mapCanvas.layer(i)
-      if layer.type() == layer.VectorLayer:
-        self.inShape.addItem(layer.name())
-        self.joinShape.addItem(layer.name())
+    layers = ftools_utils.getLayerNames([QGis.Point, QGis.Line, QGis.Polygon])
+    self.inShape.addItems(layers)
+    self.joinShape.addItems(layers)
 
   def iupdate(self, inputLayer):
-    changedLayer = self.getVectorLayerByName(unicode(inputLayer))
-    changedField = self.getFieldList(changedLayer)
+    changedLayer = ftools_utils.getVectorLayerByName(unicode(inputLayer))
+    changedField = ftools_utils.getFieldList(changedLayer)
     self.inField.clear()
     for i in changedField:
       self.inField.addItem(unicode(changedField[i].name()))
@@ -72,8 +70,8 @@ class Dialog(QDialog, Ui_Dialog):
   def jupdate(self):
     inputLayer = self.joinShape.currentText()
     if inputLayer != "":
-      changedLayer = self.getVectorLayerByName(unicode(inputLayer))
-      changedField = self.getFieldList(changedLayer)
+      changedLayer = ftools_utils.getVectorLayerByName(unicode(inputLayer))
+      changedField = ftools_utils.getFieldList(changedLayer)
       self.joinField.clear()
       for i in changedField:
         self.joinField.addItem(unicode(changedField[i].name()))
@@ -103,18 +101,12 @@ class Dialog(QDialog, Ui_Dialog):
         useTable = True
       joinField = self.joinField.currentText()
       outPath = self.outShape.text()
-      if outPath.contains("\\"):
-        outName = outPath.right((outPath.length() - outPath.lastIndexOf("\\")) - 1)
-      else:
-        outName = outPath.right((outPath.length() - outPath.lastIndexOf("/")) - 1)
-      if outName.endsWith(".shp"):
-        outName = outName.left(outName.length() - 4)
       self.compute(inName, inField, joinName, joinField, outPath, keep, useTable, self.progressBar)
       self.outShape.clear()
       addToTOC = QMessageBox.question(self, self.tr("Join Attributes"), self.tr("Created output shapefile:\n%1\n\nWould you like to add the new layer to the TOC?").arg( unicode(self.shapefileName) ), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
       if addToTOC == QMessageBox.Yes:
-        vlayer = QgsVectorLayer(self.shapefileName, outName, "ogr")
-        QgsMapLayerRegistry.instance().addMapLayer(vlayer)
+        if not ftools_utils.addShapeToCanvas( unicode( outPath ) ):
+          QMessageBox.warning( self, self.tr("Geoprocessing"), self.tr( "Error loading output shapefile:\n%1" ).arg( unicode( outPath ) ))
     self.progressBar.setValue(0)
 
   def outFile(self):
@@ -152,11 +144,11 @@ class Dialog(QDialog, Ui_Dialog):
       table = None
 
   def compute(self, inName, inField, joinName, joinField, outName, keep, useTable, progressBar):
-    layer1 = self.getVectorLayerByName(inName)
+    layer1 = ftools_utils.getVectorLayerByName(inName)
     provider1 = layer1.dataProvider()
     allAttrs = provider1.attributeIndexes()
     provider1.select(allAttrs)
-    fieldList1 = self.getFieldList(layer1).values()
+    fieldList1 = ftools_utils.getFieldList(layer1).values()
     index1 = provider1.fieldNameIndex(inField)
     if useTable:
       f = open(unicode(joinName), 'rb')
@@ -168,11 +160,11 @@ class Dialog(QDialog, Ui_Dialog):
       table = map(lambda f: map(func, f), table)
 
     else:
-      layer2 = self.getVectorLayerByName(joinName)
+      layer2 = ftools_utils.getVectorLayerByName(joinName)
       provider2 = layer2.dataProvider()
       allAttrs = provider2.attributeIndexes()
       provider2.select(allAttrs)
-      fieldList2 = self.getFieldList(layer2)
+      fieldList2 = ftools_utils.getFieldList(layer2)
       index2 = provider2.fieldNameIndex(joinField)
     fieldList2 = self.testForUniqueness(fieldList1, fieldList2.values())
     seq = range(0, len(fieldList1) + len(fieldList2))
@@ -185,7 +177,6 @@ class Dialog(QDialog, Ui_Dialog):
       if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):
         return
     writer = QgsVectorFileWriter(self.shapefileName, self.encoding, fieldList1, provider1.geometryType(), sRs)
-
     inFeat = QgsFeature()
     outFeat = QgsFeature()
     joinFeat = QgsFeature()
@@ -196,7 +187,7 @@ class Dialog(QDialog, Ui_Dialog):
     count = 0
     provider1.rewind()
     while provider1.nextFeature(inFeat):
-      inGeom = inFeat.geometry()
+      inGeom = QgsGeometry(inFeat.geometry())
       atMap1 = inFeat.attributeMap()
       outFeat.setAttributeMap(atMap1)
       outFeat.setGeometry(inGeom)
@@ -265,45 +256,10 @@ class Dialog(QDialog, Ui_Dialog):
       for i in fieldList1:
         for j in fieldList2:
           if j.name() == i.name():
-            j = self.createUniqueFieldName(j)
+            j = ftools_utils.createUniqueFieldName(j)
             changed = True
     return fieldList2
-  
-  def createUniqueFieldName(self, field):
-    check = field.name().right(2)
-    if check.startsWith("_"):
-      (val,test) = check.right(1).toInt()
-      if test:
-        if val < 2:
-          val = 2
-        else:
-          val = val + 1
-        field.setName(field.name().left(len(field.name())-1) + unicode(val))
-      else:
-        field.setName(field.name() + "_2")
-    else:
-      field.setName(field.name() + "_2")
-    return field
-  
-  def getVectorLayerByName(self, myName):
-    mc = self.iface.mapCanvas()
-    nLayers = mc.layerCount()
-    for l in range(nLayers):
-      layer = mc.layer(l)
-      if layer.name() == unicode(myName):
-        vlayer = QgsVectorLayer(unicode(layer.source()),  unicode(myName),  unicode(layer.dataProvider().name()))
-        if vlayer.isValid():
-          return vlayer
-        else:
-          QMessageBox.information(self, self.tr("Join Attributes"), self.tr("Vector layer is not valid"))
 
-  def getFieldList(self, vlayer):
-    fProvider = vlayer.dataProvider()
-    feat = QgsFeature()
-    allAttrs = fProvider.attributeIndexes()
-    fProvider.select(allAttrs)
-    myFields = fProvider.fields()
-    return myFields
   def dbfreader(self, f):
       """Returns an iterator over records in a Xbase DBF file.
 

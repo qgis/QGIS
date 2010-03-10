@@ -1,10 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>Dialog</class>
- <widget class="QDialog" name="Dialog" >
-  <property name="windowModality" >
-   <enum>Qt::WindowModal</enum>
-  </property>
-  <property name="geometry" >
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -12,48 +10,48 @@
     <height>287</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Random Selection Tool</string>
   </property>
-  <property name="sizeGripEnabled" >
+  <property name="sizeGripEnabled">
    <bool>true</bool>
   </property>
-  <layout class="QGridLayout" name="gridLayout" >
-   <item row="0" column="0" colspan="2" >
-    <widget class="QLabel" name="label_3" >
-     <property name="text" >
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0" colspan="2">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
       <string>Input Vector Layer</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="0" colspan="2" >
-    <widget class="QComboBox" name="inShape" />
+   <item row="1" column="0" colspan="2">
+    <widget class="QComboBox" name="inShape"/>
    </item>
-   <item row="2" column="0" colspan="2" >
-    <widget class="QLabel" name="label_2" >
-     <property name="text" >
+   <item row="2" column="0" colspan="2">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
       <string>Randomly Select</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="0" colspan="2" >
-    <layout class="QHBoxLayout" >
+   <item row="3" column="0" colspan="2">
+    <layout class="QHBoxLayout">
      <item>
-      <widget class="QRadioButton" name="rdoNumber" >
-       <property name="text" >
+      <widget class="QRadioButton" name="rdoNumber">
+       <property name="text">
         <string>Number of Features</string>
        </property>
-       <property name="checked" >
+       <property name="checked">
         <bool>true</bool>
        </property>
       </widget>
      </item>
      <item>
       <spacer>
-       <property name="orientation" >
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" stdset="0" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>40</width>
          <height>20</height>
@@ -62,29 +60,29 @@
       </spacer>
      </item>
      <item>
-      <widget class="QSpinBox" name="spnNumber" >
-       <property name="minimum" >
+      <widget class="QSpinBox" name="spnNumber">
+       <property name="minimum">
         <number>1</number>
        </property>
       </widget>
      </item>
     </layout>
    </item>
-   <item row="4" column="0" colspan="2" >
-    <layout class="QHBoxLayout" >
+   <item row="4" column="0" colspan="2">
+    <layout class="QHBoxLayout">
      <item>
-      <widget class="QRadioButton" name="rdoPercent" >
-       <property name="text" >
+      <widget class="QRadioButton" name="rdoPercent">
+       <property name="text">
         <string>Percentage of Features</string>
        </property>
       </widget>
      </item>
      <item>
       <spacer>
-       <property name="orientation" >
+       <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
-       <property name="sizeHint" stdset="0" >
+       <property name="sizeHint" stdset="0">
         <size>
          <width>40</width>
          <height>20</height>
@@ -93,32 +91,32 @@
       </spacer>
      </item>
      <item>
-      <widget class="QSpinBox" name="spnPercent" >
-       <property name="suffix" >
+      <widget class="QSpinBox" name="spnPercent">
+       <property name="suffix">
         <string>%</string>
        </property>
-       <property name="prefix" >
+       <property name="prefix">
         <string/>
        </property>
-       <property name="minimum" >
+       <property name="minimum">
         <number>1</number>
        </property>
-       <property name="maximum" >
+       <property name="maximum">
         <number>100</number>
        </property>
-       <property name="value" >
+       <property name="value">
         <number>50</number>
        </property>
       </widget>
      </item>
     </layout>
    </item>
-   <item row="5" column="0" colspan="2" >
+   <item row="5" column="0" colspan="2">
     <spacer>
-     <property name="orientation" >
+     <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <property name="sizeHint" stdset="0" >
+     <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
        <height>40</height>
@@ -126,25 +124,25 @@
      </property>
     </spacer>
    </item>
-   <item row="6" column="0" >
-    <widget class="QProgressBar" name="progressBar" >
-     <property name="value" >
+   <item row="6" column="0">
+    <widget class="QProgressBar" name="progressBar">
+     <property name="value">
       <number>0</number>
      </property>
-     <property name="alignment" >
+     <property name="alignment">
       <set>Qt::AlignCenter</set>
      </property>
-     <property name="textVisible" >
+     <property name="textVisible">
       <bool>true</bool>
      </property>
     </widget>
    </item>
-   <item row="6" column="1" >
-    <widget class="QDialogButtonBox" name="buttonBox_2" >
-     <property name="orientation" >
+   <item row="6" column="1">
+    <widget class="QDialogButtonBox" name="buttonBox_2">
+     <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
-     <property name="standardButtons" >
+     <property name="standardButtons">
       <set>QDialogButtonBox::Close|QDialogButtonBox::Ok</set>
      </property>
     </widget>
@@ -159,11 +157,11 @@
    <receiver>Dialog</receiver>
    <slot>accept()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>133</x>
      <y>273</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>215</x>
      <y>290</y>
     </hint>
@@ -175,11 +173,11 @@
    <receiver>Dialog</receiver>
    <slot>close()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>59</x>
      <y>273</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>132</x>
      <y>239</y>
     </hint>

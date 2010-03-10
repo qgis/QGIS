@@ -49,22 +49,20 @@ class Dialog(QDialog, Ui_Dialog):
         self.progressBar.setValue(0)
         self.setWindowTitle(self.tr("Random Points"))
         self.mapCanvas = self.iface.mapCanvas()
-        for i in range(self.mapCanvas.layerCount()):
-            layer = self.mapCanvas.layer(i)
-            if (layer.type() == layer.VectorLayer and layer.geometryType() == QGis.Polygon) or layer.type() == layer.RasterLayer:
-                self.inShape.addItem(layer.name())
+        layers = ftools_utils.getLayerNames([QGis.Polygon, "Raster"])
+        self.inShape.addItems(layers)
 
 # If input layer is changed, update field list                
     def update(self, inputLayer):
         self.cmbField.clear()
-        changedLayer = self.getMapLayerByName(inputLayer)
+        changedLayer = ftools_utils.getMapLayerByName(unicode(inputLayer))
         if changedLayer.type() == changedLayer.VectorLayer:
             self.rdoStratified.setEnabled(True)
             self.rdoDensity.setEnabled(True)
             self.rdoField.setEnabled(True)
             self.label_4.setEnabled(True)
-            changedLayer = self.getVectorLayerByName(inputLayer)
-            changedFields = self.getFieldList(changedLayer)
+            changedLayer = ftools_utils.getVectorLayerByName(inputLayer)
+            changedFields = ftools_utils.getFieldList(changedLayer)
             for i in changedFields:
                 self.cmbField.addItem(unicode(changedFields[i].name()))
         else:
@@ -95,7 +93,7 @@ class Dialog(QDialog, Ui_Dialog):
             if outName.endsWith(".shp"):
                 outName = outName.left(outName.length() - 4)
             self.progressBar.setValue(5)
-            mLayer = self.getMapLayerByName(unicode(inName))
+            mLayer = ftools_utils.getMapLayerByName(unicode(inName))
             if mLayer.type() == mLayer.VectorLayer:
                 inLayer = QgsVectorLayer(unicode(mLayer.source()),  unicode(mLayer.name()),  unicode(mLayer.dataProvider().name()))
                 if self.rdoUnstratified.isChecked():
@@ -174,38 +172,6 @@ class Dialog(QDialog, Ui_Dialog):
                 count = count + add
                 self.progressBar.setValue(count)
         return points
-    
-# Get vector layer by name from TOC     
-    def getVectorLayerByName(self, myName):
-        mc = self.mapCanvas
-        nLayers = mc.layerCount()
-        for l in range(nLayers):
-            layer = mc.layer(l)
-            if layer.name() == unicode(myName):
-                vlayer = QgsVectorLayer(unicode(layer.source()),  unicode(myName),  unicode(layer.dataProvider().name()))
-                if vlayer.isValid():
-                    return vlayer
-                else:
-                    QMessageBox.information(self, self.tr("Random Points"), self.tr("Vector layer is not valid"))
-    
-# Get map layer by name from TOC     
-    def getMapLayerByName(self, myName):
-        mc = self.mapCanvas
-        nLayers = mc.layerCount()
-        for l in range(nLayers):
-            layer = mc.layer(l)
-            if layer.name() == unicode(myName):
-                if layer.isValid():
-                    return layer
-# Retrieve the field map of a vector Layer
-    def getFieldList(self, vlayer):
-        fProvider = vlayer.dataProvider()
-        feat = QgsFeature()
-        allAttrs = fProvider.attributeIndexes()
-        fProvider.select(allAttrs)
-        myFields = fProvider.fields()
-        return myFields
-    
 
     def randomize(self, inLayer, outPath, minimum, design, value):
         outFeat = QgsFeature()

@@ -30,11 +30,13 @@ class Dialog(QDialog, Ui_Dialog):
         self.cmbLayer.addItems(layers)
 
     def updateProj1(self, layerName):
+        self.inRef.clear()
         tempLayer = ftools_utils.getVectorLayerByName(layerName)
         crs = tempLayer.dataProvider().crs().toProj4()
         self.inRef.insert(unicode(crs))
 
     def updateProj2(self, layerName):
+        self.outRef.clear()
         tempLayer = ftools_utils.getVectorLayerByName(layerName)
         crs = tempLayer.dataProvider().crs().toProj4()
         self.outRef.insert(unicode(crs))
@@ -82,11 +84,17 @@ class Dialog(QDialog, Ui_Dialog):
                         outputFile = QFile( inPath + ".prj" )
                         outputFile.open( QIODevice.WriteOnly | QIODevice.Text )
                         outputPrj = QTextStream( outputFile )
-                        self.progressBar.setValue(70)
                         outputPrj << outputWkt
-                        self.progressBar.setValue(75)
                         outputPrj.flush()
                         outputFile.close()
+                        self.progressBar.setValue(70)
+                        checkFile = QFile( inPath + ".qpj" )
+                        if checkFile.exists():
+                            checkFile.open( QIODevice.WriteOnly | QIODevice.Text )
+                            outputPrj = QTextStream( checkFile )
+                            outputPrj << outputWkt
+                            outputPrj.flush()
+                            checkFile.close()
                         self.progressBar.setValue(95)
                         vLayer.setCrs(srsDefine)
                         self.progressBar.setValue(100)

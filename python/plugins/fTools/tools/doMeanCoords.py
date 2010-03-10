@@ -19,10 +19,8 @@ class Dialog(QDialog, Ui_Dialog):
         # populate layer list
         self.progressBar.setValue(0)
         mapCanvas = self.iface.mapCanvas()
-        for i in range(mapCanvas.layerCount()):
-            layer = mapCanvas.layer(i)
-            if layer.type() == layer.VectorLayer:
-                self.inShape.addItem(layer.name())
+        layers = ftools_utils.getLayerNames([QGis.Point, QGis.Line, QGis.Polygon])
+        self.inShape.addItems(layers)
 
     def updateUi(self):
         if self.function == 1:

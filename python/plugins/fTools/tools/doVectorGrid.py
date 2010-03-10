@@ -179,22 +179,3 @@ class Dialog(QDialog, Ui_Dialog):
         if self.shapefileName is None or self.encoding is None:
             return
         self.outShape.setText( QString( self.shapefileName ) )
-
-    def getVectorLayerByName(self, myName):
-        mc = self.iface.mapCanvas()
-        nLayers = mc.layerCount()
-        for l in range(nLayers):
-            layer = mc.layer(l)
-            if unicode(layer.name()) == unicode(myName):
-                vlayer = QgsVectorLayer(unicode(layer.source()),  unicode(myName),  unicode(layer.dataProvider().name()))
-                if vlayer.isValid():
-                    return vlayer
-
-    def getMapLayerByName(self, myName):
-        mc = self.iface.mapCanvas()
-        nLayers = mc.layerCount()
-        for l in range(nLayers):
-            layer = mc.layer(l)
-            if unicode(layer.name()) == unicode(myName):
-                if layer.isValid():
-                    return layer

@@ -104,7 +104,7 @@ class Dialog(QDialog, Ui_Dialog):
         index = polyProvider.fieldNameIndex(unicode(inField))
         if index == -1:
             index = polyProvider.fieldCount()
-            field = QgsField(unicode(inField), QVariant.Int, "real", 24, 15, self.tr("point count field"))
+            field = QgsField(unicode(inField), QVariant.Double, "real", 24, 15, self.tr("point count field"))
             fieldList[index] = field
         sRs = polyProvider.crs()
         check = QFile(self.shapefileName)
