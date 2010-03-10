@@ -53,11 +53,6 @@ class CleanUpGlobalStatic
 
 # define K_GLOBAL_STATIC_STRUCT_NAME(NAME)
 
-#if QT_VERSION < 0x040400
-# define Q_BASIC_ATOMIC_INITIALIZER     Q_ATOMIC_INIT
-# define testAndSetOrdered              testAndSet
-#endif
-
 #define K_GLOBAL_STATIC(TYPE, NAME) K_GLOBAL_STATIC_WITH_ARGS(TYPE, NAME, ())
 
 #define K_GLOBAL_STATIC_WITH_ARGS(TYPE, NAME, ARGS)                            \

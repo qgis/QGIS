@@ -59,11 +59,7 @@
 #include <QSettings>
 #include <QIcon>
 #include <QPixmap>
-#if QT_VERSION < 0x040300
-#include <Q3Picture>
-#else
 #include <QSvgGenerator>
-#endif
 #include <QToolBar>
 #include <QToolButton>
 #include <QImageWriter>
@@ -554,16 +550,10 @@ void QgsComposer::print( QPrinter &printer )
   }
   else
   {
-#if QT_VERSION < 0x040400
-    QRectF paperRect( 0, 0, mComposition->paperWidth(), mComposition->paperHeight() );
-    QRect pageRect = printer.pageRect();
-    mComposition->render( &p, pageRect, paperRect );
-#else
     //better in case of custom page size, but only possible with Qt>=4.4.0
     QRectF paperRectMM = printer.pageRect( QPrinter::Millimeter );
     QRectF paperRectPixel = printer.pageRect( QPrinter::DevicePixel );
     mComposition->render( &p, paperRectPixel, paperRectMM );
-#endif
   }
   mComposition->setPlotStyle( savedPlotStyle );
   QApplication::restoreOverrideCursor();

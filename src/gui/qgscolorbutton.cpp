@@ -76,7 +76,7 @@ QgsColorButtonV2::QgsColorButtonV2( QWidget* parent )
 }
 
 QgsColorButtonV2::QgsColorButtonV2( QString text, QWidget* parent )
-  : QPushButton( text, parent )
+    : QPushButton( text, parent )
 {
 }
 
@@ -95,11 +95,7 @@ void QgsColorButtonV2::setColor( const QColor &color )
   p.setPen( Qt::NoPen );
   p.setRenderHint( QPainter::Antialiasing );
   p.setBrush( color );
-#if QT_VERSION >= 0x040400
   p.drawRoundedRect( rect, 4, 4 );
-#else
-  p.drawRect( rect );
-#endif
   p.end();
 
   // set this pixmap as icon

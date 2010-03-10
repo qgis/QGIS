@@ -60,15 +60,6 @@ QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface *iface,
   QgsDebugMsg( "QgsGrassNewMapset()" );
 
   setupUi( this );
-#if QT_VERSION < 0x040400
-  // this is not done by Qt4.3 uic
-  addPage( WizardPage1 );
-  addPage( WizardPage2 );
-  addPage( WizardPage3 );
-  addPage( WizardPage4 );
-  addPage( WizardPage5 );
-  addPage( WizardPage6 );
-#endif
 #ifdef Q_WS_MAC
   setWizardStyle( QWizard::ClassicStyle );
 #endif

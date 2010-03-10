@@ -23,11 +23,6 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 
-#if QT_VERSION < 0x040300
-#define toPlainText() text()
-#endif
-
-
 // constructor used when the query builder must make its own
 // connection to the database
 QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,

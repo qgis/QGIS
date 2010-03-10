@@ -21,11 +21,6 @@
 #include <QSettings>
 #include <QPrinter>
 
-#if QT_VERSION < 0x040300
-#define toPlainText() text()
-#endif
-
-
 //standard includes
 
 QuickPrintGui::QuickPrintGui( QgsMapCanvas * thepMapCanvas,

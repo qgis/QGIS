@@ -36,11 +36,7 @@ void QgsCopyrightLabelPluginGui::on_buttonBox_accepted()
   hide();
   //close the dialog
   emit changeFont( txtCopyrightText->currentFont() );
-#if QT_VERSION < 0x040300
-  emit changeLabel( txtCopyrightText->text() );
-#else
   emit changeLabel( txtCopyrightText->toPlainText() );
-#endif
   emit changeColor( pbnColorChooser->color() );
   emit changePlacement( cboPlacement->currentIndex() );
   emit enableCopyrightLabel( cboxEnabled->isChecked() );
