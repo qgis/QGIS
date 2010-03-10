@@ -23,54 +23,57 @@
 #include <cmath>
 using namespace std;
 
-class QgsStandardItem : public QStandardItem {
-public:
-  QgsStandardItem(QString text) : QStandardItem(text) { init(); }
-  QgsStandardItem(int value) : QStandardItem(QString::number(value)) { init(); }
-  QgsStandardItem(double value) : QStandardItem(QString::number(value, 'f', 2)) { init(); }
+class QgsStandardItem : public QStandardItem
+{
+  public:
+    QgsStandardItem( QString text ) : QStandardItem( text ) { init(); }
+    QgsStandardItem( int value ) : QStandardItem( QString::number( value ) ) { init(); }
+    QgsStandardItem( double value ) : QStandardItem( QString::number( value, 'f', 2 ) ) { init(); }
 
-private:
-  void init() {
-    setTextAlignment(Qt::AlignCenter);
-  }
+  private:
+    void init()
+    {
+      setTextAlignment( Qt::AlignCenter );
+    }
 };
 
 #define QGSSTANDARDITEM(value) (new QgsStandardItem(value))
 
 #if 0
-template <class T> class QNumericItem : public QStandardItem {
-public:
-  QNumericItem(T value) : QStandardItem(QString("%1").arg(value)), mValue(value)
-  {
-  }
+template <class T> class QNumericItem : public QStandardItem
+{
+  public:
+    QNumericItem( T value ) : QStandardItem( QString( "%1" ).arg( value ) ), mValue( value )
+    {
+    }
 
-  bool operator < (const QStandardItem &other) const
-  {
-    const QNumericItem<T> *otherD = dynamic_cast<const QNumericItem<T> *>(&other);
-    if (otherD == NULL)
-      return false;
-    return mValue < otherD->mValue;
-  }
-private:
-  T mValue;
+    bool operator < ( const QStandardItem &other ) const
+    {
+      const QNumericItem<T> *otherD = dynamic_cast<const QNumericItem<T> *>( &other );
+      if ( otherD == NULL )
+        return false;
+      return mValue < otherD->mValue;
+    }
+  private:
+    T mValue;
 };
 #endif
 
-QgsGCPListModel::QgsGCPListModel(QObject *parent)
-  : QStandardItemModel(parent)
-  , mGCPList(0)
-  , mGeorefTransform(0)
+QgsGCPListModel::QgsGCPListModel( QObject *parent )
+    : QStandardItemModel( parent )
+    , mGCPList( 0 )
+    , mGeorefTransform( 0 )
 {
 }
 
-void QgsGCPListModel::setGCPList(QgsGCPList *theGCPList)
+void QgsGCPListModel::setGCPList( QgsGCPList *theGCPList )
 {
   mGCPList = theGCPList;
   updateModel();
 }
 
 // ------------------------------- public ---------------------------------- //
-void QgsGCPListModel::setGeorefTransform(QgsGeorefTransform *theGeorefTransform)
+void QgsGCPListModel::setGeorefTransform( QgsGeorefTransform *theGeorefTransform )
 {
   mGeorefTransform = theGeorefTransform;
   updateModel();
@@ -79,76 +82,78 @@ void QgsGCPListModel::setGeorefTransform(QgsGeorefTransform *theGeorefTransform)
 void QgsGCPListModel::updateModel()
 {
   clear();
-  if (!mGCPList)
+  if ( !mGCPList )
     return;
 
 //  // Setup table header
   QStringList itemLabels;
 //  // Set column headers
-  itemLabels<< "on/off" << "id" << "srcX" << "srcY" << "dstX" << "dstY" << "dX" << "dY" << "residual";
+  itemLabels << "on/off" << "id" << "srcX" << "srcY" << "dstX" << "dstY" << "dX" << "dY" << "residual";
 //  setColumnCount(itemLabels.size());
-  setHorizontalHeaderLabels(itemLabels);
-  setRowCount(mGCPList->size());
+  setHorizontalHeaderLabels( itemLabels );
+  setRowCount( mGCPList->size() );
 
   bool bTransformUpdated = false;
-  if (mGeorefTransform)
+  if ( mGeorefTransform )
   {
     vector<QgsPoint> mapCoords, pixelCoords;
-    mGCPList->createGCPVectors(mapCoords, pixelCoords);
+    mGCPList->createGCPVectors( mapCoords, pixelCoords );
 
     // TODO: the parameters should probable be updated externally (by user interaction)
-    bTransformUpdated = mGeorefTransform->updateParametersFromGCPs(mapCoords, pixelCoords);
+    bTransformUpdated = mGeorefTransform->updateParametersFromGCPs( mapCoords, pixelCoords );
   }
 
-  for (int i = 0; i < mGCPList->sizeAll(); ++i)
+  for ( int i = 0; i < mGCPList->sizeAll(); ++i )
   {
     int j = 0;
-    QgsGeorefDataPoint *p = mGCPList->at(i);
-    p->setId(i);
+    QgsGeorefDataPoint *p = mGCPList->at( i );
+    p->setId( i );
 
     QStandardItem *si = new QStandardItem();
-    si->setTextAlignment(Qt::AlignCenter);
-    si->setCheckable(true);
-    if (p->isEnabled())
-      si->setCheckState(Qt::Checked);
+    si->setTextAlignment( Qt::AlignCenter );
+    si->setCheckable( true );
+    if ( p->isEnabled() )
+      si->setCheckState( Qt::Checked );
     else
-      si->setCheckState(Qt::Unchecked);
+      si->setCheckState( Qt::Unchecked );
 
-    setItem(i, j++, si);
-    setItem(i, j++, QGSSTANDARDITEM(i) /*create_item<int>(i)*/);
-    setItem(i, j++, QGSSTANDARDITEM(p->pixelCoords().x()) /*create_item<double>( p->pixelCoords().x() )*/);
-    setItem(i, j++, QGSSTANDARDITEM(-p->pixelCoords().y()) /*create_item<double>(-p->pixelCoords().y() )*/);
-    setItem(i, j++, QGSSTANDARDITEM(p->mapCoords().x()) /*create_item<double>( p->mapCoords().x() )*/);
-    setItem(i, j++, QGSSTANDARDITEM(p->mapCoords().y()) /*create_item<double>( p->mapCoords().y() )*/);
+    setItem( i, j++, si );
+    setItem( i, j++, QGSSTANDARDITEM( i ) /*create_item<int>(i)*/ );
+    setItem( i, j++, QGSSTANDARDITEM( p->pixelCoords().x() ) /*create_item<double>( p->pixelCoords().x() )*/ );
+    setItem( i, j++, QGSSTANDARDITEM( -p->pixelCoords().y() ) /*create_item<double>(-p->pixelCoords().y() )*/ );
+    setItem( i, j++, QGSSTANDARDITEM( p->mapCoords().x() ) /*create_item<double>( p->mapCoords().x() )*/ );
+    setItem( i, j++, QGSSTANDARDITEM( p->mapCoords().y() ) /*create_item<double>( p->mapCoords().y() )*/ );
 
     double residual = -1.f;
     double dX, dY;
     // Calculate residual if transform is available and up-to-date
-    if (mGeorefTransform && bTransformUpdated && mGeorefTransform->parametersInitialized())
+    if ( mGeorefTransform && bTransformUpdated && mGeorefTransform->parametersInitialized() )
     {
       QgsPoint dst;
       // Transform from world to raster coordinate:
       // This is the transform direction used by the warp operation.
       // As transforms of order >=2 are not invertible, we are only
       // interested in the residual in this direction
-      mGeorefTransform->transformWorldToRaster(p->mapCoords(), dst);
-      dX = (dst.x() - p->pixelCoords().x());
-      dY = (dst.y() - p->pixelCoords().y());
-      residual = sqrt(dX*dX + dY*dY);
+      mGeorefTransform->transformWorldToRaster( p->mapCoords(), dst );
+      dX = ( dst.x() - p->pixelCoords().x() );
+      dY = ( dst.y() - p->pixelCoords().y() );
+      residual = sqrt( dX * dX + dY * dY );
     }
     else
     {
       dX = dY = residual = 0;
     }
-    if (residual >= 0.f) {
-      setItem(i, j++, QGSSTANDARDITEM(dX) /*create_item<double>(dX)*/);
-      setItem(i, j++, QGSSTANDARDITEM(-dY) /*create_item<double>(-dY)*/);
-      setItem(i, j++, QGSSTANDARDITEM(residual) /*create_item<double>(residual)*/);
+    if ( residual >= 0.f )
+    {
+      setItem( i, j++, QGSSTANDARDITEM( dX ) /*create_item<double>(dX)*/ );
+      setItem( i, j++, QGSSTANDARDITEM( -dY ) /*create_item<double>(-dY)*/ );
+      setItem( i, j++, QGSSTANDARDITEM( residual ) /*create_item<double>(residual)*/ );
     }
-    else {
-      setItem(i, j++, QGSSTANDARDITEM("n/a") /*create_std_item("n/a")*/);
-      setItem(i, j++, QGSSTANDARDITEM("n/a") /*create_std_item("n/a")*/);
-      setItem(i, j++, QGSSTANDARDITEM("n/a") /*create_std_item("n/a")*/);
+    else
+    {
+      setItem( i, j++, QGSSTANDARDITEM( "n/a" ) /*create_std_item("n/a")*/ );
+      setItem( i, j++, QGSSTANDARDITEM( "n/a" ) /*create_std_item("n/a")*/ );
+      setItem( i, j++, QGSSTANDARDITEM( "n/a" ) /*create_std_item("n/a")*/ );
     }
   }
   //sort();  // Sort data
@@ -156,9 +161,9 @@ void QgsGCPListModel::updateModel()
 }
 
 // --------------------------- public slots -------------------------------- //
-void QgsGCPListModel::replaceDataPoint(QgsGeorefDataPoint *newDataPoint, int i)
+void QgsGCPListModel::replaceDataPoint( QgsGeorefDataPoint *newDataPoint, int i )
 {
-  mGCPList->replace(i, newDataPoint);
+  mGCPList->replace( i, newDataPoint );
 }
 
 void QgsGCPListModel::onGCPListModified()
@@ -170,17 +175,17 @@ void QgsGCPListModel::onTransformationModified()
 }
 
 #if 0
-template <class T> QNumericItem<T> *create_item(const T value, bool isEditable = true)
+template <class T> QNumericItem<T> *create_item( const T value, bool isEditable = true )
 {
-  QNumericItem<T> *item = new QNumericItem<T>(value);
-  item->setEditable(isEditable);
+  QNumericItem<T> *item = new QNumericItem<T>( value );
+  item->setEditable( isEditable );
   return item;
 }
 
-QStandardItem *create_std_item(const QString &S, bool isEditable = false)
+QStandardItem *create_std_item( const QString &S, bool isEditable = false )
 {
-  QStandardItem *std_item = new QStandardItem(S);
-  std_item->setEditable(isEditable);
+  QStandardItem *std_item = new QStandardItem( S );
+  std_item->setEditable( isEditable );
   return std_item;
 }
 #endif

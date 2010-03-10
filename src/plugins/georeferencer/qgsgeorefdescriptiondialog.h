@@ -25,7 +25,7 @@
 /**Dialog that shows logo and description of the georef plugin*/
 class QgsGeorefDescriptionDialog: public QDialog, private Ui::QgsGeorefDescriptionDialogBase
 {
-  Q_OBJECT
+    Q_OBJECT
 
   public:
     QgsGeorefDescriptionDialog( QWidget* parent );

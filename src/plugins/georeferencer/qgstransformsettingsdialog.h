@@ -25,35 +25,35 @@
 
 class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSettingsDialog
 {
-  Q_OBJECT
+    Q_OBJECT
 
-public:
-  QgsTransformSettingsDialog(const QString &raster, const QString &output,
-                             int countGCPpoints, QWidget *parent = 0);
-  void getTransformSettings(QgsGeorefTransform::TransformParametrisation &tp,
-                            QgsImageWarper::ResamplingMethod &rm, QString &comprMethod,
-                            QString &raster, QString &proj, bool &zt, bool &loadInQgis,
-                            double& resX, double& resY);
-  static void resetSettings();
+  public:
+    QgsTransformSettingsDialog( const QString &raster, const QString &output,
+                                int countGCPpoints, QWidget *parent = 0 );
+    void getTransformSettings( QgsGeorefTransform::TransformParametrisation &tp,
+                               QgsImageWarper::ResamplingMethod &rm, QString &comprMethod,
+                               QString &raster, QString &proj, bool &zt, bool &loadInQgis,
+                               double& resX, double& resY );
+    static void resetSettings();
 
-protected:
-  void changeEvent(QEvent *e);
-  void accept();
+  protected:
+    void changeEvent( QEvent *e );
+    void accept();
 
-private slots:
-  void on_tbnOutputRaster_clicked();
-  void on_tbnTargetSRS_clicked();
-  void on_leTargetSRS_textChanged(const QString &text);
-  QIcon getThemeIcon( const QString &theName );
+  private slots:
+    void on_tbnOutputRaster_clicked();
+    void on_tbnTargetSRS_clicked();
+    void on_leTargetSRS_textChanged( const QString &text );
+    QIcon getThemeIcon( const QString &theName );
 
-private:
-  bool checkGCPpoints(int count, int &minGCPpoints);
-  QString generateModifiedRasterFileName(const QString &raster);
+  private:
+    bool checkGCPpoints( int count, int &minGCPpoints );
+    QString generateModifiedRasterFileName( const QString &raster );
 
-  QRegExpValidator *mRegExpValidator;
-  QString mModifiedRaster;
+    QRegExpValidator *mRegExpValidator;
+    QString mModifiedRaster;
 
-  int mCountGCPpoints;
+    int mCountGCPpoints;
 };
 
 #endif // QGSTRANSFORMSETTINGSDIALOG_H

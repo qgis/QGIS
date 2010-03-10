@@ -19,26 +19,27 @@
 
 #include "ui_qgsopenrasterdialogbase.h"
 
-class QgsOpenRasterDialog : public QDialog, private Ui::QgsOpenRasterDialog {
-  Q_OBJECT
-public:
-  QgsOpenRasterDialog(QWidget *parent = 0);
-  void getRasterOptions(QString &rasterFileName, QString &modifiedFileName, QString &worldFileName);
+class QgsOpenRasterDialog : public QDialog, private Ui::QgsOpenRasterDialog
+{
+    Q_OBJECT
+  public:
+    QgsOpenRasterDialog( QWidget *parent = 0 );
+    void getRasterOptions( QString &rasterFileName, QString &modifiedFileName, QString &worldFileName );
 
-protected:
-  void changeEvent(QEvent *e);
+  protected:
+    void changeEvent( QEvent *e );
 
-private slots:
-  void on_tbnSelectRaster_clicked();
-  void on_tbnSelectModifiedRaster_clicked();
+  private slots:
+    void on_tbnSelectRaster_clicked();
+    void on_tbnSelectModifiedRaster_clicked();
 
-  void on_leModifiedRasterFileName_textChanged(const QString name);
+    void on_leModifiedRasterFileName_textChanged( const QString name );
 
-private:
-  QString generateModifiedRasterFileName();
-  QString guessWorldFileName( const QString rasterFileName );
+  private:
+    QString generateModifiedRasterFileName();
+    QString guessWorldFileName( const QString rasterFileName );
 
-  QString mWorldFileName;
+    QString mWorldFileName;
 };
 
 #endif // QGSOPENRASTERDIALOG_H

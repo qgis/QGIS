@@ -24,54 +24,54 @@ class QPushButton;
 
 class QgsGeorefMapToolEmitPoint : public QgsMapToolEmitPoint
 {
-  Q_OBJECT;
+    Q_OBJECT;
 
-public:
-  QgsGeorefMapToolEmitPoint(QgsMapCanvas *canvas)
-    : QgsMapToolEmitPoint(canvas)
-  {
-  }
+  public:
+    QgsGeorefMapToolEmitPoint( QgsMapCanvas *canvas )
+        : QgsMapToolEmitPoint( canvas )
+    {
+    }
 
-  void canvasReleaseEvent(QMouseEvent *e)
-  {
-    QgsMapToolEmitPoint::canvasReleaseEvent(e);
-    emit mouseReleased();
-  }
+    void canvasReleaseEvent( QMouseEvent *e )
+    {
+      QgsMapToolEmitPoint::canvasReleaseEvent( e );
+      emit mouseReleased();
+    }
 
-signals:
-  void mouseReleased();
+  signals:
+    void mouseReleased();
 };
 
 class QgsMapCoordsDialog : public QDialog, private Ui::QgsMapCoordsDialogBase
 {
-  Q_OBJECT
+    Q_OBJECT
 
-public:
-  QgsMapCoordsDialog( QgsMapCanvas* qgisCanvas, const QgsPoint pixelCoords, QWidget* parent = 0 );
-  ~QgsMapCoordsDialog();
+  public:
+    QgsMapCoordsDialog( QgsMapCanvas* qgisCanvas, const QgsPoint pixelCoords, QWidget* parent = 0 );
+    ~QgsMapCoordsDialog();
 
-private slots:
-  void on_buttonBox_accepted();
+  private slots:
+    void on_buttonBox_accepted();
 
-  void setToolEmitPoint(bool isEnable);
+    void setToolEmitPoint( bool isEnable );
 
-  void maybeSetXY( const QgsPoint &, Qt::MouseButton );
-  void updateOK();
-  void setPrevTool();
+    void maybeSetXY( const QgsPoint &, Qt::MouseButton );
+    void updateOK();
+    void setPrevTool();
 
-signals:
-  void pointAdded(const QgsPoint &, const QgsPoint &);
+  signals:
+    void pointAdded( const QgsPoint &, const QgsPoint & );
 
-private:
-  double dmsToDD(QString dms);
+  private:
+    double dmsToDD( QString dms );
 
-  QPushButton *mPointFromCanvasPushButton;
+    QPushButton *mPointFromCanvasPushButton;
 
-  QgsGeorefMapToolEmitPoint* mToolEmitPoint;
-  QgsMapTool* mPrevMapTool;
-  QgsMapCanvas* mQgisCanvas;
+    QgsGeorefMapToolEmitPoint* mToolEmitPoint;
+    QgsMapTool* mPrevMapTool;
+    QgsMapCanvas* mQgisCanvas;
 
-  QgsPoint mPixelCoords;
+    QgsPoint mPixelCoords;
 };
 
 #endif

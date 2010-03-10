@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsvalidateddoublespinbox.h - Simple extension to QDoubleSpinBox which 
+    qgsvalidateddoublespinbox.h - Simple extension to QDoubleSpinBox which
     implements a validate function to disallow zero as input.
      --------------------------------------
     Date                 : 23-Feb-2010
@@ -20,61 +20,62 @@
 
 #include <QDoubleSpinBox>
 
-class QgsValidatedDoubleSpinBox : public QDoubleSpinBox {
+class QgsValidatedDoubleSpinBox : public QDoubleSpinBox
+{
   public:
-    QgsValidatedDoubleSpinBox(QWidget *widget) : QDoubleSpinBox(widget)  { }
+    QgsValidatedDoubleSpinBox( QWidget *widget ) : QDoubleSpinBox( widget )  { }
 
-    QValidator::State validate(QString& input, int& pos ) const
+    QValidator::State validate( QString& input, int& pos ) const
     {
-      QValidator::State state = QDoubleSpinBox::validate(input ,pos);
-      if (state != QValidator::Acceptable)
+      QValidator::State state = QDoubleSpinBox::validate( input , pos );
+      if ( state != QValidator::Acceptable )
       {
         return state;
       }
 
       // A value of zero is acceptable as intermediate result,
       // but not as final entry
-      double val = valueFromText(input);
-      if (val == 0.0)
+      double val = valueFromText( input );
+      if ( val == 0.0 )
       {
         return QValidator::Intermediate;
       }
       return QValidator::Acceptable;
     }
 
-    StepEnabled stepEnabled () const
+    StepEnabled stepEnabled() const
     {
       StepEnabled mayStep = StepNone;
 
       // Zero is off limits, so handle the logic differently
       // (always exclude zero from the permitted interval)
-      if (minimum() == 0.0) 
+      if ( minimum() == 0.0 )
       {
-        if (value() - singleStep() > minimum())
+        if ( value() - singleStep() > minimum() )
         {
-          mayStep|= StepDownEnabled;
+          mayStep |= StepDownEnabled;
         }
       }
       else // closed interval
       {
-        if (value() - singleStep() >= minimum())
+        if ( value() - singleStep() >= minimum() )
         {
-          mayStep|= StepDownEnabled;
+          mayStep |= StepDownEnabled;
         }
       }
 
-      if (maximum() == 0.0)
+      if ( maximum() == 0.0 )
       {
-        if (value() + singleStep() < maximum())
+        if ( value() + singleStep() < maximum() )
         {
-          mayStep|= StepUpEnabled;
+          mayStep |= StepUpEnabled;
         }
       }
       else
       {
-        if (value() + singleStep() <= maximum())
+        if ( value() + singleStep() <= maximum() )
         {
-          mayStep|= StepUpEnabled;
+          mayStep |= StepUpEnabled;
         }
       }
       return mayStep;

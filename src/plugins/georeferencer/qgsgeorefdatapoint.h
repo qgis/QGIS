@@ -19,46 +19,46 @@ class QgsGCPCanvasItem;
 
 class QgsGeorefDataPoint : public QObject
 {
-  Q_OBJECT
+    Q_OBJECT
 
-public:
-  //! constructor
-  QgsGeorefDataPoint( QgsMapCanvas *srcCanvas, QgsMapCanvas *dstCanvas,
-                      const QgsPoint& pixelCoords, const QgsPoint& mapCoords,
-                      bool enable );
-  QgsGeorefDataPoint(const QgsGeorefDataPoint &p);
-  ~QgsGeorefDataPoint();
+  public:
+    //! constructor
+    QgsGeorefDataPoint( QgsMapCanvas *srcCanvas, QgsMapCanvas *dstCanvas,
+                        const QgsPoint& pixelCoords, const QgsPoint& mapCoords,
+                        bool enable );
+    QgsGeorefDataPoint( const QgsGeorefDataPoint &p );
+    ~QgsGeorefDataPoint();
 
-  //! returns coordinates of the point
-  QgsPoint pixelCoords() const { return mPixelCoords; }
-  void setPixelCoords(const QgsPoint &p);
+    //! returns coordinates of the point
+    QgsPoint pixelCoords() const { return mPixelCoords; }
+    void setPixelCoords( const QgsPoint &p );
 
-  QgsPoint mapCoords() const { return mMapCoords; }
-  void setMapCoords(const QgsPoint &p);
+    QgsPoint mapCoords() const { return mMapCoords; }
+    void setMapCoords( const QgsPoint &p );
 
-  bool isEnabled() const { return mEnabled; };
-  void setEnabled(bool enabled);
+    bool isEnabled() const { return mEnabled; };
+    void setEnabled( bool enabled );
 
-  int id() { return mId; }
-  void setId(int id);
+    int id() { return mId; }
+    void setId( int id );
 
-  bool contains(const QPoint &p);
+    bool contains( const QPoint &p );
 
-  QgsMapCanvas *srcCanvas() const { return mSrcCanvas; }
-  QgsMapCanvas *dstCanvas() const { return mDstCanvas; }
+    QgsMapCanvas *srcCanvas() const { return mSrcCanvas; }
+    QgsMapCanvas *dstCanvas() const { return mDstCanvas; }
 
-public slots:
-  void moveTo(const QPoint &);
-  void updateCoords();
+  public slots:
+    void moveTo( const QPoint & );
+    void updateCoords();
 
-private:
-  QgsMapCanvas *mSrcCanvas;
-  QgsMapCanvas *mDstCanvas;
-  QgsGCPCanvasItem *mGCPSourceItem;
-  QgsGCPCanvasItem *mGCPDestinationItem;
-  QgsPoint mPixelCoords;
-  QgsPoint mMapCoords;
+  private:
+    QgsMapCanvas *mSrcCanvas;
+    QgsMapCanvas *mDstCanvas;
+    QgsGCPCanvasItem *mGCPSourceItem;
+    QgsGCPCanvasItem *mGCPDestinationItem;
+    QgsPoint mPixelCoords;
+    QgsPoint mMapCoords;
 
-  int mId;
-  bool mEnabled;
+    int mId;
+    bool mEnabled;
 };

@@ -26,16 +26,16 @@ class QgsPoint;
 // what is better use inherid or agrigate QList?
 class QgsGCPList : public QList<QgsGeorefDataPoint *>
 {
-public:
-  QgsGCPList();
-  QgsGCPList(const QgsGCPList &list);
+  public:
+    QgsGCPList();
+    QgsGCPList( const QgsGCPList &list );
 
-  void createGCPVectors(std::vector<QgsPoint> &mapCoords,
-                        std::vector<QgsPoint> &pixelCoords);
-  int size() const;
-  int sizeAll() const;
+    void createGCPVectors( std::vector<QgsPoint> &mapCoords,
+                           std::vector<QgsPoint> &pixelCoords );
+    int size() const;
+    int sizeAll() const;
 
-  QgsGCPList &operator =(const QgsGCPList &list);
+    QgsGCPList &operator =( const QgsGCPList &list );
 };
 
 //typedef std::vector<QgsGeorefDataPoint *> QgsGCPList;

@@ -19,21 +19,22 @@
 
 #include "ui_qgsgeorefconfigdialogbase.h"
 
-class QgsGeorefConfigDialog : public QDialog, private Ui::QgsGeorefConfigDialogBase {
-  Q_OBJECT
-public:
-  QgsGeorefConfigDialog(QWidget *parent = 0);
+class QgsGeorefConfigDialog : public QDialog, private Ui::QgsGeorefConfigDialogBase
+{
+    Q_OBJECT
+  public:
+    QgsGeorefConfigDialog( QWidget *parent = 0 );
 
-protected:
-  void changeEvent(QEvent *e);
+  protected:
+    void changeEvent( QEvent *e );
 
-private slots:
-  void on_buttonBox_accepted();
-  void on_buttonBox_rejected();
+  private slots:
+    void on_buttonBox_accepted();
+    void on_buttonBox_rejected();
 
-private:
-  void readSettings();
-  void writeSettings();
+  private:
+    void readSettings();
+    void writeSettings();
 };
 
 #endif // QGSGEOREFCONFIGDIALOG_H

@@ -26,16 +26,16 @@ class QgsMapCanvas;
 
 class QgsGeorefToolAddPoint : public QgsMapToolEmitPoint
 {
-  Q_OBJECT
+    Q_OBJECT
 
-public:
-  QgsGeorefToolAddPoint( QgsMapCanvas* canvas );
+  public:
+    QgsGeorefToolAddPoint( QgsMapCanvas* canvas );
 
-  // Mouse events for overriding
-  void canvasPressEvent( QMouseEvent * e );
+    // Mouse events for overriding
+    void canvasPressEvent( QMouseEvent * e );
 
-signals:
-  void showCoordDailog( const QgsPoint & );
+  signals:
+    void showCoordDailog( const QgsPoint & );
 };
 
 #endif // QGSGEOREFTOOLADDPOINT_H

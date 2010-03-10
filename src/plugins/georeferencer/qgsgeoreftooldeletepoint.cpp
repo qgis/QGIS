@@ -19,7 +19,7 @@
 #include "qgsgeoreftooldeletepoint.h"
 
 QgsGeorefToolDeletePoint::QgsGeorefToolDeletePoint( QgsMapCanvas* canvas )
-  : QgsMapToolEmitPoint( canvas )
+    : QgsMapToolEmitPoint( canvas )
 {
 }
 
@@ -29,6 +29,6 @@ void QgsGeorefToolDeletePoint::canvasPressEvent( QMouseEvent * e )
   // Only add point on Qt:LeftButton
   if ( Qt::LeftButton == e->button() )
   {
-    emit deleteDataPoint(e->pos());
+    emit deleteDataPoint( e->pos() );
   }
 }

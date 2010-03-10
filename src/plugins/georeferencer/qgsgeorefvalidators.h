@@ -21,9 +21,9 @@
 
 class QgsDMSAndDDValidator : public QValidator
 {
-public:
-  QgsDMSAndDDValidator(QObject *parent);
-  State validate(QString &input, int &pos) const;
+  public:
+    QgsDMSAndDDValidator( QObject *parent );
+    State validate( QString &input, int &pos ) const;
 };
 
 #endif // QGSGEOREFVALIDATORS_H

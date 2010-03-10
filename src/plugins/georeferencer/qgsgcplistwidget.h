@@ -31,49 +31,49 @@ class QgsPoint;
 
 class QgsGCPListWidget : public QTableView
 {
-  Q_OBJECT
-public:
-  QgsGCPListWidget(QWidget *parent = 0);
+    Q_OBJECT
+  public:
+    QgsGCPListWidget( QWidget *parent = 0 );
 
-  void setGCPList(QgsGCPList *theGCPList);
-  void setGeorefTransform(QgsGeorefTransform *theGeorefTransform);
-  QgsGCPList *gcpList() { return mGCPList; }
-  void updateGCPList();
+    void setGCPList( QgsGCPList *theGCPList );
+    void setGeorefTransform( QgsGeorefTransform *theGeorefTransform );
+    QgsGCPList *gcpList() { return mGCPList; }
+    void updateGCPList();
 
-public slots:
-  // This slot is called by the list view if an item is double-clicked
-  void itemDoubleClicked(QModelIndex index);
-  void itemClicked(QModelIndex index);
+  public slots:
+    // This slot is called by the list view if an item is double-clicked
+    void itemDoubleClicked( QModelIndex index );
+    void itemClicked( QModelIndex index );
 
-signals:
-  void jumpToGCP(uint theGCPIndex);
+  signals:
+    void jumpToGCP( uint theGCPIndex );
 //  void replaceDataPoint(QgsGeorefDataPoint *pnt, int row);
-  void pointEnabled(QgsGeorefDataPoint *pnt, int i);
-  void deleteDataPoint(int index);
+    void pointEnabled( QgsGeorefDataPoint *pnt, int i );
+    void deleteDataPoint( int index );
 
-private slots:
-  void updateItemCoords(QWidget *editor);
-  void showContextMenu(QPoint);
-  void removeRow();
-  void editCell();
-  void jumpToPoint();
+  private slots:
+    void updateItemCoords( QWidget *editor );
+    void showContextMenu( QPoint );
+    void removeRow();
+    void editCell();
+    void jumpToPoint();
 
-private:
-  void createActions();
-  void createItemContextMenu();
-  void adjustTableContent();
+  private:
+    void createActions();
+    void createItemContextMenu();
+    void adjustTableContent();
 
-  QMenu *mItemContextMenu;
+    QMenu *mItemContextMenu;
 
-  QgsGCPList               *mGCPList;
-  QgsGCPListModel          *mGCPListModel;
+    QgsGCPList               *mGCPList;
+    QgsGCPListModel          *mGCPListModel;
 
-  QgsNonEditableDelegate   *mNonEditableDelegate;
-  QgsDmsAndDdDelegate      *mDmsAndDdDelegate;
-  QgsCoordDelegate         *mCoordDelegate;
+    QgsNonEditableDelegate   *mNonEditableDelegate;
+    QgsDmsAndDdDelegate      *mDmsAndDdDelegate;
+    QgsCoordDelegate         *mCoordDelegate;
 
-  int mPrevRow;
-  int mPrevColumn;
+    int mPrevRow;
+    int mPrevColumn;
 };
 
 #endif

@@ -23,23 +23,23 @@
 QgsGeorefDataPoint::QgsGeorefDataPoint( QgsMapCanvas* srcCanvas, QgsMapCanvas *dstCanvas,
                                         const QgsPoint& pixelCoords, const QgsPoint& mapCoords,
                                         bool enable )
-    : mSrcCanvas(srcCanvas)
-    , mDstCanvas(dstCanvas)
+    : mSrcCanvas( srcCanvas )
+    , mDstCanvas( dstCanvas )
     , mPixelCoords( pixelCoords )
     , mMapCoords( mapCoords )
-    , mId(-1)
-    , mEnabled(enable)
+    , mId( -1 )
+    , mEnabled( enable )
 {
-  mGCPSourceItem = new QgsGCPCanvasItem(srcCanvas, pixelCoords, mapCoords, true);
-  mGCPDestinationItem = new QgsGCPCanvasItem(dstCanvas, pixelCoords, mapCoords, false);
+  mGCPSourceItem = new QgsGCPCanvasItem( srcCanvas, pixelCoords, mapCoords, true );
+  mGCPDestinationItem = new QgsGCPCanvasItem( dstCanvas, pixelCoords, mapCoords, false );
 
-  mGCPSourceItem->setEnabled(enable);
-  mGCPDestinationItem->setEnabled(enable);
+  mGCPSourceItem->setEnabled( enable );
+  mGCPDestinationItem->setEnabled( enable );
   mGCPSourceItem->show();
   mGCPDestinationItem->show();
 }
 
-QgsGeorefDataPoint::QgsGeorefDataPoint(const QgsGeorefDataPoint &p)
+QgsGeorefDataPoint::QgsGeorefDataPoint( const QgsGeorefDataPoint &p )
 {
   // we share item representation on canvas between all points
 //  mGCPSourceItem = new QgsGCPCanvasItem(p.srcCanvas(), p.pixelCoords(), p.mapCoords(), p.isEnabled());
@@ -55,30 +55,31 @@ QgsGeorefDataPoint::~QgsGeorefDataPoint()
   delete mGCPDestinationItem;
 }
 
-void QgsGeorefDataPoint::setPixelCoords(const QgsPoint &p)
+void QgsGeorefDataPoint::setPixelCoords( const QgsPoint &p )
 {
   mPixelCoords = p;
-  mGCPSourceItem->setRasterCoords(p);
-  mGCPDestinationItem->setRasterCoords(p);
+  mGCPSourceItem->setRasterCoords( p );
+  mGCPDestinationItem->setRasterCoords( p );
 }
 
-void QgsGeorefDataPoint::setMapCoords(const QgsPoint &p)
+void QgsGeorefDataPoint::setMapCoords( const QgsPoint &p )
 {
   mMapCoords = p;
-  mGCPSourceItem->setWorldCoords(p);
-  mGCPDestinationItem->setWorldCoords(p);
+  mGCPSourceItem->setWorldCoords( p );
+  mGCPDestinationItem->setWorldCoords( p );
 }
 
-void QgsGeorefDataPoint::setEnabled(bool enabled)
+void QgsGeorefDataPoint::setEnabled( bool enabled )
 {
-  mGCPSourceItem->setEnabled(enabled);
+  mGCPSourceItem->setEnabled( enabled );
   mEnabled = enabled;
 }
 
-void QgsGeorefDataPoint::setId(int id) {
+void QgsGeorefDataPoint::setId( int id )
+{
   mId = id;
-  mGCPSourceItem->setId(id);
-  mGCPDestinationItem->setId(id);
+  mGCPSourceItem->setId( id );
+  mGCPDestinationItem->setId( id );
 }
 
 void QgsGeorefDataPoint::updateCoords()
@@ -89,15 +90,15 @@ void QgsGeorefDataPoint::updateCoords()
   mGCPDestinationItem->update();
 }
 
-bool QgsGeorefDataPoint::contains(const QPoint &p)
+bool QgsGeorefDataPoint::contains( const QPoint &p )
 {
-  QPointF pnt = mGCPSourceItem->mapFromScene(p);
-  return mGCPSourceItem->shape().contains(pnt);
+  QPointF pnt = mGCPSourceItem->mapFromScene( p );
+  return mGCPSourceItem->shape().contains( pnt );
 }
 
-void QgsGeorefDataPoint::moveTo(const QPoint &p)
+void QgsGeorefDataPoint::moveTo( const QPoint &p )
 {
-  QgsPoint pnt = mGCPSourceItem->toMapCoordinates(p);
-  setPixelCoords(pnt);
+  QgsPoint pnt = mGCPSourceItem->toMapCoordinates( p );
+  setPixelCoords( pnt );
   updateCoords();
 }

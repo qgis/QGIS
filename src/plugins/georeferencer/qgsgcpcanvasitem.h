@@ -20,39 +20,40 @@
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvasitem.h"
 
-class QgsGCPCanvasItem : public QgsMapCanvasItem {
-public:
-  QgsGCPCanvasItem( QgsMapCanvas* mapCanvas, const QgsPoint& rasterCoords,
-                    const QgsPoint& worldCoords, bool isGCPSource/* = true*/ );
+class QgsGCPCanvasItem : public QgsMapCanvasItem
+{
+  public:
+    QgsGCPCanvasItem( QgsMapCanvas* mapCanvas, const QgsPoint& rasterCoords,
+                      const QgsPoint& worldCoords, bool isGCPSource/* = true*/ );
 
-  //! draws point information
-  void paint( QPainter* p );
+    //! draws point information
+    void paint( QPainter* p );
 
-  //! handler for manual updating of position and size
-  QRectF boundingRect() const;
+    //! handler for manual updating of position and size
+    QRectF boundingRect() const;
 
-  QPainterPath shape() const;
+    QPainterPath shape() const;
 
-  void setEnabled(bool enabled);
+    void setEnabled( bool enabled );
 
-  void setRasterCoords(QgsPoint p);
-  void setWorldCoords(QgsPoint p);
+    void setRasterCoords( QgsPoint p );
+    void setWorldCoords( QgsPoint p );
 
-  int id() { return mId; }
-  void setId(int id);
+    int id() { return mId; }
+    void setId( int id );
 
-  void updatePosition();
+    void updatePosition();
 
-private:
-  QSizeF mTextBounds;
-  QBrush mPointBrush;
-  QBrush mLabelBrush;
-  QgsPoint mRasterCoords;
-  QgsPoint mWorldCoords;
+  private:
+    QSizeF mTextBounds;
+    QBrush mPointBrush;
+    QBrush mLabelBrush;
+    QgsPoint mRasterCoords;
+    QgsPoint mWorldCoords;
 
-  int mId;
-  bool mIsGCPSource;
-  bool mEnabled;
+    int mId;
+    bool mIsGCPSource;
+    bool mEnabled;
 };
 
 #endif // QGSGCPCANVASITEM_H
