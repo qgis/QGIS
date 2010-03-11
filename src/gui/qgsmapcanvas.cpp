@@ -222,20 +222,25 @@ const QgsMapToPixel * QgsMapCanvas::getCoordinateTransform()
   return mMapRenderer->coordinateTransform();
 }
 
-void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer>& layers )
+void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
 {
   if ( mDrawing )
   {
     return;
   }
-  int i;
 
   // create layer set
   QStringList layerSet, layerSetOverview;
 
+  int i;
   for ( i = 0; i < layers.size(); i++ )
   {
-    QgsMapCanvasLayer& lyr = layers[i];
+    QgsMapCanvasLayer &lyr = layers[i];
+    if ( !lyr.layer() )
+    {
+      continue;
+    }
+
     if ( lyr.isVisible() )
     {
       layerSet.push_back( lyr.layer()->getLayerID() );
@@ -248,7 +253,7 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer>& layers )
 
   QStringList& layerSetOld = mMapRenderer->layerSet();
 
-  bool layerSetChanged = ( layerSetOld != layerSet );
+  bool layerSetChanged = layerSetOld != layerSet;
 
   // update only if needed
   if ( layerSetChanged )
@@ -1170,11 +1175,11 @@ int QgsMapCanvas::layerCount() const
 QList<QgsMapLayer*> QgsMapCanvas::layers() const
 {
   QList<QgsMapLayer*> lst;
-  foreach ( QString layerID, mMapRenderer->layerSet() )
+  foreach( QString layerID, mMapRenderer->layerSet() )
   {
     QgsMapLayer* layer = QgsMapLayerRegistry::instance()->mapLayer( layerID );
     if ( layer )
-      lst.append(layer);
+      lst.append( layer );
   }
   return lst;
 }
