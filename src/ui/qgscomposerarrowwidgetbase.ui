@@ -42,7 +42,7 @@
        <item row="1" column="0">
         <widget class="QDoubleSpinBox" name="mOutlineWidthSpinBox">
          <property name="prefix">
-          <string>Outline width </string>
+          <string>Line width </string>
          </property>
         </widget>
        </item>

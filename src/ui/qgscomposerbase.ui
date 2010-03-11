@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>799</width>
+    <width>1145</width>
     <height>609</height>
    </rect>
   </property>
@@ -172,6 +172,7 @@
    <addaction name="mActionAddBasicShape"/>
    <addaction name="mActionAddArrow"/>
    <addaction name="mActionAddTable"/>
+   <addaction name="separator"/>
    <addaction name="mActionSelectMoveItem"/>
    <addaction name="mActionMoveItemContent"/>
    <addaction name="mActionGroupItems"/>
