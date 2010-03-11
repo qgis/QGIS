@@ -92,6 +92,7 @@ void usage( std::string const & appName )
             << "\t[--project projectfile]\tload the given QGIS project\n"
             << "\t[--extent xmin,ymin,xmax,ymax]\tset initial map extent\n"
             << "\t[--nologo]\thide splash screen\n"
+            << "\t[--optionspath path]\tuse the given QSettings path\n"
             << "\t[--help]\t\tthis text\n\n"
             << "  FILES:\n"
             << "    Files specified on the command line can include rasters,\n"
@@ -303,13 +304,14 @@ int main( int argc, char *argv[] )
         {"lang",     required_argument, 0, 'l'},
         {"project",  required_argument, 0, 'p'},
         {"extent",   required_argument, 0, 'e'},
+        {"optionspath", required_argument, 0, 'o'},
         {0, 0, 0, 0}
       };
 
       /* getopt_long stores the option index here. */
       int option_index = 0;
 
-      optionChar = getopt_long( argc, argv, "swhlpe",
+      optionChar = getopt_long( argc, argv, "swhlpeo",
                                 long_options, &option_index );
 
       /* Detect the end of the options. */
@@ -354,6 +356,10 @@ int main( int argc, char *argv[] )
 
         case 'e':
           myInitialExtent = optarg;
+          break;
+
+        case 'o':
+          QSettings::setPath( QSettings::NativeFormat, QSettings::UserScope, optarg );
           break;
 
         case '?':
@@ -419,6 +425,10 @@ int main( int argc, char *argv[] )
     else if ( i + 1 < argc && ( arg == "--extent" || arg == "-e" ) )
     {
       myInitialExtent = argv[++i];
+    }
+    else if ( i + 1 < argc && ( arg == "--optionspath" || arg == "-o" ) )
+    {
+      QSettings::setPath( QSettings::NativeFormat, QSettings::UserScope, argv[++i] );
     }
     else
     {
