@@ -187,7 +187,7 @@ class QgsLegend : public QTreeWidget
     /*!Adds a new layer group with the maplayer to the canvas*/
     void addLayer( QgsMapLayer * layer );
 
-    void setMapCanvas( QgsMapCanvas * canvas ) {mMapCanvas = canvas;}
+    void setMapCanvas( QgsMapCanvas * canvas );
 
     /**Updates symbology items for a layer*/
     void refreshLayerSymbology( QString key, bool expandItem = true );
@@ -265,6 +265,8 @@ class QgsLegend : public QTreeWidget
     /**Shows the property dialog of the first legend layer file in a legend layer*/
     void legendLayerShowProperties();
 
+    /**Updates check states when the map canvas layer set is changed */
+    void refreshCheckStates();
   protected:
 
     /*!Event handler for mouse movements.

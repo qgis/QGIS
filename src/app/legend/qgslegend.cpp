@@ -538,6 +538,17 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
   doItemsLayout();
 }
 
+void QgsLegend::setMapCanvas( QgsMapCanvas * canvas )
+{
+  if( mMapCanvas ) 
+  {
+    disconnect( mMapCanvas, SIGNAL( layersChanged() ) );
+  }
+
+  mMapCanvas = canvas;
+  connect( mMapCanvas, SIGNAL( layersChanged() ), this, SLOT( refreshCheckStates() ) );
+}
+
 QgsLegendLayer* QgsLegend::currentLegendLayer()
 {
   QgsLegendItem* citem = dynamic_cast<QgsLegendItem *>( currentItem() );
@@ -1746,3 +1757,22 @@ QTreeWidgetItem * QgsLegend::lastVisibleItem()
   }
   return current;
 }
+
+void QgsLegend::refreshCheckStates()
+{
+  if( !mMapCanvas )
+  {
+    return;
+  }
+
+  QList<QgsMapLayer*> lst = mMapCanvas->layers();
+  for ( QTreeWidgetItem* item = firstItem(); item; item = nextItem( item ) ) 
+  {
+    QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer *>( item );
+    if ( ll ) 
+    {
+      ll->setCheckState( 0, ( lst.contains( ll->layer() ) ? Qt::Checked : Qt::Unchecked ) );
+    }
+  }
+}
+
