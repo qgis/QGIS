@@ -24,6 +24,11 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl ): QDialog(), mVector
 {
   setupUi( this );
 
+  if ( !vl )
+  {
+    return;
+  }
+
   populateFields();
   populateOutputFieldTypes();
 
@@ -31,7 +36,7 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl ): QDialog(), mVector
   mOuputFieldWidthSpinBox->setValue( 10 );
   mOutputFieldPrecisionSpinBox->setValue( 3 );
 
-  mUpdateExistingFieldCheckBox->setCheckState( Qt::Checked );
+
 
   //disable ok button until there is text for output field and expression
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
@@ -39,9 +44,15 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl ): QDialog(), mVector
   // disable creation of new fields if not supported by data provider
   if ( !( vl->dataProvider()->capabilities() & QgsVectorDataProvider::AddAttributes ) )
   {
+    mUpdateExistingFieldCheckBox->setCheckState( Qt::Checked );
     mUpdateExistingFieldCheckBox->setEnabled( false ); // must stay checked
     mNewFieldGroupBox->setEnabled( false );
     mNewFieldGroupBox->setTitle( mNewFieldGroupBox->title() + tr( " (not supported by provider)" ) );
+  }
+
+  if ( vl->selectedFeaturesIds().size() > 0 )
+  {
+    mOnlyUpdateSelectedCheckBox->setChecked( true );
   }
 
   if ( vl->geometryType() != QGis::Polygon )
