@@ -407,9 +407,12 @@ void QgsPluginManager::unload()
       {
         if ( mPythonUtils && mPythonUtils->isEnabled() )
         {
-          mPythonUtils->unloadPlugin( baseName );
-          //disable it to the qsettings file
-          settings.setValue( "/PythonPlugins/" + baseName, false );
+          if( mPythonUtils->canUninstallPlugin( baseName ) )
+          {
+            mPythonUtils->unloadPlugin( baseName );
+            //disable it to the qsettings file
+            settings.setValue( "/PythonPlugins/" + baseName, false );
+          }
         }
       }
       else // C++ plugin

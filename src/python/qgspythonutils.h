@@ -81,6 +81,9 @@ class PYTHON_EXPORT QgsPythonUtils
     //! @param function one of these strings: name, tpye, version, description
     virtual QString getPluginMetadata( QString pluginName, QString function ) = 0;
 
+    //! confirm that the plugin can be uninstalled
+    virtual bool canUninstallPlugin( QString packageName ) = 0;
+
     //! unload plugin
     virtual bool unloadPlugin( QString packageName ) = 0;
 };

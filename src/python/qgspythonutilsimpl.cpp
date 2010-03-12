@@ -406,14 +406,12 @@ QString QgsPythonUtilsImpl::getPluginMetadata( QString pluginName, QString funct
   return res;
 }
 
-
 bool QgsPythonUtilsImpl::loadPlugin( QString packageName )
 {
   QString output;
   evalString( "qgis.utils.loadPlugin('" + packageName + "')", output );
   return ( output == "True" );
 }
-
 
 bool QgsPythonUtilsImpl::startPlugin( QString packageName )
 {
@@ -422,6 +420,12 @@ bool QgsPythonUtilsImpl::startPlugin( QString packageName )
   return ( output == "True" );
 }
 
+bool QgsPythonUtilsImpl::canUninstallPlugin( QString packageName )
+{
+  QString output;
+  evalString( "qgis.utils.canUninstallPlugin('" + packageName + "')", output );
+  return ( output == "True" );
+}
 
 bool QgsPythonUtilsImpl::unloadPlugin( QString packageName )
 {
