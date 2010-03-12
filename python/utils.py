@@ -161,6 +161,22 @@ def startPlugin(packageName):
   return True
 
 
+def canUninstallPlugin(packageName):
+  """ confirm that the plugin can be uninstalled """
+  global plugins, active_plugins
+
+  if not plugins.has_key(packageName): return False
+  if packageName not in active_plugins: return False
+
+  try:
+    metadata = plugins[packageName]
+    if "canBeUninstalled" not in dir(metadata):
+      return True
+    return bool(metadata.canBeUninstalled())
+  except:
+    return False
+
+
 def unloadPlugin(packageName):
   """ unload and delete plugin! """
   global plugins, active_plugins

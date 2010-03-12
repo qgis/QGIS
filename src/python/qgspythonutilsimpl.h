@@ -98,6 +98,9 @@ class QgsPythonUtilsImpl : public QgsPythonUtils
     //! @param function one of these strings: name, tpye, version, description
     QString getPluginMetadata( QString pluginName, QString function );
 
+    //! confirm it is safe to uninstall the plugin
+    bool canUninstallPlugin( QString packageName );    
+
     //! unload plugin
     bool unloadPlugin( QString packageName );
 
