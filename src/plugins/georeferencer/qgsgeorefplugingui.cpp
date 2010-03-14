@@ -1374,15 +1374,15 @@ QString QgsGeorefPluginGui::convertResamplingEnumToString( QgsImageWarper::Resam
   switch ( resampling )
   {
     case QgsImageWarper::NearestNeighbour:
-      return tr( "near" );
+      return "near";
     case QgsImageWarper::Bilinear:
-      return tr( "bilinear" );
+      return "bilinear";
     case QgsImageWarper::Cubic:
-      return tr( "cubic" );
+      return "cubic";
     case QgsImageWarper::CubicSpline:
-      return tr( "cubicspline" );
+      return "cubicspline";
     case QgsImageWarper::Lanczos:
-      return tr( "lanczons" );
+      return "lanczons";
   }
   return "";
 }
