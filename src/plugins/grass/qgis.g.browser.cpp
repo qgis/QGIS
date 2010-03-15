@@ -18,11 +18,15 @@ int main( int argc, char **argv )
     fprintf( stderr, "URL argument missing\n" );
     exit( 1 );
   }
-  QUrl url ( argv[1] );
+  QString urlStr ( argv[1] );
+  QUrl url ( urlStr );
 #ifdef Q_OS_WIN
   // openUrl on windows fails to open 'file://c:...' it must be 'file:///c:...' (3 slashes)
   if ( url.scheme() == "file" ) {
-    url.setPath ( "/" + url.path() );
+    // this does not work, the drive was already removed by QT:
+    //url.setPath ( "/" + url.path() );
+    urlStr.replace ( "file://", "file:///" );
+    url.setUrl ( urlStr );
     std::cout << "path reset to: " << qPrintable(url.path()) << std::endl;
   }
 #endif
