@@ -690,6 +690,7 @@ void QgsPostgresProvider::select( QgsAttributeList fetchAttributes, QgsRectangle
     return;
 
   mFetching = true;
+  mFetched = 0;
 }
 
 bool QgsPostgresProvider::nextFeature( QgsFeature& feature )
@@ -731,6 +732,11 @@ bool QgsPostgresProvider::nextFeature( QgsFeature& feature )
     QgsDebugMsg( "End of features" );
     connectionRO->closeCursor( cursorName );
     mFetching = false;
+    if ( featuresCounted != mFetched )
+    {
+      QgsDebugMsg( QString( "feature count adjusted from %1 to %2" ).arg( featuresCounted ).arg( mFetched ) );
+      featuresCounted = mFetched;
+    }
     return false;
   }
 
@@ -748,6 +754,7 @@ bool QgsPostgresProvider::nextFeature( QgsFeature& feature )
   feature.setAttributeMap( mFeatureQueue.front().attributeMap() );
 
   mFeatureQueue.pop();
+  mFetched++;
 
   feature.setValid( true );
   return true;

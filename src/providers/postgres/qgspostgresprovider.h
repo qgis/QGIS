@@ -364,7 +364,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     */
     bool parseDomainCheckConstraint( QStringList& enumValues, const QString& attributeName ) const;
 
-    bool mFetching;   // true if a cursor was declared
+    bool mFetching; // true if a cursor was declared
+    int mFetched; // number of retrieved features
     std::vector < QgsFeature > features;
     QgsFieldMap attributeFields;
     QString mDataComment;
