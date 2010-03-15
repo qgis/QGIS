@@ -519,6 +519,7 @@ QString GRASS_EXPORT QgsGrass::openMapset( QString gisdbase, QString location, Q
 
   QFile in( globalGisrc );
   QString line;
+  bool guiSet = false;
   char buf[1000];
   if ( in.open( QIODevice::ReadOnly ) )
   {
@@ -531,6 +532,7 @@ QString GRASS_EXPORT QgsGrass::openMapset( QString gisdbase, QString location, Q
       {
         continue;
       }
+      if ( line.contains( "GRASS_GUI:" ) ) guiSet = true;
       stream << line;
     }
     in.close();
@@ -541,6 +543,9 @@ QString GRASS_EXPORT QgsGrass::openMapset( QString gisdbase, QString location, Q
   stream << line;
   line = "MAPSET: " + mapset + "\n";
   stream << line;
+  if ( !guiSet ) {
+    stream << "GRASS_GUI: wxpython\n";
+  }
 
   out.close();
 
