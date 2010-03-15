@@ -5,6 +5,7 @@ QGIS utilities module
 """
 
 from PyQt4.QtCore import QCoreApplication
+from qgis.core import QGis
 import sys
 import traceback
 import glob
@@ -23,6 +24,7 @@ def showException(type, value, tb, msg):
   for s in lst:
     txt += s
   txt += '<br>%s<br>%s<br><br>' % (QCoreApplication.translate('Python','Python version:'), sys.version)
+  txt += '<br>%s<br>%s %s, %s<br><br>' % (QCoreApplication.translate('Python','QGIS version:'), QGis.QGIS_VERSION, QGis.QGIS_RELEASE_NAME, QGis.QGIS_SVN_VERSION)
   txt += '%s %s' % (QCoreApplication.translate('Python','Python path:'), str(sys.path))
   txt = txt.replace('\n', '<br>')
   txt = txt.replace('  ', '&nbsp; ') # preserve whitespaces for nicer output

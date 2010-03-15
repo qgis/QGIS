@@ -23,6 +23,7 @@
 #endif
 #include <Python.h>
 
+#include "qgis.h"
 #include "qgspythonutilsimpl.h"
 
 #include "qgsapplication.h"
@@ -60,7 +61,14 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
 
   // expect that bindings are installed locally, so add the path to modules
   // also add path to plugins
+#ifdef Q_OS_WIN
+  runString( "if os.environ.has_key('HOME'): oldhome=os.environ['HOME']\n" );
+  runString( "os.environ['HOME']=os.environ['USERPROFILE']" );
+#endif
   runString( "sys.path = [\"" + pythonPath() + "\", os.path.expanduser(\"~/.qgis/python\"), os.path.expanduser(\"~/.qgis/python/plugins\"), \"" + pluginsPath() + "\" ] + sys.path" );
+#ifdef Q_OS_WIN
+  runString( "if os.environ.has_key('HOME'): os.environ['HOME']=oldhome\n" );
+#endif
 
   // import SIP
   if ( !runString( "from sip import wrapinstance, unwrapinstance",
@@ -152,9 +160,10 @@ bool QgsPythonUtilsImpl::runString( const QString& command, QString msgOnError )
   evalString( "str(sys.path)", path );
   evalString( "sys.version", version );
 
-  QString str = "<font color=\"red\">" + msgOnError + "</font><br><br>" + traceback + "<br>" +
-                QObject::tr( "Python version:" ) + "<br>" + version + "<br><br>" +
-                QObject::tr( "Python path:" ) + "<br>" + path;
+  QString str = "<font color=\"red\">" + msgOnError + "</font><br><br>" + traceback + "<br>"
+              + QObject::tr( "Python version:" ) + "<br>" + version + "<br><br>"
+              + QObject::tr( "QGIS version:" ) + "<br>" + QString( "%1 '%2', %3" ).arg( QGis::QGIS_VERSION ).arg( QGis::QGIS_RELEASE_NAME ).arg( QGis::QGIS_SVN_VERSION ) + "<br><br>"
+              + QObject::tr( "Python path:" ) + "<br>" + path;
   str.replace( "\n", "<br>" ).replace( "  ", "&nbsp; " );
 
   QgsMessageOutput* msg = QgsMessageOutput::createMessageOutput();
