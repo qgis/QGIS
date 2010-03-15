@@ -142,7 +142,11 @@ void QgsAbout::init()
       //ignore the line if it starts with a hash....
       if ( sline.left( 1 ) == "#" ) continue;
       QStringList myTokens = sline.split( "|", QString::SkipEmptyParts );
-      if ( myTokens.size() > 1 )
+      if ( myTokens.size() == 0 )
+      {
+        continue;
+      }
+      else if ( myTokens.size() > 1 )
       {
         website = "<a href=\"" + myTokens[1].remove( ' ' ) + "\">" + myTokens[1] + "</a>";
       }
@@ -291,7 +295,7 @@ void QgsAbout::setPluginInfo()
   myString += "</li>\n</ol>\n";
   //qt image plugins
   myString += "<b>" + tr( "Available Qt Image Plugins" ) + "</b><br>";
-  myString += tr( "Qt Image Plugin Search Paths	<br>" );
+  myString += tr( "Qt Image Plugin Search Paths <br>" );
   myString += QApplication::libraryPaths().join( "<br>" );
   myString += "<ol>\n<li>\n";
   QList<QByteArray> myImageFormats = QImageReader::supportedImageFormats();
