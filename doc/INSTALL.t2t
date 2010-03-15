@@ -103,7 +103,7 @@ for the existence of cmake and provides some clues to build QGIS.
 * GDAL/OGR >= 1.4.x
 
 '''Optional dependencies:'''
-* for GRASS plugin - GRASS >= 6.0.0
+* for GRASS plugin - GRASS >= 6.0.0 (libraries compiled with exceptions support)
 * for georeferencer - GSL >= 1.8
 * for postgis support and SPIT plugin - PostgreSQL >= 8.0.x
 * for gps plugin - expat >= 1.95
@@ -1041,10 +1041,8 @@ skip this section.
 Now you can install grass from dapper:
 
 ```
-sudo apt-get install grass libgrass-dev libgdal1-1.4.0-grass 
+sudo apt-get install grass libgrass-dev 
 ```
-
-/!\ You may need to explicitly state your grass version e.g. libgdal1-1.3.2-grass
 
 == Setup ccache (Optional) ==
 
@@ -1358,10 +1356,12 @@ For example the GRASS 6.4rc4 is available at http://grass.itc.it/grass64/source/
 Uncompress the arquive, enter the newly created folder and run configure with a few specific parameters
 
 ``` 
-./configure --with-tcltk-includes=/usr/include/tcl8.4 --with-proj-share=/usr/share/proj --with-gdal=/usr/local/bin/gdal-config --with-python=/usr/bin/python2.5-config
+CFLAGS="-fexceptions" ./configure --with-tcltk-includes=/usr/include/tcl8.4 --with-proj-share=/usr/share/proj --with-gdal=/usr/local/bin/gdal-config --with-python=/usr/bin/python2.5-config
 ```
 
-then as usual (it will take a while)
+The additional gcc option -fexceptions is necessary to enable exceptions support in GRASS libraries. It is currently the only way to avoid QGIS crashes if a fatal error happens in GRASS library. See also http://trac.osgeo.org/grass/ticket/869
+
+Then as usual (it will take a while)
 
 ``` 
 make
@@ -1386,60 +1386,6 @@ may want to give it a try
 grass64 -wxpython
 ```
 
-=== Step 6: compile and install the GDAL-GRASS libraries ===
-
-Create a plain text file named "grass.conf" inside the folder "/etc/ld.so.conf.d"
-
-``` 
-sudo gedit /etc/ld.so.conf.d/grass.conf
-```
-
-and add the following line
-
-``` 
-/usr/local/grass-6.4.0RC4/lib/
-```
-
-save and exit.
-
-Download the latest version of the gdal-grass library (gdal-grass-1.4.3.tar.gz) from
-http://download.osgeo.org/gdal/
-
-uncompress the arquive and enter the newly created folder
-
-``` 
-cd /gdal-grass-1.4.3
-```
-
-run configure
-
-``` 
-./configure --with-grass=/usr/local/grass-6.4.0RC4
-```
-
-then as usual
-
-``` 
-make
-```
-
-and
-
-``` 
-sudo make install
-```
-
-and finish the process by creating the necessary links to the most recent shared libraries
-
-``` 
-sudo ldconfig
-```
-
-leave the folder 
-
-``` 
-cd ..
-```
 
 === Step 6: compile and install QGIS ===
 
@@ -1564,67 +1510,6 @@ Moreover he also left the notes how to compile it (for those interested):
 Unpack the whole package to ``c:\msys\local``
 
 
-=== GDAL level one ===
-
-Since Quantum GIS needs GDAL with GRASS support, we need to compile GDAL
-from source - Paul Kelly's package doesn't include GRASS support in GDAL.
-The idea is following:
-+ compile GDAL without GRASS
-+ compile GRASS
-+ compile GDAL with GRASS
-
-
-So, start with downloading GDAL sources:
-	http://download.osgeo.org/gdal/gdal141.zip
-
-Unpack it to some directory, preferably ``c:\msys\local\src``.
-
-Start MSYS console, go to gdal-1.4.1 directory and run the commands below.
-You can put them all to a script, e.g. build-gdal.sh and run them at once.
-The recipe is taken from Paul Kelly's instructions - basically they
-just make sure that the library will be created as DLL and the utility
-programs will be dynamically linked to it...
-
-```
-CFLAGS="-O2 -s" CXXFLAGS="-O2 -s" LDFLAGS=-s ./configure --without-libtool --prefix=/usr/local --enable-shared --disable-static --with-libz=/usr/local --with-png=/usr/local
-make
-make install
-rm /usr/local/lib/libgdal.a
-g++ -s -shared -o ./libgdal.dll -L/usr/local/lib -lz -lpng ./frmts/o/*.o ./gcore/*.o ./port/*.o ./alg/*.o ./ogr/ogrsf_frmts/o/*.o ./ogr/ogrgeometryfactory.o ./ogr/ogrpoint.o ./ogr/ogrcurve.o ./ogr/ogrlinestring.o ./ogr/ogrlinearring.o ./ogr/ogrpolygon.o ./ogr/ogrutils.o ./ogr/ogrgeometry.o ./ogr/ogrgeometrycollection.o ./ogr/ogrmultipolygon.o ./ogr/ogrsurface.o ./ogr/ogrmultipoint.o ./ogr/ogrmultilinestring.o ./ogr/ogr_api.o ./ogr/ogrfeature.o ./ogr/ogrfeaturedefn.o ./ogr/ogrfeaturequery.o ./ogr/ogrfeaturestyle.o ./ogr/ogrfielddefn.o ./ogr/ogrspatialreference.o ./ogr/ogr_srsnode.o ./ogr/ogr_srs_proj4.o ./ogr/ogr_fromepsg.o ./ogr/ogrct.o ./ogr/ogr_opt.o ./ogr/ogr_srs_esri.o ./ogr/ogr_srs_pci.o ./ogr/ogr_srs_usgs.o ./ogr/ogr_srs_dict.o ./ogr/ogr_srs_panorama.o ./ogr/swq.o ./ogr/ogr_srs_validate.o ./ogr/ogr_srs_xml.o ./ogr/ograssemblepolygon.o ./ogr/ogr2gmlgeometry.o ./ogr/gml2ogrgeometry.o
-install libgdal.dll /usr/local/lib
-cd ogr
-g++ -s ogrinfo.o -o ogrinfo.exe -L/usr/local/lib -lpng -lz -lgdal
-g++ -s ogr2ogr.o -o ogr2ogr.exe -lgdal -L/usr/local/lib -lpng -lz -lgdal
-g++ -s ogrtindex.o -o ogrtindex.exe -lgdal -L/usr/local/lib -lpng -lz -lgdal
-install ogrinfo.exe ogr2ogr.exe ogrtindex.exe /usr/local/bin
-cd ../apps
-g++ -s gdalinfo.o -o gdalinfo.exe -L/usr/local/lib -lpng -lz -lgdal
-g++ -s gdal_translate.o -o gdal_translate.exe -L/usr/local/lib -lpng -lz -lgdal
-g++ -s gdaladdo.o -o gdaladdo.exe -L/usr/local/lib -lpng -lz -lgdal
-g++ -s gdalwarp.o -o gdalwarp.exe -L/usr/local/lib -lpng -lz -lgdal
-g++ -s gdal_contour.o -o gdal_contour.exe -L/usr/local/lib -lpng -lz -lgdal
-g++ -s gdaltindex.o -o gdaltindex.exe -L/usr/local/lib -lpng -lz -lgdal
-g++ -s gdal_rasterize.o -o gdal_rasterize.exe -L/usr/local/lib -lpng -lz -lgdal
-install gdalinfo.exe gdal_translate.exe gdaladdo.exe gdalwarp.exe gdal_contour.exe gdaltindex.exe gdal_rasterize.exe /usr/local/bin
-
-```
-
-Finally, manually edit ``gdal-config`` in ``c:\msys\local\bin`` to replace the static library reference with -lgdal:
-```
-CONFIG_LIBS="-L/usr/local/lib -lpng -lz -lgdal"
-```
-GDAL build procedure can be greatly simplified to use libtool with a libtool line patch:
-configure gdal as below:
-./configure --with-ngpython --with-xerces=/local/ --with-jasper=/local/ --with-grass=/local/grass-6.3.cvs/ --with-pg=/local/pgsql/bin/pg_config.exe 
-
-Then fix libtool with:
-mv libtool libtool.orig
-cat libtool.orig | sed 's/max_cmd_len=8192/max_cmd_len=32768/g' > libtool
-
-Libtool on windows assumes a line length limit of 8192 for some reason and tries to page the linking and fails miserably. This is a work around.
-
-Make and make install should be hassle free after this.
-
 === GRASS ===
 
 Grab sources from CVS or use a weekly snapshot, see:
@@ -1647,27 +1532,6 @@ By the way, these pages might be useful:
 - http://grass.gdf-hannover.de/wiki/WinGRASS_Current_Status
 - http://geni.ath.cx/grass.html
 
-
-=== GDAL level two ===
-
-At this stage, we'll use GDAL sources we've used before, only the compilation will be a bit different.
-
-But first in order to be able to compile GDAL sources with current GRASS CVS, you need to patch them, here's what you need to change:
-	http://trac.osgeo.org/gdal/attachment/ticket/1587/plugin_patch_grass63.diff
-(you can patch it by hand or use patch.exe in ``c:\msys\bin``)
-
-Now in MSYS console go to the GDAL sources directory and run the same commands as in level one, only with these differences:
-
-+ when running ``./configure`` add this argument: ``--with-grass=/usr/local/grass-6.3.cvs``
-+ when calling ``g++`` on line 5 (which creates libgdal.dll), add these arguments: ``-L/usr/local/grass-6.3.cvs/lib -lgrass_vect -lgrass_dig2 -lgrass_dgl -lgrass_rtree -lgrass_linkm -lgrass_dbmiclient -lgrass_dbmibase -lgrass_I -lgrass_gproj -lgrass_vask -lgrass_gmath -lgrass_gis -lgrass_datetime``
-
-
-Then again, edit ``gdal-config`` and change line with CONFIG_LIBS
-```
-CONFIG_LIBS="-L/usr/local/lib -lpng -L/usr/local/grass-6.3.cvs/lib -lgrass_vect -lgrass_dig2 -lgrass_dgl -lgrass_rtree -lgrass_linkm -lgrass_dbmiclient -lgrass_dbmibase -lgrass_I -lgrass_gproj -lgrass_vask -lgrass_gmath -lgrass_gis -lgrass_datetime -lz -L/usr/local/lib -lgdal" 
-```
-
-Now, GDAL should be able to work also with GRASS raster layers.
 
 === GEOS ===
 
