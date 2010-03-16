@@ -54,7 +54,15 @@ int main( int argc, char **argv )
 
   name = map->answer;
 
-  G_get_window( &window );
+  /* Make sure map is available */
+  mapset = G_find_cell2( name, "" );
+  if ( mapset == NULL )
+    G_fatal_error(( "Raster map <%s> not found" ), name );
+
+  /* It can happen that GRASS data set is 'corrupted' and zone differs in WIND and 
+   * cellhd, and G_open_cell_old fails, so it is better to read window from map */
+  /* G_get_window( &window ); */
+  G_get_cellhd( name, mapset, &window );
   window.west = atof( win->answers[0] );
   window.south = atof( win->answers[1] );
   window.east = atof( win->answers[2] );
@@ -63,12 +71,6 @@ int main( int argc, char **argv )
   window.rows = atoi( win->answers[5] );
   G_adjust_Cell_head( &window, 1, 1 );
   G_set_window( &window );
-
-  /* Make sure map is available */
-  mapset = G_find_cell2( name, "" );
-  if ( mapset == NULL )
-    G_fatal_error(( "Raster map <%s> not found" ), name );
-
 
   fp = G_raster_map_is_fp( name, mapset );
 
