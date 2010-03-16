@@ -540,7 +540,7 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
 
 void QgsLegend::setMapCanvas( QgsMapCanvas * canvas )
 {
-  if( mMapCanvas ) 
+  if ( mMapCanvas )
   {
     disconnect( mMapCanvas, SIGNAL( layersChanged() ) );
   }
@@ -699,12 +699,18 @@ bool QgsLegend::removeLayer( QgsMapLayer* ml, bool askCancelOnEditable )
 
 void QgsLegend::moveLayer( QgsMapLayer * ml, int groupIndex )
 {
+  if ( !ml )
+    return;
+
   QgsLegendLayer *layer = findLegendLayer( ml->getLayerID() );
+  if ( !layer )
+    return;
+
   QgsLegendGroup *group = dynamic_cast<QgsLegendGroup*>( topLevelItem( groupIndex ) );
-  if ( layer && group )
-  {
-    insertItem( layer, group );
-  }
+  if ( !group )
+    return;
+
+  insertItem( layer, group );
 }
 
 void QgsLegend::legendLayerShowProperties()
@@ -1760,16 +1766,16 @@ QTreeWidgetItem * QgsLegend::lastVisibleItem()
 
 void QgsLegend::refreshCheckStates()
 {
-  if( !mMapCanvas )
+  if ( !mMapCanvas )
   {
     return;
   }
 
   QList<QgsMapLayer*> lst = mMapCanvas->layers();
-  for ( QTreeWidgetItem* item = firstItem(); item; item = nextItem( item ) ) 
+  for ( QTreeWidgetItem* item = firstItem(); item; item = nextItem( item ) )
   {
     QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer *>( item );
-    if ( ll ) 
+    if ( ll )
     {
       ll->setCheckState( 0, ( lst.contains( ll->layer() ) ? Qt::Checked : Qt::Unchecked ) );
     }

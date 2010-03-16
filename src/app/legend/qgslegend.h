@@ -244,7 +244,7 @@ class QgsLegend : public QTreeWidget
      * Moves a layer to a group.
      * @param ml the maplayer to move
      * @param groupIndex index of group
-     * @return false if the group does not exist, false otherwise
+     * @note keep in mind that the group's index changes, if the moved layer is above the group.
      */
     void moveLayer( QgsMapLayer* ml, int groupIndex );
 
