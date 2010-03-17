@@ -3751,6 +3751,23 @@ bool QgsGeometry::contains( QgsPoint* p )
   return returnval;
 }
 
+bool QgsGeometry::contains( QgsGeometry* geometry )
+{
+  try // geos might throw exception on error
+  {
+    // ensure that both geometries have geos geometry
+    exportWkbToGeos();
+    geometry->exportWkbToGeos();
+
+    if ( !mGeos || !geometry->mGeos )
+    {
+      QgsDebugMsg( "GEOS geometry not available!" );
+      return false;
+    }
+    return GEOSContains( mGeos, geometry->mGeos );
+  }
+  CATCH_GEOS( false )
+}
 
 QString QgsGeometry::exportToWkt()
 {

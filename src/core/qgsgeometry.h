@@ -276,11 +276,15 @@ class CORE_EXPORT QgsGeometry
 
     /** Test for intersection with a rectangle (uses GEOS) */
     bool intersects( const QgsRectangle& r );
-    /** Test for intersection with a geoemetry (uses GEOS) */
+    /** Test for intersection with a geometry (uses GEOS) */
     bool intersects( QgsGeometry* geometry );
 
     /** Test for containment of a point (uses GEOS) */
     bool contains( QgsPoint* p );
+
+    /** Test for containment with a geometry (uses GEOS)
+     *  @note added in 1.5 */
+    bool contains( QgsGeometry* geometry );
 
     /** Returns a buffer region around this geometry having the given width and with a specified number
         of segments used to approximate curves */
