@@ -238,6 +238,10 @@ not disjoint with existing polygons of the feature*/
 
     /** Test for containment of a point (uses GEOS) */
     bool contains(QgsPoint* p);
+    
+    /** Test for containment with a geometry (uses GEOS)
+    *  @note added in 1.5 */
+    bool contains( QgsGeometry* geometry );
 
     /** Returns a buffer region around this geometry having the given width and with a specified number
         of segments used to approximate curves */
