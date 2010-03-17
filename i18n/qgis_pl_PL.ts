@@ -16839,7 +16839,7 @@ Rozszerzona informacja o błędzie:
     <message>
         <location filename="../src/app/ogr/qgsnewogrconnection.cpp" line="93"/>
         <source>Connection to %1 was successful</source>
-        <translation>Połączenie do %1 zakończone pomyślnie</translation>
+        <translation>Połączenie do %1 nawiązane pomyślnie</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsnewogrconnection.cpp" line="109"/>
@@ -18501,7 +18501,7 @@ Funkcje geoprocesingu są dostępne wyłącznie dla warstw PostgreSQL/PostGIS</t
     <message>
         <location filename="../src/app/postgres/qgspgnewconnection.cpp" line="217"/>
         <source>Connection to %1 was successful</source>
-        <translation>Połączenie do %1 zakończone pomyślnie</translation>
+        <translation>Połączenie do %1 nawiązane pomyślnie</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgnewconnection.cpp" line="223"/>
