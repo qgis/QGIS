@@ -520,7 +520,18 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
   }
   blockSignals( false );
 
-  insertTopLevelItem( 0, llayer );
+  QgsLegendGroup *lg = dynamic_cast<QgsLegendGroup *>( currentItem() );
+  QSettings settings;
+  if ( lg && settings.value( "/qgis/addNewLayersToCurrentGroup", false ).toBool() )
+  {
+    lg->insertChild( 0, llayer );
+  }
+  else
+  {
+    insertTopLevelItem( 0, llayer );
+    setCurrentItem( llayer );
+  }
+
   setItemExpanded( llayer, true );
 
   refreshLayerSymbology( layer->getLayerID() );
@@ -533,7 +544,6 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
     mMapCanvas->zoomToFullExtent();
     mMapCanvas->clearExtentHistory();
   }
-  setCurrentItem( llayer );
   //make the QTreeWidget item up-to-date
   doItemsLayout();
 }
