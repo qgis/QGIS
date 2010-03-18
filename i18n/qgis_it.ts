@@ -1513,120 +1513,124 @@ Vuoi aggiungerlo alla legenda?</translation>
     </message>
     <message>
         <source>Choose output CRS:</source>
-        <translation type="unfinished"></translation>
+        <translation>Scegli un CRS di output:</translation>
     </message>
     <message>
         <source>Please select the projection system to be used by the output layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Scegli il sistema di proiezioni da usare per il layer di output.</translation>
     </message>
     <message>
         <source>Output layer will be projected from it&apos;s current CRS to the output CRS.</source>
-        <translation type="unfinished"></translation>
+        <translation>Il layer in output sarà ripriettato dal CRS corrente a quello di destinazione.</translation>
     </message>
     <message>
         <source>No Valid CRS selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Nessun CRS valido selezionato</translation>
     </message>
     <message>
         <source>Output spatial reference system is not valid</source>
-        <translation type="unfinished"></translation>
+        <translation>Il sistema di riferimento spaziale non è valido</translation>
     </message>
     <message>
         <source>Identical output spatial reference system chosen</source>
-        <translation type="unfinished"></translation>
+        <translation>Hai scelto due sistemi di riferimento spaziale identici</translation>
     </message>
     <message>
         <source>Please specify target vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Specifica uno strato vettoriale di destinazione</translation>
     </message>
     <message>
         <source>Please specify join vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Specifica un vettoriale da unire</translation>
     </message>
     <message>
         <source>Please specify target join field</source>
-        <translation type="unfinished"></translation>
+        <translation>Specifica un campo di unione</translation>
     </message>
     <message>
         <source>Please specify join field</source>
-        <translation type="unfinished"></translation>
+        <translation>Specifica un campo di unione</translation>
     </message>
     <message>
         <source>Please specify input table</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleziona una tabella di input</translation>
     </message>
     <message>
         <source>Created output shapefile:
 %1
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation>Creato uno shapefile di output:
+%1
+
+Vuoi aggiungerlo alla legenda?</translation>
     </message>
     <message>
         <source>Join Table</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabella di unione</translation>
     </message>
     <message>
         <source>Input table does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>La tabella di input non esiste</translation>
     </message>
     <message>
         <source>joined fields</source>
-        <translation type="unfinished"></translation>
+        <translation>campi uniti</translation>
     </message>
     <message>
         <source>Mean coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>Coordinate medie</translation>
     </message>
     <message>
         <source>Standard distance</source>
-        <translation type="unfinished"></translation>
+        <translation>Distanza standard</translation>
     </message>
     <message>
         <source>(Optional) Weight field</source>
-        <translation type="unfinished"></translation>
+        <translation>Campo pesato (opzionale)</translation>
     </message>
     <message>
         <source>(Optional) Unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>Campo ID univoco (opzionale)</translation>
     </message>
     <message>
         <source>Coordinate statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>Statistiche delle coordinate</translation>
     </message>
     <message>
         <source>No input vector layer specified</source>
-        <translation type="unfinished"></translation>
+        <translation>Nessun vettoriale in input selezionato</translation>
     </message>
     <message>
         <source>Please specify at least one summary statistic</source>
-        <translation type="unfinished"></translation>
+        <translation>Specifica almeno una statistica consuntiva</translation>
     </message>
     <message>
         <source>CRS warning!</source>
-        <translation type="unfinished"></translation>
+        <translation>Avviso CRS!</translation>
     </message>
     <message>
         <source>Warning: Input layers have non-matching CRS.
 This may cause unexpected results.</source>
-        <translation type="unfinished"></translation>
+        <translation>Attenzione: i layers di input hanno CRS non coincidenti.
+Questo può provocare risultati inattesi.</translation>
     </message>
     <message>
         <source>Summary field</source>
-        <translation type="unfinished"></translation>
+        <translation>Campo consuntivo</translation>
     </message>
     <message>
         <source>Please specify valid extent coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>Specifica coordinate valide per l&apos;estensione</translation>
     </message>
     <message>
         <source>Invalid extent coordinates entered</source>
-        <translation type="unfinished"></translation>
+        <translation>Sono state inserite coordinate non valide</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="17"/>
         <source>Generate Vector Grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Genera una griglia vettoriale</translation>
     </message>
     <message>
         <source>Created output shapefile:
@@ -1635,94 +1639,102 @@ This may cause unexpected results.</source>
 Note: Layer has no associated coordinate system, please use the Projection Management Tool to specify spatial reference system.
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation>Sahpefile di output creato:
+%1
+
+Nota: il layer non ha un sistema di coordinate associato, usa lo strumento di gestione delle proiezioni per specificare il sistema di riferimento spaziale.
+
+Vuoi aggiungere il nuovo layer alla legenda?</translation>
     </message>
     <message>
         <source>No input shapefile specified</source>
-        <translation type="unfinished"></translation>
+        <translation>Nessuno shapefile in input selezionato</translation>
     </message>
     <message>
         <source>Cannot define projection for PostGIS data...yet!</source>
-        <translation type="unfinished"></translation>
+        <translation>Non è possibile definire una proiezione per dati PostGIS...per il momento!</translation>
     </message>
     <message>
         <source>Unable to dynamically define projection.
 Please reload layer manually for projection definition to take effect.</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile determinare dinamicamente la proiezione.
+Ricarica lo strato perché la definizione della proiezione abbia effetto.</translation>
     </message>
     <message>
         <source>Defined Projection For:
 %1.shp</source>
-        <translation type="unfinished"></translation>
+        <translation>Definita la proiezione per:
+%1.shp</translation>
     </message>
     <message>
         <source>Please select the projection system that defines the current layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Scegli il sistema di proiezioni che definisce il layer corrente.</translation>
     </message>
     <message>
         <source>Layer CRS information will be updated to the selected CRS.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le informazioni sul CRS del layer saranno aggiornate al CRS selezionato.</translation>
     </message>
     <message>
         <source>Created output shapefiles in folder:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Creato uno shapefile di output nella catella:
+%1</translation>
     </message>
     <message>
         <source>Sum Line Lengths In Polyons</source>
-        <translation type="unfinished"></translation>
+        <translation>Somma le lunghezze delle linee nei poligoni</translation>
     </message>
     <message>
         <source>Please specify input polygon vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Specifica il layer poligonale di input</translation>
     </message>
     <message>
         <source>Please specify input line vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Specifica il layer lineare di input</translation>
     </message>
     <message>
         <source>Please specify output length field</source>
-        <translation type="unfinished"></translation>
+        <translation>Specifica la lunghezza del campo di output</translation>
     </message>
     <message>
         <source>length field</source>
-        <translation type="unfinished"></translation>
+        <translation>lunghezza del campo</translation>
     </message>
     <message>
         <source>Please specify an input field</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleziona un campo di input</translation>
     </message>
     <message>
         <source>Cannot overwrite existing shapefile...</source>
-        <translation type="unfinished"></translation>
+        <translation>Non posso sovrascrivere uno shapefile esistente...</translation>
     </message>
     <message>
         <source>Random Points</source>
-        <translation type="unfinished"></translation>
+        <translation>Punti casuali</translation>
     </message>
     <message>
         <source>unstratified</source>
-        <translation type="unfinished"></translation>
+        <translation>non stratificato</translation>
     </message>
     <message>
         <source>stratified</source>
-        <translation type="unfinished"></translation>
+        <translation>stratificato</translation>
     </message>
     <message>
         <source>density</source>
-        <translation type="unfinished"></translation>
+        <translation>densità</translation>
     </message>
     <message>
         <source>field</source>
-        <translation type="unfinished"></translation>
+        <translation>campo</translation>
     </message>
     <message>
         <source>Unknown layer type...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo di layer sconosciuto...</translation>
     </message>
     <message>
         <source>Please properly specify extent coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>Specifica correttamente le coordinate dell&apos;estensione</translation>
     </message>
     <message>
         <source>Created output point shapefile:
@@ -1731,7 +1743,12 @@ Please reload layer manually for projection definition to take effect.</source>
 Note: Layer has no associated coordinate system, please use the Projection Management Tool to specify spatial reference system.
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation>Shapefile di output puntiforme creato:
+%1
+
+Nota: il layer non ha un sistema di coordinate associato, usa lo strumento di gestione delle proiezioni per specificare il sistema di riferimento spaziale.
+
+Vuoi aggiungere il nuovo layer alla legenda?</translation>
     </message>
     <message>
         <source>Count Points in Polygon</source>
