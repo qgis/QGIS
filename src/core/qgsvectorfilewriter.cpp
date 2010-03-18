@@ -41,7 +41,7 @@
 #include <cpl_error.h>
 
 
-QgsVectorFileWriter::QgsVectorFileWriter( const QString& shapefileName,
+QgsVectorFileWriter::QgsVectorFileWriter( const QString& vectorFileName,
     const QString& fileEncoding,
     const QgsFieldMap& fields,
     QGis::WkbType geometryType,
@@ -85,7 +85,7 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString& shapefileName,
   }
 
   // create the data source
-  mDS = OGR_Dr_CreateDataSource( poDriver, shapefileName.toLocal8Bit().data(), NULL );
+  mDS = OGR_Dr_CreateDataSource( poDriver, vectorFileName.toLocal8Bit().data(), NULL );
   if ( mDS == NULL )
   {
     mError = ErrCreateDataSource;
@@ -121,7 +121,7 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString& shapefileName,
   }
 
   // datasource created, now create the output layer
-  QString layerName = shapefileName.left( shapefileName.indexOf( ".shp", Qt::CaseInsensitive ) );
+  QString layerName = QFileInfo( vectorFileName ).baseName();
   OGRwkbGeometryType wkbType = static_cast<OGRwkbGeometryType>( geometryType );
   mLayer = OGR_DS_CreateLayer( mDS, QFile::encodeName( layerName ).data(), ogrRef, wkbType, NULL );
 
@@ -386,7 +386,8 @@ QgsVectorFileWriter::writeAsShapefile( QgsVectorLayer* layer,
                                        bool onlySelected,
                                        QString *errorMessage )
 {
-
+  return writeAsVectorFormat( layer, shapefileName, fileEncoding, destCRS, "ESRI Shapefile", onlySelected, errorMessage );
+#if 0
   const QgsCoordinateReferenceSystem* outputCRS;
   QgsCoordinateTransform* ct = 0;
   int shallTransform = false;
@@ -404,6 +405,102 @@ QgsVectorFileWriter::writeAsShapefile( QgsVectorLayer* layer,
   }
   QgsVectorFileWriter* writer =
     new QgsVectorFileWriter( shapefileName, fileEncoding, layer->pendingFields(), layer->wkbType(), outputCRS );
+
+  // check whether file creation was successful
+  WriterError err = writer->hasError();
+  if ( err != NoError )
+  {
+    if ( errorMessage )
+      *errorMessage = writer->errorMessage();
+    delete writer;
+    return err;
+  }
+
+  QgsAttributeList allAttr = layer->pendingAllAttributesList();
+  QgsFeature fet;
+
+  layer->select( allAttr, QgsRectangle(), true );
+
+  const QgsFeatureIds& ids = layer->selectedFeaturesIds();
+
+  // Create our transform
+  if ( destCRS )
+  {
+    ct = new QgsCoordinateTransform( layer->srs(), *destCRS );
+  }
+
+  // Check for failure
+  if ( ct == NULL )
+  {
+    shallTransform = false;
+  }
+
+  // write all features
+  while ( layer->nextFeature( fet ) )
+  {
+    if ( onlySelected && !ids.contains( fet.id() ) )
+      continue;
+
+    if ( shallTransform )
+    {
+      try
+      {
+        fet.geometry()->transform( *ct );
+      }
+      catch ( QgsCsException &e )
+      {
+        delete ct;
+        delete writer;
+
+        QString msg = QObject::tr( "Failed to transform a point while drawing a feature of type '%1'. Writing stopped. (Exception: %2)" )
+                      .arg( fet.typeName() ).arg( e.what() );
+        QgsLogger::warning( msg );
+        if ( errorMessage )
+          *errorMessage = msg;
+
+        return ErrProjection;
+      }
+    }
+    writer->addFeature( fet );
+  }
+
+  delete writer;
+
+  if ( shallTransform )
+  {
+    delete ct;
+  }
+
+  return NoError;
+#endif //0
+}
+
+QgsVectorFileWriter::WriterError
+QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
+    const QString& fileName,
+    const QString& fileEncoding,
+    const QgsCoordinateReferenceSystem *destCRS,
+    const QString& driverName,
+    bool onlySelected,
+    QString *errorMessage )
+{
+  const QgsCoordinateReferenceSystem* outputCRS;
+  QgsCoordinateTransform* ct = 0;
+  int shallTransform = false;
+
+  if ( destCRS && destCRS->isValid() )
+  {
+    // This means we should transform
+    outputCRS = destCRS;
+    shallTransform = true;
+  }
+  else
+  {
+    // This means we shouldn't transform, use source CRS as output (if defined)
+    outputCRS = &layer->srs();
+  }
+  QgsVectorFileWriter* writer =
+    new QgsVectorFileWriter( fileName, fileEncoding, layer->pendingFields(), layer->wkbType(), outputCRS, driverName );
 
   // check whether file creation was successful
   WriterError err = writer->hasError();
@@ -497,4 +594,158 @@ bool QgsVectorFileWriter::deleteShapeFile( QString theFileName )
   }
 
   return ok;
+}
+
+QMap< QString, QString> QgsVectorFileWriter::supportedFiltersAndFormats()
+{
+  QMap<QString, QString> resultMap;
+
+  QgsApplication::registerOgrDrivers();
+  int const drvCount = OGRGetDriverCount();
+
+  QString drvName;
+  QString filterString;
+  for ( int i = 0; i < drvCount; ++i )
+  {
+    OGRSFDriverH drv = OGRGetDriver( i );
+    if ( drv )
+    {
+      drvName = OGR_Dr_GetName( drv );
+      if ( OGR_Dr_TestCapability( drv, ODrCCreateDataSource ) != 0 )
+      {
+        //add driver name and filter to map
+        filterString = QgsVectorFileWriter::filterForDriver( drvName );
+        if ( !filterString.isEmpty() )
+        {
+          resultMap.insert( filterString, drvName );
+        }
+      }
+    }
+  }
+
+  return resultMap;
+}
+
+QString QgsVectorFileWriter::fileFilterString()
+{
+  QString filterString;
+  QMap< QString, QString> driverFormatMap = QgsVectorFileWriter::supportedFiltersAndFormats();
+  QMap< QString, QString>::const_iterator it = driverFormatMap.constBegin();
+  for ( ; it != driverFormatMap.constEnd(); ++it )
+  {
+    filterString += it.key();
+  }
+  return filterString;
+}
+
+QString QgsVectorFileWriter::filterForDriver( const QString& driverName )
+{
+  QString longName;
+  QString glob;
+
+  if ( driverName.startsWith( "AVCE00" ) )
+  {
+    longName = "Arc/Info ASCII Coverage";
+    glob = "*.e00";
+  }
+  else if ( driverName.startsWith( "BNA" ) )
+  {
+    longName = "Atlas BNA";
+    glob = "*.bna";
+  }
+  else if ( driverName.startsWith( "CSV" ) )
+  {
+    longName = "Comma Separated Value";
+    glob = "*.csv";
+  }
+  else if ( driverName.startsWith( "ESRI" ) )
+  {
+    longName = "ESRI Shapefiles";
+    glob = "*.shp";
+  }
+  else if ( driverName.startsWith( "FMEObjects Gateway" ) )
+  {
+    longName = "FMEObjects Gateway";
+    glob = "*.fdd";
+  }
+  else if ( driverName.startsWith( "GeoJSON" ) )
+  {
+    longName = "GeoJSON";
+    glob = "*.geojson";
+  }
+  else if ( driverName.startsWith( "GeoRSS" ) )
+  {
+    longName = "GeoRSS";
+    glob = "*.xml";
+  }
+  else if ( driverName.startsWith( "GML" ) )
+  {
+    longName = "Geography Markup Language";
+    glob = "*.gml";
+  }
+  else if ( driverName.startsWith( "GMT" ) )
+  {
+    longName = "GMT";
+    glob = "*.gmt";
+  }
+  else if ( driverName.startsWith( "GPX" ) )
+  {
+    longName = "GPX";
+    glob = "*.gpx";
+  }
+  else if ( driverName.startsWith( "Interlis 1" ) )
+  {
+    longName = "INTERLIS 1";
+    glob = "*.itf *.xml *.ili";
+  }
+  else if ( driverName.startsWith( "Interlis 2" ) )
+  {
+    longName = "INTERLIS 2";
+    glob = "*.itf *.xml *.ili";
+  }
+  else if ( driverName.startsWith( "KML" ) )
+  {
+    longName = "KML";
+    glob = "*.kml" ;
+  }
+  else if ( driverName.startsWith( "MapInfo File" ) )
+  {
+    longName = "Mapinfo File";
+    glob = "*.mif *.tab";
+  }
+  else if ( driverName.startsWith( "DGN" ) )
+  {
+    longName = "Microstation DGN";
+    glob = "*.dgn";
+  }
+  else if ( driverName.startsWith( "S57" ) )
+  {
+    longName = "S-57 Base file";
+    glob = "*.000";
+  }
+  else if ( driverName.startsWith( "SDTS" ) )
+  {
+    longName = "Spatial Data Transfer Standard";
+    glob = "*catd.ddf";
+  }
+  else if ( driverName.startsWith( "SQLite" ) )
+  {
+    longName = "SQLite";
+    glob = "*.sqlite";
+  }
+  else if ( driverName.startsWith( "VRT" ) )
+  {
+    longName = "VRT - Virtual Datasource ";
+    glob = "*.vrt";
+  }
+  else if ( driverName.startsWith( "XPlane" ) )
+  {
+    longName = "X-Plane/Flighgear";
+    glob = "apt.dat nav.dat fix.dat awy.dat";
+  }
+  else
+  {
+    return QString();
+  }
+  return "[OGR] " + longName + " (" + glob.toLower() + " " + glob.toUpper() + ");;";
 }

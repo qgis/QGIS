@@ -423,14 +423,14 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu, QAction* toggleEditingActio
       }
     }
 
-    // save as shapefile
-    theMenu.addAction( tr( "Save as shapefile..." ), this, SLOT( saveAsShapefile() ) );
+    // save as vector file
+    theMenu.addAction( tr( "Save as..." ), this, SLOT( saveAsVectorFile() ) );
 
-    // save selection as shapefile
-    QAction* saveSelectionAction = theMenu.addAction( tr( "Save selection as shapefile..." ), this, SLOT( saveSelectionAsShapefile() ) );
+    // save selection as vector file
+    QAction* saveSelectionAsAction = theMenu.addAction( tr( "Save selection as..." ), this, SLOT( saveSelectionAsVectorFile() ) );
     if ( vlayer->selectedFeatureCount() == 0 )
     {
-      saveSelectionAction->setEnabled( false );
+      saveSelectionAsAction->setEnabled( false );
     }
 
     theMenu.addSeparator();
@@ -458,6 +458,16 @@ void QgsLegendLayer::saveAsShapefile()
 void QgsLegendLayer::saveSelectionAsShapefile()
 {
   saveAsShapefileGeneral( TRUE );
+}
+
+void QgsLegendLayer::saveAsVectorFile()
+{
+  saveAsVectorFileGeneral( false );
+}
+
+void QgsLegendLayer::saveSelectionAsVectorFile()
+{
+  saveAsVectorFileGeneral( true );
 }
 
 //////////
@@ -492,7 +502,81 @@ void QgsLegendLayer::showInOverview()
   legend()->updateOverview();
 }
 
+void QgsLegendLayer::saveAsVectorFileGeneral( bool saveOnlySelection )
+{
+  if ( mLyr.layer()->type() != QgsMapLayer::VectorLayer )
+    return;
 
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( mLyr.layer() );
+
+  //get output name and format
+  QSettings settings;
+  QString filter =  QString( "Shapefiles (*.shp)" );
+  QString dirName = settings.value( "/UI/lastVectorfileDir", "." ).toString();
+  QString filterString = QgsVectorFileWriter::fileFilterString();
+  QString selectedFilter = settings.value( "/UI/lastVectorFilter", "[OGR] ESRI Shapefiles (*.shp *.SHP)" ).toString();
+  QString outputFile = QFileDialog::getSaveFileName( 0, tr( "Save layer as..." ), dirName, filterString, &selectedFilter );
+  if ( outputFile.isNull() )
+  {
+    return; //cancelled
+  }
+
+  settings.setValue( "/UI/lastVectorfileDir", QFileInfo( outputFile ).absolutePath() );
+  settings.setValue( "/UI/lastVectorFilter", selectedFilter );
+
+  QMap< QString, QString> filterDriverMap = QgsVectorFileWriter::supportedFiltersAndFormats();
+  QMap< QString, QString>::const_iterator it = filterDriverMap.find( selectedFilter + ";;" );
+  if ( it == filterDriverMap.constEnd() )
+  {
+    return; //unknown format
+  }
+
+  QString driverKey = *it;
+
+  //output CRS
+  QgsCoordinateReferenceSystem destCRS = vlayer->srs();
+  // Find out if we have projections enabled or not
+  if ( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() )
+  {
+    destCRS = QgisApp::instance()->mapCanvas()->mapRenderer()->destinationSrs();
+  }
+
+  QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector();
+  mySelector->setSelectedCrsId( destCRS.srsid() );
+  mySelector->setMessage( tr( "Select the coordinate reference system for the saved shapefile. "
+                              "The data points will be transformed from the layer coordinate reference system." ) );
+
+  if ( mySelector->exec() )
+  {
+    QgsCoordinateReferenceSystem srs( mySelector->selectedCrsId(), QgsCoordinateReferenceSystem::InternalCrsId );
+    destCRS = srs;
+    //   destCRS->createFromId(mySelector->selectedCrsId(), QgsCoordinateReferenceSystem::InternalCrsId)
+  }
+  else
+  {
+    // Aborted CS selection, don't save.
+    delete mySelector;
+    return;
+  }
+  delete mySelector;
+
+  // overwrite the file - user will already have been prompted
+  // to verify they want to overwrite by the file dialog above
+  // might not even exists in the given case.
+  if ( driverKey == "ESRI Shapefile" )
+  {
+    // add the extension if not present
+    if ( !outputFile.endsWith( ".shp", Qt::CaseInsensitive ) )
+    {
+      outputFile += ".shp";
+    }
+    QgsVectorFileWriter::deleteShapeFile( outputFile );
+  }
+
+  QString errorMessage;
+  QgsVectorFileWriter::WriterError error;
+  error = QgsVectorFileWriter::writeAsVectorFormat( vlayer, outputFile, "utf-8", &destCRS, driverKey, saveOnlySelection, &errorMessage );
+}
 
 
 void QgsLegendLayer::saveAsShapefileGeneral( bool saveOnlySelection )

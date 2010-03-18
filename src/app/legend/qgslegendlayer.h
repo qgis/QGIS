@@ -87,6 +87,9 @@ class QgsLegendLayer : public QgsLegendItem
     void saveAsShapefile();
     void saveSelectionAsShapefile();
 
+    void saveAsVectorFile();
+    void saveSelectionAsVectorFile();
+
     /**update the layer's icon to show whether is in editing mode or in overview */
     void updateIcon();
 
@@ -110,6 +113,8 @@ class QgsLegendLayer : public QgsLegendItem
 
     /**Save as shapefile (called from saveAsShapefile and saveSelectionAsShapefile)*/
     void saveAsShapefileGeneral( bool saveOnlySelection );
+
+    void saveAsVectorFileGeneral( bool saveOnlySelection );
 
   private:
     /** Helper method to make the font bold from all ctors.

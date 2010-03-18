@@ -31,13 +31,32 @@ public:
                                         const QgsCoordinateReferenceSystem*,
                                         bool onlySelected = FALSE);
 
+    /** Write contents of vector layer to an (OGR supported) vector formt
+        @note: this method was added in version 1.5*/
+    static WriterError writeAsVectorFormat( QgsVectorLayer* layer,
+                                            const QString& fileName,
+                                            const QString& fileEncoding,
+                                            const QgsCoordinateReferenceSystem *destCRS,
+                                            const QString& driverName = "ESRI Shapefile",
+                                            bool onlySelected = FALSE,
+                                            QString *errorMessage = 0 );
+
     /** create shapefile and initialize it */
-    QgsVectorFileWriter(const QString& shapefileName,
+    QgsVectorFileWriter(const QString& vectorFileName,
                         const QString& fileEncoding,
                         const QMap<int, QgsField>& fields,
                         QGis::WkbType geometryType,
                         const QgsCoordinateReferenceSystem* srs,
 			const QString& driverName = "ESRI Shapefile" );
+
+    /**Returns map with format filter string as key and OGR format key as value*/
+    static QMap< QString, QString> supportedFiltersAndFormats();
+
+    /**Returns filter string that can be used for dialogs*/
+    static QString fileFilterString();
+
+    /**Creates a filter for an OGR driver key*/
+    static QString filterForDriver( const QString& driverName );
     
     /** checks whether there were any errors in constructor */
     WriterError hasError();
