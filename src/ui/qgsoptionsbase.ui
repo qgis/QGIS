@@ -362,6 +362,13 @@
             </item>
            </widget>
           </item>
+          <item row="8" column="0">
+           <widget class="QCheckBox" name="cbxAddNewLayersToCurrentGroup">
+            <property name="text">
+             <string>Add new layers to selected group</string>
+            </property>
+           </widget>
+          </item>
          </layout>
         </widget>
        </item>
