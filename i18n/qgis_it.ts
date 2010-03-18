@@ -461,7 +461,7 @@
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="142"/>
         <source>Click to enable coordinate capture</source>
-        <translation>Clic per abilitare la cattura delle coordinate</translation>
+        <translation>Clicca per abilitare la cattura delle coordinate</translation>
     </message>
 </context>
 <context>
@@ -994,23 +994,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>creating new selection</source>
-        <translation type="unfinished">crea nuova selezione</translation>
+        <translation>crea nuova selezione</translation>
     </message>
     <message>
         <source>adding to current selection</source>
-        <translation type="unfinished">aggiungi alla selezione corrente</translation>
+        <translation>aggiungi alla selezione corrente</translation>
     </message>
     <message>
         <source>removing from current selection</source>
-        <translation type="unfinished">rimuovi dalla selezione corrente</translation>
+        <translation>rimuovi dalla selezione corrente</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="unfinished">Seleziona per posizione</translation>
+        <translation>Seleziona per posizione</translation>
     </message>
     <message>
         <source>Select features in:</source>
-        <translation type="unfinished">Seleziona le geometrie nel:</translation>
+        <translation>Seleziona le geometrie nel:</translation>
     </message>
     <message>
         <source>that intersect features in:</source>
@@ -1018,24 +1018,24 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Modify current selection by:</source>
-        <translation type="unfinished">Modifica la selezione corrente per:</translation>
+        <translation>Modifica la selezione corrente per:</translation>
     </message>
     <message>
         <source>Please specify input layer</source>
-        <translation type="unfinished">Si prega di specificare il vettoriale in input</translation>
+        <translation>Specifica il vettoriale in input</translation>
     </message>
     <message>
         <source>Please specify select layer</source>
-        <translation type="unfinished">Si prega di definire il vettoriale scelto</translation>
+        <translation>Definire il vettoriale scelto</translation>
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation type="unfinished">Matrice di distanza</translation>
+        <translation>Matrice di distanza</translation>
     </message>
     <message>
         <source>Created output matrix:
 </source>
-        <translation type="unfinished">Matrice in output creata:</translation>
+        <translation>Matrice in output creata:</translation>
     </message>
     <message>
         <source>Points in polygon</source>
@@ -1049,7 +1049,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Vector layer is not valid</source>
-        <translation type="unfinished">Il vettoriale non è valido</translation>
+        <translation>Il vettoriale non è valido</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="16"/>
@@ -1252,39 +1252,39 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Random selection</source>
-        <translation type="unfinished">Selezione casuale</translation>
+        <translation>Selezione casuale</translation>
     </message>
     <message>
         <source>Export to new projection</source>
-        <translation type="unfinished">Esporta a nuova proiezione</translation>
+        <translation>Esporta a nuova proiezione</translation>
     </message>
     <message>
         <source>Define current projection</source>
-        <translation type="unfinished">Definisci la proiezione in uso</translation>
+        <translation>Definisci la proiezione in uso</translation>
     </message>
     <message>
         <source>Vector grid</source>
-        <translation type="unfinished">Griglia vettoriale</translation>
+        <translation>Griglia vettoriale</translation>
     </message>
     <message>
         <source>Split vector layer</source>
-        <translation type="unfinished">Dividi vettoriale</translation>
+        <translation>Dividi vettoriale</translation>
     </message>
     <message>
         <source>Random selection within subsets</source>
-        <translation type="unfinished">Selezione causale con un sottoinsieme</translation>
+        <translation>Selezione causale con un sottoinsieme</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="unfinished">Selezionare vettoriale in input</translation>
+        <translation>Seleziona un vettoriale in input</translation>
     </message>
     <message>
         <source>Shapefiles (*.shp)</source>
-        <translation type="unfinished">Shapefile (*.shp)</translation>
+        <translation>Shapefile (*.shp)</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
-        <translation type="unfinished">Unisci attributi per localizzazione</translation>
+        <translation>Unisci attributi per localizzazione</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="16"/>
@@ -1293,11 +1293,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Join attributes</source>
-        <translation type="unfinished">Unisci attributi</translation>
+        <translation>Unisci attributi</translation>
     </message>
     <message>
         <source>Regular points</source>
-        <translation type="unfinished">Punti regolari</translation>
+        <translation>Punti regolari</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="53"/>
@@ -1341,7 +1341,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Line intersections</source>
-        <translation type="unfinished">Intersezioni linea</translation>
+        <translation>Intersezioni linea</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSubsetSelect.ui" line="16"/>
@@ -1450,7 +1450,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation type="unfinished">Somma lunghezza linee</translation>
+        <translation>Somma lunghezza linee</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="241"/>
@@ -1465,45 +1465,51 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Please specify input line layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Specifica il vettoriale in input</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Specifica il vettoriale in output</translation>
     </message>
     <message>
         <source>Please specify line intersect layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Specifica il vettore lineare da intersecare</translation>
     </message>
     <message>
         <source>Please specify input unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>Specifica il campo ID univoco per l&apos;input</translation>
     </message>
     <message>
         <source>Please specify intersect unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>Specifica il campo ID univoco per l&apos;intersezione</translation>
     </message>
     <message>
         <source>Created output point shapefile:
 %1
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation>Creato uno shapefile puntiforme:
+%1
+
+Vuoi aggiungerlo alla legenda?</translation>
     </message>
     <message>
         <source>No input layer specified</source>
-        <translation type="unfinished"></translation>
+        <translation>Nessun vettoriale in input selezionato</translation>
     </message>
     <message>
         <source>Please specify spatial reference system</source>
-        <translation type="unfinished"></translation>
+        <translation>Scegliere un sistema di riferimento spaziale</translation>
     </message>
     <message>
         <source>Created projected shapefile:
 %1
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation>Creato uno shapefile riproiettato:
+%1
+
+Vuoi aggiungerlo alla legenda?</translation>
     </message>
     <message>
         <source>Choose output CRS:</source>
@@ -2036,19 +2042,19 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="unfinished">Selezionare vettoriale in input</translation>
+        <translation>Seleziona un vettoriale in input</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="unfinished">Specificare shapefile in output</translation>
+        <translation>Specifica uno shapefile in output</translation>
     </message>
     <message>
         <source>Please specify valid tolerance value</source>
-        <translation type="unfinished">Specificare un valore di tolleranza valido</translation>
+        <translation>Specifica un valore di tolleranza valido</translation>
     </message>
     <message>
         <source>Please specify valid UID field</source>
-        <translation type="unfinished">Specificare un campo UID valido</translation>
+        <translation>Specifica un campo UID valido</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
@@ -2120,7 +2126,7 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     </message>
     <message>
         <source>Unable to delete existing shapefile.</source>
-        <translation type="unfinished">Impossibile eliminare lo shapefile esistente.</translation>
+        <translation>Impossibile eliminare lo shapefile esistente.</translation>
     </message>
     <message>
         <source>Error processing specified tolerance!</source>
@@ -2132,7 +2138,7 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     </message>
     <message>
         <source>Unable to delete incomplete shapefile.</source>
-        <translation type="unfinished">Impossibile eliminare shapefile incompleto.</translation>
+        <translation>Impossibile eliminare shapefile incompleto.</translation>
     </message>
     <message>
         <source>Created output shapefile:</source>
@@ -2194,27 +2200,27 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Please specify an input layer</source>
-        <translation type="unfinished">Selezionare un layer di input</translation>
+        <translation>Seleziona un layer di input</translation>
     </message>
     <message>
         <source>Please specify a difference/intersect/union layer</source>
-        <translation type="unfinished">Specificare un layer di differenza/intersezione/unione</translation>
+        <translation>Specifica un layer di differenza/intersezione/unione</translation>
     </message>
     <message>
         <source>Please specify valid buffer value</source>
-        <translation type="unfinished">Definire un valore di buffer valido</translation>
+        <translation>Definisci un valore di buffer valido</translation>
     </message>
     <message>
         <source>Please specify dissolve field</source>
-        <translation type="unfinished">Definire un campo di dissolvenza</translation>
+        <translation>Definisci un campo di dissolvenza</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="unfinished">Definire uno shapefile in output</translation>
+        <translation>Definisci uno shapefile in output</translation>
     </message>
     <message>
         <source>No features selected, please uncheck &apos;Use selected&apos; or make a selection</source>
-        <translation type="unfinished">Nessuna geometria selezionata, deselezionare &apos;Usa selezionato&apos; o fare una selezione</translation>
+        <translation>Nessuna geometria selezionata, deseleziona &apos;Usa selezionato&apos; o fai una selezione</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
@@ -2274,20 +2280,20 @@ Would you like to add the new layer to the TOC?</source>
     </message>
     <message>
         <source>Unable to delete existing shapefile.</source>
-        <translation type="unfinished">Impossibile eliminare lo shapefile esistente.</translation>
+        <translation>Impossibile eliminare lo shapefile esistente.</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Annulla</translation>
+        <translation>Annulla</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished">Chiudi</translation>
+        <translation>Chiudi</translation>
     </message>
     <message>
         <source>
 Warnings:</source>
-        <translation type="unfinished">
+        <translation>
 Attenzione:</translation>
     </message>
     <message>
@@ -2295,7 +2301,7 @@ Attenzione:</translation>
 Some output geometries may be missing or invalid.
 
 Would you like to add the new layer anyway?</source>
-        <translation type="unfinished">
+        <translation>
 Alcune geometrie non sembrano essere presenti o non sono valide
 
 Si vuole aggiungere ugualmente il nuovo layer?</translation>
@@ -2304,24 +2310,24 @@ Si vuole aggiungere ugualmente il nuovo layer?</translation>
         <source>
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished">
+        <translation>
 
 Vuoi aggiungere il nuovo layer alla legenda?</translation>
     </message>
     <message>
         <source>
 Input CRS error: Different input coordinate reference systems detected, results may not be as expected.</source>
-        <translation type="unfinished">Errore CRS di input: individuato un errore nelle coordinate del sistema di riferimento, i risultati potrebbero non essere quelli attesi.</translation>
+        <translation>Errore CRS di input: individuato un errore nelle coordinate del sistema di riferimento, i risultati potrebbero non essere quelli attesi.</translation>
     </message>
     <message>
         <source>
 Feature geometry error: One or more output features ignored due to invalid geometry.</source>
-        <translation type="unfinished">Errore geometria: uno o più elementi sono stati ignorati a causa di incongruenze geometriche.</translation>
+        <translation>Errore geometria: uno o più elementi sono stati ignorati a causa di incongruenze geometriche.</translation>
     </message>
     <message>
         <source>
 GEOS geoprocessing error: One or more input features have invalid geometry.</source>
-        <translation type="unfinished">Errore GEOS di geoprocessing: uno o più elementi hanno incongruenze geometriche.</translation>
+        <translation>Errore GEOS di geoprocessing: uno o più elementi hanno incongruenze geometriche.</translation>
     </message>
     <message>
         <source>Created output shapefile:</source>
@@ -3109,11 +3115,11 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>OSM Download</source>
-        <translation type="unfinished">Download OSM</translation>
+        <translation>Download OSM</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="unfinished">Impossibile salvare il file: %1: %2.</translation>
+        <translation>Impossibile salvare il file: %1: %2.</translation>
     </message>
     <message>
         <source>Waiting for OpenStreetMap server ...</source>
@@ -3137,7 +3143,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
-        <translation type="unfinished">Il server OpenStreetMap da cui si sta scaricando i dati OSM ( ~api.openstreetmap.org) ha alcuni limiti sulla quantità di dati scaricabili. Come riportato alla pagina &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; le coordinate (sia latitudine che longitudine) dell&apos;area della regione da scaricare non devono superare i 0.25 gradi. Nota che Quantum GIS permette di specificare un area anche superiore, è poi il server OpenStreetMap che blocca le richieste che violano i limiti di download.</translation>
+        <translation>Il server OpenStreetMap da cui si sta scaricando i dati OSM ( ~api.openstreetmap.org) ha alcuni limiti sulla quantità di dati scaricabili. Come riportato alla pagina &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; le coordinate (sia latitudine che longitudine) dell&apos;area della regione da scaricare non devono superare i 0.25 gradi. Nota che Quantum GIS permette di specificare un area anche superiore, è poi il server OpenStreetMap che blocca le richieste che violano i limiti di download.</translation>
     </message>
     <message>
         <source>Both extents are too large!</source>
@@ -3181,23 +3187,23 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>OSM Plugin</source>
-        <translation type="unfinished">Plugin OSM</translation>
+        <translation>Plugin OSM</translation>
     </message>
     <message>
         <source>The &apos;Create OSM Relation&apos; dialog was closed automatically because current OSM database was changed.</source>
-        <translation type="unfinished">La finestra di dialogo &quot;Crea una relazione OSM&quot; è stata chiusa automaticamente in quanto il database attuale di OSM ha subito una modifica.</translation>
+        <translation>La finestra di dialogo &quot;Crea una relazione OSM&quot; è stata chiusa automaticamente in quanto il database attuale di OSM ha subito una modifica.</translation>
     </message>
     <message>
         <source>OSM Feature Dock Widget</source>
-        <translation type="unfinished">Widget elemento OSM</translation>
+        <translation>Widget elemento OSM</translation>
     </message>
     <message>
         <source>Choose OSM feature first.</source>
-        <translation type="unfinished">Selezionare prima un elemento OSM.</translation>
+        <translation>Seleziona prima un elemento OSM.</translation>
     </message>
     <message>
         <source>Choose relation for editing first.</source>
-        <translation type="unfinished">Selezionare prima una relazione da modificare.</translation>
+        <translation>Seleziona prima una relazione da modificare.</translation>
     </message>
     <message>
         <source>Property &apos;%1&apos; cannot be added twice.</source>
@@ -3466,31 +3472,31 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Save OSM to file</source>
-        <translation type="unfinished">Salva OSM su un file</translation>
+        <translation>Salva OSM su file</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="unfinished">Impossibile salvare il file %1: %2.</translation>
+        <translation>Impossibile salvare il file %1: %2.</translation>
     </message>
     <message>
         <source>Initializing...</source>
-        <translation type="unfinished">Avvio...</translation>
+        <translation>Avvio...</translation>
     </message>
     <message>
         <source>Saving nodes...</source>
-        <translation type="unfinished">Salvataggio nodi...</translation>
+        <translation>Salvataggio nodi...</translation>
     </message>
     <message>
         <source>Saving lines...</source>
-        <translation type="unfinished">Salvataggio linee...</translation>
+        <translation>Salvataggio linee...</translation>
     </message>
     <message>
         <source>Saving polygons...</source>
-        <translation type="unfinished">Salvataggio poligoni...</translation>
+        <translation>Salvataggio poligoni...</translation>
     </message>
     <message>
         <source>Saving relations...</source>
-        <translation type="unfinished">Salvataggio relazioni...</translation>
+        <translation>Salvataggio relazioni...</translation>
     </message>
 </context>
 <context>
@@ -3605,50 +3611,50 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>OSM Upload</source>
-        <translation type="unfinished">Carica su OSM</translation>
+        <translation>Carica su OSM</translation>
     </message>
     <message>
         <source>Uploading data...</source>
-        <translation type="unfinished">Caricamento dei dati ...</translation>
+        <translation>Caricamento dei dati ...</translation>
     </message>
 </context>
 <context>
     <name>Python</name>
     <message>
         <source>An error has occured while executing Python code:</source>
-        <translation type="unfinished">Errore durante l&apos;esecuzione di codice Python:</translation>
+        <translation>Errore durante l&apos;esecuzione di codice Python:</translation>
     </message>
     <message>
         <source>Python version:</source>
-        <translation type="unfinished">Versione Python:</translation>
+        <translation>Versione Python:</translation>
     </message>
     <message>
         <source>Python path:</source>
-        <translation type="unfinished">Percorso Python:</translation>
+        <translation>Percorso Python:</translation>
     </message>
     <message>
         <source>Python error</source>
-        <translation type="unfinished">Errore python</translation>
+        <translation>Errore Python</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin &apos;%1&apos; from [&apos;%2&apos;]</source>
-        <translation type="unfinished">Impossibile caricare il plugin &apos;%1&apos; da [&apos;%2&apos;]</translation>
+        <translation>Impossibile caricare il plugin &apos;%1&apos; da [&apos;%2&apos;]</translation>
     </message>
     <message>
         <source>Couldn&apos;t load plugin %1</source>
-        <translation type="unfinished">Impossibile caricare il plugin %1</translation>
+        <translation>Impossibile caricare il plugin %1</translation>
     </message>
     <message>
         <source>%1 due an error when calling its classFactory() method</source>
-        <translation type="unfinished">%1 a causa di errore chiamando il metodo classFactory()</translation>
+        <translation>%1 a causa di errore chiamando il metodo classFactory()</translation>
     </message>
     <message>
         <source>%1 due an error when calling its initGui() method</source>
-        <translation type="unfinished">%1 a causa di errore chiamando il metodo initGui()</translation>
+        <translation>%1 a causa di errore chiamando il metodo initGui()</translation>
     </message>
     <message>
         <source>Error while unloading plugin %1</source>
-        <translation type="unfinished">Errore durante lo scaricamento del plugin %1</translation>
+        <translation>Errore durante lo scaricamento del plugin %1</translation>
     </message>
 </context>
 <context>
@@ -3933,7 +3939,7 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="163"/>
         <source>Choose GRASS installation path (GISBASE)</source>
-        <translation>Selezionare il percorso di installazione di GRASS (GISBASE)</translation>
+        <translation>Seleziona il percorso di installazione di GRASS (GISBASE)</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="180"/>
@@ -4977,22 +4983,22 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1079"/>
         <source>Cannot start module</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile avviare modulo</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1080"/>
         <source>command: %1 %2&lt;br&gt;%3&lt;br&gt;%4</source>
-        <translation type="unfinished"></translation>
+        <translation>comando: %1 %2&lt;br&gt;%3&lt;br&gt;%4</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1137"/>
         <source>Cannot get projection </source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile ottenere la proiezione </translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1159"/>
         <source>Cannot get raster extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile ottenere l&apos;estensione del raster</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1181"/>
@@ -5168,7 +5174,6 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
         <comment>number of geometry errors</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -5208,7 +5213,6 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
         <comment>number of duplicate nodes</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -5231,52 +5235,52 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
         <location filename="../src/core/qgsgeometry.cpp" line="6543"/>
         <location filename="../src/core/qgsgeometry.cpp" line="6544"/>
         <source>Unknown geometry type</source>
-        <translation type="unfinished">Tipo di geometria sconosciuto</translation>
+        <translation>Tipo di geometria sconosciuto</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="61"/>
         <source>OGR driver for &apos;%1&apos; not found (OGR error: %2)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="78"/>
         <source>trimming attribute name &apos;%1&apos; to ten significant characters produces duplicate column name.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="92"/>
         <source>creation of data source failed (OGR error:%1)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="150"/>
         <source>creation of layer failed (OGR error:%1)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="199"/>
         <source>unsupported type for field %1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="225"/>
         <source>creation of field %1 failed (OGR error: %2)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="454"/>
         <source>Failed to transform a point while drawing a feature of type &apos;%1&apos;. Writing stopped. (Exception: %2)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="59"/>
         <source>Groups not yet supported</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="110"/>
         <source>Cannot draw raster</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -5478,7 +5482,7 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4576"/>
         <source>Would you like more information?</source>
-        <translation>Si vogliono avere maggiori informazioni?</translation>
+        <translation>Vuoi avere maggiori informazioni?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4579"/>
@@ -6196,7 +6200,7 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="822"/>
         <source>Click on features to identify them</source>
-        <translation>Clic su un elemento per ottenere le sue informazioni</translation>
+        <translation>Clicca su un elemento per ottenere le sue informazioni</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="808"/>
@@ -7394,7 +7398,7 @@ Si prega di contattare gli sviluppatori.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1683"/>
         <source>CRS status - Click to open coordinate reference system dialog</source>
-        <translation>Stato CRS - clic per aprire la finestra delle coordinate di riferimento spaziale</translation>
+        <translation>Stato CRS - clicca per aprire la finestra delle coordinate di riferimento spaziale</translation>
     </message>
     <message>
         <source>This release candidate includes over 60 bug fixes and enchancements over the QGIS 0.10.0 release. In addition we have added the following new features:</source>
@@ -7569,12 +7573,12 @@ Errors:  %2
     <message>
         <location filename="../src/app/qgisapp.cpp" line="763"/>
         <source>Click a vertex of the ring to delete</source>
-        <translation>Clic su un vertice dell&apos;anello per cancellarlo</translation>
+        <translation>Clicca su un vertice dell&apos;anello per cancellarlo</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="769"/>
         <source>Click a vertex of the part to delete</source>
-        <translation>Clic sul vertice di una parte per cancellarla</translation>
+        <translation>Clicca sul vertice di una parte per cancellarla</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="785"/>
@@ -7586,7 +7590,7 @@ Errors:  %2
         <location filename="../src/app/qgisapp.cpp" line="814"/>
         <location filename="../src/app/qgisapp.cpp" line="816"/>
         <source>Deselect features from all layers</source>
-        <translation>Deselezionare gli elementi da tutti i layer</translation>
+        <translation>Deseleziona gli elementi da tutti i layer</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="821"/>
@@ -7747,7 +7751,7 @@ Errors:  %2
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6120"/>
         <source>Warning</source>
-        <translation type="unfinished">Attenzione</translation>
+        <translation>Attenzione</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6120"/>
@@ -8075,7 +8079,7 @@ Provo a cercare i layer persi?</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3819"/>
         <source>The merge features tool only works on vector layers. Please select a vector layer from the layer list</source>
-        <translation>Lo strumento di unione delle geometrie funziona solo con layer vettoriali. Selezionare un layer vettoriale dalla lista</translation>
+        <translation>Lo strumento di unione delle geometrie funziona solo con layer vettoriali. Seleziona un layer vettoriale dalla lista</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3824"/>
@@ -8592,7 +8596,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="136"/>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="152"/>
         <source>Enter the name of an action here. The name should be unique (qgis will make it unique if necessary).</source>
-        <translation>Inserire un nome con cui identificare l&apos;azione. Il nome deve essere univoco (QGIS lo rende tale se necessario).</translation>
+        <translation>Inserisci un nome con cui identificare l&apos;azione. Il nome deve essere univoco (QGIS lo rende tale se necessario).</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="149"/>
@@ -8726,7 +8730,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="187"/>
         <source>Click to browse for an action</source>
-        <translation>Clic per selezionare un&apos;azione</translation>
+        <translation>Clicca per selezionare un&apos;azione</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="193"/>
@@ -8880,22 +8884,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="37"/>
         <source>Attribute</source>
-        <translation type="unfinished">Attributo</translation>
+        <translation>Attributo</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="40"/>
         <source>Alias</source>
-        <translation type="unfinished"></translation>
+        <translation>Alias</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="76"/>
         <source>Select all</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleziona tutto</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgsattributeselectiondialog.cpp" line="78"/>
         <source>Clear</source>
-        <translation type="unfinished">Pulisci</translation>
+        <translation>Cancella</translation>
     </message>
 </context>
 <context>
@@ -15267,7 +15271,7 @@ p, li { white-space: pre-wrap; }
         <source>Unable to read the selected file.
 Please reselect a valid file.</source>
         <translation>Impossibile leggere il file selezionato
-Selezionare un file valido.</translation>
+Seleziona un file valido.</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="416"/>
@@ -18207,7 +18211,7 @@ alla linea %2 colonna %3</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2771"/>
         <source>Select a layer</source>
-        <translation>Selezionare un layer</translation>
+        <translation>Seleziona un layer</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2934"/>
@@ -18257,7 +18261,7 @@ alla linea %2 colonna %3</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2283"/>
         <source>Select a layer</source>
-        <translation>Selezionare un layer</translation>
+        <translation>Seleziona un layer</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2568"/>
@@ -18728,7 +18732,7 @@ alla linea %2 colonna %3</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="607"/>
         <source>Select existing directory or create a new one:</source>
-        <translation>Selezionare una cartella esistente o crearne una nuova:</translation>
+        <translation>Seleziona una cartella esistente o creane una nuova:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="639"/>
@@ -19411,7 +19415,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassselectbase.ui" line="119"/>
         <source>Select or type map name (wildcards &apos;*&apos; and &apos;?&apos; accepted for rasters)</source>
-        <translation>Selezionare o scrivere il nome della mappa (i caratteri jolly &apos;*&apos; e &apos;?&apos; sono validi per i raster)</translation>
+        <translation>Seleziona o scrivi il nome della mappa (i caratteri jolly &apos;*&apos; e &apos;?&apos; sono validi per i raster)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassselectbase.ui" line="19"/>
@@ -21634,7 +21638,7 @@ p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot;
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="78"/>
         <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation>Non posso modificare il layer vettoriale. Per entrare in modalità modifica, selezionare la voce del layer, fare clic con il tasto destro del mouse ed attivare &quot;Attiva/Disattiva modifica&quot;.</translation>
+        <translation>Non posso modificare il layer vettoriale. Per entrare in modalità modifica, seleziona la voce del layer, fai clic con il tasto destro del mouse ed attiva &quot;Attiva/Disattiva modifica&quot;.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="89"/>
@@ -21726,19 +21730,19 @@ p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot;
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="53"/>
         <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation>Non posso modificare il vettoriale. Per entrare in modalità modifica, selezionare la voce del layer, fare clic con il tasto destro del mouse ed attivare &quot;Attiva/Disattiva modifica&quot;.</translation>
+        <translation>Non posso modificare il vettoriale. Per entrare in modalità modifica, seleziona la voce del layer, fai clic con il tasto destro del mouse ed attiva &quot;Attiva/Disattiva modifica&quot;.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="63"/>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="122"/>
         <source>No feature selected. Please select a feature with the selection tool or in the attribute table</source>
-        <translation>Nessuna geometria selezionata. Selezionare una geometria con lo strumneto di selezione o mediante la tabella attributi</translation>
+        <translation>Nessuna geometria selezionata. Seleziona una geometria con lo strumento di selezione o mediante la tabella attributi</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="67"/>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="126"/>
         <source>Several features are selected. Please select only one feature to which an island should be added.</source>
-        <translation>Ci sono più geometrie selezionate. Selezionare una sola geometria alla quale aggiungere un&apos;isola.</translation>
+        <translation type="unfinished">Ci sono più geometrie selezionate. Seleziona una sola geometria alla quale aggiungere un&apos;isola.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="72"/>
@@ -21806,7 +21810,7 @@ p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot;
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="51"/>
         <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation>Non posso modificare il layer vettoriale. Per entrare in modalità modifica, selezionare la voce del layer, fare clic con il tasto destro del mouse ed attivare &quot;Attiva/Disattiva modifica&quot;.</translation>
+        <translation>Non posso modificare il layer vettoriale. Per entrare in modalità modifica, seleziona la voce del layer, fai clic con il tasto destro del mouse ed attiva &quot;Attiva/Disattiva modifica&quot;.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdring.cpp" line="66"/>
@@ -22075,7 +22079,7 @@ p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot;
     <message>
         <location filename="../src/app/qgsmaptoolmovefeature.cpp" line="67"/>
         <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation>Non posso modificare il layer vettoriale. Per entrare in modalità modifica, selezionare la voce del layer, fare clic con il tasto destro del mouse ed attivare &quot;Attiva/Disattiva modifica&quot;.</translation>
+        <translation>Non posso modificare il layer vettoriale. Per entrare in modalità modifica, seleziona la voce del layer, fai clic con il tasto destro del mouse ed attiva &quot;Attiva/Disattiva modifica&quot;.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolmovefeature.cpp" line="140"/>
@@ -22187,7 +22191,7 @@ p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot;
     <message>
         <location filename="../src/app/qgsmaptoolselect.cpp" line="72"/>
         <source>To select features, you must choose a vector layer by clicking on its name in the legend</source>
-        <translation>Per selezionare geometrie, selezionare un layer vettoriale cliccando sul nome nella legenda</translation>
+        <translation>Per selezionare geometrie, seleziona un layer vettoriale cliccando sul nome nella legenda</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolselect.cpp" line="140"/>
@@ -22269,7 +22273,7 @@ p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot;
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="50"/>
         <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation>Non posso modificare il layer vettoriale. Per entrare in modalità modifica, selezionare la voce del layer, fare clic con il tasto destro del mouse ed attivare &quot;Attiva/Disattiva modifica&quot;.</translation>
+        <translation>Non posso modificare il layer vettoriale. Per entrare in modalità modifica, seleziona la voce del layer, fai clic con il tasto destro del mouse ed attiva &quot;Attiva/Disattiva modifica&quot;.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="65"/>
@@ -23722,7 +23726,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsogrsublayersdialogbase.ui" line="13"/>
         <source>Select OGR layers to load</source>
-        <translation>Selezionare i layer OGR da caricare</translation>
+        <translation>Seleziona i layer OGR da caricare</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsogrsublayersdialogbase.ui" line="57"/>
@@ -23797,51 +23801,51 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsopenrasterdialog.cpp" line="70"/>
         <source>Choose a name of the raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Scegli un nome del raster</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsopenrasterdialog.cpp" line="82"/>
         <location filename="../src/plugins/georeferencer/qgsopenrasterdialog.cpp" line="123"/>
         <source>Error</source>
-        <translation type="unfinished">Errore</translation>
+        <translation>Errore</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsopenrasterdialog.cpp" line="83"/>
         <location filename="../src/plugins/georeferencer/qgsopenrasterdialog.cpp" line="124"/>
         <source>The selected file is not a valid raster file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Il file selezionato non è un raster valido.</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsopenrasterdialog.cpp" line="116"/>
         <source>Choose a name for the modified raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Scegli un nome per il raster modificato</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsopenrasterdialog.cpp" line="149"/>
         <source>-modified</source>
         <comment>Georeferencer:QgsOpenRasterDialog.cpp - used to modify a user given file name</comment>
-        <translation type="unfinished">-modificato</translation>
+        <translation>-modificato</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsopenrasterdialogbase.ui" line="14"/>
         <source>Open raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Apri raster</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsopenrasterdialogbase.ui" line="25"/>
         <source>Raster file:</source>
-        <translation type="unfinished">File raster:</translation>
+        <translation>File raster:</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsopenrasterdialogbase.ui" line="44"/>
         <location filename="../src/plugins/georeferencer/qgsopenrasterdialogbase.ui" line="76"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsopenrasterdialogbase.ui" line="64"/>
         <source>Save raster as:</source>
-        <translation type="unfinished"></translation>
+        <translation>Salva raster come:</translation>
     </message>
 </context>
 <context>
@@ -25861,9 +25865,9 @@ Check your username and password and try again.
 
 The database said:
 %3</source>
-        <translation>Connessione a %1 in %2 non riuscita. O il database non é raggiungible oppure i parametri inseriti non sono corretti.
+        <translation>Connessione a %1 in %2 non riuscita. O il database non è raggiungible oppure i parametri inseriti non sono corretti.
 
-Verificare nome utente e password e provare ancora.
+Verifica nome utente e password e prova ancora.
 
 Questo il messaggio di errore restituito:
 %3</translation>
@@ -25990,7 +25994,7 @@ geometry.</source>
     <name>QgsPluginInstaller</name>
     <message>
         <source>Couldn&apos;t parse output from the repository</source>
-        <translation type="unfinished">Impossibile analizzare l&apos;output dal repository</translation>
+        <translation>Impossibile analizzare l&apos;output dal repository</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the system plugin directory</source>
@@ -26038,7 +26042,7 @@ geometry.</source>
     </message>
     <message>
         <source>Check permissions or remove it manually</source>
-        <translation type="unfinished">Controllare i permessi o rimuoverla manualmente</translation>
+        <translation>Controlla i permessi o rimuovila manualmente</translation>
     </message>
     <message>
         <source>QGIS Plugin Conflict:</source>
@@ -26046,7 +26050,7 @@ geometry.</source>
     </message>
     <message>
         <source>The Plugin Installer has detected an obsolete plugin which masks a newer version shipped with this QGIS version. This is likely due to files associated with a previous installation of QGIS. Please use the Plugin Installer to remove that older plugin in order to unmask the newer version shipped with this copy of QGIS.</source>
-        <translation type="unfinished">L&apos;installatore di plugin ha individuato un plugin obsoleto che maschera una nuova versione creata per questa versione di QGIS. Questo accade a casa di alcuni file associati a QGIS da una precedente installazione. Utilizzare il Plugin Installar per rimuovere questo plugin in modo da poter visualizzare le nuove versioni create per questa copia di QGIS.</translation>
+        <translation>L&apos;installatore di plugin ha individuato un plugin obsoleto che maschera una nuova versione creata per questa versione di QGIS. Questo accade a casa di alcuni file associati a QGIS da una precedente installazione. Utilizzare il Plugin Installar per rimuovere questo plugin in modo da poter visualizzare le nuove versioni create per questa copia di QGIS.</translation>
     </message>
 </context>
 <context>
@@ -26204,7 +26208,7 @@ geometry.</source>
     </message>
     <message>
         <source>Are you sure you want to downgrade the plugin to the latest available version? The installed one is newer!</source>
-        <translation type="unfinished">Si vuole veramente effettuare il downgrade del plugin all&apos;ultima versione disponibile? La versione installata è più recente!</translation>
+        <translation>Si vuole veramente effettuare il downgrade del plugin all&apos;ultima versione disponibile? La versione installata è più recente!</translation>
     </message>
     <message>
         <source>Plugin installation failed</source>
@@ -26217,7 +26221,7 @@ geometry.</source>
     <message>
         <source>The plugin seems to have been installed but I don&apos;t know where. Probably the plugin package contained a wrong named directory.
 Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll find the plugin there, but I just can&apos;t determine which of them it is. It also means that I won&apos;t be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue.</source>
-        <translation type="unfinished">Il plugin sembra sia stato installato ma non è recuperabile. Probabilmente il pacchetto del plugin contiene un nome di directory sbagliato.È probabile che specificando la lista dei plugin installati è facile che si riesca a trovare il plugin. QGIS non è in grado di capire quale sia. Questo vuol dire che è impossibile capire se il plugin è installato o meno e quindi non è possibile informare circa la disponibilità di aggiornamenti. Il plugin può comunque funzionare. Contattare l&apos;autore del plugin e inviare una notifica in merito a questo problema.</translation>
+        <translation>Il plugin sembra sia stato installato ma non è recuperabile. Probabilmente il pacchetto del plugin contiene un nome di directory sbagliato.È probabile che specificando la lista dei plugin installati si riesca a trovare il plugin. QGIS non è in grado di capire quale sia. Questo vuol dire che è impossibile capire se il plugin è installato o meno e quindi non è possibile informare circa la disponibilità di aggiornamenti. Il plugin può comunque funzionare. Contatta l&apos;autore del plugin e invia una notifica in merito a questo problema.</translation>
     </message>
     <message>
         <source>Plugin installed successfully</source>
@@ -26261,11 +26265,11 @@ Devi riavviare Quantum GIS per ricaricarlo.</translation>
     </message>
     <message>
         <source>Are you sure you want to remove the following repository?</source>
-        <translation type="unfinished">Si vuole veramente rimuovere i seguenti repository?</translation>
+        <translation>Si vuole veramente rimuovere i seguenti repository?</translation>
     </message>
     <message>
         <source>This plugin is incompatible with your Quantum GIS version and probably won&apos;t work.</source>
-        <translation type="unfinished">Questo plugin è incompatibile con la versione di Quantum GIS in uso e probabilmente non funzionerà.</translation>
+        <translation>Questo plugin è incompatibile con la versione di Quantum GIS in uso e probabilmente non funzionerà.</translation>
     </message>
     <message>
         <source>The required Python module is not installed.
@@ -26307,7 +26311,7 @@ Questo il messaggio di errore:</translation>
     </message>
     <message>
         <source>The plugin depends on some components missing on your system. You need to install the following Python module in order to enable it:</source>
-        <translation type="unfinished">Il plugin dipende da qualche componente che non è presente sul sistema. Per abilitarlo occorre installare i seguenti moduli Python:</translation>
+        <translation>Il plugin dipende da qualche componente che non è presente sul sistema. Per abilitarlo occorre installare i seguenti moduli Python:</translation>
     </message>
     <message>
         <source>The plugin is broken. Python said:</source>
@@ -26336,12 +26340,12 @@ Questo il messaggio di errore:</translation>
     <message>
         <source>The required Python module is not installed.
 For more information, please visit its homepage and Quantum GIS wiki.</source>
-        <translation type="unfinished">Il modulo Python richiesto non è installato.
+        <translation>Il modulo Python richiesto non è installato.
 Per maggiori informazioni visitare la home page e il wiki di Quantum GIS.</translation>
     </message>
     <message>
         <source>at least</source>
-        <translation type="unfinished">all&apos;ultimo</translation>
+        <translation>almeno</translation>
     </message>
     <message>
         <source>Python plugin installed.
@@ -26739,7 +26743,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Failed to unzip the plugin package. Probably it&apos;s broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:</source>
-        <translation type="unfinished">Scompattazione (unzip) del plugin non riuscita. Probabilmente l&apos;archivio è corrotto o non esiste nel repository. Controllare i permessi in scrittura della directory dei plugin:</translation>
+        <translation>Scompattazione (unzip) del plugin non riuscita. Probabilmente l&apos;archivio è corrotto o non esiste nel repository. Controllare i permessi in scrittura della directory dei plugin:</translation>
     </message>
     <message>
         <source>Aborted by user</source>
@@ -27488,7 +27492,7 @@ oppure una colonna di tipo oid PostgreSQL.</translation>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3009"/>
         <source>Unable to get feature type and srid</source>
-        <translation>Impossibile recuperare il tipo di geometria e lo srid</translation>
+        <translation type="unfinished">Impossibile recuperare il tipo di geometria e lo SRID</translation>
     </message>
     <message>
         <source>Note: </source>
@@ -27696,7 +27700,7 @@ La vista selezionata ha queste colonne, nessuna di questa é in grado di soddisf
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3005"/>
         <source>Qgis was unable to determine the type and srid of column %1 in %2. The database communication log was:
 %3</source>
-        <translation>Impossibile individuare il tipo e lo srid della colonna %1 in %2. Questo il messaggio di log del database:
+        <translation type="unfinished">Impossibile individuare il tipo e lo SRID della colonna %1 in %2. Questo il messaggio di log del database:
 %3</translation>
     </message>
     <message>
@@ -28354,7 +28358,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsquerybuilder.cpp" line="44"/>
         <source>&amp;Clear</source>
-        <translation>&amp;Pulisci</translation>
+        <translation>&amp;Cancella</translation>
     </message>
     <message>
         <location filename="../src/app/qgsquerybuilder.cpp" line="106"/>
@@ -30868,7 +30872,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="47"/>
         <source>&amp;Clear</source>
-        <translation>&amp;Pulisci</translation>
+        <translation>&amp;Cancella</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="178"/>
@@ -31894,7 +31898,7 @@ SQL: %2</translation>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="368"/>
         <source>[Add ...] - open a File dialog and browse to the desired file(s) to import</source>
-        <translation>[Aggiungi ... ] - apre una finestra di dialogo da cui poter sfogliare il file system e selezionare uno o più file da importare</translation>
+        <translation>[Aggiungi ... ] - apre una finestra di dialogo da cui puoi sfogliare il file system e selezionare uno o più file da importare</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="369"/>
@@ -33946,7 +33950,7 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="342"/>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="358"/>
         <source>Click to toggle table editing</source>
-        <translation>Clic per abilitare/disabilitare la modifica della modifica</translation>
+        <translation>Clicca per abilitare/disabilitare la modifica della modifica</translation>
     </message>
 </context>
 <context>
@@ -34291,7 +34295,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="448"/>
         <source>You must select at least one leaf layer first.</source>
-        <translation>Si deve prima selezionare un layer.</translation>
+        <translation>Devi prima selezionare un layer.</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="452"/>
@@ -35204,7 +35208,7 @@ URL provata: %1</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="unfinished">Selezionare vettoriale in input</translation>
+        <translation>Seleziona vettoriale in input</translation>
     </message>
     <message>
         <source>Please specify input field</source>
@@ -36149,7 +36153,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="199"/>
         <source>Use the drop-down list to select the field containing a directory path to the image. This can be an absolute or relative path.</source>
-        <translation>Utilizzare la lista drop down per selezionare il campo contenente il percorso della directory dell´immagine.Può essere un percorso assoluto o relativo.</translation>
+        <translation type="unfinished">Utilizza la lista drop down per selezionare il campo contenente il percorso della directory dell´immagine.Può essere un percorso assoluto o relativo.</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="222"/>
@@ -36357,7 +36361,7 @@ Percorso base (es. prende solo il nome del file dall´attributo)</translation>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="726"/>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="790"/>
         <source>Clears the check-box on this line.</source>
-        <translation>Pulisce le selezioni da questa linea.</translation>
+        <translation>Cancella le selezioni da questa linea.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="758"/>
