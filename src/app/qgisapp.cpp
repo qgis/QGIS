@@ -327,7 +327,7 @@ static void customSrsValidation_( QgsCoordinateReferenceSystem* srs )
 QgisApp *QgisApp::smInstance = 0;
 
 // constructor starts here
-QgisApp::QgisApp( QSplashScreen *splash, QWidget * parent, Qt::WFlags fl )
+QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, Qt::WFlags fl )
     : QMainWindow( parent, fl ),
     mSplash( splash ),
     mPythonUtils( NULL )
@@ -425,7 +425,12 @@ QgisApp::QgisApp( QSplashScreen *splash, QWidget * parent, Qt::WFlags fl )
   mSplash->showMessage( tr( "Restoring loaded plugins" ), Qt::AlignHCenter | Qt::AlignBottom );
   qApp->processEvents();
   QgsPluginRegistry::instance()->setQgisInterface( mQgisInterface );
-  QgsPluginRegistry::instance()->restoreSessionPlugins( QgsApplication::pluginPath() );
+  if ( restorePlugins )
+  {
+    // Restoring of plugins can be disabled with --noplugins command line option
+    // because some plugins may cause QGIS to crash during startup
+    QgsPluginRegistry::instance()->restoreSessionPlugins( QgsApplication::pluginPath() );
+  }
 
   mSplash->showMessage( tr( "Initializing file filters" ), Qt::AlignHCenter | Qt::AlignBottom );
   qApp->processEvents();
