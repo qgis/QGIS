@@ -346,7 +346,10 @@ void QgsGPSInformationWidget::connected( QgsGPSConnection *conn )
 void QgsGPSInformationWidget::disconnectGps()
 {
   QgsGPSConnectionRegistry::instance()->unregisterConnection( mNmea );
-  delete mNmea;
+  if ( mNmea )
+  {
+    delete mNmea;
+  }
   mGPSTextEdit->append( tr( "Disconnected..." ) );
   mConnectButton->setChecked( false );
   mConnectButton->setText( tr( "Connect" ) );
