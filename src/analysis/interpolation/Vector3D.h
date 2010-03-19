@@ -25,8 +25,8 @@
 
 class ANALYSIS_EXPORT Vector3D
     /**
-          Class Vector3D represents a 3D-Vector, capable to store x-,y- and z-coordinates in double values. In fact, the class is the same as Point3D. The name 'vector' makes it easier to understand the programs.
-          */
+                  Class Vector3D represents a 3D-Vector, capable to store x-,y- and z-coordinates in double values. In fact, the class is the same as Point3D. The name 'vector' makes it easier to understand the programs.
+                  */
 
 {
   protected:
@@ -117,37 +117,3 @@ inline void Vector3D::setZ( double z )
 }
 
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

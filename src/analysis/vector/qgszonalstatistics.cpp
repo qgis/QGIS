@@ -137,7 +137,7 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
 
   while ( vectorProvider->nextFeature( f ) )
   {
-    qWarning( QString::number( featureCounter ).toLocal8Bit().data() );
+    qWarning( "%d", featureCounter );
     if ( p )
     {
       p->setValue( featureCounter );
@@ -338,7 +338,7 @@ void QgsZonalStatistics::statisticsFromMiddlePointTest_improved( void* band, Qgs
     }
 
     //debug
-    char* scanLineIntersectionType = GEOSGeomType( scanLineIntersection );
+    //char* scanLineIntersectionType = GEOSGeomType( scanLineIntersection );
 
     int numGeoms = GEOSGetNumGeometries( scanLineIntersection );
     if ( numGeoms < 1 )
@@ -372,7 +372,7 @@ void QgsZonalStatistics::statisticsFromMiddlePointTest_improved( void* band, Qgs
       {
         //error
       }
-      for ( int k = 0; k < scanLineIntersectionSize; ++k )
+      for ( unsigned int k = 0; k < scanLineIntersectionSize; ++k )
       {
         GEOSCoordSeq_getX( scanLineCoordSequence, k, &currentValue );
         scanLineList.push_back( currentValue );
