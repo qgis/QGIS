@@ -26,7 +26,8 @@ from ui_qgsplugininstallerbase import Ui_QgsPluginInstallerDialogBase
 from installer_data import *
 
 try:
-  from qgis.utils import startPlugin, unloadPlugin
+  from qgis.utils import startPlugin, unloadPlugin, loadPlugin # QGIS >= 1.4
+  from qgis.utils import updateAvailablePlugins # QGIS >= 1.5
 except Exception:
   pass
 
@@ -592,28 +593,31 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
       plugins.rebuild()
       QApplication.restoreOverrideCursor()
     else:
-      try:
-        exec ("sys.path_importer_cache.clear()")
-        exec ("import %s" % plugin["localdir"])
-        exec ("reload (%s)" % plugin["localdir"])
-      except:
-        pass
+      if QGIS_14:
+        if QGIS_15: # update the list of plugins in plugin handling routines
+          updateAvailablePlugins()
+        # try to load the plugin
+        loadPlugin(plugin["localdir"])
+      else: # QGIS < 1.4
+        try:
+          exec ("sys.path_importer_cache.clear()")
+          exec ("import %s" % plugin["localdir"])
+          exec ("reload (%s)" % plugin["localdir"])
+        except:
+          pass
       plugins.getAllInstalled()
       plugins.rebuild()
       plugin = plugins.all()[key]
       if not plugin["error"]:
         if previousStatus in ["not installed", "new"]:
-          if QGIS_14: 
+          if QGIS_14: # plugins can be started in python from QGIS >= 1.4
             infoString = (self.tr("Plugin installed successfully"), self.tr("Plugin installed successfully"))
             settings = QSettings()
             settings.setValue("/PythonPlugins/"+plugin["localdir"], QVariant(True))
+            startPlugin(plugin["localdir"])
           else: infoString = (self.tr("Plugin installed successfully"), self.tr("Python plugin installed.\nNow you need to enable it in Plugin Manager."))
         else:
           infoString = (self.tr("Plugin reinstalled successfully"), self.tr("Python plugin reinstalled.\nYou need to restart Quantum GIS in order to reload it."))
-        try:
-          startPlugin(plugin["localdir"])
-        except:
-          pass
       else:
         if plugin["error"] == "incompatible":
           message = self.tr("The plugin is designed for a newer version of Quantum GIS. The minimum required version is:")
