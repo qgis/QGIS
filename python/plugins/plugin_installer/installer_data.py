@@ -58,10 +58,12 @@ try:
   else:
     QGIS_MAJOR_VER = 0
   QGIS_14 = False
+  QGIS_15 = False
 except:
   QGIS_VER = QGis.QGIS_VERSION
   QGIS_MAJOR_VER = 1
   QGIS_14 = (QGIS_VER[2] > 3)
+  QGIS_15 = (QGIS_VER[2] > 4)
 
 
 
