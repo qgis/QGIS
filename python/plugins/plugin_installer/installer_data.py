@@ -587,9 +587,9 @@ class Plugins(QObject):
       try:
         exec ("%s.classFactory(iface)" % key)
       except Exception, error:
-        error = error.message
+        error = unicode(error.args[0])
     except Exception, error:
-      error = error.message
+      error = unicode(error.args[0])
 
     if not nam:
       nam = key
