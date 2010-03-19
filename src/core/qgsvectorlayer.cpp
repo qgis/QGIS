@@ -1481,6 +1481,9 @@ bool QgsVectorLayer::setSubsetString( QString subset )
   mDataSource = mDataProvider->dataSourceUri();
   updateExtents();
 
+  if ( res )
+    setCacheImage( 0 );
+
   return res;
 }
 
@@ -3460,7 +3463,6 @@ bool QgsVectorLayer::commitChanges()
     undoStack()->clear();
     emit editingStopped();
   }
-
 
   mDataProvider->updateExtents();
   mDataProvider->updateFeatureCount();
