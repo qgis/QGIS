@@ -6,20 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>301</width>
-    <height>316</height>
+    <width>279</width>
+    <height>306</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Identify Results</string>
   </property>
   <layout class="QVBoxLayout">
-   <property name="spacing">
-    <number>6</number>
-   </property>
-   <property name="margin">
-    <number>0</number>
-   </property>
    <item>
     <widget class="QTreeWidget" name="lstResults">
      <property name="lineWidth">
@@ -43,17 +37,10 @@
      <property name="standardButtons">
       <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
      </property>
+     <property name="centerButtons">
+      <bool>false</bool>
+     </property>
     </widget>
-   </item>
-   <item>
-    <layout class="QHBoxLayout">
-     <property name="spacing">
-      <number>6</number>
-     </property>
-     <property name="margin">
-      <number>0</number>
-     </property>
-    </layout>
    </item>
   </layout>
  </widget>

@@ -38,7 +38,7 @@
             </size>
            </property>
            <property name="pixmap">
-            <pixmap resource="../../images/images.qrc">:/images/icons/qgis-icon-60x60.png</pixmap>
+            <pixmap>:/images/icons/qgis-icon-60x60.png</pixmap>
            </property>
            <property name="scaledContents">
             <bool>false</bool>

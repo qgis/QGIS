@@ -1716,80 +1716,99 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
 <context>
     <name>Gui</name>
     <message>
+        <location filename="../src/plugins/plugin_template/plugingui.cpp" line="55"/>
         <source>Welcome to your automatically generated plugin!</source>
-        <translation type="obsolete">Καλώς ήλθατε στο αυτόματα δημιουργηθέν plugin σας!</translation>
+        <translation type="unfinished">Καλώς ήλθατε στο αυτόματα δημιουργηθέν plugin σας!</translation>
     </message>
     <message>
+        <location filename="../src/plugins/plugin_template/plugingui.cpp" line="56"/>
         <source>This is just a starting point. You now need to modify the code to make it do something useful....read on for a more information to get yourself started.</source>
-        <translation type="obsolete">Αυτό είναι απλά μια αρχή. Τώρα χρειάζεται να τροποποιήσετε τον κώδικα προκειμένου να κάνει κάτι χρήσιμο .... συνεχίστε να διαβάζετε για να ξεκινήσετε.</translation>
+        <translation type="unfinished">Αυτό είναι απλά μια αρχή. Τώρα χρειάζεται να τροποποιήσετε τον κώδικα προκειμένου να κάνει κάτι χρήσιμο .... συνεχίστε να διαβάζετε για να ξεκινήσετε.</translation>
     </message>
     <message>
+        <location filename="../src/plugins/plugin_template/plugingui.cpp" line="57"/>
         <source>Documentation:</source>
-        <translation type="obsolete">Τεκμηρίωση:</translation>
+        <translation type="unfinished">Τεκμηρίωση:</translation>
     </message>
     <message>
+        <location filename="../src/plugins/plugin_template/plugingui.cpp" line="58"/>
         <source>You really need to read the QGIS API Documentation now at:</source>
-        <translation type="obsolete">Πρέπει πραγματικά να διαβάσετε την QGIS API Τεκμηρίωση τώρα στο:</translation>
+        <translation type="unfinished">Πρέπει πραγματικά να διαβάσετε την QGIS API Τεκμηρίωση τώρα στο:</translation>
     </message>
     <message>
+        <location filename="../src/plugins/plugin_template/plugingui.cpp" line="59"/>
         <source>In particular look at the following classes:</source>
-        <translation type="obsolete">Ειδικότερα κοιτάξτε στις παρακάτω κατηγορίες:</translation>
+        <translation type="unfinished">Ειδικότερα κοιτάξτε στις παρακάτω κατηγορίες:</translation>
     </message>
     <message>
+        <location filename="../src/plugins/plugin_template/plugingui.cpp" line="62"/>
         <source>QgsPlugin is an ABC that defines required behaviour your plugin must provide. See below for more details.</source>
-        <translation type="obsolete">Το QgsPlugin είναι ένα ABC που ορίζει την απαιτούμενη συμεριφορά που πρέπει να υλοποιεί το Plugin σας. Δείτε παρακάτω για περισσότερες λεπτομέρειες.</translation>
+        <translation type="unfinished">Το QgsPlugin είναι ένα ABC που ορίζει την απαιτούμενη συμεριφορά που πρέπει να υλοποιεί το Plugin σας. Δείτε παρακάτω για περισσότερες λεπτομέρειες.</translation>
     </message>
     <message>
+        <location filename="../src/plugins/plugin_template/plugingui.cpp" line="63"/>
         <source>What are all the files in my generated plugin directory for?</source>
-        <translation type="obsolete">Σε τι χρησιμεύουν όλα τα αρχεία που δημιουργούνται στον κατάλογο του plugin μου;</translation>
+        <translation type="unfinished">Σε τι χρησιμεύουν όλα τα αρχεία που δημιουργούνται στον κατάλογο του plugin μου;</translation>
     </message>
     <message>
+        <location filename="../src/plugins/plugin_template/plugingui.cpp" line="64"/>
         <source>This is the generated CMake file that builds the plugin. You should add you application specific dependencies and source files to this file.</source>
-        <translation type="obsolete">Αυτό είναι το δημιουργηθέν CMake αρχείο που κατασκευάζει το Plugin. Πρέπει να προσθέσετε τις ειδικές εξαρτήσεις και αρχεία προέλευσης της εφαρμογής σας σε αυτό το αρχείο. </translation>
+        <translation type="unfinished">Αυτό είναι το δημιουργηθέν CMake αρχείο που κατασκευάζει το Plugin. Πρέπει να προσθέσετε τις ειδικές εξαρτήσεις και αρχεία προέλευσης της εφαρμογής σας σε αυτό το αρχείο. </translation>
     </message>
     <message>
+        <location filename="../src/plugins/plugin_template/plugingui.cpp" line="65"/>
         <source>This is the class that provides the &apos;glue&apos; between your custom application logic and the QGIS application. You will see that a number of methods are already implemented for you - including some examples of how to add a raster or vector layer to the main application map canvas. This class is a concrete instance of the QgisPlugin interface which defines required behaviour for a plugin. In particular, a plugin has a number of static methods and members so that the QgsPluginManager and plugin loader logic can identify each plugin, create an appropriate menu entry for it etc. Note there is nothing stopping you creating multiple toolbar icons and menu entries for a single plugin. By default though a single menu entry and toolbar button is created and its pre-configured to call the run() method in this class when selected. This default implementation provided for you by the plugin builder is well documented, so please refer to the code for further advice.</source>
-        <translation type="obsolete">Αυτή είναι η κατηγορία που παρέχει τη σύνδεση μεταξύ της λειτουργίας της εφαρμογή σας και της εφαρμογής QGIS. Θα δείτε ότι ένας αριθμός μεθόδων ήδη  εφαρμόζονται για σας - συμπεριλαμβανομένων μερικών παραδειγμάτων για το πώς να προσθέσετε ένα επίπεδο  raster ή vector στον κύριο καμβά του χάρτη της εφαρμογής. Η κλάση αυτή αποτελεί ένα συγκεκριμένο στιγμιότυπο (concrete instance) της διασύνδεσης QgisPlugin η οποία καθορίζει τη συμπεριφορά που απαιτείται για ένα plugin. Ειδικότερα, ένα plugin έχει μια σειρά στατικών μεθόδων και μελών, έτσι ώστε o QgsPluginManager και o plugin loader να μπορεί να εντοπίσει κάθε plugin, να δημιουργήσει την κατάλληλη θέση για το μενού κλπ. Σημείωση: τίποτα δεν σας εμποδίζει από το να δημιουργήσετε πολλαπλά εικονίδια  εργαλείων και οι καταχωρίσεις μενού για ένα plugin. Εξ&apos; ορισμού, μια και μόνο καταχώρηση του μενού και ένα κουμπί της γραμμής εργαλείων δημιουργείται και είναι προ-ρυθμισμένο να καλεί την run () μέθοδο στην κλάση αυτή, όταν επιλεγεί. Αυτή η προεπιλεγμένη υλοποίηση σας παρέχεται από το &quot;plugin κατασκευαστή&quot; είναι καλά τεκμηριωμένη, έτσι μπορείτε να ανατρέξετε στον κώδικα για περαιτέρω συμβουλές.</translation>
+        <translation type="unfinished">Αυτή είναι η κατηγορία που παρέχει τη σύνδεση μεταξύ της λειτουργίας της εφαρμογή σας και της εφαρμογής QGIS. Θα δείτε ότι ένας αριθμός μεθόδων ήδη  εφαρμόζονται για σας - συμπεριλαμβανομένων μερικών παραδειγμάτων για το πώς να προσθέσετε ένα επίπεδο  raster ή vector στον κύριο καμβά του χάρτη της εφαρμογής. Η κλάση αυτή αποτελεί ένα συγκεκριμένο στιγμιότυπο (concrete instance) της διασύνδεσης QgisPlugin η οποία καθορίζει τη συμπεριφορά που απαιτείται για ένα plugin. Ειδικότερα, ένα plugin έχει μια σειρά στατικών μεθόδων και μελών, έτσι ώστε o QgsPluginManager και o plugin loader να μπορεί να εντοπίσει κάθε plugin, να δημιουργήσει την κατάλληλη θέση για το μενού κλπ. Σημείωση: τίποτα δεν σας εμποδίζει από το να δημιουργήσετε πολλαπλά εικονίδια  εργαλείων και οι καταχωρίσεις μενού για ένα plugin. Εξ&apos; ορισμού, μια και μόνο καταχώρηση του μενού και ένα κουμπί της γραμμής εργαλείων δημιουργείται και είναι προ-ρυθμισμένο να καλεί την run () μέθοδο στην κλάση αυτή, όταν επιλεγεί. Αυτή η προεπιλεγμένη υλοποίηση σας παρέχεται από το &quot;plugin κατασκευαστή&quot; είναι καλά τεκμηριωμένη, έτσι μπορείτε να ανατρέξετε στον κώδικα για περαιτέρω συμβουλές.</translation>
     </message>
     <message>
+        <location filename="../src/plugins/plugin_template/plugingui.cpp" line="66"/>
         <source>This is a Qt designer &apos;ui&apos; file. It defines the look of the default plugin dialog without implementing any application logic. You can modify this form to suite your needs or completely remove it if your plugin does not need to display a user form (e.g. for custom MapTools).</source>
-        <translation type="obsolete">Αυτό είναι ένα ui αρχείο του Qt σχεδιαστή. Καθορίζει την εμφάνιση του διαλόγου του προεπιλεγμένου plugin χωρίς να υλοποίεί κάποια λογική της εφαρμογής. Μπορείτε να τροποποιήσετε αυτή τη φόρμα για να καλύψετε τις ανάγκες σας ή ακόμα και να το καταργήσετε εντελώς, αν το plugin σας δεν χρειάζεται να εμφανίζει κάποια φόρμα χρήστη (π.χ. για τροποποιημένο MapTools).</translation>
+        <translation type="unfinished">Αυτό είναι ένα ui αρχείο του Qt σχεδιαστή. Καθορίζει την εμφάνιση του διαλόγου του προεπιλεγμένου plugin χωρίς να υλοποίεί κάποια λογική της εφαρμογής. Μπορείτε να τροποποιήσετε αυτή τη φόρμα για να καλύψετε τις ανάγκες σας ή ακόμα και να το καταργήσετε εντελώς, αν το plugin σας δεν χρειάζεται να εμφανίζει κάποια φόρμα χρήστη (π.χ. για τροποποιημένο MapTools).</translation>
     </message>
     <message>
+        <location filename="../src/plugins/plugin_template/plugingui.cpp" line="67"/>
         <source>This is the concrete class where application logic for the above mentioned dialog should go. The world is your oyster here really....</source>
-        <translation type="obsolete">Αυτή είναι η συγκεκριμένη κατηγορία, όπου λογική αίτηση για την προαναφερόμενη διαλόγου θα πρέπει να πάει. Ο κόσμος είναι το στρείδι σας εδώ πραγματικά ....</translation>
+        <translation type="unfinished">Αυτή είναι η συγκεκριμένη κατηγορία, όπου λογική αίτηση για την προαναφερόμενη διαλόγου θα πρέπει να πάει. Ο κόσμος είναι το στρείδι σας εδώ πραγματικά ....</translation>
     </message>
     <message>
+        <location filename="../src/plugins/plugin_template/plugingui.cpp" line="68"/>
         <source>This is the Qt4 resources file for your plugin. The Makefile generated for your plugin is all set up to compile the resource file so all you need to do is add your additional icons etc using the simple xml file format. Note the namespace used for all your resources e.g. (&apos;:/Homann/&apos;). It is important to use this prefix for all your resources. We suggest you include any other images and run time data in this resurce file too.</source>
-        <translation type="obsolete">Αυτό είναι το αρχείο πόρων Qt4 για το plugin σας. Το Makefile που παράγεται για το plugin σας έχει ρυθμιστεί ώστε να μεταφράσει σε γλώσσα μηχανής (compile) τον πηγαίο κώδικα, ώστε το μόνο που χρειάζεται να κάνετε είναι να προσθέσετε επιπλέον εικόνες σας κτλ χρησιμοποιώντας την απλή μορφή του xml αρχείου. Σημειώστε το χώρο ονομάτων (namespace)που χρησιμοποιούνται για όλους τους πόρους σας, π.χ. ( &apos;: / Homann /&apos;). Είναι σημαντικό να χρησιμοποιήσετε αυτό το πρόθεμα για το σύνολο των πόρων σας. Σας προτείνουμε να συμπεριλάβετε οποιεσδήποτε άλλες εικόνες και δεδομένα πραγματικού χρόνου σε αυτό το αρχείο.</translation>
+        <translation type="unfinished">Αυτό είναι το αρχείο πόρων Qt4 για το plugin σας. Το Makefile που παράγεται για το plugin σας έχει ρυθμιστεί ώστε να μεταφράσει σε γλώσσα μηχανής (compile) τον πηγαίο κώδικα, ώστε το μόνο που χρειάζεται να κάνετε είναι να προσθέσετε επιπλέον εικόνες σας κτλ χρησιμοποιώντας την απλή μορφή του xml αρχείου. Σημειώστε το χώρο ονομάτων (namespace)που χρησιμοποιούνται για όλους τους πόρους σας, π.χ. ( &apos;: / Homann /&apos;). Είναι σημαντικό να χρησιμοποιήσετε αυτό το πρόθεμα για το σύνολο των πόρων σας. Σας προτείνουμε να συμπεριλάβετε οποιεσδήποτε άλλες εικόνες και δεδομένα πραγματικού χρόνου σε αυτό το αρχείο.</translation>
     </message>
     <message>
+        <location filename="../src/plugins/plugin_template/plugingui.cpp" line="69"/>
         <source>This is the icon that will be used for your plugin menu entry and toolbar icon. Simply replace this icon with your own icon to make your plugin disctinctive from the rest.</source>
-        <translation type="obsolete">Αυτή είναι η εικόνα που θα χρησιμοποιηθεί για την καταχώρηση μενού του plugin σας και το εικονίδιο γραμμής εργαλείων. Απλά αντικαταστήσετε αυτό το εικονίδιο με το εικονίδιο με το δικό σας για να κάνετε το plugin σας διακριτό από τα υπόλοιπα.</translation>
+        <translation type="unfinished">Αυτή είναι η εικόνα που θα χρησιμοποιηθεί για την καταχώρηση μενού του plugin σας και το εικονίδιο γραμμής εργαλείων. Απλά αντικαταστήσετε αυτό το εικονίδιο με το εικονίδιο με το δικό σας για να κάνετε το plugin σας διακριτό από τα υπόλοιπα.</translation>
     </message>
     <message>
+        <location filename="../src/plugins/plugin_template/plugingui.cpp" line="70"/>
         <source>This file contains the documentation you are reading now!</source>
-        <translation type="obsolete">Αυτό το αρχείο περιέχει τα έγγραφα που διαβάζετε τώρα!</translation>
+        <translation type="unfinished">Αυτό το αρχείο περιέχει τα έγγραφα που διαβάζετε τώρα!</translation>
     </message>
     <message>
+        <location filename="../src/plugins/plugin_template/plugingui.cpp" line="71"/>
         <source>Getting developer help:</source>
-        <translation type="obsolete">Λήψη βοήθειας από τους προγραμματιστές:</translation>
+        <translation type="unfinished">Λήψη βοήθειας από τους προγραμματιστές:</translation>
     </message>
     <message>
+        <location filename="../src/plugins/plugin_template/plugingui.cpp" line="72"/>
         <source>For Questions and Comments regarding the plugin builder template and creating your features in QGIS using the plugin interface please contact us via:</source>
-        <translation type="obsolete">Για ερωτήσεις και σχόλια σχετικά με το πρότυπο του &quot;plugin κατασκευαστή&quot; και με τη δημιουργία ιδιοτήτων στο QGIS χρησιμοποιώντας το plugin interface παρακαλούμε επικοινωνήστε μαζί μας μέσω:</translation>
+        <translation type="unfinished">Για ερωτήσεις και σχόλια σχετικά με το πρότυπο του &quot;plugin κατασκευαστή&quot; και με τη δημιουργία ιδιοτήτων στο QGIS χρησιμοποιώντας το plugin interface παρακαλούμε επικοινωνήστε μαζί μας μέσω:</translation>
     </message>
     <message>
+        <location filename="../src/plugins/plugin_template/plugingui.cpp" line="73"/>
         <source>&lt;li&gt; the QGIS developers mailing list, or &lt;/li&gt;&lt;li&gt; IRC (#qgis on freenode.net)&lt;/li&gt;</source>
-        <translation type="obsolete">&lt;li&gt; the QGIS developers mailing list, or &lt;/li&gt;&lt;li&gt; IRC (#qgis on freenode.net)&lt;/li&gt;</translation>
+        <translation type="unfinished">&lt;li&gt; the QGIS developers mailing list, or &lt;/li&gt;&lt;li&gt; IRC (#qgis on freenode.net)&lt;/li&gt;</translation>
     </message>
     <message>
+        <location filename="../src/plugins/plugin_template/plugingui.cpp" line="74"/>
         <source>QGIS is distributed under the Gnu Public License. If you create a useful plugin please consider contributing it back to the community.</source>
-        <translation type="obsolete">QGIS διανέμεται υπό την GNU Public License. Εάν δημιουργήσετε ένα χρήσιμο plugin παρακαλούμε να εξετάσει τη συμβολή πίσω στην κοινότητα.</translation>
+        <translation type="unfinished">QGIS διανέμεται υπό την GNU Public License. Εάν δημιουργήσετε ένα χρήσιμο plugin παρακαλούμε να εξετάσει τη συμβολή πίσω στην κοινότητα.</translation>
     </message>
     <message>
+        <location filename="../src/plugins/plugin_template/plugingui.cpp" line="75"/>
         <source>Have fun and thank you for choosing QGIS.</source>
-        <translation type="obsolete">Καλή διασκέδαση και σας ευχαριστούμε για την επιλογή σας του QGIS.</translation>
+        <translation type="unfinished">Καλή διασκέδαση και σας ευχαριστούμε για την επιλογή σας του QGIS.</translation>
     </message>
 </context>
 <context>
@@ -2842,6 +2861,10 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <translation>Python Έκδοση:</translation>
     </message>
     <message>
+        <source>QGIS version:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Python path:</source>
         <translation>Python διαδρομή:</translation>
     </message>
@@ -3529,39 +3552,39 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>Mapset είναι ήδη σε χρήση.</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1067"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1073"/>
         <source>Cannot start module</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1068"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1074"/>
         <source>command: %1 %2&lt;br&gt;%3&lt;br&gt;%4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1125"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1134"/>
         <source>Cannot get projection </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1147"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1157"/>
         <source>Cannot get raster extent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1169"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1180"/>
         <source>Cannot query raster </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/idtool/eviseventidtool.cpp" line="76"/>
         <location filename="../src/plugins/evis/idtool/eviseventidtool.cpp" line="81"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="962"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="979"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1015"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1124"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1146"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1168"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="968"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="985"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1021"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1133"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1156"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1179"/>
         <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="58"/>
         <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="110"/>
         <source>Warning</source>
@@ -3578,66 +3601,71 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>Δεν βρέθηκαν ενεργά επίπεδα (layers)</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="963"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="969"/>
         <source>Cannot read raster map region</source>
         <translation>Δεν είναι δυνατή η ανάγνωση raster χάρτη της περιοχής</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="980"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="986"/>
         <source>Cannot read vector map region</source>
         <translation>Δεν είναι δυνατή η ανάγνωση περιοχής του διανυσματικού χάρτη</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1016"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1022"/>
         <source>Cannot read region</source>
         <translation>Δεν είναι δυνατή η ανάγνωση περιοχής</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="67"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="75"/>
         <source>Couldn&apos;t load SIP module.</source>
         <translation>Δεν ήταν δυνατή η φόρτωση SIP module.</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="67"/>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="75"/>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="82"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="83"/>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="90"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="98"/>
         <source>Python support will be disabled.</source>
         <translation>Python θα απενεργοποιηθεί.</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="75"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="83"/>
         <source>Couldn&apos;t load PyQt4.</source>
         <translation>Δεν ήταν δυνατή η φόρτωση PyQt4.</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="82"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="90"/>
         <source>Couldn&apos;t load PyQGIS.</source>
         <translation>Δεν ήταν δυνατή η φόρτωση PyQGIS.</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="90"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="98"/>
         <source>Couldn&apos;t load QGIS utils.</source>
         <translation>Δεν ήταν δυνατή η φόρτωση utils QGIS.</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="156"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="164"/>
         <source>Python version:</source>
         <translation>Python Έκδοση:</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="157"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="165"/>
+        <source>QGIS version:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="166"/>
         <source>Python path:</source>
         <translation>Python διαδρομή:</translation>
     </message>
     <message>
         <location filename="../src/app/qgspluginregistry.cpp" line="444"/>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="161"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="170"/>
         <source>Python error</source>
         <translation>Python σφάλμα</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="145"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="153"/>
         <source>An error occured during execution of following code:</source>
         <translation>Παρουσιάστηκε σφάλμα κατά την εκτέλεση του παρακάτω κώδικα:</translation>
     </message>
@@ -3724,7 +3752,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>Δεν είναι δυνατή η δημιουργία %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="588"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="594"/>
         <source>Cannot remove mapset lock: %1</source>
         <translation>Δεν είναι δυνατή η αφαίρεση mapset κλειδώματος: %1</translation>
     </message>
@@ -3884,38 +3912,38 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6171"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6188"/>
         <source>invalid line</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6249"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6266"/>
         <source>segment %1 of ring %2 of polygon %3 intersects segment %4 of ring %5 of polygon %6 at %7</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6257"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="6345"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6274"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6362"/>
         <source>stopping validation after more than 100 errors</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6275"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6292"/>
         <source>ring %1 with less than three points</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6283"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6300"/>
         <source>ring %1 not closed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6291"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6308"/>
         <source>line %1 with less than two points</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsgeometry.cpp" line="6309"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6326"/>
         <source>line %1 contains %n duplicate node(s) at %2</source>
         <comment>number of duplicate nodes</comment>
         <translation type="unfinished">
@@ -3924,24 +3952,24 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6340"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6357"/>
         <source>segments %1 and %2 of line %3 intersect at %4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6361"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6378"/>
         <source>ring %1 of polygon %2 not in exterior ring</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6431"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="6435"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6448"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6452"/>
         <source>polygon %1 inside polygon %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6447"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="6448"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6464"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6465"/>
         <source>Unknown geometry type</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3976,7 +4004,8 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="454"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="455"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="551"/>
         <source>Failed to transform a point while drawing a feature of type &apos;%1&apos;. Writing stopped. (Exception: %2)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4121,131 +4150,131 @@ Please contact the developers.
         <translation>Αποκατάσταση φορτωμένων plugins</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="430"/>
+        <location filename="../src/app/qgisapp.cpp" line="435"/>
         <source>Initializing file filters</source>
         <translation>Αρχικοποίηση φίλτρων αρχείου</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="458"/>
+        <location filename="../src/app/qgisapp.cpp" line="463"/>
         <source>Restoring window state</source>
         <translation>Αποκατάσταση κατάστασης παραθύρου</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="462"/>
+        <location filename="../src/app/qgisapp.cpp" line="467"/>
         <source>QGIS Ready!</source>
         <translation>QGIS Έτοιμο!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="592"/>
+        <location filename="../src/app/qgisapp.cpp" line="597"/>
         <source>&amp;New Project</source>
         <translation>&amp;New Project</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="593"/>
+        <location filename="../src/app/qgisapp.cpp" line="598"/>
         <source>Ctrl+N</source>
         <comment>New Project</comment>
         <translatorcomment>Νέο Έργο</translatorcomment>
         <translation>Ctrl+N</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="594"/>
+        <location filename="../src/app/qgisapp.cpp" line="599"/>
         <source>New Project</source>
         <translation>Νέο Έργο</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="597"/>
+        <location filename="../src/app/qgisapp.cpp" line="602"/>
         <source>&amp;Open Project...</source>
         <translation>&amp;Open Project...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="598"/>
+        <location filename="../src/app/qgisapp.cpp" line="603"/>
         <source>Ctrl+O</source>
         <comment>Open a Project</comment>
         <translatorcomment>Άνοιγμα ενός έργου</translatorcomment>
         <translation>Ctrl+O</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="599"/>
+        <location filename="../src/app/qgisapp.cpp" line="604"/>
         <source>Open a Project</source>
         <translation>Άνοιγμα ενός έργου</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="602"/>
+        <location filename="../src/app/qgisapp.cpp" line="607"/>
         <source>&amp;Save Project</source>
         <translation>Save Project</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="603"/>
+        <location filename="../src/app/qgisapp.cpp" line="608"/>
         <source>Ctrl+S</source>
         <comment>Save Project</comment>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="604"/>
+        <location filename="../src/app/qgisapp.cpp" line="609"/>
         <source>Save Project</source>
         <translation>Save Project</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="607"/>
+        <location filename="../src/app/qgisapp.cpp" line="612"/>
         <source>Save Project &amp;As...</source>
         <translation>Save Project &amp;As...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="608"/>
+        <location filename="../src/app/qgisapp.cpp" line="613"/>
         <source>Shift+Ctrl+S</source>
         <comment>Save Project under a new name</comment>
         <translation>Shift+Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="609"/>
+        <location filename="../src/app/qgisapp.cpp" line="614"/>
         <source>Save Project under a new name</source>
         <translatorcomment>Αποθήκευση Έργου με νέο όνομα</translatorcomment>
         <translation>Αποθήκευση Έργου με νέο όνομα</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="612"/>
+        <location filename="../src/app/qgisapp.cpp" line="617"/>
         <source>Save as Image...</source>
         <translation>Αποθήκευση εικόνας ως ...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="614"/>
+        <location filename="../src/app/qgisapp.cpp" line="619"/>
         <source>Save map as image</source>
         <translation>Αποθήκευση χάρτη ως εικόνα</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="626"/>
+        <location filename="../src/app/qgisapp.cpp" line="631"/>
         <source>Exit</source>
         <translation>Έξοδος</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="627"/>
+        <location filename="../src/app/qgisapp.cpp" line="632"/>
         <source>Ctrl+Q</source>
         <comment>Exit QGIS</comment>
         <translatorcomment>QGIS Έξοδος</translatorcomment>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="628"/>
+        <location filename="../src/app/qgisapp.cpp" line="633"/>
         <source>Exit QGIS</source>
         <translation>QGIS Έξοδος</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="651"/>
+        <location filename="../src/app/qgisapp.cpp" line="656"/>
         <source>&amp;Undo</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="652"/>
+        <location filename="../src/app/qgisapp.cpp" line="657"/>
         <source>Ctrl+Z</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="653"/>
+        <location filename="../src/app/qgisapp.cpp" line="658"/>
         <source>Undo the last operation</source>
         <translation>Αναίρεση της τελευταίας λειτουργίας</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="635"/>
+        <location filename="../src/app/qgisapp.cpp" line="640"/>
         <source>Cu&amp;t</source>
         <translation></translation>
     </message>
@@ -4255,889 +4284,889 @@ Please contact the developers.
         <translation>Quantum GIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="617"/>
+        <location filename="../src/app/qgisapp.cpp" line="622"/>
         <source>&amp;New Print Composer</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="618"/>
+        <location filename="../src/app/qgisapp.cpp" line="623"/>
         <source>Ctrl+P</source>
         <comment>New Print Composer</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="619"/>
+        <location filename="../src/app/qgisapp.cpp" line="624"/>
         <source>New Print Composer</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="622"/>
+        <location filename="../src/app/qgisapp.cpp" line="627"/>
         <source>Composer manager...</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="623"/>
+        <location filename="../src/app/qgisapp.cpp" line="628"/>
         <source>Composer manager</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="636"/>
-        <location filename="../src/app/qgisapp.cpp" line="664"/>
+        <location filename="../src/app/qgisapp.cpp" line="641"/>
+        <location filename="../src/app/qgisapp.cpp" line="669"/>
         <source>Ctrl+X</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="637"/>
+        <location filename="../src/app/qgisapp.cpp" line="642"/>
         <source>Cut the current selection&apos;s contents to the clipboard</source>
         <translation>Κόψτε το περιεχόμενο της τρέχουσας επιλογής στο πρόχειρο</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="640"/>
+        <location filename="../src/app/qgisapp.cpp" line="645"/>
         <source>&amp;Copy</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="641"/>
-        <location filename="../src/app/qgisapp.cpp" line="670"/>
+        <location filename="../src/app/qgisapp.cpp" line="646"/>
+        <location filename="../src/app/qgisapp.cpp" line="675"/>
         <source>Ctrl+C</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="642"/>
+        <location filename="../src/app/qgisapp.cpp" line="647"/>
         <source>Copy the current selection&apos;s contents to the clipboard</source>
         <translation>Αντιγράψτε το περιεχόμενο της τρέχουσας επιλογής στο πρόχειρο</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="645"/>
+        <location filename="../src/app/qgisapp.cpp" line="650"/>
         <source>&amp;Paste</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="646"/>
-        <location filename="../src/app/qgisapp.cpp" line="676"/>
+        <location filename="../src/app/qgisapp.cpp" line="651"/>
+        <location filename="../src/app/qgisapp.cpp" line="681"/>
         <source>Ctrl+V</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="647"/>
+        <location filename="../src/app/qgisapp.cpp" line="652"/>
         <source>Paste the clipboard&apos;s contents into the current selection</source>
         <translation>Επικολλήστε το πρόχειρο του περιεχομένου στην τρέχουσα επιλογή</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="657"/>
+        <location filename="../src/app/qgisapp.cpp" line="662"/>
         <source>&amp;Redo</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="658"/>
+        <location filename="../src/app/qgisapp.cpp" line="663"/>
         <source>Ctrl+Shift+Z</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="659"/>
+        <location filename="../src/app/qgisapp.cpp" line="664"/>
         <source>Redo the last operation</source>
         <translation>Redo η τελευταία πράξη</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="663"/>
+        <location filename="../src/app/qgisapp.cpp" line="668"/>
         <source>Cut Features</source>
         <translation>Κόψτε Χαρακτηριστικά</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="665"/>
+        <location filename="../src/app/qgisapp.cpp" line="670"/>
         <source>Cut selected features</source>
         <translation>Αποκοπή επιλεγμένων χαρακτηριστικων</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="669"/>
+        <location filename="../src/app/qgisapp.cpp" line="674"/>
         <source>Copy Features</source>
         <translation>Αντιγραφή Χαρακτηριστικών</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="671"/>
+        <location filename="../src/app/qgisapp.cpp" line="676"/>
         <source>Copy selected features</source>
         <translation>Αντιγραφή επιλεγμένων στοιχείων</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="675"/>
+        <location filename="../src/app/qgisapp.cpp" line="680"/>
         <source>Paste Features</source>
         <translation>Επικόλληση Χαρακτηριστικών</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="677"/>
+        <location filename="../src/app/qgisapp.cpp" line="682"/>
         <source>Paste selected features</source>
         <translation>Επικόλληση επιλεγμένων χαρακτηριστικών</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="681"/>
+        <location filename="../src/app/qgisapp.cpp" line="686"/>
         <source>Capture Point</source>
         <translation>Σύλληψη Σημείου</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="683"/>
+        <location filename="../src/app/qgisapp.cpp" line="688"/>
         <source>Capture Points</source>
         <translation>Σύλληψη Σημείων</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="687"/>
+        <location filename="../src/app/qgisapp.cpp" line="692"/>
         <source>Capture Line</source>
         <translation>Σύλληψη Γραμμής</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="689"/>
+        <location filename="../src/app/qgisapp.cpp" line="694"/>
         <source>Capture Lines</source>
         <translation>Σύλληψη Γραμμών</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="693"/>
+        <location filename="../src/app/qgisapp.cpp" line="698"/>
         <source>Capture Polygon</source>
         <translation>Σύλληψη Πολυγώνου</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="695"/>
+        <location filename="../src/app/qgisapp.cpp" line="700"/>
         <source>Capture Polygons</source>
         <translation>Σύλληψη Πολυγώνων</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="699"/>
-        <location filename="../src/app/qgisapp.cpp" line="701"/>
+        <location filename="../src/app/qgisapp.cpp" line="704"/>
+        <location filename="../src/app/qgisapp.cpp" line="706"/>
         <source>Move Feature</source>
         <translation>Μετακίνηση Feature</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="705"/>
-        <location filename="../src/app/qgisapp.cpp" line="707"/>
+        <location filename="../src/app/qgisapp.cpp" line="710"/>
+        <location filename="../src/app/qgisapp.cpp" line="712"/>
         <source>Reshape Features</source>
         <translation>Αλλαγη σχήματος στοιχείων</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="711"/>
-        <location filename="../src/app/qgisapp.cpp" line="713"/>
+        <location filename="../src/app/qgisapp.cpp" line="716"/>
+        <location filename="../src/app/qgisapp.cpp" line="718"/>
         <source>Split Features</source>
         <translation>Χωρισμός στοιχείων</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="717"/>
-        <location filename="../src/app/qgisapp.cpp" line="719"/>
+        <location filename="../src/app/qgisapp.cpp" line="722"/>
+        <location filename="../src/app/qgisapp.cpp" line="724"/>
         <source>Delete Selected</source>
         <translation>Διαγραφή επιλεγμένων</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="724"/>
-        <location filename="../src/app/qgisapp.cpp" line="726"/>
+        <location filename="../src/app/qgisapp.cpp" line="729"/>
+        <location filename="../src/app/qgisapp.cpp" line="731"/>
         <source>Add Vertex</source>
         <translation>Προσθήκη Κορυφής</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="730"/>
-        <location filename="../src/app/qgisapp.cpp" line="732"/>
+        <location filename="../src/app/qgisapp.cpp" line="735"/>
+        <location filename="../src/app/qgisapp.cpp" line="737"/>
         <source>Move Vertex</source>
         <translation>Μετακίνηση Κορυφής</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="736"/>
-        <location filename="../src/app/qgisapp.cpp" line="738"/>
+        <location filename="../src/app/qgisapp.cpp" line="741"/>
+        <location filename="../src/app/qgisapp.cpp" line="743"/>
         <source>Delete Vertex</source>
         <translation>Διαγραφή Κορυφής</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="743"/>
-        <location filename="../src/app/qgisapp.cpp" line="745"/>
+        <location filename="../src/app/qgisapp.cpp" line="748"/>
+        <location filename="../src/app/qgisapp.cpp" line="750"/>
         <source>Add Ring</source>
         <translation>Προσθήκη Δακτυλίου</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="773"/>
-        <location filename="../src/app/qgisapp.cpp" line="775"/>
+        <location filename="../src/app/qgisapp.cpp" line="778"/>
+        <location filename="../src/app/qgisapp.cpp" line="780"/>
         <source>Merge selected features</source>
         <translation>Συγχώνευση επιλεγμένων στοιχείων</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="779"/>
-        <location filename="../src/app/qgisapp.cpp" line="781"/>
+        <location filename="../src/app/qgisapp.cpp" line="784"/>
+        <location filename="../src/app/qgisapp.cpp" line="786"/>
         <source>Node Tool</source>
         <translation>Εργάλειο Κόμβου</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="785"/>
-        <location filename="../src/app/qgisapp.cpp" line="787"/>
+        <location filename="../src/app/qgisapp.cpp" line="790"/>
+        <location filename="../src/app/qgisapp.cpp" line="792"/>
         <source>Rotate Point Symbols</source>
         <translation>Περιστροφή Συμβόλων Σημείων</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="793"/>
+        <location filename="../src/app/qgisapp.cpp" line="798"/>
         <source>Pan Map</source>
         <translation>Μετατόπιση επί χάρτου</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="795"/>
+        <location filename="../src/app/qgisapp.cpp" line="800"/>
         <source>Pan the map</source>
         <translation>Μετατοπίσου επί του χάρτου</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="798"/>
-        <location filename="../src/app/qgisapp.cpp" line="800"/>
+        <location filename="../src/app/qgisapp.cpp" line="803"/>
+        <location filename="../src/app/qgisapp.cpp" line="805"/>
         <source>Zoom In</source>
         <translation>Μεγέθυνση</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="799"/>
+        <location filename="../src/app/qgisapp.cpp" line="804"/>
         <source>Ctrl++</source>
         <comment>Zoom In</comment>
         <translatorcomment>Μεγέθυνση</translatorcomment>
         <translation>Ctrl++</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="803"/>
-        <location filename="../src/app/qgisapp.cpp" line="805"/>
+        <location filename="../src/app/qgisapp.cpp" line="808"/>
+        <location filename="../src/app/qgisapp.cpp" line="810"/>
         <source>Zoom Out</source>
         <translation>Σμίκρυνση</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="804"/>
+        <location filename="../src/app/qgisapp.cpp" line="809"/>
         <source>Ctrl+-</source>
         <comment>Zoom Out</comment>
         <translatorcomment>Σμίκρυνση</translatorcomment>
         <translation>Ctrl+-</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="808"/>
-        <location filename="../src/app/qgisapp.cpp" line="810"/>
+        <location filename="../src/app/qgisapp.cpp" line="813"/>
+        <location filename="../src/app/qgisapp.cpp" line="815"/>
         <source>Select Features</source>
         <translation>Επιλέξτε Χαρακτηριστικά</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="814"/>
-        <location filename="../src/app/qgisapp.cpp" line="816"/>
+        <location filename="../src/app/qgisapp.cpp" line="819"/>
+        <location filename="../src/app/qgisapp.cpp" line="821"/>
         <source>Deselect features from all layers</source>
         <translation>Αποεπιλέξετε χαρακτηριστικά από όλα τα επίπεδα</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="820"/>
+        <location filename="../src/app/qgisapp.cpp" line="825"/>
         <source>Identify Features</source>
         <translation>Προσδιορίστε Χαρακτηριστικά</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="822"/>
+        <location filename="../src/app/qgisapp.cpp" line="827"/>
         <source>Click on features to identify them</source>
         <translation>Κάντε κλικ με τα χαρακτηριστικά για τον προσδιορισμό τους</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="826"/>
+        <location filename="../src/app/qgisapp.cpp" line="831"/>
         <source>Measure Line </source>
         <translation>Μέτρηση Γραμμής</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="828"/>
+        <location filename="../src/app/qgisapp.cpp" line="833"/>
         <source>Measure a Line</source>
         <translation>Μέτρηση μιας γραμμής</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="831"/>
+        <location filename="../src/app/qgisapp.cpp" line="836"/>
         <source>Measure Area</source>
         <translation>Μέτρηση Περιοχής</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="833"/>
+        <location filename="../src/app/qgisapp.cpp" line="838"/>
         <source>Measure an Area</source>
         <translation>Μέτρηση μιας Περιοχής</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="836"/>
-        <location filename="../src/app/qgisapp.cpp" line="837"/>
+        <location filename="../src/app/qgisapp.cpp" line="841"/>
+        <location filename="../src/app/qgisapp.cpp" line="842"/>
         <source>Measure Angle</source>
         <translation>Μέτρηση Γωνίας</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="840"/>
+        <location filename="../src/app/qgisapp.cpp" line="845"/>
         <source>Zoom Full</source>
         <translation>Πλήρης Μεγέθυνση</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="842"/>
+        <location filename="../src/app/qgisapp.cpp" line="847"/>
         <source>Zoom to Full Extents</source>
         <translation>Ζοομ σε όλη την έκταση</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="845"/>
-        <location filename="../src/app/qgisapp.cpp" line="847"/>
+        <location filename="../src/app/qgisapp.cpp" line="850"/>
+        <location filename="../src/app/qgisapp.cpp" line="852"/>
         <source>Zoom to Layer</source>
         <translation>Ζουμ σε Layer</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="850"/>
-        <location filename="../src/app/qgisapp.cpp" line="852"/>
+        <location filename="../src/app/qgisapp.cpp" line="855"/>
+        <location filename="../src/app/qgisapp.cpp" line="857"/>
         <source>Zoom to Selection</source>
         <translation>Zoom στην επιλογή</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="851"/>
+        <location filename="../src/app/qgisapp.cpp" line="856"/>
         <source>Ctrl+J</source>
         <comment>Zoom to Selection</comment>
         <translatorcomment>Μεγέθυνση στα επιλεγμένα</translatorcomment>
         <translation>Ctrl+J</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="855"/>
+        <location filename="../src/app/qgisapp.cpp" line="860"/>
         <source>Zoom Last</source>
         <translation>Τελευταία zoom</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="857"/>
+        <location filename="../src/app/qgisapp.cpp" line="862"/>
         <source>Zoom to Last Extent</source>
         <translation>Zoom στην Τελευταία Έκταση</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="865"/>
+        <location filename="../src/app/qgisapp.cpp" line="870"/>
         <source>Zoom Actual Size</source>
         <translation>Zoom  πραγματικού μεγέθους</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="867"/>
+        <location filename="../src/app/qgisapp.cpp" line="872"/>
         <source>Zoom to Actual Size</source>
         <translation>Zoom στο πραγματικό μέγεθος</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="871"/>
+        <location filename="../src/app/qgisapp.cpp" line="876"/>
         <source>Map Tips</source>
         <translation>Συμβουλές Χάρτη</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="873"/>
+        <location filename="../src/app/qgisapp.cpp" line="878"/>
         <source>Show information about a feature when the mouse is hovered over it</source>
         <translation>Δείτε πληροφορίες για ένα χαρακτηριστικό όταν το ποντίκι κινηθεί πάνω του</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="877"/>
+        <location filename="../src/app/qgisapp.cpp" line="882"/>
         <source>New Bookmark...</source>
         <translation>Νέος σελιδοδεικτης...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="878"/>
+        <location filename="../src/app/qgisapp.cpp" line="883"/>
         <source>Ctrl+B</source>
         <comment>New Bookmark</comment>
         <translatorcomment>Νέος Σελιδοδεικτης</translatorcomment>
         <translation>Ctrl+B</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="879"/>
-        <location filename="../src/app/qgisapp.cpp" line="5910"/>
+        <location filename="../src/app/qgisapp.cpp" line="884"/>
+        <location filename="../src/app/qgisapp.cpp" line="5915"/>
         <source>New Bookmark</source>
         <translation>Νέος σελιδοδεικτης</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="882"/>
-        <location filename="../src/app/qgisapp.cpp" line="884"/>
+        <location filename="../src/app/qgisapp.cpp" line="887"/>
+        <location filename="../src/app/qgisapp.cpp" line="889"/>
         <source>Show Bookmarks</source>
         <translation>Εμφάνισε Σελιδοδείκτες</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="887"/>
+        <location filename="../src/app/qgisapp.cpp" line="892"/>
         <source>Refresh</source>
         <translation>Ανανέωση</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="888"/>
+        <location filename="../src/app/qgisapp.cpp" line="893"/>
         <source>Ctrl+R</source>
         <comment>Refresh Map</comment>
         <translatorcomment>Ανανέωση χάρτη</translatorcomment>
         <translation>Ctrl+R</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="889"/>
+        <location filename="../src/app/qgisapp.cpp" line="894"/>
         <source>Refresh Map</source>
         <translation>Ανανέωση Χάρτη</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="894"/>
+        <location filename="../src/app/qgisapp.cpp" line="899"/>
         <source>New Vector Layer...</source>
         <translation>Νέο Διανυσματικό Επίπεδο (Vector Layer) ...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="896"/>
+        <location filename="../src/app/qgisapp.cpp" line="901"/>
         <source>Create a New Vector Layer</source>
         <translation>Δημιουργια Νέου Διανυσματικού Επιπέδου</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="899"/>
+        <location filename="../src/app/qgisapp.cpp" line="904"/>
         <source>Add Vector Layer...</source>
         <translation>Προσθήκη Διανυσματικού Επιπέδου...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="901"/>
+        <location filename="../src/app/qgisapp.cpp" line="906"/>
         <source>Add a Vector Layer</source>
         <translation>Προσθήκη ενός Διανυσματικού Επιπέδου</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="904"/>
+        <location filename="../src/app/qgisapp.cpp" line="909"/>
         <source>Add Raster Layer...</source>
         <translation>Προσθήκη Επιπέδου Raster...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="906"/>
+        <location filename="../src/app/qgisapp.cpp" line="911"/>
         <source>Add a Raster Layer</source>
         <translation>Προσθήκη ενός Επιπέδου Raster...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="909"/>
+        <location filename="../src/app/qgisapp.cpp" line="914"/>
         <source>Add PostGIS Layer...</source>
         <translation>Προσθήκη PostGIS Layer ...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="911"/>
+        <location filename="../src/app/qgisapp.cpp" line="916"/>
         <source>Add a PostGIS Layer</source>
         <translation>Προσθήκη ενός PostGIS Layer</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="933"/>
+        <location filename="../src/app/qgisapp.cpp" line="938"/>
         <source>Add WMS Layer...</source>
         <translation>Προσθήκη WMS Layer ...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="935"/>
+        <location filename="../src/app/qgisapp.cpp" line="940"/>
         <source>Add a Web Mapping Server Layer</source>
         <translation>Προσθέστε Χαρτογράφηση Web Server Layer</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="938"/>
-        <location filename="../src/app/qgisapp.cpp" line="940"/>
+        <location filename="../src/app/qgisapp.cpp" line="943"/>
+        <location filename="../src/app/qgisapp.cpp" line="945"/>
         <source>Open Attribute Table</source>
         <translation>Ανοίξτε Πίνακα Ιδιοτήτων</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="944"/>
+        <location filename="../src/app/qgisapp.cpp" line="949"/>
         <source>Toggle editing</source>
         <translation>Εναλλαγή επεξεργασίας</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="946"/>
+        <location filename="../src/app/qgisapp.cpp" line="951"/>
         <source>Toggles the editing state of the current layer</source>
         <translation>Εναλλαγή η κατάστασης επεξεργασίας του τρέχοντος επιπεδου</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="951"/>
+        <location filename="../src/app/qgisapp.cpp" line="956"/>
         <source>Save as Shapefile...</source>
         <translation>Αποθήκευση ως Shapefile ...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="953"/>
+        <location filename="../src/app/qgisapp.cpp" line="958"/>
         <source>Save the current layer as a shapefile</source>
         <translation>Αποθηκεύστε το τρέχον στρώμα ως Shapefile</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="957"/>
+        <location filename="../src/app/qgisapp.cpp" line="962"/>
         <source>Save Selection as Shapefile...</source>
         <translation>Αποθηκεύσετε την επιλογή ως Shapefile ...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="959"/>
+        <location filename="../src/app/qgisapp.cpp" line="964"/>
         <source>Save the selection as a shapefile</source>
         <translation>Αποθηκεύστε την επιλογή ως Shapefile</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="963"/>
+        <location filename="../src/app/qgisapp.cpp" line="968"/>
         <source>Remove Layer</source>
         <translation>Αφαιρέστε Επίπεδο</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="964"/>
+        <location filename="../src/app/qgisapp.cpp" line="969"/>
         <source>Ctrl+D</source>
         <comment>Remove a Layer</comment>
         <translatorcomment>Αφαιρεση επιπέδου</translatorcomment>
         <translation>Ctrl+D</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="965"/>
+        <location filename="../src/app/qgisapp.cpp" line="970"/>
         <source>Remove a Layer</source>
         <translation>Αφαιρέστε ένα Επίπεδο</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="970"/>
+        <location filename="../src/app/qgisapp.cpp" line="975"/>
         <source>Live GPS tracking</source>
         <translation>Εντοπισμός GPS πραγματικού χρόνου</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="972"/>
+        <location filename="../src/app/qgisapp.cpp" line="977"/>
         <source>Show GPS tool</source>
         <translation>Εμφάνιση GPS εργαλείου</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="977"/>
+        <location filename="../src/app/qgisapp.cpp" line="982"/>
         <source>Properties...</source>
         <translation>Ιδιότητες...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="979"/>
+        <location filename="../src/app/qgisapp.cpp" line="984"/>
         <source>Set properties of the current layer</source>
         <translation>Ορισμός ιδιοτήτων του τρέχοντος επιπέδου</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="983"/>
+        <location filename="../src/app/qgisapp.cpp" line="988"/>
         <source>Add to Overview</source>
         <translation>Προσθήκη στην Επισκόπηση</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="985"/>
+        <location filename="../src/app/qgisapp.cpp" line="990"/>
         <source>Add current layer to overview map</source>
         <translation>Προσθήκη τρέχοντος επιπέδου στο χάρτη επισκόπησης</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="989"/>
+        <location filename="../src/app/qgisapp.cpp" line="994"/>
         <source>Add All to Overview</source>
         <translation>Προσθήκη όλων στην Επισκόπηση</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="991"/>
+        <location filename="../src/app/qgisapp.cpp" line="996"/>
         <source>Show all layers in the overview map</source>
         <translation>Δείτε όλα τα επίπεδα στην επισκόπηση χάρτη</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="994"/>
+        <location filename="../src/app/qgisapp.cpp" line="999"/>
         <source>Remove All From Overview</source>
         <translation>Απομακρύνετε όλα από την επισκόπηση χάρτη</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="996"/>
+        <location filename="../src/app/qgisapp.cpp" line="1001"/>
         <source>Remove all layers from overview map</source>
         <translation>Απομακρύνετε όλα τα επίπεδα από την επισκόπηση χάρτη</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="999"/>
+        <location filename="../src/app/qgisapp.cpp" line="1004"/>
         <source>Show All Layers</source>
         <translation>Εμφάνιση όλων των επιπέδων</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1001"/>
+        <location filename="../src/app/qgisapp.cpp" line="1006"/>
         <source>Show all layers</source>
         <translation>Εμφάνιση όλων των επιπέδων</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1004"/>
+        <location filename="../src/app/qgisapp.cpp" line="1009"/>
         <source>Hide All Layers</source>
         <translation>Απόκρυψη όλων των επιπέδων</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1006"/>
+        <location filename="../src/app/qgisapp.cpp" line="1011"/>
         <source>Hide all layers</source>
         <translation>Απόκρυψη όλων των επιπέδων</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1011"/>
+        <location filename="../src/app/qgisapp.cpp" line="1016"/>
         <source>Manage Plugins...</source>
         <translation>Διαχείριση προσθέτων...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1013"/>
+        <location filename="../src/app/qgisapp.cpp" line="1018"/>
         <source>Open the plugin manager</source>
         <translation>Ανοίξτε το διαχειριστή προσθέτων</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1018"/>
+        <location filename="../src/app/qgisapp.cpp" line="1023"/>
         <source>Toggle Full Screen Mode</source>
         <translation>Εναλλαγή πλήρους οθόνης</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1019"/>
+        <location filename="../src/app/qgisapp.cpp" line="1024"/>
         <source>Ctrl-F</source>
         <comment>Toggle fullscreen mode</comment>
         <translatorcomment>Εναλλαγή πλήρους οθόνης</translatorcomment>
         <translation>Ctrl-F</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1020"/>
+        <location filename="../src/app/qgisapp.cpp" line="1025"/>
         <source>Toggle fullscreen mode</source>
         <translation>Εναλλαγή πλήρους οθόνης</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1023"/>
+        <location filename="../src/app/qgisapp.cpp" line="1028"/>
         <source>Project Properties...</source>
         <translation>Ιδιότητες του έργου...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1025"/>
+        <location filename="../src/app/qgisapp.cpp" line="1030"/>
         <source>Set project properties</source>
         <translation>Ορισμός ιδιοτήτων του έργου</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1028"/>
+        <location filename="../src/app/qgisapp.cpp" line="1033"/>
         <source>Options...</source>
         <translation>Επιλογές ...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1030"/>
+        <location filename="../src/app/qgisapp.cpp" line="1035"/>
         <source>Change various QGIS options</source>
         <translation>Αλλαγή διάφορων επιλογών QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1034"/>
+        <location filename="../src/app/qgisapp.cpp" line="1039"/>
         <source>Custom CRS...</source>
         <translation>Προσωπικό Σύστημα συντεταγμένων</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1036"/>
+        <location filename="../src/app/qgisapp.cpp" line="1041"/>
         <source>Manage custom coordinate reference systems</source>
         <translation>Διαχειριστείτε προσωπικά συστήματα αναφοράς συντεταγμένων</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1048"/>
+        <location filename="../src/app/qgisapp.cpp" line="1053"/>
         <source>Minimize</source>
         <translation>Ελαχιστοποίηση</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1049"/>
+        <location filename="../src/app/qgisapp.cpp" line="1054"/>
         <source>Ctrl+M</source>
         <comment>Minimize Window</comment>
         <translatorcomment>Ελαχιστοποίηση παραθύρου</translatorcomment>
         <translation>Ctrl+M</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1050"/>
+        <location filename="../src/app/qgisapp.cpp" line="1055"/>
         <source>Minimizes the active window to the dock</source>
         <translation>Ελαχιστοποιεί το ενεργό παράθυρο στην αποβάθρα</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1053"/>
+        <location filename="../src/app/qgisapp.cpp" line="1058"/>
         <source>Zoom</source>
         <translation>Μεγέθυνση</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1055"/>
+        <location filename="../src/app/qgisapp.cpp" line="1060"/>
         <source>Toggles between a predefined size and the window size set by the user</source>
         <translation>Εναλλαγή ανάμεσα σε ένα προκαθορισμένο μέγεθος και το μέγεθος του παραθύρου που ορίστηκε από το χρήστη</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1058"/>
+        <location filename="../src/app/qgisapp.cpp" line="1063"/>
         <source>Bring All to Front</source>
         <translation>Φέρτε τα όλα στο προσκήνιο</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1060"/>
+        <location filename="../src/app/qgisapp.cpp" line="1065"/>
         <source>Bring forward all open windows</source>
         <translation>Φέρτε όλα τα ανοιχτά παράθυρα στο προσκήνιο</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1069"/>
+        <location filename="../src/app/qgisapp.cpp" line="1074"/>
         <source>Help Contents</source>
         <translation>Περιεχόμενα Βοήθειας</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1071"/>
+        <location filename="../src/app/qgisapp.cpp" line="1076"/>
         <source>Ctrl+?</source>
         <comment>Help Documentation (Mac)</comment>
         <translatorcomment>Πληροφορίες Βοήθειας (Mac)</translatorcomment>
         <translation>Ctrl+?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1073"/>
+        <location filename="../src/app/qgisapp.cpp" line="1078"/>
         <source>F1</source>
         <comment>Help Documentation</comment>
         <translatorcomment>Πληροφορίες Βοήθειας</translatorcomment>
         <translation>F1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1075"/>
+        <location filename="../src/app/qgisapp.cpp" line="1080"/>
         <source>Help Documentation</source>
         <translation>Βιβλιοθήκη Βοήθειας</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1078"/>
-        <location filename="../src/app/qgisapp.cpp" line="1084"/>
+        <location filename="../src/app/qgisapp.cpp" line="1083"/>
+        <location filename="../src/app/qgisapp.cpp" line="1089"/>
         <source>QGIS Home Page</source>
         <translation>QGIS ΙστοΣελίδα</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1080"/>
+        <location filename="../src/app/qgisapp.cpp" line="1085"/>
         <source>Ctrl+H</source>
         <comment>QGIS Home Page</comment>
         <translation>Ctrl+H</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1087"/>
+        <location filename="../src/app/qgisapp.cpp" line="1092"/>
         <source>Check Qgis Version</source>
         <translation>Ελέγξτε Qgis Έκδοση</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1089"/>
+        <location filename="../src/app/qgisapp.cpp" line="1094"/>
         <source>Check if your QGIS version is up to date (requires internet access)</source>
         <translation>Ελέγξτε αν QGIS έκδοση σας είναι ενημερωμένα (απαιτεί πρόσβαση στο διαδίκτυο)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1092"/>
+        <location filename="../src/app/qgisapp.cpp" line="1097"/>
         <source>About</source>
         <translation>Σχετικά</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1094"/>
+        <location filename="../src/app/qgisapp.cpp" line="1099"/>
         <source>About QGIS</source>
         <translation>Σχετικά με το QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1098"/>
+        <location filename="../src/app/qgisapp.cpp" line="1103"/>
         <source>Style manager...</source>
         <translation>Διαχειριστής Στυλ ...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1100"/>
+        <location filename="../src/app/qgisapp.cpp" line="1105"/>
         <source>Show style manager V2</source>
         <translation>Δείτε V2 διαχειριστή στυλ</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1126"/>
+        <location filename="../src/app/qgisapp.cpp" line="1131"/>
         <source>Failed to open Python console:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1219"/>
+        <location filename="../src/app/qgisapp.cpp" line="1224"/>
         <source>&amp;File</source>
         <translation>Αρχε&amp;ιο</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1223"/>
+        <location filename="../src/app/qgisapp.cpp" line="1228"/>
         <source>&amp;Open Recent Projects</source>
         <translation>&apos;Αν&amp;οιγμα πρόσφατων projects</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1242"/>
+        <location filename="../src/app/qgisapp.cpp" line="1247"/>
         <source>Print Composers</source>
         <translation>Συντάκτης Εκτύπωσης</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1249"/>
+        <location filename="../src/app/qgisapp.cpp" line="1254"/>
         <source>&amp;Edit</source>
         <translation>&amp;Επεξεργασία</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1300"/>
+        <location filename="../src/app/qgisapp.cpp" line="1305"/>
         <source>Panels</source>
         <translation>Πίνακες</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1301"/>
+        <location filename="../src/app/qgisapp.cpp" line="1306"/>
         <source>Toolbars</source>
         <translation>Toolbars</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1305"/>
+        <location filename="../src/app/qgisapp.cpp" line="1310"/>
         <source>&amp;View</source>
         <translation>Εμφά&amp;νιση</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1344"/>
+        <location filename="../src/app/qgisapp.cpp" line="1349"/>
         <source>&amp;Layer</source>
         <translation>Επίπεδο (&amp;layer)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1379"/>
+        <location filename="../src/app/qgisapp.cpp" line="1384"/>
         <source>&amp;Settings</source>
         <translation>Ρυθμίσ&amp;σεις</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1398"/>
+        <location filename="../src/app/qgisapp.cpp" line="1403"/>
         <source>&amp;Plugins</source>
         <translation>&amp;Πρόσθετα</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1407"/>
+        <location filename="../src/app/qgisapp.cpp" line="1412"/>
         <source>&amp;Window</source>
         <translation>Παράθυρο (&amp;Window)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1420"/>
+        <location filename="../src/app/qgisapp.cpp" line="1425"/>
         <source>&amp;Help</source>
         <translation>Βο&amp;ήθεια</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1442"/>
+        <location filename="../src/app/qgisapp.cpp" line="1447"/>
         <source>File</source>
         <translation>Αρχείο</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1454"/>
+        <location filename="../src/app/qgisapp.cpp" line="1459"/>
         <source>Manage Layers</source>
         <translation>Διαχειριστείτε Επίπεδα Layers</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1475"/>
+        <location filename="../src/app/qgisapp.cpp" line="1480"/>
         <source>Digitizing</source>
         <translation>Ψηφιοποίηση</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1514"/>
+        <location filename="../src/app/qgisapp.cpp" line="1519"/>
         <source>Map Navigation</source>
         <translation>Χάρτης Πλοήγησης</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1529"/>
+        <location filename="../src/app/qgisapp.cpp" line="1534"/>
         <source>Attributes</source>
         <translation>Χαρακτηριστικά</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1545"/>
+        <location filename="../src/app/qgisapp.cpp" line="1550"/>
         <source>Plugins</source>
         <translation>Πρόσθετα</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1551"/>
+        <location filename="../src/app/qgisapp.cpp" line="1556"/>
         <source>Help</source>
         <translation>Βοήθεια</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1568"/>
+        <location filename="../src/app/qgisapp.cpp" line="1573"/>
         <source>Progress bar that displays the status of rendering layers and other time-intensive operations</source>
         <translation>Μπάρα προόδου που εμφανίζει την κατάσταση σχεδιασμού των διαφόρων επιπέδων καθώς και άλλες χρονοβόρες διεργασίες.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1582"/>
+        <location filename="../src/app/qgisapp.cpp" line="1587"/>
         <source>Toggle extents and mouse position display</source>
         <translation>Πινακίδα ένδειξης του ορατού πεδίου και της θέσης του ποντικιού</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1626"/>
+        <location filename="../src/app/qgisapp.cpp" line="1631"/>
         <source>Scale </source>
         <translation>Κλίμακα</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1627"/>
+        <location filename="../src/app/qgisapp.cpp" line="1632"/>
         <source>Current map scale</source>
         <translation>Τρέχουσα κλίμακα χάρτη</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1640"/>
+        <location filename="../src/app/qgisapp.cpp" line="1645"/>
         <source>Displays the current map scale</source>
         <translation>Εμφανίζει την τρέχουσα κλίμακα χάρτη</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1641"/>
+        <location filename="../src/app/qgisapp.cpp" line="1646"/>
         <source>Current map scale (formatted as x:y)</source>
         <translation>Η τρέχουσα κλίμακα χάρτη (μορφοποιημένη ως x: y)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1650"/>
+        <location filename="../src/app/qgisapp.cpp" line="1655"/>
         <source>Stop map rendering</source>
         <translation>Διακοπή διαδικασίας σχεδίασης χάρτη</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1653"/>
+        <location filename="../src/app/qgisapp.cpp" line="1658"/>
         <source>Render</source>
         <translation>Διαδικασία σχεδίασης χάρτη</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1656"/>
+        <location filename="../src/app/qgisapp.cpp" line="1661"/>
         <source>When checked, the map layers are rendered in response to map navigation commands and other events. When not checked, no rendering is done. This allows you to add a large number of layers and symbolize them before rendering.</source>
         <translation>Εάν επιλεχθεί, τα επίπεδα του χάρτη σχεδιάζονται (αναπαράγονται) αποκρινόμενα σε κάθε εντολή πλοήγησης ή άλλα γεγονότα. Εάν δεν επιλεχθεί, δεν εκτελείται κανένας σχεδιασμός. Αυτό σας επιτρέπει να προσθέσετε ένα μεγάλο αριθμό επιπέδων και να ορίσετε συμβολίσμό πριν την αναπαραγωγή τους.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1660"/>
+        <location filename="../src/app/qgisapp.cpp" line="1665"/>
         <source>Toggle map rendering</source>
         <translation>Εναλλαγή απεικόνισης / απόδοσης χάρτη</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1673"/>
+        <location filename="../src/app/qgisapp.cpp" line="1678"/>
         <source>Resource Location Error</source>
         <translation>Σφάλμα θέσης στοιχείου</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1674"/>
+        <location filename="../src/app/qgisapp.cpp" line="1679"/>
         <source>Error reading icon resources from: 
  %1
  Quitting...</source>
@@ -5146,501 +5175,501 @@ Please contact the developers.
  Παραιτούμαι...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1679"/>
+        <location filename="../src/app/qgisapp.cpp" line="1684"/>
         <source>This icon shows whether on the fly coordinate reference system transformation is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour.</source>
         <translation>Αυτό το εικονίδιο δείχνει αν είναι ενεργοποιημένος ή όχι ο αυτόματος μετασχηματισμός συστήματος συντεταγμένων. Κάντε κλικ στο εικονίδιο για να εμφανιστεί το παράθυρο διαλόγου ιδιοτήτων του έργου για να αλλάξει αυτή τη συμπεριφορά.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1683"/>
+        <location filename="../src/app/qgisapp.cpp" line="1688"/>
         <source>CRS status - Click to open coordinate reference system dialog</source>
         <translation>Κατάσταση Γεωγραφικού Συστηματος Αναφοράς Συντεταγμένων- Κάντε κλικ για να ανοίξετε το Παράθυρο &quot;Γεωγραφικό Σύστημα Αναφοράς&quot;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1688"/>
+        <location filename="../src/app/qgisapp.cpp" line="1693"/>
         <source>Ready</source>
         <translation>Έτοιμο</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1871"/>
+        <location filename="../src/app/qgisapp.cpp" line="1876"/>
         <source>Map canvas. This is where raster and vector layers are displayed when added to the map</source>
         <translation>Καμβάς Χάρτη (υπόβαθρα). Αυτό είναι το μέρος εναπόθεσης των raster και vector επιπέδων εμφανίζονται όταν προστίθενται στο χάρτη</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1939"/>
+        <location filename="../src/app/qgisapp.cpp" line="1944"/>
         <source>Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas.</source>
         <translation>Επισκόπηση καμβά χάρτη. Αυτός ο καμβάς μπορεί να χρησιμοποιηθεί για την απεικόνιση ενός χάρτη εντοπισμού που δείχνει την τρέχουσα έκταση του καμβά χάρτη. Η τρέχουσα έκταση εμφανίζεται ως ένα κόκκινο ορθογώνιο. Κάθε στρώμα (επίπεδο) πάνω στο χάρτη μπορεί να προστεθεί στην επισκόπηση καμβά.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1948"/>
+        <location filename="../src/app/qgisapp.cpp" line="1953"/>
         <source>Overview</source>
         <translation>Επισκόπηση</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2004"/>
+        <location filename="../src/app/qgisapp.cpp" line="2009"/>
         <source>Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties.</source>
         <translation>Λεζάντα χάρτη που εμφανίζει όλα τα τρέχοντα επίπεδα στον καμβά χάρτη. Κάντε κλικ στο πλαίσιο ελέγχου για να εμφανίσετε ή να αποκρύψετε ένα στρώμα. Κάντε διπλό κλικ σε ένα στρώμα στη λεζάντα για να προσαρμόσετε την εμφάνισή του και να καθορίσετε άλλες ιδιότητες.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2172"/>
+        <location filename="../src/app/qgisapp.cpp" line="2177"/>
         <source>You are using QGIS version %1 built against code revision %2.</source>
         <translatorcomment>Please consider revising...uncertain of the meaning  -  mpaigni</translatorcomment>
         <translation>Χρησιμοποιείτε έκδοση%1 QGIS μη συμβατή με την αναθεώρηση κώδικα %2.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2197"/>
+        <location filename="../src/app/qgisapp.cpp" line="2202"/>
         <source>
 This binary was compiled against Qt %1,and is currently running against Qt %2</source>
         <translation>Αυτό το δυαδικό αρχείο συντάχθηκε κατά το Qt %1, και εκτελείται αυτή τη στιγμή κατά Qt %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2204"/>
+        <location filename="../src/app/qgisapp.cpp" line="2209"/>
         <source>Version</source>
         <translation>Έκδοση</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2205"/>
+        <location filename="../src/app/qgisapp.cpp" line="2210"/>
         <source>Whats new in Version 1.4.0?</source>
         <translation>Τι νέο στην έκδοση 1.4.0;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2208"/>
+        <location filename="../src/app/qgisapp.cpp" line="2213"/>
         <source>Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.3.0. If an unchanging user interface, programmatic API and long term support is more important to you then cool new and untested features, we recommend that you use a copy of QGIS from our Long Term Support (LTS)1.0.x release series. In all other cases we recommend that you use this version.</source>
         <translation>Παρακαλώ σημειώστε ότι αυτή είναι έκδοση στη σειρά εκδόσεων κατηγορία &quot;πρωτοπορίας&quot;. Ως εκ τούτου, περιέχει νέα στοιχεία και επεκτείνει την προγραμματική διεπαφή πέραν των QGIS 1.0.x και QGIS 1.3.0. Εάν είναι πιο σημαντικό για εσάς μια αμετάβλητη διεπαφή χρήστη, ή ένα προγραμματιστικό API και μακροχρόνια στήριξη συγκριτικά με μια όμορφη νέα διεπαφή με μη δοκιμασμένα χαρακτηριστικά, συνιστούμε να χρησιμοποιήσετε ένα αντίγραφο του QGIS από τη σειρά εκδόσεων κατηγορία &quot;μακροχρόνιας υποστήριξης&quot; (LTS) 1.0.x. Σε όλες τις άλλες περιπτώσεις, σας συνιστούμε να χρησιμοποιήσετε αυτήν την έκδοση.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2216"/>
+        <location filename="../src/app/qgisapp.cpp" line="2221"/>
         <source>This release includes around 200 bug fixes, nearly 30 new features and has had a lot of love and attention poured in to it to take our favourite desktop GIS application another step on the road to GIS nirvana! So much has happened in the 3 months since our last release that it is impossible to document everything here. Instead we will just highlight a couple of important new features for you.</source>
         <translation>Αυτή η έκδοση περιλαμβάνει περίπου 200 διορθώσεις σφαλμάτων, περίπου 30 νέα χαρακτηριστικά και σε αυτή έχει δαπανηθεί πολλή αγάπη και προσοχή για να ολοκληρώσει η αγαπημένη μας desktop GIS εφαρμογή άλλο ένα βήμα στον δρόμο για την νιρβάνα των GIS! Τόσα πολλα έχουν συμβεί μέσα σε 3 μήνες από την τελευταία έκδοση που είναι αδύνατον να τεκμηριωθούν πάντα εδώ. Αντ&apos; αυτού θα επισημάνουμε μόνο μερικά σημαντικά νέα χαρακτηριστικά για εσάς.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2224"/>
+        <location filename="../src/app/qgisapp.cpp" line="2229"/>
         <source>Probably the biggest new feature is the addition of the new vector symbology infrastructure. This is provided alongside the old implementation - you can switch using a button in the vector layer properties dialog. It does&apos;t replace the old symbology implementation completely yet because there are various issues that need to be resolved and a large amount of testing before it is considered ready.</source>
         <translation>Πιθανώς το μεγαλύτερο νέο χαρακτηριστικό είναι η προσθήκη των νέων υποδομών συμβολογίας διανυσμάτων. Αυτό παρέχεται, παράλληλα με την παλαιά υλοποίηση - μπορείτε να αλλάξετε χρησιμοποιώντας ένα κουμπί στο πλαίσιο διαλόγου των ιδιοτήτων διανυσματικού επιπέδου. Δεν αντικαθιστά εντελώς τον παλιό τρόπο υλοποίησης του συμβολισμού ακόμη επειδή υπάρχουν διάφορα θέματα που πρέπει να επιλυθούν και ένα μεγάλο μέρος απαιτούμενων δοκιμών πριν θεωρηθεί έτοιμο.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2232"/>
+        <location filename="../src/app/qgisapp.cpp" line="2237"/>
         <source>QGIS now has a field calculator, accessible via a button in the attribute section of the vector properties, and from the attribute table user interface. You can use feature length, feature area, string concatenation and type conversions in the field calculator, as well as field values.</source>
         <translation>QGIS έχει τώρα μια αριθμομηχανή πεδίων, προσβάσιμη μέσω ενός κουμπιού στο τμήμα χαρακτηριστικά του παραθύρου ιδιότητες διανύσματος, καθώς και από τον πίνακα χαρακτηριστικών της διεπαφής χρήστη. Στην αριθμομηχανή αυτή, μπορείτε να χρησιμοποιήσετε το μήκος, την επιφάνεια του στοιχείου, να συγχωνεύσετε συμβολοσειρές(string concatenation) και να κάνετε μετατροπές τύπων όπως επίσης να χρησιμοποιήσετε και σχεσιακά χαρακτηριστικά του στοιχείου.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2239"/>
+        <location filename="../src/app/qgisapp.cpp" line="2244"/>
         <source>The map composer has had a lot of attention. A grid can now be added to composer maps. Composer maps can now be rotated in the layout. The limitation of a single map layout per project has been removed. A new composer manager dialog has been added to manage the existing composer instances. The composer widget property sheets have been completely overhauled to use less screen space </source>
         <translation>Ο Συνθέτης Χαρτών (map composer) δημιουργήθηκε με μεγάλη προσοχή. Ένα δίκτυο μπορεί τώρα να προστεθεί σε χάρτες συνθέτη. Χάρτες στο Συνθέτη μπορούν τώρα να περιστρέφονται στη διάταξη. Ο περιορισμός της μοναδικής διάταξη χάρτη ανά έργο έχει πλέον αφαιρεθεί. Ένα νέο παράθυρο διαλόγου διαχειρισης του Συνθέτη Χαρτών έχει προστεθεί για τη διαχείριση των υφιστάμενων στιγμιοτύπων Συνθέτη. Αναθεωρήθηκαν εκ βάθρων τα φύλλα ιδιοτήτων των widget του Συνθέτη εντελώς ώστε να χρησιμοποιούν λιγότερο χώρο στην οθόνη</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2247"/>
+        <location filename="../src/app/qgisapp.cpp" line="2252"/>
         <source>Various parts of the user interface have been overhauled with the goal of improving consistency and to improve support for netbooks and other smaller screen devices. Loading and saving of shortcuts. Position can now be displayed as Degrees, Minutes, Seconds in the status bar. The add, move and delete vertex buttons are now removed and the node tool is moved from the advanced editing toolbar to the standard editing toolbar. The identification tool has also undergone numerous improvements.</source>
         <translation>Έχουν αναθεωρηθεί διάφορα μέρη της διεπαφής χρήστη με στόχο τη βελτίωση της συνοχής και τη βελτίωση της υποστήριξης των netbooks και άλλες μικρότερες συσκευές οθόνης. Φόρτωση και την αποθήκευση των συντομεύσεων. Η Θέση μπορεί τώρα να εμφανίζεται ως μοίρες, λεπτά, δευτερόλεπτα στη γραμμή κατάστασης. Τα κουμπιά προσθήκης, μετακίνησης και διαγραφής κορυφών απομακρύνονται πλέον από την εργαλειοθήκη επεξεργασίας και το εργαλείο κόμβων μεταφέρθηκε από την προηγμένη εργαλειοθήκη επεξεργασίας στην απλή. Επίσης το εργαλείο αναγνώρισης έχει υποστεί πολλές βελτιώσεις.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2257"/>
+        <location filename="../src/app/qgisapp.cpp" line="2262"/>
         <source>A render caching capability has been added to QGIS. This speeds up common operations such as layer re-ordering, changing symbology, WMS / WFS client, hiding / showing layers and opens the door for future enhancements such as threaded rendering and pre-compositing layer cache manipulation. Note that it is disabled by default, and can be enabled in the options dialog.</source>
         <translation>Στο QGIS έχει προστεθεί δυνατότητα προσωρινής αποθήκευσης αποτύπωσης χαρτών (render caching). Αυτό επιταχύνει κοινές λειτουργίες όπως η επαναδιάταξη layer, η αλλαγή της συμβολογίας, η επικοινωνία WMS / WFS πελάτη, απόκρυψη/εμφάνιση επιπέδων και ανοίγει το δρόμο για μελλοντικές βελτιώσεις, όπως η πολυνηματική αποτύπωση (multithreaded rendering) και η διαχείριση της cache με προ-σύνθεση επιπέδων. Σημειώστε ότι αυτή είναι απενεργοποιημένη από προεπιλογή, και μπορεί να ενεργοποιηθεί στο παράθυρο διαλόγου επιλογών.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2265"/>
+        <location filename="../src/app/qgisapp.cpp" line="2270"/>
         <source>User defined SVG search paths are now added to the options dialog.</source>
         <translation>Οριζόμενα από το χρήστη SVG μονοπάτια αναζήτησης προστίθενται τώρα στο παράθυρο επιλογών.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2268"/>
+        <location filename="../src/app/qgisapp.cpp" line="2273"/>
         <source>When creating a new shapefile, you can now specify its CRS. Also the avoid intersections option for polygons is now also possible with background layers.</source>
         <translatorcomment>some proof reading needed - mpaigni</translatorcomment>
         <translation>Όταν δημιουργείτε ένα νέο Shapefile, μπορείτε πλέον να καθορίσετε το Σύστημα Αναφοράς συντεταγμένων του. Επίσης, η επιλογή αποφυγή επιτομών σε πολύγωνα είναι πλέον δυνατή με φόντο επίπεδα.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2272"/>
+        <location filename="../src/app/qgisapp.cpp" line="2277"/>
         <source>For power users, you can now create customizable attribute forms using Qt Designer dialog UIs.</source>
         <translation>Για τους χρήστες με αυξημένα δικαιώματα, μπορείτε πλέον να δημιουργήσετε προσαρμόσιμες φόρμες χαρακτηριστικών, που χρησιμοποιούν το πλαίσιο διαλόγου QtDesigner.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2410"/>
-        <location filename="../src/app/qgisapp.cpp" line="5647"/>
+        <location filename="../src/app/qgisapp.cpp" line="2415"/>
+        <location filename="../src/app/qgisapp.cpp" line="5652"/>
         <source>Invalid Data Source</source>
         <translation>Μη έγκυρη Πηγή δεδομένων</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2563"/>
-        <location filename="../src/app/qgisapp.cpp" line="2643"/>
+        <location filename="../src/app/qgisapp.cpp" line="2568"/>
+        <location filename="../src/app/qgisapp.cpp" line="2648"/>
         <source>Invalid Layer</source>
         <translation>Μη έγκυρο επίπεδο</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2563"/>
-        <location filename="../src/app/qgisapp.cpp" line="2643"/>
+        <location filename="../src/app/qgisapp.cpp" line="2568"/>
+        <location filename="../src/app/qgisapp.cpp" line="2648"/>
         <source>%1 is an invalid layer and cannot be loaded.</source>
         <translation>Το %1 είναι ένα μη έγκυρο επίπεδο και δεν μπορεί να φορτωθει.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2820"/>
+        <location filename="../src/app/qgisapp.cpp" line="2825"/>
         <source>Save As</source>
         <translation>Αποθήκευση ως</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2847"/>
+        <location filename="../src/app/qgisapp.cpp" line="2852"/>
         <source>New Shapefile</source>
         <translation>Νέο shapefile</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2848"/>
+        <location filename="../src/app/qgisapp.cpp" line="2853"/>
         <source>Shapefiles must end on .shp</source>
         <translation>Τα shapefiles πρέπει να τελειώνουν με .shp</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2935"/>
+        <location filename="../src/app/qgisapp.cpp" line="2940"/>
         <source>Choose a QGIS project file to open</source>
         <translation>Επιλέξτε ένα αρχείο έργου (project file) QGIS για άνοιγμα</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2959"/>
+        <location filename="../src/app/qgisapp.cpp" line="2964"/>
         <source>QGIS Project Read Error</source>
         <translation>Σφάλμα ανάγνωσης του QGIS Project</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3001"/>
+        <location filename="../src/app/qgisapp.cpp" line="3006"/>
         <source>Unable to open project</source>
         <translation>Αδύνατο το άνοιγμα του Project</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3066"/>
+        <location filename="../src/app/qgisapp.cpp" line="3071"/>
         <source>Choose a QGIS project file</source>
         <translation>Επιλέξατε ένα αρχείο QGIS Project</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3129"/>
+        <location filename="../src/app/qgisapp.cpp" line="3134"/>
         <source>Choose a file name to save the QGIS project file as</source>
         <translation>Επιλέξτε ένα όνομα αρχείου με το οποίο θα αποθηκεύσετε το αρχείο του project QGIS </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3289"/>
+        <location filename="../src/app/qgisapp.cpp" line="3294"/>
         <source>Choose a file name to save the map image as</source>
         <translation>Επιλέξτε ένα όνομα αρχείου για να αποθηκεύσετε την εικόνα χάρτη</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3607"/>
+        <location filename="../src/app/qgisapp.cpp" line="3612"/>
         <source>No Layer Selected</source>
         <translation>Κανένα επίπεδο δεν έχει επιλεγεί</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3608"/>
+        <location filename="../src/app/qgisapp.cpp" line="3613"/>
         <source>To delete features, you must select a vector layer in the legend</source>
         <translation>Για να διαγράψετε χαρακτηριστικά, πρέπει να επιλέξετε ένα διανυσματικό επίπεδο στη λεζάντα</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3616"/>
+        <location filename="../src/app/qgisapp.cpp" line="3621"/>
         <source>No Vector Layer Selected</source>
         <translation>Κανένα διανυσματικό επίπεδο δεν έχει επιλεγεί</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3617"/>
+        <location filename="../src/app/qgisapp.cpp" line="3622"/>
         <source>Deleting features only works on vector layers</source>
         <translation>Διαγραφή χαρακτηριστικών λειτουργεί μόνο σε διανυσματικά επίπεδα</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3623"/>
+        <location filename="../src/app/qgisapp.cpp" line="3628"/>
         <source>Provider does not support deletion</source>
         <translation>Πάροχος δεν υποστηρίζει τη διαγραφή</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3624"/>
+        <location filename="../src/app/qgisapp.cpp" line="3629"/>
         <source>Data provider does not support deleting features</source>
         <translation>Δεδομένα πάροχος δεν υποστηρίζει τη διαγραφή στοιχείων</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3630"/>
-        <location filename="../src/app/qgisapp.cpp" line="3824"/>
+        <location filename="../src/app/qgisapp.cpp" line="3635"/>
+        <location filename="../src/app/qgisapp.cpp" line="3829"/>
         <source>Layer not editable</source>
         <translation>Επίπεδο μη εγγράψιμο</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3631"/>
+        <location filename="../src/app/qgisapp.cpp" line="3636"/>
         <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
         <translation>Το τρεχων επίπεδο είναιμη εγγράψιμο. Επιλέξατε &apos;Έναρξη επεξεργασίας&apos; στην εργαλειοθήκη ψηφιοποίησης.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3642"/>
+        <location filename="../src/app/qgisapp.cpp" line="3647"/>
         <source>Features deleted</source>
         <translation>Χαρακτηριστικά διαγράφτηκαν</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3645"/>
+        <location filename="../src/app/qgisapp.cpp" line="3650"/>
         <source>Problem deleting features</source>
         <translation>Πρόβλημα στη διαγραφή χαρακτηριστικών</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3646"/>
+        <location filename="../src/app/qgisapp.cpp" line="3651"/>
         <source>A problem occured during deletion of features</source>
         <translation>Ένα πρόβλημα συνέβη κατά τη διαγραφή των στοιχείων</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3687"/>
+        <location filename="../src/app/qgisapp.cpp" line="3692"/>
         <source>Merging features...</source>
         <translation>Συγχώνευση χαρακτηριστικών...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3687"/>
+        <location filename="../src/app/qgisapp.cpp" line="3692"/>
         <source>Abort</source>
         <translation>Ακύρωση</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3740"/>
-        <location filename="../src/app/qgisapp.cpp" line="3778"/>
+        <location filename="../src/app/qgisapp.cpp" line="3745"/>
+        <location filename="../src/app/qgisapp.cpp" line="3783"/>
         <source>Composer %1</source>
         <translation>Συνθέτης%1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3813"/>
+        <location filename="../src/app/qgisapp.cpp" line="3818"/>
         <source>No active layer</source>
         <translation>Κανένα επίπεδο δεν είναι ενεργό</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3813"/>
+        <location filename="../src/app/qgisapp.cpp" line="3818"/>
         <source>No active layer found. Please select a layer in the layer list</source>
         <translation>Δεν βρέθηκε ενεργό επίπεδο. Παρακαλώ επιλέξτε ένα επίπεδοστη λίστα επιπέδων</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3819"/>
+        <location filename="../src/app/qgisapp.cpp" line="3824"/>
         <source>Active layer is not vector</source>
         <translation>Ενεργό επίπεδο μη διανυσματικό</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3819"/>
+        <location filename="../src/app/qgisapp.cpp" line="3824"/>
         <source>The merge features tool only works on vector layers. Please select a vector layer from the layer list</source>
         <translation>Το εργαλείο συγχώνευσης λειτουργεί μόνο σε διανυσματικά επίπεδα. Επιλέξατε ένα διανυσματικό επίπεδο από τη λίστα επιπέδων</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3824"/>
+        <location filename="../src/app/qgisapp.cpp" line="3829"/>
         <source>Merging features can only be done for layers in editing mode. To use the merge tool, go to  Layer-&gt;Toggle editing</source>
         <translation>Συγχώνευση χαρακτηριστικών μπορεί να γίνει μόνο για επίπεδα σε κατάσταση επεξεργασίας. Για να χρησιμοποιήσετε το εργαλείο συγχώνευσης, πηγαίνετε στο Επίπεδο -&gt; Εναλλαγή δυνατότητας Επεξεργασίας</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3839"/>
-        <location filename="../src/app/qgisapp.cpp" line="3878"/>
+        <location filename="../src/app/qgisapp.cpp" line="3844"/>
+        <location filename="../src/app/qgisapp.cpp" line="3883"/>
         <source>The merge tool requires at least two selected features</source>
         <translation>Το εργαλείο συγχώνευσης απαιτεί τουλάχιστον δύο επιλεγμένα χαρακτηριστικά</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3851"/>
-        <location filename="../src/app/qgisapp.cpp" line="3893"/>
+        <location filename="../src/app/qgisapp.cpp" line="3856"/>
+        <location filename="../src/app/qgisapp.cpp" line="3898"/>
         <source>Merge failed</source>
         <translation>Συγχώνευση απέτυχε</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3851"/>
-        <location filename="../src/app/qgisapp.cpp" line="3893"/>
+        <location filename="../src/app/qgisapp.cpp" line="3856"/>
+        <location filename="../src/app/qgisapp.cpp" line="3898"/>
         <source>An error occured during the merge operation</source>
         <translation>Παρουσιάστηκε σφάλμα κατά τη λειτουργία συγχώνευσης</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3861"/>
-        <location filename="../src/app/qgisapp.cpp" line="3902"/>
+        <location filename="../src/app/qgisapp.cpp" line="3866"/>
+        <location filename="../src/app/qgisapp.cpp" line="3907"/>
         <source>The union operation would result in a geometry type that is not compatible with the current layer and therefore is canceled</source>
         <translation>Η λειτουργία της Ένωσης θα οδηγήσει σε ένα είδος γεωμετρίας που δεν είναι συμβατή με την τρέχουσα στρώμα και ως εκ τούτου ακυρώνεται</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3908"/>
+        <location filename="../src/app/qgisapp.cpp" line="3913"/>
         <source>Merged features</source>
         <translation>Συγχωνευθέντα χαρακτηριστικά</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4080"/>
+        <location filename="../src/app/qgisapp.cpp" line="4085"/>
         <source>Features cut</source>
         <translation>Κομμένα Χαρακτηριστικά</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4132"/>
+        <location filename="../src/app/qgisapp.cpp" line="4137"/>
         <source>Features pasted</source>
         <translation>Επικολλημένα Χαρακτηριστικά</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4210"/>
+        <location filename="../src/app/qgisapp.cpp" line="4215"/>
         <source>Start editing failed</source>
         <translation>Έναρξη επεξεργασίας απέτυχε</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4210"/>
+        <location filename="../src/app/qgisapp.cpp" line="4215"/>
         <source>Provider cannot be opened for editing</source>
         <translation>Πάροχος υπηρεσιών δεν μπορεί να ανοιχθεί για επεξεργασία</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4218"/>
+        <location filename="../src/app/qgisapp.cpp" line="4223"/>
         <source>Stop editing</source>
         <translation>Τερματισμός επεξεργασίας</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4219"/>
+        <location filename="../src/app/qgisapp.cpp" line="4224"/>
         <source>Do you want to save the changes to layer %1?</source>
         <translation>Θέλετε να αποθηκεύσετε τις αλλαγές στο %1 επίπεδο;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6120"/>
+        <location filename="../src/app/qgisapp.cpp" line="6125"/>
         <source>Warning</source>
         <translation type="unfinished">Προειδοποίηση</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6120"/>
+        <location filename="../src/app/qgisapp.cpp" line="6125"/>
         <source>This layer doesn&apos;t have a properties dialog.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1126"/>
-        <location filename="../src/app/qgisapp.cpp" line="4227"/>
-        <location filename="../src/app/qgisapp.cpp" line="4240"/>
-        <location filename="../src/app/qgisapp.cpp" line="5928"/>
+        <location filename="../src/app/qgisapp.cpp" line="1131"/>
+        <location filename="../src/app/qgisapp.cpp" line="4232"/>
+        <location filename="../src/app/qgisapp.cpp" line="4245"/>
+        <location filename="../src/app/qgisapp.cpp" line="5933"/>
         <source>Error</source>
         <translation>Σφάλμα</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4240"/>
+        <location filename="../src/app/qgisapp.cpp" line="4245"/>
         <source>Problems during roll back</source>
         <translation>Προβλήματα κατά τη διάρκεια επαναφοράς</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4312"/>
+        <location filename="../src/app/qgisapp.cpp" line="4317"/>
         <source>Invalid scale</source>
         <translation>Άκυρα κλίμακα</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4407"/>
+        <location filename="../src/app/qgisapp.cpp" line="4412"/>
         <source>GPS Information</source>
         <translation>GPS Πληροφορίες</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4504"/>
+        <location filename="../src/app/qgisapp.cpp" line="4509"/>
         <source>Python Console</source>
         <translation>Python Κονσόλα</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4561"/>
+        <location filename="../src/app/qgisapp.cpp" line="4566"/>
         <source>There is a new version of QGIS available</source>
         <translation>Υπάρχει διαθέσιμη μια νέα έκδοση του QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4567"/>
+        <location filename="../src/app/qgisapp.cpp" line="4572"/>
         <source>You are running a development version of QGIS</source>
         <translation>Εκτελείτε μια έκδοση ανάπτυξης QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4571"/>
+        <location filename="../src/app/qgisapp.cpp" line="4576"/>
         <source>You are running the current version of QGIS</source>
         <translation>Εκτελείτε την τρέχουσα έκδοση του QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4576"/>
+        <location filename="../src/app/qgisapp.cpp" line="4581"/>
         <source>Would you like more information?</source>
         <translation>Θα θέλατε περισσότερες πληροφορίες;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4579"/>
-        <location filename="../src/app/qgisapp.cpp" line="4592"/>
+        <location filename="../src/app/qgisapp.cpp" line="4584"/>
         <location filename="../src/app/qgisapp.cpp" line="4597"/>
-        <location filename="../src/app/qgisapp.cpp" line="4625"/>
+        <location filename="../src/app/qgisapp.cpp" line="4602"/>
+        <location filename="../src/app/qgisapp.cpp" line="4630"/>
         <source>QGIS Version Information</source>
         <translation>QGIS Πληροφορίες έκδοσης</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4597"/>
+        <location filename="../src/app/qgisapp.cpp" line="4602"/>
         <source>Unable to get current version information from server</source>
         <translation>Αποτυχία λήψης πληροφοριών για την τρέχουσα έκδοση από το διακομιστή</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4611"/>
+        <location filename="../src/app/qgisapp.cpp" line="4616"/>
         <source>Connection refused - server may be down</source>
         <translation>Σύνδεση απέτυχε - ο διακομιστής μπορεί να είναι κάτω</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4614"/>
+        <location filename="../src/app/qgisapp.cpp" line="4619"/>
         <source>QGIS server was not found</source>
         <translation>QGIS διακομιστής δεν βρέθηκε</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4617"/>
+        <location filename="../src/app/qgisapp.cpp" line="4622"/>
         <source>Network error while communicating with server</source>
         <translation>Σφάλμα Δικτύου κατά την επικοινωνία με το διακομιστή</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4620"/>
+        <location filename="../src/app/qgisapp.cpp" line="4625"/>
         <source>Unknown network socket error</source>
         <translation>Άγνωστο σφάλμα πρίζας δικτύου (socket error)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4764"/>
-        <location filename="../src/app/qgisapp.cpp" line="4806"/>
-        <location filename="../src/app/qgisapp.cpp" line="5727"/>
+        <location filename="../src/app/qgisapp.cpp" line="4769"/>
+        <location filename="../src/app/qgisapp.cpp" line="4811"/>
+        <location filename="../src/app/qgisapp.cpp" line="5732"/>
         <source>Layer is not valid</source>
         <translation>Μη έγκυρο επίπεδο</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4765"/>
-        <location filename="../src/app/qgisapp.cpp" line="4807"/>
-        <location filename="../src/app/qgisapp.cpp" line="5728"/>
+        <location filename="../src/app/qgisapp.cpp" line="4770"/>
+        <location filename="../src/app/qgisapp.cpp" line="4812"/>
+        <location filename="../src/app/qgisapp.cpp" line="5733"/>
         <source>The layer is not a valid layer and can not be added to the map</source>
         <translation>Το επίπεδο δεν είναι έγκυρο και δεν μπορεί να προστεθεί στον χάρτη</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4852"/>
+        <location filename="../src/app/qgisapp.cpp" line="4857"/>
         <source>Save?</source>
         <translation>Αποθήκευση;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4853"/>
+        <location filename="../src/app/qgisapp.cpp" line="4858"/>
         <source>Do you want to save the current project?</source>
         <translation>Θέλετε να αποθηκεύσετε το τρέχον έργο;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5052"/>
+        <location filename="../src/app/qgisapp.cpp" line="5057"/>
         <source>Map coordinates for the current view extents</source>
         <translation>Συντεταγμένες του χάρτη για την τρέχουσα εμφανιζόμενη έκταση </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5060"/>
+        <location filename="../src/app/qgisapp.cpp" line="5065"/>
         <source>Map coordinates at mouse cursor position</source>
         <translation>Συντεταγμένες του χάρτη στη θέση του δρομέα του ποντικιού</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5081"/>
+        <location filename="../src/app/qgisapp.cpp" line="5086"/>
         <source>Extents:</source>
         <translation>Έκταση:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5154"/>
+        <location filename="../src/app/qgisapp.cpp" line="5159"/>
         <source>Maptips require an active layer</source>
         <translation>Maptips απαιτεί ένα ενεργό επίπεδο</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5556"/>
+        <location filename="../src/app/qgisapp.cpp" line="5561"/>
         <source>Open a GDAL Supported Raster Data Source</source>
         <translation>Ανοίξτε μια Πηγή Δεδομένων GDAL που Υποστηρίζει Raster Δεδομένα</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5814"/>
+        <location filename="../src/app/qgisapp.cpp" line="5819"/>
         <source>Unsupported Data Source</source>
         <translation>Μη υποστηριζόμενη πηγή δεδομένων</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5911"/>
+        <location filename="../src/app/qgisapp.cpp" line="5916"/>
         <source>Enter a name for the new bookmark:</source>
         <translation>Πληκτρολογήστε ένα όνομα για το νέο σελιδοδείκτη:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5928"/>
+        <location filename="../src/app/qgisapp.cpp" line="5933"/>
         <source>Unable to create the bookmark. Your user database may be missing or corrupted</source>
         <translation>Αδύνατη η δημιουργία του σελιδοδείκτη. Η Βάση δεδομένων των χρηστών σας μπορεί να λείπει ή είναι κατεστραμμένη</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5942"/>
+        <location filename="../src/app/qgisapp.cpp" line="5947"/>
         <source>Project file is older</source>
         <translation>Το αρχείο του Project ειναι παλαιότερο</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5959"/>
+        <location filename="../src/app/qgisapp.cpp" line="5964"/>
         <source>&lt;tt&gt;Settings:Options:General&lt;/tt&gt;</source>
         <comment>Menu path to setting options</comment>
         <translatorcomment>Μονοπάτι μενού για ορισμό ρυθμίσεων</translatorcomment>
         <translation>&lt;tt&gt;Ρυθμίσεις: Επιλογές: Γενικά&lt;/tt&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5960"/>
+        <location filename="../src/app/qgisapp.cpp" line="5965"/>
         <source>Warn me when opening a project file saved with an older version of QGIS</source>
         <translation>Ειδοποίηση σχετικά με το άνοιγμα ενός αρχείου Project αποθηκευμένου με μια παλαιότερη έκδοση του QGIS</translation>
     </message>
@@ -5650,238 +5679,238 @@ This binary was compiled against Qt %1,and is currently running against Qt %2</s
         <translation>Quantum GIS - %1 (&apos;%2&apos;)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="682"/>
+        <location filename="../src/app/qgisapp.cpp" line="687"/>
         <source>Ctrl+.</source>
         <comment>Capture Points</comment>
         <translatorcomment>Σύλληψη Σημείων</translatorcomment>
         <translation>Ctrl+.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="688"/>
+        <location filename="../src/app/qgisapp.cpp" line="693"/>
         <source>Ctrl+/</source>
         <comment>Capture Lines</comment>
         <translatorcomment>Σύλληψη γραμμών</translatorcomment>
         <translation>Ctrl+/</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="694"/>
+        <location filename="../src/app/qgisapp.cpp" line="699"/>
         <source>Ctrl+Shift+/</source>
         <comment>Capture Polygons</comment>
         <translatorcomment>Σύλληψη πολυγώνων</translatorcomment>
         <translation>Ctrl+Shift+/</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="749"/>
+        <location filename="../src/app/qgisapp.cpp" line="754"/>
         <source>Add Part</source>
         <translation>Προσθήκη Μέρους</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="751"/>
+        <location filename="../src/app/qgisapp.cpp" line="756"/>
         <source>Add part to multipolygon</source>
         <translation>Προσθήκη μέρους στο multipolygon</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="763"/>
+        <location filename="../src/app/qgisapp.cpp" line="768"/>
         <source>Click a vertex of the ring to delete</source>
         <translation>Κάντε κλικ σε μια κορυφή του δακτυλίου για να τον διαγράψετε</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="769"/>
+        <location filename="../src/app/qgisapp.cpp" line="774"/>
         <source>Click a vertex of the part to delete</source>
         <translation>Κάντε κλικ σε μια κορυφή του σχήματος για να το διαγράψετε</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="821"/>
+        <location filename="../src/app/qgisapp.cpp" line="826"/>
         <source>Ctrl+Shift+I</source>
         <comment>Click on features to identify them</comment>
         <translatorcomment>Κλίκ στα στοιχέια για να τα ταυτοποιήσετε</translatorcomment>
         <translation>Ctrl+Shift+I</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="827"/>
+        <location filename="../src/app/qgisapp.cpp" line="832"/>
         <source>Ctrl+Shift+M</source>
         <comment>Measure a Line</comment>
         <translatorcomment>Μέτρηση μιας γραμμής</translatorcomment>
         <translation>Ctrl+Shift+I</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="832"/>
+        <location filename="../src/app/qgisapp.cpp" line="837"/>
         <source>Ctrl+Shift+J</source>
         <comment>Measure an Area</comment>
         <translatorcomment>Μέτρηση μιας περιοχής</translatorcomment>
         <translation>Ctrl+Shift+J</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="841"/>
+        <location filename="../src/app/qgisapp.cpp" line="846"/>
         <source>Ctrl+Shift+F</source>
         <comment>Zoom to Full Extents</comment>
         <translatorcomment>Μεγέθυνση σε έκταση πλήρους προβολής</translatorcomment>
         <translation>Ctrl+Shift+F</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="883"/>
+        <location filename="../src/app/qgisapp.cpp" line="888"/>
         <source>Ctrl+Shift+B</source>
         <comment>Show Bookmarks</comment>
         <translatorcomment>Εμφάνιση σελιδοδεικτών</translatorcomment>
         <translation>Ctrl+Shift+B</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="895"/>
+        <location filename="../src/app/qgisapp.cpp" line="900"/>
         <source>Ctrl+Shift+N</source>
         <comment>Create a New Vector Layer</comment>
         <translatorcomment>Δημιουργία νέου διανυσματικού επιπέδου</translatorcomment>
         <translation>Ctrl+Shift+N</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="900"/>
+        <location filename="../src/app/qgisapp.cpp" line="905"/>
         <source>Ctrl+Shift+V</source>
         <comment>Add a Vector Layer</comment>
         <translatorcomment>Προσθήκη Διανυσματικού Επιπέδου</translatorcomment>
         <translation>Ctrl+Shift+V</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="905"/>
+        <location filename="../src/app/qgisapp.cpp" line="910"/>
         <source>Ctrl+Shift+R</source>
         <comment>Add a Raster Layer</comment>
         <translatorcomment>Προσθήκη Επιπέδου Raster</translatorcomment>
         <translation>Ctrl+Shift+R</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="910"/>
+        <location filename="../src/app/qgisapp.cpp" line="915"/>
         <source>Ctrl+Shift+D</source>
         <comment>Add a PostGIS Layer</comment>
         <translatorcomment>Προσθήκη Επιπέδου Ctrl+Shift+P</translatorcomment>
         <translation>Ctrl+Shift+D</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="922"/>
+        <location filename="../src/app/qgisapp.cpp" line="927"/>
         <source>Ctrl+Shift+L</source>
         <comment>Add a SpatiaLite Layer</comment>
         <translatorcomment>Προσθήκη ενός επιπέδου SpatialLite</translatorcomment>
         <translation>Ctrl+Shift+L</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="934"/>
+        <location filename="../src/app/qgisapp.cpp" line="939"/>
         <source>Ctrl+Shift+W</source>
         <comment>Add a Web Mapping Server Layer</comment>
         <translatorcomment>Προσθήκη ενός Επιπέδου Web Mapping Server</translatorcomment>
         <translation>Ctrl+Shift+W</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="984"/>
+        <location filename="../src/app/qgisapp.cpp" line="989"/>
         <source>Ctrl+Shift+O</source>
         <comment>Add current layer to overview map</comment>
         <translatorcomment>Προσθήκη τρέχοντος επιπέδου στο χάρτη επισκόπησης</translatorcomment>
         <translation>Ctrl+Shift+O</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1000"/>
+        <location filename="../src/app/qgisapp.cpp" line="1005"/>
         <source>Ctrl+Shift+U</source>
         <comment>Show all layers</comment>
         <translatorcomment>Εμφάνιση όλων των επιπέδων</translatorcomment>
         <translation>Ctrl+Shift+U</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1005"/>
+        <location filename="../src/app/qgisapp.cpp" line="1010"/>
         <source>Ctrl+Shift+H</source>
         <comment>Hide all layers</comment>
         <translatorcomment>Απόκρυψη όλων των επιπέδων</translatorcomment>
         <translation>Ctrl+Shift+H</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1024"/>
+        <location filename="../src/app/qgisapp.cpp" line="1029"/>
         <source>Ctrl+Shift+P</source>
         <comment>Set project properties</comment>
         <translatorcomment>Ορισμός Ρυθμίσεων Project</translatorcomment>
         <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1595"/>
-        <location filename="../src/app/qgisapp.cpp" line="5062"/>
+        <location filename="../src/app/qgisapp.cpp" line="1600"/>
+        <location filename="../src/app/qgisapp.cpp" line="5067"/>
         <source>Coordinate:</source>
         <translation>Συντεταγμένη:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1596"/>
+        <location filename="../src/app/qgisapp.cpp" line="1601"/>
         <source>Current map coordinate</source>
         <translation>Τρέχουσα συντεταγμένη χάρτη</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1610"/>
+        <location filename="../src/app/qgisapp.cpp" line="1615"/>
         <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved. It also allows editing to set the canvas center to a given position.</source>
         <translation>Εμφανίζει τις συντεταγμένες του χάρτη κατά την τρέχουσα θέση του δρομέα. Η οθόνη ενημερώνεται συνεχώς με τη μετακίνηση του ποντικιού. Επιτρέπει επίσης την επεξεργασία για να ρυθμίσετε το κέντρο καμβά σε μια δεδομένη θέση.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1614"/>
+        <location filename="../src/app/qgisapp.cpp" line="1619"/>
         <source>Current map coordinate (formatted as x,y)</source>
         <translation>Τρέχουσες συντεταγμένες χάρτη (σε format x,y)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2176"/>
+        <location filename="../src/app/qgisapp.cpp" line="2181"/>
         <source>
 This copy of QGIS has been built with PostgreSQL support.</source>
         <translation>
 Αυτό το αντίγραφο της QGIS υποστηρίζει PostgreSQL.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2178"/>
+        <location filename="../src/app/qgisapp.cpp" line="2183"/>
         <source>
 This copy of QGIS has been built without PostgreSQL support.</source>
         <translation>
 Αυτό το αντίγραφο της QGIS ΔΕΝ υποστηρίζει PostgreSQL.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2188"/>
+        <location filename="../src/app/qgisapp.cpp" line="2193"/>
         <source>
 This copy of QGIS has been built with QWT support (%1).</source>
         <translation>
 Αυτό το αντίγραφο της QGIS υποστηρίζει QWT support (%1).</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2190"/>
+        <location filename="../src/app/qgisapp.cpp" line="2195"/>
         <source>
 This copy of QGIS has been built without QWT support.</source>
         <translation>
 Αυτό το αντίγραφο της QGIS ΔΕΝ υποστηρίζει QWT support.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2194"/>
+        <location filename="../src/app/qgisapp.cpp" line="2199"/>
         <source>
 This copy of QGIS writes debugging output.</source>
         <translation>
 Αυτό το αντίγραφο QGIS αποθηκεύει λεπτομέρειες debugging ως έξοδο.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2409"/>
+        <location filename="../src/app/qgisapp.cpp" line="2414"/>
         <source>%1 is not a valid or recognized data source</source>
         <translation>%1 δεν είναι έγκυρη ή αναγνωρισμένη πηγή δεδομένων raster</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2935"/>
-        <location filename="../src/app/qgisapp.cpp" line="3067"/>
-        <location filename="../src/app/qgisapp.cpp" line="3129"/>
+        <location filename="../src/app/qgisapp.cpp" line="2940"/>
+        <location filename="../src/app/qgisapp.cpp" line="3072"/>
+        <location filename="../src/app/qgisapp.cpp" line="3134"/>
         <source>QGis files (*.qgs)</source>
         <translation>QGis αρχεία (*.qgs)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3098"/>
-        <location filename="../src/app/qgisapp.cpp" line="3149"/>
+        <location filename="../src/app/qgisapp.cpp" line="3103"/>
+        <location filename="../src/app/qgisapp.cpp" line="3154"/>
         <source>Saved project to: %1</source>
         <translation>Αποθηκευμένα project: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3110"/>
-        <location filename="../src/app/qgisapp.cpp" line="3156"/>
+        <location filename="../src/app/qgisapp.cpp" line="3115"/>
+        <location filename="../src/app/qgisapp.cpp" line="3161"/>
         <source>Unable to save project %1</source>
         <translation>Αδύνατη η αποθήκευση του project %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3331"/>
+        <location filename="../src/app/qgisapp.cpp" line="3336"/>
         <source>Saved map image to %1</source>
         <translation>Αποθηκεύτηκε εικόνα χάρτη στο %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4228"/>
+        <location filename="../src/app/qgisapp.cpp" line="4233"/>
         <source>Could not commit changes to layer %1
 
 Errors: %2
@@ -5891,44 +5920,44 @@ Errors: %2
 Σφάλματα: %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4585"/>
+        <location filename="../src/app/qgisapp.cpp" line="4590"/>
         <source>QGIS - Changes in SVN since last release</source>
         <translation>QGIS - Αλλαγές στην SVN από την τελευταία έκδοση</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4625"/>
+        <location filename="../src/app/qgisapp.cpp" line="4630"/>
         <source>Unable to communicate with QGIS Version server
 %1</source>
         <translation>Αδύνατη η επικοινωνία με διακομιστη εκδόσεων QGIS
 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5646"/>
+        <location filename="../src/app/qgisapp.cpp" line="5651"/>
         <source>%1 is not a valid or recognized raster data source</source>
         <translation>Το %1 δεν είναι έγκυρη ή αναγνωρισμένη πηγή δεδομένων raster</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5809"/>
+        <location filename="../src/app/qgisapp.cpp" line="5814"/>
         <source>%1 is not a supported raster data source</source>
         <translation>Το %1 δεν είναι μια υποστηριζόμενη πηγή raster δεδομένων</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5943"/>
+        <location filename="../src/app/qgisapp.cpp" line="5948"/>
         <source>&lt;p&gt;This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.&lt;p&gt;Even though QGIS developers try to maintain backwards compatibility, some of the information from the old project file might be lost. To improve the quality of QGIS, we appreciate if you file a bug report at %3. Be sure to include the old project file, and state the version of QGIS you used to discover the error.&lt;p&gt;To remove this warning when opening an older project file, uncheck the box &apos;%5&apos; in the %4 menu.&lt;p&gt;Version of the project file: %1&lt;br&gt;Current version of QGIS: %2</source>
         <translation>&lt;p&gt;Το αρχείο του Project σώθηκε από μια παλαιότερη έκδοση του QGIS. Κατά την αποθήκευση αυτού του αρχείου Project, το  QGIS θα το ενημερώσει στην πιο πρόσφατη έκδοση, πιθανώς καθιστώντας το άχρηστο για τις παλαιότερες εκδόσεις του QGIS. &lt;p&gt; Μολονότι οι QGIS προγραμματιστές προσπαθούν να διατηρήσουν την προς τα πίσω συμβατότητα, ορισμένες από τις πληροφορίες από το παλιό αρχείο του Project μπορεί να χαθούν . Για να βελτιωθεί η ποιότητα των QGIS, θα εκτιμούσαμε αν αναφέρατε το σφάλμα στο %3. Βεβαιωθείτε ότι έχετε συμπεριλάβει το παλιό αρχείο του Project, και την έκδοση του QGIS που χρησιμοποιήσατε για να ανακαλύψετε το σφάλμα. &lt;p&gt; Για να καταργήσετε αυτήν την προειδοποίηση όταν ανοίγει ένα παλαιότερο αρχείο Project, απο-επιλέξατε στη θέση &apos;%5&apos; στο μενού %4. &lt;p&gt; Έκδοση του αρχείου Project: %1 &lt;br&gt; Τρέχουσα έκδοση του QGIS: %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2005"/>
+        <location filename="../src/app/qgisapp.cpp" line="2010"/>
         <source>Layers</source>
         <translation>Επίπεδα</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3637"/>
+        <location filename="../src/app/qgisapp.cpp" line="3642"/>
         <source>Delete features</source>
         <translation>Διαγραφή χαρακτηριστικών</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="3637"/>
+        <location filename="../src/app/qgisapp.cpp" line="3642"/>
         <source>Delete %n feature(s)?</source>
         <comment>number of features to delete</comment>
         <translatorcomment>Πλήθος χαρακτηριστικών προς διαγραφή</translatorcomment>
@@ -5938,67 +5967,67 @@ Errors: %2
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="921"/>
+        <location filename="../src/app/qgisapp.cpp" line="926"/>
         <source>Add SpatiaLite Layer...</source>
         <translation>Προσθήκη SpatiaLite Επιπέδου...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="923"/>
+        <location filename="../src/app/qgisapp.cpp" line="928"/>
         <source>Add a SpatiaLite Layer</source>
         <translation>Προσθέστε SpatiaLite Επίπεδο</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2182"/>
+        <location filename="../src/app/qgisapp.cpp" line="2187"/>
         <source>
 This copy of QGIS has been built with SpatiaLite support.</source>
         <translation>
 Αυτό το αντίγραφο του QGIS έχει χτιστεί με υποστήριξη SpatiaLite.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2184"/>
+        <location filename="../src/app/qgisapp.cpp" line="2189"/>
         <source>
 This copy of QGIS has been built without SpatiaLite support.</source>
         <translation>
 Αυτό το αντίγραφο του QGIS έχει χτιστεί ΧΩΡΙΣ υποστήριξη SpatiaLite.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="860"/>
+        <location filename="../src/app/qgisapp.cpp" line="865"/>
         <source>Zoom Next</source>
         <translation>Zoom στο επόμενο</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="862"/>
+        <location filename="../src/app/qgisapp.cpp" line="867"/>
         <source>Zoom to Forward Extent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="755"/>
-        <location filename="../src/app/qgisapp.cpp" line="757"/>
+        <location filename="../src/app/qgisapp.cpp" line="760"/>
+        <location filename="../src/app/qgisapp.cpp" line="762"/>
         <source>Simplify Feature</source>
         <translation>Απλοποίηση Στοιχείου</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="761"/>
+        <location filename="../src/app/qgisapp.cpp" line="766"/>
         <source>Delete Ring</source>
         <translation>Διαγραφη Δακτυλίου</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="767"/>
+        <location filename="../src/app/qgisapp.cpp" line="772"/>
         <source>Delete Part</source>
         <translation>Διαγραφή τμήματος</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1040"/>
+        <location filename="../src/app/qgisapp.cpp" line="1045"/>
         <source>Configure shortcuts...</source>
         <translation>Ρύθμιση Συντομεύσεων...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1042"/>
+        <location filename="../src/app/qgisapp.cpp" line="1047"/>
         <source>Configure shortcuts</source>
         <translation>Ρύθμιση Συντομεύσεων</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1495"/>
+        <location filename="../src/app/qgisapp.cpp" line="1500"/>
         <source>Advanced Digitizing</source>
         <translation>Προηγμένη Ψηδιοποίηση</translation>
     </message>
@@ -6093,55 +6122,59 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="132"/>
-        <location filename="../src/app/qgsabout.cpp" line="181"/>
+        <location filename="../src/app/qgsabout.cpp" line="185"/>
         <source>Name</source>
         <translation>Όνομα</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="133"/>
-        <location filename="../src/app/qgsabout.cpp" line="182"/>
+        <location filename="../src/app/qgsabout.cpp" line="186"/>
         <source>Website</source>
         <translation>Ιστοσελίδα</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsabout.cpp" line="177"/>
+        <location filename="../src/app/qgsabout.cpp" line="181"/>
         <source>&lt;p&gt;The following individuals and institutions have contributed money to fund QGIS development and other project costs&lt;/p&gt;</source>
         <translation>&lt;p&gt; τα ακόλουθα άτομα και ιδρύματα έχουν συμβάλει χρήματα για τη χρηματοδότηση της ανάπτυξης QGIS και σε άλλες δαπάνες του έργου &lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsabout.cpp" line="226"/>
+        <location filename="../src/app/qgsabout.cpp" line="230"/>
         <source>&lt;p&gt;The following have contributed to QGIS by translating the user interface or documentation&lt;/p&gt;</source>
         <translation>&lt;p&gt; Οι ακόλουθοι συνέβαλαν στο QGIS μεταφράζοντας το περιβάλλον εργασίας ή τα έγγραφα βοηθείας &lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsabout.cpp" line="230"/>
+        <location filename="../src/app/qgsabout.cpp" line="234"/>
         <source>Language</source>
         <translation>Γλώσσα</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsabout.cpp" line="231"/>
+        <location filename="../src/app/qgsabout.cpp" line="235"/>
         <source>Names</source>
         <translation>Ονόματα</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsabout.cpp" line="284"/>
+        <location filename="../src/app/qgsabout.cpp" line="288"/>
         <source>Available QGIS Data Provider Plugins</source>
         <translation>Διαθέσιμα Πρόσθετα για Παρόχους δεδομένων για το QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsabout.cpp" line="287"/>
+        <location filename="../src/app/qgsabout.cpp" line="291"/>
         <source>Available Qt Database Plugins</source>
         <translation>Διαθέσιμα Πρόσθετα για βάσεις δεδομένων Qt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsabout.cpp" line="293"/>
+        <location filename="../src/app/qgsabout.cpp" line="297"/>
         <source>Available Qt Image Plugins</source>
         <translation>Διαθέσιμα Πρόσθετα για εικόνες Qt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsabout.cpp" line="294"/>
+        <location filename="../src/app/qgsabout.cpp" line="298"/>
+        <source>Qt Image Plugin Search Paths &lt;br&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Qt Image Plugin Search Paths	&lt;br&gt;</source>
-        <translation>Μονοπάτια Αναζήτησης Πρόσθετου εικόνων Qt | &lt;br&gt;</translation>
+        <translation type="obsolete">Μονοπάτια Αναζήτησης Πρόσθετου εικόνων Qt | &lt;br&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="217"/>
@@ -6502,10 +6535,8 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsAttributeTableDialog</name>
     <message>
-        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="78"/>
-        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="85"/>
         <source>Attribute table - %1</source>
-        <translation>Ιδιότητα πίνακα - %1</translation>
+        <translation type="obsolete">Ιδιότητα πίνακα - %1</translation>
     </message>
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="522"/>
@@ -6528,41 +6559,63 @@ p, li { white-space: pre-wrap; }
         <translation>Σφάλμα κατά την αναζήτηση</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="582"/>
         <source>Found %d matching features.</source>
-        <translation>
+        <translation type="obsolete">
             <numerusform>Βρέθηκαν %d στοιχεία που ταιριάζουν</numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="584"/>
         <source>No matching features found.</source>
-        <translation>Δεν βρέθηκαν στοιχεία που να ταιριάζουν.</translation>
+        <translation type="obsolete">Δεν βρέθηκαν στοιχεία που να ταιριάζουν.</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="78"/>
+        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="85"/>
+        <source>Attribute table - %1 (%n Feature(s))</source>
+        <comment>feature count</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="584"/>
+        <source>Attribute table - %1 (%n matching features)</source>
+        <comment>matching features</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
     </message>
     <message>
-        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="676"/>
+        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="588"/>
+        <source>Attribute table - %1 (No matching features)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="679"/>
         <source>Attribute added</source>
         <translation>Προστέθηκε Ιδιότητα</translation>
     </message>
     <message>
-        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="683"/>
-        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="724"/>
+        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="686"/>
+        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="727"/>
         <source>Attribute Error</source>
         <translation>Σφάλμα Ιδιότητας</translation>
     </message>
     <message>
-        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="683"/>
+        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="686"/>
         <source>The attribute could not be added to the layer</source>
         <translation>Το χαρακτηριστικό δεν μπόρεσε να προστεθεί στο επίπεδο</translation>
     </message>
     <message>
-        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="707"/>
+        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="710"/>
         <source>Deleted attribute</source>
         <translation>Διαγραμμένη Ιδιότητα</translation>
     </message>
     <message>
-        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="724"/>
+        <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="727"/>
         <source>The attribute(s) could not be deleted</source>
         <translation>Το χαρακτηριστικό (α) δεν μπόρεσαν να διαγραφούν</translation>
     </message>
@@ -6760,8 +6813,8 @@ Error was:%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsattributetypeedit.ui" line="14"/>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="560"/>
+        <location filename="../src/ui/qgsattributetypeedit.ui" line="14"/>
         <source>Attribute Edit Dialog</source>
         <translation type="unfinished"></translation>
     </message>
@@ -8942,8 +8995,8 @@ Error was:%2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="45"/>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="353"/>
+        <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="45"/>
         <source>Change</source>
         <translation type="unfinished"></translation>
     </message>
@@ -14903,24 +14956,24 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="664"/>
-        <location filename="../src/app/legend/qgslegend.cpp" line="675"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="674"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="685"/>
         <source>Stop editing</source>
         <translation type="unfinished">Τερματισμός επεξεργασίας</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="665"/>
-        <location filename="../src/app/legend/qgslegend.cpp" line="676"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="675"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="686"/>
         <source>Do you want to save the changes to layer %1?</source>
         <translation type="unfinished">Θέλετε να αποθηκεύσετε τις αλλαγές στο %1 επίπεδο;</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="1672"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="1688"/>
         <source>No Layer Selected</source>
         <translation type="unfinished">Κανένα επίπεδο δεν έχει επιλεγεί</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="1673"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="1689"/>
         <source>To open an attribute table, you must select a vector layer in the legend</source>
         <translation type="unfinished"></translation>
     </message>
@@ -14954,12 +15007,12 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="427"/>
-        <source>Save as shapefile...</source>
+        <source>Save as...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="430"/>
-        <source>Save selection as shapefile...</source>
+        <source>Save selection as...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -14968,27 +15021,29 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="514"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="518"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="598"/>
         <source>Save layer as...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="550"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="546"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="634"/>
         <source>Select the coordinate reference system for the saved shapefile. The data points will be transformed from the layer coordinate reference system.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="584"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="668"/>
         <source>Saving done</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="584"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="668"/>
         <source>Export to Shapefile has been completed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegendlayer.cpp" line="588"/>
+        <location filename="../src/app/legend/qgslegendlayer.cpp" line="672"/>
         <source>Save error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -16751,6 +16806,29 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsOGRSublayersDialog</name>
+    <message>
+        <location filename="../src/app/ogr/qgsogrsublayersdialog.cpp" line="26"/>
+        <source>Layer ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/ogr/qgsogrsublayersdialog.cpp" line="26"/>
+        <source>Layer name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/ogr/qgsogrsublayersdialog.cpp" line="26"/>
+        <source>Nb of features</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/ogr/qgsogrsublayersdialog.cpp" line="26"/>
+        <source>Geometry type</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsOGRSublayersDialogBase</name>
     <message>
         <location filename="../src/ui/qgsogrsublayersdialogbase.ui" line="13"/>
@@ -17229,21 +17307,21 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsOptions</name>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="290"/>
-        <location filename="../src/app/qgsoptions.cpp" line="297"/>
-        <location filename="../src/app/qgsoptions.cpp" line="587"/>
+        <location filename="../src/app/qgsoptions.cpp" line="291"/>
+        <location filename="../src/app/qgsoptions.cpp" line="298"/>
+        <location filename="../src/app/qgsoptions.cpp" line="589"/>
         <source>Semi transparent circle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="291"/>
-        <location filename="../src/app/qgsoptions.cpp" line="301"/>
-        <location filename="../src/app/qgsoptions.cpp" line="591"/>
+        <location filename="../src/app/qgsoptions.cpp" line="292"/>
+        <location filename="../src/app/qgsoptions.cpp" line="302"/>
+        <location filename="../src/app/qgsoptions.cpp" line="593"/>
         <source>Cross</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="240"/>
+        <location filename="../src/app/qgsoptions.cpp" line="241"/>
         <source>Detected active locale on your system: %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -17263,66 +17341,66 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="260"/>
+        <location filename="../src/app/qgsoptions.cpp" line="261"/>
         <source>To vertex</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="261"/>
+        <location filename="../src/app/qgsoptions.cpp" line="262"/>
         <source>To segment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="262"/>
+        <location filename="../src/app/qgsoptions.cpp" line="263"/>
         <source>To vertex and segment</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="292"/>
-        <location filename="../src/app/qgsoptions.cpp" line="305"/>
-        <location filename="../src/app/qgsoptions.cpp" line="595"/>
+        <location filename="../src/app/qgsoptions.cpp" line="293"/>
+        <location filename="../src/app/qgsoptions.cpp" line="306"/>
+        <location filename="../src/app/qgsoptions.cpp" line="597"/>
         <source>None</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="792"/>
+        <location filename="../src/app/qgsoptions.cpp" line="794"/>
         <source>Choose a directory</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="270"/>
-        <location filename="../src/app/qgsoptions.cpp" line="279"/>
+        <location filename="../src/app/qgsoptions.cpp" line="271"/>
+        <location filename="../src/app/qgsoptions.cpp" line="280"/>
         <source>map units</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="274"/>
-        <location filename="../src/app/qgsoptions.cpp" line="283"/>
+        <location filename="../src/app/qgsoptions.cpp" line="275"/>
+        <location filename="../src/app/qgsoptions.cpp" line="284"/>
         <source>pixels</source>
         <translation type="unfinished">pixels</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="316"/>
+        <location filename="../src/app/qgsoptions.cpp" line="317"/>
         <source>Central point (fastest)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="317"/>
+        <location filename="../src/app/qgsoptions.cpp" line="318"/>
         <source>Chain (fast)</source>
         <translation type="unfinished">Αλυσίδα (γρήγορη)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="318"/>
+        <location filename="../src/app/qgsoptions.cpp" line="319"/>
         <source>Popmusic tabu chain (slow)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="319"/>
+        <location filename="../src/app/qgsoptions.cpp" line="320"/>
         <source>Popmusic tabu (slow)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="320"/>
+        <location filename="../src/app/qgsoptions.cpp" line="321"/>
         <source>Popmusic chain (very slow)</source>
         <translation type="unfinished"></translation>
     </message>
@@ -17400,92 +17478,97 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="378"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="368"/>
+        <source>Add new layers to selected group</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="385"/>
         <source>Rendering behavior</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="384"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="391"/>
         <source>By default new la&amp;yers added to the map should be displayed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="391"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="398"/>
         <source>Number of features to draw before updating the display</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="398"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="405"/>
         <source>Map display will be updated (drawn) after this many features have been read from the data source</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="411"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="418"/>
         <source>&lt;b&gt;Note:&lt;/b&gt; Use zero to prevent display updates until all features have been rendered</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="418"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="425"/>
         <source>Use render caching where possible to speed up redraws</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="428"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="435"/>
         <source>Rendering quality</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="437"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="444"/>
         <source>Make lines appear less jagged at the expense of some drawing performance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="444"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="451"/>
         <source>Selecting this will unselect the &apos;make lines less&apos; jagged toggle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="447"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="454"/>
         <source>Fix problems with incorrectly filled polygons</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="457"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="464"/>
         <source>SVG paths</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="463"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="470"/>
         <source>Path(s) to search for Scalable Vector Graphic (SVG) symbols</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="655"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="662"/>
         <source>Preferred angle units</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="662"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="669"/>
         <source>Degrees</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="669"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="676"/>
         <source>Radians</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="676"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="683"/>
         <source>Gon</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="844"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="851"/>
         <source>Line color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1405"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1412"/>
         <source>WMS search address</source>
         <translation type="unfinished"></translation>
     </message>
@@ -17495,142 +17578,142 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="686"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="693"/>
         <source>Panning and zooming</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="696"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="703"/>
         <source>Zoom</source>
         <translation type="unfinished">Μεγέθυνση</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="701"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="708"/>
         <source>Zoom and recenter</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="706"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="713"/>
         <source>Zoom to mouse cursor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="711"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="718"/>
         <source>Nothing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="719"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="726"/>
         <source>Zoom factor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="726"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="733"/>
         <source>Mouse wheel action</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="575"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="582"/>
         <source>Open feature form, if a single feature is identified</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="585"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="592"/>
         <source>Measure tool</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="601"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="608"/>
         <source>Rubberband color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="591"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="598"/>
         <source>Ellipsoid for distance calculations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="634"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="641"/>
         <source>Preferred measurements units</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="641"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="648"/>
         <source>Meters</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="648"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="655"/>
         <source>Feet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="532"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="539"/>
         <source>&lt;b&gt;Note:&lt;/b&gt; Specify the search radius as a percentage of the map width</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="542"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="549"/>
         <source>Search radius for identifying features and displaying map tips</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="549"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="556"/>
         <source>%</source>
         <translation type="unfinished">%</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="568"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="575"/>
         <source>Mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="821"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="828"/>
         <source>Rubberband</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="827"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="834"/>
         <source>Line width</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="834"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="841"/>
         <source>Line width in pixels</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="867"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="874"/>
         <source>Snapping</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="873"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="880"/>
         <source>Default snap mode</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1000"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1007"/>
         <source>Vertex markers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1006"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1013"/>
         <source>Show markers only for selected features</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1013"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1020"/>
         <source>Marker style</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1056"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1063"/>
         <source>Marker size</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1141"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1148"/>
         <source>Default Coordinate Reference System</source>
         <translation type="unfinished"></translation>
     </message>
@@ -17660,22 +17743,22 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1131"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1138"/>
         <source>Select Global Default ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1160"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1167"/>
         <source>Prompt for CRS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1167"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1174"/>
         <source>Project wide default CRS will be used</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1174"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1181"/>
         <source>Global default CRS displa&amp;yed below will be used</source>
         <translation type="unfinished"></translation>
     </message>
@@ -17685,78 +17768,78 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1191"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1198"/>
         <source>Override system locale</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="503"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="510"/>
         <source>Compatibility</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="509"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="516"/>
         <source>Use new generation symbology for rendering</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1200"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1207"/>
         <source>Locale to use instead</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1210"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1217"/>
         <source>&lt;b&gt;Note:&lt;/b&gt; Enabling / changing overide on local requires an application restart</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1236"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1243"/>
         <source>Additional Info</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1242"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1249"/>
         <source>Detected active locale on your system:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1363"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1370"/>
         <source>Exclude URLs (starting with):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1277"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1284"/>
         <source>Use proxy for web access</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1289"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1296"/>
         <source>Host</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1299"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1306"/>
         <source>Port</source>
         <translation type="unfinished">Θύρα</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1309"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1316"/>
         <source>User</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1316"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1330"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1323"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1337"/>
         <source>Leave this blank if no proxy username / password are required</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1323"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1330"/>
         <source>Password</source>
         <translation type="unfinished">Κωδικός πρόσβασης</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1079"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1086"/>
         <source>Enter attribute values</source>
         <translation type="unfinished"></translation>
     </message>
@@ -17766,49 +17849,49 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished">Επιλογές</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="523"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="530"/>
         <source>Identify</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="903"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="910"/>
         <source>Default snapping tolerance</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="933"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="940"/>
         <source>Search radius for vertex edits</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1085"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1092"/>
         <source>Suppress attributes pop-up windows after each created feature</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1150"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1157"/>
         <source>When a new layer is created, or when a layer is loaded that has no coordinate reference system (CRS)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1261"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1268"/>
         <source>Timeout for network requests (ms):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1340"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1347"/>
         <source>Proxy type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="483"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1370"/>
-        <source>Add</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="490"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1377"/>
+        <source>Add</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="497"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1384"/>
         <source>Remove</source>
         <translation type="unfinished">Αφαιρέστε</translation>
     </message>
@@ -17818,24 +17901,24 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="769"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="776"/>
         <source>Position</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="775"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="782"/>
         <source>Placement algorithm:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="970"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="984"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="977"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="991"/>
         <source>map units</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="975"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="989"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="982"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="996"/>
         <source>pixels</source>
         <translation type="unfinished">pixels</translation>
     </message>
@@ -19315,111 +19398,88 @@ SQL: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="397"/>
-        <source>No PostGIS Support!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="398"/>
-        <source>Your database has no working PostGIS support.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="412"/>
-        <source>No GEOS Support!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="413"/>
-        <source>Your PostGIS installation has no GEOS support.
-Feature selection and identification will not work properly.
-Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1125"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1132"/>
         <source>No suitable key column in table</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1226"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1233"/>
         <source>and </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1275"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1282"/>
         <source>Unable to find a key column</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1416"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1423"/>
         <source>and is suitable.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1422"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1429"/>
         <source> and has a suitable constraint)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1424"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1431"/>
         <source> and does not have a suitable constraint)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1527"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1534"/>
         <source>No suitable key column in view</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2332"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2339"/>
         <source>Error while adding features</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2372"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2379"/>
         <source>Error while deleting features</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2432"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2439"/>
         <source>Error while adding attributes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2477"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2484"/>
         <source>Error while deleting attributes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2545"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2552"/>
         <source>Error while changing attributes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2631"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2638"/>
         <source>Error while changing geometry values</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3026"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3033"/>
         <source>Unknown geometry type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3034"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3041"/>
         <source>Qgis was unable to determine the type and srid of column %1 in %2. The database communication log was:
 %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3038"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3045"/>
         <source>Unable to get feature type and srid</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.h" line="516"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.h" line="517"/>
         <source>unexpected PostgreSQL error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -19454,47 +19514,47 @@ Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1201"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1208"/>
         <source>The unique index on column &apos;%1&apos; is unsuitable because Qgis does not currently support non-int4 type columns as a key into the table.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1232"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1239"/>
         <source>The unique index based on columns %1 is unsuitable because Qgis does not currently support multiple columns as a key into the table.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1412"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1419"/>
         <source>&apos;%1&apos; derives from &apos;%2.%3.%4&apos; </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1420"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1427"/>
         <source>and is not suitable (type is %1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1508"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1515"/>
         <source>Note: &apos;%1&apos; initially appeared suitable but does not contain unique data, so is not suitable.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1519"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1526"/>
         <source>The view &apos;%1.%2&apos; has no column suitable for use as a unique key.
 Qgis requires that the view has a column that can be used as a unique key. Such a column should be derived from a table column of type int4 and be a primary key, have a unique constraint on it, or be a PostgreSQL oid column. To improve performance the column should also be indexed.
 The view you selected has the following columns, none of which satisfy the above conditions:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3027"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3034"/>
         <source>Column %1 in %2 has a geometry type of %3, which Qgis does not currently support.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1126"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1133"/>
         <source>The table has no column suitable for use as a key.
 
 Qgis requires that the table either has a column of type
@@ -19502,6 +19562,32 @@ int4 with a unique constraint on it (which includes the
 primary key), has a PostgreSQL oid column or has a ctid
 column with a 16bit block number.
 </source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsPostgresProvider::Conn</name>
+    <message>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="397"/>
+        <source>No PostGIS Support!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="398"/>
+        <source>Your database has no working PostGIS support.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="412"/>
+        <source>No GEOS Support!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="413"/>
+        <source>Your PostGIS installation has no GEOS support.
+Feature selection and identification will not work properly.
+Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -22108,6 +22194,9 @@ The error was:
 SQL: %2</source>
         <translation type="unfinished"></translation>
     </message>
+</context>
+<context>
+    <name>QgsSpatiaLiteProvider::SqliteHandles</name>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1479"/>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="1490"/>
@@ -23021,8 +23110,8 @@ Do you want to overwrite the [%2] relation?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="61"/>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="37"/>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="61"/>
         <source>Linear</source>
         <translation type="unfinished"></translation>
     </message>
@@ -23272,37 +23361,37 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QgsVectorLayer</name>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2723"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2726"/>
         <source>No renderer object</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2727"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2730"/>
         <source>Classification field not found</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3206"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3209"/>
         <source>ERROR: no provider</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3212"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3215"/>
         <source>ERROR: layer not editable</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3295"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3298"/>
         <source>SUCCESS: attribute %1 was added.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3302"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3305"/>
         <source>ERROR: attribute %1 not added</source>
         <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3226"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3229"/>
         <source>SUCCESS: %n attribute(s) deleted.</source>
         <comment>deleted attributes count</comment>
         <translation type="unfinished">
@@ -23313,7 +23402,7 @@ Should the existing classes be deleted before classification?</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3232"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3235"/>
         <source>ERROR: %n attribute(s) not deleted.</source>
         <comment>not deleted attributes count</comment>
         <translation type="unfinished">
@@ -23324,7 +23413,7 @@ Should the existing classes be deleted before classification?</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3248"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3251"/>
         <source>SUCCESS: %n attribute(s) added.</source>
         <comment>added attributes count</comment>
         <translation type="unfinished">
@@ -23335,7 +23424,7 @@ Should the existing classes be deleted before classification?</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3254"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3257"/>
         <source>ERROR: %n new attribute(s) not added</source>
         <comment>not added attributes count</comment>
         <translation type="unfinished">
@@ -23346,7 +23435,7 @@ Should the existing classes be deleted before classification?</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3364"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3367"/>
         <source>SUCCESS: %n attribute value(s) changed.</source>
         <comment>changed attribute values count</comment>
         <translation type="unfinished">
@@ -23357,7 +23446,7 @@ Should the existing classes be deleted before classification?</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3369"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3372"/>
         <source>ERROR: %n attribute value change(s) not applied.</source>
         <comment>not changed attribute values count</comment>
         <translation type="unfinished">
@@ -23368,7 +23457,7 @@ Should the existing classes be deleted before classification?</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3401"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3404"/>
         <source>SUCCESS: %n feature(s) added.</source>
         <comment>added features count</comment>
         <translation type="unfinished">
@@ -23379,7 +23468,7 @@ Should the existing classes be deleted before classification?</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3406"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3409"/>
         <source>ERROR: %n feature(s) not added.</source>
         <comment>not added features count</comment>
         <translation type="unfinished">
@@ -23390,7 +23479,7 @@ Should the existing classes be deleted before classification?</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3419"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3422"/>
         <source>SUCCESS: %n geometries were changed.</source>
         <comment>changed geometries count</comment>
         <translation type="unfinished">
@@ -23401,7 +23490,7 @@ Should the existing classes be deleted before classification?</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3424"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3427"/>
         <source>ERROR: %n geometries not changed.</source>
         <comment>not changed geometries count</comment>
         <translation type="unfinished">
@@ -23412,7 +23501,7 @@ Should the existing classes be deleted before classification?</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3436"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3439"/>
         <source>SUCCESS: %n feature(s) deleted.</source>
         <comment>deleted features count</comment>
         <translation type="unfinished">
@@ -23423,7 +23512,7 @@ Should the existing classes be deleted before classification?</source>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsvectorlayer.cpp" line="3446"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="3449"/>
         <source>ERROR: %n feature(s) not deleted.</source>
         <comment>not deleted features count</comment>
         <translation type="unfinished">
@@ -23434,7 +23523,7 @@ Should the existing classes be deleted before classification?</source>
         </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorlayer.cpp" line="2717"/>
+        <location filename="../src/core/qgsvectorlayer.cpp" line="2720"/>
         <source>Unknown renderer</source>
         <translation type="unfinished"></translation>
     </message>
