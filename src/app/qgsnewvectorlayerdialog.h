@@ -46,6 +46,8 @@ class QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVectorLayerDial
     void on_mTypeBox_currentIndexChanged( int index );
     void on_pbnChangeSpatialRefSys_clicked();
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void nameChanged( QString );
+    void selectionChanged();
 
   private:
     QPushButton *mOkButton;
