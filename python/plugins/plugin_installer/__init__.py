@@ -15,7 +15,7 @@ def name():
   return "Plugin Installer"
 
 def version():
-  return "Version 1.0.9"
+  return "Version 1.0.10"
 
 def description():
   return "Downloads and installs QGIS python plugins"
