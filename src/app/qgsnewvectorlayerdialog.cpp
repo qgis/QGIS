@@ -57,6 +57,12 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WFlags fl
 
   mCrsId = srs.srsid();
   leSpatialRefSys->setText( srs.toProj4() );
+
+  connect( mNameEdit, SIGNAL( textChanged( QString ) ), this, SLOT( nameChanged( QString ) ) );
+  connect( mAttributeView, SIGNAL( itemSelectionChanged() ), this, SLOT( selectionChanged() ) );
+
+  mAddAttributeButton->setEnabled( false );
+  mRemoveAttributeButton->setEnabled( false );
 }
 
 QgsNewVectorLayerDialog::~QgsNewVectorLayerDialog()
@@ -69,23 +75,24 @@ void QgsNewVectorLayerDialog::on_mTypeBox_currentIndexChanged( int index )
   switch ( index )
   {
     case 0: // Text data
-      mWidth->setValidator( new QIntValidator( 1, 255, this ) );
+      if ( mWidth->text().toInt() < 1 || mWidth->text().toInt() > 255 )
+        mWidth->setText( "80" );
       mPrecision->setEnabled( false );
+      mWidth->setValidator( new QIntValidator( 1, 255, this ) );
       break;
 
     case 1: // Whole number
-      if ( mWidth->text().toInt() > 10 )
+      if ( mWidth->text().toInt() < 1 || mWidth->text().toInt() > 10 )
         mWidth->setText( "10" );
       mPrecision->setEnabled( false );
       mWidth->setValidator( new QIntValidator( 1, 10, this ) );
       break;
 
     case 2: // Decimal number
-      if ( mWidth->text().toInt() > 20 )
+      if ( mWidth->text().toInt() < 1 || mWidth->text().toInt() > 20 )
         mWidth->setText( "20" );
-      mPrecision->setEnabled( false );
-      mWidth->setValidator( new QIntValidator( 1, 20, this ) );
       mPrecision->setEnabled( true );
+      mWidth->setValidator( new QIntValidator( 1, 20, this ) );
       break;
 
     default:
@@ -175,4 +182,14 @@ QString QgsNewVectorLayerDialog::selectedFileFormat() const
   //use userrole to avoid translated type string
   QString myType = mFileFormatComboBox->itemData( mFileFormatComboBox->currentIndex(), Qt::UserRole ).toString();
   return myType;
+}
+
+void QgsNewVectorLayerDialog::nameChanged( QString name )
+{
+  mAddAttributeButton->setDisabled( name.isEmpty() || mAttributeView->findItems( name, Qt::MatchExactly ).size() > 0 );
+}
+
+void QgsNewVectorLayerDialog::selectionChanged()
+{
+  mRemoveAttributeButton->setDisabled( mAttributeView->selectedItems().size() == 0 );
 }
