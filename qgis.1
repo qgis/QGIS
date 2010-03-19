@@ -1,4 +1,4 @@
-.TH QGIS 1 "April 13, 2008"
+.TH QGIS 1 "March 19, 2010"
 .SH NAME
 qgis \- Quantum GIS Geographic Information System 
 .SH SYNOPSIS
@@ -13,6 +13,8 @@ qgis \- Quantum GIS Geographic Information System
 .br
 .B "     [--extent"
 .I xmin,ymin,xmax,ymax]
+.br
+.B "     [--noplugins]"
 .br
 .B "     [--help]"
 .br
@@ -65,7 +67,11 @@ are symbolized, and the view extent is restored.
 .B \--extent xmin,ymin,xmax,ymax
 Set initial map extent by passing coordinates of that rectangle.
 .TP
-.B \--help 
+.B \--noplugins
+.br
+Don't restore plugins on startup. Useful if some third-party plugins make QGIS crash during startup.
+.TP
+.B \--help
 .br 
 Display brief usage help.
 .TP

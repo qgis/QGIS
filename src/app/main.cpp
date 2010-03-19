@@ -92,6 +92,7 @@ void usage( std::string const & appName )
             << "\t[--project projectfile]\tload the given QGIS project\n"
             << "\t[--extent xmin,ymin,xmax,ymax]\tset initial map extent\n"
             << "\t[--nologo]\thide splash screen\n"
+            << "\t[--noplugins]\tdon't restore plugins on startup\n"
             << "\t[--optionspath path]\tuse the given QSettings path\n"
             << "\t[--help]\t\tthis text\n\n"
             << "  FILES:\n"
@@ -267,6 +268,7 @@ int main( int argc, char *argv[] )
   int mySnapshotHeight = 600;
 
   bool myHideSplash = false;
+  bool myRestorePlugins = true;
 
   // This behaviour will set initial extent of map canvas, but only if
   // there are no command line arguments. This gives a usable map
@@ -296,6 +298,7 @@ int main( int argc, char *argv[] )
         /* These options set a flag. */
         {"help", no_argument, 0, '?'},
         {"nologo", no_argument, 0, 'n'},
+        {"noplugins", no_argument, 0, 'P'},
         /* These options don't set a flag.
          *  We distinguish them by their indices. */
         {"snapshot", required_argument, 0, 's'},
@@ -354,6 +357,10 @@ int main( int argc, char *argv[] )
           myProjectFileName = QDir::convertSeparators( QFileInfo( QFile::decodeName( optarg ) ).absoluteFilePath() );
           break;
 
+        case 'P':
+          myRestorePlugins = false;
+          break;
+
         case 'e':
           myInitialExtent = optarg;
           break;
@@ -401,6 +408,10 @@ int main( int argc, char *argv[] )
     else if ( arg == "-nologo" || arg == "-n" )
     {
       myHideSplash = true;
+    }
+    else if ( arg == "--noplugins" || arg == "-P" )
+    {
+      myRestorePlugins = false;
     }
     else if ( i + 1 < argc && ( arg == "--snapshot" || arg == "-s" ) )
     {
@@ -615,7 +626,7 @@ int main( int argc, char *argv[] )
   }
 #endif
 
-  QgisApp *qgis = new QgisApp( mypSplash ); // "QgisApp" used to find canonical instance
+  QgisApp *qgis = new QgisApp( mypSplash, myRestorePlugins ); // "QgisApp" used to find canonical instance
   qgis->setObjectName( "QgisApp" );
 
   /////////////////////////////////////////////////////////////////////

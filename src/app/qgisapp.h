@@ -81,7 +81,7 @@ class QgisApp : public QMainWindow
     Q_OBJECT
   public:
     //! Constructor
-    QgisApp( QSplashScreen *splash, QWidget * parent = 0, Qt::WFlags fl = Qt::Window );
+    QgisApp( QSplashScreen *splash, bool restorePlugins = true, QWidget * parent = 0, Qt::WFlags fl = Qt::Window );
     //! Destructor
     ~QgisApp();
     /**
