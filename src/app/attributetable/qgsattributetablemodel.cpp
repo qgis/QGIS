@@ -220,7 +220,7 @@ void QgsAttributeTableModel::loadLayer()
   }
 
   // not needed when we have featureAdded signal
-  mFeatureCount = pendingFeatureCount;
+  mFeatureCount = mLayer->pendingFeatureCount();
   mFieldCount = mAttributes.size();
 
   if ( ins )

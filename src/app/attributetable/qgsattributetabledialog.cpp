@@ -75,14 +75,14 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   bool myDockFlag = mySettings.value( "/qgis/dockAttributeTable", false ).toBool();
   if ( myDockFlag )
   {
-    mDock = new QgsAttributeTableDock( tr( "Attribute table - %1" ).arg( mLayer->name() ), QgisApp::instance() );
+    mDock = new QgsAttributeTableDock( tr( "Attribute table - %1 (%n Feature(s))", "feature count", mModel->rowCount() ).arg( mLayer->name() ), QgisApp::instance() );
     mDock->setAllowedAreas( Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea );
     mDock->setWidget( this );
     connect( this, SIGNAL( destroyed() ), mDock, SLOT( close() ) );
     QgisApp::instance()->addDockWidget( Qt::BottomDockWidgetArea, mDock );
   }
 
-  setWindowTitle( tr( "Attribute table - %1" ).arg( mLayer->name() ) );
+  setWindowTitle( tr( "Attribute table - %1 (%n Feature(s))", "feature count", mModel->rowCount() ).arg( mLayer->name() ) );
 
   mRemoveSelectionButton->setIcon( getThemeIcon( "/mActionUnselectAttributes.png" ) );
   mSelectedToTopButton->setIcon( getThemeIcon( "/mActionSelectedToTop.png" ) );
@@ -578,12 +578,15 @@ void QgsAttributeTableDialog::doSearch( QString searchString )
   connect( mLayer, SIGNAL( selectionChanged() ), this, SLOT( updateSelectionFromLayer() ) );
 
   QString str;
+  QWidget *w = mDock ? qobject_cast<QWidget*>( mDock ) : qobject_cast<QWidget*>( this );
   if ( mSelectedFeatures.size() )
-    str.sprintf( tr( "Found %d matching features.", "", mSelectedFeatures.size() ).toUtf8(), mSelectedFeatures.size() );
+  {
+    w->setWindowTitle( tr( "Attribute table - %1 (%n matching features)", "matching features", mSelectedFeatures.size() ).arg( mLayer->name() ) );
+  }
   else
-    str = tr( "No matching features found." );
-
-  QgisApp::instance()->statusBar()->showMessage( str );
+  {
+    w->setWindowTitle( tr( "Attribute table - %1 (No matching features)" ).arg( mLayer->name() ) );
+  }
 }
 
 void QgsAttributeTableDialog::search()
