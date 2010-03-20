@@ -1261,6 +1261,7 @@
 		72A892CE0FAF7B9400108152 /* qgsconfigureshortcutsdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72A892CB0FAF7B6100108152 /* qgsconfigureshortcutsdialog.h */; };
 		72AA0BE9107394D900D00B43 /* qgsfieldcalculator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72AA0BE71073949C00D00B43 /* qgsfieldcalculator.cpp */; };
 		72AA0BEA107394D900D00B43 /* qgsfieldcalculator.h in Sources */ = {isa = PBXBuildFile; fileRef = 72AA0BE81073949C00D00B43 /* qgsfieldcalculator.h */; };
+		72AB24BD11550EF2001B5F50 /* qgsnetworkproxyfactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72AB24BB11550EE7001B5F50 /* qgsnetworkproxyfactory.cpp */; };
 		72AF7B1510F8EC6300BD549A /* qgsgpsconnectionregistry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72AF7B0510F8EC1600BD549A /* qgsgpsconnectionregistry.cpp */; };
 		72AF7B1710F8EC6300BD549A /* qgsnmeaconnection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72AF7B0910F8EC1600BD549A /* qgsnmeaconnection.cpp */; };
 		72AF7B1810F8EC8800BD549A /* context.c in Sources */ = {isa = PBXBuildFile; fileRef = 72AF7AF310F8EC1600BD549A /* context.c */; };
@@ -6657,6 +6658,9 @@
 		72AA0BE61073946500D00B43 /* qgsfieldcalculatorbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgsfieldcalculatorbase.ui; path = ../../src/ui/qgsfieldcalculatorbase.ui; sourceTree = SOURCE_ROOT; };
 		72AA0BE71073949C00D00B43 /* qgsfieldcalculator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsfieldcalculator.cpp; path = ../../src/app/qgsfieldcalculator.cpp; sourceTree = SOURCE_ROOT; };
 		72AA0BE81073949C00D00B43 /* qgsfieldcalculator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsfieldcalculator.h; path = ../../src/app/qgsfieldcalculator.h; sourceTree = SOURCE_ROOT; };
+		72AB24BA11550E97001B5F50 /* qgis_fi.ts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgis_fi.ts; path = ../../i18n/qgis_fi.ts; sourceTree = SOURCE_ROOT; };
+		72AB24BB11550EE7001B5F50 /* qgsnetworkproxyfactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsnetworkproxyfactory.cpp; path = ../../src/app/qgsnetworkproxyfactory.cpp; sourceTree = SOURCE_ROOT; };
+		72AB24BC11550EE7001B5F50 /* qgsnetworkproxyfactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsnetworkproxyfactory.h; path = ../../src/app/qgsnetworkproxyfactory.h; sourceTree = SOURCE_ROOT; };
 		72AB64E210DD66B200A7BD3A /* qgis_is.ts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgis_is.ts; path = ../../i18n/qgis_is.ts; sourceTree = SOURCE_ROOT; };
 		72ACC813100E126A00894938 /* r.bilinear.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = r.bilinear.qgm; path = "../../src/plugins/grass/modules-6.4/r.bilinear.qgm"; sourceTree = SOURCE_ROOT; };
 		72ACC814100E126A00894938 /* r.grow.distance.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = r.grow.distance.qgm; path = "../../src/plugins/grass/modules-6.4/r.grow.distance.qgm"; sourceTree = SOURCE_ROOT; };
@@ -8001,6 +8005,8 @@
 				7209E6380F39E57A003DC336 /* qgsmeasuretool.h */,
 				72683FFF0FD6B29100D90FFC /* qgsmergeattributesdialog.h */,
 				726840000FD6B29100D90FFC /* qgsmergeattributesdialog.cpp */,
+				72AB24BB11550EE7001B5F50 /* qgsnetworkproxyfactory.cpp */,
+				72AB24BC11550EE7001B5F50 /* qgsnetworkproxyfactory.h */,
 				7209E63B0F39E57A003DC336 /* qgsnewhttpconnection.cpp */,
 				7209E63C0F39E57A003DC336 /* qgsnewhttpconnection.h */,
 				7209E63D0F39E57A003DC336 /* qgsnumericsortlistviewitem.cpp */,
@@ -10628,6 +10634,7 @@
 				7209EFDB0F39E5D9003DC336 /* qgis_de.ts */,
 				7209EFDC0F39E5D9003DC336 /* qgis_el_GR.ts */,
 				7209EFDD0F39E5D9003DC336 /* qgis_es.ts */,
+				72AB24BA11550E97001B5F50 /* qgis_fi.ts */,
 				7209EFDE0F39E5D9003DC336 /* qgis_fr.ts */,
 				72F8D9460F89264000D10CE5 /* qgis_he.ts */,
 				72745E9C10DEA25C0016D2B0 /* qgis_hr_HR.ts */,
@@ -15757,6 +15764,7 @@
 				72AF7B6610F8F1EB00BD549A /* qwt_polar_plot.h in Sources */,
 				721362EF111720350088753A /* qgsmanageconnectionsdialog.cpp in Sources */,
 				721362F0111720350088753A /* qgsmanageconnectionsdialog.h in Sources */,
+				72AB24BD11550EF2001B5F50 /* qgsnetworkproxyfactory.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -19361,7 +19369,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 12997;
+				QGIS_VERSION_BUILD = 13107;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -19372,7 +19380,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 12997;
+				QGIS_VERSION_BUILD = 13107;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
