@@ -915,7 +915,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Please specify line intersect layer</source>
-        <translation type="unfinished">Podaj liniową warstwę przecięcia</translation>
+        <translation>Podaj liniową warstwę przecięcia</translation>
     </message>
     <message>
         <source>Please specify input unique ID field</source>
@@ -960,15 +960,15 @@ Czy chcesz dodać go do mapy?</translation>
     </message>
     <message>
         <source>Please select the projection system to be used by the output layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Podaj układ odniesienia warstwy wyjściowej</translation>
     </message>
     <message>
         <source>Output layer will be projected from it&apos;s current CRS to the output CRS.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Warstwa wyjsciwoa zostniae ;rzeliczona z biezącego układu współrzędnych  na układ wskazany jako wyjściowy.</translation>
     </message>
     <message>
         <source>No Valid CRS selected</source>
-        <translation type="unfinished">Nie wybrano właściwego układu współrzędnych</translation>
+        <translation>Nie wybrano właściwego układu współrzędnych</translation>
     </message>
     <message>
         <source>Output spatial reference system is not valid</source>
@@ -976,15 +976,15 @@ Czy chcesz dodać go do mapy?</translation>
     </message>
     <message>
         <source>Identical output spatial reference system chosen</source>
-        <translation type="unfinished">Wybrano identyczny układ współrzędnych</translation>
+        <translation>Wybrano identyczny układ współrzędnych</translation>
     </message>
     <message>
         <source>Please specify target vector layer</source>
-        <translation type="unfinished">Podaj docelową warstwę wektorową</translation>
+        <translation>Podaj docelową warstwę wektorową</translation>
     </message>
     <message>
         <source>Please specify join vector layer</source>
-        <translation type="unfinished">Podaj warstwę wektorową do złączenia</translation>
+        <translation>Podaj warstwę wektorową do złączenia</translation>
     </message>
     <message>
         <source>Please specify target join field</source>
@@ -10327,7 +10327,7 @@ p, li { white-space: pre-wrap; }
         <translation>Rozłącz</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="352"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="355"/>
         <source>Connect</source>
         <translation>Połącz</translation>
     </message>
@@ -10350,102 +10350,102 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">Podłączono...</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="350"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="353"/>
         <source>Disconnected...</source>
         <translation>Rozłączono...</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="544"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="547"/>
         <source>Not a vector layer</source>
         <translation>To nie jest warstwa wektorowa</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="545"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="548"/>
         <source>The current layer is not a vector layer</source>
         <translation>Aktywna warstwa nie jest warstwą wektorową</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="555"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="558"/>
         <source>2.5D shape type not supported</source>
         <translation>Geometria 2.5D nie jest wspierana</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="555"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="558"/>
         <source>Adding features to 2.5D shapetypes is not supported yet. Please select a different editable, non 2.5D layer and try again.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="568"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="571"/>
         <source>Multipart shape type not supported</source>
         <translation>Obiekty wieloczęściowe nie są wspierane</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="568"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="571"/>
         <source>Adding features to multipart shapetypes is not supported yet. Please select a different editable, non 2.5D layer and try again.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="580"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="583"/>
         <source>Layer cannot be added to</source>
         <translation>Nie można dodać warstwy do</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="581"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="584"/>
         <source>The data provider for this layer does not support the addition of features.</source>
         <translation>Źródło danych dla tej warstwy nie wspiera dodawania obiektów.</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="588"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="591"/>
         <source>Layer not editable</source>
         <translation>Warstwa nie jest w trybie edycji</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="589"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="592"/>
         <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
         <translation>Nie można edytować warstwy wektorowej. Aby rozpocząć edycję, kliknij prawym przyciskiem myszy na jej nazwie w legendzie i wybierz &apos;Tryb edycji&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="598"/>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="607"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="601"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="610"/>
         <source>Not enough vertices</source>
         <translation>Zbyt mało wierzchołków</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="599"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="602"/>
         <source>Cannot close a line feature until it has at least two vertices.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="608"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="611"/>
         <source>Cannot close a polygon feature until it has at least three vertices.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="652"/>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="801"/>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="818"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="655"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="804"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="821"/>
         <source>Feature added</source>
         <translation>Dodano obiekt</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="770"/>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="777"/>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="784"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="773"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="780"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="787"/>
         <source>Error</source>
         <translation>Błąd</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="770"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="773"/>
         <source>The feature could not be added because removing the polygon intersections would change the geometry type</source>
         <translation>Obiekt nie mógł być dodany ponieważ usunięcie przecięć poligonów zmieniłoby typ geometrii</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="777"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="780"/>
         <source>An error was reported during intersection removal</source>
         <translation>Podczas usuwania przecięć powstał błąd</translation>
     </message>
     <message>
-        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="784"/>
+        <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="787"/>
         <source>Cannot add feature. Unknown WKB type. Choose a different layer and try again.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11153,23 +11153,23 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="500"/>
         <source>Load GCP points</source>
-        <translation type="unfinished">Wczytaj punkty kontrolne</translation>
+        <translation>Wczytaj punkty kontrolne</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="512"/>
         <source>No GCP points to save</source>
-        <translation type="unfinished">Brak punktów kontrolnych do zapisu</translation>
+        <translation>Brak punktów kontrolnych do zapisu</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="517"/>
         <source>Save GCP points</source>
-        <translation type="unfinished">Zapisz punkty kontrolne</translation>
+        <translation>Zapisz punkty kontrolne</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="539"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1242"/>
         <source>Please load raster to be georeferenced</source>
-        <translation type="unfinished">Załaduj raster do georeferencji</translation>
+        <translation>Załaduj raster do georeferencji</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="741"/>
@@ -11190,13 +11190,13 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="884"/>
         <source>Coordinate: </source>
-        <translation type="unfinished">Współrzędne:</translation>
+        <translation>Współrzędne:</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="885"/>
         <source>Current map coordinate</source>
         <translatorcomment>Współrzędne bieżącej mapy?</translatorcomment>
-        <translation type="unfinished">Aktualne współrzędne mapy</translation>
+        <translation>Aktualne współrzędne mapy</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="896"/>
@@ -11261,12 +11261,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1147"/>
         <source>%1</source>
-        <translation type="unfinished">%1</translation>
+        <translation>%1</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1154"/>
         <source>GDAL script</source>
-        <translation type="unfinished">Skrypt GDAL</translation>
+        <translation>Skrypt GDAL</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1251"/>
@@ -11281,7 +11281,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1269"/>
         <source>%1 requires at least %2 GCPs. Please define more</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%1 wymaga conajmniej %2 punkty. Zdefiniuj więcej punktów</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1356"/>
@@ -11364,7 +11364,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="158"/>
         <source>GCP table</source>
-        <translation type="unfinished">Tabela punktów kontrolnych</translation>
+        <translation type="unfinished">Tabela punktów kontrolnych GCP</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="169"/>
@@ -11454,7 +11454,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="259"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="262"/>
         <source>Start georeferencing</source>
-        <translation type="unfinished">Rozpocznij</translation>
+        <translation>Wykonaj</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="265"/>
@@ -11530,12 +11530,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="346"/>
         <source>Zoom Next</source>
-        <translation type="unfinished">Przybliż następny</translation>
+        <translation>Następny</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="351"/>
         <source>Zoom Last</source>
-        <translation type="unfinished">Przybliż poprzedni</translation>
+        <translation>Poprzedni</translation>
     </message>
 </context>
 <context>
@@ -13820,12 +13820,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="314"/>
         <source>Cannot open vector %1 in mapset %2 on level 2 (topology not available, try to rebuild topology using v.build module).</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nie można otworzyć warstwy wektorowej %1 z mapsetu %2 na poziomie 2 (topologia niedostępna, spróbuj przebudować topologię przy pomocy v.build).</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="321"/>
         <source>Cannot open vector %1 in mapset %2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nie można otworzyć warstwy wektorowej %1 z mapsetu %2</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="426"/>
@@ -14033,12 +14033,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassselect.cpp" line="421"/>
         <source>Cannot open vector %1 in mapset %2 on level 2 (topology not available, try to rebuild topology using v.build module).</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nie można otworzyć warstwy wektorowej %1 z mapsetu %2 na poziomie 2 (topologia niedostępna, spróbuj przebudować topologię przy pomocy v.build).</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassselect.cpp" line="428"/>
         <source>Cannot open vector %1 in mapset %2</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nie można otworzyć warstwy wektorowej %1 z mapsetu %2</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassselect.cpp" line="485"/>
@@ -23953,12 +23953,12 @@ Czy chcesz nadpisać relację [%2]?</translation>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="134"/>
         <source>Please set output name</source>
-        <translation type="unfinished"></translation>
+        <translation>Podaj nazwę pliku wyjściowego</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="141"/>
         <source>%1 requires at least %2 GCPs. Please define more</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 wymaga conajmniej %2 punkty. Zdefiniuj więcej punktów</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="163"/>
@@ -23969,7 +23969,7 @@ Czy chcesz nadpisać relację [%2]?</translation>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="234"/>
         <source>_modified</source>
         <comment>Georeferencer:QgsOpenRasterDialog.cpp - used to modify a user given file name</comment>
-        <translation type="unfinished">_nowy</translation>
+        <translation>_nowy</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="14"/>
@@ -23989,12 +23989,12 @@ Czy chcesz nadpisać relację [%2]?</translation>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="56"/>
         <source>Nearest neighbour</source>
-        <translation type="unfinished">najbliższego sąsiedztwa</translation>
+        <translation>najbliższe sąsiedztwo</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="66"/>
         <source>Cubic</source>
-        <translation type="unfinished">sześcienna</translation>
+        <translation>sześcienna</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="71"/>
@@ -25805,12 +25805,12 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1179"/>
         <source>ring %1, vertex %2</source>
-        <translation type="unfinished">okręg %1, węzeł %2</translation>
+        <translation type="unfinished">pierścień %1, węzeł %2</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1207"/>
         <source>polygon %1, ring %2, vertex %3</source>
-        <translation type="unfinished">poligon %1, okręg %2, węzeł %3</translation>
+        <translation type="unfinished">poligon %1, pierścień %2, węzeł %3</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1240"/>
@@ -25825,7 +25825,7 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1284"/>
         <source>point %1</source>
-        <translation type="unfinished">punkt %1</translation>
+        <translation>punkt %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1300"/>
@@ -26142,7 +26142,7 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="120"/>
         <source>Use custom dash pattern</source>
-        <translation type="unfinished"></translation>
+        <translation>Użyj szrafu użytkownika</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="151"/>
