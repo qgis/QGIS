@@ -116,6 +116,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
     }
   }
 
+#if QT_VERSION < 0x40500
+  mExcludeUrlListWidget->setDisabled( true );
+#endif
+
   // cache settings
   QNetworkDiskCache *cache = qobject_cast<QNetworkDiskCache*>( QgisApp::instance()->nam()->cache() );
   if ( cache )

@@ -70,6 +70,7 @@ SET(QGIS_APP_SRCS
   qgsuniquevaluedialog.cpp
   qgsvectorlayerproperties.cpp
   qgsquerybuilder.cpp
+  qgsnetworkproxyfactory.cpp
 
   qgsmanageconnectionsdialog.cpp
 

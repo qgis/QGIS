@@ -149,6 +149,7 @@
 #include "qgsattributetabledialog.h"
 #include "qgsvectorfilewriter.h"
 #include "qgscredentialdialog.h"
+#include "qgsnetworkproxyfactory.h"
 
 #ifdef HAVE_QWT
 #include "qgsgpsinformationwidget.h"
@@ -6219,12 +6220,16 @@ void QgisApp::namProxyAuthenticationRequired( const QNetworkProxy &proxy, QAuthe
 
 void QgisApp::namUpdate()
 {
+  QNetworkProxy proxy;
+  QStringList excludes;
+
   QSettings settings;
 
   //check if proxy is enabled
   bool proxyEnabled = settings.value( "proxy/proxyEnabled", false ).toBool();
   if ( proxyEnabled )
   {
+    excludes = settings.value( "proxy/proxyExcludedUrls", "" ).toString().split( "|", QString::SkipEmptyParts );
 
     //read type, host, port, user, passw from settings
     QString proxyHost = settings.value( "proxy/proxyHost", "" ).toString();
@@ -6259,12 +6264,14 @@ void QgisApp::namUpdate()
                  .arg( proxyHost ).arg( proxyPort )
                  .arg( proxyUser ).arg( proxyPassword )
                );
-    nam()->setProxy( QNetworkProxy( proxyType, proxyHost, proxyPort, proxyUser, proxyPassword ) );
+    proxy = QNetworkProxy( proxyType, proxyHost, proxyPort, proxyUser, proxyPassword );
   }
-  else
-  {
-    nam()->setProxy( QNetworkProxy() );
-  }
+
+#if QT_VERSION >= 0x40500
+  mNAM->setProxyFactory( new QgsNetworkProxyFactory( proxy, excludes ) );
+#else
+  mNAM->setProxy( proxy );
+#endif
 
   QNetworkDiskCache *cache = qobject_cast<QNetworkDiskCache*>( nam()->cache() );
   if ( !cache )
