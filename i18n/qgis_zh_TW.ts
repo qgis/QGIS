@@ -2,400 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="zh_TW">
 <context>
-    <name></name>
-    <message>
-        <source>&amp;Geoprocessing</source>
-        <translation type="obsolete">&amp;Geoprocessing</translation>
-    </message>
-</context>
-<context>
-    <name>@default</name>
-    <message>
-        <source>OGR Driver Manager</source>
-        <translation type="obsolete">OGR管理器</translation>
-    </message>
-    <message>
-        <source>unable to get OGRDriverManager</source>
-        <translation type="obsolete">無法得到OGR管理器</translation>
-    </message>
-    <message>
-        <source>Open an OGR Supported Vector Layer</source>
-        <translation type="obsolete">開啟OGR支持的向量圖層</translation>
-    </message>
-    <message>
-        <source>is not a valid or recognized data source</source>
-        <translation type="obsolete">不是有效或可識別的資料來源</translation>
-    </message>
-    <message>
-        <source>Invalid Data Source</source>
-        <translation type="obsolete">無效的資料來源</translation>
-    </message>
-    <message>
-        <source>Invalid Layer</source>
-        <translation type="obsolete">無效的圖層</translation>
-    </message>
-    <message>
-        <source>%1 is an invalid layer and cannot be loaded.</source>
-        <translation type="obsolete">%1是一個無效的圖層，無法載入。</translation>
-    </message>
-    <message>
-        <source>Save As</source>
-        <translation type="obsolete">另存為</translation>
-    </message>
-    <message>
-        <source>QGIS Project Read Error</source>
-        <translation type="obsolete">QGIS專案讀取錯誤</translation>
-    </message>
-    <message>
-        <source>Try to find missing layers?</source>
-        <translation type="obsolete">試著尋找丟失的圖層?</translation>
-    </message>
-    <message>
-        <source>Unable to open project</source>
-        <translation type="obsolete">無法開啟專案</translation>
-    </message>
-    <message>
-        <source>Choose a QGIS project file</source>
-        <translation type="obsolete">選擇QGIS專案檔案</translation>
-    </message>
-    <message>
-        <source>Saved project to:</source>
-        <translation type="obsolete">專案另存為:</translation>
-    </message>
-    <message>
-        <source>Unable to save project</source>
-        <translation type="obsolete">無法儲存專案</translation>
-    </message>
-    <message>
-        <source>Unable to save project to </source>
-        <translation type="obsolete">無法將專案儲存為</translation>
-    </message>
-    <message>
-        <source>Unable to save project </source>
-        <translation type="obsolete">無法儲存專案</translation>
-    </message>
-    <message>
-        <source>Choose a filename to save the QGIS project file as</source>
-        <translation type="obsolete">選擇檔案名來儲存QGIS專案檔案為</translation>
-    </message>
-    <message>
-        <source>QGIS: Unable to load project</source>
-        <translation type="obsolete">QGIS: 無法載入專案</translation>
-    </message>
-    <message>
-        <source>Unable to load project </source>
-        <translation type="obsolete">無法載入專案</translation>
-    </message>
-    <message>
-        <source>Saved map image to</source>
-        <translation type="obsolete">地圖影像儲存為</translation>
-    </message>
-    <message>
-        <source>No Layer Selected</source>
-        <translation type="obsolete">未選取圖層</translation>
-    </message>
-    <message>
-        <source>To delete features, you must select a vector layer in the legend</source>
-        <translation type="obsolete">要刪除圖徵，必須在圖例中選擇向量圖層</translation>
-    </message>
-    <message>
-        <source>No Vector Layer Selected</source>
-        <translation type="obsolete">未選取向量圖層</translation>
-    </message>
-    <message>
-        <source>Deleting features only works on vector layers</source>
-        <translation type="obsolete">刪除圖徵只對向量圖層有效</translation>
-    </message>
-    <message>
-        <source>Provider does not support deletion</source>
-        <translation type="obsolete">供應者不支持刪除</translation>
-    </message>
-    <message>
-        <source>Data provider does not support deleting features</source>
-        <translation type="obsolete">資料供應者不支援刪除圖徵</translation>
-    </message>
-    <message>
-        <source>Layer not editable</source>
-        <translation type="obsolete">圖層不可編輯</translation>
-    </message>
-    <message>
-        <source>Problem deleting features</source>
-        <translation type="obsolete">刪除圖徵出錯</translation>
-    </message>
-    <message>
-        <source>A problem occured during deletion of features</source>
-        <translation type="obsolete">刪除圖徵時發生錯誤</translation>
-    </message>
-    <message>
-        <source>Error Loading Plugin</source>
-        <translation type="obsolete">載入附加元件出錯</translation>
-    </message>
-    <message>
-        <source>There was an error loading %1.</source>
-        <translation type="obsolete">載入%1時出現錯誤.</translation>
-    </message>
-    <message>
-        <source>No MapLayer Plugins</source>
-        <translation type="obsolete">沒有MapLayer附加元件</translation>
-    </message>
-    <message>
-        <source>No MapLayer plugins in ../plugins/maplayer</source>
-        <translation type="obsolete">在../plugins/maplayer下沒有MapLayer附加元件</translation>
-    </message>
-    <message>
-        <source>No Plugins</source>
-        <translation type="obsolete">沒有附加元件</translation>
-    </message>
-    <message>
-        <source>No plugins found in ../plugins. To test plugins, start qgis from the src directory</source>
-        <translation type="obsolete">在../plugins中未發現任何附加元件。要測試附加元件，請從src資料夾啟動qgis</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">名稱</translation>
-    </message>
-    <message>
-        <source>Plugin %1 is named %2</source>
-        <translation type="obsolete">附加元件%1命名為%2</translation>
-    </message>
-    <message>
-        <source>Plugin Information</source>
-        <translation type="obsolete">附加元件資訊</translation>
-    </message>
-    <message>
-        <source>QGis loaded the following plugin:</source>
-        <translation type="obsolete">QGis載入了以下的附加元件:</translation>
-    </message>
-    <message>
-        <source>Name: %1</source>
-        <translation type="obsolete">名稱：%1</translation>
-    </message>
-    <message>
-        <source>Version: %1</source>
-        <translation type="obsolete">版本：%1</translation>
-    </message>
-    <message>
-        <source>Description: %1</source>
-        <translation type="obsolete">描述：%1</translation>
-    </message>
-    <message>
-        <source>Unable to Load Plugin</source>
-        <translation type="obsolete">無法載入附加元件</translation>
-    </message>
-    <message>
-        <source>QGIS was unable to load the plugin from: %1</source>
-        <translation type="obsolete">QGIS無法從%1載入附加元件</translation>
-    </message>
-    <message>
-        <source>There is a new version of QGIS available</source>
-        <translation type="obsolete">QGIS有新版本</translation>
-    </message>
-    <message>
-        <source>You are running a development version of QGIS</source>
-        <translation type="obsolete">您正在使用QGIS的開發版本</translation>
-    </message>
-    <message>
-        <source>You are running the current version of QGIS</source>
-        <translation type="obsolete">您正在使用QGIS的目前版本</translation>
-    </message>
-    <message>
-        <source>Would you like more information?</source>
-        <translation type="obsolete">您想瞭解更多的資訊嗎?</translation>
-    </message>
-    <message>
-        <source>QGIS Version Information</source>
-        <translation type="obsolete">QGIS版本資訊</translation>
-    </message>
-    <message>
-        <source>QGIS - Changes in SVN Since Last Release</source>
-        <translation type="obsolete">QGIS - 自上次發佈之後在SVN中又有更新</translation>
-    </message>
-    <message>
-        <source>Unable to get current version information from server</source>
-        <translation type="obsolete">無法從伺服器得到目前版本的資訊</translation>
-    </message>
-    <message>
-        <source>Connection refused - server may be down</source>
-        <translation type="obsolete">連接被拒絕 - 伺服器可能出現故障</translation>
-    </message>
-    <message>
-        <source>QGIS server was not found</source>
-        <translation type="obsolete">未找到QGIS伺服器</translation>
-    </message>
-    <message>
-        <source>QGIS Browser Selection</source>
-        <translation type="obsolete">選擇QGIS的瀏覽器</translation>
-    </message>
-    <message>
-        <source>Enter the name of a web browser to use (eg. konqueror).
-</source>
-        <translation type="obsolete">輸入您要使用的web瀏覽器的名稱(例如：konqueror).</translation>
-    </message>
-    <message>
-        <source>Enter the full path if the browser is not in your PATH.
-</source>
-        <translation type="obsolete">如果瀏覽器不在您的PATH環境變數下，請輸入完整路徑.</translation>
-    </message>
-    <message>
-        <source>Layer is not valid</source>
-        <translation type="obsolete">圖層無效</translation>
-    </message>
-    <message>
-        <source>The layer is not a valid layer and can not be added to the map</source>
-        <translation type="obsolete">該圖層不是一個有效的圖層，無法新增到地圖中</translation>
-    </message>
-    <message>
-        <source>Save?</source>
-        <translation type="obsolete">儲存?</translation>
-    </message>
-    <message>
-        <source>Do you want to save the current project?</source>
-        <translation type="obsolete">您是否要儲存目前的專案?</translation>
-    </message>
-    <message>
-        <source>Extents: </source>
-        <translation type="obsolete">範圍:</translation>
-    </message>
-    <message>
-        <source>Clipboard contents set to: </source>
-        <translation type="obsolete">剪貼簿的內容設定為:</translation>
-    </message>
-    <message>
-        <source>Open a GDAL Supported Raster Data Source</source>
-        <translation type="obsolete">開啟GDAL支持的影像資料來源</translation>
-    </message>
-    <message>
-        <source> is not a valid or recognized raster data source</source>
-        <translation type="obsolete">無效或不可識別的影像資料來源</translation>
-    </message>
-    <message>
-        <source> is not a supported raster data source</source>
-        <translation type="obsolete">不支持的影像資料來源</translation>
-    </message>
-    <message>
-        <source>Unsupported Data Source</source>
-        <translation type="obsolete">不支持的資料來源</translation>
-    </message>
-    <message>
-        <source>New Bookmark</source>
-        <translation type="obsolete">新的書籤</translation>
-    </message>
-    <message>
-        <source>Enter a name for the new bookmark:</source>
-        <translation type="obsolete">新書籤的名稱:</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">錯誤</translation>
-    </message>
-    <message>
-        <source>Unable to create the bookmark. Your user database may be missing or corrupted</source>
-        <translation type="obsolete">無法建立書籤。您的使用者資料庫丟失或損壞</translation>
-    </message>
-    <message>
-        <source>&amp;Geoprocessing</source>
-        <translation type="obsolete">&amp;Geoprocessing</translation>
-    </message>
-</context>
-<context>
-    <name>BeataDialog</name>
-    <message>
-        <source>Move selected to top</source>
-        <translation type="obsolete">將選取的記錄移動到頂端</translation>
-    </message>
-    <message>
-        <source>Invert selection</source>
-        <translation type="obsolete">反向選擇</translation>
-    </message>
-    <message>
-        <source>Toggle editing</source>
-        <translation type="obsolete">切換編輯狀態</translation>
-    </message>
-    <message>
-        <source>Search string parsing error</source>
-        <translation type="obsolete">尋找字串解析錯誤</translation>
-    </message>
-    <message>
-        <source>Search results</source>
-        <translation type="obsolete">尋找結果</translation>
-    </message>
-    <message>
-        <source>You&apos;ve supplied an empty search string.</source>
-        <translation type="obsolete">您輸入空的尋找字串。</translation>
-    </message>
-    <message>
-        <source>Error during search</source>
-        <translation type="obsolete">尋找時發生錯誤</translation>
-    </message>
-    <message>
-        <source>Found %d matching features.</source>
-        <translation type="obsolete">找到%d筆符合的圖徵。</translation>
-    </message>
-    <message>
-        <source>No matching features found.</source>
-        <translation type="obsolete">未找到符合的圖徵。</translation>
-    </message>
-</context>
-<context>
-    <name>BeataDialogGui</name>
-    <message>
-        <source>Search</source>
-        <translation type="obsolete">尋找</translation>
-    </message>
-    <message>
-        <source>in</source>
-        <translation type="obsolete">在欄位</translation>
-    </message>
-    <message>
-        <source>Attribute Table</source>
-        <translation type="obsolete">屬性工作表</translation>
-    </message>
-    <message>
-        <source>Remove selection</source>
-        <translation type="obsolete">取消選擇</translation>
-    </message>
-    <message>
-        <source>Move selected to top</source>
-        <translation type="obsolete">將選取的記錄移動到頂端</translation>
-    </message>
-    <message>
-        <source>Ctrl+T</source>
-        <translation type="obsolete">Ctrl+T</translation>
-    </message>
-    <message>
-        <source>Invert selection</source>
-        <translation type="obsolete">反向選擇</translation>
-    </message>
-    <message>
-        <source>Ctrl+S</source>
-        <translation type="obsolete">Ctrl+S</translation>
-    </message>
-    <message>
-        <source>Copy selected rows to clipboard (Ctrl+C)</source>
-        <translation type="obsolete">將選取的列複製到剪貼簿 (Ctrl+C)</translation>
-    </message>
-    <message>
-        <source>Copies the selected rows to the clipboard</source>
-        <translation type="obsolete">將選取的列複製到剪貼簿</translation>
-    </message>
-    <message>
-        <source>Ctrl+C</source>
-        <translation type="obsolete">Ctrl+C</translation>
-    </message>
-    <message>
-        <source>Zoom map to the selected rows (Ctrl-J)</source>
-        <translation type="obsolete">縮放地圖至選取的列</translation>
-    </message>
-    <message>
-        <source>Zoom map to the selected rows</source>
-        <translation type="obsolete">縮放地圖至選取的列</translation>
-    </message>
-    <message>
-        <source>Toggle editing mode</source>
-        <translation type="obsolete">切換編輯模式</translation>
-    </message>
-</context>
-<context>
     <name>CoordinateCapture</name>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="96"/>
@@ -451,61 +57,7 @@
     </message>
 </context>
 <context>
-    <name>CoordinateCaptureGui</name>
-    <message>
-        <source>Coordinate Capture Plugin</source>
-        <translation type="obsolete">座標擷取附加元件</translation>
-    </message>
-</context>
-<context>
-    <name>CoordinateCaptureGuiBase</name>
-    <message>
-        <source>QGIS Plugin Template</source>
-        <translation type="obsolete">QGIS附加元件範本</translation>
-    </message>
-    <message>
-        <source>Plugin Template</source>
-        <translation type="obsolete">附加元件範本</translation>
-    </message>
-</context>
-<context>
     <name>Dialog</name>
-    <message>
-        <source>Done</source>
-        <translation type="obsolete">完成</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">名稱</translation>
-    </message>
-    <message>
-        <source>Version</source>
-        <translation type="obsolete">版本</translation>
-    </message>
-    <message>
-        <source>Description</source>
-        <translation type="obsolete">描述</translation>
-    </message>
-    <message>
-        <source>Add</source>
-        <translation type="obsolete">新增</translation>
-    </message>
-    <message>
-        <source>Edit</source>
-        <translation type="obsolete">編輯</translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation type="obsolete">刪除</translation>
-    </message>
-    <message>
-        <source>Size</source>
-        <translation type="obsolete">大小</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="115"/>
         <source>Connect</source>
@@ -536,10 +88,6 @@
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="426"/>
         <source>OGR Converter</source>
         <translation>OGR轉換</translation>
-    </message>
-    <message>
-        <source>Could not establish connection to: &apos;</source>
-        <translation type="obsolete">無法建立連線至:&apos;</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="216"/>
@@ -1262,20 +810,6 @@ p, li { white-space: pre-wrap; }
 </translation>
     </message>
     <message>
-        <source>Points in polygon</source>
-        <translation type="obsolete">多邊形中的點</translation>
-    </message>
-    <message>
-        <source>Created output Shapefile:
-</source>
-        <translation type="obsolete">已建立輸出的Shape檔:
-</translation>
-    </message>
-    <message>
-        <source>Vector layer is not valid</source>
-        <translation type="obsolete">無效的向量圖層</translation>
-    </message>
-    <message>
         <source>creating new selection</source>
         <translation type="unfinished">建立新的選取</translation>
     </message>
@@ -1687,245 +1221,6 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     </message>
 </context>
 <context>
-    <name>DlgAddRelation</name>
-    <message>
-        <source>OSM Information</source>
-        <translation type="obsolete">OSM 資訊</translation>
-    </message>
-    <message>
-        <source>Create OSM relation</source>
-        <translation type="obsolete">建立OSM關連</translation>
-    </message>
-    <message>
-        <source>Relation type:</source>
-        <translation type="obsolete">關連種類:</translation>
-    </message>
-    <message>
-        <source>Properties</source>
-        <translation type="obsolete">屬性</translation>
-    </message>
-    <message>
-        <source>Members</source>
-        <translation type="obsolete">成員</translation>
-    </message>
-    <message>
-        <source>Create</source>
-        <translation type="obsolete">建立</translation>
-    </message>
-    <message>
-        <source>Storno</source>
-        <translation type="obsolete">取消</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">取消</translation>
-    </message>
-</context>
-<context>
-    <name>DlgDownloadOSM</name>
-    <message>
-        <source>Download OSM data</source>
-        <translation type="obsolete">下載OSM資料</translation>
-    </message>
-    <message>
-        <source>Extent</source>
-        <translation type="obsolete">範圍</translation>
-    </message>
-    <message>
-        <source>Latitude:</source>
-        <translation type="obsolete">緯度:</translation>
-    </message>
-    <message>
-        <source>   From</source>
-        <translation type="obsolete">   從</translation>
-    </message>
-    <message>
-        <source>To</source>
-        <translation type="obsolete">至</translation>
-    </message>
-    <message>
-        <source>Longitude:</source>
-        <translation type="obsolete">經度:</translation>
-    </message>
-    <message>
-        <source>Download to:</source>
-        <translation type="obsolete">下載到:</translation>
-    </message>
-    <message>
-        <source>Open data automatically after download</source>
-        <translation type="obsolete">下載完畢後自動開啟資料</translation>
-    </message>
-    <message>
-        <source>Replace current data (current layer will be removed)</source>
-        <translation type="obsolete">取代現有的資料(目前的圖前將會移除)</translation>
-    </message>
-    <message>
-        <source>Use custom renderer</source>
-        <translation type="obsolete">使用自訂繪圖</translation>
-    </message>
-    <message>
-        <source>Download</source>
-        <translation type="obsolete">下載</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">取消</translation>
-    </message>
-    <message>
-        <source>OSM Download</source>
-        <translation type="obsolete">OSM下載</translation>
-    </message>
-    <message>
-        <source>Unable to save the file %1: %2.</source>
-        <translation type="obsolete">無法儲存檔案 %1: %2.</translation>
-    </message>
-    <message>
-        <source>Waiting for OpenStreetMap server ...</source>
-        <translation type="obsolete">等待OpenStreetMap(OSM)伺服器中...</translation>
-    </message>
-    <message>
-        <source>Download process failed. OpenStreetMap server response: %1 - %2</source>
-        <translation type="obsolete">下載過程失敗。OpenStreetMap伺服器回應%1 - %2</translation>
-    </message>
-    <message>
-        <source>OSM Download Error</source>
-        <translation type="obsolete">OSM下載錯誤</translation>
-    </message>
-    <message>
-        <source>Download failed: %1.</source>
-        <translation type="obsolete">下載失敗:%1。</translation>
-    </message>
-    <message>
-        <source>Getting data</source>
-        <translation type="obsolete">取得資料中</translation>
-    </message>
-    <message>
-        <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
-        <translation type="obsolete">您從OpenStreetMap伺服器(~ api.openstreetmap.org)下載的有固定限制的大小，在 &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt;中提到經度或緯度的可下載範圍不能超過0.25度。注意 Quantum GIS 允許您指定您任何範圍，但是 OpenStreetMap 伺服器會依據下載的限制拒絕您的下載。</translation>
-    </message>
-    <message>
-        <source>Both extents are too large!</source>
-        <translation type="obsolete">緯度與經度範圍過大!</translation>
-    </message>
-    <message>
-        <source>Latitude extent is too large!</source>
-        <translation type="obsolete">緯度範圍過大!</translation>
-    </message>
-    <message>
-        <source>Longitude extent is too large!</source>
-        <translation type="obsolete">經度範圍過大!</translation>
-    </message>
-    <message>
-        <source>OK! Area is probably acceptable to server.</source>
-        <translation type="obsolete">OK!面積大小伺服器可以接受。</translation>
-    </message>
-</context>
-<context>
-    <name>DlgImport</name>
-    <message>
-        <source>Import data to OSM</source>
-        <translation type="obsolete">匯入資料至OSM</translation>
-    </message>
-    <message>
-        <source>In this dialog you can import a layer loaded in QGIS into active OSM data.</source>
-        <translation type="obsolete">在這對話方塊，您可以匯入QGIS中的圖層至作用中的OSM資料</translation>
-    </message>
-    <message>
-        <source>Layer</source>
-        <translation type="obsolete">圖層</translation>
-    </message>
-    <message>
-        <source>Import only current selection</source>
-        <translation type="obsolete">僅匯入目前選取</translation>
-    </message>
-</context>
-<context>
-    <name>DlgLoadOSM</name>
-    <message>
-        <source>Load OSM</source>
-        <translation type="obsolete">載入OSM</translation>
-    </message>
-    <message>
-        <source>OpenStreetMap file to load:</source>
-        <translation type="obsolete">OpenStreetMap檔案載入:</translation>
-    </message>
-    <message>
-        <source>Add columns for tags:</source>
-        <translation type="obsolete">為標籤新增欄位:</translation>
-    </message>
-    <message>
-        <source>Use custom renderer</source>
-        <translation type="obsolete">使用自訂的繪圖</translation>
-    </message>
-    <message>
-        <source>Replace current data (current layers will be removed)</source>
-        <translation type="obsolete">取代目前的資料(目前的圖層將會被移除)</translation>
-    </message>
-</context>
-<context>
-    <name>DlgSaveOSM</name>
-    <message>
-        <source>Save OSM to file</source>
-        <translation type="obsolete">儲存OSM為檔案</translation>
-    </message>
-    <message>
-        <source>Unable to save the file %1: %2.</source>
-        <translation type="obsolete">無法儲存檔案 %1: %2.</translation>
-    </message>
-    <message>
-        <source>Initializing...</source>
-        <translation type="obsolete">初始化...</translation>
-    </message>
-    <message>
-        <source>Saving nodes...</source>
-        <translation type="obsolete">儲存結點中...</translation>
-    </message>
-    <message>
-        <source>Saving lines...</source>
-        <translation type="obsolete">儲存線中...</translation>
-    </message>
-    <message>
-        <source>Saving polygons...</source>
-        <translation type="obsolete">儲存多邊形中...</translation>
-    </message>
-    <message>
-        <source>Saving relations...</source>
-        <translation type="obsolete">儲存關連中...</translation>
-    </message>
-    <message>
-        <source>Save OSM</source>
-        <translation type="obsolete">儲存OSM</translation>
-    </message>
-    <message>
-        <source>Where to save:</source>
-        <translation type="obsolete">儲存至:</translation>
-    </message>
-    <message>
-        <source>Features to save:</source>
-        <translation type="obsolete">儲存圖徵:</translation>
-    </message>
-    <message>
-        <source>Points</source>
-        <translation type="obsolete">點</translation>
-    </message>
-    <message>
-        <source>Lines</source>
-        <translation type="obsolete">線</translation>
-    </message>
-    <message>
-        <source>Polygons</source>
-        <translation type="obsolete">多邊形</translation>
-    </message>
-    <message>
-        <source>Relations</source>
-        <translation type="obsolete">關連</translation>
-    </message>
-    <message>
-        <source>Tags</source>
-        <translation type="obsolete">標籤</translation>
-    </message>
-</context>
-<context>
     <name>DlgSymbolV2Properties</name>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="14"/>
@@ -1981,84 +1276,6 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="212"/>
         <source>Move down</source>
         <translation type="unfinished">下移</translation>
-    </message>
-</context>
-<context>
-    <name>DlgUploadOSM</name>
-    <message>
-        <source>Upload OSM data</source>
-        <translation type="obsolete">上傳OSM資料</translation>
-    </message>
-    <message>
-        <source>Ready for upload</source>
-        <translation type="obsolete">準備好上傳</translation>
-    </message>
-    <message>
-        <source>1</source>
-        <translation type="obsolete">1</translation>
-    </message>
-    <message>
-        <source>2</source>
-        <translation type="obsolete">2</translation>
-    </message>
-    <message>
-        <source>Comment on your changes:</source>
-        <translation type="obsolete">為您的更新加上註解:</translation>
-    </message>
-    <message>
-        <source>OSM account</source>
-        <translation type="obsolete">OSM帳號</translation>
-    </message>
-    <message>
-        <source>Username:</source>
-        <translation type="obsolete">使用者名稱:</translation>
-    </message>
-    <message>
-        <source>Password:</source>
-        <translation type="obsolete">密碼:</translation>
-    </message>
-    <message>
-        <source>Show password</source>
-        <translation type="obsolete">顯示密碼</translation>
-    </message>
-    <message>
-        <source>Save password</source>
-        <translation type="obsolete">儲存密碼</translation>
-    </message>
-    <message>
-        <source>OSM Upload</source>
-        <translation type="obsolete">OSM上傳</translation>
-    </message>
-    <message>
-        <source>Uploading data...</source>
-        <translation type="obsolete">上傳資料...</translation>
-    </message>
-</context>
-<context>
-    <name>DockWidget</name>
-    <message>
-        <source>OSM Plugin</source>
-        <translation type="obsolete">OSM附加元件</translation>
-    </message>
-    <message>
-        <source>The &apos;Create OSM Relation&apos; dialog was closed automatically because current OSM database was changed.</source>
-        <translation type="obsolete">因為OSM資料庫異動，所以&apos;建立OSM關連&apos;對話方塊將會自動關閉。</translation>
-    </message>
-    <message>
-        <source>OSM Feature Dock Widget</source>
-        <translation type="obsolete">OSM 圖徵停駐工具</translation>
-    </message>
-    <message>
-        <source>Choose OSM feature first.</source>
-        <translation type="obsolete">請先選取OSM圖徵。</translation>
-    </message>
-    <message>
-        <source>Choose relation for editing first.</source>
-        <translation type="obsolete">請先選取關連來編輯。</translation>
-    </message>
-    <message>
-        <source>Property &apos;%1&apos; cannot be added twice.</source>
-        <translation type="obsolete">屬性&apos;%1&apos;不能重覆新增</translation>
     </message>
 </context>
 <context>
@@ -2220,14 +1437,6 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
         <translation type="unfinished">無法刪除已存在的shape檔。</translation>
     </message>
     <message>
-        <source>Created output shapefile:</source>
-        <translation type="obsolete">已建立輸出shape檔:</translation>
-    </message>
-    <message>
-        <source>Would you like to add the new layer to the TOC?</source>
-        <translation type="obsolete">您要新增此圖層至TOC中嗎?</translation>
-    </message>
-    <message>
         <source>Geometry</source>
         <translation type="unfinished">幾何欄位</translation>
     </message>
@@ -2263,29 +1472,6 @@ Would you like to add the new layer to the TOC?</source>
         <source>Error loading output shapefile:
 %1</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Geoprocessing</name>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">確定</translation>
-    </message>
-    <message>
-        <source>Exit</source>
-        <translation type="obsolete">退出</translation>
-    </message>
-    <message>
-        <source>0.0</source>
-        <translation type="obsolete">0.0</translation>
-    </message>
-    <message>
-        <source>Buffer</source>
-        <translation type="obsolete">緩衝區</translation>
-    </message>
-    <message>
-        <source>Browse</source>
-        <translation type="obsolete">瀏覽</translation>
     </message>
 </context>
 <context>
@@ -2389,10 +1575,6 @@ Warnings:</source>
 
 Would you like to add the new layer to the TOC?</source>
         <translation type="unfinished">您想在TOC中新增到新的圖層?</translation>
-    </message>
-    <message>
-        <source>Created output shapefile:</source>
-        <translation type="obsolete">已建立輸出的shape檔:</translation>
     </message>
     <message>
         <source>Geoprocessing</source>
@@ -2536,13 +1718,6 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <location filename="../src/plugins/plugin_template/plugingui.cpp" line="75"/>
         <source>Have fun and thank you for choosing QGIS.</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>KDChartParams</name>
-    <message>
-        <source>Legend</source>
-        <translation type="obsolete">圖例</translation>
     </message>
 </context>
 <context>
@@ -2791,107 +1966,6 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
 </context>
 <context>
-    <name>MapCoordsDialogBase</name>
-    <message>
-        <source>Enter map coordinates</source>
-        <translation type="obsolete">輸入地圖座標</translation>
-    </message>
-    <message>
-        <source>X:</source>
-        <translation type="obsolete">X:</translation>
-    </message>
-    <message>
-        <source>Y:</source>
-        <translation type="obsolete">Y:</translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">確定(&amp;O)</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">取消(&amp;C)</translation>
-    </message>
-    <message>
-        <source>Enter X and Y coordinates which correspond with the selected point on the image. Alternatively, click the button with icon of a pencil and then click a corresponding point on map canvas of QGIS to fill in coordinates of that point.</source>
-        <translation type="obsolete">輸入您在影像上選取點的X與Y座標。或者按下[從地圖上取得座標]按鈕，從QGIS的地圖上點選取得該點的座標。</translation>
-    </message>
-    <message>
-        <source> from map canvas</source>
-        <translation type="obsolete">從地圖上取得座標</translation>
-    </message>
-</context>
-<context>
-    <name>NavigationGui</name>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>Stop</source>
-        <translation type="obsolete">停止</translation>
-    </message>
-    <message>
-        <source>Status</source>
-        <translation type="obsolete">狀態</translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">確定(&amp;O)</translation>
-    </message>
-    <message>
-        <source>Alt+O</source>
-        <translation type="obsolete">Alt+O</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">取消(&amp;C)</translation>
-    </message>
-    <message>
-        <source>Alt+C</source>
-        <translation type="obsolete">Alt+C</translation>
-    </message>
-</context>
-<context>
-    <name>NewPostgisLayer</name>
-    <message>
-        <source>Delete</source>
-        <translation type="obsolete">刪除</translation>
-    </message>
-    <message>
-        <source>Edit</source>
-        <translation type="obsolete">編輯</translation>
-    </message>
-    <message>
-        <source>New</source>
-        <translation type="obsolete">新增</translation>
-    </message>
-    <message>
-        <source>Connect</source>
-        <translation type="obsolete">連接</translation>
-    </message>
-    <message>
-        <source>Geometry column:</source>
-        <translation type="obsolete">幾何欄位:</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">說明</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
-    </message>
-    <message>
-        <source>Ok</source>
-        <translation type="obsolete">確定</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">取消</translation>
-    </message>
-</context>
-<context>
     <name>OgrConverterGuiBase</name>
     <message>
         <location filename="../src/plugins/ogr_converter/ogrconverterguibase.ui" line="26"/>
@@ -2956,10 +2030,6 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <translation>執行OGR檔案轉換工具</translation>
     </message>
     <message>
-        <source>Replace this with a short description of the what the plugin does</source>
-        <translation type="obsolete">用簡短的描述替換這行文字，說明附加元件的功能</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/ogr_converter/plugin.cpp" line="72"/>
         <source>OG&amp;R Converter</source>
         <translation>OG&amp;R檔案轉換工具</translation>
@@ -2976,18 +2046,6 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <location filename="../src/plugins/oracle_raster/qgsoracleconnectbase.ui" line="14"/>
         <source>Create Oracle Connection</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">確定</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">取消</translation>
-    </message>
-    <message>
-        <source>Connection Information</source>
-        <translation type="obsolete">連接資訊</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracleconnectbase.ui" line="25"/>
@@ -3119,97 +2177,6 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="230"/>
         <source>Removes all selected members.</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>OsmDockWidget</name>
-    <message>
-        <source>OSM Feature</source>
-        <translation type="obsolete">OSM 圖徵</translation>
-    </message>
-    <message>
-        <source>Identify object</source>
-        <translation type="obsolete">識別物件</translation>
-    </message>
-    <message>
-        <source>Move object</source>
-        <translation type="obsolete">移動物件</translation>
-    </message>
-    <message>
-        <source>Create point</source>
-        <translation type="obsolete">建立點</translation>
-    </message>
-    <message>
-        <source>Create line</source>
-        <translation type="obsolete">建立線</translation>
-    </message>
-    <message>
-        <source>Create polygon</source>
-        <translation type="obsolete">建立多邊形</translation>
-    </message>
-    <message>
-        <source>Create relation</source>
-        <translation type="obsolete">建立關連</translation>
-    </message>
-    <message>
-        <source>Undo</source>
-        <translation type="obsolete">復原</translation>
-    </message>
-    <message>
-        <source>Redo</source>
-        <translation type="obsolete">取消復原</translation>
-    </message>
-    <message>
-        <source>Show/Hide OSM Edit History</source>
-        <translation type="obsolete">顯示/隱藏OSM編輯歷程</translation>
-    </message>
-    <message>
-        <source>Feature:</source>
-        <translation type="obsolete">圖徵:</translation>
-    </message>
-    <message>
-        <source>unknown</source>
-        <translation type="obsolete">未知</translation>
-    </message>
-    <message>
-        <source>Properties</source>
-        <translation type="obsolete">屬性</translation>
-    </message>
-    <message>
-        <source>Add new relation</source>
-        <translation type="obsolete">新增關連</translation>
-    </message>
-    <message>
-        <source>Edit selected relation</source>
-        <translation type="obsolete">編輯選取的關連</translation>
-    </message>
-    <message>
-        <source>E</source>
-        <translation type="obsolete">東</translation>
-    </message>
-    <message>
-        <source>Remove selected relation</source>
-        <translation type="obsolete">移除選取的關連</translation>
-    </message>
-    <message>
-        <source>R</source>
-        <translation type="obsolete">R</translation>
-    </message>
-    <message>
-        <source>Relation tags:</source>
-        <translation type="obsolete">關連標籤:</translation>
-    </message>
-    <message>
-        <source>1</source>
-        <translation type="obsolete">1</translation>
-    </message>
-    <message>
-        <source>Relation members:</source>
-        <translation type="obsolete">關連成員:</translation>
-    </message>
-    <message>
-        <source>Relations</source>
-        <translation type="obsolete">關連</translation>
     </message>
 </context>
 <context>
@@ -3363,14 +2330,6 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Identify object</source>
-        <translation type="obsolete">識別物件</translation>
-    </message>
-    <message>
-        <source>Move object</source>
-        <translation type="obsolete">移動物件</translation>
-    </message>
-    <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="168"/>
         <source>Create point</source>
         <translation type="unfinished">建立點</translation>
@@ -3510,10 +2469,6 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <source>Choose relation for editing first.</source>
         <translation type="unfinished">請先選取關連來編輯。</translation>
-    </message>
-    <message>
-        <source>Property &apos;%1&apos; cannot be added twice.</source>
-        <translation type="obsolete">屬性&apos;%1&apos;不能重覆新增</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="100"/>
@@ -3706,25 +2661,6 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
 </context>
 <context>
-    <name>OsmUndoRedoDockWidget</name>
-    <message>
-        <source>OSM Edit History</source>
-        <translation type="obsolete">OSM編輯歷程</translation>
-    </message>
-    <message>
-        <source>Clear all</source>
-        <translation type="obsolete">全部清除</translation>
-    </message>
-    <message>
-        <source>Undo</source>
-        <translation type="obsolete">復原</translation>
-    </message>
-    <message>
-        <source>Redo</source>
-        <translation type="obsolete">取消復原</translation>
-    </message>
-</context>
-<context>
     <name>OsmUploadDlg</name>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="22"/>
@@ -3801,306 +2737,6 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
 </context>
 <context>
-    <name>Plugin</name>
-    <message>
-        <source>Bottom Right</source>
-        <translation type="obsolete">右下</translation>
-    </message>
-    <message>
-        <source>Bottom Left</source>
-        <translation type="obsolete">左下</translation>
-    </message>
-    <message>
-        <source>Top Left</source>
-        <translation type="obsolete">左上</translation>
-    </message>
-    <message>
-        <source>Top Right</source>
-        <translation type="obsolete">右上</translation>
-    </message>
-    <message>
-        <source> metres</source>
-        <translation type="obsolete">公尺</translation>
-    </message>
-    <message>
-        <source> feet</source>
-        <translation type="obsolete">英呎</translation>
-    </message>
-    <message>
-        <source> degrees</source>
-        <translation type="obsolete">度</translation>
-    </message>
-    <message>
-        <source>Tick Down</source>
-        <translation type="obsolete">開口向下</translation>
-    </message>
-    <message>
-        <source>Tick Up</source>
-        <translation type="obsolete">開口向上</translation>
-    </message>
-    <message>
-        <source>Bar</source>
-        <translation type="obsolete">條狀</translation>
-    </message>
-    <message>
-        <source>Box</source>
-        <translation type="obsolete">矩形框</translation>
-    </message>
-    <message>
-        <source> metres/km</source>
-        <translation type="obsolete">公尺/公里</translation>
-    </message>
-    <message>
-        <source> km</source>
-        <translation type="obsolete">公里</translation>
-    </message>
-</context>
-<context>
-    <name>PluginGuiBase</name>
-    <message>
-        <source>Copyright Label Plugin</source>
-        <translation type="obsolete">版權標籤附加元件</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:helvetica&quot;&gt;
-&lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:19pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Enter your copyright label below. This plugin supports basic html markup tags for formatting the label.  For example:&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt;&amp;lt;B&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-weight:600&quot;&gt;Bold text&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/B&amp;gt;&lt;br /&gt;&amp;lt;I&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-style:italic&quot;&gt;Italics&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:helvetica&quot;&gt;
-&lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:19pt;font-weight:600&quot;&gt;描述&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;在底部顯示您的版權標籤。該附加元件支援基本的html標記來格式化標籤。例如：&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt;&amp;lt;B&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-weight:600&quot;&gt;粗體&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/B&amp;gt;&lt;br /&gt;&amp;lt;I&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-style:italic&quot;&gt;斜體&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</translation>
-    </message>
-    <message utf8="true">
-        <source>© QGIS 2004</source>
-        <translation type="obsolete">© QGIS 2004</translation>
-    </message>
-    <message>
-        <source>Placement</source>
-        <translation type="obsolete">位置</translation>
-    </message>
-    <message>
-        <source>Bottom Left</source>
-        <translation type="obsolete">左下</translation>
-    </message>
-    <message>
-        <source>Top Left</source>
-        <translation type="obsolete">左上</translation>
-    </message>
-    <message>
-        <source>Bottom Right</source>
-        <translation type="obsolete">右下</translation>
-    </message>
-    <message>
-        <source>Top Right</source>
-        <translation type="obsolete">右上</translation>
-    </message>
-    <message>
-        <source>Orientation</source>
-        <translation type="obsolete">方向</translation>
-    </message>
-    <message>
-        <source>Horizontal</source>
-        <translation type="obsolete">水平</translation>
-    </message>
-    <message>
-        <source>Vertical</source>
-        <translation type="obsolete">垂直</translation>
-    </message>
-    <message>
-        <source>Enable Copyright Label</source>
-        <translation type="obsolete">顯示版權標籤</translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">確定(&amp;O)</translation>
-    </message>
-    <message>
-        <source>Alt+O</source>
-        <translation type="obsolete">Alt+O</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">取消(&amp;C)</translation>
-    </message>
-    <message>
-        <source>Alt+C</source>
-        <translation type="obsolete">Alt+C</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>QGIS Plugin Template</source>
-        <translation type="obsolete">QGIS附加元件範本</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:16pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;This plugin will help you to build a graticule shapefile that you can use as an overlay within your qgis map viewer.&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:16pt;font-weight:600&quot;&gt;描述&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;該附加元件可以幫助您構建格網標線檔。您可以將它作為疊加圖層在地圖檢視中使用。&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</translation>
-    </message>
-    <message>
-        <source>Graticule Builder</source>
-        <translation type="obsolete">格網標線工具</translation>
-    </message>
-    <message>
-        <source>Latitude Interval:</source>
-        <translation type="obsolete">緯度間距:</translation>
-    </message>
-    <message>
-        <source>Longitude Interval:</source>
-        <translation type="obsolete">經度間距:</translation>
-    </message>
-    <message>
-        <source>North Arrow Plugin</source>
-        <translation type="obsolete">指北針附加元件</translation>
-    </message>
-    <message>
-        <source>Properties</source>
-        <translation type="obsolete">屬性</translation>
-    </message>
-    <message>
-        <source>Angle</source>
-        <translation type="obsolete">角度</translation>
-    </message>
-    <message>
-        <source>Enable North Arrow</source>
-        <translation type="obsolete">顯示指北針</translation>
-    </message>
-    <message>
-        <source>Placement on screen</source>
-        <translation type="obsolete">螢幕位置</translation>
-    </message>
-    <message>
-        <source>Preview of north arrow</source>
-        <translation type="obsolete">預覽指北針</translation>
-    </message>
-    <message>
-        <source>Icon</source>
-        <translation type="obsolete">圖示</translation>
-    </message>
-    <message>
-        <source>New Item</source>
-        <translation type="obsolete">新專案</translation>
-    </message>
-    <message>
-        <source>Plugin Template</source>
-        <translation type="obsolete">附加元件範本</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;This plugin was generated using QGIS internal plugin template. Please modify it according to your needs.&lt;/p&gt;
-&lt;p&gt;Tim Sutton&lt;/p&gt;
-&lt;p&gt;2004&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;描述&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;該附加元件使用QGIS內部的附加元件範本生成。請根據您的需要作相應的修改。&lt;/p&gt;
-&lt;p&gt;Tim Sutton&lt;/p&gt;
-&lt;p&gt;2004&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</translation>
-    </message>
-    <message>
-        <source>Scale Bar Plugin</source>
-        <translation type="obsolete">比例尺附加元件</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;This plugin draws a scale bar on the map. Please note the size option below is a &apos;preferred&apos; size and may have to be altered by QGIS depending on the level of zoom.  The size is measured according to the map units specified in the project properties.&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;描述&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;該附加元件會在地圖上繪製比例尺。請注意下面的大小選項，它僅是“預設”的尺寸，QGIS會根據不同的縮放層次來改變它。這個值根據專案屬性中指定的地圖單位來測量。&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</translation>
-    </message>
-    <message>
-        <source>Size of bar:</source>
-        <translation type="obsolete">比例尺的大小:</translation>
-    </message>
-    <message>
-        <source>Select Colour</source>
-        <translation type="obsolete">選擇顏色</translation>
-    </message>
-    <message>
-        <source>Placement:</source>
-        <translation type="obsolete">位置:</translation>
-    </message>
-    <message>
-        <source>Tick Down</source>
-        <translation type="obsolete">開口向下</translation>
-    </message>
-    <message>
-        <source>Tick Up</source>
-        <translation type="obsolete">開口向上</translation>
-    </message>
-    <message>
-        <source>Box</source>
-        <translation type="obsolete">矩形框</translation>
-    </message>
-    <message>
-        <source>Bar</source>
-        <translation type="obsolete">條狀</translation>
-    </message>
-    <message>
-        <source>Select the style of the scale bar</source>
-        <translation type="obsolete">選擇比例尺樣式</translation>
-    </message>
-    <message>
-        <source>Colour of bar:</source>
-        <translation type="obsolete">比例尺的顏色:</translation>
-    </message>
-    <message>
-        <source>Scale bar style:</source>
-        <translation type="obsolete">比例尺的樣式:</translation>
-    </message>
-    <message>
-        <source>Enable scale bar</source>
-        <translation type="obsolete">顯示比例尺</translation>
-    </message>
-    <message>
-        <source>Origin (Lower Left)</source>
-        <translation type="obsolete">起點(左下角點)</translation>
-    </message>
-    <message>
-        <source>Latitude:</source>
-        <translation type="obsolete">緯度:</translation>
-    </message>
-    <message>
-        <source>Longitude:</source>
-        <translation type="obsolete">經度:</translation>
-    </message>
-    <message>
-        <source>End point (Upper Right)</source>
-        <translation type="obsolete">終點(右上角點)</translation>
-    </message>
-    <message>
-        <source>Output (Shape) File</source>
-        <translation type="obsolete">輸出檔(Shape)</translation>
-    </message>
-    <message>
-        <source>Graticule Size (units in degrees)</source>
-        <translation type="obsolete">網格大小(單位：度)</translation>
-    </message>
-</context>
-<context>
     <name>Python</name>
     <message>
         <source>Python error</source>
@@ -4146,30 +2782,6 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
 <context>
     <name>QFileDialog</name>
     <message>
-        <source>open files dialog</source>
-        <translation type="obsolete">開啟文件對話方塊</translation>
-    </message>
-    <message>
-        <source>Save file dialog</source>
-        <translation type="obsolete">儲存檔對話方塊</translation>
-    </message>
-    <message>
-        <source>Open an OGR Supported Data Source</source>
-        <translation type="obsolete">開啟OGR支持的資料來源</translation>
-    </message>
-    <message>
-        <source>Choose a QGIS project file to open</source>
-        <translation type="obsolete">選擇QGIS專案檔案並開啟</translation>
-    </message>
-    <message>
-        <source>Choose a QGIS project file</source>
-        <translation type="obsolete">選擇QGIS專案檔案</translation>
-    </message>
-    <message>
-        <source>save new vector files dialog</source>
-        <translation type="obsolete">儲存新的向量檔對話方塊</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/quick_print/quickprintgui.cpp" line="104"/>
         <source>Save experiment report to portable document format (.pdf)</source>
         <translation type="unfinished"></translation>
@@ -4188,19 +2800,6 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
 <context>
     <name>QObject</name>
     <message>
-        <source>QGis files (*.qgs)</source>
-        <translation type="obsolete">QGis文件(*.qgs)</translation>
-    </message>
-    <message>
-        <source>Choose a QGIS project file to open</source>
-        <translation type="obsolete">選擇要開啟的QGIS專案檔案</translation>
-    </message>
-    <message>
-        <source>No Data Provider Plugins</source>
-        <comment>No QGIS data provider plugins found in:</comment>
-        <translation type="obsolete">沒有資料來源附加元件</translation>
-    </message>
-    <message>
         <location filename="../src/core/qgsproviderregistry.cpp" line="88"/>
         <source>No vector layers can be loaded. Check your QGIS installation</source>
         <translation>沒有向量圖層能夠載入。請檢查您的QGIS安裝</translation>
@@ -4216,235 +2815,14 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <translation>沒有有效的資料來源附加元件。不能載入向量圖層</translation>
     </message>
     <message>
-        <source>Choose a QGIS project file</source>
-        <translation type="obsolete">選擇QGIS專案檔案</translation>
-    </message>
-    <message>
-        <source>Open an OGR Supported Layer</source>
-        <translation type="obsolete">開啟OGR支持的圖層</translation>
-    </message>
-    <message>
-        <source>Project file read error</source>
-        <translation type="obsolete">專案檔案讀取錯誤</translation>
-    </message>
-    <message>
-        <source> at line </source>
-        <translation type="obsolete">行</translation>
-    </message>
-    <message>
-        <source> column </source>
-        <translation type="obsolete">列</translation>
-    </message>
-    <message>
-        <source> for file </source>
-        <translation type="obsolete">文件</translation>
-    </message>
-    <message>
-        <source>No proj4 projection string. Unable to set map units.</source>
-        <translation type="obsolete">沒有proj4的投影定義字串。不能設定地圖單位.</translation>
-    </message>
-    <message>
-        <source>Unsupported map units of </source>
-        <translation type="obsolete">不支援的地圖單位</translation>
-    </message>
-    <message>
-        <source>No oid column in table</source>
-        <translation type="obsolete">表中沒有OID欄位</translation>
-    </message>
-    <message>
-        <source>The table has no primary key nor oid column. 
-Qgis requires that the table either has a primary key 
-or has a column containing the PostgreSQL oid.
-For better performance the column should be indexed
-</source>
-        <translation type="obsolete">這個表既沒有主鍵也沒有OID欄位。Qgis要求表格需有一個主鍵
-或是有一個欄位包含了PostgreSQL的OID。為了有更好的
-執行效率，這個欄位應該建立索引</translation>
-    </message>
-    <message>
-        <source>No suitable key column in view</source>
-        <translation type="obsolete">檢視中沒有合適的關鍵字段</translation>
-    </message>
-    <message>
-        <source>The view has no column suitable for use as a unique key.
-
-Qgis requires that the view has a column that can be
-used as a unique key. It should be derived from a column
-of type int4 and be either a primary key or have
-a unique constraint on it (an indexed column will
-give better performance).</source>
-        <translation type="obsolete">目前檢視沒有一個欄位適合作為唯一關鍵值(key)。
-
-Qgis要求檢視有一個欄位能用作唯一關鍵字段。它的類型必須是int4，
-並且要是主鍵或者包含了唯一值(建過索引的欄位會有更好的執行效率).</translation>
-    </message>
-    <message>
-        <source>No primary key column in table</source>
-        <translation type="obsolete">表中沒有主鍵欄位</translation>
-    </message>
-    <message>
-        <source>The table has a primary key that is composed of 
-more than one column. Qgis does not currently 
-support this.</source>
-        <translation type="obsolete">Qgis不支持一個表格的主鍵由多個欄位構成。</translation>
-    </message>
-    <message>
-        <source>Unable to save to file </source>
-        <translation type="obsolete">無法儲存檔</translation>
-    </message>
-    <message>
-        <source>Regular expressions on numeric values don&apos;t make sense. Use comparison insted.</source>
-        <translation type="obsolete">在數值上使用規則運算式沒有意義。請使用比較運算。</translation>
-    </message>
-    <message>
-        <source>Referenced column wasn&apos;t found: </source>
-        <translation type="obsolete">引用的欄位未找到: </translation>
-    </message>
-    <message>
         <location filename="../src/core/qgssearchtreenode.cpp" line="332"/>
         <source>Division by zero.</source>
         <translation>被0除。</translation>
     </message>
     <message>
-        <source>No active layer</source>
-        <translation type="obsolete">沒有啟動的圖層</translation>
-    </message>
-    <message>
-        <source>To identify features, you must choose an layer active by clicking on its name in the legend</source>
-        <translation type="obsolete">要識別圖徵，您必須在圖例上按一下一個圖層的名稱，啟動該圖層</translation>
-    </message>
-    <message>
-        <source>Band</source>
-        <translation type="obsolete">波段</translation>
-    </message>
-    <message>
-        <source>action</source>
-        <translation type="obsolete">動作</translation>
-    </message>
-    <message>
-        <source> features found</source>
-        <translation type="obsolete">圖徵被找到</translation>
-    </message>
-    <message>
-        <source> 1 feature found</source>
-        <translation type="obsolete"> 1個圖徵被找到</translation>
-    </message>
-    <message>
-        <source>No features found</source>
-        <translation type="obsolete">未找到圖徵</translation>
-    </message>
-    <message>
-        <source>No features were found in the active layer at the point you clicked</source>
-        <translation type="obsolete">在目前啟動圖層的滑鼠點擊位置上未發現圖徵</translation>
-    </message>
-    <message>
-        <source>Could not identify objects on</source>
-        <translation type="obsolete">無法識別圖徵在</translation>
-    </message>
-    <message>
-        <source>because</source>
-        <translation type="obsolete">因為</translation>
-    </message>
-    <message>
-        <source>To select features, you must choose an layer active by clicking on its name in the legend</source>
-        <translation type="obsolete">要選取圖徵，您必須在圖例上按一下一個圖層的名稱，啟動該圖層</translation>
-    </message>
-    <message>
-        <source>New centroid</source>
-        <translation type="obsolete">新的質心</translation>
-    </message>
-    <message>
-        <source>New point</source>
-        <translation type="obsolete">新的點</translation>
-    </message>
-    <message>
-        <source>New vertex</source>
-        <translation type="obsolete">新轉折點</translation>
-    </message>
-    <message>
-        <source>Undo last point</source>
-        <translation type="obsolete">復原最後的點</translation>
-    </message>
-    <message>
-        <source>Close line</source>
-        <translation type="obsolete">閉合線</translation>
-    </message>
-    <message>
-        <source>Select vertex</source>
-        <translation type="obsolete">選擇轉折點</translation>
-    </message>
-    <message>
-        <source>Select new position</source>
-        <translation type="obsolete">選擇新的位置</translation>
-    </message>
-    <message>
-        <source>Select line segment</source>
-        <translation type="obsolete">選擇線段</translation>
-    </message>
-    <message>
-        <source>New vertex position</source>
-        <translation type="obsolete">新的轉折點位置</translation>
-    </message>
-    <message>
-        <source>Release</source>
-        <translation type="obsolete">取消</translation>
-    </message>
-    <message>
-        <source>Delete vertex</source>
-        <translation type="obsolete">刪除轉折點</translation>
-    </message>
-    <message>
-        <source>Release vertex</source>
-        <translation type="obsolete">取消轉折點</translation>
-    </message>
-    <message>
-        <source>Select element</source>
-        <translation type="obsolete">選擇元素</translation>
-    </message>
-    <message>
-        <source>New location</source>
-        <translation type="obsolete">新的區域</translation>
-    </message>
-    <message>
-        <source>Release selected</source>
-        <translation type="obsolete">取消選取的</translation>
-    </message>
-    <message>
-        <source>Delete selected / select next</source>
-        <translation type="obsolete">刪除選取的/選擇下一個</translation>
-    </message>
-    <message>
-        <source>Select position on line</source>
-        <translation type="obsolete">線上上選擇一個位置</translation>
-    </message>
-    <message>
-        <source>Split the line</source>
-        <translation type="obsolete">分割線</translation>
-    </message>
-    <message>
-        <source>Release the line</source>
-        <translation type="obsolete">取消線</translation>
-    </message>
-    <message>
-        <source>Select point on line</source>
-        <translation type="obsolete">線上上選擇一個點</translation>
-    </message>
-    <message>
         <location filename="../src/core/qgslabelattributes.cpp" line="62"/>
         <source>Label</source>
         <translation>標籤</translation>
-    </message>
-    <message>
-        <source>Length</source>
-        <translation type="obsolete">長度</translation>
-    </message>
-    <message>
-        <source>Area</source>
-        <translation type="obsolete">面積</translation>
-    </message>
-    <message>
-        <source>Project file read error: </source>
-        <translation type="obsolete">專案檔案讀取錯誤:</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsleastsquares.cpp" line="33"/>
@@ -4467,14 +2845,14 @@ support this.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="307"/>
-        <location filename="../src/core/qgsdistancearea.cpp" line="332"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="306"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="331"/>
         <source>Caught a coordinate system exception while trying to transform a point. Unable to calculate line length.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="399"/>
-        <location filename="../src/core/qgsdistancearea.cpp" line="428"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="398"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="427"/>
         <source>Caught a coordinate system exception while trying to transform a point. Unable to calculate polygon area.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -4546,14 +2924,6 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation type="unfinished">新增CSV純文字圖層</translation>
     </message>
     <message>
-        <source>Georeferencer</source>
-        <translation type="obsolete">幾何校正(Georeferencer)</translation>
-    </message>
-    <message>
-        <source>Adding projection info to rasters</source>
-        <translation type="obsolete">新增影像投影資訊</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="53"/>
         <source>GPS Tools</source>
         <translation type="unfinished">GPS工具</translation>
@@ -4572,14 +2942,6 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="897"/>
         <source>GRASS layer</source>
         <translation type="unfinished">GRASS圖層</translation>
-    </message>
-    <message>
-        <source>Graticule Creator</source>
-        <translation type="obsolete">格網標線產生工具</translation>
-    </message>
-    <message>
-        <source>Builds a graticule</source>
-        <translation type="obsolete">建立格網標線</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="59"/>
@@ -4632,215 +2994,91 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation type="unfinished">新增WFS至QGIS canvas</translation>
     </message>
     <message>
-        <source>Not a vector layer</source>
-        <translation type="obsolete">不是向量圖層</translation>
-    </message>
-    <message>
-        <source>The current layer is not a vector layer</source>
-        <translation type="obsolete">目前的圖層是不向量圖層</translation>
-    </message>
-    <message>
-        <source>Layer cannot be added to</source>
-        <translation type="obsolete">不能新增圖層</translation>
-    </message>
-    <message>
-        <source>The data provider for this layer does not support the addition of features.</source>
-        <translation type="obsolete">該圖層的資料來源不支持圖徵的新增。</translation>
-    </message>
-    <message>
-        <source>Layer not editable</source>
-        <translation type="obsolete">圖層不可編輯</translation>
-    </message>
-    <message>
-        <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation type="obsolete">無法編輯向量圖層。請確定它是可以編輯。在圖層的檔案項中，選取為&apos;允許編輯&apos;。</translation>
-    </message>
-    <message>
-        <source>To select features, you must choose a vector layer by clicking on its name in the legend</source>
-        <translation type="obsolete">要選取圖徵，您必須在圖例上按一下一個圖層的名稱，啟動該圖層</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgspluginregistry.cpp" line="444"/>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="170"/>
         <source>Python error</source>
         <translation type="unfinished">Python錯誤</translation>
     </message>
     <message>
-        <source>Couldn&apos;t load plugin </source>
-        <translation type="obsolete">無法載入附加元件</translation>
-    </message>
-    <message>
-        <source> due an error when calling its classFactory() method</source>
-        <translation type="obsolete">當呼叫classFactory()方法發生錯誤</translation>
-    </message>
-    <message>
-        <source> due an error when calling its initGui() method</source>
-        <translation type="obsolete">當呼叫initGui()方法發生錯誤</translation>
-    </message>
-    <message>
-        <source>Error while unloading plugin </source>
-        <translation type="obsolete">卸除附加元件時發生錯誤</translation>
-    </message>
-    <message>
-        <source>2.5D shape type not supported</source>
-        <translation type="obsolete">不支援2.5D的Shape型態</translation>
-    </message>
-    <message>
-        <source>Adding features to 2.5D shapetypes is not supported yet</source>
-        <translation type="obsolete">增加圖徵至2.5DShape type尚未支援</translation>
-    </message>
-    <message>
-        <source>Wrong editing tool</source>
-        <translation type="obsolete">錯誤的編輯工具</translation>
-    </message>
-    <message>
-        <source>Coordinate transform error</source>
-        <translation type="obsolete">座標轉換錯誤</translation>
-    </message>
-    <message>
-        <source>Cannot transform the point to the layers coordinate system</source>
-        <translation type="obsolete">無法轉換點至圖層的座標系統</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">錯誤</translation>
-    </message>
-    <message>
-        <source>Cannot add feature. Unknown WKB type</source>
-        <translation type="obsolete">無法新增圖徵，未知的WKB形態</translation>
-    </message>
-    <message>
-        <source>Error, could not add island</source>
-        <translation type="obsolete">錯誤，無法增加島形(island)</translation>
-    </message>
-    <message>
-        <source>An unknown error occured</source>
-        <translation type="obsolete">發生未知的錯誤</translation>
-    </message>
-    <message>
-        <source>Error, could not add ring</source>
-        <translation type="obsolete">錯誤，不能新增環形(ring)</translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="681"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="680"/>
         <source> km2</source>
         <translation type="unfinished">平方公里</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="686"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="685"/>
         <source> ha</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="691"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="690"/>
         <source> m2</source>
         <translation type="unfinished">平方公尺</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="699"/>
-        <location filename="../src/core/qgsdistancearea.cpp" line="719"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="698"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="718"/>
         <source> m</source>
         <translation type="unfinished">公尺</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="704"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="703"/>
         <source> km</source>
         <translation type="unfinished">公里</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="709"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="708"/>
         <source> mm</source>
         <translation type="unfinished">公釐</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="714"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="713"/>
         <source> cm</source>
         <translation type="unfinished">公分</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="728"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="727"/>
         <source> sq mile</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="733"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="732"/>
         <source> sq ft</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="740"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="739"/>
         <source> mile</source>
         <translation type="unfinished">英哩</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="746"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="745"/>
         <source> foot</source>
         <translation type="unfinished">英呎</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="748"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="747"/>
         <source> feet</source>
         <translation type="unfinished">英呎</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="755"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="754"/>
         <source> sq.deg.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="760"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="759"/>
         <source> degree</source>
         <translation type="unfinished">度</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="762"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="761"/>
         <source> degrees</source>
         <translation type="unfinished">度</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="766"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="765"/>
         <source> unknown</source>
         <translation type="unfinished">未知</translation>
-    </message>
-    <message>
-        <source>Received %1 of %2 bytes</source>
-        <translation type="obsolete">接收到 %1 bytes(共 %2 bytes)</translation>
-    </message>
-    <message>
-        <source>Received %1 bytes (total unknown)</source>
-        <translation type="obsolete">接收到 %1 bytes(大小未知)</translation>
-    </message>
-    <message>
-        <source>Not connected</source>
-        <translation type="obsolete">無連線</translation>
-    </message>
-    <message>
-        <source>Looking up &apos;%1&apos;</source>
-        <translation type="obsolete">尋找 &apos;%1&apos;</translation>
-    </message>
-    <message>
-        <source>Connecting to &apos;%1&apos;</source>
-        <translation type="obsolete">連線至 &apos;%1&apos;</translation>
-    </message>
-    <message>
-        <source>Sending request &apos;%1&apos;</source>
-        <translation type="obsolete">傳送請求指命 &apos;%1&apos;</translation>
-    </message>
-    <message>
-        <source>Receiving reply</source>
-        <translation type="obsolete">接收回應資料</translation>
-    </message>
-    <message>
-        <source>Response is complete</source>
-        <translation type="obsolete">回應資料傳完</translation>
-    </message>
-    <message>
-        <source>Closing down connection</source>
-        <translation type="obsolete">關閉連線</translation>
-    </message>
-    <message>
-        <source>Unable to open </source>
-        <translation type="obsolete">無法開啟</translation>
     </message>
     <message>
         <location filename="../src/core/qgssearchtreenode.cpp" line="299"/>
@@ -4851,15 +3089,6 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="46"/>
         <source>Geoprocessing functions for working with PostgreSQL/PostGIS layers</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Location: </source>
-        <comment>Metadata in GRASS Browser</comment>
-        <translation type="obsolete">位置:</translation>
-    </message>
-    <message>
-        <source>Location: </source>
-        <translation type="obsolete">位置:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="126"/>
@@ -5067,30 +3296,10 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Cannot start </source>
-        <translation type="obsolete">無法啟動</translation>
-    </message>
-    <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="445"/>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="481"/>
         <source>Mapset is already in use.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Temporary directory </source>
-        <translation type="obsolete">暫存資料夾</translation>
-    </message>
-    <message>
-        <source> exist but is not writable</source>
-        <translation type="obsolete">存在但無法寫入</translation>
-    </message>
-    <message>
-        <source>Cannot create temporary directory </source>
-        <translation type="obsolete">無法建立暫存資料夾</translation>
-    </message>
-    <message>
-        <source>Cannot create </source>
-        <translation type="obsolete">無法建立</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/idtool/eviseventidtool.cpp" line="76"/>
@@ -5122,10 +3331,6 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation type="unfinished">無法讀取區域</translation>
     </message>
     <message>
-        <source>original location: </source>
-        <translation type="obsolete">原始位置:</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="45"/>
         <source>PostgreSQL Geoprocessing</source>
         <translation>PostGIS 地理空間運算</translation>
@@ -5141,22 +3346,10 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Could not remove polygon intersection</source>
-        <translation type="obsolete">無法移除多邊形的交叉</translation>
-    </message>
-    <message>
-        <source>Created default style file as </source>
-        <translation type="obsolete">建立預設樣式檔案為</translation>
-    </message>
-    <message>
         <location filename="../src/analysis/interpolation/qgsgridfilewriter.cpp" line="65"/>
         <location filename="../src/analysis/interpolation/qgstininterpolator.cpp" line="104"/>
         <source>Abort</source>
         <translation type="unfinished">放棄</translation>
-    </message>
-    <message>
-        <source> is not writeable.</source>
-        <translation type="obsolete">不是可寫入的。</translation>
     </message>
     <message>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="75"/>
@@ -5200,10 +3393,6 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="153"/>
         <source>An error occured during execution of following code:</source>
         <translation type="unfinished">當執行以下程式碼發生錯誤:</translation>
-    </message>
-    <message>
-        <source>Legend</source>
-        <translation type="obsolete">圖例</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="53"/>
@@ -5256,18 +3445,6 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation type="unfinished">使用OGR library轉換各種向量圖層</translation>
     </message>
     <message>
-        <source>CRS Exception</source>
-        <translation type="obsolete">CRS意外</translation>
-    </message>
-    <message>
-        <source>Loading style file </source>
-        <translation type="obsolete">載入樣式檔</translation>
-    </message>
-    <message>
-        <source>Could not save symbology because:</source>
-        <translation type="obsolete">無法儲存符號設計結果，因為:</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgspluginregistry.cpp" line="313"/>
         <source>Error Loading Plugin</source>
         <translation type="unfinished">載入附加元件出錯</translation>
@@ -5277,10 +3454,6 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <source>There was an error loading a plugin.The following diagnostic information may help the QGIS developers resolve the issue:
 %1.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error when reading metadata of plugin </source>
-        <translation type="obsolete">讀取附加元件的詮釋資料發生錯誤</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsprojectbadlayerguihandler.cpp" line="188"/>
@@ -5521,7 +3694,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1211"/>
+        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1213"/>
         <source>Generated CRS</source>
         <comment>A CRS automatically generated from layer info get this prefix for description</comment>
         <translation type="unfinished"></translation>
@@ -5809,1647 +3982,947 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
 <context>
     <name>QgisApp</name>
     <message>
-        <source>Loading QGIS...</source>
-        <translation type="obsolete">啟動QGIS...</translation>
-    </message>
-    <message>
-        <source>Setting up QGIS gui...</source>
-        <translation type="obsolete">設定QGIS的介面...</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="2010"/>
+        <location filename="../src/app/qgisapp.cpp" line="2022"/>
         <source>Layers</source>
         <translation>圖層</translation>
     </message>
     <message>
-        <source>Quantum GIS - </source>
-        <translation type="obsolete">Quantum GIS</translation>
-    </message>
-    <message>
-        <source>Loading plugins...</source>
-        <translation type="obsolete">載入附加元件...</translation>
-    </message>
-    <message>
-        <source>Version </source>
-        <translation type="obsolete">版本 </translation>
-    </message>
-    <message>
-        <source> with PostgreSQL support</source>
-        <translation type="obsolete">支持PostgreSQL</translation>
-    </message>
-    <message>
-        <source> (no PostgreSQL support)</source>
-        <translation type="obsolete">(不支持PostgreSQL)</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="2209"/>
+        <location filename="../src/app/qgisapp.cpp" line="2221"/>
         <source>Version</source>
         <translation>版本</translation>
     </message>
     <message>
-        <source>Available Data Provider Plugins</source>
-        <translation type="obsolete">有效的資料來源附加元件</translation>
-    </message>
-    <message>
-        <source>No OGR Provider</source>
-        <translation type="obsolete">沒有OGR供應者</translation>
-    </message>
-    <message>
-        <source>No OGR data provider was found in the QGIS lib directory</source>
-        <translation type="obsolete">在QGIS lib資料夾下未發現OGR資料供應者</translation>
-    </message>
-    <message>
-        <source>is not a valid or recognized data source</source>
-        <translation type="obsolete">不是有效或可識別的資料來源</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="2415"/>
-        <location filename="../src/app/qgisapp.cpp" line="5652"/>
+        <location filename="../src/app/qgisapp.cpp" line="2427"/>
+        <location filename="../src/app/qgisapp.cpp" line="5685"/>
         <source>Invalid Data Source</source>
         <translation>無效的資料來源</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2568"/>
-        <location filename="../src/app/qgisapp.cpp" line="2648"/>
+        <location filename="../src/app/qgisapp.cpp" line="2580"/>
+        <location filename="../src/app/qgisapp.cpp" line="2660"/>
         <source>Invalid Layer</source>
         <translation>無效的圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2568"/>
-        <location filename="../src/app/qgisapp.cpp" line="2648"/>
+        <location filename="../src/app/qgisapp.cpp" line="2580"/>
+        <location filename="../src/app/qgisapp.cpp" line="2660"/>
         <source>%1 is an invalid layer and cannot be loaded.</source>
         <translation>%1是一個無效的圖層，無法載入。</translation>
     </message>
     <message>
-        <source>No PostgreSQL Provider</source>
-        <translation type="obsolete">沒有PostgreSQL供應者</translation>
-    </message>
-    <message>
-        <source>No PostgreSQL data provider was found in the QGIS lib directory</source>
-        <translation type="obsolete">在QGIS lib資料夾下未發現PostgreSQL資料供應者</translation>
-    </message>
-    <message>
-        <source>Saved map to:</source>
-        <translation type="obsolete">地圖儲存為:</translation>
-    </message>
-    <message>
-        <source>Choose a filename to save the map image as</source>
-        <translation type="obsolete">選擇一個地圖影像儲存的名稱</translation>
-    </message>
-    <message>
-        <source>Saved map image to</source>
-        <translation type="obsolete">地圖影像儲存為</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="3612"/>
+        <location filename="../src/app/qgisapp.cpp" line="3624"/>
         <source>No Layer Selected</source>
         <translation>沒有選取的圖層</translation>
     </message>
     <message>
-        <source>To open an attribute table, you must select a layer in the legend</source>
-        <translation type="obsolete">要開啟圖層的屬性工作表，必須在圖例中選擇一個圖層</translation>
-    </message>
-    <message>
-        <source>Error Loading Plugin</source>
-        <translation type="obsolete">載入附加元件出錯</translation>
-    </message>
-    <message>
-        <source>There was an error loading %1.</source>
-        <translation type="obsolete">載入%1時出現錯誤.</translation>
-    </message>
-    <message>
-        <source>No MapLayer Plugins</source>
-        <translation type="obsolete">沒有MapLayer附加元件</translation>
-    </message>
-    <message>
-        <source>No MapLayer plugins in ../plugins/maplayer</source>
-        <translation type="obsolete">在../plugins/maplayer下沒有MapLayer附加元件</translation>
-    </message>
-    <message>
-        <source>No Plugins</source>
-        <translation type="obsolete">沒有附加元件</translation>
-    </message>
-    <message>
-        <source>No plugins found in ../plugins. To test plugins, start qgis from the src directory</source>
-        <translation type="obsolete">在../plugins中未發現任何附加元件。要測試附加元件，請從src資料夾啟動qgis</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">名稱</translation>
-    </message>
-    <message>
-        <source>Plugin %1 is named %2</source>
-        <translation type="obsolete">附加元件%1命名為%2</translation>
-    </message>
-    <message>
-        <source>Plugin Information</source>
-        <translation type="obsolete">附加元件資訊</translation>
-    </message>
-    <message>
-        <source>QGis loaded the following plugin:</source>
-        <translation type="obsolete">QGis載入了以下的附加元件:</translation>
-    </message>
-    <message>
-        <source>Name: %1</source>
-        <translation type="obsolete">名稱：%1</translation>
-    </message>
-    <message>
-        <source>Version: %1</source>
-        <translation type="obsolete">版本：%1</translation>
-    </message>
-    <message>
-        <source>Description: %1</source>
-        <translation type="obsolete">描述：%1</translation>
-    </message>
-    <message>
-        <source>Unable to Load Plugin</source>
-        <translation type="obsolete">無法載入附加元件</translation>
-    </message>
-    <message>
-        <source>QGIS was unable to load the plugin from: %1</source>
-        <translation type="obsolete">QGIS無法從%1載入附加元件</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="4566"/>
+        <location filename="../src/app/qgisapp.cpp" line="4574"/>
         <source>There is a new version of QGIS available</source>
         <translation>QGIS有新版本</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4572"/>
+        <location filename="../src/app/qgisapp.cpp" line="4580"/>
         <source>You are running a development version of QGIS</source>
         <translation>您正在使用QGIS的開發版本</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4576"/>
+        <location filename="../src/app/qgisapp.cpp" line="4584"/>
         <source>You are running the current version of QGIS</source>
         <translation>您正在使用QGIS的目前版本</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4581"/>
+        <location filename="../src/app/qgisapp.cpp" line="4589"/>
         <source>Would you like more information?</source>
         <translation>您想瞭解更多的資訊嗎?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4584"/>
-        <location filename="../src/app/qgisapp.cpp" line="4597"/>
-        <location filename="../src/app/qgisapp.cpp" line="4602"/>
-        <location filename="../src/app/qgisapp.cpp" line="4630"/>
+        <location filename="../src/app/qgisapp.cpp" line="4592"/>
+        <location filename="../src/app/qgisapp.cpp" line="4605"/>
+        <location filename="../src/app/qgisapp.cpp" line="4610"/>
+        <location filename="../src/app/qgisapp.cpp" line="4638"/>
         <source>QGIS Version Information</source>
         <translation>QGIS版本資訊</translation>
     </message>
     <message>
-        <source>Yes</source>
-        <translation type="obsolete">是</translation>
-    </message>
-    <message>
-        <source>No</source>
-        <translation type="obsolete">否</translation>
-    </message>
-    <message>
-        <source>QGIS - Changes in CVS Since Last Release</source>
-        <translation type="obsolete">QGIS - 在CVS中有新的變化</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="4602"/>
+        <location filename="../src/app/qgisapp.cpp" line="4610"/>
         <source>Unable to get current version information from server</source>
         <translation>無法從伺服器得到目前版本的資訊</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4616"/>
+        <location filename="../src/app/qgisapp.cpp" line="4624"/>
         <source>Connection refused - server may be down</source>
         <translation>連接被拒絕 - 伺服器可能出現故障</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4619"/>
+        <location filename="../src/app/qgisapp.cpp" line="4627"/>
         <source>QGIS server was not found</source>
         <translation>未找到QGIS伺服器</translation>
     </message>
     <message>
-        <source>Error reading from server</source>
-        <translation type="obsolete">讀取伺服器錯誤</translation>
-    </message>
-    <message>
-        <source>Unable to connect to the QGIS Version server</source>
-        <translation type="obsolete">無法連接到QGIS的版本伺服器</translation>
-    </message>
-    <message>
-        <source>Extents: </source>
-        <translation type="obsolete">範圍:</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="3650"/>
+        <location filename="../src/app/qgisapp.cpp" line="3662"/>
         <source>Problem deleting features</source>
         <translation>刪除圖徵出錯</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3651"/>
+        <location filename="../src/app/qgisapp.cpp" line="3663"/>
         <source>A problem occured during deletion of features</source>
         <translation>刪除圖徵時發生錯誤</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3621"/>
+        <location filename="../src/app/qgisapp.cpp" line="3633"/>
         <source>No Vector Layer Selected</source>
         <translation>未選取向量圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3622"/>
+        <location filename="../src/app/qgisapp.cpp" line="3634"/>
         <source>Deleting features only works on vector layers</source>
         <translation>刪除圖徵只對向量圖層有效</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3613"/>
+        <location filename="../src/app/qgisapp.cpp" line="3625"/>
         <source>To delete features, you must select a vector layer in the legend</source>
         <translation>要刪除圖徵，必須在圖例中選擇向量圖層</translation>
     </message>
     <message>
-        <source>Quantum GIS is licensed under the GNU General Public License</source>
-        <translation type="obsolete">Quantum GIS is licensed under the GNU General Public License</translation>
-    </message>
-    <message>
-        <source>http://www.gnu.org/licenses</source>
-        <translation type="obsolete">http://www.gnu.org/licenses</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="2009"/>
+        <location filename="../src/app/qgisapp.cpp" line="2021"/>
         <source>Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties.</source>
         <translation>目前地圖上顯示的所有圖層的圖例。按一下核取方塊顯示或隱藏圖層。在圖例上按兩下圖層來定制它的顯示並設定其它的屬性.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1944"/>
+        <location filename="../src/app/qgisapp.cpp" line="1956"/>
         <source>Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas.</source>
         <translation>地圖全覽圖。這個區域用來顯示一個定點陣圖，它顯示了地圖檢視的目前範圍。目前範圍以紅色矩形框顯示。地圖上的任何一個圖層都能夠新增到全覽圖中.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1876"/>
+        <location filename="../src/app/qgisapp.cpp" line="1888"/>
         <source>Map canvas. This is where raster and vector layers are displayed when added to the map</source>
         <translation type="unfinished">f地圖顯示區。這是影像和向量圖層顯示的地方</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1403"/>
+        <location filename="../src/app/qgisapp.cpp" line="1412"/>
         <source>&amp;Plugins</source>
         <translation>附加元件(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1573"/>
+        <location filename="../src/app/qgisapp.cpp" line="1582"/>
         <source>Progress bar that displays the status of rendering layers and other time-intensive operations</source>
         <translation>進度條用來顯示繪製圖層的進度，以及其它一些耗時的操作的進度</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1645"/>
+        <location filename="../src/app/qgisapp.cpp" line="1654"/>
         <source>Displays the current map scale</source>
         <translation>顯示目前的地圖比例</translation>
     </message>
     <message>
-        <source>Shows the map coordinates at the current cursor postion. The display is continuously updated as the mouse is moved.</source>
-        <translation type="obsolete">顯示目前滑鼠位置的地圖座標。這一顯示隨著滑鼠的移動連續更新.</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="1658"/>
+        <location filename="../src/app/qgisapp.cpp" line="1667"/>
         <source>Render</source>
         <translation>繪圖</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1661"/>
+        <location filename="../src/app/qgisapp.cpp" line="1670"/>
         <source>When checked, the map layers are rendered in response to map navigation commands and other events. When not checked, no rendering is done. This allows you to add a large number of layers and symbolize them before rendering.</source>
         <translation>當選取這一選項時，地圖圖層會在地圖移動或其它一些事件中被繪圖。不選取它，則不會進行繪圖。這可以讓您在繪圖以前新增大量的圖層並對它們進行符號化.</translation>
     </message>
     <message>
-        <source>Setting theme...</source>
-        <translation type="obsolete">設定主題...</translation>
-    </message>
-    <message>
-        <source>QGIS Ready</source>
-        <translation type="obsolete">QGIS準備好了</translation>
-    </message>
-    <message>
-        <source>PostGIS editing support in provider</source>
-        <translation type="obsolete">供應者支持PostGIS編輯</translation>
-    </message>
-    <message>
-        <source>Create new vector layer (shapefile) for editing</source>
-        <translation type="obsolete">新增向量圖層(Shape檔)且編輯</translation>
-    </message>
-    <message>
-        <source>Windows installer</source>
-        <translation type="obsolete">Windows安裝程式</translation>
-    </message>
-    <message>
-        <source>Mac OSX binary</source>
-        <translation type="obsolete">Mac OSX 二進位程式</translation>
-    </message>
-    <message>
-        <source>New options in the graticule builder plugin</source>
-        <translation type="obsolete">格網標線工具的新選項</translation>
-    </message>
-    <message>
-        <source>Enhancements to the GPS plugin</source>
-        <translation type="obsolete">GPS附加元件的改進</translation>
-    </message>
-    <message>
-        <source>Man page</source>
-        <translation type="obsolete">Man page</translation>
-    </message>
-    <message>
-        <source>Save delimited text as shapefile</source>
-        <translation type="obsolete">將分隔文本儲存為Shape檔</translation>
-    </message>
-    <message>
-        <source>PostgreSQL query builder</source>
-        <translation type="obsolete">PostgreSQL查詢構造器</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="2940"/>
-        <location filename="../src/app/qgisapp.cpp" line="3072"/>
-        <location filename="../src/app/qgisapp.cpp" line="3134"/>
+        <location filename="../src/app/qgisapp.cpp" line="2952"/>
+        <location filename="../src/app/qgisapp.cpp" line="3084"/>
+        <location filename="../src/app/qgisapp.cpp" line="3146"/>
         <source>QGis files (*.qgs)</source>
         <translation>QGis文件(*.qgs)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3071"/>
+        <location filename="../src/app/qgisapp.cpp" line="3083"/>
         <source>Choose a QGIS project file</source>
         <translation>選擇QGIS專案檔案</translation>
     </message>
     <message>
-        <source>Unable to save project</source>
-        <translation type="obsolete">無法儲存專案</translation>
-    </message>
-    <message>
-        <source>Unable to save project to </source>
-        <translation type="obsolete">無法將專案儲存為</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="1665"/>
+        <location filename="../src/app/qgisapp.cpp" line="1674"/>
         <source>Toggle map rendering</source>
         <translation>切換地圖繪圖</translation>
     </message>
     <message>
-        <source>This icon shows whether on the fly projection is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour.</source>
-        <translation type="obsolete">這個圖示顯示了是否啟用動態投影。點擊這個圖示，開啟專案屬性對話方塊來改變它的設定.</translation>
-    </message>
-    <message>
-        <source>Projection status - Click to open projection dialog</source>
-        <translation type="obsolete">專案狀態 - 點擊開啟專案對話方塊</translation>
-    </message>
-    <message>
-        <source>On the fly projection support to automatically project layers from different coordinate systems</source>
-        <translation type="obsolete">動態投影能夠將不同座標系下的圖層自動投影到目前座標系下</translation>
-    </message>
-    <message>
-        <source>Map Composer for creating map layouts</source>
-        <translation type="obsolete">地圖設計器用來建立地圖佈局</translation>
-    </message>
-    <message>
-        <source>Toolbox for running GRASS tools from QGIS. The toolbox can be easily customized to add additional tools</source>
-        <translation type="obsolete">在QGIS裡運行GRASS工具的工具箱。這個工具箱易於定制，來新增其它的工具</translation>
-    </message>
-    <message>
-        <source>Handling of spatially enabled tables and views in PostgreSQL has been greatly improved. QGIS can now load any table in the database that contains a geometry column</source>
-        <translation type="obsolete">處理PostgreSQL空間表和檢視的能力大大改善。QGIS現在能夠載入資料庫中任何包含幾何欄位的表格</translation>
-    </message>
-    <message>
-        <source>PostgreSQL views containing a geometry column can be viewed in QGIS</source>
-        <translation type="obsolete">包含幾何欄位的PostgreSQL檢視能夠在QGIS中瀏覽</translation>
-    </message>
-    <message>
-        <source>Raster graphing tool to produce a histogram for a raster layer</source>
-        <translation type="obsolete">影像圖表工具用來生成影像圖層的分佈圖</translation>
-    </message>
-    <message>
-        <source>Raster query using the identify tool allows you to get the pixel values from a raster by making it the active layer and clicking on the point of interest</source>
-        <translation type="obsolete">使用識別工具進行影像查詢，您可以在啟動的圖層上點擊感興趣的點，來獲得像元值</translation>
-    </message>
-    <message>
-        <source>User preferences provides customizable settings for the digitizing line width, color, and selection color</source>
-        <translation type="obsolete">用戶偏好設定提供了可定制的設定，包括數化的線寬、顏色和選取的顏色等</translation>
-    </message>
-    <message>
-        <source>New symbols for use with point layers are available from the layer properties dialog</source>
-        <translation type="obsolete">新的用於點圖層的符號可以在圖層屬性對話方塊中找到</translation>
-    </message>
-    <message>
-        <source>Spatial bookmarks allow you to create and manage bookmarks for an area on the map. Bookmarks are persistent and global; meaning they are available for all projects</source>
-        <translation type="obsolete">書籤功能允許您對地圖上的某一區域建立書籤並管理它們。書籤能夠被儲存並且是全域的；這意味著它們對整個專案都是有效的</translation>
-    </message>
-    <message>
-        <source>Measure tool allows you to measure distances on the map with both segment length and total length displayed as you click</source>
-        <translation type="obsolete">測量工具可以讓您在地圖上測量距離，您既可以得到線段的長度，也可以得到總長度</translation>
-    </message>
-    <message>
-        <source>GPX loading times and memory consumption for large GPX (GPS) files has been drastically reduced</source>
-        <translation type="obsolete">大的GPX (GPS)檔的載入時間和記憶體消耗大大減少</translation>
-    </message>
-    <message>
-        <source>Many enhancements to the digitizing tools have been made, including the ability to capture data straight into PostgreSQL/PostGIS, and improvements to the definition of attribute tables for newly created layers</source>
-        <translation type="obsolete">數化工具有了許多增強，包括新資料直接存入PostgreSQL/PostGIS的能力，以及為新建立的圖層定義屬性工作表的改進</translation>
-    </message>
-    <message>
-        <source>The Raster Georeferencer plugin can be used to generate a world file for a raster. The plugin allows you to define known control points in the raster coordinate system. Once enough control points are defined, the world file can be generated and the raster properly displayed in QGIS or other GIS applications</source>
-        <translation type="obsolete">影像幾合校正附加元件可以讓您為影像生成world檔。該附加元件能讓您在影像座標系下定義已知的控制點。一旦定義了足夠的控制點，就能夠產生world檔，並且這個影像圖層就能夠在QGIS或是其它的GIS應用程式中正確顯示</translation>
-    </message>
-    <message>
-        <source>Improvements to the Mapserver export tool</source>
-        <translation type="obsolete">Mapserver匯出工具的改進</translation>
-    </message>
-    <message>
-        <source>Open an OGR Supported Vector Layer</source>
-        <translation type="obsolete">開啟OGR支持的向量圖層</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="2964"/>
+        <location filename="../src/app/qgisapp.cpp" line="2976"/>
         <source>QGIS Project Read Error</source>
         <translation>QGIS專案讀取錯誤</translation>
     </message>
     <message>
-        <source>Try to find missing layers?</source>
-        <translation type="obsolete">試著尋找丟失的圖層?</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="5561"/>
+        <location filename="../src/app/qgisapp.cpp" line="5593"/>
         <source>Open a GDAL Supported Raster Data Source</source>
         <translation>開啟GDAL支持的影像資料來源</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2825"/>
+        <location filename="../src/app/qgisapp.cpp" line="2837"/>
         <source>Save As</source>
         <translation>另存為</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2940"/>
+        <location filename="../src/app/qgisapp.cpp" line="2952"/>
         <source>Choose a QGIS project file to open</source>
         <translation>選擇QGIS專案檔案並開啟</translation>
     </message>
     <message>
-        <source>Project file exists.</source>
-        <translation type="obsolete">專案檔案已存在.</translation>
-    </message>
-    <message>
-        <source>The given project file exists.  Do you wish to over-write it with a new one?</source>
-        <translation type="obsolete">專案檔案已存在。您是否要取代它?</translation>
-    </message>
-    <message>
-        <source>Saved project to:</source>
-        <translation type="obsolete">專案另存為:</translation>
-    </message>
-    <message>
-        <source>QGIS Browser Selection</source>
-        <translation type="obsolete">選擇QGIS的瀏覽器</translation>
-    </message>
-    <message>
-        <source>Enter the name of a web browser to use (eg. konqueror).
-</source>
-        <translation type="obsolete">輸入您要使用的web瀏覽器的名稱(例如：konqueror).</translation>
-    </message>
-    <message>
-        <source>Enter the full path if the browser is not in your PATH.
-</source>
-        <translation type="obsolete">如果瀏覽器不在您的PATH環境變數下，請輸入完整路徑.</translation>
-    </message>
-    <message>
-        <source>You can change this option later by selecting Preferences from the Settings menu.</source>
-        <translation type="obsolete">您可以在以後從設定功能表中選擇選項來設定這個選項.</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="359"/>
+        <location filename="../src/app/qgisapp.cpp" line="368"/>
         <source>Reading settings</source>
         <translation>讀取設定</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="362"/>
+        <location filename="../src/app/qgisapp.cpp" line="371"/>
         <source>Setting up the GUI</source>
         <translation>設定GUI</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="353"/>
+        <location filename="../src/app/qgisapp.cpp" line="362"/>
         <source>Checking database</source>
         <translation>檢查資料庫</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="425"/>
+        <location filename="../src/app/qgisapp.cpp" line="434"/>
         <source>Restoring loaded plugins</source>
         <translation>恢復載入的附加元件</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="435"/>
+        <location filename="../src/app/qgisapp.cpp" line="444"/>
         <source>Initializing file filters</source>
         <translation>初始設定檔案篩檢程式</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="463"/>
+        <location filename="../src/app/qgisapp.cpp" line="472"/>
         <source>Restoring window state</source>
         <translation>恢復視窗狀態</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="467"/>
+        <location filename="../src/app/qgisapp.cpp" line="476"/>
         <source>QGIS Ready!</source>
         <translation>QGIS準備好了!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="597"/>
+        <location filename="../src/app/qgisapp.cpp" line="606"/>
         <source>&amp;New Project</source>
         <translation>新增專案(&amp;N)</translation>
     </message>
     <message>
-        <source>Ctrl+N</source>
-        <translation type="obsolete">Ctrl+N</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="599"/>
+        <location filename="../src/app/qgisapp.cpp" line="608"/>
         <source>New Project</source>
         <translation>新增專案</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="602"/>
+        <location filename="../src/app/qgisapp.cpp" line="611"/>
         <source>&amp;Open Project...</source>
         <translation>開啟專案(&amp;O)...</translation>
     </message>
     <message>
-        <source>Ctrl+O</source>
-        <translation type="obsolete">Ctrl+O</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="604"/>
+        <location filename="../src/app/qgisapp.cpp" line="613"/>
         <source>Open a Project</source>
         <translation>開啟專案</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="607"/>
+        <location filename="../src/app/qgisapp.cpp" line="616"/>
         <source>&amp;Save Project</source>
         <translation>儲存專案(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="612"/>
+        <location filename="../src/app/qgisapp.cpp" line="621"/>
         <source>Save Project &amp;As...</source>
         <translation>專案另存為(&amp;A)...</translation>
     </message>
     <message>
-        <source>Ctrl+A</source>
-        <translation type="obsolete">Ctrl+A</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="614"/>
+        <location filename="../src/app/qgisapp.cpp" line="623"/>
         <source>Save Project under a new name</source>
         <translation>以新名稱儲存專案</translation>
     </message>
     <message>
-        <source>&amp;Print...</source>
-        <translation type="obsolete">列印(&amp;P)...</translation>
-    </message>
-    <message>
-        <source>Ctrl+P</source>
-        <translation type="obsolete">Ctrl+P</translation>
-    </message>
-    <message>
-        <source>Print</source>
-        <translation type="obsolete">列印</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="617"/>
+        <location filename="../src/app/qgisapp.cpp" line="626"/>
         <source>Save as Image...</source>
         <translation>另存為影像...</translation>
     </message>
     <message>
-        <source>I</source>
-        <translation type="obsolete">I</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="619"/>
+        <location filename="../src/app/qgisapp.cpp" line="628"/>
         <source>Save map as image</source>
         <translation>將地圖另存為影像</translation>
     </message>
     <message>
-        <source>Export to MapServer Map...</source>
-        <translation type="obsolete">輸出為MapServer地圖...</translation>
-    </message>
-    <message>
-        <source>M</source>
-        <translation type="obsolete">M</translation>
-    </message>
-    <message>
-        <source>Export as MapServer .map file</source>
-        <translation type="obsolete">輸出為MapServer .map文件</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="631"/>
+        <location filename="../src/app/qgisapp.cpp" line="640"/>
         <source>Exit</source>
         <translation>退出</translation>
     </message>
     <message>
-        <source>Ctrl+Q</source>
-        <translation type="obsolete">Ctrl+Q</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="633"/>
+        <location filename="../src/app/qgisapp.cpp" line="642"/>
         <source>Exit QGIS</source>
         <translation>退出QGIS</translation>
     </message>
     <message>
-        <source>Add a Vector Layer...</source>
-        <translation type="obsolete">加入向量圖層...</translation>
-    </message>
-    <message>
-        <source>V</source>
-        <translation type="obsolete">V</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="906"/>
+        <location filename="../src/app/qgisapp.cpp" line="915"/>
         <source>Add a Vector Layer</source>
         <translation>加入向量圖層</translation>
     </message>
     <message>
-        <source>Add a Raster Layer...</source>
-        <translation type="obsolete">加入影像圖層...</translation>
-    </message>
-    <message>
-        <source>R</source>
-        <translation type="obsolete">R</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="911"/>
+        <location filename="../src/app/qgisapp.cpp" line="920"/>
         <source>Add a Raster Layer</source>
         <translation>新增影像圖層</translation>
     </message>
     <message>
-        <source>Add a PostGIS Layer...</source>
-        <translation type="obsolete">加入PostGIS圖層...</translation>
-    </message>
-    <message>
-        <source>D</source>
-        <translation type="obsolete">D</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="916"/>
+        <location filename="../src/app/qgisapp.cpp" line="925"/>
         <source>Add a PostGIS Layer</source>
         <translation>新增PostGIS圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="899"/>
+        <location filename="../src/app/qgisapp.cpp" line="908"/>
         <source>New Vector Layer...</source>
         <translation>新增向量圖層...</translation>
     </message>
     <message>
-        <source>N</source>
-        <translation type="obsolete">N</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="901"/>
+        <location filename="../src/app/qgisapp.cpp" line="910"/>
         <source>Create a New Vector Layer</source>
         <translation>建立新的向量圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="968"/>
+        <location filename="../src/app/qgisapp.cpp" line="977"/>
         <source>Remove Layer</source>
         <translation>移除圖層</translation>
     </message>
     <message>
-        <source>Ctrl+D</source>
-        <translation type="obsolete">Ctrl+D</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="970"/>
+        <location filename="../src/app/qgisapp.cpp" line="979"/>
         <source>Remove a Layer</source>
         <translation>移除圖層</translation>
     </message>
     <message>
-        <source>Add All To Overview</source>
-        <translation type="obsolete">全部圖層加入全覽圖</translation>
-    </message>
-    <message>
-        <source>+</source>
-        <translation type="obsolete">+</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="996"/>
+        <location filename="../src/app/qgisapp.cpp" line="1005"/>
         <source>Show all layers in the overview map</source>
         <translation>在全覽圖中顯示所有圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="999"/>
+        <location filename="../src/app/qgisapp.cpp" line="1008"/>
         <source>Remove All From Overview</source>
         <translation>移除全覽圖內所有的圖層</translation>
     </message>
     <message>
-        <source>-</source>
-        <translation type="obsolete">-</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="1001"/>
+        <location filename="../src/app/qgisapp.cpp" line="1010"/>
         <source>Remove all layers from overview map</source>
         <translation>移除全覽圖內所有的圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1004"/>
+        <location filename="../src/app/qgisapp.cpp" line="1013"/>
         <source>Show All Layers</source>
         <translation>顯示所有圖層</translation>
     </message>
     <message>
-        <source>S</source>
-        <translation type="obsolete">S</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="1006"/>
+        <location filename="../src/app/qgisapp.cpp" line="1015"/>
         <source>Show all layers</source>
         <translation>顯示所有圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1009"/>
+        <location filename="../src/app/qgisapp.cpp" line="1018"/>
         <source>Hide All Layers</source>
         <translation>隱藏所有圖層</translation>
     </message>
     <message>
-        <source>H</source>
-        <translation type="obsolete">H</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="1011"/>
+        <location filename="../src/app/qgisapp.cpp" line="1020"/>
         <source>Hide all layers</source>
         <translation>隱藏所有圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1028"/>
+        <location filename="../src/app/qgisapp.cpp" line="1037"/>
         <source>Project Properties...</source>
         <translation>專案屬性...</translation>
     </message>
     <message>
-        <source>Alt+P</source>
-        <translation type="obsolete">Alt+P</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="1030"/>
+        <location filename="../src/app/qgisapp.cpp" line="1039"/>
         <source>Set project properties</source>
         <translation>設定專案屬性</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1033"/>
+        <location filename="../src/app/qgisapp.cpp" line="1042"/>
         <source>Options...</source>
         <translation>選項...</translation>
     </message>
     <message>
-        <source>Alt+O</source>
-        <translation type="obsolete">Alt+O</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="1035"/>
+        <location filename="../src/app/qgisapp.cpp" line="1044"/>
         <source>Change various QGIS options</source>
         <translation>改變QGIS選項</translation>
     </message>
     <message>
-        <source>Custom Projection...</source>
-        <translation type="obsolete">自訂投影...</translation>
-    </message>
-    <message>
-        <source>Alt+I</source>
-        <translation type="obsolete">Alt+I</translation>
-    </message>
-    <message>
-        <source>Manage custom projections</source>
-        <translation type="obsolete">管理自訂投影</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="1074"/>
+        <location filename="../src/app/qgisapp.cpp" line="1083"/>
         <source>Help Contents</source>
         <translation>內容</translation>
     </message>
     <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="1080"/>
+        <location filename="../src/app/qgisapp.cpp" line="1089"/>
         <source>Help Documentation</source>
         <translation>說明文件</translation>
     </message>
     <message>
-        <source>Qgis Home Page</source>
-        <translation type="obsolete">QGIS首頁</translation>
-    </message>
-    <message>
-        <source>Ctrl+H</source>
-        <translation type="obsolete">Ctrl+H</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="1083"/>
-        <location filename="../src/app/qgisapp.cpp" line="1089"/>
+        <location filename="../src/app/qgisapp.cpp" line="1092"/>
+        <location filename="../src/app/qgisapp.cpp" line="1098"/>
         <source>QGIS Home Page</source>
         <translation>QGIS首頁</translation>
     </message>
     <message>
-        <source>Qgis Sourceforge</source>
-        <translation type="obsolete">Qgis Sourceforge</translation>
-    </message>
-    <message>
-        <source>Alt+H</source>
-        <translation type="obsolete">Alt+H</translation>
-    </message>
-    <message>
-        <source>Visit QGIS SourceForge page</source>
-        <translation type="obsolete">Visit QGIS SourceForge page</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="1097"/>
+        <location filename="../src/app/qgisapp.cpp" line="1106"/>
         <source>About</source>
         <translation>關於</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1099"/>
+        <location filename="../src/app/qgisapp.cpp" line="1108"/>
         <source>About QGIS</source>
         <translation>關於QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1092"/>
+        <location filename="../src/app/qgisapp.cpp" line="1101"/>
         <source>Check Qgis Version</source>
         <translation>檢查QGIS版本</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1094"/>
+        <location filename="../src/app/qgisapp.cpp" line="1103"/>
         <source>Check if your QGIS version is up to date (requires internet access)</source>
         <translation>檢查是否有新版本的QGIS (需要互聯網接入)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="892"/>
+        <location filename="../src/app/qgisapp.cpp" line="901"/>
         <source>Refresh</source>
         <translation>重新整理</translation>
     </message>
     <message>
-        <source>Ctrl+R</source>
-        <translation type="obsolete">Ctrl+R</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="894"/>
+        <location filename="../src/app/qgisapp.cpp" line="903"/>
         <source>Refresh Map</source>
         <translation>重新整理地圖</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="803"/>
-        <location filename="../src/app/qgisapp.cpp" line="805"/>
+        <location filename="../src/app/qgisapp.cpp" line="812"/>
+        <location filename="../src/app/qgisapp.cpp" line="814"/>
         <source>Zoom In</source>
         <translation>放大</translation>
     </message>
     <message>
-        <source>z</source>
-        <translation type="obsolete">z</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="808"/>
-        <location filename="../src/app/qgisapp.cpp" line="810"/>
+        <location filename="../src/app/qgisapp.cpp" line="817"/>
+        <location filename="../src/app/qgisapp.cpp" line="819"/>
         <source>Zoom Out</source>
         <translation>縮小</translation>
     </message>
     <message>
-        <source>Z</source>
-        <translation type="obsolete">Z</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="845"/>
+        <location filename="../src/app/qgisapp.cpp" line="854"/>
         <source>Zoom Full</source>
         <translation>全圖顯示</translation>
     </message>
     <message>
-        <source>f</source>
-        <translation type="obsolete">f</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="847"/>
+        <location filename="../src/app/qgisapp.cpp" line="856"/>
         <source>Zoom to Full Extents</source>
         <translation>全圖顯示</translation>
     </message>
     <message>
-        <source>Zoom To Selection</source>
-        <translation type="obsolete">縮放到選取的記錄</translation>
-    </message>
-    <message>
-        <source>F</source>
-        <translation type="obsolete">F</translation>
-    </message>
-    <message>
-        <source>Zoom to selection</source>
-        <translation type="obsolete">縮放到選取的記錄</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="798"/>
+        <location filename="../src/app/qgisapp.cpp" line="807"/>
         <source>Pan Map</source>
         <translation>平移地圖</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="800"/>
+        <location filename="../src/app/qgisapp.cpp" line="809"/>
         <source>Pan the map</source>
         <translation>地圖漫遊</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="860"/>
+        <location filename="../src/app/qgisapp.cpp" line="869"/>
         <source>Zoom Last</source>
         <translation>回到上一檢視</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="862"/>
+        <location filename="../src/app/qgisapp.cpp" line="871"/>
         <source>Zoom to Last Extent</source>
         <translation>回到上一檢視</translation>
     </message>
     <message>
-        <source>Zoom To Layer</source>
-        <translation type="obsolete">縮放到圖層範圍</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="850"/>
-        <location filename="../src/app/qgisapp.cpp" line="852"/>
+        <location filename="../src/app/qgisapp.cpp" line="859"/>
+        <location filename="../src/app/qgisapp.cpp" line="861"/>
         <source>Zoom to Layer</source>
         <translation>縮放到圖層範圍</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="825"/>
+        <location filename="../src/app/qgisapp.cpp" line="834"/>
         <source>Identify Features</source>
         <translation>識別圖徵</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="827"/>
+        <location filename="../src/app/qgisapp.cpp" line="836"/>
         <source>Click on features to identify them</source>
         <translation>點擊圖徵進行識別</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="813"/>
-        <location filename="../src/app/qgisapp.cpp" line="815"/>
+        <location filename="../src/app/qgisapp.cpp" line="822"/>
+        <location filename="../src/app/qgisapp.cpp" line="824"/>
         <source>Select Features</source>
         <translation>選取圖徵</translation>
     </message>
     <message>
-        <source>Open Table</source>
-        <translation type="obsolete">開啟表格</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="831"/>
+        <location filename="../src/app/qgisapp.cpp" line="840"/>
         <source>Measure Line </source>
         <translation>測量長度</translation>
     </message>
     <message>
-        <source>Ctrl+M</source>
-        <translation type="obsolete">Ctrl+M</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="833"/>
+        <location filename="../src/app/qgisapp.cpp" line="842"/>
         <source>Measure a Line</source>
         <translation>測量線的距離</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="836"/>
+        <location filename="../src/app/qgisapp.cpp" line="845"/>
         <source>Measure Area</source>
         <translation>測量面積</translation>
     </message>
     <message>
-        <source>Alt+M</source>
-        <translation type="obsolete">Alt+M</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="838"/>
+        <location filename="../src/app/qgisapp.cpp" line="847"/>
         <source>Measure an Area</source>
         <translation>測量面積</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="887"/>
-        <location filename="../src/app/qgisapp.cpp" line="889"/>
+        <location filename="../src/app/qgisapp.cpp" line="896"/>
+        <location filename="../src/app/qgisapp.cpp" line="898"/>
         <source>Show Bookmarks</source>
         <translation>顯示書籤</translation>
     </message>
     <message>
-        <source>Ctrl+B</source>
-        <translation type="obsolete">Ctrl+B</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="882"/>
+        <location filename="../src/app/qgisapp.cpp" line="891"/>
         <source>New Bookmark...</source>
         <translation>新的書籤...</translation>
     </message>
     <message>
-        <source>Alt+B</source>
-        <translation type="obsolete">Alt+B</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="884"/>
-        <location filename="../src/app/qgisapp.cpp" line="5915"/>
+        <location filename="../src/app/qgisapp.cpp" line="893"/>
+        <location filename="../src/app/qgisapp.cpp" line="5949"/>
         <source>New Bookmark</source>
         <translation>新的書籤</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="938"/>
+        <location filename="../src/app/qgisapp.cpp" line="947"/>
         <source>Add WMS Layer...</source>
         <translation>加入WMS圖層...</translation>
     </message>
     <message>
-        <source>Add Web Mapping Server Layer</source>
-        <translation type="obsolete">新增Web Mapping Server圖層</translation>
-    </message>
-    <message>
-        <source>In Overview</source>
-        <translation type="obsolete">在全覽圖中</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="990"/>
+        <location filename="../src/app/qgisapp.cpp" line="999"/>
         <source>Add current layer to overview map</source>
         <translation>將目前圖層新增到全覽圖中</translation>
     </message>
     <message>
-        <source>Plugin Manager...</source>
-        <translation type="obsolete">附加元件管理器...</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="1018"/>
+        <location filename="../src/app/qgisapp.cpp" line="1027"/>
         <source>Open the plugin manager</source>
         <translation>開啟附加元件管理器</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="686"/>
+        <location filename="../src/app/qgisapp.cpp" line="695"/>
         <source>Capture Point</source>
         <translation>新增點</translation>
     </message>
     <message>
-        <source>.</source>
-        <translation type="obsolete">.</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="688"/>
+        <location filename="../src/app/qgisapp.cpp" line="697"/>
         <source>Capture Points</source>
         <translation>新增點</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="692"/>
+        <location filename="../src/app/qgisapp.cpp" line="701"/>
         <source>Capture Line</source>
         <translation>新增線</translation>
     </message>
     <message>
-        <source>/</source>
-        <translation type="obsolete">/</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="694"/>
+        <location filename="../src/app/qgisapp.cpp" line="703"/>
         <source>Capture Lines</source>
         <translation>新增線</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="698"/>
+        <location filename="../src/app/qgisapp.cpp" line="707"/>
         <source>Capture Polygon</source>
         <translation>新增多邊形</translation>
     </message>
     <message>
-        <source>Ctrl+/</source>
-        <translation type="obsolete">Ctrl+/</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="700"/>
+        <location filename="../src/app/qgisapp.cpp" line="709"/>
         <source>Capture Polygons</source>
         <translation>新增多邊形</translation>
     </message>
     <message>
-        <source>Delete Seleced</source>
-        <translation type="obsolete">刪除選取的記錄</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="722"/>
-        <location filename="../src/app/qgisapp.cpp" line="724"/>
+        <location filename="../src/app/qgisapp.cpp" line="731"/>
+        <location filename="../src/app/qgisapp.cpp" line="733"/>
         <source>Delete Selected</source>
         <translation>刪除選取的記錄</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="729"/>
-        <location filename="../src/app/qgisapp.cpp" line="731"/>
+        <location filename="../src/app/qgisapp.cpp" line="738"/>
+        <location filename="../src/app/qgisapp.cpp" line="740"/>
         <source>Add Vertex</source>
         <translation>新增轉折點</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="741"/>
-        <location filename="../src/app/qgisapp.cpp" line="743"/>
+        <location filename="../src/app/qgisapp.cpp" line="750"/>
+        <location filename="../src/app/qgisapp.cpp" line="752"/>
         <source>Delete Vertex</source>
         <translation>刪除轉折點</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="735"/>
-        <location filename="../src/app/qgisapp.cpp" line="737"/>
+        <location filename="../src/app/qgisapp.cpp" line="744"/>
+        <location filename="../src/app/qgisapp.cpp" line="746"/>
         <source>Move Vertex</source>
         <translation>移動轉折點</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1224"/>
+        <location filename="../src/app/qgisapp.cpp" line="1233"/>
         <source>&amp;File</source>
         <translation>檔案(&amp;F)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1228"/>
+        <location filename="../src/app/qgisapp.cpp" line="1237"/>
         <source>&amp;Open Recent Projects</source>
         <translation>開啟最近的專案(&amp;O)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1310"/>
+        <location filename="../src/app/qgisapp.cpp" line="1319"/>
         <source>&amp;View</source>
         <translation>檢視(&amp;V)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1349"/>
+        <location filename="../src/app/qgisapp.cpp" line="1358"/>
         <source>&amp;Layer</source>
         <translation>圖層(&amp;L)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1384"/>
+        <location filename="../src/app/qgisapp.cpp" line="1393"/>
         <source>&amp;Settings</source>
         <translation>設定(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1425"/>
+        <location filename="../src/app/qgisapp.cpp" line="1434"/>
         <source>&amp;Help</source>
         <translation>說明(&amp;H)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1447"/>
+        <location filename="../src/app/qgisapp.cpp" line="1456"/>
         <source>File</source>
         <translation>檔案</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1459"/>
+        <location filename="../src/app/qgisapp.cpp" line="1468"/>
         <source>Manage Layers</source>
         <translation>管理圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1556"/>
+        <location filename="../src/app/qgisapp.cpp" line="1565"/>
         <source>Help</source>
         <translation>說明</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1480"/>
+        <location filename="../src/app/qgisapp.cpp" line="1489"/>
         <source>Digitizing</source>
         <translation>數化</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1519"/>
+        <location filename="../src/app/qgisapp.cpp" line="1528"/>
         <source>Map Navigation</source>
         <translation>地圖瀏覽</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1534"/>
+        <location filename="../src/app/qgisapp.cpp" line="1543"/>
         <source>Attributes</source>
         <translation>屬性</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1550"/>
+        <location filename="../src/app/qgisapp.cpp" line="1559"/>
         <source>Plugins</source>
         <translation>附加元件</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1693"/>
+        <location filename="../src/app/qgisapp.cpp" line="1702"/>
         <source>Ready</source>
         <translation>我準備好了</translation>
     </message>
     <message>
-        <source>New features</source>
-        <translation type="obsolete">新功能</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="3006"/>
+        <location filename="../src/app/qgisapp.cpp" line="3018"/>
         <source>Unable to open project</source>
         <translation>無法開啟專案</translation>
     </message>
     <message>
-        <source>Unable to save project </source>
-        <translation type="obsolete">無法儲存專案</translation>
-    </message>
-    <message>
-        <source>Choose a filename to save the QGIS project file as</source>
-        <translation type="obsolete">選擇檔案名來儲存QGIS專案檔案</translation>
-    </message>
-    <message>
-        <source>QGIS: Unable to load project</source>
-        <translation type="obsolete">QGIS: 無法載入專案</translation>
-    </message>
-    <message>
-        <source>Unable to load project </source>
-        <translation type="obsolete">無法載入專案</translation>
-    </message>
-    <message>
-        <source>No Map Layers</source>
-        <translation type="obsolete">沒有地圖圖層</translation>
-    </message>
-    <message>
-        <source>No layers to export. You must add at least one layer to the map in order to export the view.</source>
-        <translation type="obsolete">沒有任何輸出。為了輸出檢視，您必須在地圖上至少新增一個圖層。</translation>
-    </message>
-    <message>
-        <source>QGIS - Changes in SVN Since Last Release</source>
-        <translation type="obsolete">QGIS - 自上次發佈之後在SVN中又有更新</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="4769"/>
-        <location filename="../src/app/qgisapp.cpp" line="4811"/>
-        <location filename="../src/app/qgisapp.cpp" line="5732"/>
+        <location filename="../src/app/qgisapp.cpp" line="4777"/>
+        <location filename="../src/app/qgisapp.cpp" line="4819"/>
+        <location filename="../src/app/qgisapp.cpp" line="5766"/>
         <source>Layer is not valid</source>
         <translation>圖層無效</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4770"/>
-        <location filename="../src/app/qgisapp.cpp" line="4812"/>
-        <location filename="../src/app/qgisapp.cpp" line="5733"/>
+        <location filename="../src/app/qgisapp.cpp" line="4778"/>
+        <location filename="../src/app/qgisapp.cpp" line="4820"/>
+        <location filename="../src/app/qgisapp.cpp" line="5767"/>
         <source>The layer is not a valid layer and can not be added to the map</source>
         <translation>該圖層不是一個有效的圖層，無法新增到地圖中</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4857"/>
+        <location filename="../src/app/qgisapp.cpp" line="4865"/>
         <source>Save?</source>
         <translation>是否儲存?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4858"/>
+        <location filename="../src/app/qgisapp.cpp" line="4866"/>
         <source>Do you want to save the current project?</source>
         <translation>您是否要儲存目前的專案?</translation>
     </message>
     <message>
-        <source>Clipboard contents set to: </source>
-        <translation type="obsolete">剪貼簿的內容設定為:</translation>
-    </message>
-    <message>
-        <source> is not a valid or recognized raster data source</source>
-        <translation type="obsolete">無效或不可識別的影像資料來源</translation>
-    </message>
-    <message>
-        <source> is not a supported raster data source</source>
-        <translation type="obsolete">不支持的影像資料來源</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="5819"/>
+        <location filename="../src/app/qgisapp.cpp" line="5853"/>
         <source>Unsupported Data Source</source>
         <translation>不支持的資料來源</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5916"/>
+        <location filename="../src/app/qgisapp.cpp" line="5950"/>
         <source>Enter a name for the new bookmark:</source>
         <translation>新書籤的名稱:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1131"/>
-        <location filename="../src/app/qgisapp.cpp" line="4232"/>
-        <location filename="../src/app/qgisapp.cpp" line="4245"/>
-        <location filename="../src/app/qgisapp.cpp" line="5933"/>
+        <location filename="../src/app/qgisapp.cpp" line="1140"/>
+        <location filename="../src/app/qgisapp.cpp" line="4244"/>
+        <location filename="../src/app/qgisapp.cpp" line="4257"/>
+        <location filename="../src/app/qgisapp.cpp" line="5967"/>
         <source>Error</source>
         <translation>錯誤</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5933"/>
+        <location filename="../src/app/qgisapp.cpp" line="5967"/>
         <source>Unable to create the bookmark. Your user database may be missing or corrupted</source>
         <translation>無法建立書籤。您的使用者資料庫丟失或損壞</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="598"/>
+        <location filename="../src/app/qgisapp.cpp" line="607"/>
         <source>Ctrl+N</source>
         <comment>New Project</comment>
         <translation>Ctrl+N</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="603"/>
+        <location filename="../src/app/qgisapp.cpp" line="612"/>
         <source>Ctrl+O</source>
         <comment>Open a Project</comment>
         <translation>Ctrl+O</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="608"/>
+        <location filename="../src/app/qgisapp.cpp" line="617"/>
         <source>Ctrl+S</source>
         <comment>Save Project</comment>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="609"/>
+        <location filename="../src/app/qgisapp.cpp" line="618"/>
         <source>Save Project</source>
         <translation>儲存專案</translation>
     </message>
     <message>
-        <source>Ctrl+A</source>
-        <comment>Save Project under a new name</comment>
-        <translation type="obsolete">Ctrl+A</translation>
-    </message>
-    <message>
-        <source>Ctrl+P</source>
-        <comment>Print</comment>
-        <translation type="obsolete">Ctrl+P</translation>
-    </message>
-    <message>
-        <source>M</source>
-        <comment>Export as MapServer .map file</comment>
-        <translation type="obsolete">M</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="632"/>
+        <location filename="../src/app/qgisapp.cpp" line="641"/>
         <source>Ctrl+Q</source>
         <comment>Exit QGIS</comment>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <source>V</source>
-        <comment>Add a Vector Layer</comment>
-        <translation type="obsolete">V</translation>
-    </message>
-    <message>
-        <source>R</source>
-        <comment>Add a Raster Layer</comment>
-        <translation type="obsolete">R</translation>
-    </message>
-    <message>
-        <source>D</source>
-        <comment>Add a PostGIS Layer</comment>
-        <translation type="obsolete">D</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="969"/>
+        <location filename="../src/app/qgisapp.cpp" line="978"/>
         <source>Ctrl+D</source>
         <comment>Remove a Layer</comment>
         <translation>Ctrl+D</translation>
     </message>
     <message>
-        <source>+</source>
-        <comment>Show all layers in the overview map</comment>
-        <translation type="obsolete">+</translation>
-    </message>
-    <message>
-        <source>-</source>
-        <comment>Remove all layers from overview map</comment>
-        <translation type="obsolete">-</translation>
-    </message>
-    <message>
-        <source>H</source>
-        <comment>Hide all layers</comment>
-        <translation type="obsolete">H</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="1078"/>
+        <location filename="../src/app/qgisapp.cpp" line="1087"/>
         <source>F1</source>
         <comment>Help Documentation</comment>
         <translation>F1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1085"/>
+        <location filename="../src/app/qgisapp.cpp" line="1094"/>
         <source>Ctrl+H</source>
         <comment>QGIS Home Page</comment>
         <translation>Ctrl+H</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="893"/>
+        <location filename="../src/app/qgisapp.cpp" line="902"/>
         <source>Ctrl+R</source>
         <comment>Refresh Map</comment>
         <translation>Ctrl+R</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="804"/>
+        <location filename="../src/app/qgisapp.cpp" line="813"/>
         <source>Ctrl++</source>
         <comment>Zoom In</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="809"/>
+        <location filename="../src/app/qgisapp.cpp" line="818"/>
         <source>Ctrl+-</source>
         <comment>Zoom Out</comment>
         <translation></translation>
     </message>
     <message>
-        <source>F</source>
-        <comment>Zoom to Full Extents</comment>
-        <translation type="obsolete">F</translation>
-    </message>
-    <message>
-        <source>I</source>
-        <comment>Click on features to identify them</comment>
-        <translation type="obsolete">I</translation>
-    </message>
-    <message>
-        <source>Ctrl+M</source>
-        <comment>Measure a Line</comment>
-        <translation type="obsolete">Ctrl+M</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="883"/>
+        <location filename="../src/app/qgisapp.cpp" line="892"/>
         <source>Ctrl+B</source>
         <comment>New Bookmark</comment>
         <translation>Ctrl+B</translation>
     </message>
     <message>
-        <source>W</source>
-        <comment>Add Web Mapping Server Layer</comment>
-        <translation type="obsolete">W</translation>
-    </message>
-    <message>
-        <source>.</source>
-        <comment>Capture Points</comment>
-        <translation type="obsolete">.</translation>
-    </message>
-    <message>
-        <source>/</source>
-        <comment>Capture Lines</comment>
-        <translation type="obsolete">/</translation>
-    </message>
-    <message>
-        <source>Ctrl+/</source>
-        <comment>Capture Polygons</comment>
-        <translation type="obsolete">Ctrl+/</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="1076"/>
+        <location filename="../src/app/qgisapp.cpp" line="1085"/>
         <source>Ctrl+?</source>
         <comment>Help Documentation (Mac)</comment>
         <translation></translation>
     </message>
     <message>
-        <source>H</source>
-        <comment>Hide most toolbars</comment>
-        <translation type="obsolete">H</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="668"/>
+        <location filename="../src/app/qgisapp.cpp" line="677"/>
         <source>Cut Features</source>
         <translation>剪下圖徵</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="670"/>
+        <location filename="../src/app/qgisapp.cpp" line="679"/>
         <source>Cut selected features</source>
         <translation>剪下選取圖徵</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="674"/>
+        <location filename="../src/app/qgisapp.cpp" line="683"/>
         <source>Copy Features</source>
         <translation>複製圖徵</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="676"/>
+        <location filename="../src/app/qgisapp.cpp" line="685"/>
         <source>Copy selected features</source>
         <translation>複製選取圖徵</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="680"/>
+        <location filename="../src/app/qgisapp.cpp" line="689"/>
         <source>Paste Features</source>
         <translation>貼上圖徵</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="682"/>
+        <location filename="../src/app/qgisapp.cpp" line="691"/>
         <source>Paste selected features</source>
         <translation>貼上取選圖徵</translation>
     </message>
     <message>
-        <source>Ctrl+T</source>
-        <comment>Hide most toolbars</comment>
-        <translation type="obsolete">Ctrl+T</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="414"/>
+        <location filename="../src/app/qgisapp.cpp" line="423"/>
         <source>Checking provider plugins</source>
         <translation>檢查提供的附加元件</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="418"/>
+        <location filename="../src/app/qgisapp.cpp" line="427"/>
         <source>Starting Python</source>
         <translation>啟動Python中</translation>
     </message>
     <message>
-        <source>Python error</source>
-        <translation type="obsolete">Python錯誤</translation>
-    </message>
-    <message>
-        <source>Error when reading metadata of plugin </source>
-        <translation type="obsolete">讀取附加元件的詮釋資料發生錯誤</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="3628"/>
+        <location filename="../src/app/qgisapp.cpp" line="3640"/>
         <source>Provider does not support deletion</source>
         <translation>提供者不支持刪除</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3629"/>
+        <location filename="../src/app/qgisapp.cpp" line="3641"/>
         <source>Data provider does not support deleting features</source>
         <translation>資料提供者不支援刪除圖徵</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3635"/>
-        <location filename="../src/app/qgisapp.cpp" line="3829"/>
+        <location filename="../src/app/qgisapp.cpp" line="3647"/>
+        <location filename="../src/app/qgisapp.cpp" line="3841"/>
         <source>Layer not editable</source>
         <translation>圖層不可編輯</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="949"/>
+        <location filename="../src/app/qgisapp.cpp" line="958"/>
         <source>Toggle editing</source>
         <translation>切換編輯狀態</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="951"/>
+        <location filename="../src/app/qgisapp.cpp" line="960"/>
         <source>Toggles the editing state of the current layer</source>
         <translation>切換目前圖層的編輯狀態</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="748"/>
-        <location filename="../src/app/qgisapp.cpp" line="750"/>
+        <location filename="../src/app/qgisapp.cpp" line="757"/>
+        <location filename="../src/app/qgisapp.cpp" line="759"/>
         <source>Add Ring</source>
         <translation>新增環形(Ring)</translation>
     </message>
     <message>
-        <source>Add Island</source>
-        <translation type="obsolete">新增島形(Island)</translation>
-    </message>
-    <message>
-        <source>Add Island to multipolygon</source>
-        <translation type="obsolete">新增島形至多邊形中</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="1631"/>
+        <location filename="../src/app/qgisapp.cpp" line="1640"/>
         <source>Scale </source>
         <translation>比例</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1646"/>
+        <location filename="../src/app/qgisapp.cpp" line="1655"/>
         <source>Current map scale (formatted as x:y)</source>
         <translation>目前的地圖比例(使用x:y表示)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5065"/>
+        <location filename="../src/app/qgisapp.cpp" line="5073"/>
         <source>Map coordinates at mouse cursor position</source>
         <translation>在滑鼠的位置顯示地圖座標</translation>
     </message>
     <message>
-        <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved.</source>
-        <translation type="obsolete">在目前的滑鼠位置顯示地圖座標，而且會隨著滑鼠移動持續更新。</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="3636"/>
+        <location filename="../src/app/qgisapp.cpp" line="3648"/>
         <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
         <translation>目前的圖層是無法編輯的，請在[數化工具列]中 選擇&apos;開始編輯&apos;。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4317"/>
+        <location filename="../src/app/qgisapp.cpp" line="4329"/>
         <source>Invalid scale</source>
         <translation>無效的比例</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4622"/>
+        <location filename="../src/app/qgisapp.cpp" line="4630"/>
         <source>Network error while communicating with server</source>
         <translation>當與伺服器溝通時發生錯誤</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4625"/>
+        <location filename="../src/app/qgisapp.cpp" line="4633"/>
         <source>Unknown network socket error</source>
         <translation>未知的網路封包錯誤</translation>
     </message>
     <message>
-        <source>Unable to communicate with QGIS Version server</source>
-        <translation type="obsolete">無法與QGIS版本伺服器連線溝通</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="704"/>
-        <location filename="../src/app/qgisapp.cpp" line="706"/>
+        <location filename="../src/app/qgisapp.cpp" line="713"/>
+        <location filename="../src/app/qgisapp.cpp" line="715"/>
         <source>Move Feature</source>
         <translation>移動圖徵</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="716"/>
-        <location filename="../src/app/qgisapp.cpp" line="718"/>
+        <location filename="../src/app/qgisapp.cpp" line="725"/>
+        <location filename="../src/app/qgisapp.cpp" line="727"/>
         <source>Split Features</source>
         <translation>分割圖徵</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="876"/>
+        <location filename="../src/app/qgisapp.cpp" line="885"/>
         <source>Map Tips</source>
         <translation>地圖提示工具</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="878"/>
+        <location filename="../src/app/qgisapp.cpp" line="887"/>
         <source>Show information about a feature when the mouse is hovered over it</source>
         <translation>當滑鼠移動至圖徵上時顯示其資訊</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1632"/>
+        <location filename="../src/app/qgisapp.cpp" line="1641"/>
         <source>Current map scale</source>
         <translation>目前地圖比例</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5947"/>
+        <location filename="../src/app/qgisapp.cpp" line="5981"/>
         <source>Project file is older</source>
         <translation>專案檔是舊版</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5964"/>
+        <location filename="../src/app/qgisapp.cpp" line="5998"/>
         <source>&lt;tt&gt;Settings:Options:General&lt;/tt&gt;</source>
         <comment>Menu path to setting options</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5965"/>
+        <location filename="../src/app/qgisapp.cpp" line="5999"/>
         <source>Warn me when opening a project file saved with an older version of QGIS</source>
         <translation>開啟舊版QGIS檔案時提醒我</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1024"/>
+        <location filename="../src/app/qgisapp.cpp" line="1033"/>
         <source>Ctrl-F</source>
         <comment>Toggle fullscreen mode</comment>
         <translatorcomment>切換至全螢幕</translatorcomment>
         <translation>Ctrl-F</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1025"/>
+        <location filename="../src/app/qgisapp.cpp" line="1034"/>
         <source>Toggle fullscreen mode</source>
         <translation type="unfinished">切換全螢幕模式</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1678"/>
+        <location filename="../src/app/qgisapp.cpp" line="1687"/>
         <source>Resource Location Error</source>
         <translation>資源位置發生錯誤</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1679"/>
+        <location filename="../src/app/qgisapp.cpp" line="1688"/>
         <source>Error reading icon resources from: 
  %1
  Quitting...</source>
@@ -7458,556 +4931,513 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
  離開中...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1953"/>
+        <location filename="../src/app/qgisapp.cpp" line="1965"/>
         <source>Overview</source>
         <translation>全覽圖</translation>
     </message>
     <message>
-        <source>Legend</source>
-        <translation type="obsolete">圖例</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="2177"/>
+        <location filename="../src/app/qgisapp.cpp" line="2189"/>
         <source>You are using QGIS version %1 built against code revision %2.</source>
         <translation>您正在使用由%2源碼建立的QGIS%1版。</translation>
     </message>
     <message>
-        <source> This copy of QGIS has been built with PostgreSQL support.</source>
-        <translation type="obsolete">此版QGIS支援PostGIS。</translation>
-    </message>
-    <message>
-        <source> This copy of QGIS has been built without PostgreSQL support.</source>
-        <translation type="obsolete">此版QGIS不支援PostGIS。</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="2202"/>
+        <location filename="../src/app/qgisapp.cpp" line="2214"/>
         <source>
 This binary was compiled against Qt %1,and is currently running against Qt %2</source>
         <translation>
 QGIS由Qt %1版編譯而成，而您目前使用Qt %2執行QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1655"/>
+        <location filename="../src/app/qgisapp.cpp" line="1664"/>
         <source>Stop map rendering</source>
         <translation>停止地圖繪圖</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="343"/>
+        <location filename="../src/app/qgisapp.cpp" line="350"/>
         <source>Multiple Instances of QgisApp</source>
         <translation>執行多個QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="344"/>
+        <location filename="../src/app/qgisapp.cpp" line="351"/>
         <source>Multiple instances of Quantum GIS application object detected.
 Please contact the developers.
 </source>
         <translation>發現執行多個QGIS，請通知開發人員。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="613"/>
+        <location filename="../src/app/qgisapp.cpp" line="622"/>
         <source>Shift+Ctrl+S</source>
         <comment>Save Project under a new name</comment>
         <translation></translation>
     </message>
     <message>
-        <source>&amp;Print Composer</source>
-        <translation type="obsolete">出圖設計(&amp;P)</translation>
-    </message>
-    <message>
-        <source>Ctrl+P</source>
-        <comment>Print Composer</comment>
-        <translation type="obsolete">Ctrl+P</translation>
-    </message>
-    <message>
-        <source>Print Composer</source>
-        <translation type="obsolete">出圖設計</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="656"/>
+        <location filename="../src/app/qgisapp.cpp" line="665"/>
         <source>&amp;Undo</source>
         <translation>復原(&amp;U)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="657"/>
+        <location filename="../src/app/qgisapp.cpp" line="666"/>
         <source>Ctrl+Z</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="658"/>
+        <location filename="../src/app/qgisapp.cpp" line="667"/>
         <source>Undo the last operation</source>
         <translation>恢復至最後的一次操作</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="640"/>
+        <location filename="../src/app/qgisapp.cpp" line="649"/>
         <source>Cu&amp;t</source>
         <translation>剪下(u&amp;)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="641"/>
-        <location filename="../src/app/qgisapp.cpp" line="669"/>
+        <location filename="../src/app/qgisapp.cpp" line="650"/>
+        <location filename="../src/app/qgisapp.cpp" line="678"/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="642"/>
+        <location filename="../src/app/qgisapp.cpp" line="651"/>
         <source>Cut the current selection&apos;s contents to the clipboard</source>
         <translation>剪下目前選擇的內容至剪貼簿</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="645"/>
+        <location filename="../src/app/qgisapp.cpp" line="654"/>
         <source>&amp;Copy</source>
         <translation>複製(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="646"/>
-        <location filename="../src/app/qgisapp.cpp" line="675"/>
+        <location filename="../src/app/qgisapp.cpp" line="655"/>
+        <location filename="../src/app/qgisapp.cpp" line="684"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="647"/>
+        <location filename="../src/app/qgisapp.cpp" line="656"/>
         <source>Copy the current selection&apos;s contents to the clipboard</source>
         <translation>複製目前選擇的內容至剪貼簿</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="650"/>
+        <location filename="../src/app/qgisapp.cpp" line="659"/>
         <source>&amp;Paste</source>
         <translation>貼上(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="651"/>
-        <location filename="../src/app/qgisapp.cpp" line="681"/>
+        <location filename="../src/app/qgisapp.cpp" line="660"/>
+        <location filename="../src/app/qgisapp.cpp" line="690"/>
         <source>Ctrl+V</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="652"/>
+        <location filename="../src/app/qgisapp.cpp" line="661"/>
         <source>Paste the clipboard&apos;s contents into the current selection</source>
         <translation>貼上目前選擇的內容至剪貼簿</translation>
     </message>
     <message>
-        <source>M</source>
-        <comment>Measure a Line</comment>
-        <translation type="obsolete">M</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="855"/>
-        <location filename="../src/app/qgisapp.cpp" line="857"/>
+        <location filename="../src/app/qgisapp.cpp" line="864"/>
+        <location filename="../src/app/qgisapp.cpp" line="866"/>
         <source>Zoom to Selection</source>
         <translation>縮放至選取的大小</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="856"/>
+        <location filename="../src/app/qgisapp.cpp" line="865"/>
         <source>Ctrl+J</source>
         <comment>Zoom to Selection</comment>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="870"/>
+        <location filename="../src/app/qgisapp.cpp" line="879"/>
         <source>Zoom Actual Size</source>
         <translation>實際大小縮放</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="872"/>
+        <location filename="../src/app/qgisapp.cpp" line="881"/>
         <source>Zoom to Actual Size</source>
         <translation>縮放到實際大小</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="904"/>
+        <location filename="../src/app/qgisapp.cpp" line="913"/>
         <source>Add Vector Layer...</source>
         <translation>加入向量圖層...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="909"/>
+        <location filename="../src/app/qgisapp.cpp" line="918"/>
         <source>Add Raster Layer...</source>
         <translation>加入影像圖層...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="914"/>
+        <location filename="../src/app/qgisapp.cpp" line="923"/>
         <source>Add PostGIS Layer...</source>
         <translation>加入PostGIS圖層...</translation>
     </message>
     <message>
-        <source>W</source>
-        <comment>Add a Web Mapping Server Layer</comment>
-        <translation type="obsolete">W</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="940"/>
+        <location filename="../src/app/qgisapp.cpp" line="949"/>
         <source>Add a Web Mapping Server Layer</source>
         <translation>新增Web Mapping Server圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="943"/>
-        <location filename="../src/app/qgisapp.cpp" line="945"/>
+        <location filename="../src/app/qgisapp.cpp" line="952"/>
+        <location filename="../src/app/qgisapp.cpp" line="954"/>
         <source>Open Attribute Table</source>
         <translation>開啟屬性工作表</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="956"/>
+        <location filename="../src/app/qgisapp.cpp" line="965"/>
         <source>Save as Shapefile...</source>
         <translation>儲存為Shape檔...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="958"/>
+        <location filename="../src/app/qgisapp.cpp" line="967"/>
         <source>Save the current layer as a shapefile</source>
         <translation>儲存目前的圖層為Shape檔</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="962"/>
+        <location filename="../src/app/qgisapp.cpp" line="971"/>
         <source>Save Selection as Shapefile...</source>
         <translation>儲存選取部分為Shape檔...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="964"/>
+        <location filename="../src/app/qgisapp.cpp" line="973"/>
         <source>Save the selection as a shapefile</source>
         <translation>儲存選取部分為Shape檔</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="975"/>
+        <location filename="../src/app/qgisapp.cpp" line="984"/>
         <source>Live GPS tracking</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="977"/>
+        <location filename="../src/app/qgisapp.cpp" line="986"/>
         <source>Show GPS tool</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="982"/>
+        <location filename="../src/app/qgisapp.cpp" line="991"/>
         <source>Properties...</source>
         <translation>屬性...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="984"/>
+        <location filename="../src/app/qgisapp.cpp" line="993"/>
         <source>Set properties of the current layer</source>
         <translation>設定目前圖層的屬性</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="988"/>
+        <location filename="../src/app/qgisapp.cpp" line="997"/>
         <source>Add to Overview</source>
         <translation>新增到全覽圖</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="994"/>
+        <location filename="../src/app/qgisapp.cpp" line="1003"/>
         <source>Add All to Overview</source>
         <translation>全部圖層加入全覽圖</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1016"/>
+        <location filename="../src/app/qgisapp.cpp" line="1025"/>
         <source>Manage Plugins...</source>
         <translation>附加元件管理…</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1023"/>
+        <location filename="../src/app/qgisapp.cpp" line="1032"/>
         <source>Toggle Full Screen Mode</source>
         <translation type="unfinished">切換全螢幕模式</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1039"/>
+        <location filename="../src/app/qgisapp.cpp" line="1048"/>
         <source>Custom CRS...</source>
         <translation>自訂座標參考系統(CRS)...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1041"/>
+        <location filename="../src/app/qgisapp.cpp" line="1050"/>
         <source>Manage custom coordinate reference systems</source>
         <translation>管理自訂的座標參考系統(CRS)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1053"/>
+        <location filename="../src/app/qgisapp.cpp" line="1062"/>
         <source>Minimize</source>
         <translation>最小化</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1054"/>
+        <location filename="../src/app/qgisapp.cpp" line="1063"/>
         <source>Ctrl+M</source>
         <comment>Minimize Window</comment>
         <translation>Ctrl+M</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1055"/>
+        <location filename="../src/app/qgisapp.cpp" line="1064"/>
         <source>Minimizes the active window to the dock</source>
         <translation>將目前的視窗縮小化至停駐位置</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1058"/>
+        <location filename="../src/app/qgisapp.cpp" line="1067"/>
         <source>Zoom</source>
         <translation>縮放</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1060"/>
+        <location filename="../src/app/qgisapp.cpp" line="1069"/>
         <source>Toggles between a predefined size and the window size set by the user</source>
         <translation>在預設大小與視窗大小中切換</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1063"/>
+        <location filename="../src/app/qgisapp.cpp" line="1072"/>
         <source>Bring All to Front</source>
         <translation>移置最上層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1065"/>
+        <location filename="../src/app/qgisapp.cpp" line="1074"/>
         <source>Bring forward all open windows</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1131"/>
+        <location filename="../src/app/qgisapp.cpp" line="1140"/>
         <source>Failed to open Python console:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1254"/>
+        <location filename="../src/app/qgisapp.cpp" line="1263"/>
         <source>&amp;Edit</source>
         <translation>編輯(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1305"/>
+        <location filename="../src/app/qgisapp.cpp" line="1314"/>
         <source>Panels</source>
         <translation>版面配置</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1306"/>
+        <location filename="../src/app/qgisapp.cpp" line="1315"/>
         <source>Toolbars</source>
         <translation>工具列</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1412"/>
+        <location filename="../src/app/qgisapp.cpp" line="1421"/>
         <source>&amp;Window</source>
         <translation>視窗(&amp;W)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1587"/>
+        <location filename="../src/app/qgisapp.cpp" line="1596"/>
         <source>Toggle extents and mouse position display</source>
         <translation>切換地圖範圍或滑鼠位置資訊</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1684"/>
+        <location filename="../src/app/qgisapp.cpp" line="1693"/>
         <source>This icon shows whether on the fly coordinate reference system transformation is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1688"/>
+        <location filename="../src/app/qgisapp.cpp" line="1697"/>
         <source>CRS status - Click to open coordinate reference system dialog</source>
         <translation>CRD狀況 - 按一下開啟座標參考系統對話方塊</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2181"/>
+        <location filename="../src/app/qgisapp.cpp" line="2193"/>
         <source>
 This copy of QGIS has been built with PostgreSQL support.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2183"/>
+        <location filename="../src/app/qgisapp.cpp" line="2195"/>
         <source>
 This copy of QGIS has been built without PostgreSQL support.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2193"/>
+        <location filename="../src/app/qgisapp.cpp" line="2205"/>
         <source>
 This copy of QGIS has been built with QWT support (%1).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2195"/>
+        <location filename="../src/app/qgisapp.cpp" line="2207"/>
         <source>
 This copy of QGIS has been built without QWT support.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2199"/>
+        <location filename="../src/app/qgisapp.cpp" line="2211"/>
         <source>
 This copy of QGIS writes debugging output.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2210"/>
+        <location filename="../src/app/qgisapp.cpp" line="2222"/>
         <source>Whats new in Version 1.4.0?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2213"/>
+        <location filename="../src/app/qgisapp.cpp" line="2225"/>
         <source>Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.3.0. If an unchanging user interface, programmatic API and long term support is more important to you then cool new and untested features, we recommend that you use a copy of QGIS from our Long Term Support (LTS)1.0.x release series. In all other cases we recommend that you use this version.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2221"/>
+        <location filename="../src/app/qgisapp.cpp" line="2233"/>
         <source>This release includes around 200 bug fixes, nearly 30 new features and has had a lot of love and attention poured in to it to take our favourite desktop GIS application another step on the road to GIS nirvana! So much has happened in the 3 months since our last release that it is impossible to document everything here. Instead we will just highlight a couple of important new features for you.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2229"/>
+        <location filename="../src/app/qgisapp.cpp" line="2241"/>
         <source>Probably the biggest new feature is the addition of the new vector symbology infrastructure. This is provided alongside the old implementation - you can switch using a button in the vector layer properties dialog. It does&apos;t replace the old symbology implementation completely yet because there are various issues that need to be resolved and a large amount of testing before it is considered ready.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2237"/>
+        <location filename="../src/app/qgisapp.cpp" line="2249"/>
         <source>QGIS now has a field calculator, accessible via a button in the attribute section of the vector properties, and from the attribute table user interface. You can use feature length, feature area, string concatenation and type conversions in the field calculator, as well as field values.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2244"/>
+        <location filename="../src/app/qgisapp.cpp" line="2256"/>
         <source>The map composer has had a lot of attention. A grid can now be added to composer maps. Composer maps can now be rotated in the layout. The limitation of a single map layout per project has been removed. A new composer manager dialog has been added to manage the existing composer instances. The composer widget property sheets have been completely overhauled to use less screen space </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2252"/>
+        <location filename="../src/app/qgisapp.cpp" line="2264"/>
         <source>Various parts of the user interface have been overhauled with the goal of improving consistency and to improve support for netbooks and other smaller screen devices. Loading and saving of shortcuts. Position can now be displayed as Degrees, Minutes, Seconds in the status bar. The add, move and delete vertex buttons are now removed and the node tool is moved from the advanced editing toolbar to the standard editing toolbar. The identification tool has also undergone numerous improvements.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2262"/>
+        <location filename="../src/app/qgisapp.cpp" line="2274"/>
         <source>A render caching capability has been added to QGIS. This speeds up common operations such as layer re-ordering, changing symbology, WMS / WFS client, hiding / showing layers and opens the door for future enhancements such as threaded rendering and pre-compositing layer cache manipulation. Note that it is disabled by default, and can be enabled in the options dialog.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2270"/>
+        <location filename="../src/app/qgisapp.cpp" line="2282"/>
         <source>User defined SVG search paths are now added to the options dialog.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2273"/>
+        <location filename="../src/app/qgisapp.cpp" line="2285"/>
         <source>When creating a new shapefile, you can now specify its CRS. Also the avoid intersections option for polygons is now also possible with background layers.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2277"/>
+        <location filename="../src/app/qgisapp.cpp" line="2289"/>
         <source>For power users, you can now create customizable attribute forms using Qt Designer dialog UIs.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2852"/>
+        <location filename="../src/app/qgisapp.cpp" line="2864"/>
         <source>New Shapefile</source>
         <translation>新增Shape檔</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2853"/>
+        <location filename="../src/app/qgisapp.cpp" line="2865"/>
         <source>Shapefiles must end on .shp</source>
         <translation type="unfinished">新增Shape檔必須使用.shp結尾</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3134"/>
+        <location filename="../src/app/qgisapp.cpp" line="3146"/>
         <source>Choose a file name to save the QGIS project file as</source>
         <translation>選擇欲儲存的QGIS專案檔案名稱為</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3294"/>
+        <location filename="../src/app/qgisapp.cpp" line="3306"/>
         <source>Choose a file name to save the map image as</source>
         <translation>請選擇地圖影像的檔名為</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3856"/>
-        <location filename="../src/app/qgisapp.cpp" line="3898"/>
+        <location filename="../src/app/qgisapp.cpp" line="3868"/>
+        <location filename="../src/app/qgisapp.cpp" line="3910"/>
         <source>Merge failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3856"/>
-        <location filename="../src/app/qgisapp.cpp" line="3898"/>
+        <location filename="../src/app/qgisapp.cpp" line="3868"/>
+        <location filename="../src/app/qgisapp.cpp" line="3910"/>
         <source>An error occured during the merge operation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4215"/>
+        <location filename="../src/app/qgisapp.cpp" line="4227"/>
         <source>Start editing failed</source>
         <translation>開始編輯失敗</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4215"/>
+        <location filename="../src/app/qgisapp.cpp" line="4227"/>
         <source>Provider cannot be opened for editing</source>
         <translation>資料來源不能以編輯模式開啟</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4223"/>
+        <location filename="../src/app/qgisapp.cpp" line="4235"/>
         <source>Stop editing</source>
         <translation>結束編輯</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4224"/>
+        <location filename="../src/app/qgisapp.cpp" line="4236"/>
         <source>Do you want to save the changes to layer %1?</source>
         <translation>您想將改變的內容儲存至圖層 %1?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4245"/>
+        <location filename="../src/app/qgisapp.cpp" line="4257"/>
         <source>Problems during roll back</source>
         <translation>資料復原時發生問題</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4412"/>
+        <location filename="../src/app/qgisapp.cpp" line="4424"/>
         <source>GPS Information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4509"/>
+        <location filename="../src/app/qgisapp.cpp" line="4517"/>
         <source>Python Console</source>
         <translation>Python主控台</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5057"/>
+        <location filename="../src/app/qgisapp.cpp" line="5065"/>
         <source>Map coordinates for the current view extents</source>
         <translation>目前檢視範圍的地圖座標</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5159"/>
+        <location filename="../src/app/qgisapp.cpp" line="5186"/>
         <source>Maptips require an active layer</source>
         <translation>地圖提示需要一個作用中的圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6125"/>
+        <location filename="../src/app/qgisapp.cpp" line="6159"/>
         <source>Warning</source>
         <translation type="unfinished">警告</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6125"/>
+        <location filename="../src/app/qgisapp.cpp" line="6159"/>
         <source>This layer doesn&apos;t have a properties dialog.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Quantum GIS - %1 </source>
-        <translation type="obsolete">Quantum GIS - %1 </translation>
+        <location filename="../src/app/qgisapp.cpp" line="6197"/>
+        <source>Authentication required</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="398"/>
+        <location filename="../src/app/qgisapp.cpp" line="6213"/>
+        <source>Proxy authentication required</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="407"/>
         <source>Quantum GIS - %1 (&apos;%2&apos;)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2414"/>
+        <location filename="../src/app/qgisapp.cpp" line="2426"/>
         <source>%1 is not a valid or recognized data source</source>
         <translation>%1 不是一個有效或支援的資料來源</translation>
     </message>
     <message>
-        <source>%1
-Try to find missing layers?</source>
-        <translation type="obsolete">%1
-試著找出遺失的圖層?</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="3103"/>
-        <location filename="../src/app/qgisapp.cpp" line="3154"/>
+        <location filename="../src/app/qgisapp.cpp" line="3115"/>
+        <location filename="../src/app/qgisapp.cpp" line="3166"/>
         <source>Saved project to: %1</source>
         <translation>儲存專案至: %1</translation>
     </message>
     <message>
-        <source>Unable to save project to %1</source>
-        <translation type="obsolete">無法儲存專案至: %1</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="3115"/>
-        <location filename="../src/app/qgisapp.cpp" line="3161"/>
+        <location filename="../src/app/qgisapp.cpp" line="3127"/>
+        <location filename="../src/app/qgisapp.cpp" line="3173"/>
         <source>Unable to save project %1</source>
         <translation>無法儲存專案: %1</translation>
     </message>
     <message>
-        <source>Unable to load project %1</source>
-        <translation type="obsolete">無法載入專案至: %1</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="3336"/>
+        <location filename="../src/app/qgisapp.cpp" line="3348"/>
         <source>Saved map image to %1</source>
         <translation>儲存地圖影像至 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4233"/>
+        <location filename="../src/app/qgisapp.cpp" line="4245"/>
         <source>Could not commit changes to layer %1
 
 Errors: %2
@@ -8017,43 +5447,39 @@ Errors: %2
 錯誤: %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4590"/>
+        <location filename="../src/app/qgisapp.cpp" line="4598"/>
         <source>QGIS - Changes in SVN since last release</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4630"/>
+        <location filename="../src/app/qgisapp.cpp" line="4638"/>
         <source>Unable to communicate with QGIS Version server
 %1</source>
         <translation>無法與QGIS版本伺服器溝通
 %1</translation>
     </message>
     <message>
-        <source>Extents: %1</source>
-        <translation type="obsolete">範圍: %1</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="5651"/>
+        <location filename="../src/app/qgisapp.cpp" line="5684"/>
         <source>%1 is not a valid or recognized raster data source</source>
         <translation>%1 不是一個有效或支援的影像資料來源</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5814"/>
+        <location filename="../src/app/qgisapp.cpp" line="5848"/>
         <source>%1 is not a supported raster data source</source>
         <translation>%1 不是一個支援的影像資料來源</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5948"/>
+        <location filename="../src/app/qgisapp.cpp" line="5982"/>
         <source>&lt;p&gt;This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.&lt;p&gt;Even though QGIS developers try to maintain backwards compatibility, some of the information from the old project file might be lost. To improve the quality of QGIS, we appreciate if you file a bug report at %3. Be sure to include the old project file, and state the version of QGIS you used to discover the error.&lt;p&gt;To remove this warning when opening an older project file, uncheck the box &apos;%5&apos; in the %4 menu.&lt;p&gt;Version of the project file: %1&lt;br&gt;Current version of QGIS: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3642"/>
+        <location filename="../src/app/qgisapp.cpp" line="3654"/>
         <source>Delete features</source>
         <translation>刪除圖徵</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="3642"/>
+        <location filename="../src/app/qgisapp.cpp" line="3654"/>
         <source>Delete %n feature(s)?</source>
         <comment>number of features to delete</comment>
         <translation>
@@ -8061,1103 +5487,395 @@ Errors: %2
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="926"/>
+        <location filename="../src/app/qgisapp.cpp" line="935"/>
         <source>Add SpatiaLite Layer...</source>
         <translation>新增SpatiaLite圖層...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="928"/>
+        <location filename="../src/app/qgisapp.cpp" line="937"/>
         <source>Add a SpatiaLite Layer</source>
         <translation>加入SpatiaLite圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2187"/>
+        <location filename="../src/app/qgisapp.cpp" line="2199"/>
         <source>
 This copy of QGIS has been built with SpatiaLite support.</source>
         <translation>此版QGIS支援SpatiaLite。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2189"/>
+        <location filename="../src/app/qgisapp.cpp" line="2201"/>
         <source>
 This copy of QGIS has been built without SpatiaLite support.</source>
         <translation>此版QGIS不支援SpatiaLite。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="865"/>
+        <location filename="../src/app/qgisapp.cpp" line="874"/>
         <source>Zoom Next</source>
         <translation type="unfinished">縮放至下一步</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="867"/>
+        <location filename="../src/app/qgisapp.cpp" line="876"/>
         <source>Zoom to Forward Extent</source>
         <translation type="unfinished">縮放至下一個範圍</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="760"/>
-        <location filename="../src/app/qgisapp.cpp" line="762"/>
+        <location filename="../src/app/qgisapp.cpp" line="769"/>
+        <location filename="../src/app/qgisapp.cpp" line="771"/>
         <source>Simplify Feature</source>
         <translation>簡化圖徵</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="766"/>
+        <location filename="../src/app/qgisapp.cpp" line="775"/>
         <source>Delete Ring</source>
         <translation>刪除環形(Ring)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="772"/>
+        <location filename="../src/app/qgisapp.cpp" line="781"/>
         <source>Delete Part</source>
         <translation type="unfinished">刪除部件(Part)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1045"/>
+        <location filename="../src/app/qgisapp.cpp" line="1054"/>
         <source>Configure shortcuts...</source>
         <translation>設定快速鍵...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1047"/>
+        <location filename="../src/app/qgisapp.cpp" line="1056"/>
         <source>Configure shortcuts</source>
         <translation>設定快速鍵</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1500"/>
+        <location filename="../src/app/qgisapp.cpp" line="1509"/>
         <source>Advanced Digitizing</source>
         <translation>進階數化</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="662"/>
+        <location filename="../src/app/qgisapp.cpp" line="671"/>
         <source>&amp;Redo</source>
         <translation>取消回復(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="663"/>
+        <location filename="../src/app/qgisapp.cpp" line="672"/>
         <source>Ctrl+Shift+Z</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="664"/>
+        <location filename="../src/app/qgisapp.cpp" line="673"/>
         <source>Redo the last operation</source>
         <translation>重作最後一個動作</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="778"/>
-        <location filename="../src/app/qgisapp.cpp" line="780"/>
+        <location filename="../src/app/qgisapp.cpp" line="787"/>
+        <location filename="../src/app/qgisapp.cpp" line="789"/>
         <source>Merge selected features</source>
         <translation>合併選取圖徵</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="784"/>
-        <location filename="../src/app/qgisapp.cpp" line="786"/>
+        <location filename="../src/app/qgisapp.cpp" line="793"/>
+        <location filename="../src/app/qgisapp.cpp" line="795"/>
         <source>Node Tool</source>
         <translation>節點工具</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3647"/>
+        <location filename="../src/app/qgisapp.cpp" line="3659"/>
         <source>Features deleted</source>
         <translation>圖徵已刪除</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3692"/>
+        <location filename="../src/app/qgisapp.cpp" line="3704"/>
         <source>Merging features...</source>
         <translation>合併圖徵...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3692"/>
+        <location filename="../src/app/qgisapp.cpp" line="3704"/>
         <source>Abort</source>
         <translation>放棄</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3818"/>
+        <location filename="../src/app/qgisapp.cpp" line="3830"/>
         <source>No active layer</source>
         <translation>沒有作用中的圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3818"/>
+        <location filename="../src/app/qgisapp.cpp" line="3830"/>
         <source>No active layer found. Please select a layer in the layer list</source>
         <translation>沒有發現作用中的圖層。請在圖層清單中選擇任一圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3824"/>
+        <location filename="../src/app/qgisapp.cpp" line="3836"/>
         <source>Active layer is not vector</source>
         <translation>作用中的圖層不是向量圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3824"/>
+        <location filename="../src/app/qgisapp.cpp" line="3836"/>
         <source>The merge features tool only works on vector layers. Please select a vector layer from the layer list</source>
         <translation>合併圖徵工具僅適用於向量圖層。請在圖層清單中選擇向量圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3829"/>
+        <location filename="../src/app/qgisapp.cpp" line="3841"/>
         <source>Merging features can only be done for layers in editing mode. To use the merge tool, go to  Layer-&gt;Toggle editing</source>
         <translation>合併圖徵僅號在圖層編輯模式中使用。要使用合併工具，請先至[圖層]-&gt;[切換編輯模式]</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3844"/>
-        <location filename="../src/app/qgisapp.cpp" line="3883"/>
+        <location filename="../src/app/qgisapp.cpp" line="3856"/>
+        <location filename="../src/app/qgisapp.cpp" line="3895"/>
         <source>The merge tool requires at least two selected features</source>
         <translation>合併工具至少需要兩個圖徵</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3866"/>
-        <location filename="../src/app/qgisapp.cpp" line="3907"/>
+        <location filename="../src/app/qgisapp.cpp" line="3878"/>
+        <location filename="../src/app/qgisapp.cpp" line="3919"/>
         <source>The union operation would result in a geometry type that is not compatible with the current layer and therefore is canceled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3913"/>
+        <location filename="../src/app/qgisapp.cpp" line="3925"/>
         <source>Merged features</source>
         <translation>合併圖徵</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4085"/>
+        <location filename="../src/app/qgisapp.cpp" line="4097"/>
         <source>Features cut</source>
         <translation>圖徵已剪下</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4137"/>
+        <location filename="../src/app/qgisapp.cpp" line="4149"/>
         <source>Features pasted</source>
         <translation>圖徵已貼上</translation>
     </message>
     <message>
-        <source>Whats new in Version 1.2.0?</source>
-        <translation type="obsolete">在1.2.0新版中有那些功能?</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="687"/>
+        <location filename="../src/app/qgisapp.cpp" line="696"/>
         <source>Ctrl+.</source>
         <comment>Capture Points</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="693"/>
+        <location filename="../src/app/qgisapp.cpp" line="702"/>
         <source>Ctrl+/</source>
         <comment>Capture Lines</comment>
         <translation type="unfinished">Ctrl+/</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="699"/>
+        <location filename="../src/app/qgisapp.cpp" line="708"/>
         <source>Ctrl+Shift+/</source>
         <comment>Capture Polygons</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="710"/>
-        <location filename="../src/app/qgisapp.cpp" line="712"/>
+        <location filename="../src/app/qgisapp.cpp" line="719"/>
+        <location filename="../src/app/qgisapp.cpp" line="721"/>
         <source>Reshape Features</source>
         <translation type="unfinished">重塑圖徵</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="826"/>
+        <location filename="../src/app/qgisapp.cpp" line="835"/>
         <source>Ctrl+Shift+I</source>
         <comment>Click on features to identify them</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="832"/>
+        <location filename="../src/app/qgisapp.cpp" line="841"/>
         <source>Ctrl+Shift+M</source>
         <comment>Measure a Line</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="837"/>
+        <location filename="../src/app/qgisapp.cpp" line="846"/>
         <source>Ctrl+Shift+J</source>
         <comment>Measure an Area</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="841"/>
-        <location filename="../src/app/qgisapp.cpp" line="842"/>
+        <location filename="../src/app/qgisapp.cpp" line="850"/>
+        <location filename="../src/app/qgisapp.cpp" line="851"/>
         <source>Measure Angle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="846"/>
+        <location filename="../src/app/qgisapp.cpp" line="855"/>
         <source>Ctrl+Shift+F</source>
         <comment>Zoom to Full Extents</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="888"/>
+        <location filename="../src/app/qgisapp.cpp" line="897"/>
         <source>Ctrl+Shift+B</source>
         <comment>Show Bookmarks</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="900"/>
+        <location filename="../src/app/qgisapp.cpp" line="909"/>
         <source>Ctrl+Shift+N</source>
         <comment>Create a New Vector Layer</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="905"/>
+        <location filename="../src/app/qgisapp.cpp" line="914"/>
         <source>Ctrl+Shift+V</source>
         <comment>Add a Vector Layer</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="910"/>
+        <location filename="../src/app/qgisapp.cpp" line="919"/>
         <source>Ctrl+Shift+R</source>
         <comment>Add a Raster Layer</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="915"/>
+        <location filename="../src/app/qgisapp.cpp" line="924"/>
         <source>Ctrl+Shift+D</source>
         <comment>Add a PostGIS Layer</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="927"/>
+        <location filename="../src/app/qgisapp.cpp" line="936"/>
         <source>Ctrl+Shift+L</source>
         <comment>Add a SpatiaLite Layer</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="939"/>
+        <location filename="../src/app/qgisapp.cpp" line="948"/>
         <source>Ctrl+Shift+W</source>
         <comment>Add a Web Mapping Server Layer</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="989"/>
+        <location filename="../src/app/qgisapp.cpp" line="998"/>
         <source>Ctrl+Shift+O</source>
         <comment>Add current layer to overview map</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1005"/>
+        <location filename="../src/app/qgisapp.cpp" line="1014"/>
         <source>Ctrl+Shift+U</source>
         <comment>Show all layers</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1010"/>
+        <location filename="../src/app/qgisapp.cpp" line="1019"/>
         <source>Ctrl+Shift+H</source>
         <comment>Hide all layers</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1029"/>
+        <location filename="../src/app/qgisapp.cpp" line="1038"/>
         <source>Ctrl+Shift+P</source>
         <comment>Set project properties</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1600"/>
-        <location filename="../src/app/qgisapp.cpp" line="5067"/>
+        <location filename="../src/app/qgisapp.cpp" line="1609"/>
+        <location filename="../src/app/qgisapp.cpp" line="5075"/>
         <source>Coordinate:</source>
         <translation type="unfinished">座標:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1601"/>
+        <location filename="../src/app/qgisapp.cpp" line="1610"/>
         <source>Current map coordinate</source>
         <translation type="unfinished">擷取地圖座標</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1615"/>
+        <location filename="../src/app/qgisapp.cpp" line="1624"/>
         <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved. It also allows editing to set the canvas center to a given position.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1619"/>
+        <location filename="../src/app/qgisapp.cpp" line="1628"/>
         <source>Current map coordinate (formatted as x,y)</source>
         <translation type="unfinished">目前的地圖座標(格式為x,y)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5086"/>
+        <location filename="../src/app/qgisapp.cpp" line="5113"/>
         <source>Extents:</source>
         <translation>範圍:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="790"/>
-        <location filename="../src/app/qgisapp.cpp" line="792"/>
+        <location filename="../src/app/qgisapp.cpp" line="799"/>
+        <location filename="../src/app/qgisapp.cpp" line="801"/>
         <source>Rotate Point Symbols</source>
         <translation>旋轉點符號</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="234"/>
+        <location filename="../src/app/qgisapp.cpp" line="241"/>
         <source>Quantum GIS </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="622"/>
+        <location filename="../src/app/qgisapp.cpp" line="631"/>
         <source>&amp;New Print Composer</source>
         <translation type="unfinished">地圖出版設計(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="623"/>
+        <location filename="../src/app/qgisapp.cpp" line="632"/>
         <source>Ctrl+P</source>
         <comment>New Print Composer</comment>
         <translation type="unfinished">Ctrl+P</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="624"/>
+        <location filename="../src/app/qgisapp.cpp" line="633"/>
         <source>New Print Composer</source>
         <translation type="unfinished">新版出圖設計</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1247"/>
+        <location filename="../src/app/qgisapp.cpp" line="1256"/>
         <source>Print Composers</source>
         <translation type="unfinished">所有設計</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="754"/>
+        <location filename="../src/app/qgisapp.cpp" line="763"/>
         <source>Add Part</source>
         <translation type="unfinished">新增部件(Part)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="756"/>
+        <location filename="../src/app/qgisapp.cpp" line="765"/>
         <source>Add part to multipolygon</source>
         <translation>新增部件至多邊形</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="768"/>
+        <location filename="../src/app/qgisapp.cpp" line="777"/>
         <source>Click a vertex of the ring to delete</source>
         <translation type="unfinished">按一下環形上的轉折點且刪除</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="774"/>
+        <location filename="../src/app/qgisapp.cpp" line="783"/>
         <source>Click a vertex of the part to delete</source>
         <translation type="unfinished">按一下部件上的轉折點且刪除</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="627"/>
+        <location filename="../src/app/qgisapp.cpp" line="636"/>
         <source>Composer manager...</source>
         <translation>設計管理...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="628"/>
+        <location filename="../src/app/qgisapp.cpp" line="637"/>
         <source>Composer manager</source>
         <translation>設計管理</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="819"/>
-        <location filename="../src/app/qgisapp.cpp" line="821"/>
+        <location filename="../src/app/qgisapp.cpp" line="828"/>
+        <location filename="../src/app/qgisapp.cpp" line="830"/>
         <source>Deselect features from all layers</source>
         <translation>取消所有圖層的圖徵的選取</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1103"/>
+        <location filename="../src/app/qgisapp.cpp" line="1112"/>
         <source>Style manager...</source>
         <translation type="unfinished">樣式管理...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1105"/>
+        <location filename="../src/app/qgisapp.cpp" line="1114"/>
         <source>Show style manager V2</source>
         <translation type="unfinished">顯示樣式管理 V2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3745"/>
-        <location filename="../src/app/qgisapp.cpp" line="3783"/>
+        <location filename="../src/app/qgisapp.cpp" line="3757"/>
+        <location filename="../src/app/qgisapp.cpp" line="3795"/>
         <source>Composer %1</source>
         <translation type="unfinished">設計 %1</translation>
     </message>
 </context>
 <context>
     <name>QgisAppBase</name>
-    <message>
-        <source>Quantum GIS</source>
-        <translation type="obsolete">Quantum GIS</translation>
-    </message>
-    <message>
-        <source>&amp;File</source>
-        <translation type="obsolete">文件(&amp;F)</translation>
-    </message>
-    <message>
-        <source>&amp;Layer</source>
-        <translation type="obsolete">圖層(&amp;L)</translation>
-    </message>
-    <message>
-        <source>&amp;View</source>
-        <translation type="obsolete">檢視(&amp;V)</translation>
-    </message>
-    <message>
-        <source>&amp;Tools</source>
-        <translation type="obsolete">工具(&amp;T)</translation>
-    </message>
-    <message>
-        <source>&amp;Help</source>
-        <translation type="obsolete">說明(&amp;H)</translation>
-    </message>
-    <message>
-        <source>File Management Toolbar</source>
-        <translation type="obsolete">文件管理工具列</translation>
-    </message>
-    <message>
-        <source>Data Toolbar</source>
-        <translation type="obsolete">資料工具列</translation>
-    </message>
-    <message>
-        <source>Map Navigation Toolbar</source>
-        <translation type="obsolete">地圖漫遊工具列</translation>
-    </message>
-    <message>
-        <source>Attribute Data Toolbar</source>
-        <translation type="obsolete">屬性資料工具列</translation>
-    </message>
-    <message>
-        <source>Help Toolbar</source>
-        <translation type="obsolete">說明工具列</translation>
-    </message>
-    <message>
-        <source>Open Project</source>
-        <translation type="obsolete">開啟專案</translation>
-    </message>
-    <message>
-        <source>&amp;Open Project</source>
-        <translation type="obsolete">開啟專案(&amp;O)</translation>
-    </message>
-    <message>
-        <source>Open a previously saved QGIS project file. The layers (raster and vector) stored in the project file will be loaded and displayed on the map canvas</source>
-        <translation type="obsolete">開啟先前儲存的QGIS專案檔案。專案檔案中儲存的圖層(影像和向量)會被載入並顯示在地圖上</translation>
-    </message>
-    <message>
-        <source>Ctrl+O</source>
-        <translation type="obsolete">Ctrl+O</translation>
-    </message>
-    <message>
-        <source>Exit</source>
-        <translation type="obsolete">退出</translation>
-    </message>
-    <message>
-        <source>E&amp;xit</source>
-        <translation type="obsolete">退出(&amp;x)</translation>
-    </message>
-    <message>
-        <source>Close all layers and exit QGIS</source>
-        <translation type="obsolete">關閉所有圖層並退出QGIS</translation>
-    </message>
-    <message>
-        <source>Add a PostGIS Layer</source>
-        <translation type="obsolete">新增PostGIS圖層</translation>
-    </message>
-    <message>
-        <source>Add a &amp;PostGIS Layer</source>
-        <translation type="obsolete">新增PostGIS圖層(&amp;P)</translation>
-    </message>
-    <message>
-        <source>Add a PostgreSQL layer to the map. This requires a properly configured and running PostgreSQL database and the PostGIS extensions.</source>
-        <translation type="obsolete">新增PostgreSQL圖層至地圖上。這需要一個正確設定並運行良好的PostgreSQL資料庫，以及PostGIS地理擴充功能。</translation>
-    </message>
-    <message>
-        <source>Refresh </source>
-        <translation type="obsolete">重新整理</translation>
-    </message>
-    <message>
-        <source>&amp;Refresh </source>
-        <translation type="obsolete">重新整理(&amp;R)</translation>
-    </message>
-    <message>
-        <source>Refresh the map by clearing the map canvas and redrawing all visible layers</source>
-        <translation type="obsolete">通過清除地圖顯示區並重繪所有可見圖層來重新整理地圖</translation>
-    </message>
-    <message>
-        <source>Zoom to full extent</source>
-        <translation type="obsolete">全幅顯示</translation>
-    </message>
-    <message>
-        <source>Zoom to &amp;full extent</source>
-        <translation type="obsolete">全幅顯示(&amp;f)</translation>
-    </message>
-    <message>
-        <source>Zoom to the full extent of all layers on the map. This brings everything on the map into full view</source>
-        <translation type="obsolete">縮放到所有圖層的全幅範圍。這將使地圖上的所有內容都顯示在檢視範圍之內</translation>
-    </message>
-    <message>
-        <source>Map Navigation Tools</source>
-        <translation type="obsolete">地圖漫遊工具</translation>
-    </message>
-    <message>
-        <source>Zoom in</source>
-        <translation type="obsolete">放大</translation>
-    </message>
-    <message>
-        <source>Zoom &amp;In</source>
-        <translation type="obsolete">放大(&amp;I)</translation>
-    </message>
-    <message>
-        <source>Zoom in on the map. Drag the mouse (hold down the left button) to draw a rectangle around the area you want to zoom to, then release the mouse.</source>
-        <translation type="obsolete">放大地圖。在您想要放大的區域周圍拖動滑鼠(按下左鍵)拉一個矩形框，然後釋放滑鼠。</translation>
-    </message>
-    <message>
-        <source>Pan</source>
-        <translation type="obsolete">移動</translation>
-    </message>
-    <message>
-        <source>&amp;Pan</source>
-        <translation type="obsolete">移動(&amp;P)</translation>
-    </message>
-    <message>
-        <source>Pan the map view by dragging the mouse (hold down the left button). The area displayed will change after the mouse is released.</source>
-        <translation type="obsolete">通過拖動滑鼠(按下左鍵)來移動地圖檢視。釋放滑鼠後顯示區域會改變。</translation>
-    </message>
-    <message>
-        <source>Zoom out</source>
-        <translation type="obsolete">縮小</translation>
-    </message>
-    <message>
-        <source>Zoom &amp;Out</source>
-        <translation type="obsolete">縮小(&amp;O)</translation>
-    </message>
-    <message>
-        <source>Zoom out to view more of the map. Drag the mouse (hold down the left button) to draw a rectangle around an area. The current view will zoomed out and resized to &quot;fit&quot; in the rectangle.</source>
-        <translation type="obsolete">縮小以瀏覽更多的地圖區域。在某個區域周圍拖動滑鼠(按下左鍵)拉一個矩形框。目前檢視會被縮小以&quot;適應&quot;這個矩形框.</translation>
-    </message>
-    <message>
-        <source>Zoom to selected features</source>
-        <translation type="obsolete">放大至選取的圖徵</translation>
-    </message>
-    <message>
-        <source>&amp;Zoom to selected features</source>
-        <translation type="obsolete">放大至選取的圖徵(&amp;Z)</translation>
-    </message>
-    <message>
-        <source>Zoom to selected features in active layer</source>
-        <translation type="obsolete">縮放到啟動圖層的選取圖徵上</translation>
-    </message>
-    <message>
-        <source>Zoom to the extent of selected features on the active layer. The view will be zoomed so that all selected features are visible. If there are no selected features, the view is not changed.</source>
-        <translation type="obsolete">在啟動圖層上，縮放到選取圖徵的範圍。檢視會被縮放，以至於所有選取的圖徵都能夠被看到。如果沒有選取的圖徵，那麼檢視不會改變.</translation>
-    </message>
-    <message>
-        <source>Identify</source>
-        <translation type="obsolete">識別圖徵</translation>
-    </message>
-    <message>
-        <source>I&amp;dentify</source>
-        <translation type="obsolete">識別圖徵(&amp;d)</translation>
-    </message>
-    <message>
-        <source>Identify a feature on the active layer</source>
-        <translation type="obsolete">在啟動圖層上識別一個圖徵</translation>
-    </message>
-    <message>
-        <source>Identify a feature on the active layer (the active layer is the highlighted layer in the legend). Idenify searches for features near where the mouse is clicked and displays information about the results. The search radius can be customized on the QGIS Preferences dialog.</source>
-        <translation type="obsolete">在啟動圖層(啟動圖層是在圖例中高亮顯示的圖層)上識別圖徵。它會在滑鼠點擊的附近位置尋找圖徵，並顯示找到的圖徵的資訊。搜尋半徑可以在QGIS選項對話方塊中設定.</translation>
-    </message>
-    <message>
-        <source>select features</source>
-        <translation type="obsolete">選取圖徵</translation>
-    </message>
-    <message>
-        <source>Select features on the active layer by dragging the mouse to create a box around the features of interest. When the mouse is released, the features are selected and drawn in a different color (default is yellow)</source>
-        <translation type="obsolete">在啟動圖層上，用滑鼠在感興趣的圖徵周圍拖一個矩形框來選取圖徵。當滑鼠釋放後，這些圖徵被選取，並且以不同的顏色(預設是黃色)繪製</translation>
-    </message>
-    <message>
-        <source>&amp;About Quantum GIS</source>
-        <translation type="obsolete">關於Quantum GIS (&amp;A)</translation>
-    </message>
-    <message>
-        <source>Display the About QGIS dialog. About QGIS contains information about the current version, contributors, and available data provider plugins.</source>
-        <translation type="obsolete">顯示QGIS的關於對話方塊。關於對話方塊包含了目前版本的資訊、貢獻者以及有效的資料供應者附加元件。</translation>
-    </message>
-    <message>
-        <source>Test button</source>
-        <translation type="obsolete">測試按鈕</translation>
-    </message>
-    <message>
-        <source>Add a Vector Layer</source>
-        <translation type="obsolete">加入向量圖層</translation>
-    </message>
-    <message>
-        <source>Add a &amp;Vector Layer</source>
-        <translation type="obsolete">新增向量圖層(&amp;V)</translation>
-    </message>
-    <message>
-        <source>Add a vector layer (e.g. Shapefile)</source>
-        <translation type="obsolete">加入向量圖層(如：Shape檔)</translation>
-    </message>
-    <message>
-        <source>Add a vector layer to the map canvas. The supported formats are those provided by the OGR library. For a list of supported formats, see http://www.remotesensing.org/gdal/ogr/ogr_formats.html</source>
-        <translation type="obsolete">在地圖中加入向量圖層。支援的格式是OGR庫提供的格式。要得到支持格式的列表，請參閱http://www.remotesensing.org/gdal/ogr/ogr_formats.html</translation>
-    </message>
-    <message>
-        <source>Attribute table</source>
-        <translation type="obsolete">屬性工作表格</translation>
-    </message>
-    <message>
-        <source>&amp;Attribute table</source>
-        <translation type="obsolete">屬性工作表(&amp;A)</translation>
-    </message>
-    <message>
-        <source>Open the attribute table for the selected layer</source>
-        <translation type="obsolete">開啟選取圖層的屬性工作表</translation>
-    </message>
-    <message>
-        <source>Open the attribute table for the selected vector layer. The rows can be sorted by clicking on the column names in the header row.</source>
-        <translation type="obsolete">開啟選取的向量圖層的屬性工作表。在首列點擊行名，會將所有的記錄進行排序.</translation>
-    </message>
-    <message>
-        <source>Previous</source>
-        <translation type="obsolete">前一檢視</translation>
-    </message>
-    <message>
-        <source>Zoom to &amp;previous extent</source>
-        <translation type="obsolete">返回前一檢視(&amp;p)</translation>
-    </message>
-    <message>
-        <source>Zoom to last extent</source>
-        <translation type="obsolete">返回前一檢視</translation>
-    </message>
-    <message>
-        <source>Zoom to the last view. QGIS stores only one previous view so repeatedly clicking this button swaps the views.</source>
-        <translation type="obsolete">返回前一檢視。QGIS只儲存一個先前檢視，所以反復點擊該按鈕會交換檢視.</translation>
-    </message>
-    <message>
-        <source>Test plugin functions</source>
-        <translation type="obsolete">測試附加元件功能</translation>
-    </message>
-    <message>
-        <source>Preferences</source>
-        <translation type="obsolete">選項</translation>
-    </message>
-    <message>
-        <source>&amp;Preferences</source>
-        <translation type="obsolete">選項(&amp;P)</translation>
-    </message>
-    <message>
-        <source>QGIS User Preferences</source>
-        <translation type="obsolete">QGIS用戶的偏好設定</translation>
-    </message>
-    <message>
-        <source>Open the options dialog to set QGIS preferences like web browser and identify search radius.</source>
-        <translation type="obsolete">開啟選項對話方塊來設定QGIS的選項，如web瀏覽器和識別圖徵時尋找的半徑.</translation>
-    </message>
-    <message>
-        <source>Save Project</source>
-        <translation type="obsolete">儲存專案</translation>
-    </message>
-    <message>
-        <source>&amp;Save Project</source>
-        <translation type="obsolete">儲存專案(&amp;S)</translation>
-    </message>
-    <message>
-        <source>Save the current map as a QGIS project. A QGIS project can later be opened and all layers and setting will be restored.</source>
-        <translation type="obsolete">將目前地圖儲存為QGIS專案。QGIS專案能夠在以後被開啟，並且所有的圖層和設定會被恢復.</translation>
-    </message>
-    <message>
-        <source>Ctrl+S</source>
-        <translation type="obsolete">Ctrl+S</translation>
-    </message>
-    <message>
-        <source>Save Project As...</source>
-        <translation type="obsolete">專案另存為...</translation>
-    </message>
-    <message>
-        <source>Save Project &amp;As...</source>
-        <translation type="obsolete">專案另存為(&amp;A)...</translation>
-    </message>
-    <message>
-        <source>Save the current map as a new QGIS project. A QGIS project can later be opened and all layers and setting will be restored.</source>
-        <translation type="obsolete">將目前地圖儲存為新的QGIS專案。QGIS專案能夠在以後被開啟，並且所有的圖層和設定會被恢復.</translation>
-    </message>
-    <message>
-        <source>New Project</source>
-        <translation type="obsolete">新增專案</translation>
-    </message>
-    <message>
-        <source>&amp;New Project</source>
-        <translation type="obsolete">新增專案(&amp;N)</translation>
-    </message>
-    <message>
-        <source>Start a new QGIS project</source>
-        <translation type="obsolete">開始新的QGIS專案</translation>
-    </message>
-    <message>
-        <source>Create a new, empty QGIS project. All layers will be removed from the map canvas and a blank canvas will be created.</source>
-        <translation type="obsolete">建立新的、空的QGIS專案。所有圖層會被移除，並且會建立一個空白的檢視區.</translation>
-    </message>
-    <message>
-        <source>Ctrl+N</source>
-        <translation type="obsolete">Ctrl+N</translation>
-    </message>
-    <message>
-        <source>Plugin Manager</source>
-        <translation type="obsolete">附加元件管理</translation>
-    </message>
-    <message>
-        <source>Plugin &amp;Manager</source>
-        <translation type="obsolete">附加元件管理(&amp;M)</translation>
-    </message>
-    <message>
-        <source>Opens the Plugin Manager and allows you to view loaded plugins or load a new one. The Plugin Manager lists the available plugins and a description of the features each provides.</source>
-        <translation type="obsolete">開啟附加元件管理器，您能夠查看已載入的附加元件，或是載入一個新的。附加元件管理器列出了所有可用的附加元件和它們的功能描述.</translation>
-    </message>
-    <message>
-        <source>Check QGIS Version</source>
-        <translation type="obsolete">檢查QGIS版本</translation>
-    </message>
-    <message>
-        <source>Check QGIS &amp;Version</source>
-        <translation type="obsolete">檢查QGIS版本(&amp;V)</translation>
-    </message>
-    <message>
-        <source>Contacts the QGIS version server and provides information about the current version and any new features/changes available in the development version.</source>
-        <translation type="obsolete">連接QGIS版本伺服器，獲取目前版本的資訊，以及開發版本中所有新的功能/改變.</translation>
-    </message>
-    <message>
-        <source>Export As Mapserver file</source>
-        <translation type="obsolete">匯出為Mapserver格式</translation>
-    </message>
-    <message>
-        <source>Export As &amp;Mapserver file</source>
-        <translation type="obsolete">匯出為Mapserver格式(&amp;M)</translation>
-    </message>
-    <message>
-        <source>Creates a Mapserver file (.map) from the current QGIS view. The .map file can be used to create a Mapserver project.</source>
-        <translation type="obsolete">從目前的QGIS檢視建立Mapserver檔(.map)。這個.map檔能夠用來建立Mapserver專案.</translation>
-    </message>
-    <message>
-        <source>Export to MapServer</source>
-        <translation type="obsolete">匯出到MapServer</translation>
-    </message>
-    <message>
-        <source>Add a Raster Layer</source>
-        <translation type="obsolete">新增影像圖層</translation>
-    </message>
-    <message>
-        <source>Add a &amp;Raster Layer</source>
-        <translation type="obsolete">新增影像圖層(&amp;R)</translation>
-    </message>
-    <message>
-        <source>Adds a raster layer to the map canvas. Supported raster formats include most of those provided by the GDAL library. See http://www.remotesensing.org/gdal/formats_list.html</source>
-        <translation type="obsolete">向地圖中加入影像圖層。支援的影像格式包括了GDAL庫提供的大部分格式。請參閱http://www.remotesensing.org/gdal/formats_list.html</translation>
-    </message>
-    <message>
-        <source>Action</source>
-        <translation type="obsolete">動作</translation>
-    </message>
-    <message>
-        <source>&amp;Contents</source>
-        <translation type="obsolete">內容(&amp;C)</translation>
-    </message>
-    <message>
-        <source>QGIS Help (HTML)</source>
-        <translation type="obsolete">QGIS說明(HTML)</translation>
-    </message>
-    <message>
-        <source>Open the QGIS Help Contents in a web browser</source>
-        <translation type="obsolete">在瀏覽器中開啟QGIS說明檔</translation>
-    </message>
-    <message>
-        <source>QGIS Home Page</source>
-        <translation type="obsolete">QGIS首頁</translation>
-    </message>
-    <message>
-        <source>Open the QGIS home page in a web browser</source>
-        <translation type="obsolete">在瀏覽器中開啟QGIS首頁</translation>
-    </message>
-    <message>
-        <source>QGIS SourceForge Page</source>
-        <translation type="obsolete">QGIS SourceForge首頁</translation>
-    </message>
-    <message>
-        <source>Open the QGIS SourceForge project page in a web browser</source>
-        <translation type="obsolete">在瀏覽器中開啟QGIS的SourceForge首頁</translation>
-    </message>
-    <message>
-        <source>Export As Image</source>
-        <translation type="obsolete">匯出為圖像</translation>
-    </message>
-    <message>
-        <source>E&amp;xport As Image</source>
-        <translation type="obsolete">匯出為圖像(&amp;x)</translation>
-    </message>
-    <message>
-        <source>Save the current map view as a PNG image. The image size will be exactly the same as the size of the map canvas.</source>
-        <translation type="obsolete">將目前地圖檢視儲存為PNG圖像。圖像的大小與地圖檢視區域的大小一致.</translation>
-    </message>
-    <message>
-        <source>Whats this?</source>
-        <translation type="obsolete">這是什麼?</translation>
-    </message>
-    <message>
-        <source>&amp;Whats this?</source>
-        <translation type="obsolete">這是什麼(&amp;W)?</translation>
-    </message>
-    <message>
-        <source>Whats this? - Click this tool and then click on a toolbar button or menu item to get more information</source>
-        <translation type="obsolete">這是什麼? - 點擊這個工具，然後在按鈕或功能表專案上按一下以獲得更多的資訊</translation>
-    </message>
-    <message>
-        <source>Shift+F1</source>
-        <translation type="obsolete">Shitft+F1</translation>
-    </message>
-    <message>
-        <source>Project Properties</source>
-        <translation type="obsolete">專案屬性</translation>
-    </message>
-    <message>
-        <source>Project &amp;Properties</source>
-        <translation type="obsolete">專案屬性(&amp;P)</translation>
-    </message>
-    <message>
-        <source>Set project properties, including map units</source>
-        <translation type="obsolete">設定專案屬性，包括地圖單位</translation>
-    </message>
-    <message>
-        <source>Set properties for the current project, including map units</source>
-        <translation type="obsolete">為目前專案設定屬性，包括地圖單位</translation>
-    </message>
-    <message>
-        <source>Properties</source>
-        <translation type="obsolete">屬性</translation>
-    </message>
-    <message>
-        <source>&amp;Properties</source>
-        <translation type="obsolete">屬性(&amp;P)</translation>
-    </message>
-    <message>
-        <source>Properties for the selected layer</source>
-        <translation type="obsolete">選取圖層的屬性</translation>
-    </message>
-    <message>
-        <source>Zoom to layer</source>
-        <translation type="obsolete">放大至圖層</translation>
-    </message>
-    <message>
-        <source>Zoom to &amp;layer</source>
-        <translation type="obsolete">放大至圖層(&amp;l)</translation>
-    </message>
-    <message>
-        <source>Print</source>
-        <translation type="obsolete">列印</translation>
-    </message>
-    <message>
-        <source>&amp;Print</source>
-        <translation type="obsolete">列印(&amp;P)</translation>
-    </message>
-    <message>
-        <source>Ctrl+P</source>
-        <translation type="obsolete">Ctrl+P</translation>
-    </message>
-    <message>
-        <source>Capture Point</source>
-        <translation type="obsolete">建立點</translation>
-    </message>
-    <message>
-        <source>Add All To Overview</source>
-        <translation type="obsolete">全部圖層加入全覽圖</translation>
-    </message>
-    <message>
-        <source>D</source>
-        <translation type="obsolete">D</translation>
-    </message>
-    <message>
-        <source>V</source>
-        <translation type="obsolete">V</translation>
-    </message>
-    <message>
-        <source>R</source>
-        <translation type="obsolete">R</translation>
-    </message>
-    <message>
-        <source>+</source>
-        <translation type="obsolete">+</translation>
-    </message>
-    <message>
-        <source>Remove All From Overview</source>
-        <translation type="obsolete">移除全覽圖內所有的圖層</translation>
-    </message>
-    <message>
-        <source>-</source>
-        <translation type="obsolete">-</translation>
-    </message>
-    <message>
-        <source>Show All Layers</source>
-        <translation type="obsolete">顯示所有圖層</translation>
-    </message>
-    <message>
-        <source>S</source>
-        <translation type="obsolete">S</translation>
-    </message>
-    <message>
-        <source>Hide All Layers</source>
-        <translation type="obsolete">隱藏所有圖層</translation>
-    </message>
-    <message>
-        <source>H</source>
-        <translation type="obsolete">H</translation>
-    </message>
-    <message>
-        <source>Capture Line</source>
-        <translation type="obsolete">建立線</translation>
-    </message>
-    <message>
-        <source>Capture Polygon</source>
-        <translation type="obsolete">建立多邊形</translation>
-    </message>
-    <message>
-        <source>Map Edit Tools</source>
-        <translation type="obsolete">地圖編輯工具</translation>
-    </message>
-    <message>
-        <source>Show all layers</source>
-        <translation type="obsolete">顯示所有圖層</translation>
-    </message>
-    <message>
-        <source>Add to overview</source>
-        <translation type="obsolete">新增到全覽圖</translation>
-    </message>
-    <message>
-        <source>Capture points</source>
-        <translation type="obsolete">建立點</translation>
-    </message>
-    <message>
-        <source>Plugins Toolbar</source>
-        <translation type="obsolete">附加元件工具列</translation>
-    </message>
-    <message>
-        <source>&amp;Settings</source>
-        <translation type="obsolete">設定(&amp;S)</translation>
-    </message>
-    <message>
-        <source>&amp;Export As Image</source>
-        <translation type="obsolete">匯出為影像(&amp;E)</translation>
-    </message>
-    <message>
-        <source>P&amp;roject Properties</source>
-        <translation type="obsolete">專案屬性(&amp;r)</translation>
-    </message>
-    <message>
-        <source>Remove Layer</source>
-        <translation type="obsolete">移除圖層</translation>
-    </message>
-    <message>
-        <source>Toggle In Overview</source>
-        <translation type="obsolete">關聯到全覽圖中</translation>
-    </message>
-    <message>
-        <source>New Vectorlayer</source>
-        <translation type="obsolete">新增向量圖層</translation>
-    </message>
-    <message>
-        <source>Bookmarks Toolbar</source>
-        <translation type="obsolete">書籤工具列</translation>
-    </message>
-    <message>
-        <source>Capture (digitise) a point on the current layer. The layer must be in edit mode.</source>
-        <translation type="obsolete">在目前圖層上建立(數化)一個點。這個圖層必須在編輯模式下。</translation>
-    </message>
-    <message>
-        <source>Capture (digitise) a line on the current layer. The layer must be in edit mode.</source>
-        <translation type="obsolete">在目前圖層上建立(數化)一條線。這個圖層必須在編輯模式下。</translation>
-    </message>
-    <message>
-        <source>Capture (digitise) a polygon on the current layer. The layer must be in edit mode.</source>
-        <translation type="obsolete">在目前圖層上建立(數化)一個多邊形。這個圖層必須在編輯模式下。</translation>
-    </message>
-    <message>
-        <source>Measure</source>
-        <translation type="obsolete">測量</translation>
-    </message>
-    <message>
-        <source>Measure distances on the map canvas.</source>
-        <translation type="obsolete">在地圖檢視上測量距離.</translation>
-    </message>
-    <message>
-        <source>Ctrl+M</source>
-        <translation type="obsolete">Ctrl+M</translation>
-    </message>
-    <message>
-        <source>Properties for the selected layer, including rendering and projection settings.</source>
-        <translation type="obsolete">選取圖層的屬性，包括繪圖和專案設定.</translation>
-    </message>
-    <message>
-        <source>Zoom to the extent of the active layer</source>
-        <translation type="obsolete">縮放至啟動的圖層</translation>
-    </message>
-    <message>
-        <source>Open the Map Composer to create and print a map using the current layers and settings.</source>
-        <translation type="obsolete">開啟地圖設計器來建立和列印地圖，使用目前的圖層和設定。</translation>
-    </message>
-    <message>
-        <source>Add all layers to the overview map.</source>
-        <translation type="obsolete">將所有圖層新增到全覽圖中。</translation>
-    </message>
-    <message>
-        <source>Remove all layers to the overview map.</source>
-        <translation type="obsolete">移除全覽圖內所有的圖層。</translation>
-    </message>
-    <message>
-        <source>Toggle the visibility of all layers to on and redraw the map.</source>
-        <translation type="obsolete">將所有圖層的可見性置為可見，並且重繪地圖。</translation>
-    </message>
-    <message>
-        <source>Toggle the visibility of all layers to off and clear the map.</source>
-        <translation type="obsolete">將所有圖層的可見性置為不可見，並且清空地圖。</translation>
-    </message>
-    <message>
-        <source>Remove the active layer from the map.</source>
-        <translation type="obsolete">從地圖中移除啟動的圖層。</translation>
-    </message>
-    <message>
-        <source>Add or remove the active layer to the Overview map.</source>
-        <translation type="obsolete">在全覽圖中新增或移除啟動的圖層。</translation>
-    </message>
-    <message>
-        <source>Create a new vector layer (shapefile) for editing.</source>
-        <translation type="obsolete">建立新的向量圖層(Shape檔)且編輯。</translation>
-    </message>
-    <message>
-        <source>DebugHook</source>
-        <translation type="obsolete">DebugHook</translation>
-    </message>
-    <message>
-        <source>DebugHook to which random stuff can be attached</source>
-        <translation type="obsolete">DebugHook to which random stuff can be attached</translation>
-    </message>
-    <message>
-        <source>Custom Projections</source>
-        <translation type="obsolete">自訂投影</translation>
-    </message>
-    <message>
-        <source>Create or manage custom projection definitions.</source>
-        <translation type="obsolete">建立或管理自訂投影的設定.</translation>
-    </message>
-    <message>
-        <source>Show geospatial bookmarks</source>
-        <translation type="obsolete">顯示書籤</translation>
-    </message>
-    <message>
-        <source>Geospatial bookmarks...</source>
-        <translation type="obsolete">書籤...</translation>
-    </message>
-    <message>
-        <source>Show the spatial bookmarks dialog and zoom to a bookmark or delete unwanted bookmarks.</source>
-        <translation type="obsolete">顯示書籤對話方塊，用來縮放到書籤或是刪除不再需要的書籤.</translation>
-    </message>
-    <message>
-        <source>Create a new geospatial bookmark</source>
-        <translation type="obsolete">建立新的書籤</translation>
-    </message>
-    <message>
-        <source>New geospatial bookmark...</source>
-        <translation type="obsolete">新書籤...</translation>
-    </message>
-    <message>
-        <source>Create a new geospatial bookmark for the current view</source>
-        <translation type="obsolete">為目前檢視建立新的書籤</translation>
-    </message>
-    <message>
-        <source>Ctrl+B</source>
-        <translation type="obsolete">Ctrl+B</translation>
-    </message>
-    <message>
-        <source>Create a new geospatial bookmark for the current view extent.</source>
-        <translation type="obsolete">為目前檢視範圍建立新的書籤.</translation>
-    </message>
-    <message>
-        <source>MainWindow</source>
-        <translation type="obsolete">主窗口</translation>
-    </message>
-    <message>
-        <source>Legend</source>
-        <translation type="obsolete">圖例</translation>
-    </message>
-    <message>
-        <source>Map View</source>
-        <translation type="obsolete">地圖檢視</translation>
-    </message>
     <message>
         <location filename="../src/ui/qgisappbase.ui" line="13"/>
         <source>QGIS</source>
@@ -9170,10 +5888,6 @@ This copy of QGIS has been built without SpatiaLite support.</source>
         <location filename="../src/ui/qgsabout.ui" line="14"/>
         <source>About Quantum GIS</source>
         <translation>關於Quantum GIS</translation>
-    </message>
-    <message>
-        <source>Ok</source>
-        <translation type="obsolete">確定</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="27"/>
@@ -9196,31 +5910,9 @@ This copy of QGIS has been built without SpatiaLite support.</source>
         <translation type="unfinished">貢獻者</translation>
     </message>
     <message>
-        <source>&lt;h2&gt;QGIS Contributors&lt;/h2&gt;</source>
-        <translation type="obsolete">&lt;h2&gt;QGIS貢獻者&lt;/h2&gt;</translation>
-    </message>
-    <message>
-        <source>Plugins</source>
-        <translation type="obsolete">附加元件</translation>
-    </message>
-    <message>
-        <source>&lt;h2&gt;Quantum GIS (qgis)&lt;/h2&gt;</source>
-        <translation type="obsolete">&lt;h2&gt;Quantum GIS (qgis)&lt;/h2&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;p align=&quot;center&quot;&gt;Quantum GIS is licensed under the GNU General Public License&lt;p&gt;
-&lt;p align=&quot;center&quot;&gt;http://www.gnu.org/licenses&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;p align=&quot;center&quot;&gt;Quantum GIS is licensed under the GNU General Public License&lt;p&gt;
-&lt;p align=&quot;center&quot;&gt;http://www.gnu.org/licenses&lt;/p&gt;</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsabout.ui" line="130"/>
         <source>QGIS Home Page</source>
         <translation>QGIS首頁</translation>
-    </message>
-    <message>
-        <source>Subscribe to the QGIS-User mailing list</source>
-        <translation type="obsolete">訂閱QGIS-User郵寄清單</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="176"/>
@@ -9231,14 +5923,6 @@ This copy of QGIS has been built without SpatiaLite support.</source>
         <location filename="../src/ui/qgsabout.ui" line="186"/>
         <source>Developers</source>
         <translation>開發人員</translation>
-    </message>
-    <message>
-        <source>&lt;h2&gt;QGIS Developers&lt;/h2&gt;</source>
-        <translation type="obsolete">&lt;h2&gt;QGIS開發人員&lt;/h2&gt;</translation>
-    </message>
-    <message>
-        <source>QGIS Browser Selection</source>
-        <translation type="obsolete">選擇QGIS的瀏覽器</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="132"/>
@@ -9276,10 +5960,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsabout.ui" line="140"/>
         <source>Join our user mailing list</source>
         <translation>加入使用者郵件清單</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;The following have sponsored QGIS by contributing money to fund development and other project costs&lt;/p&gt;</source>
-        <translation type="obsolete">以下是使用金錢來贊助QGIS專案開發的名單</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="133"/>
@@ -9351,26 +6031,6 @@ p, li { white-space: pre-wrap; }
         <translation>新增屬性</translation>
     </message>
     <message>
-        <source>Name:</source>
-        <translation type="obsolete">名稱:</translation>
-    </message>
-    <message>
-        <source>Type:</source>
-        <translation type="obsolete">類型:</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">確定</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">取消</translation>
-    </message>
-    <message>
-        <source>Comment:</source>
-        <translation type="obsolete">註解:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="72"/>
         <source>Width</source>
         <translation>寬度</translation>
@@ -9410,18 +6070,6 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsAttributeActionDialog</name>
     <message>
-        <source>Name</source>
-        <translation type="obsolete">名稱</translation>
-    </message>
-    <message>
-        <source>Action</source>
-        <translation type="obsolete">動作</translation>
-    </message>
-    <message>
-        <source>Capture</source>
-        <translation type="obsolete">截取</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsattributeactiondialog.cpp" line="151"/>
         <source>Select an action</source>
         <comment>File dialog window title</comment>
@@ -9440,10 +6088,6 @@ p, li { white-space: pre-wrap; }
 </context>
 <context>
     <name>QgsAttributeActionDialogBase</name>
-    <message>
-        <source>Form1</source>
-        <translation type="obsolete">表單1</translation>
-    </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="59"/>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="139"/>
@@ -9492,10 +6136,6 @@ p, li { white-space: pre-wrap; }
         <translation>移除選取的動作</translation>
     </message>
     <message>
-        <source>Name:</source>
-        <translation type="obsolete">名稱:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="136"/>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="152"/>
         <source>Enter the name of an action here. The name should be unique (qgis will make it unique if necessary).</source>
@@ -9507,25 +6147,9 @@ p, li { white-space: pre-wrap; }
         <translation>在這裡輸入動作的名稱</translation>
     </message>
     <message>
-        <source>Action:</source>
-        <translation type="obsolete">動作:</translation>
-    </message>
-    <message>
-        <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if preceeded by a backslash</source>
-        <translation type="obsolete">在這裡輸入動作。它可以是任何的程式、腳本或是系統中可用的動作。當動作調用的時候，任何以a%開頭並且包含一個欄位名稱的字串都會用這個欄位的值來替換。特殊字元%%會用選取欄位的值來替換。雙引號包圍的一組文本會作為程式、腳本或動作的一個參數。雙引號前如果有反斜線，則它會被忽略</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="174"/>
         <source>Enter the action command here</source>
         <translation>在這裡輸入動作</translation>
-    </message>
-    <message>
-        <source>Browse</source>
-        <translation type="obsolete">瀏覽</translation>
-    </message>
-    <message>
-        <source>Browse for action commands</source>
-        <translation type="obsolete">瀏覽動作命令</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="80"/>
@@ -9677,45 +6301,6 @@ p, li { white-space: pre-wrap; }
         <source>Attributes - %1</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-</context>
-<context>
-    <name>QgsAttributeDialogBase</name>
-    <message>
-        <source>Enter Attribute Values</source>
-        <translation type="obsolete">輸入屬性值</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">確定</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">取消</translation>
-    </message>
-    <message>
-        <source>1</source>
-        <translation type="obsolete">1</translation>
-    </message>
-    <message>
-        <source>Attribute</source>
-        <translation type="obsolete">屬性</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="obsolete">值</translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">確定(&amp;O)</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">取消(&amp;C)</translation>
-    </message>
 </context>
 <context>
     <name>QgsAttributeEditor</name>
@@ -9789,145 +6374,7 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>QgsAttributeTable</name>
-    <message>
-        <source>&lt;center&gt;Run action&lt;/center&gt;</source>
-        <translation type="obsolete">&lt;center&gt;運行動作&lt;/center&gt;</translation>
-    </message>
-    <message>
-        <source>Abort</source>
-        <translation type="obsolete">放棄</translation>
-    </message>
-</context>
-<context>
-    <name>QgsAttributeTableBase</name>
-    <message>
-        <source>Attribute Table</source>
-        <translation type="obsolete">屬性工作表</translation>
-    </message>
-    <message>
-        <source>Start editing</source>
-        <translation type="obsolete">開始編輯</translation>
-    </message>
-    <message>
-        <source>Stop editing</source>
-        <translation type="obsolete">結束編輯</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">關閉(&amp;C)</translation>
-    </message>
-    <message>
-        <source>Alt+C</source>
-        <translation type="obsolete">Alt+C</translation>
-    </message>
-    <message>
-        <source>Ctrl+X</source>
-        <translation type="obsolete">Ctrl+X</translation>
-    </message>
-    <message>
-        <source>Delete attribute</source>
-        <translation type="obsolete">刪除屬性</translation>
-    </message>
-    <message>
-        <source>Ctrl+N</source>
-        <translation type="obsolete">Ctrl+N</translation>
-    </message>
-    <message>
-        <source>New attribute</source>
-        <translation type="obsolete">新屬性</translation>
-    </message>
-    <message>
-        <source>Ctrl+S</source>
-        <translation type="obsolete">Ctrl+S</translation>
-    </message>
-    <message>
-        <source>Invert selection</source>
-        <translation type="obsolete">反向選擇</translation>
-    </message>
-    <message>
-        <source>Ctrl+T</source>
-        <translation type="obsolete">Ctrl+T</translation>
-    </message>
-    <message>
-        <source>Move selected to top</source>
-        <translation type="obsolete">將選取的記錄移動到頂端</translation>
-    </message>
-    <message>
-        <source>Remove selection</source>
-        <translation type="obsolete">取消選擇</translation>
-    </message>
-    <message>
-        <source>Copy selected rows to clipboard (Ctrl+C)</source>
-        <translation type="obsolete">將選取的列複製到剪貼簿 (Ctrl+C)</translation>
-    </message>
-    <message>
-        <source>Copies the selected rows to the clipboard</source>
-        <translation type="obsolete">將選取的列複製到剪貼簿</translation>
-    </message>
-    <message>
-        <source>Ctrl+C</source>
-        <translation type="obsolete">Ctrl+C</translation>
-    </message>
-    <message>
-        <source>Stop editin&amp;g</source>
-        <translation type="obsolete">結束編輯 (&amp;g)</translation>
-    </message>
-    <message>
-        <source>Alt+G</source>
-        <translation type="obsolete">Alt+G</translation>
-    </message>
-    <message>
-        <source>Search for:</source>
-        <translation type="obsolete">尋找:</translation>
-    </message>
-    <message>
-        <source>in</source>
-        <translation type="obsolete">在欄位</translation>
-    </message>
-    <message>
-        <source>Search</source>
-        <translation type="obsolete">尋找</translation>
-    </message>
-    <message>
-        <source>Adva&amp;nced...</source>
-        <translation type="obsolete">進階查詢(&amp;n)...</translation>
-    </message>
-    <message>
-        <source>Alt+N</source>
-        <translation type="obsolete">Alt+N</translation>
-    </message>
-    <message>
-        <source>&amp;Help</source>
-        <translation type="obsolete">說明(&amp;H)</translation>
-    </message>
-    <message>
-        <source>Zoom map to the selected rows</source>
-        <translation type="obsolete">縮放地圖至選取的列</translation>
-    </message>
-    <message>
-        <source>Search for</source>
-        <translation type="obsolete">搜尋關鍵字</translation>
-    </message>
-    <message>
-        <source>Zoom map to the selected rows (Ctrl-J)</source>
-        <translation type="obsolete">縮放地圖至選取的列</translation>
-    </message>
-    <message>
-        <source>Toggle editing mode</source>
-        <translation type="obsolete">切換編輯模式</translation>
-    </message>
-    <message>
-        <source>Click to toggle table editing</source>
-        <translation type="obsolete">按一下切換表格編輯</translation>
-    </message>
-</context>
-<context>
     <name>QgsAttributeTableDialog</name>
-    <message>
-        <source>Attribute table - %1</source>
-        <translation type="obsolete">屬性工作表 - %1</translation>
-    </message>
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="522"/>
         <source>Search string parsing error</source>
@@ -9948,28 +6395,10 @@ p, li { white-space: pre-wrap; }
         <source>Error during search</source>
         <translation>尋找時發生錯誤</translation>
     </message>
-    <message numerus="yes">
-        <source>Found %d matching features.</source>
-        <translation type="obsolete">
-            <numerusform>找到%n個符合的圖徵。</numerusform>
-        </translation>
-    </message>
-    <message>
-        <source>No matching features found.</source>
-        <translation type="obsolete">未找到符合的圖徵。</translation>
-    </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="14"/>
         <source>Attribute Table</source>
         <translation>屬性工作表</translation>
-    </message>
-    <message>
-        <source>Remove selection</source>
-        <translation type="obsolete">取消選擇</translation>
-    </message>
-    <message>
-        <source>Move selected to top</source>
-        <translation type="obsolete">將選取的記錄移動到頂端</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="122"/>
@@ -9992,10 +6421,6 @@ p, li { white-space: pre-wrap; }
         <translation>將選取的列複製到剪貼簿 (Ctrl+C)</translation>
     </message>
     <message>
-        <source>Copies the selected rows to the clipboard</source>
-        <translation type="obsolete">將選取的列複製到剪貼簿</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="171"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
@@ -10006,10 +6431,6 @@ p, li { white-space: pre-wrap; }
         <translation>依據選取的列縮放地圖 (Ctrl-J)</translation>
     </message>
     <message>
-        <source>Zoom map to the selected rows</source>
-        <translation type="obsolete">依據選取的列縮放地圖</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="197"/>
         <source>Ctrl+J</source>
         <translation></translation>
@@ -10018,10 +6439,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsattributetabledialog.ui" line="204"/>
         <source>Toggle editing mode</source>
         <translation>切換編輯模式</translation>
-    </message>
-    <message>
-        <source>Click to toggle table editing</source>
-        <translation type="obsolete">單擊切換工作表編輯狀況</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="310"/>
@@ -10150,139 +6567,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsattributetabledialog.ui" line="290"/>
         <source>Open field calculator</source>
         <translation type="unfinished">開啟欄位計算</translation>
-    </message>
-</context>
-<context>
-    <name>QgsAttributeTableDisplay</name>
-    <message>
-        <source>select</source>
-        <translation type="obsolete">選擇</translation>
-    </message>
-    <message>
-        <source>select and bring to top</source>
-        <translation type="obsolete">選擇並置於頂端</translation>
-    </message>
-    <message>
-        <source>show only matching</source>
-        <translation type="obsolete">只顯示符合的記錄</translation>
-    </message>
-    <message>
-        <source>Search string parsing error</source>
-        <translation type="obsolete">尋找字串解析錯誤</translation>
-    </message>
-    <message>
-        <source>Search results</source>
-        <translation type="obsolete">尋找結果</translation>
-    </message>
-    <message>
-        <source>You&apos;ve supplied an empty search string.</source>
-        <translation type="obsolete">您輸入空的尋找字串。</translation>
-    </message>
-    <message>
-        <source>Error during search</source>
-        <translation type="obsolete">尋找時發生錯誤</translation>
-    </message>
-    <message>
-        <source>No matching features found.</source>
-        <translation type="obsolete">未找到符合的圖徵。</translation>
-    </message>
-    <message>
-        <source>Stop editing</source>
-        <translation type="obsolete">結束編輯</translation>
-    </message>
-    <message>
-        <source>Do you want to save the changes?</source>
-        <translation type="obsolete">您是否想儲存更改?</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">錯誤</translation>
-    </message>
-    <message>
-        <source>Could not commit changes</source>
-        <translation type="obsolete">無法提交更改</translation>
-    </message>
-    <message>
-        <source>Attribute table - </source>
-        <translation type="obsolete">屬性工作表-</translation>
-    </message>
-    <message>
-        <source>QGIS</source>
-        <translation type="obsolete">QGIS</translation>
-    </message>
-    <message>
-        <source>File</source>
-        <translation type="obsolete">檔案</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">關閉</translation>
-    </message>
-    <message>
-        <source>Edit</source>
-        <translation type="obsolete">編輯</translation>
-    </message>
-    <message>
-        <source>&amp;Undo</source>
-        <translation type="obsolete">復原(&amp;U)</translation>
-    </message>
-    <message>
-        <source>Ctrl+X</source>
-        <translation type="obsolete">Ctrl+X</translation>
-    </message>
-    <message>
-        <source>&amp;Copy</source>
-        <translation type="obsolete">複製(&amp;C)</translation>
-    </message>
-    <message>
-        <source>Ctrl+C</source>
-        <translation type="obsolete">Ctrl+C</translation>
-    </message>
-    <message>
-        <source>&amp;Paste</source>
-        <translation type="obsolete">貼上(&amp;P)</translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation type="obsolete">刪除</translation>
-    </message>
-    <message>
-        <source>Layer</source>
-        <translation type="obsolete">圖層</translation>
-    </message>
-    <message>
-        <source>Zoom to Selection</source>
-        <translation type="obsolete">縮放至選取大小</translation>
-    </message>
-    <message>
-        <source>Toggle Editing</source>
-        <translation type="obsolete">切換編輯</translation>
-    </message>
-    <message>
-        <source>Table</source>
-        <translation type="obsolete">表格</translation>
-    </message>
-    <message>
-        <source>Move to Top</source>
-        <translation type="obsolete">移至頂端</translation>
-    </message>
-    <message>
-        <source>Invert</source>
-        <translation type="obsolete">反向選取</translation>
-    </message>
-    <message>
-        <source>Found %n matching feature(s).</source>
-        <comment>search results</comment>
-        <translation type="obsolete">
-        
-        </translation>
-    </message>
-</context>
-<context>
-    <name>QgsAttributeTableMemoryModel</name>
-    <message>
-        <source>Attribute changed</source>
-        <translation type="obsolete">屬性已更改</translation>
     </message>
 </context>
 <context>
@@ -10529,22 +6813,6 @@ Error was:%2</source>
         <translation>確實要刪除?</translation>
     </message>
     <message>
-        <source>&amp;Yes</source>
-        <translation type="obsolete">是(&amp;Y)</translation>
-    </message>
-    <message>
-        <source>&amp;No</source>
-        <translation type="obsolete">否(&amp;N)</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to delete the </source>
-        <translation type="obsolete">您確定要刪除</translation>
-    </message>
-    <message>
-        <source> bookmark?</source>
-        <translation type="obsolete">該書籤?</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="173"/>
         <source>Error deleting bookmark</source>
         <translation type="unfinished"></translation>
@@ -10597,34 +6865,6 @@ Error was:%2</source>
         <location filename="../src/ui/qgsbookmarksbase.ui" line="44"/>
         <source>Id</source>
         <translation>Id</translation>
-    </message>
-    <message>
-        <source>Zoom To</source>
-        <translation type="obsolete">縮放</translation>
-    </message>
-    <message>
-        <source>Zoom to the currently selected bookmark</source>
-        <translation type="obsolete">縮放到目前選擇的書籤</translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation type="obsolete">刪除</translation>
-    </message>
-    <message>
-        <source>Delete the currently selected bookmark</source>
-        <translation type="obsolete">刪除目前選擇的書籤</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">關閉</translation>
-    </message>
-    <message>
-        <source>Close the dialog</source>
-        <translation type="obsolete">關閉對話方塊</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">說明</translation>
     </message>
 </context>
 <context>
@@ -10687,115 +6927,16 @@ Error was:%2</source>
     </message>
 </context>
 <context>
-    <name>QgsCommunityRegPluginGuiBase</name>
-    <message>
-        <source>QGIS Plugin QGIS Community Registration Plugin</source>
-        <translation type="obsolete">QGIS Community註冊附加元件</translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">確定(&amp;O)</translation>
-    </message>
-    <message>
-        <source>Alt+O</source>
-        <translation type="obsolete">Alt+O</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">取消(&amp;C)</translation>
-    </message>
-    <message>
-        <source>Alt+C</source>
-        <translation type="obsolete">Alt+C</translation>
-    </message>
-    <message>
-        <source>qgis.community.org</source>
-        <translation type="obsolete">qgis.community.org</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;This plugin will register you on the community.qgis.org users map.&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;該附加元件會將您註冊到community.qgis.org的用戶地圖上。&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</translation>
-    </message>
-    <message>
-        <source>Home URL:</source>
-        <translation type="obsolete">首頁地址:</translation>
-    </message>
-    <message>
-        <source>Email:</source>
-        <translation type="obsolete">Email:</translation>
-    </message>
-    <message>
-        <source>Place Description:</source>
-        <translation type="obsolete">位置描述:</translation>
-    </message>
-    <message>
-        <source>Name:</source>
-        <translation type="obsolete">名稱:</translation>
-    </message>
-    <message>
-        <source>Longitude (dec. degrees):</source>
-        <translation type="obsolete">經度(十進位度):</translation>
-    </message>
-    <message>
-        <source>Country:</source>
-        <translation type="obsolete">國家:</translation>
-    </message>
-    <message>
-        <source>Image URL (50x50):</source>
-        <translation type="obsolete">圖片位址(50x50):</translation>
-    </message>
-    <message>
-        <source>Latitude (dec. degrees):</source>
-        <translation type="obsolete">緯度(十進位度):</translation>
-    </message>
-    <message>
-        <source>Get From Map</source>
-        <translation type="obsolete">從地圖獲得</translation>
-    </message>
-</context>
-<context>
     <name>QgsComposer</name>
-    <message>
-        <source>Choose a filename to save the map image as</source>
-        <translation type="obsolete">選擇檔案名來儲存地圖影像</translation>
-    </message>
-    <message>
-        <source>Choose a filename to save the map as</source>
-        <translation type="obsolete">選擇檔案名來儲存地圖</translation>
-    </message>
-    <message>
-        <source> for read/write</source>
-        <translation type="obsolete">讀/寫</translation>
-    </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="579"/>
         <source>Big image</source>
         <translation type="unfinished">大型影像</translation>
     </message>
     <message>
-        <source>To create image </source>
-        <translation type="obsolete">建立影像</translation>
-    </message>
-    <message>
-        <source>QGIS - print composer</source>
-        <translation type="obsolete">QGIS - 出圖設計</translation>
-    </message>
-    <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="212"/>
         <source>Map 1</source>
         <translation type="unfinished">地圖 1</translation>
-    </message>
-    <message>
-        <source>format</source>
-        <translation type="obsolete">格式</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="708"/>
@@ -10814,62 +6955,6 @@ Error was:%2</source>
         <translation>SVG格式</translation>
     </message>
     <message>
-        <source>Move Content</source>
-        <translation type="obsolete">移動項目</translation>
-    </message>
-    <message>
-        <source>Move item content</source>
-        <translation type="obsolete">移動項目內容</translation>
-    </message>
-    <message>
-        <source>&amp;Group</source>
-        <translation type="obsolete">群組(&amp;G)</translation>
-    </message>
-    <message>
-        <source>Group items</source>
-        <translation type="obsolete">群組項目</translation>
-    </message>
-    <message>
-        <source>&amp;Ungroup</source>
-        <translation type="obsolete">取消群組(&amp;U)</translation>
-    </message>
-    <message>
-        <source>Ungroup items</source>
-        <translation type="obsolete">取消項目群組(&amp;U)</translation>
-    </message>
-    <message>
-        <source>Raise</source>
-        <translation type="obsolete">上移一層</translation>
-    </message>
-    <message>
-        <source>Raise selected items</source>
-        <translation type="obsolete">取選項目上移一層</translation>
-    </message>
-    <message>
-        <source>Lower</source>
-        <translation type="obsolete">下移一層</translation>
-    </message>
-    <message>
-        <source>Lower selected items</source>
-        <translation type="obsolete">取選項目下移一層</translation>
-    </message>
-    <message>
-        <source>Bring to Front</source>
-        <translation type="obsolete">移至最上層</translation>
-    </message>
-    <message>
-        <source>Move selected items to top</source>
-        <translation type="obsolete">選取項目移至最上層</translation>
-    </message>
-    <message>
-        <source>Send to Back</source>
-        <translation type="obsolete">移至最下層</translation>
-    </message>
-    <message>
-        <source>Move selected items to bottom</source>
-        <translation type="obsolete">選取項目移至最下層</translation>
-    </message>
-    <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="127"/>
         <source>QGIS</source>
         <translation>QGIS</translation>
@@ -10878,42 +6963,6 @@ Error was:%2</source>
         <location filename="../src/app/composer/qgscomposer.cpp" line="132"/>
         <source>File</source>
         <translation>檔案</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">關閉</translation>
-    </message>
-    <message>
-        <source>Edit</source>
-        <translation type="obsolete">編輯</translation>
-    </message>
-    <message>
-        <source>&amp;Undo</source>
-        <translation type="obsolete">復原(&amp;U)</translation>
-    </message>
-    <message>
-        <source>Cu&amp;t</source>
-        <translation type="obsolete">剪下(&amp;u)</translation>
-    </message>
-    <message>
-        <source>Ctrl+X</source>
-        <translation type="obsolete">Ctrl+X</translation>
-    </message>
-    <message>
-        <source>&amp;Copy</source>
-        <translation type="obsolete">複製(&amp;C)</translation>
-    </message>
-    <message>
-        <source>Ctrl+C</source>
-        <translation type="obsolete">Ctrl+C</translation>
-    </message>
-    <message>
-        <source>&amp;Paste</source>
-        <translation type="obsolete">貼上(&amp;P)</translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation type="obsolete">刪除</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="145"/>
@@ -11059,10 +7108,6 @@ Error was:%2</source>
         <translation type="unfinished">箭頭顏色...</translation>
     </message>
     <message>
-        <source>Outline width </source>
-        <translation type="obsolete">線寬 </translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="45"/>
         <source>Line width </source>
         <translation type="unfinished">線寬 </translation>
@@ -11112,10 +7157,6 @@ Error was:%2</source>
 <context>
     <name>QgsComposerBase</name>
     <message>
-        <source>Map Composer</source>
-        <translation type="obsolete">地圖設計器</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="67"/>
         <source>General</source>
         <translation>一般</translation>
@@ -11131,53 +7172,9 @@ Error was:%2</source>
         <translation type="unfinished">項目內容</translation>
     </message>
     <message>
-        <source>Toolbar_2</source>
-        <translation type="obsolete">工具條_2</translation>
-    </message>
-    <message>
-        <source>Toolbar</source>
-        <translation type="obsolete">工具條</translation>
-    </message>
-    <message>
-        <source>Tools</source>
-        <translation type="obsolete">工具</translation>
-    </message>
-    <message>
-        <source>Open Template</source>
-        <translation type="obsolete">開啟範本</translation>
-    </message>
-    <message>
-        <source>&amp;Open Template ...</source>
-        <translation type="obsolete">開啟範本(&amp;O)...</translation>
-    </message>
-    <message>
-        <source>Ctrl+O</source>
-        <translation type="obsolete">Ctrl+O</translation>
-    </message>
-    <message>
-        <source>Save Template As</source>
-        <translation type="obsolete">範本另存為</translation>
-    </message>
-    <message>
-        <source>Save Template &amp;As...</source>
-        <translation type="obsolete">範本另存為(&amp;A)...</translation>
-    </message>
-    <message>
-        <source>Print</source>
-        <translation type="obsolete">列印</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="187"/>
         <source>&amp;Print...</source>
         <translation>列印(&amp;P)...</translation>
-    </message>
-    <message>
-        <source>Ctrl+P</source>
-        <translation type="obsolete">Ctrl+P</translation>
-    </message>
-    <message>
-        <source>Action</source>
-        <translation type="obsolete">動作</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="226"/>
@@ -11200,14 +7197,6 @@ Error was:%2</source>
         <translation type="unfinished">選擇/移動項目</translation>
     </message>
     <message>
-        <source>Export as image</source>
-        <translation type="obsolete">輸出為影像</translation>
-    </message>
-    <message>
-        <source>Export as SVG</source>
-        <translation type="obsolete">輸出為SVG</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="301"/>
         <source>Add new scalebar</source>
         <translation>新增新的比例尺</translation>
@@ -11218,25 +7207,9 @@ Error was:%2</source>
         <translation>重新整理檢視</translation>
     </message>
     <message>
-        <source>Zoom to full extent</source>
-        <translation type="obsolete">全幅顯示</translation>
-    </message>
-    <message>
-        <source>Zoom in</source>
-        <translation type="obsolete">放大</translation>
-    </message>
-    <message>
-        <source>Zoom out</source>
-        <translation type="obsolete">縮小</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="17"/>
         <source>MainWindow</source>
         <translation>主要視窗</translation>
-    </message>
-    <message>
-        <source>Zoom All</source>
-        <translation type="obsolete">全圖顯示</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="205"/>
@@ -11252,14 +7225,6 @@ Error was:%2</source>
         <location filename="../src/ui/qgscomposerbase.ui" line="322"/>
         <source>Add Image</source>
         <translation>新增影像</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">關閉</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">說明</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="196"/>
@@ -11491,41 +7456,9 @@ Error was:%2</source>
         <translation>表單</translation>
     </message>
     <message>
-        <source>Composer item properties</source>
-        <translation type="obsolete">項目屬性設計</translation>
-    </message>
-    <message>
-        <source>Color:</source>
-        <translation type="obsolete">顏色:</translation>
-    </message>
-    <message>
-        <source>Frame...</source>
-        <translation type="obsolete">框線顏色...</translation>
-    </message>
-    <message>
-        <source>Background...</source>
-        <translation type="obsolete">背景...</translation>
-    </message>
-    <message>
-        <source>Opacity:</source>
-        <translation type="obsolete">透明度:</translation>
-    </message>
-    <message>
-        <source>Outline width: </source>
-        <translation type="obsolete">框線寬度:</translation>
-    </message>
-    <message>
-        <source>Frame</source>
-        <translation type="obsolete">顯示框線</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="73"/>
         <source>Position...</source>
         <translation>位置...</translation>
-    </message>
-    <message>
-        <source>Color</source>
-        <translation type="obsolete">顏色</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="34"/>
@@ -11554,21 +7487,6 @@ Error was:%2</source>
     </message>
 </context>
 <context>
-    <name>QgsComposerLabelBase</name>
-    <message>
-        <source>Label Options</source>
-        <translation type="obsolete">標籤選項</translation>
-    </message>
-    <message>
-        <source>Font</source>
-        <translation type="obsolete">字體</translation>
-    </message>
-    <message>
-        <source>Box</source>
-        <translation type="obsolete">矩形框</translation>
-    </message>
-</context>
-<context>
     <name>QgsComposerLabelWidget</name>
     <message>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="31"/>
@@ -11587,10 +7505,6 @@ Error was:%2</source>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="57"/>
         <source>Font</source>
         <translation>字體</translation>
-    </message>
-    <message>
-        <source>Margin (mm):</source>
-        <translation type="obsolete">邊界間隙(公釐):</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="71"/>
@@ -11624,10 +7538,6 @@ Error was:%2</source>
         <translation>圖例項目屬性</translation>
     </message>
     <message>
-        <source>Item text:</source>
-        <translation type="obsolete">項目文字:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerlegenditemdialogbase.ui" line="19"/>
         <source>Item text</source>
         <translation>項目文字</translation>
@@ -11654,93 +7564,9 @@ Error was:%2</source>
         <translation>一般</translation>
     </message>
     <message>
-        <source>Title:</source>
-        <translation type="obsolete">標題:</translation>
-    </message>
-    <message>
-        <source>Font:</source>
-        <translation type="obsolete">字體:</translation>
-    </message>
-    <message>
-        <source>Title...</source>
-        <translation type="obsolete">標題...</translation>
-    </message>
-    <message>
-        <source>Layer...</source>
-        <translation type="obsolete">圖層...</translation>
-    </message>
-    <message>
-        <source>Item...</source>
-        <translation type="obsolete">項目...</translation>
-    </message>
-    <message>
-        <source>Symbol width: </source>
-        <translation type="obsolete">符號寬度:</translation>
-    </message>
-    <message>
-        <source>Symbol height:</source>
-        <translation type="obsolete">符號高度:</translation>
-    </message>
-    <message>
-        <source>Layer space: </source>
-        <translation type="obsolete">圖層間距: </translation>
-    </message>
-    <message>
-        <source>Symbol space:</source>
-        <translation type="obsolete">符號間距:</translation>
-    </message>
-    <message>
-        <source>Icon label space:</source>
-        <translation type="obsolete">圖示標籤間距::</translation>
-    </message>
-    <message>
-        <source>Box space:</source>
-        <translation type="obsolete">矩形間距:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="184"/>
         <source>Legend items</source>
         <translation>圖例項目</translation>
-    </message>
-    <message>
-        <source>down</source>
-        <translation type="obsolete">下移</translation>
-    </message>
-    <message>
-        <source>up</source>
-        <translation type="obsolete">上移</translation>
-    </message>
-    <message>
-        <source>remove</source>
-        <translation type="obsolete">移除</translation>
-    </message>
-    <message>
-        <source>edit...</source>
-        <translation type="obsolete">編輯...</translation>
-    </message>
-    <message>
-        <source>update</source>
-        <translation type="obsolete">更新</translation>
-    </message>
-    <message>
-        <source>update all</source>
-        <translation type="obsolete">全更新</translation>
-    </message>
-    <message>
-        <source>Title</source>
-        <translation type="obsolete">標題</translation>
-    </message>
-    <message>
-        <source>Font</source>
-        <translation type="obsolete">字體</translation>
-    </message>
-    <message>
-        <source>Remove</source>
-        <translation type="obsolete">移除</translation>
-    </message>
-    <message>
-        <source>Edit...</source>
-        <translation type="obsolete">編輯...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="231"/>
@@ -11887,98 +7713,15 @@ Error was:%2</source>
 <context>
     <name>QgsComposerMap</name>
     <message>
-        <source>Map %d</source>
-        <translation type="obsolete">地圖 %d</translation>
-    </message>
-    <message>
-        <source>Extent (calculate scale)</source>
-        <translation type="obsolete">範圍(計算比例)</translation>
-    </message>
-    <message>
-        <source>Scale (calculate extent)</source>
-        <translation type="obsolete">比例(計算範圍)</translation>
-    </message>
-    <message>
         <location filename="../src/core/composer/qgscomposermap.cpp" line="69"/>
         <location filename="../src/core/composer/qgscomposermap.cpp" line="90"/>
         <source>Map %1</source>
         <translation>地圖 %1</translation>
     </message>
     <message>
-        <source>Render</source>
-        <translation type="obsolete">繪圖</translation>
-    </message>
-    <message>
-        <source>Map</source>
-        <translation type="obsolete">地圖</translation>
-    </message>
-    <message>
         <location filename="../src/core/composer/qgscomposermap.cpp" line="230"/>
         <source>Map will be printed here</source>
         <translation>地圖會在此處印出</translation>
-    </message>
-</context>
-<context>
-    <name>QgsComposerMapBase</name>
-    <message>
-        <source>Map options</source>
-        <translation type="obsolete">地圖選項</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Map&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;b&gt;地圖&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>Set</source>
-        <translation type="obsolete">設定</translation>
-    </message>
-    <message>
-        <source>Width</source>
-        <translation type="obsolete">寬度</translation>
-    </message>
-    <message>
-        <source>Height</source>
-        <translation type="obsolete">高度</translation>
-    </message>
-    <message>
-        <source>Scale</source>
-        <translation type="obsolete">比例</translation>
-    </message>
-    <message>
-        <source>1 :</source>
-        <translation type="obsolete">1 :</translation>
-    </message>
-    <message>
-        <source>Set Extent</source>
-        <translation type="obsolete">設定範圍</translation>
-    </message>
-    <message>
-        <source>Set map extent to current extent in QGIS map canvas</source>
-        <translation type="obsolete">將地圖範圍設定為QGIS目前的地圖檢視範圍</translation>
-    </message>
-    <message>
-        <source>Line width scale</source>
-        <translation type="obsolete">線寬比例</translation>
-    </message>
-    <message>
-        <source>Width of one unit in millimeters</source>
-        <translation type="obsolete">一個單位的寬度(毫公尺)</translation>
-    </message>
-    <message>
-        <source>Symbol scale</source>
-        <translation type="obsolete">符號比例</translation>
-    </message>
-    <message>
-        <source>Font size scale</source>
-        <translation type="obsolete">字體大小的比例</translation>
-    </message>
-    <message>
-        <source>Frame</source>
-        <translation type="obsolete">框線</translation>
-    </message>
-    <message>
-        <source>Preview</source>
-        <translation type="obsolete">預覽</translation>
     </message>
 </context>
 <context>
@@ -12071,10 +7814,6 @@ Error was:%2</source>
         <translation>地圖選項</translation>
     </message>
     <message>
-        <source>&lt;b&gt;Map&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;b&gt;地圖&lt;/b&gt;</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="79"/>
         <source>Width</source>
         <translation>寬度</translation>
@@ -12085,33 +7824,9 @@ Error was:%2</source>
         <translation>高度</translation>
     </message>
     <message>
-        <source>Scale:</source>
-        <translation type="obsolete">比例:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="215"/>
         <source>Map extent</source>
         <translation>地圖範圍</translation>
-    </message>
-    <message>
-        <source>X min:</source>
-        <translation type="obsolete">X最小:</translation>
-    </message>
-    <message>
-        <source>Y min:</source>
-        <translation type="obsolete">Y最小:</translation>
-    </message>
-    <message>
-        <source>X max:</source>
-        <translation type="obsolete">X最大:</translation>
-    </message>
-    <message>
-        <source>Y max:</source>
-        <translation type="obsolete">Y最大:</translation>
-    </message>
-    <message>
-        <source>set to map canvas extent</source>
-        <translation type="obsolete">設定為地圖範圍</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="47"/>
@@ -12124,10 +7839,6 @@ Error was:%2</source>
         <translation>更新預覽</translation>
     </message>
     <message>
-        <source>Keep layer list</source>
-        <translation type="obsolete">保留圖層清單</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="41"/>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="73"/>
         <source>Map</source>
@@ -12137,10 +7848,6 @@ Error was:%2</source>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="117"/>
         <source>Scale</source>
         <translation type="unfinished">比例</translation>
-    </message>
-    <message>
-        <source>Rotation:</source>
-        <translation type="obsolete">旋轉:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="224"/>
@@ -12171,10 +7878,6 @@ Error was:%2</source>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="172"/>
         <source>Lock layers for map item</source>
         <translation type="unfinished">為地圖項目鎖定圖層</translation>
-    </message>
-    <message>
-        <source>Line width:</source>
-        <translation type="obsolete">線寬:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="429"/>
@@ -12268,48 +7971,6 @@ Error was:%2</source>
     </message>
 </context>
 <context>
-    <name>QgsComposerPicture</name>
-    <message>
-        <source>Warning</source>
-        <translation type="obsolete">警告</translation>
-    </message>
-</context>
-<context>
-    <name>QgsComposerPictureBase</name>
-    <message>
-        <source>Picture Options</source>
-        <translation type="obsolete">圖片選項</translation>
-    </message>
-    <message>
-        <source>Picture</source>
-        <translation type="obsolete">圖片</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>Frame</source>
-        <translation type="obsolete">框線</translation>
-    </message>
-    <message>
-        <source>Angle</source>
-        <translation type="obsolete">角度</translation>
-    </message>
-    <message>
-        <source>Width</source>
-        <translation type="obsolete">寬度</translation>
-    </message>
-    <message>
-        <source>Height</source>
-        <translation type="obsolete">高度</translation>
-    </message>
-    <message>
-        <source>Browse</source>
-        <translation type="obsolete">瀏覽</translation>
-    </message>
-</context>
-<context>
     <name>QgsComposerPictureWidget</name>
     <message>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="69"/>
@@ -12344,22 +8005,6 @@ Error was:%2</source>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="20"/>
         <source>Picture Options</source>
         <translation>圖片選項</translation>
-    </message>
-    <message>
-        <source>Browse...</source>
-        <translation type="obsolete">瀏覽...</translation>
-    </message>
-    <message>
-        <source>Width:</source>
-        <translation type="obsolete">寬度:</translation>
-    </message>
-    <message>
-        <source>Height:</source>
-        <translation type="obsolete">高度:</translation>
-    </message>
-    <message>
-        <source>Rotation:</source>
-        <translation type="obsolete">旋轉:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="53"/>
@@ -12481,50 +8126,6 @@ Error was:%2</source>
         <translation>比例尺選項</translation>
     </message>
     <message>
-        <source>Segment size (map units):</source>
-        <translation type="obsolete">分段大小(地圖單位):</translation>
-    </message>
-    <message>
-        <source>Map units per bar unit:</source>
-        <translation type="obsolete">地圖/比例尺單位:</translation>
-    </message>
-    <message>
-        <source>Number of segments:</source>
-        <translation type="obsolete">線段數目:</translation>
-    </message>
-    <message>
-        <source>Segments left:</source>
-        <translation type="obsolete">左邊分段數:</translation>
-    </message>
-    <message>
-        <source>Style:</source>
-        <translation type="obsolete">樣式:</translation>
-    </message>
-    <message>
-        <source>Map:</source>
-        <translation type="obsolete">地圖:</translation>
-    </message>
-    <message>
-        <source>Height (mm):</source>
-        <translation type="obsolete">高(mm):</translation>
-    </message>
-    <message>
-        <source>Line width:</source>
-        <translation type="obsolete">線寬:</translation>
-    </message>
-    <message>
-        <source>Label space:</source>
-        <translation type="obsolete">標籤間距::</translation>
-    </message>
-    <message>
-        <source>Box space:</source>
-        <translation type="obsolete">矩形間距:</translation>
-    </message>
-    <message>
-        <source>Unit label:</source>
-        <translation type="obsolete">單位標籤:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="226"/>
         <source>Font...</source>
         <translation>字體...</translation>
@@ -12543,10 +8144,6 @@ Error was:%2</source>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="70"/>
         <source>Map units per bar unit</source>
         <translation type="unfinished">每單位比例尺/地圖單位</translation>
-    </message>
-    <message>
-        <source>Number of segments</source>
-        <translation type="obsolete">片段的數目</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="104"/>
@@ -12605,41 +8202,6 @@ Error was:%2</source>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="194"/>
         <source>Box space </source>
         <translation type="unfinished">矩形間距 </translation>
-    </message>
-</context>
-<context>
-    <name>QgsComposerScalebarBase</name>
-    <message>
-        <source>Barscale Options</source>
-        <translation type="obsolete">比例尺選項</translation>
-    </message>
-    <message>
-        <source>Segment size</source>
-        <translation type="obsolete">片段的大小</translation>
-    </message>
-    <message>
-        <source>Number of segments</source>
-        <translation type="obsolete">片段的數目</translation>
-    </message>
-    <message>
-        <source>Map units per scalebar unit</source>
-        <translation type="obsolete">每一比例尺單位代表的地圖單位</translation>
-    </message>
-    <message>
-        <source>Unit label</source>
-        <translation type="obsolete">單位標籤</translation>
-    </message>
-    <message>
-        <source>Map</source>
-        <translation type="obsolete">地圖</translation>
-    </message>
-    <message>
-        <source>Font</source>
-        <translation type="obsolete">字體</translation>
-    </message>
-    <message>
-        <source>Line width</source>
-        <translation type="obsolete">線的寬度</translation>
     </message>
 </context>
 <context>
@@ -12815,25 +8377,6 @@ Error was:%2</source>
     </message>
 </context>
 <context>
-    <name>QgsComposerVectorLegend</name>
-    <message>
-        <source>Layers</source>
-        <translation type="obsolete">圖層</translation>
-    </message>
-    <message>
-        <source>Group</source>
-        <translation type="obsolete">組</translation>
-    </message>
-    <message>
-        <source>Render</source>
-        <translation type="obsolete">繪圖</translation>
-    </message>
-    <message>
-        <source>Legend</source>
-        <translation type="obsolete">圖例</translation>
-    </message>
-</context>
-<context>
     <name>QgsComposerVectorLegendBase</name>
     <message>
         <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="21"/>
@@ -12861,14 +8404,6 @@ Error was:%2</source>
         <translation>矩形框</translation>
     </message>
     <message>
-        <source>Column 1</source>
-        <translation type="obsolete">行 1</translation>
-    </message>
-    <message>
-        <source>New Item</source>
-        <translation type="obsolete">新專案</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="53"/>
         <source>Preview</source>
         <translation>預覽</translation>
@@ -12887,85 +8422,6 @@ Error was:%2</source>
         <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="159"/>
         <source>ID</source>
         <translation>識別碼(ID)</translation>
-    </message>
-</context>
-<context>
-    <name>QgsComposition</name>
-    <message>
-        <source>Custom</source>
-        <translation type="obsolete">自訂</translation>
-    </message>
-    <message>
-        <source>A5 (148x210 mm)</source>
-        <translation type="obsolete">A5 (148x210 mm)</translation>
-    </message>
-    <message>
-        <source>A4 (210x297 mm)</source>
-        <translation type="obsolete">A4 (210x297 mm)</translation>
-    </message>
-    <message>
-        <source>A3 (297x420 mm)</source>
-        <translation type="obsolete">A3 (297x420 mm)</translation>
-    </message>
-    <message>
-        <source>A2 (420x594 mm)</source>
-        <translation type="obsolete">A2 (420x594 mm)</translation>
-    </message>
-    <message>
-        <source>A1 (594x841 mm)</source>
-        <translation type="obsolete">A1 (594x841 mm)</translation>
-    </message>
-    <message>
-        <source>A0 (841x1189 mm)</source>
-        <translation type="obsolete">A0 (841x1189 mm)</translation>
-    </message>
-    <message>
-        <source>B5 (176 x 250 mm)</source>
-        <translation type="obsolete">B5 (176 x 250 mm)</translation>
-    </message>
-    <message>
-        <source>B4 (250 x 353 mm)</source>
-        <translation type="obsolete">B4 (250 x 353 mm)</translation>
-    </message>
-    <message>
-        <source>B3 (353 x 500 mm)</source>
-        <translation type="obsolete">B3 (353 x 500 mm)</translation>
-    </message>
-    <message>
-        <source>B2 (500 x 707 mm)</source>
-        <translation type="obsolete">B2 (500 x 707 mm)</translation>
-    </message>
-    <message>
-        <source>B1 (707 x 1000 mm)</source>
-        <translation type="obsolete">B1 (707 x 1000 mm)</translation>
-    </message>
-    <message>
-        <source>B0 (1000 x 1414 mm)</source>
-        <translation type="obsolete">B0 (1000 x 1414 mm)</translation>
-    </message>
-    <message>
-        <source>Letter (8.5x11 inches)</source>
-        <translation type="obsolete">Letter (8.5x11 inches)</translation>
-    </message>
-    <message>
-        <source>Legal (8.5x14 inches)</source>
-        <translation type="obsolete">Legal (8.5x14 inches)</translation>
-    </message>
-    <message>
-        <source>Portrait</source>
-        <translation type="obsolete">縱向</translation>
-    </message>
-    <message>
-        <source>Landscape</source>
-        <translation type="obsolete">橫向</translation>
-    </message>
-    <message>
-        <source>Label</source>
-        <translation type="obsolete">標籤</translation>
-    </message>
-    <message>
-        <source>Warning</source>
-        <translation type="obsolete">警告</translation>
     </message>
 </context>
 <context>
@@ -13004,10 +8460,6 @@ Error was:%2</source>
         <location filename="../src/ui/qgscompositionbase.ui" line="155"/>
         <source>Orientation</source>
         <translation>方向</translation>
-    </message>
-    <message>
-        <source>Resolution (dpi)</source>
-        <translation type="obsolete">解析度(dpi)</translation>
     </message>
 </context>
 <context>
@@ -13092,10 +8544,6 @@ Error was:%2</source>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="125"/>
         <source>B0 (1000 x 1414 mm)</source>
         <translation type="unfinished">B0 (1000 x 1414 mm)</translation>
-    </message>
-    <message>
-        <source>Letter (8.5x11 inches)</source>
-        <translation type="obsolete">Letter (8.5x11 inches)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="127"/>
@@ -13194,21 +8642,9 @@ Error was:%2</source>
         <translation>組成</translation>
     </message>
     <message>
-        <source>Paper</source>
-        <translation type="obsolete">紙張</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="120"/>
         <source>Orientation</source>
         <translation>紙張方向</translation>
-    </message>
-    <message>
-        <source>Height</source>
-        <translation type="obsolete">高度</translation>
-    </message>
-    <message>
-        <source>Width</source>
-        <translation type="obsolete">寬度</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="88"/>
@@ -13221,10 +8657,6 @@ Error was:%2</source>
         <translation>大小</translation>
     </message>
     <message>
-        <source>Print quality (dpi)</source>
-        <translation type="obsolete">列印品質(dpi)</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="195"/>
         <source>Snapping</source>
         <translation>自動貼齊</translation>
@@ -13233,30 +8665,6 @@ Error was:%2</source>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="201"/>
         <source>Snap to grid</source>
         <translation>貼齊格線</translation>
-    </message>
-    <message>
-        <source>Grid resolution:</source>
-        <translation type="obsolete">格線解析度:</translation>
-    </message>
-    <message>
-        <source>Offset x:</source>
-        <translation type="obsolete">x偏移量:</translation>
-    </message>
-    <message>
-        <source>Offset y:</source>
-        <translation type="obsolete">y偏移量:</translation>
-    </message>
-    <message>
-        <source>Pen width:</source>
-        <translation type="obsolete">筆寬:</translation>
-    </message>
-    <message>
-        <source>Grid color:</source>
-        <translation type="obsolete">格線顏色:</translation>
-    </message>
-    <message>
-        <source>Grid style:</source>
-        <translation type="obsolete">格線樣式:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="146"/>
@@ -13446,150 +8854,11 @@ Error was:%2</source>
     </message>
 </context>
 <context>
-    <name>QgsConnectionDialog</name>
-    <message>
-        <source>Test connection</source>
-        <translation type="obsolete">測試連接</translation>
-    </message>
-    <message>
-        <source>Connection to </source>
-        <translation type="obsolete">連接到</translation>
-    </message>
-    <message>
-        <source> was successfull</source>
-        <translation type="obsolete">成功</translation>
-    </message>
-    <message>
-        <source>Connection failed - Check settings and try again </source>
-        <translation type="obsolete">連接失敗 - 檢查設定並重試</translation>
-    </message>
-    <message>
-        <source>General Interface Help:
-
-</source>
-        <translation type="obsolete">通用介面説明:</translation>
-    </message>
-</context>
-<context>
-    <name>QgsConnectionDialogBase</name>
-    <message>
-        <source>Create a New PostGIS connection</source>
-        <translation type="obsolete">建立新的PostGIS連線</translation>
-    </message>
-    <message>
-        <source>Connection Information</source>
-        <translation type="obsolete">連接資訊</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">名稱</translation>
-    </message>
-    <message>
-        <source>Host</source>
-        <translation type="obsolete">主機</translation>
-    </message>
-    <message>
-        <source>Database</source>
-        <translation type="obsolete">資料庫</translation>
-    </message>
-    <message>
-        <source>Port</source>
-        <translation type="obsolete">埠</translation>
-    </message>
-    <message>
-        <source>Username</source>
-        <translation type="obsolete">使用者名稱</translation>
-    </message>
-    <message>
-        <source>Password</source>
-        <translation type="obsolete">密碼</translation>
-    </message>
-    <message>
-        <source>Name of the new connection</source>
-        <translation type="obsolete">新連接的名稱</translation>
-    </message>
-    <message>
-        <source>5432</source>
-        <translation type="obsolete">5432</translation>
-    </message>
-    <message>
-        <source>Save Password</source>
-        <translation type="obsolete">儲存密碼</translation>
-    </message>
-    <message>
-        <source>Test Connect</source>
-        <translation type="obsolete">測試連接</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">說明</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">確定</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">取消</translation>
-    </message>
-</context>
-<context>
-    <name>QgsContColDialogBase</name>
-    <message>
-        <source>Continuous color</source>
-        <translation type="obsolete">連續色</translation>
-    </message>
-    <message>
-        <source>Classification Field:</source>
-        <translation type="obsolete">分類欄位:</translation>
-    </message>
-    <message>
-        <source>Minimum Value:</source>
-        <translation type="obsolete">最小值:</translation>
-    </message>
-    <message>
-        <source>Outline Width:</source>
-        <translation type="obsolete">框線寬度:</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>Maximum Value:</source>
-        <translation type="obsolete">最大值:</translation>
-    </message>
-</context>
-<context>
     <name>QgsContinuousColorDialogBase</name>
     <message>
         <location filename="../src/ui/qgscontinuouscolordialogbase.ui" line="14"/>
         <source>Continuous color</source>
         <translation>連續色</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>Maximum Value:</source>
-        <translation type="obsolete">最大值:</translation>
-    </message>
-    <message>
-        <source>Outline Width:</source>
-        <translation type="obsolete">框線寬度:</translation>
-    </message>
-    <message>
-        <source>Minimum Value:</source>
-        <translation type="obsolete">最小值:</translation>
-    </message>
-    <message>
-        <source>Classification Field:</source>
-        <translation type="obsolete">分類欄位:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscontinuouscolordialogbase.ui" line="143"/>
@@ -13619,18 +8888,6 @@ Error was:%2</source>
 </context>
 <context>
     <name>QgsCoordinateTransform</name>
-    <message>
-        <source>Failed</source>
-        <translation type="obsolete">失敗</translation>
-    </message>
-    <message>
-        <source>transform of</source>
-        <translation type="obsolete">轉換</translation>
-    </message>
-    <message>
-        <source>with error: </source>
-        <translation type="obsolete">錯誤:</translation>
-    </message>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="417"/>
         <source>The source spatial reference system (CRS) is not valid. </source>
@@ -13690,17 +8947,9 @@ failed with error: %3
         <translation type="unfinished">地圖裝飾(&amp;D)</translation>
     </message>
     <message>
-        <source>&amp;CopyrightLabel</source>
-        <translation type="obsolete">版權標籤 (&amp;C)</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/copyright_label/plugin.cpp" line="81"/>
         <source>Creates a copyright label that is displayed on the map canvas.</source>
         <translation>在地圖檢視上建立版權標籤。</translation>
-    </message>
-    <message>
-        <source>Copyright Label</source>
-        <translation type="obsolete">版權標籤</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/plugin.cpp" line="67"/>
@@ -13719,28 +8968,6 @@ failed with error: %3
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="14"/>
         <source>Copyright Label Plugin</source>
         <translation>版權標籤附加元件</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:helvetica&quot;&gt;
-&lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:19pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Enter your copyright label below. This plugin supports basic html markup tags for formatting the label.  For example:&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt;&amp;lt;B&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-weight:600&quot;&gt;Bold text&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/B&amp;gt;&lt;br /&gt;&amp;lt;I&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-style:italic&quot;&gt;Italics&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:helvetica&quot;&gt;
-&lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:19pt;font-weight:600&quot;&gt;描述&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;在底部顯示您的版權標籤。該附加元件支援基本的html標記來格式化標籤。例如：&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt;&amp;lt;B&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-weight:600&quot;&gt;粗體&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/B&amp;gt;&lt;br /&gt;&amp;lt;I&amp;gt; &lt;/span&gt;&lt;span style=&quot;font-family:Courier New;font-style:italic&quot;&gt;斜體&lt;/span&gt;&lt;span style=&quot;font-family:Courier New&quot;&gt; &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</translation>
-    </message>
-    <message utf8="true">
-        <source>© QGIS 2004</source>
-        <translation type="obsolete">© QGIS 2004</translation>
-    </message>
-    <message>
-        <source>Placement</source>
-        <translation type="obsolete">位置</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="67"/>
@@ -13763,10 +8990,6 @@ failed with error: %3
         <translation>右上</translation>
     </message>
     <message>
-        <source>Orientation</source>
-        <translation type="obsolete">方位</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="101"/>
         <source>Horizontal</source>
         <translation>水準</translation>
@@ -13775,54 +8998,6 @@ failed with error: %3
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="106"/>
         <source>Vertical</source>
         <translation>垂直</translation>
-    </message>
-    <message>
-        <source>Enable Copyright Label</source>
-        <translation type="obsolete">顯示版權標籤</translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">確定(&amp;O)</translation>
-    </message>
-    <message>
-        <source>Alt+O</source>
-        <translation type="obsolete">Alt+O</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">取消(&amp;C)</translation>
-    </message>
-    <message>
-        <source>Alt+C</source>
-        <translation type="obsolete">Alt+C</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">說明</translation>
-    </message>
-    <message>
-        <source>Color</source>
-        <translation type="obsolete">顏色</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;Enter your copyright label below. This plugin supports basic html markup tags for formatting the label. For example:&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;&amp;lt;B&amp;gt; Bold text &amp;lt;/B&amp;gt; &lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400; font-style:italic;&quot;&gt;&amp;lt;I&amp;gt; Italics &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(note: &amp;amp;copy; gives a copyright symbol)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Verdana&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;說明&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;在底部顯示您的版權標籤。該附加元件支援基本的html標記來格式化標籤。例如：&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;&amp;lt;B&amp;gt; 粗體 &amp;lt;/B&amp;gt; &lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:600;&quot;&gt;&lt;span style=&quot; font-weight:400; font-style:italic;&quot;&gt;&amp;lt;I&amp;gt; 斜體 &amp;lt;/I&amp;gt;&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-style:italic;&quot;&gt;&lt;span style=&quot; font-style:normal;&quot;&gt;(注意: &amp;amp;copy; 是一個版權符號)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="25"/>
@@ -13927,26 +9102,6 @@ p, li { white-space: pre-wrap; }
         <translation>QGIS自訂投影</translation>
     </message>
     <message>
-        <source>This proj4 projection definition is not valid. Please correct before pressing save.</source>
-        <translation type="obsolete">proj4的投影定義無效。儲存前請先改正.</translation>
-    </message>
-    <message>
-        <source>This proj4 projection definition is not valid. Please give the projection a name before pressing save.</source>
-        <translation type="obsolete">該proj4投影定義無效。在按下儲存之前，請給這個投影一個名稱.</translation>
-    </message>
-    <message>
-        <source>This proj4 projection definition is not valid. Please add the parameters before pressing save.</source>
-        <translation type="obsolete">該proj4投影定義無效。在按下儲存之前，請新增參數.</translation>
-    </message>
-    <message>
-        <source>This proj4 projection definition is not valid. Please add a proj= clause before pressing save.</source>
-        <translation type="obsolete">該proj4投影定義無效。在按下儲存之前，請新增 proj= 子句.</translation>
-    </message>
-    <message>
-        <source>This proj4 ellipsoid definition is not valid. Please add a ellips= clause before pressing save.</source>
-        <translation type="obsolete">該proj4橢球定義無效。在按下儲存之前，請新增 ellips= 子句.</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="650"/>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="657"/>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="673"/>
@@ -13959,10 +9114,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="875"/>
         <source>Northing and Easthing must be in decimal form.</source>
         <translation>北向偏移和東向偏移必須是十進位形式.</translation>
-    </message>
-    <message>
-        <source>Internal Error (source projection invalid?</source>
-        <translation type="obsolete">內部錯誤 - 原始投影無效?</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="887"/>
@@ -13999,36 +9150,6 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsCustomProjectionDialogBase</name>
     <message>
-        <source>Form1</source>
-        <translation type="obsolete">表單1</translation>
-    </message>
-    <message>
-        <source>Name:</source>
-        <translation type="obsolete">名稱:</translation>
-    </message>
-    <message>
-        <source>Ellipsoid:</source>
-        <translation type="obsolete">橢球:</translation>
-    </message>
-    <message>
-        <source>Projection Family:</source>
-        <translation type="obsolete">投影類別:</translation>
-    </message>
-    <message>
-        <source>Custom Projection Definition</source>
-        <translation type="obsolete">自訂投影的定義</translation>
-    </message>
-    <message>
-        <source>Parameters:</source>
-        <translation type="obsolete">參數:</translation>
-    </message>
-    <message>
-        <source>Expected 
-Parameters:</source>
-        <translation type="obsolete">期望的 
-參數:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="69"/>
         <source>|&lt;</source>
         <translation>|&lt;</translation>
@@ -14054,29 +9175,9 @@ Parameters:</source>
         <translation>&gt;|</translation>
     </message>
     <message>
-        <source>New</source>
-        <translation type="obsolete">新增</translation>
-    </message>
-    <message>
-        <source>Save</source>
-        <translation type="obsolete">儲存</translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation type="obsolete">刪除</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">關閉</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="25"/>
         <source>Define</source>
         <translation>自訂</translation>
-    </message>
-    <message>
-        <source>You can define your own custom projection here. The definition must conform to the proj4 format for specifying a Spatial Reference System.</source>
-        <translation type="obsolete">您能夠在這裡定義自己的投影。空間參考系統的定義必須與proj4的格式一致.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="161"/>
@@ -14084,34 +9185,14 @@ Parameters:</source>
         <translation>測試</translation>
     </message>
     <message>
-        <source>Transform from WGS84 to the chosen projection</source>
-        <translation type="obsolete">將WGS84轉換為選擇的投影</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="263"/>
         <source>Calculate</source>
         <translation>計算</translation>
     </message>
     <message>
-        <source>Projected Corrdinate System</source>
-        <translation type="obsolete">投影座標系統</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="190"/>
         <source>Geographic / WGS84</source>
         <translation type="unfinished">地理座標系 / WGS84</translation>
-    </message>
-    <message>
-        <source>North:</source>
-        <translation type="obsolete">北向偏移:</translation>
-    </message>
-    <message>
-        <source>East:</source>
-        <translation type="obsolete">東向偏移:</translation>
-    </message>
-    <message>
-        <source>Use the text boxes below to test the projection definition you are creating. Enter a coordinate where both the lat/long and the projected result are known (for example by reading off a map). Then press the calculate button to see if the projection definition you are creating is accurate.</source>
-        <translation type="obsolete">用下面的文字方塊來測試您建立的投影。輸入一個座標（經度和緯度，並且投影後的結果您也知道，例如從地圖上讀取）。然後按下計算按鈕，看看您所建立的投影是否正確.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="41"/>
@@ -14195,196 +9276,6 @@ Google 900913
     </message>
 </context>
 <context>
-    <name>QgsDbSourceSelect</name>
-    <message>
-        <source>Are you sure you want to remove the </source>
-        <translation type="obsolete">您確實想刪除</translation>
-    </message>
-    <message>
-        <source> connection and all associated settings?</source>
-        <translation type="obsolete">連接和所有相關的設定?</translation>
-    </message>
-    <message>
-        <source>Confirm Delete</source>
-        <translation type="obsolete">確認刪除</translation>
-    </message>
-    <message>
-        <source>Yes</source>
-        <translation type="obsolete">是</translation>
-    </message>
-    <message>
-        <source>No</source>
-        <translation type="obsolete">否</translation>
-    </message>
-    <message>
-        <source>Select Table</source>
-        <translation type="obsolete">選擇表格</translation>
-    </message>
-    <message>
-        <source>You must select a table in order to add a Layer.</source>
-        <translation type="obsolete">為了新增圖層，您必須選擇表格.</translation>
-    </message>
-    <message>
-        <source>Password for </source>
-        <translation type="obsolete">密碼</translation>
-    </message>
-    <message>
-        <source>Please enter your password:</source>
-        <translation type="obsolete">請輸入您的密碼:</translation>
-    </message>
-    <message>
-        <source>Connection failed</source>
-        <translation type="obsolete">連接失敗</translation>
-    </message>
-    <message>
-        <source>Connection to %1 on %2 failed. Either the database is down or your settings are incorrect.%3Check your username and password and try again.%4%5</source>
-        <translation type="obsolete">連接到%1在%2上失敗。可能是資料庫當機，也可能是您的設定不正確。%3檢查您的使用者名稱和密碼，然後重試。%4%5</translation>
-    </message>
-    <message>
-        <source> using sql;
-</source>
-        <translation type="obsolete"> 使用sql;
-</translation>
-    </message>
-    <message>
-        <source>
-has failed. The database said:
-</source>
-        <translation type="obsolete">失敗。資料庫回應是:</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">類型</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">名稱</translation>
-    </message>
-    <message>
-        <source>Sql</source>
-        <translation type="obsolete">Sql</translation>
-    </message>
-    <message>
-        <source>Point layer</source>
-        <translation type="obsolete">點圖層</translation>
-    </message>
-    <message>
-        <source>Multi-point layer</source>
-        <translation type="obsolete">多點圖層</translation>
-    </message>
-    <message>
-        <source>Polygon layer</source>
-        <translation type="obsolete">多邊形圖層</translation>
-    </message>
-    <message>
-        <source>Waiting for layer type</source>
-        <translation type="obsolete">等待圖層類型</translation>
-    </message>
-    <message>
-        <source>Unknown layer type</source>
-        <translation type="obsolete">未知的圖層類型</translation>
-    </message>
-    <message>
-        <source>All</source>
-        <translation type="obsolete">所有</translation>
-    </message>
-    <message>
-        <source>Table</source>
-        <translation type="obsolete">表格</translation>
-    </message>
-    <message>
-        <source>Geometry column</source>
-        <translation type="obsolete">幾合欄位</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="obsolete">您確定要移除%1連線與所有的設定嗎？</translation>
-    </message>
-</context>
-<context>
-    <name>QgsDbSourceSelectBase</name>
-    <message>
-        <source>Add PostGIS Table(s)</source>
-        <translation type="obsolete">新增PostGIS表格</translation>
-    </message>
-    <message>
-        <source>PostgreSQL Connections</source>
-        <translation type="obsolete">PostgreSQL連線</translation>
-    </message>
-    <message>
-        <source>Connect</source>
-        <translation type="obsolete">連接</translation>
-    </message>
-    <message>
-        <source>New</source>
-        <translation type="obsolete">新增</translation>
-    </message>
-    <message>
-        <source>Edit</source>
-        <translation type="obsolete">編輯</translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation type="obsolete">刪除</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">說明</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
-    </message>
-    <message>
-        <source>Add</source>
-        <translation type="obsolete">新增</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">關閉</translation>
-    </message>
-    <message>
-        <source>Tables:</source>
-        <translation type="obsolete">表格:</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">類型</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">名稱</translation>
-    </message>
-    <message>
-        <source>Sql</source>
-        <translation type="obsolete">Sql</translation>
-    </message>
-    <message>
-        <source>Encoding:</source>
-        <translation type="obsolete">編碼:</translation>
-    </message>
-    <message>
-        <source>Search:</source>
-        <translation type="obsolete">尋找:</translation>
-    </message>
-    <message>
-        <source>Search mode:</source>
-        <translation type="obsolete">尋找模式:</translation>
-    </message>
-    <message>
-        <source>Search in columns:</source>
-        <translation type="obsolete">在欄位中尋找:</translation>
-    </message>
-    <message>
-        <source>Search options...</source>
-        <translation type="obsolete">尋找選項...</translation>
-    </message>
-    <message>
-        <source>Build query</source>
-        <translation type="obsolete">建立查詢</translation>
-    </message>
-</context>
-<context>
     <name>QgsDbTableModel</name>
     <message>
         <location filename="../src/app/qgsdbtablemodel.cpp" line="25"/>
@@ -14454,18 +9345,6 @@ has failed. The database said:
         <source>Delete Attributes</source>
         <translation>刪除屬性</translation>
     </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">確定</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">取消</translation>
-    </message>
-    <message>
-        <source>New Item</source>
-        <translation type="obsolete">新專案</translation>
-    </message>
 </context>
 <context>
     <name>QgsDelimitedTextPlugin</name>
@@ -14479,18 +9358,6 @@ has failed. The database said:
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="101"/>
         <source>&amp;Add Delimited Text Layer</source>
         <translation>新增CSV純文字檔圖層(&amp;A)</translation>
-    </message>
-    <message>
-        <source>Add a delimited text file as a map layer. </source>
-        <translation type="obsolete">新增CSV純文字檔為地圖圖層。</translation>
-    </message>
-    <message>
-        <source>The file must have a header row containing the field names. </source>
-        <translation type="obsolete">檔案第一列必須有欄位名稱。</translation>
-    </message>
-    <message>
-        <source>X and Y fields are required and must contain coordinates in decimal units.</source>
-        <translation type="obsolete">X和Y欄位是必須的，並且所包含的座標必須是十進位單位。</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="56"/>
@@ -14535,18 +9402,6 @@ has failed. The database said:
         <source>Parse</source>
         <translation>解析</translation>
     </message>
-    <message>
-        <source>Description</source>
-        <translation type="obsolete">說明</translation>
-    </message>
-    <message>
-        <source>Select a delimited text file containing a header row and one or more rows of x and y coordinates that you would like to use as a point layer and this plugin will do the job for you!</source>
-        <translation type="obsolete">請選擇包含分隔符號的純文字檔(CSV)。第一列須為欄位名稱且有X與Y座標的點資料，此附加元件會協助您把資料加入點圖層!</translation>
-    </message>
-    <message>
-        <source>Use the layer name box to specify the legend name for the new layer. Use the delimiter box to specify what delimeter is used in your file (e.g. space, comma, tab or a regular expression in Perl style). After choosing a delimiter, press the parse button and select the columns containing the x and y values for the layer.</source>
-        <translation type="obsolete">使用圖層名稱文字方塊可以設定新圖層的圖例名稱。使用分隔符號文字方塊來指定您純文字檔案中的分隔符號(例如：空白、逗號、Tab或者是Perl的正規化表示式)。當您指定分隔符號後請按下分析按鈕，之後選擇包含圖層X,Y值的欄位。</translation>
-    </message>
 </context>
 <context>
     <name>QgsDelimitedTextPluginGuiBase</name>
@@ -14554,74 +9409,6 @@ has failed. The database said:
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="14"/>
         <source>Create a Layer from a Delimited Text File</source>
         <translation type="unfinished">從CSV純文字檔建立圖層</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">取消</translation>
-    </message>
-    <message>
-        <source>&amp;Help</source>
-        <translation type="obsolete">說明(&amp;H)</translation>
-    </message>
-    <message>
-        <source>Alt+H</source>
-        <translation type="obsolete">Alt+H</translation>
-    </message>
-    <message>
-        <source>Help on using the plugin</source>
-        <translation type="obsolete">使用附加元件的說明</translation>
-    </message>
-    <message>
-        <source>Opens the Delimited Text Plugin help in your configured browser</source>
-        <translation type="obsolete">在已配置的瀏覽器中開啟分隔文字檔附加元件的說明</translation>
-    </message>
-    <message>
-        <source>&amp;Parse</source>
-        <translation type="obsolete">解析(&amp;P)</translation>
-    </message>
-    <message>
-        <source>Alt+P</source>
-        <translation type="obsolete">Alt+P</translation>
-    </message>
-    <message>
-        <source>Parse the header row and update the X and Y field lists</source>
-        <translation type="obsolete">解析首列並更新X、Y欄位清單</translation>
-    </message>
-    <message>
-        <source>Parse the header row of the input file and refresh the fields in the X and Y field drop-down lists. Use this button to refresh the field lists if you change the delimiter after selecting the delimited text file.</source>
-        <translation type="obsolete">解析輸入檔的首列，並重新整理X、Y欄位下拉清單中的欄位名稱。在選擇了分隔文字檔以後，如果您改變了分隔符號，那麼請使用這個按鈕來重新整理欄位清單.</translation>
-    </message>
-    <message>
-        <source>&amp;Add Layer</source>
-        <translation type="obsolete">新增圖層(&amp;A)</translation>
-    </message>
-    <message>
-        <source>Alt+A</source>
-        <translation type="obsolete">Alt+A</translation>
-    </message>
-    <message>
-        <source>Add layer using the delimiter, file, and x/y fields specified</source>
-        <translation type="obsolete">使用分隔符號、檔和指定的x/y欄位來新增圖層</translation>
-    </message>
-    <message>
-        <source>Creates a layer using the specified parameters and adds it to the map. The dialog remains open to allow adding of additional layers.</source>
-        <translation type="obsolete">使用指定的參數建立圖層，並新增到地圖中。這個對話方塊會繼續開啟，以便新增其它的圖層.</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">關閉(&amp;C)</translation>
-    </message>
-    <message>
-        <source>Alt+C</source>
-        <translation type="obsolete">Alt+C</translation>
-    </message>
-    <message>
-        <source>Close the dialog</source>
-        <translation type="obsolete">關閉對話方塊</translation>
-    </message>
-    <message>
-        <source>Close the dialog without adding anything to the map.</source>
-        <translation type="obsolete">關閉對話方塊，不新增任何圖層.</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="195"/>
@@ -14684,10 +9471,6 @@ has failed. The database said:
         <translation>在文字檔中分隔欄位的分隔符號。分隔符號可以是一個或多個字元.</translation>
     </message>
     <message>
-        <source>Delimited Text Layer</source>
-        <translation type="obsolete">CSV純文字檔圖層</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="33"/>
         <source>Delimited text file</source>
         <translation type="unfinished">CSV純文字檔</translation>
@@ -14721,24 +9504,6 @@ has failed. The database said:
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="268"/>
         <source>Sample text</source>
         <translation type="unfinished">範例純文字內容</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:16pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Select a delimited text file containing x and y coordinates that you would like to use as a point layer and this plugin will do the job for you! &lt;/p&gt;
-&lt;p&gt;Use the layer name box to specify the legend name for the new layer. Use the delimiter box to specify what delimeter is used in your file (e.g. space, commar or tab). Note this box accepts regular expressions so use \t for tab and so on. After choosing a delimiter, press the parse button an select the columns containing the x and y values for the layer.&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:16pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;選擇一個包含x和y座標的分隔文字檔，您希望將它作為一個點圖層來使用，該附加元件會幫您完成這個工作！&lt;/p&gt;
-&lt;p&gt;用圖層名稱框來指定新圖層的圖例名稱。用分隔符號框來指定您的檔中使用的分隔符號(如空格、逗號或定位字元)。注意這個輸入框接受規則運算式，所以可以用\t表示定位字元等等。選擇了分隔符號後，按下解析按鈕。與此同時，必須為圖層選擇包含x和y值的欄位。&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</translation>
-    </message>
-    <message>
-        <source>Browse...</source>
-        <translation type="obsolete">瀏覽...</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="160"/>
@@ -14780,10 +9545,6 @@ has failed. The database said:
 </context>
 <context>
     <name>QgsDelimitedTextProvider</name>
-    <message>
-        <source>Save layer as...</source>
-        <translation type="obsolete">圖層另存為...</translation>
-    </message>
     <message>
         <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="446"/>
         <source>Note: the following lines were not loaded because Qgis was unable to determine values for the x and y coordinates:
@@ -14858,18 +9619,6 @@ has failed. The database said:
         <translation>顯示圖表</translation>
     </message>
     <message>
-        <source>Diagram type:</source>
-        <translation type="obsolete">圖表類型:</translation>
-    </message>
-    <message>
-        <source>Classification attribute:</source>
-        <translation type="obsolete">分類屬性:</translation>
-    </message>
-    <message>
-        <source>Classification type:</source>
-        <translation type="obsolete">分類方式:</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramdialogbase.ui" line="35"/>
         <source>Diagram type</source>
         <translation>圖表類型</translation>
@@ -14917,26 +9666,6 @@ has failed. The database said:
         <location filename="../src/plugins/geoprocessing/qgsdlgpgbufferbase.ui" line="13"/>
         <source>Buffer features</source>
         <translation>對圖徵作環域分析</translation>
-    </message>
-    <message>
-        <source>&amp;Help</source>
-        <translation type="obsolete">說明(&amp;H)</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">確定(&amp;O)</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">取消(&amp;C)</translation>
-    </message>
-    <message>
-        <source>Buffer Settings:</source>
-        <translation type="obsolete">環域分析設定:</translation>
     </message>
     <message>
         <location filename="../src/plugins/geoprocessing/qgsdlgpgbufferbase.ui" line="224"/>
@@ -14995,338 +9724,6 @@ has failed. The database said:
     </message>
 </context>
 <context>
-    <name>QgsDlgVectorLayerProperties</name>
-    <message>
-        <source>Single Symbol</source>
-        <translation type="obsolete">單一符號</translation>
-    </message>
-    <message>
-        <source>Graduated Symbol</source>
-        <translation type="obsolete">漸進符號</translation>
-    </message>
-    <message>
-        <source>Continuous Color</source>
-        <translation type="obsolete">連續色</translation>
-    </message>
-    <message>
-        <source>Single Marker</source>
-        <translation type="obsolete">單一標記符號</translation>
-    </message>
-    <message>
-        <source>Graduated Marker</source>
-        <translation type="obsolete">漸進標記符號</translation>
-    </message>
-    <message>
-        <source>Unique Value</source>
-        <translation type="obsolete">唯一值</translation>
-    </message>
-    <message>
-        <source>Unique Value Marker</source>
-        <translation type="obsolete">唯一值標記符號</translation>
-    </message>
-    <message>
-        <source>The source of the data (path name or database connection information)</source>
-        <translation type="obsolete">資料來源(路徑名稱或資料庫連接資訊)</translation>
-    </message>
-    <message>
-        <source>This button opens the PostgreSQL query builder and allows you to create a subset of features to display on the map canvas rather than displaying all features in the layer</source>
-        <translation type="obsolete">這個按鈕可以開啟PostgreSQL查詢構建器，它允許您建立圖層圖徵的子集顯示在地圖上，而不是顯示整個圖層的所有圖徵</translation>
-    </message>
-    <message>
-        <source>The query used to limit the features in the layer is shown here. This is currently only supported for PostgreSQL layers. To enter or modify the query, click on the Query Builder button</source>
-        <translation type="obsolete">這裡的查詢用來限制圖層上顯示的圖徵。目前只支持PostgreSQL圖層。要輸入或修改查詢，請點擊查詢構建器按鈕</translation>
-    </message>
-    <message>
-        <source>In order for QGIS to support SVG markers under Windows, we need to build QGIS</source>
-        <translation type="obsolete">為了讓Windows下的QGIS支援SVG標記符號，我們需要編譯QGIS</translation>
-    </message>
-    <message>
-        <source> using the commercial version of Qt. As this project is developed by volunteers</source>
-        <translation type="obsolete">使用商業版的QT。因為這個專案是志願者開發的</translation>
-    </message>
-    <message>
-        <source> donating their time, we don&apos;t have the financial resources to purchase Qt</source>
-        <translation type="obsolete">捐獻他們時間，我們沒有資金來購買QT</translation>
-    </message>
-    <message>
-        <source> commercial.  If you would like to help us, please visit the QGIS sourceforge</source>
-        <translation type="obsolete">的商業版。如果您想幫助我們，請訪問QGIS sourceforge首頁</translation>
-    </message>
-    <message>
-        <source> home page to make a donation</source>
-        <translation type="obsolete">捐贈的首頁</translation>
-    </message>
-    <message>
-        <source>No SVG Support</source>
-        <translation type="obsolete">沒有SVG支持</translation>
-    </message>
-    <message>
-        <source>Spatial Index</source>
-        <translation type="obsolete">空間索引</translation>
-    </message>
-    <message>
-        <source>Creation of spatial index successfull</source>
-        <translation type="obsolete">建立空間索引成功</translation>
-    </message>
-    <message>
-        <source>Creation of spatial index failed</source>
-        <translation type="obsolete">建立空間索引失敗</translation>
-    </message>
-    <message>
-        <source>General:</source>
-        <translation type="obsolete">一般:</translation>
-    </message>
-    <message>
-        <source>Geometry type of the features in this layer : </source>
-        <translation type="obsolete">這個圖層的圖徵的幾何類型:</translation>
-    </message>
-    <message>
-        <source>The number of features in this layer : </source>
-        <translation type="obsolete">這個圖層的圖徵數目:</translation>
-    </message>
-    <message>
-        <source>Extents:</source>
-        <translation type="obsolete">範圍:</translation>
-    </message>
-    <message>
-        <source>In layer spatial reference system units : </source>
-        <translation type="obsolete">以圖層空間參考系統的單位計算:</translation>
-    </message>
-    <message>
-        <source>xMin,yMin </source>
-        <translation type="obsolete">xMin,yMin </translation>
-    </message>
-    <message>
-        <source> : xMax,yMax </source>
-        <translation type="obsolete"> : xMax,yMax </translation>
-    </message>
-    <message>
-        <source>In project spatial reference system units : </source>
-        <translation type="obsolete">以專案空間參考系統的單位計算:</translation>
-    </message>
-    <message>
-        <source>Layer Spatial Reference System:</source>
-        <translation type="obsolete">圖層的空間參考系統:</translation>
-    </message>
-    <message>
-        <source>Project (Output) Spatial Reference System:</source>
-        <translation type="obsolete">專案的(輸出的)空間參考系統:</translation>
-    </message>
-    <message>
-        <source>Attribute field info:</source>
-        <translation type="obsolete">屬性欄位資訊:</translation>
-    </message>
-    <message>
-        <source>Field</source>
-        <translation type="obsolete">欄位</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">類型</translation>
-    </message>
-    <message>
-        <source>Length</source>
-        <translation type="obsolete">長度</translation>
-    </message>
-    <message>
-        <source>Precision</source>
-        <translation type="obsolete">精確度</translation>
-    </message>
-</context>
-<context>
-    <name>QgsDlgVectorLayerPropertiesBase</name>
-    <message>
-        <source>Layer Properties</source>
-        <translation type="obsolete">圖層屬性</translation>
-    </message>
-    <message>
-        <source>Apply</source>
-        <translation type="obsolete">套用</translation>
-    </message>
-    <message>
-        <source>Legend type:</source>
-        <translation type="obsolete">圖例類型:</translation>
-    </message>
-    <message>
-        <source>Display name</source>
-        <translation type="obsolete">顯示名稱</translation>
-    </message>
-    <message>
-        <source>General</source>
-        <translation type="obsolete">一般</translation>
-    </message>
-    <message>
-        <source>Layer source</source>
-        <translation type="obsolete">圖層的資料來源</translation>
-    </message>
-    <message>
-        <source>TextLabel2</source>
-        <translation type="obsolete">文本標籤2</translation>
-    </message>
-    <message>
-        <source>Labels</source>
-        <translation type="obsolete">標籤</translation>
-    </message>
-    <message>
-        <source>Display labels</source>
-        <translation type="obsolete">顯示標籤</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">說明</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">取消</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">確定</translation>
-    </message>
-    <message>
-        <source>Symbology</source>
-        <translation type="obsolete">符號化</translation>
-    </message>
-    <message>
-        <source>Visibility</source>
-        <translation type="obsolete">可見性</translation>
-    </message>
-    <message>
-        <source>Use scale dependent rendering</source>
-        <translation type="obsolete">依比例繪圖</translation>
-    </message>
-    <message>
-        <source>Maximum 1:</source>
-        <translation type="obsolete">最大值1:</translation>
-    </message>
-    <message>
-        <source>Maximum scale at which this layer will be displayed. </source>
-        <translation type="obsolete">圖層顯示的最大比例.</translation>
-    </message>
-    <message>
-        <source>Minimum 1:</source>
-        <translation type="obsolete">最小值1:</translation>
-    </message>
-    <message>
-        <source>Minimum scale at which this layer will be displayed. </source>
-        <translation type="obsolete">圖層顯示的最小比例.</translation>
-    </message>
-    <message>
-        <source>Display field</source>
-        <translation type="obsolete">顯示欄位</translation>
-    </message>
-    <message>
-        <source>Display field for the Identify Results dialog box</source>
-        <translation type="obsolete">識別結果對話方塊中顯示的欄位</translation>
-    </message>
-    <message>
-        <source>This sets the display field for the Identify Results dialog box</source>
-        <translation type="obsolete">這裡設定了識別結果對話方塊中顯示的欄位</translation>
-    </message>
-    <message>
-        <source>Use this control to set which field is placed at the top level of the Identify Results dialog box.</source>
-        <translation type="obsolete">用這個控制項來設定某個欄位顯示在識別結果對話方塊的頂部.</translation>
-    </message>
-    <message>
-        <source>Subset:</source>
-        <translation type="obsolete">子集:</translation>
-    </message>
-    <message>
-        <source>Query Builder</source>
-        <translation type="obsolete">查詢構建器</translation>
-    </message>
-    <message>
-        <source>Metadata</source>
-        <translation type="obsolete">詮釋資料</translation>
-    </message>
-    <message>
-        <source>Actions</source>
-        <translation type="obsolete">動作</translation>
-    </message>
-    <message>
-        <source>Spatial Reference System</source>
-        <translation type="obsolete">空間參考系統</translation>
-    </message>
-    <message>
-        <source>Change</source>
-        <translation type="obsolete">改變</translation>
-    </message>
-    <message>
-        <source>Spatial Index</source>
-        <translation type="obsolete">空間索引</translation>
-    </message>
-    <message>
-        <source>Create Spatial Index</source>
-        <translation type="obsolete">建立空間索引</translation>
-    </message>
-    <message>
-        <source>Create</source>
-        <translation type="obsolete">建立</translation>
-    </message>
-</context>
-<context>
-    <name>QgsEditReservedWordsBase</name>
-    <message>
-        <source>Edit Reserved Words</source>
-        <translation type="obsolete">編輯保留字</translation>
-    </message>
-    <message>
-        <source>Status</source>
-        <translation type="obsolete">狀態</translation>
-    </message>
-    <message>
-        <source>Column name</source>
-        <translation type="obsolete">欄位名稱</translation>
-    </message>
-    <message>
-        <source>Index</source>
-        <translation type="obsolete">索引</translation>
-    </message>
-    <message>
-        <source>This shapefile contains reserved words. These may affect the import into PostgreSQL. Edit the column names so none of the reserved words listed at the right are used. You may also change any column name if desired.</source>
-        <translation type="obsolete">這個Shape檔包含保留字。這可能會影響PostgreSQL的匯入。編輯欄位名稱，使其沒有任何保留字。您可以改變任何一個欄位的名稱，如果您想這麼做的話.</translation>
-    </message>
-    <message>
-        <source>&amp;Help</source>
-        <translation type="obsolete">說明(&amp;H)</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">確定(&amp;O)</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">取消(&amp;C)</translation>
-    </message>
-    <message>
-        <source>Reserved Words</source>
-        <translation type="obsolete">保留字</translation>
-    </message>
-    <message>
-        <source>Column Name</source>
-        <translation type="obsolete">欄位名稱</translation>
-    </message>
-</context>
-<context>
-    <name>QgsEditReservedWordsDialog</name>
-    <message>
-        <source>Status</source>
-        <translation type="obsolete">狀態</translation>
-    </message>
-    <message>
-        <source>Column Name</source>
-        <translation type="obsolete">欄位名稱</translation>
-    </message>
-    <message>
-        <source>Index</source>
-        <translation type="obsolete">索引</translation>
-    </message>
-</context>
-<context>
     <name>QgsEncodingFileDialog</name>
     <message>
         <location filename="../src/gui/qgsencodingfiledialog.cpp" line="35"/>
@@ -15336,14 +9733,6 @@ has failed. The database said:
 </context>
 <context>
     <name>QgsFieldCalculator</name>
-    <message>
-        <source>Integer</source>
-        <translation type="obsolete">整數</translation>
-    </message>
-    <message>
-        <source>String</source>
-        <translation type="obsolete">字串</translation>
-    </message>
     <message>
         <location filename="../src/app/qgsfieldcalculator.cpp" line="84"/>
         <source>Syntax error</source>
@@ -15544,29 +9933,6 @@ has failed. The database said:
     </message>
 </context>
 <context>
-    <name>QgsFillStyleWidgetBase</name>
-    <message>
-        <source>Form1</source>
-        <translation type="obsolete">表單1</translation>
-    </message>
-    <message>
-        <source>Fill Style</source>
-        <translation type="obsolete">填滿樣式</translation>
-    </message>
-    <message>
-        <source>PolyStyleWidget</source>
-        <translation type="obsolete">多邊型樣式裝飾</translation>
-    </message>
-    <message>
-        <source>Colour:</source>
-        <translation type="obsolete">顏色:</translation>
-    </message>
-    <message>
-        <source>col</source>
-        <translation type="obsolete">列</translation>
-    </message>
-</context>
-<context>
     <name>QgsGCPListWidget</name>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgcplistwidget.cpp" line="176"/>
@@ -15605,29 +9971,9 @@ has failed. The database said:
         <translation>GPS設備編輯器</translation>
     </message>
     <message>
-        <source>Device name:</source>
-        <translation type="obsolete">設備名稱:</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/gps_importer/qgsgpsdevicedialogbase.ui" line="131"/>
         <source>This is the name of the device as it will appear in the lists</source>
         <translation>這是設備的名稱，它會出現在列表中</translation>
-    </message>
-    <message>
-        <source>Update device</source>
-        <translation type="obsolete">更新設備</translation>
-    </message>
-    <message>
-        <source>Delete device</source>
-        <translation type="obsolete">刪除設備</translation>
-    </message>
-    <message>
-        <source>New device</source>
-        <translation type="obsolete">新設備</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">關閉</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsdevicedialogbase.ui" line="140"/>
@@ -15635,33 +9981,9 @@ has failed. The database said:
         <translation>命令</translation>
     </message>
     <message>
-        <source>Waypoint download:</source>
-        <translation type="obsolete">路線點下載:</translation>
-    </message>
-    <message>
-        <source>Waypoint upload:</source>
-        <translation type="obsolete">路線點上載:</translation>
-    </message>
-    <message>
-        <source>Route download:</source>
-        <translation type="obsolete">路徑下載:</translation>
-    </message>
-    <message>
-        <source>Route upload:</source>
-        <translation type="obsolete">路徑上載:</translation>
-    </message>
-    <message>
-        <source>Track download:</source>
-        <translation type="obsolete">軌跡下載:</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/gps_importer/qgsgpsdevicedialogbase.ui" line="240"/>
         <source>The command that is used to upload tracks to the device</source>
         <translation>該命令用來將軌跡上載到設備上</translation>
-    </message>
-    <message>
-        <source>Track upload:</source>
-        <translation type="obsolete">軌跡上載:</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsdevicedialogbase.ui" line="219"/>
@@ -16062,10 +10384,6 @@ p, li { white-space: pre-wrap; }
         <translation>建立新的GPX圖層並顯示在地圖中</translation>
     </message>
     <message>
-        <source>Gps Tools</source>
-        <translation type="obsolete">GPS工具</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="164"/>
         <source>Save new GPX file as...</source>
         <translation>新的GPX檔另存為...</translation>
@@ -16099,15 +10417,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="217"/>
         <source>GPX Loader</source>
         <translation>GPX載入器</translation>
-    </message>
-    <message>
-        <source>Unable to read the selected file.
-</source>
-        <translation type="obsolete">無法讀取選取的文件。</translation>
-    </message>
-    <message>
-        <source>Please reselect a valid file.</source>
-        <translation type="obsolete">請重新選擇一個有效的檔。</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="268"/>
@@ -16160,10 +10469,6 @@ p, li { white-space: pre-wrap; }
         <translation>不支持</translation>
     </message>
     <message>
-        <source>This device does not support downloading </source>
-        <translation type="obsolete">該設備不支援下載</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="434"/>
         <source>Downloading data...</source>
         <translation>下載資料...</translation>
@@ -16181,10 +10486,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="449"/>
         <source>Error downloading data</source>
         <translation>下載資料錯誤</translation>
-    </message>
-    <message>
-        <source>This device does not support uploading of </source>
-        <translation type="obsolete">該設備不支援上傳</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="526"/>
@@ -16237,10 +10538,6 @@ Please reselect a valid file.</source>
 <context>
     <name>QgsGPSPluginGui</name>
     <message>
-        <source>Choose a filename to save under</source>
-        <translation type="obsolete">選擇檔案名來儲存</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="153"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="239"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="297"/>
@@ -16279,71 +10576,11 @@ Please reselect a valid file.</source>
         <translation>軌跡</translation>
     </message>
     <message>
-        <source>QGIS can perform conversions of GPX files, by using GPSBabel (%1) to perform the conversions.</source>
-        <translation type="obsolete">QGIS使用GPSBabel (%1)工具轉換各種GPX內容。</translation>
-    </message>
-    <message>
-        <source>This requires that you have GPSBabel installed where QGIS can find it.</source>
-        <translation type="obsolete">這需要您有安裝GPSBabel軟體，您在QGIS中目錄可以找得到。</translation>
-    </message>
-    <message>
-        <source>GPX is the %1, which is used to store information about waypoints, routes, and tracks.</source>
-        <translation type="obsolete">GPX原文為%1，它可以用來儲存路線點、路徑及軌跡的資訊。</translation>
-    </message>
-    <message>
-        <source>GPS eXchange file format</source>
-        <translation type="obsolete">GPS交換檔案格式</translation>
-    </message>
-    <message>
-        <source>Select a GPX file and then select the feature types that you want to load.</source>
-        <translation type="obsolete">選擇一個GPX檔案，然後再選擇您要載入圖徵的型態。</translation>
-    </message>
-    <message>
-        <source>This tool will help you download data from a GPS device.</source>
-        <translation type="obsolete">這個工具會幫助您從GPS裝置下載資料。</translation>
-    </message>
-    <message>
-        <source>Choose your GPS device, the port it is connected to, the feature type you want to download, a name for your new layer, and the GPX file where you want to store the data.</source>
-        <translation type="obsolete">請選擇您的GPS設備、連接埠、欲下載的圖徵型態、新圖新的名稱及輸出的GPX檔案。</translation>
-    </message>
-    <message>
-        <source>If your device isn&apos;t listed, or if you want to change some settings, you can also edit the devices.</source>
-        <translation type="obsolete">如果未列出您的GPS設備或者您想改變設定，您可以自己編輯設備。</translation>
-    </message>
-    <message>
-        <source>This tool uses the program GPSBabel (%1) to transfer the data.</source>
-        <translation type="obsolete">這個工具使用GPSBabel (%1)來轉換資料。</translation>
-    </message>
-    <message>
-        <source>This tool will help you upload data from a GPX layer to a GPS device.</source>
-        <translation type="obsolete">此工具會協助您上傳GPX圖層資料至GPS裝置。</translation>
-    </message>
-    <message>
-        <source>Choose the layer you want to upload, the device you want to upload it to, and the port your device is connected to.</source>
-        <translation type="obsolete">請選擇您要上傳的圖層、GPS設備及連接埠號。</translation>
-    </message>
-    <message>
-        <source>QGIS can only load GPX files by itself, but many other formats can be converted to GPX using GPSBabel (%1).</source>
-        <translation type="obsolete">QGIS可以載入GPX，但是許多其它格式的檔案都可以使用 GPSBabel (%1)轉換成GPX。</translation>
-    </message>
-    <message>
-        <source>All file formats can not store waypoints, routes, and tracks, so some feature types may be disabled for some file formats.</source>
-        <translation type="obsolete">不是所有的檔案格式都可以儲存成路線點、路徑及軌跡。</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="151"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="295"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="389"/>
         <source>Choose a file name to save under</source>
         <translation>選擇檔名存成</translation>
-    </message>
-    <message>
-        <source>Select a GPS file format and the file that you want to import, the feature type that you want to use, a GPX file name that you want to save the converted file as, and a name for the new layer.</source>
-        <translation type="obsolete">選擇您想匯入的GPS檔案格式、檔案、圖徵型態、GPX檔案名稱與圖層名稱。</translation>
-    </message>
-    <message>
-        <source>Select a GPX input file name, the type of conversion you want to perform, a GPX file name that you want to save the converted file as, and a name for the new layer created from the result.</source>
-        <translation type="obsolete">選取輸入GPX的檔名、欲轉換的類型、GPX的檔名稱及建立新圖層名稱。</translation>
     </message>
 </context>
 <context>
@@ -16357,28 +10594,6 @@ Please reselect a valid file.</source>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="29"/>
         <source>Load GPX file</source>
         <translation>載入GPX檔</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;GPX is the &lt;a href=&quot;http://www.topografix.com/gpx.asp&quot;&gt;GPS eXchange file format&lt;/a&gt;, which is used to store information about waypoints, routes, and tracks.&lt;/p&gt;
-&lt;p&gt;Select a GPX file and then select the feature types that you want to load.&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;描述&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;GPX is the &lt;a href=&quot;http://www.topografix.com/gpx.asp&quot;&gt;GPS交換檔格式&lt;/a&gt;，它用來儲存路線點、路徑和軌跡的資訊。&lt;/p&gt;
-&lt;p&gt;選擇GPX檔，然後選擇您想要載入的圖徵類型。&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</translation>
-    </message>
-    <message>
-        <source>File:</source>
-        <translation type="obsolete">文件:</translation>
-    </message>
-    <message>
-        <source>Feature types:</source>
-        <translation type="obsolete">圖徵類型:</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="74"/>
@@ -16399,29 +10614,9 @@ Please reselect a valid file.</source>
         <translation>軌跡</translation>
     </message>
     <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="139"/>
         <source>Import other file</source>
         <translation>匯入其它的文件</translation>
-    </message>
-    <message>
-        <source>File to import:</source>
-        <translation type="obsolete">要匯入的文件:</translation>
-    </message>
-    <message>
-        <source>Feature type:</source>
-        <translation type="obsolete">圖徵類型:</translation>
-    </message>
-    <message>
-        <source>GPX output file:</source>
-        <translation type="obsolete">GPX輸出檔:</translation>
-    </message>
-    <message>
-        <source>Layer name:</source>
-        <translation type="obsolete">圖層名稱:</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="243"/>
@@ -16434,45 +10629,9 @@ Please reselect a valid file.</source>
         <translation>編輯設備</translation>
     </message>
     <message>
-        <source>GPS device:</source>
-        <translation type="obsolete">GPS設備:</translation>
-    </message>
-    <message>
-        <source>Output file:</source>
-        <translation type="obsolete">輸出檔案:</translation>
-    </message>
-    <message>
-        <source>Port:</source>
-        <translation type="obsolete">埠:</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="397"/>
         <source>Upload to GPS</source>
         <translation>上載到GPS</translation>
-    </message>
-    <message>
-        <source>Data layer:</source>
-        <translation type="obsolete">資料圖層:</translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">確定(&amp;O)</translation>
-    </message>
-    <message>
-        <source>Alt+O</source>
-        <translation type="obsolete">Alt+O</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">取消(&amp;C)</translation>
-    </message>
-    <message>
-        <source>Alt+C</source>
-        <translation type="obsolete">Alt+C</translation>
-    </message>
-    <message>
-        <source>&amp;Help</source>
-        <translation type="obsolete">說明(&amp;H)</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="50"/>
@@ -16497,14 +10656,6 @@ Please reselect a valid file.</source>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="533"/>
         <source>GPX Conversions</source>
         <translation>GPX轉換</translation>
-    </message>
-    <message>
-        <source>Conversion:</source>
-        <translation type="obsolete">轉換:</translation>
-    </message>
-    <message>
-        <source>GPX input file:</source>
-        <translation type="obsolete">GPX輸入檔案:</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="275"/>
@@ -16604,10 +10755,6 @@ Please reselect a valid file.</source>
 <context>
     <name>QgsGenericProjectionSelector</name>
     <message>
-        <source>Define this layer&apos;s projection:</source>
-        <translation type="obsolete">定義此圖層的投影方式:</translation>
-    </message>
-    <message>
         <location filename="../src/gui/qgsgenericprojectionselector.cpp" line="44"/>
         <source>This layer appears to have no projection specification.</source>
         <translation>這個圖層沒有指定投影方式。</translation>
@@ -16626,127 +10773,9 @@ Please reselect a valid file.</source>
 <context>
     <name>QgsGenericProjectionSelectorBase</name>
     <message>
-        <source>Projection Selector</source>
-        <translation type="obsolete">選擇投影方式</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsgenericprojectionselectorbase.ui" line="14"/>
         <source>Coordinate Reference System Selector</source>
         <translation>選擇座標參考系統</translation>
-    </message>
-</context>
-<context>
-    <name>QgsGeomTypeDialog</name>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">名稱</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">類型</translation>
-    </message>
-    <message>
-        <source>Real</source>
-        <translation type="obsolete">實數</translation>
-    </message>
-    <message>
-        <source>Integer</source>
-        <translation type="obsolete">整數</translation>
-    </message>
-    <message>
-        <source>String</source>
-        <translation type="obsolete">字串</translation>
-    </message>
-</context>
-<context>
-    <name>QgsGeomTypeDialogBase</name>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">類型</translation>
-    </message>
-    <message>
-        <source>Point</source>
-        <translation type="obsolete">點</translation>
-    </message>
-    <message>
-        <source>Line</source>
-        <translation type="obsolete">線</translation>
-    </message>
-    <message>
-        <source>Polygon</source>
-        <translation type="obsolete">多邊形</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">確定</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">取消</translation>
-    </message>
-    <message>
-        <source>New Vector Layer</source>
-        <translation type="obsolete">新增向量圖層</translation>
-    </message>
-    <message>
-        <source>Attributes:</source>
-        <translation type="obsolete">屬性:</translation>
-    </message>
-    <message>
-        <source>Add</source>
-        <translation type="obsolete">新增</translation>
-    </message>
-    <message>
-        <source>Column 1</source>
-        <translation type="obsolete">欄位1</translation>
-    </message>
-    <message>
-        <source>New Item</source>
-        <translation type="obsolete">新專案</translation>
-    </message>
-    <message>
-        <source>Remove</source>
-        <translation type="obsolete">移除</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">說明</translation>
-    </message>
-    <message>
-        <source>File Format:</source>
-        <translation type="obsolete">檔案格式:</translation>
-    </message>
-    <message>
-        <source>File format</source>
-        <translation type="obsolete">檔案格式</translation>
-    </message>
-    <message>
-        <source>Attributes</source>
-        <translation type="obsolete">屬性</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">名稱</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>Delete selected attribute</source>
-        <translation type="obsolete">刪除選取的屬性</translation>
-    </message>
-    <message>
-        <source>Add attribute</source>
-        <translation type="obsolete">新增屬性</translation>
-    </message>
-    <message>
-        <source>Width</source>
-        <translation type="obsolete">寬度</translation>
-    </message>
-    <message>
-        <source>Precision</source>
-        <translation type="obsolete">精確度</translation>
     </message>
 </context>
 <context>
@@ -16805,25 +10834,9 @@ p, li { white-space: pre-wrap; }
         <source>&amp;Georeferencer</source>
         <translation>幾何校正(&amp;Georeferencer)</translation>
     </message>
-    <message>
-        <source>&lt;b&gt;Developers:&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;b&gt;開發者:&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Links:&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;b&gt;連結:&lt;/b&gt;</translation>
-    </message>
 </context>
 <context>
     <name>QgsGeorefPluginGui</name>
-    <message>
-        <source>Choose a raster file</source>
-        <translation type="obsolete">選擇影像影像檔</translation>
-    </message>
-    <message>
-        <source>Raster files (*.*)</source>
-        <translation type="obsolete">影像影像文件 (*.*)</translation>
-    </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="159"/>
         <source>All other files (*)</source>
@@ -17039,37 +11052,9 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The selected file is not a valid raster file.</source>
-        <translation type="obsolete">選擇的檔不是有效的影像檔。</translation>
-    </message>
-    <message>
-        <source>The selected file already seems to have a </source>
-        <translation type="obsolete">選擇的檔案似乎已經有一個</translation>
-    </message>
-    <message>
-        <source>world file! If you want to replace it with a </source>
-        <translation type="obsolete">world文件! 如果您想用新的world檔</translation>
-    </message>
-    <message>
-        <source>new world file, remove the old one first.</source>
-        <translation type="obsolete">來替換它，請先將舊的檔刪除。</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1062"/>
         <source>World file exists</source>
         <translation type="unfinished">World檔案已存在</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;The selected file already seems to have a </source>
-        <translation type="obsolete">您選擇的檔案似乎已有</translation>
-    </message>
-    <message>
-        <source>world file! Do you want to replace it with the </source>
-        <translation type="obsolete">world 檔!您真的要用建立新的world檔案覆蓋它</translation>
-    </message>
-    <message>
-        <source>new world file?&lt;/p&gt;</source>
-        <translation type="obsolete">?&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -17278,140 +11263,6 @@ p, li { white-space: pre-wrap; }
         <source>Zoom Last</source>
         <translation type="unfinished">回到上一檢視</translation>
     </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">關閉</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">瀏覽...</translation>
-    </message>
-    <message>
-        <source>Raster file:</source>
-        <translation type="obsolete">影像檔案:</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:Sans Serif&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:13pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;This plugin can generate world files for rasters. You select points on the raster and give their world coordinates, and the plugin will compute the world file parameters. The more coordinates you can provide the better the result will be.&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:Sans Serif&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:13pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;該附加元件能為影像生成world檔。您在影像上選擇點，並給它們真實的座標，這個附加元件會算出world檔的參數。提供的點越多，結果會越好。&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</translation>
-    </message>
-    <message>
-        <source>Enter world coordinates</source>
-        <translation type="obsolete">輸入world座標</translation>
-    </message>
-    <message>
-        <source>Arrange plugin windows</source>
-        <translation type="obsolete">自動排列附加元件視窗</translation>
-    </message>
-    <message>
-        <source>Description...</source>
-        <translation type="obsolete">說明...</translation>
-    </message>
-</context>
-<context>
-    <name>QgsGeorefWarpOptionsDialogBase</name>
-    <message>
-        <source>Warp options</source>
-        <translation type="obsolete">變形選項</translation>
-    </message>
-    <message>
-        <source>Resampling method:</source>
-        <translation type="obsolete">重採樣方法:</translation>
-    </message>
-    <message>
-        <source>Nearest neighbour</source>
-        <translation type="obsolete">最鄰近採樣</translation>
-    </message>
-    <message>
-        <source>Linear</source>
-        <translation type="obsolete">線性</translation>
-    </message>
-    <message>
-        <source>Cubic</source>
-        <translation type="obsolete">立方卷積</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">確定</translation>
-    </message>
-    <message>
-        <source>Use 0 for transparency when needed</source>
-        <translation type="obsolete">需要時使用0表示透明</translation>
-    </message>
-    <message>
-        <source>Resampling method</source>
-        <translation type="obsolete">重新取樣方式</translation>
-    </message>
-</context>
-<context>
-    <name>QgsGraMaDialogBase</name>
-    <message>
-        <source>graduated Marker</source>
-        <translation type="obsolete">漸進標記符號</translation>
-    </message>
-    <message>
-        <source>Mode:</source>
-        <translation type="obsolete">模式:</translation>
-    </message>
-    <message>
-        <source>Classification Field:</source>
-        <translation type="obsolete">分類欄位:</translation>
-    </message>
-    <message>
-        <source>Number of Classes:</source>
-        <translation type="obsolete">分類數目:</translation>
-    </message>
-</context>
-<context>
-    <name>QgsGraMaExtensionWidget</name>
-    <message>
-        <source>Lower</source>
-        <translation type="obsolete">向下</translation>
-    </message>
-    <message>
-        <source>Upper</source>
-        <translation type="obsolete">向上</translation>
-    </message>
-    <message>
-        <source>Label</source>
-        <translation type="obsolete">標籤</translation>
-    </message>
-    <message>
-        <source>Image</source>
-        <translation type="obsolete">影像</translation>
-    </message>
-    <message>
-        <source>Scale
-Factor</source>
-        <translation type="obsolete">比例
-係數</translation>
-    </message>
-</context>
-<context>
-    <name>QgsGraSyDialogBase</name>
-    <message>
-        <source>graduated Symbol</source>
-        <translation type="obsolete">漸進符號</translation>
-    </message>
-    <message>
-        <source>Number of Classes:</source>
-        <translation type="obsolete">分類數目:</translation>
-    </message>
-    <message>
-        <source>Classification Field:</source>
-        <translation type="obsolete">分類欄位:</translation>
-    </message>
-    <message>
-        <source>Mode:</source>
-        <translation type="obsolete">模式:</translation>
-    </message>
 </context>
 <context>
     <name>QgsGraduatedSymbolDialog</name>
@@ -17447,18 +11298,6 @@ Factor</source>
         <location filename="../src/ui/qgsgraduatedsymboldialogbase.ui" line="26"/>
         <source>graduated Symbol</source>
         <translation>漸進符號</translation>
-    </message>
-    <message>
-        <source>Classification Field:</source>
-        <translation type="obsolete">分類欄位:</translation>
-    </message>
-    <message>
-        <source>Mode:</source>
-        <translation type="obsolete">模式:</translation>
-    </message>
-    <message>
-        <source>Number of Classes:</source>
-        <translation type="obsolete">分類數目:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymboldialogbase.ui" line="163"/>
@@ -17581,10 +11420,6 @@ Factor</source>
         <location filename="../src/plugins/grass/qgsgrassattributes.cpp" line="122"/>
         <source>Type</source>
         <translation type="unfinished">類型</translation>
-    </message>
-    <message>
-        <source>Field</source>
-        <translation type="obsolete">欄位</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassattributes.cpp" line="267"/>
@@ -17751,10 +11586,6 @@ Factor</source>
 <context>
     <name>QgsGrassEdit</name>
     <message>
-        <source>New vertex</source>
-        <translation type="obsolete">新轉折點</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="259"/>
         <source>New point</source>
         <translation>新的點</translation>
@@ -17765,85 +11596,9 @@ Factor</source>
         <translation>新的質心</translation>
     </message>
     <message>
-        <source>Select vertex</source>
-        <translation type="obsolete">選擇轉折點</translation>
-    </message>
-    <message>
-        <source>Select line segment</source>
-        <translation type="obsolete">選擇線段</translation>
-    </message>
-    <message>
-        <source>Select position on line</source>
-        <translation type="obsolete">在線上選擇位置</translation>
-    </message>
-    <message>
-        <source>Select element</source>
-        <translation type="obsolete">選擇元素</translation>
-    </message>
-    <message>
-        <source>Undo last point</source>
-        <translation type="obsolete">撤銷最後的點</translation>
-    </message>
-    <message>
-        <source>Close line</source>
-        <translation type="obsolete">閉合線</translation>
-    </message>
-    <message>
-        <source>Delete selected / select next</source>
-        <translation type="obsolete">刪除選取的/選擇下一個</translation>
-    </message>
-    <message>
-        <source>Release selected</source>
-        <translation type="obsolete">釋放選取的</translation>
-    </message>
-    <message>
-        <source>New location</source>
-        <translation type="obsolete">新的區域</translation>
-    </message>
-    <message>
-        <source>Select new position</source>
-        <translation type="obsolete">選擇新的位置</translation>
-    </message>
-    <message>
-        <source>New vertex position</source>
-        <translation type="obsolete">新的轉折點位置</translation>
-    </message>
-    <message>
-        <source>Release</source>
-        <translation type="obsolete">釋放</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="295"/>
         <source>Delete vertex</source>
         <translation>刪除轉折點</translation>
-    </message>
-    <message>
-        <source>Release vertex</source>
-        <translation type="obsolete">釋放轉折點</translation>
-    </message>
-    <message>
-        <source>Split the line</source>
-        <translation type="obsolete">分割線</translation>
-    </message>
-    <message>
-        <source>Release the line</source>
-        <translation type="obsolete">釋放線</translation>
-    </message>
-    <message>
-        <source>Select point on line</source>
-        <translation type="obsolete">在線上選擇點</translation>
-    </message>
-    <message>
-        <source>Left: </source>
-        <translation type="obsolete">左鍵:</translation>
-    </message>
-    <message>
-        <source>Middle: </source>
-        <translation type="obsolete">中鍵:</translation>
-    </message>
-    <message>
-        <source>Rigth: </source>
-        <translation type="obsolete">右鍵:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="256"/>
@@ -18011,29 +11766,6 @@ Factor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Color</source>
-        <comment>Column title</comment>
-        <translation type="obsolete">顏色</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <comment>Column title</comment>
-        <translation type="obsolete">類型</translation>
-    </message>
-    <message>
-        <source>Index</source>
-        <comment>Column title</comment>
-        <translation type="obsolete">索引</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">類型</translation>
-    </message>
-    <message>
-        <source>Length</source>
-        <translation type="obsolete">長度</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="548"/>
         <source>Next not used</source>
         <translation type="unfinished"></translation>
@@ -18122,10 +11854,6 @@ Factor</source>
         <translation>模式</translation>
     </message>
     <message>
-        <source>Field (layer)</source>
-        <translation type="obsolete">欄位(圖層)</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="154"/>
         <source>Settings</source>
         <translation>設定</translation>
@@ -18141,14 +11869,6 @@ Factor</source>
         <translation>符號化</translation>
     </message>
     <message>
-        <source>Column 1</source>
-        <translation type="obsolete">行 1</translation>
-    </message>
-    <message>
-        <source>New Item</source>
-        <translation type="obsolete">新專案</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="327"/>
         <source>Table</source>
         <translation>表格</translation>
@@ -18162,106 +11882,6 @@ Factor</source>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="423"/>
         <source>Create / Alter Table</source>
         <translation>建立/更改表格</translation>
-    </message>
-    <message>
-        <source>Tools</source>
-        <translation type="obsolete">工具</translation>
-    </message>
-    <message>
-        <source>Toolbar</source>
-        <translation type="obsolete">工具條</translation>
-    </message>
-    <message>
-        <source>New line</source>
-        <translation type="obsolete">新的線</translation>
-    </message>
-    <message>
-        <source>F2</source>
-        <translation type="obsolete">F2</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">關閉</translation>
-    </message>
-    <message>
-        <source>New point</source>
-        <translation type="obsolete">新的點</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
-    </message>
-    <message>
-        <source>New boundary</source>
-        <translation type="obsolete">新的邊界</translation>
-    </message>
-    <message>
-        <source>F3</source>
-        <translation type="obsolete">F3</translation>
-    </message>
-    <message>
-        <source>New centroid</source>
-        <translation type="obsolete">新的質心</translation>
-    </message>
-    <message>
-        <source>F4</source>
-        <translation type="obsolete">F4</translation>
-    </message>
-    <message>
-        <source>Move vertex</source>
-        <translation type="obsolete">移動轉折點</translation>
-    </message>
-    <message>
-        <source>F5</source>
-        <translation type="obsolete">F5</translation>
-    </message>
-    <message>
-        <source>Add vertex</source>
-        <translation type="obsolete">新增轉折點</translation>
-    </message>
-    <message>
-        <source>F6</source>
-        <translation type="obsolete">F6</translation>
-    </message>
-    <message>
-        <source>Delete vertex</source>
-        <translation type="obsolete">刪除轉折點</translation>
-    </message>
-    <message>
-        <source>F7</source>
-        <translation type="obsolete">F7</translation>
-    </message>
-    <message>
-        <source>Split line</source>
-        <translation type="obsolete">分割線</translation>
-    </message>
-    <message>
-        <source>F10</source>
-        <translation type="obsolete">F10</translation>
-    </message>
-    <message>
-        <source>Move line</source>
-        <translation type="obsolete">移動線</translation>
-    </message>
-    <message>
-        <source>F9</source>
-        <translation type="obsolete">F9</translation>
-    </message>
-    <message>
-        <source>Delete line</source>
-        <translation type="obsolete">刪除線</translation>
-    </message>
-    <message>
-        <source>F11</source>
-        <translation type="obsolete">F11</translation>
-    </message>
-    <message>
-        <source>Edit attributes</source>
-        <translation type="obsolete">編輯屬性</translation>
-    </message>
-    <message>
-        <source>ActionGroup</source>
-        <translation type="obsolete">動作組</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="227"/>
@@ -18843,10 +12463,6 @@ Factor</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> column </source>
-        <translation type="obsolete">列</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="209"/>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1321"/>
         <source>Output</source>
@@ -18932,10 +12548,6 @@ at line %2 column %3</source>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1397"/>
         <source>Warning</source>
         <translation type="unfinished">警告</translation>
-    </message>
-    <message>
-        <source> column </source>
-        <translation type="obsolete">列</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1196"/>
@@ -19263,10 +12875,6 @@ at line %2 column %3</source>
         <translation type="unfinished">警告</translation>
     </message>
     <message>
-        <source> column </source>
-        <translation type="obsolete">行</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="846"/>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="901"/>
         <source>Cannot get current region</source>
@@ -19324,14 +12932,6 @@ at line %2 column %3</source>
 </context>
 <context>
     <name>QgsGrassNewMapset</name>
-    <message>
-        <source>Projection</source>
-        <translation type="obsolete">投影</translation>
-    </message>
-    <message>
-        <source>Mapset</source>
-        <translation type="obsolete">地圖集(MapSet)</translation>
-    </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="118"/>
         <source>Database</source>
@@ -19419,10 +13019,6 @@ at line %2 column %3</source>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="689"/>
         <source>East must be greater than west</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source> column </source>
-        <translation type="obsolete">行</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="881"/>
@@ -19548,10 +13144,6 @@ at line %2 column %3</source>
 <context>
     <name>QgsGrassNewMapsetBase</name>
     <message>
-        <source>Column 1</source>
-        <translation type="obsolete">行 1</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="52"/>
         <source>Example directory tree:</source>
         <translation>範例 樹狀資料夾:</translation>
@@ -19566,10 +13158,6 @@ at line %2 column %3</source>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="2668"/>
         <source>Database:</source>
         <translation>資料庫:</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="607"/>
@@ -20120,10 +13708,6 @@ p, li { white-space: pre-wrap; }
         <translation>警告</translation>
     </message>
     <message>
-        <source>Cannot open vector on level 2 (topology not available).</source>
-        <translation type="obsolete">無法在第二層(level 2)開啟向量，因為拓撲(topology)無法取得。</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/qgsgrassselect.cpp" line="421"/>
         <source>Cannot open vector %1 in mapset %2 on level 2 (topology not available, try to rebuild topology using v.build module).</source>
         <translation type="unfinished"></translation>
@@ -20225,10 +13809,6 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsGrassShell</name>
     <message>
-        <source>Close</source>
-        <translation type="obsolete">關閉</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="38"/>
         <source>Ctrl+Shift+V</source>
         <translation type="unfinished"></translation>
@@ -20238,32 +13818,9 @@ p, li { white-space: pre-wrap; }
         <source>Ctrl+Shift+C</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Warning</source>
-        <translation type="obsolete">警告</translation>
-    </message>
-    <message>
-        <source>Cannot rename the lock file %1</source>
-        <translation type="obsolete">無法更名鎖定的檔案 %1</translation>
-    </message>
-</context>
-<context>
-    <name>QgsGrassShellBase</name>
-    <message>
-        <source>GRASS Shell</source>
-        <translation type="obsolete">GRASS Shell</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">關閉</translation>
-    </message>
 </context>
 <context>
     <name>QgsGrassTools</name>
-    <message>
-        <source>Modules</source>
-        <translation type="obsolete">模組</translation>
-    </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="113"/>
         <source>Browser</source>
@@ -20286,10 +13843,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="155"/>
         <source>GRASS Shell is not compiled.</source>
         <translation>Grass Shell無法編譯。</translation>
-    </message>
-    <message>
-        <source> column </source>
-        <translation type="obsolete">行</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="107"/>
@@ -20330,46 +13883,6 @@ at line %2 column %3</source>
 <context>
     <name>QgsGrassToolsBase</name>
     <message>
-        <source>GRASS Tools</source>
-        <translation type="obsolete">GRASS工具</translation>
-    </message>
-    <message>
-        <source>Modules</source>
-        <translation type="obsolete">模組</translation>
-    </message>
-    <message>
-        <source>Column 1</source>
-        <translation type="obsolete">行 1</translation>
-    </message>
-    <message>
-        <source>New Item</source>
-        <translation type="obsolete">新專案</translation>
-    </message>
-    <message>
-        <source>New Mapset</source>
-        <translation type="obsolete">新的地圖集</translation>
-    </message>
-    <message>
-        <source>&amp;New</source>
-        <translation type="obsolete">新增(&amp;N)</translation>
-    </message>
-    <message>
-        <source>Ctrl+N</source>
-        <translation type="obsolete">Ctrl+N</translation>
-    </message>
-    <message>
-        <source>Open Mapset</source>
-        <translation type="obsolete">開啟地圖集</translation>
-    </message>
-    <message>
-        <source>&amp;Open...</source>
-        <translation type="obsolete">開啟(&amp;O)...</translation>
-    </message>
-    <message>
-        <source>Ctrl+O</source>
-        <translation type="obsolete">Ctrl+O</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/qgsgrasstoolsbase.ui" line="14"/>
         <source>Grass Tools</source>
         <translation>Grass工具</translation>
@@ -20391,214 +13904,7 @@ at line %2 column %3</source>
     </message>
 </context>
 <context>
-    <name>QgsGridMakerPlugin</name>
-    <message>
-        <source>&amp;Graticules</source>
-        <translation type="obsolete">格網標線工具(&amp;G)</translation>
-    </message>
-    <message>
-        <source>&amp;GraticuleMaker</source>
-        <translation type="obsolete">格網標線產生工具(&amp;G)</translation>
-    </message>
-    <message>
-        <source>Creates a graticule (grid) and stores the result as a shapefile</source>
-        <translation type="obsolete">建立格網標線並儲存為Shape檔</translation>
-    </message>
-    <message>
-        <source>Graticule Creator</source>
-        <translation type="obsolete">格網標線產生工具</translation>
-    </message>
-    <message>
-        <source>&amp;Graticule Creator</source>
-        <translation type="obsolete">格網標線產生工具</translation>
-    </message>
-</context>
-<context>
-    <name>QgsGridMakerPluginGui</name>
-    <message>
-        <source>QGIS - Grid Maker</source>
-        <translation type="obsolete">QGIS - 格網產生工具</translation>
-    </message>
-    <message>
-        <source>Please enter the file name before pressing OK!.</source>
-        <translation type="obsolete">按下OK前請輸入檔案名。</translation>
-    </message>
-    <message>
-        <source>Longitude Interval is invalid - please correct and try again.</source>
-        <translation type="obsolete">經度間隔無效 - 請改正並重試。</translation>
-    </message>
-    <message>
-        <source>Latitude Interval is invalid - please correct and try again.</source>
-        <translation type="obsolete">緯度間隔無效 - 請改正並重試。</translation>
-    </message>
-    <message>
-        <source>Longitude Origin is invalid - please correct and try again..</source>
-        <translation type="obsolete">起始經度無效 - 請改正並重試。</translation>
-    </message>
-    <message>
-        <source>Latitude Origin is invalid - please correct and try again.</source>
-        <translation type="obsolete">起始緯度無效 - 請改正並重試。</translation>
-    </message>
-    <message>
-        <source>End Point Longitude is invalid - please correct and try again.</source>
-        <translation type="obsolete">終點經度無效 - 請改正並重試。</translation>
-    </message>
-    <message>
-        <source>End Point Latitude is invalid - please correct and try again.</source>
-        <translation type="obsolete">終點緯度無效 - 請改正並重試。</translation>
-    </message>
-    <message>
-        <source>Choose a filename to save under</source>
-        <translation type="obsolete">選擇檔案名稱來儲存</translation>
-    </message>
-    <message>
-        <source>ESRI Shapefile (*.shp)</source>
-        <translation type="obsolete">ESRI Shape檔 (*.shp)</translation>
-    </message>
-</context>
-<context>
-    <name>QgsGridMakerPluginGuiBase</name>
-    <message>
-        <source>QGIS Plugin Template</source>
-        <translation type="obsolete">QGIS附加元件範本</translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">確定(&amp;O)</translation>
-    </message>
-    <message>
-        <source>Alt+O</source>
-        <translation type="obsolete">Alt+O</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">取消(&amp;C)</translation>
-    </message>
-    <message>
-        <source>Alt+C</source>
-        <translation type="obsolete">Alt+C</translation>
-    </message>
-    <message>
-        <source>Graticule Builder</source>
-        <translation type="obsolete">格網標線工具</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:16pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;This plugin will help you to build a graticule shapefile that you can use as an overlay within your qgis map viewer.&lt;/p&gt;
-&lt;p&gt;Please enter all units in decimal degrees&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:11pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:16pt;font-weight:600&quot;&gt;描述&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;該附加元件能夠幫助您構建格網標線Shape檔，您可以將它作為套疊圖層在地圖中使用。&lt;/p&gt;
-&lt;p&gt;所有的輸入都以十進位度為單位&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</translation>
-    </message>
-    <message>
-        <source>Origin (Lower Left)</source>
-        <translation type="obsolete">起點(左下角點)</translation>
-    </message>
-    <message>
-        <source>#000.00000; </source>
-        <translation type="obsolete">#000.00000; </translation>
-    </message>
-    <message>
-        <source>Latitude:</source>
-        <translation type="obsolete">緯度:</translation>
-    </message>
-    <message>
-        <source>Longitude:</source>
-        <translation type="obsolete">經度:</translation>
-    </message>
-    <message>
-        <source>End point (Upper Right)</source>
-        <translation type="obsolete">終點(右上角點)</translation>
-    </message>
-    <message>
-        <source>Output (Shape) File</source>
-        <translation type="obsolete">輸出檔(Shape)</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>Graticule Size (units in degrees)</source>
-        <translation type="obsolete">格網大小(單位：度)</translation>
-    </message>
-    <message>
-        <source>Latitude Interval:</source>
-        <translation type="obsolete">緯度間距:</translation>
-    </message>
-    <message>
-        <source>Longitude Interval:</source>
-        <translation type="obsolete">經度間距:</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">類型</translation>
-    </message>
-    <message>
-        <source>Point</source>
-        <translation type="obsolete">點</translation>
-    </message>
-    <message>
-        <source>Line</source>
-        <translation type="obsolete">線</translation>
-    </message>
-    <message>
-        <source>Polygon</source>
-        <translation type="obsolete">多邊形</translation>
-    </message>
-    <message>
-        <source>Origin (lower left)</source>
-        <translation type="obsolete">起點 (左下角點)</translation>
-    </message>
-    <message>
-        <source>End point (upper right)</source>
-        <translation type="obsolete">終點 (右上角點)</translation>
-    </message>
-    <message>
-        <source>Graticle size (units in degrees)</source>
-        <translation type="obsolete">格網大小(以度為單位)</translation>
-    </message>
-    <message>
-        <source>Output (shape) file</source>
-        <translation type="obsolete">輸出的(shape)檔</translation>
-    </message>
-    <message>
-        <source>Save As...</source>
-        <translation type="obsolete">存檔為...</translation>
-    </message>
-    <message>
-        <source>QGIS Graticule Creator</source>
-        <translation type="obsolete">QGIS格網標線產生工具</translation>
-    </message>
-    <message>
-        <source>Graticle size</source>
-        <translation type="obsolete">格網大小</translation>
-    </message>
-    <message>
-        <source>Y Interval:</source>
-        <translation type="obsolete">y間距</translation>
-    </message>
-    <message>
-        <source>X Interval:</source>
-        <translation type="obsolete">x間距</translation>
-    </message>
-</context>
-<context>
     <name>QgsHelpViewer</name>
-    <message>
-        <source>Quantum GIS Help - </source>
-        <translation type="obsolete">Quantum GIS 說明 - </translation>
-    </message>
-    <message>
-        <source>Failed to get the help text from the database</source>
-        <translation type="obsolete">從資料庫中獲取説明文本失敗</translation>
-    </message>
     <message>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="196"/>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="221"/>
@@ -20705,13 +14011,6 @@ at line %2 column %3</source>
         <translation>HTTP回應完成，不過仍有錯誤: %1</translation>
     </message>
     <message>
-        <source>Network timed out after %1 seconds of inactivity.
-This may be a problem in your network connection or at the WMS server.</source>
-        <translation type="obsolete">
-        
-        </translation>
-    </message>
-    <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="403"/>
         <source>HTTP transaction completed, however there was an error: %1</source>
         <translation>HTTP處理完成，不過仍有錯誤: %1</translation>
@@ -20786,14 +14085,6 @@ This may be a problem in your network connection or at the WMS server.</source>
 </context>
 <context>
     <name>QgsIdentifyResults</name>
-    <message>
-        <source>&lt;center&gt;Run action&lt;/center&gt;</source>
-        <translation type="obsolete">&lt;center&gt;運行動作&lt;/center&gt;</translation>
-    </message>
-    <message>
-        <source>Identify Results - </source>
-        <translation type="obsolete">結果 -</translation>
-    </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="115"/>
         <source>Feature</source>
@@ -20906,26 +14197,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <source>Identify Results</source>
         <translation>結果</translation>
     </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">說明</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">關閉</translation>
-    </message>
-    <message>
-        <source>Feature</source>
-        <translation type="obsolete">圖徵</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="obsolete">值</translation>
-    </message>
 </context>
 <context>
     <name>QgsImageWarper</name>
@@ -21016,17 +14287,9 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>輸入</translation>
     </message>
     <message>
-        <source>Input vector layer</source>
-        <translation type="obsolete">輸入向量圖層</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="78"/>
         <source>Use z-Coordinate for interpolation</source>
         <translation>使用z-Coordinate內插</translation>
-    </message>
-    <message>
-        <source>Interpolation attribute </source>
-        <translation type="obsolete">內插屬性</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="133"/>
@@ -21047,14 +14310,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="294"/>
         <source>Output file </source>
         <translation>輸出檔案</translation>
-    </message>
-    <message>
-        <source>Vector layers:</source>
-        <translation type="obsolete">向量圖層:</translation>
-    </message>
-    <message>
-        <source>Interpolation attribute:</source>
-        <translation type="obsolete">內插屬性:</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="85"/>
@@ -21188,18 +14443,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>下界值</translation>
     </message>
     <message>
-        <source>-</source>
-        <translation type="obsolete">-</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">確定</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">取消</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsludialogbase.ui" line="36"/>
         <source>Upper value</source>
         <translation>上界值</translation>
@@ -21221,18 +14464,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>表單1</translation>
     </message>
     <message>
-        <source>Source:</source>
-        <translation type="obsolete">源:</translation>
-    </message>
-    <message>
-        <source>Field containing label:</source>
-        <translation type="obsolete">包含標籤的欄位:</translation>
-    </message>
-    <message>
-        <source>Default label:</source>
-        <translation type="obsolete">預設標籤:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="861"/>
         <source>Preview:</source>
         <translation>字體預覽:</translation>
@@ -21243,25 +14474,9 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>搖滾吧 QGIS!</translation>
     </message>
     <message>
-        <source>Font Style</source>
-        <translation type="obsolete">字體樣式</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="442"/>
         <source>Font</source>
         <translation>字體</translation>
-    </message>
-    <message>
-        <source>Font size units are in ...</source>
-        <translation type="obsolete">字體大小的單位是...</translation>
-    </message>
-    <message>
-        <source>Points</source>
-        <translation type="obsolete">點單位</translation>
-    </message>
-    <message>
-        <source>Map units</source>
-        <translation type="obsolete">地圖單位</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="237"/>
@@ -21274,53 +14489,9 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>透明度:</translation>
     </message>
     <message>
-        <source>Colour</source>
-        <translation type="obsolete">顏色</translation>
-    </message>
-    <message>
-        <source>Position</source>
-        <translation type="obsolete">位置</translation>
-    </message>
-    <message>
-        <source>X Offset (pts):</source>
-        <translation type="obsolete">X偏移量(pts):</translation>
-    </message>
-    <message>
-        <source>Y Offset (pts):</source>
-        <translation type="obsolete">Y偏移量(pts):</translation>
-    </message>
-    <message>
-        <source>Offset units are in ...</source>
-        <translation type="obsolete">偏移量單位是...</translation>
-    </message>
-    <message>
-        <source>Buffer Settings</source>
-        <translation type="obsolete">字體輪廓設定</translation>
-    </message>
-    <message>
-        <source>Buffer Labels?</source>
-        <translation type="obsolete">標籤是否使用字體輪廓？</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="740"/>
         <source>Size:</source>
         <translation>大小:</translation>
-    </message>
-    <message>
-        <source>Buffer size is in ...</source>
-        <translation type="obsolete">字體輪廓大小是...</translation>
-    </message>
-    <message>
-        <source>Size is in map units</source>
-        <translation type="obsolete">地圖單位大小</translation>
-    </message>
-    <message>
-        <source>Size is in points</source>
-        <translation type="obsolete">點單位大小</translation>
-    </message>
-    <message>
-        <source>Alignment</source>
-        <translation type="obsolete">對齊</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="94"/>
@@ -21368,106 +14539,10 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>左下方</translation>
     </message>
     <message>
-        <source>Angle (deg):</source>
-        <translation type="obsolete">角度(度):</translation>
-    </message>
-    <message>
-        <source>Use best judgement when labels collide</source>
-        <translation type="obsolete">當標籤重疊時使用最佳判斷</translation>
-    </message>
-    <message>
-        <source>Data Defined Style</source>
-        <translation type="obsolete">定義樣式的資料</translation>
-    </message>
-    <message>
-        <source>&amp;Font family:</source>
-        <translation type="obsolete">字體類型(&amp;F):</translation>
-    </message>
-    <message>
-        <source>&amp;Italic:</source>
-        <translation type="obsolete">斜體(&amp;I):</translation>
-    </message>
-    <message>
-        <source>&amp;Underline:</source>
-        <translation type="obsolete">底線(&amp;U):</translation>
-    </message>
-    <message>
-        <source>&amp;Bold:</source>
-        <translation type="obsolete">粗體(&amp;B):</translation>
-    </message>
-    <message>
-        <source>&amp;Size:</source>
-        <translation type="obsolete">大小(&amp;S):</translation>
-    </message>
-    <message>
-        <source>X Coordinate:</source>
-        <translation type="obsolete">X座標:</translation>
-    </message>
-    <message>
-        <source>Y Coordinate:</source>
-        <translation type="obsolete">Y座標:</translation>
-    </message>
-    <message>
-        <source>Placement:</source>
-        <translation type="obsolete">位置:</translation>
-    </message>
-    <message>
-        <source>&amp;Colour:</source>
-        <translation type="obsolete">顏色(&amp;C):</translation>
-    </message>
-    <message>
-        <source>Font and Alignment</source>
-        <translation type="obsolete">字體和對齊</translation>
-    </message>
-    <message>
-        <source>Buffer and Position</source>
-        <translation type="obsolete">字體輪廓和位置</translation>
-    </message>
-    <message>
-        <source>Advanced Data Defined Style</source>
-        <translation type="obsolete">進階的資料定義的樣式</translation>
-    </message>
-    <message>
-        <source>Font size units</source>
-        <translation type="obsolete">字體大小的單位</translation>
-    </message>
-    <message>
-        <source>Font Alignment</source>
-        <translation type="obsolete">字體對齊</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="54"/>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="506"/>
         <source>Placement</source>
         <translation>位置</translation>
-    </message>
-    <message>
-        <source>Buffer</source>
-        <translation type="obsolete">字體輪廓</translation>
-    </message>
-    <message>
-        <source>Buffer size units</source>
-        <translation type="obsolete">字體輪廓大小的單位</translation>
-    </message>
-    <message>
-        <source>Offset units</source>
-        <translation type="obsolete">偏移量的單位</translation>
-    </message>
-    <message>
-        <source>Data Defined Alignment</source>
-        <translation type="obsolete">定義對齊的欄位</translation>
-    </message>
-    <message>
-        <source>Data Defined Buffer</source>
-        <translation type="obsolete">定義字體輪廓的欄位</translation>
-    </message>
-    <message>
-        <source>Data Defined Position</source>
-        <translation type="obsolete">定義位置的欄位</translation>
-    </message>
-    <message>
-        <source>Source</source>
-        <translation type="obsolete">來源</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="311"/>
@@ -21480,14 +14555,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>預設標籤</translation>
     </message>
     <message>
-        <source>Data defined style</source>
-        <translation type="obsolete">選擇定義樣式的欄位</translation>
-    </message>
-    <message>
-        <source>Data defined alignment</source>
-        <translation type="obsolete">選擇定義對齊方式的欄位</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="696"/>
         <source>Data defined buffer</source>
         <translation>選擇定義字體輪廓的欄位</translation>
@@ -21496,10 +14563,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="756"/>
         <source>Data defined position</source>
         <translation>選擇定義位置的欄位</translation>
-    </message>
-    <message>
-        <source>Font transparency</source>
-        <translation type="obsolete">字體透明度</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="215"/>
@@ -21514,17 +14577,9 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>角度(度)</translation>
     </message>
     <message>
-        <source>Buffer labels?</source>
-        <translation type="obsolete">是否使用字體輪廓?</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="188"/>
         <source>Buffer size</source>
         <translation>字體輪廓大小</translation>
-    </message>
-    <message>
-        <source>Transparency</source>
-        <translation type="obsolete">透明度</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="806"/>
@@ -21592,10 +14647,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>使用多行標籤?</translation>
     </message>
     <message>
-        <source>General</source>
-        <translation type="obsolete">一般</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="132"/>
         <source>Use scale dependent rendering</source>
         <translation>依比例繪圖</translation>
@@ -21609,14 +14660,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="154"/>
         <source>Minimum</source>
         <translation>最小值</translation>
-    </message>
-    <message>
-        <source>Minimum scale at which this layer will be displayed. </source>
-        <translation type="obsolete">圖層呈現的最小比例。</translation>
-    </message>
-    <message>
-        <source>Maximum scale at which this layer will be displayed. </source>
-        <translation type="obsolete">圖層呈現的最大比例。</translation>
     </message>
     <message utf8="true">
         <location filename="../src/ui/qgslabeldialogbase.ui" line="399"/>
@@ -21694,50 +14737,11 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
 </context>
 <context>
-    <name>QgsLayerProjectionSelectorBase</name>
-    <message>
-        <source>Layer Projection Selector</source>
-        <translation type="obsolete">圖層投影選擇工具</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">確定</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Bitstream Vera Sans&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:18pt;font-weight:600&quot;&gt;Define this layer&apos;s projection:&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;This layer appears to have no projection specification. By default, this layer will now have its projection set to that of the project, but you may override this by selecting a different projection below.&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Bitstream Vera Sans&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:18pt;font-weight:600&quot;&gt;定義該圖層的投影：&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;這個圖層看起來沒有指定投影。預設情況下，它的投影會被設定為專案的投影。但是您也可以從下面選擇一個不同的投影來取代它。&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</translation>
-    </message>
-</context>
-<context>
     <name>QgsLegend</name>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="122"/>
         <source>group</source>
         <translation>群組</translation>
-    </message>
-    <message>
-        <source>&amp;Properties</source>
-        <translation type="obsolete">屬性(&amp;P)</translation>
-    </message>
-    <message>
-        <source>&amp;Zoom to layer extent</source>
-        <translation type="obsolete">縮放到圖層的範圍 (&amp;Z)</translation>
-    </message>
-    <message>
-        <source>&amp;Add to overview</source>
-        <translation type="obsolete">新增到全覽圖 (&amp;A)</translation>
-    </message>
-    <message>
-        <source>&amp;Remove from overview</source>
-        <translation type="obsolete">從全覽圖中移除 (&amp;R)</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="458"/>
@@ -21770,26 +14774,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>全部折疊 (&amp;C)</translation>
     </message>
     <message>
-        <source>Show file groups</source>
-        <translation type="obsolete">顯示檔案資料</translation>
-    </message>
-    <message>
-        <source>&amp;Open attribute table</source>
-        <translation type="obsolete">開啟屬性工作表(&amp;O)</translation>
-    </message>
-    <message>
-        <source>Allow Editing</source>
-        <translation type="obsolete">放棄編輯</translation>
-    </message>
-    <message>
-        <source>Save as shapefile...</source>
-        <translation type="obsolete">儲存為Shape檔...</translation>
-    </message>
-    <message>
-        <source>&amp;Convert to...</source>
-        <translation type="obsolete">轉換為(&amp;C)... </translation>
-    </message>
-    <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="1688"/>
         <source>No Layer Selected</source>
         <translation type="unfinished">沒有選取圖層</translation>
@@ -21810,21 +14794,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/app/legend/qgslegend.cpp" line="686"/>
         <source>Do you want to save the changes to layer %1?</source>
         <translation type="unfinished">您想將改變的內容儲存至圖層 %1?</translation>
-    </message>
-</context>
-<context>
-    <name>QgsLegendItemBase</name>
-    <message>
-        <source>Form1</source>
-        <translation type="obsolete">表單1</translation>
-    </message>
-    <message>
-        <source>CheckBox1</source>
-        <translation type="obsolete">核取方塊</translation>
-    </message>
-    <message>
-        <source>TextLabel1</source>
-        <translation type="obsolete">文本標籤1</translation>
     </message>
 </context>
 <context>
@@ -21865,14 +14834,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Save as shapefile...</source>
-        <translation type="obsolete">儲存為Shape檔...</translation>
-    </message>
-    <message>
-        <source>Save selection as shapefile...</source>
-        <translation type="obsolete">儲存選擇區域為shapfile...</translation>
-    </message>
-    <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="441"/>
         <source>&amp;Properties</source>
         <translation type="unfinished">屬性(&amp;P)</translation>
@@ -21881,14 +14842,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="672"/>
         <source>Save error</source>
         <translation type="unfinished">儲存錯誤</translation>
-    </message>
-    <message>
-        <source>Multiple layers</source>
-        <translation type="obsolete">多個圖層</translation>
-    </message>
-    <message>
-        <source>This item contains multiple layers. Displaying multiple layers in the table is not supported.</source>
-        <translation type="obsolete">這個項目包含多個圖層。不支援在表格中顯示多個圖層。</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="518"/>
@@ -21911,199 +14864,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="668"/>
         <source>Export to Shapefile has been completed</source>
         <translation type="unfinished">匯出Shape檔已完成</translation>
-    </message>
-    <message>
-        <source>Driver not found</source>
-        <translation type="obsolete">找不到磁碟機</translation>
-    </message>
-    <message>
-        <source>ESRI Shapefile driver is not available</source>
-        <translation type="obsolete">ESRI Shape檔找不到</translation>
-    </message>
-    <message>
-        <source>Error creating shapefile</source>
-        <translation type="obsolete">建立shape檔錯誤</translation>
-    </message>
-    <message>
-        <source>The shapefile could not be created (%1)</source>
-        <translation type="obsolete">Shape檔無法建立(%1)</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">錯誤</translation>
-    </message>
-    <message>
-        <source>Layer creation failed</source>
-        <translation type="obsolete">圖層建立失敗</translation>
-    </message>
-    <message>
-        <source>Layer attribute table contains unsupported datatype(s)</source>
-        <translation type="obsolete">圖層屬性工作表包含未支援的資料型態</translation>
-    </message>
-    <message>
-        <source>Creation of an attribute failed</source>
-        <translation type="obsolete">建立屬性失敗</translation>
-    </message>
-</context>
-<context>
-    <name>QgsLegendLayerFile</name>
-    <message>
-        <source>Attribute table - </source>
-        <translation type="obsolete">屬性工作表</translation>
-    </message>
-    <message>
-        <source>Save layer as...</source>
-        <translation type="obsolete">圖層另存為...</translation>
-    </message>
-    <message>
-        <source>Start editing failed</source>
-        <translation type="obsolete">開始編輯失敗</translation>
-    </message>
-    <message>
-        <source>Provider cannot be opened for editing</source>
-        <translation type="obsolete">資料來源不能以可寫方式開啟</translation>
-    </message>
-    <message>
-        <source>Stop editing</source>
-        <translation type="obsolete">結束編輯</translation>
-    </message>
-    <message>
-        <source>Do you want to save the changes?</source>
-        <translation type="obsolete">您是否想儲存更改?</translation>
-    </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation type="obsolete">是(&amp;Y)</translation>
-    </message>
-    <message>
-        <source>&amp;No</source>
-        <translation type="obsolete">否(&amp;N)</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">錯誤</translation>
-    </message>
-    <message>
-        <source>Could not commit changes</source>
-        <translation type="obsolete">無法提交更改</translation>
-    </message>
-    <message>
-        <source>Problems during roll back</source>
-        <translation type="obsolete">回滾時發生問題</translation>
-    </message>
-    <message>
-        <source>Saving done</source>
-        <translation type="obsolete">儲存完成</translation>
-    </message>
-    <message>
-        <source>Export to Shapefile has been completed</source>
-        <translation type="obsolete">匯出Shape檔已完成</translation>
-    </message>
-    <message>
-        <source>Driver not found</source>
-        <translation type="obsolete">找不到磁碟機</translation>
-    </message>
-    <message>
-        <source>ESRI Shapefile driver is not available</source>
-        <translation type="obsolete">ESRI Shape檔找不到</translation>
-    </message>
-    <message>
-        <source>Error creating shapefile</source>
-        <translation type="obsolete">建立shape檔錯誤</translation>
-    </message>
-    <message>
-        <source>Layer creation failed</source>
-        <translation type="obsolete">圖層建立失敗</translation>
-    </message>
-    <message>
-        <source>&amp;Zoom to layer extent</source>
-        <translation type="obsolete">縮放到圖層的範圍 (&amp;Z)</translation>
-    </message>
-    <message>
-        <source>&amp;Show in overview</source>
-        <translation type="obsolete">在全覽圖中顯示(&amp;S)</translation>
-    </message>
-    <message>
-        <source>&amp;Remove</source>
-        <translation type="obsolete">移除(&amp;R)</translation>
-    </message>
-    <message>
-        <source>&amp;Open attribute table</source>
-        <translation type="obsolete">開啟屬性工作表(&amp;O)</translation>
-    </message>
-    <message>
-        <source>Save as shapefile...</source>
-        <translation type="obsolete">儲存為Shape檔...</translation>
-    </message>
-    <message>
-        <source>Save selection as shapefile...</source>
-        <translation type="obsolete">儲存選取部分為Shape檔...</translation>
-    </message>
-    <message>
-        <source>&amp;Properties</source>
-        <translation type="obsolete">屬性(&amp;P)</translation>
-    </message>
-    <message>
-        <source>Layer attribute table contains unsupported datatype(s)</source>
-        <translation type="obsolete">圖層屬性工作表包含未支援的資料型態</translation>
-    </message>
-    <message>
-        <source>Select the coordinate reference system for the saved shapefile. The data points will be transformed from the layer coordinate reference system.</source>
-        <translation type="obsolete">為儲存的Shape檔選取座標參考系統。這些點資料將會由圖層座標系統轉換。</translation>
-    </message>
-    <message>
-        <source>The shapefile could not be created (%1)</source>
-        <translation type="obsolete">Shape檔無法建立(%1)</translation>
-    </message>
-    <message>
-        <source>Creation of an attribute failed</source>
-        <translation type="obsolete">建立屬性失敗</translation>
-    </message>
-</context>
-<context>
-    <name>QgsLineStyleDialogBase</name>
-    <message>
-        <source>Select a line style</source>
-        <translation type="obsolete">選擇線的樣式</translation>
-    </message>
-    <message>
-        <source>Styles</source>
-        <translation type="obsolete">樣式</translation>
-    </message>
-    <message>
-        <source>Ok</source>
-        <translation type="obsolete">確定</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">取消</translation>
-    </message>
-</context>
-<context>
-    <name>QgsLineStyleWidgetBase</name>
-    <message>
-        <source>Form2</source>
-        <translation type="obsolete">表單2</translation>
-    </message>
-    <message>
-        <source>Outline Style</source>
-        <translation type="obsolete">框線樣式</translation>
-    </message>
-    <message>
-        <source>Width:</source>
-        <translation type="obsolete">寬度:</translation>
-    </message>
-    <message>
-        <source>Colour:</source>
-        <translation type="obsolete">顏色:</translation>
-    </message>
-    <message>
-        <source>LineStyleWidget</source>
-        <translation type="obsolete">線形裝飾</translation>
-    </message>
-    <message>
-        <source>col</source>
-        <translation type="obsolete">列</translation>
     </message>
 </context>
 <context>
@@ -22130,22 +14890,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>表單</translation>
     </message>
     <message>
-        <source>Scale linearly between 0 and the following attribute value/ diagram size:</source>
-        <translation type="obsolete">線性比例介於0與(以下的資性質/圖表大小):</translation>
-    </message>
-    <message>
-        <source>find maximum Value:</source>
-        <translation type="obsolete">尋找最大值:</translation>
-    </message>
-    <message>
-        <source>Size:</source>
-        <translation type="obsolete">大小:</translation>
-    </message>
-    <message>
-        <source>Size unit: </source>
-        <translation type="obsolete">單位:</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/diagram_overlay/qgslinearlyscalingdialogbase.ui" line="35"/>
         <source>Find maximum value</source>
         <translation type="unfinished">找最大值</translation>
@@ -22164,52 +14908,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/plugins/diagram_overlay/qgslinearlyscalingdialogbase.ui" line="23"/>
         <source>Scale linearly between 0 and the following attribute value / diagram size:</source>
         <translation type="unfinished">線性比例介於0與以下的資性質/圖表大小:</translation>
-    </message>
-</context>
-<context>
-    <name>QgsLocationCaptureWidget</name>
-    <message>
-        <source>Captured Pos: </source>
-        <translation type="obsolete">截取的位置:</translation>
-    </message>
-    <message>
-        <source>Current Pos: </source>
-        <translation type="obsolete">目前的位置:</translation>
-    </message>
-</context>
-<context>
-    <name>QgsLocationCaptureWidgetBase</name>
-    <message>
-        <source>Form1</source>
-        <translation type="obsolete">表單1</translation>
-    </message>
-    <message>
-        <source>ZoomIn</source>
-        <translation type="obsolete">放大</translation>
-    </message>
-    <message>
-        <source>Pan</source>
-        <translation type="obsolete">移動</translation>
-    </message>
-    <message>
-        <source>Zoom Out</source>
-        <translation type="obsolete">縮小</translation>
-    </message>
-    <message>
-        <source>Capture Pos</source>
-        <translation type="obsolete">截取位置</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">確定</translation>
-    </message>
-    <message>
-        <source>Captured Pos:</source>
-        <translation type="obsolete">截取的位置:</translation>
-    </message>
-    <message>
-        <source>Current Pos:</source>
-        <translation type="obsolete">目前的位置:</translation>
     </message>
 </context>
 <context>
@@ -22328,30 +15026,6 @@ This may be a problem in your network connection or at the WMS server.</source>
 <context>
     <name>QgsMapCanvas</name>
     <message>
-        <source>No active layer</source>
-        <translation type="obsolete">沒有啟動的圖層</translation>
-    </message>
-    <message>
-        <source>To select features, you must choose an layer active by clicking on its name in the legend</source>
-        <translation type="obsolete">要選取圖徵，您必須在圖例上按一下一個圖層的名稱，啟動該圖層</translation>
-    </message>
-    <message>
-        <source>To identify features, you must choose an layer active by clicking on its name in the legend</source>
-        <translation type="obsolete">要識別圖徵，，您必須在圖例上按一下一個圖層的名稱，啟動該圖層</translation>
-    </message>
-    <message>
-        <source>Error when projecting the view extent, you may need to manually zoom to the region of interest.</source>
-        <translation type="obsolete">投影檢視區域範圍時出錯，您也許需要手動縮放到感興趣的區域.</translation>
-    </message>
-    <message>
-        <source>Could not draw</source>
-        <translation type="obsolete">無法繪製</translation>
-    </message>
-    <message>
-        <source>because</source>
-        <translation type="obsolete">因為</translation>
-    </message>
-    <message>
         <location filename="../src/gui/qgsmapcanvas.cpp" line="1368"/>
         <source>Could not draw %1 because:
 %2</source>
@@ -22400,22 +15074,6 @@ This may be a problem in your network connection or at the WMS server.</source>
 </context>
 <context>
     <name>QgsMapLayer</name>
-    <message>
-        <source>&amp;Zoom to extent of selected layer</source>
-        <translation type="obsolete">縮放至選取的圖層(&amp;Z)</translation>
-    </message>
-    <message>
-        <source>&amp;Remove</source>
-        <translation type="obsolete">移除(&amp;R)</translation>
-    </message>
-    <message>
-        <source>&amp;Properties</source>
-        <translation type="obsolete">屬性(&amp;P)</translation>
-    </message>
-    <message>
-        <source>Toggle in Overview</source>
-        <translation type="obsolete">放入全覽圖中</translation>
-    </message>
     <message>
         <location filename="../src/core/qgsmaplayer.cpp" line="550"/>
         <location filename="../src/core/qgsmaplayer.cpp" line="566"/>
@@ -22574,10 +15232,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="426"/>
         <source>Cannot add feature. Unknown WKB type</source>
         <translation type="unfinished">無法新增圖徵，未知的WKB形態</translation>
-    </message>
-    <message>
-        <source>Could not remove polygon intersection</source>
-        <translation type="obsolete">無法移除多邊形的交叉</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdfeature.cpp" line="175"/>
@@ -22797,17 +15451,6 @@ This may be a problem in your network connection or at the WMS server.</source>
 <context>
     <name>QgsMapToolIdentify</name>
     <message>
-        <source>- %1 features found</source>
-        <comment>Identify results window title</comment>
-        <translation type="obsolete">
-        
-        
-        
-        
-        
-        </translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="201"/>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="391"/>
         <source>(clicked coordinate)</source>
@@ -22824,16 +15467,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>識別圖徵，您必須在圖例中選取一個作用中的圖層</translation>
     </message>
     <message>
-        <source>Band</source>
-        <translation type="obsolete">波段</translation>
-    </message>
-    <message>
-        <source>WMS identify result for %1:
-%2</source>
-        <translation type="obsolete">WMS識別結果是%1:
-%2</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="297"/>
         <source>Length</source>
         <translation>長度</translation>
@@ -22842,42 +15475,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="317"/>
         <source>Area</source>
         <translation>面積</translation>
-    </message>
-    <message>
-        <source>action</source>
-        <translation type="obsolete">動作</translation>
-    </message>
-    <message>
-        <source>No features found</source>
-        <translation type="obsolete">沒有找到圖徵</translation>
-    </message>
-    <message>
-        <source>No features were found in the active layer at the point you clicked</source>
-        <translation type="obsolete">在目前啟動圖層的滑鼠點擊位置上未發現圖徵</translation>
-    </message>
-    <message numerus="yes">
-        <source>%1 - %n feature(s) found</source>
-        <comment>Identify results window title</comment>
-        <translation type="obsolete">
-            <numerusform>%1 - %n 圖徵找到</numerusform>
-        </translation>
-    </message>
-    <message>
-        <source>Could not draw %1 because:
-%2</source>
-        <comment>COMMENTED OUT</comment>
-        <translation type="obsolete">無法繪圖 %1 因為:
-%2</translation>
-    </message>
-    <message>
-        <source>Could not identify objects on %1 because:
-%2</source>
-        <translation type="obsolete">無法在 %1 識別物件，因為:
-%2</translation>
-    </message>
-    <message>
-        <source>Attribute changed</source>
-        <translation type="obsolete">屬性已更改</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="302"/>
@@ -23189,14 +15786,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Yes</source>
-        <translation type="obsolete">是</translation>
-    </message>
-    <message>
-        <source>No</source>
-        <translation type="obsolete">否</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsmapserverexport.cpp" line="76"/>
         <source>%1 exists.
 Do you want to overwrite it?</source>
@@ -23245,30 +15834,6 @@ Do you want to overwrite it?</source>
         <location filename="../src/ui/qgsmapserverexportbase.ui" line="195"/>
         <source>Width</source>
         <translation>寬度</translation>
-    </message>
-    <message>
-        <source>dd</source>
-        <translation type="obsolete">十進位度</translation>
-    </message>
-    <message>
-        <source>feet</source>
-        <translation type="obsolete">英呎</translation>
-    </message>
-    <message>
-        <source>meters</source>
-        <translation type="obsolete">公尺</translation>
-    </message>
-    <message>
-        <source>miles</source>
-        <translation type="obsolete">英里</translation>
-    </message>
-    <message>
-        <source>inches</source>
-        <translation type="obsolete">英寸</translation>
-    </message>
-    <message>
-        <source>kilometers</source>
-        <translation type="obsolete">公里</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="182"/>
@@ -23356,33 +15921,9 @@ Do you want to overwrite it?</source>
         <translation>範本</translation>
     </message>
     <message>
-        <source>&amp;Help</source>
-        <translation type="obsolete">說明(&amp;H)</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">確定(&amp;O)</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">取消(&amp;C)</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsmapserverexportbase.ui" line="49"/>
         <source>...</source>
         <translation>...</translation>
-    </message>
-    <message>
-        <source>QGIS Project File</source>
-        <translation type="obsolete">QGIS專案檔案</translation>
-    </message>
-    <message>
-        <source>QGIS project file to export to MapServer map format</source>
-        <translation type="obsolete">將QGIS專案檔案輸出為MapServer地圖格式</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="70"/>
@@ -23410,10 +15951,6 @@ Do you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>QGIS project file</source>
-        <translation type="obsolete">QGIS專案檔案</translation>
-    </message>
-    <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="47"/>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="291"/>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="308"/>
@@ -23425,10 +15962,6 @@ Do you want to overwrite it?</source>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="77"/>
         <source>Save As...</source>
         <translation type="unfinished">存檔為...</translation>
-    </message>
-    <message>
-        <source>Options</source>
-        <translation type="obsolete">選項</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="459"/>
@@ -23545,73 +16078,11 @@ http://my.host.com/cgi-bin/mapserv.exe</source>
     </message>
 </context>
 <context>
-    <name>QgsMarkerDialogBase</name>
-    <message>
-        <source>Choose a marker symbol</source>
-        <translation type="obsolete">選擇標記符號</translation>
-    </message>
-    <message>
-        <source>Directory</source>
-        <translation type="obsolete">資料夾</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>Ok</source>
-        <translation type="obsolete">確定</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">取消</translation>
-    </message>
-    <message>
-        <source>New Item</source>
-        <translation type="obsolete">新專案</translation>
-    </message>
-</context>
-<context>
-    <name>QgsMeasure</name>
-    <message>
-        <source>Increment</source>
-        <translation type="obsolete">增量</translation>
-    </message>
-    <message>
-        <source>Total</source>
-        <translation type="obsolete">總計</translation>
-    </message>
-    <message>
-        <source>Segments (in meters)</source>
-        <translation type="obsolete">線段(公尺)</translation>
-    </message>
-</context>
-<context>
     <name>QgsMeasureBase</name>
     <message>
         <location filename="../src/ui/qgsmeasurebase.ui" line="20"/>
         <source>Measure</source>
         <translation>測量</translation>
-    </message>
-    <message>
-        <source>New</source>
-        <translation type="obsolete">新增</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">關閉</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">說明</translation>
-    </message>
-    <message>
-        <source>Cl&amp;ose</source>
-        <translation type="obsolete">關閉(&amp;o)</translation>
-    </message>
-    <message>
-        <source>Total:</source>
-        <translation type="obsolete">總計:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmeasurebase.ui" line="89"/>
@@ -23741,127 +16212,9 @@ http://my.host.com/cgi-bin/mapserv.exe</source>
         <translation>QGIS消息</translation>
     </message>
     <message>
-        <source>Close</source>
-        <translation type="obsolete">關閉</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsmessageviewer.ui" line="49"/>
         <source>Don&apos;t show this message again</source>
         <translation type="unfinished">不要在顯示此訊息</translation>
-    </message>
-</context>
-<context>
-    <name>QgsMessageViewerBase</name>
-    <message>
-        <source>SPIT Message</source>
-        <translation type="obsolete">SPIT消息</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">關閉</translation>
-    </message>
-</context>
-<context>
-    <name>QgsMySQLProvider</name>
-    <message>
-        <source>No GEOS Support!</source>
-        <translation type="obsolete">沒有GEOS支持!</translation>
-    </message>
-    <message>
-        <source>Save layer as...</source>
-        <translation type="obsolete">圖層另存為...</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">錯誤</translation>
-    </message>
-</context>
-<context>
-    <name>QgsNewConnection</name>
-    <message>
-        <source>Test connection</source>
-        <translation type="obsolete">測試連接</translation>
-    </message>
-    <message>
-        <source>Connection to %1 was successfull</source>
-        <translation type="obsolete">成功連接到%1</translation>
-    </message>
-    <message>
-        <source>Connection failed - Check settings and try again.
-
-Extended error information:
-</source>
-        <translation type="obsolete">連接失敗 - 檢查設定然後重試。
-
-詳細的錯誤資訊:
-</translation>
-    </message>
-</context>
-<context>
-    <name>QgsNewConnectionBase</name>
-    <message>
-        <source>Create a New PostGIS connection</source>
-        <translation type="obsolete">建立新的PostGIS連接</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">確定</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">取消</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">說明</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
-    </message>
-    <message>
-        <source>Connection Information</source>
-        <translation type="obsolete">連接資訊</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">名稱</translation>
-    </message>
-    <message>
-        <source>Host</source>
-        <translation type="obsolete">主機</translation>
-    </message>
-    <message>
-        <source>Database</source>
-        <translation type="obsolete">資料庫</translation>
-    </message>
-    <message>
-        <source>Port</source>
-        <translation type="obsolete">埠</translation>
-    </message>
-    <message>
-        <source>Username</source>
-        <translation type="obsolete">使用者名稱</translation>
-    </message>
-    <message>
-        <source>Password</source>
-        <translation type="obsolete">密碼</translation>
-    </message>
-    <message>
-        <source>Name of the new connection</source>
-        <translation type="obsolete">新連接的名稱</translation>
-    </message>
-    <message>
-        <source>5432</source>
-        <translation type="obsolete">5432</translation>
-    </message>
-    <message>
-        <source>Save Password</source>
-        <translation type="obsolete">儲存密碼</translation>
-    </message>
-    <message>
-        <source>Test Connect</source>
-        <translation type="obsolete">測試連接</translation>
     </message>
 </context>
 <context>
@@ -23880,14 +16233,6 @@ Extended error information:
 <context>
     <name>QgsNewHttpConnectionBase</name>
     <message>
-        <source>Create a New WMS connection</source>
-        <translation type="obsolete">建立新的WMS連接</translation>
-    </message>
-    <message>
-        <source>Connection Information</source>
-        <translation type="obsolete">連接資訊</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="32"/>
         <source>Name</source>
         <translation>名稱</translation>
@@ -23898,30 +16243,6 @@ Extended error information:
         <translation>URL</translation>
     </message>
     <message>
-        <source>Proxy Host</source>
-        <translation type="obsolete">代理伺服器主機</translation>
-    </message>
-    <message>
-        <source>Proxy Port</source>
-        <translation type="obsolete">代理伺服器埠</translation>
-    </message>
-    <message>
-        <source>Proxy User</source>
-        <translation type="obsolete">代理伺服器使用者</translation>
-    </message>
-    <message>
-        <source>Proxy Password</source>
-        <translation type="obsolete">代理伺服器密碼</translation>
-    </message>
-    <message>
-        <source>Your user name for the HTTP proxy (optional)</source>
-        <translation type="obsolete">HTTP代理的使用者名稱 (可選的)</translation>
-    </message>
-    <message>
-        <source>Password for your HTTP proxy (optional)</source>
-        <translation type="obsolete">HTTP代理的密碼 (可選的)</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="54"/>
         <source>Name of the new connection</source>
         <translation>新連接的名稱</translation>
@@ -23930,30 +16251,6 @@ Extended error information:
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="77"/>
         <source>HTTP address of the Web Map Server</source>
         <translation>Web Map Server的HTTP地址</translation>
-    </message>
-    <message>
-        <source>Name of your HTTP proxy (optional)</source>
-        <translation type="obsolete">HTTP代理的名稱 (可選的)</translation>
-    </message>
-    <message>
-        <source>Port number of your HTTP proxy (optional)</source>
-        <translation type="obsolete">HTTP代理的埠號 (可選的)</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">確定</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">取消</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">說明</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="14"/>
@@ -24031,10 +16328,6 @@ Extended error information:
         <translation type="unfinished">儲存密碼</translation>
     </message>
     <message>
-        <source>Test Connect</source>
-        <translation type="obsolete">測試連接</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="90"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
@@ -24077,22 +16370,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="174"/>
         <source>Name of the new connection</source>
         <translation type="unfinished">新連接的名稱</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">確定</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">取消</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">說明</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="65"/>
@@ -24246,21 +16523,9 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished">地圖裝飾(&amp;D)</translation>
     </message>
     <message>
-        <source>&amp;NorthArrow</source>
-        <translation type="obsolete">指北針(&amp;N)</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="97"/>
         <source>Creates a north arrow that is displayed on the map canvas</source>
         <translation>在地圖檢視中建立指北針</translation>
-    </message>
-    <message>
-        <source>North Arrow</source>
-        <translation type="obsolete">指北針</translation>
-    </message>
-    <message>
-        <source>Pixmap Not Found</source>
-        <translation type="obsolete">Pixmap未找到</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="81"/>
@@ -24281,10 +16546,6 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsNorthArrowPluginGui</name>
     <message>
-        <source>Pixmap Not Found</source>
-        <translation type="obsolete">Pixmap未找到</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/north_arrow/plugingui.cpp" line="150"/>
         <source>Pixmap not found</source>
         <translation type="unfinished"></translation>
@@ -24296,10 +16557,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/north_arrow/pluginguibase.ui" line="14"/>
         <source>North Arrow Plugin</source>
         <translation>指北針附加元件</translation>
-    </message>
-    <message>
-        <source>Properties</source>
-        <translation type="obsolete">屬性</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/pluginguibase.ui" line="52"/>
@@ -24350,38 +16607,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/north_arrow/pluginguibase.ui" line="35"/>
         <source>Preview of north arrow</source>
         <translation>指北針預覽</translation>
-    </message>
-    <message>
-        <source>Icon</source>
-        <translation type="obsolete">圖示</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>New Item</source>
-        <translation type="obsolete">新專案</translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">確定(&amp;O)</translation>
-    </message>
-    <message>
-        <source>Alt+O</source>
-        <translation type="obsolete">Alt+O</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">取消(&amp;C)</translation>
-    </message>
-    <message>
-        <source>Alt+C</source>
-        <translation type="obsolete">Alt+C</translation>
-    </message>
-    <message>
-        <source>Browse...</source>
-        <translation type="obsolete">瀏覽...</translation>
     </message>
 </context>
 <context>
@@ -24447,18 +16672,6 @@ p, li { white-space: pre-wrap; }
 </context>
 <context>
     <name>QgsOgrProvider</name>
-    <message>
-        <source>Integer</source>
-        <translation type="obsolete">整數</translation>
-    </message>
-    <message>
-        <source>Real</source>
-        <translation type="obsolete">實數</translation>
-    </message>
-    <message>
-        <source>String</source>
-        <translation type="obsolete">字串</translation>
-    </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="173"/>
         <source>Whole number (integer)</source>
@@ -24898,116 +17111,101 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsOptions</name>
     <message>
-        <source>Detected active locale on your system: </source>
-        <translation type="obsolete">偵測目前您的系統使用的語言區域值為:</translation>
-    </message>
-    <message>
-        <source>to vertex</source>
-        <translation type="obsolete">自動接合 轉折點</translation>
-    </message>
-    <message>
-        <source>to segment</source>
-        <translation type="obsolete">自動接合 線段</translation>
-    </message>
-    <message>
-        <source>to vertex and segment</source>
-        <translation type="obsolete">自動接合 轉折點與線段</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgsoptions.cpp" line="291"/>
-        <location filename="../src/app/qgsoptions.cpp" line="298"/>
-        <location filename="../src/app/qgsoptions.cpp" line="589"/>
+        <location filename="../src/app/qgsoptions.cpp" line="308"/>
+        <location filename="../src/app/qgsoptions.cpp" line="315"/>
+        <location filename="../src/app/qgsoptions.cpp" line="610"/>
         <source>Semi transparent circle</source>
         <translation>半透明圓圈</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="292"/>
-        <location filename="../src/app/qgsoptions.cpp" line="302"/>
-        <location filename="../src/app/qgsoptions.cpp" line="593"/>
+        <location filename="../src/app/qgsoptions.cpp" line="309"/>
+        <location filename="../src/app/qgsoptions.cpp" line="319"/>
+        <location filename="../src/app/qgsoptions.cpp" line="614"/>
         <source>Cross</source>
         <translation type="unfinished">十字形</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="241"/>
+        <location filename="../src/app/qgsoptions.cpp" line="258"/>
         <source>Detected active locale on your system: %1</source>
         <translation>偵測目前您的系統使用的語言區域值為:%1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="293"/>
-        <location filename="../src/app/qgsoptions.cpp" line="306"/>
-        <location filename="../src/app/qgsoptions.cpp" line="597"/>
+        <location filename="../src/app/qgsoptions.cpp" line="310"/>
+        <location filename="../src/app/qgsoptions.cpp" line="323"/>
+        <location filename="../src/app/qgsoptions.cpp" line="618"/>
         <source>None</source>
         <translation>不透明</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="271"/>
-        <location filename="../src/app/qgsoptions.cpp" line="280"/>
+        <location filename="../src/app/qgsoptions.cpp" line="288"/>
+        <location filename="../src/app/qgsoptions.cpp" line="297"/>
         <source>map units</source>
         <translation>地圖單位</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="275"/>
-        <location filename="../src/app/qgsoptions.cpp" line="284"/>
+        <location filename="../src/app/qgsoptions.cpp" line="292"/>
+        <location filename="../src/app/qgsoptions.cpp" line="301"/>
         <source>pixels</source>
         <translation>像素</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="317"/>
+        <location filename="../src/app/qgsoptions.cpp" line="334"/>
         <source>Central point (fastest)</source>
         <translation type="unfinished">中心點法(最快)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="318"/>
+        <location filename="../src/app/qgsoptions.cpp" line="335"/>
         <source>Chain (fast)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="319"/>
+        <location filename="../src/app/qgsoptions.cpp" line="336"/>
         <source>Popmusic tabu chain (slow)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="320"/>
+        <location filename="../src/app/qgsoptions.cpp" line="337"/>
         <source>Popmusic tabu (slow)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="321"/>
+        <location filename="../src/app/qgsoptions.cpp" line="338"/>
         <source>Popmusic chain (very slow)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="51"/>
+        <location filename="../src/app/qgsoptions.cpp" line="53"/>
         <source>Current layer</source>
         <translation type="unfinished">目前圖層</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="52"/>
+        <location filename="../src/app/qgsoptions.cpp" line="54"/>
         <source>Top down, stop at first</source>
         <translation type="unfinished">上至下,停至第一個(Top down, stop at first)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="53"/>
+        <location filename="../src/app/qgsoptions.cpp" line="55"/>
         <source>Top down</source>
         <translation type="unfinished">上至下(Top down)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="261"/>
+        <location filename="../src/app/qgsoptions.cpp" line="278"/>
         <source>To vertex</source>
         <translation type="unfinished">自動接合 轉折點</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="262"/>
+        <location filename="../src/app/qgsoptions.cpp" line="279"/>
         <source>To segment</source>
         <translation type="unfinished">自動接合 線段</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="263"/>
+        <location filename="../src/app/qgsoptions.cpp" line="280"/>
         <source>To vertex and segment</source>
         <translation type="unfinished">自動接合 轉折點與線段</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="794"/>
+        <location filename="../src/app/qgsoptions.cpp" line="815"/>
+        <location filename="../src/app/qgsoptions.cpp" line="857"/>
         <source>Choose a directory</source>
         <translation type="unfinished">選擇資料夾</translation>
     </message>
@@ -25015,57 +17213,9 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsOptionsBase</name>
     <message>
-        <source>QGIS Options</source>
-        <translation type="obsolete">QGIS選項</translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">確定(&amp;O)</translation>
-    </message>
-    <message>
-        <source>Alt+O</source>
-        <translation type="obsolete">Alt+O</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">取消(&amp;C)</translation>
-    </message>
-    <message>
-        <source>&amp;Appearance</source>
-        <translation type="obsolete">外觀(&amp;A)</translation>
-    </message>
-    <message>
-        <source>&amp;Splash Screen</source>
-        <translation type="obsolete">飛濺螢幕(&amp;S)</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="328"/>
         <source>Hide splash screen at startup</source>
         <translation type="unfinished">啟動時隱藏QGIS畫面</translation>
-    </message>
-    <message>
-        <source>&amp;Icon Theme</source>
-        <translation type="obsolete">圖示主題(&amp;I)</translation>
-    </message>
-    <message>
-        <source>Theme</source>
-        <translation type="obsolete">主題</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Note: &lt;/b&gt;Theme changes take effect the next time QGIS is started</source>
-        <translation type="obsolete">&lt;b&gt;注意:&lt;/b&gt;主題的更改會在下一次QGIS啟動時生效</translation>
-    </message>
-    <message>
-        <source>&amp;Rendering</source>
-        <translation type="obsolete">繪圖與效能(&amp;R)</translation>
-    </message>
-    <message>
-        <source>&amp;Update During Drawing</source>
-        <translation type="obsolete">繪製過程中更新(&amp;U)</translation>
-    </message>
-    <message>
-        <source>Update display after reading</source>
-        <translation type="obsolete">讀取後更新顯示</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="405"/>
@@ -25073,152 +17223,14 @@ p, li { white-space: pre-wrap; }
         <translation>從資料來源中讀取這麼多圖徵後，地圖顯示會被更新</translation>
     </message>
     <message>
-        <source>features</source>
-        <translation type="obsolete">圖徵</translation>
-    </message>
-    <message>
-        <source>(Set to 0 to not update the display until all features have been read)</source>
-        <translation type="obsolete">(如果設定為0，則要等所有圖徵讀取完成後才會更新顯示)</translation>
-    </message>
-    <message>
-        <source>&amp;Selection</source>
-        <translation type="obsolete">選擇(&amp;S)</translation>
-    </message>
-    <message>
-        <source>Search Radius</source>
-        <translation type="obsolete">搜尋半徑</translation>
-    </message>
-    <message>
-        <source>Search Radius for Identifying Features</source>
-        <translation type="obsolete">識別圖徵時的搜尋半徑</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;
-&lt;b&gt;Note:&lt;/b&gt; Specify the value in thousandths.  The search radius is calculated as:&lt;br&gt;
-&amp;nbsp;&amp;nbsp;&lt;i&gt;(Map View Width) * ( Value/1000.0)&lt;/i&gt;
-&lt;br&gt;
-By default QGIS uses a value of 5. Increase the value if you have trouble
-identifying features without zooming in very close.
-&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;
-&lt;b&gt;注意：&lt;/b&gt; 指定的值是千分值。搜尋半徑這樣計算:&lt;br&gt;
-&amp;nbsp;&amp;nbsp;&lt;i&gt;(地圖檢視的寬度) * (輸入值/1000.0)&lt;/i&gt;
-&lt;br&gt;
-QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請增大這個值。
-&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Help &amp;Browser</source>
-        <translation type="obsolete">說明瀏覽器(&amp;B)</translation>
-    </message>
-    <message>
-        <source>Open help documents with</source>
-        <translation type="obsolete">用它來開啟說明文檔</translation>
-    </message>
-    <message>
-        <source>epiphany</source>
-        <translation type="obsolete">epiphany</translation>
-    </message>
-    <message>
-        <source>firebird</source>
-        <translation type="obsolete">firebird</translation>
-    </message>
-    <message>
-        <source>galeon</source>
-        <translation type="obsolete">galeon</translation>
-    </message>
-    <message>
-        <source>konqueror</source>
-        <translation type="obsolete">konqueror</translation>
-    </message>
-    <message>
-        <source>mozilla</source>
-        <translation type="obsolete">mozilla</translation>
-    </message>
-    <message>
-        <source>opera</source>
-        <translation type="obsolete">opera</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Note:&lt;/b&gt; The browser must be in your PATH or you can specify &lt;br&gt;the full path above</source>
-        <translation type="obsolete">&lt;b&gt;注意：&lt;/b&gt;瀏覽器必須在您的PATH下，或者您可以指定完整路徑</translation>
-    </message>
-    <message>
-        <source>SVG Options</source>
-        <translation type="obsolete">SVG選項</translation>
-    </message>
-    <message>
-        <source>SVG oversampling factor</source>
-        <translation type="obsolete">SVG oversampling係數</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Note: &lt;/b&gt;A higher value gives smoother SVG symbols, but can slow down rendering</source>
-        <translation type="obsolete">&lt;b&gt;注意：&lt;/b&gt;值越高，SVG符號越光滑，但繪圖速度會變慢</translation>
-    </message>
-    <message>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1428"/>
         <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>Initial Visibility</source>
-        <translation type="obsolete">初始可見性</translation>
-    </message>
-    <message>
-        <source>New layers added to the map are not displayed</source>
-        <translation type="obsolete">新增到地圖上的新圖層不顯示</translation>
-    </message>
-    <message>
-        <source>Projection</source>
-        <translation type="obsolete">投影</translation>
+        <translation type="unfinished">...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1138"/>
         <source>Select Global Default ...</source>
         <translation>選擇全域預設值...</translation>
-    </message>
-    <message>
-        <source>When layer is loaded that has no projection information:</source>
-        <translation type="obsolete">圖層載入時沒有投影資訊:</translation>
-    </message>
-    <message>
-        <source>Prompt for projection.</source>
-        <translation type="obsolete">提示選擇投影.</translation>
-    </message>
-    <message>
-        <source>Project wide default projection will be used.</source>
-        <translation type="obsolete">使用專案預設的投影.</translation>
-    </message>
-    <message>
-        <source>Global default projection displayed below will be used.</source>
-        <translation type="obsolete">使用下面顯示的全域預設投影.</translation>
-    </message>
-    <message>
-        <source>firefox</source>
-        <translation type="obsolete">firefox</translation>
-    </message>
-    <message>
-        <source>mozilla-firefox</source>
-        <translation type="obsolete">mozilla-firefox</translation>
-    </message>
-    <message>
-        <source>Default Map Appearance (Overridden by project properties)</source>
-        <translation type="obsolete">預設地圖外觀 (專案屬性優先)</translation>
-    </message>
-    <message>
-        <source>Background Color:</source>
-        <translation type="obsolete">背景色:</translation>
-    </message>
-    <message>
-        <source>Selection Color:</source>
-        <translation type="obsolete">選擇顏色:</translation>
-    </message>
-    <message>
-        <source>&amp;Splash screen</source>
-        <translation type="obsolete">蹦現視窗(&amp;Splash screen)</translation>
-    </message>
-    <message>
-        <source>Anti-aliasing</source>
-        <translation type="obsolete">抗鋸齒功能</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="444"/>
@@ -25231,58 +17243,14 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
         <translation type="unfinished">預設顯示新增圖層 (&amp;y)</translation>
     </message>
     <message>
-        <source>&amp;Update during drawing</source>
-        <translation type="obsolete">繪製時更新 (&amp;U)</translation>
-    </message>
-    <message>
-        <source>&amp;Selection &amp;&amp; Measuring</source>
-        <translation type="obsolete">選取與測量(&amp;S)</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="592"/>
         <source>Measure tool</source>
         <translation>測量工具</translation>
     </message>
     <message>
-        <source>Ellipsoid for distance calculations:</source>
-        <translation type="obsolete">計算距離的橢球:</translation>
-    </message>
-    <message>
-        <source>Search radius</source>
-        <translation type="obsolete">搜尋半徑</translation>
-    </message>
-    <message>
-        <source>Pro&amp;jection</source>
-        <translation type="obsolete">投影 (&amp;j)</translation>
-    </message>
-    <message>
-        <source>When layer is loaded that has no projection information</source>
-        <translation type="obsolete">載入的圖層沒有投影資訊時</translation>
-    </message>
-    <message>
-        <source>Global default projection displa&amp;yed below will be used.</source>
-        <translation type="obsolete">將使用預設的全域投影(&amp;y)。 </translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Note:&lt;/b&gt; The browser must be in your PATH or you can specify the full path above</source>
-        <translation type="obsolete">&lt;b&gt;注意:&lt;/b&gt; 瀏覽器必須在PATH環境變數下，或者在上面指定完整路徑</translation>
-    </message>
-    <message>
-        <source>Appearance</source>
-        <translation type="obsolete">外觀</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="454"/>
         <source>Fix problems with incorrectly filled polygons</source>
         <translation type="unfinished">修正不正確的多邊形填滿問題</translation>
-    </message>
-    <message>
-        <source>Continuously redraw the map when dragging the legend/map divider</source>
-        <translation type="obsolete">當拖曳圖例或地圖時能繼續重繪地圖</translation>
-    </message>
-    <message>
-        <source>&amp;Map tools</source>
-        <translation type="obsolete">地圖工具(&amp;M)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="556"/>
@@ -25310,10 +17278,6 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
         <translation type="unfinished">無動作</translation>
     </message>
     <message>
-        <source>&amp;General</source>
-        <translation type="obsolete">一般(&amp;G)</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="147"/>
         <source>Locale</source>
         <translation type="unfinished">語言區域設定</translation>
@@ -25339,26 +17303,14 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Digitizing</source>
-        <translation type="obsolete">數化</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="828"/>
         <source>Rubberband</source>
         <translation>數化線(Rubberband)</translation>
     </message>
     <message>
-        <source>Line Width:</source>
-        <translation type="obsolete">線的寬度:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="841"/>
         <source>Line width in pixels</source>
         <translation type="unfinished">線寬像素</translation>
-    </message>
-    <message>
-        <source>Line Colour:</source>
-        <translation type="obsolete">線的顏色:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="874"/>
@@ -25477,6 +17429,26 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1412"/>
+        <source>Cache settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1418"/>
+        <source>Directory</source>
+        <translation type="unfinished">資料夾</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1435"/>
+        <source>Size</source>
+        <translation type="unfinished">大小</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1445"/>
+        <source>Clear</source>
+        <translation type="unfinished">清除</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1457"/>
         <source>WMS search address</source>
         <translation type="unfinished"></translation>
     </message>
@@ -25506,21 +17478,9 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
         <translation type="unfinished">線寬</translation>
     </message>
     <message>
-        <source>Line colour</source>
-        <translation type="obsolete">線顏色</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="880"/>
         <source>Default snap mode</source>
         <translation type="unfinished">預設接合模式</translation>
-    </message>
-    <message>
-        <source>Default snapping tolerance in layer units</source>
-        <translation type="obsolete">預設接合容許範圍(圖層單位)</translation>
-    </message>
-    <message>
-        <source>Search radius for vertex edits in layer units</source>
-        <translation type="obsolete">搜尋預編輯轉折點半徑值(圖層單位)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1007"/>
@@ -25543,37 +17503,33 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
         <translation type="unfinished">&lt;b&gt;注意:&lt;/b&gt; 使用 / 改變 語言區域設定需要重新啟動程式</translation>
     </message>
     <message>
-        <source>Proxy</source>
-        <translation type="obsolete">Proxy 伺服器</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1284"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1281"/>
         <source>Use proxy for web access</source>
         <translation>存取網頁使用Proxy伺服器</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1296"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1293"/>
         <source>Host</source>
         <translation type="unfinished">主機名稱</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1306"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1303"/>
         <source>Port</source>
         <translation>連接埠號</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1316"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1313"/>
         <source>User</source>
         <translation>使用者帳號</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1323"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1337"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1320"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1334"/>
         <source>Leave this blank if no proxy username / password are required</source>
         <translation type="unfinished">如果proxy伺服器不需帳號密碼，就不用輸入</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1330"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1327"/>
         <source>Password</source>
         <translation>密碼</translation>
     </message>
@@ -25586,10 +17542,6 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
         <location filename="../src/ui/qgsoptionsbase.ui" line="138"/>
         <source>CRS</source>
         <translation type="unfinished">CRS(座標參考系統)</translation>
-    </message>
-    <message>
-        <source>When layer is loaded that has no coordinate reference system (CRS)</source>
-        <translation type="obsolete">當圖層載入後沒有座標參考系統(CRS)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1167"/>
@@ -25617,23 +17569,19 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
         <translation>建立圖徵後取消跳出屬性視窗</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1347"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1344"/>
         <source>Proxy type</source>
         <translation>Proxy類別</translation>
     </message>
     <message>
-        <source>Exclude URLs:</source>
-        <translation type="obsolete">排除的網址:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="490"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1377"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1383"/>
         <source>Add</source>
         <translation>新增</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="497"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1384"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1376"/>
         <source>Remove</source>
         <translation>移除</translation>
     </message>
@@ -25745,12 +17693,12 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
         <translation>可縮放向量圖形(SVG)符號的路徑</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1268"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1265"/>
         <source>Timeout for network requests (ms):</source>
         <translation type="unfinished">發出網站需求的過期時間(ms):</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1370"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1367"/>
         <source>Exclude URLs (starting with):</source>
         <translation type="unfinished">排除的網址:</translation>
     </message>
@@ -25886,37 +17834,6 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
         <source>Destination</source>
         <translation>目標</translation>
     </message>
-    <message>
-        <source>&amp;Help</source>
-        <translation type="obsolete">說明(&amp;H)</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">確定(&amp;O)</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">取消(&amp;C)</translation>
-    </message>
-</context>
-<context>
-    <name>QgsPatternDialogBase</name>
-    <message>
-        <source>Select a fill pattern</source>
-        <translation type="obsolete">選擇填滿樣式</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">取消</translation>
-    </message>
-    <message>
-        <source>Ok</source>
-        <translation type="obsolete">確定</translation>
-    </message>
 </context>
 <context>
     <name>QgsPenCapStyleComboBox</name>
@@ -25973,34 +17890,14 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
         <translation>&amp;Geoprocessing</translation>
     </message>
     <message>
-        <source>&amp;Buffer Features</source>
-        <translation type="obsolete">圖徵環域分析 (&amp;B)</translation>
-    </message>
-    <message>
-        <source>A new layer is created in the database with the buffered features.</source>
-        <translation type="obsolete">在資料庫中建立新的環域分析圖徵的圖層</translation>
-    </message>
-    <message>
-        <source>Buffer features</source>
-        <translation type="obsolete">對圖徵作環域分析</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="344"/>
         <source>Unable to add geometry column</source>
         <translation>無法新增幾何屬性欄位</translation>
     </message>
     <message>
-        <source>Unable to add geometry column to the output table </source>
-        <translation type="obsolete">無法為輸出表新增幾何屬性欄位</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="351"/>
         <source>Unable to create table</source>
         <translation>無法建立表格</translation>
-    </message>
-    <message>
-        <source>Failed to create the output table </source>
-        <translation type="obsolete">建立輸出表失敗</translation>
     </message>
     <message>
         <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="368"/>
@@ -26011,19 +17908,6 @@ QGIS的預設值是5。如果在不放大的情況下識別圖徵有困難，請
         <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="369"/>
         <source>Buffer function requires GEOS support in PostGIS</source>
         <translation>在PostGIS中環域分析功能需要GEOS支援</translation>
-    </message>
-    <message>
-        <source>Not a PostgreSQL/PosGIS Layer</source>
-        <translation type="obsolete">不是PostgreSQL/PosGIS圖層</translation>
-    </message>
-    <message>
-        <source> is not a PostgreSQL/PosGIS layer.
-</source>
-        <translation type="obsolete">不是PostgreSQL/PosGIS圖層。</translation>
-    </message>
-    <message>
-        <source>Geoprocessing functions are only available for PostgreSQL/PosGIS Layers</source>
-        <translation type="obsolete">Geoprocessing功能只對PostgreSQL/PosGIS圖層有效</translation>
     </message>
     <message>
         <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="381"/>
@@ -26247,203 +18131,6 @@ Extended error information:
     </message>
 </context>
 <context>
-    <name>QgsPgQueryBuilder</name>
-    <message>
-        <source>Table &lt;b&gt;%1&lt;/b&gt; in database &lt;b&gt;%2&lt;/b&gt; on host &lt;b&gt;%3&lt;/b&gt;, user &lt;b&gt;%4&lt;/b&gt;</source>
-        <translation type="obsolete">表&lt;b&gt;%1&lt;/b&gt;在資料庫&lt;b&gt;%2&lt;/b&gt;中，主機&lt;b&gt;%3&lt;/b&gt;，用戶&lt;b&gt;%4&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>Connection Failed</source>
-        <translation type="obsolete">連接失敗</translation>
-    </message>
-    <message>
-        <source>Connection to the database failed:</source>
-        <translation type="obsolete">連接到資料庫失敗:</translation>
-    </message>
-    <message>
-        <source>Database error</source>
-        <translation type="obsolete">資料庫錯誤</translation>
-    </message>
-    <message>
-        <source>Failed to get sample of field values</source>
-        <translation type="obsolete">欄位值採樣失敗</translation>
-    </message>
-    <message>
-        <source>Query Result</source>
-        <translation type="obsolete">查詢結果</translation>
-    </message>
-    <message>
-        <source>The where clause returned </source>
-        <translation type="obsolete">返回的where子句</translation>
-    </message>
-    <message>
-        <source> rows.</source>
-        <translation type="obsolete"> 列。</translation>
-    </message>
-    <message>
-        <source>Query Failed</source>
-        <translation type="obsolete">查詢失敗</translation>
-    </message>
-    <message>
-        <source>An error occurred when executing the query:</source>
-        <translation type="obsolete">執行查詢時發生錯誤:</translation>
-    </message>
-    <message>
-        <source>No Records</source>
-        <translation type="obsolete">沒有記錄</translation>
-    </message>
-    <message>
-        <source>The query you specified results in zero records being returned. Valid PostgreSQL layers must have at least one feature.</source>
-        <translation type="obsolete">您指定的查詢返回了零條記錄。有效的PostgreSQL圖層至少應該有一個圖徵.</translation>
-    </message>
-    <message>
-        <source>No Query</source>
-        <translation type="obsolete">無查詢</translation>
-    </message>
-    <message>
-        <source>You must create a query before you can test it</source>
-        <translation type="obsolete">在您測試前必須建立一個查詢</translation>
-    </message>
-    <message>
-        <source>Error in Query</source>
-        <translation type="obsolete">查詢錯誤</translation>
-    </message>
-    <message>
-        <source>Connection to the database failed:
-%1</source>
-        <translation type="obsolete">連接到資料庫失敗:
-%1</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;Failed to get sample of field values using SQL:&lt;/p&gt;&lt;p&gt;%1&lt;/p&gt;&lt;p&gt;Error message was: %2&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;p&gt;使用SQL取得欄位值失敗:&lt;/p&gt;&lt;p&gt;%1&lt;/p&gt;&lt;p&gt;錯誤訊息是: %2&lt;/p&gt;</translation>
-    </message>
-    <message numerus="yes">
-        <source>The where clause returned %n row(s).</source>
-        <comment>returned test rows</comment>
-        <translation type="obsolete">
-            <numerusform>where 子句傳回 %n 筆記錄。</numerusform>
-        </translation>
-    </message>
-    <message>
-        <source>An error occurred when executing the query:
-%1</source>
-        <translation type="obsolete">執行查詢時發生錯誤:
-%1</translation>
-    </message>
-</context>
-<context>
-    <name>QgsPgQueryBuilderBase</name>
-    <message>
-        <source>PostgreSQL Query Builder</source>
-        <translation type="obsolete">PostgreSQL查詢工具</translation>
-    </message>
-    <message>
-        <source>Clear</source>
-        <translation type="obsolete">清除</translation>
-    </message>
-    <message>
-        <source>Test</source>
-        <translation type="obsolete">測試</translation>
-    </message>
-    <message>
-        <source>Ok</source>
-        <translation type="obsolete">確定</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">取消</translation>
-    </message>
-    <message>
-        <source>Values</source>
-        <translation type="obsolete">值</translation>
-    </message>
-    <message>
-        <source>All</source>
-        <translation type="obsolete">查詢欄位所有值</translation>
-    </message>
-    <message>
-        <source>Sample</source>
-        <translation type="obsolete">查詢欄位取樣值</translation>
-    </message>
-    <message>
-        <source>Fields</source>
-        <translation type="obsolete">欄位</translation>
-    </message>
-    <message>
-        <source>Datasource:</source>
-        <translation type="obsolete">資料來源:</translation>
-    </message>
-    <message>
-        <source>Operators</source>
-        <translation type="obsolete">運算符號</translation>
-    </message>
-    <message>
-        <source>=</source>
-        <translation type="obsolete">=</translation>
-    </message>
-    <message>
-        <source>IN</source>
-        <translation type="obsolete">IN</translation>
-    </message>
-    <message>
-        <source>NOT IN</source>
-        <translation type="obsolete">NOT IN</translation>
-    </message>
-    <message>
-        <source>&lt;</source>
-        <translation type="obsolete">&lt;</translation>
-    </message>
-    <message>
-        <source>&gt;</source>
-        <translation type="obsolete">&gt;</translation>
-    </message>
-    <message>
-        <source>%</source>
-        <translation type="obsolete">%</translation>
-    </message>
-    <message>
-        <source>&lt;=</source>
-        <translation type="obsolete">&lt;=</translation>
-    </message>
-    <message>
-        <source>&gt;=</source>
-        <translation type="obsolete">&gt;=</translation>
-    </message>
-    <message>
-        <source>!=</source>
-        <translation type="obsolete">!=</translation>
-    </message>
-    <message>
-        <source>LIKE</source>
-        <translation type="obsolete">LIKE</translation>
-    </message>
-    <message>
-        <source>AND</source>
-        <translation type="obsolete">AND</translation>
-    </message>
-    <message>
-        <source>ILIKE</source>
-        <translation type="obsolete">ILIKE</translation>
-    </message>
-    <message>
-        <source>OR</source>
-        <translation type="obsolete">OR</translation>
-    </message>
-    <message>
-        <source>NOT</source>
-        <translation type="obsolete">NOT</translation>
-    </message>
-    <message>
-        <source>SQL where clause</source>
-        <translation type="obsolete">SQL where 子句</translation>
-    </message>
-    <message>
-        <source>Datasource</source>
-        <translation type="obsolete">資料來源</translation>
-    </message>
-</context>
-<context>
     <name>QgsPgSourceSelect</name>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="57"/>
@@ -26540,14 +18227,6 @@ Extended error information:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Password for </source>
-        <translation type="obsolete">密碼</translation>
-    </message>
-    <message>
-        <source>Please enter your password:</source>
-        <translation type="obsolete">請輸入您的密碼:</translation>
-    </message>
-    <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="508"/>
         <source>Connection failed</source>
         <translation type="unfinished">連接失敗</translation>
@@ -26635,22 +18314,6 @@ geometry.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Help</source>
-        <translation type="obsolete">說明</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
-    </message>
-    <message>
-        <source>Add</source>
-        <translation type="obsolete">新增</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">關閉</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgspgsourceselectbase.ui" line="118"/>
         <source>Search:</source>
         <translation type="unfinished">尋找:</translation>
@@ -26669,10 +18332,6 @@ geometry.</source>
         <location filename="../src/ui/qgspgsourceselectbase.ui" line="87"/>
         <source>Build query</source>
         <translation type="unfinished">建立查詢</translation>
-    </message>
-    <message>
-        <source>Search options...</source>
-        <translation type="obsolete">尋找選項...</translation>
     </message>
 </context>
 <context>
@@ -26736,38 +18395,6 @@ geometry.</source>
 </context>
 <context>
     <name>QgsPluginInstallerDialog</name>
-    <message>
-        <source>Plugins</source>
-        <translation type="obsolete">附加元件</translation>
-    </message>
-    <message>
-        <source>Status</source>
-        <translation type="obsolete">狀態</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">名稱</translation>
-    </message>
-    <message>
-        <source>Version</source>
-        <translation type="obsolete">版本</translation>
-    </message>
-    <message>
-        <source>Description</source>
-        <translation type="obsolete">描述</translation>
-    </message>
-    <message>
-        <source>URL</source>
-        <translation type="obsolete">URL</translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation type="obsolete">刪除</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">關閉</translation>
-    </message>
     <message>
         <source>QGIS Python Plugin Installer</source>
         <translation type="unfinished">QGIS Python 附加元件安裝</translation>
@@ -27442,13 +19069,6 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>QgsPluginInstallerRepositoryDetailsDialog</name>
-    <message>
-        <source>Name:</source>
-        <translation type="obsolete">名稱:</translation>
-    </message>
-</context>
-<context>
     <name>QgsPluginInstallerRepositoryDetailsDialogBase</name>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerrepositorybase.ui" line="20"/>
@@ -27492,29 +19112,9 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsPluginManager</name>
     <message>
-        <source>Choose a directory</source>
-        <translation type="obsolete">選擇資料夾</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgspluginmanager.cpp" line="236"/>
         <source>No Plugins</source>
         <translation>沒有附加元件</translation>
-    </message>
-    <message>
-        <source>No QGIS plugins found in </source>
-        <translation type="obsolete">未發現QGIS附加元件</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">名稱</translation>
-    </message>
-    <message>
-        <source>Version</source>
-        <translation type="obsolete">版本</translation>
-    </message>
-    <message>
-        <source>Description</source>
-        <translation type="obsolete">描述</translation>
     </message>
     <message>
         <location filename="../src/app/qgspluginmanager.cpp" line="86"/>
@@ -27550,70 +19150,6 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsPluginManagerBase</name>
     <message>
-        <source>QGIS Plugin Manger</source>
-        <translation type="obsolete">QGIS附加元件管理器</translation>
-    </message>
-    <message>
-        <source>Plugin Directory</source>
-        <translation type="obsolete">附加元件資料夾</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">名稱</translation>
-    </message>
-    <message>
-        <source>Version</source>
-        <translation type="obsolete">版本</translation>
-    </message>
-    <message>
-        <source>Description</source>
-        <translation type="obsolete">描述</translation>
-    </message>
-    <message>
-        <source>Library Name</source>
-        <translation type="obsolete">庫的名稱</translation>
-    </message>
-    <message>
-        <source>To load a plugin, click the checkbox next to the plugin and click Ok</source>
-        <translation type="obsolete">要載入附加元件，請點擊附加元件旁邊的核取方塊，然後點擊OK</translation>
-    </message>
-    <message>
-        <source>&amp;Select All</source>
-        <translation type="obsolete">全選(&amp;S)</translation>
-    </message>
-    <message>
-        <source>Alt+S</source>
-        <translation type="obsolete">Alt+S</translation>
-    </message>
-    <message>
-        <source>C&amp;lear All</source>
-        <translation type="obsolete">全部清除(&amp;l)</translation>
-    </message>
-    <message>
-        <source>Alt+L</source>
-        <translation type="obsolete">Alt+L</translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">確定(&amp;O)</translation>
-    </message>
-    <message>
-        <source>Alt+O</source>
-        <translation type="obsolete">Alt+O</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">關閉(&amp;C)</translation>
-    </message>
-    <message>
-        <source>Alt+C</source>
-        <translation type="obsolete">Alt+C</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="16"/>
         <source>QGIS Plugin Manager</source>
         <translation>QGIS附加元件管理器</translation>
@@ -27645,223 +19181,6 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>QgsPointDialog</name>
-    <message>
-        <source>Zoom In</source>
-        <translation type="obsolete">放大</translation>
-    </message>
-    <message>
-        <source>z</source>
-        <translation type="obsolete">z</translation>
-    </message>
-    <message>
-        <source>Zoom Out</source>
-        <translation type="obsolete">縮小</translation>
-    </message>
-    <message>
-        <source>Z</source>
-        <translation type="obsolete">Z</translation>
-    </message>
-    <message>
-        <source>Zoom To Layer</source>
-        <translation type="obsolete">縮放到圖層範圍</translation>
-    </message>
-    <message>
-        <source>Zoom to Layer</source>
-        <translation type="obsolete">縮放到圖層範圍</translation>
-    </message>
-    <message>
-        <source>Pan Map</source>
-        <translation type="obsolete">平移地圖</translation>
-    </message>
-    <message>
-        <source>Pan the map</source>
-        <translation type="obsolete">地圖漫遊</translation>
-    </message>
-    <message>
-        <source>Add Point</source>
-        <translation type="obsolete">新增點</translation>
-    </message>
-    <message>
-        <source>.</source>
-        <translation type="obsolete">.</translation>
-    </message>
-    <message>
-        <source>Capture Points</source>
-        <translation type="obsolete">建立點</translation>
-    </message>
-    <message>
-        <source>Delete Point</source>
-        <translation type="obsolete">刪除點</translation>
-    </message>
-    <message>
-        <source>Delete Selected</source>
-        <translation type="obsolete">刪除選取的記錄</translation>
-    </message>
-    <message>
-        <source>Linear</source>
-        <translation type="obsolete">線性</translation>
-    </message>
-    <message>
-        <source>Warning</source>
-        <translation type="obsolete">警告</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">錯誤</translation>
-    </message>
-    <message>
-        <source>World file exists</source>
-        <translation type="obsolete">World檔案已存在</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;The selected file already seems to have a </source>
-        <translation type="obsolete">您選擇的檔案似乎已有</translation>
-    </message>
-    <message>
-        <source>world file! Do you want to replace it with the </source>
-        <translation type="obsolete">world 檔!您真的要用建立新的world檔案覆蓋它</translation>
-    </message>
-    <message>
-        <source>new world file?&lt;/p&gt;</source>
-        <translation type="obsolete">?&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>Choose a raster file</source>
-        <translation type="obsolete">選擇影像影像檔</translation>
-    </message>
-    <message>
-        <source>Raster files (*.*)</source>
-        <translation type="obsolete">影像影像文件 (*.*)</translation>
-    </message>
-    <message>
-        <source>The selected file is not a valid raster file.</source>
-        <translation type="obsolete">選擇的檔不是有效的影像檔。</translation>
-    </message>
-</context>
-<context>
-    <name>QgsPointDialogBase</name>
-    <message>
-        <source>Georeferencer</source>
-        <translation type="obsolete">幾合校正(Georeferencer)</translation>
-    </message>
-    <message>
-        <source>Transform type:</source>
-        <translation type="obsolete">轉換類型:</translation>
-    </message>
-    <message>
-        <source>Linear</source>
-        <translation type="obsolete">線性</translation>
-    </message>
-    <message>
-        <source>Zoom in</source>
-        <translation type="obsolete">放大</translation>
-    </message>
-    <message>
-        <source>Zoom out</source>
-        <translation type="obsolete">縮小</translation>
-    </message>
-    <message>
-        <source>Zoom to the raster extents</source>
-        <translation type="obsolete">放大到影像範圍</translation>
-    </message>
-    <message>
-        <source>Pan</source>
-        <translation type="obsolete">移動</translation>
-    </message>
-    <message>
-        <source>Add points</source>
-        <translation type="obsolete">新增點</translation>
-    </message>
-    <message>
-        <source>Delete points</source>
-        <translation type="obsolete">刪除點</translation>
-    </message>
-    <message>
-        <source>Generate world file and load layer</source>
-        <translation type="obsolete">生成world檔並載入圖層</translation>
-    </message>
-    <message>
-        <source>Generate world file</source>
-        <translation type="obsolete">生成world檔</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">取消</translation>
-    </message>
-    <message>
-        <source>World file:</source>
-        <translation type="obsolete">World文件:</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">瀏覽...</translation>
-    </message>
-    <message>
-        <source>Modified raster:</source>
-        <translation type="obsolete">修改後的影像:</translation>
-    </message>
-    <message>
-        <source>Reference points</source>
-        <translation type="obsolete">設定參考點</translation>
-    </message>
-    <message>
-        <source>Create</source>
-        <translation type="obsolete">建立</translation>
-    </message>
-    <message>
-        <source>Create and load layer</source>
-        <translation type="obsolete">建立與載入圖層</translation>
-    </message>
-    <message>
-        <source>Raster file:</source>
-        <translation type="obsolete">影像檔案:</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">關閉</translation>
-    </message>
-    <message>
-        <source>Save GCPs</source>
-        <translation type="obsolete">儲存GCPs</translation>
-    </message>
-    <message>
-        <source>Load GCPs</source>
-        <translation type="obsolete">載入GCPs</translation>
-    </message>
-    <message>
-        <source>Raster file</source>
-        <translation type="obsolete">影像檔案</translation>
-    </message>
-    <message>
-        <source>Transform type</source>
-        <translation type="obsolete">轉換方式</translation>
-    </message>
-    <message>
-        <source>Modified raster</source>
-        <translation type="obsolete">修改後的影像檔案</translation>
-    </message>
-    <message>
-        <source>World file</source>
-        <translation type="obsolete">World文件</translation>
-    </message>
-</context>
-<context>
-    <name>QgsPointStyleWidgetBase</name>
-    <message>
-        <source>Form3</source>
-        <translation type="obsolete">表單3</translation>
-    </message>
-    <message>
-        <source>Symbol Style</source>
-        <translation type="obsolete">符號樣式</translation>
-    </message>
-    <message>
-        <source>Scale</source>
-        <translation type="obsolete">比例</translation>
-    </message>
-</context>
-<context>
     <name>QgsPostgresProvider</name>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="115"/>
@@ -27870,89 +19189,77 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>No GEOS Support!</source>
-        <translation type="obsolete">沒有GEOS支持!</translation>
-    </message>
-    <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1132"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1139"/>
         <source>No suitable key column in table</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1233"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1240"/>
         <source>and </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1282"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1289"/>
         <source>Unable to find a key column</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1423"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1430"/>
         <source>and is suitable.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1429"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1436"/>
         <source> and has a suitable constraint)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1431"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1438"/>
         <source> and does not have a suitable constraint)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1534"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1541"/>
         <source>No suitable key column in view</source>
         <translation type="unfinished">檢視中沒有合適的關鍵字段</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3033"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3040"/>
         <source>Unknown geometry type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Column </source>
-        <translation type="obsolete">欄位</translation>
-    </message>
-    <message>
-        <source>, which Qgis does not currently support.</source>
-        <translation type="obsolete">QGIS目前不支持。</translation>
-    </message>
-    <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3045"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3052"/>
         <source>Unable to get feature type and srid</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2339"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2346"/>
         <source>Error while adding features</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2379"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2386"/>
         <source>Error while deleting features</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2439"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2446"/>
         <source>Error while adding attributes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2484"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2491"/>
         <source>Error while deleting attributes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2552"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2559"/>
         <source>Error while changing attributes</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2638"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2645"/>
         <source>Error while changing geometry values</source>
         <translation type="unfinished"></translation>
     </message>
@@ -27962,47 +19269,47 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1208"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1215"/>
         <source>The unique index on column &apos;%1&apos; is unsuitable because Qgis does not currently support non-int4 type columns as a key into the table.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1239"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1246"/>
         <source>The unique index based on columns %1 is unsuitable because Qgis does not currently support multiple columns as a key into the table.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1419"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1426"/>
         <source>&apos;%1&apos; derives from &apos;%2.%3.%4&apos; </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1427"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1434"/>
         <source>and is not suitable (type is %1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1515"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1522"/>
         <source>Note: &apos;%1&apos; initially appeared suitable but does not contain unique data, so is not suitable.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1526"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1533"/>
         <source>The view &apos;%1.%2&apos; has no column suitable for use as a unique key.
 Qgis requires that the view has a column that can be used as a unique key. Such a column should be derived from a table column of type int4 and be a primary key, have a unique constraint on it, or be a PostgreSQL oid column. To improve performance the column should also be indexed.
 The view you selected has the following columns, none of which satisfy the above conditions:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3034"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3041"/>
         <source>Column %1 in %2 has a geometry type of %3, which Qgis does not currently support.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1133"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1140"/>
         <source>The table has no column suitable for use as a key.
 
 Qgis requires that the table either has a column of type
@@ -28063,7 +19370,7 @@ column with a 16bit block number.
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3041"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3048"/>
         <source>Qgis was unable to determine the type and srid of column %1 in %2. The database communication log was:
 %3</source>
         <translation type="unfinished"></translation>
@@ -28199,10 +19506,6 @@ Try to find missing layers?</source>
         <translation>專案屬性</translation>
     </message>
     <message>
-        <source>Map Units</source>
-        <translation type="obsolete">地圖單位</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="183"/>
         <source>Meters</source>
         <translation>公尺</translation>
@@ -28218,58 +19521,14 @@ Try to find missing layers?</source>
         <translation>十進位度</translation>
     </message>
     <message>
-        <source>&amp;Help</source>
-        <translation type="obsolete">說明(&amp;H)</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">確定(&amp;O)</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">取消(&amp;C)</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="55"/>
         <source>Default project title</source>
         <translation>預設專案標題</translation>
     </message>
     <message>
-        <source>&amp;Apply</source>
-        <translation type="obsolete">套用(&amp;A)</translation>
-    </message>
-    <message>
-        <source>Alt+A</source>
-        <translation type="obsolete">Alt+A</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="30"/>
         <source>General</source>
         <translation>一般</translation>
-    </message>
-    <message>
-        <source>Digitising Settings</source>
-        <translation type="obsolete">數化選項設定</translation>
-    </message>
-    <message>
-        <source>Line Width:</source>
-        <translation type="obsolete">線的寬度:</translation>
-    </message>
-    <message>
-        <source>Snapping Tolerance:</source>
-        <translation type="obsolete">捕捉容限:</translation>
-    </message>
-    <message>
-        <source>Line Colour:</source>
-        <translation type="obsolete">線的顏色:</translation>
-    </message>
-    <message>
-        <source>Cursor display precision</source>
-        <translation type="obsolete">指標顯示精確度</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="229"/>
@@ -28309,30 +19568,6 @@ Try to find missing layers?</source>
         <translation>小數位</translation>
     </message>
     <message>
-        <source>Map Appearance</source>
-        <translation type="obsolete">地圖外觀</translation>
-    </message>
-    <message>
-        <source>Selection Color:</source>
-        <translation type="obsolete">選擇顏色:</translation>
-    </message>
-    <message>
-        <source>Project Title</source>
-        <translation type="obsolete">專案標題</translation>
-    </message>
-    <message>
-        <source>Projection</source>
-        <translation type="obsolete">投影</translation>
-    </message>
-    <message>
-        <source>Enable on the fly projection</source>
-        <translation type="obsolete">啟用動態投影</translation>
-    </message>
-    <message>
-        <source>Background Color:</source>
-        <translation type="obsolete">背景色:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="217"/>
         <source>Precision</source>
         <translation>精確度</translation>
@@ -28358,14 +19593,6 @@ Try to find missing layers?</source>
         <translation>自動接合(Snapping)選項...</translation>
     </message>
     <message>
-        <source>Avoid intersections of new polygons</source>
-        <translation type="obsolete">避免新多邊形使用交叉</translation>
-    </message>
-    <message>
-        <source>Title and colors</source>
-        <translation type="obsolete">主題與顏色</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="42"/>
         <source>Project title</source>
         <translation>專案主題</translation>
@@ -28381,10 +19608,6 @@ Try to find missing layers?</source>
         <translation>背景顏色</translation>
     </message>
     <message>
-        <source>Map units</source>
-        <translation type="obsolete">地圖單位</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="318"/>
         <source>Coordinate Reference System (CRS)</source>
         <translation>座標參考系統(CRS)</translation>
@@ -28393,10 +19616,6 @@ Try to find missing layers?</source>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="336"/>
         <source>Enable &apos;on the fly&apos; CRS transformation</source>
         <translation>開啟即時CRS轉換</translation>
-    </message>
-    <message>
-        <source>save absolute paths</source>
-        <translation type="obsolete">儲存絕對路徑</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="177"/>
@@ -28457,35 +19676,27 @@ Try to find missing layers?</source>
 <context>
     <name>QgsProjectionSelector</name>
     <message>
-        <source>QGIS SRSID: </source>
-        <translation type="obsolete">QGIS SRSID: </translation>
-    </message>
-    <message>
-        <source>PostGIS SRID: </source>
-        <translation type="obsolete">PostGIS SRID: </translation>
-    </message>
-    <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="667"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="654"/>
         <source>User Defined Coordinate Systems</source>
         <translation>使用者定義座標系統</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="744"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="729"/>
         <source>Geographic Coordinate Systems</source>
         <translation>地理座標系統</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="753"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="738"/>
         <source>Projected Coordinate Systems</source>
         <translation>投影座標系統</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="1125"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="1107"/>
         <source>Resource Location Error</source>
         <translation>資源位置錯誤</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="1126"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="1108"/>
         <source>Error reading database file from: 
  %1
 Because of this the projection selector will not work...</source>
@@ -28497,20 +19708,9 @@ Because of this the projection selector will not work...</source>
 <context>
     <name>QgsProjectionSelectorBase</name>
     <message>
-        <source>Projection Selector</source>
-        <translation type="obsolete">選擇投影方式</translation>
-    </message>
-    <message>
-        <source>Projection</source>
-        <translation type="obsolete">投影</translation>
-    </message>
-    <message>
-        <source>Coordinate Systems</source>
-        <translation type="obsolete">座標系統</translation>
-    </message>
-    <message>
-        <source>Spatial Reference Id</source>
-        <translation type="obsolete">空間參考的ID(SRID)</translation>
+        <location filename="../src/ui/qgsprojectionselectorbase.ui" line="52"/>
+        <source>Authority ID</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="105"/>
@@ -28518,35 +19718,19 @@ Because of this the projection selector will not work...</source>
         <translation>尋找</translation>
     </message>
     <message>
+        <location filename="../src/ui/qgsprojectionselectorbase.ui" line="111"/>
+        <source>AuthorityID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="149"/>
         <source>Find</source>
         <translation>尋找</translation>
     </message>
     <message>
-        <source>Postgis SRID</source>
-        <translation type="obsolete">PostGIS SRID</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsprojectionselectorbase.ui" line="111"/>
-        <source>EPSG ID</source>
-        <translation>EPSG ID</translation>
-    </message>
-    <message>
-        <source>QGIS SRSID</source>
-        <translation type="obsolete">QGIS SRSID</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="127"/>
         <source>Name</source>
         <translation>名稱</translation>
-    </message>
-    <message>
-        <source>Spatial Reference System</source>
-        <translation type="obsolete">空間參考系統</translation>
-    </message>
-    <message>
-        <source>Id</source>
-        <translation type="obsolete">Id</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="20"/>
@@ -28559,60 +19743,9 @@ Because of this the projection selector will not work...</source>
         <translation>座標參考系統</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectionselectorbase.ui" line="52"/>
-        <source>EPSG</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="57"/>
         <source>ID</source>
         <translation type="unfinished">ID</translation>
-    </message>
-</context>
-<context>
-    <name>QgsPublishToWebDialogBase</name>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">取消</translation>
-    </message>
-</context>
-<context>
-    <name>QgsPythonDialog</name>
-    <message>
-        <source>Python console</source>
-        <translation type="obsolete">Python主控台</translation>
-    </message>
-    <message>
-        <source>To access Quantum GIS environment from this python console use object from global scope which is an instance of QgisInterface class.&lt;br&gt;Usage e.g.: iface.zoomFull()</source>
-        <translation type="obsolete">使用QGIS環境中python主控台存取物件，是使用全域的QgisInterface類別實體&lt;br&gt;使用範例: iface.zoomFull()</translation>
-    </message>
-    <message>
-        <source>&amp;Execute</source>
-        <translation type="obsolete">執行(&amp;E)</translation>
-    </message>
-    <message>
-        <source>&amp;Previous</source>
-        <translation type="obsolete">上一指令(&amp;P)</translation>
-    </message>
-    <message>
-        <source>&amp;Next</source>
-        <translation type="obsolete">下一指令(&amp;N)</translation>
-    </message>
-    <message>
-        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;To access Quantum GIS environment from this python console use qgis.utils.iface object which is an instance of QgisInterface class.&lt;br /&gt;Usage e.g.: qgis.utils.iface.zoomFull()&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:8pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;使用QGIS環境中python主控台存取物件，是使用全域的QgisInterface類別實體&lt;br&gt;使用範例: iface.zoomFull()&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>E&amp;xecute</source>
-        <translation type="obsolete">執行(&amp;E)</translation>
     </message>
 </context>
 <context>
@@ -28825,22 +19958,6 @@ p, li { white-space: pre-wrap; }
         <source>SQL where clause</source>
         <translation type="unfinished">SQL where 子句</translation>
     </message>
-    <message>
-        <source>Clear</source>
-        <translation type="obsolete">清除</translation>
-    </message>
-    <message>
-        <source>Test</source>
-        <translation type="obsolete">測試</translation>
-    </message>
-    <message>
-        <source>Ok</source>
-        <translation type="obsolete">確定</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">取消</translation>
-    </message>
 </context>
 <context>
     <name>QgsQuickPrint</name>
@@ -28914,229 +20031,163 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsRasterLayer</name>
     <message>
-        <source>Red</source>
-        <translation type="obsolete">紅</translation>
-    </message>
-    <message>
-        <source>Green</source>
-        <translation type="obsolete">綠</translation>
-    </message>
-    <message>
-        <source>Blue</source>
-        <translation type="obsolete">藍</translation>
-    </message>
-    <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="85"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2517"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="3444"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="3460"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2513"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="3440"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="3456"/>
         <source>Not Set</source>
         <translation>未設定</translation>
     </message>
     <message>
-        <source>Raster Extent: </source>
-        <translation type="obsolete">影像範圍:</translation>
-    </message>
-    <message>
-        <source>Clipped area: </source>
-        <translation type="obsolete">切割區域:</translation>
-    </message>
-    <message>
-        <source>&lt;center&gt;&lt;b&gt;Raster Layer&lt;/b&gt;&lt;/center&gt;</source>
-        <translation type="obsolete">&lt;center&gt;&lt;b&gt;影像圖層&lt;/b&gt;&lt;/center&gt;</translation>
-    </message>
-    <message>
-        <source>&amp;Properties</source>
-        <translation type="obsolete">屬性(&amp;P)</translation>
-    </message>
-    <message>
-        <source>&lt;center&gt;&lt;b&gt;Transparency&lt;/b&gt;&lt;/center&gt;</source>
-        <translation type="obsolete">&lt;center&gt;&lt;b&gt;透明度&lt;/b&gt;&lt;/center&gt;</translation>
-    </message>
-    <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2529"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2525"/>
         <source>Driver:</source>
         <translation>驅動:</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2606"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2602"/>
         <source>Dimensions:</source>
         <translation>尺寸:</translation>
     </message>
     <message>
-        <source>X: </source>
-        <translation type="obsolete">X: </translation>
-    </message>
-    <message>
-        <source> Y: </source>
-        <translation type="obsolete"> Y: </translation>
-    </message>
-    <message>
-        <source> Bands: </source>
-        <translation type="obsolete"> 波段: </translation>
-    </message>
-    <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2634"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2630"/>
         <source>Data Type:</source>
         <translation>資料類型:</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2640"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2636"/>
         <source>GDT_Byte - Eight bit unsigned integer</source>
         <translation>GDT_Byte - 8位元無符號整型</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2643"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2639"/>
         <source>GDT_UInt16 - Sixteen bit unsigned integer </source>
         <translation>GDT_UInt16 - 16位元無符號整型</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2646"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2642"/>
         <source>GDT_Int16 - Sixteen bit signed integer </source>
         <translation>GDT_Int16 - 16位元有符號整型</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2649"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2645"/>
         <source>GDT_UInt32 - Thirty two bit unsigned integer </source>
         <translation>GDT_UInt32 - 32位元無符號整型</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2652"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2648"/>
         <source>GDT_Int32 - Thirty two bit signed integer </source>
         <translation>GDT_Int32 - 32位元有符號整型</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2655"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2651"/>
         <source>GDT_Float32 - Thirty two bit floating point </source>
         <translation>GDT_Float32 - 32位浮點型</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2658"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2654"/>
         <source>GDT_Float64 - Sixty four bit floating point </source>
         <translation>GDT_Float64 - 64位浮點型</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2661"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2657"/>
         <source>GDT_CInt16 - Complex Int16 </source>
         <translation>GDT_CInt16 - Complex Int16 </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2664"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2660"/>
         <source>GDT_CInt32 - Complex Int32 </source>
         <translation>GDT_CInt32 - Complex Int32 </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2667"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2663"/>
         <source>GDT_CFloat32 - Complex Float32 </source>
         <translation>GDT_CFloat32 - Complex Float32 </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2670"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2666"/>
         <source>GDT_CFloat64 - Complex Float64 </source>
         <translation>GDT_CFloat64 - Complex Float64 </translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2673"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2669"/>
         <source>Could not determine raster data type.</source>
         <translation>無法確定影像資料的類型.</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2678"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2674"/>
         <source>Pyramid overviews:</source>
         <translation>快取顯示(Pyramid)全覽圖:</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2727"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2723"/>
         <source>Origin:</source>
         <translation>起點:</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2736"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2732"/>
         <source>Pixel Size:</source>
         <translation>圖元大小:</translation>
     </message>
     <message>
-        <source>Band Statistics (if gathered):</source>
-        <translation type="obsolete">波段統計(如果收集了):</translation>
-    </message>
-    <message>
-        <source>Property</source>
-        <translation type="obsolete">屬性</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="obsolete">值</translation>
-    </message>
-    <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2754"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="4900"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2750"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="4896"/>
         <source>Band</source>
         <translation>波段</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2761"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2757"/>
         <source>Band No</source>
         <translation>波段數</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2773"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2769"/>
         <source>No Stats</source>
         <translation>沒有統計值</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2776"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2772"/>
         <source>No stats collected yet</source>
         <translation>尚未收集統計值</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2786"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2782"/>
         <source>Min Val</source>
         <translation>最小值</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2794"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2790"/>
         <source>Max Val</source>
         <translation>最大值</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2802"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2798"/>
         <source>Range</source>
         <translation>範圍</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2810"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2806"/>
         <source>Mean</source>
         <translation>均值</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2818"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2814"/>
         <source>Sum of squares</source>
         <translation>平方和</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2826"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2822"/>
         <source>Standard Deviation</source>
         <translation>標準差</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2834"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2830"/>
         <source>Sum of all cells</source>
         <translation>像元總和</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2842"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2838"/>
         <source>Cell Count</source>
         <translation>像元數量</translation>
-    </message>
-    <message>
-        <source>Write access denied</source>
-        <translation type="obsolete">拒絕寫操作</translation>
-    </message>
-    <message>
-        <source>Write access denied. Adjust the file permissions and try again.
-
-</source>
-        <translation type="obsolete">拒絕寫操作。修改檔許可權然後重試.</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1054"/>
@@ -29149,63 +20200,47 @@ p, li { white-space: pre-wrap; }
         <translation>平均值</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2699"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2695"/>
         <source>Layer Spatial Reference System: </source>
         <translation>圖層的空間參考系統:</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2709"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2705"/>
         <source>Project Spatial Reference System: </source>
         <translation type="unfinished">專案的空間參考系統:</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1893"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1889"/>
         <source>out of extent</source>
         <translation>超出範圍</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1934"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1930"/>
         <source>null (no data)</source>
         <translation>空值(no data)</translation>
     </message>
     <message>
-        <source>Building pyramids failed.</source>
-        <translation type="obsolete">建立快取顯示檔(Pyramid)失敗.</translation>
-    </message>
-    <message>
-        <source>The file was not writeable. Some formats can not be written to, only read. You can also try to check the permissions and then try again.</source>
-        <translation type="obsolete">檔必須是可寫入的。有些格式是不可寫入的，只能讀取。您還要檢查檔的許可權，然後再重試.</translation>
-    </message>
-    <message>
-        <source>Building pyramid overviews is not supported on this type of raster.</source>
-        <translation type="obsolete">此類影像不支持建立快取顯示檔(Pyramid)的全覽圖.</translation>
-    </message>
-    <message>
-        <source>&amp;Convert to...</source>
-        <translation type="obsolete">轉換為(&amp;C)... </translation>
-    </message>
-    <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2554"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2550"/>
         <source>Dataset Description</source>
         <translation>資料集描述</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2619"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2615"/>
         <source>No Data Value</source>
         <translation>沒有資料值</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2628"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2624"/>
         <source>NoDataValue not set</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2575"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2571"/>
         <source>Band %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2609"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2605"/>
         <source>X: %1 Y: %2 Bands: %3</source>
         <translation type="unfinished"></translation>
     </message>
@@ -29225,16 +20260,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1542"/>
-        <source>Retrieving %1 using %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1626"/>
-        <source>%1 retrieved using %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="435"/>
         <source>All other files (*)</source>
         <translation type="unfinished"></translation>
@@ -29242,30 +20267,6 @@ p, li { white-space: pre-wrap; }
 </context>
 <context>
     <name>QgsRasterLayerProperties</name>
-    <message>
-        <source>Columns:</source>
-        <translation type="obsolete">列:</translation>
-    </message>
-    <message>
-        <source>Rows:</source>
-        <translation type="obsolete">行:</translation>
-    </message>
-    <message>
-        <source>No Data:</source>
-        <translation type="obsolete">No Data:</translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;Multiband Image Notes&lt;/h3&gt;&lt;p&gt;This is a multiband image. You can choose to render it as grayscale or color (RGB). For color images, you can associate bands to colors arbitarily. For example, if you have a seven band landsat image, you may choose to render it as:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Visible Blue (0.45 to 0.52 microns) - not mapped&lt;/li&gt;&lt;li&gt;Visible Green (0.52 to 0.60 microns) - not mapped&lt;/li&gt;&lt;/li&gt;Visible Red (0.63 to 0.69 microns) - mapped to red in image&lt;/li&gt;&lt;li&gt;Near Infrared (0.76 to 0.90 microns) - mapped to green in image&lt;/li&gt;&lt;li&gt;Mid Infrared (1.55 to 1.75 microns) - not mapped&lt;/li&gt;&lt;li&gt;Thermal Infrared (10.4 to 12.5 microns) - not mapped&lt;/li&gt;&lt;li&gt;Mid Infrared (2.08 to 2.35 microns) - mapped to blue in image&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="obsolete">&lt;h3&gt;多波段影像注釋&lt;/h3&gt;&lt;p&gt;這是一個多波段影像。您可以將它繪圖為灰度或彩色(RGB)。對於彩色影像，您可以為每個波段關聯任意的顏色。比如有一個七波段的landsat影像，您可以這樣繪圖：&lt;/p&gt;&lt;ul&gt;&lt;li&gt;可見藍光 (0.45到0.52微公尺) - 未映射&lt;/li&gt;&lt;li&gt;可見綠光(0.52到0.60微公尺) - 未映射&lt;/li&gt;&lt;/li&gt;可見紅光(0.63到0.69微公尺) - 映射為紅色&lt;/li&gt;&lt;li&gt;近紅外(0.76到0.90微公尺) - 映射為綠色&lt;/li&gt;&lt;li&gt;中紅外(1.55到1.75微公尺) - 未映射&lt;/li&gt;&lt;li&gt;熱紅外(10.4到12.5微公尺) - 未映射&lt;/li&gt;&lt;li&gt;中紅外(2.08到2.35微公尺) - 映射為藍色&lt;/li&gt;&lt;/ul&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;Paletted Image Notes&lt;/h3&gt; &lt;p&gt;This image uses a fixed color palette. You can remap these colors in different combinations e.g.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Red - blue in image&lt;/li&gt;&lt;li&gt;Green - blue in image&lt;/li&gt;&lt;li&gt;Blue - green in image&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="obsolete">&lt;h3&gt;色調影像注釋&lt;/h3&gt; &lt;p&gt;這個影像使用了一個固定的色調。您可以將這些顏色重新映射為不同的組合。如&lt;/p&gt;&lt;ul&gt;&lt;li&gt;紅色 - 映射為藍色&lt;/li&gt;&lt;li&gt;綠色 - 映射為藍色&lt;/li&gt;&lt;li&gt;藍色 - 映射為綠色&lt;/li&gt;&lt;/ul&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;h3&gt;Grayscale Image Notes&lt;/h3&gt; &lt;p&gt;You can remap these grayscale colors to a pseudocolor image using an automatically generated color ramp.&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;h3&gt;灰度影像注釋&lt;/h3&gt; &lt;p&gt;您可以將灰度重新映射為偽彩色，使用自動生成的色階。&lt;/p&gt;</translation>
-    </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="107"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="636"/>
@@ -29293,10 +20294,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2383"/>
         <source>Freak Out</source>
         <translation>反常</translation>
-    </message>
-    <message>
-        <source>Palette</source>
-        <translation type="obsolete">調色板</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="58"/>
@@ -29349,10 +20346,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1602"/>
         <source>Building pyramids failed.</source>
         <translation type="unfinished">建立快取金字塔顯示檔(Pyramid)失敗.</translation>
-    </message>
-    <message>
-        <source>The file was not writeable. Some formats can not be written to, only read. You can also try to check the permissions and then try again.</source>
-        <translation type="obsolete">檔必須是可寫入的。有些格式是不可寫入的，只能讀取。您還要檢查檔的許可權，然後再重試.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1593"/>
@@ -29641,13 +20634,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished">儲存樣式</translation>
     </message>
     <message>
-        <source>The color map for Band %n failed to load</source>
-        <translation type="obsolete">
-        
-        
-        </translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="452"/>
         <source>Note: Minimum Maximum values are actual values computed from the band(s)</source>
         <translation type="unfinished">注意：最大值/最小值是由各波段中計算取得的實際值</translation>
@@ -29735,41 +20721,9 @@ p, li { white-space: pre-wrap; }
         <translation>影像圖層的屬性</translation>
     </message>
     <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">取消(&amp;C)</translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">確定(&amp;O)</translation>
-    </message>
-    <message>
-        <source>&amp;Apply</source>
-        <translation type="obsolete">套用(&amp;A)</translation>
-    </message>
-    <message>
-        <source>Alt+A</source>
-        <translation type="obsolete">Alt+A</translation>
-    </message>
-    <message>
-        <source>&amp;Help</source>
-        <translation type="obsolete">說明(&amp;H)</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="92"/>
         <source>Symbology</source>
         <translation type="unfinished">符號設計</translation>
-    </message>
-    <message>
-        <source>Appearance</source>
-        <translation type="obsolete">外觀</translation>
-    </message>
-    <message>
-        <source>Transparency:</source>
-        <translation type="obsolete">透明度:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1084"/>
@@ -29782,81 +20736,9 @@ p, li { white-space: pre-wrap; }
         <translation>不透明</translation>
     </message>
     <message>
-        <source>Invert Color Map</source>
-        <translation type="obsolete">反轉色彩影射表</translation>
-    </message>
-    <message>
-        <source>0%</source>
-        <translation type="obsolete">0%</translation>
-    </message>
-    <message>
-        <source>RGB</source>
-        <translation type="obsolete">RGB</translation>
-    </message>
-    <message>
-        <source>Band</source>
-        <translation type="obsolete">波段</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;&lt;font color=&quot;#00ff00&quot;&gt;Green&lt;/font&gt;&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;b&gt;&lt;font color=&quot;#00ff00&quot;&gt;綠&lt;/font&gt;&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;&lt;font color=&quot;#ff0000&quot;&gt;Red&lt;/font&gt;&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;b&gt;&lt;font color=&quot;#ff0000&quot;&gt;紅&lt;/font&gt;&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;&lt;font color=&quot;#0000ff&quot;&gt;Blue&lt;/font&gt;&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;b&gt;&lt;font color=&quot;#0000ff&quot;&gt;藍&lt;/font&gt;&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>Color</source>
-        <translation type="obsolete">顏色</translation>
-    </message>
-    <message>
-        <source>Grayscale</source>
-        <translation type="obsolete">灰階</translation>
-    </message>
-    <message>
-        <source>Gray</source>
-        <translation type="obsolete">灰度</translation>
-    </message>
-    <message>
-        <source>Std Deviations</source>
-        <translation type="obsolete">標準差</translation>
-    </message>
-    <message>
-        <source>Color Map</source>
-        <translation type="obsolete">色彩影射表</translation>
-    </message>
-    <message>
-        <source>Show As</source>
-        <translation type="obsolete">顯示為</translation>
-    </message>
-    <message>
-        <source>Three Band</source>
-        <translation type="obsolete">三波段</translation>
-    </message>
-    <message>
-        <source>Single Band</source>
-        <translation type="obsolete">單波段</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="119"/>
         <source>General</source>
         <translation>一般</translation>
-    </message>
-    <message>
-        <source>Display Name:</source>
-        <translation type="obsolete">顯示名稱:</translation>
-    </message>
-    <message>
-        <source>Show debug info as overlay on raster?</source>
-        <translation type="obsolete">是否在套疊影像的時候顯示除錯資訊?</translation>
-    </message>
-    <message>
-        <source>Layer Source:</source>
-        <translation type="obsolete">圖層的源:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1655"/>
@@ -29879,42 +20761,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished">橫列:</translation>
     </message>
     <message>
-        <source>Legend:</source>
-        <translation type="obsolete">圖例:</translation>
-    </message>
-    <message>
-        <source>Palette:</source>
-        <translation type="obsolete">調色板:</translation>
-    </message>
-    <message>
-        <source>Advanced Symbology</source>
-        <translation type="obsolete">進階符號化</translation>
-    </message>
-    <message>
-        <source>Red</source>
-        <translation type="obsolete">紅</translation>
-    </message>
-    <message>
-        <source>Green</source>
-        <translation type="obsolete">綠</translation>
-    </message>
-    <message>
-        <source>Blue</source>
-        <translation type="obsolete">藍</translation>
-    </message>
-    <message>
-        <source>Behaviour</source>
-        <translation type="obsolete">行為</translation>
-    </message>
-    <message>
-        <source>Exclude values outside the above ranges (after color mapping)</source>
-        <translation type="obsolete">排除上面範圍以外的值(色彩影射以後)</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;&lt;font color=&quot;#ff0000&quot;&gt;Please Note :&lt;/font&gt; Advanced Symbology not implemented yet!&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;b&gt;&lt;font color=&quot;#ff0000&quot;&gt;請注意：&lt;/font&gt; 進階的符號化功能還沒有實現！&lt;/b&gt;</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="128"/>
         <source>Metadata</source>
         <translation type="unfinished">詮釋資料</translation>
@@ -29923,10 +20769,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="137"/>
         <source>Pyramids</source>
         <translation type="unfinished">快取金字塔(Pyramids)</translation>
-    </message>
-    <message>
-        <source>Resampling Method</source>
-        <translation type="obsolete">重採樣方法</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1855"/>
@@ -29939,62 +20781,6 @@ p, li { white-space: pre-wrap; }
         <translation>最鄰近採樣</translation>
     </message>
     <message>
-        <source>Build Pyramids</source>
-        <translation type="obsolete">建立快取顯示檔(Pyramid)</translation>
-    </message>
-    <message>
-        <source>Pyramid Resolutions</source>
-        <translation type="obsolete">快取顯示檔(Pyramid)的解析度</translation>
-    </message>
-    <message>
-        <source>Visibility</source>
-        <translation type="obsolete">可見性</translation>
-    </message>
-    <message>
-        <source>Use scale dependent rendering</source>
-        <translation type="obsolete">依比例繪圖</translation>
-    </message>
-    <message>
-        <source>Maximum 1:</source>
-        <translation type="obsolete">最大值1:</translation>
-    </message>
-    <message>
-        <source>Maximum scale at which this layer will be displayed. </source>
-        <translation type="obsolete">圖層顯示的最大比例.</translation>
-    </message>
-    <message>
-        <source>Minimum 1:</source>
-        <translation type="obsolete">最小值1:</translation>
-    </message>
-    <message>
-        <source>Minimum scale at which this layer will be displayed. </source>
-        <translation type="obsolete">圖層顯示的最小比例.</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Bitstream Vera Sans&quot;&gt;
-&lt;p style=&quot;margin-top:14px&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;Notes&lt;/span&gt;&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Bitstream Vera Sans&quot;&gt;
-&lt;p style=&quot;margin-top:14px&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;注意&lt;/span&gt;&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Bitstream Vera Sans&quot;&gt;
-&lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:22pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;Large resolution raster layers can slow navigation in QGIS. By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom. You must have write access in the directory where the original data is stored to build pyramids. &lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;Please note that building pyramids may alter the original data file and once created they cannot be removed.&lt;/span&gt;&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Bitstream Vera Sans&quot;&gt;
-&lt;p style=&quot;margin-top:18px&quot;&gt;&lt;span style=&quot;font-size:22pt;font-weight:600&quot;&gt;描述&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;高解析度的影像圖層在QGIS會降低瀏覽速度。建立低解析度的資料複製(快取顯示檔-Pyramid)，執行效率會有顯著提高，因為QGIS會根據縮放的級別來選擇最合適的解析度。要建立快取顯示檔(Pyramid)，您必須對原始資料的儲存資料夾有寫許可權。&lt;/p&gt;
-&lt;p&gt;&lt;span style=&quot;color:#ff0000&quot;&gt;請注意，建快取顯示檔(Pyramid)也許會修改原始資料檔案，而且它們一經建立就無法刪除。&lt;/span&gt;&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="146"/>
         <source>Histogram</source>
         <translation type="unfinished">分佈圖</translation>
@@ -30005,76 +20791,14 @@ p, li { white-space: pre-wrap; }
         <translation>選項</translation>
     </message>
     <message>
-        <source>Out Of Range OK?</source>
-        <translation type="obsolete">超出範圍，OK?</translation>
-    </message>
-    <message>
-        <source>Allow Approximation</source>
-        <translation type="obsolete">允許近似值</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1926"/>
         <source>Chart Type</source>
         <translation>圖表類型</translation>
     </message>
     <message>
-        <source>Bar Chart</source>
-        <translation type="obsolete">長條圖</translation>
-    </message>
-    <message>
-        <source>Line Graph</source>
-        <translation type="obsolete">線形圖</translation>
-    </message>
-    <message>
-        <source>X Range:</source>
-        <translation type="obsolete">X的範圍:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2037"/>
         <source>Refresh</source>
         <translation>重新整理</translation>
-    </message>
-    <message>
-        <source>Spatial Reference System</source>
-        <translation type="obsolete">空間參考系統</translation>
-    </message>
-    <message>
-        <source>Change</source>
-        <translation type="obsolete">改變</translation>
-    </message>
-    <message>
-        <source>Display</source>
-        <translation type="obsolete">顯示</translation>
-    </message>
-    <message>
-        <source>Grayscale Image</source>
-        <translation type="obsolete">灰度影像</translation>
-    </message>
-    <message>
-        <source>Color Image</source>
-        <translation type="obsolete">彩色影像</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:14px&quot; dir=&quot;ltr&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;Notes&lt;/span&gt;&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:14px&quot; dir=&quot;ltr&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;注釋&lt;/span&gt;&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</translation>
-    </message>
-    <message>
-        <source>DebugInfo</source>
-        <translation type="obsolete">除錯資訊</translation>
-    </message>
-    <message>
-        <source>Scale Dependent Visibility</source>
-        <translation type="obsolete">依比例顯示</translation>
-    </message>
-    <message>
-        <source>Column Count:</source>
-        <translation type="obsolete">欄位數:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="754"/>
@@ -30499,10 +21223,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished">座標參考系統(CRS)</translation>
     </message>
     <message>
-        <source>Change ...</source>
-        <translation type="obsolete">改變...</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1692"/>
         <source>Legend</source>
         <translation type="unfinished">圖例</translation>
@@ -30689,18 +21409,6 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsRunProcess</name>
     <message>
-        <source>Unable to run command</source>
-        <translation type="obsolete">不能運行命令</translation>
-    </message>
-    <message>
-        <source>Unable to run the command</source>
-        <translation type="obsolete">不能運行該命令</translation>
-    </message>
-    <message>
-        <source>Starting</source>
-        <translation type="obsolete">開始</translation>
-    </message>
-    <message>
         <location filename="../src/core/qgsrunprocess.cpp" line="119"/>
         <source>Done</source>
         <translation>完成</translation>
@@ -30725,52 +21433,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/core/qgsrunprocess.cpp" line="152"/>
         <source>Unable to run command %1</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QgsSOSSourceSelect</name>
-    <message>
-        <source>Are you sure you want to remove the </source>
-        <translation type="obsolete">您確實想刪除</translation>
-    </message>
-    <message>
-        <source> connection and all associated settings?</source>
-        <translation type="obsolete">連接和所有相關的設定?</translation>
-    </message>
-    <message>
-        <source>Confirm Delete</source>
-        <translation type="obsolete">確認刪除</translation>
-    </message>
-</context>
-<context>
-    <name>QgsSOSSourceSelectBase</name>
-    <message>
-        <source>Server Connections</source>
-        <translation type="obsolete">伺服器連線</translation>
-    </message>
-    <message>
-        <source>&amp;New</source>
-        <translation type="obsolete">新增(&amp;N)</translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation type="obsolete">刪除</translation>
-    </message>
-    <message>
-        <source>Edit</source>
-        <translation type="obsolete">編輯</translation>
-    </message>
-    <message>
-        <source>C&amp;onnect</source>
-        <translation type="obsolete">連線(&amp;o)</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">名稱</translation>
-    </message>
-    <message>
-        <source>Id</source>
-        <translation type="obsolete">Id</translation>
     </message>
 </context>
 <context>
@@ -30817,10 +21479,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/diagram_overlay/qgssvgdiagramfactorywidgetbase.ui" line="81"/>
         <source>SVG Preview</source>
         <translation type="unfinished">SVG預覽</translation>
-    </message>
-    <message>
-        <source>Browse...</source>
-        <translation type="obsolete">瀏覽...</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgssvgdiagramfactorywidgetbase.ui" line="126"/>
@@ -30936,17 +21594,9 @@ p, li { white-space: pre-wrap; }
         <translation>地圖裝飾(&amp;D)</translation>
     </message>
     <message>
-        <source>&amp;ScaleBar</source>
-        <translation type="obsolete">比例尺 (&amp;S)</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="105"/>
         <source>Creates a scale bar that is displayed on the map canvas</source>
         <translation>在地圖檢視中建立比例尺</translation>
-    </message>
-    <message>
-        <source>Scale Bar</source>
-        <translation type="obsolete">比例尺</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="103"/>
@@ -30982,34 +21632,6 @@ p, li { white-space: pre-wrap; }
         <translation>比例尺附加元件</translation>
     </message>
     <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">確定(&amp;O)</translation>
-    </message>
-    <message>
-        <source>Alt+O</source>
-        <translation type="obsolete">Alt+O</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">取消(&amp;C)</translation>
-    </message>
-    <message>
-        <source>Alt+C</source>
-        <translation type="obsolete">Alt+C</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;This plugin draws a scale bar on the map. Please note the size option below is a &apos;preferred&apos; size and may have to be altered by QGIS depending on the level of zoom.  The size is measured according to the map units specified in the project properties.&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;描述&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;該附加元件會在地圖上繪製比例尺。請注意下面的大小選項，它是“預選”的尺寸，QGIS會根據不同的縮放層次來改變它。這個值根據專案屬性中指定的地圖單位來測量。&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="48"/>
         <source>Top Left</source>
         <translation>左上</translation>
@@ -31041,18 +21663,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Size of bar:</source>
-        <translation type="obsolete">比例尺的大小:</translation>
-    </message>
-    <message>
-        <source>Select Colour</source>
-        <translation type="obsolete">選擇顏色</translation>
-    </message>
-    <message>
-        <source>Placement:</source>
-        <translation type="obsolete">位置:</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="97"/>
         <source>Tick Down</source>
         <translation>開口向下</translation>
@@ -31078,14 +21688,6 @@ p, li { white-space: pre-wrap; }
         <translation>選擇比例尺樣式</translation>
     </message>
     <message>
-        <source>Colour of bar:</source>
-        <translation type="obsolete">比例尺的顏色:</translation>
-    </message>
-    <message>
-        <source>Scale bar style:</source>
-        <translation type="obsolete">比例尺的樣式:</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="187"/>
         <source>Enable scale bar</source>
         <translation>顯示比例尺</translation>
@@ -31094,10 +21696,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="203"/>
         <source>Automatically snap to round number on resize</source>
         <translation type="unfinished">刻度取整</translation>
-    </message>
-    <message>
-        <source>Click to select the colour</source>
-        <translation type="obsolete">點擊選擇顏色</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="31"/>
@@ -31110,32 +21708,13 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished">比例尺的樣式</translation>
     </message>
     <message>
-        <source>Colour of bar</source>
-        <translation type="obsolete">比例尺顏色</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="161"/>
         <source>Size of bar</source>
         <translation type="unfinished">比例尺大小</translation>
     </message>
 </context>
 <context>
-    <name>QgsScanGeometries</name>
-    <message>
-        <source>Scanning Geometries</source>
-        <translation type="obsolete">掃描幾何形狀</translation>
-    </message>
-    <message>
-        <source>textLabel1</source>
-        <translation type="obsolete">文本標籤1</translation>
-    </message>
-</context>
-<context>
     <name>QgsSearchQueryBuilder</name>
-    <message>
-        <source>No matching features found.</source>
-        <translation type="obsolete">未找到符合的圖徵。</translation>
-    </message>
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="173"/>
         <source>Search results</source>
@@ -31181,237 +21760,6 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>QgsServerSourceSelect</name>
-    <message>
-        <source>PNG</source>
-        <translation type="obsolete">PNG</translation>
-    </message>
-    <message>
-        <source>JPEG</source>
-        <translation type="obsolete">JPEG</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to remove the </source>
-        <translation type="obsolete">您想移除</translation>
-    </message>
-    <message>
-        <source> connection and all associated settings?</source>
-        <translation type="obsolete">連線和所有相關的設定?</translation>
-    </message>
-    <message>
-        <source>Confirm Delete</source>
-        <translation type="obsolete">確認刪除</translation>
-    </message>
-    <message>
-        <source>Yes</source>
-        <translation type="obsolete">是</translation>
-    </message>
-    <message>
-        <source>No</source>
-        <translation type="obsolete">否</translation>
-    </message>
-    <message>
-        <source>WMS Provider</source>
-        <translation type="obsolete">WMS提供來源</translation>
-    </message>
-    <message>
-        <source>Could not open the WMS Provider</source>
-        <translation type="obsolete">無法開啟WMS來源</translation>
-    </message>
-    <message>
-        <source>Select Layer</source>
-        <translation type="obsolete">選擇圖層</translation>
-    </message>
-    <message>
-        <source>You must select at least one layer first.</source>
-        <translation type="obsolete">您至少要選擇一個圖層。</translation>
-    </message>
-    <message>
-        <source>Coordinate Reference System (%1 available)</source>
-        <translation type="obsolete">座標參考系統 (%1可用)
-        
-        </translation>
-    </message>
-    <message>
-        <source>Could not understand the response.  The</source>
-        <translation type="obsolete">無法解析WMS伺服器的回應。</translation>
-    </message>
-    <message>
-        <source>provider said</source>
-        <translation type="obsolete">伺服器回應</translation>
-    </message>
-    <message>
-        <source>WMS proxies</source>
-        <translation type="obsolete">WMS Proxy伺服器</translation>
-    </message>
-    <message>
-        <source>Coordinate Reference System</source>
-        <translation type="obsolete">座標參考系統</translation>
-    </message>
-    <message>
-        <source>There are no available coordinate reference system for the set of layers you&apos;ve selected.</source>
-        <translation type="obsolete">沒有您所選擇的座標參考系統。</translation>
-    </message>
-    <message>
-        <source>Several WMS servers have been added to the server list. Note that if you access the internet via a web proxy, you will need to set the proxy settings in the QGIS options dialog.</source>
-        <translation type="obsolete">已加入數個WMS伺服器至您的伺服器清單中。注意如果您需透過Proxy伺服器連線，您必須先在QGIS選項中設定prxoy主機資料。</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="obsolete">您確定要移除%1連線與所有的設定嗎？</translation>
-    </message>
-    <message numerus="yes">
-        <source>Coordinate Reference System (%n available)</source>
-        <comment>crs count</comment>
-        <translation type="obsolete">
-            <numerusform>座標參考系統 (%n可用)</numerusform>
-        </translation>
-    </message>
-    <message>
-        <source>Confirm Overwrite</source>
-        <translation type="obsolete">確認覆蓋</translation>
-    </message>
-</context>
-<context>
-    <name>QgsServerSourceSelectBase</name>
-    <message>
-        <source>Add Layer(s) from a Server</source>
-        <translation type="obsolete">新增伺服器上的圖層</translation>
-    </message>
-    <message>
-        <source>C&amp;lose</source>
-        <translation type="obsolete">關閉(&amp;l)</translation>
-    </message>
-    <message>
-        <source>Alt+L</source>
-        <translation type="obsolete">Alt+L</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">說明</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
-    </message>
-    <message>
-        <source>Image encoding</source>
-        <translation type="obsolete">影像編碼格式</translation>
-    </message>
-    <message>
-        <source>Layers</source>
-        <translation type="obsolete">圖層</translation>
-    </message>
-    <message>
-        <source>ID</source>
-        <translation type="obsolete">ID</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">名稱</translation>
-    </message>
-    <message>
-        <source>Title</source>
-        <translation type="obsolete">標題</translation>
-    </message>
-    <message>
-        <source>Abstract</source>
-        <translation type="obsolete">摘要</translation>
-    </message>
-    <message>
-        <source>&amp;Add</source>
-        <translation type="obsolete">新增 (&amp;A)</translation>
-    </message>
-    <message>
-        <source>Alt+A</source>
-        <translation type="obsolete">Alt+A</translation>
-    </message>
-    <message>
-        <source>Server Connections</source>
-        <translation type="obsolete">伺服器連線</translation>
-    </message>
-    <message>
-        <source>&amp;New</source>
-        <translation type="obsolete">新增(&amp;N)</translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation type="obsolete">刪除</translation>
-    </message>
-    <message>
-        <source>Edit</source>
-        <translation type="obsolete">編輯</translation>
-    </message>
-    <message>
-        <source>C&amp;onnect</source>
-        <translation type="obsolete">連線(&amp;o)</translation>
-    </message>
-    <message>
-        <source>Ready</source>
-        <translation type="obsolete">我準備好了</translation>
-    </message>
-    <message>
-        <source>Coordinate Reference System</source>
-        <translation type="obsolete">座標參考系統</translation>
-    </message>
-    <message>
-        <source>Change ...</source>
-        <translation type="obsolete">改變...</translation>
-    </message>
-    <message>
-        <source>Adds a few example WMS servers</source>
-        <translation type="obsolete">新增幾個範例WMS伺服器</translation>
-    </message>
-    <message>
-        <source>Add default servers</source>
-        <translation type="obsolete">新增預設伺服器</translation>
-    </message>
-    <message>
-        <source>Servers</source>
-        <translation type="obsolete">伺服器</translation>
-    </message>
-    <message>
-        <source>Server Search</source>
-        <translation type="obsolete">搜尋伺服器</translation>
-    </message>
-    <message>
-        <source>Search</source>
-        <translation type="obsolete">尋找</translation>
-    </message>
-    <message>
-        <source>URL</source>
-        <translation type="obsolete">網址</translation>
-    </message>
-    <message>
-        <source>Description</source>
-        <translation type="obsolete">說明</translation>
-    </message>
-    <message>
-        <source>Add selected row to WMS list</source>
-        <translation type="obsolete">新增選取的列至WMS清單</translation>
-    </message>
-    <message>
-        <source>Layer Order</source>
-        <translation type="obsolete">圖層順序</translation>
-    </message>
-    <message>
-        <source>Layer</source>
-        <translation type="obsolete">圖層</translation>
-    </message>
-    <message>
-        <source>Style</source>
-        <translation type="obsolete">樣式</translation>
-    </message>
-    <message>
-        <source>Options</source>
-        <translation type="obsolete">選項</translation>
-    </message>
-    <message>
-        <source>Layer name</source>
-        <translation type="obsolete">圖層名稱</translation>
-    </message>
-</context>
-<context>
     <name>QgsShapeFile</name>
     <message>
         <location filename="../src/plugins/spit/qgsshapefile.cpp" line="442"/>
@@ -31454,97 +21802,7 @@ The error was:
     </message>
 </context>
 <context>
-    <name>QgsSiMaDialogBase</name>
-    <message>
-        <source>QgsSiMaDialogBase</source>
-        <translation type="obsolete">QgsSiMaDialogBase</translation>
-    </message>
-    <message>
-        <source>Directory</source>
-        <translation type="obsolete">資料夾</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>New Item</source>
-        <translation type="obsolete">新專案</translation>
-    </message>
-    <message>
-        <source>Image</source>
-        <translation type="obsolete">影像</translation>
-    </message>
-    <message>
-        <source>Scale Factor (%)</source>
-        <translation type="obsolete">比例係數(%)</translation>
-    </message>
-</context>
-<context>
-    <name>QgsSiSyDialogBase</name>
-    <message>
-        <source>Single Symbol</source>
-        <translation type="obsolete">單一符號</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>Label:</source>
-        <translation type="obsolete">標籤:</translation>
-    </message>
-    <message>
-        <source>Outline Style:</source>
-        <translation type="obsolete">框線樣式:</translation>
-    </message>
-    <message>
-        <source>Fill Color:</source>
-        <translation type="obsolete">填滿顏色:</translation>
-    </message>
-    <message>
-        <source>Outline color:</source>
-        <translation type="obsolete">框線顏色:</translation>
-    </message>
-    <message>
-        <source>Outline Width:</source>
-        <translation type="obsolete">框線寬度:</translation>
-    </message>
-    <message>
-        <source>Fill Patterns:</source>
-        <translation type="obsolete">填滿樣式:</translation>
-    </message>
-    <message>
-        <source>Clear</source>
-        <translation type="obsolete">清除</translation>
-    </message>
-    <message>
-        <source>Point</source>
-        <translation type="obsolete">點</translation>
-    </message>
-    <message>
-        <source>Symbol</source>
-        <translation type="obsolete">符號</translation>
-    </message>
-    <message>
-        <source>Size</source>
-        <translation type="obsolete">大小</translation>
-    </message>
-</context>
-<context>
     <name>QgsSingleSymbolDialog</name>
-    <message>
-        <source>Horizontal</source>
-        <translation type="obsolete">水準</translation>
-    </message>
-    <message>
-        <source>Vertical</source>
-        <translation type="obsolete">垂直</translation>
-    </message>
-    <message>
-        <source>Cross</source>
-        <translation type="obsolete">十字</translation>
-    </message>
     <message>
         <location filename="../src/app/qgssinglesymboldialog.cpp" line="184"/>
         <source>Texture</source>
@@ -31570,14 +21828,6 @@ The error was:
         <translation>單一符號</translation>
     </message>
     <message>
-        <source>Fill Patterns:</source>
-        <translation type="obsolete">填滿樣式:</translation>
-    </message>
-    <message>
-        <source>Point</source>
-        <translation type="obsolete">點</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="90"/>
         <source>Size</source>
         <translation>大小</translation>
@@ -31588,66 +21838,14 @@ The error was:
         <translation type="unfinished">符號</translation>
     </message>
     <message>
-        <source>Outline Width:</source>
-        <translation type="obsolete">框線寬度:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="189"/>
         <source>...</source>
         <translation type="unfinished">...</translation>
     </message>
     <message>
-        <source>Fill Color:</source>
-        <translation type="obsolete">填滿顏色:</translation>
-    </message>
-    <message>
-        <source>Outline color:</source>
-        <translation type="obsolete">框線顏色:</translation>
-    </message>
-    <message>
-        <source>Outline Style:</source>
-        <translation type="obsolete">框線樣式:</translation>
-    </message>
-    <message>
-        <source>Label:</source>
-        <translation type="obsolete">標籤:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="50"/>
         <source>Point Symbol</source>
         <translation type="unfinished">點符號</translation>
-    </message>
-    <message>
-        <source>Area scale field</source>
-        <translation type="obsolete">範圍比例欄位</translation>
-    </message>
-    <message>
-        <source>Rotation field</source>
-        <translation type="obsolete">旋轉欄位</translation>
-    </message>
-    <message>
-        <source>Style Options</source>
-        <translation type="obsolete">樣式選項</translation>
-    </message>
-    <message>
-        <source>Outline style</source>
-        <translation type="obsolete">框線樣式</translation>
-    </message>
-    <message>
-        <source>Outline color</source>
-        <translation type="obsolete">框線顏色</translation>
-    </message>
-    <message>
-        <source>Outline width</source>
-        <translation type="obsolete">框線寬度</translation>
-    </message>
-    <message>
-        <source>Fill color</source>
-        <translation type="obsolete">填滿顏色</translation>
-    </message>
-    <message>
-        <source>Fill style</source>
-        <translation type="obsolete">填滿樣式</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="135"/>
@@ -31772,10 +21970,6 @@ SQL: %2</source>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="118"/>
         <source>Text</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Integer</source>
-        <translation type="obsolete">整數</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="117"/>
@@ -31933,10 +22127,6 @@ SQL: %2</source>
         <translation>新增 SpatiaLite 表格</translation>
     </message>
     <message>
-        <source>SpatiaLite DBs</source>
-        <translation type="obsolete">SpatiaLite資料庫</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsspatialitesourceselectbase.ui" line="69"/>
         <source>Delete</source>
         <translation type="unfinished">刪除</translation>
@@ -31950,34 +22140,6 @@ SQL: %2</source>
         <location filename="../src/ui/qgsspatialitesourceselectbase.ui" line="83"/>
         <source>Connect</source>
         <translation type="unfinished">連接</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">說明</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
-    </message>
-    <message>
-        <source>Add</source>
-        <translation type="obsolete">新增</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">關閉</translation>
-    </message>
-    <message>
-        <source>Search:</source>
-        <translation type="obsolete">尋找:</translation>
-    </message>
-    <message>
-        <source>Search mode:</source>
-        <translation type="obsolete">尋找模式:</translation>
-    </message>
-    <message>
-        <source>Search in columns:</source>
-        <translation type="obsolete">在欄位中尋找:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsspatialitesourceselectbase.ui" line="150"/>
@@ -32056,29 +22218,9 @@ SQL: %2</source>
 <context>
     <name>QgsSpit</name>
     <message>
-        <source>Are you sure you want to remove the [</source>
-        <translation type="obsolete">您確實想刪除[</translation>
-    </message>
-    <message>
-        <source>] connection and all associated settings?</source>
-        <translation type="obsolete">]連接和所有相關的設定?</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="149"/>
         <source>Confirm Delete</source>
         <translation>確認刪除</translation>
-    </message>
-    <message>
-        <source>Yes</source>
-        <translation type="obsolete">是</translation>
-    </message>
-    <message>
-        <source>No</source>
-        <translation type="obsolete">否</translation>
-    </message>
-    <message>
-        <source> - Edit Column Names</source>
-        <translation type="obsolete">- 編輯欄位名稱</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="272"/>
@@ -32304,10 +22446,6 @@ SQL: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Password for </source>
-        <translation type="obsolete">密碼</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="412"/>
         <source>Please enter your password:</source>
         <translation>請輸入您的密碼:</translation>
@@ -32388,30 +22526,6 @@ Do you want to overwrite the [%2] relation?</source>
         <translation>SPIT - Shape檔匯入PostGIS的工具</translation>
     </message>
     <message>
-        <source>Shapefile to PostGIS Import Tool</source>
-        <translation type="obsolete">Shape檔匯入PostGIS的工具</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">說明</translation>
-    </message>
-    <message>
-        <source>Import</source>
-        <translation type="obsolete">匯入</translation>
-    </message>
-    <message>
-        <source>Import the defined shapefiles to PostGIS</source>
-        <translation type="obsolete">將選定的Shape檔匯入到PostGIS中</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">關閉</translation>
-    </message>
-    <message>
-        <source>Shapefile List</source>
-        <translation type="obsolete">Shape檔文件列清單</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="262"/>
         <source>Add</source>
         <translation>新增</translation>
@@ -32446,44 +22560,16 @@ Do you want to overwrite the [%2] relation?</source>
         <translation>移除匯入列表中所有的Shape檔</translation>
     </message>
     <message>
-        <source>File Name</source>
-        <translation type="obsolete">檔案名稱</translation>
-    </message>
-    <message>
-        <source>Feature Class</source>
-        <translation type="obsolete">圖徵類別</translation>
-    </message>
-    <message>
-        <source>Features</source>
-        <translation type="obsolete">圖徵</translation>
-    </message>
-    <message>
-        <source>Global Schema</source>
-        <translation type="obsolete">全域Schema</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="177"/>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="180"/>
         <source>Set the SRID to the default value</source>
         <translation>設定SRID為預設值</translation>
     </message>
     <message>
-        <source>Use Default Geometry Column Name</source>
-        <translation type="obsolete">使用預設的幾何欄位的名稱</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="141"/>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="144"/>
         <source>Set the geometry column name to the default value</source>
         <translation>將幾何欄位的名稱設定為預設值</translation>
-    </message>
-    <message>
-        <source>Geometry Column Name</source>
-        <translation type="obsolete">幾何欄位的名稱</translation>
-    </message>
-    <message>
-        <source>PostgreSQL Connections</source>
-        <translation type="obsolete">PostgreSQL連接</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="82"/>
@@ -32522,18 +22608,6 @@ Do you want to overwrite the [%2] relation?</source>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="120"/>
         <source>Import options and shapefile list</source>
         <translation>匯入選項與Shape檔清單</translation>
-    </message>
-    <message>
-        <source>Use Default SRID or specify here</source>
-        <translation type="obsolete">使用預設的SRID或指定為</translation>
-    </message>
-    <message>
-        <source>Use Default Geometry Column Name or specify here</source>
-        <translation type="obsolete">使用預設的[幾何欄位]或指定為</translation>
-    </message>
-    <message>
-        <source>Primary Key Column Name</source>
-        <translation type="obsolete">主鍵(PK)欄位名稱</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="63"/>
@@ -32721,10 +22795,6 @@ Do you want to overwrite the [%2] relation?</source>
 <context>
     <name>QgsTINInterpolatorDialog</name>
     <message>
-        <source>Linear interpolation</source>
-        <translation type="obsolete">線性內插</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/interpolation/qgstininterpolatordialog.cpp" line="86"/>
         <source>Save triangulation to file</source>
         <translation>儲存三角測量至檔案</translation>
@@ -32747,10 +22817,6 @@ Do you want to overwrite the [%2] relation?</source>
         <location filename="../src/plugins/interpolation/qgstininterpolatordialogbase.ui" line="14"/>
         <source>Triangle based interpolation</source>
         <translation type="unfinished">三角內插法</translation>
-    </message>
-    <message>
-        <source>Interpolation method:</source>
-        <translation type="obsolete">內插方法:</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgstininterpolatordialogbase.ui" line="46"/>
@@ -32866,7 +22932,7 @@ Do you want to overwrite the [%2] relation?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="234"/>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="233"/>
         <source>_modified</source>
         <comment>Georeferencer:QgsOpenRasterDialog.cpp - used to modify a user given file name</comment>
         <translation type="unfinished"></translation>
@@ -32974,36 +23040,6 @@ Do you want to overwrite the [%2] relation?</source>
     </message>
 </context>
 <context>
-    <name>QgsUValDialogBase</name>
-    <message>
-        <source>Form1</source>
-        <translation type="obsolete">表單1</translation>
-    </message>
-    <message>
-        <source>Classification Field:</source>
-        <translation type="obsolete">分類欄位:</translation>
-    </message>
-    <message>
-        <source>New Item</source>
-        <translation type="obsolete">新專案</translation>
-    </message>
-</context>
-<context>
-    <name>QgsUValMaDialogBase</name>
-    <message>
-        <source>Form1</source>
-        <translation type="obsolete">表單1</translation>
-    </message>
-    <message>
-        <source>Classification Field:</source>
-        <translation type="obsolete">分類欄位:</translation>
-    </message>
-    <message>
-        <source>New Item</source>
-        <translation type="obsolete">新專案</translation>
-    </message>
-</context>
-<context>
     <name>QgsUniqueValueDialog</name>
     <message>
         <location filename="../src/app/qgsuniquevaluedialog.cpp" line="285"/>
@@ -33028,10 +23064,6 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/ui/qgsuniquevaluedialogbase.ui" line="20"/>
         <source>Form1</source>
         <translation>表單1</translation>
-    </message>
-    <message>
-        <source>Classification Field:</source>
-        <translation type="obsolete">分類欄位:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsuniquevaluedialogbase.ui" line="94"/>
@@ -33123,134 +23155,6 @@ Should the existing classes be deleted before classification?</source>
 </context>
 <context>
     <name>QgsVectorLayer</name>
-    <message>
-        <source>No features found</source>
-        <translation type="obsolete">未發現圖徵</translation>
-    </message>
-    <message>
-        <source>No features were found in the active layer at the point you clicked</source>
-        <translation type="obsolete">在目前啟動圖層的滑鼠點擊位置上未發現圖徵</translation>
-    </message>
-    <message>
-        <source>Attribute table - </source>
-        <translation type="obsolete">屬性工作表</translation>
-    </message>
-    <message>
-        <source>&lt;center&gt;&lt;b&gt;Vector Layer&lt;/b&gt;&lt;/center&gt;</source>
-        <translation type="obsolete">&lt;center&gt;&lt;b&gt;向量圖層&lt;/b&gt;&lt;/center&gt;</translation>
-    </message>
-    <message>
-        <source>&amp;Open attribute table</source>
-        <translation type="obsolete">開啟屬性工作表(&amp;O)</translation>
-    </message>
-    <message>
-        <source>&amp;Properties</source>
-        <translation type="obsolete">屬性(&amp;P)</translation>
-    </message>
-    <message>
-        <source>Start editing</source>
-        <translation type="obsolete">開始編輯</translation>
-    </message>
-    <message>
-        <source>Stop editing</source>
-        <translation type="obsolete">結束編輯</translation>
-    </message>
-    <message>
-        <source>Save as shapefile...</source>
-        <translation type="obsolete">儲存為Shape檔...</translation>
-    </message>
-    <message>
-        <source>Provider does not support deletion</source>
-        <translation type="obsolete">供應者不支持刪除</translation>
-    </message>
-    <message>
-        <source>Data provider does not support deleting features</source>
-        <translation type="obsolete">資料供應者不支援刪除圖徵</translation>
-    </message>
-    <message>
-        <source>Layer not editable</source>
-        <translation type="obsolete">圖層不可編輯</translation>
-    </message>
-    <message>
-        <source>The current layer is not editable. Choose &apos;start editing&apos; in the legend item right click menu</source>
-        <translation type="obsolete">目前圖層不可編輯。在相應的圖例項目上按右鍵，選擇“開始編輯”</translation>
-    </message>
-    <message>
-        <source>action</source>
-        <translation type="obsolete">動作</translation>
-    </message>
-    <message>
-        <source>Do you want to save the changes?</source>
-        <translation type="obsolete">您是否想儲存更改?</translation>
-    </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation type="obsolete">是(&amp;Y)</translation>
-    </message>
-    <message>
-        <source>&amp;No</source>
-        <translation type="obsolete">否(&amp;N)</translation>
-    </message>
-    <message>
-        <source>Invert Selection...</source>
-        <translation type="obsolete">反轉選取的記錄...</translation>
-    </message>
-    <message>
-        <source>Abort</source>
-        <translation type="obsolete">放棄</translation>
-    </message>
-    <message>
-        <source>Allow Editing</source>
-        <translation type="obsolete">放棄編輯</translation>
-    </message>
-    <message>
-        <source>Layer cannot be added to</source>
-        <translation type="obsolete">不能新增圖層</translation>
-    </message>
-    <message>
-        <source>The data provider for this layer does not support the addition of features.</source>
-        <translation type="obsolete">該圖層的資料來源不支持圖徵的新增。</translation>
-    </message>
-    <message>
-        <source>The current layer is not editable. Choose &apos;Allow editing&apos; in the legend item right click menu.</source>
-        <translation type="obsolete">目前圖層無法編輯。在圖例中按右鍵該項目，選擇&apos;允許編輯&apos;。</translation>
-    </message>
-    <message>
-        <source>The current layer is not editable. Choose &apos;Allow editing&apos; in the legend item right click menu</source>
-        <translation type="obsolete">目前圖層無法編輯。在圖例中按右鍵該項目，選擇&apos;允許編輯&apos;</translation>
-    </message>
-    <message>
-        <source>Start editing failed</source>
-        <translation type="obsolete">開始編輯失敗</translation>
-    </message>
-    <message>
-        <source>Provider cannot be opened for editing</source>
-        <translation type="obsolete">資料來源不能以可寫方式開啟</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">錯誤</translation>
-    </message>
-    <message>
-        <source>Could not commit changes</source>
-        <translation type="obsolete">無法提交更改</translation>
-    </message>
-    <message>
-        <source>Problems during roll back</source>
-        <translation type="obsolete">回滾時發生問題</translation>
-    </message>
-    <message>
-        <source>Warning</source>
-        <translation type="obsolete">警告</translation>
-    </message>
-    <message>
-        <source>Could not change attributes</source>
-        <translation type="obsolete">無法改變屬性</translation>
-    </message>
-    <message>
-        <source>Could not commit changes to geometries</source>
-        <translation type="obsolete">無法提交幾何形狀的更改</translation>
-    </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3209"/>
         <source>ERROR: no provider</source>
@@ -33386,10 +23290,6 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QgsVectorLayerProperties</name>
     <message>
-        <source>Transparency: </source>
-        <translation type="obsolete">透明度:</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="410"/>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="483"/>
         <source>Single Symbol</source>
@@ -33414,26 +23314,10 @@ Should the existing classes be deleted before classification?</source>
         <translation>唯一值</translation>
     </message>
     <message>
-        <source>The source of the data (path name or database connection information)</source>
-        <translation type="obsolete">資料來源(路徑名稱或資料庫連接資訊)</translation>
-    </message>
-    <message>
-        <source>This button opens the PostgreSQL query builder and allows you to create a subset of features to display on the map canvas rather than displaying all features in the layer</source>
-        <translation type="obsolete">這個按鈕可以開啟PostgreSQL查詢構建器，它允許您建立圖層圖徵的子集顯示在地圖上，而不是顯示整個圖層的所有圖徵</translation>
-    </message>
-    <message>
-        <source>The query used to limit the features in the layer is shown here. This is currently only supported for PostgreSQL layers. To enter or modify the query, click on the Query Builder button</source>
-        <translation type="obsolete">這裡的查詢用來限制圖層上顯示的圖徵。目前只支持PostgreSQL圖層。要輸入或修改查詢，請點擊查詢構建器按鈕</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="712"/>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="717"/>
         <source>Spatial Index</source>
         <translation>空間索引</translation>
-    </message>
-    <message>
-        <source>Creation of spatial index successfull</source>
-        <translation type="obsolete">建立空間索引成功</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="717"/>
@@ -33446,22 +23330,6 @@ Should the existing classes be deleted before classification?</source>
         <translation>一般:</translation>
     </message>
     <message>
-        <source>Storage type of this layer : </source>
-        <translation type="obsolete">該圖層的儲存類型:</translation>
-    </message>
-    <message>
-        <source>Geometry type of the features in this layer : </source>
-        <translation type="obsolete">該圖層的圖徵的幾何類型:</translation>
-    </message>
-    <message>
-        <source>The number of features in this layer : </source>
-        <translation type="obsolete">這個圖層的圖徵數目:</translation>
-    </message>
-    <message>
-        <source>Editing capabilities of this layer : </source>
-        <translation type="obsolete">該圖層的編輯能力: </translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="782"/>
         <source>Extents:</source>
         <translation>範圍:</translation>
@@ -33470,14 +23338,6 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="786"/>
         <source>In layer spatial reference system units : </source>
         <translation>以圖層空間參考系統的單位計算:</translation>
-    </message>
-    <message>
-        <source>xMin,yMin </source>
-        <translation type="obsolete">xMin,yMin </translation>
-    </message>
-    <message>
-        <source> : xMax,yMax </source>
-        <translation type="obsolete"> : xMax,yMax </translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="800"/>
@@ -33521,14 +23381,6 @@ Should the existing classes be deleted before classification?</source>
         <translation>精確度</translation>
     </message>
     <message>
-        <source>Source for this layer : </source>
-        <translation type="obsolete">此圖層的來源:</translation>
-    </message>
-    <message>
-        <source>Layer comment: </source>
-        <translation type="obsolete">圖層註解:</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="868"/>
         <source>Comment</source>
         <translation>註解</translation>
@@ -33544,14 +23396,6 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="998"/>
         <source>QGIS Layer Style File (*.qml)</source>
         <translation>QGIS圖層樣式檔(*.qml)</translation>
-    </message>
-    <message>
-        <source>QGIS</source>
-        <translation type="obsolete">QGIS</translation>
-    </message>
-    <message>
-        <source>Unknown style format: </source>
-        <translation type="obsolete">未知的樣式格式:</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="166"/>
@@ -33587,26 +23431,6 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="172"/>
         <source>edit widget</source>
         <translation type="unfinished">編輯工具</translation>
-    </message>
-    <message>
-        <source>values</source>
-        <translation type="obsolete">值</translation>
-    </message>
-    <message>
-        <source>unique values</source>
-        <translation type="obsolete">唯一值</translation>
-    </message>
-    <message>
-        <source>unique values (editable)</source>
-        <translation type="obsolete">唯一值(可編輯)</translation>
-    </message>
-    <message>
-        <source>classification</source>
-        <translation type="obsolete">分類</translation>
-    </message>
-    <message>
-        <source>file name</source>
-        <translation type="obsolete">檔案名稱</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="322"/>
@@ -33684,10 +23508,6 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="969"/>
         <source>Load layer properties from style file (.qml)</source>
         <translation type="unfinished">載從樣式檔案入圖層屬性</translation>
-    </message>
-    <message>
-        <source>Unknown style format: %1</source>
-        <translation type="obsolete">未知的樣式格式:%1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="998"/>
@@ -33808,45 +23628,9 @@ Should the existing classes be deleted before classification?</source>
         <translation type="unfinished">圖層屬性設計</translation>
     </message>
     <message>
-        <source>Legend type:</source>
-        <translation type="obsolete">圖例類型:</translation>
-    </message>
-    <message>
-        <source>Layer source</source>
-        <translation type="obsolete">圖層的資料來源</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">說明</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
-    </message>
-    <message>
-        <source>Settings</source>
-        <translation type="obsolete">設定</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">確定</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">取消</translation>
-    </message>
-    <message>
-        <source>TextLabel2</source>
-        <translation type="obsolete">文本標籤2</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="88"/>
         <source>Symbology</source>
         <translation>符號設計</translation>
-    </message>
-    <message>
-        <source>Transparency:</source>
-        <translation type="obsolete">透明度:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="115"/>
@@ -33859,24 +23643,6 @@ Should the existing classes be deleted before classification?</source>
         <translation>依比例繪圖</translation>
     </message>
     <message>
-        <source>Maximum 1:</source>
-        <translation type="obsolete">最大值1:</translation>
-    </message>
-    <message>
-        <source>Minimum 1:</source>
-        <translation type="obsolete">最小值1:</translation>
-    </message>
-    <message>
-        <source>Minimum scale at which this layer will be displayed. </source>
-        <translation type="obsolete">圖層顯示的最小比例.
-</translation>
-    </message>
-    <message>
-        <source>Maximum scale at which this layer will be displayed. </source>
-        <translation type="obsolete">圖層顯示的最大比例.
-</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="440"/>
         <source>Display name</source>
         <translation>顯示名稱</translation>
@@ -33885,14 +23651,6 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="469"/>
         <source>Use this control to set which field is placed at the top level of the Identify Results dialog box.</source>
         <translation>用該控制項來設定某個欄位顯示在識別結果對話方塊的頂部.</translation>
-    </message>
-    <message>
-        <source>Spatial Reference System</source>
-        <translation type="obsolete">空間參考系統</translation>
-    </message>
-    <message>
-        <source>Change</source>
-        <translation type="obsolete">改變</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="453"/>
@@ -33920,17 +23678,9 @@ Should the existing classes be deleted before classification?</source>
         <translation>查詢構建器</translation>
     </message>
     <message>
-        <source>Spatial Index</source>
-        <translation type="obsolete">空間索引</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="497"/>
         <source>Create Spatial Index</source>
         <translation>建立空間索引</translation>
-    </message>
-    <message>
-        <source>Create</source>
-        <translation type="obsolete">建立</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="124"/>
@@ -33951,10 +23701,6 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="133"/>
         <source>Actions</source>
         <translation type="unfinished">動作設計</translation>
-    </message>
-    <message>
-        <source>Apply</source>
-        <translation type="obsolete">套用</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="664"/>
@@ -34000,10 +23746,6 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="556"/>
         <source>Minimum</source>
         <translation type="unfinished">最小值</translation>
-    </message>
-    <message>
-        <source>Change CRS</source>
-        <translation type="obsolete">改變座標參考系統(CRS)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="106"/>
@@ -34126,53 +23868,6 @@ Should the existing classes be deleted before classification?</source>
     </message>
 </context>
 <context>
-    <name>QgsVectorSymbologyWidgetBase</name>
-    <message>
-        <source>Form2</source>
-        <translation type="obsolete">表單2</translation>
-    </message>
-    <message>
-        <source>Label</source>
-        <translation type="obsolete">標籤</translation>
-    </message>
-    <message>
-        <source>Min</source>
-        <translation type="obsolete">最小值</translation>
-    </message>
-    <message>
-        <source>Max</source>
-        <translation type="obsolete">最大值</translation>
-    </message>
-    <message>
-        <source>Rivers</source>
-        <translation type="obsolete">河流</translation>
-    </message>
-    <message>
-        <source>1000</source>
-        <translation type="obsolete">1000</translation>
-    </message>
-    <message>
-        <source>10000</source>
-        <translation type="obsolete">10000</translation>
-    </message>
-    <message>
-        <source>Symbol Classes:</source>
-        <translation type="obsolete">符號類別:</translation>
-    </message>
-    <message>
-        <source>Count:</source>
-        <translation type="obsolete">數量:</translation>
-    </message>
-    <message>
-        <source>Mode:</source>
-        <translation type="obsolete">模式:</translation>
-    </message>
-    <message>
-        <source>Field:</source>
-        <translation type="obsolete">欄位:</translation>
-    </message>
-</context>
-<context>
     <name>QgsWFSData</name>
     <message>
         <location filename="../src/providers/wfs/qgswfsdata.cpp" line="114"/>
@@ -34198,12 +23893,12 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QgsWFSProvider</name>
     <message>
-        <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1388"/>
+        <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1380"/>
         <source>unknown</source>
         <translation>未知</translation>
     </message>
     <message>
-        <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1394"/>
+        <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1386"/>
         <source>received %1 bytes from %2</source>
         <translation>從%2接收到%1 bytes</translation>
     </message>
@@ -34211,48 +23906,32 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QgsWFSSourceSelect</name>
     <message>
-        <source>Are you sure you want to remove the </source>
-        <translation type="obsolete">您確實想刪除</translation>
-    </message>
-    <message>
-        <source> connection and all associated settings?</source>
-        <translation type="obsolete">連接和所有相關的設定?</translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="263"/>
+        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="260"/>
         <source>Confirm Delete</source>
         <translation>確認刪除</translation>
     </message>
     <message>
-        <source>Yes</source>
-        <translation type="obsolete">是</translation>
-    </message>
-    <message>
-        <source>No</source>
-        <translation type="obsolete">否</translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="261"/>
+        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="258"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
         <translation type="unfinished">您確定要移除%1連線與所有的設定嗎?</translation>
     </message>
     <message>
-        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="238"/>
+        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="235"/>
         <source>Create a new WFS connection</source>
         <translation>建立新的WFS連線</translation>
     </message>
     <message>
-        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="249"/>
+        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="246"/>
         <source>Modify WFS connection</source>
         <translation>修改WFS連線</translation>
     </message>
     <message>
-        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="148"/>
+        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="145"/>
         <source>Error</source>
         <translation>錯誤</translation>
     </message>
     <message>
-        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="148"/>
+        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="145"/>
         <source>The capabilities document could not be retrieved from the server</source>
         <translation type="unfinished"></translation>
     </message>
@@ -34275,41 +23954,9 @@ Should the existing classes be deleted before classification?</source>
         <translation>摘要</translation>
     </message>
     <message>
-        <source>Coordinate Reference System</source>
-        <translation type="obsolete">座標參考系統</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="151"/>
         <source>Change ...</source>
         <translation>變更...</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">說明</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
-    </message>
-    <message>
-        <source>&amp;Add</source>
-        <translation type="obsolete">新增 (&amp;A)</translation>
-    </message>
-    <message>
-        <source>Alt+A</source>
-        <translation type="obsolete">Alt+A</translation>
-    </message>
-    <message>
-        <source>C&amp;lose</source>
-        <translation type="obsolete">關閉(&amp;l)</translation>
-    </message>
-    <message>
-        <source>Alt+L</source>
-        <translation type="obsolete">Alt+L</translation>
-    </message>
-    <message>
-        <source>Server Connections</source>
-        <translation type="obsolete">伺服器連接</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="32"/>
@@ -34360,22 +24007,10 @@ Should the existing classes be deleted before classification?</source>
         <translation>表單</translation>
     </message>
     <message>
-        <source>Attributes:</source>
-        <translation type="obsolete">屬性:</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/diagram_overlay/qgswkndiagramfactorywidgetbase.ui" line="68"/>
         <location filename="../src/plugins/diagram_overlay/qgswkndiagramfactorywidgetbase.ui" line="73"/>
         <source>1</source>
         <translation type="unfinished">1</translation>
-    </message>
-    <message>
-        <source>Remove attribute</source>
-        <translation type="obsolete">移除屬性</translation>
-    </message>
-    <message>
-        <source>Add attribute</source>
-        <translation type="obsolete">新增屬性</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgswkndiagramfactorywidgetbase.ui" line="31"/>
@@ -34396,52 +24031,53 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QgsWMSSourceSelect</name>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="200"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="213"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
         <translation type="unfinished">您確定要移除%1連線與所有的設定嗎?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="202"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="215"/>
         <source>Confirm Delete</source>
         <translation type="unfinished">確認刪除</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="402"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="415"/>
         <source>WMS Password for %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="437"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="454"/>
         <source>WMS Provider</source>
         <translation type="unfinished">WMS提供來源</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="438"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="455"/>
         <source>Could not open the WMS Provider</source>
         <translation type="unfinished">無法開啟WMS來源</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="448"/>
-        <source>Select Layer</source>
-        <translation type="unfinished">選擇圖層</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="448"/>
-        <source>You must select at least one leaf layer first.</source>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="62"/>
+        <source>&amp;Save</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="452"/>
-        <source>Coordinate Reference System</source>
-        <translation type="unfinished">座標參考系統</translation>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="66"/>
+        <source>&amp;Load</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="452"/>
-        <source>There are no available coordinate reference system for the set of layers you&apos;ve selected.</source>
-        <translation type="unfinished">沒有您所選擇的座標參考系統。</translation>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="367"/>
+        <source>encoding %1 not supported.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="373"/>
+        <source>CRS %1 not supported.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgswmssourceselect.cpp" line="567"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="716"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="775"/>
         <source>Coordinate Reference System (%n available)</source>
         <comment>crs count</comment>
         <translation type="unfinished">
@@ -34449,40 +24085,93 @@ Should the existing classes be deleted before classification?</source>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="732"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="763"/>
+        <source>Select layer(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="765"/>
+        <source>Select layer(s) or a tileset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="770"/>
+        <source>Select either layer(s) or a tileset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="782"/>
+        <source>No common CRS for selected layers.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="787"/>
+        <source>No CRS selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="792"/>
+        <source>No image encoding selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/app/qgswmssourceselect.cpp" line="797"/>
+        <source>%n Layer(s) selected</source>
+        <comment>selected layer count</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="803"/>
+        <source>Tileset selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="890"/>
         <source>Could not understand the response.  The %1 provider said:
 %2</source>
         <comment>COMMENTED OUT</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="739"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="897"/>
         <source>Could not understand the response.  The %1 provider said:
 %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="790"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="952"/>
         <source>WMS proxies</source>
         <translation type="unfinished">WMS Proxy伺服器</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="790"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="952"/>
         <source>Several WMS servers have been added to the server list. Note that if you access the internet via a web proxy, you will need to set the proxy settings in the QGIS options dialog.</source>
         <translation type="unfinished">已加入數個WMS伺服器至您的伺服器清單中。注意如果您需透過Proxy伺服器連線，您必須先在QGIS選項中設定prxoy主機資料。</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="932"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="1028"/>
+        <source>parse error at row %1, column %2: %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="1033"/>
+        <source>network error: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="1056"/>
         <source>The %1 connection already exists. Do you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="933"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="1057"/>
         <source>Confirm Overwrite</source>
         <translation type="unfinished">確認覆蓋</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="60"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="58"/>
         <source>&amp;Add</source>
         <translation type="unfinished">新增 (&amp;A)</translation>
     </message>
@@ -34495,162 +24184,154 @@ Should the existing classes be deleted before classification?</source>
         <translation type="unfinished">新增伺服器上的圖層</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="34"/>
-        <source>Servers</source>
-        <translation type="unfinished">伺服器</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="46"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="49"/>
         <source>C&amp;onnect</source>
         <translation type="unfinished">連線(&amp;o)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="53"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="56"/>
         <source>&amp;New</source>
         <translation type="unfinished">新增(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="63"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="66"/>
         <source>Edit</source>
         <translation type="unfinished">編輯</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="73"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="76"/>
         <source>Delete</source>
         <translation type="unfinished">刪除</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="93"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="96"/>
         <source>Adds a few example WMS servers</source>
         <translation type="unfinished">新增幾個範例WMS伺服器</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="99"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="102"/>
         <source>Add default servers</source>
         <translation type="unfinished">新增預設伺服器</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="119"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="122"/>
         <source>ID</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="124"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="127"/>
         <source>Name</source>
         <translation type="unfinished">名稱</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="129"/>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="250"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="132"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="338"/>
         <source>Title</source>
         <translation type="unfinished">標題</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="134"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="137"/>
         <source>Abstract</source>
         <translation type="unfinished">摘要</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="142"/>
-        <source>Save</source>
-        <translation type="unfinished">儲存</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="149"/>
-        <source>Load</source>
-        <translation type="unfinished">載入</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="170"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="207"/>
         <source>Layer Order</source>
         <translation type="unfinished">圖層順序</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="207"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="244"/>
         <source>Layer</source>
         <translation type="unfinished">圖層</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="212"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="249"/>
         <source>Style</source>
         <translation type="unfinished">樣式</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="221"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="258"/>
+        <source>Tilesets</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="282"/>
+        <source>Styles</source>
+        <translation type="unfinished">樣式</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="287"/>
+        <source>Size</source>
+        <translation type="unfinished">大小</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="292"/>
+        <source>Format</source>
+        <translation type="unfinished">格式</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="297"/>
+        <source>CRS</source>
+        <translation type="unfinished">CRS(座標參考系統)</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="306"/>
         <source>Server Search</source>
         <translation type="unfinished">搜尋伺服器</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="230"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="315"/>
         <source>Search</source>
         <translation type="unfinished">尋找</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="255"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="348"/>
         <source>URL</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="260"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="343"/>
         <source>Description</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="268"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="356"/>
         <source>Add selected row to WMS list</source>
         <translation type="unfinished">新增選取的列至WMS清單</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="291"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="157"/>
         <source>Image encoding</source>
         <translation type="unfinished">影像編碼格式</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="298"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="37"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="277"/>
+        <source>Layers</source>
+        <translation type="unfinished">圖層</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="164"/>
         <source>Options</source>
         <translation type="unfinished">選項</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="304"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="170"/>
         <source>Layer name</source>
         <translation type="unfinished">圖層名稱</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="317"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="183"/>
         <source>Coordinate Reference System</source>
         <translation type="unfinished">座標參考系統</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="330"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="196"/>
         <source>Change ...</source>
         <translation type="unfinished">改變...</translation>
     </message>
     <message>
-        <source>Help</source>
-        <translation type="obsolete">說明</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
-    </message>
-    <message>
-        <source>&amp;Add</source>
-        <translation type="obsolete">新增 (&amp;A)</translation>
-    </message>
-    <message>
-        <source>Alt+A</source>
-        <translation type="obsolete">Alt+A</translation>
-    </message>
-    <message>
-        <source>C&amp;lose</source>
-        <translation type="obsolete">關閉(&amp;l)</translation>
-    </message>
-    <message>
-        <source>Alt+L</source>
-        <translation type="obsolete">Alt+L</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="353"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="380"/>
         <source>Ready</source>
         <translation type="unfinished">我準備好了</translation>
     </message>
@@ -34658,329 +24339,432 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QgsWmsProvider</name>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="535"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="551"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="656"/>
-        <source>Tried URL: </source>
-        <translation>嘗試URL: </translation>
-    </message>
-    <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="532"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="653"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="712"/>
-        <source>HTTP Exception</source>
-        <translation>HTTP異常</translation>
-    </message>
-    <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="546"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="726"/>
-        <source>WMS Service Exception</source>
-        <translation>WMS服務異常</translation>
-    </message>
-    <message>
-        <source>DOM Exception</source>
-        <translation type="obsolete">DOM異常</translation>
-    </message>
-    <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="782"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="806"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="947"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="968"/>
         <source>This is probably due to an incorrect WMS Server URL.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1558"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1798"/>
         <source>Could not get WMS Service Exception at %1: %2 at line %3 column %4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1611"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1851"/>
         <source>Request contains a Format not offered by the server.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1615"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1855"/>
         <source>Request contains a CRS not offered by the server for one or more of the Layers in the request.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1619"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1859"/>
         <source>Request contains a SRS not offered by the server for one or more of the Layers in the request.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1623"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1863"/>
         <source>GetMap request is for a Layer not offered by the server, or GetFeatureInfo request is for a Layer not shown on the map.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1628"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1868"/>
         <source>Request is for a Layer in a Style not offered by the server.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1632"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1872"/>
         <source>GetFeatureInfo request is applied to a Layer which is not declared queryable.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1636"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1876"/>
         <source>GetFeatureInfo request contains invalid X or Y value.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1640"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1880"/>
         <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is equal to current value of service metadata update sequence number.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1645"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1885"/>
         <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is greater than current value of service metadata update sequence number.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1650"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1890"/>
         <source>Request does not include a sample dimension value, and the server did not declare a default value for that dimension.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1655"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1895"/>
         <source>Request contains an invalid sample dimension value.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1659"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1899"/>
         <source>Request is for an optional operation that is not supported by the server.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1670"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1910"/>
         <source>The WMS vendor also reported: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1855"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2107"/>
         <source>Server Properties:</source>
         <translation>伺服器屬性:</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1864"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1998"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2116"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2260"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2448"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2508"/>
         <source>Property</source>
         <translation>屬性</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1867"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2001"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2119"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2263"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2451"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2511"/>
         <source>Value</source>
         <translation>值</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1872"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2124"/>
         <source>WMS Version</source>
         <translation>WMS版本</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1880"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2028"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2131"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2132"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2293"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2405"/>
         <source>Title</source>
         <translation>標題</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1888"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2036"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2139"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2140"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2301"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2413"/>
         <source>Abstract</source>
         <translation>摘要</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1896"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2148"/>
         <source>Keywords</source>
         <translation>關鍵字</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1904"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2156"/>
         <source>Online Resource</source>
         <translation>線上資源</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1912"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2164"/>
         <source>Contact Person</source>
         <translation>連絡人</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1924"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2176"/>
         <source>Fees</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1932"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2184"/>
         <source>Access Constraints</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1940"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2192"/>
         <source>Image Formats</source>
         <translation>影像格式</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1948"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2200"/>
         <source>Identify Formats</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1956"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2208"/>
         <source>Layer Count</source>
         <translation>圖層數量</translation>
     </message>
     <message>
-        <source>Layer Properties: </source>
-        <translation type="obsolete">圖層屬性:</translation>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2613"/>
+        <source>identify request redirected.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2006"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2270"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2455"/>
         <source>Selected</source>
         <translation>選取</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2010"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2047"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2055"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2063"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2273"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2312"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2320"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2328"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2458"/>
         <source>Yes</source>
         <translation>是</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2010"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2047"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2055"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2063"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2273"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2312"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2320"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2328"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2458"/>
         <source>No</source>
         <translation>否</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2015"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2278"/>
         <source>Visibility</source>
         <translation>可見性</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2021"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2283"/>
         <source>Visible</source>
         <translation>顯示</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2021"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2283"/>
         <source>Hidden</source>
         <translation>隱藏</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2023"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2287"/>
         <source>n/a</source>
         <translation>n/a</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2044"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2309"/>
         <source>Can Identify</source>
         <translation>可識別</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2052"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2317"/>
         <source>Can be Transparent</source>
         <translation>可透明</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2060"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2325"/>
         <source>Can Zoom In</source>
         <translation>可縮放</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2068"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2333"/>
         <source>Cascade Count</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2076"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2341"/>
         <source>Fixed Width</source>
         <translation>固定寬度</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2084"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2349"/>
         <source>Fixed Height</source>
         <translation>固定高度</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2092"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2357"/>
         <source>WGS 84 Bounding Box</source>
         <translation>WGS 84 邊框範圍</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2114"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2367"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2377"/>
+        <source>Available in CRS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2380"/>
+        <source>(and more)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2388"/>
         <source>Available in style</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2123"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2397"/>
         <source>Name</source>
         <translation>名稱</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2208"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2433"/>
+        <source>Tileset Properties:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2464"/>
+        <source>Styles</source>
+        <translation type="unfinished">樣式</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2472"/>
+        <source>CRS</source>
+        <translation type="unfinished">CRS(座標參考系統)</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2479"/>
+        <source>Bounding Box</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2486"/>
+        <source>Available in Resolutions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2500"/>
+        <source>Cache stats:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2515"/>
+        <source>Hits</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2521"/>
+        <source>Misses</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2527"/>
+        <source>Errors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2598"/>
         <source>Layer cannot be queried.</source>
         <translation type="unfinished">無法查詢該圖層。</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="779"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="802"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1557"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="944"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="964"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1797"/>
         <source>Dom Exception</source>
         <translation type="unfinished"></translation>
     </message>
+    <message numerus="yes">
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="657"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="765"/>
+        <source>%n tile requests in background</source>
+        <comment>tile request count</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="658"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="766"/>
+        <source>, %n cache hits</source>
+        <comment>tile cache hits</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="659"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="767"/>
+        <source>, %n cache misses.</source>
+        <comment>tile cache missed</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="660"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="768"/>
+        <source>, %n errors.</source>
+        <comment>errors</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="674"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="715"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="731"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="717"/>
+        <source>tile request err %1: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="792"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2628"/>
+        <source>map request error %1: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="863"/>
         <source>
 Tried URL: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="780"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="884"/>
+        <source>Capabilities request redirected.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="903"/>
+        <source>empty of capabilities: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="908"/>
+        <source>Download of capabilities failed: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="920"/>
+        <source>%1 of %2 bytes of capabilities downloaded.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="945"/>
         <source>Could not get WMS capabilities: %1 at line %2 column %3
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="803"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="965"/>
         <source>Could not get WMS capabilities in the expected format (DTD): no %1 or %2 found
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1663"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1903"/>
         <source>(No error code was reported)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1667"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1907"/>
         <source>(Unknown error code)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1964"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2218"/>
+        <source>Tileset Count</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2227"/>
         <source>GetFeatureInfoUrl</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1976"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2239"/>
         <source>Layer Properties:</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QuickPrint</name>
-    <message>
-        <source>Replace this with a short description of the what the plugin does</source>
-        <translation type="obsolete">用一個簡短的描述替換這行文字，說明附加元件的功能</translation>
     </message>
 </context>
 <context>
@@ -34997,42 +24781,6 @@ Tried URL: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> km</source>
-        <translation type="obsolete">公里</translation>
-    </message>
-    <message>
-        <source> mm</source>
-        <translation type="obsolete">公釐</translation>
-    </message>
-    <message>
-        <source> cm</source>
-        <translation type="obsolete">公分</translation>
-    </message>
-    <message>
-        <source> m</source>
-        <translation type="obsolete">公尺</translation>
-    </message>
-    <message>
-        <source> foot</source>
-        <translation type="obsolete">英呎</translation>
-    </message>
-    <message>
-        <source> feet</source>
-        <translation type="obsolete">英呎</translation>
-    </message>
-    <message>
-        <source> degree</source>
-        <translation type="obsolete">度</translation>
-    </message>
-    <message>
-        <source> degrees</source>
-        <translation type="obsolete">度</translation>
-    </message>
-    <message>
-        <source> unknown</source>
-        <translation type="obsolete">未知</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/quick_print/quickprintgui.cpp" line="151"/>
         <source>Unknown format: %1</source>
         <translation type="unfinished"></translation>
@@ -35041,29 +24789,9 @@ Tried URL: %1</source>
 <context>
     <name>QuickPrintGuiBase</name>
     <message>
-        <source>QGIS Plugin Template</source>
-        <translation type="obsolete">QGIS附加元件範本</translation>
-    </message>
-    <message>
-        <source>Plugin Template</source>
-        <translation type="obsolete">附加元件範本</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/quick_print/quickprintguibase.ui" line="14"/>
         <source>QGIS Quick Print Plugin</source>
         <translation>QGIS PDF列印附加元件</translation>
-    </message>
-    <message>
-        <source>Quick Print</source>
-        <translation type="obsolete">PDF列印</translation>
-    </message>
-    <message>
-        <source>Map Title e.g. ACME inc.</source>
-        <translation type="obsolete">地圖主題 例如 ACME inc.</translation>
-    </message>
-    <message>
-        <source>Map Name e.g. Water Features</source>
-        <translation type="obsolete">地圖名稱 例如 水文圖徵</translation>
     </message>
     <message>
         <location filename="../src/plugins/quick_print/quickprintguibase.ui" line="50"/>
@@ -35096,10 +24824,6 @@ Tried URL: %1</source>
         <translation>注意：如果您想要設定更多地圖的排版樣式，請使用QGIS的出輸設計。</translation>
     </message>
     <message>
-        <source>Page Size</source>
-        <translation type="obsolete">紙張大小</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/quick_print/quickprintguibase.ui" line="24"/>
         <source>Map title</source>
         <translation>地圖標題</translation>
@@ -35123,10 +24847,6 @@ Tried URL: %1</source>
         <translation type="unfinished">PDF列印</translation>
     </message>
     <message>
-        <source>Replace this with a short description of the what the plugin does</source>
-        <translation type="obsolete">用一個簡短的描述替換這行文字，說明附加元件的功能</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/quick_print/quickprintplugin.cpp" line="84"/>
         <source>&amp;Quick Print</source>
         <translation type="unfinished">PDF列印(&amp;Q)</translation>
@@ -35135,13 +24855,6 @@ Tried URL: %1</source>
         <location filename="../src/plugins/quick_print/quickprintplugin.cpp" line="79"/>
         <source>Provides a way to quickly produce a map with minimal user input.</source>
         <translation type="unfinished">讓使用者在最少輸入的情形下提供快速產生一張地圖。</translation>
-    </message>
-</context>
-<context>
-    <name>RepositoryDetailsDialog</name>
-    <message>
-        <source>Name:</source>
-        <translation type="obsolete">名稱:</translation>
     </message>
 </context>
 <context>
@@ -35192,29 +24905,9 @@ Tried URL: %1</source>
         <translation type="unfinished">我準備好了</translation>
     </message>
     <message>
-        <source>Alt+A</source>
-        <translation type="obsolete">Alt+A</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="119"/>
         <source>Subdatasets</source>
         <translation type="unfinished">子資料集</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">說明</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
-    </message>
-    <message>
-        <source>C&amp;lose</source>
-        <translation type="obsolete">關閉(&amp;l)</translation>
-    </message>
-    <message>
-        <source>Alt+L</source>
-        <translation type="obsolete">Alt+L</translation>
     </message>
 </context>
 <context>
@@ -35279,17 +24972,6 @@ Tried URL: %1</source>
         <location filename="../src/ui/qgssimplifytolerancedialog.ui" line="34"/>
         <source>OK</source>
         <translation type="unfinished">確定</translation>
-    </message>
-</context>
-<context>
-    <name>SplashScreen</name>
-    <message>
-        <source>Quantum GIS - </source>
-        <translation type="obsolete">Quantum GIS</translation>
-    </message>
-    <message>
-        <source>Version </source>
-        <translation type="obsolete">版本 </translation>
     </message>
 </context>
 <context>
@@ -35650,17 +25332,6 @@ Tried URL: %1</source>
     </message>
 </context>
 <context>
-    <name>[pluginname]Gui</name>
-    <message>
-        <source>QGIS Plugin Template</source>
-        <translation type="obsolete">QGIS附加元件範本</translation>
-    </message>
-    <message>
-        <source>Plugin Template</source>
-        <translation type="obsolete">附加元件範本</translation>
-    </message>
-</context>
-<context>
     <name>[pluginname]GuiBase</name>
     <message>
         <location filename="../src/plugins/plugin_template/pluginguibase.ui" line="13"/>
@@ -35671,38 +25342,6 @@ Tried URL: %1</source>
         <location filename="../src/plugins/plugin_template/pluginguibase.ui" line="47"/>
         <source>Plugin Template</source>
         <translation type="unfinished">附加元件範本</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;Description&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;This plugin was generated using QGIS internal plugin template. Please modify it according to your needs.&lt;/p&gt;
-&lt;p&gt;Tim Sutton&lt;/p&gt;
-&lt;p&gt;2004&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:12pt;font-family:Arial&quot;&gt;
-&lt;p style=&quot;margin-top:16px&quot;&gt;&lt;span style=&quot;font-size:17pt;font-weight:600&quot;&gt;描述&lt;/span&gt;&lt;/p&gt;
-&lt;p&gt;該附加元件使用QGIS內部的附加元件範本生成。請根據您的需要作相應的修改。&lt;/p&gt;
-&lt;p&gt;Tim Sutton&lt;/p&gt;
-&lt;p&gt;2004&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">確定(&amp;O)</translation>
-    </message>
-    <message>
-        <source>Alt+O</source>
-        <translation type="obsolete">Alt+O</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">取消(&amp;C)</translation>
-    </message>
-    <message>
-        <source>Alt+C</source>
-        <translation type="obsolete">Alt+C</translation>
     </message>
 </context>
 <context>
@@ -35722,10 +25361,6 @@ Tried URL: %1</source>
 <context>
     <name>dxf2shpConverterGui</name>
     <message>
-        <source>QGIS Plugin Template</source>
-        <translation type="obsolete">QGIS附加元件範本</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="121"/>
         <source>Polygon</source>
         <translation>多邊形</translation>
@@ -35734,14 +25369,6 @@ Tried URL: %1</source>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="128"/>
         <source>Point</source>
         <translation>點</translation>
-    </message>
-    <message>
-        <source>Browse</source>
-        <translation type="obsolete">瀏覽</translation>
-    </message>
-    <message>
-        <source>Choose a delimited text file to open</source>
-        <translation type="obsolete">選擇開啟CSV檔案</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="26"/>
@@ -35758,16 +25385,6 @@ Tried URL: %1</source>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="76"/>
         <source>...</source>
         <translation type="unfinished">...</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Output file&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;輸出檔案&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="105"/>
@@ -36553,10 +26170,6 @@ Base Path (i.e. keep only filename from attribute)</source>
 <context>
     <name>fTools</name>
     <message>
-        <source>&amp;Tools</source>
-        <translation type="obsolete">工具(&amp;T)</translation>
-    </message>
-    <message>
         <source>&amp;Analysis Tools</source>
         <translation type="unfinished">分析工具(&amp;A)</translation>
     </message>
@@ -36763,21 +26376,6 @@ Plugin will not be enabled.</source>
     <message>
         <source>Point y coordinate</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>gpsPage</name>
-    <message>
-        <source>Longitude:</source>
-        <translation type="obsolete">經度:</translation>
-    </message>
-    <message>
-        <source>No</source>
-        <translation type="obsolete">否</translation>
-    </message>
-    <message>
-        <source>Latitude:</source>
-        <translation type="obsolete">緯度:</translation>
     </message>
 </context>
 <context>
@@ -38850,10 +28448,6 @@ Plugin will not be enabled.</source>
 </context>
 <context>
     <name>pluginname</name>
-    <message>
-        <source>Replace this with a short description of the what the plugin does</source>
-        <translation type="obsolete">用簡短的描述替換這行文字，說明附加元件的功能</translation>
-    </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugin.cpp" line="73"/>
         <source>[menuitemname]</source>

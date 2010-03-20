@@ -17613,32 +17613,32 @@ p, li { white-space: pre-wrap; }
         <translation>Mausradaktion</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1407"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1412"/>
         <source>Cache settings</source>
         <translation>Cache-Einstellungen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1413"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1418"/>
         <source>Directory</source>
         <translation>Verzeichnis</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1423"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1428"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1430"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1435"/>
         <source>Size</source>
         <translation>Grösse</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1440"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1445"/>
         <source>Clear</source>
         <translation>Löschen</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1452"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1457"/>
         <source>WMS search address</source>
         <translation>WMS-Suchadresse</translation>
     </message>
@@ -17840,13 +17840,13 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="490"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1374"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1383"/>
         <source>Add</source>
         <translation>Hinzufügen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="497"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1381"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1376"/>
         <source>Remove</source>
         <translation>Entfernen</translation>
     </message>

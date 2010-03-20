@@ -2,434 +2,6 @@
 <!DOCTYPE TS>
 <TS version="2.0" language="tr">
 <context>
-    <name></name>
-    <message>
-        <source>&amp;Geoprocessing</source>
-        <translation type="obsolete">&amp;Coğrafi işlem</translation>
-    </message>
-</context>
-<context>
-    <name>@default</name>
-    <message>
-        <source>OGR Driver Manager</source>
-        <translation type="obsolete">OGR Sürücü Yöneticisi</translation>
-    </message>
-    <message>
-        <source>unable to get OGRDriverManager</source>
-        <translation type="obsolete">OGR Sürücü Yöneticisi alınamıyor</translation>
-    </message>
-    <message>
-        <source>Open an OGR Supported Vector Layer</source>
-        <translation type="obsolete">OGR Desteği Olan Vektör Katmanı Aç</translation>
-    </message>
-    <message>
-        <source>is not a valid or recognized data source</source>
-        <translation type="obsolete">geçerli veya tanınan veri kaynağı değildir</translation>
-    </message>
-    <message>
-        <source>Invalid Data Source</source>
-        <translation type="obsolete">Geçersiz Veri Kaynağı</translation>
-    </message>
-    <message>
-        <source>Invalid Layer</source>
-        <translation type="obsolete">Geçersiz Katman</translation>
-    </message>
-    <message>
-        <source>%1 is an invalid layer and cannot be loaded.</source>
-        <translation type="obsolete">%1 geçersiz katman ve yüklenemiyor.</translation>
-    </message>
-    <message>
-        <source>Save As</source>
-        <translation type="obsolete">Farklı Kaydet</translation>
-    </message>
-    <message>
-        <source>Choose a QGIS project file to open</source>
-        <translation type="obsolete">Açılacak QGIS proje dosyasını seç</translation>
-    </message>
-    <message>
-        <source>QGIS Project Read Error</source>
-        <translation type="obsolete">QGIS Proje Okuma Hatası</translation>
-    </message>
-    <message>
-        <source>Try to find missing layers?</source>
-        <translation type="obsolete">Kayıp katmanları bulmayı deneyin?</translation>
-    </message>
-    <message>
-        <source>Unable to open project</source>
-        <translation type="obsolete">Proje açılamıyor</translation>
-    </message>
-    <message>
-        <source>Choose a QGIS project file</source>
-        <translation type="obsolete">QGIS proje dosyasını seç</translation>
-    </message>
-    <message>
-        <source>Saved project to:</source>
-        <translation type="obsolete">Projeyi şuna kaydet:</translation>
-    </message>
-    <message>
-        <source>Unable to save project</source>
-        <translation type="obsolete">Proje kaydedilemiyor</translation>
-    </message>
-    <message>
-        <source>Unable to save project to </source>
-        <translation type="obsolete">Proje şöyle kaydedilemiyor</translation>
-    </message>
-    <message>
-        <source>Unable to save project </source>
-        <translation type="obsolete">Proje kaydedilemiyor</translation>
-    </message>
-    <message>
-        <source>Choose a filename to save the QGIS project file as</source>
-        <translation type="obsolete">QGIS projesini  kaydedeceğiniz dosya adını seçin</translation>
-    </message>
-    <message>
-        <source>QGIS: Unable to load project</source>
-        <translation type="obsolete">QGIS: Projeyi yüklemede hata</translation>
-    </message>
-    <message>
-        <source>Unable to load project </source>
-        <translation type="obsolete">Proje yüklenemiyor</translation>
-    </message>
-    <message>
-        <source>Choose a filename to save the map image as</source>
-        <translation type="obsolete">Harita görüntüsünü  kaydedeceğiniz dosya adını seçin</translation>
-    </message>
-    <message>
-        <source>Saved map image to</source>
-        <translation type="obsolete">Harita görüntüsünü şuna kaydet</translation>
-    </message>
-    <message>
-        <source>No Layer Selected</source>
-        <translation type="obsolete">Katman seçilmedi</translation>
-    </message>
-    <message>
-        <source>To delete features, you must select a vector layer in the legend</source>
-        <translation type="obsolete">Objeleri silmek için, lejanddan bir vektör katman seçmelisiniz</translation>
-    </message>
-    <message>
-        <source>No Vector Layer Selected</source>
-        <translation type="obsolete">Hiç vektör katman seçilmedi</translation>
-    </message>
-    <message>
-        <source>Deleting features only works on vector layers</source>
-        <translation type="obsolete">Objeleri silme sadece vektör katmanlarda çalışır</translation>
-    </message>
-    <message>
-        <source>Provider does not support deletion</source>
-        <translation type="obsolete">Sağlayıcı silmeyi desteklemiyor</translation>
-    </message>
-    <message>
-        <source>Data provider does not support deleting features</source>
-        <translation type="obsolete">Veri sağlayıcı objelerin silinmesini desteklemiyor</translation>
-    </message>
-    <message>
-        <source>Layer not editable</source>
-        <translation type="obsolete">Katman düzeltilemez</translation>
-    </message>
-    <message>
-        <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
-        <translation type="obsolete">Geçerli katman düzeltilebilir değil. Sayısallaştırma aracındaki &apos;Sayısallaştırmayı Başlat&apos;&apos;ı seç. </translation>
-    </message>
-    <message>
-        <source>Problem deleting features</source>
-        <translation type="obsolete">Objeleri silmede sorun var</translation>
-    </message>
-    <message>
-        <source>A problem occured during deletion of features</source>
-        <translation type="obsolete">Objeleri silerken bir hata oluştu</translation>
-    </message>
-    <message>
-        <source>Error Loading Plugin</source>
-        <translation type="obsolete">Eklenti Yüklemede hata</translation>
-    </message>
-    <message>
-        <source>There was an error loading %1.</source>
-        <translation type="obsolete">Yüklerken hata oldu %1.</translation>
-    </message>
-    <message>
-        <source>No MapLayer Plugins</source>
-        <translation type="obsolete">Harita Katmanı Eklentisi yok</translation>
-    </message>
-    <message>
-        <source>No MapLayer plugins in ../plugins/maplayer</source>
-        <translation type="obsolete">../plugins/maplayer&apos;de Harita Katmanı Eklentisi yok</translation>
-    </message>
-    <message>
-        <source>No Plugins</source>
-        <translation type="obsolete">Eklenti Yok</translation>
-    </message>
-    <message>
-        <source>No plugins found in ../plugins. To test plugins, start qgis from the src directory</source>
-        <translation type="obsolete">../plugins dizininde eklenti bulunamadı. Eklentileri denemek için, qgis&apos;i src dizininde başlatın</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Ad</translation>
-    </message>
-    <message>
-        <source>Plugin %1 is named %2</source>
-        <translation type="obsolete">%1 eklentisi %2 olarak adlandırıldı</translation>
-    </message>
-    <message>
-        <source>Plugin Information</source>
-        <translation type="obsolete">Eklenti Bilgisi</translation>
-    </message>
-    <message>
-        <source>QGis loaded the following plugin:</source>
-        <translation type="obsolete">QGIS şu eklentiyi yüklemiştir:</translation>
-    </message>
-    <message>
-        <source>Name: %1</source>
-        <translation type="obsolete">Ad: %1</translation>
-    </message>
-    <message>
-        <source>Version: %1</source>
-        <translation type="obsolete">Sürüm: %1</translation>
-    </message>
-    <message>
-        <source>Description: %1</source>
-        <translation type="obsolete">Açıklama:%1</translation>
-    </message>
-    <message>
-        <source>Unable to Load Plugin</source>
-        <translation type="obsolete">Eklenti Yüklenemiyor</translation>
-    </message>
-    <message>
-        <source>QGIS was unable to load the plugin from: %1</source>
-        <translation type="obsolete">QGIS  %1&apos;den eklentiyi yükleyemedi</translation>
-    </message>
-    <message>
-        <source>There is a new version of QGIS available</source>
-        <translation type="obsolete">QGIS&apos;in yeni bir sürümü mevcut</translation>
-    </message>
-    <message>
-        <source>You are running a development version of QGIS</source>
-        <translation type="obsolete">QGIS&apos;in geliştirme sürümünü çalıştırıyorsunuz</translation>
-    </message>
-    <message>
-        <source>You are running the current version of QGIS</source>
-        <translation type="obsolete">QGIS&apos;in güncel sürümünü çalıştırıyorsunuz</translation>
-    </message>
-    <message>
-        <source>Would you like more information?</source>
-        <translation type="obsolete">Daha fazla bilgi istermisin?</translation>
-    </message>
-    <message>
-        <source>QGIS Version Information</source>
-        <translation type="obsolete">QGIS Sürüm Bilgisi</translation>
-    </message>
-    <message>
-        <source>QGIS - Changes in SVN Since Last Release</source>
-        <translation type="obsolete">QGIS - En son sürümden beri SVN&apos;deki değişiklikler</translation>
-    </message>
-    <message>
-        <source>Unable to get current version information from server</source>
-        <translation type="obsolete">Sunucudan geçerli sürüm bilgisi alınamıyor</translation>
-    </message>
-    <message>
-        <source>Connection refused - server may be down</source>
-        <translation type="obsolete">Bağlantı red edildi - Belki sunucu kapalı olabilir</translation>
-    </message>
-    <message>
-        <source>QGIS server was not found</source>
-        <translation type="obsolete">QGIS Sunucusu bulunamadı</translation>
-    </message>
-    <message>
-        <source>Network error while communicating with server</source>
-        <translation type="obsolete">Sunucuyla iletişim esnasında ağ hatası</translation>
-    </message>
-    <message>
-        <source>Unknown network socket error</source>
-        <translation type="obsolete">Bilinmeyen ağ soket hatası</translation>
-    </message>
-    <message>
-        <source>Unable to communicate with QGIS Version server</source>
-        <translation type="obsolete">QGIS Sürüm Sunucusuyla iletişim sağlanamıyor</translation>
-    </message>
-    <message>
-        <source>QGIS Browser Selection</source>
-        <translation type="obsolete">QGIS Gözatıcı Seçimi</translation>
-    </message>
-    <message>
-        <source>Enter the name of a web browser to use (eg. konqueror).
-</source>
-        <translation type="obsolete">Web tarayıcı adını girin (örneğin; Konqueror).</translation>
-    </message>
-    <message>
-        <source>Enter the full path if the browser is not in your PATH.
-</source>
-        <translation type="obsolete">Gözatıcı YOL&apos;unuzda değilse yolu tam olarak girin.</translation>
-    </message>
-    <message>
-        <source>You can change this option later by selecting Options from the Settings menu (Help Browser tab).</source>
-        <translation type="obsolete">Bu seçeneği daha sonra Ayarlar menüsünden Seçenekleri seçerek değiştirebilirsiniz (Yardım Gözatıcı sekmesi).</translation>
-    </message>
-    <message>
-        <source>Layer is not valid</source>
-        <translation type="obsolete">Katman geçersiz</translation>
-    </message>
-    <message>
-        <source>The layer is not a valid layer and can not be added to the map</source>
-        <translation type="obsolete">Katman geçerli bir katman değil ve haritaya eklenemedi</translation>
-    </message>
-    <message>
-        <source>Save?</source>
-        <translation type="obsolete">Kaydedeyim mi?</translation>
-    </message>
-    <message>
-        <source>Extents: </source>
-        <translation type="obsolete">Dış sınırlar:</translation>
-    </message>
-    <message>
-        <source>Clipboard contents set to: </source>
-        <translation type="obsolete">Pano içeriği ayarlandı:</translation>
-    </message>
-    <message>
-        <source>Open a GDAL Supported Raster Data Source</source>
-        <translation type="obsolete">GDAL Desteği Olan Raster Veri Kaynağını Aç</translation>
-    </message>
-    <message>
-        <source> is not a valid or recognized raster data source</source>
-        <translation type="obsolete">geçerli veya tanınan raster veri kaynağı değildir</translation>
-    </message>
-    <message>
-        <source> is not a supported raster data source</source>
-        <translation type="obsolete">desteklenen raster veri kaynağı değildir</translation>
-    </message>
-    <message>
-        <source>Unsupported Data Source</source>
-        <translation type="obsolete">Desteklenmeyen Veri Kaynağı</translation>
-    </message>
-    <message>
-        <source>Enter a name for the new bookmark:</source>
-        <translation type="obsolete">Yeni sık kullanılan için bir isim gir:</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Hata</translation>
-    </message>
-    <message>
-        <source>Unable to create the bookmark. Your user database may be missing or corrupted</source>
-        <translation type="obsolete">Sık kullanılanlar oluşturulamıyor. Kullanıcı veritabanınız kayıp veya bozuk</translation>
-    </message>
-    <message>
-        <source>&amp;Geoprocessing</source>
-        <translation type="obsolete">&amp;Coğrafi işlem</translation>
-    </message>
-</context>
-<context>
-    <name>BeataDialog</name>
-    <message>
-        <source>Move selected to top</source>
-        <translation type="obsolete">Seçileni en üste taşı</translation>
-    </message>
-    <message>
-        <source>Invert selection</source>
-        <translation type="obsolete">Seçimi tersine çevir</translation>
-    </message>
-    <message>
-        <source>Toggle editing</source>
-        <translation type="obsolete">Düzenlemeyi aç/kapa</translation>
-    </message>
-    <message>
-        <source>Search string parsing error</source>
-        <translation type="obsolete">Arama tümcesi ayrıştırma hatası</translation>
-    </message>
-    <message>
-        <source>You&apos;ve supplied an empty search string.</source>
-        <translation type="obsolete">Boş araştırma dizgisi girdiniz.</translation>
-    </message>
-    <message>
-        <source>Error during search</source>
-        <translation type="obsolete">Aramada hata</translation>
-    </message>
-    <message>
-        <source>Found %d matching features.</source>
-        <translation type="obsolete">%d eşleşen obje bulundu.
-        
-        
-        
-        
-        
-        </translation>
-    </message>
-    <message>
-        <source>No matching features found.</source>
-        <translation type="obsolete">Eşleşen obje bulunamadı.</translation>
-    </message>
-</context>
-<context>
-    <name>BeataDialogGui</name>
-    <message>
-        <source>Search</source>
-        <translation type="obsolete">Araştır</translation>
-    </message>
-    <message>
-        <source>in</source>
-        <translation type="obsolete">içinde</translation>
-    </message>
-    <message>
-        <source>Attribute Table</source>
-        <translation type="obsolete">Öznitelik Tablosu</translation>
-    </message>
-    <message>
-        <source>Remove selection</source>
-        <translation type="obsolete">Seçimi kaldır</translation>
-    </message>
-    <message>
-        <source>Move selected to top</source>
-        <translation type="obsolete">Seçileni en üste taşı</translation>
-    </message>
-    <message>
-        <source>Ctrl+T</source>
-        <translation type="obsolete">Ctrl+T</translation>
-    </message>
-    <message>
-        <source>Invert selection</source>
-        <translation type="obsolete">Seçimi tersine çevir</translation>
-    </message>
-    <message>
-        <source>Ctrl+S</source>
-        <translation type="obsolete">Ctrl+S</translation>
-    </message>
-    <message>
-        <source>Copy selected rows to clipboard (Ctrl+C)</source>
-        <translation type="obsolete">Seçilen satırları panoya kopyala (Crtl+C)</translation>
-    </message>
-    <message>
-        <source>Copies the selected rows to the clipboard</source>
-        <translation type="obsolete">Seçilen satırları panoya kopyala</translation>
-    </message>
-    <message>
-        <source>Ctrl+C</source>
-        <translation type="obsolete">Ctrl+C</translation>
-    </message>
-    <message>
-        <source>Zoom map to the selected rows (Ctrl-J)</source>
-        <translation type="obsolete">Seçilen satırları haritada  göster (Ctrl-F) </translation>
-    </message>
-    <message>
-        <source>Zoom map to the selected rows</source>
-        <translation type="obsolete">Haritada seçilen satırı göster</translation>
-    </message>
-    <message>
-        <source>Ctrl+J</source>
-        <translation type="obsolete">Ctrl+J</translation>
-    </message>
-    <message>
-        <source>Toggle editing mode</source>
-        <translation type="obsolete">Düzenlemeyi aç/kapa</translation>
-    </message>
-    <message>
-        <source>Click to toggle table editing</source>
-        <translation type="obsolete">Tablo düzenlemeyi aç/kapa</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-</context>
-<context>
     <name>CoordinateCapture</name>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="96"/>
@@ -485,137 +57,7 @@
     </message>
 </context>
 <context>
-    <name>CoordinateCaptureGui</name>
-    <message>
-        <source>Welcome to your automatically generated plugin!</source>
-        <translation type="obsolete">Otomatik olarak oluşturulmuş eklentinize Hoşgeldiniz!</translation>
-    </message>
-    <message>
-        <source>Documentation:</source>
-        <translation type="obsolete">Belgeler:</translation>
-    </message>
-    <message>
-        <source>Coordinate Capture Plugin</source>
-        <translation type="obsolete">Koordinat Yakalama Eklentisi</translation>
-    </message>
-</context>
-<context>
-    <name>CoordinateCaptureGuiBase</name>
-    <message>
-        <source>QGIS Plugin Template</source>
-        <translation type="obsolete">QGIS Eklenti Şablonu</translation>
-    </message>
-    <message>
-        <source>Plugin Template</source>
-        <translation type="obsolete">Eklenti Şablonu</translation>
-    </message>
-</context>
-<context>
     <name>Dialog</name>
-    <message>
-        <source>QGIS Plugin Installer</source>
-        <translation type="obsolete">QGIS Eklenti Yükleyici</translation>
-    </message>
-    <message>
-        <source>Name of plugin to install</source>
-        <translation type="obsolete">Yüklenecek eklenti adı</translation>
-    </message>
-    <message>
-        <source>Get List</source>
-        <translation type="obsolete">Listele</translation>
-    </message>
-    <message>
-        <source>Done</source>
-        <translation type="obsolete">Tamamlandı</translation>
-    </message>
-    <message>
-        <source>Install Plugin</source>
-        <translation type="obsolete">Eklenti Yükle</translation>
-    </message>
-    <message>
-        <source>The plugin will be installed to ~/.qgis/python/plugins</source>
-        <translation type="obsolete">Eklenti ~/.qgis/python/plugins dizinine yüklenecek</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Ad</translation>
-    </message>
-    <message>
-        <source>Version</source>
-        <translation type="obsolete">Sürüm</translation>
-    </message>
-    <message>
-        <source>Description</source>
-        <translation type="obsolete">Açıklama</translation>
-    </message>
-    <message>
-        <source>Author</source>
-        <translation type="obsolete">Yazar</translation>
-    </message>
-    <message>
-        <source>Select repository, retrieve the list of available plugins, select one and install it</source>
-        <translation type="obsolete">Depo seç, mevcut eklentileri listele, birini seç ve yükle</translation>
-    </message>
-    <message>
-        <source>Repository</source>
-        <translation type="obsolete">Depo</translation>
-    </message>
-    <message>
-        <source>Active repository:</source>
-        <translation type="obsolete">Aktif depo:</translation>
-    </message>
-    <message>
-        <source>Add</source>
-        <translation type="obsolete">Ekle</translation>
-    </message>
-    <message>
-        <source>Edit</source>
-        <translation type="obsolete">Düzenle</translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation type="obsolete">Sil</translation>
-    </message>
-    <message>
-        <source>Dialog</source>
-        <translation type="obsolete">Diyalog</translation>
-    </message>
-    <message>
-        <source>Point Symbol</source>
-        <translation type="obsolete">Nokta Sembolü</translation>
-    </message>
-    <message>
-        <source>Size</source>
-        <translation type="obsolete">Boyut</translation>
-    </message>
-    <message>
-        <source>Style Options</source>
-        <translation type="obsolete">Stil Seçenekleri</translation>
-    </message>
-    <message>
-        <source>Outline style</source>
-        <translation type="obsolete">Çerçeve stili</translation>
-    </message>
-    <message>
-        <source>Outline color</source>
-        <translation type="obsolete">Çerçeve rengi</translation>
-    </message>
-    <message>
-        <source>Outline width</source>
-        <translation type="obsolete">Çerçeve genişliği</translation>
-    </message>
-    <message>
-        <source>Fill color</source>
-        <translation type="obsolete">Doldurma rengi</translation>
-    </message>
-    <message>
-        <source>Fill style</source>
-        <translation type="obsolete">Doldurma stili</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="115"/>
         <source>Connect</source>
@@ -646,10 +88,6 @@
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="426"/>
         <source>OGR Converter</source>
         <translation>OGR Dönüştürücü</translation>
-    </message>
-    <message>
-        <source>Could not establish connection to: &apos;</source>
-        <translation type="obsolete">Bağlantı kurulamıyor:&apos;</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="216"/>
@@ -691,18 +129,6 @@
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="281"/>
         <source>Output OGR layer name is missing!</source>
         <translation>Çıktı OGR katman adı kayıp!</translation>
-    </message>
-    <message>
-        <source>Successfully translated layer &apos;</source>
-        <translation type="obsolete">Başarıyla dönüştürlen katman &apos;</translation>
-    </message>
-    <message>
-        <source>Failed to translate layer &apos;</source>
-        <translation type="obsolete">Dönüşümünde hata olan katman&apos;</translation>
-    </message>
-    <message>
-        <source>Successfully connected to: &apos;</source>
-        <translation type="obsolete">Başarıyla bağlanıldı:&apos;</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="435"/>
@@ -1250,19 +676,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished">Lütfen seçilecek katmanı belirleyin</translation>
     </message>
     <message>
-        <source>Points in polygon</source>
-        <translation type="obsolete">Poligon içindeki Noktalar</translation>
-    </message>
-    <message>
-        <source>Created output Shapefile:
-</source>
-        <translation type="obsolete">Oluşturulan Shape dosyası:</translation>
-    </message>
-    <message>
-        <source>Vector layer is not valid</source>
-        <translation type="obsolete">Vektör katman geçersiz</translation>
-    </message>
-    <message>
         <source>Sum line lengths</source>
         <translation type="unfinished">Çizgi uzunlukları toplamı</translation>
     </message>
@@ -1807,77 +1220,6 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     </message>
 </context>
 <context>
-    <name>DlgAddRelation</name>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>Properties</source>
-        <translation type="obsolete">Özellikler</translation>
-    </message>
-    <message>
-        <source>Create</source>
-        <translation type="obsolete">Oluştur</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">İptal</translation>
-    </message>
-</context>
-<context>
-    <name>DlgDownloadOSM</name>
-    <message>
-        <source>Extent</source>
-        <translation type="obsolete">Dış sınırlar</translation>
-    </message>
-    <message>
-        <source>Latitude:</source>
-        <translation type="obsolete">Enlem:</translation>
-    </message>
-    <message>
-        <source>Longitude:</source>
-        <translation type="obsolete">Boylam:</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">İptal</translation>
-    </message>
-</context>
-<context>
-    <name>DlgImport</name>
-    <message>
-        <source>Layer</source>
-        <translation type="obsolete">Katman</translation>
-    </message>
-</context>
-<context>
-    <name>DlgLoadOSM</name>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-</context>
-<context>
-    <name>DlgSaveOSM</name>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>Points</source>
-        <translation type="obsolete">Noktalar</translation>
-    </message>
-    <message>
-        <source>Lines</source>
-        <translation type="obsolete">Çizgiler</translation>
-    </message>
-</context>
-<context>
     <name>DlgSymbolV2Properties</name>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="14"/>
@@ -1933,21 +1275,6 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="212"/>
         <source>Move down</source>
         <translation>Aşağı taşı</translation>
-    </message>
-</context>
-<context>
-    <name>DlgUploadOSM</name>
-    <message>
-        <source>1</source>
-        <translation type="obsolete">1</translation>
-    </message>
-    <message>
-        <source>2</source>
-        <translation type="obsolete">2</translation>
-    </message>
-    <message>
-        <source>Uploading data...</source>
-        <translation type="obsolete">Veri yükleniyor...</translation>
     </message>
 </context>
 <context>
@@ -2117,24 +1444,8 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
         <translation type="unfinished">Vaolan shapefile silinemiyor.</translation>
     </message>
     <message>
-        <source>Error processing specified tolerance!</source>
-        <translation type="obsolete">Belirlenen toleransı işlemede hata!</translation>
-    </message>
-    <message>
-        <source>Please choose larger tolerance...</source>
-        <translation type="obsolete">Lütfen daha büyük tolerans seçin...</translation>
-    </message>
-    <message>
         <source>Unable to delete incomplete shapefile.</source>
         <translation type="unfinished">Tamamlanmamış shapefile silinemiyor.</translation>
-    </message>
-    <message>
-        <source>Created output shapefile:</source>
-        <translation type="obsolete">Oluşturulan Shapefile:</translation>
-    </message>
-    <message>
-        <source>Would you like to add the new layer to the TOC?</source>
-        <translation type="obsolete">Oluşturulan yeni katmanı Katmanlar ağacına eklemek istermisin?</translation>
     </message>
     <message>
         <source>Error writing output shapefile.</source>
@@ -2160,81 +1471,6 @@ Would you like to add the new layer to the TOC?</source>
         <source>Error loading output shapefile:
 %1</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>Geoprocessing</name>
-    <message>
-        <source>Geoprocessing</source>
-        <translation type="obsolete">Coğrafi işlem</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">TAMAM</translation>
-    </message>
-    <message>
-        <source>Exit</source>
-        <translation type="obsolete">Çık</translation>
-    </message>
-    <message>
-        <source>Layer B:</source>
-        <translation type="obsolete">Katman B:</translation>
-    </message>
-    <message>
-        <source>Parameter:</source>
-        <translation type="obsolete">Parametre:</translation>
-    </message>
-    <message>
-        <source>0.0</source>
-        <translation type="obsolete">0.0</translation>
-    </message>
-    <message>
-        <source>Layer A:</source>
-        <translation type="obsolete">Katman A:</translation>
-    </message>
-    <message>
-        <source>Function:</source>
-        <translation type="obsolete">Fonksiyon:</translation>
-    </message>
-    <message>
-        <source>Select a function ...</source>
-        <translation type="obsolete">Fonksiyon seç...</translation>
-    </message>
-    <message>
-        <source>Buffer</source>
-        <translation type="obsolete">Tampon</translation>
-    </message>
-    <message>
-        <source>Convex Hull</source>
-        <translation type="obsolete">Dış sınır</translation>
-    </message>
-    <message>
-        <source>Difference A - B</source>
-        <translation type="obsolete">A - B Farkı</translation>
-    </message>
-    <message>
-        <source>Intersection</source>
-        <translation type="obsolete">Kesişim</translation>
-    </message>
-    <message>
-        <source>Union</source>
-        <translation type="obsolete">Birleşim</translation>
-    </message>
-    <message>
-        <source>Add Layer to Map?</source>
-        <translation type="obsolete">Haritaya katman eklensin mi?</translation>
-    </message>
-    <message>
-        <source>Save as:</source>
-        <translation type="obsolete">Farklı kaydet:</translation>
-    </message>
-    <message>
-        <source>Browse</source>
-        <translation type="obsolete">Araştır</translation>
-    </message>
-    <message>
-        <source>use selected Objects</source>
-        <translation type="obsolete">Seçilen Objeleri kullan</translation>
     </message>
 </context>
 <context>
@@ -2353,10 +1589,6 @@ Would you like to add the new layer anyway?</source>
 
 Would you like to add the new layer to the TOC?</source>
         <translation type="unfinished">Oluşturulan yeni katmanı Katmanlar ağacına eklemek istermisin?</translation>
-    </message>
-    <message>
-        <source>Created output shapefile:</source>
-        <translation type="obsolete">Oluşturulan çıktı shapefile:</translation>
     </message>
     <message>
         <source>Union</source>
@@ -2733,270 +1965,6 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
 </context>
 <context>
-    <name>MapCoordsDialogBase</name>
-    <message>
-        <source>Enter map coordinates</source>
-        <translation type="obsolete">Harita koordinatlarını gir</translation>
-    </message>
-    <message>
-        <source>X:</source>
-        <translation type="obsolete">X:</translation>
-    </message>
-    <message>
-        <source>Y:</source>
-        <translation type="obsolete">Y:</translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">&amp;TAMAM</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;İptal</translation>
-    </message>
-    <message>
-        <source>Enter X and Y coordinates which correspond with the selected point on the image. Alternatively, click the button with icon of a pencil and then click a corresponding point on map canvas of QGIS to fill in coordinates of that point.</source>
-        <translation type="obsolete">Görüntü üzerinde seçilen noktanın X ve Y koordinatlarını girin. Alternatif olarak üzerinde kalem sembolü olan düğmeye tıklayın ve ardından QGIS harita kanavasında karşılık gelen noktaya tıklayarak koordinatları girebilirsiniz.</translation>
-    </message>
-    <message>
-        <source>X</source>
-        <translation type="obsolete">X</translation>
-    </message>
-    <message>
-        <source> from map canvas</source>
-        <translation type="obsolete">(sp) harita kanavasından</translation>
-    </message>
-    <message>
-        <source>Y</source>
-        <translation type="obsolete">Y</translation>
-    </message>
-</context>
-<context>
-    <name>Navigation</name>
-    <message>
-        <source>&amp;Navigation</source>
-        <translation type="obsolete">&amp;Yön bulma</translation>
-    </message>
-</context>
-<context>
-    <name>NavigationGui</name>
-    <message>
-        <source>Navigation plugin settings</source>
-        <translation type="obsolete">Yöneltme eklentisi ayarları</translation>
-    </message>
-    <message>
-        <source>GPS</source>
-        <translation type="obsolete">KKS (GPS)</translation>
-    </message>
-    <message>
-        <source>This plugin uses &apos;gpsd&apos; (GPS daemon) for acquiring your current position. Please select the option which suits best your needs:</source>
-        <translation type="obsolete">Bu eklenti, aktif konumunuzu belirlemek için &apos;gpsd&apos; (KKS bekletici programı) kullanır. Lütfen İhtiyaçlarınıza en uygun seçeneği seçiniz:</translation>
-    </message>
-    <message>
-        <source>GPS daemon already runs</source>
-        <translation type="obsolete">KKS bekletici programı zaten çalışıyor</translation>
-    </message>
-    <message>
-        <source>Simulate GPS using &apos;gpsfake&apos;</source>
-        <translation type="obsolete">&apos;gpsfake&apos; i kullanarak KKS simülasyonu yap </translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>Log file to play:</source>
-        <translation type="obsolete">Açılacak günlük dosyası:</translation>
-    </message>
-    <message>
-        <source>Playback speed:</source>
-        <translation type="obsolete">Açma hızı:</translation>
-    </message>
-    <message>
-        <source>Start &apos;gpsd&apos; daemon</source>
-        <translation type="obsolete">&apos;gpsd&apos; bekletici programını başlat</translation>
-    </message>
-    <message>
-        <source>Input defice for &apos;gpsd&apos;</source>
-        <translation type="obsolete">&apos;gpsd&apos;için girdi aygıtı</translation>
-    </message>
-    <message>
-        <source>/dev/ttyS0</source>
-        <translation type="obsolete">/dev/ttyS0</translation>
-    </message>
-    <message>
-        <source>/dev/ttyS1</source>
-        <translation type="obsolete">/dev/ttyS1</translation>
-    </message>
-    <message>
-        <source>/dev/ttyS2</source>
-        <translation type="obsolete">/dev/ttyS2</translation>
-    </message>
-    <message>
-        <source>/dev/ttyS3</source>
-        <translation type="obsolete">/dev/ttyS3</translation>
-    </message>
-    <message>
-        <source>Start</source>
-        <translation type="obsolete">Başlat</translation>
-    </message>
-    <message>
-        <source>Stop</source>
-        <translation type="obsolete">Durdur</translation>
-    </message>
-    <message>
-        <source>GPSD connection:</source>
-        <translation type="obsolete">KKS Bekletici Program bağlantısı</translation>
-    </message>
-    <message>
-        <source>Routing</source>
-        <translation type="obsolete">Rota</translation>
-    </message>
-    <message>
-        <source>To enable routing support you must specify a vector layer that will be used as the roadmap.</source>
-        <translation type="obsolete">Yol bulma desteğini etkinleştirmek için yol haritası olarak kullanılacak bir vektör katman belirlemelisiniz.</translation>
-    </message>
-    <message>
-        <source>Vector layer for roadmap:</source>
-        <translation type="obsolete">Yol haritası için vektör katman:</translation>
-    </message>
-    <message>
-        <source>Optional additional settings for better routing:</source>
-        <translation type="obsolete">Daha iyi yol bulma için seçimlik ek ayarlar:</translation>
-    </message>
-    <message>
-        <source>Support for road classification</source>
-        <translation type="obsolete">Yol sınıflama için destek</translation>
-    </message>
-    <message>
-        <source>Field containing the classification:</source>
-        <translation type="obsolete">Sınıflandırmayı içeren alan</translation>
-    </message>
-    <message>
-        <source>Support for one-way roads</source>
-        <translation type="obsolete">Tek yön yollar için destek</translation>
-    </message>
-    <message>
-        <source>Field with information about direction:</source>
-        <translation type="obsolete">Yön ile ilgili alan bilgisi:</translation>
-    </message>
-    <message>
-        <source>Status</source>
-        <translation type="obsolete">Durum</translation>
-    </message>
-    <message>
-        <source>Compute routing data</source>
-        <translation type="obsolete">Rota verisini hesapla</translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">&amp;TAMAM</translation>
-    </message>
-    <message>
-        <source>Alt+O</source>
-        <translation type="obsolete">Alt+O</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;İptal</translation>
-    </message>
-    <message>
-        <source>Alt+C</source>
-        <translation type="obsolete">Alt+C</translation>
-    </message>
-</context>
-<context>
-    <name>NewPostgisLayer</name>
-    <message>
-        <source>Create new PostGIS layer</source>
-        <translation type="obsolete">Yeni PostGIS katmanı oluştur</translation>
-    </message>
-    <message>
-        <source>Available PostgreSQL connections</source>
-        <translation type="obsolete">Mevcut Postgresql bağlantıları</translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation type="obsolete">Sil</translation>
-    </message>
-    <message>
-        <source>Edit</source>
-        <translation type="obsolete">Düzenle</translation>
-    </message>
-    <message>
-        <source>New</source>
-        <translation type="obsolete">Yeni</translation>
-    </message>
-    <message>
-        <source>Connect</source>
-        <translation type="obsolete">Bağlan</translation>
-    </message>
-    <message>
-        <source>New layer definition</source>
-        <translation type="obsolete">Yeni katman açıklaması</translation>
-    </message>
-    <message>
-        <source>Schema name:</source>
-        <translation type="obsolete">Şema adı:</translation>
-    </message>
-    <message>
-        <source>New layer name:</source>
-        <translation type="obsolete">Yeni katman adı:</translation>
-    </message>
-    <message>
-        <source>Index column:</source>
-        <translation type="obsolete">Dizin sütunu:</translation>
-    </message>
-    <message>
-        <source>gid</source>
-        <translation type="obsolete">gid</translation>
-    </message>
-    <message>
-        <source>Geometry column:</source>
-        <translation type="obsolete">Geometri sütunu:</translation>
-    </message>
-    <message>
-        <source>the_geom</source>
-        <translation type="obsolete">the_geom</translation>
-    </message>
-    <message>
-        <source>Geometry type:</source>
-        <translation type="obsolete">Geometri tipi:</translation>
-    </message>
-    <message>
-        <source>MULTIPOINT</source>
-        <translation type="obsolete">MULTIPOINT</translation>
-    </message>
-    <message>
-        <source>MULTILINESTRING</source>
-        <translation type="obsolete">MULTILINESTRING</translation>
-    </message>
-    <message>
-        <source>MULTIPOLYGON</source>
-        <translation type="obsolete">MULTIPOLYGON</translation>
-    </message>
-    <message>
-        <source>SRID number:</source>
-        <translation type="obsolete">SRID numarası:</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">Yardım</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
-    </message>
-    <message>
-        <source>Ok</source>
-        <translation type="obsolete">Tamam</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">İptal</translation>
-    </message>
-</context>
-<context>
     <name>OgrConverterGuiBase</name>
     <message>
         <location filename="../src/plugins/ogr_converter/ogrconverterguibase.ui" line="26"/>
@@ -3061,10 +2029,6 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <translation>OGR Katman Dönüştürücüyü Çalıştır</translation>
     </message>
     <message>
-        <source>Replace this with a short description of the what the plugin does</source>
-        <translation type="obsolete">OGR tarafından desteklenen biçimlerden diğer desteklenen biçimlere dönüşüm sağlar</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/ogr_converter/plugin.cpp" line="72"/>
         <source>OG&amp;R Converter</source>
         <translation>OG&amp;R Dönüştürücü</translation>
@@ -3081,18 +2045,6 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <location filename="../src/plugins/oracle_raster/qgsoracleconnectbase.ui" line="14"/>
         <source>Create Oracle Connection</source>
         <translation>Oracle Bağlantısı Oluştur</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">TAMAM</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">İptal</translation>
-    </message>
-    <message>
-        <source>Connection Information</source>
-        <translation type="obsolete">Bağlantı bilgisi</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracleconnectbase.ui" line="25"/>
@@ -3224,33 +2176,6 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <source>OSM Information</source>
         <translation type="unfinished">OSM Bilgisi</translation>
-    </message>
-</context>
-<context>
-    <name>OsmDockWidget</name>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>unknown</source>
-        <translation type="obsolete">bilinmeyen</translation>
-    </message>
-    <message>
-        <source>Properties</source>
-        <translation type="obsolete">Özellikler</translation>
-    </message>
-    <message>
-        <source>E</source>
-        <translation type="obsolete">E</translation>
-    </message>
-    <message>
-        <source>R</source>
-        <translation type="obsolete">R</translation>
-    </message>
-    <message>
-        <source>1</source>
-        <translation type="obsolete">1</translation>
     </message>
 </context>
 <context>
@@ -3735,13 +2660,6 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
 </context>
 <context>
-    <name>OsmUndoRedoDockWidget</name>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-</context>
-<context>
     <name>OsmUploadDlg</name>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="22"/>
@@ -3886,11 +2804,6 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <translation>Veri sağlayıcı yok</translation>
     </message>
     <message>
-        <source>No Data Provider Plugins</source>
-        <comment>No QGIS data provider plugins found in:</comment>
-        <translation type="obsolete">Veri Sağlayıcı Eklentisinin bulunamadı</translation>
-    </message>
-    <message>
         <location filename="../src/core/qgsproviderregistry.cpp" line="88"/>
         <source>No vector layers can be loaded. Check your QGIS installation</source>
         <translation>Hiç vektör katman yüklenemiyor. QGIS kurulumunu kontrol edin</translation>
@@ -3899,174 +2812,6 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <location filename="../src/core/qgsproviderregistry.cpp" line="274"/>
         <source>No data provider plugins are available. No vector layers can be loaded</source>
         <translation>Veri Sağlayıcı Eklentisi Yok. Vektör katmanların hiçbiri yüklenemiyor</translation>
-    </message>
-    <message>
-        <source>QGis files (*.qgs)</source>
-        <translation type="obsolete">QGIS dosyaları (*.qgs)</translation>
-    </message>
-    <message>
-        <source>Open an OGR Supported Layer</source>
-        <translation type="obsolete">OGR Desteği Olan Katmanı Aç</translation>
-    </message>
-    <message>
-        <source> at line </source>
-        <translation type="obsolete">satırında</translation>
-    </message>
-    <message>
-        <source> column </source>
-        <translation type="obsolete">sütun</translation>
-    </message>
-    <message>
-        <source> for file </source>
-        <translation type="obsolete">dosyası için</translation>
-    </message>
-    <message>
-        <source>Unable to save to file </source>
-        <translation type="obsolete">Dosyaya kaydedilemiyor</translation>
-    </message>
-    <message>
-        <source>Referenced column wasn&apos;t found: </source>
-        <translation type="obsolete">Referans sütun bulunamadı:</translation>
-    </message>
-    <message>
-        <source>No active layer</source>
-        <translation type="obsolete">Aktif katman yok</translation>
-    </message>
-    <message>
-        <source>To identify features, you must choose an layer active by clicking on its name in the legend</source>
-        <translation type="obsolete">Objeleri belirlemek için, lejandtaki adına yıklayarak katmanı aktif hale getirmelisiniz</translation>
-    </message>
-    <message>
-        <source>Band</source>
-        <translation type="obsolete">Bant</translation>
-    </message>
-    <message>
-        <source>action</source>
-        <translation type="obsolete">eylem</translation>
-    </message>
-    <message>
-        <source> features found</source>
-        <translation type="obsolete"> objeler bulundu</translation>
-    </message>
-    <message>
-        <source> 1 feature found</source>
-        <translation type="obsolete"> 1 obje bulundu</translation>
-    </message>
-    <message>
-        <source>No features found</source>
-        <translation type="obsolete">Hiç obje bulunmadı</translation>
-    </message>
-    <message>
-        <source>No features were found in the active layer at the point you clicked</source>
-        <translation type="obsolete">tıkladığınız noktada aktif katmanda hiç obje bulunamadı </translation>
-    </message>
-    <message>
-        <source>Could not identify objects on</source>
-        <translation type="obsolete">üzerindeki objeler belirlenemedi</translation>
-    </message>
-    <message>
-        <source>because</source>
-        <translation type="obsolete">çünkü</translation>
-    </message>
-    <message>
-        <source>New centroid</source>
-        <translation type="obsolete">Yeni alan merkezi</translation>
-    </message>
-    <message>
-        <source>New point</source>
-        <translation type="obsolete">Yeni nokta</translation>
-    </message>
-    <message>
-        <source>New vertex</source>
-        <translation type="obsolete">Yeni kırıklık noktası</translation>
-    </message>
-    <message>
-        <source>Undo last point</source>
-        <translation type="obsolete">Son noktaya geri al</translation>
-    </message>
-    <message>
-        <source>Close line</source>
-        <translation type="obsolete">Çizgiyi kapat</translation>
-    </message>
-    <message>
-        <source>Select vertex</source>
-        <translation type="obsolete">Kırıklık noktasını seç</translation>
-    </message>
-    <message>
-        <source>Select new position</source>
-        <translation type="obsolete">Yeni konum seç</translation>
-    </message>
-    <message>
-        <source>Select line segment</source>
-        <translation type="obsolete">Çizgi parçasını seç</translation>
-    </message>
-    <message>
-        <source>New vertex position</source>
-        <translation type="obsolete">Yeni kırıklık noktası konumu</translation>
-    </message>
-    <message>
-        <source>Release</source>
-        <translation type="obsolete">Serbest bırak</translation>
-    </message>
-    <message>
-        <source>Delete vertex</source>
-        <translation type="obsolete">Kırıklık Noktasını sil</translation>
-    </message>
-    <message>
-        <source>Release vertex</source>
-        <translation type="obsolete">Kırıklık noktasını serbest bırak</translation>
-    </message>
-    <message>
-        <source>Select element</source>
-        <translation type="obsolete">Öğeyi seç</translation>
-    </message>
-    <message>
-        <source>New location</source>
-        <translation type="obsolete">Yeni mevki</translation>
-    </message>
-    <message>
-        <source>Release selected</source>
-        <translation type="obsolete">Seçileni serbest bırak</translation>
-    </message>
-    <message>
-        <source>Delete selected / select next</source>
-        <translation type="obsolete">Seçileni sil / diğerini seç</translation>
-    </message>
-    <message>
-        <source>Select position on line</source>
-        <translation type="obsolete">çizgi üzerindeki konumu seç</translation>
-    </message>
-    <message>
-        <source>Split the line</source>
-        <translation type="obsolete">Çizgiyi böl</translation>
-    </message>
-    <message>
-        <source>Release the line</source>
-        <translation type="obsolete">Çizgiyi serbest bırak</translation>
-    </message>
-    <message>
-        <source>Select point on line</source>
-        <translation type="obsolete">çizgi üzerindeki noktayı seç</translation>
-    </message>
-    <message>
-        <source>Length</source>
-        <translation type="obsolete">Uzunluk</translation>
-    </message>
-    <message>
-        <source>Area</source>
-        <translation type="obsolete">Alan</translation>
-    </message>
-    <message>
-        <source>Could not snap segment. Have you set the tolerance in Settings &gt; Project Properties &gt; General?</source>
-        <translation type="obsolete">Parça yakalanamıyor. Töleransı, Ayarlar&gt; Proje Özellikleri &gt; Genel&apos;den ayarlayabilirmisiniz?</translation>
-    </message>
-    <message>
-        <source>Could not snap vertex. Have you set the tolerance in Settings &gt; Project Properties &gt; General?</source>
-        <translation type="obsolete">Kırıklık noktası yakalanamıyor. Töleransı, Ayarlar&gt; Proje Özellikleri &gt; Genel&apos;den ayarlayabilirmisiniz?</translation>
-    </message>
-    <message>
-        <source>Project file read error: </source>
-        <translation type="obsolete">Proje dosyası okuma hatası:</translation>
     </message>
     <message>
         <location filename="../src/core/qgslabelattributes.cpp" line="62"/>
@@ -4089,27 +2834,19 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <translation>Affin dönüşüm yapmak için en azından 4 nokta gereklidir.</translation>
     </message>
     <message>
-        <source>Couldn&apos;t open the data source: </source>
-        <translation type="obsolete">Veri kaynağı açılamıyor :</translation>
-    </message>
-    <message>
-        <source>Parse error at line </source>
-        <translation type="obsolete"> satırında ayrıştırma hatası</translation>
-    </message>
-    <message>
         <location filename="../src/providers/gpx/qgsgpxprovider.cpp" line="56"/>
         <source>GPS eXchange format provider</source>
         <translation>KKS veri değişim biçemi sağlayıcısı</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="307"/>
-        <location filename="../src/core/qgsdistancearea.cpp" line="332"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="306"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="331"/>
         <source>Caught a coordinate system exception while trying to transform a point. Unable to calculate line length.</source>
         <translation>Nokta dönüştürülürken koordinat sistemi istisnası oluştu. Çizgi uzunluğu hesaplanamıyor.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="399"/>
-        <location filename="../src/core/qgsdistancearea.cpp" line="428"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="398"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="427"/>
         <source>Caught a coordinate system exception while trying to transform a point. Unable to calculate polygon area.</source>
         <translation>Nokta dönüştürülürken koordinat sistemi istisnası oluştu. Poligon alanı hesaplanamıyor.</translation>
     </message>
@@ -4181,14 +2918,6 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>Sınırlandırılmış Metin Katmanı ekle</translation>
     </message>
     <message>
-        <source>Georeferencer</source>
-        <translation type="obsolete">Coğrafi Referanslama Aracı</translation>
-    </message>
-    <message>
-        <source>Adding projection info to rasters</source>
-        <translation type="obsolete">Raster&apos;lara projeksiyon bilgisi ekle</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="53"/>
         <source>GPS Tools</source>
         <translation>KKS Araçları</translation>
@@ -4207,14 +2936,6 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="897"/>
         <source>GRASS layer</source>
         <translation>GRASS-Katmanı</translation>
-    </message>
-    <message>
-        <source>Graticule Creator</source>
-        <translation type="obsolete">Grid Oluşturucu</translation>
-    </message>
-    <message>
-        <source>Builds a graticule</source>
-        <translation type="obsolete">Grid oluştur</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="59"/>
@@ -4267,258 +2988,71 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>WFS katmanlarını QGIS kanavasına ekle</translation>
     </message>
     <message>
-        <source>Version 0.0001</source>
-        <translation type="obsolete">Sürüm 0.0001</translation>
-    </message>
-    <message>
-        <source>Not a vector layer</source>
-        <translation type="obsolete">Vektör katman değil</translation>
-    </message>
-    <message>
-        <source>The current layer is not a vector layer</source>
-        <translation type="obsolete">Geçerli katman vektör katman değildir</translation>
-    </message>
-    <message>
-        <source>Layer cannot be added to</source>
-        <translation type="obsolete">Katman eklenemiyor</translation>
-    </message>
-    <message>
-        <source>The data provider for this layer does not support the addition of features.</source>
-        <translation type="obsolete">Bu katmanın veri sağlayıcısı obje eklenmesini desteklemiyor.</translation>
-    </message>
-    <message>
-        <source>Layer not editable</source>
-        <translation type="obsolete">Katman düzeltilemez</translation>
-    </message>
-    <message>
-        <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation type="obsolete">Vektör katman düzeltilemiyor. Düzeltme yapabilmek için, katman lejand öğesine gidin, sağ tıklayın ve &apos;Düzeltmeye İzin Ver&apos; seçin. </translation>
-    </message>
-    <message>
-        <source>To select features, you must choose a vector layer by clicking on its name in the legend</source>
-        <translation type="obsolete">Objeleri seçmek için, lejanddaki ismine tıklayarak bir vektör katman seçmelisiniz</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgspluginregistry.cpp" line="444"/>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="170"/>
         <source>Python error</source>
         <translation>Python hatası</translation>
     </message>
     <message>
-        <source>Couldn&apos;t load SIP module.
-Python support will be disabled.</source>
-        <translation type="obsolete">SIP modülü yüklenemedi.
-Python desteği etkisizleştirilecek.</translation>
-    </message>
-    <message>
-        <source>Couldn&apos;t load PyQt bindings.
-Python support will be disabled.</source>
-        <translation type="obsolete">PyQt bağları yüklenemedi.
-Python desteği etkisizleştirilecek.</translation>
-    </message>
-    <message>
-        <source>Couldn&apos;t load QGIS bindings.
-Python support will be disabled.</source>
-        <translation type="obsolete">QGIS bağları yüklenemedi.
-Python desteği etkisizleştirilecek.</translation>
-    </message>
-    <message>
-        <source>Couldn&apos;t load plugin due this error:
-</source>
-        <translation type="obsolete">Eklenti şu sebepten yüklenemiyor:</translation>
-    </message>
-    <message>
-        <source>Couldn&apos;t load plugin </source>
-        <translation type="obsolete">Eklenti yüklenemiyor</translation>
-    </message>
-    <message>
-        <source>Error while unloading plugin </source>
-        <translation type="obsolete">Eklentiyi ayırmada hata</translation>
-    </message>
-    <message>
-        <source>2.5D shape type not supported</source>
-        <translation type="obsolete">2.5D shape tipi desteklenmiyor</translation>
-    </message>
-    <message>
-        <source>Adding features to 2.5D shapetypes is not supported yet</source>
-        <translation type="obsolete">Objeleri 2.5D shape tipine ekleme henüz desteklenmiyor</translation>
-    </message>
-    <message>
-        <source>Wrong editing tool</source>
-        <translation type="obsolete">Yanlış düzenleme aracı</translation>
-    </message>
-    <message>
-        <source>Cannot apply the &apos;capture point&apos; tool on this vector layer</source>
-        <translation type="obsolete">&apos;Nokta sayısallaştır&apos; aracı bu vektör katmanında uygulanamıyor</translation>
-    </message>
-    <message>
-        <source>Coordinate transform error</source>
-        <translation type="obsolete">Koordinat dönüşüm hatası</translation>
-    </message>
-    <message>
-        <source>Cannot transform the point to the layers coordinate system</source>
-        <translation type="obsolete">Nokta katmanların koordinat sistemine dönüştürülemiyor</translation>
-    </message>
-    <message>
-        <source>Cannot apply the &apos;capture line&apos; tool on this vector layer</source>
-        <translation type="obsolete">&apos;Çizgi sayısallaştır&apos; aracı bu vektör katmanında uygulanamıyor</translation>
-    </message>
-    <message>
-        <source>Cannot apply the &apos;capture polygon&apos; tool on this vector layer</source>
-        <translation type="obsolete">&apos;Poligon sayısallaştır&apos; aracı bu vektör katmanında uygulanamıyor</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Hata</translation>
-    </message>
-    <message>
-        <source>Cannot add feature. Unknown WKB type</source>
-        <translation type="obsolete">Obje eklenemiyor. Bilinmeyen WKB tipi</translation>
-    </message>
-    <message>
-        <source>Error, could not add island</source>
-        <translation type="obsolete">Hata, ada eklenemiyor</translation>
-    </message>
-    <message>
-        <source>A problem with geometry type occured</source>
-        <translation type="obsolete">Geometri tipiyle ilgili bir sorun oluştu</translation>
-    </message>
-    <message>
-        <source>The inserted Ring is not closed</source>
-        <translation type="obsolete">Eklenen Halka kapalı değil</translation>
-    </message>
-    <message>
-        <source>The inserted Ring is not a valid geometry</source>
-        <translation type="obsolete">Eklenen Halka geçerli geometriye sahip değil</translation>
-    </message>
-    <message>
-        <source>The inserted Ring crosses existing rings</source>
-        <translation type="obsolete">Eklenen Halka mevcut halkaları kesiyor</translation>
-    </message>
-    <message>
-        <source>The inserted Ring is not contained in a feature</source>
-        <translation type="obsolete">Eklenen Halka objede kapsanmıyor</translation>
-    </message>
-    <message>
-        <source>An unknown error occured</source>
-        <translation type="obsolete">Bilinmeyen bir hata oluştu</translation>
-    </message>
-    <message>
-        <source>Error, could not add ring</source>
-        <translation type="obsolete">Hata, halka eklenemiyor</translation>
-    </message>
-    <message>
-        <source>Change geometry</source>
-        <translation type="obsolete">Geometriyi değiştir</translation>
-    </message>
-    <message>
-        <source>Data provider of the current layer doesn&apos;t allow changing geometries</source>
-        <translation type="obsolete">Geçerli katmanın veri sağlayıcısı geometri değişimine olanak tanımıyor</translation>
-    </message>
-    <message>
-        <source>Cannot edit the vector layer. Use &apos;Start editing&apos; in the legend item menu</source>
-        <translation type="obsolete">Vektör katman düzenlenemiyor. Legand menüsündeki &apos;Düzenlemeyi başlat&apos; ı kullan</translation>
-    </message>
-    <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="681"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="680"/>
         <source> km2</source>
         <translation>km2</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="686"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="685"/>
         <source> ha</source>
         <translation> ha</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="691"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="690"/>
         <source> m2</source>
         <translation> m2</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="699"/>
-        <location filename="../src/core/qgsdistancearea.cpp" line="719"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="698"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="718"/>
         <source> m</source>
         <translation> m</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="704"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="703"/>
         <source> km</source>
         <translation>km</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="709"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="708"/>
         <source> mm</source>
         <translation>mm</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="714"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="713"/>
         <source> cm</source>
         <translation> cm</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="740"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="739"/>
         <source> mile</source>
         <translation> mil</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="746"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="745"/>
         <source> foot</source>
         <translation>ayak (uzunluk birimi)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="760"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="759"/>
         <source> degree</source>
         <translation>Derece</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="762"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="761"/>
         <source> degrees</source>
         <translation>derece</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="766"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="765"/>
         <source> unknown</source>
         <translation>(Bilinmeyen</translation>
-    </message>
-    <message>
-        <source>Received %1 of %2 bytes</source>
-        <translation type="obsolete">%2 baytın %1 i alındı</translation>
-    </message>
-    <message>
-        <source>Received %1 bytes (total unknown)</source>
-        <translation type="obsolete">%1 bayt alındı (toplam bilinmiyor)</translation>
-    </message>
-    <message>
-        <source>Not connected</source>
-        <translation type="obsolete">Bağlanmadı</translation>
-    </message>
-    <message>
-        <source>Looking up &apos;%1&apos;</source>
-        <translation type="obsolete">&apos;%1&apos; e bakılıyor</translation>
-    </message>
-    <message>
-        <source>Connecting to &apos;%1&apos;</source>
-        <translation type="obsolete">&apos;%1&apos; e bağlanılıyor</translation>
-    </message>
-    <message>
-        <source>Sending request &apos;%1&apos;</source>
-        <translation type="obsolete">&apos;%1&apos; e istek gönderiliyor</translation>
-    </message>
-    <message>
-        <source>Receiving reply</source>
-        <translation type="obsolete">Yanıt alınıyor</translation>
-    </message>
-    <message>
-        <source>Response is complete</source>
-        <translation type="obsolete">Yanıt tamamlandı</translation>
-    </message>
-    <message>
-        <source>Closing down connection</source>
-        <translation type="obsolete">Bağlantı kapatılıyor</translation>
-    </message>
-    <message>
-        <source>Unable to open </source>
-        <translation type="obsolete">Açılamıyor</translation>
     </message>
     <message>
         <location filename="../src/core/qgssearchtreenode.cpp" line="299"/>
@@ -4529,24 +3063,6 @@ Python desteği etkisizleştirilecek.</translation>
         <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="46"/>
         <source>Geoprocessing functions for working with PostgreSQL/PostGIS layers</source>
         <translation>PostgreSQl/PostGIS katmanlarınyla çalışmak için coğrafi işlem fonksiyonları</translation>
-    </message>
-    <message>
-        <source>Location: </source>
-        <comment>Metadata in GRASS Browser</comment>
-        <translation type="obsolete">Mevki:</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Mapset: </source>
-        <comment>Metadata in GRASS Browser</comment>
-        <translation type="obsolete">&lt;br&gt;Haritatakımı:</translation>
-    </message>
-    <message>
-        <source>Location: </source>
-        <translation type="obsolete">Mevki:</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Mapset: </source>
-        <translation type="obsolete">&lt;br&gt; Harita Takımı:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="126"/>
@@ -4819,38 +3335,10 @@ Python desteği etkisizleştirilecek.</translation>
         <translation>GISBASE ayarlanmadı.</translation>
     </message>
     <message>
-        <source> is not a GRASS mapset.</source>
-        <translation type="obsolete">GRASS harita takımı değil.</translation>
-    </message>
-    <message>
-        <source>Cannot start </source>
-        <translation type="obsolete">Başlıyamıyor</translation>
-    </message>
-    <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="445"/>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="481"/>
         <source>Mapset is already in use.</source>
         <translation>Harita takımı zaten kullanımda.</translation>
-    </message>
-    <message>
-        <source>Temporary directory </source>
-        <translation type="obsolete">Geçici dizin</translation>
-    </message>
-    <message>
-        <source> exist but is not writable</source>
-        <translation type="obsolete">mevcut fakat yazılabilir değil</translation>
-    </message>
-    <message>
-        <source>Cannot create temporary directory </source>
-        <translation type="obsolete">Geçici dizin oluşturulamıyor</translation>
-    </message>
-    <message>
-        <source>Cannot create </source>
-        <translation type="obsolete">Oluşturulamıyor</translation>
-    </message>
-    <message>
-        <source>Cannot remove mapset lock: </source>
-        <translation type="obsolete">Harita takımı kilidi silinemiyor:</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/idtool/eviseventidtool.cpp" line="76"/>
@@ -4882,39 +3370,27 @@ Python desteği etkisizleştirilecek.</translation>
         <translation>Bölge okunamıyor</translation>
     </message>
     <message>
-        <source>Where is &apos;</source>
-        <translation type="obsolete">Nerede &apos;</translation>
-    </message>
-    <message>
-        <source>original location: </source>
-        <translation type="obsolete">orjinal mevki:</translation>
-    </message>
-    <message>
-        <source>To identify features, you must choose an active layer by clicking on its name in the legend</source>
-        <translation type="obsolete">Objeleri belirlemek için lejandda ilgili katman üzerine tıklayarak onu aktif katman olarak seçmelisiniz</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="45"/>
         <source>PostgreSQL Geoprocessing</source>
         <translation>PostgreSQL Coğrafi işleme</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="728"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="727"/>
         <source> sq mile</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="733"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="732"/>
         <source> sq ft</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="748"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="747"/>
         <source> feet</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/core/qgsdistancearea.cpp" line="755"/>
+        <location filename="../src/core/qgsdistancearea.cpp" line="754"/>
         <source> sq.deg.</source>
         <translation></translation>
     </message>
@@ -4937,30 +3413,6 @@ Python desteği etkisizleştirilecek.</translation>
         <location filename="../src/plugins/quick_print/quickprintplugin.cpp" line="40"/>
         <source>Quick Print is a plugin to quickly print a map with minimal effort.</source>
         <translation>Hızlı Çıktı en az çabayla bir haritanın çıktısını alan bir eklentidir.</translation>
-    </message>
-    <message>
-        <source>Could not remove polygon intersection</source>
-        <translation type="obsolete">Poligon kesişimleri uzaklaştırılamıyor</translation>
-    </message>
-    <message>
-        <source>Currently only filebased datasets are supported</source>
-        <translation type="obsolete">Şu anda sadece doyatabanlı veri takımları destekleniyor</translation>
-    </message>
-    <message>
-        <source>Loaded default style file from </source>
-        <translation type="obsolete">Varsayılan stili yükle</translation>
-    </message>
-    <message>
-        <source>The directory containing your dataset needs to be writeable!</source>
-        <translation type="obsolete">Veri takımınızı içeren dizin yazılabilir olmalıdır!</translation>
-    </message>
-    <message>
-        <source>Created default style file as </source>
-        <translation type="obsolete">Varsayılan stil dosyasını farklı kaydet</translation>
-    </message>
-    <message>
-        <source>File could not been opened.</source>
-        <translation type="obsolete">Dosya açılamadı.</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconverter.cpp" line="39"/>
@@ -4986,14 +3438,6 @@ Python desteği etkisizleştirilecek.</translation>
         <location filename="../src/plugins/evis/evis.cpp" line="86"/>
         <source>Version 1.1.0</source>
         <translation>Sürüm 1.1.0</translation>
-    </message>
-    <message>
-        <source>An event visualization pluigin for QGIS</source>
-        <translation type="obsolete">QGIS için olay görselleştirme eklentisi</translation>
-    </message>
-    <message>
-        <source>Version 0.7</source>
-        <translation type="obsolete">Sürüm 0.7</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/idtool/eviseventidtool.cpp" line="76"/>
@@ -5032,22 +3476,6 @@ Python desteği etkisizleştirilecek.</translation>
         <translation>Sürüm 0.001</translation>
     </message>
     <message>
-        <source>SOS plugin</source>
-        <translation type="obsolete">SOS eklentisi</translation>
-    </message>
-    <message>
-        <source> is not writeable.</source>
-        <translation type="obsolete">yazılabilir değil.</translation>
-    </message>
-    <message>
-        <source>Please adjust permissions (if possible) and try again.</source>
-        <translation type="obsolete">Lütfen izinleri düzenleyin (eğer mümkünse) ve tekrar deneyin.</translation>
-    </message>
-    <message>
-        <source>Uncatched fatal GRASS error</source>
-        <translation type="obsolete">Yakalanamayan ölümcül GRASS hatası</translation>
-    </message>
-    <message>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="75"/>
         <source>Couldn&apos;t load SIP module.</source>
         <translation>SIP modülü yüklenemiyor.</translation>
@@ -5076,10 +3504,6 @@ Python desteği etkisizleştirilecek.</translation>
         <translation>QGIS aracı yüklenemiyor.</translation>
     </message>
     <message>
-        <source>An error has occured while executing Python code:</source>
-        <translation type="obsolete">Python kodunu çalıştırırken bir hata oluştu:</translation>
-    </message>
-    <message>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="164"/>
         <source>Python version:</source>
         <translation>Python sürümü:</translation>
@@ -5098,10 +3522,6 @@ Python desteği etkisizleştirilecek.</translation>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="153"/>
         <source>An error occured during execution of following code:</source>
         <translation>Takipeden kodu çalıştırırken bir hata oluştu:</translation>
-    </message>
-    <message>
-        <source>Legend</source>
-        <translation type="obsolete">Lejand</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="53"/>
@@ -5248,10 +3668,6 @@ Python desteği etkisizleştirilecek.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Adding projection info to rasters using GDAL</source>
-        <translation type="obsolete">Raster haritalara GDAL kullanarak projeksiyon bilgisi ekle </translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsspatialitesourceselect.cpp" line="303"/>
         <source>SQLite DB (*.sqlite);;All files (*.*)</source>
         <translation>SQLite VT (*.sqlite);;Tüm Dosyalar (*.*)</translation>
@@ -5287,7 +3703,7 @@ Python desteği etkisizleştirilecek.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1211"/>
+        <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1213"/>
         <source>Generated CRS</source>
         <comment>A CRS automatically generated from layer info get this prefix for description</comment>
         <translation>Oluşturulan KRS</translation>
@@ -5567,1500 +3983,939 @@ Python desteği etkisizleştirilecek.</translation>
 <context>
     <name>QgisApp</name>
     <message>
-        <source>Quantum GIS - </source>
-        <translation type="obsolete">Quantum CBS -</translation>
-    </message>
-    <message>
-        <source>Version </source>
-        <translation type="obsolete">Sürüm</translation>
-    </message>
-    <message>
-        <source> with PostgreSQL support</source>
-        <translation type="obsolete">PostgreSQL desteği ile</translation>
-    </message>
-    <message>
-        <source> (no PostgreSQL support)</source>
-        <translation type="obsolete">(PostgreSQL desteği yok)</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="2209"/>
+        <location filename="../src/app/qgisapp.cpp" line="2221"/>
         <source>Version</source>
         <translation>Sürüm</translation>
     </message>
     <message>
-        <source>Available Data Provider Plugins</source>
-        <translation type="obsolete">Mevcut Veri Sağlama Eklentileri</translation>
-    </message>
-    <message>
-        <source>is not a valid or recognized data source</source>
-        <translation type="obsolete">geçerli veya tanınan veri kaynağı değildir</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="2415"/>
-        <location filename="../src/app/qgisapp.cpp" line="5652"/>
+        <location filename="../src/app/qgisapp.cpp" line="2427"/>
+        <location filename="../src/app/qgisapp.cpp" line="5685"/>
         <source>Invalid Data Source</source>
         <translation>Geçersiz Veri Kaynağı</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3612"/>
+        <location filename="../src/app/qgisapp.cpp" line="3624"/>
         <source>No Layer Selected</source>
         <translation>Katman seçilmedi</translation>
     </message>
     <message>
-        <source>No MapLayer Plugins</source>
-        <translation type="obsolete">Harita Katmanı Eklentisi yok</translation>
-    </message>
-    <message>
-        <source>No MapLayer plugins in ../plugins/maplayer</source>
-        <translation type="obsolete">../plugins/maplayer&apos;de Harita Katmanı Eklentisi yok</translation>
-    </message>
-    <message>
-        <source>No Plugins</source>
-        <translation type="obsolete">Eklenti Yok</translation>
-    </message>
-    <message>
-        <source>No plugins found in ../plugins. To test plugins, start qgis from the src directory</source>
-        <translation type="obsolete">../plugins dizininde eklenti bulunamadı. Eklentileri denemek için, qgis&apos;i src dizininde başlatın</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Ad</translation>
-    </message>
-    <message>
-        <source>Plugin %1 is named %2</source>
-        <translation type="obsolete">%1 eklentisi %2 olarak adlandırıldı</translation>
-    </message>
-    <message>
-        <source>Plugin Information</source>
-        <translation type="obsolete">Eklenti Bilgisi</translation>
-    </message>
-    <message>
-        <source>QGis loaded the following plugin:</source>
-        <translation type="obsolete">QGIS şu eklentiyi yüklemiştir:</translation>
-    </message>
-    <message>
-        <source>Name: %1</source>
-        <translation type="obsolete">Ad: %1</translation>
-    </message>
-    <message>
-        <source>Version: %1</source>
-        <translation type="obsolete">Sürüm: %1</translation>
-    </message>
-    <message>
-        <source>Description: %1</source>
-        <translation type="obsolete">Açıklama:%1</translation>
-    </message>
-    <message>
-        <source>Unable to Load Plugin</source>
-        <translation type="obsolete">Eklenti Yüklenemiyor</translation>
-    </message>
-    <message>
-        <source>QGIS was unable to load the plugin from: %1</source>
-        <translation type="obsolete">QGIS  %1&apos;den eklentiyi yükleyemedi</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="4566"/>
+        <location filename="../src/app/qgisapp.cpp" line="4574"/>
         <source>There is a new version of QGIS available</source>
         <translation>QGIS&apos;in yeni bir sürümü mevcut</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4572"/>
+        <location filename="../src/app/qgisapp.cpp" line="4580"/>
         <source>You are running a development version of QGIS</source>
         <translation>QGIS&apos;in geliştirme sürümünü çalıştırıyorsunuz</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4576"/>
+        <location filename="../src/app/qgisapp.cpp" line="4584"/>
         <source>You are running the current version of QGIS</source>
         <translation>QGIS&apos;in güncel sürümünü çalıştırıyorsunuz</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4581"/>
+        <location filename="../src/app/qgisapp.cpp" line="4589"/>
         <source>Would you like more information?</source>
         <translation>Daha fazla bilgi istermisiniz?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4584"/>
-        <location filename="../src/app/qgisapp.cpp" line="4597"/>
-        <location filename="../src/app/qgisapp.cpp" line="4602"/>
-        <location filename="../src/app/qgisapp.cpp" line="4630"/>
+        <location filename="../src/app/qgisapp.cpp" line="4592"/>
+        <location filename="../src/app/qgisapp.cpp" line="4605"/>
+        <location filename="../src/app/qgisapp.cpp" line="4610"/>
+        <location filename="../src/app/qgisapp.cpp" line="4638"/>
         <source>QGIS Version Information</source>
         <translation>QGIS Sürüm Bilgisi</translation>
     </message>
     <message>
-        <source>Yes</source>
-        <translation type="obsolete">Evet</translation>
-    </message>
-    <message>
-        <source>No</source>
-        <translation type="obsolete">Hayır</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="4602"/>
+        <location filename="../src/app/qgisapp.cpp" line="4610"/>
         <source>Unable to get current version information from server</source>
         <translation>Sunucudan geçerli sürüm bilgisi alınamıyor</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4616"/>
+        <location filename="../src/app/qgisapp.cpp" line="4624"/>
         <source>Connection refused - server may be down</source>
         <translation>Bağlantı red edildi - Belki sunucu kapalı olabilir</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4619"/>
+        <location filename="../src/app/qgisapp.cpp" line="4627"/>
         <source>QGIS server was not found</source>
         <translation>QGIS Sunucusu bulunamadı</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2568"/>
-        <location filename="../src/app/qgisapp.cpp" line="2648"/>
+        <location filename="../src/app/qgisapp.cpp" line="2580"/>
+        <location filename="../src/app/qgisapp.cpp" line="2660"/>
         <source>Invalid Layer</source>
         <translation>Geçersiz Katman</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2568"/>
-        <location filename="../src/app/qgisapp.cpp" line="2648"/>
+        <location filename="../src/app/qgisapp.cpp" line="2580"/>
+        <location filename="../src/app/qgisapp.cpp" line="2660"/>
         <source>%1 is an invalid layer and cannot be loaded.</source>
         <translation>%1 geçersiz katman ve yüklenemiyor.</translation>
     </message>
     <message>
-        <source>Error Loading Plugin</source>
-        <translation type="obsolete">Eklenti Yüklemede hata</translation>
-    </message>
-    <message>
-        <source>There was an error loading %1.</source>
-        <translation type="obsolete">Yüklerken hata oldu %1.</translation>
-    </message>
-    <message>
-        <source>Saved map image to</source>
-        <translation type="obsolete">Harita görüntüsünü şuna kaydet</translation>
-    </message>
-    <message>
-        <source>Choose a filename to save the map image as</source>
-        <translation type="obsolete">Harita görüntüsünü  kaydedeceğiniz dosya adını seçin</translation>
-    </message>
-    <message>
-        <source>Extents: </source>
-        <translation type="obsolete">Dış sınırlar:</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="3650"/>
+        <location filename="../src/app/qgisapp.cpp" line="3662"/>
         <source>Problem deleting features</source>
         <translation>Objeleri silmede sorun var</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3651"/>
+        <location filename="../src/app/qgisapp.cpp" line="3663"/>
         <source>A problem occured during deletion of features</source>
         <translation>Objeleri silerken bir hata oluştu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3621"/>
+        <location filename="../src/app/qgisapp.cpp" line="3633"/>
         <source>No Vector Layer Selected</source>
         <translation>Hiç vektör katman seçilmedi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3622"/>
+        <location filename="../src/app/qgisapp.cpp" line="3634"/>
         <source>Deleting features only works on vector layers</source>
         <translation>Objeleri silme sadece vektör katmanlarda çalışır</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3613"/>
+        <location filename="../src/app/qgisapp.cpp" line="3625"/>
         <source>To delete features, you must select a vector layer in the legend</source>
         <translation>Objeleri silmek için, lejanddan bir vektör katman seçmelisiniz</translation>
     </message>
     <message>
-        <source>Quantum GIS is licensed under the GNU General Public License</source>
-        <translation type="obsolete">Quantum CBS GNU General Public License ile lisanslıdır</translation>
-    </message>
-    <message>
-        <source>http://www.gnu.org/licenses</source>
-        <translation type="obsolete">http://www.gnu.org/licenses</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="1876"/>
+        <location filename="../src/app/qgisapp.cpp" line="1888"/>
         <source>Map canvas. This is where raster and vector layers are displayed when added to the map</source>
         <translation>Harita kanavası. Raster ve vektör katmanlar haritaya eklendiğinde gösterilen yer </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1403"/>
+        <location filename="../src/app/qgisapp.cpp" line="1412"/>
         <source>&amp;Plugins</source>
         <translation>&amp;Eklentiler</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1645"/>
+        <location filename="../src/app/qgisapp.cpp" line="1654"/>
         <source>Displays the current map scale</source>
         <translation>Geçerli harita ölçeğini göster</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3071"/>
+        <location filename="../src/app/qgisapp.cpp" line="3083"/>
         <source>Choose a QGIS project file</source>
         <translation>QGIS proje dosyasını seç</translation>
     </message>
     <message>
-        <source>Unable to save project</source>
-        <translation type="obsolete">Proje kaydedilemiyor</translation>
-    </message>
-    <message>
-        <source>Unable to save project to </source>
-        <translation type="obsolete">Proje şöyle kaydedilemiyor</translation>
-    </message>
-    <message>
-        <source>Projection status - Click to open projection dialog</source>
-        <translation type="obsolete">Projeksiyon durumu - Projeksiyon diyaloğunu  açmak için tıklayın</translation>
-    </message>
-    <message>
-        <source>Open an OGR Supported Vector Layer</source>
-        <translation type="obsolete">OGR Desteği Olan Vektör Katmanı Aç</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="2964"/>
+        <location filename="../src/app/qgisapp.cpp" line="2976"/>
         <source>QGIS Project Read Error</source>
         <translation>QGIS Proje Okuma Hatası</translation>
     </message>
     <message>
-        <source>Try to find missing layers?</source>
-        <translation type="obsolete">Kayıp katmanları bulmayı deneyin?</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="5561"/>
+        <location filename="../src/app/qgisapp.cpp" line="5593"/>
         <source>Open a GDAL Supported Raster Data Source</source>
         <translation>GDAL Desteği Olan Raster Veri Kaynağını Aç</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2825"/>
+        <location filename="../src/app/qgisapp.cpp" line="2837"/>
         <source>Save As</source>
         <translation>Farklı Kaydet</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2940"/>
+        <location filename="../src/app/qgisapp.cpp" line="2952"/>
         <source>Choose a QGIS project file to open</source>
         <translation>Açılacak QGIS proje dosyasını seç</translation>
     </message>
     <message>
-        <source>Saved project to:</source>
-        <translation type="obsolete">Projeyi şuna kaydet:</translation>
-    </message>
-    <message>
-        <source>QGIS Browser Selection</source>
-        <translation type="obsolete">QGIS Gözatıcı Seçimi</translation>
-    </message>
-    <message>
-        <source>Enter the name of a web browser to use (eg. konqueror).
-</source>
-        <translation type="obsolete">Web tarayıcı adını girin (örneğin; Konqueror).</translation>
-    </message>
-    <message>
-        <source>Enter the full path if the browser is not in your PATH.
-</source>
-        <translation type="obsolete">Gözatıcı YOL&apos;unuzda değilse yolu tam olarak girin.</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="359"/>
+        <location filename="../src/app/qgisapp.cpp" line="368"/>
         <source>Reading settings</source>
         <translation>Ayarlar okunuyor</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="362"/>
+        <location filename="../src/app/qgisapp.cpp" line="371"/>
         <source>Setting up the GUI</source>
         <translation>GUI Ayarları</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="353"/>
+        <location filename="../src/app/qgisapp.cpp" line="362"/>
         <source>Checking database</source>
         <translation>Veritabanı kontrol ediliyor</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="234"/>
+        <location filename="../src/app/qgisapp.cpp" line="241"/>
         <source>Quantum GIS </source>
         <translation>Quantum CBS </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="425"/>
+        <location filename="../src/app/qgisapp.cpp" line="434"/>
         <source>Restoring loaded plugins</source>
         <translation>Yüklenen eklentiler onarılıyor</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="435"/>
+        <location filename="../src/app/qgisapp.cpp" line="444"/>
         <source>Initializing file filters</source>
         <translation>Dosya filtresine erişiliyor</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="463"/>
+        <location filename="../src/app/qgisapp.cpp" line="472"/>
         <source>Restoring window state</source>
         <translation>Pencere durumu onarılıyor</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="467"/>
+        <location filename="../src/app/qgisapp.cpp" line="476"/>
         <source>QGIS Ready!</source>
         <translation>QGIS Hazır!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="597"/>
+        <location filename="../src/app/qgisapp.cpp" line="606"/>
         <source>&amp;New Project</source>
         <translation>&amp;Yeni proje</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="598"/>
+        <location filename="../src/app/qgisapp.cpp" line="607"/>
         <source>Ctrl+N</source>
         <comment>New Project</comment>
         <translation>Ctrl+N</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="599"/>
+        <location filename="../src/app/qgisapp.cpp" line="608"/>
         <source>New Project</source>
         <translation>Yeni proje</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="602"/>
+        <location filename="../src/app/qgisapp.cpp" line="611"/>
         <source>&amp;Open Project...</source>
         <translation>&amp;Projeyi Aç...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="603"/>
+        <location filename="../src/app/qgisapp.cpp" line="612"/>
         <source>Ctrl+O</source>
         <comment>Open a Project</comment>
         <translation>Ctrl+O</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="604"/>
+        <location filename="../src/app/qgisapp.cpp" line="613"/>
         <source>Open a Project</source>
         <translation>Proje Aç</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="607"/>
+        <location filename="../src/app/qgisapp.cpp" line="616"/>
         <source>&amp;Save Project</source>
         <translation>&amp;Projeyi Kaydet</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="608"/>
+        <location filename="../src/app/qgisapp.cpp" line="617"/>
         <source>Ctrl+S</source>
         <comment>Save Project</comment>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="609"/>
+        <location filename="../src/app/qgisapp.cpp" line="618"/>
         <source>Save Project</source>
         <translation>Projeyi Kaydet</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="612"/>
+        <location filename="../src/app/qgisapp.cpp" line="621"/>
         <source>Save Project &amp;As...</source>
         <translation>Projeyi Farklı &amp;Kaydet ...</translation>
     </message>
     <message>
-        <source>Ctrl+A</source>
-        <comment>Save Project under a new name</comment>
-        <translation type="obsolete">Ctrl+A</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="614"/>
+        <location filename="../src/app/qgisapp.cpp" line="623"/>
         <source>Save Project under a new name</source>
         <translation>Projeyi yeni bir adla kaydet</translation>
     </message>
     <message>
-        <source>&amp;Print...</source>
-        <translation type="obsolete">&amp;Yazdır...</translation>
-    </message>
-    <message>
-        <source>Ctrl+P</source>
-        <comment>Print</comment>
-        <translation type="obsolete">Ctrl+P</translation>
-    </message>
-    <message>
-        <source>Print</source>
-        <translation type="obsolete">Yazdır</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="617"/>
+        <location filename="../src/app/qgisapp.cpp" line="626"/>
         <source>Save as Image...</source>
         <translation>Görüntü Olarak Kaydet...</translation>
     </message>
     <message>
-        <source>Ctrl+I</source>
-        <comment>Save map as image</comment>
-        <translation type="obsolete">Ctrl+I</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="619"/>
+        <location filename="../src/app/qgisapp.cpp" line="628"/>
         <source>Save map as image</source>
         <translation>Haritayı görüntü olarak kaydet</translation>
     </message>
     <message>
-        <source>Export to MapServer Map...</source>
-        <translation type="obsolete">MapServer Verisi olarak dışarı aktar...</translation>
-    </message>
-    <message>
-        <source>M</source>
-        <comment>Export as MapServer .map file</comment>
-        <translation type="obsolete">M</translation>
-    </message>
-    <message>
-        <source>Export as MapServer .map file</source>
-        <translation type="obsolete">MapServer .map dosyası olarak dışarı aktar</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="631"/>
+        <location filename="../src/app/qgisapp.cpp" line="640"/>
         <source>Exit</source>
         <translation>Çık</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="632"/>
+        <location filename="../src/app/qgisapp.cpp" line="641"/>
         <source>Ctrl+Q</source>
         <comment>Exit QGIS</comment>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="633"/>
+        <location filename="../src/app/qgisapp.cpp" line="642"/>
         <source>Exit QGIS</source>
         <translation>QGIS&apos;ten Çık</translation>
     </message>
     <message>
-        <source>Add a Vector Layer...</source>
-        <translation type="obsolete">Vektör Katman ekle...</translation>
-    </message>
-    <message>
-        <source>V</source>
-        <comment>Add a Vector Layer</comment>
-        <translation type="obsolete">V</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="906"/>
+        <location filename="../src/app/qgisapp.cpp" line="915"/>
         <source>Add a Vector Layer</source>
         <translation>Vektör Katman ekle</translation>
     </message>
     <message>
-        <source>Add a Raster Layer...</source>
-        <translation type="obsolete">Raster Katman ekle...</translation>
-    </message>
-    <message>
-        <source>R</source>
-        <comment>Add a Raster Layer</comment>
-        <translation type="obsolete">R</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="911"/>
+        <location filename="../src/app/qgisapp.cpp" line="920"/>
         <source>Add a Raster Layer</source>
         <translation>Raster Katman ekle</translation>
     </message>
     <message>
-        <source>Add a PostGIS Layer...</source>
-        <translation type="obsolete">PostGIS Katmanı ekle...</translation>
-    </message>
-    <message>
-        <source>D</source>
-        <comment>Add a PostGIS Layer</comment>
-        <translation type="obsolete">D</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="916"/>
+        <location filename="../src/app/qgisapp.cpp" line="925"/>
         <source>Add a PostGIS Layer</source>
         <translation>PostGIS Katmanı ekle</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="899"/>
+        <location filename="../src/app/qgisapp.cpp" line="908"/>
         <source>New Vector Layer...</source>
         <translation>Yeni Vektör Katmanı...</translation>
     </message>
     <message>
-        <source>N</source>
-        <comment>Create a New Vector Layer</comment>
-        <translation type="obsolete">N</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="901"/>
+        <location filename="../src/app/qgisapp.cpp" line="910"/>
         <source>Create a New Vector Layer</source>
         <translation>Yeni bir vektör katman oluştur</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="968"/>
+        <location filename="../src/app/qgisapp.cpp" line="977"/>
         <source>Remove Layer</source>
         <translation>Katmanı Kaldır</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="969"/>
+        <location filename="../src/app/qgisapp.cpp" line="978"/>
         <source>Ctrl+D</source>
         <comment>Remove a Layer</comment>
         <translation>Ctrl+D</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="970"/>
+        <location filename="../src/app/qgisapp.cpp" line="979"/>
         <source>Remove a Layer</source>
         <translation>Katmanı Kaldır</translation>
     </message>
     <message>
-        <source>Add All To Overview</source>
-        <translation type="obsolete">Tümünü öngörünüşe ekle</translation>
-    </message>
-    <message>
-        <source>+</source>
-        <comment>Show all layers in the overview map</comment>
-        <translation type="obsolete">+</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="996"/>
+        <location filename="../src/app/qgisapp.cpp" line="1005"/>
         <source>Show all layers in the overview map</source>
         <translation>Tüm katmanları öngörünüşte göster</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="999"/>
+        <location filename="../src/app/qgisapp.cpp" line="1008"/>
         <source>Remove All From Overview</source>
         <translation>Öngörünüşten tümünü Kaldır</translation>
     </message>
     <message>
-        <source>-</source>
-        <comment>Remove all layers from overview map</comment>
-        <translation type="obsolete">-</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="1001"/>
+        <location filename="../src/app/qgisapp.cpp" line="1010"/>
         <source>Remove all layers from overview map</source>
         <translation>Öngörünüş haritasından  tümünü kaldır</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1004"/>
+        <location filename="../src/app/qgisapp.cpp" line="1013"/>
         <source>Show All Layers</source>
         <translation>Tüm Katmanları Göster</translation>
     </message>
     <message>
-        <source>S</source>
-        <comment>Show all layers</comment>
-        <translation type="obsolete">S</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="1006"/>
+        <location filename="../src/app/qgisapp.cpp" line="1015"/>
         <source>Show all layers</source>
         <translation>Tüm Katmanları Göster</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1009"/>
+        <location filename="../src/app/qgisapp.cpp" line="1018"/>
         <source>Hide All Layers</source>
         <translation>Tüm Katmanları Gizle</translation>
     </message>
     <message>
-        <source>H</source>
-        <comment>Hide all layers</comment>
-        <translation type="obsolete">H</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="1011"/>
+        <location filename="../src/app/qgisapp.cpp" line="1020"/>
         <source>Hide all layers</source>
         <translation>Tüm Katmanları Gizle</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1028"/>
+        <location filename="../src/app/qgisapp.cpp" line="1037"/>
         <source>Project Properties...</source>
         <translation>Projeksiyon Özellikleri...</translation>
     </message>
     <message>
-        <source>P</source>
-        <comment>Set project properties</comment>
-        <translation type="obsolete">P</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="1030"/>
+        <location filename="../src/app/qgisapp.cpp" line="1039"/>
         <source>Set project properties</source>
         <translation>Proje Özellikleri</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1033"/>
+        <location filename="../src/app/qgisapp.cpp" line="1042"/>
         <source>Options...</source>
         <translation>Seçenekler...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1035"/>
+        <location filename="../src/app/qgisapp.cpp" line="1044"/>
         <source>Change various QGIS options</source>
         <translation>Çeşitli QGIS seçeneklerini değiştir</translation>
     </message>
     <message>
-        <source>Custom Projection...</source>
-        <translation type="obsolete">Özel projeksiyon...</translation>
-    </message>
-    <message>
-        <source>Manage custom projections</source>
-        <translation type="obsolete">Özel projeksiyonları yönet</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="1074"/>
+        <location filename="../src/app/qgisapp.cpp" line="1083"/>
         <source>Help Contents</source>
         <translation>Yardım İçerikleri</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1078"/>
+        <location filename="../src/app/qgisapp.cpp" line="1087"/>
         <source>F1</source>
         <comment>Help Documentation</comment>
         <translation>F1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1080"/>
+        <location filename="../src/app/qgisapp.cpp" line="1089"/>
         <source>Help Documentation</source>
         <translation>Yardım Belgeleri</translation>
     </message>
     <message>
-        <source>Qgis Home Page</source>
-        <translation type="obsolete">QGIS Ana Sayfa</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="1085"/>
+        <location filename="../src/app/qgisapp.cpp" line="1094"/>
         <source>Ctrl+H</source>
         <comment>QGIS Home Page</comment>
         <translation>Ctrl+H</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1083"/>
-        <location filename="../src/app/qgisapp.cpp" line="1089"/>
+        <location filename="../src/app/qgisapp.cpp" line="1092"/>
+        <location filename="../src/app/qgisapp.cpp" line="1098"/>
         <source>QGIS Home Page</source>
         <translation>QGIS Ana Sayfası</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1097"/>
+        <location filename="../src/app/qgisapp.cpp" line="1106"/>
         <source>About</source>
         <translation>Hakkında</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1099"/>
+        <location filename="../src/app/qgisapp.cpp" line="1108"/>
         <source>About QGIS</source>
         <translation>QGIS Hakkında</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1092"/>
+        <location filename="../src/app/qgisapp.cpp" line="1101"/>
         <source>Check Qgis Version</source>
         <translation>QGIS Versiyonunu kontrol et</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1094"/>
+        <location filename="../src/app/qgisapp.cpp" line="1103"/>
         <source>Check if your QGIS version is up to date (requires internet access)</source>
         <translation>QGIS versiyonunun güncel olup olmadığını kontrol et (internet erişimi gereklidir)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="892"/>
+        <location filename="../src/app/qgisapp.cpp" line="901"/>
         <source>Refresh</source>
         <translation>Tazele</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="893"/>
+        <location filename="../src/app/qgisapp.cpp" line="902"/>
         <source>Ctrl+R</source>
         <comment>Refresh Map</comment>
         <translation>Ctrl+R</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="894"/>
+        <location filename="../src/app/qgisapp.cpp" line="903"/>
         <source>Refresh Map</source>
         <translation>Haritayı Tazele</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="803"/>
-        <location filename="../src/app/qgisapp.cpp" line="805"/>
+        <location filename="../src/app/qgisapp.cpp" line="812"/>
+        <location filename="../src/app/qgisapp.cpp" line="814"/>
         <source>Zoom In</source>
         <translation>Yaklaştır</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="804"/>
+        <location filename="../src/app/qgisapp.cpp" line="813"/>
         <source>Ctrl++</source>
         <comment>Zoom In</comment>
         <translation>Ctrl++</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="808"/>
-        <location filename="../src/app/qgisapp.cpp" line="810"/>
+        <location filename="../src/app/qgisapp.cpp" line="817"/>
+        <location filename="../src/app/qgisapp.cpp" line="819"/>
         <source>Zoom Out</source>
         <translation>Uzaklaştır</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="809"/>
+        <location filename="../src/app/qgisapp.cpp" line="818"/>
         <source>Ctrl+-</source>
         <comment>Zoom Out</comment>
         <translation>Ctrl+-</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="845"/>
+        <location filename="../src/app/qgisapp.cpp" line="854"/>
         <source>Zoom Full</source>
         <translation>Tam Yakınlaştırma</translation>
     </message>
     <message>
-        <source>F</source>
-        <comment>Zoom to Full Extents</comment>
-        <translation type="obsolete">F</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="847"/>
+        <location filename="../src/app/qgisapp.cpp" line="856"/>
         <source>Zoom to Full Extents</source>
         <translation>En geniş dış sınıra kadar göster</translation>
     </message>
     <message>
-        <source>Zoom To Selection</source>
-        <translation type="obsolete">Seçime Yaklaştır</translation>
-    </message>
-    <message>
-        <source>Ctrl+F</source>
-        <comment>Zoom to selection</comment>
-        <translation type="obsolete">Ctrl+F</translation>
-    </message>
-    <message>
-        <source>Zoom to selection</source>
-        <translation type="obsolete">Seçime Yaklaştır</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="798"/>
+        <location filename="../src/app/qgisapp.cpp" line="807"/>
         <source>Pan Map</source>
         <translation>Haritayı kaydır</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="800"/>
+        <location filename="../src/app/qgisapp.cpp" line="809"/>
         <source>Pan the map</source>
         <translation>Haritayı kaydır</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="860"/>
+        <location filename="../src/app/qgisapp.cpp" line="869"/>
         <source>Zoom Last</source>
         <translation>Son Yaklaştırma</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="862"/>
+        <location filename="../src/app/qgisapp.cpp" line="871"/>
         <source>Zoom to Last Extent</source>
         <translation>Son dış sınıra getir</translation>
     </message>
     <message>
-        <source>Zoom To Layer</source>
-        <translation type="obsolete">Katmanın Dış Sınırlarını görecek Şekilde Yaklaştır</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="850"/>
-        <location filename="../src/app/qgisapp.cpp" line="852"/>
+        <location filename="../src/app/qgisapp.cpp" line="859"/>
+        <location filename="../src/app/qgisapp.cpp" line="861"/>
         <source>Zoom to Layer</source>
         <translation>Katmanın Dış Sınırlarını görecek Şekilde Yaklaştır</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="825"/>
+        <location filename="../src/app/qgisapp.cpp" line="834"/>
         <source>Identify Features</source>
         <translation>Objeleri Belirle</translation>
     </message>
     <message>
-        <source>I</source>
-        <comment>Click on features to identify them</comment>
-        <translation type="obsolete">I</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="827"/>
+        <location filename="../src/app/qgisapp.cpp" line="836"/>
         <source>Click on features to identify them</source>
         <translation>Objeyi belirlemek için üstüne tıkla</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="813"/>
-        <location filename="../src/app/qgisapp.cpp" line="815"/>
+        <location filename="../src/app/qgisapp.cpp" line="822"/>
+        <location filename="../src/app/qgisapp.cpp" line="824"/>
         <source>Select Features</source>
         <translation>Objeleri Seç</translation>
     </message>
     <message>
-        <source>Open Table</source>
-        <translation type="obsolete">Tabloyu Aç</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="831"/>
+        <location filename="../src/app/qgisapp.cpp" line="840"/>
         <source>Measure Line </source>
         <translation>Çizgi ölç</translation>
     </message>
     <message>
-        <source>Ctrl+M</source>
-        <comment>Measure a Line</comment>
-        <translation type="obsolete">Ctrl+M</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="833"/>
+        <location filename="../src/app/qgisapp.cpp" line="842"/>
         <source>Measure a Line</source>
         <translation>Çizgiyi Ölç</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="836"/>
+        <location filename="../src/app/qgisapp.cpp" line="845"/>
         <source>Measure Area</source>
         <translation>Alanı Ölç</translation>
     </message>
     <message>
-        <source>Ctrl+J</source>
-        <comment>Measure an Area</comment>
-        <translation type="obsolete">Ctrl+J</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="838"/>
+        <location filename="../src/app/qgisapp.cpp" line="847"/>
         <source>Measure an Area</source>
         <translation>Alanı Ölç</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="887"/>
-        <location filename="../src/app/qgisapp.cpp" line="889"/>
+        <location filename="../src/app/qgisapp.cpp" line="896"/>
+        <location filename="../src/app/qgisapp.cpp" line="898"/>
         <source>Show Bookmarks</source>
         <translation>Sık Kullanılanları Göster</translation>
     </message>
     <message>
-        <source>B</source>
-        <comment>Show Bookmarks</comment>
-        <translation type="obsolete">B</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="882"/>
+        <location filename="../src/app/qgisapp.cpp" line="891"/>
         <source>New Bookmark...</source>
         <translation>Yeni Sık kullanılan...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="883"/>
+        <location filename="../src/app/qgisapp.cpp" line="892"/>
         <source>Ctrl+B</source>
         <comment>New Bookmark</comment>
         <translation>Ctrl+B</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="884"/>
-        <location filename="../src/app/qgisapp.cpp" line="5915"/>
+        <location filename="../src/app/qgisapp.cpp" line="893"/>
+        <location filename="../src/app/qgisapp.cpp" line="5949"/>
         <source>New Bookmark</source>
         <translation>Yeni Sık kullanılan</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="938"/>
+        <location filename="../src/app/qgisapp.cpp" line="947"/>
         <source>Add WMS Layer...</source>
         <translation>WMS katmanı ekle...</translation>
     </message>
     <message>
-        <source>W</source>
-        <comment>Add Web Mapping Server Layer</comment>
-        <translation type="obsolete">W</translation>
-    </message>
-    <message>
-        <source>Add Web Mapping Server Layer</source>
-        <translation type="obsolete">İnternet Harita Sunucusu Katmanı ekle</translation>
-    </message>
-    <message>
-        <source>O</source>
-        <comment>Add current layer to overview map</comment>
-        <translation type="obsolete">O</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="990"/>
+        <location filename="../src/app/qgisapp.cpp" line="999"/>
         <source>Add current layer to overview map</source>
         <translation>Geçerli katmanı öngörünüş haritasına ekle</translation>
     </message>
     <message>
-        <source>Plugin Manager...</source>
-        <translation type="obsolete">Eklenti Yöneticisi...</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="1018"/>
+        <location filename="../src/app/qgisapp.cpp" line="1027"/>
         <source>Open the plugin manager</source>
         <translation>Eklenti yöneticisini aç</translation>
     </message>
     <message>
-        <source>Start editing the current layer</source>
-        <translation type="obsolete">Geçerli katmanı düzeltmeyi başlat</translation>
-    </message>
-    <message>
-        <source>Stop editing the current layer</source>
-        <translation type="obsolete">Geçerli katmanı düzeltmeyi durdur</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="686"/>
+        <location filename="../src/app/qgisapp.cpp" line="695"/>
         <source>Capture Point</source>
         <translation>Nokta sayısallaştır</translation>
     </message>
     <message>
-        <source>.</source>
-        <comment>Capture Points</comment>
-        <translation type="obsolete">.</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="688"/>
+        <location filename="../src/app/qgisapp.cpp" line="697"/>
         <source>Capture Points</source>
         <translation>Noktaları sayısallaştır</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="692"/>
+        <location filename="../src/app/qgisapp.cpp" line="701"/>
         <source>Capture Line</source>
         <translation>Çizgi sayısallaştır</translation>
     </message>
     <message>
-        <source>/</source>
-        <comment>Capture Lines</comment>
-        <translation type="obsolete">/</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="694"/>
+        <location filename="../src/app/qgisapp.cpp" line="703"/>
         <source>Capture Lines</source>
         <translation>Çizgileri sayısallaştır</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="698"/>
+        <location filename="../src/app/qgisapp.cpp" line="707"/>
         <source>Capture Polygon</source>
         <translation>Poligon sayısallaştır</translation>
     </message>
     <message>
-        <source>Ctrl+/</source>
-        <comment>Capture Polygons</comment>
-        <translation type="obsolete">Ctrl+/</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="700"/>
+        <location filename="../src/app/qgisapp.cpp" line="709"/>
         <source>Capture Polygons</source>
         <translation>Poligonları sayısallaştır</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="722"/>
-        <location filename="../src/app/qgisapp.cpp" line="724"/>
+        <location filename="../src/app/qgisapp.cpp" line="731"/>
+        <location filename="../src/app/qgisapp.cpp" line="733"/>
         <source>Delete Selected</source>
         <translation>Seçileni Sil</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="729"/>
-        <location filename="../src/app/qgisapp.cpp" line="731"/>
+        <location filename="../src/app/qgisapp.cpp" line="738"/>
+        <location filename="../src/app/qgisapp.cpp" line="740"/>
         <source>Add Vertex</source>
         <translation>Kırıklık Noktası Ekle</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="741"/>
-        <location filename="../src/app/qgisapp.cpp" line="743"/>
+        <location filename="../src/app/qgisapp.cpp" line="750"/>
+        <location filename="../src/app/qgisapp.cpp" line="752"/>
         <source>Delete Vertex</source>
         <translation>Kırıklık Noktasını sil</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="735"/>
-        <location filename="../src/app/qgisapp.cpp" line="737"/>
+        <location filename="../src/app/qgisapp.cpp" line="744"/>
+        <location filename="../src/app/qgisapp.cpp" line="746"/>
         <source>Move Vertex</source>
         <translation>Kırıklık noktalarını taşı</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1224"/>
+        <location filename="../src/app/qgisapp.cpp" line="1233"/>
         <source>&amp;File</source>
         <translation>&amp;Dosya</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1228"/>
+        <location filename="../src/app/qgisapp.cpp" line="1237"/>
         <source>&amp;Open Recent Projects</source>
         <translation>&amp;En Son Projelerden Birini Aç</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1310"/>
+        <location filename="../src/app/qgisapp.cpp" line="1319"/>
         <source>&amp;View</source>
         <translation>&amp;Pencere</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1349"/>
+        <location filename="../src/app/qgisapp.cpp" line="1358"/>
         <source>&amp;Layer</source>
         <translation>&amp;Katman</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1384"/>
+        <location filename="../src/app/qgisapp.cpp" line="1393"/>
         <source>&amp;Settings</source>
         <translation>&amp;Ayarlar</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1425"/>
+        <location filename="../src/app/qgisapp.cpp" line="1434"/>
         <source>&amp;Help</source>
         <translation>&amp;Yardım</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1447"/>
+        <location filename="../src/app/qgisapp.cpp" line="1456"/>
         <source>File</source>
         <translation>Dosya</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1459"/>
+        <location filename="../src/app/qgisapp.cpp" line="1468"/>
         <source>Manage Layers</source>
         <translation>Katmanları yönet</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1556"/>
+        <location filename="../src/app/qgisapp.cpp" line="1565"/>
         <source>Help</source>
         <translation>Yardım</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1480"/>
+        <location filename="../src/app/qgisapp.cpp" line="1489"/>
         <source>Digitizing</source>
         <translation>Sayısallaştırma</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1519"/>
+        <location filename="../src/app/qgisapp.cpp" line="1528"/>
         <source>Map Navigation</source>
         <translation>Harita yöneltme</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1534"/>
+        <location filename="../src/app/qgisapp.cpp" line="1543"/>
         <source>Attributes</source>
         <translation>Öznitelikler</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1550"/>
+        <location filename="../src/app/qgisapp.cpp" line="1559"/>
         <source>Plugins</source>
         <translation>Eklentiler</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1693"/>
+        <location filename="../src/app/qgisapp.cpp" line="1702"/>
         <source>Ready</source>
         <translation>Hazır</translation>
     </message>
     <message>
-        <source>New features</source>
-        <translation type="obsolete">Yeni objeler</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="3006"/>
+        <location filename="../src/app/qgisapp.cpp" line="3018"/>
         <source>Unable to open project</source>
         <translation>Proje açılamıyor</translation>
     </message>
     <message>
-        <source>Unable to save project </source>
-        <translation type="obsolete">Proje kaydedilemiyor</translation>
-    </message>
-    <message>
-        <source>Choose a filename to save the QGIS project file as</source>
-        <translation type="obsolete">QGIS projesini  kaydedeceğiniz dosya adını seçin</translation>
-    </message>
-    <message>
-        <source>QGIS: Unable to load project</source>
-        <translation type="obsolete">QGIS: Projeyi yüklemede hata</translation>
-    </message>
-    <message>
-        <source>Unable to load project </source>
-        <translation type="obsolete">Proje yüklenemiyor</translation>
-    </message>
-    <message>
-        <source>QGIS - Changes in SVN Since Last Release</source>
-        <translation type="obsolete">QGIS - En son sürümden beri SVN&apos;deki değişiklikler</translation>
-    </message>
-    <message>
-        <source>You can change this option later by selecting Options from the Settings menu (Help Browser tab).</source>
-        <translation type="obsolete">Bu seçeneği daha sonra Ayarlar menüsünden Seçenekleri seçerek değiştirebilirsiniz (Yardım Gözatıcı sekmesi).</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="4769"/>
-        <location filename="../src/app/qgisapp.cpp" line="4811"/>
-        <location filename="../src/app/qgisapp.cpp" line="5732"/>
+        <location filename="../src/app/qgisapp.cpp" line="4777"/>
+        <location filename="../src/app/qgisapp.cpp" line="4819"/>
+        <location filename="../src/app/qgisapp.cpp" line="5766"/>
         <source>Layer is not valid</source>
         <translation>Katman geçersiz</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4770"/>
-        <location filename="../src/app/qgisapp.cpp" line="4812"/>
-        <location filename="../src/app/qgisapp.cpp" line="5733"/>
+        <location filename="../src/app/qgisapp.cpp" line="4778"/>
+        <location filename="../src/app/qgisapp.cpp" line="4820"/>
+        <location filename="../src/app/qgisapp.cpp" line="5767"/>
         <source>The layer is not a valid layer and can not be added to the map</source>
         <translation>Katman geçerli bir katman değil ve haritaya eklenemedi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4857"/>
+        <location filename="../src/app/qgisapp.cpp" line="4865"/>
         <source>Save?</source>
         <translation>Kaydedeyim mi?</translation>
     </message>
     <message>
-        <source>Clipboard contents set to: </source>
-        <translation type="obsolete">Pano içeriği ayarlandı:</translation>
-    </message>
-    <message>
-        <source> is not a valid or recognized raster data source</source>
-        <translation type="obsolete">geçerli veya tanınan raster veri kaynağı değildir</translation>
-    </message>
-    <message>
-        <source> is not a supported raster data source</source>
-        <translation type="obsolete">desteklenen raster veri kaynağı değildir</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="5819"/>
+        <location filename="../src/app/qgisapp.cpp" line="5853"/>
         <source>Unsupported Data Source</source>
         <translation>Desteklenmeyen Veri Kaynağı</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5916"/>
+        <location filename="../src/app/qgisapp.cpp" line="5950"/>
         <source>Enter a name for the new bookmark:</source>
         <translation>Yeni sık kullanılan için bir isim gir:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1131"/>
-        <location filename="../src/app/qgisapp.cpp" line="4232"/>
-        <location filename="../src/app/qgisapp.cpp" line="4245"/>
-        <location filename="../src/app/qgisapp.cpp" line="5933"/>
+        <location filename="../src/app/qgisapp.cpp" line="1140"/>
+        <location filename="../src/app/qgisapp.cpp" line="4244"/>
+        <location filename="../src/app/qgisapp.cpp" line="4257"/>
+        <location filename="../src/app/qgisapp.cpp" line="5967"/>
         <source>Error</source>
         <translation>Hata</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5933"/>
+        <location filename="../src/app/qgisapp.cpp" line="5967"/>
         <source>Unable to create the bookmark. Your user database may be missing or corrupted</source>
         <translation>Sık kullanılanlar oluşturulamıyor. Kullanıcı veritabanınız kayıp veya bozuk</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="668"/>
+        <location filename="../src/app/qgisapp.cpp" line="677"/>
         <source>Cut Features</source>
         <translation>Objeleri kes</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="670"/>
+        <location filename="../src/app/qgisapp.cpp" line="679"/>
         <source>Cut selected features</source>
         <translation>Seçilen objeleri kes</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="674"/>
+        <location filename="../src/app/qgisapp.cpp" line="683"/>
         <source>Copy Features</source>
         <translation>Objeleri kopyala</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="676"/>
+        <location filename="../src/app/qgisapp.cpp" line="685"/>
         <source>Copy selected features</source>
         <translation>Seçilen objeleri kopyala</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="680"/>
+        <location filename="../src/app/qgisapp.cpp" line="689"/>
         <source>Paste Features</source>
         <translation>Objeleri yapıştır</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="682"/>
+        <location filename="../src/app/qgisapp.cpp" line="691"/>
         <source>Paste selected features</source>
         <translation>Seçilen objeleri yapıştır</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1076"/>
+        <location filename="../src/app/qgisapp.cpp" line="1085"/>
         <source>Ctrl+?</source>
         <comment>Help Documentation (Mac)</comment>
         <translation>Ctrl+?</translation>
     </message>
     <message>
-        <source>&lt;p&gt;Do you want to save the current project?&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;p&gt;Geçerli projeyi kaydetmek istiyormusunuz?&lt;p&gt;</translation>
-    </message>
-    <message>
-        <source>Show most toolbars</source>
-        <translation type="obsolete">Araçların çoğunu göster</translation>
-    </message>
-    <message>
-        <source>Hide most toolbars</source>
-        <translation type="obsolete">Araçların çoğunu gizle</translation>
-    </message>
-    <message>
-        <source>&amp;Toolbars...</source>
-        <translation type="obsolete">&amp;Araçlar...</translation>
-    </message>
-    <message>
-        <source>
-Compiled against Qt </source>
-        <translation type="obsolete">Qt ile derlenmiştir</translation>
-    </message>
-    <message>
-        <source>, running against Qt </source>
-        <translation type="obsolete">Qt ile çalışır</translation>
-    </message>
-    <message>
-        <source>Improved vector and attribute editing</source>
-        <translation type="obsolete">Geliştirilmiş vektör ve öznitelik düzeltme</translation>
-    </message>
-    <message>
-        <source>WMS support</source>
-        <translation type="obsolete">WMS desteği</translation>
-    </message>
-    <message>
-        <source>Improved measure tools with area measuring</source>
-        <translation type="obsolete">Alan ölçümleri yapan geliştirilmiş ölçme aracı</translation>
-    </message>
-    <message>
-        <source>Attribute searching</source>
-        <translation type="obsolete">Öznitelik arama</translation>
-    </message>
-    <message>
-        <source>New legend structure</source>
-        <translation type="obsolete">Yeni lejand yapısı</translation>
-    </message>
-    <message>
-        <source>Improved MapServer export tool</source>
-        <translation type="obsolete">Geliştirilmiş Mapserver&apos;a  aktarma aracı</translation>
-    </message>
-    <message>
-        <source>Map canvas background color is customizable</source>
-        <translation type="obsolete">Harita kanavası arkaplan rengi özelleştirilebilir</translation>
-    </message>
-    <message>
-        <source>Vector layer transparency</source>
-        <translation type="obsolete">Vektör katman şeffaflığı</translation>
-    </message>
-    <message>
-        <source>Enhanced GRASS support and toolbox commands</source>
-        <translation type="obsolete">Zengin GRASS desteği ve komut araçları</translation>
-    </message>
-    <message>
-        <source>Enhanced vector editing, including copy/paste, snapping and vertex editing</source>
-        <translation type="obsolete">Kopyala/yapıştır, yapışma ve köşe noktaları düzeltmeyi içeren zengin vektör düzenleme</translation>
-    </message>
-    <message>
-        <source>Shapefile/OGR layer editing</source>
-        <translation type="obsolete">Shapefile/OGR katmanı düzeltme</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="4622"/>
+        <location filename="../src/app/qgisapp.cpp" line="4630"/>
         <source>Network error while communicating with server</source>
         <translation>Sunucuyla iletişim esnasında ağ hatası</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4625"/>
+        <location filename="../src/app/qgisapp.cpp" line="4633"/>
         <source>Unknown network socket error</source>
         <translation>Bilinmeyen ağ soket hatası</translation>
     </message>
     <message>
-        <source>Unable to communicate with QGIS Version server</source>
-        <translation type="obsolete">QGIS Sürüm Sunucusuyla iletişim sağlanamıyor</translation>
-    </message>
-    <message>
-        <source>T</source>
-        <comment>Show most toolbars</comment>
-        <translation type="obsolete">T</translation>
-    </message>
-    <message>
-        <source>Ctrl+T</source>
-        <comment>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Hide most toolbars</comment>
-        <translation type="obsolete">Ctrl+T</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="414"/>
+        <location filename="../src/app/qgisapp.cpp" line="423"/>
         <source>Checking provider plugins</source>
         <translation>Sağlayıcı eklentileri kontrol ediliyor</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="418"/>
+        <location filename="../src/app/qgisapp.cpp" line="427"/>
         <source>Starting Python</source>
         <translation>Python Başlatılıyor</translation>
     </message>
     <message>
-        <source>Python console</source>
-        <translation type="obsolete">Python işletmen uçbirimi</translation>
-    </message>
-    <message>
-        <source>Python error</source>
-        <translation type="obsolete">Python hatası</translation>
-    </message>
-    <message>
-        <source>Not a vector layer</source>
-        <translation type="obsolete">Vektör katman değil</translation>
-    </message>
-    <message>
-        <source>To open an attribute table, you must select a vector layer in the legend</source>
-        <translation type="obsolete">Öznitelik tablosunu açmak için, lejanddan bir vektör katman seçmelisiniz</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="3628"/>
+        <location filename="../src/app/qgisapp.cpp" line="3640"/>
         <source>Provider does not support deletion</source>
         <translation>Sağlayıcı silmeyi desteklemiyor</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3629"/>
+        <location filename="../src/app/qgisapp.cpp" line="3641"/>
         <source>Data provider does not support deleting features</source>
         <translation>Veri sağlayıcı objelerin silinmesini desteklemiyor</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3635"/>
-        <location filename="../src/app/qgisapp.cpp" line="3829"/>
+        <location filename="../src/app/qgisapp.cpp" line="3647"/>
+        <location filename="../src/app/qgisapp.cpp" line="3841"/>
         <source>Layer not editable</source>
         <translation>Katman düzeltilemez</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3636"/>
+        <location filename="../src/app/qgisapp.cpp" line="3648"/>
         <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
         <translation>Geçerli katman düzeltilebilir değil. Sayısallaştırma aracındaki &apos;Sayısallaştırmayı Başlat&apos;&apos;ı seç. </translation>
     </message>
     <message>
-        <source>Ctrl+T</source>
-        <comment>Hide most toolbars</comment>
-        <translation type="obsolete">Ctrl+T</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="949"/>
+        <location filename="../src/app/qgisapp.cpp" line="958"/>
         <source>Toggle editing</source>
         <translation>Düzenlemeyi aç/kapa</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="951"/>
+        <location filename="../src/app/qgisapp.cpp" line="960"/>
         <source>Toggles the editing state of the current layer</source>
         <translation>Geçerli katmanın düzenleme durumunu değiştirin</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="748"/>
-        <location filename="../src/app/qgisapp.cpp" line="750"/>
+        <location filename="../src/app/qgisapp.cpp" line="757"/>
+        <location filename="../src/app/qgisapp.cpp" line="759"/>
         <source>Add Ring</source>
         <translation>Halka Ekle</translation>
     </message>
     <message>
-        <source>Add Island</source>
-        <translation type="obsolete">Ada Ekle</translation>
-    </message>
-    <message>
-        <source>Add Island to multipolygon</source>
-        <translation type="obsolete">Çoklu poligona ada ekle</translation>
-    </message>
-    <message>
-        <source>Toolbar Visibility...</source>
-        <translation type="obsolete">Araç çubuğu Görünürlüğü...</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="1631"/>
+        <location filename="../src/app/qgisapp.cpp" line="1640"/>
         <source>Scale </source>
         <translation>Ölçek</translation>
     </message>
     <message>
-        <source>In Overview</source>
-        <translation type="obsolete">Öngörünüşte</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="1573"/>
+        <location filename="../src/app/qgisapp.cpp" line="1582"/>
         <source>Progress bar that displays the status of rendering layers and other time-intensive operations</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1646"/>
+        <location filename="../src/app/qgisapp.cpp" line="1655"/>
         <source>Current map scale (formatted as x:y)</source>
         <translation>Geçerli harita ölçeği ( x y olarak biçimlendirilmiş)</translation>
     </message>
     <message>
-        <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved.</source>
-        <translation type="obsolete">İmleç konumunun koordinatlarını gösterir. Gösterim fare hareket ettirildikçe değişir.</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="5065"/>
+        <location filename="../src/app/qgisapp.cpp" line="5073"/>
         <source>Map coordinates at mouse cursor position</source>
         <translation>Fare imleç konumundaki harita koordinatları</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1658"/>
+        <location filename="../src/app/qgisapp.cpp" line="1667"/>
         <source>Render</source>
         <translation>Görüntüle</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1661"/>
+        <location filename="../src/app/qgisapp.cpp" line="1670"/>
         <source>When checked, the map layers are rendered in response to map navigation commands and other events. When not checked, no rendering is done. This allows you to add a large number of layers and symbolize them before rendering.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1665"/>
+        <location filename="../src/app/qgisapp.cpp" line="1674"/>
         <source>Toggle map rendering</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1944"/>
+        <location filename="../src/app/qgisapp.cpp" line="1956"/>
         <source>Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2009"/>
+        <location filename="../src/app/qgisapp.cpp" line="2021"/>
         <source>Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4317"/>
+        <location filename="../src/app/qgisapp.cpp" line="4329"/>
         <source>Invalid scale</source>
         <translation>Geçersiz ölçek</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4858"/>
+        <location filename="../src/app/qgisapp.cpp" line="4866"/>
         <source>Do you want to save the current project?</source>
         <translation>Geçerli projeyi kaydetmek istiyormusunuz?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="704"/>
-        <location filename="../src/app/qgisapp.cpp" line="706"/>
+        <location filename="../src/app/qgisapp.cpp" line="713"/>
+        <location filename="../src/app/qgisapp.cpp" line="715"/>
         <source>Move Feature</source>
         <translation>Objeyi kaydır</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="716"/>
-        <location filename="../src/app/qgisapp.cpp" line="718"/>
+        <location filename="../src/app/qgisapp.cpp" line="725"/>
+        <location filename="../src/app/qgisapp.cpp" line="727"/>
         <source>Split Features</source>
         <translation>Objeleri böl</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="876"/>
+        <location filename="../src/app/qgisapp.cpp" line="885"/>
         <source>Map Tips</source>
         <translation>Harita İpuçları</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="878"/>
+        <location filename="../src/app/qgisapp.cpp" line="887"/>
         <source>Show information about a feature when the mouse is hovered over it</source>
         <translation>fare üzerine geldiğinde obje ile ilgili bilgi göster</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1632"/>
+        <location filename="../src/app/qgisapp.cpp" line="1641"/>
         <source>Current map scale</source>
         <translation>Geçerli harita ölçeği</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5947"/>
+        <location filename="../src/app/qgisapp.cpp" line="5981"/>
         <source>Project file is older</source>
         <translation>Proje dosyası eski</translation>
     </message>
     <message>
-        <source>&lt;p&gt;This project file was saved by an older version of QGIS.</source>
-        <translation type="obsolete">&lt;p&gt; Bu proje dosyası eski bir QGIS sürümünde kaydedilmiş.</translation>
-    </message>
-    <message>
-        <source> When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.</source>
-        <translation type="obsolete">Bu proje dosyasını kaydederken, QGIS en son sürüme güncelleyecektir ve eski QGIS sürümlerinde kullanılamayabilir.</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;Even though QGIS developers try to maintain backwards compatibility, some of the information from the old project file might be lost.</source>
-        <translation type="obsolete">&lt;p&gt;QGIS geliştiricileri eski versiyonlara uyumluluğu sağlamaya çalışsada, eski proje dosyasında bazı bilgiler kaybolabilir.</translation>
-    </message>
-    <message>
-        <source> To improve the quality of QGIS, we appreciate if you file a bug report at %3.</source>
-        <translation type="obsolete">QGIS&apos;in kalitesini artırmak için %3 teki hata raporunu dosyalarsanız değerlendiririz.</translation>
-    </message>
-    <message>
-        <source> Be sure to include the old project file, and state the version of QGIS you used to discover the error.</source>
-        <translation type="obsolete">Eski proje dosyasını  ve hata bulduğunuz QGIS sürümünü eklemeyi unutmayın.</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;To remove this warning when opening an older project file, uncheck the box &apos;%5&apos; in the %4 menu.</source>
-        <translation type="obsolete">&lt;p&gt; Eski proje dosyasını açarken bu uyarıyı görmemek için &apos;%4&apos; menüsündeki &apos;%5&apos; kutusunundaki onayı kaldırın.</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;Version of the project file: %1&lt;br&gt;Current version of QGIS: %2</source>
-        <translation type="obsolete">&lt;p&gt;Proje dosyasının sürümü:%1&lt;br&gt;Geçerli QGIS sürümü:%2</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="5964"/>
+        <location filename="../src/app/qgisapp.cpp" line="5998"/>
         <source>&lt;tt&gt;Settings:Options:General&lt;/tt&gt;</source>
         <comment>Menu path to setting options</comment>
         <translation>&lt;tt&gt;Ayarlar:Seçenekler:Genel&lt;/tt&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5965"/>
+        <location filename="../src/app/qgisapp.cpp" line="5999"/>
         <source>Warn me when opening a project file saved with an older version of QGIS</source>
         <translation>Eski QGIS sürümlerinde kaydedilen proje dosyasını açarken beni uyar</translation>
     </message>
     <message>
-        <source>Toggle full screen mode</source>
-        <translation type="obsolete">Tam ekran moduna değiştir</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="1024"/>
+        <location filename="../src/app/qgisapp.cpp" line="1033"/>
         <source>Ctrl-F</source>
         <comment>Toggle fullscreen mode</comment>
         <translation>Ctrl-F</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1025"/>
+        <location filename="../src/app/qgisapp.cpp" line="1034"/>
         <source>Toggle fullscreen mode</source>
         <translation>Tam ekran moduna değiştir</translation>
     </message>
     <message>
-        <source>Imrovements to digitising capabilities.</source>
-        <translation type="obsolete">Sayısallaştırma yetenekleri için iyileştirmeler.</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="1678"/>
+        <location filename="../src/app/qgisapp.cpp" line="1687"/>
         <source>Resource Location Error</source>
         <translation>Kaynak Konum Hatası</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1679"/>
+        <location filename="../src/app/qgisapp.cpp" line="1688"/>
         <source>Error reading icon resources from: 
  %1
  Quitting...</source>
@@ -7069,868 +4924,838 @@ Hide most toolbars</comment>
 Çıkılıyor...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1953"/>
+        <location filename="../src/app/qgisapp.cpp" line="1965"/>
         <source>Overview</source>
         <translation>Öngörünüş</translation>
     </message>
     <message>
-        <source>Legend</source>
-        <translation type="obsolete">Lejand</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="2177"/>
+        <location filename="../src/app/qgisapp.cpp" line="2189"/>
         <source>You are using QGIS version %1 built against code revision %2.</source>
         <translation>Kod düzeltme %2 olan QGIS sürüm %1 i kullanıyorsunuz.</translation>
     </message>
     <message>
-        <source> This copy of QGIS has been built with PostgreSQL support.</source>
-        <translation type="obsolete">Bu QGIS kopyası PostgreSQL desteği ile derlendi.</translation>
-    </message>
-    <message>
-        <source> This copy of QGIS has been built without PostgreSQL support.</source>
-        <translation type="obsolete">Bu QGIS kopyası PostgreSQL desteği olmadan derlendi.</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="2202"/>
+        <location filename="../src/app/qgisapp.cpp" line="2214"/>
         <source>
 This binary was compiled against Qt %1,and is currently running against Qt %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1655"/>
+        <location filename="../src/app/qgisapp.cpp" line="1664"/>
         <source>Stop map rendering</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="343"/>
+        <location filename="../src/app/qgisapp.cpp" line="350"/>
         <source>Multiple Instances of QgisApp</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="344"/>
+        <location filename="../src/app/qgisapp.cpp" line="351"/>
         <source>Multiple instances of Quantum GIS application object detected.
 Please contact the developers.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="613"/>
+        <location filename="../src/app/qgisapp.cpp" line="622"/>
         <source>Shift+Ctrl+S</source>
         <comment>Save Project under a new name</comment>
         <translation>Shift+Ctrl+S</translation>
     </message>
     <message>
-        <source>&amp;Print Composer</source>
-        <translation type="obsolete">&amp;Çıktı Düzenleyici</translation>
-    </message>
-    <message>
-        <source>Ctrl+P</source>
-        <comment>Print Composer</comment>
-        <translation type="obsolete">Ctrl+P</translation>
-    </message>
-    <message>
-        <source>Print Composer</source>
-        <translation type="obsolete">Çıktı Düzenleyici</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="656"/>
+        <location filename="../src/app/qgisapp.cpp" line="665"/>
         <source>&amp;Undo</source>
         <translation>&amp;Geri al</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="657"/>
+        <location filename="../src/app/qgisapp.cpp" line="666"/>
         <source>Ctrl+Z</source>
         <translation>Ctrl+Z</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="658"/>
+        <location filename="../src/app/qgisapp.cpp" line="667"/>
         <source>Undo the last operation</source>
         <translation>Son işlemi geri al</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="640"/>
+        <location filename="../src/app/qgisapp.cpp" line="649"/>
         <source>Cu&amp;t</source>
         <translation>Ke&amp;s</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="641"/>
-        <location filename="../src/app/qgisapp.cpp" line="669"/>
+        <location filename="../src/app/qgisapp.cpp" line="650"/>
+        <location filename="../src/app/qgisapp.cpp" line="678"/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="642"/>
+        <location filename="../src/app/qgisapp.cpp" line="651"/>
         <source>Cut the current selection&apos;s contents to the clipboard</source>
         <translation>Geçerli seçimi panoya kes</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="645"/>
+        <location filename="../src/app/qgisapp.cpp" line="654"/>
         <source>&amp;Copy</source>
         <translation>&amp;Kopyala</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="646"/>
-        <location filename="../src/app/qgisapp.cpp" line="675"/>
+        <location filename="../src/app/qgisapp.cpp" line="655"/>
+        <location filename="../src/app/qgisapp.cpp" line="684"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="647"/>
+        <location filename="../src/app/qgisapp.cpp" line="656"/>
         <source>Copy the current selection&apos;s contents to the clipboard</source>
         <translation>Geçerli seçimi panoya kopyala</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="650"/>
+        <location filename="../src/app/qgisapp.cpp" line="659"/>
         <source>&amp;Paste</source>
         <translation>&amp;Yapıştır</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="651"/>
-        <location filename="../src/app/qgisapp.cpp" line="681"/>
+        <location filename="../src/app/qgisapp.cpp" line="660"/>
+        <location filename="../src/app/qgisapp.cpp" line="690"/>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="652"/>
+        <location filename="../src/app/qgisapp.cpp" line="661"/>
         <source>Paste the clipboard&apos;s contents into the current selection</source>
         <translation>Panodaki içeriği geçerli seçime yapıştır</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="662"/>
+        <location filename="../src/app/qgisapp.cpp" line="671"/>
         <source>&amp;Redo</source>
         <translation>&amp;Tekrarla</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="663"/>
+        <location filename="../src/app/qgisapp.cpp" line="672"/>
         <source>Ctrl+Shift+Z</source>
         <translation>Ctrl+Shift+Z</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="664"/>
+        <location filename="../src/app/qgisapp.cpp" line="673"/>
         <source>Redo the last operation</source>
         <translation>Son işlemi tekrarla</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="778"/>
-        <location filename="../src/app/qgisapp.cpp" line="780"/>
+        <location filename="../src/app/qgisapp.cpp" line="787"/>
+        <location filename="../src/app/qgisapp.cpp" line="789"/>
         <source>Merge selected features</source>
         <translation>Seçilen objeleri birleştir</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="784"/>
-        <location filename="../src/app/qgisapp.cpp" line="786"/>
+        <location filename="../src/app/qgisapp.cpp" line="793"/>
+        <location filename="../src/app/qgisapp.cpp" line="795"/>
         <source>Node Tool</source>
         <translation>Düğüm Aracı</translation>
     </message>
     <message>
-        <source>M</source>
-        <comment>Measure a Line</comment>
-        <translation type="obsolete">M</translation>
-    </message>
-    <message>
-        <source>J</source>
-        <comment>Measure an Area</comment>
-        <translation type="obsolete">J</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="855"/>
-        <location filename="../src/app/qgisapp.cpp" line="857"/>
+        <location filename="../src/app/qgisapp.cpp" line="864"/>
+        <location filename="../src/app/qgisapp.cpp" line="866"/>
         <source>Zoom to Selection</source>
         <translation>Seçime yaklaş</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="856"/>
+        <location filename="../src/app/qgisapp.cpp" line="865"/>
         <source>Ctrl+J</source>
         <comment>Zoom to Selection</comment>
         <translation>Ctrl+J</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="870"/>
+        <location filename="../src/app/qgisapp.cpp" line="879"/>
         <source>Zoom Actual Size</source>
         <translation>Gerçek boyutu ayarla</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="872"/>
+        <location filename="../src/app/qgisapp.cpp" line="881"/>
         <source>Zoom to Actual Size</source>
         <translation>Gerçek boyuta ayarla</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="904"/>
+        <location filename="../src/app/qgisapp.cpp" line="913"/>
         <source>Add Vector Layer...</source>
         <translation>Vektör Katman Ekle...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="909"/>
+        <location filename="../src/app/qgisapp.cpp" line="918"/>
         <source>Add Raster Layer...</source>
         <translation>Raster Katman Ekle...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="914"/>
+        <location filename="../src/app/qgisapp.cpp" line="923"/>
         <source>Add PostGIS Layer...</source>
         <translation>PostGIS Katmanı Ekle...</translation>
     </message>
     <message>
-        <source>W</source>
-        <comment>Add a Web Mapping Server Layer</comment>
-        <translation type="obsolete">W</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="940"/>
+        <location filename="../src/app/qgisapp.cpp" line="949"/>
         <source>Add a Web Mapping Server Layer</source>
         <translation>Harita Sunucu Katman Ekle</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="943"/>
-        <location filename="../src/app/qgisapp.cpp" line="945"/>
+        <location filename="../src/app/qgisapp.cpp" line="952"/>
+        <location filename="../src/app/qgisapp.cpp" line="954"/>
         <source>Open Attribute Table</source>
         <translation>Öznitelik Tablosunu Aç</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="956"/>
+        <location filename="../src/app/qgisapp.cpp" line="965"/>
         <source>Save as Shapefile...</source>
         <translation>Shapefile olarak kaydet...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="958"/>
+        <location filename="../src/app/qgisapp.cpp" line="967"/>
         <source>Save the current layer as a shapefile</source>
         <translation>Geçerli seçimi Shapefile olarak kaydet</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="962"/>
+        <location filename="../src/app/qgisapp.cpp" line="971"/>
         <source>Save Selection as Shapefile...</source>
         <translation>Seçimi Shapefile olarak kaydet...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="964"/>
+        <location filename="../src/app/qgisapp.cpp" line="973"/>
         <source>Save the selection as a shapefile</source>
         <translation>Seçimi Shapefile olarak kaydet</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="975"/>
+        <location filename="../src/app/qgisapp.cpp" line="984"/>
         <source>Live GPS tracking</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="977"/>
+        <location filename="../src/app/qgisapp.cpp" line="986"/>
         <source>Show GPS tool</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="982"/>
+        <location filename="../src/app/qgisapp.cpp" line="991"/>
         <source>Properties...</source>
         <translation>Özellikler</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="984"/>
+        <location filename="../src/app/qgisapp.cpp" line="993"/>
         <source>Set properties of the current layer</source>
         <translation>Geçerli katmanın özelliklerini ayarla</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="988"/>
+        <location filename="../src/app/qgisapp.cpp" line="997"/>
         <source>Add to Overview</source>
         <translation>Öngörünüşe ekle</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="989"/>
+        <location filename="../src/app/qgisapp.cpp" line="998"/>
         <source>Ctrl+Shift+O</source>
         <comment>Add current layer to overview map</comment>
         <translation>Ctrl+Shift+O</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="994"/>
+        <location filename="../src/app/qgisapp.cpp" line="1003"/>
         <source>Add All to Overview</source>
         <translation>Tümünü öngörünüşe ekle</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1005"/>
+        <location filename="../src/app/qgisapp.cpp" line="1014"/>
         <source>Ctrl+Shift+U</source>
         <comment>Show all layers</comment>
         <translation>Ctrl+Shift+U</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1010"/>
+        <location filename="../src/app/qgisapp.cpp" line="1019"/>
         <source>Ctrl+Shift+H</source>
         <comment>Hide all layers</comment>
         <translation>Ctrl+Shift+H</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1016"/>
+        <location filename="../src/app/qgisapp.cpp" line="1025"/>
         <source>Manage Plugins...</source>
         <translation>Eklentileri Yönet...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1023"/>
+        <location filename="../src/app/qgisapp.cpp" line="1032"/>
         <source>Toggle Full Screen Mode</source>
         <translation>Tam ekran moduna değiştir</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1029"/>
+        <location filename="../src/app/qgisapp.cpp" line="1038"/>
         <source>Ctrl+Shift+P</source>
         <comment>Set project properties</comment>
         <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1039"/>
+        <location filename="../src/app/qgisapp.cpp" line="1048"/>
         <source>Custom CRS...</source>
         <translation>Özel KRS...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1041"/>
+        <location filename="../src/app/qgisapp.cpp" line="1050"/>
         <source>Manage custom coordinate reference systems</source>
         <translation>Özel koordinat referans sistemini yönet</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1053"/>
+        <location filename="../src/app/qgisapp.cpp" line="1062"/>
         <source>Minimize</source>
         <translation>Küçült</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1054"/>
+        <location filename="../src/app/qgisapp.cpp" line="1063"/>
         <source>Ctrl+M</source>
         <comment>Minimize Window</comment>
         <translation>Ctrl+M</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1055"/>
+        <location filename="../src/app/qgisapp.cpp" line="1064"/>
         <source>Minimizes the active window to the dock</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1058"/>
+        <location filename="../src/app/qgisapp.cpp" line="1067"/>
         <source>Zoom</source>
         <translation>Yakınlaştır</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1060"/>
+        <location filename="../src/app/qgisapp.cpp" line="1069"/>
         <source>Toggles between a predefined size and the window size set by the user</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1063"/>
+        <location filename="../src/app/qgisapp.cpp" line="1072"/>
         <source>Bring All to Front</source>
         <translation>Tümünü öne getir</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1065"/>
+        <location filename="../src/app/qgisapp.cpp" line="1074"/>
         <source>Bring forward all open windows</source>
         <translation>Tüm açık pencereleri öne getir</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1103"/>
+        <location filename="../src/app/qgisapp.cpp" line="1112"/>
         <source>Style manager...</source>
         <translation>Stil Yöneticisi...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1105"/>
+        <location filename="../src/app/qgisapp.cpp" line="1114"/>
         <source>Show style manager V2</source>
         <translation>Stil Yöneticisi V2 yi göster</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1131"/>
+        <location filename="../src/app/qgisapp.cpp" line="1140"/>
         <source>Failed to open Python console:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1247"/>
+        <location filename="../src/app/qgisapp.cpp" line="1256"/>
         <source>Print Composers</source>
         <translation>Çıktı Düzenleyiciler</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1254"/>
+        <location filename="../src/app/qgisapp.cpp" line="1263"/>
         <source>&amp;Edit</source>
         <translation>&amp;Düzenle</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1305"/>
+        <location filename="../src/app/qgisapp.cpp" line="1314"/>
         <source>Panels</source>
         <translation>Panolar</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1306"/>
+        <location filename="../src/app/qgisapp.cpp" line="1315"/>
         <source>Toolbars</source>
         <translation>Araçlar</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1412"/>
+        <location filename="../src/app/qgisapp.cpp" line="1421"/>
         <source>&amp;Window</source>
         <translation>&amp;Pencere</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1587"/>
+        <location filename="../src/app/qgisapp.cpp" line="1596"/>
         <source>Toggle extents and mouse position display</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1600"/>
-        <location filename="../src/app/qgisapp.cpp" line="5067"/>
+        <location filename="../src/app/qgisapp.cpp" line="1609"/>
+        <location filename="../src/app/qgisapp.cpp" line="5075"/>
         <source>Coordinate:</source>
         <translation>Koordinat:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1601"/>
+        <location filename="../src/app/qgisapp.cpp" line="1610"/>
         <source>Current map coordinate</source>
         <translation>Geçerli harita koordinatları</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1615"/>
+        <location filename="../src/app/qgisapp.cpp" line="1624"/>
         <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved. It also allows editing to set the canvas center to a given position.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1619"/>
+        <location filename="../src/app/qgisapp.cpp" line="1628"/>
         <source>Current map coordinate (formatted as x,y)</source>
         <translation>Geçerli harita koordinatları (x,y olarak biçimlendirilmiş)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1684"/>
+        <location filename="../src/app/qgisapp.cpp" line="1693"/>
         <source>This icon shows whether on the fly coordinate reference system transformation is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1688"/>
+        <location filename="../src/app/qgisapp.cpp" line="1697"/>
         <source>CRS status - Click to open coordinate reference system dialog</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="2181"/>
-        <source>
-This copy of QGIS has been built with PostgreSQL support.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="2183"/>
-        <source>
-This copy of QGIS has been built without PostgreSQL support.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2193"/>
         <source>
-This copy of QGIS has been built with QWT support (%1).</source>
+This copy of QGIS has been built with PostgreSQL support.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2195"/>
         <source>
+This copy of QGIS has been built without PostgreSQL support.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2205"/>
+        <source>
+This copy of QGIS has been built with QWT support (%1).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="2207"/>
+        <source>
 This copy of QGIS has been built without QWT support.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2199"/>
+        <location filename="../src/app/qgisapp.cpp" line="2211"/>
         <source>
 This copy of QGIS writes debugging output.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2210"/>
+        <location filename="../src/app/qgisapp.cpp" line="2222"/>
         <source>Whats new in Version 1.4.0?</source>
         <translation>Sürüm 1.4.0 da neler yeni?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2213"/>
+        <location filename="../src/app/qgisapp.cpp" line="2225"/>
         <source>Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.3.0. If an unchanging user interface, programmatic API and long term support is more important to you then cool new and untested features, we recommend that you use a copy of QGIS from our Long Term Support (LTS)1.0.x release series. In all other cases we recommend that you use this version.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2221"/>
+        <location filename="../src/app/qgisapp.cpp" line="2233"/>
         <source>This release includes around 200 bug fixes, nearly 30 new features and has had a lot of love and attention poured in to it to take our favourite desktop GIS application another step on the road to GIS nirvana! So much has happened in the 3 months since our last release that it is impossible to document everything here. Instead we will just highlight a couple of important new features for you.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2229"/>
+        <location filename="../src/app/qgisapp.cpp" line="2241"/>
         <source>Probably the biggest new feature is the addition of the new vector symbology infrastructure. This is provided alongside the old implementation - you can switch using a button in the vector layer properties dialog. It does&apos;t replace the old symbology implementation completely yet because there are various issues that need to be resolved and a large amount of testing before it is considered ready.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2237"/>
+        <location filename="../src/app/qgisapp.cpp" line="2249"/>
         <source>QGIS now has a field calculator, accessible via a button in the attribute section of the vector properties, and from the attribute table user interface. You can use feature length, feature area, string concatenation and type conversions in the field calculator, as well as field values.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2244"/>
+        <location filename="../src/app/qgisapp.cpp" line="2256"/>
         <source>The map composer has had a lot of attention. A grid can now be added to composer maps. Composer maps can now be rotated in the layout. The limitation of a single map layout per project has been removed. A new composer manager dialog has been added to manage the existing composer instances. The composer widget property sheets have been completely overhauled to use less screen space </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2252"/>
+        <location filename="../src/app/qgisapp.cpp" line="2264"/>
         <source>Various parts of the user interface have been overhauled with the goal of improving consistency and to improve support for netbooks and other smaller screen devices. Loading and saving of shortcuts. Position can now be displayed as Degrees, Minutes, Seconds in the status bar. The add, move and delete vertex buttons are now removed and the node tool is moved from the advanced editing toolbar to the standard editing toolbar. The identification tool has also undergone numerous improvements.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2262"/>
+        <location filename="../src/app/qgisapp.cpp" line="2274"/>
         <source>A render caching capability has been added to QGIS. This speeds up common operations such as layer re-ordering, changing symbology, WMS / WFS client, hiding / showing layers and opens the door for future enhancements such as threaded rendering and pre-compositing layer cache manipulation. Note that it is disabled by default, and can be enabled in the options dialog.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2270"/>
+        <location filename="../src/app/qgisapp.cpp" line="2282"/>
         <source>User defined SVG search paths are now added to the options dialog.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2273"/>
+        <location filename="../src/app/qgisapp.cpp" line="2285"/>
         <source>When creating a new shapefile, you can now specify its CRS. Also the avoid intersections option for polygons is now also possible with background layers.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2277"/>
+        <location filename="../src/app/qgisapp.cpp" line="2289"/>
         <source>For power users, you can now create customizable attribute forms using Qt Designer dialog UIs.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2852"/>
+        <location filename="../src/app/qgisapp.cpp" line="2864"/>
         <source>New Shapefile</source>
         <translation>Yeni Shapefile</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2853"/>
+        <location filename="../src/app/qgisapp.cpp" line="2865"/>
         <source>Shapefiles must end on .shp</source>
         <translation>Shapefile .shp ile bitmelidir</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3134"/>
+        <location filename="../src/app/qgisapp.cpp" line="3146"/>
         <source>Choose a file name to save the QGIS project file as</source>
         <translation>QGIS projesini  kaydedeceğiniz dosya adını seçin</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3294"/>
+        <location filename="../src/app/qgisapp.cpp" line="3306"/>
         <source>Choose a file name to save the map image as</source>
         <translation>Harita görüntüsünü  kaydedeceğiniz dosya adını seçin</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3647"/>
+        <location filename="../src/app/qgisapp.cpp" line="3659"/>
         <source>Features deleted</source>
         <translation>Objeler silindi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3692"/>
+        <location filename="../src/app/qgisapp.cpp" line="3704"/>
         <source>Merging features...</source>
         <translation>Objeleri birleştiriliyor...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3692"/>
+        <location filename="../src/app/qgisapp.cpp" line="3704"/>
         <source>Abort</source>
         <translation>Vazgeç</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3745"/>
-        <location filename="../src/app/qgisapp.cpp" line="3783"/>
+        <location filename="../src/app/qgisapp.cpp" line="3757"/>
+        <location filename="../src/app/qgisapp.cpp" line="3795"/>
         <source>Composer %1</source>
         <translation>Düzenleyici %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3818"/>
+        <location filename="../src/app/qgisapp.cpp" line="3830"/>
         <source>No active layer</source>
         <translation>Aktif katman yok</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3818"/>
+        <location filename="../src/app/qgisapp.cpp" line="3830"/>
         <source>No active layer found. Please select a layer in the layer list</source>
         <translation>Aktif katman yok. Katman listesinden bir katman seçin</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3824"/>
+        <location filename="../src/app/qgisapp.cpp" line="3836"/>
         <source>Active layer is not vector</source>
         <translation>Aktif katman vektör değil</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3824"/>
+        <location filename="../src/app/qgisapp.cpp" line="3836"/>
         <source>The merge features tool only works on vector layers. Please select a vector layer from the layer list</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3829"/>
+        <location filename="../src/app/qgisapp.cpp" line="3841"/>
         <source>Merging features can only be done for layers in editing mode. To use the merge tool, go to  Layer-&gt;Toggle editing</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3844"/>
-        <location filename="../src/app/qgisapp.cpp" line="3883"/>
+        <location filename="../src/app/qgisapp.cpp" line="3856"/>
+        <location filename="../src/app/qgisapp.cpp" line="3895"/>
         <source>The merge tool requires at least two selected features</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3856"/>
-        <location filename="../src/app/qgisapp.cpp" line="3898"/>
+        <location filename="../src/app/qgisapp.cpp" line="3868"/>
+        <location filename="../src/app/qgisapp.cpp" line="3910"/>
         <source>Merge failed</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3856"/>
-        <location filename="../src/app/qgisapp.cpp" line="3898"/>
+        <location filename="../src/app/qgisapp.cpp" line="3868"/>
+        <location filename="../src/app/qgisapp.cpp" line="3910"/>
         <source>An error occured during the merge operation</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3866"/>
-        <location filename="../src/app/qgisapp.cpp" line="3907"/>
+        <location filename="../src/app/qgisapp.cpp" line="3878"/>
+        <location filename="../src/app/qgisapp.cpp" line="3919"/>
         <source>The union operation would result in a geometry type that is not compatible with the current layer and therefore is canceled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3913"/>
+        <location filename="../src/app/qgisapp.cpp" line="3925"/>
         <source>Merged features</source>
         <translation>Birleştirilen objeler</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4085"/>
+        <location filename="../src/app/qgisapp.cpp" line="4097"/>
         <source>Features cut</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4137"/>
+        <location filename="../src/app/qgisapp.cpp" line="4149"/>
         <source>Features pasted</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4215"/>
+        <location filename="../src/app/qgisapp.cpp" line="4227"/>
         <source>Start editing failed</source>
         <translation>Düzeltmeyi başlatmada hata</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4215"/>
+        <location filename="../src/app/qgisapp.cpp" line="4227"/>
         <source>Provider cannot be opened for editing</source>
         <translation>Düzeltme için gerekli sağlayıcı açılamıyor</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4223"/>
+        <location filename="../src/app/qgisapp.cpp" line="4235"/>
         <source>Stop editing</source>
         <translation>Düzenlemeyi durdur</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4224"/>
+        <location filename="../src/app/qgisapp.cpp" line="4236"/>
         <source>Do you want to save the changes to layer %1?</source>
         <translation>Değişiklikleri %1 katmanına kaydetmek istiyor musunuz?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4245"/>
+        <location filename="../src/app/qgisapp.cpp" line="4257"/>
         <source>Problems during roll back</source>
         <translation>Geri almada hata</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4412"/>
+        <location filename="../src/app/qgisapp.cpp" line="4424"/>
         <source>GPS Information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4509"/>
+        <location filename="../src/app/qgisapp.cpp" line="4517"/>
         <source>Python Console</source>
         <translation>Python işletmen uçbirimi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5057"/>
+        <location filename="../src/app/qgisapp.cpp" line="5065"/>
         <source>Map coordinates for the current view extents</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5086"/>
+        <location filename="../src/app/qgisapp.cpp" line="5113"/>
         <source>Extents:</source>
         <translation>Dış sınırlar:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5159"/>
+        <location filename="../src/app/qgisapp.cpp" line="5186"/>
         <source>Maptips require an active layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6125"/>
+        <location filename="../src/app/qgisapp.cpp" line="6159"/>
         <source>Warning</source>
         <translation type="unfinished">Uyarı</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6125"/>
+        <location filename="../src/app/qgisapp.cpp" line="6159"/>
         <source>This layer doesn&apos;t have a properties dialog.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="398"/>
+        <location filename="../src/app/qgisapp.cpp" line="6197"/>
+        <source>Authentication required</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="6213"/>
+        <source>Proxy authentication required</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="407"/>
         <source>Quantum GIS - %1 (&apos;%2&apos;)</source>
         <translation>Quantum CBS - %1 (&apos;%2&apos;)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="622"/>
+        <location filename="../src/app/qgisapp.cpp" line="631"/>
         <source>&amp;New Print Composer</source>
         <translation>&amp;Yeni Çıktı Düzenleyici</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="623"/>
+        <location filename="../src/app/qgisapp.cpp" line="632"/>
         <source>Ctrl+P</source>
         <comment>New Print Composer</comment>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="624"/>
+        <location filename="../src/app/qgisapp.cpp" line="633"/>
         <source>New Print Composer</source>
         <translation>Yeni Çıktı Düzenleyici</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="627"/>
+        <location filename="../src/app/qgisapp.cpp" line="636"/>
         <source>Composer manager...</source>
         <translation>Düzenleyici yöneticisi...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="628"/>
+        <location filename="../src/app/qgisapp.cpp" line="637"/>
         <source>Composer manager</source>
         <translation>Düzenleyici yöneticisi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="687"/>
+        <location filename="../src/app/qgisapp.cpp" line="696"/>
         <source>Ctrl+.</source>
         <comment>Capture Points</comment>
         <translation>Ctrl+.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="693"/>
+        <location filename="../src/app/qgisapp.cpp" line="702"/>
         <source>Ctrl+/</source>
         <comment>Capture Lines</comment>
         <translation>Ctrl+/</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="699"/>
+        <location filename="../src/app/qgisapp.cpp" line="708"/>
         <source>Ctrl+Shift+/</source>
         <comment>Capture Polygons</comment>
         <translation>Ctrl+Shift+/</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="710"/>
-        <location filename="../src/app/qgisapp.cpp" line="712"/>
+        <location filename="../src/app/qgisapp.cpp" line="719"/>
+        <location filename="../src/app/qgisapp.cpp" line="721"/>
         <source>Reshape Features</source>
         <translation>Objeleri yeniden şekillendir</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="754"/>
+        <location filename="../src/app/qgisapp.cpp" line="763"/>
         <source>Add Part</source>
         <translation>Parça Ekle</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="756"/>
+        <location filename="../src/app/qgisapp.cpp" line="765"/>
         <source>Add part to multipolygon</source>
         <translation>Çoklu poligona parça ekle</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="768"/>
+        <location filename="../src/app/qgisapp.cpp" line="777"/>
         <source>Click a vertex of the ring to delete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="774"/>
+        <location filename="../src/app/qgisapp.cpp" line="783"/>
         <source>Click a vertex of the part to delete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="790"/>
-        <location filename="../src/app/qgisapp.cpp" line="792"/>
+        <location filename="../src/app/qgisapp.cpp" line="799"/>
+        <location filename="../src/app/qgisapp.cpp" line="801"/>
         <source>Rotate Point Symbols</source>
         <translation>Nokta Sembolleri Döndür</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="819"/>
-        <location filename="../src/app/qgisapp.cpp" line="821"/>
+        <location filename="../src/app/qgisapp.cpp" line="828"/>
+        <location filename="../src/app/qgisapp.cpp" line="830"/>
         <source>Deselect features from all layers</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="826"/>
+        <location filename="../src/app/qgisapp.cpp" line="835"/>
         <source>Ctrl+Shift+I</source>
         <comment>Click on features to identify them</comment>
         <translation>Ctrl+Shift+I</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="832"/>
+        <location filename="../src/app/qgisapp.cpp" line="841"/>
         <source>Ctrl+Shift+M</source>
         <comment>Measure a Line</comment>
         <translation>Ctrl+Shift+M</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="837"/>
+        <location filename="../src/app/qgisapp.cpp" line="846"/>
         <source>Ctrl+Shift+J</source>
         <comment>Measure an Area</comment>
         <translation>Ctrl+Shift+J</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="841"/>
-        <location filename="../src/app/qgisapp.cpp" line="842"/>
+        <location filename="../src/app/qgisapp.cpp" line="850"/>
+        <location filename="../src/app/qgisapp.cpp" line="851"/>
         <source>Measure Angle</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="846"/>
+        <location filename="../src/app/qgisapp.cpp" line="855"/>
         <source>Ctrl+Shift+F</source>
         <comment>Zoom to Full Extents</comment>
         <translation>Ctrl+Shift+F</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="888"/>
+        <location filename="../src/app/qgisapp.cpp" line="897"/>
         <source>Ctrl+Shift+B</source>
         <comment>Show Bookmarks</comment>
         <translation>Ctrl+Shift+B</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="900"/>
+        <location filename="../src/app/qgisapp.cpp" line="909"/>
         <source>Ctrl+Shift+N</source>
         <comment>Create a New Vector Layer</comment>
         <translation>Ctrl+Shift+N</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="905"/>
+        <location filename="../src/app/qgisapp.cpp" line="914"/>
         <source>Ctrl+Shift+V</source>
         <comment>Add a Vector Layer</comment>
         <translation>Ctrl+Shift+V</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="910"/>
+        <location filename="../src/app/qgisapp.cpp" line="919"/>
         <source>Ctrl+Shift+R</source>
         <comment>Add a Raster Layer</comment>
         <translation>Ctrl+Shift+R</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="915"/>
+        <location filename="../src/app/qgisapp.cpp" line="924"/>
         <source>Ctrl+Shift+D</source>
         <comment>Add a PostGIS Layer</comment>
         <translation>Ctrl+Shift+D</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="927"/>
+        <location filename="../src/app/qgisapp.cpp" line="936"/>
         <source>Ctrl+Shift+L</source>
         <comment>Add a SpatiaLite Layer</comment>
         <translation>Ctrl+Shift+L</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="939"/>
+        <location filename="../src/app/qgisapp.cpp" line="948"/>
         <source>Ctrl+Shift+W</source>
         <comment>Add a Web Mapping Server Layer</comment>
         <translation>Ctrl+Shift+W</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2414"/>
+        <location filename="../src/app/qgisapp.cpp" line="2426"/>
         <source>%1 is not a valid or recognized data source</source>
         <translation>%1 geçerli veya tanınan veri kaynağı değildir</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2940"/>
-        <location filename="../src/app/qgisapp.cpp" line="3072"/>
-        <location filename="../src/app/qgisapp.cpp" line="3134"/>
+        <location filename="../src/app/qgisapp.cpp" line="2952"/>
+        <location filename="../src/app/qgisapp.cpp" line="3084"/>
+        <location filename="../src/app/qgisapp.cpp" line="3146"/>
         <source>QGis files (*.qgs)</source>
         <translation>QGIS dosyaları (*.qgs)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3103"/>
-        <location filename="../src/app/qgisapp.cpp" line="3154"/>
+        <location filename="../src/app/qgisapp.cpp" line="3115"/>
+        <location filename="../src/app/qgisapp.cpp" line="3166"/>
         <source>Saved project to: %1</source>
         <translation>Projeyi Kaydet: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3115"/>
-        <location filename="../src/app/qgisapp.cpp" line="3161"/>
+        <location filename="../src/app/qgisapp.cpp" line="3127"/>
+        <location filename="../src/app/qgisapp.cpp" line="3173"/>
         <source>Unable to save project %1</source>
         <translation>%1 projesi kaydedilemiyor</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3336"/>
+        <location filename="../src/app/qgisapp.cpp" line="3348"/>
         <source>Saved map image to %1</source>
         <translation>Harita görüntüsünü %1 e kaydet</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4233"/>
+        <location filename="../src/app/qgisapp.cpp" line="4245"/>
         <source>Could not commit changes to layer %1
 
 Errors: %2
@@ -7941,44 +5766,44 @@ Hatalar: %2
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4590"/>
+        <location filename="../src/app/qgisapp.cpp" line="4598"/>
         <source>QGIS - Changes in SVN since last release</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4630"/>
+        <location filename="../src/app/qgisapp.cpp" line="4638"/>
         <source>Unable to communicate with QGIS Version server
 %1</source>
         <translation>QGIS Sürüm sunucusuyla iletişim kurulamıyor
 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5651"/>
+        <location filename="../src/app/qgisapp.cpp" line="5684"/>
         <source>%1 is not a valid or recognized raster data source</source>
         <translation>%1 geçerli veya tanınan raster veri kaynağı değildir</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5814"/>
+        <location filename="../src/app/qgisapp.cpp" line="5848"/>
         <source>%1 is not a supported raster data source</source>
         <translation>%1 raster veri kaynağı olarak desteklenmemektedir</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5948"/>
+        <location filename="../src/app/qgisapp.cpp" line="5982"/>
         <source>&lt;p&gt;This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.&lt;p&gt;Even though QGIS developers try to maintain backwards compatibility, some of the information from the old project file might be lost. To improve the quality of QGIS, we appreciate if you file a bug report at %3. Be sure to include the old project file, and state the version of QGIS you used to discover the error.&lt;p&gt;To remove this warning when opening an older project file, uncheck the box &apos;%5&apos; in the %4 menu.&lt;p&gt;Version of the project file: %1&lt;br&gt;Current version of QGIS: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2010"/>
+        <location filename="../src/app/qgisapp.cpp" line="2022"/>
         <source>Layers</source>
         <translation>Katmanlar</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3642"/>
+        <location filename="../src/app/qgisapp.cpp" line="3654"/>
         <source>Delete features</source>
         <translation>Objeleri sil</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="3642"/>
+        <location filename="../src/app/qgisapp.cpp" line="3654"/>
         <source>Delete %n feature(s)?</source>
         <comment>number of features to delete</comment>
         <translation>
@@ -7986,83 +5811,71 @@ Hatalar: %2
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="926"/>
+        <location filename="../src/app/qgisapp.cpp" line="935"/>
         <source>Add SpatiaLite Layer...</source>
         <translation>SpatiaLite Katmanı Ekle...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="928"/>
+        <location filename="../src/app/qgisapp.cpp" line="937"/>
         <source>Add a SpatiaLite Layer</source>
         <translation>SpatiaLite Katmanı Ekler</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2187"/>
+        <location filename="../src/app/qgisapp.cpp" line="2199"/>
         <source>
 This copy of QGIS has been built with SpatiaLite support.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2189"/>
+        <location filename="../src/app/qgisapp.cpp" line="2201"/>
         <source>
 This copy of QGIS has been built without SpatiaLite support.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="865"/>
+        <location filename="../src/app/qgisapp.cpp" line="874"/>
         <source>Zoom Next</source>
         <translation>Sonrakine Yaklaştır</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="867"/>
+        <location filename="../src/app/qgisapp.cpp" line="876"/>
         <source>Zoom to Forward Extent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="760"/>
-        <location filename="../src/app/qgisapp.cpp" line="762"/>
+        <location filename="../src/app/qgisapp.cpp" line="769"/>
+        <location filename="../src/app/qgisapp.cpp" line="771"/>
         <source>Simplify Feature</source>
         <translation>Objeyi Basitleştir</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="766"/>
+        <location filename="../src/app/qgisapp.cpp" line="775"/>
         <source>Delete Ring</source>
         <translation>Halka Sil</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="772"/>
+        <location filename="../src/app/qgisapp.cpp" line="781"/>
         <source>Delete Part</source>
         <translation>Parça Sil</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1045"/>
+        <location filename="../src/app/qgisapp.cpp" line="1054"/>
         <source>Configure shortcuts...</source>
         <translation>Kısayolları ayarla...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1047"/>
+        <location filename="../src/app/qgisapp.cpp" line="1056"/>
         <source>Configure shortcuts</source>
         <translation>Kısayolları ayarla</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1500"/>
+        <location filename="../src/app/qgisapp.cpp" line="1509"/>
         <source>Advanced Digitizing</source>
         <translation>Gelişmiş Sayısallaştırma</translation>
     </message>
 </context>
 <context>
     <name>QgisAppBase</name>
-    <message>
-        <source>MainWindow</source>
-        <translation type="obsolete">AnaPencere</translation>
-    </message>
-    <message>
-        <source>Legend</source>
-        <translation type="obsolete">Lejand</translation>
-    </message>
-    <message>
-        <source>Map View</source>
-        <translation type="obsolete">Harita Penceresi</translation>
-    </message>
     <message>
         <location filename="../src/ui/qgisappbase.ui" line="13"/>
         <source>QGIS</source>
@@ -8087,10 +5900,6 @@ This copy of QGIS has been built without SpatiaLite support.</source>
         <translation>Bağışçılar</translation>
     </message>
     <message>
-        <source>Ok</source>
-        <translation type="obsolete">Tamam</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsabout.ui" line="27"/>
         <source>About</source>
         <translation>Hakkında</translation>
@@ -8106,17 +5915,9 @@ This copy of QGIS has been built without SpatiaLite support.</source>
         <translation>Neler Yeni</translation>
     </message>
     <message>
-        <source>&lt;h2&gt;Quantum GIS (qgis)&lt;/h2&gt;</source>
-        <translation type="obsolete">&lt;h2&gt;Quantum GIS (qgis)&lt;/h2&gt;</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsabout.ui" line="130"/>
         <source>QGIS Home Page</source>
         <translation>QGIS Ana Sayfası</translation>
-    </message>
-    <message>
-        <source>Subscribe to the QGIS-User mailing list</source>
-        <translation type="obsolete">QGIS Kullanıcı mektup listesine kayıt ol</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="176"/>
@@ -8129,18 +5930,6 @@ This copy of QGIS has been built without SpatiaLite support.</source>
         <translation>Geliştiriciler</translation>
     </message>
     <message>
-        <source>&lt;h2&gt;QGIS Developers&lt;/h2&gt;</source>
-        <translation type="obsolete">&lt;h2&gt;QGIS Geliştiricileri&lt;/h2&gt;</translation>
-    </message>
-    <message>
-        <source>QGIS Browser Selection</source>
-        <translation type="obsolete">QGIS Gözatıcı Seçimi</translation>
-    </message>
-    <message>
-        <source>QGIS Sponsors</source>
-        <translation type="obsolete">QGIS Destekçileri</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsabout.cpp" line="132"/>
         <location filename="../src/app/qgsabout.cpp" line="185"/>
         <source>Name</source>
@@ -8151,14 +5940,6 @@ This copy of QGIS has been built without SpatiaLite support.</source>
         <location filename="../src/app/qgsabout.cpp" line="186"/>
         <source>Website</source>
         <translation>Web sitesi</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Arial&apos;; font-size:12pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;Quantum GIS is licensed under the GNU General Public License&lt;/p&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;http://www.gnu.org/licenses&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Arial&apos;; font-size:12pt; font-weight:400; font-style:normal; text-decoration:none;&quot;&gt;&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;Quantum GIS GNU General Public License ile lisanslıdır&lt;/p&gt;&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;http://www.gnu.org/licenses&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="227"/>
@@ -8247,14 +6028,6 @@ p, li { white-space: pre-wrap; }
         <translation>Öznitelik Ekle</translation>
     </message>
     <message>
-        <source>Name:</source>
-        <translation type="obsolete">Ad:</translation>
-    </message>
-    <message>
-        <source>Type:</source>
-        <translation type="obsolete">Tip:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="23"/>
         <source>N&amp;ame</source>
         <translation>&amp;Ad</translation>
@@ -8280,14 +6053,6 @@ p, li { white-space: pre-wrap; }
         <source>Precision</source>
         <translation>Hassasiyet</translation>
     </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">TAMAM</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">İptal</translation>
-    </message>
 </context>
 <context>
     <name>QgsApplication</name>
@@ -8301,18 +6066,6 @@ p, li { white-space: pre-wrap; }
 </context>
 <context>
     <name>QgsAttributeActionDialog</name>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Ad</translation>
-    </message>
-    <message>
-        <source>Action</source>
-        <translation type="obsolete">Eylem</translation>
-    </message>
-    <message>
-        <source>Capture</source>
-        <translation type="obsolete">Sayısallaştır</translation>
-    </message>
     <message>
         <location filename="../src/app/qgsattributeactiondialog.cpp" line="151"/>
         <source>Select an action</source>
@@ -8332,10 +6085,6 @@ p, li { white-space: pre-wrap; }
 </context>
 <context>
     <name>QgsAttributeActionDialogBase</name>
-    <message>
-        <source>Form1</source>
-        <translation type="obsolete">Form1</translation>
-    </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="100"/>
         <source>Move up</source>
@@ -8367,10 +6116,6 @@ p, li { white-space: pre-wrap; }
         <translation>Seçilen eylemi kaldır</translation>
     </message>
     <message>
-        <source>Name:</source>
-        <translation type="obsolete">Ad:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="136"/>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="152"/>
         <source>Enter the name of an action here. The name should be unique (qgis will make it unique if necessary).</source>
@@ -8382,21 +6127,9 @@ p, li { white-space: pre-wrap; }
         <translation>Eylem adını buraya gir</translation>
     </message>
     <message>
-        <source>Action:</source>
-        <translation type="obsolete">Eylem:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="174"/>
         <source>Enter the action command here</source>
         <translation>Eylem komutunu buraya gir</translation>
-    </message>
-    <message>
-        <source>Browse</source>
-        <translation type="obsolete">Gözat</translation>
-    </message>
-    <message>
-        <source>Browse for action commands</source>
-        <translation type="obsolete">Eylem komutları için gözat</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="80"/>
@@ -8565,41 +6298,6 @@ p, li { white-space: pre-wrap; }
         <source>Attributes - %1</source>
         <translation>Öznitelikler - %1</translation>
     </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>Select a file</source>
-        <translation type="obsolete">Dosya seç</translation>
-    </message>
-</context>
-<context>
-    <name>QgsAttributeDialogBase</name>
-    <message>
-        <source>Enter Attribute Values</source>
-        <translation type="obsolete">Öznitelik Değerlerini Gir</translation>
-    </message>
-    <message>
-        <source>1</source>
-        <translation type="obsolete">1</translation>
-    </message>
-    <message>
-        <source>Attribute</source>
-        <translation type="obsolete">Öznitelik</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="obsolete">Değer</translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">&amp;TAMAM</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;İptal</translation>
-    </message>
 </context>
 <context>
     <name>QgsAttributeEditor</name>
@@ -8673,153 +6371,7 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>QgsAttributeTable</name>
-    <message>
-        <source>Run action</source>
-        <translation type="obsolete">Eylemi çalıştır</translation>
-    </message>
-    <message>
-        <source>Abort</source>
-        <translation type="obsolete">Vazgeç</translation>
-    </message>
-</context>
-<context>
-    <name>QgsAttributeTableBase</name>
-    <message>
-        <source>Attribute Table</source>
-        <translation type="obsolete">Öznitelik Tablosu</translation>
-    </message>
-    <message>
-        <source>Start editing</source>
-        <translation type="obsolete">Düzeltmeyi başlat</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">&amp;Kapat</translation>
-    </message>
-    <message>
-        <source>Alt+C</source>
-        <translation type="obsolete">Alt+C</translation>
-    </message>
-    <message>
-        <source>Ctrl+X</source>
-        <translation type="obsolete">Ctrl+X</translation>
-    </message>
-    <message>
-        <source>Ctrl+N</source>
-        <translation type="obsolete">Ctrl+N</translation>
-    </message>
-    <message>
-        <source>Ctrl+S</source>
-        <translation type="obsolete">Ctrl+S</translation>
-    </message>
-    <message>
-        <source>Invert selection</source>
-        <translation type="obsolete">Seçimi tersine çevir</translation>
-    </message>
-    <message>
-        <source>Ctrl+T</source>
-        <translation type="obsolete">Ctrl+T</translation>
-    </message>
-    <message>
-        <source>Move selected to top</source>
-        <translation type="obsolete">Seçileni en üste taşı</translation>
-    </message>
-    <message>
-        <source>Remove selection</source>
-        <translation type="obsolete">Seçimi kaldır</translation>
-    </message>
-    <message>
-        <source>Copy selected rows to clipboard (Ctrl+C)</source>
-        <translation type="obsolete">Seçilen satırları panoya kopyala (Crtl+C)</translation>
-    </message>
-    <message>
-        <source>Copies the selected rows to the clipboard</source>
-        <translation type="obsolete">Seçilen satırları panoya kopyala</translation>
-    </message>
-    <message>
-        <source>Ctrl+C</source>
-        <translation type="obsolete">Ctrl+C</translation>
-    </message>
-    <message>
-        <source>Stop editin&amp;g</source>
-        <translation type="obsolete">Düzeltmeyi &amp;durdur</translation>
-    </message>
-    <message>
-        <source>Alt+G</source>
-        <translation type="obsolete">Alt+G</translation>
-    </message>
-    <message>
-        <source>Search for:</source>
-        <translation type="obsolete">Şunu araştır:</translation>
-    </message>
-    <message>
-        <source>in</source>
-        <translation type="obsolete">içinde</translation>
-    </message>
-    <message>
-        <source>Search</source>
-        <translation type="obsolete">Araştır</translation>
-    </message>
-    <message>
-        <source>Adva&amp;nced...</source>
-        <translation type="obsolete">&amp;Gelişmiş...</translation>
-    </message>
-    <message>
-        <source>Alt+N</source>
-        <translation type="obsolete">Alt+N</translation>
-    </message>
-    <message>
-        <source>&amp;Help</source>
-        <translation type="obsolete">&amp;Yardım</translation>
-    </message>
-    <message>
-        <source>New column</source>
-        <translation type="obsolete">Yeni sütun</translation>
-    </message>
-    <message>
-        <source>Delete column</source>
-        <translation type="obsolete">Sütun sil</translation>
-    </message>
-    <message>
-        <source>Zoom map to the selected rows (Ctrl-F)</source>
-        <translation type="obsolete">Haritada seçilen satırı göster (Ctrl-F) </translation>
-    </message>
-    <message>
-        <source>Zoom map to the selected rows</source>
-        <translation type="obsolete">Haritada seçilen satırı göster</translation>
-    </message>
-    <message>
-        <source>Ctrl+F</source>
-        <translation type="obsolete">Ctrl+F</translation>
-    </message>
-    <message>
-        <source>Search for</source>
-        <translation type="obsolete">Araştır</translation>
-    </message>
-    <message>
-        <source>Zoom map to the selected rows (Ctrl-J)</source>
-        <translation type="obsolete">Seçilen satırları haritada  göster (Ctrl-F) </translation>
-    </message>
-    <message>
-        <source>Ctrl+J</source>
-        <translation type="obsolete">Ctrl+J</translation>
-    </message>
-    <message>
-        <source>Toggle editing mode</source>
-        <translation type="obsolete">Düzenlemeyi aç/kapa</translation>
-    </message>
-    <message>
-        <source>Click to toggle table editing</source>
-        <translation type="obsolete">Tablo düzenlemeyi aç/kapa</translation>
-    </message>
-</context>
-<context>
     <name>QgsAttributeTableDialog</name>
-    <message>
-        <source>Attribute table - %1</source>
-        <translation type="obsolete">Öznitelik Tablosu - %1</translation>
-    </message>
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="522"/>
         <source>Search string parsing error</source>
@@ -8839,16 +6391,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="569"/>
         <source>Error during search</source>
         <translation>Aramada hata</translation>
-    </message>
-    <message numerus="yes">
-        <source>Found %d matching features.</source>
-        <translation type="obsolete">
-            <numerusform>%d eşleşen obje bulundu.</numerusform>
-        </translation>
-    </message>
-    <message>
-        <source>No matching features found.</source>
-        <translation type="obsolete">Eşleşen obje bulunamadı.</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="78"/>
@@ -8904,14 +6446,6 @@ p, li { white-space: pre-wrap; }
         <translation>Öznitelik Tablosu</translation>
     </message>
     <message>
-        <source>Remove selection</source>
-        <translation type="obsolete">Seçimi kaldır</translation>
-    </message>
-    <message>
-        <source>Move selected to top</source>
-        <translation type="obsolete">Seçileni en üste taşı</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="83"/>
         <source>Unselect all</source>
         <translation>Tümünü bırak</translation>
@@ -8942,10 +6476,6 @@ p, li { white-space: pre-wrap; }
         <translation>Seçilen satırları panoya kopyala (Crtl+C)</translation>
     </message>
     <message>
-        <source>Copies the selected rows to the clipboard</source>
-        <translation type="obsolete">Seçilen satırları panoya kopyala</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="171"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
@@ -8956,10 +6486,6 @@ p, li { white-space: pre-wrap; }
         <translation>Seçilen satırları haritada  göster (Ctrl-F) </translation>
     </message>
     <message>
-        <source>Zoom map to the selected rows</source>
-        <translation type="obsolete">Haritada seçilen satırı göster</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="197"/>
         <source>Ctrl+J</source>
         <translation>Ctrl+J</translation>
@@ -8968,10 +6494,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsattributetabledialog.ui" line="204"/>
         <source>Toggle editing mode</source>
         <translation>Düzenlemeyi aç/kapa</translation>
-    </message>
-    <message>
-        <source>Click to toggle table editing</source>
-        <translation type="obsolete">Tablo düzenlemeyi aç/kapa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="250"/>
@@ -9042,168 +6564,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsattributetabledialog.ui" line="36"/>
         <source>Search selected records only</source>
         <translation>Sadece seçilen kayıtları araştır</translation>
-    </message>
-</context>
-<context>
-    <name>QgsAttributeTableDisplay</name>
-    <message>
-        <source>select</source>
-        <translation type="obsolete">Seç</translation>
-    </message>
-    <message>
-        <source>select and bring to top</source>
-        <translation type="obsolete">seç ve yukarı taşı</translation>
-    </message>
-    <message>
-        <source>show only matching</source>
-        <translation type="obsolete">Sadece eşleşenleri göster</translation>
-    </message>
-    <message>
-        <source>Search string parsing error</source>
-        <translation type="obsolete">Arama tümcesi ayrıştırma hatası</translation>
-    </message>
-    <message>
-        <source>Search results</source>
-        <translation type="obsolete">Sonuçları araştır</translation>
-    </message>
-    <message>
-        <source>You&apos;ve supplied an empty search string.</source>
-        <translation type="obsolete">Boş araştırma dizgisi girdiniz.</translation>
-    </message>
-    <message>
-        <source>Error during search</source>
-        <translation type="obsolete">Aramada hata</translation>
-    </message>
-    <message>
-        <source>Found %d matching features.</source>
-        <translation type="obsolete">%d eşleşen obje bulundu.
-        
-        
-        
-        </translation>
-    </message>
-    <message>
-        <source>No matching features found.</source>
-        <translation type="obsolete">Eşleşen obje bulunamadı.</translation>
-    </message>
-    <message>
-        <source>Name conflict</source>
-        <translation type="obsolete">İsim çakışması</translation>
-    </message>
-    <message>
-        <source>Stop editing</source>
-        <translation type="obsolete">Düzenlemeyi durdur</translation>
-    </message>
-    <message>
-        <source>Do you want to save the changes?</source>
-        <translation type="obsolete">Değişikliklerin kaydedilmesini istermisiniz?</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Hata</translation>
-    </message>
-    <message>
-        <source>Could not commit changes</source>
-        <translation type="obsolete">Değişiklikler henüz kabul edilmedi</translation>
-    </message>
-    <message>
-        <source>The attribute could not be inserted. The name already exists in the table.</source>
-        <translation type="obsolete">Öznitelik girilemedi. İsim zaten tabloda var.</translation>
-    </message>
-    <message>
-        <source>Attribute table - </source>
-        <translation type="obsolete">Öznitelik Tablosu - </translation>
-    </message>
-    <message>
-        <source>QGIS</source>
-        <translation type="obsolete">QGIS</translation>
-    </message>
-    <message>
-        <source>File</source>
-        <translation type="obsolete">Dosya</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">Kapat</translation>
-    </message>
-    <message>
-        <source>Ctrl+W</source>
-        <translation type="obsolete">Ctrl+W</translation>
-    </message>
-    <message>
-        <source>Edit</source>
-        <translation type="obsolete">Düzenle</translation>
-    </message>
-    <message>
-        <source>&amp;Undo</source>
-        <translation type="obsolete">&amp;Geri al</translation>
-    </message>
-    <message>
-        <source>Ctrl+Z</source>
-        <translation type="obsolete">Ctrl+Z</translation>
-    </message>
-    <message>
-        <source>Cu&amp;t</source>
-        <translation type="obsolete">Ke&amp;s</translation>
-    </message>
-    <message>
-        <source>Ctrl+X</source>
-        <translation type="obsolete">Ctrl+X</translation>
-    </message>
-    <message>
-        <source>&amp;Copy</source>
-        <translation type="obsolete">&amp;Kopyala</translation>
-    </message>
-    <message>
-        <source>Ctrl+C</source>
-        <translation type="obsolete">Ctrl+C</translation>
-    </message>
-    <message>
-        <source>&amp;Paste</source>
-        <translation type="obsolete">&amp;Yapıştır</translation>
-    </message>
-    <message>
-        <source>Ctrl+V</source>
-        <translation type="obsolete">Ctrl+V</translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation type="obsolete">Sil</translation>
-    </message>
-    <message>
-        <source>Layer</source>
-        <translation type="obsolete">Katman</translation>
-    </message>
-    <message>
-        <source>Zoom to Selection</source>
-        <translation type="obsolete">Seçime Yaklaştır</translation>
-    </message>
-    <message>
-        <source>Ctrl+J</source>
-        <translation type="obsolete">Ctrl+J</translation>
-    </message>
-    <message>
-        <source>Toggle Editing</source>
-        <translation type="obsolete">Düzenlemeyi aç/kapa</translation>
-    </message>
-    <message>
-        <source>Table</source>
-        <translation type="obsolete">Tablo</translation>
-    </message>
-    <message>
-        <source>Move to Top</source>
-        <translation type="obsolete">Üste taşı</translation>
-    </message>
-    <message>
-        <source>Invert</source>
-        <translation type="obsolete">Ters çevir</translation>
-    </message>
-    <message>
-        <source>Found %n matching feature(s).</source>
-        <comment>search results</comment>
-        <translation type="obsolete">
-        
-        </translation>
     </message>
 </context>
 <context>
@@ -9451,35 +6811,9 @@ Hata şuydu: %2</translation>
         <translation>Silmek istediğinizden emin misiniz?</translation>
     </message>
     <message>
-        <source>&amp;Yes</source>
-        <translation type="obsolete">&amp;Evet</translation>
-    </message>
-    <message>
-        <source>&amp;No</source>
-        <translation type="obsolete">&amp;Hayır</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to delete the </source>
-        <translation type="obsolete">Silmek istediğinizden eminmisiniz</translation>
-    </message>
-    <message>
-        <source> bookmark?</source>
-        <translation type="obsolete">Sık kullanılanlara ekle?</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="173"/>
         <source>Error deleting bookmark</source>
         <translation>Sık kullanılanı silmede hata</translation>
-    </message>
-    <message>
-        <source>Failed to delete the </source>
-        <translation type="obsolete">silmede hata</translation>
-    </message>
-    <message>
-        <source> bookmark from the database. The database said:
-</source>
-        <translation type="obsolete">veritabanından sık kullanılanlara ekle. Veritabanı diyor ki:
-</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="58"/>
@@ -9530,34 +6864,6 @@ Hata şuydu: %2</translation>
         <location filename="../src/ui/qgsbookmarksbase.ui" line="44"/>
         <source>Id</source>
         <translation>Id</translation>
-    </message>
-    <message>
-        <source>Zoom To</source>
-        <translation type="obsolete">&apos;e Yaklaştır</translation>
-    </message>
-    <message>
-        <source>Zoom to the currently selected bookmark</source>
-        <translation type="obsolete">Geçerli Seçilmiş Sıkkullanılanlara Yaklaştır</translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation type="obsolete">Sil</translation>
-    </message>
-    <message>
-        <source>Delete the currently selected bookmark</source>
-        <translation type="obsolete">Seçilen sık kullanılanı sil</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">Kapat</translation>
-    </message>
-    <message>
-        <source>Close the dialog</source>
-        <translation type="obsolete">Diyaloğu kapat </translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">Yardım</translation>
     </message>
 </context>
 <context>
@@ -9622,86 +6928,14 @@ Hata şuydu: %2</translation>
 <context>
     <name>QgsComposer</name>
     <message>
-        <source>Choose a filename to save the map image as</source>
-        <translation type="obsolete">Harita görüntüsünü  kaydedeceğiniz dosya adını seçin</translation>
-    </message>
-    <message>
-        <source>Choose a filename to save the map as</source>
-        <translation type="obsolete">Haritayı kaydedeceğiniz dosya adını seçin</translation>
-    </message>
-    <message>
-        <source> for read/write</source>
-        <translation type="obsolete">okuma/yazma için</translation>
-    </message>
-    <message>
-        <source>Error in Print</source>
-        <translation type="obsolete">Yazdırmada hata</translation>
-    </message>
-    <message>
-        <source>Cannot seek</source>
-        <translation type="obsolete">Araştırılamıyor</translation>
-    </message>
-    <message>
-        <source>Cannot overwrite BoundingBox</source>
-        <translation type="obsolete">Sınır çerçevesi üstüne yazılamıyor</translation>
-    </message>
-    <message>
-        <source>Cannot find BoundingBox</source>
-        <translation type="obsolete">Sınır çerçevesi bulunamıyor</translation>
-    </message>
-    <message>
-        <source>Cannot overwrite translate</source>
-        <translation type="obsolete">Çevirinin üzerine yazılamıyor</translation>
-    </message>
-    <message>
-        <source>Cannot find translate</source>
-        <translation type="obsolete">Çeviri bulunamıyor</translation>
-    </message>
-    <message>
-        <source>File IO Error</source>
-        <translation type="obsolete">Dosya IO Hatası</translation>
-    </message>
-    <message>
-        <source>Paper does not match</source>
-        <translation type="obsolete">Kağıt uyuşmuyor</translation>
-    </message>
-    <message>
-        <source>The selected paper size does not match the composition size</source>
-        <translation type="obsolete">Seçilen kağıt boyutu kompozisyon boyutuna uymuyor</translation>
-    </message>
-    <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="579"/>
         <source>Big image</source>
         <translation>Büyük görüntü</translation>
     </message>
     <message>
-        <source>To create image </source>
-        <translation type="obsolete">Görüntü oluşturmak için</translation>
-    </message>
-    <message>
-        <source> requires circa </source>
-        <translation type="obsolete">yaklaşık değer</translation>
-    </message>
-    <message>
-        <source> MB of memory</source>
-        <translation type="obsolete">MB olarak Hafıza </translation>
-    </message>
-    <message>
-        <source>QGIS - print composer</source>
-        <translation type="obsolete">QGIS - Yazdırma düzenleyici</translation>
-    </message>
-    <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="212"/>
         <source>Map 1</source>
         <translation>Harita 1</translation>
-    </message>
-    <message>
-        <source>Couldn&apos;t open </source>
-        <translation type="obsolete">Açılamıyor</translation>
-    </message>
-    <message>
-        <source>format</source>
-        <translation type="obsolete">Biçem</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="708"/>
@@ -9720,62 +6954,6 @@ Hata şuydu: %2</translation>
         <translation>SVG Biçemi</translation>
     </message>
     <message>
-        <source>Move Content</source>
-        <translation type="obsolete">İçeriği Taşı</translation>
-    </message>
-    <message>
-        <source>Move item content</source>
-        <translation type="obsolete">Öğe içeriğini taşı</translation>
-    </message>
-    <message>
-        <source>&amp;Group</source>
-        <translation type="obsolete">&amp;Grup</translation>
-    </message>
-    <message>
-        <source>Group items</source>
-        <translation type="obsolete">Öğeleri grupla</translation>
-    </message>
-    <message>
-        <source>&amp;Ungroup</source>
-        <translation type="obsolete">&amp;Grubu çöz</translation>
-    </message>
-    <message>
-        <source>Ungroup items</source>
-        <translation type="obsolete">Öğe grubunu çöz</translation>
-    </message>
-    <message>
-        <source>Raise</source>
-        <translation type="obsolete">Üste çıkar</translation>
-    </message>
-    <message>
-        <source>Raise selected items</source>
-        <translation type="obsolete">Seçilen öğeleri üste çıkar</translation>
-    </message>
-    <message>
-        <source>Lower</source>
-        <translation type="obsolete">Alta gönder</translation>
-    </message>
-    <message>
-        <source>Lower selected items</source>
-        <translation type="obsolete">Seçilen öğeleri alta gönder</translation>
-    </message>
-    <message>
-        <source>Bring to Front</source>
-        <translation type="obsolete">Öne getir</translation>
-    </message>
-    <message>
-        <source>Move selected items to top</source>
-        <translation type="obsolete">Seçilen öğeleri üste çıkar</translation>
-    </message>
-    <message>
-        <source>Send to Back</source>
-        <translation type="obsolete">Arkaya Gönder</translation>
-    </message>
-    <message>
-        <source>Move selected items to bottom</source>
-        <translation type="obsolete">Seçilen öğeleri alta gönder</translation>
-    </message>
-    <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="127"/>
         <source>QGIS</source>
         <translation>QGIS</translation>
@@ -9784,54 +6962,6 @@ Hata şuydu: %2</translation>
         <location filename="../src/app/composer/qgscomposer.cpp" line="132"/>
         <source>File</source>
         <translation>Dosya</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">Kapat</translation>
-    </message>
-    <message>
-        <source>Ctrl+W</source>
-        <translation type="obsolete">Ctrl+W</translation>
-    </message>
-    <message>
-        <source>Edit</source>
-        <translation type="obsolete">Düzenle</translation>
-    </message>
-    <message>
-        <source>&amp;Undo</source>
-        <translation type="obsolete">&amp;Geri al</translation>
-    </message>
-    <message>
-        <source>Ctrl+Z</source>
-        <translation type="obsolete">Ctrl+Z</translation>
-    </message>
-    <message>
-        <source>Cu&amp;t</source>
-        <translation type="obsolete">Ke&amp;s</translation>
-    </message>
-    <message>
-        <source>Ctrl+X</source>
-        <translation type="obsolete">Ctrl+X</translation>
-    </message>
-    <message>
-        <source>&amp;Copy</source>
-        <translation type="obsolete">&amp;Kopyala</translation>
-    </message>
-    <message>
-        <source>Ctrl+C</source>
-        <translation type="obsolete">Ctrl+C</translation>
-    </message>
-    <message>
-        <source>&amp;Paste</source>
-        <translation type="obsolete">&amp;Yapıştır</translation>
-    </message>
-    <message>
-        <source>Ctrl+V</source>
-        <translation type="obsolete">Ctrl+V</translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation type="obsolete">Sil</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="145"/>
@@ -9977,10 +7107,6 @@ Hata şuydu: %2</translation>
         <translation>Ok rengi...</translation>
     </message>
     <message>
-        <source>Outline width </source>
-        <translation type="obsolete">Çerçeve genişliği</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="45"/>
         <source>Line width </source>
         <translation type="unfinished">Çizgi Genişliği</translation>
@@ -10045,14 +7171,6 @@ Hata şuydu: %2</translation>
         <translation>Öğe</translation>
     </message>
     <message>
-        <source>&amp;Open Template ...</source>
-        <translation type="obsolete">&amp;Şablonu Aç...</translation>
-    </message>
-    <message>
-        <source>Save Template &amp;As...</source>
-        <translation type="obsolete">Şablonu Yeni &amp;Adla kaydet... </translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="187"/>
         <source>&amp;Print...</source>
         <translation>&amp;Yazdır...</translation>
@@ -10078,14 +7196,6 @@ Hata şuydu: %2</translation>
         <translation>Öğeyi Seç/Taşı</translation>
     </message>
     <message>
-        <source>Export as image</source>
-        <translation type="obsolete">Görüntü olarak dışarı aktar</translation>
-    </message>
-    <message>
-        <source>Export as SVG</source>
-        <translation type="obsolete">SVG olarak dışarı aktar</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="301"/>
         <source>Add new scalebar</source>
         <translation>Yeni ölçek çubuğu ekle</translation>
@@ -10101,10 +7211,6 @@ Hata şuydu: %2</translation>
         <translation>AnaPencere</translation>
     </message>
     <message>
-        <source>Zoom All</source>
-        <translation type="obsolete">Tümünü Yakınlaştır</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="205"/>
         <source>Zoom In</source>
         <translation>Yaklaştır</translation>
@@ -10118,18 +7224,6 @@ Hata şuydu: %2</translation>
         <location filename="../src/ui/qgscomposerbase.ui" line="322"/>
         <source>Add Image</source>
         <translation>Görüntü ekle</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">Kapat</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">Yardım</translation>
-    </message>
-    <message>
-        <source>&amp;Open Template...</source>
-        <translation type="obsolete">&amp;Şablonu Aç...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="196"/>
@@ -10361,14 +7455,6 @@ Hata şuydu: %2</translation>
         <translation>Form</translation>
     </message>
     <message>
-        <source>Composer item properties</source>
-        <translation type="obsolete">Düzenleyici öğe özellikleri</translation>
-    </message>
-    <message>
-        <source>Color</source>
-        <translation type="obsolete">Renk</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="20"/>
         <source>Frame color...</source>
         <translation>Çerçeve rengi...</translation>
@@ -10394,48 +7480,9 @@ Hata şuydu: %2</translation>
         <translation>Çerçeveyi göster</translation>
     </message>
     <message>
-        <source>Color:</source>
-        <translation type="obsolete">Renk:</translation>
-    </message>
-    <message>
-        <source>Frame...</source>
-        <translation type="obsolete">Çerçeve...</translation>
-    </message>
-    <message>
-        <source>Background...</source>
-        <translation type="obsolete">Artalan...</translation>
-    </message>
-    <message>
-        <source>Opacity:</source>
-        <translation type="obsolete">Şeffaflık:</translation>
-    </message>
-    <message>
-        <source>Outline width: </source>
-        <translation type="obsolete">Çerçeve genişliği:</translation>
-    </message>
-    <message>
-        <source>Frame</source>
-        <translation type="obsolete">Çerçeve</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="73"/>
         <source>Position...</source>
         <translation>Konum...</translation>
-    </message>
-</context>
-<context>
-    <name>QgsComposerLabelBase</name>
-    <message>
-        <source>Label Options</source>
-        <translation type="obsolete">Etiket Seçenekleri</translation>
-    </message>
-    <message>
-        <source>Font</source>
-        <translation type="obsolete">Yazıtipi</translation>
-    </message>
-    <message>
-        <source>Box</source>
-        <translation type="obsolete">Kutu</translation>
     </message>
 </context>
 <context>
@@ -10473,10 +7520,6 @@ Hata şuydu: %2</translation>
         <source>Margin (mm)</source>
         <translation>Sınırlar (mm)</translation>
     </message>
-    <message>
-        <source>Margin (mm):</source>
-        <translation type="obsolete">Sınırlar (mm):</translation>
-    </message>
 </context>
 <context>
     <name>QgsComposerLegend</name>
@@ -10497,10 +7540,6 @@ Hata şuydu: %2</translation>
         <location filename="../src/ui/qgscomposerlegenditemdialogbase.ui" line="19"/>
         <source>Item text</source>
         <translation>Öğe metni</translation>
-    </message>
-    <message>
-        <source>Item text:</source>
-        <translation type="obsolete">Öğe metni:</translation>
     </message>
 </context>
 <context>
@@ -10609,98 +7648,14 @@ Hata şuydu: %2</translation>
         <translation>Tümü</translation>
     </message>
     <message>
-        <source>Title:</source>
-        <translation type="obsolete">Başlık:</translation>
-    </message>
-    <message>
-        <source>Font:</source>
-        <translation type="obsolete">Yazıtipi:</translation>
-    </message>
-    <message>
-        <source>Title</source>
-        <translation type="obsolete">Başlık</translation>
-    </message>
-    <message>
-        <source>Font</source>
-        <translation type="obsolete">Yazıtipi</translation>
-    </message>
-    <message>
-        <source>Title...</source>
-        <translation type="obsolete">Başlık...</translation>
-    </message>
-    <message>
-        <source>Layer...</source>
-        <translation type="obsolete">Katman...</translation>
-    </message>
-    <message>
-        <source>Item...</source>
-        <translation type="obsolete">Öğe...</translation>
-    </message>
-    <message>
-        <source>Remove</source>
-        <translation type="obsolete">Kaldır</translation>
-    </message>
-    <message>
-        <source>Edit...</source>
-        <translation type="obsolete">Düzenle...</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="231"/>
         <source>Update</source>
         <translation>Güncelle</translation>
     </message>
     <message>
-        <source>Symbol width: </source>
-        <translation type="obsolete">Sembol genişliği:</translation>
-    </message>
-    <message>
-        <source>Symbol height:</source>
-        <translation type="obsolete">Sembol yüksekliği:</translation>
-    </message>
-    <message>
-        <source>Layer space: </source>
-        <translation type="obsolete">Katman boşluğu:</translation>
-    </message>
-    <message>
-        <source>Symbol space:</source>
-        <translation type="obsolete">Sembol boşluğu:</translation>
-    </message>
-    <message>
-        <source>Icon label space:</source>
-        <translation type="obsolete">Simge etiket boşluğu:</translation>
-    </message>
-    <message>
-        <source>Box space:</source>
-        <translation type="obsolete">Kutu boşluğu:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="184"/>
         <source>Legend items</source>
         <translation>Lejand öğeleri</translation>
-    </message>
-    <message>
-        <source>down</source>
-        <translation type="obsolete">aşağı</translation>
-    </message>
-    <message>
-        <source>up</source>
-        <translation type="obsolete">yukarı</translation>
-    </message>
-    <message>
-        <source>remove</source>
-        <translation type="obsolete">Kaldır</translation>
-    </message>
-    <message>
-        <source>edit...</source>
-        <translation type="obsolete">Düzenle...</translation>
-    </message>
-    <message>
-        <source>update</source>
-        <translation type="obsolete">Güncelle</translation>
-    </message>
-    <message>
-        <source>update all</source>
-        <translation type="obsolete">Tümünü güncelle</translation>
     </message>
 </context>
 <context>
@@ -10757,110 +7712,15 @@ Hata şuydu: %2</translation>
 <context>
     <name>QgsComposerMap</name>
     <message>
-        <source>Extent (calculate scale)</source>
-        <translation type="obsolete">Dış sınırlar(ölçeğe göre hesapla)</translation>
-    </message>
-    <message>
-        <source>Scale (calculate extent)</source>
-        <translation type="obsolete">Ölçek (dış sınırları hesapla)</translation>
-    </message>
-    <message>
         <location filename="../src/core/composer/qgscomposermap.cpp" line="69"/>
         <location filename="../src/core/composer/qgscomposermap.cpp" line="90"/>
         <source>Map %1</source>
         <translation>Harita %1</translation>
     </message>
     <message>
-        <source>Cache</source>
-        <translation type="obsolete">Önbellek</translation>
-    </message>
-    <message>
-        <source>Render</source>
-        <translation type="obsolete">Görüntüle</translation>
-    </message>
-    <message>
-        <source>Rectangle</source>
-        <translation type="obsolete">Dikdörtgen</translation>
-    </message>
-    <message>
-        <source>Map</source>
-        <translation type="obsolete">Harita</translation>
-    </message>
-    <message>
         <location filename="../src/core/composer/qgscomposermap.cpp" line="230"/>
         <source>Map will be printed here</source>
         <translation>Harita burada yazdırılacak</translation>
-    </message>
-</context>
-<context>
-    <name>QgsComposerMapBase</name>
-    <message>
-        <source>Map options</source>
-        <translation type="obsolete">Harita seçenekleri</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Map&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;b&gt;Harita&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>Set</source>
-        <translation type="obsolete">Ayarla</translation>
-    </message>
-    <message>
-        <source>Width</source>
-        <translation type="obsolete">Genişlik</translation>
-    </message>
-    <message>
-        <source>Height</source>
-        <translation type="obsolete">Yükseklik</translation>
-    </message>
-    <message>
-        <source>Scale</source>
-        <translation type="obsolete">Ölçek</translation>
-    </message>
-    <message>
-        <source>1 :</source>
-        <translation type="obsolete">1:</translation>
-    </message>
-    <message>
-        <source>Set Extent</source>
-        <translation type="obsolete">Sınırları Ayarla</translation>
-    </message>
-    <message>
-        <source>Set map extent to current extent in QGIS map canvas</source>
-        <translation type="obsolete">Harita sınırlarını QGIS harita kanavasındaki geçerli sınırlara ayarla</translation>
-    </message>
-    <message>
-        <source>Line width scale</source>
-        <translation type="obsolete">Çizgi genişliği ölçeği</translation>
-    </message>
-    <message>
-        <source>Width of one unit in millimeters</source>
-        <translation type="obsolete">Bir birimin milimetre olarak genişliği</translation>
-    </message>
-    <message>
-        <source>Symbol scale</source>
-        <translation type="obsolete">Sembol ölçeği</translation>
-    </message>
-    <message>
-        <source>Font size scale</source>
-        <translation type="obsolete">Yazıtipi boyutu ölçeği</translation>
-    </message>
-    <message>
-        <source>Frame</source>
-        <translation type="obsolete">Çerçeve</translation>
-    </message>
-    <message>
-        <source>Preview</source>
-        <translation type="obsolete">Öngörünüş</translation>
-    </message>
-    <message>
-        <source>1:</source>
-        <translation type="obsolete">1:</translation>
-    </message>
-    <message>
-        <source>Scale:</source>
-        <translation type="obsolete">Ölçek:</translation>
     </message>
 </context>
 <context>
@@ -10951,10 +7811,6 @@ Hata şuydu: %2</translation>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="20"/>
         <source>Map options</source>
         <translation>Harita seçenekleri</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Map&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;b&gt;Harita&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="41"/>
@@ -11078,10 +7934,6 @@ Hata şuydu: %2</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Line width:</source>
-        <translation type="obsolete">Çizgi Genişliği:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="429"/>
         <source>Draw annotation</source>
         <translation type="unfinished"></translation>
@@ -11102,41 +7954,9 @@ Hata şuydu: %2</translation>
         <translation>Koordinat hassasiyeti</translation>
     </message>
     <message>
-        <source>Scale:</source>
-        <translation type="obsolete">Ölçek:</translation>
-    </message>
-    <message>
-        <source>1:</source>
-        <translation type="obsolete">1:</translation>
-    </message>
-    <message>
-        <source>Rotation:</source>
-        <translation type="obsolete">Döndürme:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="215"/>
         <source>Map extent</source>
         <translation>Harita sınırları</translation>
-    </message>
-    <message>
-        <source>X min:</source>
-        <translation type="obsolete">X min:</translation>
-    </message>
-    <message>
-        <source>Y min:</source>
-        <translation type="obsolete">Y min:</translation>
-    </message>
-    <message>
-        <source>X max:</source>
-        <translation type="obsolete">X max:</translation>
-    </message>
-    <message>
-        <source>Y max:</source>
-        <translation type="obsolete">Y max:</translation>
-    </message>
-    <message>
-        <source>set to map canvas extent</source>
-        <translation type="obsolete">Harita kanava sınırlarına ayarla</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="47"/>
@@ -11147,60 +7967,6 @@ Hata şuydu: %2</translation>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="63"/>
         <source>Update preview</source>
         <translation>Önizlemeyi güncelle</translation>
-    </message>
-</context>
-<context>
-    <name>QgsComposerPicture</name>
-    <message>
-        <source>Warning</source>
-        <translation type="obsolete">Uyarı</translation>
-    </message>
-    <message>
-        <source>Cannot load picture.</source>
-        <translation type="obsolete">Resim yüklenemiyor.</translation>
-    </message>
-    <message>
-        <source>Choose a file</source>
-        <translation type="obsolete">Dosya seç</translation>
-    </message>
-    <message>
-        <source>Pictures (</source>
-        <translation type="obsolete">Resimler (</translation>
-    </message>
-</context>
-<context>
-    <name>QgsComposerPictureBase</name>
-    <message>
-        <source>Picture Options</source>
-        <translation type="obsolete">Resim Seçenekleri</translation>
-    </message>
-    <message>
-        <source>Picture</source>
-        <translation type="obsolete">Resim</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>Frame</source>
-        <translation type="obsolete">Çerçeve</translation>
-    </message>
-    <message>
-        <source>Angle</source>
-        <translation type="obsolete">Açı</translation>
-    </message>
-    <message>
-        <source>Width</source>
-        <translation type="obsolete">Genişlik</translation>
-    </message>
-    <message>
-        <source>Height</source>
-        <translation type="obsolete">Yükseklik</translation>
-    </message>
-    <message>
-        <source>Browse</source>
-        <translation type="obsolete">Gözat</translation>
     </message>
 </context>
 <context>
@@ -11238,22 +8004,6 @@ Hata şuydu: %2</translation>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="20"/>
         <source>Picture Options</source>
         <translation>Resim Seçenekleri</translation>
-    </message>
-    <message>
-        <source>Browse...</source>
-        <translation type="obsolete">Göz at...</translation>
-    </message>
-    <message>
-        <source>Width:</source>
-        <translation type="obsolete">Genişlik:</translation>
-    </message>
-    <message>
-        <source>Height:</source>
-        <translation type="obsolete">Yükseklik:</translation>
-    </message>
-    <message>
-        <source>Rotation:</source>
-        <translation type="obsolete">Döndürme:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="41"/>
@@ -11317,33 +8067,6 @@ Hata şuydu: %2</translation>
     </message>
 </context>
 <context>
-    <name>QgsComposerScaleBar</name>
-    <message>
-        <source>Single Box</source>
-        <translation type="obsolete">Tek Kutu</translation>
-    </message>
-    <message>
-        <source>Double Box</source>
-        <translation type="obsolete">Çift Kutu</translation>
-    </message>
-    <message>
-        <source>Line Ticks Middle</source>
-        <translation type="obsolete">Çubuk ayrımları ortada</translation>
-    </message>
-    <message>
-        <source>Line Ticks Down</source>
-        <translation type="obsolete">Çubuk ayrımları altta</translation>
-    </message>
-    <message>
-        <source>Line Ticks Up</source>
-        <translation type="obsolete">Çubuk ayrımları üstte</translation>
-    </message>
-    <message>
-        <source>Numeric</source>
-        <translation type="obsolete">Sayısal</translation>
-    </message>
-</context>
-<context>
     <name>QgsComposerScaleBarWidget</name>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="31"/>
@@ -11388,10 +8111,6 @@ Hata şuydu: %2</translation>
         <translation>Sayısal</translation>
     </message>
     <message>
-        <source>Map </source>
-        <translation type="obsolete">Harita</translation>
-    </message>
-    <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="66"/>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="153"/>
         <source>Map %1</source>
@@ -11404,50 +8123,6 @@ Hata şuydu: %2</translation>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="20"/>
         <source>Barscale Options</source>
         <translation>Çubuk ölçek Seçenekleri</translation>
-    </message>
-    <message>
-        <source>Segment size (map units):</source>
-        <translation type="obsolete">Parça boyutları (harita birimlerinde):</translation>
-    </message>
-    <message>
-        <source>Map units per bar unit:</source>
-        <translation type="obsolete">Her çubuk birimi için harita birimleri:</translation>
-    </message>
-    <message>
-        <source>Number of segments:</source>
-        <translation type="obsolete">Parça sayısı:</translation>
-    </message>
-    <message>
-        <source>Segments left:</source>
-        <translation type="obsolete">Sola parça:</translation>
-    </message>
-    <message>
-        <source>Style:</source>
-        <translation type="obsolete">Stil:</translation>
-    </message>
-    <message>
-        <source>Map:</source>
-        <translation type="obsolete">Harita:</translation>
-    </message>
-    <message>
-        <source>Height (mm):</source>
-        <translation type="obsolete">Yükseklik(mm):</translation>
-    </message>
-    <message>
-        <source>Line width:</source>
-        <translation type="obsolete">Çizgi Genişliği:</translation>
-    </message>
-    <message>
-        <source>Label space:</source>
-        <translation type="obsolete">Etiket boşluğu:</translation>
-    </message>
-    <message>
-        <source>Box space:</source>
-        <translation type="obsolete">Kutu boşluğu:</translation>
-    </message>
-    <message>
-        <source>Unit label:</source>
-        <translation type="obsolete">Birim etiketi:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="41"/>
@@ -11503,10 +8178,6 @@ Hata şuydu: %2</translation>
         <translation>Kutu boşluğu</translation>
     </message>
     <message>
-        <source>Number of segments</source>
-        <translation type="obsolete">Parça Sayısı</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="104"/>
         <source>Style</source>
         <translation>Stil</translation>
@@ -11515,10 +8186,6 @@ Hata şuydu: %2</translation>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="123"/>
         <source>Map</source>
         <translation>Harita</translation>
-    </message>
-    <message>
-        <source>Line width</source>
-        <translation type="obsolete">Çizgi Genişliği</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="204"/>
@@ -11534,41 +8201,6 @@ Hata şuydu: %2</translation>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="233"/>
         <source>Color...</source>
         <translation>Renk...</translation>
-    </message>
-</context>
-<context>
-    <name>QgsComposerScalebarBase</name>
-    <message>
-        <source>Barscale Options</source>
-        <translation type="obsolete">Çubuk ölçek Seçenekleri</translation>
-    </message>
-    <message>
-        <source>Segment size</source>
-        <translation type="obsolete">Parça boyutu</translation>
-    </message>
-    <message>
-        <source>Number of segments</source>
-        <translation type="obsolete">Parça Sayısı</translation>
-    </message>
-    <message>
-        <source>Map units per scalebar unit</source>
-        <translation type="obsolete">Her ölçek çubuğu birimi için harita birimleri</translation>
-    </message>
-    <message>
-        <source>Unit label</source>
-        <translation type="obsolete">Birim etiketi</translation>
-    </message>
-    <message>
-        <source>Map</source>
-        <translation type="obsolete">Harita</translation>
-    </message>
-    <message>
-        <source>Font</source>
-        <translation type="obsolete">Yazıtipi</translation>
-    </message>
-    <message>
-        <source>Line width</source>
-        <translation type="obsolete">Çizgi Genişliği</translation>
     </message>
 </context>
 <context>
@@ -11744,37 +8376,6 @@ Hata şuydu: %2</translation>
     </message>
 </context>
 <context>
-    <name>QgsComposerVectorLegend</name>
-    <message>
-        <source>Layers</source>
-        <translation type="obsolete">Katmanlar</translation>
-    </message>
-    <message>
-        <source>Group</source>
-        <translation type="obsolete">Grup</translation>
-    </message>
-    <message>
-        <source>Combine selected layers</source>
-        <translation type="obsolete">Seçilen katmanları birleştir</translation>
-    </message>
-    <message>
-        <source>Cache</source>
-        <translation type="obsolete">Önbellek</translation>
-    </message>
-    <message>
-        <source>Render</source>
-        <translation type="obsolete">Görüntüle</translation>
-    </message>
-    <message>
-        <source>Rectangle</source>
-        <translation type="obsolete">Dikdörtgen</translation>
-    </message>
-    <message>
-        <source>Legend</source>
-        <translation type="obsolete">Lejand</translation>
-    </message>
-</context>
-<context>
     <name>QgsComposerVectorLegendBase</name>
     <message>
         <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="21"/>
@@ -11802,10 +8403,6 @@ Hata şuydu: %2</translation>
         <translation>Kutu</translation>
     </message>
     <message>
-        <source>Column 1</source>
-        <translation type="obsolete">Sütun 1</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="53"/>
         <source>Preview</source>
         <translation>Öngörünüş</translation>
@@ -11824,101 +8421,6 @@ Hata şuydu: %2</translation>
         <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="159"/>
         <source>ID</source>
         <translation>ID</translation>
-    </message>
-</context>
-<context>
-    <name>QgsComposition</name>
-    <message>
-        <source>Custom</source>
-        <translation type="obsolete">Özel</translation>
-    </message>
-    <message>
-        <source>A5 (148x210 mm)</source>
-        <translation type="obsolete">A5 (148x210 mm)</translation>
-    </message>
-    <message>
-        <source>A4 (210x297 mm)</source>
-        <translation type="obsolete">A4 (210x297 mm)</translation>
-    </message>
-    <message>
-        <source>A3 (297x420 mm)</source>
-        <translation type="obsolete">A3 (297x420 mm)</translation>
-    </message>
-    <message>
-        <source>A2 (420x594 mm)</source>
-        <translation type="obsolete">A2 (420x594 mm)</translation>
-    </message>
-    <message>
-        <source>A1 (594x841 mm)</source>
-        <translation type="obsolete">A1 (594x841 mm)</translation>
-    </message>
-    <message>
-        <source>A0 (841x1189 mm)</source>
-        <translation type="obsolete">A0 (841x1189 mm)</translation>
-    </message>
-    <message>
-        <source>B5 (176 x 250 mm)</source>
-        <translation type="obsolete">B5 (176 x 250 mm)</translation>
-    </message>
-    <message>
-        <source>B4 (250 x 353 mm)</source>
-        <translation type="obsolete">B4 (250 x 353 mm)</translation>
-    </message>
-    <message>
-        <source>B3 (353 x 500 mm)</source>
-        <translation type="obsolete">B3 (353 x 500 mm)</translation>
-    </message>
-    <message>
-        <source>B2 (500 x 707 mm)</source>
-        <translation type="obsolete">B2 (500 x 707 mm)</translation>
-    </message>
-    <message>
-        <source>B1 (707 x 1000 mm)</source>
-        <translation type="obsolete">B1 (707 x 1000 mm)</translation>
-    </message>
-    <message>
-        <source>B0 (1000 x 1414 mm)</source>
-        <translation type="obsolete">B0 (1000 x 1414 mm)</translation>
-    </message>
-    <message>
-        <source>Letter (8.5x11 inches)</source>
-        <translation type="obsolete">Mektup (8.5x11 inç)</translation>
-    </message>
-    <message>
-        <source>Legal (8.5x14 inches)</source>
-        <translation type="obsolete">Legal (8.5x14 inç)</translation>
-    </message>
-    <message>
-        <source>Portrait</source>
-        <translation type="obsolete">Düşey</translation>
-    </message>
-    <message>
-        <source>Landscape</source>
-        <translation type="obsolete">Yatay</translation>
-    </message>
-    <message>
-        <source>Out of memory</source>
-        <translation type="obsolete">Hafıza yetmezliği</translation>
-    </message>
-    <message>
-        <source>Qgis is unable to resize the paper size due to insufficient memory.
- It is best that you avoid using the map composer until you restart qgis.
-</source>
-        <translation type="obsolete">Qgis yetersiz hafıza nedeniyle kağıt boyutunu değiştiremiyor.
-Qgis&apos;i yeniden başlatana kadar harita düzenleyiciyi kullanmaktan kaçınmanız uygun olur.
-</translation>
-    </message>
-    <message>
-        <source>Label</source>
-        <translation type="obsolete">Etiket</translation>
-    </message>
-    <message>
-        <source>Warning</source>
-        <translation type="obsolete">Uyarı</translation>
-    </message>
-    <message>
-        <source>Cannot load picture.</source>
-        <translation type="obsolete">Resim yüklemiyor.</translation>
     </message>
 </context>
 <context>
@@ -11957,10 +8459,6 @@ Qgis&apos;i yeniden başlatana kadar harita düzenleyiciyi kullanmaktan kaçınm
         <location filename="../src/ui/qgscompositionbase.ui" line="155"/>
         <source>Orientation</source>
         <translation>Yerleştirme</translation>
-    </message>
-    <message>
-        <source>Resolution (dpi)</source>
-        <translation type="obsolete">Çözünürlük (dpi)</translation>
     </message>
 </context>
 <context>
@@ -12112,10 +8610,6 @@ Qgis&apos;i yeniden başlatana kadar harita düzenleyiciyi kullanmaktan kaçınm
         <translation>B0 (1000 x 1414 mm)</translation>
     </message>
     <message>
-        <source>Letter (8.5x11 inches)</source>
-        <translation type="obsolete">Mektup (8.5x11 inç)</translation>
-    </message>
-    <message>
         <location filename="../src/app/composer/qgscompositionwidget.cpp" line="127"/>
         <source>Legal (8.5x14 inches)</source>
         <translation>Legal (8.5x14 inç)</translation>
@@ -12147,21 +8641,9 @@ Qgis&apos;i yeniden başlatana kadar harita düzenleyiciyi kullanmaktan kaçınm
         <translation>Düzenleme</translation>
     </message>
     <message>
-        <source>Paper</source>
-        <translation type="obsolete">Kağıt</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="120"/>
         <source>Orientation</source>
         <translation>Yerleştirme</translation>
-    </message>
-    <message>
-        <source>Height</source>
-        <translation type="obsolete">Yükseklik</translation>
-    </message>
-    <message>
-        <source>Width</source>
-        <translation type="obsolete">Genişlik</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="88"/>
@@ -12227,10 +8709,6 @@ Qgis&apos;i yeniden başlatana kadar harita düzenleyiciyi kullanmaktan kaçınm
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="271"/>
         <source>Grid style</source>
         <translation>Grid stili</translation>
-    </message>
-    <message>
-        <source>Print quality (dpi)</source>
-        <translation type="obsolete">Çıktı kalitesi (dpi)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="195"/>
@@ -12377,100 +8855,6 @@ Qgis&apos;i yeniden başlatana kadar harita düzenleyiciyi kullanmaktan kaçınm
     </message>
 </context>
 <context>
-    <name>QgsConnectionDialog</name>
-    <message>
-        <source>Test connection</source>
-        <translation type="obsolete">Bağlantıyı Dene</translation>
-    </message>
-    <message>
-        <source>Connection to </source>
-        <translation type="obsolete">&apos;e bağlantı</translation>
-    </message>
-    <message>
-        <source> was successfull</source>
-        <translation type="obsolete">başarıldı</translation>
-    </message>
-    <message>
-        <source>Connection failed - Check settings and try again </source>
-        <translation type="obsolete">Bağlantıda hata - Ayarları kotrol edin ve tekrar deneyin</translation>
-    </message>
-    <message>
-        <source>General Interface Help:
-
-</source>
-        <translation type="obsolete">Genel Arayüz Yardımı:
-
-</translation>
-    </message>
-</context>
-<context>
-    <name>QgsConnectionDialogBase</name>
-    <message>
-        <source>Connection Information</source>
-        <translation type="obsolete">Bağlantı bilgisi</translation>
-    </message>
-    <message>
-        <source>Host</source>
-        <translation type="obsolete">Ana Bilgisayar</translation>
-    </message>
-    <message>
-        <source>Database</source>
-        <translation type="obsolete">Veritabanı</translation>
-    </message>
-    <message>
-        <source>Username</source>
-        <translation type="obsolete">Kullanıcı adı</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Ad</translation>
-    </message>
-    <message>
-        <source>Name of the new connection</source>
-        <translation type="obsolete">Yeni bağlantının adı</translation>
-    </message>
-    <message>
-        <source>Password</source>
-        <translation type="obsolete">Parola</translation>
-    </message>
-    <message>
-        <source>Test Connect</source>
-        <translation type="obsolete">Bağlantıyı Dene</translation>
-    </message>
-    <message>
-        <source>Save Password</source>
-        <translation type="obsolete">Parolayı Kaydet</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">TAMAM</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">İptal</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">Yardım</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
-    </message>
-    <message>
-        <source>Create a New PostGIS connection</source>
-        <translation type="obsolete">Yeni bir PostGIS bağlantısı oluştur</translation>
-    </message>
-    <message>
-        <source>Port</source>
-        <translation type="obsolete">Port</translation>
-    </message>
-    <message>
-        <source>5432</source>
-        <translation type="obsolete">5432</translation>
-    </message>
-</context>
-<context>
     <name>QgsContinuousColorDialogBase</name>
     <message>
         <location filename="../src/ui/qgscontinuouscolordialogbase.ui" line="14"/>
@@ -12498,22 +8882,6 @@ Qgis&apos;i yeniden başlatana kadar harita düzenleyiciyi kullanmaktan kaçınm
         <translation>Sınıflandırma alanı</translation>
     </message>
     <message>
-        <source>Maximum Value:</source>
-        <translation type="obsolete">En büyük Değer:</translation>
-    </message>
-    <message>
-        <source>Outline Width:</source>
-        <translation type="obsolete">Çerçeve genişliği:</translation>
-    </message>
-    <message>
-        <source>Minimum Value:</source>
-        <translation type="obsolete">En küçük değer:</translation>
-    </message>
-    <message>
-        <source>Classification Field:</source>
-        <translation type="obsolete">Sınıflandırma alanı:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscontinuouscolordialogbase.ui" line="143"/>
         <source>Draw polygon outline</source>
         <translation>Poligon çiz</translation>
@@ -12521,30 +8889,6 @@ Qgis&apos;i yeniden başlatana kadar harita düzenleyiciyi kullanmaktan kaçınm
 </context>
 <context>
     <name>QgsCoordinateTransform</name>
-    <message>
-        <source>Failed</source>
-        <translation type="obsolete">Hata</translation>
-    </message>
-    <message>
-        <source>transform of</source>
-        <translation type="obsolete">&apos;ın dönüştürmesi</translation>
-    </message>
-    <message>
-        <source>with error: </source>
-        <translation type="obsolete">hatası ile:</translation>
-    </message>
-    <message>
-        <source>The source spatial reference system (SRS) is not valid. </source>
-        <translation type="obsolete">Kaynak Mekansal Referans Sistemi (SRS) geçerli değil. </translation>
-    </message>
-    <message>
-        <source>The coordinates can not be reprojected. The SRS is: </source>
-        <translation type="obsolete">Koordinatlar yeniden projeksiyonlandırılamadı. SRS şudur: </translation>
-    </message>
-    <message>
-        <source>The destination spatial reference system (SRS) is not valid. </source>
-        <translation type="obsolete">Hedef mekansal referans sistemi(SRS) geçerli değil. </translation>
-    </message>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="417"/>
         <source>The source spatial reference system (CRS) is not valid. </source>
@@ -12567,10 +8911,6 @@ Qgis&apos;i yeniden başlatana kadar harita düzenleyiciyi kullanmaktan kaçınm
 failed with error: %3
 </source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The coordinates can not be reprojected. The CRS is: </source>
-        <translation type="obsolete">Koordinatlar yeniden projeksiyonlandırılamadı. SRS şudur: </translation>
     </message>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="425"/>
@@ -12631,10 +8971,6 @@ failed with error: %3
         <translation>Telif Hakkı Etiketi Eklentisi</translation>
     </message>
     <message>
-        <source>Placement</source>
-        <translation type="obsolete">Yerleştirme</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="35"/>
         <source>&amp;Enter your copyright label here:</source>
         <translation type="unfinished"></translation>
@@ -12684,10 +9020,6 @@ p, li { white-space: pre-wrap; }
         <translation>&amp;Renk</translation>
     </message>
     <message>
-        <source>Orientation</source>
-        <translation type="obsolete">Yerleştirme</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="101"/>
         <source>Horizontal</source>
         <translation>Yatay</translation>
@@ -12701,34 +9033,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="25"/>
         <source>Enable copyright label</source>
         <translation>Telif Hakkı Etiketini göster</translation>
-    </message>
-    <message>
-        <source>Enable Copyright Label</source>
-        <translation type="obsolete">Telif Hakkı Etiketini göster</translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">&amp;TAMAM</translation>
-    </message>
-    <message>
-        <source>Alt+O</source>
-        <translation type="obsolete">Alt+O</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;İptal</translation>
-    </message>
-    <message>
-        <source>Alt+C</source>
-        <translation type="obsolete">Alt+C</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">Yardım</translation>
-    </message>
-    <message>
-        <source>Color</source>
-        <translation type="obsolete">Renk</translation>
     </message>
 </context>
 <context>
@@ -12799,26 +9103,6 @@ p, li { white-space: pre-wrap; }
         <translation>QGIS Özel Projeksiyon</translation>
     </message>
     <message>
-        <source>This proj4 projection definition is not valid. Please correct before pressing save.</source>
-        <translation type="obsolete">Bu proj4 Projeksiyonu geçerli değil. Lütfen kaydetmeden önce düzeltin.</translation>
-    </message>
-    <message>
-        <source>This proj4 projection definition is not valid. Please give the projection a name before pressing save.</source>
-        <translation type="obsolete"> Bu proj4 Projeksiyonu geçerli değil. Lütfen kaydetmeden önce projeksiyon adını verin.</translation>
-    </message>
-    <message>
-        <source>This proj4 projection definition is not valid. Please add the parameters before pressing save.</source>
-        <translation type="obsolete"> Bu proj4 Projeksiyonu geçerli değil. Lütfen kaydetmeden önce parametreleri ekle tümcesini kullanın.</translation>
-    </message>
-    <message>
-        <source>This proj4 projection definition is not valid. Please add a proj= clause before pressing save.</source>
-        <translation type="obsolete"> Bu proj4 Projeksiyonu geçerli değil. Lütfen kaydetmeden önce proj= tümcesini ekleyin.</translation>
-    </message>
-    <message>
-        <source>This proj4 ellipsoid definition is not valid. Please add a ellips= clause before pressing save.</source>
-        <translation type="obsolete">Bu proj4 elipsoid tanımı geçersiz. Kaydetmeden önce lütfen ellips=  cümlesi ekleyin.</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="650"/>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="657"/>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="673"/>
@@ -12867,18 +9151,6 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsCustomProjectionDialogBase</name>
     <message>
-        <source>Name:</source>
-        <translation type="obsolete">Ad:</translation>
-    </message>
-    <message>
-        <source>Custom Projection Definition</source>
-        <translation type="obsolete">Özel Projeksiyon Tanımlama</translation>
-    </message>
-    <message>
-        <source>Parameters:</source>
-        <translation type="obsolete">Parametreler:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="69"/>
         <source>|&lt;</source>
         <translation>|&lt;</translation>
@@ -12904,22 +9176,6 @@ p, li { white-space: pre-wrap; }
         <translation>&gt;|</translation>
     </message>
     <message>
-        <source>New</source>
-        <translation type="obsolete">Yeni</translation>
-    </message>
-    <message>
-        <source>Save</source>
-        <translation type="obsolete">Kaydet</translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation type="obsolete">Sil</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">Kapat</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="25"/>
         <source>Define</source>
         <translation>Belirle</translation>
@@ -12930,30 +9186,14 @@ p, li { white-space: pre-wrap; }
         <translation>Dene</translation>
     </message>
     <message>
-        <source>Transform from WGS84 to the chosen projection</source>
-        <translation type="obsolete">WGS84&apos;ten seçilen projeksiyona dönüştürme</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="263"/>
         <source>Calculate</source>
         <translation>Hesapla</translation>
     </message>
     <message>
-        <source>Projected Corrdinate System</source>
-        <translation type="obsolete">Projeksiyon Koordinat Sistemi</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="190"/>
         <source>Geographic / WGS84</source>
         <translation>Coğrafi / WGS84</translation>
-    </message>
-    <message>
-        <source>North:</source>
-        <translation type="obsolete">Kuzey:</translation>
-    </message>
-    <message>
-        <source>East:</source>
-        <translation type="obsolete">Doğu:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="41"/>
@@ -13031,219 +9271,6 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>QgsDbSourceSelect</name>
-    <message>
-        <source>Are you sure you want to remove the </source>
-        <translation type="obsolete">Kaldırmak istediğinizden eminmisiniz</translation>
-    </message>
-    <message>
-        <source> connection and all associated settings?</source>
-        <translation type="obsolete">bağlantı ve tüm ilgili ayarlar?</translation>
-    </message>
-    <message>
-        <source>Confirm Delete</source>
-        <translation type="obsolete">Silmeyi Onayla</translation>
-    </message>
-    <message>
-        <source>Yes</source>
-        <translation type="obsolete">Evet</translation>
-    </message>
-    <message>
-        <source>No</source>
-        <translation type="obsolete">Hayır</translation>
-    </message>
-    <message>
-        <source>Select Table</source>
-        <translation type="obsolete">Tablo Seç</translation>
-    </message>
-    <message>
-        <source>You must select a table in order to add a Layer.</source>
-        <translation type="obsolete">Katman eklemek için bir tablo seçmelisiniz.</translation>
-    </message>
-    <message>
-        <source>Password for </source>
-        <translation type="obsolete">Parolası</translation>
-    </message>
-    <message>
-        <source>Please enter your password:</source>
-        <translation type="obsolete">Lütfen parolanızı girin:</translation>
-    </message>
-    <message>
-        <source>Connection failed</source>
-        <translation type="obsolete">Bağlantıda hata</translation>
-    </message>
-    <message>
-        <source>Access to relation </source>
-        <translation type="obsolete">İlişkiye erişim</translation>
-    </message>
-    <message>
-        <source> using sql;
-</source>
-        <translation type="obsolete">sql kullanarak</translation>
-    </message>
-    <message>
-        <source>
-has failed. The database said:
-</source>
-        <translation type="obsolete">hata oldu. Veritabanı söyledi:</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">Tip</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Ad</translation>
-    </message>
-    <message>
-        <source>Sql</source>
-        <translation type="obsolete">Sql</translation>
-    </message>
-    <message>
-        <source>Point layer</source>
-        <translation type="obsolete">Nokta katman</translation>
-    </message>
-    <message>
-        <source>Multi-point layer</source>
-        <translation type="obsolete">Çoklu-nokta katmanı</translation>
-    </message>
-    <message>
-        <source>Linestring layer</source>
-        <translation type="obsolete">Çizgi katman</translation>
-    </message>
-    <message>
-        <source>Multi-linestring layer</source>
-        <translation type="obsolete">Çoklu-çizgi katmanı</translation>
-    </message>
-    <message>
-        <source>Polygon layer</source>
-        <translation type="obsolete">Poligon katman</translation>
-    </message>
-    <message>
-        <source>Multi-polygon layer</source>
-        <translation type="obsolete">Çoklu-alan katmanı</translation>
-    </message>
-    <message>
-        <source>Mixed geometry layer</source>
-        <translation type="obsolete">Karışık geometri katmanı</translation>
-    </message>
-    <message>
-        <source>Waiting for layer type</source>
-        <translation type="obsolete">Katman tipi için bekleniyor</translation>
-    </message>
-    <message>
-        <source>Unknown layer type</source>
-        <translation type="obsolete">Bilinmeyen katman tipi</translation>
-    </message>
-    <message>
-        <source>Wildcard</source>
-        <translation type="obsolete">Joker karakter</translation>
-    </message>
-    <message>
-        <source>All</source>
-        <translation type="obsolete">Tüm</translation>
-    </message>
-    <message>
-        <source>Schema</source>
-        <translation type="obsolete">Şema</translation>
-    </message>
-    <message>
-        <source>Table</source>
-        <translation type="obsolete">Tablo</translation>
-    </message>
-    <message>
-        <source>Geometry column</source>
-        <translation type="obsolete">Geometri sütunu</translation>
-    </message>
-    <message>
-        <source>Accessible tables could not be determined</source>
-        <translation type="obsolete">Erişilebilir tablolar belirlenemedi</translation>
-    </message>
-    <message>
-        <source>No accessible tables found</source>
-        <translation type="obsolete">Erişilebilir tablolar bulunamadı</translation>
-    </message>
-</context>
-<context>
-    <name>QgsDbSourceSelectBase</name>
-    <message>
-        <source>Add PostGIS Table(s)</source>
-        <translation type="obsolete">PostGIS Tablo(ları)su ekle</translation>
-    </message>
-    <message>
-        <source>Add</source>
-        <translation type="obsolete">Ekle</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">Yardım</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
-    </message>
-    <message>
-        <source>Connect</source>
-        <translation type="obsolete">Bağlan</translation>
-    </message>
-    <message>
-        <source>New</source>
-        <translation type="obsolete">Yeni</translation>
-    </message>
-    <message>
-        <source>Edit</source>
-        <translation type="obsolete">Düzenle</translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation type="obsolete">Sil</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">Kapat</translation>
-    </message>
-    <message>
-        <source>PostgreSQL Connections</source>
-        <translation type="obsolete">PostgreSQL Bağlantısı</translation>
-    </message>
-    <message>
-        <source>Tables:</source>
-        <translation type="obsolete">Tablolar:</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">Tip</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Ad</translation>
-    </message>
-    <message>
-        <source>Sql</source>
-        <translation type="obsolete">Sql</translation>
-    </message>
-    <message>
-        <source>Encoding:</source>
-        <translation type="obsolete">Kodlama:</translation>
-    </message>
-    <message>
-        <source>Search:</source>
-        <translation type="obsolete">Araştır:</translation>
-    </message>
-    <message>
-        <source>Search mode:</source>
-        <translation type="obsolete">Araştırma modu:</translation>
-    </message>
-    <message>
-        <source>Search in columns:</source>
-        <translation type="obsolete">Sütunları araştır:</translation>
-    </message>
-    <message>
-        <source>Search options...</source>
-        <translation type="obsolete">Araştırma seçenekleri...</translation>
-    </message>
-</context>
-<context>
     <name>QgsDbTableModel</name>
     <message>
         <location filename="../src/app/qgsdbtablemodel.cpp" line="25"/>
@@ -13313,14 +9340,6 @@ has failed. The database said:
         <source>Delete Attributes</source>
         <translation>Öznitelikleri sil</translation>
     </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">TAMAM</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">İptal</translation>
-    </message>
 </context>
 <context>
     <name>QgsDelimitedTextPlugin</name>
@@ -13328,18 +9347,6 @@ has failed. The database said:
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="101"/>
         <source>&amp;Add Delimited Text Layer</source>
         <translation>Sınırlandırılmış &amp;Metin Katmanı ekle</translation>
-    </message>
-    <message>
-        <source>Add a delimited text file as a map layer. </source>
-        <translation type="obsolete">Sınırlandırılmış metin dosyasını katman olarak ekle.</translation>
-    </message>
-    <message>
-        <source>The file must have a header row containing the field names. </source>
-        <translation type="obsolete">Dosya alan isimlerini içeren üstbilgi satırına sahip olmalıdır.</translation>
-    </message>
-    <message>
-        <source>X and Y fields are required and must contain coordinates in decimal units.</source>
-        <translation type="obsolete">X ve Y alanları gereklidir ve koordinatları ondalıklı olarak içermelidir.</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="110"/>
@@ -13390,10 +9397,6 @@ has failed. The database said:
         <source>Parse</source>
         <translation>Ayrıştır</translation>
     </message>
-    <message>
-        <source>Description</source>
-        <translation type="obsolete">Açıklama</translation>
-    </message>
 </context>
 <context>
     <name>QgsDelimitedTextPluginGuiBase</name>
@@ -13401,18 +9404,6 @@ has failed. The database said:
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="14"/>
         <source>Create a Layer from a Delimited Text File</source>
         <translation>Sınırlandırılmış Metin Dosyasından Katman Oluştur</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">İptal</translation>
-    </message>
-    <message>
-        <source>Close the dialog</source>
-        <translation type="obsolete">Diyaloğu kapat </translation>
-    </message>
-    <message>
-        <source>Close the dialog without adding anything to the map.</source>
-        <translation type="obsolete">Haritaya hiçbirşey eklemeden diyaloğu kapat.</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="195"/>
@@ -13490,10 +9481,6 @@ has failed. The database said:
         <translation>Geometri</translation>
     </message>
     <message>
-        <source>Delimited Text Layer</source>
-        <translation type="obsolete">Sınırlandırılmış Metin Katmanı</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="33"/>
         <source>Delimited text file</source>
         <translation>Sınırlandırılmış metin dosyası</translation>
@@ -13514,49 +9501,9 @@ has failed. The database said:
         <translation>İşlenecek sınırlandırılmış metin dosyasını bulmak için göz at</translation>
     </message>
     <message>
-        <source>Add layer using the delimiter, file, and x/y fields specified</source>
-        <translation type="obsolete">Belirlenen sınırlayıcı, dosya ve x/y alanlarını kullanarak katman ekle</translation>
-    </message>
-    <message>
-        <source>&amp;Help</source>
-        <translation type="obsolete">&amp;Yardım</translation>
-    </message>
-    <message>
-        <source>Alt+H</source>
-        <translation type="obsolete">Alt+H</translation>
-    </message>
-    <message>
-        <source>&amp;Parse</source>
-        <translation type="obsolete">&amp;Ayrıştır</translation>
-    </message>
-    <message>
-        <source>Alt+P</source>
-        <translation type="obsolete">Alt+P</translation>
-    </message>
-    <message>
-        <source>&amp;Add Layer</source>
-        <translation type="obsolete">Katman Ekle</translation>
-    </message>
-    <message>
-        <source>Alt+A</source>
-        <translation type="obsolete">Alt+A</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">&amp;Kapat</translation>
-    </message>
-    <message>
-        <source>Alt+C</source>
-        <translation type="obsolete">Alt+C</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="268"/>
         <source>Sample text</source>
         <translation>Örnek metin</translation>
-    </message>
-    <message>
-        <source>Browse...</source>
-        <translation type="obsolete">Göz at...</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="46"/>
@@ -13716,22 +9663,6 @@ has failed. The database said:
         <translation>Tampon objeler</translation>
     </message>
     <message>
-        <source>&amp;Help</source>
-        <translation type="obsolete">&amp;Yardım</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">&amp;TAMAM</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;İptal</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/geoprocessing/qgsdlgpgbufferbase.ui" line="224"/>
         <source>Buffer distance in map units:</source>
         <translation>Harita birimlerine göre tampon mesafesi:</translation>
@@ -13788,60 +9719,6 @@ has failed. The database said:
     </message>
 </context>
 <context>
-    <name>QgsEditReservedWordsBase</name>
-    <message>
-        <source>Edit Reserved Words</source>
-        <translation type="obsolete">Korunan Sözcükleri Düzelt</translation>
-    </message>
-    <message>
-        <source>Status</source>
-        <translation type="obsolete">Durum</translation>
-    </message>
-    <message>
-        <source>Index</source>
-        <translation type="obsolete">Dizin</translation>
-    </message>
-    <message>
-        <source>&amp;Help</source>
-        <translation type="obsolete">&amp;Yardım</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">&amp;TAMAM</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;İptal</translation>
-    </message>
-    <message>
-        <source>Reserved Words</source>
-        <translation type="obsolete">Korunmuş Sözcükler</translation>
-    </message>
-    <message>
-        <source>Column Name</source>
-        <translation type="obsolete">Sütun Adı</translation>
-    </message>
-</context>
-<context>
-    <name>QgsEditReservedWordsDialog</name>
-    <message>
-        <source>Status</source>
-        <translation type="obsolete">Durum</translation>
-    </message>
-    <message>
-        <source>Column Name</source>
-        <translation type="obsolete">Sütun Adı</translation>
-    </message>
-    <message>
-        <source>Index</source>
-        <translation type="obsolete">Dizin</translation>
-    </message>
-</context>
-<context>
     <name>QgsEncodingFileDialog</name>
     <message>
         <location filename="../src/gui/qgsencodingfiledialog.cpp" line="35"/>
@@ -13851,14 +9728,6 @@ has failed. The database said:
 </context>
 <context>
     <name>QgsFieldCalculator</name>
-    <message>
-        <source>Integer</source>
-        <translation type="obsolete">Tamsayı</translation>
-    </message>
-    <message>
-        <source>String</source>
-        <translation type="obsolete">Karakter</translation>
-    </message>
     <message>
         <location filename="../src/app/qgsfieldcalculator.cpp" line="50"/>
         <source> (not supported by provider)</source>
@@ -14059,25 +9928,6 @@ has failed. The database said:
     </message>
 </context>
 <context>
-    <name>QgsFillStyleWidgetBase</name>
-    <message>
-        <source>Form1</source>
-        <translation type="obsolete">Form1</translation>
-    </message>
-    <message>
-        <source>Fill Style</source>
-        <translation type="obsolete">Doldurma stili</translation>
-    </message>
-    <message>
-        <source>Colour:</source>
-        <translation type="obsolete">Renk:</translation>
-    </message>
-    <message>
-        <source>col</source>
-        <translation type="obsolete">sütun</translation>
-    </message>
-</context>
-<context>
     <name>QgsGCPListWidget</name>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgcplistwidget.cpp" line="176"/>
@@ -14116,29 +9966,9 @@ has failed. The database said:
         <translation>KKS Aygıt Düzenleyici</translation>
     </message>
     <message>
-        <source>Device name:</source>
-        <translation type="obsolete">Aygıt adı:</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/gps_importer/qgsgpsdevicedialogbase.ui" line="131"/>
         <source>This is the name of the device as it will appear in the lists</source>
         <translation>Bu aygıtın listelerde görünecek adıdır</translation>
-    </message>
-    <message>
-        <source>Update device</source>
-        <translation type="obsolete">Aygıtı güncelle</translation>
-    </message>
-    <message>
-        <source>Delete device</source>
-        <translation type="obsolete">Aygıtı sil</translation>
-    </message>
-    <message>
-        <source>New device</source>
-        <translation type="obsolete">Yeni aygıt</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">Kapat</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsdevicedialogbase.ui" line="140"/>
@@ -14146,33 +9976,9 @@ has failed. The database said:
         <translation>Komutlar</translation>
     </message>
     <message>
-        <source>Waypoint download:</source>
-        <translation type="obsolete">Noktaları indir:</translation>
-    </message>
-    <message>
-        <source>Waypoint upload:</source>
-        <translation type="obsolete">Noktaları yükle:</translation>
-    </message>
-    <message>
-        <source>Route download:</source>
-        <translation type="obsolete">Rota indir:</translation>
-    </message>
-    <message>
-        <source>Route upload:</source>
-        <translation type="obsolete">Rota yükle:</translation>
-    </message>
-    <message>
-        <source>Track download:</source>
-        <translation type="obsolete">İz indirme:</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/gps_importer/qgsgpsdevicedialogbase.ui" line="240"/>
         <source>The command that is used to upload tracks to the device</source>
         <translation>Aygıta izleri yüklemek için kullanılan komut</translation>
-    </message>
-    <message>
-        <source>Track upload:</source>
-        <translation type="obsolete">İz yükleme:</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsdevicedialogbase.ui" line="219"/>
@@ -14608,16 +10414,6 @@ p, li { white-space: pre-wrap; }
         <translation>GPX Yükleyici</translation>
     </message>
     <message>
-        <source>Unable to read the selected file.
-</source>
-        <translation type="obsolete">Seçilen dosya okunamıyor.
-</translation>
-    </message>
-    <message>
-        <source>Please reselect a valid file.</source>
-        <translation type="obsolete">Geçerli dosyayı tekrar seçin.</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="268"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="340"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="428"/>
@@ -14668,10 +10464,6 @@ p, li { white-space: pre-wrap; }
         <translation>Desteklenmiyor</translation>
     </message>
     <message>
-        <source>This device does not support downloading </source>
-        <translation type="obsolete">Bu aygıt indirmeyi desteklemiyor</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="434"/>
         <source>Downloading data...</source>
         <translation>Veri indiriliyor...</translation>
@@ -14689,10 +10481,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="449"/>
         <source>Error downloading data</source>
         <translation>Veri indirmede hata</translation>
-    </message>
-    <message>
-        <source>This device does not support uploading of </source>
-        <translation type="obsolete">Bu aygıt yüklemeyi desteklemiyor</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="526"/>
@@ -14747,10 +10535,6 @@ Please reselect a valid file.</source>
 <context>
     <name>QgsGPSPluginGui</name>
     <message>
-        <source>Choose a filename to save under</source>
-        <translation type="obsolete">Kaydedeceğiniz dosya adını seçin</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="153"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="239"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="297"/>
@@ -14789,38 +10573,6 @@ Please reselect a valid file.</source>
         <translation>İzler</translation>
     </message>
     <message>
-        <source>QGIS can perform conversions of GPX files, by using GPSBabel (%1) to perform the conversions.</source>
-        <translation type="obsolete">QGIS GPX dosyalarının dönüşümünü GPSBabel (%1) kulanarak gerçekleştirir.</translation>
-    </message>
-    <message>
-        <source>This requires that you have GPSBabel installed where QGIS can find it.</source>
-        <translation type="obsolete">Bu GPSBabel&apos;ın yüklü olmasını ve QGIS&apos;in onu bulmasını gerektirir.</translation>
-    </message>
-    <message>
-        <source>GPS eXchange file format</source>
-        <translation type="obsolete">KKS veri değişim dosya biçimi</translation>
-    </message>
-    <message>
-        <source>Select a GPX file and then select the feature types that you want to load.</source>
-        <translation type="obsolete">GPX dosyasını ve ardından yüklemek istediğiniz obje tipini seçin.</translation>
-    </message>
-    <message>
-        <source>This tool will help you download data from a GPS device.</source>
-        <translation type="obsolete">Bu araç size KKS aygıtından veri indirmenizde yardımcı olacaktır.</translation>
-    </message>
-    <message>
-        <source>This tool uses the program GPSBabel (%1) to transfer the data.</source>
-        <translation type="obsolete">Bu araç veriyi aktarmak için GPSBabel(%1) programını kullanır.</translation>
-    </message>
-    <message>
-        <source>This tool will help you upload data from a GPX layer to a GPS device.</source>
-        <translation type="obsolete">Bu araç size KKS aygıtına GPX katmanından veri yüklemenizde yardımcı olacaktır.</translation>
-    </message>
-    <message>
-        <source>QGIS can only load GPX files by itself, but many other formats can be converted to GPX using GPSBabel (%1).</source>
-        <translation type="obsolete">QGIS sadece GPX dosyalarını yükler, ama birçok diğer biçim GPSBabel(%1) ile GPX formatına dönüştürülür.</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="151"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="295"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugingui.cpp" line="389"/>
@@ -14841,14 +10593,6 @@ Please reselect a valid file.</source>
         <translation>GPX Dosyasını yükle</translation>
     </message>
     <message>
-        <source>File:</source>
-        <translation type="obsolete">Dosya:</translation>
-    </message>
-    <message>
-        <source>Feature types:</source>
-        <translation type="obsolete">Obje tipi:</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="74"/>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="332"/>
         <source>Waypoints</source>
@@ -14867,29 +10611,9 @@ Please reselect a valid file.</source>
         <translation>İzler</translation>
     </message>
     <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="139"/>
         <source>Import other file</source>
         <translation>Diğer dosyayı içeri aktar</translation>
-    </message>
-    <message>
-        <source>File to import:</source>
-        <translation type="obsolete">İçeri aktarılacak dosya:</translation>
-    </message>
-    <message>
-        <source>Feature type:</source>
-        <translation type="obsolete">Obje tipi:</translation>
-    </message>
-    <message>
-        <source>GPX output file:</source>
-        <translation type="obsolete">GPX çıktı dosya:</translation>
-    </message>
-    <message>
-        <source>Layer name:</source>
-        <translation type="obsolete">Katman adı:</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="243"/>
@@ -14902,45 +10626,9 @@ Please reselect a valid file.</source>
         <translation>Araçları düzenle</translation>
     </message>
     <message>
-        <source>GPS device:</source>
-        <translation type="obsolete">KKS aygıtı:</translation>
-    </message>
-    <message>
-        <source>Output file:</source>
-        <translation type="obsolete">Çıktı Dosya:</translation>
-    </message>
-    <message>
-        <source>Port:</source>
-        <translation type="obsolete">Port:</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="397"/>
         <source>Upload to GPS</source>
         <translation>KKS&apos;ne yükleniyor</translation>
-    </message>
-    <message>
-        <source>Data layer:</source>
-        <translation type="obsolete">Veri katmanı:</translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">&amp;TAMAM</translation>
-    </message>
-    <message>
-        <source>Alt+O</source>
-        <translation type="obsolete">Alt+O</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;İptal</translation>
-    </message>
-    <message>
-        <source>Alt+C</source>
-        <translation type="obsolete">Alt+C</translation>
-    </message>
-    <message>
-        <source>&amp;Help</source>
-        <translation type="obsolete">&amp;Yardım</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="37"/>
@@ -15033,14 +10721,6 @@ Please reselect a valid file.</source>
         <translation>Dönüşüm</translation>
     </message>
     <message>
-        <source>Conversion:</source>
-        <translation type="obsolete">Dönüşüm:</translation>
-    </message>
-    <message>
-        <source>GPX input file:</source>
-        <translation type="obsolete">GPX girdi dosyası:</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/gps_importer/qgsgpspluginguibase.ui" line="275"/>
         <source>Edit devices...</source>
         <translation>Aygıtlarıı düzenle...</translation>
@@ -15072,10 +10752,6 @@ Please reselect a valid file.</source>
 <context>
     <name>QgsGenericProjectionSelector</name>
     <message>
-        <source>Define this layer&apos;s projection:</source>
-        <translation type="obsolete">Bu katmanların projeksiyonunu belirle:</translation>
-    </message>
-    <message>
         <location filename="../src/gui/qgsgenericprojectionselector.cpp" line="44"/>
         <source>This layer appears to have no projection specification.</source>
         <translation>Bu katman projeksiyon bilgisi yok görünüyor.</translation>
@@ -15094,123 +10770,9 @@ Please reselect a valid file.</source>
 <context>
     <name>QgsGenericProjectionSelectorBase</name>
     <message>
-        <source>Projection Selector</source>
-        <translation type="obsolete">Projeksiyon Seçici</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsgenericprojectionselectorbase.ui" line="14"/>
         <source>Coordinate Reference System Selector</source>
         <translation>Koordinat Referans Sistemi Seçici</translation>
-    </message>
-</context>
-<context>
-    <name>QgsGeomTypeDialog</name>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Ad</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">Tip</translation>
-    </message>
-    <message>
-        <source>Real</source>
-        <translation type="obsolete">Gerçek sayı</translation>
-    </message>
-    <message>
-        <source>Integer</source>
-        <translation type="obsolete">Tamsayı</translation>
-    </message>
-    <message>
-        <source>String</source>
-        <translation type="obsolete">Karakter</translation>
-    </message>
-</context>
-<context>
-    <name>QgsGeomTypeDialogBase</name>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">Tip</translation>
-    </message>
-    <message>
-        <source>Point</source>
-        <translation type="obsolete">Nokta</translation>
-    </message>
-    <message>
-        <source>Line</source>
-        <translation type="obsolete">Çizgi</translation>
-    </message>
-    <message>
-        <source>Polygon</source>
-        <translation type="obsolete">Poligon</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">TAMAM</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">İptal</translation>
-    </message>
-    <message>
-        <source>New Vector Layer</source>
-        <translation type="obsolete">Yeni Vektör Katmanı</translation>
-    </message>
-    <message>
-        <source>Attributes:</source>
-        <translation type="obsolete">Öznitelikler:</translation>
-    </message>
-    <message>
-        <source>Add</source>
-        <translation type="obsolete">Ekle</translation>
-    </message>
-    <message>
-        <source>Column 1</source>
-        <translation type="obsolete">Sütun 1</translation>
-    </message>
-    <message>
-        <source>Remove</source>
-        <translation type="obsolete">Kaldır</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">Yardım</translation>
-    </message>
-    <message>
-        <source>File Format:</source>
-        <translation type="obsolete">Dosya biçemi:</translation>
-    </message>
-    <message>
-        <source>File format</source>
-        <translation type="obsolete">Dosya biçimi</translation>
-    </message>
-    <message>
-        <source>Attributes</source>
-        <translation type="obsolete">Öznitelikler</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Ad</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>Delete selected attribute</source>
-        <translation type="obsolete">Seçilen özniteliğiı sil</translation>
-    </message>
-    <message>
-        <source>Add attribute</source>
-        <translation type="obsolete">Öznitelik Ekle</translation>
-    </message>
-    <message>
-        <source>Width</source>
-        <translation type="obsolete">Genişlik</translation>
-    </message>
-    <message>
-        <source>Precision</source>
-        <translation type="obsolete">Hassasiyet</translation>
     </message>
 </context>
 <context>
@@ -15269,25 +10831,9 @@ p, li { white-space: pre-wrap; }
         <source>&amp;Georeferencer</source>
         <translation>&amp;Coğrafi Referanslama Aracı</translation>
     </message>
-    <message>
-        <source>&lt;b&gt;Georeferencer GDAL&lt;/b&gt;</source>
-        <translation type="obsolete">GDAL Coğrafi Referanslama Aracı</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Developers:&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;b&gt;Geliştiriciler&lt;b&gt;</translation>
-    </message>
 </context>
 <context>
     <name>QgsGeorefPluginGui</name>
-    <message>
-        <source>Choose a raster file</source>
-        <translation type="obsolete">Raster dosya seç</translation>
-    </message>
-    <message>
-        <source>Raster files (*.*)</source>
-        <translation type="obsolete">Raster dosyalar (*.*)</translation>
-    </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="159"/>
         <source>All other files (*)</source>
@@ -15438,10 +10984,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished">Hata</translation>
     </message>
     <message>
-        <source>Could not write to </source>
-        <translation type="obsolete">&apos;e yazılamıyor</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1141"/>
         <source>Copy in clipboard</source>
         <translation type="unfinished"></translation>
@@ -15507,25 +11049,9 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The selected file is not a valid raster file.</source>
-        <translation type="obsolete">Seçilen dosya geçerli raster dosya değil.</translation>
-    </message>
-    <message>
-        <source>You need to specify a file to georeference first.</source>
-        <translation type="obsolete">Önce coğrafi referans için bir dosya belirlemeniz gerekir.</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1062"/>
         <source>World file exists</source>
         <translation type="unfinished">Koordinatlandırma dosyası mevcut</translation>
-    </message>
-    <message>
-        <source>world file! Do you want to replace it with the </source>
-        <translation type="obsolete">Koordinatlandırma dosyası! Şununla değiştirmek istermisiniz</translation>
-    </message>
-    <message>
-        <source>new world file?&lt;/p&gt;</source>
-        <translation type="obsolete">Yeni coğrafi referans dosyası?&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -15734,80 +11260,6 @@ p, li { white-space: pre-wrap; }
         <source>Zoom Last</source>
         <translation type="unfinished">Son Yaklaştırma</translation>
     </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">Kapat</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>Raster file:</source>
-        <translation type="obsolete">Raster dosya:</translation>
-    </message>
-    <message>
-        <source>Enter world coordinates</source>
-        <translation type="obsolete">Coğrafi referans koordinatlarını gir</translation>
-    </message>
-    <message>
-        <source>Arrange plugin windows</source>
-        <translation type="obsolete">Eklenti pencerelerini düzenle</translation>
-    </message>
-    <message>
-        <source>Description...</source>
-        <translation type="obsolete">Açıklama...</translation>
-    </message>
-</context>
-<context>
-    <name>QgsGeorefWarpOptionsDialog</name>
-    <message>
-        <source>unstable</source>
-        <translation type="obsolete">kararsız</translation>
-    </message>
-</context>
-<context>
-    <name>QgsGeorefWarpOptionsDialogBase</name>
-    <message>
-        <source>Warp options</source>
-        <translation type="obsolete">Esnetme seçenekleri</translation>
-    </message>
-    <message>
-        <source>Resampling method:</source>
-        <translation type="obsolete">Yeniden örnekleme metodu:</translation>
-    </message>
-    <message>
-        <source>Resampling method</source>
-        <translation type="obsolete">Yeniden örnekleme metodu</translation>
-    </message>
-    <message>
-        <source>Nearest neighbour</source>
-        <translation type="obsolete">En yakın Komşu</translation>
-    </message>
-    <message>
-        <source>Linear</source>
-        <translation type="obsolete">Doğrusal</translation>
-    </message>
-    <message>
-        <source>Cubic</source>
-        <translation type="obsolete">Kübik</translation>
-    </message>
-    <message>
-        <source>Compression</source>
-        <translation type="obsolete">Sıkıştırma</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">TAMAM</translation>
-    </message>
-    <message>
-        <source>Use 0 for transparency when needed</source>
-        <translation type="obsolete">Gerektiğinde şeffaflık için 0 kullanın</translation>
-    </message>
-    <message>
-        <source>Compression:</source>
-        <translation type="obsolete">Sıkıştırma:</translation>
-    </message>
 </context>
 <context>
     <name>QgsGraduatedSymbolDialog</name>
@@ -15843,18 +11295,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsgraduatedsymboldialogbase.ui" line="26"/>
         <source>graduated Symbol</source>
         <translation>Derecelendirilmiş Sembol</translation>
-    </message>
-    <message>
-        <source>Classification Field:</source>
-        <translation type="obsolete">Sınıflandırma alanı:</translation>
-    </message>
-    <message>
-        <source>Mode:</source>
-        <translation type="obsolete">Mod:</translation>
-    </message>
-    <message>
-        <source>Number of Classes:</source>
-        <translation type="obsolete">Sınıf Sayısı:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymboldialogbase.ui" line="163"/>
@@ -15977,10 +11417,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/grass/qgsgrassattributes.cpp" line="122"/>
         <source>Type</source>
         <translation>Tip</translation>
-    </message>
-    <message>
-        <source>Field</source>
-        <translation type="obsolete">Alan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassattributes.cpp" line="267"/>
@@ -16111,26 +11547,6 @@ p, li { white-space: pre-wrap; }
         </translation>
     </message>
     <message>
-        <source>Cannot copy map </source>
-        <translation type="obsolete">Harita kopyalanamıyor</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;command: </source>
-        <translation type="obsolete">&lt;br&gt; Komut: </translation>
-    </message>
-    <message>
-        <source>Cannot rename map </source>
-        <translation type="obsolete">Harita yeniden isimlendirilemiyor</translation>
-    </message>
-    <message>
-        <source>Delete map &lt;b&gt;</source>
-        <translation type="obsolete">Haritayı Sil&lt;b&gt;</translation>
-    </message>
-    <message>
-        <source>Cannot delete map </source>
-        <translation type="obsolete">Harita silinemiyor</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="464"/>
         <source>Cannot write new region</source>
         <translation>Yeni bölge yazılamıyor</translation>
@@ -16180,18 +11596,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="295"/>
         <source>Delete vertex</source>
         <translation>Kırıklık Noktasını sil</translation>
-    </message>
-    <message>
-        <source>Left: </source>
-        <translation type="obsolete">Sol:</translation>
-    </message>
-    <message>
-        <source>Middle: </source>
-        <translation type="obsolete">Orta:</translation>
-    </message>
-    <message>
-        <source>Rigth: </source>
-        <translation type="obsolete">Sağ:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="256"/>
@@ -16284,10 +11688,6 @@ p, li { white-space: pre-wrap; }
         <translation>Araçlar henüz tamamlanmadı.</translation>
     </message>
     <message>
-        <source>Cannot check orphan record: </source>
-        <translation type="obsolete">tek kayıt kontrol edilemiyor:</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1410"/>
         <source>Orphan record was left in attribute table. &lt;br&gt;Delete the record?</source>
         <translation>Öznitelik tablosunda tek bir satır kaldı. &lt;br&gt; Sileyim mi?</translation>
@@ -16296,10 +11696,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1420"/>
         <source>Cannot delete orphan record: </source>
         <translation>Tek kayıt silinemiyor:</translation>
-    </message>
-    <message>
-        <source>Cannot describe table for field </source>
-        <translation type="obsolete">Alan için tablo belirlenemiyor</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="407"/>
@@ -16367,38 +11763,6 @@ p, li { white-space: pre-wrap; }
         <translation>Düğüm (2 çizgi)</translation>
     </message>
     <message>
-        <source>Disp</source>
-        <comment>Column title</comment>
-        <translation type="obsolete">Görüntü</translation>
-    </message>
-    <message>
-        <source>Color</source>
-        <comment>Column title</comment>
-        <translation type="obsolete">Renk</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <comment>Column title</comment>
-        <translation type="obsolete">Tip</translation>
-    </message>
-    <message>
-        <source>Index</source>
-        <comment>Column title</comment>
-        <translation type="obsolete">Dizin</translation>
-    </message>
-    <message>
-        <source>Column</source>
-        <translation type="obsolete">Sütun</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">Tip</translation>
-    </message>
-    <message>
-        <source>Length</source>
-        <translation type="obsolete">Uzunluk</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="548"/>
         <source>Next not used</source>
         <translation>Kullanılmau,yan bir sonraki</translation>
@@ -16412,10 +11776,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="550"/>
         <source>No category</source>
         <translation>Kategori yok</translation>
-    </message>
-    <message>
-        <source>Right: </source>
-        <translation type="obsolete">Sağ:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1404"/>
@@ -16491,10 +11851,6 @@ p, li { white-space: pre-wrap; }
         <translation>Mod</translation>
     </message>
     <message>
-        <source>Field (layer)</source>
-        <translation type="obsolete">Alan (katman)</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="154"/>
         <source>Settings</source>
         <translation>Ayarlar</translation>
@@ -16508,10 +11864,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="213"/>
         <source>Symbology</source>
         <translation>Semboloji</translation>
-    </message>
-    <message>
-        <source>Column 1</source>
-        <translation type="obsolete">Sütun 1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="327"/>
@@ -17067,14 +12419,6 @@ p, li { white-space: pre-wrap; }
         <translation>Geçerli bölge alınamıyor</translation>
     </message>
     <message>
-        <source>Cannot check region of map </source>
-        <translation type="obsolete">Haritanın bölgesi kontrol edilemiyor</translation>
-    </message>
-    <message>
-        <source>Cannot get region of map </source>
-        <translation type="obsolete">Haritanın bölgesi alınamıyor</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="768"/>
         <source>No GRASS raster maps currently in QGIS</source>
         <translation>Şu anda QGIS&apos;te hiç GRASS raster haritası yok</translation>
@@ -17100,10 +12444,6 @@ p, li { white-space: pre-wrap; }
         <translation>Vektör adını girin</translation>
     </message>
     <message>
-        <source>The file already exists. Overwrite? </source>
-        <translation type="obsolete">Dosya zaten zevcut. Üzerine yazayım mı?</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1085"/>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1103"/>
         <source>Save mapcalc</source>
@@ -17118,32 +12458,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1104"/>
         <source>Cannot open mapcalc file</source>
         <translation>mapcalc dosyası açılamıyor</translation>
-    </message>
-    <message>
-        <source>The mapcalc schema (</source>
-        <translation type="obsolete">Mapcalc-Şeması (</translation>
-    </message>
-    <message>
-        <source>) not found.</source>
-        <translation type="obsolete">) bulunamadı.</translation>
-    </message>
-    <message>
-        <source>Cannot open mapcalc schema (</source>
-        <translation type="obsolete">mapcalc şeması açılamıyor (</translation>
-    </message>
-    <message>
-        <source>Cannot read mapcalc schema (</source>
-        <translation type="obsolete">mapcalc şeması okunamıyor (</translation>
-    </message>
-    <message>
-        <source>
-at line </source>
-        <translation type="obsolete">satırında
-</translation>
-    </message>
-    <message>
-        <source> column </source>
-        <translation type="obsolete">sütun</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="209"/>
@@ -17216,10 +12530,6 @@ at line %2 column %3</source>
         <translation>Durdur</translation>
     </message>
     <message>
-        <source>Module</source>
-        <translation type="obsolete">Modül</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="160"/>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="165"/>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="176"/>
@@ -17235,61 +12545,6 @@ at line %2 column %3</source>
         <translation>Uyarı</translation>
     </message>
     <message>
-        <source>The module file (</source>
-        <translation type="obsolete">Modül dosyası (</translation>
-    </message>
-    <message>
-        <source>) not found.</source>
-        <translation type="obsolete">) bulunamadı.</translation>
-    </message>
-    <message>
-        <source>Cannot open module file (</source>
-        <translation type="obsolete">Modül dosyası açılamadı (</translation>
-    </message>
-    <message>
-        <source>)</source>
-        <translation type="obsolete">)</translation>
-    </message>
-    <message>
-        <source>Cannot read module file (</source>
-        <translation type="obsolete">Modül dosyası okunamadı (</translation>
-    </message>
-    <message>
-        <source>):
-</source>
-        <translation type="obsolete">):
-</translation>
-    </message>
-    <message>
-        <source>
-at line </source>
-        <translation type="obsolete">satırında</translation>
-    </message>
-    <message>
-        <source>Module </source>
-        <translation type="obsolete">Modül</translation>
-    </message>
-    <message>
-        <source> not found</source>
-        <translation type="obsolete">bulunamadı</translation>
-    </message>
-    <message>
-        <source>Cannot find man page </source>
-        <translation type="obsolete">kılavuz sayfası nulunamadı</translation>
-    </message>
-    <message>
-        <source>Not available, cannot open description (</source>
-        <translation type="obsolete">Mevcut değil, açıklama açılamıyor (</translation>
-    </message>
-    <message>
-        <source> column </source>
-        <translation type="obsolete">Sütun</translation>
-    </message>
-    <message>
-        <source>Not available, incorrect description (</source>
-        <translation type="obsolete">Mevcut değil, yanlış açıklama (</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1196"/>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1223"/>
         <source>Cannot get input region</source>
@@ -17299,14 +12554,6 @@ at line </source>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1212"/>
         <source>Use Input Region</source>
         <translation>Girdi Bölgesini kullan</translation>
-    </message>
-    <message>
-        <source>Cannot find module </source>
-        <translation type="obsolete">Modül bulunamadı</translation>
-    </message>
-    <message>
-        <source>Cannot start module: </source>
-        <translation type="obsolete">Modül başlatılamadı:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1415"/>
@@ -17322,10 +12569,6 @@ at line </source>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1429"/>
         <source>&lt;B&gt;Module crashed or killed&lt;/B&gt;</source>
         <translation>&lt;B&gt;Modül çöktü veya öldü&lt;/B&gt;</translation>
-    </message>
-    <message>
-        <source>Not available, description not found (</source>
-        <translation type="obsolete">Mevcut değil, açıklama bulunamadı (</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="253"/>
@@ -17476,14 +12719,6 @@ at line %2 column %3</source>
         <translation>Dosya</translation>
     </message>
     <message>
-        <source>:&amp;nbsp;missing value</source>
-        <translation type="obsolete">:&amp;nbsp;kayıp değer</translation>
-    </message>
-    <message>
-        <source>:&amp;nbsp;directory does not exist</source>
-        <translation type="obsolete">:&amp;nbsp;dizin yok</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3273"/>
         <source>%1:&amp;nbsp;missing value</source>
         <translation>%1:&amp;nbsp;kayıp değer</translation>
@@ -17509,21 +12744,9 @@ at line %2 column %3</source>
         <translation>Uyarı</translation>
     </message>
     <message>
-        <source>Cannot find layeroption </source>
-        <translation type="obsolete">Katman seçeneği bulunamadı</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2907"/>
         <source>PostGIS driver in OGR does not support schemas!&lt;br&gt;Only the table name will be used.&lt;br&gt;It can result in wrong input if more tables of the same name&lt;br&gt;are present in the database.</source>
         <translation>OGR deki PostGIS sürücüsü şemayı desteklemiyor!&lt;br&gt;Sadece tablo adı kullanılabilecek.&lt;br&gt; Veritabanında &lt;br&gt; eğer aynı isimde birden fazla tablo varsa yanlış bir girdi olacaktır.</translation>
-    </message>
-    <message>
-        <source>:&amp;nbsp;no input</source>
-        <translation type="obsolete">:&amp;nbsp;girdi yok</translation>
-    </message>
-    <message>
-        <source>Cannot find whereoption </source>
-        <translation type="obsolete">nerede seçeneği bulunamadı</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2710"/>
@@ -17557,33 +12780,9 @@ at line %2 column %3</source>
         <translation>Uyarı</translation>
     </message>
     <message>
-        <source>Cannot find typeoption </source>
-        <translation type="obsolete">Tip seçeneği bulunamadı</translation>
-    </message>
-    <message>
-        <source>Cannot find values for typeoption </source>
-        <translation type="obsolete">Tip seçeneği için değerler bulunamadı</translation>
-    </message>
-    <message>
-        <source>Cannot find layeroption </source>
-        <translation type="obsolete">Katman seçeneği bulunamadı</translation>
-    </message>
-    <message>
-        <source>GRASS element </source>
-        <translation type="obsolete">GRASS elemanı</translation>
-    </message>
-    <message>
-        <source> not supported</source>
-        <translation type="obsolete">desteklenmiyor</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2208"/>
         <source>Use region of this map</source>
         <translation>Bu haritanın bölgesini kullan</translation>
-    </message>
-    <message>
-        <source>:&amp;nbsp;no input</source>
-        <translation type="obsolete">:&amp;nbsp;girdi yok</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2085"/>
@@ -17624,10 +12823,6 @@ at line %2 column %3</source>
 <context>
     <name>QgsGrassModuleOption</name>
     <message>
-        <source>:&amp;nbsp;missing value</source>
-        <translation type="obsolete">:&amp;nbsp;kayıp değer</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2003"/>
         <source>%1:&amp;nbsp;missing value</source>
         <translation>%1:&amp;nbsp;kayıp değer</translation>
@@ -17635,10 +12830,6 @@ at line %2 column %3</source>
 </context>
 <context>
     <name>QgsGrassModuleSelection</name>
-    <message>
-        <source>Attribute field</source>
-        <translation type="obsolete">Öznitelik alanı</translation>
-    </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3040"/>
         <source>Selected categories</source>
@@ -17677,57 +12868,10 @@ at line %2 column %3</source>
         <translation>Uyarı</translation>
     </message>
     <message>
-        <source>Cannot find module </source>
-        <translation type="obsolete">Modül bulunamadı</translation>
-    </message>
-    <message>
-        <source>Cannot start module </source>
-        <translation type="obsolete">Modül başlatılamadı</translation>
-    </message>
-    <message>
-        <source>Cannot read module description (</source>
-        <translation type="obsolete">Modül açıklaması okunamadı (</translation>
-    </message>
-    <message>
-        <source>):
-</source>
-        <translation type="obsolete">):
-</translation>
-    </message>
-    <message>
-        <source>
-at line </source>
-        <translation type="obsolete">satırında</translation>
-    </message>
-    <message>
-        <source> column </source>
-        <translation type="obsolete">Sütun</translation>
-    </message>
-    <message>
-        <source>Cannot find key </source>
-        <translation type="obsolete">Anahtar bulunamadı</translation>
-    </message>
-    <message>
-        <source>Item with id </source>
-        <translation type="obsolete">nolu öğe</translation>
-    </message>
-    <message>
-        <source> not found</source>
-        <translation type="obsolete">bulunamadı</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="846"/>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="901"/>
         <source>Cannot get current region</source>
         <translation>Geçerli bölge alınamıyor</translation>
-    </message>
-    <message>
-        <source>Cannot check region of map </source>
-        <translation type="obsolete">Haritanın bölgesi kontrol edilemiyor</translation>
-    </message>
-    <message>
-        <source>Cannot set region of map </source>
-        <translation type="obsolete">Haritanın bölgesi ayarlanamıyor</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="317"/>
@@ -17780,38 +12924,6 @@ at line %2 column %3</source>
 <context>
     <name>QgsGrassNewMapset</name>
     <message>
-        <source>GRASS database</source>
-        <translation type="obsolete">GRASS veritabanı</translation>
-    </message>
-    <message>
-        <source>GRASS location</source>
-        <translation type="obsolete">GRASS mevkisi</translation>
-    </message>
-    <message>
-        <source>Projection</source>
-        <translation type="obsolete">Projeksiyon</translation>
-    </message>
-    <message>
-        <source>Default GRASS Region</source>
-        <translation type="obsolete">Varsayılan GRASS Bölgesi</translation>
-    </message>
-    <message>
-        <source>Mapset</source>
-        <translation type="obsolete">Harita Takımı</translation>
-    </message>
-    <message>
-        <source>Create New Mapset</source>
-        <translation type="obsolete">Yeni Harita takımı oluştur</translation>
-    </message>
-    <message>
-        <source>Tree</source>
-        <translation type="obsolete">Ağaç</translation>
-    </message>
-    <message>
-        <source>Comment</source>
-        <translation type="obsolete">Yorum</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="118"/>
         <source>Database</source>
         <translation>Veritabanı</translation>
@@ -17840,10 +12952,6 @@ at line %2 column %3</source>
         <translation>Mevki 1</translation>
     </message>
     <message>
-        <source>Owner</source>
-        <translation type="obsolete">Sahip</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="183"/>
         <source>Enter path to GRASS database</source>
         <translation>GRASS veritabanı yolunu girin</translation>
@@ -17852,10 +12960,6 @@ at line %2 column %3</source>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="191"/>
         <source>The directory doesn&apos;t exist!</source>
         <translation>Dizin mevcut değil!</translation>
-    </message>
-    <message>
-        <source>No writable locations, the database not writable!</source>
-        <translation type="obsolete">Yazılabilir mevki değil, veritabanı yazılabilir değil!</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="336"/>
@@ -17908,46 +13012,6 @@ at line %2 column %3</source>
         <translation>Doğu batıdan büyük olmalıdır</translation>
     </message>
     <message>
-        <source>Regions file (</source>
-        <translation type="obsolete">Bölge dosyası (</translation>
-    </message>
-    <message>
-        <source>) not found.</source>
-        <translation type="obsolete">) bulunamadı.</translation>
-    </message>
-    <message>
-        <source>Cannot open locations file (</source>
-        <translation type="obsolete">Mevki dosyası açılamadı (</translation>
-    </message>
-    <message>
-        <source>)</source>
-        <translation type="obsolete">)</translation>
-    </message>
-    <message>
-        <source>Cannot read locations file (</source>
-        <translation type="obsolete">Mevki dosyası okunamadı (</translation>
-    </message>
-    <message>
-        <source>):
-</source>
-        <translation type="obsolete">):
-</translation>
-    </message>
-    <message>
-        <source>
-at line </source>
-        <translation type="obsolete">
-satırında</translation>
-    </message>
-    <message>
-        <source> column </source>
-        <translation type="obsolete">Sütun</translation>
-    </message>
-    <message>
-        <source>Cannot create QgsSpatialRefSys</source>
-        <translation type="obsolete">QgsSpatialRefSys oluşturulamıyor</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="881"/>
         <source>Cannot reproject selected region.</source>
         <translation>Seçilen bölge yeniden projeksiyonlandırılamıyor.</translation>
@@ -17988,10 +13052,6 @@ satırında</translation>
         <translation>Mevki oluştur</translation>
     </message>
     <message>
-        <source>Cannot create new location: </source>
-        <translation type="obsolete">Yeni mevki oluşturulamıyor:</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1291"/>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1301"/>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1308"/>
@@ -18013,10 +13073,6 @@ satırında</translation>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1335"/>
         <source>New mapset</source>
         <translation>Yeni harita takımı</translation>
-    </message>
-    <message>
-        <source>New mapset successfully created, but cannot be opened: </source>
-        <translation type="obsolete">Yeni harita takımı başarıyla oluşturuldu, fakat açılamıyor:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1336"/>
@@ -18077,10 +13133,6 @@ at line %2 column %3</source>
 <context>
     <name>QgsGrassNewMapsetBase</name>
     <message>
-        <source>Column 1</source>
-        <translation type="obsolete">Sütun 1</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="52"/>
         <source>Example directory tree:</source>
         <translation>Dizin ağaç yapısı örneği :</translation>
@@ -18095,10 +13147,6 @@ at line %2 column %3</source>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="2668"/>
         <source>Database:</source>
         <translation>Veritabanı:</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="607"/>
@@ -18458,10 +13506,6 @@ p, li { white-space: pre-wrap; }
         <translation>Yeni vektör harita adı</translation>
     </message>
     <message>
-        <source>Cannot create new vector: </source>
-        <translation type="obsolete">Yeni vektör harita oluşturulamıyor:</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="539"/>
         <source>New vector created but cannot be opened by data provider.</source>
         <translation>Yeni vektör harita oluşturuldu fakat veri sağlayıcı tarafından açılamıyor.</translation>
@@ -18475,30 +13519,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="586"/>
         <source>GISDBASE, LOCATION_NAME or MAPSET is not set, cannot display current region.</source>
         <translation>GISDBASE, MEVKİ_ADI veya HARİTA TAKIMI ayarlanmadı, geçerli bölge gösterilemiyor.</translation>
-    </message>
-    <message>
-        <source>Cannot read current region: </source>
-        <translation type="obsolete">Geçerli bölge okunamıyor:</translation>
-    </message>
-    <message>
-        <source>Cannot open the mapset. </source>
-        <translation type="obsolete">Harita takımı açılamıyor.</translation>
-    </message>
-    <message>
-        <source>Cannot close mapset. </source>
-        <translation type="obsolete">Harita takımı kapanamıyor.</translation>
-    </message>
-    <message>
-        <source>Cannot close current mapset. </source>
-        <translation type="obsolete">Geçerli harita takımı kapanamıyor.</translation>
-    </message>
-    <message>
-        <source>Cannot open GRASS mapset. </source>
-        <translation type="obsolete">GRASS harita takımı açılamıyor.</translation>
-    </message>
-    <message>
-        <source>Could not add raster layer: </source>
-        <translation type="obsolete">Raster katman eklenemiyor:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="354"/>
@@ -18564,10 +13584,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/grass/qgsgrassregion.cpp" line="164"/>
         <source>GISDBASE, LOCATION_NAME or MAPSET is not set, cannot display current region.</source>
         <translation>GISDBASE, MEVKİ_ADI veya HARİTA TAKIMI ayarlanmadı, geçerli bölge gösterilemiyor.</translation>
-    </message>
-    <message>
-        <source>Cannot read current region: </source>
-        <translation type="obsolete">Geçerli bölge okunamıyor:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassregion.cpp" line="433"/>
@@ -18677,10 +13693,6 @@ p, li { white-space: pre-wrap; }
         <translation>Uyarı</translation>
     </message>
     <message>
-        <source>Cannot open vector on level 2 (topology not available).</source>
-        <translation type="obsolete">2. katmandaki vektör açılamıyor  (Topoloji yok).</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/qgsgrassselect.cpp" line="421"/>
         <source>Cannot open vector %1 in mapset %2 on level 2 (topology not available, try to rebuild topology using v.build module).</source>
         <translation type="unfinished"></translation>
@@ -18782,10 +13794,6 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsGrassShell</name>
     <message>
-        <source>Close</source>
-        <translation type="obsolete">Kapat</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="38"/>
         <source>Ctrl+Shift+V</source>
         <translation>Ctrl+Shift+V</translation>
@@ -18795,28 +13803,9 @@ p, li { white-space: pre-wrap; }
         <source>Ctrl+Shift+C</source>
         <translation>Ctrl+Shift+C</translation>
     </message>
-    <message>
-        <source>Warning</source>
-        <translation type="obsolete">Uyarı</translation>
-    </message>
-</context>
-<context>
-    <name>QgsGrassShellBase</name>
-    <message>
-        <source>GRASS Shell</source>
-        <translation type="obsolete">GRASS Kabuğu (Komut Satırı)</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">Kapat</translation>
-    </message>
 </context>
 <context>
     <name>QgsGrassTools</name>
-    <message>
-        <source>Modules</source>
-        <translation type="obsolete">Modüller</translation>
-    </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="113"/>
         <source>Browser</source>
@@ -18828,10 +13817,6 @@ p, li { white-space: pre-wrap; }
         <translation>GRASS Araçları</translation>
     </message>
     <message>
-        <source>GRASS Tools: </source>
-        <translation type="obsolete">GRASS Araçları:</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="155"/>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="203"/>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="208"/>
@@ -18840,43 +13825,9 @@ p, li { white-space: pre-wrap; }
         <translation>Uyarı</translation>
     </message>
     <message>
-        <source>Cannot find MSYS (</source>
-        <translation type="obsolete">MSYS bulunamadı (</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="155"/>
         <source>GRASS Shell is not compiled.</source>
         <translation>GRASS Kabuğu derlenmedi.</translation>
-    </message>
-    <message>
-        <source>The config file (</source>
-        <translation type="obsolete">Ayar dosyası (</translation>
-    </message>
-    <message>
-        <source>) not found.</source>
-        <translation type="obsolete">) bulunamadı.</translation>
-    </message>
-    <message>
-        <source>Cannot open config file (</source>
-        <translation type="obsolete">Ayar dosyası açılamadı (</translation>
-    </message>
-    <message>
-        <source>)</source>
-        <translation type="obsolete">)</translation>
-    </message>
-    <message>
-        <source>Cannot read config file (</source>
-        <translation type="obsolete">Ayar dosyası okunamadı (</translation>
-    </message>
-    <message>
-        <source>
-at line </source>
-        <translation type="obsolete">
-satırında</translation>
-    </message>
-    <message>
-        <source> column </source>
-        <translation type="obsolete">sütun</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="107"/>
@@ -18936,188 +13887,7 @@ at line %2 column %3</source>
     </message>
 </context>
 <context>
-    <name>QgsGridMakerPlugin</name>
-    <message>
-        <source>&amp;Graticule Creator</source>
-        <translation type="obsolete">&amp;Grid Oluşturucu</translation>
-    </message>
-    <message>
-        <source>Creates a graticule (grid) and stores the result as a shapefile</source>
-        <translation type="obsolete">Grid oluştur ve sonucu shape dosyası olarak sakla</translation>
-    </message>
-    <message>
-        <source>&amp;Graticules</source>
-        <translation type="obsolete">&amp;Gridler</translation>
-    </message>
-</context>
-<context>
-    <name>QgsGridMakerPluginGui</name>
-    <message>
-        <source>QGIS - Grid Maker</source>
-        <translation type="obsolete">QGIS - Grid Yapıcı</translation>
-    </message>
-    <message>
-        <source>Please enter the file name before pressing OK!.</source>
-        <translation type="obsolete">Lütfen TAMAM&apos;a basmadan önce dosya adını girin!.</translation>
-    </message>
-    <message>
-        <source>Longitude Interval is invalid - please correct and try again.</source>
-        <translation type="obsolete">Boylam aralığı geçersiz - lütfen düzeltin ve tekrar deneyin.</translation>
-    </message>
-    <message>
-        <source>Latitude Interval is invalid - please correct and try again.</source>
-        <translation type="obsolete">Enlem aralığı geçersiz - lütfen düzeltin ve tekrar deneyin.</translation>
-    </message>
-    <message>
-        <source>Longitude Origin is invalid - please correct and try again..</source>
-        <translation type="obsolete">Boylam aralığı geçersiz - lütfen düzeltin ve tekrar deneyin..</translation>
-    </message>
-    <message>
-        <source>Latitude Origin is invalid - please correct and try again.</source>
-        <translation type="obsolete">Boylam Merkezi geçersiz - lütfen düzeltin ve tekrar deneyin.</translation>
-    </message>
-    <message>
-        <source>Choose a filename to save under</source>
-        <translation type="obsolete">Kaydedeceğiniz dosya adını seçin</translation>
-    </message>
-    <message>
-        <source>ESRI Shapefile (*.shp)</source>
-        <translation type="obsolete">ESRI Shapefile (*.shp)</translation>
-    </message>
-    <message>
-        <source>Please enter the file name before pressing OK!</source>
-        <translation type="obsolete">Lütfen TAMAM&apos;a basmadan önce dosya adını girin!</translation>
-    </message>
-    <message>
-        <source>Please enter intervals before pressing OK!</source>
-        <translation type="obsolete">Lütfen TAMAM&apos;a basmadan önce aralık değerleriniı girin!</translation>
-    </message>
-    <message>
-        <source>Choose a file name to save under</source>
-        <translation type="obsolete">Kaydedeceğiniz dosya adını seçin</translation>
-    </message>
-</context>
-<context>
-    <name>QgsGridMakerPluginGuiBase</name>
-    <message>
-        <source>QGIS Plugin Template</source>
-        <translation type="obsolete">QGIS Eklenti Şablonu</translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">&amp;TAMAM</translation>
-    </message>
-    <message>
-        <source>Alt+O</source>
-        <translation type="obsolete">Alt+O</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;İptal</translation>
-    </message>
-    <message>
-        <source>Alt+C</source>
-        <translation type="obsolete">Alt+C</translation>
-    </message>
-    <message>
-        <source>Graticule Builder</source>
-        <translation type="obsolete">Grid Oluşturucu</translation>
-    </message>
-    <message>
-        <source>#000.00000; </source>
-        <translation type="obsolete">#000.00000; </translation>
-    </message>
-    <message>
-        <source>Latitude:</source>
-        <translation type="obsolete">Enlem:</translation>
-    </message>
-    <message>
-        <source>Longitude:</source>
-        <translation type="obsolete">Boylam:</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>Latitude Interval:</source>
-        <translation type="obsolete">Enlem Aralığı:</translation>
-    </message>
-    <message>
-        <source>Longitude Interval:</source>
-        <translation type="obsolete">Boylam Aralığı:</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">Tip</translation>
-    </message>
-    <message>
-        <source>Point</source>
-        <translation type="obsolete">Nokta</translation>
-    </message>
-    <message>
-        <source>Line</source>
-        <translation type="obsolete">Satır</translation>
-    </message>
-    <message>
-        <source>Polygon</source>
-        <translation type="obsolete">Poligon</translation>
-    </message>
-    <message>
-        <source>Origin (lower left)</source>
-        <translation type="obsolete">Merkez (sol alt)</translation>
-    </message>
-    <message>
-        <source>End point (upper right)</source>
-        <translation type="obsolete">Son nokta (sağ üst)</translation>
-    </message>
-    <message>
-        <source>Graticle size (units in degrees)</source>
-        <translation type="obsolete">Grid boyutu (derece biriminde)</translation>
-    </message>
-    <message>
-        <source>Output (shape) file</source>
-        <translation type="obsolete">Çıktı (Shape) dosya</translation>
-    </message>
-    <message>
-        <source>Save As...</source>
-        <translation type="obsolete">Farklı Kaydet...</translation>
-    </message>
-    <message>
-        <source>QGIS Graticule Creator</source>
-        <translation type="obsolete">QGIS Grid Oluşturucu</translation>
-    </message>
-    <message>
-        <source>Graticle size</source>
-        <translation type="obsolete">Grid boyutu</translation>
-    </message>
-    <message>
-        <source>Y Interval:</source>
-        <translation type="obsolete">Y aralığı:</translation>
-    </message>
-    <message>
-        <source>X Interval:</source>
-        <translation type="obsolete">X aralığı:</translation>
-    </message>
-    <message>
-        <source>Y</source>
-        <translation type="obsolete">Y</translation>
-    </message>
-    <message>
-        <source>X</source>
-        <translation type="obsolete">X</translation>
-    </message>
-</context>
-<context>
     <name>QgsHelpViewer</name>
-    <message>
-        <source>Quantum GIS Help - </source>
-        <translation type="obsolete">Quantum CBS Yardım -</translation>
-    </message>
-    <message>
-        <source>Failed to get the help text from the database</source>
-        <translation type="obsolete">Veritabanından yardım metnini almada hata</translation>
-    </message>
     <message>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="139"/>
         <source>This help file is not available in your language %1. If you would like to translate it, please contact the QGIS  development team.</source>
@@ -19133,14 +13903,6 @@ at line %2 column %3</source>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="222"/>
         <source>The QGIS help database is not installed</source>
         <translation>QGIS yardım veritabanı yüklenmedi</translation>
-    </message>
-    <message>
-        <source>This help file does not exist for your language</source>
-        <translation type="obsolete">Bu yardım dosyası sizin dilinizde yok</translation>
-    </message>
-    <message>
-        <source>If you would like to create it, contact the QGIS development team</source>
-        <translation type="obsolete">Eğer bunu oluşturmak istiyorsanız, QGIS geliştirme takımı ile bağlantı kurun</translation>
     </message>
     <message>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="163"/>
@@ -19227,16 +13989,6 @@ at line %2 column %3</source>
         <translation>HHTP yanıtı tamamlandı, ancak bir hata oldu: %1</translation>
     </message>
     <message>
-        <source>Network timed out after %1 seconds of inactivity.
-This may be a problem in your network connection or at the WMS server.</source>
-        <translation type="obsolete">
-        
-        
-        
-        
-        </translation>
-    </message>
-    <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="403"/>
         <source>HTTP transaction completed, however there was an error: %1</source>
         <translation>HHTP hareketi tamamlandı, ancak bir hata oldu: %1</translation>
@@ -19316,10 +14068,6 @@ This may be a problem in your network connection or at the WMS server.</source>
 </context>
 <context>
     <name>QgsIdentifyResults</name>
-    <message>
-        <source>Identify Results - </source>
-        <translation type="obsolete">Sonuçları Belirle - </translation>
-    </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="385"/>
         <source>Run action</source>
@@ -19432,18 +14180,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <source>Identify Results</source>
         <translation>Sonuçları Belirle</translation>
     </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">Yardım</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">Kapat</translation>
-    </message>
 </context>
 <context>
     <name>QgsImageWarper</name>
@@ -19513,17 +14249,9 @@ This may be a problem in your network connection or at the WMS server.</source>
 <context>
     <name>QgsInterpolationDialogBase</name>
     <message>
-        <source>Dialog</source>
-        <translation type="obsolete">Diyalog</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="32"/>
         <source>Input</source>
         <translation>Girdi</translation>
-    </message>
-    <message>
-        <source>Input vector layer:</source>
-        <translation type="obsolete">Girdi vektör katman:</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="78"/>
@@ -19531,29 +14259,9 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>Ara değeri belirleme için z-koordinatını kullan</translation>
     </message>
     <message>
-        <source>Interpolation attribute: </source>
-        <translation type="obsolete">Ara değer için öznitelik:</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="127"/>
         <source>Output</source>
         <translation>Çıktı</translation>
-    </message>
-    <message>
-        <source>Interpolation method:</source>
-        <translation type="obsolete">Ara değer belirleme yöntemi:</translation>
-    </message>
-    <message>
-        <source>Number of columns:</source>
-        <translation type="obsolete">Sütun sayısı:</translation>
-    </message>
-    <message>
-        <source>Number of rows:</source>
-        <translation type="obsolete">Satır sayısı:</translation>
-    </message>
-    <message>
-        <source>Output File: </source>
-        <translation type="obsolete">Çıktı Dosya:</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="146"/>
@@ -19565,14 +14273,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="20"/>
         <source>Interpolation plugin</source>
         <translation>Ara değerler hesaplama eklentisi</translation>
-    </message>
-    <message>
-        <source>Input vector layer</source>
-        <translation type="obsolete">Girdi vektör katman</translation>
-    </message>
-    <message>
-        <source>Interpolation attribute </source>
-        <translation type="obsolete">Ara değer için öznitelik</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="38"/>
@@ -19726,18 +14426,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>En düşük Değer</translation>
     </message>
     <message>
-        <source>-</source>
-        <translation type="obsolete">-</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">TAMAM</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">İptal</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsludialogbase.ui" line="36"/>
         <source>Upper value</source>
         <translation>Üst değer</translation>
@@ -19759,34 +14447,14 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>Form1</translation>
     </message>
     <message>
-        <source>Field containing label:</source>
-        <translation type="obsolete">Etiket içeren alan:</translation>
-    </message>
-    <message>
-        <source>Default label:</source>
-        <translation type="obsolete">Varsayılan etiket:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="861"/>
         <source>Preview:</source>
         <translation>Öngörünüş:</translation>
     </message>
     <message>
-        <source>Font Style</source>
-        <translation type="obsolete">Yazıtipi stili</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="442"/>
         <source>Font</source>
         <translation>Yazıtipi</translation>
-    </message>
-    <message>
-        <source>Points</source>
-        <translation type="obsolete">Noktalar</translation>
-    </message>
-    <message>
-        <source>Map units</source>
-        <translation type="obsolete">Harita birimleri</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="237"/>
@@ -19799,29 +14467,9 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>Şeffaflık:</translation>
     </message>
     <message>
-        <source>Colour</source>
-        <translation type="obsolete">Renk</translation>
-    </message>
-    <message>
-        <source>Position</source>
-        <translation type="obsolete">Konum</translation>
-    </message>
-    <message>
-        <source>Buffer Labels?</source>
-        <translation type="obsolete">Tampon etiketleri?</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="740"/>
         <source>Size:</source>
         <translation>Boyut:</translation>
-    </message>
-    <message>
-        <source>Size is in map units</source>
-        <translation type="obsolete">Boyut harita birimlerine göredir</translation>
-    </message>
-    <message>
-        <source>Size is in points</source>
-        <translation type="obsolete">Boyut nokta olaraktır</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="94"/>
@@ -19874,70 +14522,10 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>Alt sol</translation>
     </message>
     <message>
-        <source>Angle (deg):</source>
-        <translation type="obsolete">Açı (derece):</translation>
-    </message>
-    <message>
-        <source>&amp;Font family:</source>
-        <translation type="obsolete">&amp;Yazıtipi ailesi:</translation>
-    </message>
-    <message>
-        <source>&amp;Italic:</source>
-        <translation type="obsolete">&amp;Eğik:</translation>
-    </message>
-    <message>
-        <source>&amp;Underline:</source>
-        <translation type="obsolete">&amp;Altçizgi:</translation>
-    </message>
-    <message>
-        <source>&amp;Bold:</source>
-        <translation type="obsolete">&amp;Koyu:</translation>
-    </message>
-    <message>
-        <source>&amp;Size:</source>
-        <translation type="obsolete">&amp;Boyut:</translation>
-    </message>
-    <message>
-        <source>X Coordinate:</source>
-        <translation type="obsolete">X-Koordinatı:</translation>
-    </message>
-    <message>
-        <source>Y Coordinate:</source>
-        <translation type="obsolete">Y-Koordinatı:</translation>
-    </message>
-    <message>
-        <source>Placement:</source>
-        <translation type="obsolete">Yerleştirme:</translation>
-    </message>
-    <message>
-        <source>Font size units</source>
-        <translation type="obsolete">Yazıtipi boyut birimleri</translation>
-    </message>
-    <message>
-        <source>Font Alignment</source>
-        <translation type="obsolete">Yazıtipi Hizalama</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="54"/>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="506"/>
         <source>Placement</source>
         <translation>Yerleştirme</translation>
-    </message>
-    <message>
-        <source>Buffer</source>
-        <translation type="obsolete">Tampon</translation>
-    </message>
-    <message>
-        <source>Buffer size units</source>
-        <translation type="obsolete">Tampon boyut birimleri</translation>
-    </message>
-    <message>
-        <source>Source</source>
-        <translation type="obsolete">Kaynak</translation>
-    </message>
-    <message>
-        <source>Size Units:</source>
-        <translation type="obsolete">Ölçü Birimleri:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="870"/>
@@ -19965,10 +14553,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Font transparency</source>
-        <translation type="obsolete">Yazıtipi şeffaflığı</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="215"/>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="455"/>
         <source>Color</source>
@@ -19981,17 +14565,9 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>Açı (derece)</translation>
     </message>
     <message>
-        <source>Buffer labels?</source>
-        <translation type="obsolete">Tampon etiketleri?</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="188"/>
         <source>Buffer size</source>
         <translation>Tampon boyutu</translation>
-    </message>
-    <message>
-        <source>Transparency</source>
-        <translation type="obsolete">Şeffaflık</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="806"/>
@@ -20113,10 +14689,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>General</source>
-        <translation type="obsolete">Genel</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="351"/>
         <source>Font size</source>
         <translation>Yazıtipi boyutu</translation>
@@ -20136,14 +14708,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <source>Minimum</source>
         <translation>En küçük</translation>
     </message>
-    <message>
-        <source>Minimum scale at which this layer will be displayed. </source>
-        <translation type="obsolete">Bu katmanın gösterileceği minimum ölçek.</translation>
-    </message>
-    <message>
-        <source>Maximum scale at which this layer will be displayed. </source>
-        <translation type="obsolete">Bu katmanın görüntülenebileceği en büyük ölçek.</translation>
-    </message>
     <message utf8="true">
         <location filename="../src/ui/qgslabeldialogbase.ui" line="399"/>
         <source>°</source>
@@ -20156,49 +14720,11 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
 </context>
 <context>
-    <name>QgsLayerProjectionSelector</name>
-    <message>
-        <source>Define this layer&apos;s projection:</source>
-        <translation type="obsolete">Bu katmanların projeksiyonunu belirle:</translation>
-    </message>
-    <message>
-        <source>This layer appears to have no projection specification.</source>
-        <translation type="obsolete">Bu katman projeksiyon bilgisi yok görünüyor.</translation>
-    </message>
-</context>
-<context>
-    <name>QgsLayerProjectionSelectorBase</name>
-    <message>
-        <source>Layer Projection Selector</source>
-        <translation type="obsolete">Katman Projeksiyonu Seçici</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">TAMAM</translation>
-    </message>
-</context>
-<context>
     <name>QgsLegend</name>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="122"/>
         <source>group</source>
         <translation>Grup</translation>
-    </message>
-    <message>
-        <source>&amp;Properties</source>
-        <translation type="obsolete">&amp;Özellikler</translation>
-    </message>
-    <message>
-        <source>&amp;Zoom to layer extent</source>
-        <translation type="obsolete">Katmanın Dış Sınırlarını görecek Şekilde Yaklaştır</translation>
-    </message>
-    <message>
-        <source>&amp;Add to overview</source>
-        <translation type="obsolete">Öngörünüşe ekle</translation>
-    </message>
-    <message>
-        <source>&amp;Remove from overview</source>
-        <translation type="obsolete">&amp;Öngörünüşten kaldır</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="458"/>
@@ -20209,10 +14735,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/app/legend/qgslegend.cpp" line="451"/>
         <source>&amp;Make to toplevel item</source>
         <translation>&amp;Enüst seviye öğesi yap</translation>
-    </message>
-    <message>
-        <source>&amp;Allow editing</source>
-        <translation type="obsolete">Düzenlemeye izin ver</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="463"/>
@@ -20235,10 +14757,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>&amp;Tümünü daralt</translation>
     </message>
     <message>
-        <source>Show file groups</source>
-        <translation type="obsolete">Dosya gruplarını göster</translation>
-    </message>
-    <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="674"/>
         <location filename="../src/app/legend/qgslegend.cpp" line="685"/>
         <source>Stop editing</source>
@@ -20249,18 +14767,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/app/legend/qgslegend.cpp" line="686"/>
         <source>Do you want to save the changes to layer %1?</source>
         <translation>Değişiklikleri %1 katmanına kaydetmek istiyor musunuz?</translation>
-    </message>
-    <message>
-        <source>&amp;Open attribute table</source>
-        <translation type="obsolete">&amp;Öznitelik tablosu aç</translation>
-    </message>
-    <message>
-        <source>Allow Editing</source>
-        <translation type="obsolete">Düzenlemeye izin ver</translation>
-    </message>
-    <message>
-        <source>Save as shapefile...</source>
-        <translation type="obsolete">Shape dosyası olarak Kaydet...</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="1688"/>
@@ -20299,14 +14805,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="413"/>
         <source>&amp;Open attribute table</source>
         <translation>&amp;Öznitelik tablosu aç</translation>
-    </message>
-    <message>
-        <source>Save as shapefile...</source>
-        <translation type="obsolete">Shape dosyası olarak Kaydet...</translation>
-    </message>
-    <message>
-        <source>Save selection as shapefile...</source>
-        <translation type="obsolete">Seçimi shape dosyası olarak kaydet...</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="427"/>
@@ -20349,207 +14847,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="672"/>
         <source>Save error</source>
         <translation type="unfinished">Kayıt hatası</translation>
-    </message>
-    <message>
-        <source>Driver not found</source>
-        <translation type="obsolete">Sürücü bulunamadı</translation>
-    </message>
-    <message>
-        <source>ESRI Shapefile driver is not available</source>
-        <translation type="obsolete">ESRI Shapefile sürücüsü mevcut değil</translation>
-    </message>
-    <message>
-        <source>Error creating shapefile</source>
-        <translation type="obsolete">Shapefile oluşturmada hata</translation>
-    </message>
-    <message>
-        <source>The shapefile could not be created (%1)</source>
-        <translation type="obsolete">Shapefile oluşturulamıyor (%1)</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Hata</translation>
-    </message>
-    <message>
-        <source>Layer creation failed</source>
-        <translation type="obsolete">Katman oluşturmada hata</translation>
-    </message>
-    <message>
-        <source>Layer attribute table contains unsupported datatype(s)</source>
-        <translation type="obsolete">Katman öznitelik tablosu desteklenmeyen veri tip(ler)i içeriyor</translation>
-    </message>
-    <message>
-        <source>More layers</source>
-        <translation type="obsolete">Daha çok katman</translation>
-    </message>
-    <message>
-        <source>This item contains more layer files. Displaying more layers in table is not supported.</source>
-        <translation type="obsolete">Bu öğe daha fazla katman dosyası içeriyor. Tabloda fazla katman gösterimi desteklenmiyor.</translation>
-    </message>
-    <message>
-        <source>Multiple layers</source>
-        <translation type="obsolete">Çoklu katmanlar</translation>
-    </message>
-</context>
-<context>
-    <name>QgsLegendLayerFile</name>
-    <message>
-        <source>Attribute table - </source>
-        <translation type="obsolete">Öznitelik Tablosu - </translation>
-    </message>
-    <message>
-        <source>Save layer as...</source>
-        <translation type="obsolete">Katmanı şöyle kaydet...</translation>
-    </message>
-    <message>
-        <source>Start editing failed</source>
-        <translation type="obsolete">Düzeltmeyi başlatmada hata</translation>
-    </message>
-    <message>
-        <source>Provider cannot be opened for editing</source>
-        <translation type="obsolete">Düzeltme için gerekli sağlayıcı açılamıyor</translation>
-    </message>
-    <message>
-        <source>Stop editing</source>
-        <translation type="obsolete">Düzeltmeyi durdur</translation>
-    </message>
-    <message>
-        <source>Do you want to save the changes?</source>
-        <translation type="obsolete">Değişikliklerin kaydedilmesini istermisiniz?</translation>
-    </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation type="obsolete">&amp;Evet</translation>
-    </message>
-    <message>
-        <source>&amp;No</source>
-        <translation type="obsolete">&amp;Hayır</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Hata</translation>
-    </message>
-    <message>
-        <source>Could not commit changes</source>
-        <translation type="obsolete">Değişiklikler henüz kabul edilmedi</translation>
-    </message>
-    <message>
-        <source>Problems during roll back</source>
-        <translation type="obsolete">Geri almada hata</translation>
-    </message>
-    <message>
-        <source>Not a vector layer</source>
-        <translation type="obsolete">Vektör katman değil</translation>
-    </message>
-    <message>
-        <source>To open an attribute table, you must select a vector layer in the legend</source>
-        <translation type="obsolete">Öznitelik tablosunu açmak için, lejanddan bir vektör katman seçmelisiniz</translation>
-    </message>
-    <message>
-        <source>Saving done</source>
-        <translation type="obsolete">Kayıt tamalandı</translation>
-    </message>
-    <message>
-        <source>Export to Shapefile has been completed</source>
-        <translation type="obsolete">Shape dosyasına dönüştürme tamamlandı</translation>
-    </message>
-    <message>
-        <source>Driver not found</source>
-        <translation type="obsolete">Sürücü bulunamadı</translation>
-    </message>
-    <message>
-        <source>ESRI Shapefile driver is not available</source>
-        <translation type="obsolete">ESRI Shape dosyası sürücüsü mevcut değil</translation>
-    </message>
-    <message>
-        <source>Error creating shapefile</source>
-        <translation type="obsolete">Shape dosyası oluşturmada hata</translation>
-    </message>
-    <message>
-        <source>The shapefile could not be created (</source>
-        <translation type="obsolete">Shape dosyası oluşturulamıyor (</translation>
-    </message>
-    <message>
-        <source>Layer creation failed</source>
-        <translation type="obsolete">Katman oluşturmada hata</translation>
-    </message>
-    <message>
-        <source>&amp;Zoom to layer extent</source>
-        <translation type="obsolete">&amp;Katmanın Dış Sınırlarını görecek Şekilde Yaklaştır</translation>
-    </message>
-    <message>
-        <source>&amp;Show in overview</source>
-        <translation type="obsolete">&amp;Öngörünüşte göster</translation>
-    </message>
-    <message>
-        <source>&amp;Remove</source>
-        <translation type="obsolete">&amp;Kaldır</translation>
-    </message>
-    <message>
-        <source>&amp;Open attribute table</source>
-        <translation type="obsolete">&amp;Öznitelik tablosu aç</translation>
-    </message>
-    <message>
-        <source>Save as shapefile...</source>
-        <translation type="obsolete">Shape dosyası olarak Kaydet...</translation>
-    </message>
-    <message>
-        <source>Save selection as shapefile...</source>
-        <translation type="obsolete">Seçimi shape dosyası olarak Kaydet...</translation>
-    </message>
-    <message>
-        <source>&amp;Properties</source>
-        <translation type="obsolete">&amp;Özellikler</translation>
-    </message>
-    <message>
-        <source>Layer attribute table contains unsupported datatype(s)</source>
-        <translation type="obsolete">Katman öznitelik tablosu desteklenmeyen veri tip(ler)i içeriyor</translation>
-    </message>
-</context>
-<context>
-    <name>QgsLineStyleDialogBase</name>
-    <message>
-        <source>Select a line style</source>
-        <translation type="obsolete">Çizgi stilini seç</translation>
-    </message>
-    <message>
-        <source>Styles</source>
-        <translation type="obsolete">Stiller</translation>
-    </message>
-    <message>
-        <source>Ok</source>
-        <translation type="obsolete">Tamam</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">İptal</translation>
-    </message>
-</context>
-<context>
-    <name>QgsLineStyleWidgetBase</name>
-    <message>
-        <source>Form2</source>
-        <translation type="obsolete">Form2</translation>
-    </message>
-    <message>
-        <source>Outline Style</source>
-        <translation type="obsolete">Çerçeve stili</translation>
-    </message>
-    <message>
-        <source>Width:</source>
-        <translation type="obsolete">Genişlik:</translation>
-    </message>
-    <message>
-        <source>Colour:</source>
-        <translation type="obsolete">Renk:</translation>
-    </message>
-    <message>
-        <source>LineStyleWidget</source>
-        <translation type="obsolete">Çizgi stili butonu</translation>
-    </message>
-    <message>
-        <source>col</source>
-        <translation type="obsolete">sütun</translation>
     </message>
 </context>
 <context>
@@ -20594,10 +14891,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/plugins/diagram_overlay/qgslinearlyscalingdialogbase.ui" line="59"/>
         <source>Size unit</source>
         <translation>Boyut Birimleri</translation>
-    </message>
-    <message>
-        <source>Size:</source>
-        <translation type="obsolete">Boyut:</translation>
     </message>
 </context>
 <context>
@@ -20717,18 +15010,6 @@ This may be a problem in your network connection or at the WMS server.</source>
 </context>
 <context>
     <name>QgsMapCanvas</name>
-    <message>
-        <source>Could not draw</source>
-        <translation type="obsolete">Çizilemiyor</translation>
-    </message>
-    <message>
-        <source>because</source>
-        <translation type="obsolete">çünkü</translation>
-    </message>
-    <message>
-        <source>Scale </source>
-        <translation type="obsolete">Ölçek</translation>
-    </message>
     <message>
         <location filename="../src/gui/qgsmapcanvas.cpp" line="1368"/>
         <source>Could not draw %1 because:
@@ -20952,10 +15233,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <source>An error was reported during intersection removal</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Could not remove polygon intersection</source>
-        <translation type="obsolete">Poligon kesişimleri uzaklaştırılamıyor</translation>
-    </message>
 </context>
 <context>
     <name>QgsMapToolAddIsland</name>
@@ -21157,20 +15434,6 @@ This may be a problem in your network connection or at the WMS server.</source>
 <context>
     <name>QgsMapToolIdentify</name>
     <message>
-        <source>No features found</source>
-        <translation type="obsolete">Hiç obje bulunmadı</translation>
-    </message>
-    <message>
-        <source>- %1 features found</source>
-        <comment>Identify results window title</comment>
-        <translation type="obsolete">-%1 obje bulundu
-        
-        
-        
-        
-        </translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="201"/>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="391"/>
         <source>(clicked coordinate)</source>
@@ -21185,10 +15448,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="97"/>
         <source>To identify features, you must choose an active layer by clicking on its name in the legend</source>
         <translation>Objeleri belirlemek için lejandda ilgili katman üzerine tıklayarak onu aktif katman olarak seçmelisiniz</translation>
-    </message>
-    <message>
-        <source>Band</source>
-        <translation type="obsolete">Bant</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="121"/>
@@ -21261,23 +15520,6 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="385"/>
         <source>Raster</source>
         <translation>Raster</translation>
-    </message>
-    <message>
-        <source>action</source>
-        <translation type="obsolete">eylem</translation>
-    </message>
-    <message>
-        <source>No features were found in the active layer at the point you clicked</source>
-        <translation type="obsolete">tıkladığınız noktada aktif katmanda hiç obje bulunamadı </translation>
-    </message>
-    <message numerus="yes">
-        <source>%1 - %n feature(s) found</source>
-        <comment>Identify results window title</comment>
-        <translation type="obsolete">
-            <numerusform>
-        
-        </numerusform>
-        </translation>
     </message>
 </context>
 <context>
@@ -21522,60 +15764,9 @@ This may be a problem in your network connection or at the WMS server.</source>
 <context>
     <name>QgsMapserverExport</name>
     <message>
-        <source>Name for the map file</source>
-        <translation type="obsolete">Mapserver harita dosyasının adı</translation>
-    </message>
-    <message>
-        <source>MapServer map files (*.map);;All files(*.*)</source>
-        <comment>Filter list for selecting files from a dialog box</comment>
-        <translation type="obsolete">Mapserver harita dosyaları (*.map);;Tüm dosyalar(*.*)</translation>
-    </message>
-    <message>
-        <source>Choose the QGIS project file</source>
-        <translation type="obsolete">QGIS proje dosyasını seç</translation>
-    </message>
-    <message>
-        <source>QGIS Project Files (*.qgs);;All files (*.*)</source>
-        <comment>Filter list for selecting files from a dialog box</comment>
-        <translation type="obsolete">QGIS Proje dosyaları (*.qgs);;Tüm Dosyalar (*.*)</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsmapserverexport.cpp" line="75"/>
         <source>Overwrite File?</source>
         <translation>Dosyanın Üzerine Yazayım mı?</translation>
-    </message>
-    <message>
-        <source> exists. 
-Do you want to overwrite it?</source>
-        <comment>a filename is prepended to this text, and appears in a dialog box</comment>
-        <translation type="obsolete">Mevcut
-Üzerine yazmamı istermisin?</translation>
-    </message>
-    <message>
-        <source>Yes</source>
-        <translation type="obsolete">Evet</translation>
-    </message>
-    <message>
-        <source>No</source>
-        <translation type="obsolete">Hayır</translation>
-    </message>
-    <message>
-        <source> exists. 
-Do you want to overwrite it?</source>
-        <translation type="obsolete">Mevcut
-Üzerine yazmamı istermisin?</translation>
-    </message>
-    <message>
-        <source>MapServer map files (*.map);;All files (*.*)</source>
-        <comment>Filter list for selecting files from a dialog box</comment>
-        <translation type="obsolete">MapServer harita dosyaları (*.map);;Tüm dosyalar (*.*)</translation>
-    </message>
-    <message>
-        <source> exists. 
-Do you want to overwrite it?</source>
-        <comment>a fileName is prepended to this text, and appears in a dialog box</comment>
-        <translation type="obsolete">Mevcut
-Üzerine yazılmasını istermisin?</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmapserverexport.cpp" line="76"/>
@@ -21629,30 +15820,6 @@ Do you want to overwrite it?</source>
         <translation>Genişlik</translation>
     </message>
     <message>
-        <source>dd</source>
-        <translation type="obsolete">dd</translation>
-    </message>
-    <message>
-        <source>feet</source>
-        <translation type="obsolete">feet</translation>
-    </message>
-    <message>
-        <source>meters</source>
-        <translation type="obsolete">Metre</translation>
-    </message>
-    <message>
-        <source>miles</source>
-        <translation type="obsolete">mil</translation>
-    </message>
-    <message>
-        <source>inches</source>
-        <translation type="obsolete">inç</translation>
-    </message>
-    <message>
-        <source>kilometers</source>
-        <translation type="obsolete">Kilometre</translation>
-    </message>
-    <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="182"/>
         <location filename="../src/ui/qgsmapserverexportbase.ui" line="97"/>
         <source>Units</source>
@@ -21678,10 +15845,6 @@ Do you want to overwrite it?</source>
         <location filename="../src/ui/qgsmapserverexportbase.ui" line="128"/>
         <source>jpeg</source>
         <translation>jpeg</translation>
-    </message>
-    <message>
-        <source>Options</source>
-        <translation type="obsolete">Seçenekler</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="456"/>
@@ -21850,22 +16013,6 @@ http://my.host.com/cgi-bin/mapserv.exe</source>
         <translation>Şablon</translation>
     </message>
     <message>
-        <source>&amp;Help</source>
-        <translation type="obsolete">&amp;Yardım</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">&amp;TAMAM</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;İptal</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsmapserverexportbase.ui" line="49"/>
         <source>...</source>
         <translation>...</translation>
@@ -21889,10 +16036,6 @@ http://my.host.com/cgi-bin/mapserv.exe</source>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="37"/>
         <source>Full path to the QGIS project file to export to MapServer map format</source>
         <translation>MarServer map biçemine dönüştürülecek QGIS projesinin tam tolu</translation>
-    </message>
-    <message>
-        <source>QGIS project file</source>
-        <translation type="obsolete">QGIS Proje dosyası</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="47"/>
@@ -21919,44 +16062,6 @@ http://my.host.com/cgi-bin/mapserv.exe</source>
     </message>
 </context>
 <context>
-    <name>QgsMarkerDialogBase</name>
-    <message>
-        <source>Choose a marker symbol</source>
-        <translation type="obsolete">İmleyici sembolünü seç</translation>
-    </message>
-    <message>
-        <source>Directory</source>
-        <translation type="obsolete">Dizin</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>Ok</source>
-        <translation type="obsolete">Tamam</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">İptal</translation>
-    </message>
-    <message>
-        <source>New Item</source>
-        <translation type="obsolete">Yeni öğe</translation>
-    </message>
-</context>
-<context>
-    <name>QgsMeasure</name>
-    <message>
-        <source>Segments (in meters)</source>
-        <translation type="obsolete">Parçalar (Metre olarak)</translation>
-    </message>
-    <message>
-        <source>Incorrect measure results</source>
-        <translation type="obsolete">Hatalı ölçme sonuçları</translation>
-    </message>
-</context>
-<context>
     <name>QgsMeasureBase</name>
     <message>
         <location filename="../src/ui/qgsmeasurebase.ui" line="20"/>
@@ -21967,22 +16072,6 @@ http://my.host.com/cgi-bin/mapserv.exe</source>
         <location filename="../src/ui/qgsmeasurebase.ui" line="69"/>
         <source>Total</source>
         <translation>Toplam</translation>
-    </message>
-    <message>
-        <source>New</source>
-        <translation type="obsolete">Yeni</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">Yardım</translation>
-    </message>
-    <message>
-        <source>Cl&amp;ose</source>
-        <translation type="obsolete">&amp;Kapat</translation>
-    </message>
-    <message>
-        <source>Total:</source>
-        <translation type="obsolete">Toplam:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsmeasurebase.ui" line="89"/>
@@ -22107,193 +16196,9 @@ http://my.host.com/cgi-bin/mapserv.exe</source>
         <translation>QGIS Mesajı</translation>
     </message>
     <message>
-        <source>Close</source>
-        <translation type="obsolete">Kapat</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsmessageviewer.ui" line="49"/>
         <source>Don&apos;t show this message again</source>
         <translation>Bu mesajı bir daha gösterme</translation>
-    </message>
-</context>
-<context>
-    <name>QgsMySQLProvider</name>
-    <message>
-        <source>Unable to access relation</source>
-        <translation type="obsolete">İlişkiye erişilemiyor</translation>
-    </message>
-    <message>
-        <source>Unable to access the </source>
-        <translation type="obsolete">&apos;e erişilemiyor</translation>
-    </message>
-    <message>
-        <source> relation.
-The error message from the database was:
-</source>
-        <translation type="obsolete">ilişki. 
-Veritabanından şu mesaj geldi:
-</translation>
-    </message>
-    <message>
-        <source>No GEOS Support!</source>
-        <translation type="obsolete">GEOS desteği yok!</translation>
-    </message>
-    <message>
-        <source>Your PostGIS installation has no GEOS support.
-Feature selection and identification will not work properly.
-Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
-        <translation type="obsolete">PostGIS kurulumunuzun GEOS desteği yok.
-Obje seçimi ve belirlenmesi doğru çalışmayacak.
-Lütfen PostGIS&apos;i GEOS desteği ile kurun (http:// geos.refractions.net)</translation>
-    </message>
-    <message>
-        <source>Save layer as...</source>
-        <translation type="obsolete">Katmanı şöyle kaydet...</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Hata</translation>
-    </message>
-    <message>
-        <source>Error creating field </source>
-        <translation type="obsolete">Alan oluşturmada hata</translation>
-    </message>
-    <message>
-        <source>Layer creation failed</source>
-        <translation type="obsolete">Katman oluşturmada hata</translation>
-    </message>
-    <message>
-        <source>Error creating shapefile</source>
-        <translation type="obsolete">Shape dosyası oluşturmada hata</translation>
-    </message>
-    <message>
-        <source>The shapefile could not be created (</source>
-        <translation type="obsolete">Shape dosyası oluşturulamıyor (</translation>
-    </message>
-    <message>
-        <source>Driver not found</source>
-        <translation type="obsolete">Sürücü bulunamadı</translation>
-    </message>
-    <message>
-        <source> driver is not available</source>
-        <translation type="obsolete">sürücü mevcut değil</translation>
-    </message>
-</context>
-<context>
-    <name>QgsNewConnection</name>
-    <message>
-        <source>Test connection</source>
-        <translation type="obsolete">Bağlantıyı Dene</translation>
-    </message>
-    <message>
-        <source>Connection to %1 was successfull</source>
-        <translation type="obsolete">%1 &apos;e bağlantı başarıldı</translation>
-    </message>
-    <message>
-        <source>Connection failed - Check settings and try again.
-
-Extended error information:
-</source>
-        <translation type="obsolete">Bağlantıda hata - Ayarları kotrol edin ve tekrar deneyin
-
-Geniş hata bilgisi:</translation>
-    </message>
-    <message>
-        <source>Connection to %1 was successful</source>
-        <translation type="obsolete">%1 &apos;e bağlantı başarıldı</translation>
-    </message>
-    <message>
-        <source>Connection failed - Check settings and try again.
-
-Extended error information:
-%1</source>
-        <translation type="obsolete">Bağlantıda hata - Ayarları kotrol edin ve tekrar deneyin
-
-Geniş hata bilgisi:
-%1</translation>
-    </message>
-    <message>
-        <source>Save connection</source>
-        <translation type="obsolete">Bağlantıyı kaydet</translation>
-    </message>
-</context>
-<context>
-    <name>QgsNewConnectionBase</name>
-    <message>
-        <source>Create a New PostGIS connection</source>
-        <translation type="obsolete">Yeni bir PostGIS bağlantısı oluştur</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">TAMAM</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">İptal</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">Yardım</translation>
-    </message>
-    <message>
-        <source>Connection Information</source>
-        <translation type="obsolete">Bağlantı bilgisi</translation>
-    </message>
-    <message>
-        <source>Host</source>
-        <translation type="obsolete">Ana Bilgisayar</translation>
-    </message>
-    <message>
-        <source>Database</source>
-        <translation type="obsolete">Veritabanı</translation>
-    </message>
-    <message>
-        <source>Username</source>
-        <translation type="obsolete">Kullanıcı adı</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Ad</translation>
-    </message>
-    <message>
-        <source>Name of the new connection</source>
-        <translation type="obsolete">Yeni bağlantının adı</translation>
-    </message>
-    <message>
-        <source>Password</source>
-        <translation type="obsolete">Parola</translation>
-    </message>
-    <message>
-        <source>Test Connect</source>
-        <translation type="obsolete">Bağlantıyı Dene</translation>
-    </message>
-    <message>
-        <source>Save Password</source>
-        <translation type="obsolete">Parolayı Kaydet</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
-    </message>
-    <message>
-        <source>Port</source>
-        <translation type="obsolete">Port</translation>
-    </message>
-    <message>
-        <source>5432</source>
-        <translation type="obsolete">5432</translation>
-    </message>
-    <message>
-        <source>&amp;Test Connect</source>
-        <translation type="obsolete">&amp;Bağlantıyı Dene</translation>
-    </message>
-    <message>
-        <source>Only look in the geometry_columns table</source>
-        <translation type="obsolete">Sadece geometry_columns tablosuna gözat</translation>
-    </message>
-    <message>
-        <source>Only look in the &apos;public&apos; schema</source>
-        <translation type="obsolete">Sadece &apos;public&apos; şemasına gözat</translation>
     </message>
 </context>
 <context>
@@ -22312,14 +16217,6 @@ Geniş hata bilgisi:
 <context>
     <name>QgsNewHttpConnectionBase</name>
     <message>
-        <source>Create a New WMS connection</source>
-        <translation type="obsolete">Yeni bir WMS bağlantısı oluştur</translation>
-    </message>
-    <message>
-        <source>Connection Information</source>
-        <translation type="obsolete">Bağlantı bilgisi</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="32"/>
         <source>Name</source>
         <translation>Ad</translation>
@@ -22330,30 +16227,6 @@ Geniş hata bilgisi:
         <translation>URL</translation>
     </message>
     <message>
-        <source>Proxy Host</source>
-        <translation type="obsolete">Vekil Sunucu bilgisayar</translation>
-    </message>
-    <message>
-        <source>Proxy Port</source>
-        <translation type="obsolete">Vekil Sunucu portu</translation>
-    </message>
-    <message>
-        <source>Proxy User</source>
-        <translation type="obsolete">Vekil Sunucu Kullanıcısı</translation>
-    </message>
-    <message>
-        <source>Proxy Password</source>
-        <translation type="obsolete">Vekil Sunucu Parolası</translation>
-    </message>
-    <message>
-        <source>Your user name for the HTTP proxy (optional)</source>
-        <translation type="obsolete">HTTP Vekil Sunucusu için kullanıcı adınız (seçimlik)</translation>
-    </message>
-    <message>
-        <source>Password for your HTTP proxy (optional)</source>
-        <translation type="obsolete">HTTP Vekil Sunucusunun parolası (seçimlik)</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="54"/>
         <source>Name of the new connection</source>
         <translation>Yeni bağlantının adı</translation>
@@ -22362,30 +16235,6 @@ Geniş hata bilgisi:
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="77"/>
         <source>HTTP address of the Web Map Server</source>
         <translation>İnternet Harita Sunucusunun HTTP adresi</translation>
-    </message>
-    <message>
-        <source>Name of your HTTP proxy (optional)</source>
-        <translation type="obsolete">HTTP vekil sunucunuzun adı (seçimlik)</translation>
-    </message>
-    <message>
-        <source>Port number of your HTTP proxy (optional)</source>
-        <translation type="obsolete">HTTP Vekil Sunucunuzun port numarası (seçimlik)</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">TAMAM</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">İptal</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">Yardım</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="14"/>
@@ -22466,10 +16315,6 @@ Geniş hata bilgisi:
         <translation>Parolayı Kaydet</translation>
     </message>
     <message>
-        <source>Test Connect</source>
-        <translation type="obsolete">Bağlantıyı Dene</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="65"/>
         <source>&amp;Test Connect</source>
         <translation>&amp;Bağlantıyı Dene</translation>
@@ -22517,22 +16362,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="174"/>
         <source>Name of the new connection</source>
         <translation>Yeni bağlantının adı</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">TAMAM</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">İptal</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">Yardım</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
     </message>
 </context>
 <context>
@@ -22717,10 +16546,6 @@ p, li { white-space: pre-wrap; }
         <translation>Kuzey Oku Eklentisi</translation>
     </message>
     <message>
-        <source>Properties</source>
-        <translation type="obsolete">Özellikler</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/north_arrow/pluginguibase.ui" line="52"/>
         <source>Angle</source>
         <translation>Açı</translation>
@@ -22769,49 +16594,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/north_arrow/pluginguibase.ui" line="35"/>
         <source>Preview of north arrow</source>
         <translation>Kuzey Okunun öngörünüşü</translation>
-    </message>
-    <message>
-        <source>Icon</source>
-        <translation type="obsolete">Simge</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>New Item</source>
-        <translation type="obsolete">Yeni öğe</translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">&amp;TAMAM</translation>
-    </message>
-    <message>
-        <source>Alt+O</source>
-        <translation type="obsolete">Alt+O</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;İptal</translation>
-    </message>
-    <message>
-        <source>Alt+C</source>
-        <translation type="obsolete">Alt+C</translation>
-    </message>
-    <message>
-        <source>Browse...</source>
-        <translation type="obsolete">Göz at...</translation>
-    </message>
-</context>
-<context>
-    <name>QgsOGRFactory</name>
-    <message>
-        <source>Wrong Path/URI</source>
-        <translation type="obsolete">Yanlış Yol/URI</translation>
-    </message>
-    <message>
-        <source>The provided path for the dataset is not valid.</source>
-        <translation type="obsolete">Veriseti için girilen yol geçerli değil.</translation>
     </message>
 </context>
 <context>
@@ -22877,18 +16659,6 @@ p, li { white-space: pre-wrap; }
 </context>
 <context>
     <name>QgsOgrProvider</name>
-    <message>
-        <source>Integer</source>
-        <translation type="obsolete">Tamsayı</translation>
-    </message>
-    <message>
-        <source>Real</source>
-        <translation type="obsolete">Gerçek sayı</translation>
-    </message>
-    <message>
-        <source>String</source>
-        <translation type="obsolete">Karakter</translation>
-    </message>
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="173"/>
         <source>Whole number (integer)</source>
@@ -23328,128 +17098,101 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsOptions</name>
     <message>
-        <source>Detected active locale on your system: </source>
-        <translation type="obsolete">Sisteminizde şu aktif yerel belirlendi:</translation>
-    </message>
-    <message>
-        <source>to vertex</source>
-        <translation type="obsolete">kırıklık noktasına</translation>
-    </message>
-    <message>
-        <source>to segment</source>
-        <translation type="obsolete">parçaya</translation>
-    </message>
-    <message>
-        <source>to vertex and segment</source>
-        <translation type="obsolete">kırıklık noktasına ve parçaya</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgsoptions.cpp" line="291"/>
-        <location filename="../src/app/qgsoptions.cpp" line="298"/>
-        <location filename="../src/app/qgsoptions.cpp" line="589"/>
+        <location filename="../src/app/qgsoptions.cpp" line="308"/>
+        <location filename="../src/app/qgsoptions.cpp" line="315"/>
+        <location filename="../src/app/qgsoptions.cpp" line="610"/>
         <source>Semi transparent circle</source>
         <translation>Yarı şeffaf daire</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="292"/>
-        <location filename="../src/app/qgsoptions.cpp" line="302"/>
-        <location filename="../src/app/qgsoptions.cpp" line="593"/>
+        <location filename="../src/app/qgsoptions.cpp" line="309"/>
+        <location filename="../src/app/qgsoptions.cpp" line="319"/>
+        <location filename="../src/app/qgsoptions.cpp" line="614"/>
         <source>Cross</source>
         <translation>Çarpı</translation>
     </message>
     <message>
-        <source>Show all features</source>
-        <translation type="obsolete">Tüm objeleri göster</translation>
-    </message>
-    <message>
-        <source>Show selected features</source>
-        <translation type="obsolete">Seçilen objeleri göster</translation>
-    </message>
-    <message>
-        <source>Show features in current canvas</source>
-        <translation type="obsolete">Geçerli kanavadaki objeleri göster</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgsoptions.cpp" line="241"/>
+        <location filename="../src/app/qgsoptions.cpp" line="258"/>
         <source>Detected active locale on your system: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="293"/>
-        <location filename="../src/app/qgsoptions.cpp" line="306"/>
-        <location filename="../src/app/qgsoptions.cpp" line="597"/>
+        <location filename="../src/app/qgsoptions.cpp" line="310"/>
+        <location filename="../src/app/qgsoptions.cpp" line="323"/>
+        <location filename="../src/app/qgsoptions.cpp" line="618"/>
         <source>None</source>
         <translation>Hiçbiri</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="271"/>
-        <location filename="../src/app/qgsoptions.cpp" line="280"/>
+        <location filename="../src/app/qgsoptions.cpp" line="288"/>
+        <location filename="../src/app/qgsoptions.cpp" line="297"/>
         <source>map units</source>
         <translation>Harita birimleri</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="51"/>
+        <location filename="../src/app/qgsoptions.cpp" line="53"/>
         <source>Current layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="52"/>
+        <location filename="../src/app/qgsoptions.cpp" line="54"/>
         <source>Top down, stop at first</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="53"/>
+        <location filename="../src/app/qgsoptions.cpp" line="55"/>
         <source>Top down</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="261"/>
+        <location filename="../src/app/qgsoptions.cpp" line="278"/>
         <source>To vertex</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="262"/>
+        <location filename="../src/app/qgsoptions.cpp" line="279"/>
         <source>To segment</source>
         <translation>parçaya</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="263"/>
+        <location filename="../src/app/qgsoptions.cpp" line="280"/>
         <source>To vertex and segment</source>
         <translation>kırıklık noktasına ve parçaya</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="275"/>
-        <location filename="../src/app/qgsoptions.cpp" line="284"/>
+        <location filename="../src/app/qgsoptions.cpp" line="292"/>
+        <location filename="../src/app/qgsoptions.cpp" line="301"/>
         <source>pixels</source>
         <translation>Pikseller</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="317"/>
+        <location filename="../src/app/qgsoptions.cpp" line="334"/>
         <source>Central point (fastest)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="318"/>
+        <location filename="../src/app/qgsoptions.cpp" line="335"/>
         <source>Chain (fast)</source>
         <translation>Zincir(hızlı)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="319"/>
+        <location filename="../src/app/qgsoptions.cpp" line="336"/>
         <source>Popmusic tabu chain (slow)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="320"/>
+        <location filename="../src/app/qgsoptions.cpp" line="337"/>
         <source>Popmusic tabu (slow)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="321"/>
+        <location filename="../src/app/qgsoptions.cpp" line="338"/>
         <source>Popmusic chain (very slow)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgsoptions.cpp" line="794"/>
+        <location filename="../src/app/qgsoptions.cpp" line="815"/>
+        <location filename="../src/app/qgsoptions.cpp" line="857"/>
         <source>Choose a directory</source>
         <translation>Dizin seç</translation>
     </message>
@@ -23457,93 +17200,14 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsOptionsBase</name>
     <message>
-        <source>QGIS Options</source>
-        <translation type="obsolete">QGIS Seçenekleri</translation>
-    </message>
-    <message>
-        <source>epiphany</source>
-        <translation type="obsolete">epiphany</translation>
-    </message>
-    <message>
-        <source>galeon</source>
-        <translation type="obsolete">galeon</translation>
-    </message>
-    <message>
-        <source>konqueror</source>
-        <translation type="obsolete">konqueror</translation>
-    </message>
-    <message>
-        <source>mozilla</source>
-        <translation type="obsolete">mozilla</translation>
-    </message>
-    <message>
-        <source>opera</source>
-        <translation type="obsolete">opera</translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Tamam</translation>
-    </message>
-    <message>
-        <source>Alt+O</source>
-        <translation type="obsolete">Alt+O</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;İptal</translation>
-    </message>
-    <message>
-        <source>Search Radius for Identifying Features</source>
-        <translation type="obsolete">Objeleri Belirlemek için Yarıçap içindekileri Araştır</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="328"/>
         <source>Hide splash screen at startup</source>
         <translation>Açılışta sıçrayan görüntüyü gizle</translation>
     </message>
     <message>
-        <source>&amp;Appearance</source>
-        <translation type="obsolete">&amp;Görünüm</translation>
-    </message>
-    <message>
-        <source>&amp;Icon Theme</source>
-        <translation type="obsolete">&amp;Simge Teması</translation>
-    </message>
-    <message>
-        <source>Theme</source>
-        <translation type="obsolete">Tema</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Note: &lt;/b&gt;Theme changes take effect the next time QGIS is started</source>
-        <translation type="obsolete">&lt;b&gt;Nat: &lt;/b&gt;Tema değişiklikleri QGIS&apos;i bir sonraki açışınızda etkin olacaktır</translation>
-    </message>
-    <message>
-        <source>Help &amp;Browser</source>
-        <translation type="obsolete">YArdım &amp; Gözatıcı</translation>
-    </message>
-    <message>
-        <source>Open help documents with</source>
-        <translation type="obsolete">Yardım dökümanlarını birlikte aç</translation>
-    </message>
-    <message>
-        <source>&amp;Rendering</source>
-        <translation type="obsolete">&amp;Görüntüle</translation>
-    </message>
-    <message>
-        <source>Update display after reading</source>
-        <translation type="obsolete">Okumadan sonra güncellemeyi göster</translation>
-    </message>
-    <message>
-        <source>features</source>
-        <translation type="obsolete">Objeler</translation>
-    </message>
-    <message>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1428"/>
         <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>Initial Visibility</source>
-        <translation type="obsolete">Başlangıç Görünümü</translation>
+        <translation type="unfinished">...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1138"/>
@@ -23551,81 +17215,9 @@ p, li { white-space: pre-wrap; }
         <translation>Genel Varsayılanı Seç ...</translation>
     </message>
     <message>
-        <source>Prompt for projection.</source>
-        <translation type="obsolete">Projeksiyon için yönlendirici.</translation>
-    </message>
-    <message>
-        <source>Project wide default projection will be used.</source>
-        <translation type="obsolete">Proje bazında varsayılan projeksiyon kullanılacak.</translation>
-    </message>
-    <message>
-        <source>firefox</source>
-        <translation type="obsolete">Firefox</translation>
-    </message>
-    <message>
-        <source>mozilla-firefox</source>
-        <translation type="obsolete">Mozilla-Firefox</translation>
-    </message>
-    <message>
-        <source>&amp;Splash screen</source>
-        <translation type="obsolete">&amp;Sıçrayan görüntü</translation>
-    </message>
-    <message>
-        <source>Default Map Appearance (Overridden by project properties)</source>
-        <translation type="obsolete">Varsayılan Harita Görünümü (Proje özellikleri üzerine kaydedilmiş)</translation>
-    </message>
-    <message>
-        <source>Background Color:</source>
-        <translation type="obsolete">Arkaplan Rengi:</translation>
-    </message>
-    <message>
-        <source>Selection Color:</source>
-        <translation type="obsolete">Seçim Rengi:</translation>
-    </message>
-    <message>
-        <source>Appearance</source>
-        <translation type="obsolete">Görünüm</translation>
-    </message>
-    <message>
-        <source>Capitalise layer name</source>
-        <translation type="obsolete">Katman adını büyük harfe çevir</translation>
-    </message>
-    <message>
-        <source>&amp;Update during drawing</source>
-        <translation type="obsolete">&amp;Çizim esnasında güncelle</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="592"/>
         <source>Measure tool</source>
         <translation>Ölçme aracı</translation>
-    </message>
-    <message>
-        <source>Ellipsoid for distance calculations:</source>
-        <translation type="obsolete">Mesafe hesaplama için kullanılacak Elipsoid:</translation>
-    </message>
-    <message>
-        <source>Search radius</source>
-        <translation type="obsolete">Yarıçap içindekileri araştır</translation>
-    </message>
-    <message>
-        <source>Pro&amp;jection</source>
-        <translation type="obsolete">&amp;Projeksiyon</translation>
-    </message>
-    <message>
-        <source>When layer is loaded that has no projection information</source>
-        <translation type="obsolete">Projeksiyon bilgisi olmayan katman yüklenirken</translation>
-    </message>
-    <message>
-        <source>Global default projection displa&amp;yed below will be used.</source>
-        <translation type="obsolete">&amp;Aşağıda görüntülenen varsayılan genel projeksiyon kullanılacak.</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;Note:&lt;/b&gt; The browser must be in your PATH or you can specify the full path above</source>
-        <translation type="obsolete">&lt;b&gt;Not:&lt;/b&gt; Gözatıcı varsayılan YOL&apos;da olmalı veya yukarda tüm tolu belirlemelisiz</translation>
-    </message>
-    <message>
-        <source>Rendering</source>
-        <translation type="obsolete">Görüntüle</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="454"/>
@@ -23636,10 +17228,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsoptionsbase.ui" line="556"/>
         <source>%</source>
         <translation>%</translation>
-    </message>
-    <message>
-        <source>&amp;Map tools</source>
-        <translation type="obsolete">&amp;Harita araçları</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="14"/>
@@ -23667,25 +17255,9 @@ p, li { white-space: pre-wrap; }
         <translation>Hiçbiri</translation>
     </message>
     <message>
-        <source>Zoom factor:</source>
-        <translation type="obsolete">Yakınlaştırma faktörü:</translation>
-    </message>
-    <message>
-        <source>Mouse wheel action:</source>
-        <translation type="obsolete">fare tekerleği eylemi:</translation>
-    </message>
-    <message>
-        <source>&amp;General</source>
-        <translation type="obsolete">&amp;Genel</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="87"/>
         <source>General</source>
         <translation>Genel</translation>
-    </message>
-    <message>
-        <source>Ask to save project changes when required</source>
-        <translation type="obsolete">Gerektiğinde proje değişikliklerini kaydetmek için sor</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="147"/>
@@ -23693,17 +17265,9 @@ p, li { white-space: pre-wrap; }
         <translation>Yerel dil</translation>
     </message>
     <message>
-        <source>Force Override System Locale</source>
-        <translation type="obsolete">Sistem dilini zorla değiştir</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1207"/>
         <source>Locale to use instead</source>
         <translation>Yerine kullanılacak yerel dil</translation>
-    </message>
-    <message>
-        <source>Note: Enabling / changing overide on local requires an application restart.</source>
-        <translation type="obsolete">Not: Yerel dili aktif etme veya değiştirme uygulamanın yeniden başlatılmasını gerektirir.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1243"/>
@@ -23731,25 +17295,9 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Warn me when opening a project file saved with an older version of QGIS</source>
-        <translation type="obsolete">Eski QGIS sürümlerinde kaydedilen proje dosyasını açarken beni uyar</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="451"/>
         <source>Selecting this will unselect the &apos;make lines less&apos; jagged toggle</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>(Specify the search radius as a percentage of the map width)</source>
-        <translation type="obsolete">(Arama yarıçapını harita genişliğinin yüzdesi olarak belirleyin)</translation>
-    </message>
-    <message>
-        <source>Search Radius for Identifying Features and displaying Map Tips</source>
-        <translation type="obsolete">Objeleri Tanıma ve Harita İpuçlarını gösterme için Arama Yarıçapı</translation>
-    </message>
-    <message>
-        <source>Digitizing</source>
-        <translation type="obsolete">Sayısallaştırma</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="828"/>
@@ -23757,17 +17305,9 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Line Width:</source>
-        <translation type="obsolete">Çizgi Genişliği:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="841"/>
         <source>Line width in pixels</source>
         <translation>Piksel olarak Çizgi Genişliği</translation>
-    </message>
-    <message>
-        <source>Line Colour:</source>
-        <translation type="obsolete">Çizgi Rengi:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="874"/>
@@ -23775,21 +17315,9 @@ p, li { white-space: pre-wrap; }
         <translation>Yakalama</translation>
     </message>
     <message>
-        <source>Default Snapping Tolerance (in layer units):</source>
-        <translation type="obsolete">varsayılan yakalama sınırları (katman birimlerinde):</translation>
-    </message>
-    <message>
-        <source>Search radius for vertex edits (in layer units):</source>
-        <translation type="obsolete">Kırıklık noktalarını düzeltme için arama yarıçapı (katman birimlerinde)</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="713"/>
         <source>Zoom to mouse cursor</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Default Snap Mode:</source>
-        <translation type="obsolete">Varsayılan Yakalama Modu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="178"/>
@@ -23933,6 +17461,26 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1412"/>
+        <source>Cache settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1418"/>
+        <source>Directory</source>
+        <translation type="unfinished">Dizin</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1435"/>
+        <source>Size</source>
+        <translation type="unfinished">Boyut</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1445"/>
+        <source>Clear</source>
+        <translation type="unfinished">Temizle</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1457"/>
         <source>WMS search address</source>
         <translation type="unfinished"></translation>
     </message>
@@ -24007,26 +17555,14 @@ p, li { white-space: pre-wrap; }
         <translation>Çizgi Genişliği</translation>
     </message>
     <message>
-        <source>Line colour</source>
-        <translation type="obsolete">Çizgi Rengi</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="880"/>
         <source>Default snap mode</source>
         <translation>Varsayılan Yakalama Modu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1370"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1367"/>
         <source>Exclude URLs (starting with):</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Default snapping tolerance in layer units</source>
-        <translation type="obsolete">katman birimlerindeki varsayılan yakalama sınırları </translation>
-    </message>
-    <message>
-        <source>Search radius for vertex edits in layer units</source>
-        <translation type="obsolete">Kırıklık noktalarını düzeltme için arama yarıçapı (katman birimlerinde)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1007"/>
@@ -24069,33 +17605,33 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1284"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1281"/>
         <source>Use proxy for web access</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1296"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1293"/>
         <source>Host</source>
         <translation>Ana Bilgisayar</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1306"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1303"/>
         <source>Port</source>
         <translation>Port</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1316"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1313"/>
         <source>User</source>
         <translation>Kullanıcı</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1323"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1337"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1320"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1334"/>
         <source>Leave this blank if no proxy username / password are required</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1330"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1327"/>
         <source>Password</source>
         <translation>Parola</translation>
     </message>
@@ -24103,10 +17639,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsoptionsbase.ui" line="342"/>
         <source>Open attribute table in a dock window</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Attribute table behaviour</source>
-        <translation type="obsolete">Öznitelik tablo davranışı</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="138"/>
@@ -24149,24 +17681,24 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1268"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1265"/>
         <source>Timeout for network requests (ms):</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1347"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1344"/>
         <source>Proxy type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="490"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1377"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1383"/>
         <source>Add</source>
         <translation>Ekle</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="497"/>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1384"/>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1376"/>
         <source>Remove</source>
         <translation>Kaldır</translation>
     </message>
@@ -24289,45 +17821,6 @@ p, li { white-space: pre-wrap; }
         <source>Destination</source>
         <translation>Hedef</translation>
     </message>
-    <message>
-        <source>&amp;Help</source>
-        <translation type="obsolete">&amp;Yardım</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
-    </message>
-    <message>
-        <source>Add New Transfer</source>
-        <translation type="obsolete">Yeni aktarma ekle</translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">&amp;TAMAM</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;İptal</translation>
-    </message>
-</context>
-<context>
-    <name>QgsPatternDialogBase</name>
-    <message>
-        <source>Select a fill pattern</source>
-        <translation type="obsolete">Doldurma desenini seçin</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">İptal</translation>
-    </message>
-    <message>
-        <source>Ok</source>
-        <translation type="obsolete">Tamam</translation>
-    </message>
-    <message>
-        <source>No Fill</source>
-        <translation type="obsolete">Boş</translation>
-    </message>
 </context>
 <context>
     <name>QgsPenCapStyleComboBox</name>
@@ -24383,10 +17876,6 @@ p, li { white-space: pre-wrap; }
         <translation>&amp;Tampon objeler</translation>
     </message>
     <message>
-        <source>A new layer is created in the database with the buffered features.</source>
-        <translation type="obsolete">Tamponlanan objelerle veritabanında yeni bir katman oluşturuldu.</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="83"/>
         <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="442"/>
         <source>&amp;Geoprocessing</source>
@@ -24398,17 +17887,9 @@ p, li { white-space: pre-wrap; }
         <translation>Geometri sütunu eklenemiyor</translation>
     </message>
     <message>
-        <source>Unable to add geometry column to the output table </source>
-        <translation type="obsolete">Çıktı tablosuna geometri sütunu eklenemiyor</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="351"/>
         <source>Unable to create table</source>
         <translation>Tablo oluşturulamıyor</translation>
-    </message>
-    <message>
-        <source>Failed to create the output table </source>
-        <translation type="obsolete">Çıktı tablosnu oluşturmada hata</translation>
     </message>
     <message>
         <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="368"/>
@@ -24421,19 +17902,6 @@ p, li { white-space: pre-wrap; }
         <translation>Tampon fonksiyonu için PostGIS&apos;te GEOS desteği olmalıdır</translation>
     </message>
     <message>
-        <source>Not a PostgreSQL/PosGIS Layer</source>
-        <translation type="obsolete">PostgreSQL/PostGIS Katmanı değil</translation>
-    </message>
-    <message>
-        <source> is not a PostgreSQL/PosGIS layer.
-</source>
-        <translation type="obsolete">PostgreSQL/PostGIS katmanı değildir.</translation>
-    </message>
-    <message>
-        <source>Geoprocessing functions are only available for PostgreSQL/PosGIS Layers</source>
-        <translation type="obsolete">Coğrafi işlem fonksiyonu sadece PostgreSQL/PostGIS Katmanlarında olanaklıdır</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="381"/>
         <source>No Active Layer</source>
         <translation>Aktif katman yok</translation>
@@ -24444,23 +17912,9 @@ p, li { white-space: pre-wrap; }
         <translation>Tamponlama için lejandda bir katman seçmelisiniz</translation>
     </message>
     <message>
-        <source>Create a buffer for a PostgreSQL layer. </source>
-        <translation type="obsolete">PostgreSQL katmanı için tampon oluştur.</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="374"/>
         <source>Not a PostgreSQL/PostGIS Layer</source>
         <translation>PostgreSQL/PostGIS katmanı değildir</translation>
-    </message>
-    <message>
-        <source> is not a PostgreSQL/PostGIS layer.
-</source>
-        <translation type="obsolete">PostgreSQL/PostGIS katmanı değildir.
-</translation>
-    </message>
-    <message>
-        <source>Geoprocessing functions are only available for PostgreSQL/PostGIS Layers</source>
-        <translation type="obsolete">Coğrafi İşlem fonksiyonu sadece PostgreSQL/PostGIS Katmanları için kullanılabilir</translation>
     </message>
     <message>
         <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="77"/>
@@ -24666,193 +18120,6 @@ Geniş hata bilgisi:
     </message>
 </context>
 <context>
-    <name>QgsPgQueryBuilder</name>
-    <message>
-        <source>Table &lt;b&gt;%1&lt;/b&gt; in database &lt;b&gt;%2&lt;/b&gt; on host &lt;b&gt;%3&lt;/b&gt;, user &lt;b&gt;%4&lt;/b&gt;</source>
-        <translation type="obsolete">Tablo&lt;b&gt;%1&lt;/b&gt; veritabanındaki&lt;b&gt;%2&lt;/b&gt; bilgisayarındaki &lt;b&gt;%3&lt;/b&gt;, kullanıcı &lt;b&gt;%4&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>Connection Failed</source>
-        <translation type="obsolete">Bağlantıda hata</translation>
-    </message>
-    <message>
-        <source>Connection to the database failed:</source>
-        <translation type="obsolete">Veritabanına bağlantıda hata:</translation>
-    </message>
-    <message>
-        <source>Database error</source>
-        <translation type="obsolete">Veritabanı hatası</translation>
-    </message>
-    <message>
-        <source>Failed to get sample of field values</source>
-        <translation type="obsolete">Alan değeri örneklerini almada hata</translation>
-    </message>
-    <message>
-        <source>Query Result</source>
-        <translation type="obsolete">Sorgulama Sonucu</translation>
-    </message>
-    <message>
-        <source>The where clause returned </source>
-        <translation type="obsolete">Nerede(where) tümcesi şöyle sonuç verdi</translation>
-    </message>
-    <message>
-        <source> rows.</source>
-        <translation type="obsolete">satırlar.</translation>
-    </message>
-    <message>
-        <source>Query Failed</source>
-        <translation type="obsolete">Sorgulama Hatası</translation>
-    </message>
-    <message>
-        <source>An error occurred when executing the query:</source>
-        <translation type="obsolete">Sorgulamayı yaparken bir hata oldu:</translation>
-    </message>
-    <message>
-        <source>No Records</source>
-        <translation type="obsolete">Kayıt Yok</translation>
-    </message>
-    <message>
-        <source>The query you specified results in zero records being returned. Valid PostgreSQL layers must have at least one feature.</source>
-        <translation type="obsolete">Yaptığınız sorgulama hiçbir kayıt elde edemedi. Geçerli PostgreSQL katmanları en azından bir objeye sahip olmalıdır.</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;Failed to get sample of field values using SQL:&lt;/p&gt;&lt;p&gt;</source>
-        <translation type="obsolete">&lt;p&gt;SQL kullanarak alan değerleri örneklerini almada hata:&lt;/p&gt;&lt;p&gt;</translation>
-    </message>
-    <message>
-        <source>No Query</source>
-        <translation type="obsolete">Sorgu yok</translation>
-    </message>
-    <message>
-        <source>You must create a query before you can test it</source>
-        <translation type="obsolete">Sınamadan önce bir sorgu oluşturmalısınız</translation>
-    </message>
-    <message>
-        <source>Error in Query</source>
-        <translation type="obsolete">Sorguda hata</translation>
-    </message>
-    <message numerus="yes">
-        <source>The where clause returned %n row(s).</source>
-        <comment>returned test rows</comment>
-        <translation type="obsolete">
-            <numerusform>
-        
-        </numerusform>
-        </translation>
-    </message>
-</context>
-<context>
-    <name>QgsPgQueryBuilderBase</name>
-    <message>
-        <source>PostgreSQL Query Builder</source>
-        <translation type="obsolete">PostgreSQL Sorgulama Oluşturucu</translation>
-    </message>
-    <message>
-        <source>Clear</source>
-        <translation type="obsolete">Temizle</translation>
-    </message>
-    <message>
-        <source>Test</source>
-        <translation type="obsolete">Dene</translation>
-    </message>
-    <message>
-        <source>Ok</source>
-        <translation type="obsolete">Tamam</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">İptal</translation>
-    </message>
-    <message>
-        <source>Values</source>
-        <translation type="obsolete">Değerler</translation>
-    </message>
-    <message>
-        <source>All</source>
-        <translation type="obsolete">Tümü</translation>
-    </message>
-    <message>
-        <source>Sample</source>
-        <translation type="obsolete">Örnek</translation>
-    </message>
-    <message>
-        <source>Fields</source>
-        <translation type="obsolete">Alanlar</translation>
-    </message>
-    <message>
-        <source>Datasource:</source>
-        <translation type="obsolete">Veri kaynağı:</translation>
-    </message>
-    <message>
-        <source>Operators</source>
-        <translation type="obsolete">İşletmenler</translation>
-    </message>
-    <message>
-        <source>=</source>
-        <translation type="obsolete">=</translation>
-    </message>
-    <message>
-        <source>IN</source>
-        <translation type="obsolete">IN</translation>
-    </message>
-    <message>
-        <source>NOT IN</source>
-        <translation type="obsolete">NOT IN</translation>
-    </message>
-    <message>
-        <source>&lt;</source>
-        <translation type="obsolete">&lt;</translation>
-    </message>
-    <message>
-        <source>&gt;</source>
-        <translation type="obsolete">&gt;</translation>
-    </message>
-    <message>
-        <source>%</source>
-        <translation type="obsolete">%</translation>
-    </message>
-    <message>
-        <source>&lt;=</source>
-        <translation type="obsolete">&lt;=</translation>
-    </message>
-    <message>
-        <source>&gt;=</source>
-        <translation type="obsolete">&gt;=</translation>
-    </message>
-    <message>
-        <source>!=</source>
-        <translation type="obsolete">!=</translation>
-    </message>
-    <message>
-        <source>LIKE</source>
-        <translation type="obsolete">LIKE</translation>
-    </message>
-    <message>
-        <source>AND</source>
-        <translation type="obsolete">AND</translation>
-    </message>
-    <message>
-        <source>ILIKE</source>
-        <translation type="obsolete">ILIKE</translation>
-    </message>
-    <message>
-        <source>OR</source>
-        <translation type="obsolete">OR</translation>
-    </message>
-    <message>
-        <source>NOT</source>
-        <translation type="obsolete">NOT</translation>
-    </message>
-    <message>
-        <source>SQL where clause</source>
-        <translation type="obsolete">SQL nerede (where) tümcesi </translation>
-    </message>
-    <message>
-        <source>Datasource</source>
-        <translation type="obsolete">Veri kaynağı</translation>
-    </message>
-</context>
-<context>
     <name>QgsPgSourceSelect</name>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="53"/>
@@ -24954,14 +18221,6 @@ Geniş hata bilgisi:
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Password for </source>
-        <translation type="obsolete">Parolası</translation>
-    </message>
-    <message>
-        <source>Please enter your password:</source>
-        <translation type="obsolete">Lütfen parolanızı girin:</translation>
-    </message>
-    <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="508"/>
         <source>Connection failed</source>
         <translation>Bağlantıda hata</translation>
@@ -25044,22 +18303,6 @@ geometry.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Help</source>
-        <translation type="obsolete">Yardım</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
-    </message>
-    <message>
-        <source>Add</source>
-        <translation type="obsolete">Ekle</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">Kapat</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgspgsourceselectbase.ui" line="118"/>
         <source>Search:</source>
         <translation>Araştır:</translation>
@@ -25078,10 +18321,6 @@ geometry.</source>
         <location filename="../src/ui/qgspgsourceselectbase.ui" line="87"/>
         <source>Build query</source>
         <translation>Sorgu oluştur</translation>
-    </message>
-    <message>
-        <source>Search options...</source>
-        <translation type="obsolete">Araştırma seçenekleri...</translation>
     </message>
 </context>
 <context>
@@ -25403,10 +18642,6 @@ You need to restart Quantum GIS in order to reload it.</source>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="22"/>
         <source>QGIS Python Plugin Installer</source>
         <translation>QGIS Python Eklenti Yükleyici</translation>
-    </message>
-    <message>
-        <source>QGIS Plugin Installer</source>
-        <translation type="obsolete">QGIS Eklenti Yükleyici</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="107"/>
@@ -25857,29 +19092,9 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsPluginManager</name>
     <message>
-        <source>Choose a directory</source>
-        <translation type="obsolete">Dizin seç</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgspluginmanager.cpp" line="236"/>
         <source>No Plugins</source>
         <translation>Eklenti Yok</translation>
-    </message>
-    <message>
-        <source>No QGIS plugins found in </source>
-        <translation type="obsolete">İlgili dizinde QGIS eklentisi bulunamadı</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Ad</translation>
-    </message>
-    <message>
-        <source>Version</source>
-        <translation type="obsolete">Sürüm</translation>
-    </message>
-    <message>
-        <source>Description</source>
-        <translation type="obsolete">Açıklama</translation>
     </message>
     <message>
         <location filename="../src/app/qgspluginmanager.cpp" line="86"/>
@@ -25915,70 +19130,6 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsPluginManagerBase</name>
     <message>
-        <source>QGIS Plugin Manger</source>
-        <translation type="obsolete">QGIS Eklenti Yöneticisi</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Ad</translation>
-    </message>
-    <message>
-        <source>Description</source>
-        <translation type="obsolete">Açıklama</translation>
-    </message>
-    <message>
-        <source>Library Name</source>
-        <translation type="obsolete">Kütüphane Adı</translation>
-    </message>
-    <message>
-        <source>Plugin Directory</source>
-        <translation type="obsolete">Eklenti Dizini</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>To load a plugin, click the checkbox next to the plugin and click Ok</source>
-        <translation type="obsolete">Eklenti yüklemek için, eklentinin yanındaki onay kutusunu tıklayın ve Tamam&apos;a basın</translation>
-    </message>
-    <message>
-        <source>Version</source>
-        <translation type="obsolete">Sürüm</translation>
-    </message>
-    <message>
-        <source>&amp;Select All</source>
-        <translation type="obsolete">&amp;Tümünü Seç</translation>
-    </message>
-    <message>
-        <source>Alt+S</source>
-        <translation type="obsolete">Alt+S</translation>
-    </message>
-    <message>
-        <source>C&amp;lear All</source>
-        <translation type="obsolete">&amp;Tümünü temizle</translation>
-    </message>
-    <message>
-        <source>Alt+L</source>
-        <translation type="obsolete">Alt+L</translation>
-    </message>
-    <message>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Tamam</translation>
-    </message>
-    <message>
-        <source>Alt+O</source>
-        <translation type="obsolete">Alt+O</translation>
-    </message>
-    <message>
-        <source>&amp;Close</source>
-        <translation type="obsolete">&amp;Kapat</translation>
-    </message>
-    <message>
-        <source>Alt+C</source>
-        <translation type="obsolete">Alt+C</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="16"/>
         <source>QGIS Plugin Manager</source>
         <translation>QGIS Eklenti Yöneticisi</translation>
@@ -26010,257 +19161,6 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>QgsPointDialog</name>
-    <message>
-        <source>Zoom In</source>
-        <translation type="obsolete">Yaklaştır</translation>
-    </message>
-    <message>
-        <source>z</source>
-        <translation type="obsolete">z</translation>
-    </message>
-    <message>
-        <source>Zoom Out</source>
-        <translation type="obsolete">Uzaklaştır</translation>
-    </message>
-    <message>
-        <source>Z</source>
-        <translation type="obsolete">Z</translation>
-    </message>
-    <message>
-        <source>Zoom To Layer</source>
-        <translation type="obsolete">Katmanın Dış Sınırlarını görecek Şekilde Yaklaştır</translation>
-    </message>
-    <message>
-        <source>Zoom to Layer</source>
-        <translation type="obsolete">Katmanın Dış Sınırlarını görecek Şekilde Yaklaştır</translation>
-    </message>
-    <message>
-        <source>Pan Map</source>
-        <translation type="obsolete">Haritayı kaydır</translation>
-    </message>
-    <message>
-        <source>Pan the map</source>
-        <translation type="obsolete">Haritayı kaydır</translation>
-    </message>
-    <message>
-        <source>Add Point</source>
-        <translation type="obsolete">Nokta ekle</translation>
-    </message>
-    <message>
-        <source>.</source>
-        <translation type="obsolete">.</translation>
-    </message>
-    <message>
-        <source>Capture Points</source>
-        <translation type="obsolete">Noktaları sayısallaştır</translation>
-    </message>
-    <message>
-        <source>Delete Point</source>
-        <translation type="obsolete">Noktayı Sil</translation>
-    </message>
-    <message>
-        <source>Delete Selected</source>
-        <translation type="obsolete">Seçileni Sil</translation>
-    </message>
-    <message>
-        <source>Linear</source>
-        <translation type="obsolete">Doğrusal</translation>
-    </message>
-    <message>
-        <source>Helmert</source>
-        <translation type="obsolete">Helmert</translation>
-    </message>
-    <message>
-        <source>Choose a name for the world file</source>
-        <translation type="obsolete">coğrafi referanslama dosyası için isim seç</translation>
-    </message>
-    <message>
-        <source>-modified</source>
-        <comment>Georeferencer:QgsPointDialog.cpp - used to modify a user given filename</comment>
-        <translation type="obsolete">-koordinatli</translation>
-    </message>
-    <message>
-        <source>Warning</source>
-        <translation type="obsolete">Uyarı</translation>
-    </message>
-    <message>
-        <source>Affine</source>
-        <translation type="obsolete">Affin</translation>
-    </message>
-    <message>
-        <source>Not implemented!</source>
-        <translation type="obsolete">Tamamlanmadı!</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;An affine transform requires changing the original raster file. This is not yet supported.&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;p&gt;Affin dönüşümü raster dosyada değişiklik gerektirir. Henüz bu desteklenmiyor.&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source> transform is not yet supported.&lt;/p&gt;</source>
-        <translation type="obsolete"> dönüştürme henüz desteklenmiyor.&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Hata</translation>
-    </message>
-    <message>
-        <source>Could not write to </source>
-        <translation type="obsolete">&apos;e yazılamıyor</translation>
-    </message>
-    <message>
-        <source>Currently all modified files will be written in TIFF format.</source>
-        <translation type="obsolete">Aktif olarak tüm değiştirilen dosyalar TIFF biçeminde yazılacak.</translation>
-    </message>
-    <message>
-        <source>-modified</source>
-        <comment>Georeferencer:QgsPointDialog.cpp - used to modify a user given file name</comment>
-        <translation type="obsolete">-koordinatli</translation>
-    </message>
-    <message>
-        <source>Information</source>
-        <translation type="obsolete">Bilgi</translation>
-    </message>
-    <message>
-        <source>Error!</source>
-        <translation type="obsolete">Hata!</translation>
-    </message>
-    <message>
-        <source>World file exists</source>
-        <translation type="obsolete">Koordinatlandırma dosyası mevcut</translation>
-    </message>
-    <message>
-        <source>world file! Do you want to replace it with the </source>
-        <translation type="obsolete">Koordinatlandırma dosyası! Şununla değiştirmek istermisiniz</translation>
-    </message>
-    <message>
-        <source>new world file?&lt;/p&gt;</source>
-        <translation type="obsolete">Yeni coğrafi referans dosyası?&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <source>Choose a raster file</source>
-        <translation type="obsolete">Raster dosya seç</translation>
-    </message>
-    <message>
-        <source>Raster files (*.*)</source>
-        <translation type="obsolete">Raster dosyalar (*.*)</translation>
-    </message>
-    <message>
-        <source>The selected file is not a valid raster file.</source>
-        <translation type="obsolete">Seçilen dosya geçerli raster dosya değil.</translation>
-    </message>
-</context>
-<context>
-    <name>QgsPointDialogBase</name>
-    <message>
-        <source>Georeferencer</source>
-        <translation type="obsolete">Coğrafi Referanslama Aracı</translation>
-    </message>
-    <message>
-        <source>Transform type:</source>
-        <translation type="obsolete">Dönüştürme tipi:</translation>
-    </message>
-    <message>
-        <source>Zoom in</source>
-        <translation type="obsolete">Yaklaştır</translation>
-    </message>
-    <message>
-        <source>Zoom out</source>
-        <translation type="obsolete">Uzaklaştır</translation>
-    </message>
-    <message>
-        <source>Zoom to the raster extents</source>
-        <translation type="obsolete">Raster sınırlarını  görecek şekilde yaklaştır </translation>
-    </message>
-    <message>
-        <source>Pan</source>
-        <translation type="obsolete">Kaydırma</translation>
-    </message>
-    <message>
-        <source>Add points</source>
-        <translation type="obsolete">Noktalar ekle</translation>
-    </message>
-    <message>
-        <source>Delete points</source>
-        <translation type="obsolete">Noktaları Sil</translation>
-    </message>
-    <message>
-        <source>Generate world file and load layer</source>
-        <translation type="obsolete">Coğrafi referans dosyasını oluştur ve katmanı yükle</translation>
-    </message>
-    <message>
-        <source>Generate world file</source>
-        <translation type="obsolete">Coğrafi referans dosyasını oluştur</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">İptal</translation>
-    </message>
-    <message>
-        <source>World file:</source>
-        <translation type="obsolete">Koordinatlandırma dosyası:</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="obsolete">...</translation>
-    </message>
-    <message>
-        <source>Modified raster:</source>
-        <translation type="obsolete">Değiştirilmiş raster :</translation>
-    </message>
-    <message>
-        <source>Reference points</source>
-        <translation type="obsolete">Referans noktaları</translation>
-    </message>
-    <message>
-        <source>Raster file</source>
-        <translation type="obsolete">Raster dosya</translation>
-    </message>
-    <message>
-        <source>Transform type</source>
-        <translation type="obsolete">Dönüştürme tipi</translation>
-    </message>
-    <message>
-        <source>Modified raster</source>
-        <translation type="obsolete">Değiştirilmiş raster</translation>
-    </message>
-    <message>
-        <source>World file</source>
-        <translation type="obsolete">Koordinatlandırma dosyası</translation>
-    </message>
-    <message>
-        <source>Create</source>
-        <translation type="obsolete">Oluştur</translation>
-    </message>
-    <message>
-        <source>Create and load layer</source>
-        <translation type="obsolete">Katman oluştur ve yükle</translation>
-    </message>
-    <message>
-        <source>Raster file:</source>
-        <translation type="obsolete">Raster dosya:</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">Kapat</translation>
-    </message>
-</context>
-<context>
-    <name>QgsPointStyleWidgetBase</name>
-    <message>
-        <source>Form3</source>
-        <translation type="obsolete">Form3</translation>
-    </message>
-    <message>
-        <source>Symbol Style</source>
-        <translation type="obsolete">Sembol stili</translation>
-    </message>
-    <message>
-        <source>Scale</source>
-        <translation type="obsolete">Ölçek</translation>
-    </message>
-</context>
-<context>
     <name>QgsPostgresProvider</name>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="115"/>
@@ -26269,246 +19169,79 @@ p, li { white-space: pre-wrap; }
         <translation>İlişkiye erişilemiyor</translation>
     </message>
     <message>
-        <source>Unable to access the </source>
-        <translation type="obsolete">&apos;e erişilemiyor</translation>
-    </message>
-    <message>
-        <source> relation.
-The error message from the database was:
-</source>
-        <translation type="obsolete">ilişki. 
-Veritabanından şu mesaj geldi:
-</translation>
-    </message>
-    <message>
-        <source>No GEOS Support!</source>
-        <translation type="obsolete">GEOS desteği yok!</translation>
-    </message>
-    <message>
-        <source>Your PostGIS installation has no GEOS support.
-Feature selection and identification will not work properly.
-Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
-        <translation type="obsolete">PostGIS kurulumunuzun GEOS desteği yok.
-Obje seçimi ve belirlenmesi doğru çalışmayacak.
-Lütfen PostGIS&apos;i GEOS desteği ile kurun (http:// geos.refractions.net)</translation>
-    </message>
-    <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1132"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1139"/>
         <source>No suitable key column in table</source>
         <translation>Tabloda uygun anahtar sütun yok</translation>
     </message>
     <message>
-        <source>The table has no column suitable for use as a key.
-
-Qgis requires that the table either has a column of type
-int4 with a unique constraint on it (which includes the
-primary key) or has a PostgreSQL oid column.
-</source>
-        <translation type="obsolete">Tablo anahtar olarak kullanılabilecek sütuna sahip değil.
-
-Qgis tablonun ya benzersiz kısıtlayıcıya (anahtar sütunu içeren) sahip int4 tipinde bir sütunu olmasına veya PostgreSQl oid sütununa sahip olmasına gereksinim duyar.
-</translation>
-    </message>
-    <message>
-        <source>The unique index on column</source>
-        <translation type="obsolete">Benzersiz indeks sütunu</translation>
-    </message>
-    <message>
-        <source>is unsuitable because Qgis does not currently support non-int4 type columns as a key into the table.
-</source>
-        <translation type="obsolete">uygun değildir. Çünkü Qgis şu anda tablodaki non-int4 tipinde sütunları anahtar olarak desteklemiyor.
-</translation>
-    </message>
-    <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1233"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1240"/>
         <source>and </source>
         <translation>ve</translation>
     </message>
     <message>
-        <source>The unique index based on columns </source>
-        <translation type="obsolete">Sütunlara dayanan benzersiz indeks</translation>
-    </message>
-    <message>
-        <source> is unsuitable because Qgis does not currently support multiple columns as a key into the table.
-</source>
-        <translation type="obsolete">uygun değildir. Çünkü Qgis şu anda tablodaki  çoklu sütunları anahtar olarak desteklemiyor.
-</translation>
-    </message>
-    <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1282"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1289"/>
         <source>Unable to find a key column</source>
         <translation>Anahtar sütun bulunamıyor</translation>
     </message>
     <message>
-        <source> derives from </source>
-        <translation type="obsolete">den türetildi</translation>
-    </message>
-    <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1423"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1430"/>
         <source>and is suitable.</source>
         <translation>ve uygundur.</translation>
     </message>
     <message>
-        <source>and is not suitable </source>
-        <translation type="obsolete">ve uygun değildir</translation>
-    </message>
-    <message>
-        <source>type is </source>
-        <translation type="obsolete">Tip şudur</translation>
-    </message>
-    <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1429"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1436"/>
         <source> and has a suitable constraint)</source>
         <translation>ve uygun kısıtlayıcıya sahip)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1431"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1438"/>
         <source> and does not have a suitable constraint)</source>
         <translation>ve uygun kısıtlayıcıya sahip değil)</translation>
     </message>
     <message>
-        <source>The view you selected has the following columns, none of which satisfy the above conditions:</source>
-        <translation type="obsolete">Seçtiğiniz veritabanı penceresi takib eden sütunlara sahiptir, hiçbiri yukarıda şartları sağlamıyor:</translation>
-    </message>
-    <message>
-        <source>Qgis requires that the view has a column that can be used as a unique key. Such a column should be derived from a table column of type int4 and be a primary key, have a unique constraint on it, or be a PostgreSQL oid column. To improve performance the column should also be indexed.
-</source>
-        <translation type="obsolete">Qgis veritabanı penceresinin benzersiz anahtar olarak kullanılabilecek sütuna sahip olmasına ihtiyaç duyar. Böyle bir sütun tablodaki int4 tipinde olan ve anahtar sütun olan, benzersiz kısıtlayıcıya sahip olan veya PostgreSQL oid sütunu olan sütunlardan türetilir. Verimliliği arttırmak için sütun indekslenebilir.
-</translation>
-    </message>
-    <message>
-        <source>The view </source>
-        <translation type="obsolete">Pencere</translation>
-    </message>
-    <message>
-        <source>has no column suitable for use as a unique key.
-</source>
-        <translation type="obsolete">Benzersiz anahtar olarak kullanmak için uygun sütun yok.</translation>
-    </message>
-    <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1534"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1541"/>
         <source>No suitable key column in view</source>
         <translation>Veritabanı Penceresinde(view) uygun anahtar sütun yok</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3033"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3040"/>
         <source>Unknown geometry type</source>
         <translation>Bilinmeyen geometri tipi</translation>
     </message>
     <message>
-        <source>Column </source>
-        <translation type="obsolete">Sütun</translation>
-    </message>
-    <message>
-        <source> in </source>
-        <translation type="obsolete">içinde</translation>
-    </message>
-    <message>
-        <source> has a geometry type of </source>
-        <translation type="obsolete">geometri tipine sahip</translation>
-    </message>
-    <message>
-        <source>, which Qgis does not currently support.</source>
-        <translation type="obsolete">, Qgis&apos;in henüz desteklemediği.</translation>
-    </message>
-    <message>
-        <source>. The database communication log was:
-</source>
-        <translation type="obsolete">. Veritabanı iletişim kayıtları şunlardı:
-</translation>
-    </message>
-    <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3045"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3052"/>
         <source>Unable to get feature type and srid</source>
         <translation>Obje tipi ve SRID alınamıyor</translation>
     </message>
     <message>
-        <source>Note: </source>
-        <translation type="obsolete">Not: </translation>
-    </message>
-    <message>
-        <source>initially appeared suitable but does not contain unique data, so is not suitable.
-</source>
-        <translation type="obsolete">başlangıçta uygun gibi göründü fakat benzersiz veri içermiyor, yani uygun değildir.
-</translation>
-    </message>
-    <message>
-        <source>INSERT error</source>
-        <translation type="obsolete">INSERT hatası</translation>
-    </message>
-    <message>
-        <source>An error occured during feature insertion</source>
-        <translation type="obsolete">Obje eklerken bir hata oldu</translation>
-    </message>
-    <message>
-        <source>DELETE error</source>
-        <translation type="obsolete">Silme hatası</translation>
-    </message>
-    <message>
-        <source>An error occured during deletion from disk</source>
-        <translation type="obsolete">Diskten silerken bir hata oldu</translation>
-    </message>
-    <message>
-        <source>PostGIS error</source>
-        <translation type="obsolete">PostGIS hatası</translation>
-    </message>
-    <message>
-        <source>An error occured contacting the PostgreSQL databse</source>
-        <translation type="obsolete">PostgreSQL veitabanıyla iletişim kurarken hata oldu</translation>
-    </message>
-    <message>
-        <source>The PostgreSQL databse returned: </source>
-        <translation type="obsolete">PostgreSQL veritabanı derki:</translation>
-    </message>
-    <message>
-        <source>When trying: </source>
-        <translation type="obsolete">Denerken:</translation>
-    </message>
-    <message>
-        <source>An error occured contacting the PostgreSQL database</source>
-        <translation type="obsolete">PostgreSQL veritabanıyla bağlantı kurulurken bir hata oluştu</translation>
-    </message>
-    <message>
-        <source>The PostgreSQL database returned: </source>
-        <translation type="obsolete">postgreSQL veritabanının yanıtı:</translation>
-    </message>
-    <message>
-        <source>Unable to determine table access privileges for the </source>
-        <translation type="obsolete">için tablo erişim yetkileri belirlenemiyor</translation>
-    </message>
-    <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2339"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2346"/>
         <source>Error while adding features</source>
         <translation>Obje eklerken hata</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2379"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2386"/>
         <source>Error while deleting features</source>
         <translation>Obje silerken hata</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2439"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2446"/>
         <source>Error while adding attributes</source>
         <translation>Öznitelik eklerken hata</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2484"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2491"/>
         <source>Error while deleting attributes</source>
         <translation>Öznitelik silerken hata</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2552"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2559"/>
         <source>Error while changing attributes</source>
         <translation>Öznitelikleri değiştirirken hata</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2638"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2645"/>
         <source>Error while changing geometry values</source>
         <translation>geometri değerlerini değiştirirken hata</translation>
-    </message>
-    <message>
-        <source>Qgis was unable to determine the type and srid of column </source>
-        <translation type="obsolete">Qgis sütunun tipi ve srid&apos;ini belirleyemedi</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.h" line="517"/>
@@ -26536,53 +19269,53 @@ Qgis tablonun ya benzersiz kısıtlayıcıya (anahtar sütunu içeren) sahip int
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1208"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1215"/>
         <source>The unique index on column &apos;%1&apos; is unsuitable because Qgis does not currently support non-int4 type columns as a key into the table.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1239"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1246"/>
         <source>The unique index based on columns %1 is unsuitable because Qgis does not currently support multiple columns as a key into the table.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1419"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1426"/>
         <source>&apos;%1&apos; derives from &apos;%2.%3.%4&apos; </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1427"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1434"/>
         <source>and is not suitable (type is %1)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1515"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1522"/>
         <source>Note: &apos;%1&apos; initially appeared suitable but does not contain unique data, so is not suitable.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1526"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1533"/>
         <source>The view &apos;%1.%2&apos; has no column suitable for use as a unique key.
 Qgis requires that the view has a column that can be used as a unique key. Such a column should be derived from a table column of type int4 and be a primary key, have a unique constraint on it, or be a PostgreSQL oid column. To improve performance the column should also be indexed.
 The view you selected has the following columns, none of which satisfy the above conditions:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3034"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3041"/>
         <source>Column %1 in %2 has a geometry type of %3, which Qgis does not currently support.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3041"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3048"/>
         <source>Qgis was unable to determine the type and srid of column %1 in %2. The database communication log was:
 %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1133"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1140"/>
         <source>The table has no column suitable for use as a key.
 
 Qgis requires that the table either has a column of type
@@ -26755,10 +19488,6 @@ Try to find missing layers?</source>
         <translation>Proje Özellikleri</translation>
     </message>
     <message>
-        <source>Map Units</source>
-        <translation type="obsolete">Harita birimleri</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="183"/>
         <source>Meters</source>
         <translation>Metre</translation>
@@ -26774,50 +19503,14 @@ Try to find missing layers?</source>
         <translation>Ondalık derece</translation>
     </message>
     <message>
-        <source>&amp;Help</source>
-        <translation type="obsolete">&amp;Yardım</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">&amp;TAMAM</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;İptal</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="55"/>
         <source>Default project title</source>
         <translation>Varsayılan proje başlığı</translation>
     </message>
     <message>
-        <source>&amp;Apply</source>
-        <translation type="obsolete">&amp;Uygula</translation>
-    </message>
-    <message>
-        <source>Alt+A</source>
-        <translation type="obsolete">Alt+A</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="30"/>
         <source>General</source>
         <translation>Genel</translation>
-    </message>
-    <message>
-        <source>Line Width:</source>
-        <translation type="obsolete">Çizgi Genişliği:</translation>
-    </message>
-    <message>
-        <source>Snapping Tolerance:</source>
-        <translation type="obsolete">Yakalama töleransı:</translation>
-    </message>
-    <message>
-        <source>Line Colour:</source>
-        <translation type="obsolete">Çizgi Rengi:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="229"/>
@@ -26901,30 +19594,6 @@ Try to find missing layers?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Map Appearance</source>
-        <translation type="obsolete">Harita Görünüşü</translation>
-    </message>
-    <message>
-        <source>Selection Color:</source>
-        <translation type="obsolete">Seçim Rengi:</translation>
-    </message>
-    <message>
-        <source>Project Title</source>
-        <translation type="obsolete">Proje Başlığı</translation>
-    </message>
-    <message>
-        <source>Projection</source>
-        <translation type="obsolete">Projeksiyon</translation>
-    </message>
-    <message>
-        <source>Enable on the fly projection</source>
-        <translation type="obsolete">Değişik projeksiyonlara sahip dosyaları aynı projede göster</translation>
-    </message>
-    <message>
-        <source>Background Color:</source>
-        <translation type="obsolete">Arkaplan Rengi:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="217"/>
         <source>Precision</source>
         <translation>Hassasiyet</translation>
@@ -26938,18 +19607,6 @@ Try to find missing layers?</source>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="52"/>
         <source>Descriptive project name</source>
         <translation>Açıklayıcı proje adı</translation>
-    </message>
-    <message>
-        <source>Line width in pixels</source>
-        <translation type="obsolete">Piksel olarak Çizgi Genişliği</translation>
-    </message>
-    <message>
-        <source>Snapping tolerance in map units</source>
-        <translation type="obsolete">Harita birimlerine göre yakalama sınırı</translation>
-    </message>
-    <message>
-        <source>Snapping Tolerance (in map units):</source>
-        <translation type="obsolete">Yakalama sınırları (harita birimlerinde):</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="226"/>
@@ -26973,14 +19630,6 @@ Try to find missing layers?</source>
         <translation>Yakalama seçenekleri...</translation>
     </message>
     <message>
-        <source>Avoid intersections of new polygons</source>
-        <translation type="obsolete">Yeni poligon kesişimlerinden kaçın</translation>
-    </message>
-    <message>
-        <source>Title and colors</source>
-        <translation type="obsolete">Başlık ve renkler</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="42"/>
         <source>Project title</source>
         <translation>Proje Başlığı</translation>
@@ -26996,10 +19645,6 @@ Try to find missing layers?</source>
         <translation>Artalan Rengi</translation>
     </message>
     <message>
-        <source>Map units</source>
-        <translation type="obsolete">Harita birimleri</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="318"/>
         <source>Coordinate Reference System (CRS)</source>
         <translation>Koordinat Referans Sistemi</translation>
@@ -27013,35 +19658,27 @@ Try to find missing layers?</source>
 <context>
     <name>QgsProjectionSelector</name>
     <message>
-        <source>QGIS SRSID: </source>
-        <translation type="obsolete">QGIS SRSID: </translation>
-    </message>
-    <message>
-        <source>PostGIS SRID: </source>
-        <translation type="obsolete">PostGIS SRID:</translation>
-    </message>
-    <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="667"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="654"/>
         <source>User Defined Coordinate Systems</source>
         <translation>Kullanıcı tanımlı Koordinat Sistemleri</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="744"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="729"/>
         <source>Geographic Coordinate Systems</source>
         <translation>Coğrafi koordinat Sistemi</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="753"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="738"/>
         <source>Projected Coordinate Systems</source>
         <translation>Projeksiyon Koordinat Sistemi</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="1125"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="1107"/>
         <source>Resource Location Error</source>
         <translation>Kaynak Konum Hatası</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="1126"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="1108"/>
         <source>Error reading database file from: 
  %1
 Because of this the projection selector will not work...</source>
@@ -27051,12 +19688,9 @@ Because of this the projection selector will not work...</source>
 <context>
     <name>QgsProjectionSelectorBase</name>
     <message>
-        <source>Projection Selector</source>
-        <translation type="obsolete">Projeksiyon Seçici</translation>
-    </message>
-    <message>
-        <source>Projection</source>
-        <translation type="obsolete">Projeksiyon</translation>
+        <location filename="../src/ui/qgsprojectionselectorbase.ui" line="52"/>
+        <source>Authority ID</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="105"/>
@@ -27064,35 +19698,19 @@ Because of this the projection selector will not work...</source>
         <translation>Araştır</translation>
     </message>
     <message>
+        <location filename="../src/ui/qgsprojectionselectorbase.ui" line="111"/>
+        <source>AuthorityID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="149"/>
         <source>Find</source>
         <translation>Bul</translation>
     </message>
     <message>
-        <source>Postgis SRID</source>
-        <translation type="obsolete">PostGIS SRID</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsprojectionselectorbase.ui" line="111"/>
-        <source>EPSG ID</source>
-        <translation>EPSG ID</translation>
-    </message>
-    <message>
-        <source>QGIS SRSID</source>
-        <translation type="obsolete">QGIS SRSID</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="127"/>
         <source>Name</source>
         <translation>Ad</translation>
-    </message>
-    <message>
-        <source>Spatial Reference System</source>
-        <translation type="obsolete">Mekansal Referans Sistemi</translation>
-    </message>
-    <message>
-        <source>Id</source>
-        <translation type="obsolete">Id</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="20"/>
@@ -27105,25 +19723,9 @@ Because of this the projection selector will not work...</source>
         <translation>Koordinat Referans Sistemi</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsprojectionselectorbase.ui" line="52"/>
-        <source>EPSG</source>
-        <translation>EPSG</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="57"/>
         <source>ID</source>
         <translation>ID</translation>
-    </message>
-</context>
-<context>
-    <name>QgsPythonDialog</name>
-    <message>
-        <source>Python console</source>
-        <translation type="obsolete">Python işletmen uçbirimi</translation>
-    </message>
-    <message>
-        <source>&gt;&gt;&gt;</source>
-        <translation type="obsolete">&gt;&gt;&gt;</translation>
     </message>
 </context>
 <context>
@@ -27338,22 +19940,6 @@ p, li { white-space: pre-wrap; }
         <source>SQL where clause</source>
         <translation>SQL nerede (where) tümcesi </translation>
     </message>
-    <message>
-        <source>Clear</source>
-        <translation type="obsolete">Temizle</translation>
-    </message>
-    <message>
-        <source>Test</source>
-        <translation type="obsolete">Dene</translation>
-    </message>
-    <message>
-        <source>Ok</source>
-        <translation type="obsolete">Tamam</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">İptal</translation>
-    </message>
 </context>
 <context>
     <name>QgsQuickPrint</name>
@@ -27428,132 +20014,100 @@ p, li { white-space: pre-wrap; }
     <name>QgsRasterLayer</name>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="85"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2517"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="3444"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="3460"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2513"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="3440"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="3456"/>
         <source>Not Set</source>
         <translation>Ayarlanmadı</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2529"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2525"/>
         <source>Driver:</source>
         <translation>Sürücü:</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2606"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2602"/>
         <source>Dimensions:</source>
         <translation>Boyutlar:</translation>
     </message>
     <message>
-        <source>X: </source>
-        <translation type="obsolete">X:</translation>
-    </message>
-    <message>
-        <source> Y: </source>
-        <translation type="obsolete">Y:</translation>
-    </message>
-    <message>
-        <source> Bands: </source>
-        <translation type="obsolete">Bantlar:</translation>
-    </message>
-    <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2727"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2723"/>
         <source>Origin:</source>
         <translation>Merkez:</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2736"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2732"/>
         <source>Pixel Size:</source>
         <translation>Piksel Boyutu:</translation>
     </message>
     <message>
-        <source>Raster Extent: </source>
-        <translation type="obsolete">Raster Sınırları:</translation>
-    </message>
-    <message>
-        <source>Clipped area: </source>
-        <translation type="obsolete">Kırpılmış alan:</translation>
-    </message>
-    <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2678"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2674"/>
         <source>Pyramid overviews:</source>
         <translation>Piramid öngörünüşü:</translation>
     </message>
     <message>
-        <source>Band Statistics (if gathered):</source>
-        <translation type="obsolete">Bant İstatistikleri (elde edildiyse):</translation>
-    </message>
-    <message>
-        <source>Property</source>
-        <translation type="obsolete">Özellik</translation>
-    </message>
-    <message>
-        <source>Value</source>
-        <translation type="obsolete">Değer</translation>
-    </message>
-    <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2754"/>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="4900"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2750"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="4896"/>
         <source>Band</source>
         <translation>Bant</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2761"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2757"/>
         <source>Band No</source>
         <translation>Bant Numarası</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2773"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2769"/>
         <source>No Stats</source>
         <translation>İstatistik yok</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2776"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2772"/>
         <source>No stats collected yet</source>
         <translation>Henüz istatistik toplanmadı</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2786"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2782"/>
         <source>Min Val</source>
         <translation>En küçük değer</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2794"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2790"/>
         <source>Max Val</source>
         <translation>En büyük değer</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2802"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2798"/>
         <source>Range</source>
         <translation>Aralık</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2810"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2806"/>
         <source>Mean</source>
         <translation>Orta</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2818"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2814"/>
         <source>Sum of squares</source>
         <translation>Karelerin toplamı</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2826"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2822"/>
         <source>Standard Deviation</source>
         <translation>Standart Sapma</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2834"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2830"/>
         <source>Sum of all cells</source>
         <translation>Tüm hücrelerin toplamı</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2842"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2838"/>
         <source>Cell Count</source>
         <translation>Hücre Sayısı</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2634"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2630"/>
         <source>Data Type:</source>
         <translation>Veri tipi:</translation>
     </message>
@@ -27563,67 +20117,57 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1542"/>
-        <source>Retrieving %1 using %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1626"/>
-        <source>%1 retrieved using %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2643"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2639"/>
         <source>GDT_UInt16 - Sixteen bit unsigned integer </source>
         <translation>GDT_UInt16 - Sixteen bit unsigned integer</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2646"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2642"/>
         <source>GDT_Int16 - Sixteen bit signed integer </source>
         <translation>GDT_Int16 - Sixteen bit signed integer</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2649"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2645"/>
         <source>GDT_UInt32 - Thirty two bit unsigned integer </source>
         <translation>GDT_UInt32 - Thirty two bit unsigned integer</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2652"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2648"/>
         <source>GDT_Int32 - Thirty two bit signed integer </source>
         <translation>GDT_Int32 - Thirty two bit signed integer</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2655"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2651"/>
         <source>GDT_Float32 - Thirty two bit floating point </source>
         <translation>GDT_Float32 - Thirty two bit floating point</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2658"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2654"/>
         <source>GDT_Float64 - Sixty four bit floating point </source>
         <translation>GDT_Float64 - Sixty four bit floating point</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2661"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2657"/>
         <source>GDT_CInt16 - Complex Int16 </source>
         <translation>GDT_CInt16 - Complex Int16</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2664"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2660"/>
         <source>GDT_CInt32 - Complex Int32 </source>
         <translation>GDT_CInt32 - Complex Int32</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2667"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2663"/>
         <source>GDT_CFloat32 - Complex Float32 </source>
         <translation>GDT_CFloat32 - Complex Float32</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2670"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2666"/>
         <source>GDT_CFloat64 - Complex Float64 </source>
         <translation>GDT_CFloat64 - Complex Float64</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2673"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2669"/>
         <source>Could not determine raster data type.</source>
         <translation>Raster veri tipi belirlenemedi.</translation>
     </message>
@@ -27638,56 +20182,52 @@ p, li { white-space: pre-wrap; }
         <translation>Ortalama</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2699"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2695"/>
         <source>Layer Spatial Reference System: </source>
         <translation>Katman Mekansal Referans Sistemi:</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1893"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1889"/>
         <source>out of extent</source>
         <translation>Sınırlar dışında</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1934"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1930"/>
         <source>null (no data)</source>
         <translation>null (veri yok)</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2554"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2550"/>
         <source>Dataset Description</source>
         <translation>Veritabanı Açıklaması</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2619"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2615"/>
         <source>No Data Value</source>
         <translation>Veri Değeri Yok</translation>
     </message>
     <message>
-        <source>and all other files</source>
-        <translation type="obsolete">ve tüm diğer dosyalar</translation>
-    </message>
-    <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2640"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2636"/>
         <source>GDT_Byte - Eight bit unsigned integer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2628"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2624"/>
         <source>NoDataValue not set</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2575"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2571"/>
         <source>Band %1</source>
         <translation>Bant %1</translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2609"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2605"/>
         <source>X: %1 Y: %2 Bands: %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2709"/>
+        <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2705"/>
         <source>Project Spatial Reference System: </source>
         <translation type="unfinished"></translation>
     </message>
@@ -27727,10 +20267,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2383"/>
         <source>Pseudocolor</source>
         <translation>Yalancı renk</translation>
-    </message>
-    <message>
-        <source>Palette</source>
-        <translation type="obsolete">Palet</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="58"/>
@@ -27784,10 +20320,6 @@ p, li { white-space: pre-wrap; }
         <translation>Piramid oluşturmada hata oldu.</translation>
     </message>
     <message>
-        <source>The file was not writeable. Some formats can not be written to, only read. You can also try to check the permissions and then try again.</source>
-        <translation type="obsolete">Dosya yazılabilir değil. Bazı biçimler yazılamaz sadece okunur. Ayrıca izinleri kontrol edip tekrar deneyin.</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1593"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1603"/>
         <source>Building pyramid overviews is not supported on this type of raster.</source>
@@ -27801,10 +20333,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2383"/>
         <source>Freak Out</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Custom Colormap</source>
-        <translation type="obsolete">Kullanıcı Renk haritası</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="113"/>
@@ -27851,10 +20379,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2805"/>
         <source>Discrete</source>
         <translation>Ayrı</translation>
-    </message>
-    <message>
-        <source>Linearly</source>
-        <translation type="obsolete">Doğrusal</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="144"/>
@@ -27951,10 +20475,6 @@ p, li { white-space: pre-wrap; }
         <translation>Kullanıcı Tanımlı</translation>
     </message>
     <message>
-        <source>No Scaling</source>
-        <translation type="obsolete">Ölçeksiz</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="830"/>
         <source>No-Data Value: Not Set</source>
         <translation>Veri Değeri Yok: Ayarlanmadı</translation>
@@ -28040,10 +20560,6 @@ p, li { white-space: pre-wrap; }
         <translation>QGIS</translation>
     </message>
     <message>
-        <source>Unknown style format: </source>
-        <translation type="obsolete">Bilinmeyen stil biçimi:</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="110"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="627"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1006"/>
@@ -28081,10 +20597,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Default</source>
-        <translation type="obsolete">Varsayılan</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1587"/>
         <source>The file was not writeable. Some formats do not support pyramid overviews. Consult the GDAL documentation if in doubt.</source>
         <translation type="unfinished"></translation>
@@ -28109,14 +20621,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3238"/>
         <source>Saved Style</source>
         <translation>Kayıtlı Stil</translation>
-    </message>
-    <message>
-        <source>The color map for Band %n failed to load</source>
-        <translation type="obsolete">
-        
-        
-        
-        </translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="452"/>
@@ -28199,45 +20703,9 @@ p, li { white-space: pre-wrap; }
         <translation>Raster Katman Özellikleri</translation>
     </message>
     <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;İptal</translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">&amp;TAMAM</translation>
-    </message>
-    <message>
-        <source>&amp;Apply</source>
-        <translation type="obsolete">&amp;Uygula</translation>
-    </message>
-    <message>
-        <source>Alt+A</source>
-        <translation type="obsolete">Alt+A</translation>
-    </message>
-    <message>
-        <source>&amp;Help</source>
-        <translation type="obsolete">&amp;Yardım</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="119"/>
         <source>General</source>
         <translation>Genel</translation>
-    </message>
-    <message>
-        <source>Layer Source:</source>
-        <translation type="obsolete">Katman Kaynağı:</translation>
-    </message>
-    <message>
-        <source>Display Name:</source>
-        <translation type="obsolete">Ad Göster:</translation>
-    </message>
-    <message>
-        <source>Legend:</source>
-        <translation type="obsolete">Lejand:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1554"/>
@@ -28250,10 +20718,6 @@ p, li { white-space: pre-wrap; }
         <translation>Semboloji</translation>
     </message>
     <message>
-        <source>Transparency:</source>
-        <translation type="obsolete">Şeffaflık:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1084"/>
         <source>&lt;p align=&quot;right&quot;&gt;Full&lt;/p&gt;</source>
         <translation>&lt;p align=&quot;right&quot;&gt;Tam&lt;/p&gt;</translation>
@@ -28262,46 +20726,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1038"/>
         <source>None</source>
         <translation>Hiçbiri</translation>
-    </message>
-    <message>
-        <source>Invert Color Map</source>
-        <translation type="obsolete">Renk Haritasını Dönüştür</translation>
-    </message>
-    <message>
-        <source>0%</source>
-        <translation type="obsolete">0%</translation>
-    </message>
-    <message>
-        <source>Band</source>
-        <translation type="obsolete">Bant</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;&lt;font color=&quot;#00ff00&quot;&gt;Green&lt;/font&gt;&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;b&gt;&lt;yazı tipi rengi=&quot;#00ff00&quot;&gt;Yeşil&lt;/font&gt;&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;&lt;font color=&quot;#ff0000&quot;&gt;Red&lt;/font&gt;&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;b&gt;&lt;yazı tipi rengi=&quot;#ff0000&quot;&gt;Kırmızı&lt;/font&gt;&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;&lt;font color=&quot;#0000ff&quot;&gt;Blue&lt;/font&gt;&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;b&gt;&lt;Yazı tii rengir=&quot;#0000ff&quot;&gt;Mavi&lt;/font&gt;&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>Color</source>
-        <translation type="obsolete">Renk</translation>
-    </message>
-    <message>
-        <source>Gray</source>
-        <translation type="obsolete">Gri</translation>
-    </message>
-    <message>
-        <source>Std Deviations</source>
-        <translation type="obsolete">Standart Sapma</translation>
-    </message>
-    <message>
-        <source>Color Map</source>
-        <translation type="obsolete">Renk haritası</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="128"/>
@@ -28314,10 +20738,6 @@ p, li { white-space: pre-wrap; }
         <translation>Piramitler</translation>
     </message>
     <message>
-        <source>Resampling Method</source>
-        <translation type="obsolete">Yeniden örnekleme metodu</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1855"/>
         <source>Average</source>
         <translation>Ortalama</translation>
@@ -28326,14 +20746,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1860"/>
         <source>Nearest Neighbour</source>
         <translation>En yakın Komşu</translation>
-    </message>
-    <message>
-        <source>Build Pyramids</source>
-        <translation type="obsolete">Piramit Oluştur</translation>
-    </message>
-    <message>
-        <source>Pyramid Resolutions</source>
-        <translation type="obsolete">Piramid Çözünürlükleri</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1655"/>
@@ -28351,26 +20763,6 @@ p, li { white-space: pre-wrap; }
         <translation>Satırlar:</translation>
     </message>
     <message>
-        <source>Palette:</source>
-        <translation type="obsolete">Palet:</translation>
-    </message>
-    <message>
-        <source>Maximum 1:</source>
-        <translation type="obsolete">En büyük 1:</translation>
-    </message>
-    <message>
-        <source>Maximum scale at which this layer will be displayed. </source>
-        <translation type="obsolete">Bu katmanın görüntülenebileceği en büyük ölçek.</translation>
-    </message>
-    <message>
-        <source>Minimum 1:</source>
-        <translation type="obsolete">En küçük 1:</translation>
-    </message>
-    <message>
-        <source>Minimum scale at which this layer will be displayed. </source>
-        <translation type="obsolete">Bu katmanın gösterileceği minimum ölçek.</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="146"/>
         <source>Histogram</source>
         <translation>Histogram</translation>
@@ -28381,25 +20773,9 @@ p, li { white-space: pre-wrap; }
         <translation>Seçenekler</translation>
     </message>
     <message>
-        <source>Out Of Range OK?</source>
-        <translation type="obsolete">Aralık Dışında Tamam?</translation>
-    </message>
-    <message>
-        <source>Allow Approximation</source>
-        <translation type="obsolete">Yaklaştırmaya izin ver</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1926"/>
         <source>Chart Type</source>
         <translation>Çizelge Tipi</translation>
-    </message>
-    <message>
-        <source>Bar Chart</source>
-        <translation type="obsolete">Çubuk Diyagram</translation>
-    </message>
-    <message>
-        <source>Line Graph</source>
-        <translation type="obsolete">Çizgi Grafik</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2037"/>
@@ -28407,89 +20783,14 @@ p, li { white-space: pre-wrap; }
         <translation>Tazele</translation>
     </message>
     <message>
-        <source>Spatial Reference System</source>
-        <translation type="obsolete">Mekansal Referans Sistemi</translation>
-    </message>
-    <message>
-        <source>Change</source>
-        <translation type="obsolete">Değiştir</translation>
-    </message>
-    <message>
-        <source>Display</source>
-        <translation type="obsolete">Görüntü</translation>
-    </message>
-    <message>
-        <source>Grayscale Image</source>
-        <translation type="obsolete">Gri ölçekli görüntü</translation>
-    </message>
-    <message>
-        <source>Color Image</source>
-        <translation type="obsolete">Renkli Görüntü</translation>
-    </message>
-    <message>
-        <source>DebugInfo</source>
-        <translation type="obsolete">Hata ayıklama bilgisi</translation>
-    </message>
-    <message>
-        <source>Scale Dependent Visibility</source>
-        <translation type="obsolete">Ölçek Bağımsız Görünürlük</translation>
-    </message>
-    <message>
-        <source>Column Count:</source>
-        <translation type="obsolete">Sütun Sayısı:</translation>
-    </message>
-    <message>
-        <source>Transparent</source>
-        <translation type="obsolete">Şeffaflık</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:Sans Serif&quot;&gt;
-&lt;p style=&quot;margin-top:14px&quot; dir=&quot;ltr&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;Notes&lt;/span&gt;&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;
-</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;/head&gt;&lt;body style=&quot;font-size:10pt;font-family:Sans Serif&quot;&gt;&lt;p style=&quot;margin-top:14px&quot; dir=&quot;ltr&quot;&gt;&lt;span style=&quot;font-weight:600&quot;&gt;Notes&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="754"/>
         <source>Max</source>
         <translation>En büyük</translation>
     </message>
     <message>
-        <source>Std Deviation</source>
-        <translation type="obsolete">Standart sapma</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="716"/>
         <source>Min</source>
         <translation>En küçük</translation>
-    </message>
-    <message>
-        <source>Contrast Enhancement</source>
-        <translation type="obsolete">Kontrast Zenginleştirme</translation>
-    </message>
-    <message>
-        <source>RGB Scaling</source>
-        <translation type="obsolete">KYM Ölçekleme</translation>
-    </message>
-    <message>
-        <source>Grayscale Band Selection</source>
-        <translation type="obsolete">Gri ölçek Band Seçimi</translation>
-    </message>
-    <message>
-        <source>RGB Mode Band Selection</source>
-        <translation type="obsolete">KYM modda Band Seçimi</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;&lt;font color=&apos;blue&apos;&gt;Blue&lt;/font&gt;&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;b&gt;&lt;font color=&apos;blue&apos;&gt;Mavi&lt;/font&gt;&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;&lt;font color=&apos;green&apos;&gt;Green&lt;/font&gt;&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;b&gt;&lt;font color=&apos;green&apos;&gt;Yeşil&lt;/font&gt;&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;b&gt;&lt;font color=&apos;red&apos;&gt;Red&lt;/font&gt;&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;b&gt;&lt;font color=&apos;red&apos;&gt;Kırmızı&lt;/font&gt;&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1064"/>
@@ -28500,30 +20801,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="168"/>
         <source>Render as</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Single Band Gray</source>
-        <translation type="obsolete">Tek Band Gri</translation>
-    </message>
-    <message>
-        <source>Three Band Color</source>
-        <translation type="obsolete">Üç Band Renkli</translation>
-    </message>
-    <message>
-        <source>Transparent Pixels</source>
-        <translation type="obsolete">Şeffaf Hücreler</translation>
-    </message>
-    <message>
-        <source>Transparent Band:</source>
-        <translation type="obsolete">Şeffaf Band:</translation>
-    </message>
-    <message>
-        <source>Transparency Layer;</source>
-        <translation type="obsolete">Şeffaf Katman;</translation>
-    </message>
-    <message>
-        <source>Add Values Manually</source>
-        <translation type="obsolete">Değerleri elle ekle</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="341"/>
@@ -28540,37 +20817,9 @@ p, li { white-space: pre-wrap; }
         <translation>...</translation>
     </message>
     <message>
-        <source>Add Values From Display</source>
-        <translation type="obsolete">Değerleri Görüntüden Ekle</translation>
-    </message>
-    <message>
-        <source>Remove Selected Row</source>
-        <translation type="obsolete">Seçilen Satırı Sil</translation>
-    </message>
-    <message>
-        <source>Default Values</source>
-        <translation type="obsolete">Varsayılan Değerler</translation>
-    </message>
-    <message>
-        <source>Import From File</source>
-        <translation type="obsolete">Dosyadan içe aktar</translation>
-    </message>
-    <message>
-        <source>Export To File</source>
-        <translation type="obsolete">Dosyaya dışa aktar</translation>
-    </message>
-    <message>
-        <source>No Data Value:</source>
-        <translation type="obsolete">Veri Değeri Yok:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="110"/>
         <source>Colormap</source>
         <translation>Renk haritası</translation>
-    </message>
-    <message>
-        <source>Number of entries:</source>
-        <translation type="obsolete">Kayıt sayısı:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1376"/>
@@ -28592,10 +20841,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1478"/>
         <source>2</source>
         <translation>2</translation>
-    </message>
-    <message>
-        <source>Classification mode:</source>
-        <translation type="obsolete">Sınıflandırma modu:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="174"/>
@@ -28976,10 +21221,6 @@ p, li { white-space: pre-wrap; }
         <translation>Koordinat Referans Sistemi</translation>
     </message>
     <message>
-        <source>Change ...</source>
-        <translation type="obsolete">Değiştir ...</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1692"/>
         <source>Legend</source>
         <translation>Lejand</translation>
@@ -29150,14 +21391,6 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsRunProcess</name>
     <message>
-        <source>Unable to run command</source>
-        <translation type="obsolete">Komut çalıştırılamıyor</translation>
-    </message>
-    <message>
-        <source>Starting</source>
-        <translation type="obsolete">Başlatılıyor</translation>
-    </message>
-    <message>
         <location filename="../src/core/qgsrunprocess.cpp" line="119"/>
         <source>Done</source>
         <translation>Yapıldı</translation>
@@ -29182,64 +21415,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/core/qgsrunprocess.cpp" line="152"/>
         <source>Unable to run command %1</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>QgsSOSSourceSelect</name>
-    <message>
-        <source>Are you sure you want to remove the </source>
-        <translation type="obsolete">Kaldırmak istediğinizden eminmisiniz</translation>
-    </message>
-    <message>
-        <source> connection and all associated settings?</source>
-        <translation type="obsolete">bağlantı ve tüm ilgili ayarlar?</translation>
-    </message>
-    <message>
-        <source>Confirm Delete</source>
-        <translation type="obsolete">Silmeyi Onayla</translation>
-    </message>
-</context>
-<context>
-    <name>QgsSOSSourceSelectBase</name>
-    <message>
-        <source>Dialog</source>
-        <translation type="obsolete">Diyalog</translation>
-    </message>
-    <message>
-        <source>Server Connections</source>
-        <translation type="obsolete">Sunucu Bağlantıları</translation>
-    </message>
-    <message>
-        <source>&amp;New</source>
-        <translation type="obsolete">&amp;Yeni</translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation type="obsolete">Sil</translation>
-    </message>
-    <message>
-        <source>Edit</source>
-        <translation type="obsolete">Düzenle</translation>
-    </message>
-    <message>
-        <source>C&amp;onnect</source>
-        <translation type="obsolete">B&amp;ağlan</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Ad</translation>
-    </message>
-    <message>
-        <source>Id</source>
-        <translation type="obsolete">Id</translation>
-    </message>
-    <message>
-        <source>Optional settings</source>
-        <translation type="obsolete">Seçimlik ayarlar</translation>
-    </message>
-    <message>
-        <source>Features of interest...</source>
-        <translation type="obsolete">ilgili Objeler...</translation>
     </message>
 </context>
 <context>
@@ -29291,10 +21466,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/diagram_overlay/qgssvgdiagramfactorywidgetbase.ui" line="126"/>
         <source>...</source>
         <translation>...</translation>
-    </message>
-    <message>
-        <source>Browse...</source>
-        <translation type="obsolete">Göz at...</translation>
     </message>
 </context>
 <context>
@@ -29443,22 +21614,6 @@ p, li { white-space: pre-wrap; }
         <translation>Ölçek çubuğu eklentisi</translation>
     </message>
     <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">&amp;TAMAM</translation>
-    </message>
-    <message>
-        <source>Alt+O</source>
-        <translation type="obsolete">Alt+O</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;İptal</translation>
-    </message>
-    <message>
-        <source>Alt+C</source>
-        <translation type="obsolete">Alt+C</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="48"/>
         <source>Top Left</source>
         <translation>Sol Üst</translation>
@@ -29490,14 +21645,6 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Size of bar:</source>
-        <translation type="obsolete">Çubuk boyutları:</translation>
-    </message>
-    <message>
-        <source>Placement:</source>
-        <translation type="obsolete">Yerleştirme:</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="97"/>
         <source>Tick Down</source>
         <translation>Aşağı Tıkla</translation>
@@ -29523,21 +21670,9 @@ p, li { white-space: pre-wrap; }
         <translation>Ölçek çubuğu stilini seç</translation>
     </message>
     <message>
-        <source>Colour of bar:</source>
-        <translation type="obsolete">Çubuk rengi:</translation>
-    </message>
-    <message>
-        <source>Scale bar style:</source>
-        <translation type="obsolete">Ölçek çubuğu stili:</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="187"/>
         <source>Enable scale bar</source>
         <translation>ölçek çubuğunu göster</translation>
-    </message>
-    <message>
-        <source>Click to select the colour</source>
-        <translation type="obsolete">Rengi seçmek için tıkla</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="31"/>
@@ -29548,10 +21683,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="77"/>
         <source>Scale bar style</source>
         <translation>Ölçek çubuğu stili</translation>
-    </message>
-    <message>
-        <source>Colour of bar</source>
-        <translation type="obsolete">Çubuk rengi</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="161"/>
@@ -29566,18 +21697,6 @@ p, li { white-space: pre-wrap; }
 </context>
 <context>
     <name>QgsSearchQueryBuilder</name>
-    <message>
-        <source>Found %d matching features.</source>
-        <translation type="obsolete">%d eşleşen obje bulundu.
-        
-        
-        
-        </translation>
-    </message>
-    <message>
-        <source>No matching features found.</source>
-        <translation type="obsolete">Eşleşen obje bulunamadı.</translation>
-    </message>
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="173"/>
         <source>Search results</source>
@@ -29623,207 +21742,11 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>QgsServerSourceSelect</name>
-    <message>
-        <source>Are you sure you want to remove the </source>
-        <translation type="obsolete">Kaldırmak istediğinizden eminmisiniz</translation>
-    </message>
-    <message>
-        <source> connection and all associated settings?</source>
-        <translation type="obsolete">bağlantı ve tüm ilgili ayarlar?</translation>
-    </message>
-    <message>
-        <source>Confirm Delete</source>
-        <translation type="obsolete">Silmeyi Onayla</translation>
-    </message>
-    <message>
-        <source>Yes</source>
-        <translation type="obsolete">Evet</translation>
-    </message>
-    <message>
-        <source>No</source>
-        <translation type="obsolete">Hayır</translation>
-    </message>
-    <message>
-        <source>WMS Provider</source>
-        <translation type="obsolete">WMS Sağlayıcı</translation>
-    </message>
-    <message>
-        <source>Could not open the WMS Provider</source>
-        <translation type="obsolete">WMS Sağlayıcı açılamıyor</translation>
-    </message>
-    <message>
-        <source>Select Layer</source>
-        <translation type="obsolete">Katmanı Seç</translation>
-    </message>
-    <message>
-        <source>You must select at least one layer first.</source>
-        <translation type="obsolete">Önce enazından bir katman seçmelisiniz.</translation>
-    </message>
-    <message>
-        <source>Coordinate Reference System (%1 available)</source>
-        <translation type="obsolete">Koordinat Referans Sistemi (%1 mevcut)
-        
-        
-        
-        
-        </translation>
-    </message>
-    <message>
-        <source>provider said</source>
-        <translation type="obsolete">Sağlayıcı diyor ki</translation>
-    </message>
-    <message>
-        <source>WMS proxies</source>
-        <translation type="obsolete">WMS-Vekil Sunucu</translation>
-    </message>
-    <message>
-        <source>Coordinate Reference System</source>
-        <translation type="obsolete">Koordinat Referans Sistemi</translation>
-    </message>
-    <message>
-        <source>There are no available coordinate reference system for the set of layers you&apos;ve selected.</source>
-        <translation type="obsolete">Seçtiğiniz katmanlar için uygun koordinat sistemi yok.</translation>
-    </message>
-    <message numerus="yes">
-        <source>Coordinate Reference System (%n available)</source>
-        <comment>crs count</comment>
-        <translation type="obsolete">
-            <numerusform>
-        
-        </numerusform>
-        </translation>
-    </message>
-</context>
-<context>
-    <name>QgsServerSourceSelectBase</name>
-    <message>
-        <source>Add Layer(s) from a Server</source>
-        <translation type="obsolete">Sunucudan Katman(lar) ekle</translation>
-    </message>
-    <message>
-        <source>C&amp;lose</source>
-        <translation type="obsolete">K&amp;apat</translation>
-    </message>
-    <message>
-        <source>Alt+L</source>
-        <translation type="obsolete">Alt+L</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">Yardım</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
-    </message>
-    <message>
-        <source>Image encoding</source>
-        <translation type="obsolete">Görüntü kodlama</translation>
-    </message>
-    <message>
-        <source>Layers</source>
-        <translation type="obsolete">Katmanlar</translation>
-    </message>
-    <message>
-        <source>ID</source>
-        <translation type="obsolete">ID</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Ad</translation>
-    </message>
-    <message>
-        <source>Title</source>
-        <translation type="obsolete">Başlık</translation>
-    </message>
-    <message>
-        <source>Abstract</source>
-        <translation type="obsolete">Özet</translation>
-    </message>
-    <message>
-        <source>Layer</source>
-        <translation type="obsolete">Katman</translation>
-    </message>
-    <message>
-        <source>Options</source>
-        <translation type="obsolete">Seçenekler</translation>
-    </message>
-    <message>
-        <source>Layer name</source>
-        <translation type="obsolete">Katman adı</translation>
-    </message>
-    <message>
-        <source>&amp;Add</source>
-        <translation type="obsolete">&amp;Ekle</translation>
-    </message>
-    <message>
-        <source>Alt+A</source>
-        <translation type="obsolete">Alt+A</translation>
-    </message>
-    <message>
-        <source>Server Connections</source>
-        <translation type="obsolete">Sunucu Bağlantıları</translation>
-    </message>
-    <message>
-        <source>&amp;New</source>
-        <translation type="obsolete">&amp;Yeni</translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation type="obsolete">Sil</translation>
-    </message>
-    <message>
-        <source>Edit</source>
-        <translation type="obsolete">Düzeltme</translation>
-    </message>
-    <message>
-        <source>C&amp;onnect</source>
-        <translation type="obsolete">B&amp;ağlan</translation>
-    </message>
-    <message>
-        <source>Ready</source>
-        <translation type="obsolete">Hazır</translation>
-    </message>
-    <message>
-        <source>Coordinate Reference System</source>
-        <translation type="obsolete">Koordinat Referans Sistemi</translation>
-    </message>
-    <message>
-        <source>Change ...</source>
-        <translation type="obsolete">Değiştir ...</translation>
-    </message>
-    <message>
-        <source>Adds a few example WMS servers</source>
-        <translation type="obsolete">Birkaç örnek WMS sunucusu ekle</translation>
-    </message>
-    <message>
-        <source>Add default servers</source>
-        <translation type="obsolete">Varsayılan sunucuları ekle</translation>
-    </message>
-    <message>
-        <source>Search</source>
-        <translation type="obsolete">Araştır</translation>
-    </message>
-    <message>
-        <source>URL</source>
-        <translation type="obsolete">URL</translation>
-    </message>
-    <message>
-        <source>Description</source>
-        <translation type="obsolete">Açıklama</translation>
-    </message>
-</context>
-<context>
     <name>QgsShapeFile</name>
     <message>
         <location filename="../src/plugins/spit/qgsshapefile.cpp" line="442"/>
         <source>The database gave an error while executing this SQL:</source>
         <translation>Veritabanı şu SQL&apos;i icra ederkenhata verdi:</translation>
-    </message>
-    <message>
-        <source>The error was:</source>
-        <translation type="obsolete">Hata şuydu:</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsshapefile.cpp" line="446"/>
@@ -29859,54 +21782,6 @@ The error was:
 <context>
     <name>QgsSingleSymbolDialog</name>
     <message>
-        <source>Solid Line</source>
-        <translation type="obsolete">Kesiksiz Çizgi</translation>
-    </message>
-    <message>
-        <source>Dash Line</source>
-        <translation type="obsolete">Kesikli Çizgi</translation>
-    </message>
-    <message>
-        <source>Dot Line</source>
-        <translation type="obsolete">Noktalı Çizgi</translation>
-    </message>
-    <message>
-        <source>Dash Dot Line</source>
-        <translation type="obsolete">Kesikli Noktalı Çizgi</translation>
-    </message>
-    <message>
-        <source>Dash Dot Dot Line</source>
-        <translation type="obsolete">Kesikli Çift Noktalı Çizgi</translation>
-    </message>
-    <message>
-        <source>No Pen</source>
-        <translation type="obsolete">Çizgisiz</translation>
-    </message>
-    <message>
-        <source>Solid Pattern</source>
-        <translation type="obsolete">Dolu Desen</translation>
-    </message>
-    <message>
-        <source>Hor Pattern</source>
-        <translation type="obsolete">Yatay Desen</translation>
-    </message>
-    <message>
-        <source>Ver Pattern</source>
-        <translation type="obsolete">Düşey Desen</translation>
-    </message>
-    <message>
-        <source>Cross Pattern</source>
-        <translation type="obsolete">Çapraz Desen</translation>
-    </message>
-    <message>
-        <source>No Brush</source>
-        <translation type="obsolete">Desensiz</translation>
-    </message>
-    <message>
-        <source>Solid</source>
-        <translation type="obsolete">Dolu</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgssinglesymboldialog.cpp" line="63"/>
         <source>Refresh markers</source>
         <translation type="unfinished"></translation>
@@ -29916,46 +21791,6 @@ The error was:
         <location filename="../src/app/qgssinglesymboldialog.cpp" line="183"/>
         <source>None</source>
         <translation>Hiçbiri</translation>
-    </message>
-    <message>
-        <source>Horizontal</source>
-        <translation type="obsolete">Yatay</translation>
-    </message>
-    <message>
-        <source>Vertical</source>
-        <translation type="obsolete">Düşey</translation>
-    </message>
-    <message>
-        <source>Cross</source>
-        <translation type="obsolete">Çarpraz</translation>
-    </message>
-    <message>
-        <source>Dense1</source>
-        <translation type="obsolete">Yoğun 1</translation>
-    </message>
-    <message>
-        <source>Dense2</source>
-        <translation type="obsolete">Yoğun  2</translation>
-    </message>
-    <message>
-        <source>Dense3</source>
-        <translation type="obsolete">Yoğun 3</translation>
-    </message>
-    <message>
-        <source>Dense4</source>
-        <translation type="obsolete">Yoğun 4</translation>
-    </message>
-    <message>
-        <source>Dense5</source>
-        <translation type="obsolete">Yoğun 5</translation>
-    </message>
-    <message>
-        <source>Dense6</source>
-        <translation type="obsolete">Yoğun 6</translation>
-    </message>
-    <message>
-        <source>Dense7</source>
-        <translation type="obsolete">Yoğun 7</translation>
     </message>
     <message>
         <location filename="../src/app/qgssinglesymboldialog.cpp" line="184"/>
@@ -29969,14 +21804,6 @@ The error was:
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="20"/>
         <source>Single Symbol</source>
         <translation>Tek Sembol</translation>
-    </message>
-    <message>
-        <source>Fill Patterns:</source>
-        <translation type="obsolete">İçini tarama deseni:</translation>
-    </message>
-    <message>
-        <source>Point</source>
-        <translation type="obsolete">Nokta</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="90"/>
@@ -30024,66 +21851,14 @@ The error was:
         <translation>Genişlik</translation>
     </message>
     <message>
-        <source>Outline Width:</source>
-        <translation type="obsolete">Çerçeve genişliği:</translation>
-    </message>
-    <message>
-        <source>Fill Color:</source>
-        <translation type="obsolete">İçini boyama rengi:</translation>
-    </message>
-    <message>
-        <source>Outline color:</source>
-        <translation type="obsolete">Çerçeve rengi:</translation>
-    </message>
-    <message>
-        <source>Outline Style:</source>
-        <translation type="obsolete">Çerçeve stili:</translation>
-    </message>
-    <message>
-        <source>Label:</source>
-        <translation type="obsolete">Etiket:</translation>
-    </message>
-    <message>
-        <source>No Fill</source>
-        <translation type="obsolete">Doldurma</translation>
-    </message>
-    <message>
-        <source>Browse:</source>
-        <translation type="obsolete">Göz at:</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="50"/>
         <source>Point Symbol</source>
         <translation>Nokta Sembolü</translation>
     </message>
     <message>
-        <source>Style Options</source>
-        <translation type="obsolete">Stil Seçenekleri</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="189"/>
         <source>...</source>
         <translation>...</translation>
-    </message>
-    <message>
-        <source>Outline style</source>
-        <translation type="obsolete">Çerçeve stili</translation>
-    </message>
-    <message>
-        <source>Outline color</source>
-        <translation type="obsolete">Çerçeve rengi</translation>
-    </message>
-    <message>
-        <source>Outline width</source>
-        <translation type="obsolete">Çerçeve genişliği</translation>
-    </message>
-    <message>
-        <source>Fill color</source>
-        <translation type="obsolete">Doldurma rengi</translation>
-    </message>
-    <message>
-        <source>Fill style</source>
-        <translation type="obsolete">Doldurma stili</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="135"/>
@@ -30161,10 +21936,6 @@ The error was:
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="118"/>
         <source>Text</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Integer</source>
-        <translation type="obsolete">Tamsayı</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="117"/>
@@ -30292,14 +22063,6 @@ SQL: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Are you sure you want to remove the </source>
-        <translation type="obsolete">Kaldırmak istediğinizden eminmisiniz</translation>
-    </message>
-    <message>
-        <source> connection and all associated settings?</source>
-        <translation type="obsolete">bağlantı ve tüm ilgili ayarlar?</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsspatialitesourceselect.cpp" line="342"/>
         <source>Confirm Delete</source>
         <translation>Silmeyi Onayla</translation>
@@ -30355,34 +22118,6 @@ SQL: %2</source>
         <location filename="../src/ui/qgsspatialitesourceselectbase.ui" line="83"/>
         <source>Connect</source>
         <translation>Bağlan</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">Yardım</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
-    </message>
-    <message>
-        <source>Add</source>
-        <translation type="obsolete">Ekle</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">Kapat</translation>
-    </message>
-    <message>
-        <source>Search:</source>
-        <translation type="obsolete">Araştır:</translation>
-    </message>
-    <message>
-        <source>Search mode:</source>
-        <translation type="obsolete">Araştırma modu:</translation>
-    </message>
-    <message>
-        <source>Search in columns:</source>
-        <translation type="obsolete">Sütunları araştır:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsspatialitesourceselectbase.ui" line="150"/>
@@ -30461,29 +22196,9 @@ SQL: %2</source>
 <context>
     <name>QgsSpit</name>
     <message>
-        <source>Are you sure you want to remove the [</source>
-        <translation type="obsolete">Kaldırmak istediğinizden eminmisiniz [</translation>
-    </message>
-    <message>
-        <source>] connection and all associated settings?</source>
-        <translation type="obsolete">] bağlantı ve tüm ilgili ayarlar?</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="149"/>
         <source>Confirm Delete</source>
         <translation>Silmeyi Onayla</translation>
-    </message>
-    <message>
-        <source>Yes</source>
-        <translation type="obsolete">Evet</translation>
-    </message>
-    <message>
-        <source>No</source>
-        <translation type="obsolete">Hayır</translation>
-    </message>
-    <message>
-        <source> - Edit Column Names</source>
-        <translation type="obsolete">- Sütun Adlarını Düzeltme</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="272"/>
@@ -30650,45 +22365,9 @@ SQL: %2</source>
         <translation>Dosyadan objeleri almada sorun var:</translation>
     </message>
     <message>
-        <source>Invalid table name.</source>
-        <translation type="obsolete">Geçersiz Tablo Adı.</translation>
-    </message>
-    <message>
-        <source>No fields detected.</source>
-        <translation type="obsolete">Alan bulunamadı.</translation>
-    </message>
-    <message>
-        <source>The following fields are duplicates:</source>
-        <translation type="obsolete">Müteakip alanlar çifttir:</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="676"/>
         <source>Import Shapefiles - Relation Exists</source>
         <translation>Shape dosyalarını içeri aktar - İlişki mevcut</translation>
-    </message>
-    <message>
-        <source>The Shapefile:</source>
-        <translation type="obsolete">Shape Dosyası:</translation>
-    </message>
-    <message>
-        <source>will use [</source>
-        <translation type="obsolete">kullanılacak [</translation>
-    </message>
-    <message>
-        <source>] relation for its data,</source>
-        <translation type="obsolete">] verisinin ilişkisi,</translation>
-    </message>
-    <message>
-        <source>which already exists and possibly contains data.</source>
-        <translation type="obsolete">Zaten mevcut olan ve muhtemelen veri içeren.</translation>
-    </message>
-    <message>
-        <source>Do you want to overwrite the [</source>
-        <translation type="obsolete">Üzerine yazılmasını istermisin [</translation>
-    </message>
-    <message>
-        <source>] relation?</source>
-        <translation type="obsolete">]İlişki?</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="66"/>
@@ -30716,10 +22395,6 @@ SQL: %2</source>
         <translation>Şema</translation>
     </message>
     <message>
-        <source>New Connection</source>
-        <translation type="obsolete">Yeni Bağlantı</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="176"/>
         <source>Add Shapefiles</source>
         <translation>Shape dosyalarını ekle</translation>
@@ -30735,14 +22410,6 @@ SQL: %2</source>
         <translation>PostGIS mevcut değil</translation>
     </message>
     <message>
-        <source>&lt;p&gt;Error while executing the SQL:&lt;/p&gt;&lt;p&gt;</source>
-        <translation type="obsolete">&lt;p&gt; SQL icrasında hata:&lt;/p&gt;&lt;p&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;/p&gt;&lt;p&gt;The database said:</source>
-        <translation type="obsolete">&lt;/p&gt;&lt;p&gt;Veritabanı diyorki:</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="365"/>
         <source>-when changing connections Global Schema also changes accordingly</source>
         <translation type="unfinished"></translation>
@@ -30756,10 +22423,6 @@ SQL: %2</source>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="832"/>
         <source>%1 of %2 shapefiles could not be imported.</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Password for </source>
-        <translation type="obsolete">Parolası</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="412"/>
@@ -30841,30 +22504,10 @@ Do you want to overwrite the [%2] relation?</source>
         <translation>SPIT - Shapefile&apos;den PostGIS&apos;e Aktarma Aracı</translation>
     </message>
     <message>
-        <source>PostgreSQL Connections</source>
-        <translation type="obsolete">PostgreSQL Bağlantısı</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="108"/>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="275"/>
         <source>Remove</source>
         <translation>Kaldır</translation>
-    </message>
-    <message>
-        <source>Import</source>
-        <translation type="obsolete">İçeri Aktar</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">Yardım</translation>
-    </message>
-    <message>
-        <source>Shapefile List</source>
-        <translation type="obsolete">Shapefile Listesi</translation>
-    </message>
-    <message>
-        <source>Geometry Column Name</source>
-        <translation type="obsolete">Geometri Sütunu Adı</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="154"/>
@@ -30875,22 +22518,6 @@ Do you want to overwrite the [%2] relation?</source>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="288"/>
         <source>Remove All</source>
         <translation>Tümünü Kaldır</translation>
-    </message>
-    <message>
-        <source>Global Schema</source>
-        <translation type="obsolete">Genel Şema</translation>
-    </message>
-    <message>
-        <source>Shapefile to PostGIS Import Tool</source>
-        <translation type="obsolete">Shapefile&apos;den  PostGIS&apos;e Aktarma Aracı</translation>
-    </message>
-    <message>
-        <source>Import the defined shapefiles to PostGIS</source>
-        <translation type="obsolete">Belirlenen shape dosyalarını PostgreSQL&apos;e aktar</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">Kapat</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="262"/>
@@ -30946,18 +22573,10 @@ Do you want to overwrite the [%2] relation?</source>
         <translation>İçeri aktarma listesindeki tüm shape dosyalarını kaldır</translation>
     </message>
     <message>
-        <source>Use Default SRID</source>
-        <translation type="obsolete">Varsayılan SRID&apos;i kullan</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="177"/>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="180"/>
         <source>Set the SRID to the default value</source>
         <translation>SRID&apos;i varsayılan değere ayarla</translation>
-    </message>
-    <message>
-        <source>Use Default Geometry Column Name</source>
-        <translation type="obsolete">Varsayılan Geometri Sütun Adı&apos;nı Kulllan</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="141"/>
@@ -31002,18 +22621,6 @@ Do you want to overwrite the [%2] relation?</source>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="120"/>
         <source>Import options and shapefile list</source>
         <translation>Seçenekleri ve shapefile listesini içe aktar</translation>
-    </message>
-    <message>
-        <source>Use Default SRID or specify here</source>
-        <translation type="obsolete">Varsayılan SRID kullan veya buraya belirt</translation>
-    </message>
-    <message>
-        <source>Use Default Geometry Column Name or specify here</source>
-        <translation type="obsolete">Varsayılan Geometri Sütununu kullan veya buraya belirt</translation>
-    </message>
-    <message>
-        <source>Primary Key Column Name</source>
-        <translation type="obsolete">Birincil Anahtar Sütun Adı</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="63"/>
@@ -31185,10 +22792,6 @@ Do you want to overwrite the [%2] relation?</source>
 <context>
     <name>QgsTINInterpolatorDialogBase</name>
     <message>
-        <source>Interpolation method:</source>
-        <translation type="obsolete">Ara değer belirleme yöntemi:</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/interpolation/qgstininterpolatordialogbase.ui" line="26"/>
         <source>Interpolation method</source>
         <translation>Ara değer belirleme yöntemi</translation>
@@ -31307,7 +22910,7 @@ Do you want to overwrite the [%2] relation?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="234"/>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="233"/>
         <source>_modified</source>
         <comment>Georeferencer:QgsOpenRasterDialog.cpp - used to modify a user given file name</comment>
         <translation type="unfinished"></translation>
@@ -31441,14 +23044,6 @@ Should the existing classes be deleted before classification?</source>
         <translation>Form1</translation>
     </message>
     <message>
-        <source>Classification Field:</source>
-        <translation type="obsolete">Sınıflandırma alanı:</translation>
-    </message>
-    <message>
-        <source>Delete class</source>
-        <translation type="obsolete">Sınıf sil</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsuniquevaluedialogbase.ui" line="94"/>
         <source>Classify</source>
         <translation>Sınıflandır</translation>
@@ -31538,34 +23133,6 @@ Should the existing classes be deleted before classification?</source>
 </context>
 <context>
     <name>QgsVectorLayer</name>
-    <message>
-        <source>Could not commit the added features.</source>
-        <translation type="obsolete">Eklenen objeler henüz kabul edilmedi.</translation>
-    </message>
-    <message>
-        <source>Could not commit the changed attributes.</source>
-        <translation type="obsolete">Değişen öznitelikler henüz kabul edilmedi.</translation>
-    </message>
-    <message>
-        <source>However, the added features were committed OK.</source>
-        <translation type="obsolete">Buna rağmen eklenen objeler kabul edildi.</translation>
-    </message>
-    <message>
-        <source>Could not commit the changed geometries.</source>
-        <translation type="obsolete">Değişen geometriler henüz kabul edilmedi.</translation>
-    </message>
-    <message>
-        <source>However, the changed attributes were committed OK.</source>
-        <translation type="obsolete">Buna rağmen değişen objeler kabul edildi.</translation>
-    </message>
-    <message>
-        <source>Could not commit the deleted features.</source>
-        <translation type="obsolete">Silinen objeler henüz kabul edilmedi.</translation>
-    </message>
-    <message>
-        <source>However, the changed geometries were committed OK.</source>
-        <translation type="obsolete">Buna rağmen değişen geometrilerkabul edildi.</translation>
-    </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3209"/>
         <source>ERROR: no provider</source>
@@ -31701,10 +23268,6 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QgsVectorLayerProperties</name>
     <message>
-        <source>Transparency: </source>
-        <translation type="obsolete">Şeffaflık:</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="410"/>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="483"/>
         <source>Single Symbol</source>
@@ -31729,22 +23292,10 @@ Should the existing classes be deleted before classification?</source>
         <translation>Benzersiz Değer</translation>
     </message>
     <message>
-        <source>This button opens the PostgreSQL query builder and allows you to create a subset of features to display on the map canvas rather than displaying all features in the layer</source>
-        <translation type="obsolete">Bu düğme PostgreSQL sorgu oluşturucusunu açar ve  tüm objeleri göstermek yerine objelerden bir kısmını harita kanavasında göstermek için oluşturmanızı sağlar</translation>
-    </message>
-    <message>
-        <source>The query used to limit the features in the layer is shown here. This is currently only supported for PostgreSQL layers. To enter or modify the query, click on the Query Builder button</source>
-        <translation type="obsolete">Bu sorgu burada gösterilen katmanın objelerini sınırlandırmak için kullanılır. Bu şu anda sadece PostgreSQL katmanlarında desteklenmektedir. Sorhu girmek veya değiştirmek için Sorgu Oluşturucu düğmesine tıklayın</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="712"/>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="717"/>
         <source>Spatial Index</source>
         <translation>Mekansal İndeks</translation>
-    </message>
-    <message>
-        <source>Creation of spatial index successfull</source>
-        <translation type="obsolete">Mekansal indeks oluşturma başarılı</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="717"/>
@@ -31757,26 +23308,6 @@ Should the existing classes be deleted before classification?</source>
         <translation>Genel:</translation>
     </message>
     <message>
-        <source>Storage type of this layer : </source>
-        <translation type="obsolete">Bu katmanı depolama tipi: </translation>
-    </message>
-    <message>
-        <source>Source for this layer : </source>
-        <translation type="obsolete">Bu katman için kaynak: </translation>
-    </message>
-    <message>
-        <source>Geometry type of the features in this layer : </source>
-        <translation type="obsolete">Bu katmandaki objelerin geometri tipi:</translation>
-    </message>
-    <message>
-        <source>The number of features in this layer : </source>
-        <translation type="obsolete">Bu katmandaki obje sayısı:</translation>
-    </message>
-    <message>
-        <source>Editing capabilities of this layer : </source>
-        <translation type="obsolete">Bu katmanın düzeltme olanakları: </translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="782"/>
         <source>Extents:</source>
         <translation>Dış sınırlar:</translation>
@@ -31785,14 +23316,6 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="786"/>
         <source>In layer spatial reference system units : </source>
         <translation>Katmandaki mekansal referans sistemi birimleri:</translation>
-    </message>
-    <message>
-        <source>xMin,yMin </source>
-        <translation type="obsolete">xMin,yMin </translation>
-    </message>
-    <message>
-        <source> : xMax,yMax </source>
-        <translation type="obsolete"> : xMax,yMax </translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="800"/>
@@ -31831,10 +23354,6 @@ Should the existing classes be deleted before classification?</source>
         <translation>Hassasiyet</translation>
     </message>
     <message>
-        <source>Layer comment: </source>
-        <translation type="obsolete">Katman açıklaması:</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="868"/>
         <source>Comment</source>
         <translation>Açıklama</translation>
@@ -31850,14 +23369,6 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="998"/>
         <source>QGIS Layer Style File (*.qml)</source>
         <translation>QGIS katman Stil Dosyası (*.qml)</translation>
-    </message>
-    <message>
-        <source>QGIS</source>
-        <translation type="obsolete">QGIS</translation>
-    </message>
-    <message>
-        <source>Unknown style format: </source>
-        <translation type="obsolete">Bilinmeyen stil biçimi:</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="166"/>
@@ -31895,33 +23406,9 @@ Should the existing classes be deleted before classification?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>values</source>
-        <translation type="obsolete">Değerler</translation>
-    </message>
-    <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="173"/>
         <source>alias</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>unique values</source>
-        <translation type="obsolete">Benzersiz Değerler</translation>
-    </message>
-    <message>
-        <source>unique values (editable)</source>
-        <translation type="obsolete">Benzersiz Değerler (düzeltilebilir)</translation>
-    </message>
-    <message>
-        <source>value map</source>
-        <translation type="obsolete">değer haritası</translation>
-    </message>
-    <message>
-        <source>classification</source>
-        <translation type="obsolete">Sınıflandırma</translation>
-    </message>
-    <message>
-        <source>file name</source>
-        <translation type="obsolete">Dosya Adı</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="322"/>
@@ -32119,29 +23606,9 @@ Should the existing classes be deleted before classification?</source>
         <translation>Katman Özellikleri</translation>
     </message>
     <message>
-        <source>Legend type:</source>
-        <translation type="obsolete">Lejand tipi:</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">Yardım</translation>
-    </message>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">TAMAM</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">İptal</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="88"/>
         <source>Symbology</source>
         <translation>Semboloji</translation>
-    </message>
-    <message>
-        <source>Transparency:</source>
-        <translation type="obsolete">Şeffaflık:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="115"/>
@@ -32154,22 +23621,6 @@ Should the existing classes be deleted before classification?</source>
         <translation>Ölçek bağımlı görüntülemeyi kullan</translation>
     </message>
     <message>
-        <source>Maximum 1:</source>
-        <translation type="obsolete">En büyük 1:</translation>
-    </message>
-    <message>
-        <source>Minimum 1:</source>
-        <translation type="obsolete">En küçük 1:</translation>
-    </message>
-    <message>
-        <source>Minimum scale at which this layer will be displayed. </source>
-        <translation type="obsolete">Bu katmanın gösterileceği en küçük ölçek.</translation>
-    </message>
-    <message>
-        <source>Maximum scale at which this layer will be displayed. </source>
-        <translation type="obsolete">Bu katmanın gösterileceği en büyük ölçek.</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="440"/>
         <source>Display name</source>
         <translation>Ad Göster</translation>
@@ -32178,14 +23629,6 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="469"/>
         <source>Use this control to set which field is placed at the top level of the Identify Results dialog box.</source>
         <translation>Sonuçları Belirleme diyalog kutusunun en üstünde yer alacak alanı ayarlamak için bu kontrolü kullan.</translation>
-    </message>
-    <message>
-        <source>Spatial Reference System</source>
-        <translation type="obsolete">Mekansal Referans Sistemi</translation>
-    </message>
-    <message>
-        <source>Change</source>
-        <translation type="obsolete">Değiştir</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="453"/>
@@ -32213,17 +23656,9 @@ Should the existing classes be deleted before classification?</source>
         <translation>Sorgulama Oluşturucu</translation>
     </message>
     <message>
-        <source>Spatial Index</source>
-        <translation type="obsolete">Mekansal İndeks</translation>
-    </message>
-    <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="497"/>
         <source>Create Spatial Index</source>
         <translation>Mekansal İndeks oluştur</translation>
-    </message>
-    <message>
-        <source>Create</source>
-        <translation type="obsolete">Oluştur</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="124"/>
@@ -32244,10 +23679,6 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="133"/>
         <source>Actions</source>
         <translation>Eylemler</translation>
-    </message>
-    <message>
-        <source>Apply</source>
-        <translation type="obsolete">Uygula</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="664"/>
@@ -32324,10 +23755,6 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="556"/>
         <source>Minimum</source>
         <translation>En küçük</translation>
-    </message>
-    <message>
-        <source>Change CRS</source>
-        <translation type="obsolete">KRS değiştir</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="106"/>
@@ -32419,41 +23846,6 @@ Should the existing classes be deleted before classification?</source>
     </message>
 </context>
 <context>
-    <name>QgsVectorSymbologyWidgetBase</name>
-    <message>
-        <source>Form2</source>
-        <translation type="obsolete">Form2</translation>
-    </message>
-    <message>
-        <source>Label</source>
-        <translation type="obsolete">Etiket</translation>
-    </message>
-    <message>
-        <source>Min</source>
-        <translation type="obsolete">En küçük</translation>
-    </message>
-    <message>
-        <source>Max</source>
-        <translation type="obsolete">En büyük</translation>
-    </message>
-    <message>
-        <source>Symbol Classes:</source>
-        <translation type="obsolete">Sembol Sınıfları:</translation>
-    </message>
-    <message>
-        <source>Count:</source>
-        <translation type="obsolete">Sayı:</translation>
-    </message>
-    <message>
-        <source>Mode:</source>
-        <translation type="obsolete">Mod:</translation>
-    </message>
-    <message>
-        <source>Field:</source>
-        <translation type="obsolete">Alan:</translation>
-    </message>
-</context>
-<context>
     <name>QgsWFSData</name>
     <message>
         <location filename="../src/providers/wfs/qgswfsdata.cpp" line="114"/>
@@ -32479,12 +23871,12 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QgsWFSProvider</name>
     <message>
-        <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1388"/>
+        <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1380"/>
         <source>unknown</source>
         <translation>bilinmeyen</translation>
     </message>
     <message>
-        <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1394"/>
+        <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1386"/>
         <source>received %1 bytes from %2</source>
         <translation>%2 baytın %1 i alındı</translation>
     </message>
@@ -32492,48 +23884,32 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QgsWFSSourceSelect</name>
     <message>
-        <source>Are you sure you want to remove the </source>
-        <translation type="obsolete">Kaldırmak istediğinizden eminmisiniz</translation>
-    </message>
-    <message>
-        <source> connection and all associated settings?</source>
-        <translation type="obsolete">bağlantı ve tüm ilgili ayarlar?</translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="148"/>
+        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="145"/>
         <source>Error</source>
         <translation>Hata</translation>
     </message>
     <message>
-        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="148"/>
+        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="145"/>
         <source>The capabilities document could not be retrieved from the server</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="238"/>
+        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="235"/>
         <source>Create a new WFS connection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="249"/>
+        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="246"/>
         <source>Modify WFS connection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="263"/>
+        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="260"/>
         <source>Confirm Delete</source>
         <translation>Silmeyi Onayla</translation>
     </message>
     <message>
-        <source>Yes</source>
-        <translation type="obsolete">Evet</translation>
-    </message>
-    <message>
-        <source>No</source>
-        <translation type="obsolete">Hayır</translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="261"/>
+        <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="258"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
         <translation type="unfinished"></translation>
     </message>
@@ -32556,41 +23932,9 @@ Should the existing classes be deleted before classification?</source>
         <translation>Özet</translation>
     </message>
     <message>
-        <source>Coordinate Reference System</source>
-        <translation type="obsolete">Koordinat Referans Sistemi</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="151"/>
         <source>Change ...</source>
         <translation>Değiştir ...</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">Yardım</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
-    </message>
-    <message>
-        <source>&amp;Add</source>
-        <translation type="obsolete">&amp;Ekle</translation>
-    </message>
-    <message>
-        <source>Alt+A</source>
-        <translation type="obsolete">Alt+A</translation>
-    </message>
-    <message>
-        <source>C&amp;lose</source>
-        <translation type="obsolete">Kapat</translation>
-    </message>
-    <message>
-        <source>Alt+L</source>
-        <translation type="obsolete">Alt+L</translation>
-    </message>
-    <message>
-        <source>Server Connections</source>
-        <translation type="obsolete">Sunucu Bağlantıları</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="113"/>
@@ -32628,10 +23972,6 @@ Should the existing classes be deleted before classification?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Note: this plugin not considered stable yet. Use it on your own risk</source>
-        <translation type="obsolete">Not: bu eklenti henüz kararlı sürüm olarak sayılmamaktadır. Bunu göze alarak kullanın </translation>
-    </message>
-    <message>
         <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="14"/>
         <source>Add WFS Layer from a Server</source>
         <translation>Sunucudan WFS Katman ekle</translation>
@@ -32643,10 +23983,6 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/plugins/diagram_overlay/qgswkndiagramfactorywidgetbase.ui" line="14"/>
         <source>Form</source>
         <translation>Form</translation>
-    </message>
-    <message>
-        <source>Attributes:</source>
-        <translation type="obsolete">Öznitelikler:</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgswkndiagramfactorywidgetbase.ui" line="31"/>
@@ -32669,65 +24005,62 @@ Should the existing classes be deleted before classification?</source>
         <source>1</source>
         <translation>1</translation>
     </message>
-    <message>
-        <source>Add attribute</source>
-        <translation type="obsolete">Öznitelik Ekle</translation>
-    </message>
 </context>
 <context>
     <name>QgsWMSSourceSelect</name>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="60"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="58"/>
         <source>&amp;Add</source>
         <translation>&amp;Ekle</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="200"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="62"/>
+        <source>&amp;Save</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="66"/>
+        <source>&amp;Load</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="213"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="202"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="215"/>
         <source>Confirm Delete</source>
         <translation>Silmeyi Onayla</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="402"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="367"/>
+        <source>encoding %1 not supported.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="373"/>
+        <source>CRS %1 not supported.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="415"/>
         <source>WMS Password for %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="437"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="454"/>
         <source>WMS Provider</source>
         <translation>WMS Sağlayıcı</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="438"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="455"/>
         <source>Could not open the WMS Provider</source>
         <translation>WMS Sağlayıcı açılamıyor</translation>
     </message>
-    <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="448"/>
-        <source>Select Layer</source>
-        <translation>Katmanı Seç</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="448"/>
-        <source>You must select at least one leaf layer first.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="452"/>
-        <source>Coordinate Reference System</source>
-        <translation>Koordinat Referans Sistemi</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="452"/>
-        <source>There are no available coordinate reference system for the set of layers you&apos;ve selected.</source>
-        <translation>Seçtiğiniz katmanlar için uygun koordinat sistemi yok.</translation>
-    </message>
     <message numerus="yes">
-        <location filename="../src/app/qgswmssourceselect.cpp" line="567"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="716"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="775"/>
         <source>Coordinate Reference System (%n available)</source>
         <comment>crs count</comment>
         <translation>
@@ -32735,35 +24068,88 @@ Should the existing classes be deleted before classification?</source>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="732"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="763"/>
+        <source>Select layer(s)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="765"/>
+        <source>Select layer(s) or a tileset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="770"/>
+        <source>Select either layer(s) or a tileset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="782"/>
+        <source>No common CRS for selected layers.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="787"/>
+        <source>No CRS selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="792"/>
+        <source>No image encoding selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/app/qgswmssourceselect.cpp" line="797"/>
+        <source>%n Layer(s) selected</source>
+        <comment>selected layer count</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="803"/>
+        <source>Tileset selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="890"/>
         <source>Could not understand the response.  The %1 provider said:
 %2</source>
         <comment>COMMENTED OUT</comment>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="739"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="897"/>
         <source>Could not understand the response.  The %1 provider said:
 %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="790"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="952"/>
         <source>WMS proxies</source>
         <translation>WMS-Vekil Sunucu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="790"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="952"/>
         <source>Several WMS servers have been added to the server list. Note that if you access the internet via a web proxy, you will need to set the proxy settings in the QGIS options dialog.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="932"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="1028"/>
+        <source>parse error at row %1, column %2: %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="1033"/>
+        <source>network error: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="1056"/>
         <source>The %1 connection already exists. Do you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgswmssourceselect.cpp" line="933"/>
+        <location filename="../src/app/qgswmssourceselect.cpp" line="1057"/>
         <source>Confirm Overwrite</source>
         <translation type="unfinished"></translation>
     </message>
@@ -32776,158 +24162,154 @@ Should the existing classes be deleted before classification?</source>
         <translation>Sunucudan Katman(lar) ekle</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="34"/>
-        <source>Servers</source>
-        <translation>Sunucular</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="46"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="49"/>
         <source>C&amp;onnect</source>
         <translation>B&amp;ağlan</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="53"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="56"/>
         <source>&amp;New</source>
         <translation>&amp;Yeni</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="63"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="66"/>
         <source>Edit</source>
         <translation>Düzenle</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="73"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="76"/>
         <source>Delete</source>
         <translation>Sil</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="93"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="96"/>
         <source>Adds a few example WMS servers</source>
         <translation>Birkaç örnek WMS sunucusu ekle</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="99"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="102"/>
         <source>Add default servers</source>
         <translation>Varsayılan sunucuları ekle</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="119"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="122"/>
         <source>ID</source>
         <translation>ID</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="124"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="127"/>
         <source>Name</source>
         <translation>Ad</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="129"/>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="250"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="132"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="338"/>
         <source>Title</source>
         <translation>Başlık</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="134"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="137"/>
         <source>Abstract</source>
         <translation>Özet</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="142"/>
-        <source>Save</source>
-        <translation type="unfinished">Kaydet</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="149"/>
-        <source>Load</source>
-        <translation type="unfinished">Yükle</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="170"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="207"/>
         <source>Layer Order</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="207"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="244"/>
         <source>Layer</source>
         <translation>Katman</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="212"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="249"/>
         <source>Style</source>
         <translation>Stil</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="221"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="258"/>
+        <source>Tilesets</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="282"/>
+        <source>Styles</source>
+        <translation type="unfinished">Stiller</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="287"/>
+        <source>Size</source>
+        <translation type="unfinished">Boyut</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="292"/>
+        <source>Format</source>
+        <translation type="unfinished">Biçim</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="297"/>
+        <source>CRS</source>
+        <translation type="unfinished">KRS</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="306"/>
         <source>Server Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="230"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="315"/>
         <source>Search</source>
         <translation>Araştır</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="255"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="348"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="260"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="343"/>
         <source>Description</source>
         <translation>Açıklama</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="268"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="356"/>
         <source>Add selected row to WMS list</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="291"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="157"/>
         <source>Image encoding</source>
         <translation>Görüntü kodlama</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="298"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="37"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="277"/>
+        <source>Layers</source>
+        <translation type="unfinished">Katmanlar</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="164"/>
         <source>Options</source>
         <translation>Seçenekler</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="304"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="170"/>
         <source>Layer name</source>
         <translation>Katman adı</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="317"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="183"/>
         <source>Coordinate Reference System</source>
         <translation>Koordinat Referans Sistemi</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="330"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="196"/>
         <source>Change ...</source>
         <translation>Değiştir ...</translation>
     </message>
     <message>
-        <source>Help</source>
-        <translation type="obsolete">Yardım</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
-    </message>
-    <message>
-        <source>&amp;Add</source>
-        <translation type="obsolete">&amp;Ekle</translation>
-    </message>
-    <message>
-        <source>Alt+A</source>
-        <translation type="obsolete">Alt+A</translation>
-    </message>
-    <message>
-        <source>Alt+L</source>
-        <translation type="obsolete">Alt+L</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="353"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="380"/>
         <source>Ready</source>
         <translation>Hazır</translation>
     </message>
@@ -32935,316 +24317,430 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QgsWmsProvider</name>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="532"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="653"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="712"/>
-        <source>HTTP Exception</source>
-        <translation>HTTP Kural uyuşmazlığı</translation>
-    </message>
-    <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="546"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="726"/>
-        <source>WMS Service Exception</source>
-        <translation>WMS Servis Kural Dışılığı</translation>
-    </message>
-    <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="782"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="806"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="947"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="968"/>
         <source>This is probably due to an incorrect WMS Server URL.</source>
         <translation>Bu muhtemelen hatalı WMS Sunucu adresinden(URL) kaynaklanıyor.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1611"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1851"/>
         <source>Request contains a Format not offered by the server.</source>
         <translation>İstek sunucu tarafından sağlanmayan bir biçem içeriyor.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1655"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1895"/>
         <source>Request contains an invalid sample dimension value.</source>
         <translation>İstek geçersiz örnek boyut değeri içeriyor.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1659"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1899"/>
         <source>Request is for an optional operation that is not supported by the server.</source>
         <translation>İstek sunucu tarafından desteklenmeyen seçimlik bir işlem için.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1670"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1910"/>
         <source>The WMS vendor also reported: </source>
         <translation>WMS sağlayıcı da şöyle raporladı:</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1855"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2107"/>
         <source>Server Properties:</source>
         <translation>Sunucu Özellikleri:</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1864"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1998"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2116"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2260"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2448"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2508"/>
         <source>Property</source>
         <translation>Özellik</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1867"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2001"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2119"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2263"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2451"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2511"/>
         <source>Value</source>
         <translation>Değer</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1872"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2124"/>
         <source>WMS Version</source>
         <translation>WMS Sürümü</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1880"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2028"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2131"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2132"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2293"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2405"/>
         <source>Title</source>
         <translation>Başlık</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1888"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2036"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2139"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2140"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2301"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2413"/>
         <source>Abstract</source>
         <translation>Özet</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1896"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2148"/>
         <source>Keywords</source>
         <translation>Anahtar kelimeler</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1904"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2156"/>
         <source>Online Resource</source>
         <translation>Çevrimiçi Kaynak</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1912"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2164"/>
         <source>Contact Person</source>
         <translation>İletişime Geçilecek Kişi</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1924"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2176"/>
         <source>Fees</source>
         <translation>Ücret</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1940"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2192"/>
         <source>Image Formats</source>
         <translation>Görüntü Biçimleri</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1948"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2200"/>
         <source>Identify Formats</source>
         <translation>Biçemleri Belirle</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1956"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2208"/>
         <source>Layer Count</source>
         <translation>Katman Sayısı</translation>
     </message>
     <message>
-        <source>Layer Properties: </source>
-        <translation type="obsolete">Katman Özellikleri: </translation>
-    </message>
-    <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2006"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2270"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2455"/>
         <source>Selected</source>
         <translation>Seçilen</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2010"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2047"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2055"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2063"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2273"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2312"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2320"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2328"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2458"/>
         <source>Yes</source>
         <translation>Evet</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2010"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2047"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2055"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2063"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2273"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2312"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2320"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2328"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2458"/>
         <source>No</source>
         <translation>Hayır</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2015"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2278"/>
         <source>Visibility</source>
         <translation>Görünürlük</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2021"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2283"/>
         <source>Visible</source>
         <translation>Görünür</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2021"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2283"/>
         <source>Hidden</source>
         <translation>Gizli</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2023"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2287"/>
         <source>n/a</source>
         <translation>n/a</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2044"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2309"/>
         <source>Can Identify</source>
         <translation>Belirlenmelidir</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2052"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2317"/>
         <source>Can be Transparent</source>
         <translation>Şeffaf olmalıdır</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2076"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2341"/>
         <source>Fixed Width</source>
         <translation>Sabit Genişlik</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2084"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2349"/>
         <source>Fixed Height</source>
         <translation>Sabit Yükseklik</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2092"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2357"/>
         <source>WGS 84 Bounding Box</source>
         <translation>WGS 84 Sınır Kutusu</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2123"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2397"/>
         <source>Name</source>
         <translation>Ad</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="535"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="551"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="656"/>
-        <source>Tried URL: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1558"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1798"/>
         <source>Could not get WMS Service Exception at %1: %2 at line %3 column %4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1615"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1855"/>
         <source>Request contains a CRS not offered by the server for one or more of the Layers in the request.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1619"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1859"/>
         <source>Request contains a SRS not offered by the server for one or more of the Layers in the request.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1623"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1863"/>
         <source>GetMap request is for a Layer not offered by the server, or GetFeatureInfo request is for a Layer not shown on the map.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1628"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1868"/>
         <source>Request is for a Layer in a Style not offered by the server.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1632"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1872"/>
         <source>GetFeatureInfo request is applied to a Layer which is not declared queryable.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1636"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1876"/>
         <source>GetFeatureInfo request contains invalid X or Y value.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1640"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1880"/>
         <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is equal to current value of service metadata update sequence number.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1645"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1885"/>
         <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is greater than current value of service metadata update sequence number.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1650"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1890"/>
         <source>Request does not include a sample dimension value, and the server did not declare a default value for that dimension.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1932"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2184"/>
         <source>Access Constraints</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2060"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2325"/>
         <source>Can Zoom In</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2068"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2333"/>
         <source>Cascade Count</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2114"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2367"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2377"/>
+        <source>Available in CRS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2380"/>
+        <source>(and more)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2388"/>
         <source>Available in style</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2208"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2433"/>
+        <source>Tileset Properties:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2464"/>
+        <source>Styles</source>
+        <translation type="unfinished">Stiller</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2472"/>
+        <source>CRS</source>
+        <translation type="unfinished">KRS</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2479"/>
+        <source>Bounding Box</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2486"/>
+        <source>Available in Resolutions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2500"/>
+        <source>Cache stats:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2515"/>
+        <source>Hits</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2521"/>
+        <source>Misses</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2527"/>
+        <source>Errors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2598"/>
         <source>Layer cannot be queried.</source>
         <translation>Katman sorgulanamadı.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="779"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="802"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1557"/>
-        <source>Dom Exception</source>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2613"/>
+        <source>identify request redirected.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="674"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="715"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="731"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="944"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="964"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1797"/>
+        <source>Dom Exception</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="657"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="765"/>
+        <source>%n tile requests in background</source>
+        <comment>tile request count</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="658"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="766"/>
+        <source>, %n cache hits</source>
+        <comment>tile cache hits</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="659"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="767"/>
+        <source>, %n cache misses.</source>
+        <comment>tile cache missed</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="660"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="768"/>
+        <source>, %n errors.</source>
+        <comment>errors</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="717"/>
+        <source>tile request err %1: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="792"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2628"/>
+        <source>map request error %1: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="863"/>
         <source>
 Tried URL: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="780"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="884"/>
+        <source>Capabilities request redirected.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="903"/>
+        <source>empty of capabilities: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="908"/>
+        <source>Download of capabilities failed: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="920"/>
+        <source>%1 of %2 bytes of capabilities downloaded.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="945"/>
         <source>Could not get WMS capabilities: %1 at line %2 column %3
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="803"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="965"/>
         <source>Could not get WMS capabilities in the expected format (DTD): no %1 or %2 found
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1663"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1903"/>
         <source>(No error code was reported)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1667"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1907"/>
         <source>(Unknown error code)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1964"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2218"/>
+        <source>Tileset Count</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2227"/>
         <source>GetFeatureInfoUrl</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1976"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2239"/>
         <source>Layer Properties:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -33263,10 +24759,6 @@ Tried URL: %1</source>
         <translation>hızlıçıktı</translation>
     </message>
     <message>
-        <source>Unknown format: </source>
-        <translation type="obsolete">bilinmeyen biçim:</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/quick_print/quickprintgui.cpp" line="151"/>
         <source>Unknown format: %1</source>
         <translation type="unfinished"></translation>
@@ -33275,29 +24767,9 @@ Tried URL: %1</source>
 <context>
     <name>QuickPrintGuiBase</name>
     <message>
-        <source>QGIS Plugin Template</source>
-        <translation type="obsolete">QGIS Eklenti Şablonu</translation>
-    </message>
-    <message>
-        <source>Plugin Template</source>
-        <translation type="obsolete">Eklenti Şablonu</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/quick_print/quickprintguibase.ui" line="14"/>
         <source>QGIS Quick Print Plugin</source>
         <translation>QGIS Hızlı Çıktı Eklentisi</translation>
-    </message>
-    <message>
-        <source>Quick Print</source>
-        <translation type="obsolete">Hızlı Çıktı</translation>
-    </message>
-    <message>
-        <source>Map Title e.g. ACME inc.</source>
-        <translation type="obsolete">Harita Başlığı örneğin; ACME inc.</translation>
-    </message>
-    <message>
-        <source>Map Name e.g. Water Features</source>
-        <translation type="obsolete">Harita Adı örneğin;Water Features</translation>
     </message>
     <message>
         <location filename="../src/plugins/quick_print/quickprintguibase.ui" line="24"/>
@@ -33344,10 +24816,6 @@ Tried URL: %1</source>
         <source>Note: If you want more control over the map layout please use the map composer function in QGIS.</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Page Size</source>
-        <translation type="obsolete">Sayfa Boyutu</translation>
-    </message>
 </context>
 <context>
     <name>QuickPrintPlugin</name>
@@ -33355,10 +24823,6 @@ Tried URL: %1</source>
         <location filename="../src/plugins/quick_print/quickprintplugin.cpp" line="75"/>
         <source>Quick Print</source>
         <translation>Hızlı Çıktı</translation>
-    </message>
-    <message>
-        <source>Replace this with a short description of the what the plugin does</source>
-        <translation type="obsolete">Bunu eklentinin ne yaptığını anlatan kısa bir açıklama ile yer değiştirin</translation>
     </message>
     <message>
         <location filename="../src/plugins/quick_print/quickprintplugin.cpp" line="84"/>
@@ -33369,25 +24833,6 @@ Tried URL: %1</source>
         <location filename="../src/plugins/quick_print/quickprintplugin.cpp" line="79"/>
         <source>Provides a way to quickly produce a map with minimal user input.</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>RepositoryDetailsDialog</name>
-    <message>
-        <source>Repository details</source>
-        <translation type="obsolete">Depo detayları</translation>
-    </message>
-    <message>
-        <source>Name:</source>
-        <translation type="obsolete">Ad:</translation>
-    </message>
-    <message>
-        <source>URL:</source>
-        <translation type="obsolete">URL:</translation>
-    </message>
-    <message>
-        <source>http://</source>
-        <translation type="obsolete">http://</translation>
     </message>
 </context>
 <context>
@@ -33438,25 +24883,9 @@ Tried URL: %1</source>
         <translation>Hazır</translation>
     </message>
     <message>
-        <source>Alt+A</source>
-        <translation type="obsolete">Alt+A</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="119"/>
         <source>Subdatasets</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">Yardım</translation>
-    </message>
-    <message>
-        <source>F1</source>
-        <translation type="obsolete">F1</translation>
-    </message>
-    <message>
-        <source>Alt+L</source>
-        <translation type="obsolete">Alt+L</translation>
     </message>
 </context>
 <context>
@@ -33881,17 +25310,6 @@ Tried URL: %1</source>
     </message>
 </context>
 <context>
-    <name>[pluginname]Gui</name>
-    <message>
-        <source>QGIS Plugin Template</source>
-        <translation type="obsolete">QGIS Eklenti Şablonu</translation>
-    </message>
-    <message>
-        <source>Plugin Template</source>
-        <translation type="obsolete">Eklenti Şablonu</translation>
-    </message>
-</context>
-<context>
     <name>[pluginname]GuiBase</name>
     <message>
         <location filename="../src/plugins/plugin_template/pluginguibase.ui" line="13"/>
@@ -33902,22 +25320,6 @@ Tried URL: %1</source>
         <location filename="../src/plugins/plugin_template/pluginguibase.ui" line="47"/>
         <source>Plugin Template</source>
         <translation>Eklenti Şablonu</translation>
-    </message>
-    <message>
-        <source>&amp;OK</source>
-        <translation type="obsolete">&amp;TAMAM</translation>
-    </message>
-    <message>
-        <source>Alt+O</source>
-        <translation type="obsolete">Alt+O</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">&amp;İptal</translation>
-    </message>
-    <message>
-        <source>Alt+C</source>
-        <translation type="obsolete">Alt+C</translation>
     </message>
 </context>
 <context>
@@ -33937,10 +25339,6 @@ Tried URL: %1</source>
 <context>
     <name>dxf2shpConverterGui</name>
     <message>
-        <source>QGIS Plugin Template</source>
-        <translation type="obsolete">QGIS Eklenti Şablonu</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="121"/>
         <source>Polygon</source>
         <translation>Poligon</translation>
@@ -33949,14 +25347,6 @@ Tried URL: %1</source>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="128"/>
         <source>Point</source>
         <translation>Nokta</translation>
-    </message>
-    <message>
-        <source>Browse</source>
-        <translation type="obsolete">Gözat</translation>
-    </message>
-    <message>
-        <source>Choose a delimited text file to open</source>
-        <translation type="obsolete">Açılacak sınırlandırılmış metin dosyasını seçin</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="111"/>
@@ -34057,10 +25447,6 @@ For support send a mail to scala@itc.cnr.it
         <source>Open an Event Browser to explore the current layer&apos;s features</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Create layer from database query</source>
-        <translation type="obsolete">Veritabanı sorgusundan katman oluştur</translation>
-    </message>
 </context>
 <context>
     <name>eVisDatabaseConnectionGui</name>
@@ -34140,37 +25526,9 @@ For support send a mail to scala@itc.cnr.it
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Error: No username entered</source>
-        <translation type="obsolete">Hata: Kullanıcı adı girilmedi</translation>
-    </message>
-    <message>
-        <source>Error: No password entered</source>
-        <translation type="obsolete">Hata: Parola adı girilmedi</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="240"/>
         <source>Error: No database name entered</source>
         <translation>Hata: Veritabanı adı girilmedi</translation>
-    </message>
-    <message>
-        <source>XML (*.xml)</source>
-        <translation type="obsolete">XML (*.xml)</translation>
-    </message>
-    <message>
-        <source>Error: Unabled to open file [</source>
-        <translation type="obsolete">Hata: Dosya açılamıyor [</translation>
-    </message>
-    <message>
-        <source>MSAccess (*.mdb)</source>
-        <translation type="obsolete">MSAccess (*.mdb)</translation>
-    </message>
-    <message>
-        <source>Sqlite (*.db)</source>
-        <translation type="obsolete">Sqlite (*.db)</translation>
-    </message>
-    <message>
-        <source>Error: Query failed: </source>
-        <translation type="obsolete">Hata: Sorguda hata:</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/databaseconnection/evisdatabaseconnectiongui.cpp" line="531"/>
@@ -34441,10 +25799,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1091"/>
         <source>All ( * )</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>All (*)</source>
-        <translation type="obsolete">Tüm(*)</translation>
     </message>
 </context>
 <context>
@@ -34763,10 +26117,6 @@ Base Path (i.e. keep only filename from attribute)</source>
         <translation>Yaklaştır</translation>
     </message>
     <message>
-        <source>Zoom in to see more detal.</source>
-        <translation type="obsolete">Daha detaylı görmek için yaklaştır.</translation>
-    </message>
-    <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="52"/>
         <source>Zoom in to see more detail.</source>
         <translation type="unfinished"></translation>
@@ -35001,41 +26351,6 @@ Plugin will not be enabled.</source>
     <message>
         <source>Point y coordinate</source>
         <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>gpsPage</name>
-    <message>
-        <source>GPS</source>
-        <translation type="obsolete">KKS</translation>
-    </message>
-    <message>
-        <source>Longitude:</source>
-        <translation type="obsolete">Boylam:</translation>
-    </message>
-    <message>
-        <source>No</source>
-        <translation type="obsolete">Hayır</translation>
-    </message>
-    <message>
-        <source>GPS Time:</source>
-        <translation type="obsolete">KKS Zamanı:</translation>
-    </message>
-    <message>
-        <source>Latitude:</source>
-        <translation type="obsolete">Enlem:</translation>
-    </message>
-    <message>
-        <source>Show position on map</source>
-        <translation type="obsolete">Haritadaki konumu göster</translation>
-    </message>
-    <message>
-        <source>Show position history</source>
-        <translation type="obsolete">konum geçmişini göster</translation>
-    </message>
-    <message>
-        <source>Recenter map</source>
-        <translation type="obsolete">Hariatayı yeniden ortala</translation>
     </message>
 </context>
 <context>
@@ -37108,10 +28423,6 @@ Plugin will not be enabled.</source>
 </context>
 <context>
     <name>pluginname</name>
-    <message>
-        <source>Replace this with a short description of the what the plugin does</source>
-        <translation type="obsolete">Bunu eklentinin ne yaptığını anlatan kısa bir açıklama ile yer değiştirin</translation>
-    </message>
     <message>
         <location filename="../src/plugins/plugin_template/plugin.cpp" line="73"/>
         <source>[menuitemname]</source>
