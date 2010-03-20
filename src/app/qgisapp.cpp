@@ -6221,40 +6221,50 @@ void QgisApp::namUpdate()
 {
   QSettings settings;
 
-  //read type, host, port, user, passw from settings
-  QString proxyHost = settings.value( "proxy/proxyHost", "" ).toString();
-  int proxyPort = settings.value( "proxy/proxyPort", "" ).toString().toInt();
-  QString proxyUser = settings.value( "proxy/proxyUser", "" ).toString();
-  QString proxyPassword = settings.value( "proxy/proxyPassword", "" ).toString();
+  //check if proxy is enabled
+  bool proxyEnabled = settings.value( "proxy/proxyEnabled", false ).toBool();
+  if ( proxyEnabled )
+  {
 
-  QString proxyTypeString = settings.value( "proxy/proxyType", "" ).toString();
-  QNetworkProxy::ProxyType proxyType = QNetworkProxy::NoProxy;
-  if ( proxyTypeString == "DefaultProxy" )
-  {
-    proxyType = QNetworkProxy::DefaultProxy;
+    //read type, host, port, user, passw from settings
+    QString proxyHost = settings.value( "proxy/proxyHost", "" ).toString();
+    int proxyPort = settings.value( "proxy/proxyPort", "" ).toString().toInt();
+    QString proxyUser = settings.value( "proxy/proxyUser", "" ).toString();
+    QString proxyPassword = settings.value( "proxy/proxyPassword", "" ).toString();
+
+    QString proxyTypeString = settings.value( "proxy/proxyType", "" ).toString();
+    QNetworkProxy::ProxyType proxyType = QNetworkProxy::NoProxy;
+    if ( proxyTypeString == "DefaultProxy" )
+    {
+      proxyType = QNetworkProxy::DefaultProxy;
+    }
+    else if ( proxyTypeString == "Socks5Proxy" )
+    {
+      proxyType = QNetworkProxy::Socks5Proxy;
+    }
+    else if ( proxyTypeString == "HttpProxy" )
+    {
+      proxyType = QNetworkProxy::HttpProxy;
+    }
+    else if ( proxyTypeString == "HttpCachingProxy" )
+    {
+      proxyType = QNetworkProxy::HttpCachingProxy;
+    }
+    else if ( proxyTypeString == "FtpCachingProxy" )
+    {
+      proxyType = QNetworkProxy::FtpCachingProxy;
+    }
+    QgsDebugMsg( QString( "setting proxy %1 %2:%3 %4/%5" )
+                 .arg( proxyType )
+                 .arg( proxyHost ).arg( proxyPort )
+                 .arg( proxyUser ).arg( proxyPassword )
+               );
+    nam()->setProxy( QNetworkProxy( proxyType, proxyHost, proxyPort, proxyUser, proxyPassword ) );
   }
-  else if ( proxyTypeString == "Socks5Proxy" )
+  else
   {
-    proxyType = QNetworkProxy::Socks5Proxy;
+    nam()->setProxy( QNetworkProxy() );
   }
-  else if ( proxyTypeString == "HttpProxy" )
-  {
-    proxyType = QNetworkProxy::HttpProxy;
-  }
-  else if ( proxyTypeString == "HttpCachingProxy" )
-  {
-    proxyType = QNetworkProxy::HttpCachingProxy;
-  }
-  else if ( proxyTypeString == "FtpCachingProxy" )
-  {
-    proxyType = QNetworkProxy::FtpCachingProxy;
-  }
-  QgsDebugMsg( QString( "setting proxy %1 %2:%3 %4/%5" )
-               .arg( proxyType )
-               .arg( proxyHost ).arg( proxyPort )
-               .arg( proxyUser ).arg( proxyPassword )
-             );
-  nam()->setProxy( QNetworkProxy( proxyType, proxyHost, proxyPort, proxyUser, proxyPassword ) );
 
   QNetworkDiskCache *cache = qobject_cast<QNetworkDiskCache*>( nam()->cache() );
   if ( !cache )
