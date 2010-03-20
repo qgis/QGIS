@@ -359,6 +359,25 @@ QgsLegendSymbologyList QgsCategorizedSymbolRendererV2::legendSymbologyItems( QSi
   return lst;
 }
 
+QgsLegendSymbolList QgsCategorizedSymbolRendererV2::legendSymbolItems()
+{
+  QSettings settings;
+  bool showClassifiers = settings.value( "/qgis/showLegendClassifiers", false ).toBool();
+
+  QgsLegendSymbolList lst;
+  if ( showClassifiers )
+  {
+    lst << qMakePair( classAttribute(), ( QgsSymbolV2* )0 );
+  }
+
+  QgsCategoryList::const_iterator catIt = mCategories.constBegin();
+  for ( ; catIt != mCategories.constEnd(); ++catIt )
+  {
+    lst << qMakePair( catIt->label(), catIt->symbol() );
+  }
+  return lst;
+}
+
 
 QgsSymbolV2* QgsCategorizedSymbolRendererV2::sourceSymbol()
 {

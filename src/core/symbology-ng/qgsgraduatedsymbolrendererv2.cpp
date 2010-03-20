@@ -482,6 +482,25 @@ QgsLegendSymbologyList QgsGraduatedSymbolRendererV2::legendSymbologyItems( QSize
   return lst;
 }
 
+QgsLegendSymbolList QgsGraduatedSymbolRendererV2::legendSymbolItems()
+{
+  QSettings settings;
+  bool showClassifiers = settings.value( "/qgis/showLegendClassifiers", false ).toBool();
+
+  QgsLegendSymbolList lst;
+  if ( showClassifiers )
+  {
+    lst << qMakePair( classAttribute(), ( QgsSymbolV2* )0 );
+  }
+
+  QgsRangeList::const_iterator rangeIt = mRanges.constBegin();
+  for ( ; rangeIt != mRanges.constEnd(); ++rangeIt )
+  {
+    lst << qMakePair( rangeIt->label(), rangeIt->symbol() );
+  }
+  return lst;
+}
+
 QgsSymbolV2* QgsGraduatedSymbolRendererV2::sourceSymbol()
 {
   return mSourceSymbol;

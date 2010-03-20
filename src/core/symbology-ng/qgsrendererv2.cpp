@@ -312,7 +312,7 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::load( QDomElement& element )
   QString rendererType = element.attribute( "type" );
 
   QgsRendererV2AbstractMetadata* m = QgsRendererV2Registry::instance()->rendererMetadata( rendererType );
-  if (m == NULL)
+  if ( m == NULL )
     return NULL;
 
   QgsFeatureRendererV2* r = m->createRenderer( element );
@@ -332,6 +332,11 @@ QgsLegendSymbologyList QgsFeatureRendererV2::legendSymbologyItems( QSize iconSiz
 {
   // empty list by default
   return QgsLegendSymbologyList();
+}
+
+QgsLegendSymbolList QgsFeatureRendererV2::legendSymbolItems()
+{
+  return QgsLegendSymbolList();
 }
 
 void QgsFeatureRendererV2::setVertexMarkerAppearance( int type, int size )

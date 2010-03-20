@@ -97,6 +97,10 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     //! return a list of symbology items for the legend
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
 
+    //! return a list of item text / symbol
+    //! @note: this method was added in version 1.5
+    virtual QgsLegendSymbolList legendSymbolItems();
+
     QgsSymbolV2* sourceSymbol();
     void setSourceSymbol( QgsSymbolV2* sym );
 
