@@ -19,14 +19,14 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" >
-   <item row="0" column="0" colspan="3" >
+   <item row="1" column="0" colspan="3" >
     <widget class="QLabel" name="textLabel1_2" >
      <property name="text" >
       <string>To enable / disable a plugin, click its checkbox or description</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="0" colspan="3" >
+   <item row="2" column="0" colspan="3" >
     <widget class="QListView" name="vwPlugins" >
      <property name="selectionMode" >
       <enum>QAbstractItemView::SingleSelection</enum>
@@ -39,7 +39,7 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="0" >
+   <item row="0" column="0" >
     <widget class="QLabel" name="lblFilter" >
      <property name="text" >
       <string>&amp;Filter</string>
@@ -49,7 +49,7 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="1" colspan="2" >
+   <item row="0" column="1" colspan="2" >
     <widget class="QLineEdit" name="leFilter" />
    </item>
    <item row="3" column="0" colspan="2" >
@@ -96,8 +96,8 @@
  </widget>
  <layoutdefault spacing="6" margin="11" />
  <tabstops>
-  <tabstop>vwPlugins</tabstop>
   <tabstop>leFilter</tabstop>
+  <tabstop>vwPlugins</tabstop>
   <tabstop>btnPluginInstaller</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
