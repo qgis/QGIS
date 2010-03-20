@@ -110,3 +110,10 @@ QgsLegendSymbologyList QgsSingleSymbolRendererV2::legendSymbologyItems( QSize ic
   lst << qMakePair( QString(), pix );
   return lst;
 }
+
+QgsLegendSymbolList QgsSingleSymbolRendererV2::legendSymbolItems()
+{
+  QgsLegendSymbolList lst;
+  lst << qMakePair( QString(), mSymbol );
+  return lst;
+}

@@ -22,6 +22,7 @@ typedef QList<QgsSymbolV2*> QgsSymbolV2List;
 typedef QMap<QString, QgsSymbolV2* > QgsSymbolV2Map;
 
 typedef QList< QPair<QString, QPixmap> > QgsLegendSymbologyList;
+typedef QList< QPair<QString, QgsSymbolV2*> > QgsLegendSymbolList;
 
 #define RENDERER_TAG_NAME   "renderer-v2"
 
@@ -91,6 +92,10 @@ class CORE_EXPORT QgsFeatureRendererV2
 
     //! return a list of symbology items for the legend
     virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
+
+    //! return a list of item text / symbol
+    //! @note: this method was added in version 1.5
+    virtual QgsLegendSymbolList legendSymbolItems();
 
     //! set type and size of editing vertex markers for subsequent rendering
     void setVertexMarkerAppearance( int type, int size );
