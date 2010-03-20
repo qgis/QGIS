@@ -8004,7 +8004,7 @@ Fehler war:%2</translation>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="527"/>
         <source>Interval Y</source>
-        <translation>X-Interval</translation>
+        <translation>Y-Interval</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="550"/>
