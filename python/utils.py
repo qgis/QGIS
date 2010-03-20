@@ -243,6 +243,7 @@ def reloadPlugin(packageName):
 
 
 def showPluginHelp(packageName=None,filename="index",section=""):
+  """ show a help in the user's html browser. The help file should be named index-ll_CC.html or index-ll.html"""
   try:
     source = ""
     if packageName is None:
@@ -253,10 +254,14 @@ def showPluginHelp(packageName=None,filename="index",section=""):
   except:
     return
   path = os.path.dirname(source)
-  locale = str(QLocale().name()).split("_")[0]
+  locale = str(QLocale().name())
   helpfile = os.path.join(path,filename+"-"+locale+".html")
   if not os.path.exists(helpfile):
-    helpfile = os.path.join(path,filename+".html")
+    helpfile = os.path.join(path,filename+"-"+locale.split("_")[0]+".html")
+  if not os.path.exists(helpfile):    
+    helpfile = os.path.join(path,filename+"-en.html")
+  if not os.path.exists(helpfile):    
+    helpfile = os.path.join(path,filename+"-en_US.html")
   if os.path.exists(helpfile):
     url = "file://"+helpfile
     if section != "":
