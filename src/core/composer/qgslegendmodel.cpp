@@ -21,6 +21,8 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsrasterlayer.h"
 #include "qgsrenderer.h"
+#include "qgsrendererv2.h"
+#include "qgssymbollayerv2utils.h"
 #include "qgssymbol.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
@@ -40,6 +42,7 @@ QgsLegendModel::QgsLegendModel(): QStandardItemModel()
 QgsLegendModel::~QgsLegendModel()
 {
   removeAllSymbols();
+  removeAllSymbolsV2();
 }
 
 void QgsLegendModel::setLayerSet( const QStringList& layerIds )
@@ -48,6 +51,8 @@ void QgsLegendModel::setLayerSet( const QStringList& layerIds )
 
   //for now clear the model and add the new entries
   clear();
+  removeAllSymbols();
+  removeAllSymbolsV2();
 
   QStringList::const_iterator idIter = mLayerIds.constBegin();
   QgsMapLayer* currentLayer = 0;
@@ -67,8 +72,21 @@ void QgsLegendModel::setLayerSet( const QStringList& layerIds )
     switch ( currentLayer->type() )
     {
       case QgsMapLayer::VectorLayer:
-        addVectorLayerItems( layerItem, currentLayer );
+      {
+        QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( currentLayer );
+        if ( vl )
+        {
+          if ( vl->isUsingRendererV2() )
+          {
+            addVectorLayerItemsV2( layerItem, vl );
+          }
+          else
+          {
+            addVectorLayerItems( layerItem, vl );
+          }
+        }
         break;
+      }
       case QgsMapLayer::RasterLayer:
         addRasterLayerItem( layerItem, currentLayer );
         break;
@@ -79,21 +97,47 @@ void QgsLegendModel::setLayerSet( const QStringList& layerIds )
 
 }
 
-int QgsLegendModel::addVectorLayerItems( QStandardItem* layerItem, QgsMapLayer* vlayer )
+int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLayer* vlayer )
 {
   if ( !layerItem || !vlayer )
   {
     return 1;
   }
 
-  QgsVectorLayer* vectorLayer = qobject_cast<QgsVectorLayer *>( vlayer );
-  if ( !vectorLayer )
+  QgsFeatureRendererV2* renderer = vlayer->rendererV2();
+  if ( !renderer )
   {
     return 2;
   }
-  int opacity = vectorLayer->getTransparency();
 
-  const QgsRenderer* vectorRenderer = vectorLayer->renderer();
+  QgsLegendSymbolList lst = renderer->legendSymbolItems();
+  QgsLegendSymbolList::const_iterator symbolIt = lst.constBegin();
+  for ( ; symbolIt != lst.constEnd(); ++symbolIt )
+  {
+    QStandardItem* currentSymbolItem = new QStandardItem( symbolIt->first );
+    if ( symbolIt->second )
+    {
+      currentSymbolItem->setIcon( QgsSymbolLayerV2Utils::symbolPreviewIcon( symbolIt->second, QSize( 30, 30 ) ) );
+      //reserve Qt::UserRole + 2 for symbology-ng
+      QgsSymbolV2* newSymbol = symbolIt->second->clone();
+      insertSymbolV2( newSymbol );
+      currentSymbolItem->setData( QVariant::fromValue(( void* )( newSymbol ) ), Qt::UserRole + 2 );
+    }
+    currentSymbolItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    layerItem->setChild( layerItem->rowCount(), 0, currentSymbolItem );
+  }
+}
+
+int QgsLegendModel::addVectorLayerItems( QStandardItem* layerItem, QgsVectorLayer* vlayer )
+{
+  if ( !layerItem || !vlayer )
+  {
+    return 1;
+  }
+
+  int opacity = vlayer->getTransparency();
+
+  const QgsRenderer* vectorRenderer = vlayer->renderer();
   if ( !vectorRenderer )
   {
     return 3;
@@ -103,7 +147,7 @@ int QgsLegendModel::addVectorLayerItems( QStandardItem* layerItem, QgsMapLayer* 
   QSettings settings;
   if ( settings.value( "/qgis/showLegendClassifiers", false ).toBool() )
   {
-    QgsFieldMap layerFields = vectorLayer->pendingFields();
+    QgsFieldMap layerFields = vlayer->pendingFields();
     QgsAttributeList attributes = vectorRenderer->classificationAttributes();
     QgsAttributeList::const_iterator att_it = attributes.constBegin();
     for ( ; att_it != attributes.constEnd(); ++att_it )
@@ -111,7 +155,7 @@ int QgsLegendModel::addVectorLayerItems( QStandardItem* layerItem, QgsMapLayer* 
       QgsFieldMap::const_iterator fieldIt = layerFields.find( *att_it );
       if ( fieldIt != layerFields.constEnd() )
       {
-        QString attributeName = vectorLayer->attributeDisplayName( fieldIt.key() );
+        QString attributeName = vlayer->attributeDisplayName( fieldIt.key() );
         QStandardItem* attributeItem = new QStandardItem( attributeName );
         layerItem->setChild( layerItem->rowCount(), 0, attributeItem );
       }
@@ -172,9 +216,24 @@ void QgsLegendModel::insertSymbol( QgsSymbol* s )
   mSymbols.insert( s );
 }
 
+void QgsLegendModel::insertSymbolV2( QgsSymbolV2* s )
+{
+  QSet<QgsSymbolV2*>::iterator it = mSymbolsV2.find( s );
+  if ( it != mSymbolsV2.end() )
+  {
+    delete( *it ); //very unlikely
+  }
+  mSymbolsV2.insert( s );
+}
+
 void QgsLegendModel::removeSymbol( QgsSymbol* s )
 {
   mSymbols.remove( s );
+}
+
+void QgsLegendModel::removeSymbolV2( QgsSymbolV2* s )
+{
+  mSymbolsV2.remove( s );
 }
 
 void QgsLegendModel::removeAllSymbols()
@@ -185,6 +244,16 @@ void QgsLegendModel::removeAllSymbols()
     delete *it;
   }
   mSymbols.clear();
+}
+
+void QgsLegendModel::removeAllSymbolsV2()
+{
+  QSet<QgsSymbolV2*>::iterator it = mSymbolsV2.begin();
+  for ( ; it != mSymbolsV2.end(); ++it )
+  {
+    delete *it;
+  }
+  mSymbolsV2.clear();
 }
 
 void QgsLegendModel::updateItem( QStandardItem* item )
@@ -211,9 +280,21 @@ void QgsLegendModel::updateItem( QStandardItem* item )
     symbol = ( QgsSymbol* )( symbolData );
   }
 
+  QVariant symbolNgVariant = item->data( Qt::UserRole + 2 );
+  QgsSymbolV2* symbolNg = 0;
+  if ( symbolNgVariant.canConvert<void*>() )
+  {
+    void* symbolNgData = symbolVariant.value<void*>();
+    symbolNg = ( QgsSymbolV2* )symbolNgData;
+  }
+
   if ( symbol )  //vector classification item
   {
     updateVectorClassificationItem( item, symbol, item->text() );
+  }
+  else if ( symbolNg )
+  {
+    updateVectorV2ClassificationItem( item, symbolNg, item->text() );
   }
   else if ( !item->icon().isNull() ) //raster classification item
   {
@@ -243,8 +324,21 @@ void QgsLegendModel::updateLayer( QStandardItem* layerItem )
     switch ( mapLayer->type() )
     {
       case QgsMapLayer::VectorLayer:
-        addVectorLayerItems( layerItem, mapLayer );
-        break;
+      {
+        QgsVectorLayer* vLayer = dynamic_cast<QgsVectorLayer*>( mapLayer );
+        if ( vLayer )
+        {
+          if ( vLayer->isUsingRendererV2() )
+          {
+            addVectorLayerItemsV2( layerItem, vLayer );
+          }
+          else
+          {
+            addVectorLayerItems( layerItem, vLayer );
+          }
+        }
+      }
+      break;
       case QgsMapLayer::RasterLayer:
         addRasterLayerItem( layerItem, mapLayer );
         break;
@@ -334,6 +428,11 @@ void QgsLegendModel::updateVectorClassificationItem( QStandardItem* classificati
   }
 }
 
+void QgsLegendModel::updateVectorV2ClassificationItem( QStandardItem* classificationItem, QgsSymbolV2* symbol, QString itemText )
+{
+  //todo...
+}
+
 
 void QgsLegendModel::updateRasterClassificationItem( QStandardItem* classificationItem )
 {
@@ -406,8 +505,21 @@ void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer )
   switch ( theMapLayer->type() )
   {
     case QgsMapLayer::VectorLayer:
-      addVectorLayerItems( layerItem, theMapLayer );
+    {
+      QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( theMapLayer );
+      if ( vl )
+      {
+        if ( vl->isUsingRendererV2() )
+        {
+          addVectorLayerItemsV2( layerItem, vl );
+        }
+        else
+        {
+          addVectorLayerItems( layerItem, vl );
+        }
+      }
       break;
+    }
     case QgsMapLayer::RasterLayer:
       addRasterLayerItem( layerItem, theMapLayer );
       break;
@@ -522,17 +634,38 @@ bool QgsLegendModel::writeXML( QDomElement& composerLegendElem, QDomDocument& do
 
       //store text and QgsSymbol for vector classification items
       QVariant symbolVariant = currentClassificationItem->data();
+      QVariant symbolNgVariant = currentClassificationItem->data( Qt::UserRole + 2 );
       QgsSymbol* symbol = 0;
+      QgsSymbolV2* symbolNg = 0;
+
       if ( symbolVariant.canConvert<void*>() )
       {
         void* symbolData = symbolVariant.value<void*>();
-        symbol = ( QgsSymbol* )( symbolData );
+        symbol = ( QgsSymbol* )symbolData;
       }
-      if ( symbol )
+      else if ( symbolNgVariant.canConvert<void*>() )
       {
-        QDomElement vectorClassElem = doc.createElement( "VectorClassificationItem" );
+        void* symbolNgData = symbolNgVariant.value<void*>();
+        symbolNg = ( QgsSymbolV2* )symbolNgData;
+      }
+
+      if ( symbol || symbolNg )
+      {
+        QDomElement vectorClassElem;
+        if ( symbol )
+        {
+          vectorClassElem = doc.createElement( "VectorClassificationItem" );
+          symbol->writeXML( vectorClassElem, doc, 0 );
+        }
+        else if ( symbolNg )
+        {
+          vectorClassElem = doc.createElement( "VectorClassificationItemNg" );
+          QgsSymbolV2Map saveSymbolMap;
+          saveSymbolMap.insert( "classificationSymbol", symbolNg );
+          QDomElement symbolsElem = QgsSymbolLayerV2Utils::saveSymbols( saveSymbolMap, "symbols", doc );
+          vectorClassElem.appendChild( symbolsElem );
+        }
         vectorClassElem.setAttribute( "text", currentClassificationItem->text() );
-        symbol->writeXML( vectorClassElem, doc, 0 );
         newLayerItem.appendChild( vectorClassElem );
         continue;
       }
@@ -638,6 +771,23 @@ bool QgsLegendModel::readXML( const QDomElement& legendModelElem, const QDomDocu
           }
         }
         layerItem->setChild( layerItem->rowCount(), 0, childItem );
+      }
+      else if ( currentChildElement.tagName() == "VectorClassificationItemNg" )
+      {
+        QDomElement symbolNgElem = currentChildElement.firstChildElement( "symbols" );
+        if ( !symbolNgElem.isNull() )
+        {
+          QgsSymbolV2Map loadSymbolMap = QgsSymbolLayerV2Utils::loadSymbols( symbolNgElem );
+          //we assume there is only one symbol in the map...
+          QgsSymbolV2Map::iterator mapIt = loadSymbolMap.begin();
+          if ( mapIt != loadSymbolMap.end() )
+          {
+            QgsSymbolV2* symbolNg = mapIt.value();
+            childItem->setData( QVariant::fromValue(( void* )symbolNg ), Qt::UserRole + 2 );
+            childItem->setIcon( QgsSymbolLayerV2Utils::symbolPreviewIcon( symbolNg, QSize( 30, 30 ) ) );
+          }
+          layerItem->setChild( layerItem->rowCount(), 0, childItem );
+        }
       }
       else if ( currentChildElement.tagName() == "TextItem" )
       {

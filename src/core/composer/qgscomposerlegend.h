@@ -22,6 +22,7 @@
 #include "qgslegendmodel.h"
 
 class QgsSymbol;
+class QgsSymbolV2;
 
 /** \ingroup MapComposer
  * A legend that can be placed onto a map composition
@@ -133,6 +134,7 @@ class CORE_EXPORT QgsComposerLegend: public QgsComposerItem
     /**Draws a symbol at the current y position and returns the new x position. Returns real symbol height, because for points,
      it is possible that it differs from mSymbolHeight*/
     void drawSymbol( QPainter* p, QgsSymbol* s, double currentYCoord, double& currentXPosition, double& symbolHeight, int layerOpacity = 255 ) const;
+    void drawSymbolV2( QPainter* p, QgsSymbolV2* s, double currentYCoord, double& currentXPosition, double& symbolHeight, int layerOpacity = 255 ) const;
     void drawPointSymbol( QPainter*, QgsSymbol* s, double currentYCoord, double& currentXPosition, double& symbolHeight, int opacity = 255 ) const;
     void drawLineSymbol( QPainter*, QgsSymbol* s, double currentYCoord, double& currentXPosition, int opacity = 255 ) const;
     void drawPolygonSymbol( QPainter* p, QgsSymbol* s, double currentYCoord, double& currentXPosition, int opacity = 255 ) const;
