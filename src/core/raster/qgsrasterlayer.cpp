@@ -5548,7 +5548,6 @@ void QgsRasterImageBuffer::reset( int maxPixelsInVirtualMemory )
 bool QgsRasterImageBuffer::nextScanLine( QRgb** imageScanLine, void** rasterScanLine )
 {
   if ( !mValid )
-  {
     return false;
     
   if( !mCurrentImage && !mCurrentGDALData )
