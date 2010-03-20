@@ -1752,43 +1752,43 @@ Vuoi aggiungere il nuovo layer alla legenda?</translation>
     </message>
     <message>
         <source>Count Points in Polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Conta i punti nel poligono</translation>
     </message>
     <message>
         <source>Count Points In Polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Conta i punti nei poligoni</translation>
     </message>
     <message>
         <source>Please specify input point vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Specifica il layer di punti di input</translation>
     </message>
     <message>
         <source>Please specify output count field</source>
-        <translation type="unfinished"></translation>
+        <translation>Specifica il campo in output per il conteggio</translation>
     </message>
     <message>
         <source>point count field</source>
-        <translation type="unfinished"></translation>
+        <translation>campo per il conteggio dei punti</translation>
     </message>
     <message>
         <source>Create Point Distance Matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Crea una matrice di distanze fra punti</translation>
     </message>
     <message>
         <source>Please specify input point layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Specifica il vettoriale di punti in input</translation>
     </message>
     <message>
         <source>Please specify output file</source>
-        <translation type="unfinished"></translation>
+        <translation>Specifica il file di output</translation>
     </message>
     <message>
         <source>Please specify target point layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleziona il layer puntiforme di destinazione</translation>
     </message>
     <message>
         <source>Please specify target unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>Scegli il campo ID univoco di destinazione</translation>
     </message>
     <message>
         <source>
@@ -1829,11 +1829,12 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     <message>
         <source>Error loading output shapefile:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Errore durante il caricamento dello shapefile di output:
+%1</translation>
     </message>
     <message>
         <source>Unable to read input table!</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile leggera la tabella di input!</translation>
     </message>
 </context>
 <context>
@@ -2064,31 +2065,31 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation>Seleziona un vettoriale in input</translation>
+        <translation>Scegli un vettoriale in input</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation>Specifica uno shapefile in output</translation>
+        <translation>Scegli uno shapefile in output</translation>
     </message>
     <message>
         <source>Please specify valid tolerance value</source>
-        <translation>Specifica un valore di tolleranza valido</translation>
+        <translation>Scegli un valore di tolleranza valido</translation>
     </message>
     <message>
         <source>Please specify valid UID field</source>
-        <translation>Specifica un campo UID valido</translation>
+        <translation>Scegli un campo UID valido</translation>
     </message>
     <message>
         <source>Singleparts to multipart</source>
-        <translation type="unfinished">Da parti singole a parti multiple</translation>
+        <translation>Da parti singole a parti multiple</translation>
     </message>
     <message>
         <source>Output shapefile</source>
-        <translation type="unfinished">Shapefile in output</translation>
+        <translation>Shapefile in output</translation>
     </message>
     <message>
         <source>Multipart to singleparts</source>
-        <translation type="unfinished">Da parti multiple a parti singole</translation>
+        <translation>Da parti multiple a parti singole</translation>
     </message>
     <message>
         <source>Extract nodes</source>
@@ -2222,15 +2223,15 @@ Vuoi aggiungerlo alla legenda?</translation>
     <name>GeoprocessingDialog</name>
     <message>
         <source>Dissolve all</source>
-        <translation type="unfinished">Dissolvi tutto</translation>
+        <translation>Dissolvi tutto</translation>
     </message>
     <message>
         <source>Geoprocessing</source>
-        <translation type="unfinished">Geoprocessa</translation>
+        <translation>Geoprocessa</translation>
     </message>
     <message>
         <source>Please specify an input layer</source>
-        <translation>Seleziona un layer di input</translation>
+        <translation>Scegli un layer di input</translation>
     </message>
     <message>
         <source>Please specify a difference/intersect/union layer</source>
@@ -2254,59 +2255,59 @@ Vuoi aggiungerlo alla legenda?</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
-        <translation type="unfinished">Buffer</translation>
+        <translation>Buffer</translation>
     </message>
     <message>
         <source>Create single minimum convex hull</source>
-        <translation type="unfinished">Crea un singolo poligono minimo convesso</translation>
+        <translation>Crea un singolo poligono minimo convesso</translation>
     </message>
     <message>
         <source>Create convex hulls based on input field</source>
-        <translation type="unfinished">Crea poligoni minimi convessi sulla base di un campo di input</translation>
+        <translation>Crea poligoni minimi convessi sulla base di un campo di input</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation type="unfinished">Poligono/i convesso/i</translation>
+        <translation>Poligono/i convesso/i</translation>
     </message>
     <message>
         <source>Dissolve</source>
-        <translation type="unfinished">Dissolvenza</translation>
+        <translation>Dissolvenza</translation>
     </message>
     <message>
         <source>Difference layer</source>
-        <translation type="unfinished">Layer in differenza</translation>
+        <translation>Layer in differenza</translation>
     </message>
     <message>
         <source>Difference</source>
-        <translation type="unfinished">Differenza</translation>
+        <translation>Differenza</translation>
     </message>
     <message>
         <source>Intersect layer</source>
-        <translation type="unfinished">Layer di intersezione</translation>
+        <translation>Layer di intersezione</translation>
     </message>
     <message>
         <source>Intersect</source>
-        <translation type="unfinished">Intersezione</translation>
+        <translation>Intersezione</translation>
     </message>
     <message>
         <source>Symetrical difference</source>
-        <translation type="unfinished">Differenza simmetrica</translation>
+        <translation>Differenza simmetrica</translation>
     </message>
     <message>
         <source>Clip layer</source>
-        <translation type="unfinished">Clip layer</translation>
+        <translation>Clip layer</translation>
     </message>
     <message>
         <source>Clip</source>
-        <translation type="unfinished">Clip</translation>
+        <translation>Clip</translation>
     </message>
     <message>
         <source>Union layer</source>
-        <translation type="unfinished">Layer di unione</translation>
+        <translation>Layer di unione</translation>
     </message>
     <message>
         <source>Union</source>
-        <translation type="unfinished">Unione</translation>
+        <translation>Unione</translation>
     </message>
     <message>
         <source>Unable to delete existing shapefile.</source>
@@ -2367,12 +2368,15 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <source>Created output shapefile:
 %1
 %2%3</source>
-        <translation type="unfinished"></translation>
+        <translation>Shapefile in ouput creato:
+%1
+%2%3</translation>
     </message>
     <message>
         <source>Error loading output shapefile:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Errore durante il caricamento dello shapefile di output:
+%1</translation>
     </message>
 </context>
 <context>
@@ -2987,7 +2991,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>OSM Information</source>
-        <translation type="unfinished">Informazioni OSM</translation>
+        <translation>Informazioni OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="78"/>
@@ -3025,7 +3029,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="205"/>
         <source>Select member on map</source>
-        <translation>Seleziona un membro sulla mappa</translation>
+        <translation>Scegli un membro sulla mappa</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="208"/>
@@ -3157,23 +3161,23 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Waiting for OpenStreetMap server ...</source>
-        <translation type="unfinished">In attesa di risposte dal server OpenStreetMap ...</translation>
+        <translation>In attesa di risposte dal server OpenStreetMap ...</translation>
     </message>
     <message>
         <source>Download process failed. OpenStreetMap server response: %1 - %2</source>
-        <translation type="unfinished">Errore durante il download. Risposta del server OpenStreetMap: %1 - %2</translation>
+        <translation>Errore durante il download. Risposta del server OpenStreetMap: %1 - %2</translation>
     </message>
     <message>
         <source>OSM Download Error</source>
-        <translation type="unfinished">Errore download OSM</translation>
+        <translation>Errore download OSM</translation>
     </message>
     <message>
         <source>Download failed: %1.</source>
-        <translation type="unfinished">Errore di download: %1.</translation>
+        <translation>Errore di download: %1.</translation>
     </message>
     <message>
         <source>Getting data</source>
-        <translation type="unfinished">Recupero dati</translation>
+        <translation>Recupero dati</translation>
     </message>
     <message>
         <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
@@ -3181,19 +3185,19 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Both extents are too large!</source>
-        <translation type="unfinished">L&apos;area scelta è troppo grande!</translation>
+        <translation>L&apos;area scelta è troppo grande!</translation>
     </message>
     <message>
         <source>Latitude extent is too large!</source>
-        <translation type="unfinished">L&apos;area ha una estensione in latitudine troppo grande!</translation>
+        <translation>L&apos;area ha una estensione in latitudine troppo grande!</translation>
     </message>
     <message>
         <source>Longitude extent is too large!</source>
-        <translation type="unfinished">L&apos;area ha una estensione in longitudine troppo grande!</translation>
+        <translation>L&apos;area ha una estensione in longitudine troppo grande!</translation>
     </message>
     <message>
         <source>OK! Area is probably acceptable to server.</source>
-        <translation type="unfinished">Ok! L&apos;area ha una dimensione che potrebbe essere accettata dal server.</translation>
+        <translation>Ok! L&apos;area ha una dimensione che potrebbe essere accettata dal server.</translation>
     </message>
 </context>
 <context>
@@ -3233,11 +3237,11 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Choose OSM feature first.</source>
-        <translation>Seleziona prima un elemento OSM.</translation>
+        <translation>Scegli prima un elemento OSM.</translation>
     </message>
     <message>
         <source>Choose relation for editing first.</source>
-        <translation>Seleziona prima una relazione da modificare.</translation>
+        <translation>Scegli prima una relazione da modificare.</translation>
     </message>
     <message>
         <source>Property &apos;%1&apos; cannot be added twice.</source>
@@ -3664,7 +3668,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>QGIS version:</source>
-        <translation type="unfinished"></translation>
+        <translation>Versione di QGIS:</translation>
     </message>
     <message>
         <source>Python path:</source>
@@ -3977,7 +3981,7 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="165"/>
         <source>Choose GRASS installation path (GISBASE)</source>
-        <translation>Seleziona il percorso di installazione di GRASS (GISBASE)</translation>
+        <translation>Scegli il percorso di installazione di GRASS (GISBASE)</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="182"/>
@@ -5217,7 +5221,6 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
         <comment>number of geometry errors</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -5256,7 +5259,6 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
         <source>line %1 contains %n duplicate node(s) at %2</source>
         <comment>number of duplicate nodes</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -5452,7 +5454,7 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3612"/>
         <source>No Layer Selected</source>
-        <translation>Nessun layer selezionato</translation>
+        <translation>Nessun layer scelto</translation>
     </message>
     <message>
         <source>To open an attribute table, you must select a layer in the legend</source>
@@ -5721,12 +5723,12 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2940"/>
         <source>Choose a QGIS project file to open</source>
-        <translation>Seleziona un progetto QGIS da caricare</translation>
+        <translation>Scegli un progetto QGIS da caricare</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3071"/>
         <source>Choose a QGIS project file</source>
-        <translation>Seleziona un file di progetto QGIS</translation>
+        <translation>Scegli un file di progetto QGIS</translation>
     </message>
     <message>
         <source>Saved project to:</source>
@@ -6252,7 +6254,7 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
         <location filename="../src/app/qgisapp.cpp" line="813"/>
         <location filename="../src/app/qgisapp.cpp" line="815"/>
         <source>Select Features</source>
-        <translation>Seleziona elementi</translation>
+        <translation>Scegli elementi</translation>
     </message>
     <message>
         <source>Open Table</source>
@@ -8115,7 +8117,7 @@ Provo a cercare i layer persi?</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3818"/>
         <source>No active layer found. Please select a layer in the layer list</source>
-        <translation>Non è stato trovato alcun layer attivo. Selezionarne uno dalla lista</translation>
+        <translation>Non è stato trovato alcun layer attivo. Selezionane uno dalla lista</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3824"/>
@@ -9138,7 +9140,6 @@ p, li { white-space: pre-wrap; }
         <comment>feature count</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -9146,7 +9147,6 @@ p, li { white-space: pre-wrap; }
         <source>Attribute table - %1 (%n matching features)</source>
         <comment>matching features</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
