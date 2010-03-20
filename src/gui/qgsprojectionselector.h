@@ -110,6 +110,7 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
     void setOgcWmsCrsFilter( QSet<QString> crsFilter );
 
     void on_pbnFind_clicked();
+    void on_cbxHideDeprecated_stateChanged();
 
     void on_pbnPopular1_clicked();
     void on_pbnPopular2_clicked();
@@ -232,6 +233,9 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
 
     //! Most recently used projections (trimmed at 25 entries)
     QStringList mRecentProjections;
+
+    //! hide deprecated CRSes
+    void hideDeprecated( QTreeWidgetItem *item );
 
   private slots:
     /**private handler for when user selects a cs

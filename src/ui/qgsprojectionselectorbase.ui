@@ -153,6 +153,13 @@
         </property>
        </widget>
       </item>
+      <item row="1" column="0" colspan="4">
+       <widget class="QCheckBox" name="cbxHideDeprecated">
+        <property name="text">
+         <string>Hide deprecated CRSs</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
