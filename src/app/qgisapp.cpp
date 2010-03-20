@@ -45,7 +45,6 @@
 #include <QMenuBar>
 #include <QMenuItem>
 #include <QMessageBox>
-#include <QNetworkProxy>
 #include <QPainter>
 #include <QPictureIO>
 #include <QPixmap>
@@ -67,6 +66,13 @@
 #include <QToolButton>
 #include <QVBoxLayout>
 #include <QWhatsThis>
+
+#include <QNetworkAccessManager>
+#include <QNetworkDiskCache>
+#include <QNetworkReply>
+#include <QNetworkProxy>
+#include <QAuthenticator>
+
 //
 // Mac OS X Includes
 // Must include before GEOS 3 due to unqualified use of 'Point'
@@ -328,12 +334,12 @@ QgisApp *QgisApp::smInstance = 0;
 
 // constructor starts here
 QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, Qt::WFlags fl )
-    : QMainWindow( parent, fl ),
-    mSplash( splash ),
-    mPythonUtils( NULL )
+    : QMainWindow( parent, fl )
+    , mSplash( splash )
+    , mPythonUtils( NULL )
+    , mNAM( NULL )
 #ifdef HAVE_QWT
-    ,
-    mpGpsWidget( NULL )
+    , mpGpsWidget( NULL )
 #endif
 {
   if ( smInstance )
@@ -346,6 +352,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   }
 
   smInstance = this;
+
+  namSetup();
 
 //  setupUi(this);
   resize( 640, 480 );
@@ -1840,6 +1848,9 @@ void QgisApp::setupConnections()
   connect( mMapCanvas, SIGNAL( extentsChanged() ), this, SLOT( markDirty() ) );
   connect( mMapCanvas, SIGNAL( layersChanged() ), this, SLOT( markDirty() ) );
   connect( mMapLegend, SIGNAL( zOrderChanged() ), this, SLOT( markDirty() ) );
+
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer * ) ),
+           this, SLOT( layerWasAdded( QgsMapLayer * ) ) );
 
   connect( mRenderSuppressionCBox, SIGNAL( toggled( bool ) ), mMapCanvas, SLOT( setRenderFlag( bool ) ) );
   //
@@ -4468,11 +4479,7 @@ void QgisApp::loadPythonSupport()
 #endif
   QString version = QString( "%1.%2.%3" ).arg( QGis::QGIS_VERSION_INT / 10000 ).arg( QGis::QGIS_VERSION_INT / 100 % 100 ).arg( QGis::QGIS_VERSION_INT % 100 );
   QgsDebugMsg( QString( "load library %1 (%2)" ).arg( pythonlibName ).arg( version ) );
-#if QT_VERSION >= 0x040400
   QLibrary pythonlib( pythonlibName, version );
-#else
-  QLibrary pythonlib( pythonlibName );
-#endif
   // It's necessary to set these two load hints, otherwise Python library won't work correctly
   // see http://lists.kde.org/?l=pykde&m=117190116820758&w=2
   pythonlib.setLoadHints( QLibrary::ResolveAllSymbolsHint | QLibrary::ExportExternalSymbolsHint );
@@ -5074,6 +5081,25 @@ void QgisApp::markDirty()
   QgsProject::instance()->dirty( true );
 }
 
+void QgisApp::layerWasAdded( QgsMapLayer *layer )
+{
+  QgsDataProvider *provider = 0;
+
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+  if ( vlayer )
+    provider = vlayer->dataProvider();
+
+  QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
+  if ( rlayer )
+    provider = rlayer->dataProvider();
+
+  if ( provider )
+  {
+    connect( provider, SIGNAL( dataChanged() ), layer, SLOT( clearCacheImage() ) );
+    connect( provider, SIGNAL( dataChanged() ), mMapCanvas, SLOT( refresh() ) );
+  }
+}
+
 void QgisApp::showExtents()
 {
   if ( !mToggleExtentsViewButton->isChecked() )
@@ -5194,7 +5220,7 @@ void QgisApp::projectProperties()
            SLOT( updateMouseCoordinatePrecision() ) );
   QApplication::restoreOverrideCursor();
 
-  //pass any refresg signals off to canvases
+  //pass any refresh signals off to canvases
   // Line below was commented out by wonder three years ago (r4949).
   // It is needed to refresh scale bar after changing display units.
   connect( pp, SIGNAL( refresh() ), mMapCanvas, SLOT( refresh() ) );
@@ -5345,12 +5371,14 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
           mActionCapturePoint->setEnabled( true );
           mActionCapturePoint->setVisible( true );
           mActionDeletePart->setEnabled( true );
+          mActionAddIsland->setEnabled( true );
         }
         else
         {
           mActionCapturePoint->setEnabled( false );
           mActionCapturePoint->setVisible( false );
           mActionDeletePart->setEnabled( false );
+          mActionAddIsland->setEnabled( false );
         }
         mActionCaptureLine->setEnabled( false );
         mActionCapturePolygon->setEnabled( false );
@@ -5362,6 +5390,9 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionMoveVertex->setEnabled( false );
 #endif
         mActionAddRing->setEnabled( false );
+#if 0
+        mActionAddIsland->setEnabled( false );
+#endif
         mActionAddIsland->setEnabled( false );
         mActionReshapeFeatures->setEnabled( false );
         mActionSplitFeatures->setEnabled( false );
@@ -5608,6 +5639,7 @@ bool QgisApp::addRasterLayer( QgsRasterLayer * theRasterLayer )
                     SIGNAL( drawingProgress( int, int ) ),
                     this,
                     SLOT( showProgress( int, int ) ) );
+
   // connect up any request the raster may make to update the statusbar message
   QObject::connect( theRasterLayer,
                     SIGNAL( statusChanged( QString ) ),
@@ -5681,13 +5713,14 @@ QgsRasterLayer* QgisApp::addRasterLayer( QString const & rasterFile, QString con
   \note   Copied from the equivalent addVectorLayer function in this file
   TODO    Make it work for rasters specifically.
   */
-QgsRasterLayer* QgisApp::addRasterLayer( QString const & rasterLayerPath,
-    QString const & baseName,
-    QString const & providerKey,
-    QStringList const & layers,
-    QStringList const & styles,
-    QString const & format,
-    QString const & crs )
+QgsRasterLayer* QgisApp::addRasterLayer(
+  QString const &rasterLayerPath,
+  QString const &baseName,
+  QString const &providerKey,
+  QStringList const & layers,
+  QStringList const & styles,
+  QString const &format,
+  QString const &crs )
 {
   QgsDebugMsg( "about to get library for " + providerKey );
 
@@ -6126,4 +6159,116 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
     }
 
   }
+}
+
+void QgisApp::namSetup()
+{
+  if ( mNAM )
+    return;
+
+  mNAM = new QNetworkAccessManager( this );
+
+  namUpdate();
+
+  connect( mNAM, SIGNAL( authenticationRequired( QNetworkReply *, QAuthenticator * ) ),
+           this, SLOT( namAuthenticationRequired( QNetworkReply *, QAuthenticator * ) ) );
+
+  connect( mNAM, SIGNAL( proxyAuthenticationRequired( const QNetworkProxy &, QAuthenticator * ) ),
+           this, SLOT( namProxyAuthenticationRequired( const QNetworkProxy &, QAuthenticator * ) ) );
+
+  QCoreApplication::instance()->setProperty( "qgisNetworkAccessManager", qVariantFromValue<QObject*>( mNAM ) );
+}
+
+QNetworkAccessManager *QgisApp::nam()
+{
+  namSetup();
+  return mNAM;
+}
+
+void QgisApp::namAuthenticationRequired( QNetworkReply *reply, QAuthenticator *auth )
+{
+  QString username = auth->user();
+  QString password = auth->password();
+
+  bool ok = QgsCredentials::instance()->get(
+              QString( "%1 at %2" ).arg( auth->realm() ).arg( reply->url().host() ),
+              username, password,
+              tr( "Authentication required" ) );
+  if ( !ok )
+    return;
+
+  auth->setUser( username );
+  auth->setPassword( password );
+}
+
+void QgisApp::namProxyAuthenticationRequired( const QNetworkProxy &proxy, QAuthenticator *auth )
+{
+  QString username = auth->user();
+  QString password = auth->password();
+
+  bool ok = QgsCredentials::instance()->get(
+              QString( "proxy %1:%2 [%3]" ).arg( proxy.hostName() ).arg( proxy.port() ).arg( auth->realm() ),
+              username, password,
+              tr( "Proxy authentication required" ) );
+  if ( !ok )
+    return;
+
+  auth->setUser( username );
+  auth->setPassword( password );
+}
+
+void QgisApp::namUpdate()
+{
+  QSettings settings;
+
+  //read type, host, port, user, passw from settings
+  QString proxyHost = settings.value( "proxy/proxyHost", "" ).toString();
+  int proxyPort = settings.value( "proxy/proxyPort", "" ).toString().toInt();
+  QString proxyUser = settings.value( "proxy/proxyUser", "" ).toString();
+  QString proxyPassword = settings.value( "proxy/proxyPassword", "" ).toString();
+
+  QString proxyTypeString = settings.value( "proxy/proxyType", "" ).toString();
+  QNetworkProxy::ProxyType proxyType = QNetworkProxy::NoProxy;
+  if ( proxyTypeString == "DefaultProxy" )
+  {
+    proxyType = QNetworkProxy::DefaultProxy;
+  }
+  else if ( proxyTypeString == "Socks5Proxy" )
+  {
+    proxyType = QNetworkProxy::Socks5Proxy;
+  }
+  else if ( proxyTypeString == "HttpProxy" )
+  {
+    proxyType = QNetworkProxy::HttpProxy;
+  }
+  else if ( proxyTypeString == "HttpCachingProxy" )
+  {
+    proxyType = QNetworkProxy::HttpCachingProxy;
+  }
+  else if ( proxyTypeString == "FtpCachingProxy" )
+  {
+    proxyType = QNetworkProxy::FtpCachingProxy;
+  }
+  QgsDebugMsg( QString( "setting proxy %1 %2:%3 %4/%5" )
+               .arg( proxyType )
+               .arg( proxyHost ).arg( proxyPort )
+               .arg( proxyUser ).arg( proxyPassword )
+             );
+  nam()->setProxy( QNetworkProxy( proxyType, proxyHost, proxyPort, proxyUser, proxyPassword ) );
+
+  QNetworkDiskCache *cache = qobject_cast<QNetworkDiskCache*>( nam()->cache() );
+  if ( !cache )
+    cache = new QNetworkDiskCache( this );
+
+  QString cacheDirectory = settings.value( "cache/directory", QgsApplication::qgisSettingsDirPath() + "cache" ).toString();
+  qint64 cacheSize = settings.value( "cache/size", 50 * 1024 * 1024 ).toULongLong();
+  QgsDebugMsg( QString( "setCacheDirectory: %1" ).arg( cacheDirectory ) );
+  QgsDebugMsg( QString( "setMaximumCacheSize: %1" ).arg( cacheSize ) );
+  cache->setCacheDirectory( cacheDirectory );
+  cache->setMaximumCacheSize( cacheSize );
+  QgsDebugMsg( QString( "cacheDirectory: %1" ).arg( cache->cacheDirectory() ) );
+  QgsDebugMsg( QString( "maximumCacheSize: %1" ).arg( cache->maximumCacheSize() ) );
+
+  if ( mNAM->cache() != cache )
+    mNAM->setCache( cache );
 }

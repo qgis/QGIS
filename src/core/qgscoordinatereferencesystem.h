@@ -48,7 +48,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     {
       InternalCrsId,
       PostgisCrsId,
-      EpsgCrsId
+      EpsgCrsId  // deprecated
     };
 
     //! Default constructor
@@ -152,7 +152,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *   or isSameGeocs (essentially calling the == overloaded operator). We'll try to
      *   be smart about this and first parse out the proj and ellpse strings and only
      *   check for a match in entities that have the same ellps and proj entries so
-     *   that it doesnt munch yer cpu so much.
+     *   that it doesn't munch yer cpu so much.
      *
      * @note If the srs was not matched, we will create a new entry on the users tbl_srs
      *    for this srs.
@@ -249,9 +249,15 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     long postgisSrid() const;
 
     /*! Get the EpsgCrsId identifier for this srs
-     * @return  long theEpsg the ESPG identifier for this srs (defaults to 0)
+     * @return  long theEpsg the EPSG identifier for this srs (defaults to 0)
      */
     long epsg() const;
+
+    /*! Get the authority identifier for this srs
+     * @return  QString the Authority identifier for this srs
+     * @note added in 1.5
+     */
+    QString authid() const;
 
     /*! Get the Description
      * @return  QString the Description A textual description of the srs.
@@ -334,10 +340,16 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * @param  bool theGeoFlag Whether this is a geographic or projected coordinate system
      */
     void setGeographicFlag( bool theGeoFlag );
+
     /*! Set the EpsgCrsId identifier for this srs
      * @param  long theEpsg the ESPG identifier for this srs (defaults to 0)
      */
     void setEpsg( long theEpsg );
+
+    /*! Set the authority identifier for this srs
+     * @param  QString thID the authority identifier for this srs (defaults to 0)
+     */
+    void setAuthId( QString theID );
     /*! Set the projection acronym
      * @param QString the acronym (must be a valid proj4 projection acronym)
      */
@@ -379,8 +391,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     QGis::UnitType mMapUnits;
     //!If available, the Postgis spatial_ref_sys identifier for this srs (defaults to 0)
     long    mSRID;
-    //!If available the ESPG identifier for this srs (defaults to 0)
-    long    mEpsg ;
+    //!If available the authority identifier for this srs
+    QString mAuthId;
     //! Wehter this srs is properly defined and valid
     bool mIsValidFlag;
 
@@ -398,7 +410,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
 
     void *mCRS;
 
-    bool loadFromDb( QString db, QString field, long id );
+    bool loadFromDb( QString db, QString expression, QString value );
 
     QString mValidationHint;
 

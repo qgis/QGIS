@@ -276,6 +276,13 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     void fullExtentCalculated();
 
+    /**
+     *   This is emitted whenever an asynchronous operation has finished
+     *   and the data should be redrawn
+     *   @note added in 1.5
+     */
+    void dataChanged();
+
   private:
 
     /**

@@ -859,3 +859,8 @@ void QgsMapLayer::setValid( bool valid )
 {
   mValid = valid;
 }
+
+void QgsMapLayer::clearCacheImage()
+{
+  setCacheImage( 0 );
+}

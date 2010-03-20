@@ -1394,6 +1394,7 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
   QgsRectangle myRasterExtent = theViewExtent.intersect( &mLayerExtent );
   if ( myRasterExtent.isEmpty() )
   {
+    QgsDebugMsg( "draw request outside view extent." );
     // nothing to do
     return TRUE;
   }
@@ -1430,12 +1431,13 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
   myRasterViewPort->rectXOffset = static_cast < int >( myRasterViewPort->rectXOffsetFloat );
   myRasterViewPort->rectYOffset = static_cast < int >( myRasterViewPort->rectYOffsetFloat );
 
-  QgsDebugMsg( QString( "mGeoTransform[0] = %1" ).arg( mGeoTransform[0] ) );
-  QgsDebugMsg( QString( "mGeoTransform[1] = %1" ).arg( mGeoTransform[1] ) );
-  QgsDebugMsg( QString( "mGeoTransform[2] = %1" ).arg( mGeoTransform[2] ) );
-  QgsDebugMsg( QString( "mGeoTransform[3] = %1" ).arg( mGeoTransform[3] ) );
-  QgsDebugMsg( QString( "mGeoTransform[4] = %1" ).arg( mGeoTransform[4] ) );
-  QgsDebugMsg( QString( "mGeoTransform[5] = %1" ).arg( mGeoTransform[5] ) );
+  QgsDebugMsgLevel( QString( "mGeoTransform: %1, %2, %3, %4, %5, %6" )
+                    .arg( mGeoTransform[0] )
+                    .arg( mGeoTransform[1] )
+                    .arg( mGeoTransform[2] )
+                    .arg( mGeoTransform[3] )
+                    .arg( mGeoTransform[4] )
+                    .arg( mGeoTransform[5] ), 3 );
 
   // get dimensions of clipped raster image in raster pixel space/ RasterIO will do the scaling for us.
   // So for example, if the user is zoomed in a long way, there may only be e.g. 5x5 pixels retrieved from
@@ -1494,38 +1496,38 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
     myRasterViewPort->drawableAreaYDim = myRasterViewPort->clippedHeight;
   }
 
-  QgsDebugMsg( QString( "mapUnitsPerPixel = %1" ).arg( theQgsMapToPixel.mapUnitsPerPixel() ) );
-  QgsDebugMsg( QString( "mWidth = %1" ).arg( mWidth ) );
-  QgsDebugMsg( QString( "mHeight = %1" ).arg( mHeight ) );
-  QgsDebugMsg( QString( "rectXOffset = %1" ).arg( myRasterViewPort->rectXOffset ) );
-  QgsDebugMsg( QString( "rectXOffsetFloat = %1" ).arg( myRasterViewPort->rectXOffsetFloat ) );
-  QgsDebugMsg( QString( "rectYOffset = %1" ).arg( myRasterViewPort->rectYOffset ) );
-  QgsDebugMsg( QString( "rectYOffsetFloat = %1" ).arg( myRasterViewPort->rectYOffsetFloat ) );
+  QgsDebugMsgLevel( QString( "mapUnitsPerPixel = %1" ).arg( theQgsMapToPixel.mapUnitsPerPixel() ), 3 );
+  QgsDebugMsgLevel( QString( "mWidth = %1" ).arg( mWidth ), 3 );
+  QgsDebugMsgLevel( QString( "mHeight = %1" ).arg( mHeight ), 3 );
+  QgsDebugMsgLevel( QString( "rectXOffset = %1" ).arg( myRasterViewPort->rectXOffset ), 3 );
+  QgsDebugMsgLevel( QString( "rectXOffsetFloat = %1" ).arg( myRasterViewPort->rectXOffsetFloat ), 3 );
+  QgsDebugMsgLevel( QString( "rectYOffset = %1" ).arg( myRasterViewPort->rectYOffset ), 3 );
+  QgsDebugMsgLevel( QString( "rectYOffsetFloat = %1" ).arg( myRasterViewPort->rectYOffsetFloat ), 3 );
 
-  QgsDebugMsg( QString( "myRasterExtent.xMinimum() = %1" ).arg( myRasterExtent.xMinimum() ) );
-  QgsDebugMsg( QString( "myRasterExtent.xMaximum() = %1" ).arg( myRasterExtent.xMaximum() ) );
-  QgsDebugMsg( QString( "myRasterExtent.yMinimum() = %1" ).arg( myRasterExtent.yMinimum() ) );
-  QgsDebugMsg( QString( "myRasterExtent.yMaximum() = %1" ).arg( myRasterExtent.yMaximum() ) );
+  QgsDebugMsgLevel( QString( "myRasterExtent.xMinimum() = %1" ).arg( myRasterExtent.xMinimum() ), 3 );
+  QgsDebugMsgLevel( QString( "myRasterExtent.xMaximum() = %1" ).arg( myRasterExtent.xMaximum() ), 3 );
+  QgsDebugMsgLevel( QString( "myRasterExtent.yMinimum() = %1" ).arg( myRasterExtent.yMinimum() ), 3 );
+  QgsDebugMsgLevel( QString( "myRasterExtent.yMaximum() = %1" ).arg( myRasterExtent.yMaximum() ), 3 );
 
-  QgsDebugMsg( QString( "topLeftPoint.x() = %1" ).arg( myRasterViewPort->topLeftPoint.x() ) );
-  QgsDebugMsg( QString( "bottomRightPoint.x() = %1" ).arg( myRasterViewPort->bottomRightPoint.x() ) );
-  QgsDebugMsg( QString( "topLeftPoint.y() = %1" ).arg( myRasterViewPort->topLeftPoint.y() ) );
-  QgsDebugMsg( QString( "bottomRightPoint.y() = %1" ).arg( myRasterViewPort->bottomRightPoint.y() ) );
+  QgsDebugMsgLevel( QString( "topLeftPoint.x() = %1" ).arg( myRasterViewPort->topLeftPoint.x() ), 3 );
+  QgsDebugMsgLevel( QString( "bottomRightPoint.x() = %1" ).arg( myRasterViewPort->bottomRightPoint.x() ), 3 );
+  QgsDebugMsgLevel( QString( "topLeftPoint.y() = %1" ).arg( myRasterViewPort->topLeftPoint.y() ), 3 );
+  QgsDebugMsgLevel( QString( "bottomRightPoint.y() = %1" ).arg( myRasterViewPort->bottomRightPoint.y() ), 3 );
 
-  QgsDebugMsg( QString( "clippedXMin = %1" ).arg( myRasterViewPort->clippedXMin ) );
-  QgsDebugMsg( QString( "clippedXMax = %1" ).arg( myRasterViewPort->clippedXMax ) );
-  QgsDebugMsg( QString( "clippedYMin = %1" ).arg( myRasterViewPort->clippedYMin ) );
-  QgsDebugMsg( QString( "clippedYMax = %1" ).arg( myRasterViewPort->clippedYMax ) );
+  QgsDebugMsgLevel( QString( "clippedXMin = %1" ).arg( myRasterViewPort->clippedXMin ), 3 );
+  QgsDebugMsgLevel( QString( "clippedXMax = %1" ).arg( myRasterViewPort->clippedXMax ), 3 );
+  QgsDebugMsgLevel( QString( "clippedYMin = %1" ).arg( myRasterViewPort->clippedYMin ), 3 );
+  QgsDebugMsgLevel( QString( "clippedYMax = %1" ).arg( myRasterViewPort->clippedYMax ), 3 );
 
-  QgsDebugMsg( QString( "clippedWidth = %1" ).arg( myRasterViewPort->clippedWidth ) );
-  QgsDebugMsg( QString( "clippedHeight = %1" ).arg( myRasterViewPort->clippedHeight ) );
-  QgsDebugMsg( QString( "drawableAreaXDim = %1" ).arg( myRasterViewPort->drawableAreaXDim ) );
-  QgsDebugMsg( QString( "drawableAreaYDim = %1" ).arg( myRasterViewPort->drawableAreaYDim ) );
+  QgsDebugMsgLevel( QString( "clippedWidth = %1" ).arg( myRasterViewPort->clippedWidth ), 3 );
+  QgsDebugMsgLevel( QString( "clippedHeight = %1" ).arg( myRasterViewPort->clippedHeight ), 3 );
+  QgsDebugMsgLevel( QString( "drawableAreaXDim = %1" ).arg( myRasterViewPort->drawableAreaXDim ), 3 );
+  QgsDebugMsgLevel( QString( "drawableAreaYDim = %1" ).arg( myRasterViewPort->drawableAreaYDim ), 3 );
 
-  QgsDebugMsg( "ReadXml: gray band name : " + mGrayBandName );
-  QgsDebugMsg( "ReadXml: red band name : " + mRedBandName );
-  QgsDebugMsg( "ReadXml: green band name : " + mGreenBandName );
-  QgsDebugMsg( "ReadXml: blue band name : " + mBlueBandName );
+  QgsDebugMsgLevel( "ReadXml: gray band name : " + mGrayBandName, 3 );
+  QgsDebugMsgLevel( "ReadXml: red band name : " + mRedBandName, 3 );
+  QgsDebugMsgLevel( "ReadXml: green band name : " + mGreenBandName, 3 );
+  QgsDebugMsgLevel( "ReadXml: blue band name : " + mBlueBandName, 3 );
 
   // /\/\/\ - added to handle zoomed-in rasters
 
@@ -1538,8 +1540,6 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
   if ( !mProviderKey.isEmpty() )
   {
     QgsDebugMsg( "Wanting a '" + mProviderKey + "' provider to draw this." );
-
-    emit statusChanged( tr( "Retrieving %1 using %2" ).arg( name() ).arg( mProviderKey ) );
 
     mDataProvider->setDpi( rendererContext.rasterScaleFactor() * 25.4 * rendererContext.scaleFactor() );
 
@@ -1575,20 +1575,18 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
         return FALSE;
       }
 
-      QgsDebugMsg( "Done mDataProvider->draw." );
-      QgsDebugMsg( "image stats: " );
+      QgsDebugMsg( "done mDataProvider->draw." );
 
-      QgsDebugMsg( QString( "depth=%1" ).arg( image->depth() ) );
-      QgsDebugMsg( QString( "bytes=%1" ).arg( image->numBytes() ) );
-      QgsDebugMsg( QString( "width=%1" ).arg( image->width() ) );
-      QgsDebugMsg( QString( "height=%1" ).arg( image->height() ) );
+      QgsDebugMsgLevel( QString( "image stats: depth=%1 bytes=%2 width=%3 height=%4" ).arg( image->depth() )
+                        .arg( image->numBytes() )
+                        .arg( image->width() )
+                        .arg( image->height() ),
+                        3 );
 
-      QgsDebugMsg( "Want to theQPainter->drawImage with" );
-
-      QgsDebugMsg( QString( "origin x: %1" ).arg( myRasterViewPort->topLeftPoint.x() ) );
-      QgsDebugMsg( QString( "(int)origin x: %1" ).arg( static_cast<int>( myRasterViewPort->topLeftPoint.x() ) ) );
-      QgsDebugMsg( QString( "origin y: %1" ).arg( myRasterViewPort->topLeftPoint.y() ) );
-      QgsDebugMsg( QString( "(int)origin y: %1" ).arg( static_cast<int>( myRasterViewPort->topLeftPoint.y() ) ) );
+      QgsDebugMsgLevel( QString( "Want to theQPainter->drawImage with origin x: %1 (%2) %3 (%4)" )
+                        .arg( myRasterViewPort->topLeftPoint.x() ).arg( static_cast<int>( myRasterViewPort->topLeftPoint.x() ) )
+                        .arg( myRasterViewPort->topLeftPoint.y() ).arg( static_cast<int>( myRasterViewPort->topLeftPoint.y() ) ),
+                        3 );
 
       //Set the transparency for the whole layer
       //QImage::setAlphaChannel does not work quite as expected so set each pixel individually
@@ -1622,8 +1620,6 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
       {
         delete image;
       }
-
-      emit statusChanged( tr( "%1 retrieved using %2" ).arg( name() ).arg( mProviderKey ) );
     }
   }
   else
@@ -3870,7 +3866,7 @@ bool QgsRasterLayer::readXml( QDomNode & layer_node )
     QString format = rpNode.namedItem( "wmsFormat" ).toElement().text();
 
     // Collect CRS
-    QString crs = QString( "EPSG:%1" ).arg( srs().epsg() );
+    QString crs = srs().authid();
 
     setDataProvider( mProviderKey, layers, styles, format, crs );
   }
@@ -5521,15 +5517,13 @@ QgsRasterImageBuffer::~QgsRasterImageBuffer()
 
 void QgsRasterImageBuffer::reset( int maxPixelsInVirtualMemory )
 {
-  if ( mRasterBand && mPainter && mViewPort && mMapToPixel )
-  {
-    mValid = true;
-  }
-  else
+  if ( !mRasterBand || !mPainter || !mViewPort || !mMapToPixel )
   {
     mValid = false;
     return;
   }
+
+  mValid = true;
 
   //decide on the partition of the image
 
@@ -5556,14 +5550,13 @@ bool QgsRasterImageBuffer::nextScanLine( QRgb** imageScanLine, void** rasterScan
   if ( !mValid )
   {
     return false;
-  }
-
-  if ( !mCurrentImage && !mCurrentGDALData )
+    
+  if( !mCurrentImage && !mCurrentGDALData )
   {
     return false;
   }
 
-  if ( mCurrentPartImageRow >= ( mNumCurrentImageRows ) )
+  if ( mCurrentPartImageRow >= mNumCurrentImageRows )
   {
     if ( !createNextPartImage() )
     {
@@ -5573,7 +5566,7 @@ bool QgsRasterImageBuffer::nextScanLine( QRgb** imageScanLine, void** rasterScan
 
   if ( mWritingEnabled )
   {
-    *imageScanLine = ( QRgb* )( mCurrentImage->scanLine( mCurrentPartImageRow ) );
+    *imageScanLine = ( QRgb* ) mCurrentImage->scanLine( mCurrentPartImageRow );
   }
   else
   {

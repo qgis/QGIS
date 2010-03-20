@@ -97,29 +97,16 @@ void QgsCoordinateReferenceSystem::createFromId( const long theId, CrsType theTy
 
 bool QgsCoordinateReferenceSystem::createFromOgcWmsCrs( QString theCrs )
 {
-  QStringList parts = theCrs.split( ":" );
+  if ( loadFromDb( QgsApplication::srsDbFilePath(), "lower(auth_name||':'||auth_id)", theCrs.toLower() ) )
+    return true;
 
-  if ( parts.at( 0 ).compare( "EPSG", Qt::CaseInsensitive ) == 0 )
+  if ( theCrs.compare( "CRS:84", Qt::CaseInsensitive ) == 0 )
   {
-    createFromEpsg( parts.at( 1 ).toLong() );
-  }
-  else if ( parts.at( 0 ).compare( "CRS", Qt::CaseInsensitive ) == 0 )
-  {
-    if ( parts.at( 1 ) == "84" )
-    {
-      //! \todo - CRS:84 is hardcoded to EPSG:4326 - see if this is appropriate
-      /**
-       *  See WMS 1.3 standard appendix B3 for details
-       */
-      createFromEpsg( 4326 );
-    }
-  }
-  else
-  {
-    return FALSE;
+    createFromSrsId( GEOCRS_ID );
+    return true;
   }
 
-  return TRUE;
+  return false;
 }
 
 QgsCoordinateReferenceSystem::QgsCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &srs )
@@ -140,7 +127,7 @@ QgsCoordinateReferenceSystem& QgsCoordinateReferenceSystem::operator=( const Qgs
     mGeoFlag = srs.mGeoFlag;
     mMapUnits = srs.mMapUnits;
     mSRID = srs.mSRID;
-    mEpsg = srs.mEpsg;
+    mAuthId = srs.mAuthId;
     mIsValidFlag = srs.mIsValidFlag;
     mValidationHint = srs.mValidationHint;
     if ( mIsValidFlag )
@@ -171,23 +158,23 @@ void QgsCoordinateReferenceSystem::validate()
 
 bool QgsCoordinateReferenceSystem::createFromSrid( long id )
 {
-  return loadFromDb( QgsApplication::srsDbFilePath(), "srid", id );
+  return loadFromDb( QgsApplication::srsDbFilePath(), "srid", QString::number( id ) );
 }
 
 bool QgsCoordinateReferenceSystem::createFromEpsg( long id )
 {
-  return loadFromDb( QgsApplication::srsDbFilePath(), "epsg", id );
+  return createFromOgcWmsCrs( QString( "EPSG:%1" ).arg( id ) );
 }
 
 bool QgsCoordinateReferenceSystem::createFromSrsId( long id )
 {
   return loadFromDb( id < 100000 ? QgsApplication::srsDbFilePath() :
-                     QgsApplication::qgisUserDbFilePath(), "srs_id", id );
+                     QgsApplication::qgisUserDbFilePath(), "srs_id", QString::number( id ) );
 }
 
-bool QgsCoordinateReferenceSystem::loadFromDb( QString db, QString field, long id )
+bool QgsCoordinateReferenceSystem::loadFromDb( QString db, QString expression, QString value )
 {
-  QgsDebugMsgLevel( "load CRS from " + db + " where " + field + " is " + QString::number( id ), 3 );
+  QgsDebugMsgLevel( "load CRS from " + db + " where " + expression + " is " + value, 3 );
   mIsValidFlag = false;
 
   QFileInfo myInfo( db );
@@ -216,11 +203,12 @@ bool QgsCoordinateReferenceSystem::loadFromDb( QString db, QString field, long i
     ellipsoid_acronym NOT NULL,
     parameters text NOT NULL,
     srid integer NOT NULL,
-    epsg integer NOT NULL,
+    auth_name varchar NOT NULL,
+    auth_id integer NOT NULL,
     is_geo integer NOT NULL);
   */
 
-  QString mySql = "select srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,epsg,is_geo from tbl_srs where " + field + "='" + QString::number( id ) + "'";
+  QString mySql = "select srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,auth_name||':'||auth_id,is_geo from tbl_srs where " + expression + "='" + value + "'";
   myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
   // XXX Need to free memory from the error msg if one is set
   if ( myResult == SQLITE_OK && sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
@@ -231,7 +219,7 @@ bool QgsCoordinateReferenceSystem::loadFromDb( QString db, QString field, long i
     mEllipsoidAcronym = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 3 ) );
     QString toProj4 = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 4 ) );
     mSRID = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 5 ) ).toLong();
-    mEpsg = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 6 ) ).toLong();
+    mAuthId = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 6 ) );
     int geo = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 7 ) ).toInt();
     mGeoFlag = ( geo == 0 ? false : true );
     setProj4String( toProj4 );
@@ -510,7 +498,7 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
   {
     QgsDebugMsg( "trying system srs.db" );
     int myColumnCount = sqlite3_column_count( myPreparedStatement );
-    //loop through each column in the record adding its field name and vvalue to the map
+    //loop through each column in the record adding its expression name and value to the map
     for ( int myColNo = 0; myColNo < myColumnCount; myColNo++ )
     {
       myFieldName = QString::fromUtf8(( char * )sqlite3_column_name( myPreparedStatement, myColNo ) );
@@ -545,7 +533,7 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
     if ( myResult == SQLITE_OK && sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
     {
       int myColumnCount = sqlite3_column_count( myPreparedStatement );
-      //loop through each column in the record adding its field name and vvalue to the map
+      //loop through each column in the record adding its field name and value to the map
       for ( int myColNo = 0; myColNo < myColumnCount; myColNo++ )
       {
         myFieldName = QString::fromUtf8(( char * )sqlite3_column_name( myPreparedStatement, myColNo ) );
@@ -593,7 +581,15 @@ long QgsCoordinateReferenceSystem::postgisSrid() const
 
 long QgsCoordinateReferenceSystem::epsg() const
 {
-  return mEpsg;
+  if ( mAuthId.startsWith( "EPSG:", Qt::CaseInsensitive ) )
+    return mAuthId.mid( 5 ).toLong();
+  else
+    return 0;
+}
+
+QString QgsCoordinateReferenceSystem::authid() const
+{
+  return mAuthId;
 }
 
 QString QgsCoordinateReferenceSystem::description() const
@@ -665,6 +661,10 @@ void QgsCoordinateReferenceSystem::setInternalId( long theSrsId )
 {
   mSrsId = theSrsId;
 }
+void QgsCoordinateReferenceSystem::setAuthId( QString authId )
+{
+  mAuthId = authId;
+}
 void QgsCoordinateReferenceSystem::setSrid( long theSrid )
 {
   mSRID = theSrid;
@@ -695,7 +695,7 @@ void QgsCoordinateReferenceSystem::setGeographicFlag( bool theGeoFlag )
 }
 void QgsCoordinateReferenceSystem::setEpsg( long theEpsg )
 {
-  mEpsg = theEpsg;
+  mAuthId = QString( "EPSG:%1" ).arg( theEpsg );
 }
 void  QgsCoordinateReferenceSystem::setProjectionAcronym( QString theProjectionAcronym )
 {
@@ -933,20 +933,30 @@ bool QgsCoordinateReferenceSystem::readXML( QDomNode & theNode )
 
   if ( ! srsNode.isNull() )
   {
-    QDomNode myNode = srsNode.namedItem( "epsg" );
-    QDomElement myElement = myNode.toElement();
+    bool initialized = false;
 
-    if ( createFromEpsg( myElement.text().toLong() ) )
+    QDomNode myNode = srsNode.namedItem( "authid" );
+    if ( !myNode.isNull() )
     {
-      // createFromEpsg() sets everything, including map units
-      QgsDebugMsg( "Setting from EPSG id" );
+      initialized = createFromOgcWmsCrs( myNode.toElement().text() );
+    }
+
+    if ( !initialized )
+    {
+      myNode = srsNode.namedItem( "epsg" );
+      if ( !myNode.isNull() )
+        initialized = createFromEpsg( myNode.toElement().text().toLong() );
+    }
+
+    if ( initialized )
+    {
+      QgsDebugMsg( "Set from auth id" );
     }
     else
     {
       myNode = srsNode.namedItem( "proj4" );
-      myElement = myNode.toElement();
 
-      if ( createFromProj4( myElement.text() ) )
+      if ( createFromProj4( myNode.toElement().text() ) )
       {
         // createFromProj4() sets everything, including map units
         QgsDebugMsg( "Setting from proj4 string" );
@@ -956,36 +966,28 @@ bool QgsCoordinateReferenceSystem::readXML( QDomNode & theNode )
         QgsDebugMsg( "Setting from elements one by one" );
 
         myNode = srsNode.namedItem( "proj4" );
-        myElement = myNode.toElement();
-        setProj4String( myElement.text() );
+        setProj4String( myNode.toElement().text() );
 
         myNode = srsNode.namedItem( "srsid" );
-        myElement = myNode.toElement();
-        setInternalId( myElement.text().toLong() );
+        setInternalId( myNode.toElement().text().toLong() );
 
         myNode = srsNode.namedItem( "srid" );
-        myElement = myNode.toElement();
-        setSrid( myElement.text().toLong() );
+        setSrid( myNode.toElement().text().toLong() );
 
-        myNode = srsNode.namedItem( "epsg" );
-        myElement = myNode.toElement();
-        setEpsg( myElement.text().toLong() );
+        myNode = srsNode.namedItem( "authid" );
+        setAuthId( myNode.toElement().text() );
 
         myNode = srsNode.namedItem( "description" );
-        myElement = myNode.toElement();
-        setDescription( myElement.text() );
+        setDescription( myNode.toElement().text() );
 
         myNode = srsNode.namedItem( "projectionacronym" );
-        myElement = myNode.toElement();
-        setProjectionAcronym( myElement.text() );
+        setProjectionAcronym( myNode.toElement().text() );
 
         myNode = srsNode.namedItem( "ellipsoidacronym" );
-        myElement = myNode.toElement();
-        setEllipsoidAcronym( myElement.text() );
+        setEllipsoidAcronym( myNode.toElement().text() );
 
         myNode = srsNode.namedItem( "geographicflag" );
-        myElement = myNode.toElement();
-        if ( myElement.text().compare( "true" ) )
+        if ( myNode.toElement().text().compare( "true" ) )
         {
           setGeographicFlag( true );
         }
@@ -1005,7 +1007,7 @@ bool QgsCoordinateReferenceSystem::readXML( QDomNode & theNode )
   else
   {
     // Return default CRS if none was found in the XML.
-    createFromEpsg( GEO_EPSG_CRS_ID );
+    createFromId( GEOCRS_ID, InternalCrsId );
   }
   return true;
 }
@@ -1028,8 +1030,8 @@ bool QgsCoordinateReferenceSystem::writeXML( QDomNode & theNode, QDomDocument & 
   mySridElement.appendChild( theDoc.createTextNode( QString::number( postgisSrid() ) ) );
   mySrsElement.appendChild( mySridElement );
 
-  QDomElement myEpsgElement  = theDoc.createElement( "epsg" );
-  myEpsgElement.appendChild( theDoc.createTextNode( QString::number( epsg() ) ) );
+  QDomElement myEpsgElement  = theDoc.createElement( "authid" );
+  myEpsgElement.appendChild( theDoc.createTextNode( authid() ) );
   mySrsElement.appendChild( myEpsgElement );
 
   QDomElement myDescriptionElement  = theDoc.createElement( "description" );

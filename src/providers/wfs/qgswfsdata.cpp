@@ -214,7 +214,7 @@ void QgsWFSData::startElement( const XML_Char* el, const XML_Char** attr )
     //qWarning(("epsg id is: " + QString::number(epsgNr)).toLocal8Bit().data());
     if ( mSrs )
     {
-      if ( !mSrs->createFromEpsg( epsgNr ) )
+      if ( !mSrs->createFromOgcWmsCrs( QString( "EPSG:%1" ).arg( epsgNr ) ) )
       {
         QgsDebugMsg( "Creation of srs from epsg failed" );
       }
