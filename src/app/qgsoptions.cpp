@@ -117,7 +117,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   }
 
 #if QT_VERSION < 0x40500
-  mExcludeUrlListWidget->setDisabled( true );
+  grpUrlExclude->setHidden( true );
 #endif
 
   // cache settings
