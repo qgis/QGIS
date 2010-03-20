@@ -783,6 +783,7 @@ bool QgsLegendModel::readXML( const QDomElement& legendModelElem, const QDomDocu
           if ( mapIt != loadSymbolMap.end() )
           {
             QgsSymbolV2* symbolNg = mapIt.value();
+            insertSymbolV2( symbolNg );
             childItem->setData( QVariant::fromValue(( void* )symbolNg ), Qt::UserRole + 2 );
             childItem->setIcon( QgsSymbolLayerV2Utils::symbolPreviewIcon( symbolNg, QSize( 30, 30 ) ) );
           }
