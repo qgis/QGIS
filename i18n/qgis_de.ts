@@ -7370,7 +7370,7 @@ Fehler war:%2</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="338"/>
         <source>Group items</source>
-        <translation>Gruppenelemente</translation>
+        <translation>Elemente gruppieren</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="343"/>
@@ -7380,7 +7380,7 @@ Fehler war:%2</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="346"/>
         <source>Ungroup items</source>
-        <translation>Die Gruppe auflösen</translation>
+        <translation>Gruppe auflösen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="351"/>
