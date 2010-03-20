@@ -16,7 +16,7 @@
 #include <sqlite3.h>
 
 //qgis includes
-#include "qgis.h" //magick numbers here
+#include "qgis.h" //magic numbers here
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include <qgscoordinatereferencesystem.h>
@@ -36,15 +36,13 @@ const int AUTHID_COLUMN = 1;
 const int QGIS_CRS_ID_COLUMN = 2;
 const int POPULAR_CRSES = 3;
 
-QgsProjectionSelector::QgsProjectionSelector( QWidget* parent,
-    const char * name,
-    Qt::WFlags fl )
-    : QWidget( parent, fl ),
-    mProjListDone( FALSE ),
-    mUserProjListDone( FALSE ),
-    mCRSNameSelectionPending( FALSE ),
-    mCRSIDSelectionPending( FALSE ),
-    mAuthIDSelectionPending( FALSE )
+QgsProjectionSelector::QgsProjectionSelector( QWidget* parent, const char * name, Qt::WFlags fl )
+    : QWidget( parent, fl )
+    , mProjListDone( false )
+    , mUserProjListDone( false )
+    , mCRSNameSelectionPending( false )
+    , mCRSIDSelectionPending( false )
+    , mAuthIDSelectionPending( false )
 {
   setupUi( this );
   connect( lstCoordinateSystems, SIGNAL( currentItemChanged( QTreeWidgetItem*, QTreeWidgetItem* ) ),
@@ -268,9 +266,9 @@ QString QgsProjectionSelector::ogcWmsCrsFilterAsSqlExpression( QSet<QString> * c
 void QgsProjectionSelector::setSelectedCrsName( QString theCRSName )
 {
   mCRSNameSelection = theCRSName;
-  mCRSNameSelectionPending = TRUE;
-  mCRSIDSelectionPending = FALSE;  // only one type can be pending at a time
-  mAuthIDSelectionPending = TRUE;
+  mCRSNameSelectionPending = true;
+  mCRSIDSelectionPending = false;  // only one type can be pending at a time
+  mAuthIDSelectionPending = true;
 
   if ( isVisible() )
   {
@@ -285,9 +283,9 @@ void QgsProjectionSelector::setSelectedCrsName( QString theCRSName )
 void QgsProjectionSelector::setSelectedCrsId( long theCRSID )
 {
   mCRSIDSelection = theCRSID;
-  mCRSIDSelectionPending = TRUE;
-  mCRSNameSelectionPending = FALSE;  // only one type can be pending at a time
-  mAuthIDSelectionPending = FALSE;
+  mCRSIDSelectionPending = true;
+  mCRSNameSelectionPending = false;  // only one type can be pending at a time
+  mAuthIDSelectionPending = false;
 
   if ( isVisible() )
   {
@@ -306,9 +304,9 @@ void QgsProjectionSelector::setSelectedEpsg( long id )
 void QgsProjectionSelector::setSelectedAuthId( QString id )
 {
   mAuthIDSelection = id;
-  mCRSIDSelectionPending = FALSE;
-  mAuthIDSelectionPending = TRUE;
-  mCRSNameSelectionPending = FALSE;  // only one type can be pending at a time
+  mCRSIDSelectionPending = false;
+  mAuthIDSelectionPending = true;
+  mCRSNameSelectionPending = false;  // only one type can be pending at a time
 }
 
 void QgsProjectionSelector::applyCRSNameSelection()
@@ -334,7 +332,7 @@ void QgsProjectionSelector::applyCRSNameSelection()
       teProjection->setText( "" );
     }
 
-    mCRSNameSelectionPending = FALSE;
+    mCRSNameSelectionPending = false;
   }
 }
 
@@ -379,7 +377,7 @@ void QgsProjectionSelector::applyAuthIDSelection()
       teProjection->setText( "" );
     }
 
-    mAuthIDSelectionPending = FALSE;
+    mAuthIDSelectionPending = false;
   }
 }
 
@@ -402,7 +400,7 @@ void QgsProjectionSelector::applyCRSIDSelection()
       teProjection->setText( "" );
     }
 
-    mCRSIDSelectionPending = FALSE;
+    mCRSIDSelectionPending = false;
   }
 }
 
@@ -654,8 +652,8 @@ void QgsProjectionSelector::loadUserCrsList( QSet<QString> * crsFilter )
   mUserProjList = new QTreeWidgetItem( lstCoordinateSystems, QStringList( tr( "User Defined Coordinate Systems" ) ) );
 
   QFont fontTemp = mUserProjList->font( 0 );
-  fontTemp.setItalic( TRUE );
-  fontTemp.setBold( TRUE );
+  fontTemp.setItalic( true );
+  fontTemp.setBold( true );
   mUserProjList->setFont( 0, fontTemp );
   mUserProjList->setIcon( 0, QIcon( QgsApplication::activeThemePath() + "user.png" ) );
 
@@ -671,7 +669,7 @@ void QgsProjectionSelector::loadUserCrsList( QSet<QString> * crsFilter )
   {
     QgsDebugMsg( "Users qgis.db not found...skipping" );
 
-    mUserProjListDone = TRUE;
+    mUserProjListDone = true;
     return;
   }
 
@@ -714,7 +712,7 @@ void QgsProjectionSelector::loadUserCrsList( QSet<QString> * crsFilter )
   sqlite3_finalize( myPreparedStatement );
   sqlite3_close( myDatabase );
 
-  mUserProjListDone = TRUE;
+  mUserProjListDone = true;
 }
 
 void QgsProjectionSelector::loadCrsList( QSet<QString> * crsFilter )
@@ -729,8 +727,8 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> * crsFilter )
   mGeoList = new QTreeWidgetItem( lstCoordinateSystems, QStringList( tr( "Geographic Coordinate Systems" ) ) );
 
   QFont fontTemp = mGeoList->font( 0 );
-  fontTemp.setItalic( TRUE );
-  fontTemp.setBold( TRUE );
+  fontTemp.setItalic( true );
+  fontTemp.setBold( true );
   mGeoList->setFont( 0, fontTemp );
   mGeoList->setIcon( 0, QIcon( QgsApplication::activeThemePath() + "geographic.png" ) );
 
@@ -738,8 +736,8 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> * crsFilter )
   mProjList = new QTreeWidgetItem( lstCoordinateSystems, QStringList( tr( "Projected Coordinate Systems" ) ) );
 
   fontTemp = mProjList->font( 0 );
-  fontTemp.setItalic( TRUE );
-  fontTemp.setBold( TRUE );
+  fontTemp.setItalic( true );
+  fontTemp.setBold( true );
   mProjList->setFont( 0, fontTemp );
   mProjList->setIcon( 0, QIcon( QgsApplication::activeThemePath() + "transformed.png" ) );
 
@@ -752,7 +750,7 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> * crsFilter )
   myFileInfo.setFile( mSrsDatabaseFileName );
   if ( !myFileInfo.exists( ) )
   {
-    mProjListDone = TRUE;
+    mProjListDone = true;
     return;
   }
 
@@ -782,7 +780,7 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> * crsFilter )
   // Set up the query to retrieve the projection information needed to populate the list
   //note I am giving the full field names for clarity here and in case someone
   //changes the underlying view TS
-  sql = QString( "select description, srs_id, auth_id, is_geo, name, parameters from vw_srs where %1 order by name,description" )
+  sql = QString( "select description, srs_id, auth_name||':'||auth_id, is_geo, name, parameters, deprecated from vw_srs where %1 order by name,description" )
         .arg( sqlFilter );
 
   rc = sqlite3_prepare( db, sql.toUtf8(), sql.toUtf8().length(), &ppStmt, &pzTail );
@@ -832,7 +830,7 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> * crsFilter )
             node = new QTreeWidgetItem( mProjList, QStringList( srsType ) );
 
             QFont fontTemp = node->font( 0 );
-            fontTemp.setItalic( TRUE );
+            fontTemp.setItalic( true );
             node->setFont( 0, fontTemp );
           }
           else
@@ -849,7 +847,12 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> * crsFilter )
         newItem->setText( AUTHID_COLUMN, QString::fromUtf8(( char * )sqlite3_column_text( ppStmt, 2 ) ) );
         // display the qgis srs_id (field 1) in the third column of the list view
         newItem->setText( QGIS_CRS_ID_COLUMN, QString::fromUtf8(( char * )sqlite3_column_text( ppStmt, 1 ) ) );
+
       }
+
+      // display the qgis deprecated in the user data of the item
+      newItem->setData( 0, Qt::UserRole, QString::fromUtf8(( char * )sqlite3_column_text( ppStmt, 6 ) ) );
+      newItem->setHidden( cbxHideDeprecated->isChecked() );
     }
     mProjList->setExpanded( true );
   }
@@ -858,7 +861,7 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> * crsFilter )
   // close the database
   sqlite3_close( db );
 
-  mProjListDone = TRUE;
+  mProjListDone = true;
 }
 
 
@@ -867,7 +870,7 @@ void QgsProjectionSelector::coordinateSystemSelected( QTreeWidgetItem * theItem 
 {
   // If the item has children, it's not an end node in the tree, and
   // hence is just a grouping thingy, not an actual CRS.
-  if ( theItem != NULL && theItem->childCount() == 0 )
+  if ( theItem && theItem->childCount() == 0 )
   {
     // Found a real CRS
     QString myDescription;
@@ -879,9 +882,31 @@ void QgsProjectionSelector::coordinateSystemSelected( QTreeWidgetItem * theItem 
   else
   {
     // Not an CRS - remove the highlight so the user doesn't get too confused
-    lstCoordinateSystems->setItemSelected( theItem, FALSE );  // TODO - make this work.
+    theItem->setSelected( false );
     teProjection->setText( "" );
   }
+}
+
+void QgsProjectionSelector::hideDeprecated( QTreeWidgetItem *item )
+{
+  if( item->data( 0, Qt::UserRole ).toBool() )
+  {
+    item->setHidden( cbxHideDeprecated->isChecked() );
+    if( item->isSelected() && item->isHidden() )
+    {
+      teProjection->setText( "" );
+      item->setSelected( false );
+    }
+  }
+
+  for( int i=0; i < item->childCount(); i++ )
+    hideDeprecated( item->child(i) );
+}
+
+void QgsProjectionSelector::on_cbxHideDeprecated_stateChanged()
+{
+  for( int i = 0; i<lstCoordinateSystems->topLevelItemCount(); i++ )
+    hideDeprecated( lstCoordinateSystems->topLevelItem(i) );
 }
 
 void QgsProjectionSelector::on_pbnPopular1_clicked()
@@ -893,10 +918,12 @@ void QgsProjectionSelector::on_pbnPopular2_clicked()
 {
   setSelectedCrsId( mRecentProjections.at( 1 ).toLong() );
 }
+
 void QgsProjectionSelector::on_pbnPopular3_clicked()
 {
   setSelectedCrsId( mRecentProjections.at( 2 ).toLong() );
 }
+
 void QgsProjectionSelector::on_pbnPopular4_clicked()
 {
   setSelectedCrsId( mRecentProjections.at( 3 ).toLong() );
@@ -904,7 +931,6 @@ void QgsProjectionSelector::on_pbnPopular4_clicked()
 
 void QgsProjectionSelector::on_pbnFind_clicked()
 {
-
   QgsDebugMsg( "pbnFind..." );
 
   QString mySearchString( sqlSafeString( leSearch->text() ) );
@@ -918,7 +944,10 @@ void QgsProjectionSelector::on_pbnFind_clicked()
   {
     //we need to find what the largest srsid matching our query so we know whether to
     //loop backto the beginning
-    mySql = "select srs_id from tbl_srs where description like '%" + mySearchString + "%' order by srs_id desc limit 1";
+    mySql = "select srs_id from tbl_srs where description like '%" + mySearchString + "%'";
+    if( cbxHideDeprecated->isChecked() )
+      mySql += " and not deprecated";
+    mySql += " order by srs_id desc limit 1";
     long myLargestSrsId = getLargestCRSIDMatch( mySql );
     QgsDebugMsg( QString( "Largest CRSID%1" ).arg( myLargestSrsId ) );
     //a name search is ambiguous, so we find the first srsid after the current seelcted srsid
@@ -926,14 +955,18 @@ void QgsProjectionSelector::on_pbnFind_clicked()
     if ( myLargestSrsId <= selectedCrsId() )
     {
       //roll search around to the beginning
-      mySql = "select srs_id from tbl_srs where description like '%" + mySearchString + "%'" +
-              " order by srs_id limit 1";
+      mySql = "select srs_id from tbl_srs where description like '%" + mySearchString + "%'";
+      if( cbxHideDeprecated->isChecked() )
+        mySql += " and not deprecated";
+      mySql += " order by srs_id limit 1";
     }
     else
     {
       // search ahead of the current position
-      mySql = "select srs_id from tbl_srs where description like '%" + mySearchString + "%'" +
-              " and srs_id > " + QString::number( selectedCrsId() ) + " order by srs_id limit 1";
+      mySql = "select srs_id from tbl_srs where description like '%" + mySearchString + "%'";
+      if( cbxHideDeprecated->isChecked() )
+        mySql += " and not deprecated";
+      mySql += " and srs_id > " + QString::number( selectedCrsId() ) + " order by srs_id limit 1";
     }
   }
   QgsDebugMsg( QString( " Search sql: %1" ).arg( mySql ) );
@@ -1002,8 +1035,13 @@ void QgsProjectionSelector::on_pbnFind_clicked()
       // close the sqlite3 statement
       sqlite3_finalize( myPreparedStatement );
       sqlite3_close( myDatabase );
+      return;
     }
   }
+
+  QMessageBox::information( this, tr( "Find projection" ), tr( "No matching projection found." ) );
+  lstCoordinateSystems->clearSelection();
+  teProjection->setText( "" );
 }
 
 long QgsProjectionSelector::getLargestCRSIDMatch( QString theSql )
