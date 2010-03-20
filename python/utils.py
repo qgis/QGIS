@@ -4,7 +4,7 @@ QGIS utilities module
 
 """
 
-from PyQt4.QtCore import QCoreApplication
+from PyQt4.QtCore import QCoreApplication,QLocale
 from qgis.core import QGis
 import sys
 import traceback
@@ -176,7 +176,9 @@ def canUninstallPlugin(packageName):
       return True
     return bool(metadata.canBeUninstalled())
   except:
-    return False
+    msg = "Error calling "+packageName+".canBeUninstalled"
+    showException(sys.exc_type, sys.exc_value, sys.exc_traceback, msg)
+    return True
 
 
 def unloadPlugin(packageName):
@@ -238,6 +240,28 @@ def reloadPlugin(packageName):
   unloadPlugin(packageName)
   loadPlugin(packageName)
   startPlugin(packageName)
+
+
+def showPluginHelp(packageName=None,filename="index",section=""):
+  try:
+    source = ""
+    if packageName is None:
+       import inspect
+       source = inspect.currentframe().f_back.f_code.co_filename
+    else:
+       source = sys.modules[packageName].__file__
+  except:
+    return
+  path = os.path.dirname(source)
+  locale = str(QLocale().name()).split("_")[0]
+  helpfile = os.path.join(path,filename+"-"+locale+".html")
+  if not os.path.exists(helpfile):
+    helpfile = os.path.join(path,filename+".html")
+  if os.path.exists(helpfile):
+    url = "file://"+helpfile
+    if section != "":
+        url = url + "#" + section
+    iface.openURL(url,False)
 
 
 #######################
