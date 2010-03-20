@@ -103,7 +103,7 @@ class Dialog(QDialog, Ui_Dialog):
             self.progressBar.setValue( 0 )
 
     def compute( self, bound, xOffset, yOffset, polygon ):
-        crs = self.canvas.mapRenderer().destinationSrs()
+        crs = self.iface.mapCanvas().mapRenderer().destinationSrs()
         if not crs.isValid(): crs = None
         if polygon:
             fields = {0:QgsField("ID", QVariant.Int), 1:QgsField("XMIN", QVariant.Double), 2:QgsField("XMAX", QVariant.Double),
