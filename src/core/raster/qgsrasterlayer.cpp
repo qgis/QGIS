@@ -303,6 +303,9 @@ void QgsRasterLayer::buildSupportedRasterFileFilter( QString & theFileFiltersStr
   // "DMD_EXTENSION=.*".  We'll also store the long name of the
   // driver, which will be found in DMD_LONGNAME, which will have the
   // same form.
+  
+  // start with the default case
+  theFileFiltersString = tr( "All files (*)" );
 
   for ( int i = 0; i < GDALGetDriverCount(); ++i )
   {
@@ -381,7 +384,7 @@ void QgsRasterLayer::buildSupportedRasterFileFilter( QString & theFileFiltersStr
           glob += " *.jpeg";
         }
 
-        theFileFiltersString += myGdalDriverLongName + " (" + glob.toLower() + " " + glob.toUpper() + ");;";
+        theFileFiltersString += ";;" + myGdalDriverLongName + " (" + glob.toLower() + " " + glob.toUpper() + ")";
 
         break;            // ... to next driver, if any.
       }
@@ -407,19 +410,19 @@ void QgsRasterLayer::buildSupportedRasterFileFilter( QString & theFileFiltersStr
       if ( myGdalDriverDescription.startsWith( "USGSDEM" ) )
       {
         QString glob = "*.dem";
-        theFileFiltersString += myGdalDriverLongName + " (" + glob.toLower() + " " + glob.toUpper() + ");;";
+        theFileFiltersString += ";;" + myGdalDriverLongName + " (" + glob.toLower() + " " + glob.toUpper() + ")";
       }
       else if ( myGdalDriverDescription.startsWith( "DTED" ) )
       {
         // DTED use "*.dt0"
         QString glob = "*.dt0";
-        theFileFiltersString += myGdalDriverLongName + " (" + glob.toLower() + " " + glob.toUpper() + ");;";
+        theFileFiltersString += ";;" + myGdalDriverLongName + " (" + glob.toLower() + " " + glob.toUpper() + ")";
       }
       else if ( myGdalDriverDescription.startsWith( "MrSID" ) )
       {
         // MrSID use "*.sid"
         QString glob = "*.sid";
-        theFileFiltersString += myGdalDriverLongName + " (" + glob.toLower() + " " + glob.toUpper() + ");;";
+        theFileFiltersString += ";;" + myGdalDriverLongName + " (" + glob.toLower() + " " + glob.toUpper() + ")";
       }
       else
       {
@@ -431,8 +434,6 @@ void QgsRasterLayer::buildSupportedRasterFileFilter( QString & theFileFiltersStr
 
   }                           // each loaded GDAL driver
 
-  // can't forget the default case
-  theFileFiltersString += tr( "All other files (*)" );
   QgsDebugMsg( "Raster filter list built: " + theFileFiltersString );
 }                               // buildSupportedRasterFileFilter_()
 
