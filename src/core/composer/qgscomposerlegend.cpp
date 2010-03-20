@@ -21,6 +21,7 @@
 #include "qgsmaprenderer.h"
 #include "qgsrenderer.h" //for brush scaling
 #include "qgssymbol.h"
+#include "qgssymbolv2.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QPainter>
@@ -218,10 +219,25 @@ void QgsComposerLegend::drawLayerChildItems( QPainter* p, QStandardItem* layerIt
       symbol = ( QgsSymbol* )( symbolData );
     }
 
+    //take QgsSymbolV2* from user data if there
+    QVariant symbolNgVariant = currentItem->data( Qt::UserRole + 2 );
+    QgsSymbolV2* symbolNg = 0;
+    if ( symbolNgVariant.canConvert<void*>() )
+    {
+      void* symbolNgData = symbolNgVariant.value<void*>();
+      symbolNg = ( QgsSymbolV2* )symbolNgData;
+    }
+
     if ( symbol )  //item with symbol?
     {
       //draw symbol
       drawSymbol( p, symbol, currentYCoord + ( itemHeight - mSymbolHeight ) / 2, currentXCoord, realSymbolHeight, layerOpacity );
+      realItemHeight = std::max( realSymbolHeight, itemHeight );
+      currentXCoord += mIconLabelSpace;
+    }
+    else if ( symbolNg ) //item with symbol NG?
+    {
+      drawSymbolV2( p, symbolNg, currentYCoord + ( itemHeight - mSymbolHeight ) / 2, currentXCoord, realSymbolHeight, layerOpacity );
       realItemHeight = std::max( realSymbolHeight, itemHeight );
       currentXCoord += mIconLabelSpace;
     }
@@ -274,6 +290,32 @@ void QgsComposerLegend::drawSymbol( QPainter* p, QgsSymbol* s, double currentYCo
       // shouldn't occur
       break;
   }
+}
+
+void QgsComposerLegend::drawSymbolV2( QPainter* p, QgsSymbolV2* s, double currentYCoord, double& currentXPosition, double& symbolHeight, int layerOpacity ) const
+{
+  if ( !p || !s )
+  {
+    return;
+  }
+
+  double rasterScaleFactor = 1.0;
+  if ( p )
+  {
+    QPaintDevice* paintDevice = p->device();
+    if ( !paintDevice )
+    {
+      return;
+    }
+    rasterScaleFactor = ( paintDevice->logicalDpiX() + paintDevice->logicalDpiY() ) / 2.0 / 25.4;
+  }
+  p->save();
+  p->translate( currentXPosition, currentYCoord );
+  p->scale( 1.0 / rasterScaleFactor, 1.0 / rasterScaleFactor );
+  s->drawPreviewIcon( p, QSize( mSymbolWidth * rasterScaleFactor, mSymbolHeight * rasterScaleFactor ) );
+  p->restore();
+  currentXPosition += mSymbolWidth;
+  symbolHeight = mSymbolHeight;
 }
 
 void QgsComposerLegend::drawPointSymbol( QPainter* p, QgsSymbol* s, double currentYCoord, double& currentXPosition, double& symbolHeight, int opacity ) const

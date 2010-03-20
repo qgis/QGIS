@@ -26,6 +26,8 @@ class QDomDocument;
 class QDomElement;
 class QgsMapLayer;
 class QgsSymbol;
+class QgsSymbolV2;
+class QgsVectorLayer;
 
 /** \ingroup MapComposer
  * A model that provides layers as root items. The classification items are
@@ -47,6 +49,7 @@ class CORE_EXPORT QgsLegendModel: public QStandardItemModel
     void updateLayer( QStandardItem* layerItem );
     /**Tries to update a single classification item*/
     void updateVectorClassificationItem( QStandardItem* classificationItem, QgsSymbol* symbol, QString itemText );
+    void updateVectorV2ClassificationItem( QStandardItem* classificationItem, QgsSymbolV2* symbol, QString itemText );
     void updateRasterClassificationItem( QStandardItem* classificationItem );
 
     bool writeXML( QDomElement& composerLegendElem, QDomDocument& doc ) const;
@@ -62,7 +65,10 @@ class CORE_EXPORT QgsLegendModel: public QStandardItemModel
   private:
     /**Adds classification items of vector layers
      @return 0 in case of success*/
-    int addVectorLayerItems( QStandardItem* layerItem, QgsMapLayer* vlayer );
+    int addVectorLayerItems( QStandardItem* layerItem, QgsVectorLayer* vlayer );
+
+    /**Adds classification items of vector layers using new symbology*/
+    int addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLayer* vlayer );
 
     /**Adds item of raster layer
      @return 0 in case of success*/
@@ -70,16 +76,21 @@ class CORE_EXPORT QgsLegendModel: public QStandardItemModel
 
     /**Insert a symbol into QgsLegendModel symbol storage*/
     void insertSymbol( QgsSymbol* s );
+    void insertSymbolV2( QgsSymbolV2* s );
     /**Removes and deletes a symbol*/
     void removeSymbol( QgsSymbol* s );
+    void removeSymbolV2( QgsSymbolV2* s );
     /**Removes and deletes all stored symbols*/
     void removeAllSymbols();
+    void removeAllSymbolsV2();
 
     /**Creates a model item for a vector symbol. The calling function takes ownership*/
     QStandardItem* itemFromSymbol( QgsSymbol* s, int opacity );
 
     /**Keep track of copied symbols to delete them if not used anymore*/
     QSet<QgsSymbol*> mSymbols;
+    /**Keep track of copied symbols v2*/
+    QSet<QgsSymbolV2*> mSymbolsV2;
 
   protected:
     QStringList mLayerIds;
