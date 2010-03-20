@@ -54,15 +54,6 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
 
   QGis::WkbType layerWKBType = vlayer->wkbType();
 
-  //no support for adding features to 2.5D types yet
-  if ( layerWKBType == QGis::WKBLineString25D || layerWKBType == QGis::WKBPolygon25D ||
-       layerWKBType == QGis::WKBMultiLineString25D || layerWKBType == QGis::WKBPoint25D || layerWKBType == QGis::WKBMultiPoint25D )
-  {
-    QMessageBox::critical( 0, tr( "2.5D shape type not supported" ), tr( "Adding features to 2.5D shapetypes is not supported yet" ) );
-    stopCapturing();
-    return;
-  }
-
   QgsVectorDataProvider* provider = vlayer->dataProvider();
 
   if ( !( provider->capabilities() & QgsVectorDataProvider::AddFeatures ) )
@@ -131,7 +122,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
       double x = savePoint.x();
       double y = savePoint.y();
 
-      if ( layerWKBType == QGis::WKBPoint )
+      if ( layerWKBType == QGis::WKBPoint || layerWKBType == QGis::WKBPoint25D )
       {
         size = 1 + sizeof( int ) + 2 * sizeof( double );
         wkb = new unsigned char[size];
@@ -141,7 +132,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
         memcpy( &wkb[5], &x, sizeof( double ) );
         memcpy( &wkb[5] + sizeof( double ), &y, sizeof( double ) );
       }
-      else if ( layerWKBType == QGis::WKBMultiPoint )
+      else if ( layerWKBType == QGis::WKBMultiPoint || layerWKBType == QGis::WKBMultiPoint25D )
       {
         size = 2 + 3 * sizeof( int ) + 2 * sizeof( double );
         wkb = new unsigned char[size];
@@ -268,7 +259,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
 
       if ( mode() == CaptureLine )
       {
-        if ( layerWKBType == QGis::WKBLineString )
+        if ( layerWKBType == QGis::WKBLineString || layerWKBType == QGis::WKBLineString25D )
         {
           wkbsize = 1 + 2 * sizeof( int ) + 2 * size() * sizeof( double );
           wkb = new unsigned char[wkbsize];
@@ -292,7 +283,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
             position += sizeof( double );
           }
         }
-        else if ( layerWKBType == QGis::WKBMultiLineString )
+        else if ( layerWKBType == QGis::WKBMultiLineString || layerWKBType == QGis::WKBMultiLineString25D )
         {
           wkbsize = 1 + 2 * sizeof( int ) + 1 + 2 * sizeof( int ) + 2 * size() * sizeof( double );
           wkb = new unsigned char[wkbsize];
@@ -337,7 +328,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
       }
       else // polygon
       {
-        if ( layerWKBType == QGis::WKBPolygon )
+        if ( layerWKBType == QGis::WKBPolygon ||  layerWKBType == QGis::WKBPolygon25D )
         {
           wkbsize = 1 + 3 * sizeof( int ) + 2 * ( size() + 1 ) * sizeof( double );
           wkb = new unsigned char[wkbsize];
@@ -374,7 +365,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
 
           memcpy( &wkb[position], &y, sizeof( double ) );
         }
-        else if ( layerWKBType == QGis::WKBMultiPolygon )
+        else if ( layerWKBType == QGis::WKBMultiPolygon ||  layerWKBType == QGis::WKBMultiPolygon25D )
         {
           wkbsize = 2 + 5 * sizeof( int ) + 2 * ( size() + 1 ) * sizeof( double );
           wkb = new unsigned char[wkbsize];
