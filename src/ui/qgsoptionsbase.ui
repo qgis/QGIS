@@ -165,7 +165,7 @@
    <item row="0" column="1">
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>7</number>
      </property>
      <widget class="QWidget" name="stackedWidgetPage1">
       <layout class="QGridLayout">
@@ -1294,7 +1294,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="1" colspan="5">
+          <item row="0" column="1" colspan="4">
            <widget class="QLineEdit" name="leProxyHost"/>
           </item>
           <item row="1" column="0">
@@ -1304,7 +1304,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1" colspan="5">
+          <item row="1" column="1" colspan="4">
            <widget class="QLineEdit" name="leProxyPort"/>
           </item>
           <item row="2" column="0">
@@ -1314,7 +1314,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="1" colspan="5">
+          <item row="2" column="1" colspan="4">
            <widget class="QLineEdit" name="leProxyUser">
             <property name="toolTip">
              <string>Leave this blank if no proxy username / password are required</string>
@@ -1328,7 +1328,7 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="1" colspan="5">
+          <item row="3" column="1" colspan="4">
            <widget class="QLineEdit" name="leProxyPassword">
             <property name="toolTip">
              <string>Leave this blank if no proxy username / password are required</string>
@@ -1348,7 +1348,7 @@
           <item row="4" column="1" colspan="2">
            <widget class="QComboBox" name="mProxyTypeComboBox"/>
           </item>
-          <item row="4" column="3" colspan="3">
+          <item row="4" column="3" colspan="2">
            <spacer>
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -1361,42 +1361,47 @@
             </property>
            </spacer>
           </item>
-          <item row="5" column="0" colspan="2">
-           <widget class="QLabel" name="mExcludeUrlsLabel">
-            <property name="text">
+          <item row="5" column="0" rowspan="2" colspan="5">
+           <widget class="QGroupBox" name="grpUrlExclude">
+            <property name="title">
              <string>Exclude URLs (starting with):</string>
             </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_5">
+             <item row="2" column="2">
+              <widget class="QPushButton" name="mRemoveUrlPushButton">
+               <property name="text">
+                <string>Remove</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QPushButton" name="mAddUrlPushButton">
+               <property name="text">
+                <string>Add</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0" colspan="4">
+              <widget class="QListWidget" name="mExcludeUrlListWidget"/>
+             </item>
+             <item row="2" column="1">
+              <spacer name="horizontalSpacer">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
            </widget>
-          </item>
-          <item row="5" column="2" colspan="2">
-           <widget class="QPushButton" name="mAddUrlPushButton">
-            <property name="text">
-             <string>Add</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="4">
-           <widget class="QPushButton" name="mRemoveUrlPushButton">
-            <property name="text">
-             <string>Remove</string>
-            </property>
-           </widget>
-          </item>
-          <item row="5" column="5">
-           <spacer>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>391</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item row="6" column="0" colspan="6">
-           <widget class="QListWidget" name="mExcludeUrlListWidget"/>
           </item>
          </layout>
         </widget>
@@ -1540,9 +1545,6 @@
   <tabstop>leProxyUser</tabstop>
   <tabstop>leProxyPassword</tabstop>
   <tabstop>mProxyTypeComboBox</tabstop>
-  <tabstop>mAddUrlPushButton</tabstop>
-  <tabstop>mRemoveUrlPushButton</tabstop>
-  <tabstop>mExcludeUrlListWidget</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>
