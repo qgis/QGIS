@@ -696,13 +696,20 @@ void QgsPostgresProvider::select( QgsAttributeList fetchAttributes, QgsRectangle
 bool QgsPostgresProvider::nextFeature( QgsFeature& feature )
 {
   feature.setValid( false );
-  QString cursorName = QString( "qgisf%1" ).arg( providerId );
 
   if ( !valid )
   {
     QgsDebugMsg( "Read attempt on an invalid postgresql data source" );
     return false;
   }
+
+  if ( !mFetching )
+  {
+    QgsDebugMsg( "nextFeature() without select()" );
+    return false;
+  }
+
+  QString cursorName = QString( "qgisf%1" ).arg( providerId );
 
   if ( mFeatureQueue.empty() )
   {

@@ -63,10 +63,12 @@ class GUI_EXPORT QgsGenericProjectionSelector : public QDialog, private Ui::QgsG
     void setMessage( QString theMessage = "" );
     QString selectedProj4String();
     long selectedCrsId();
+    QString selectedAuthId();
     long selectedEpsg();
 
     void setSelectedCrsName( QString theName );
     void setSelectedCrsId( long theID );
+    void setSelectedAuthId( QString authId );
     void setSelectedEpsg( long theID );
 
     /**
@@ -78,8 +80,6 @@ class GUI_EXPORT QgsGenericProjectionSelector : public QDialog, private Ui::QgsG
      * \param crsFilter a list of OGC Coordinate Reference Systems to filter the
      *                  list of projections by.  This is useful in (e.g.) WMS situations
      *                  where you just want to offer what the WMS server can support.
-     *
-     * \note This function only deals with EpsgCrsId labels only at this time.
      *
      * \warning This function's behaviour is undefined if it is called after the dialog is shown.
      */

@@ -43,7 +43,7 @@ QgsDistanceArea::QgsDistanceArea()
   // init with default settings
   mProjectionsEnabled = FALSE;
   mCoordTransform = new QgsCoordinateTransform;
-  setSourceEpsgCrsId( GEO_EPSG_CRS_ID ); // WGS 84
+  setSourceCrs( GEOCRS_ID ); // WGS 84
   setEllipsoid( "WGS84" );
 }
 
@@ -72,7 +72,6 @@ void QgsDistanceArea::setSourceEpsgCrsId( long epsgId )
   srcCRS.createFromEpsg( epsgId );
   mCoordTransform->setSourceCrs( srcCRS );
 }
-
 
 bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
 {
@@ -120,7 +119,7 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
   // row for this ellipsoid wasn't found?
   if ( radius.isEmpty() || parameter2.isEmpty() )
   {
-    QgsDebugMsg( QString( "setEllipsoid: no row in tbl_ellipsoid for acronym '" ) + ellipsoid.toLocal8Bit().data() + "'" );
+    QgsDebugMsg( QString( "setEllipsoid: no row in tbl_ellipsoid for acronym '%1'" ).arg( ellipsoid ) );
     return false;
   }
 
@@ -129,7 +128,7 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
     mSemiMajor = radius.mid( 2 ).toDouble();
   else
   {
-    QgsDebugMsg( QString( "setEllipsoid: wrong format of radius field: '" ) + radius.toLocal8Bit().data() + "'" );
+    QgsDebugMsg( QString( "setEllipsoid: wrong format of radius field: '%1'" ).arg( radius ) );
     return false;
   }
 
@@ -148,11 +147,11 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
   }
   else
   {
-    QgsDebugMsg( QString( "setEllipsoid: wrong format of parameter2 field: '" ) + parameter2.toLocal8Bit().data() + "'" );
+    QgsDebugMsg( QString( "setEllipsoid: wrong format of parameter2 field: '%1'" ).arg( parameter2 ) );
     return false;
   }
 
-  QgsDebugMsg( QString( "setEllipsoid: a=" ) + mSemiMajor + ", b=" + mSemiMinor + ", 1/f=" + mInvFlattening );
+  QgsDebugMsg( QString( "setEllipsoid: a=%1, b=%2, 1/f=%3" ).arg( mSemiMajor ).arg( mSemiMinor ).arg( mInvFlattening ) );
 
 
   // get spatial ref system for ellipsoid

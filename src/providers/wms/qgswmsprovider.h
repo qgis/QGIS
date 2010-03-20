@@ -31,6 +31,8 @@
 #include <QVector>
 
 class QgsCoordinateTransform;
+class QNetworkAccessManager;
+class QNetworkReply;
 
 /*
  * The following structs reflect the WMS XML schema,
@@ -277,7 +279,7 @@ struct QgsWmsLayerProperty
   QString                                 title;
   QString                                 abstract;
   QStringList                             keywordList;
-  QVector<QString>                        crs;        // coord ref sys
+  QStringList                             crs;        // coord ref sys
   QgsRectangle                            ex_GeographicBoundingBox;
   QVector<QgsWmsBoundingBoxProperty>      boundingBox;
   QVector<QgsWmsDimensionProperty>        dimension;
@@ -301,22 +303,35 @@ struct QgsWmsLayerProperty
   int                fixedHeight;
 };
 
+struct QgsWmsTileSetProfile
+{
+  QString crs;
+  QgsWmsBoundingBoxProperty boundingBox;
+  QStringList resolutions;
+  int tileWidth;
+  int tileHeight;
+  QString format;
+  QStringList styles;
+  QStringList layers;
+};
+
 /** Capability Property structure */
 // TODO: Fill to WMS specifications
 struct QgsWmsCapabilityProperty
 {
-  QgsWmsRequestProperty           request;
-  QgsWmsExceptionProperty         exception;
-  QgsWmsLayerProperty             layer;
+  QgsWmsRequestProperty         request;
+  QgsWmsExceptionProperty       exception;
+  QgsWmsLayerProperty           layer;
+  QVector<QgsWmsTileSetProfile> tileSetProfiles;
 };
 
 /** Capabilities Property structure */
 // TODO: Fill to WMS specifications
 struct QgsWmsCapabilitiesProperty
 {
-  QgsWmsServiceProperty           service;
-  QgsWmsCapabilityProperty        capability;
-  QString                         version;
+  QgsWmsServiceProperty         service;
+  QgsWmsCapabilityProperty      capability;
+  QString                       version;
 };
 
 
@@ -356,20 +371,22 @@ class QgsWmsProvider : public QgsRasterDataProvider
      *
      * \todo Document this better, make static
      */
-    virtual bool supportedLayers( QVector<QgsWmsLayerProperty> & layers );
+    virtual bool supportedLayers( QVector<QgsWmsLayerProperty> &layers );
+
+    /**
+     * \brief   Returns a list of the supported tile sets of the WMS server
+     *
+     * \param[out] tileset  The list of tile sets will be placed here.
+     *
+     * \retval FALSE if the tile sets could not be retrieved or parsed -
+     *         see lastError() for more info
+     */
+    virtual bool supportedTileSets( QVector<QgsWmsTileSetProfile> &tilesets );
 
     /**
      * \brief   Returns a map for the hierarchy of layers
      */
     virtual void layerParents( QMap<int, int> &parents, QMap<int, QStringList> &parentNames ) const;
-
-    // TODO: Document this better
-    /** \brief   Returns a list of the supported CRSs of the given layers
-     *  \note    Since WMS can specify CRSs per layer, this may change depending
-                 on which layers are specified!  The "lowest common denominator" between
-                 all specified layers is returned.
-     */
-    virtual QSet<QString> supportedCrsForLayers( QStringList const & layers );
 
     /*! Get the QgsCoordinateReferenceSystem for this layer
      * @note Must be reimplemented by each provider.
@@ -381,9 +398,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     /**
      * Add the list of WMS layer names to be rendered by this server
      */
-    void addLayers( QStringList const &  layers,
-                    QStringList const &  styles = QStringList() );
-
+    void addLayers( QStringList const &layers, QStringList const &styles = QStringList() );
 
     /** return the number of layers for the current data source
 
@@ -442,26 +457,19 @@ class QgsWmsProvider : public QgsRasterDataProvider
      *  \warning A pointer to an QImage is used, as a plain QImage seems to have difficulty being
      *           shared across library boundaries
      */
-    QImage * draw( QgsRectangle const &  viewExtent, int pixelWidth, int pixelHeight );
-
-
-//  /** Experimental function only **/
-//  void getServerCapabilities();
-
-    /* Example URI: http://ims.cr.usgs.gov:80/servlet/com.esri.wms.Esrimap/USGS_EDC_Trans_BTS_Roads?SERVICE=WMS&REQUEST=GetCapabilities */
+    QImage *draw( QgsRectangle const &  viewExtent, int pixelWidth, int pixelHeight );
 
     /** Return the extent for this data layer
     */
     virtual QgsRectangle extent();
 
-    /** Reset the layer - for a PostgreSQL layer, this means clearing the PQresult
-     * pointer and setting it to 0
-     */
-    void begin();
-
     /**Returns true if layer is valid
-    */
+     */
     bool isValid();
+
+    /**Returns true if layer has tile set profiles
+     */
+    virtual bool hasTiles() const;
 
     //! get WMS Server version string
     QString wmsVersion();
@@ -582,14 +590,16 @@ class QgsWmsProvider : public QgsRasterDataProvider
     /** \brief emit a signal to be caught by qgisapp and display a msg on status bar */
     void statusChanged( QString const &  theStatusQString );
 
+    void dataChanged();
 
-  public slots:
-
-    void showStatusMessage( QString const &  theMessage );
-
+  private slots:
+    void cacheReplyFinished();
+    void capabilitiesReplyFinished();
+    void capabilitiesReplyProgress( qint64, qint64 );
+    void identifyReplyFinished();
+    void tileReplyFinished();
 
   private:
-
     /**
      * \brief Retrieve and parse the (cached) Capabilities document from the server
      *
@@ -604,84 +614,71 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     bool retrieveServerCapabilities( bool forceRefresh = FALSE );
 
-    /**
-     * \brief Common URL retreival code for the differing WMS request types
-     *
-     * \retval 0 if an error occured - use lastError() and lastErrorTitle() for details
-     *
-     */
-    QByteArray retrieveUrl( QString url );
-
-    /*
-      //! Test function: see if we can download a WMS' capabilities
-      //! \retval FALSE if the download failed in some way
-      bool downloadCapabilitiesURI(QString const &  uri);
-    */
-
     //! \return FALSE if the capabilities document could not be parsed - see lastError() for more info
-    bool parseCapabilitiesDom( QByteArray const & xml, QgsWmsCapabilitiesProperty& capabilitiesProperty );
+    bool parseCapabilitiesDom( QByteArray const &xml, QgsWmsCapabilitiesProperty &capabilitiesProperty );
 
     //! parse the WMS Service XML element
-    void parseService( QDomElement const & e, QgsWmsServiceProperty& serviceProperty );
+    void parseService( QDomElement const &e, QgsWmsServiceProperty &serviceProperty );
 
     //! parse the WMS Capability XML element
-    void parseCapability( QDomElement const & e, QgsWmsCapabilityProperty& capabilityProperty );
+    void parseCapability( QDomElement const &e, QgsWmsCapabilityProperty &capabilityProperty );
 
     //! parse the WMS ContactPersonPrimary XML element
-    void parseContactPersonPrimary( QDomElement const & e, QgsWmsContactPersonPrimaryProperty&
-                                    contactPersonPrimaryProperty );
+    void parseContactPersonPrimary( QDomElement const &e, QgsWmsContactPersonPrimaryProperty &contactPersonPrimaryProperty );
 
     //! parse the WMS ContactAddress XML element
-    void parseContactAddress( QDomElement const & e, QgsWmsContactAddressProperty& contactAddressProperty );
+    void parseContactAddress( QDomElement const &e, QgsWmsContactAddressProperty &contactAddressProperty );
 
     //! parse the WMS ContactInformation XML element
-    void parseContactInformation( QDomElement const & e, QgsWmsContactInformationProperty&
-                                  contactInformationProperty );
+    void parseContactInformation( QDomElement const &e, QgsWmsContactInformationProperty &contactInformationProperty );
 
     //! parse the WMS OnlineResource XML element
-    void parseOnlineResource( QDomElement const & e, QgsWmsOnlineResourceAttribute& onlineResourceAttribute );
+    void parseOnlineResource( QDomElement const &e, QgsWmsOnlineResourceAttribute &onlineResourceAttribute );
 
     //! parse the WMS KeywordList XML element
-    void parseKeywordList( QDomElement const & e, QStringList& keywordListProperty );
+    void parseKeywordList( QDomElement const &e, QStringList &keywordListProperty );
 
     //! parse the WMS Get XML element
-    void parseGet( QDomElement const & e, QgsWmsGetProperty& getProperty );
+    void parseGet( QDomElement const &e, QgsWmsGetProperty &getProperty );
 
     //! parse the WMS Post XML element
-    void parsePost( QDomElement const & e, QgsWmsPostProperty& postProperty );
+    void parsePost( QDomElement const &e, QgsWmsPostProperty &postProperty );
 
     //! parse the WMS HTTP XML element
-    void parseHttp( QDomElement const & e, QgsWmsHttpProperty& httpProperty );
+    void parseHttp( QDomElement const &e, QgsWmsHttpProperty &httpProperty );
 
     //! parse the WMS DCPType XML element
-    void parseDcpType( QDomElement const & e, QgsWmsDcpTypeProperty& dcpType );
+    void parseDcpType( QDomElement const &e, QgsWmsDcpTypeProperty &dcpType );
 
     //! parse the WMS GetCapabilities, GetMap, or GetFeatureInfo XML element, each of type "OperationType".
     void parseOperationType( QDomElement const & e, QgsWmsOperationType& operationType );
 
     //! parse the WMS Request XML element
-    void parseRequest( QDomElement const & e, QgsWmsRequestProperty& requestProperty );
+    void parseRequest( QDomElement const &e, QgsWmsRequestProperty &requestProperty );
 
     //! parse the WMS Legend URL XML element
-    void parseLegendUrl( QDomElement const & e, QgsWmsLegendUrlProperty& legendUrlProperty );
+    void parseLegendUrl( QDomElement const &e, QgsWmsLegendUrlProperty &legendUrlProperty );
 
     //! parse the WMS Style XML element
-    void parseStyle( QDomElement const & e, QgsWmsStyleProperty& styleProperty );
+    void parseStyle( QDomElement const &e, QgsWmsStyleProperty &styleProperty );
 
     //! parse the WMS Layer XML element
     // TODO: Make recursable
-    void parseLayer( QDomElement const & e, QgsWmsLayerProperty& layerProperty,
+    void parseLayer( QDomElement const &e, QgsWmsLayerProperty &layerProperty,
                      QgsWmsLayerProperty *parentProperty = 0 );
+
+    //! extract tile information from VendorSpecificCapabilities
+    void parseTileSetProfile( QDomElement const &e, QVector<QgsWmsTileSetProfile> &tileSetProfiles );
 
     /**
      * \brief parse the full WMS ServiceExceptionReport XML document
      *
      * \note mErrorCaption and mError are updated to suit the results of this function.
      */
-    bool parseServiceExceptionReportDom( QByteArray const & xml );
+    bool parseServiceExceptionReportDom( QByteArray const &xml );
 
     //! parse the WMS ServiceException XML element
-    void parseServiceException( QDomElement const & e );
+    void parseServiceException( QDomElement const &e );
 
 
     /**
@@ -693,15 +690,15 @@ class QgsWmsProvider : public QgsRasterDataProvider
     bool calculateExtent();
 
     /**
-     * \brief Check for authentication information contained in the uri,
-     * stripping and saving the username and password if present.
+     * \brief Check for parameters in the uri,
+     * stripping and saving them if present.
      *
      * \param uri uri to check
      *
      * \note added in 1.1
      */
 
-    void setAuthentication( QString uri );
+    void parseUri( QString uri );
 
     /**
      * \brief Prepare the URI so that we can later simply append param=value
@@ -760,6 +757,11 @@ class QgsWmsProvider : public QgsRasterDataProvider
     QVector<QgsWmsLayerProperty> layersSupported;
 
     /**
+     * tilesets hosted by the WMS Server
+     */
+    QVector<QgsWmsTileSetProfile> tilesetsSupported;
+
+    /**
      * extents per layer (in WMS CRS:84 datum)
      */
     QMap<QString, QgsRectangle> extentForLayer;
@@ -767,7 +769,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     /**
      * available CRSs per layer
      */
-    QMap<QString, QVector<QString> > crsForLayer;
+    QMap<QString, QStringList > crsForLayer;
 
     /**
      * WMS "queryable" per layer
@@ -780,7 +782,6 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * (some may not be visible in a draw function, cf. activeSubLayerVisibility)
      */
     QStringList activeSubLayers;
-
     QStringList activeSubStyles;
 
     /**
@@ -803,22 +804,39 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * This can be reused if draw() is called consecutively
      * with the same parameters.
      */
-    QImage* cachedImage;
+    QImage *cachedImage;
 
     /**
-     * The previous parameter to draw().
+     * The reply to the on going request to fill the cache
+     */
+    QNetworkReply *cacheReply;
+
+    /**
+     * Running tile requests
+     */
+    QList<QNetworkReply*> tileReplies;
+
+    /**
+     * The reply to the capabilities request
+     */
+    QNetworkReply *mCapabilitiesReply;
+
+    /**
+     * The reply to the capabilities request
+     */
+    QNetworkReply *mIdentifyReply;
+
+    /**
+     * The result of the identify reply
+     */
+    QString mIdentifyResult;
+
+    /**
+     * The previous parameters to draw().
      */
     QgsRectangle cachedViewExtent;
-
-    /**
-     * The previous parameter to draw().
-     */
-    int cachedPixelWidth;
-
-    /**
-     * The previous parameter to draw().
-     */
-    int cachedPixelHeight;
+    int cachedViewWidth;
+    int cachedViewHeight;
 
     /**
      * The error caption associated with the last WMS error.
@@ -831,7 +849,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     QString mError;
 
     //! A QgsCoordinateTransform is used for transformation of WMS layer extents
-    QgsCoordinateTransform * mCoordinateTransform;
+    QgsCoordinateTransform *mCoordinateTransform;
 
     //! See if calculateExtents() needs to be called before extent() returns useful data
     bool extentDirty;
@@ -839,9 +857,19 @@ class QgsWmsProvider : public QgsRasterDataProvider
     //! Base URL for WMS GetFeatureInfo requests
     QString mGetFeatureInfoUrlBase;
 
+    //! number of layers and parents
     int mLayerCount;
     QMap<int, int> mLayerParents;
     QMap<int, QStringList> mLayerParentNames;
+
+    //! flag set while provider is fetching tiles synchronously
+    bool mWaiting;
+
+    //! tile request number, cache hits and misses
+    int mTileReqNo;
+    int mCacheHits;
+    int mCacheMisses;
+    int mErrors;
 
     //! Username for basic http authentication
     QString mUserName;
@@ -849,6 +877,14 @@ class QgsWmsProvider : public QgsRasterDataProvider
     //! Password for basic http authentication
     QString mPassword;
 
+    //! layer is tiled, tile size and available resolutions
+    bool mTiled;
+    int mTileWidth;
+    int mTileHeight;
+    QVector<double> mResolutions;
+
+    //! wms provider's network access manager
+    static QNetworkAccessManager *smNAM;
 };
 
 #endif

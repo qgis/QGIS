@@ -88,35 +88,32 @@ void QgsWFSSourceSelect::populateConnectionList()
   }
 }
 
-long QgsWFSSourceSelect::getPreferredCrs( const QSet<long>& crsSet ) const
+QString QgsWFSSourceSelect::getPreferredCrs( const QSet<QString>& crsSet ) const
 {
   if ( crsSet.size() < 1 )
   {
-    return -1;
+    return "";
   }
 
   //first: project CRS
   long ProjectCRSID = QgsProject::instance()->readNumEntry( "SpatialRefSys", "/ProjectCRSID", -1 );
   //convert to EPSG
   QgsCoordinateReferenceSystem projectRefSys( ProjectCRSID, QgsCoordinateReferenceSystem::InternalCrsId );
-  int ProjectCRS = -1;
+  QString ProjectCRS;
   if ( projectRefSys.isValid() )
   {
-    ProjectCRS = projectRefSys.epsg();
+    ProjectCRS = projectRefSys.authid();
   }
 
-  if ( ProjectCRS != -1 )
+  if ( !ProjectCRS.isEmpty() && crsSet.contains( ProjectCRS ) )
   {
-    if ( crsSet.contains( ProjectCRS ) )
-    {
-      return ProjectCRS;
-    }
+    return ProjectCRS;
   }
 
   //second: WGS84
-  if ( crsSet.contains( 4326 ) )
+  if ( crsSet.contains( GEO_EPSG_CRS_AUTHID ) )
   {
-    return 4326;
+    return GEO_EPSG_CRS_AUTHID;
   }
 
   //third: first entry in set
@@ -358,10 +355,10 @@ void QgsWFSSourceSelect::addLayer()
   QString crsString;
   if ( mProjectionSelector )
   {
-    long epsgNr = mProjectionSelector->selectedEpsg();
-    if ( epsgNr != 0 )
+    QString authid = mProjectionSelector->selectedAuthId();
+    if ( !authid.isEmpty() )
     {
-      crsString = "&SRSNAME=EPSG:" + QString::number( epsgNr );
+      crsString = "&SRSNAME=" + authid;
     }
   }
   //add a wfs layer to the map
@@ -384,7 +381,7 @@ void QgsWFSSourceSelect::changeCRS()
 {
   if ( mProjectionSelector->exec() )
   {
-    QString crsString = "EPSG: " + QString::number( mProjectionSelector->selectedEpsg() );
+    QString crsString = mProjectionSelector->selectedAuthId();
     labelCoordRefSys->setText( crsString );
   }
 }
@@ -403,24 +400,23 @@ void QgsWFSSourceSelect::changeCRSFilter()
     {
       std::list<QString> crsList = crsIterator->second;
 
-      QSet<long> crsSet;
       QSet<QString> crsNames;
 
       for ( std::list<QString>::const_iterator it = crsList.begin(); it != crsList.end(); ++it )
       {
         crsNames.insert( *it );
-        crsSet.insert( it->section( ":", 1, 1 ).toLong() );
       }
       if ( mProjectionSelector )
       {
         mProjectionSelector->setOgcWmsCrsFilter( crsNames );
-        long preferredCRS = getPreferredCrs( crsSet ); //get preferred EPSG system
-        if ( preferredCRS != -1 )
+        QString preferredCRS = getPreferredCrs( crsNames ); //get preferred EPSG system
+        if ( !preferredCRS.isEmpty() )
         {
-          QgsCoordinateReferenceSystem refSys( preferredCRS );
+          QgsCoordinateReferenceSystem refSys;
+          refSys.createFromOgcWmsCrs( preferredCRS );
           mProjectionSelector->setSelectedCrsId( refSys.srsid() );
 
-          labelCoordRefSys->setText( "EPSG: " + QString::number( preferredCRS ) );
+          labelCoordRefSys->setText( preferredCRS );
         }
       }
     }

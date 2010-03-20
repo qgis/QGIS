@@ -314,6 +314,10 @@ class CORE_EXPORT QgsMapLayer : public QObject
     void toggleScaleBasedVisibility( bool theVisibilityFlag );
     bool hasScaleBasedVisibility();
 
+    /** Clear cached image
+     * added in 1.5 */
+    void clearCacheImage();
+
   signals:
 
     /** Emit a signal to notify of a progress event */
@@ -341,6 +345,10 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** This is used to send a request that any mapcanvas using this layer update its extents */
     void recalculateExtents();
+
+    /** data of layer changed
+     * added in 1.5 */
+    void dataChanged();
 
   protected:
 

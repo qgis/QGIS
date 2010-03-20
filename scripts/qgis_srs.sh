@@ -164,7 +164,8 @@ echo "CREATE TABLE tbl_srs (
   ellipsoid_acronym NOT NULL,
   parameters text NOT NULL,
   srid integer NULL,
-  epsg integer NULL,
+  auth_name varchar NULL,
+  auth_id varchar NULL,
   is_geo integer NOT NULL
 );"
 }
@@ -233,7 +234,8 @@ echo "CREATE VIEW vw_srs as
           a.is_geo as is_geo,
           b.name as name,
           a.parameters as parameters,
-          a.epsg as epsg
+          a.auth_name as auth_name,
+          a.auth_id as auth_id
    from tbl_srs a
      inner join tbl_projection b
      on a.projection_acronym=b.acronym
@@ -268,7 +270,7 @@ elif [ "$1" = "--srs" ]; then
   mk_tbl_projs; pop_tbl_projs
   mk_tbl_srss_srs; pop_tbl_srss
   mk_view
-  echo "CREATE UNIQUE INDEX idx_srsepsg on tbl_srs(epsg);
+  echo "CREATE UNIQUE INDEX idx_srsauthid on tbl_srs(auth_name,auth_id);
 CREATE UNIQUE INDEX idx_srssrid on tbl_srs(srid);
 COMMIT;"
 

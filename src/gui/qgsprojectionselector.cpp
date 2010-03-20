@@ -32,9 +32,9 @@
 #include "qgslogger.h"
 
 const int NAME_COLUMN = 0;
-const int EPSG_COLUMN = 1;
+const int AUTHID_COLUMN = 1;
 const int QGIS_CRS_ID_COLUMN = 2;
-const int POPULAR_CRSES = 4;
+const int POPULAR_CRSES = 3;
 
 QgsProjectionSelector::QgsProjectionSelector( QWidget* parent,
     const char * name,
@@ -44,7 +44,7 @@ QgsProjectionSelector::QgsProjectionSelector( QWidget* parent,
     mUserProjListDone( FALSE ),
     mCRSNameSelectionPending( FALSE ),
     mCRSIDSelectionPending( FALSE ),
-    mEPSGIDSelectionPending( FALSE )
+    mAuthIDSelectionPending( FALSE )
 {
   setupUi( this );
   connect( lstCoordinateSystems, SIGNAL( currentItemChanged( QTreeWidgetItem*, QTreeWidgetItem* ) ),
@@ -53,7 +53,7 @@ QgsProjectionSelector::QgsProjectionSelector( QWidget* parent,
 
   // Get the full path name to the sqlite3 spatial reference database.
   mSrsDatabaseFileName = QgsApplication::srsDbFilePath();
-  lstCoordinateSystems->header()->setResizeMode( EPSG_COLUMN, QHeaderView::Stretch );
+  lstCoordinateSystems->header()->setResizeMode( AUTHID_COLUMN, QHeaderView::Stretch );
   lstCoordinateSystems->header()->resizeSection( QGIS_CRS_ID_COLUMN, 0 );
   lstCoordinateSystems->header()->setResizeMode( QGIS_CRS_ID_COLUMN, QHeaderView::Fixed );
 
@@ -135,8 +135,8 @@ QgsProjectionSelector::~QgsProjectionSelector()
 void QgsProjectionSelector::resizeEvent( QResizeEvent * theEvent )
 {
 
-  lstCoordinateSystems->header()->resizeSection( NAME_COLUMN, ( theEvent->size().width() - 120 ) );
-  lstCoordinateSystems->header()->resizeSection( EPSG_COLUMN, 120 );
+  lstCoordinateSystems->header()->resizeSection( NAME_COLUMN, theEvent->size().width() - 240 );
+  lstCoordinateSystems->header()->resizeSection( AUTHID_COLUMN, 240 );
   lstCoordinateSystems->header()->resizeSection( QGIS_CRS_ID_COLUMN, 0 );
 }
 
@@ -165,9 +165,9 @@ void QgsProjectionSelector::showEvent( QShowEvent * theEvent )
   {
     applyCRSIDSelection();
   }
-  if ( mEPSGIDSelectionPending )
+  if ( mAuthIDSelectionPending )
   {
-    applyEPSGIDSelection();
+    applyAuthIDSelection();
   }
 
   // Update buttons
@@ -215,7 +215,7 @@ void QgsProjectionSelector::showEvent( QShowEvent * theEvent )
 QString QgsProjectionSelector::ogcWmsCrsFilterAsSqlExpression( QSet<QString> * crsFilter )
 {
   QString sqlExpression = "1";             // it's "SQL" for "true"
-  QStringList epsgParts = QStringList();
+  QMap<QString, QStringList> authParts;
 
   if ( !crsFilter )
   {
@@ -240,40 +240,23 @@ QString QgsProjectionSelector::ogcWmsCrsFilterAsSqlExpression( QSet<QString> * c
 
   // iterate through all incoming CRSs
 
-  QSet<QString>::const_iterator i = crsFilter->begin();
-  QRegExp rx( "[^0-9]" );
-  while ( i != crsFilter->end() )
+  foreach( QString auth_id, crsFilter->values() )
   {
-    QStringList parts = i->split( ":" );
+    QStringList parts = auth_id.split( ":" );
 
-    if ( parts.at( 0 ) == "EPSG" && parts.size() >= 2 )
-    {
-      //this line is necessary to make change projection work
-      //with geoserver because for some reason geoserver returns
-      //EPSG:WGS84(DD) as the first srs and is invalid because the
-      //epsg database expect an integer string
-      if ( rx.indexIn( parts.at( 1 ) ) == -1 )
-        epsgParts.push_back( parts.at( 1 ) );
-    }
+    if ( parts.size() < 2 )
+      continue;
 
-    ++i;
+    authParts[ parts.at( 0 )].append( parts.at( 1 ) );
   }
 
-//   for ( int i = 0; i < crsFilter->size(); i++ )
-//   {
-//     QStringList parts = crsFilter->at(i).split(":");
-//
-//     if (parts.at(0) == "EPSG")
-//     {
-//       epsgParts.push_back( parts.at(1) );
-//     }
-//   }
+  if ( authParts.isEmpty() )
+    return sqlExpression;
 
-  if ( epsgParts.size() )
+  foreach( QString auth_name, authParts.keys() )
   {
-    sqlExpression = "epsg in (";
-    sqlExpression += epsgParts.join( "," );
-    sqlExpression += ")";
+    sqlExpression += QString( " AND (auth_name='%1' AND auth_id IN ('%2'))" )
+                     .arg( auth_name ).arg( authParts[auth_name].join( "','" ) );
   }
 
   QgsDebugMsg( "exiting with '" + sqlExpression + "'." );
@@ -287,7 +270,7 @@ void QgsProjectionSelector::setSelectedCrsName( QString theCRSName )
   mCRSNameSelection = theCRSName;
   mCRSNameSelectionPending = TRUE;
   mCRSIDSelectionPending = FALSE;  // only one type can be pending at a time
-  mEPSGIDSelectionPending = TRUE;
+  mAuthIDSelectionPending = TRUE;
 
   if ( isVisible() )
   {
@@ -304,7 +287,7 @@ void QgsProjectionSelector::setSelectedCrsId( long theCRSID )
   mCRSIDSelection = theCRSID;
   mCRSIDSelectionPending = TRUE;
   mCRSNameSelectionPending = FALSE;  // only one type can be pending at a time
-  mEPSGIDSelectionPending = FALSE;
+  mAuthIDSelectionPending = FALSE;
 
   if ( isVisible() )
   {
@@ -315,20 +298,25 @@ void QgsProjectionSelector::setSelectedCrsId( long theCRSID )
   // selection there
 }
 
-void QgsProjectionSelector::setSelectedEpsg( long epsg )
+void QgsProjectionSelector::setSelectedEpsg( long id )
 {
-  mEPSGIDSelection = epsg;
+  setSelectedAuthId( QString( "EPSG:%1" ).arg( id ) );
+}
+
+void QgsProjectionSelector::setSelectedAuthId( QString id )
+{
+  mAuthIDSelection = id;
   mCRSIDSelectionPending = FALSE;
-  mEPSGIDSelectionPending = TRUE;
+  mAuthIDSelectionPending = TRUE;
   mCRSNameSelectionPending = FALSE;  // only one type can be pending at a time
 }
 
 void QgsProjectionSelector::applyCRSNameSelection()
 {
   if (
-    ( mCRSNameSelectionPending ) &&
-    ( mProjListDone ) &&
-    ( mUserProjListDone )
+    mCRSNameSelectionPending &&
+    mProjListDone &&
+    mUserProjListDone
   )
   {
     //get the srid given the wkt so we can pick the correct list item
@@ -353,10 +341,7 @@ void QgsProjectionSelector::applyCRSNameSelection()
 QString QgsProjectionSelector::getCrsIdName( long theCrsId )
 {
   QString retvalue( "" );
-  if (
-    ( mProjListDone ) &&
-    ( mUserProjListDone )
-  )
+  if ( mProjListDone && mUserProjListDone )
   {
     QString myCRSIDString = QString::number( theCrsId );
 
@@ -365,9 +350,9 @@ QString QgsProjectionSelector::getCrsIdName( long theCrsId )
     if ( nodes.count() > 0 )
     {
       retvalue = nodes.first()->text( NAME_COLUMN );
-      if ( nodes.first()->text( EPSG_COLUMN ) != "" )
+      if ( nodes.first()->text( AUTHID_COLUMN ) != "" )
       {
-        retvalue += QString( " (EPSG : %1)" ).arg( nodes.first()->text( EPSG_COLUMN ) );
+        retvalue += " " + nodes.first()->text( AUTHID_COLUMN );
       }
     }
   }
@@ -375,17 +360,13 @@ QString QgsProjectionSelector::getCrsIdName( long theCrsId )
 
 }
 
-void QgsProjectionSelector::applyEPSGIDSelection()
+void QgsProjectionSelector::applyAuthIDSelection()
 {
-  if (
-    ( mEPSGIDSelectionPending ) &&
-    ( mProjListDone ) &&
-    ( mUserProjListDone )
-  )
+  if ( mAuthIDSelectionPending && mProjListDone && mUserProjListDone )
   {
     //get the srid given the wkt so we can pick the correct list item
-    QgsDebugMsg( "called with " + QString::number( mEPSGIDSelection ) );
-    QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems( QString::number( mEPSGIDSelection ), Qt::MatchExactly | Qt::MatchRecursive, EPSG_COLUMN );
+    QgsDebugMsg( "called with " + mAuthIDSelection );
+    QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems( mAuthIDSelection, Qt::MatchExactly | Qt::MatchRecursive, AUTHID_COLUMN );
 
     if ( nodes.count() > 0 )
     {
@@ -398,17 +379,13 @@ void QgsProjectionSelector::applyEPSGIDSelection()
       teProjection->setText( "" );
     }
 
-    mEPSGIDSelectionPending = FALSE;
+    mAuthIDSelectionPending = FALSE;
   }
 }
 
 void QgsProjectionSelector::applyCRSIDSelection()
 {
-  if (
-    ( mCRSIDSelectionPending ) &&
-    ( mProjListDone ) &&
-    ( mUserProjListDone )
-  )
+  if ( mCRSIDSelectionPending && mProjListDone &&  mUserProjListDone )
   {
     QString myCRSIDString = QString::number( mCRSIDSelection );
 
@@ -501,8 +478,7 @@ QString QgsProjectionSelector::selectedProj4String()
       // prepare the sql statement
       const char *pzTail;
       sqlite3_stmt *ppStmt;
-      QString sql = "select parameters from tbl_srs where srs_id = ";
-      sql += mySrsId;
+      QString sql = QString( "select parameters from tbl_srs where srs_id = %1" ).arg( mySrsId );
 
       QgsDebugMsg( "Selection sql: " + sql );
 
@@ -537,7 +513,7 @@ QString QgsProjectionSelector::selectedProj4String()
 
 }
 
-long QgsProjectionSelector::getSelectedLongAttribute( QString attributeName )
+QString QgsProjectionSelector::getSelectedExpression( QString expression )
 {
   // Only return the attribute if there is a node in the tree
   // selected that has an srs_id.  This prevents error if the user
@@ -587,10 +563,9 @@ long QgsProjectionSelector::getSelectedLongAttribute( QString attributeName )
       // prepare the sql statement
       const char *pzTail;
       sqlite3_stmt *ppStmt;
-      QString sql = "select ";
-      sql += attributeName;
-      sql += " from tbl_srs where srs_id = ";
-      sql += lvi->text( QGIS_CRS_ID_COLUMN );
+      QString sql = QString( "select %1 from tbl_srs where srs_id=%2" )
+                    .arg( expression )
+                    .arg( lvi->text( QGIS_CRS_ID_COLUMN ) );
 
       QgsDebugMsg( QString( "Finding selected attribute using : %1" ).arg( sql ) );
       rc = sqlite3_prepare( db, sql.toUtf8(), sql.toUtf8().length(), &ppStmt, &pzTail );
@@ -609,8 +584,8 @@ long QgsProjectionSelector::getSelectedLongAttribute( QString attributeName )
       sqlite3_finalize( ppStmt );
       // close the database
       sqlite3_close( db );
-      // return the srs wkt
-      return myAttributeValue.toLong();
+      // return the srs
+      return myAttributeValue;
     }
   }
 
@@ -618,16 +593,28 @@ long QgsProjectionSelector::getSelectedLongAttribute( QString attributeName )
   return 0;
 }
 
+long QgsProjectionSelector::selectedEpsg()
+{
+  if ( getSelectedExpression( "auth_name" ).compare( "EPSG", Qt::CaseInsensitive ) == 0 )
+  {
+    return getSelectedExpression( "auth_id" ).toLong();
+  }
+  else
+  {
+    QgsDebugMsg( "selected projection is NOT EPSG" );
+    return 0;
+  }
+}
 
 long QgsProjectionSelector::selectedPostgresSrId()
 {
-  return getSelectedLongAttribute( "srid" );
+  return getSelectedExpression( "srid" ).toLong();
 }
 
 
-long QgsProjectionSelector::selectedEpsg()
+QString QgsProjectionSelector::selectedAuthId()
 {
-  return getSelectedLongAttribute( "epsg" );
+  return getSelectedExpression( "auth_name||':'||auth_id" );
 }
 
 
@@ -705,9 +692,7 @@ void QgsProjectionSelector::loadUserCrsList( QSet<QString> * crsFilter )
   }
 
   // Set up the query to retrieve the projection information needed to populate the list
-  QString mySql = "select description, srs_id from vw_srs ";
-  mySql += "where ";
-  mySql += sqlFilter;
+  QString mySql = QString( "select description, srs_id from vw_srs where %1" ).arg( sqlFilter );
 
   myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
   // XXX Need to free memory from the error msg if one is set
@@ -795,12 +780,10 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> * crsFilter )
   sqlite3_finalize( ppStmt );
 
   // Set up the query to retrieve the projection information needed to populate the list
-  //note I am giving the full field names for clarity here and in case someown
+  //note I am giving the full field names for clarity here and in case someone
   //changes the underlying view TS
-  sql = "select description, srs_id, epsg, is_geo, name, parameters from vw_srs ";
-  sql += "where ";
-  sql += sqlFilter;
-  sql += " order by name, description";
+  sql = QString( "select description, srs_id, auth_id, is_geo, name, parameters from vw_srs where %1 order by name,description" )
+        .arg( sqlFilter );
 
   rc = sqlite3_prepare( db, sql.toUtf8(), sql.toUtf8().length(), &ppStmt, &pzTail );
   // XXX Need to free memory from the error msg if one is set
@@ -822,8 +805,8 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> * crsFilter )
         // Add it to the tree (field 0)
         newItem = new QTreeWidgetItem( mGeoList, QStringList( QString::fromUtf8(( char * )sqlite3_column_text( ppStmt, 0 ) ) ) );
 
-        // display the epsg (field 2) in the second column of the list view
-        newItem->setText( EPSG_COLUMN, QString::fromUtf8(( char * )sqlite3_column_text( ppStmt, 2 ) ) );
+        // display the authority name (field 2) in the second column of the list view
+        newItem->setText( AUTHID_COLUMN, QString::fromUtf8(( char * )sqlite3_column_text( ppStmt, 2 ) ) );
 
         // display the qgis srs_id (field 1) in the third column of the list view
         newItem->setText( QGIS_CRS_ID_COLUMN, QString::fromUtf8(( char * )sqlite3_column_text( ppStmt, 1 ) ) );
@@ -862,8 +845,8 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> * crsFilter )
         }
         // add the item, setting the projection name in the first column of the list view
         newItem = new QTreeWidgetItem( node, QStringList( QString::fromUtf8(( char * )sqlite3_column_text( ppStmt, 0 ) ) ) );
-        // display the epsg (field 2) in the second column of the list view
-        newItem->setText( EPSG_COLUMN, QString::fromUtf8(( char * )sqlite3_column_text( ppStmt, 2 ) ) );
+        // display the authority id (field 2) in the second column of the list view
+        newItem->setText( AUTHID_COLUMN, QString::fromUtf8(( char * )sqlite3_column_text( ppStmt, 2 ) ) );
         // display the qgis srs_id (field 1) in the third column of the list view
         newItem->setText( QGIS_CRS_ID_COLUMN, QString::fromUtf8(( char * )sqlite3_column_text( ppStmt, 1 ) ) );
       }
@@ -927,16 +910,15 @@ void QgsProjectionSelector::on_pbnFind_clicked()
   QString mySearchString( sqlSafeString( leSearch->text() ) );
   // Set up the query to retrieve the projection information needed to populate the list
   QString mySql;
-  if ( radEpsgCrsId->isChecked() )
+  if ( radAuthId->isChecked() )
   {
-    mySql = "select srs_id from tbl_srs where epsg=" + mySearchString;
+    mySql = QString( "select srs_id from tbl_srs where auth_name||':'||auth_id='%1'" ).arg( mySearchString );
   }
   else if ( radName->isChecked() ) //name search
   {
     //we need to find what the largest srsid matching our query so we know whether to
     //loop backto the beginning
-    mySql = "select srs_id from tbl_srs where description like '%" + mySearchString + "%'" +
-            " order by srs_id desc limit 1";
+    mySql = "select srs_id from tbl_srs where description like '%" + mySearchString + "%' order by srs_id desc limit 1";
     long myLargestSrsId = getLargestCRSIDMatch( mySql );
     QgsDebugMsg( QString( "Largest CRSID%1" ).arg( myLargestSrsId ) );
     //a name search is ambiguous, so we find the first srsid after the current seelcted srsid

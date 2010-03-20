@@ -60,6 +60,14 @@ class QgsUndoWidget;
 class QgsVectorLayer;
 
 class QDomDocument;
+class QNetworkAccessManager;
+class QNetworkReply;
+class QNetworkProxy;
+class QAuthenticator;
+
+#ifdef HAVE_QWT
+class QgsGPSInformationWidget;
+#endif
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -69,9 +77,6 @@ class QDomDocument;
 #include "qgsconfig.h"
 #include "qgsfeature.h"
 #include "qgspoint.h"
-#ifdef HAVE_QWT
-class QgsGPSInformationWidget;
-#endif
 
 /*! \class QgisApp
  * \brief Main window for the Qgis application
@@ -155,24 +160,16 @@ class QgisApp : public QMainWindow
     //! Returns a pointer to the internal clipboard
     QgsClipboard * clipboard();
 
-    /** Setup the proxy settings from the QSettings environment.
-      * This is not called by default in the constructor. Rather,
-      * the application must explicitly call setupProx(). If
-      * you write your own application and wish to explicitly
-      * set up your own proxy rather, you should e.g.
-      *  QNetworkProxy proxy;
-      *  proxy.setType(QNetworkProxy::Socks5Proxy);
-      *  proxy.setHostName("proxy.example.com");
-      *  proxy.setPort(1080);
-      *  proxy.setUser("username");
-      *  proxy.setPassword("password");
-      *  QNetworkProxy::setApplicationProxy(proxy);
-      *
-      *  (as documented in Qt documentation.
-    */
-    void setupProxy();
-
     static QgisApp *instance() { return smInstance; }
+
+    //! initialize network manager
+    void namSetup();
+
+    //! update proxy settings
+    void namUpdate();
+
+    //! retrieve network manager
+    QNetworkAccessManager *nam();
 
     //! Helper to get a theme icon. It will fall back to the
     //default theme if the active theme does not have the required
@@ -368,6 +365,9 @@ class QgisApp : public QMainWindow
     //! mark project dirty
     void markDirty();
 
+    //! layer was added
+    void layerWasAdded( QgsMapLayer * );
+
     void updateUndoActions();
 
     //! cuts selected features on the active layer to the clipboard
@@ -399,6 +399,10 @@ class QgisApp : public QMainWindow
 
     //! project was read
     void readProject( const QDomDocument & );
+
+    //! request credentials for network manager
+    void namAuthenticationRequired( QNetworkReply *reply, QAuthenticator *auth );
+    void namProxyAuthenticationRequired( const QNetworkProxy &proxy, QAuthenticator *auth );
 
   protected:
 
@@ -697,7 +701,6 @@ class QgisApp : public QMainWindow
     /**This signal is emitted before a new composer instance is going to be removed
       @note added in version 1.4*/
     void composerWillBeRemoved( QgsComposerView* v );
-
 
   private:
     /** This method will open a dialog so the user can select the sublayers
@@ -1054,6 +1057,8 @@ class QgisApp : public QMainWindow
     static QgisApp *smInstance;
 
     QgsUndoWidget* mUndoWidget;
+
+    QNetworkAccessManager *mNAM;
 
     int mLastComposerId;
 

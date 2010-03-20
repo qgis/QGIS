@@ -58,6 +58,11 @@ void QgsGenericProjectionSelector::setMessage( QString theMessage )
 QgsGenericProjectionSelector::~QgsGenericProjectionSelector()
 {}
 
+void QgsGenericProjectionSelector::setSelectedEpsg( long theId )
+{
+  projectionSelector->setSelectedEpsg( theId );
+}
+
 void QgsGenericProjectionSelector::setSelectedCrsName( QString theName )
 {
   projectionSelector->setSelectedCrsName( theName );
@@ -68,9 +73,9 @@ void QgsGenericProjectionSelector::setSelectedCrsId( long theID )
   projectionSelector->setSelectedCrsId( theID );
 }
 
-void QgsGenericProjectionSelector::setSelectedEpsg( long theID )
+void QgsGenericProjectionSelector::setSelectedAuthId( QString theID )
 {
-  projectionSelector->setSelectedEpsg( theID );
+  projectionSelector->setSelectedAuthId( theID );
 }
 
 QString QgsGenericProjectionSelector::selectedProj4String()
@@ -90,8 +95,12 @@ long QgsGenericProjectionSelector::selectedEpsg()
   return projectionSelector->selectedEpsg();
 }
 
+QString QgsGenericProjectionSelector::selectedAuthId()
+{
+  return projectionSelector->selectedAuthId();
+}
+
 void QgsGenericProjectionSelector::setOgcWmsCrsFilter( QSet<QString> crsFilter )
 {
   projectionSelector->setOgcWmsCrsFilter( crsFilter );
 }
-

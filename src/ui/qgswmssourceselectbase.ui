@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>439</width>
+    <width>564</width>
     <height>539</height>
    </rect>
   </property>
@@ -25,13 +25,16 @@
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
-    <widget class="QTabWidget" name="tabWidget">
+    <widget class="QTabWidget" name="tabServers">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
      <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QWidget" name="tab">
+     <widget class="QWidget" name="tabLayers">
       <attribute name="title">
-       <string>Servers</string>
+       <string>Layers</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout">
        <item row="0" column="0" colspan="8">
@@ -136,32 +139,66 @@
          </column>
         </widget>
        </item>
-       <item row="3" column="0">
-        <widget class="QPushButton" name="btnSave">
-         <property name="text">
-          <string>Save</string>
+       <item row="3" column="0" colspan="8">
+        <widget class="QGroupBox" name="btnGrpImageEncoding">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
          </property>
-        </widget>
-       </item>
-       <item row="3" column="1" colspan="2">
-        <widget class="QPushButton" name="btnLoad">
-         <property name="text">
-          <string>Load</string>
-         </property>
-        </widget>
-       </item>
-       <item row="3" column="3" colspan="5">
-        <spacer name="horizontalSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
+         <property name="minimumSize">
           <size>
-           <width>292</width>
-           <height>20</height>
+           <width>16</width>
+           <height>64</height>
           </size>
          </property>
-        </spacer>
+         <property name="title">
+          <string>Image encoding</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0" colspan="8">
+        <widget class="QGroupBox" name="gbCRS">
+         <property name="title">
+          <string>Options</string>
+         </property>
+         <layout class="QGridLayout">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Layer name</string>
+            </property>
+            <property name="buddy">
+             <cstring>leLayerName</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" colspan="2">
+           <widget class="QLineEdit" name="leLayerName"/>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QLabel" name="labelCoordRefSys">
+            <property name="text">
+             <string>Coordinate Reference System</string>
+            </property>
+            <property name="buddy">
+             <cstring>btnChangeSpatialRefSys</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QPushButton" name="btnChangeSpatialRefSys">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>Change ...</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -216,7 +253,55 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab_2">
+     <widget class="QWidget" name="tabTilesets">
+      <attribute name="title">
+       <string>Tilesets</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0">
+        <widget class="QTableWidget" name="lstTilesets">
+         <property name="selectionMode">
+          <enum>QAbstractItemView::SingleSelection</enum>
+         </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
+         <property name="cornerButtonEnabled">
+          <bool>false</bool>
+         </property>
+         <attribute name="verticalHeaderVisible">
+          <bool>false</bool>
+         </attribute>
+         <column>
+          <property name="text">
+           <string>Layers</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Styles</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Size</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Format</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>CRS</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabServerSearch">
       <attribute name="title">
        <string>Server Search</string>
       </attribute>
@@ -245,6 +330,9 @@
          <property name="cornerButtonEnabled">
           <bool>false</bool>
          </property>
+         <attribute name="verticalHeaderVisible">
+          <bool>false</bool>
+         </attribute>
          <column>
           <property name="text">
            <string>Title</string>
@@ -252,12 +340,12 @@
          </column>
          <column>
           <property name="text">
-           <string>URL</string>
+           <string>Description</string>
           </property>
          </column>
          <column>
           <property name="text">
-           <string>Description</string>
+           <string>URL</string>
           </property>
          </column>
         </widget>
@@ -271,67 +359,6 @@
        </item>
       </layout>
      </widget>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QGroupBox" name="btnGrpImageEncoding">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>16</width>
-       <height>64</height>
-      </size>
-     </property>
-     <property name="title">
-      <string>Image encoding</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QGroupBox" name="gbCRS">
-     <property name="title">
-      <string>Options</string>
-     </property>
-     <layout class="QGridLayout">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Layer name</string>
-        </property>
-        <property name="buddy">
-         <cstring>leLayerName</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1" colspan="2">
-       <widget class="QLineEdit" name="leLayerName"/>
-      </item>
-      <item row="1" column="0" colspan="2">
-       <widget class="QLabel" name="labelCoordRefSys">
-        <property name="text">
-         <string>Coordinate Reference System</string>
-        </property>
-        <property name="buddy">
-         <cstring>btnChangeSpatialRefSys</cstring>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QPushButton" name="btnChangeSpatialRefSys">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>Change ...</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
     </widget>
    </item>
    <item row="3" column="0">

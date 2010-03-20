@@ -103,6 +103,9 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
 
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
+    void on_mBrowseCacheDirectory_clicked();
+    void on_mClearCache_clicked();
+
   protected:
     //! Populates combo box with ellipsoids
     void getEllipsoidList();

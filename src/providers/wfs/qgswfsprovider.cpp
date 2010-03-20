@@ -715,28 +715,20 @@ int QgsWFSProvider::setCRSFromGML2( const QDomElement& wfsCollectionElement )
 
 
   //extract the EpsgCrsId id
-  int epsgId;
   bool conversionSuccess;
   if ( srsName.contains( "#" ) )//geoserver has "http://www.opengis.net/gml/srs/epsg.xml#4326"
   {
-    epsgId = srsName.section( "#", 1, 1 ).toInt( &conversionSuccess );
+    int epsgId = srsName.section( "#", 1, 1 ).toInt( &conversionSuccess );
     if ( !conversionSuccess )
     {
       return 4;
     }
+    srsName = QString( "EPSG:%1" ).arg( epsgId );
   }
-  else if ( srsName.contains( ":" ) )//mapserver has "EPSG:4326"
-  {
-    epsgId = srsName.section( ":", 1, 1 ).toInt( &conversionSuccess );
-    if ( !conversionSuccess )
-    {
-      return 5;
-    }
-  }
-  else
-    epsgId = GEO_EPSG_CRS_ID;
+  else if ( !srsName.contains( ":" ) ) //mapserver has "EPSG:4326"
+    srsName = GEO_EPSG_CRS_AUTHID;
 
-  if ( !mSourceCRS.createFromEpsg( epsgId ) )
+  if ( !mSourceCRS.createFromOgcWmsCrs( srsName ) )
   {
     QgsDebugMsg( "Error, creation of QgsCoordinateReferenceSystem failed" );
     return 6;

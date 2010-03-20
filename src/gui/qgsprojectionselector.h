@@ -70,12 +70,20 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
     //! Gets the current EpsgCrsId-style projection identifier
     long selectedEpsg();
 
+    //! Gets the current InternalCrsId-style projection identifier
+    long selectedSrsid();
+
+    //! Gets the current authority-style projection identifier
+    QString selectedAuthId();
+
   public slots:
     void setSelectedCrsName( QString theCRSName );
 
     QString selectedName();
 
     void setSelectedCrsId( long theCRSID );
+
+    void setSelectedAuthId( QString authId );
 
     void setSelectedEpsg( long epsg );
 
@@ -96,8 +104,6 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
      * \param crsFilter a list of OGC Coordinate Reference Systems to filter the
      *                  list of projections by.  This is useful in (e.g.) WMS situations
      *                  where you just want to offer what the WMS server can support.
-     *
-     * \note This function only deals with EpsgCrsId labels only at this time.
      *
      * \warning This function's behaviour is undefined if it is called after the widget is shown.
      */
@@ -128,7 +134,6 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
      *                  list of projections by.  This is useful in (e.g.) WMS situations
      *                  where you just want to offer what the WMS server can support.
      *
-     * \note This function only deals with EpsgCrsId labels only at this time.
      */
     QString ogcWmsCrsFilterAsSqlExpression( QSet<QString> * crsFilter );
 
@@ -157,7 +162,7 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
     void applyCRSIDSelection();
 
     /**
-     * \brief does the legwork of applying the EPSG ID Selection
+     * \brief does the legwork of applying the Authority ID Selection
      *
      * \warning This function does nothing unless getUserList() and getUserProjList()
      *          Have already been called
@@ -166,14 +171,14 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
      *          does not scroll the list to the selection if the widget is not visible.
      *          Therefore you will typically want to use this in a showEvent().
      */
-    void applyEPSGIDSelection();
+    void applyAuthIDSelection();
 
     /**
-       * \brief gets an arbitrary sqlite3 attribute of type "long" from the selection
+       * \brief gets an arbitrary sqlite3 expression from the selection
        *
-       * \param attributeName   The sqlite3 column name, typically "srid" or "epsg"
+       * \param attributeName   The sqlite3 column name, typically "srid" or "sridid"
        */
-    long getSelectedLongAttribute( QString attributeName );
+    QString getSelectedExpression( QString e );
 
     /** Show the user a warning if the srs database could not be found */
     void showDBMissingWarning( const QString theFileName );
@@ -210,8 +215,8 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
     //! Is there a pending selection to be made by CRS ID?
     bool mCRSIDSelectionPending;
 
-    //! Is there a pending selection to be made by EPSG ID?
-    bool mEPSGIDSelectionPending;
+    //! Is there a pending selection to be made by Authority ID?
+    bool mAuthIDSelectionPending;
 
     //! The CRS Name that wants to be selected on this widget
     QString mCRSNameSelection;
@@ -219,8 +224,8 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
     //! The CRS ID that wants to be selected on this widget
     long mCRSIDSelection;
 
-    //! The EPSG ID that wants to be selected on this widget
-    long mEPSGIDSelection;
+    //! The Authority ID that wants to be selected on this widget
+    QString mAuthIDSelection;
 
     //! The set of OGC WMS CRSs that want to be applied to this widget
     QSet<QString> mCrsFilter;

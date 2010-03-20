@@ -28,8 +28,10 @@
 #include <QSettings>
 #include <QColorDialog>
 #include <QLocale>
+#include <QNetworkAccessManager>
+#include <QNetworkDiskCache>
 
-#include <cassert>
+#include <limits>
 #include <sqlite3.h>
 #include "qgslogger.h"
 #define ELLIPS_FLAT "NONE"
@@ -114,9 +116,20 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
     }
   }
 
+  // cache settings
+  QNetworkDiskCache *cache = qobject_cast<QNetworkDiskCache*>( QgisApp::instance()->nam()->cache() );
+  if ( cache )
+  {
+    mCacheDirectory->setText( cache->cacheDirectory() );
+    mCacheSize->setMinimum( 0 );
+    mCacheSize->setMaximum( std::numeric_limits<int>::max() );
+    mCacheSize->setSingleStep( 1024 );
+    QgsDebugMsg( QString( "set cacheSize: %1" ).arg( cache->maximumCacheSize() ) );
+    mCacheSize->setValue( cache->maximumCacheSize() / 1024 );
+  }
+
   //wms search server
   leWmsSearch->setText( settings.value( "/qgis/WMSSearchUrl", "http://geopole.org/wms/search?search=%1&type=rss" ).toString() );
-
 
   // set the current theme
   cmbTheme->setItemText( cmbTheme->currentIndex(), settings.value( "/Themes" ).toString() );
@@ -430,6 +443,10 @@ void QgsOptions::saveOptions()
   settings.setValue( "proxy/proxyPassword", leProxyPassword->text() );
   settings.setValue( "proxy/proxyType", mProxyTypeComboBox->currentText() );
 
+  settings.setValue( "cache/directory", mCacheDirectory->text() );
+  settings.setValue( "cache/size", QVariant::fromValue( mCacheSize->value()*1024L ) );
+
+  QgisApp::instance()->namUpdate();
 
   //url to exclude from proxys
   QString proxyExcludeString;
@@ -688,7 +705,7 @@ void QgsOptions::getEllipsoidList()
     QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
     // XXX This will likely never happen since on open, sqlite creates the
     //     database if it does not exist.
-    assert( myResult == 0 );
+    Q_ASSERT( myResult == 0 );
   }
 
   // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
@@ -721,7 +738,7 @@ QString QgsOptions::getEllipsoidAcronym( QString theEllipsoidName )
     QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
     // XXX This will likely never happen since on open, sqlite creates the
     //     database if it does not exist.
-    assert( myResult == 0 );
+    Q_ASSERT( myResult == 0 );
   }
   // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
   QString mySql = "select acronym from tbl_ellipsoid where name='" + theEllipsoidName + "'";
@@ -753,7 +770,7 @@ QString QgsOptions::getEllipsoidName( QString theEllipsoidAcronym )
     QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
     // XXX This will likely never happen since on open, sqlite creates the
     //     database if it does not exist.
-    assert( myResult == 0 );
+    Q_ASSERT( myResult == 0 );
   }
   // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
   QString mySql = "select name from tbl_ellipsoid where acronym='" + theEllipsoidAcronym + "'";
@@ -827,4 +844,25 @@ void QgsOptions::on_mRemoveUrlPushButton_clicked()
   int currentRow = mExcludeUrlListWidget->currentRow();
   QListWidgetItem* itemToRemove = mExcludeUrlListWidget->takeItem( currentRow );
   delete itemToRemove;
+}
+
+void QgsOptions::on_mBrowseCacheDirectory_clicked()
+{
+  QString myDir = QFileDialog::getExistingDirectory(
+                    this,
+                    tr( "Choose a directory" ),
+                    QDir::toNativeSeparators( mCacheDirectory->text() ),
+                    QFileDialog::ShowDirsOnly
+                  );
+
+  if ( !myDir.isEmpty() )
+  {
+    mCacheDirectory->setText( QDir::toNativeSeparators( myDir ) );
+  }
+
+}
+
+void QgsOptions::on_mClearCache_clicked()
+{
+  QgisApp::instance()->nam()->cache()->clear();
 }

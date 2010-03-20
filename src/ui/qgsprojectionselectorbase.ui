@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>428</width>
-    <height>313</height>
+    <height>316</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -49,7 +49,7 @@
      </column>
      <column>
       <property name="text">
-       <string>EPSG</string>
+       <string>Authority ID</string>
       </property>
      </column>
      <column>
@@ -106,9 +106,9 @@
      </property>
      <layout class="QGridLayout">
       <item row="0" column="0">
-       <widget class="QRadioButton" name="radEpsgCrsId">
+       <widget class="QRadioButton" name="radAuthId">
         <property name="text">
-         <string>EPSG ID</string>
+         <string>AuthorityID</string>
         </property>
         <property name="iconSize">
          <size>
