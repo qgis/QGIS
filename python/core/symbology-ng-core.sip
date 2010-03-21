@@ -79,7 +79,7 @@ public:
 
   virtual QgsSymbolV2List symbols()=0;
 
-  void renderFeature(QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool drawVertexMarker = false );
+  virtual void renderFeature(QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool drawVertexMarker = false );
 
   bool usingSymbolLevels() const;
   void setUsingSymbolLevels(bool usingSymbolLevels);
