@@ -2694,6 +2694,7 @@ void QgisApp::addWmsLayer()
 
   QgsWMSSourceSelect *wmss = new QgsWMSSourceSelect( this );
   wmss->exec();
+  delete wmss;
 }
 
 
