@@ -110,6 +110,10 @@ class CORE_EXPORT QgsFeatureRendererV2
     //! render editing vertex marker for a polygon
     void renderVertexMarkerPolygon( QPolygonF& pts, QList<QPolygonF>* rings, QgsRenderContext& context );
 
+    static unsigned char* _getPoint( QPointF& pt, QgsRenderContext& context, unsigned char* wkb );
+    static unsigned char* _getLineString( QPolygonF& pts, QgsRenderContext& context, unsigned char* wkb );
+    static unsigned char* _getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsRenderContext& context, unsigned char* wkb );
+
     QString mType;
 
     bool mUsingSymbolLevels;
