@@ -19,7 +19,7 @@
 
 
 
-static unsigned char* _getPoint( QPointF& pt, QgsRenderContext& context, unsigned char* wkb )
+unsigned char* QgsFeatureRendererV2::_getPoint( QPointF& pt, QgsRenderContext& context, unsigned char* wkb )
 {
   wkb++; // jump over endian info
   unsigned int wkbType = *(( int* ) wkb );
@@ -43,7 +43,7 @@ static unsigned char* _getPoint( QPointF& pt, QgsRenderContext& context, unsigne
   return wkb;
 }
 
-static unsigned char* _getLineString( QPolygonF& pts, QgsRenderContext& context, unsigned char* wkb )
+unsigned char* QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRenderContext& context, unsigned char* wkb )
 {
   wkb++; // jump over endian info
   unsigned int wkbType = *(( int* ) wkb );
@@ -82,7 +82,7 @@ static unsigned char* _getLineString( QPolygonF& pts, QgsRenderContext& context,
   return wkb;
 }
 
-static unsigned char* _getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsRenderContext& context, unsigned char* wkb )
+unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QPolygonF>& holes, QgsRenderContext& context, unsigned char* wkb )
 {
   wkb++; // jump over endian info
   unsigned int wkbType = *(( int* ) wkb );
