@@ -12,6 +12,7 @@ SUBDIRS (copyright_label
   diagram_overlay
   evis
   labeling
+  point_displacement_renderer
   )
 
 IF (POSTGRES_FOUND)
