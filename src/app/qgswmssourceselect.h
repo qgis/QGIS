@@ -182,6 +182,8 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     void collectSelectedLayers( QStringList &layers, QStringList &styles );
     QString selectedImageEncoding();
 
+    QList<QTreeWidgetItem*> mCurrentSelection;
+
   private slots:
     void on_btnSearch_clicked();
     void on_btnAddWMS_clicked();
