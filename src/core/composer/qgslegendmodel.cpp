@@ -126,6 +126,8 @@ int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLa
     currentSymbolItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
     layerItem->setChild( layerItem->rowCount(), 0, currentSymbolItem );
   }
+
+  return 0;
 }
 
 int QgsLegendModel::addVectorLayerItems( QStandardItem* layerItem, QgsVectorLayer* vlayer )
