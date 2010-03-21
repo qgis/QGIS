@@ -73,7 +73,7 @@ class CORE_EXPORT QgsFeatureRendererV2
 
     virtual QgsFeatureRendererV2* clone() = 0;
 
-    void renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool drawVertexMarker = false );
+    virtual void renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool drawVertexMarker = false );
 
     //! for debugging
     virtual QString dump();

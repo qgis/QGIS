@@ -18,31 +18,31 @@
 #include <QKeyEvent>
 #include <QMessageBox>
 
-static bool _initRenderer(QString name, QgsRendererV2WidgetFunc f, QString iconName )
+static bool _initRenderer( QString name, QgsRendererV2WidgetFunc f, QString iconName )
 {
   QgsRendererV2Registry* reg = QgsRendererV2Registry::instance();
   QgsRendererV2AbstractMetadata* am = reg->rendererMetadata( name );
-  if (am == NULL)
+  if ( am == NULL )
     return false;
-  QgsRendererV2Metadata* m = dynamic_cast<QgsRendererV2Metadata*>(am);
-  if (m == NULL)
+  QgsRendererV2Metadata* m = dynamic_cast<QgsRendererV2Metadata*>( am );
+  if ( m == NULL )
     return false;
 
-  m->setWidgetFunction(f);
+  m->setWidgetFunction( f );
 
   QString iconPath = QgsApplication::defaultThemePath() + iconName;
   QPixmap pix;
   if ( pix.load( iconPath, "png" ) )
-    m->setIcon(pix);
+    m->setIcon( pix );
 
-  QgsDebugMsg("Set for "+name);
+  QgsDebugMsg( "Set for " + name );
   return true;
 }
 
 static void _initRendererWidgetFunctions()
 {
   static bool initialized = false;
-  if (initialized)
+  if ( initialized )
     return;
 
   _initRenderer( "singleSymbol", QgsSingleSymbolRendererV2Widget::create, "rendererSingleSymbol.png" );
@@ -154,9 +154,15 @@ void QgsRendererV2PropertiesDialog::rendererChanged()
 
 void QgsRendererV2PropertiesDialog::apply()
 {
-  if ( mActiveWidget != NULL )
+  if ( !mActiveWidget || !mLayer )
   {
-    mLayer->setRendererV2( mActiveWidget->renderer()->clone() );
+    return;
+  }
+
+  QgsFeatureRendererV2* renderer = mActiveWidget->renderer();
+  if ( renderer )
+  {
+    mLayer->setRendererV2( renderer->clone() );
   }
 }
 
