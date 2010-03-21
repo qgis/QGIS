@@ -7,6 +7,6 @@
 	<option key="shadedmap" />
 	<option key="altitude" />
 	<option key="azimuth" />
-	<option key="zmult" answer="1" hidden="yes" />
+	<option key="zmult" answer="1" />
 	<option key="scale" answer="1" hidden="yes" />
 </qgisgrassmodule>
