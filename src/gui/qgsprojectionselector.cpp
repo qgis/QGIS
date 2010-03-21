@@ -251,10 +251,18 @@ QString QgsProjectionSelector::ogcWmsCrsFilterAsSqlExpression( QSet<QString> * c
   if ( authParts.isEmpty() )
     return sqlExpression;
 
-  foreach( QString auth_name, authParts.keys() )
+  if( authParts.size() > 0 )
   {
-    sqlExpression += QString( " AND (auth_name='%1' AND auth_id IN ('%2'))" )
-                     .arg( auth_name ).arg( authParts[auth_name].join( "','" ) );
+    QString prefix = " AND (";
+    foreach( QString auth_name, authParts.keys() )
+    {
+      sqlExpression += QString( "%1(auth_name='%2' AND auth_id IN ('%3'))" )
+                        .arg( prefix )
+                        .arg( auth_name )
+                        .arg( authParts[auth_name].join( "','" ) );
+      prefix = " OR ";
+    }
+    sqlExpression += ")";
   }
 
   QgsDebugMsg( "exiting with '" + sqlExpression + "'." );
