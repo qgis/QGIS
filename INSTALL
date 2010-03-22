@@ -176,11 +176,11 @@ for the existence of cmake and provides some clues to build QGIS.
   ==========================================================
 
 '''Required build deps:'''
-* CMake >= 2.4.3
+* CMake >= 2.6.0
 * Flex, Bison
 
 '''Required runtime deps:'''
-* Qt >= 4.3.0
+* Qt >= 4.4.0
 * Proj >= 4.4.x
 * GEOS >= 3.0
 * Sqlite3 >= 3.0.0
