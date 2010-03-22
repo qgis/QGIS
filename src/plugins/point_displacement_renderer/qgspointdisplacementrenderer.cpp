@@ -238,7 +238,7 @@ QList<QString> QgsPointDisplacementRenderer::usedAttributes()
   }
   if ( mRenderer )
   {
-    attributeList.append( mRenderer->usedAttributes() );
+    attributeList += mRenderer->usedAttributes();
   }
   return attributeList;
 }

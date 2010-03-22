@@ -35,8 +35,11 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
-#include <QNetworkDiskCache>
 #include <QNetworkProxy>
+
+#if QT_VERSION >= 0x40500
+#include <QNetworkDiskCache>
+#endif
 
 #include <QUrl>
 #include <QImage>
@@ -105,6 +108,7 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri )
       }
     }
 
+#if QT_VERSION >= 0x40500
     if ( !smNAM )
     {
       QgsDebugMsg( "application doesn't have a network access manager - creating wmscache" );
@@ -113,6 +117,7 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri )
       ndc->setCacheDirectory( "wmsCache" );
       smNAM->setCache( ndc );
     }
+#endif
   }
 
   // URL may contain username/password information for a WMS
@@ -670,11 +675,13 @@ void QgsWmsProvider::tileReplyFinished()
 {
   QNetworkReply *reply = qobject_cast<QNetworkReply*>( sender() );
 
+#if QT_VERSION >= 0x40500
   bool fromCache = reply->attribute( QNetworkRequest::SourceIsFromCacheAttribute ).toBool();
   if ( fromCache )
     mCacheHits++;
   else
     mCacheMisses++;
+#endif
   int tileReqNo = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 0 ) ).toInt();
   int tileNo = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 1 ) ).toInt();
   QRectF r = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 2 ) ).toRectF();

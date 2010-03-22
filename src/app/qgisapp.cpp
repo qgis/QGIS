@@ -68,10 +68,13 @@
 #include <QWhatsThis>
 
 #include <QNetworkAccessManager>
-#include <QNetworkDiskCache>
 #include <QNetworkReply>
 #include <QNetworkProxy>
 #include <QAuthenticator>
+
+#if QT_VERSION >= 0x40500
+#include <QNetworkDiskCache>
+#endif
 
 //
 // Mac OS X Includes
@@ -6270,9 +6273,6 @@ void QgisApp::namUpdate()
 
 #if QT_VERSION >= 0x40500
   mNAM->setProxyFactory( new QgsNetworkProxyFactory( proxy, excludes ) );
-#else
-  mNAM->setProxy( proxy );
-#endif
 
   QNetworkDiskCache *cache = qobject_cast<QNetworkDiskCache*>( nam()->cache() );
   if ( !cache )
@@ -6289,4 +6289,7 @@ void QgisApp::namUpdate()
 
   if ( mNAM->cache() != cache )
     mNAM->setCache( cache );
+#else
+  mNAM->setProxy( proxy );
+#endif
 }

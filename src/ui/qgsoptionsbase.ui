@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>813</width>
-    <height>565</height>
+    <height>605</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -1407,7 +1407,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBox_4">
+        <widget class="QGroupBox" name="grpCache">
          <property name="title">
           <string>Cache settings</string>
          </property>
