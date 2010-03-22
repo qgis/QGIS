@@ -76,6 +76,7 @@
 				7256F1B30F411C120022BE1F /* PBXTargetDependency */,
 				7256F1B10F411C120022BE1F /* PBXTargetDependency */,
 				720383870F8BA92B0083B883 /* PBXTargetDependency */,
+				72B236C711570990007B4803 /* PBXTargetDependency */,
 				7256F1C10F411C7C0022BE1F /* PBXTargetDependency */,
 				72FB0B6D0FFD6B8F0052360B /* PBXTargetDependency */,
 				7256F1AD0F411C120022BE1F /* PBXTargetDependency */,
@@ -1298,6 +1299,12 @@
 		72AF7B6610F8F1EB00BD549A /* qwt_polar_plot.h in Sources */ = {isa = PBXBuildFile; fileRef = 72AF7B4D10F8F02100BD549A /* qwt_polar_plot.h */; };
 		72AF7B7310F8F62400BD549A /* qgsattributeselectiondialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72AF7B7110F8F5F600BD549A /* qgsattributeselectiondialog.cpp */; };
 		72AF7B7410F8F67E00BD549A /* qgscomposertable.h in Sources */ = {isa = PBXBuildFile; fileRef = 7295BC7410F57CE8005D1408 /* qgscomposertable.h */; };
+		72B236B011570743007B4803 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
+		72B236B111570743007B4803 /* libqgis_gui.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F38E0F3A2F2B003DC336 /* libqgis_gui.dylib */; };
+		72B236BB115707EF007B4803 /* qgsdisplacementplugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72B236A411570705007B4803 /* qgsdisplacementplugin.cpp */; };
+		72B236BC115707EF007B4803 /* qgspointdisplacementrenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72B236A611570705007B4803 /* qgspointdisplacementrenderer.cpp */; };
+		72B236BD115707EF007B4803 /* qgspointdisplacementrendererwidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72B236A811570705007B4803 /* qgspointdisplacementrendererwidget.cpp */; };
+		72B236BE11570801007B4803 /* qgspointdisplacementrendererwidget.h in Sources */ = {isa = PBXBuildFile; fileRef = 72B236A911570705007B4803 /* qgspointdisplacementrendererwidget.h */; };
 		72BD9FE510A499D700FEA70F /* qgszonalstatistics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72BD9FE310A4998600FEA70F /* qgszonalstatistics.cpp */; };
 		72BD9FE610A499FA00FEA70F /* qgszonalstatistics.h in Headers */ = {isa = PBXBuildFile; fileRef = 72BD9FE410A4998600FEA70F /* qgszonalstatistics.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		72C77407111327B800BCB559 /* qgsattributeselectiondialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72AF7B7210F8F5F600BD549A /* qgsattributeselectiondialog.h */; };
@@ -2260,6 +2267,28 @@
 			);
 			script = "$QTMOC -nw $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
+		72B236B211570743007B4803 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.qrc";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"$(DERIVED_FILES_DIR)/qrc_$(INPUT_FILE_BASE).cpp",
+			);
+			script = "$QTRCC -name $INPUT_FILE_BASE -o \"$DERIVED_FILES_DIR/qrc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+		};
+		72B236B311570743007B4803 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.h";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
+			);
+			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+		};
 		72DB68DF1021D08400ED5F3A /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.proxy.script;
@@ -2596,6 +2625,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 72A07E090F3BEE16004FC2A4;
 			remoteInfo = qgisgrass;
+		};
+		72B236C611570990007B4803 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 72B236AC11570743007B4803 /* displacementplugin */;
+			remoteInfo = displacementplugin;
 		};
 		72BD9FEF10A49CEE00FEA70F /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -6805,6 +6841,15 @@
 		72AF7B5110F8F02100BD549A /* qwt_polar_spectrogram.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qwt_polar_spectrogram.h; path = ../../src/app/gps/qwtpolar/qwt_polar_spectrogram.h; sourceTree = SOURCE_ROOT; };
 		72AF7B7110F8F5F600BD549A /* qgsattributeselectiondialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsattributeselectiondialog.cpp; path = ../../src/app/composer/qgsattributeselectiondialog.cpp; sourceTree = SOURCE_ROOT; };
 		72AF7B7210F8F5F600BD549A /* qgsattributeselectiondialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsattributeselectiondialog.h; path = ../../src/app/composer/qgsattributeselectiondialog.h; sourceTree = SOURCE_ROOT; };
+		72B236A311570705007B4803 /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = CMakeLists.txt; sourceTree = "<group>"; };
+		72B236A411570705007B4803 /* qgsdisplacementplugin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = qgsdisplacementplugin.cpp; sourceTree = "<group>"; };
+		72B236A511570705007B4803 /* qgsdisplacementplugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = qgsdisplacementplugin.h; sourceTree = "<group>"; };
+		72B236A611570705007B4803 /* qgspointdisplacementrenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = qgspointdisplacementrenderer.cpp; sourceTree = "<group>"; };
+		72B236A711570705007B4803 /* qgspointdisplacementrenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = qgspointdisplacementrenderer.h; sourceTree = "<group>"; };
+		72B236A811570705007B4803 /* qgspointdisplacementrendererwidget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = qgspointdisplacementrendererwidget.cpp; sourceTree = "<group>"; };
+		72B236A911570705007B4803 /* qgspointdisplacementrendererwidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = qgspointdisplacementrendererwidget.h; sourceTree = "<group>"; };
+		72B236AA11570705007B4803 /* qgspointdisplacementrendererwidgetbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = qgspointdisplacementrendererwidgetbase.ui; sourceTree = "<group>"; };
+		72B236B711570743007B4803 /* libdisplacementplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libdisplacementplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		72B4DDC30F9F4C0D009351FE /* qgis_help.1 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.man; name = qgis_help.1; path = ../../qgis_help.1; sourceTree = SOURCE_ROOT; };
 		72B4DDC40F9F4C0D009351FE /* qgis.1 */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.man; name = qgis.1; path = ../../qgis.1; sourceTree = SOURCE_ROOT; };
 		72B4DDC50F9F4C0D009351FE /* qgis.dtd */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgis.dtd; path = ../../qgis.dtd; sourceTree = SOURCE_ROOT; };
@@ -7624,6 +7669,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		72B236AF11570743007B4803 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				72B236B011570743007B4803 /* libqgis_core.dylib in Frameworks */,
+				72B236B111570743007B4803 /* libqgis_gui.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		72DB68DD1021D08400ED5F3A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -7727,6 +7781,7 @@
 				72FEE3B1111D353300D28C1A /* qgis.d.rast */,
 				72FEE3C8111D378800D28C1A /* qgis.g.info */,
 				72463E451122FEF200BE5F17 /* qgis.g.browser */,
+				72B236B711570743007B4803 /* libdisplacementplugin.so */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -8646,6 +8701,7 @@
 				7209EBE90F39E57B003DC336 /* north_arrow */,
 				7209EBF90F39E57B003DC336 /* ogr_converter */,
 				7223B7720F969A9D00D905B4 /* oracle_raster */,
+				72B236A211570705007B4803 /* point_displacement_renderer */,
 				7209EC150F39E57B003DC336 /* quick_print */,
 				726C671C104602FB00EFEDCC /* raster_terrain_analysis */,
 				7209EC1E0F39E57B003DC336 /* scale_bar */,
@@ -12571,6 +12627,21 @@
 			path = ../../src/app/gps/qwtpolar;
 			sourceTree = SOURCE_ROOT;
 		};
+		72B236A211570705007B4803 /* point_displacement_renderer */ = {
+			isa = PBXGroup;
+			children = (
+				72B236A311570705007B4803 /* CMakeLists.txt */,
+				72B236A411570705007B4803 /* qgsdisplacementplugin.cpp */,
+				72B236A511570705007B4803 /* qgsdisplacementplugin.h */,
+				72B236A611570705007B4803 /* qgspointdisplacementrenderer.cpp */,
+				72B236A711570705007B4803 /* qgspointdisplacementrenderer.h */,
+				72B236A811570705007B4803 /* qgspointdisplacementrendererwidget.cpp */,
+				72B236A911570705007B4803 /* qgspointdisplacementrendererwidget.h */,
+				72B236AA11570705007B4803 /* qgspointdisplacementrendererwidgetbase.ui */,
+			);
+			path = point_displacement_renderer;
+			sourceTree = "<group>";
+		};
 		72DB68CF1021D06C00ED5F3A /* osm */ = {
 			isa = PBXGroup;
 			children = (
@@ -13929,6 +14000,25 @@
 			productReference = 72A56DA30F3CCAF700BA32A1 /* libplugin.so */;
 			productType = "com.apple.product-type.tool";
 		};
+		72B236AC11570743007B4803 /* displacementplugin */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 72B236B411570743007B4803 /* Build configuration list for PBXNativeTarget "displacementplugin" */;
+			buildPhases = (
+				72B236AD11570743007B4803 /* Script - ui */,
+				72B236AE11570743007B4803 /* Sources */,
+				72B236AF11570743007B4803 /* Frameworks */,
+			);
+			buildRules = (
+				72B236B211570743007B4803 /* PBXBuildRule */,
+				72B236B311570743007B4803 /* PBXBuildRule */,
+			);
+			dependencies = (
+			);
+			name = displacementplugin;
+			productName = testprog;
+			productReference = 72B236B711570743007B4803 /* libdisplacementplugin.so */;
+			productType = "com.apple.product-type.tool";
+		};
 		72DB68DB1021D08400ED5F3A /* osmprovider */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 72DB68E01021D08400ED5F3A /* Build configuration list for PBXNativeTarget "osmprovider" */;
@@ -14105,6 +14195,7 @@
 				72A07E570F3BF35F004FC2A4 /* copyrightlabelplugin */,
 				72A56B290F3C810600BA32A1 /* delimitedtextplugin */,
 				720383490F8B905D0083B883 /* diagramoverlayplugin */,
+				72B236AC11570743007B4803 /* displacementplugin */,
 				72A56BFB0F3C887000BA32A1 /* dxf2shpconverterplugin */,
 				72FB0B4A0FFD680F0052360B /* evisplugin */,
 				72A56B6C0F3C824400BA32A1 /* interpolationplugin */,
@@ -14563,6 +14654,21 @@
 			showEnvVarsInLog = 0;
 		};
 		72A56D960F3CCAF700BA32A1 /* Script - ui */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Script - ui";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# generate ui headers in separate script because:\n#  1. Xcode will attempt to process generated *.h with moc rule\n#  2. parallel processing might not finish ui's before a cpp source needs it\n\n# derived sources dir created by Compile Sources phase, we need it NOW\nmkdir -p \"$DERIVED_FILES_DIR\"\n\ncd ../../src/plugins/$TARGET_PLUGINDIR\n\nUIUI=`ls *.ui`\n\nfor u in $UIUI\ndo\n\tuh=`echo $u | sed 's,\\.ui$,.h,'`\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\tif [ ! -f \"$DERIVED_FILES_DIR/ui_$uh\" ] || [ $u -nt \"$DERIVED_FILES_DIR/ui_$uh\" ] ; then\n\t\trm -f \"$DERIVED_FILES_DIR/ui_$uh\"\n\t\techo \"$QTUIC -o \\\"$DERIVED_FILES_DIR/ui_$uh\\\" $u\"\n\t\t$QTUIC -o \"$DERIVED_FILES_DIR/ui_$uh\" $u\n\tfi\ndone\n\nexit 0\n";
+			showEnvVarsInLog = 0;
+		};
+		72B236AD11570743007B4803 /* Script - ui */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -15486,6 +15592,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		72B236AE11570743007B4803 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				72B236BB115707EF007B4803 /* qgsdisplacementplugin.cpp in Sources */,
+				72B236BC115707EF007B4803 /* qgspointdisplacementrenderer.cpp in Sources */,
+				72B236BD115707EF007B4803 /* qgspointdisplacementrendererwidget.cpp in Sources */,
+				72B236BE11570801007B4803 /* qgspointdisplacementrendererwidget.h in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		72DB68DC1021D08400ED5F3A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -15985,6 +16102,11 @@
 			isa = PBXTargetDependency;
 			target = 72A07E090F3BEE16004FC2A4 /* qgisgrass */;
 			targetProxy = 72A07E520F3BF191004FC2A4 /* PBXContainerItemProxy */;
+		};
+		72B236C711570990007B4803 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 72B236AC11570743007B4803 /* displacementplugin */;
+			targetProxy = 72B236C611570990007B4803 /* PBXContainerItemProxy */;
 		};
 		72BD9FF010A49CEE00FEA70F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -17296,6 +17418,7 @@
 					"$(QT_LIB_CORE)",
 					"$(QT_LIB_XML)",
 					"$(QT_LIB_GUI)",
+					"$(QT_LIB_NET)",
 				);
 				PRODUCT_NAME = wmsprovider.so;
 			};
@@ -17324,6 +17447,7 @@
 					"$(QT_LIB_CORE)",
 					"$(QT_LIB_XML)",
 					"$(QT_LIB_GUI)",
+					"$(QT_LIB_NET)",
 				);
 				PRODUCT_NAME = wmsprovider.so;
 			};
@@ -18885,6 +19009,81 @@
 			};
 			name = Release;
 		};
+		72B236B511570743007B4803 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
+				EXECUTABLE_PREFIX = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					displacement_EXPORTS,
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					../../src/plugins,
+					../../src/plugins/point_displacement_renderer,
+					../../src/core,
+					../../src/core/spatialindex,
+					"../../src/core/symbology-ng",
+					../../src/gui,
+					"../../src/gui/symbology-ng",
+					"$(HEADER_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(GEOS_INC)",
+				);
+				HEADER_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(TARGET_TEMP_DIR)/../qgis_gui.build/DerivedSources\"";
+				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"$(QT_LIB_CORE)",
+					"$(QT_LIB_GUI)",
+					"$(QT_LIB_XML)",
+				);
+				PRODUCT_NAME = displacementplugin.so;
+				TARGET_PLUGINDIR = point_displacement_renderer;
+			};
+			name = Debug;
+		};
+		72B236B611570743007B4803 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
+				EXECUTABLE_PREFIX = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					displacement_EXPORTS,
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					../../src/plugins,
+					../../src/plugins/point_displacement_renderer,
+					../../src/core,
+					../../src/core/spatialindex,
+					"../../src/core/symbology-ng",
+					../../src/gui,
+					"../../src/gui/symbology-ng",
+					"$(HEADER_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+					"$(GEOS_INC)",
+				);
+				HEADER_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(TARGET_TEMP_DIR)/../qgis_gui.build/DerivedSources\"";
+				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"$(QT_LIB_CORE)",
+					"$(QT_LIB_GUI)",
+					"$(QT_LIB_XML)",
+				);
+				PRODUCT_NAME = displacementplugin.so;
+				TARGET_PLUGINDIR = point_displacement_renderer;
+			};
+			name = Release;
+		};
 		72DB68E11021D08400ED5F3A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -19369,7 +19568,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 13107;
+				QGIS_VERSION_BUILD = 13139;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -19380,7 +19579,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 13107;
+				QGIS_VERSION_BUILD = 13139;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
@@ -19798,6 +19997,15 @@
 			buildConfigurations = (
 				72A56DA10F3CCAF700BA32A1 /* Debug */,
 				72A56DA20F3CCAF700BA32A1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		72B236B411570743007B4803 /* Build configuration list for PBXNativeTarget "displacementplugin" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				72B236B511570743007B4803 /* Debug */,
+				72B236B611570743007B4803 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
