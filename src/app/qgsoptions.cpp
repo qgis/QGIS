@@ -29,7 +29,10 @@
 #include <QColorDialog>
 #include <QLocale>
 #include <QNetworkAccessManager>
+
+#if QT_VERSION >= 0x40500
 #include <QNetworkDiskCache>
+#endif
 
 #include <limits>
 #include <sqlite3.h>
@@ -116,10 +119,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
     }
   }
 
-#if QT_VERSION < 0x40500
-  grpUrlExclude->setHidden( true );
-#endif
-
+#if QT_VERSION >= 0x40500
   // cache settings
   QNetworkDiskCache *cache = qobject_cast<QNetworkDiskCache*>( QgisApp::instance()->nam()->cache() );
   if ( cache )
@@ -131,6 +131,10 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
     QgsDebugMsg( QString( "set cacheSize: %1" ).arg( cache->maximumCacheSize() ) );
     mCacheSize->setValue( cache->maximumCacheSize() / 1024 );
   }
+#else
+  grpUrlExclude->setHidden( true );
+  grpCache->setHidden( true );
+#endif
 
   //wms search server
   leWmsSearch->setText( settings.value( "/qgis/WMSSearchUrl", "http://geopole.org/wms/search?search=%1&type=rss" ).toString() );
@@ -868,5 +872,7 @@ void QgsOptions::on_mBrowseCacheDirectory_clicked()
 
 void QgsOptions::on_mClearCache_clicked()
 {
+#if QT_VERSION >= 0x40500
   QgisApp::instance()->nam()->cache()->clear();
+#endif
 }
