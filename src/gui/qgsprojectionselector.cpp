@@ -206,7 +206,7 @@ void QgsProjectionSelector::showEvent( QShowEvent * theEvent )
     pbnPopular4->show();
   }
 
-  // Pass up the inheritance heirarchy
+  // Pass up the inheritance hierarchy
   QWidget::showEvent( theEvent );
 }
 
@@ -256,7 +256,7 @@ QString QgsProjectionSelector::ogcWmsCrsFilterAsSqlExpression( QSet<QString> * c
     QString prefix = " AND (";
     foreach( QString auth_name, authParts.keys() )
     {
-      sqlExpression += QString( "%1(auth_name='%2' AND auth_id IN ('%3'))" )
+      sqlExpression += QString( "%1(lower(auth_name)=lower('%2') AND auth_id IN ('%3'))" )
                         .arg( prefix )
                         .arg( auth_name )
                         .arg( authParts[auth_name].join( "','" ) );
