@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>328</width>
-    <height>469</height>
+    <width>327</width>
+    <height>505</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -110,6 +110,27 @@
          <widget class="QDoubleSpinBox" name="mCircleModificationSpinBox">
           <property name="minimum">
            <double>-99.000000000000000</double>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="3" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_10">
+        <item>
+         <widget class="QLabel" name="mDistanceToleranceLabel">
+          <property name="text">
+           <string>Point distance tolerance:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QDoubleSpinBox" name="mDistanceSpinBox">
+          <property name="decimals">
+           <number>7</number>
+          </property>
+          <property name="maximum">
+           <double>9999.000000000000000</double>
           </property>
          </widget>
         </item>
