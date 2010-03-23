@@ -24352,7 +24352,7 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
         <comment>selected layer count</comment>
         <translation>
             <numerusform>Ein Layer gewählt</numerusform>
-            <numerusform>%1 Layer gewählt</numerusform>
+            <numerusform>%n Layer gewählt</numerusform>
         </translation>
     </message>
     <message>
@@ -24944,7 +24944,7 @@ URL %1 versucht</translation>
         <comment>tile request count</comment>
         <translation>
             <numerusform>Eine Tile-Anfrage im Hintergrund</numerusform>
-            <numerusform>%1Tile-Anfragen im Hintergrund</numerusform>
+            <numerusform>%n Tile-Anfragen im Hintergrund</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -24954,7 +24954,7 @@ URL %1 versucht</translation>
         <comment>tile cache hits</comment>
         <translation>
             <numerusform>, ein Cache-Treffer</numerusform>
-            <numerusform>, %1 Cache-Treffer</numerusform>
+            <numerusform>, %n Cache-Treffer</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -24964,7 +24964,7 @@ URL %1 versucht</translation>
         <comment>tile cache missed</comment>
         <translation>
             <numerusform>, ein Cache-Fehlgriff</numerusform>
-            <numerusform>, %1 Cache-Fehlgriffe</numerusform>
+            <numerusform>, %n Cache-Fehlgriffe</numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -24974,7 +24974,7 @@ URL %1 versucht</translation>
         <comment>errors</comment>
         <translation>
             <numerusform>, ein Fehler.</numerusform>
-            <numerusform>, %1 Fehler.</numerusform>
+            <numerusform>, %n Fehler.</numerusform>
         </translation>
     </message>
     <message>
