@@ -47,6 +47,7 @@ class QgsPointDisplacementRendererWidget: public QgsRendererV2Widget, private Ui
     void on_mLabelFontButton_clicked();
     void on_mCircleWidthSpinBox_valueChanged( double d );
     void on_mCircleColorButton_clicked();
+    void on_mDistanceSpinBox_valueChanged( double d );
     void on_mLabelColorButton_clicked();
     void on_mCircleModificationSpinBox_valueChanged( double d );
     void on_mScaleDependentLabelsCheckBox_stateChanged( int state );

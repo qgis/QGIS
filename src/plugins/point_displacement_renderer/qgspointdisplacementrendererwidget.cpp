@@ -98,6 +98,7 @@ QgsPointDisplacementRendererWidget::QgsPointDisplacementRendererWidget( QgsVecto
   mCircleColorButton->setColor( mRenderer->circleColor() );
   mLabelColorButton->setColor( mRenderer->labelColor() );
   mCircleModificationSpinBox->setValue( mRenderer->circleRadiusAddition() );
+  mDistanceSpinBox->setValue( mRenderer->tolerance() );
 
   //scale dependent labelling
   mMaxScaleDenominatorEdit->setText( QString::number( mRenderer->maxLabelScaleDenominator() ) );
@@ -265,6 +266,14 @@ void QgsPointDisplacementRendererWidget::on_mCircleModificationSpinBox_valueChan
   mRenderer->setCircleRadiusAddition( d );
 }
 
+void QgsPointDisplacementRendererWidget::on_mDistanceSpinBox_valueChanged( double d )
+{
+  if ( mRenderer )
+  {
+    mRenderer->setTolerance( d );
+  }
+}
+
 void QgsPointDisplacementRendererWidget::on_mScaleDependentLabelsCheckBox_stateChanged( int state )
 {
   if ( state == Qt::Unchecked )
@@ -305,6 +314,7 @@ void QgsPointDisplacementRendererWidget::blockAllSignals( bool block )
   mScaleDependentLabelsCheckBox->blockSignals( block );
   mMaxScaleDenominatorEdit->blockSignals( block );
   mCenterSymbolPushButton->blockSignals( block );
+  mDistanceSpinBox->blockSignals( block );
 }
 
 void QgsPointDisplacementRendererWidget::on_mCenterSymbolPushButton_clicked()

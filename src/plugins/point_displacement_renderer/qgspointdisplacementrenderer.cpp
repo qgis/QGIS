@@ -58,6 +58,7 @@ QgsFeatureRendererV2* QgsPointDisplacementRenderer::clone()
   r->setLabelColor( mLabelColor );
   r->setCircleRadiusAddition( mCircleRadiusAddition );
   r->setMaxLabelScaleDenominator( mMaxLabelScaleDenominator );
+  r->setTolerance( mTolerance );
   if ( mCenterSymbol )
   {
     r->setCenterSymbol( dynamic_cast<QgsMarkerSymbolV2*>( mCenterSymbol->clone() ) );
