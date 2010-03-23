@@ -24,20 +24,21 @@ QT4_WRAP_CPP (POINT_DISPLACEMENT_MOC_SRCS  ${POINT_DISPLACEMENT_MOC_HDRS})
 
 ADD_LIBRARY (displacementplugin MODULE 
   ${POINT_DISPLACEMENT_SRCS}
-${POINT_DISPLACEMENT_UIS_H}
-${POINT_DISPLACEMENT_MOC_SRCS}
+  ${POINT_DISPLACEMENT_UIS_H}
+  ${POINT_DISPLACEMENT_MOC_SRCS}
 )
 
 INCLUDE_DIRECTORIES(
-     ${CMAKE_CURRENT_BINARY_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}/../../ui
-     ../../core 
-     ../../core/symbology-ng
-     ../../core/spatialindex
+    ${GEOS_INCLUDE_DIR}
+    ../../core 
+    ../../core/symbology-ng
+    ../../core/spatialindex
     ../../gui
     ../../gui/symbology-ng
-     ..
-     .
+    ..
+    .
 )
 
 TARGET_LINK_LIBRARIES(displacementplugin

@@ -40,8 +40,13 @@ QT4_WRAP_CPP (DIAGRAMOVERLAY_MOC_SRCS  ${DIAGRAMOVERLAY_MOC_HDRS})
 ADD_LIBRARY (diagramoverlay MODULE ${DIAGRAMOVERLAY_UIS_H} ${DIAGRAMOVERLAY_SRCS} ${DIAGRAMOVERLAY_MOC_SRCS})
 
 INCLUDE_DIRECTORIES(
-     ${CMAKE_CURRENT_BINARY_DIR} ${GEOS_INCLUDE_DIR}
-     ../../core ../../core/pal ../../core/raster ../../core/renderer ../../core/symbology
+     ${CMAKE_CURRENT_BINARY_DIR}
+     ${GEOS_INCLUDE_DIR}
+     ../../core
+     ../../core/pal
+     ../../core/raster
+     ../../core/renderer
+     ../../core/symbology
      ../../gui
      ..
 )
