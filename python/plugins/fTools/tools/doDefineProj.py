@@ -65,40 +65,43 @@ class Dialog(QDialog, Ui_Dialog):
                     destLayer = self.getVectorLayerByName(self.cmbLayer.currentText())
                     srsDefine = destLayer.srs()
                 if srsDefine == vLayer.srs():
-                    QMessageBox.information(self, self.tr("Define current projection"), self.tr("Identical output spatial reference system chosen"))
+                    responce = QMessageBox.question(self, self.tr("Define current projection"),
+                    self.tr("Identical output spatial reference system chosen\n\nAre you sure you want to proceed?"),
+                    QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
+                    if responce == QMessageBox.No:
+                        return
+                provider = vLayer.dataProvider()
+                self.progressBar.setValue(35)
+                inPath = provider.dataSourceUri()
+                inPath = inPath.remove( QRegExp( "\|.*" ) )
+                self.progressBar.setValue(40)
+                if inPath.endsWith(".shp"):
+                    inPath = inPath.left(inPath.length() - 4)
+                self.progressBar.setValue(55)
+                if not srsDefine.isValid():
+                    QMessageBox.information(self, self.tr("Define current projection"), self.tr("Output spatial reference system is not valid"))
                 else:
-                    provider = vLayer.dataProvider()
-                    self.progressBar.setValue(35)
-                    inPath = provider.dataSourceUri()
-                    inPath = inPath.remove( QRegExp( "\|.*" ) )
-                    self.progressBar.setValue(40)
-                    if inPath.endsWith(".shp"):
-                        inPath = inPath.left(inPath.length() - 4)
-                    self.progressBar.setValue(55)
-                    if not srsDefine.isValid():
-                        QMessageBox.information(self, self.tr("Define current projection"), self.tr("Output spatial reference system is not valid"))
-                    else:
-                        self.progressBar.setValue(60)
-                        outputWkt = srsDefine.toWkt()
-                        self.progressBar.setValue(65)
-                        outputFile = QFile( inPath + ".prj" )
-                        outputFile.open( QIODevice.WriteOnly | QIODevice.Text )
-                        outputPrj = QTextStream( outputFile )
+                    self.progressBar.setValue(60)
+                    outputWkt = srsDefine.toWkt()
+                    self.progressBar.setValue(65)
+                    outputFile = QFile( inPath + ".prj" )
+                    outputFile.open( QIODevice.WriteOnly | QIODevice.Text )
+                    outputPrj = QTextStream( outputFile )
+                    outputPrj << outputWkt
+                    outputPrj.flush()
+                    outputFile.close()
+                    self.progressBar.setValue(70)
+                    checkFile = QFile( inPath + ".qpj" )
+                    if checkFile.exists():
+                        checkFile.open( QIODevice.WriteOnly | QIODevice.Text )
+                        outputPrj = QTextStream( checkFile )
                         outputPrj << outputWkt
                         outputPrj.flush()
-                        outputFile.close()
-                        self.progressBar.setValue(70)
-                        checkFile = QFile( inPath + ".qpj" )
-                        if checkFile.exists():
-                            checkFile.open( QIODevice.WriteOnly | QIODevice.Text )
-                            outputPrj = QTextStream( checkFile )
-                            outputPrj << outputWkt
-                            outputPrj.flush()
-                            checkFile.close()
-                        self.progressBar.setValue(95)
-                        vLayer.setCrs(srsDefine)
-                        self.progressBar.setValue(100)
-                        QMessageBox.information(self, self.tr("Define current projection"), self.tr("Defined Projection For:\n%1.shp").arg( inPath ) )
+                        checkFile.close()
+                    self.progressBar.setValue(95)
+                    vLayer.setCrs(srsDefine)
+                    self.progressBar.setValue(100)
+                    QMessageBox.information(self, self.tr("Define current projection"), self.tr("Defined Projection For:\n%1.shp").arg( inPath ) )
         self.progressBar.setValue(0)
 
     def outProjFile(self):
