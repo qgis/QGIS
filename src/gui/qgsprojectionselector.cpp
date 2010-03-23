@@ -245,21 +245,21 @@ QString QgsProjectionSelector::ogcWmsCrsFilterAsSqlExpression( QSet<QString> * c
     if ( parts.size() < 2 )
       continue;
 
-    authParts[ parts.at( 0 )].append( parts.at( 1 ) );
+    authParts[ parts.at( 0 ).toUpper()].append( parts.at( 1 ).toUpper() );
   }
 
   if ( authParts.isEmpty() )
     return sqlExpression;
 
-  if( authParts.size() > 0 )
+  if ( authParts.size() > 0 )
   {
     QString prefix = " AND (";
     foreach( QString auth_name, authParts.keys() )
     {
-      sqlExpression += QString( "%1(lower(auth_name)=lower('%2') AND auth_id IN ('%3'))" )
-                        .arg( prefix )
-                        .arg( auth_name )
-                        .arg( authParts[auth_name].join( "','" ) );
+      sqlExpression += QString( "%1(upper(auth_name)='%2' AND upper(auth_id) IN ('%3'))" )
+                       .arg( prefix )
+                       .arg( auth_name )
+                       .arg( authParts[auth_name].join( "','" ) );
       prefix = " OR ";
     }
     sqlExpression += ")";
@@ -620,7 +620,7 @@ long QgsProjectionSelector::selectedPostgresSrId()
 
 QString QgsProjectionSelector::selectedAuthId()
 {
-  return getSelectedExpression( "auth_name||':'||auth_id" );
+  return getSelectedExpression( "upper(auth_name||':'||auth_id)" );
 }
 
 
@@ -788,7 +788,7 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> * crsFilter )
   // Set up the query to retrieve the projection information needed to populate the list
   //note I am giving the full field names for clarity here and in case someone
   //changes the underlying view TS
-  sql = QString( "select description, srs_id, auth_name||':'||auth_id, is_geo, name, parameters, deprecated from vw_srs where %1 order by name,description" )
+  sql = QString( "select description, srs_id, upper(auth_name||':'||auth_id), is_geo, name, parameters, deprecated from vw_srs where %1 order by name,description" )
         .arg( sqlFilter );
 
   rc = sqlite3_prepare( db, sql.toUtf8(), sql.toUtf8().length(), &ppStmt, &pzTail );
@@ -897,24 +897,24 @@ void QgsProjectionSelector::coordinateSystemSelected( QTreeWidgetItem * theItem 
 
 void QgsProjectionSelector::hideDeprecated( QTreeWidgetItem *item )
 {
-  if( item->data( 0, Qt::UserRole ).toBool() )
+  if ( item->data( 0, Qt::UserRole ).toBool() )
   {
     item->setHidden( cbxHideDeprecated->isChecked() );
-    if( item->isSelected() && item->isHidden() )
+    if ( item->isSelected() && item->isHidden() )
     {
       teProjection->setText( "" );
       item->setSelected( false );
     }
   }
 
-  for( int i=0; i < item->childCount(); i++ )
-    hideDeprecated( item->child(i) );
+  for ( int i = 0; i < item->childCount(); i++ )
+    hideDeprecated( item->child( i ) );
 }
 
 void QgsProjectionSelector::on_cbxHideDeprecated_stateChanged()
 {
-  for( int i = 0; i<lstCoordinateSystems->topLevelItemCount(); i++ )
-    hideDeprecated( lstCoordinateSystems->topLevelItem(i) );
+  for ( int i = 0; i < lstCoordinateSystems->topLevelItemCount(); i++ )
+    hideDeprecated( lstCoordinateSystems->topLevelItem( i ) );
 }
 
 void QgsProjectionSelector::on_pbnPopular1_clicked()
@@ -946,14 +946,14 @@ void QgsProjectionSelector::on_pbnFind_clicked()
   QString mySql;
   if ( radAuthId->isChecked() )
   {
-    mySql = QString( "select srs_id from tbl_srs where auth_name||':'||auth_id='%1'" ).arg( mySearchString );
+    mySql = QString( "select srs_id from tbl_srs where upper(auth_name||':'||auth_id)='%1'" ).arg( mySearchString.toUpper() );
   }
   else if ( radName->isChecked() ) //name search
   {
     //we need to find what the largest srsid matching our query so we know whether to
     //loop backto the beginning
-    mySql = "select srs_id from tbl_srs where description like '%" + mySearchString + "%'";
-    if( cbxHideDeprecated->isChecked() )
+    mySql = "select srs_id from tbl_srs where upper(description) like '%" + mySearchString.toUpper() + "%'";
+    if ( cbxHideDeprecated->isChecked() )
       mySql += " and not deprecated";
     mySql += " order by srs_id desc limit 1";
     long myLargestSrsId = getLargestCRSIDMatch( mySql );
@@ -963,16 +963,16 @@ void QgsProjectionSelector::on_pbnFind_clicked()
     if ( myLargestSrsId <= selectedCrsId() )
     {
       //roll search around to the beginning
-      mySql = "select srs_id from tbl_srs where description like '%" + mySearchString + "%'";
-      if( cbxHideDeprecated->isChecked() )
+      mySql = "select srs_id from tbl_srs where upper(description) like '%" + mySearchString.toUpper() + "%'";
+      if ( cbxHideDeprecated->isChecked() )
         mySql += " and not deprecated";
       mySql += " order by srs_id limit 1";
     }
     else
     {
       // search ahead of the current position
-      mySql = "select srs_id from tbl_srs where description like '%" + mySearchString + "%'";
-      if( cbxHideDeprecated->isChecked() )
+      mySql = "select srs_id from tbl_srs where upper(description) like '%" + mySearchString.toUpper() + "%'";
+      if ( cbxHideDeprecated->isChecked() )
         mySql += " and not deprecated";
       mySql += " and srs_id > " + QString::number( selectedCrsId() ) + " order by srs_id limit 1";
     }
