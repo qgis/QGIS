@@ -86,6 +86,9 @@ class QgsPointDisplacementRenderer: public QgsFeatureRendererV2
     /**Sets the center symbol (takes ownership)*/
     void setCenterSymbol( QgsMarkerSymbolV2* symbol );
 
+    void setTolerance( double t ) { mTolerance = t; }
+    double tolerance() const { return mTolerance; }
+
   private:
 
     /**Embedded renderer. Like This, it is possible to use a classification together with point displacement*/
