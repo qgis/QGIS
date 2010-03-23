@@ -5,7 +5,7 @@
     copyright            :
     original             : (C) 2005 by Brendan Morley email  : morb at ozemail dot com dot au
     wms search           : (C) 2009 Mathias Walker <mwa at sourcepole.ch>, Sourcepole AG
-    wms-c support        : (C) 2010 Jürgen E. Fischer < jef at norbit dot de >, norBIT GmbH
+    wms-c support        : (C) 2010 Juergen E. Fischer < jef at norbit dot de >, norBIT GmbH
 
  ***************************************************************************/
 
@@ -56,14 +56,17 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WFlags fl )
   setupUi( this );
 
   mAddButton = new QPushButton( tr( "&Add" ) );
+  mAddButton->setToolTip( tr( "Add selected layers to map" ) );
   buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
   connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addClicked() ) );
 
   QPushButton *pb = new QPushButton( tr( "&Save" ) );
+  pb->setToolTip( tr( "Save WMS server connections to file" ) );
   buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
   connect( pb, SIGNAL( clicked() ), this, SLOT( saveClicked() ) );
 
   pb = new QPushButton( tr( "&Load" ) );
+  pb->setToolTip( tr( "Load WMS server connections from file" ) );
   buttonBox->addButton( pb, QDialogButtonBox::ActionRole );
   connect( pb, SIGNAL( clicked() ), this, SLOT( loadClicked() ) );
 

@@ -568,26 +568,32 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     double ymax = std::min( viewExtent.yMaximum(), layerExtent.yMaximum() );
 
     // snap to tile coordinates
-    double x0 = floor( xmin / dx ) * dx;
-    double y0 = floor( ymin / dy ) * dy;
+    double x0 = floor(( xmin - layerExtent.xMinimum() ) / dx ) * dx + layerExtent.xMinimum();
+    double y0 = floor(( ymin - layerExtent.yMinimum() ) / dy ) * dy + layerExtent.yMinimum();
 
 #ifdef QGISDEBUG
     // calculate number of tiles
     int n = ceil(( xmax - xmin ) / dx ) * ceil(( ymax - ymin ) / dy );
 #endif
 
+    QgsDebugMsg( QString( "layer extent: %1,%2 %3x%4" )
+                 .arg( layerExtent.xMinimum(), 0, 'f' )
+                 .arg( layerExtent.yMinimum(), 0, 'f' )
+                 .arg( layerExtent.width() )
+                 .arg( layerExtent.height() )
+               );
     QgsDebugMsg( QString( "view extent: %1,%2 %3x%4  res:%5" )
-                 .arg( viewExtent.xMinimum() )
-                 .arg( viewExtent.yMinimum() )
+                 .arg( viewExtent.xMinimum(), 0, 'f' )
+                 .arg( viewExtent.yMinimum(), 0, 'f' )
                  .arg( viewExtent.width() )
                  .arg( viewExtent.height() )
-                 .arg( vres )
+                 .arg( vres, 0, 'f' )
                );
     QgsDebugMsg( QString( "tile extent: %1,%2 %3x%4 pixel:%5x%6 res:%7" )
-                 .arg( x0 ).arg( y0 )
-                 .arg( dx ).arg( dy )
+                 .arg( x0, 0, 'f' ).arg( y0, 0, 'f' )
+                 .arg( dx, 0, 'f' ).arg( dy, 0, 'f' )
                  .arg( mTileWidth ).arg( mTileHeight )
-                 .arg( tres )
+                 .arg( tres, 0, 'f' )
                );
     QgsDebugMsg( QString( "tile number: %1x%2 = %3" )
                  .arg( ceil(( xmax - xmin ) / dx ) )
@@ -643,29 +649,29 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
         tileReplies << reply;
         connect( reply, SIGNAL( finished() ), this, SLOT( tileReplyFinished() ) );
       }
+    }
 
-      mWaiting = true;
+    mWaiting = true;
 
-      QTime t;
-      t.start();
+    QTime t;
+    t.start();
 
-      // draw everything that is retrieved within a second
-      // and the rest asynchronously
-      while ( !tileReplies.isEmpty() && t.elapsed() < WMS_THRESHOLD )
-      {
-        QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, WMS_THRESHOLD );
-      }
+    // draw everything that is retrieved within a second
+    // and the rest asynchronously
+    while ( !tileReplies.isEmpty() && t.elapsed() < WMS_THRESHOLD )
+    {
+      QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, WMS_THRESHOLD );
+    }
 
-      mWaiting = false;
+    mWaiting = false;
 
 #ifdef QGISDEBUG
-      emit statusChanged( tr( "%n tile requests in background", "tile request count", tileReplies.count() )
-                          + tr( ", %n cache hits", "tile cache hits", mCacheHits )
-                          + tr( ", %n cache misses.", "tile cache missed", mCacheMisses )
-                          + tr( ", %n errors.", "errors", mErrors )
-                        );
+    emit statusChanged( tr( "%n tile requests in background", "tile request count", tileReplies.count() )
+                        + tr( ", %n cache hits", "tile cache hits", mCacheHits )
+                        + tr( ", %n cache misses.", "tile cache missed", mCacheMisses )
+                        + tr( ", %n errors.", "errors", mErrors )
+                      );
 #endif
-    }
   }
 
   return cachedImage;
@@ -688,7 +694,7 @@ void QgsWmsProvider::tileReplyFinished()
 
   QgsDebugMsg( QString( "tile reply %1 (%2) tile:%3 rect:%4,%5 %6x%7) fromcache:%8 error:%9" )
                .arg( tileReqNo ).arg( mTileReqNo ).arg( tileNo )
-               .arg( r.left() ).arg( r.bottom() ).arg( r.width() ).arg( r.height() )
+               .arg( r.left(), 0, 'f' ).arg( r.bottom(), 0, 'f' ).arg( r.width(), 0, 'f' ).arg( r.height(), 0, 'f' )
                .arg( fromCache )
                .arg( reply->errorString() )
              );
@@ -2109,9 +2115,34 @@ QString QgsWmsProvider::metadata()
 {
   QString myMetadataQString = "";
 
+  myMetadataQString += "<tr><td>";
+
+  myMetadataQString += "<a href=\"#serverproperties\">";
+  myMetadataQString += tr( "Server Properties" );
+  myMetadataQString += "</a> ";
+
+  myMetadataQString += "<a href=\"#layerproperties\">";
+  myMetadataQString += tr( "Layer Properties" );
+  myMetadataQString += "</a> ";
+
+  if ( tilesetsSupported.size() > 0 )
+  {
+    myMetadataQString += "<a href=\"#tilesetproperties\">";
+    myMetadataQString += tr( "Tileset Properties" );
+    myMetadataQString += "</a> ";
+
+#if QT_VERSION >= 0x40500
+    myMetadataQString += "<a href=\"#cachestats\">";
+    myMetadataQString += tr( "Cache Stats" );
+    myMetadataQString += "</a> ";
+#endif
+  }
+
+  myMetadataQString += "</td></tr>";
+
   // Server Properties section
-  myMetadataQString += "<tr><td bgcolor=\"gray\">";
-  myMetadataQString += tr( "Server Properties:" );
+  myMetadataQString += "<tr><td bgcolor=\"gray\"><a name=\"serverproperties\"></a>";
+  myMetadataQString += tr( "Server Properties" );
   myMetadataQString += "</td></tr>";
 
   // Use a nested table
@@ -2242,7 +2273,7 @@ QString QgsWmsProvider::metadata()
   myMetadataQString += "</td></tr>";
 
   // Layer properties
-  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += "<tr><td bgcolor=\"gray\"><a name=\"layerproperties\"></a>";
   myMetadataQString += tr( "Layer Properties:" );
   myMetadataQString += "</td></tr>";
 
@@ -2436,8 +2467,8 @@ QString QgsWmsProvider::metadata()
   // Tileset properties
   if ( tilesetsSupported.size() > 0 )
   {
-    myMetadataQString += "<tr><td bgcolor=\"gray\">";
-    myMetadataQString += tr( "Tileset Properties:" );
+    myMetadataQString += "<tr><td bgcolor=\"gray\"><a name=\"tilesetproperties\"></a>";
+    myMetadataQString += tr( "Tileset Properties" );
     myMetadataQString += "</td></tr>";
 
     // Iterate through tilesets
@@ -2501,10 +2532,13 @@ QString QgsWmsProvider::metadata()
       myMetadataQString += "</td></tr>";
     }
 
+    myMetadataQString += "</table></td></tr>";
+
+#if QT_VERSION >= 0x40500
     if ( mTiled )
     {
-      myMetadataQString += "<tr><td bgcolor=\"gray\">";
-      myMetadataQString += tr( "Cache stats:" );
+      myMetadataQString += "<tr><td bgcolor=\"gray\"><a name=\"cachestats\"></a>";
+      myMetadataQString += tr( "Cache stats" );
       myMetadataQString += "</td></tr>";
 
       // Iterate through tilesets
@@ -2536,8 +2570,9 @@ QString QgsWmsProvider::metadata()
       myMetadataQString += QString::number( mErrors );
       myMetadataQString += "</td></tr>";
 
-      myMetadataQString += "</table>";
+      myMetadataQString += "</table></td></tr>";
     }
+#endif
   }
 
   myMetadataQString += "</table>";
