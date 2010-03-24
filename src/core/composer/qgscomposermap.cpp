@@ -34,6 +34,7 @@
 #include "qgslabelattributes.h"
 
 #include <QGraphicsScene>
+#include <QGraphicsView>
 #include <QPainter>
 #include <QSettings>
 #include <iostream>
@@ -42,7 +43,7 @@
 QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int width, int height )
     : QgsComposerItem( x, y, width, height, composition ), mKeepLayerSet( false ), mGridEnabled( false ), mGridStyle( Solid ), \
     mGridIntervalX( 0.0 ), mGridIntervalY( 0.0 ), mGridOffsetX( 0.0 ), mGridOffsetY( 0.0 ), mGridAnnotationPrecision( 3 ), mShowGridAnnotation( false ), \
-    mGridAnnotationPosition( OutsideMapFrame ), mAnnotationFrameDistance( 1.0 ), mGridAnnotationDirection( Horizontal ), mCrossLength( 3 )
+    mGridAnnotationPosition( OutsideMapFrame ), mAnnotationFrameDistance( 1.0 ), mGridAnnotationDirection( Horizontal ), mCrossLength( 3 ), mMapCanvas( 0 )
 {
   mComposition = composition;
   mId = mComposition->composerMapItems().size();
@@ -73,7 +74,7 @@ QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int w
 QgsComposerMap::QgsComposerMap( QgsComposition *composition )
     : QgsComposerItem( 0, 0, 10, 10, composition ), mKeepLayerSet( false ), mGridEnabled( false ), mGridStyle( Solid ), \
     mGridIntervalX( 0.0 ), mGridIntervalY( 0.0 ), mGridOffsetX( 0.0 ), mGridOffsetY( 0.0 ), mGridAnnotationPrecision( 3 ), mShowGridAnnotation( false ), \
-    mGridAnnotationPosition( OutsideMapFrame ), mAnnotationFrameDistance( 1.0 ), mGridAnnotationDirection( Horizontal ), mCrossLength( 3 )
+    mGridAnnotationPosition( OutsideMapFrame ), mAnnotationFrameDistance( 1.0 ), mGridAnnotationDirection( Horizontal ), mCrossLength( 3 ), mMapCanvas( 0 )
 {
   //Offset
   mXOffset = 0.0;
@@ -257,14 +258,19 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
     double yTopLeftShift = ( mExtent.yMaximum() - rotationPoint.y() ) * mapUnitsToMM();
 
     painter->save();
-    //painter->scale( scale, scale );
+
     painter->translate( mXOffset, mYOffset );
     painter->translate( xTopLeftShift, yTopLeftShift );
     painter->rotate( mRotation );
     painter->translate( xShiftMM, -yShiftMM );
     painter->scale( scale, scale );
     painter->drawImage( 0, 0, mCacheImage );
+
+    //restore rotation
     painter->restore();
+
+    //draw canvas items
+    //drawCanvasItems( painter, itemStyle );
   }
   else if ( mComposition->plotStyle() == QgsComposition::Print ||
             mComposition->plotStyle() == QgsComposition::Postscript )
@@ -300,7 +306,12 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
     painter->rotate( mRotation );
     painter->translate( xShiftMM, -yShiftMM );
     draw( painter, requestRectangle, theSize, 25.4 ); //scene coordinates seem to be in mm
+
+    //restore rotation
     painter->restore();
+
+    //draw canvas items
+    //drawCanvasItems( painter, itemStyle );
 
     mDrawing = false;
   }
@@ -1387,4 +1398,94 @@ QgsComposerMap::Border QgsComposerMap::borderForLineCoord( const QPointF& p ) co
   {
     return Bottom;
   }
+}
+
+void QgsComposerMap::drawCanvasItems( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle )
+{
+  if ( !mMapCanvas )
+  {
+    return;
+  }
+
+  QList<QGraphicsItem*> itemList = mMapCanvas->items();
+
+  int nItems = itemList.size();
+
+  QList<QGraphicsItem*>::iterator itemIt = itemList.begin();
+  for ( ; itemIt != itemList.end(); ++itemIt )
+  {
+    //don't draw mapcanvasmap (has z value -10)
+    if ( !( *itemIt ) || ( *itemIt )->zValue() == -10 )
+    {
+      continue;
+    }
+    drawCanvasItem( *itemIt, painter, itemStyle );
+  }
+}
+
+void QgsComposerMap::drawCanvasItem( QGraphicsItem* item, QPainter* painter, const QStyleOptionGraphicsItem* itemStyle )
+{
+  if ( !item || !mMapCanvas || !mMapRenderer )
+  {
+    return;
+  }
+
+  painter->save();
+
+  //only for debugging
+  double itemPosX = item->scenePos().x();
+  double itemPosY = item->scenePos().y();
+  double cWidth = mMapCanvas->width();
+  double cHeight = mMapCanvas->height();
+  QgsRectangle rendererExtent = mMapRenderer->extent();
+  QgsRectangle composerMapExtent = mExtent;
+
+  //determine scale factor according to graphics view dpi
+  double scaleFactor = 1.0 / mMapCanvas->logicalDpiX() * 25.4;
+
+  double itemX, itemY;
+  QGraphicsItem* parent = item->parentItem();
+  if ( !parent )
+  {
+    QPointF mapPos = composerMapPosForItem( item );
+    itemX = mapPos.x();
+    itemY = mapPos.y();
+  }
+  else //place item relative to the parent item
+  {
+    QPointF itemScenePos = item->scenePos();
+    QPointF parentScenePos = parent->scenePos();
+
+    QPointF mapPos = composerMapPosForItem( parent );
+
+    itemX = mapPos.x() + ( itemScenePos.x() - parentScenePos.x() ) * scaleFactor;
+    itemY = mapPos.y() + ( itemScenePos.y() - parentScenePos.y() ) * scaleFactor;
+  }
+  painter->translate( itemX, itemY );
+
+
+  painter->scale( scaleFactor, scaleFactor );
+
+  item->paint( painter, itemStyle, 0 );
+  painter->restore();
+}
+
+QPointF QgsComposerMap::composerMapPosForItem( const QGraphicsItem* item ) const
+{
+  if ( !item || !mMapCanvas || !mMapRenderer )
+  {
+    return QPointF( 0, 0 );
+  }
+
+  if ( mExtent.height() <= 0 || mExtent.width() <= 0 || mMapCanvas->width() <= 0 || mMapCanvas->height() <= 0 )
+  {
+    return QPointF( 0, 0 );
+  }
+
+  double mapX = item->scenePos().x() / mMapCanvas->width() * mMapRenderer->extent().width() + mMapRenderer->extent().xMinimum();
+  double mapY = mMapRenderer->extent().yMaximum() - item->scenePos().y() / mMapCanvas->height() * mMapRenderer->extent().height();
+
+  double itemX = rect().width() * ( mapX - mExtent.xMinimum() ) / mExtent.width();
+  double itemY = rect().height() * ( mExtent.yMaximum() - mapY ) / mExtent.height();
+  return QPointF( itemX, itemY );
 }
