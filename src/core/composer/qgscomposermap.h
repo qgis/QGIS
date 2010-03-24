@@ -27,6 +27,7 @@ class QgsMapRenderer;
 class QgsMapToPixel;
 class QDomNode;
 class QDomDocument;
+class QGraphicsView;
 class QPainter;
 
 /** \ingroup MapComposer
@@ -245,6 +246,9 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
 
     void setMapRotation( double r );
 
+    /**Sets canvas pointer (necessary to query and draw map canvas items)*/
+    void setMapCanvas( QGraphicsView* canvas ) { mMapCanvas = canvas; }
+
   public slots:
 
     /**Called if map canvas has changed*/
@@ -341,6 +345,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     QRectF mCurrentRectangle;
     /**The length of the cross sides for mGridStyle Cross*/
     double mCrossLength;
+    QGraphicsView* mMapCanvas;
 
     /**Draws the map grid*/
     void drawGrid( QPainter* p );
@@ -381,6 +386,10 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     QPointF mapToItemCoords( const QPointF& mapCoords ) const;
     /**Returns the item border of a point (in item coordinates)*/
     Border borderForLineCoord( const QPointF& p ) const;
+
+    void drawCanvasItems( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle );
+    void drawCanvasItem( QGraphicsItem* item, QPainter* painter, const QStyleOptionGraphicsItem* itemStyle );
+    QPointF composerMapPosForItem( const QGraphicsItem* item ) const;
 };
 
 #endif
