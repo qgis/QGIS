@@ -508,7 +508,7 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
   }
   else
   {
-    QgsDebugMsg( "trying system qgis.db" );
+    QgsDebugMsg( "trying user qgis.db" );
     sqlite3_finalize( myPreparedStatement );
     sqlite3_close( myDatabase );
 
@@ -517,7 +517,7 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
     myFileInfo.setFile( myDatabaseFileName );
     if ( !myFileInfo.exists( ) )
     {
-      QgsDebugMsg( "users qgis.db not found" );
+      QgsDebugMsg( "user qgis.db not found" );
       return myMap;
     }
 
