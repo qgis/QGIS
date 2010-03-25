@@ -330,11 +330,13 @@ void QgsGrass::setLocation( QString gisdbase, QString location )
   init();
 
   // Set principal GRASS variables (in memory)
-// #if defined(WIN32)
-//  G__setenv(( char * ) "GISDBASE", shortPath( gisdbase ).toLocal8Bit().data() );
-//#else
+#if defined(WIN32)
+  G__setenv(( char * ) "GISDBASE", shortPath( gisdbase ).toLocal8Bit().data() );
+#else
+  // This does not work for GISBAS with non ascii chars on Windows XP,
+  // gives error 'LOCATION ... not available':
   G__setenv(( char * ) "GISDBASE", gisdbase.toUtf8().constData() );
-//#endif
+#endif
   G__setenv(( char * ) "LOCATION_NAME", location.toUtf8().constData() );
   G__setenv(( char * ) "MAPSET", ( char * ) "PERMANENT" ); // PERMANENT must always exist
 
@@ -349,11 +351,11 @@ void QgsGrass::setMapset( QString gisdbase, QString location, QString mapset )
   init();
 
   // Set principal GRASS variables (in memory)
-// #if defined(WIN32)
-//  G__setenv(( char * ) "GISDBASE", shortPath( gisdbase ).toUtf8().data() );
-// #else
+#if defined(WIN32)
+  G__setenv(( char * ) "GISDBASE", shortPath( gisdbase ).toUtf8().data() );
+#else
   G__setenv(( char * ) "GISDBASE", gisdbase.toUtf8().data() );
-// #endif
+#endif
   G__setenv(( char * ) "LOCATION_NAME", location.toUtf8().data() );
   G__setenv(( char * ) "MAPSET", mapset.toUtf8().data() );
 
