@@ -23,6 +23,7 @@ extern "C"
 #include <grass/form.h>
 }
 
+#include <stdexcept>
 #include "qgsexception.h"
 #include <QString>
 #include <QMap>
@@ -35,9 +36,19 @@ class QgsRectangle;
 class QgsGrass
 {
   public:
+    // This does not work (gcc/Linux), such exception cannot be caught
+    // so I have enabled the old version, if you are able to fix it, please
+    // check first if it realy works, i.e. can be caught!
+    /*
     struct Exception : public QgsException
     {
       Exception( const QString &msg ) : QgsException( msg ) {}
+    };
+    */
+    struct Exception : public std::runtime_error
+    {
+      //Exception( const std::string &msg ) : std::runtime_error( msg ) {} 
+      Exception( const QString &msg ) : std::runtime_error( msg.toUtf8().constData() ) {} 
     };
 
     //! Get info about the mode

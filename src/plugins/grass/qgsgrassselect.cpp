@@ -141,21 +141,15 @@ void QgsGrassSelect::setLocations()
 
     QString ldpath = egisdbase->text() + "/" + d[i];
 
-    /* TODO: G_is_location() was added to GRASS 6.1 06-05-24,
-    enable its use after some period (others do update) */
-#if 0
     if ( QgsGrass::versionMajor() > 6 || QgsGrass::versionMinor() > 0 )
     {
       if ( !G_is_location( ldpath.toLocal8Bit().constData() ) ) continue;
     }
     else
     {
-#endif
       QString chf = egisdbase->text() + "/" + d[i] + "/PERMANENT/DEFAULT_WIND";
       if ( !QFile::exists( chf ) ) continue;
-#if 0
     }
-#endif
 
     // if type is MAPSET check also if at least one mapset owned by user exists
     if ( QgsGrassSelect::type == QgsGrassSelect::MAPSET )

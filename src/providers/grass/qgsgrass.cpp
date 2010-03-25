@@ -1128,7 +1128,7 @@ QgsCoordinateReferenceSystem GRASS_EXPORT QgsGrass::crs( QString gisdbase, QStri
     crs.createFromWkt( wkt );
 
   }
-  catch ( QgsException &e )
+  catch ( QgsGrass::Exception &e )
   {
     QMessageBox::warning( 0, QObject::tr( "Warning" ),
                           QObject::tr( "Cannot get projection " ) + "\n" + e.what() );
@@ -1151,7 +1151,7 @@ QgsRectangle GRASS_EXPORT QgsGrass::extent( QString gisdbase, QString location, 
     }
     return QgsRectangle( list[0].toDouble(), list[1].toDouble(), list[2].toDouble(), list[3].toDouble() ) ;
   }
-  catch ( QgsException &e )
+  catch ( QgsGrass::Exception &e )
   {
     QMessageBox::warning( 0, QObject::tr( "Warning" ),
                           QObject::tr( "Cannot get raster extent" ) + "\n" + e.what() );
@@ -1174,7 +1174,7 @@ QMap<QString, QString> GRASS_EXPORT QgsGrass::query( QString gisdbase, QString l
       result[list[0]] = list[1];
     }
   }
-  catch ( QgsException &e )
+  catch ( QgsGrass::Exception &e )
   {
     QMessageBox::warning( 0, QObject::tr( "Warning" ),
                           QObject::tr( "Cannot query raster " ) + "\n" + e.what() );

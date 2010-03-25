@@ -104,8 +104,7 @@ QImage* QgsGrassRasterProvider::draw( QgsRectangle  const & viewExtent, int pixe
   {
     data = QgsGrass::runModule ( mGisdbase, mLocation, cmd, arguments );
   }
-  //catch ( QgsGrass::Exception &e ) // does not work
-  catch ( QgsException &e )
+  catch ( QgsGrass::Exception &e )
   {
     QMessageBox::warning( 0, QObject::tr( "Warning" ), QObject::tr( "Cannot draw raster" ) + "\n"
                               + e.what() );
