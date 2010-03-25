@@ -2056,7 +2056,64 @@ bool QgisApp::createDB()
       return FALSE;
     }
   }
-  return TRUE;
+  else
+  {
+    // migrate if necessary
+    sqlite3 *db;
+    if ( sqlite3_open( QgsApplication::qgisUserDbFilePath().toUtf8().constData(), &db ) != SQLITE_OK )
+    {
+      QMessageBox::critical( this, tr( "Private qgis.db" ), tr( "Could not open qgis.db" ) );
+      return false;
+    }
+
+    char *errmsg;
+    int res = sqlite3_exec( db, "SELECT epsg FROM tbl_srs LIMIT 0", 0, 0, &errmsg );
+    if ( res == SQLITE_OK )
+    {
+      // epsg column exists => need migration
+      if ( sqlite3_exec( db,
+                         "ALTER TABLE tbl_srs RENAME TO tbl_srs_bak;"
+                         "CREATE TABLE tbl_srs ("
+                         "srs_id INTEGER PRIMARY KEY,"
+                         "description text NOT NULL,"
+                         "projection_acronym text NOT NULL,"
+                         "ellipsoid_acronym NOT NULL,"
+                         "parameters text NOT NULL,"
+                         "srid integer,"
+                         "auth_name varchar,"
+                         "auth_id varchar,"
+                         "is_geo integer NOT NULL,"
+                         "deprecated boolean);"
+                         "CREATE INDEX idx_srsauthid on tbl_srs(auth_name,auth_id);"
+                         "DROP VIEW vw_srs;"
+                         "CREATE VIEW vw_srs as "
+                         "select a.description as description,"
+                         "a.srs_id as srs_id,"
+                         "a.is_geo as is_geo,"
+                         "b.name as name,"
+                         "a.parameters as parameters,"
+                         "a.auth_name as auth_name,"
+                         "a.auth_id as auth_id,"
+                         "a.deprecated as deprecated"
+                         " from "
+                         "tbl_srs a inner join tbl_projection b on a.projection_acronym=b.acronym"
+                         " order by "
+                         "b.name,"
+                         "a.description;"
+                         "INSERT INTO tbl_srs(srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,auth_name,auth_id,is_geo,deprecated) SELECT srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,'','',is_geo,0 FROM tbl_srs_bak;"
+                         "DROP TABLE tbl_srs_bak", 0, 0, &errmsg ) != SQLITE_OK
+         )
+      {
+        QMessageBox::critical( this, tr( "Private qgis.db" ), tr( "Migration of private qgis.db failed.\n%1" ).arg( QString::fromUtf8( errmsg ) ) );
+        sqlite3_free( errmsg );
+        sqlite3_close( db );
+        return false;
+      }
+    }
+
+    sqlite3_close( db );
+  }
+  return true;
 }
 
 void QgisApp::createMapTips()
