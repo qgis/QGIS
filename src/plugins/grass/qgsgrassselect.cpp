@@ -413,7 +413,12 @@ QStringList QgsGrassSelect::vectorLayers( QString gisdbase,
   {
     QgsDebugMsg( "Cannot open vector on level 2" );
     QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot open vector %1 in mapset %2 on level 2 (topology not available, try to rebuild topology using v.build module)." ).arg( mapName ).arg( mapset ) );
+    // Vect_close here is correct, it should work, but it seems to cause 
+    // crash on win http://trac.osgeo.org/qgis/ticket/2003
+    // disabled on win test it
+#if !defined(WIN32)
     Vect_close( &map );
+#endif
     return list;
   } 
   else if ( level < 1 )
