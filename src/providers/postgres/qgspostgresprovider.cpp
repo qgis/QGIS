@@ -736,10 +736,10 @@ bool QgsPostgresProvider::nextFeature( QgsFeature& feature )
 
   if ( mFeatureQueue.empty() )
   {
-    QgsDebugMsg( "End of features" );
+    QgsDebugMsg( QString( "finished after %1 features" ).arg( mFetched ) );
     connectionRO->closeCursor( cursorName );
     mFetching = false;
-    if ( featuresCounted != mFetched )
+    if ( featuresCounted < mFetched )
     {
       QgsDebugMsg( QString( "feature count adjusted from %1 to %2" ).arg( featuresCounted ).arg( mFetched ) );
       featuresCounted = mFetched;
