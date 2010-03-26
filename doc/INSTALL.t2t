@@ -388,7 +388,7 @@ sudo ln -s /usr/local/ local
 
 == Install Qt4 from .dmg ==
 
-You need a minimum of Qt-4.3.0. I suggest getting the latest.
+You need a minimum of Qt-4.4.0. I suggest getting the latest.
 
 __Snow Leopard note:__ If you are building on Snow Leopard, you will need to
 decide between 32-bit support in the older, Qt Carbon branch, or 64-bit
@@ -405,7 +405,7 @@ addition to the non-debug frameworks.
 Once downloaded open the dmg and run the installer. Note you need admin
 privileges to install.
 
-__Qt 4.4+ note:__ Starting in Qt 4.4 (?) libQtCLucene was added, and in 4.5
+__Qt note:__ Starting in Qt 4.4, libQtCLucene was added, and in 4.5
 libQtUiTools was added, both in /usr/lib.  When using a system SDK (which will
 happen in the Xcode build), these libraries will not be found.  To fix this problem,
 add symlinks to /usr/local:
@@ -563,7 +563,7 @@ python configure.py
 yes 
 ```
 
-There is a problem with the configuration that needs to be fixed now (it affect PyQwt compilation later).  Edit pyqtconfig.py and change the qt_dir line to:
+There is a problem with the configuration that needs to be fixed now (it affects PyQwt compilation later).  Edit pyqtconfig.py and change the qt_dir line to:
 
 ```
     'qt_dir': '/usr',
@@ -618,10 +618,10 @@ You can take care of both with the PyQwt source from:
 http://pyqwt.sourceforge.net/
 ```
 
-Double-click the tarball to unpack it.
+Double-click the tarball to unpack it.  The following assumes PyQwt v5.2.0 (comes with Qwt 5.2.1).
 
 Now, first edit qwtconfig.pri in the qwt-5.2 subdir and change some settings so
-you don't get a bloated debug static library (too bad they are configurable from
+you don't get a bloated debug static library (too bad they are not configurable from
 qmake).  Scroll down to the 'release/debug mode' block.  Edit the last 'CONFIG +='
 line, within an 'else' block, and change 'debug' to 'release'.  Also uncomment
 (remove # prefix) the line 'CONFIG += QwtDll'.
