@@ -2630,7 +2630,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 72B236AC11570743007B4803 /* displacementplugin */;
+			remoteGlobalIDString = 72B236AC11570743007B4803;
 			remoteInfo = displacementplugin;
 		};
 		72BD9FEF10A49CEE00FEA70F /* PBXContainerItemProxy */ = {
@@ -6771,7 +6771,7 @@
 		72ACC859100E143400894938 /* r.sunmask.position.3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.sunmask.position.3.png; path = "../../src/plugins/grass/modules-common/r.sunmask.position.3.png"; sourceTree = SOURCE_ROOT; };
 		72ACC85A100E143400894938 /* r.in.bin.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.in.bin.1.png; path = "../../src/plugins/grass/modules-common/r.in.bin.1.png"; sourceTree = SOURCE_ROOT; };
 		72ACC85B100E143400894938 /* r.circle.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = r.circle.qgm; path = "../../src/plugins/grass/modules-common/r.circle.qgm"; sourceTree = SOURCE_ROOT; };
-		72ACC85C100E143400894938 /* r.circle.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.circle.png; path = "../../src/plugins/grass/modules-common/r.circle.png"; sourceTree = SOURCE_ROOT; };
+		72ACC85C100E143400894938 /* r.circle.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.circle.1.png; path = "../../src/plugins/grass/modules-common/r.circle.1.png"; sourceTree = SOURCE_ROOT; };
 		72ACC85D100E143400894938 /* db.copy.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = db.copy.qgm; path = "../../src/plugins/grass/modules-common/db.copy.qgm"; sourceTree = SOURCE_ROOT; };
 		72ACC85E100E143400894938 /* db.copy.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = db.copy.2.png; path = "../../src/plugins/grass/modules-common/db.copy.2.png"; sourceTree = SOURCE_ROOT; };
 		72ACC85F100E143400894938 /* db.copy.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = db.copy.1.png; path = "../../src/plugins/grass/modules-common/db.copy.1.png"; sourceTree = SOURCE_ROOT; };
@@ -12489,7 +12489,7 @@
 				72ACC859100E143400894938 /* r.sunmask.position.3.png */,
 				72ACC85A100E143400894938 /* r.in.bin.1.png */,
 				72ACC85B100E143400894938 /* r.circle.qgm */,
-				72ACC85C100E143400894938 /* r.circle.png */,
+				72ACC85C100E143400894938 /* r.circle.1.png */,
 				72ACC85D100E143400894938 /* db.copy.qgm */,
 				72ACC85E100E143400894938 /* db.copy.2.png */,
 				72ACC85F100E143400894938 /* db.copy.1.png */,
@@ -19568,7 +19568,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 13139;
+				QGIS_VERSION_BUILD = 13161;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -19579,7 +19579,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 13139;
+				QGIS_VERSION_BUILD = 13161;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
