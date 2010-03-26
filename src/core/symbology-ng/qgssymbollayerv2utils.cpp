@@ -286,15 +286,17 @@ static bool lineInfo( QPointF p1, QPointF p2, double& angle, double& t )
     return false;
 
   // tangent
-  t = ( x1 == x2 ? t = DBL_MAX : ( y2 - y1 ) / ( x2 - x1 ) );
+  t = ( x1 == x2 ? DBL_MAX : ( y2 - y1 ) / ( x2 - x1 ) );
 
   // angle
   if ( t == DBL_MAX )
-    angle = ( y2 >= y1 ? M_PI / 2 : M_PI * 3 / 2 );  // angle is 90 or 270
+    angle = ( y2 > y1 ? M_PI / 2 : M_PI * 3 / 2 );  // angle is 90 or 270
+  else if ( t == 0 )
+    angle = ( x2 > x1 ? 0 : M_PI ); // angle is 0 or 180
   else if ( t >= 0 )
-    angle = ( y2 >= y1 ? atan( t ) : M_PI + atan( t ) );
+    angle = ( y2 > y1 ? atan( t ) : M_PI + atan( t ) );
   else // t < 0
-    angle = ( y2 >= y1 ? M_PI + atan( t ) : M_PI * 2 + atan( t ) );
+    angle = ( y2 > y1 ? M_PI + atan( t ) : atan( t ) );
 
   return true;
 }
@@ -308,8 +310,8 @@ static QPointF offsetPoint( QPointF pt, double angle, double dist )
 // calc intersection of two (infinite) lines defined by one point and tangent
 static QPointF linesIntersection( QPointF p1, double t1, QPointF p2, double t2 )
 {
-  // parallel lines?
-  if (( t1 == DBL_MAX && t2 == DBL_MAX ) || t1 == t2 )
+  // parallel lines? (or the difference between angles is less than cca 0.1 degree)
+  if (( t1 == DBL_MAX && t2 == DBL_MAX ) || fabs( t1 - t2 ) < 0.001 )
     return QPointF();
 
   double x, y;
@@ -346,6 +348,7 @@ QPolygonF offsetLine( QPolygonF polyline, double dist )
   double angle = 0.0, t_new, t_old = 0;
   QPointF pt_old, pt_new;
   QPointF p1 = polyline[0], p2;
+  bool first_point = true;
 
   for ( int i = 1; i < polyline.count(); i++ )
   {
@@ -356,11 +359,12 @@ QPolygonF offsetLine( QPolygonF polyline, double dist )
 
     pt_new = offsetPoint( p1, angle + M_PI / 2, dist );
 
-    if ( i != 1 )
+    if ( ! first_point )
     {
       // if it's not the first line segment
       // calc intersection with last line (with offset)
-      pt_new = linesIntersection( pt_old, t_old, pt_new, t_new );
+      QPointF pt_tmp = linesIntersection( pt_old, t_old, pt_new, t_new );
+      if ( !pt_tmp.isNull() ) pt_new = pt_tmp;
     }
 
     newLine.append( pt_new );
@@ -368,6 +372,7 @@ QPolygonF offsetLine( QPolygonF polyline, double dist )
     pt_old = pt_new;
     t_old = t_new;
     p1 = p2;
+    first_point = false;
   }
 
   // last line segment:
