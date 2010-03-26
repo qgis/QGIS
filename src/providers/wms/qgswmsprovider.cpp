@@ -527,6 +527,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     QgsDebugMsg( QString( "getmap: %1" ).arg( url ) );
     cacheReply = smNAM->get( QNetworkRequest( url ) );
     connect( cacheReply, SIGNAL( finished() ), this, SLOT( cacheReplyFinished() ) );
+    connect( cacheReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( cacheReplyProgress( qint64, qint64 ) ) );
 
     mWaiting = true;
 
@@ -931,6 +932,11 @@ void QgsWmsProvider::capabilitiesReplyFinished()
 void QgsWmsProvider::capabilitiesReplyProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
   emit statusChanged( tr( "%1 of %2 bytes of capabilities downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QString( "unknown number of" ) : QString::number( bytesTotal ) ) );
+}
+
+void QgsWmsProvider::cacheReplyProgress( qint64 bytesReceived, qint64 bytesTotal )
+{
+  emit statusChanged( tr( "%1 of %2 bytes of map downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QString( "unknown number of" ) : QString::number( bytesTotal ) ) );
 }
 
 bool QgsWmsProvider::parseCapabilitiesDom( QByteArray const &xml, QgsWmsCapabilitiesProperty& capabilitiesProperty )

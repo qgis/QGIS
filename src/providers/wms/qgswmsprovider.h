@@ -594,6 +594,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
   private slots:
     void cacheReplyFinished();
+    void cacheReplyProgress( qint64, qint64 );
     void capabilitiesReplyFinished();
     void capabilitiesReplyProgress( qint64, qint64 );
     void identifyReplyFinished();
