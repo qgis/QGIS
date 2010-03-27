@@ -965,16 +965,16 @@ void QgisApp::createActions()
   connect( mActionToggleEditing, SIGNAL( triggered() ), this, SLOT( toggleEditing() ) );
   mActionToggleEditing->setEnabled( false );
 
-  mActionLayerSaveAs = new QAction( tr( "Save as Shapefile..." ), this );
+  mActionLayerSaveAs = new QAction( tr( "Save as..." ), this );
   shortcuts->registerAction( mActionLayerSaveAs );
-  mActionLayerSaveAs->setStatusTip( tr( "Save the current layer as a shapefile" ) );
-  connect( mActionLayerSaveAs, SIGNAL( triggered() ), this, SLOT( saveAsShapefile() ) );
+  mActionLayerSaveAs->setStatusTip( tr( "Save the current layer as a vector file" ) );
+  connect( mActionLayerSaveAs, SIGNAL( triggered() ), this, SLOT( saveAsVectorFile() ) );
   mActionLayerSaveAs->setEnabled( false );
 
-  mActionLayerSelectionSaveAs = new QAction( tr( "Save Selection as Shapefile..." ), this );
+  mActionLayerSelectionSaveAs = new QAction( tr( "Save Selection as vector file..." ), this );
   shortcuts->registerAction( mActionLayerSelectionSaveAs );
-  mActionLayerSelectionSaveAs->setStatusTip( tr( "Save the selection as a shapefile" ) );
-  connect( mActionLayerSelectionSaveAs, SIGNAL( triggered() ), this, SLOT( saveSelectionAsShapefile() ) );
+  mActionLayerSelectionSaveAs->setStatusTip( tr( "Save the selection as a vector file" ) );
+  connect( mActionLayerSelectionSaveAs, SIGNAL( triggered() ), this, SLOT( saveSelectionAsVectorFile() ) );
   mActionLayerSelectionSaveAs->setEnabled( false );
 
   mActionRemoveLayer = new QAction( getThemeIcon( "mActionRemoveLayer.png" ), tr( "Remove Layer" ), this );
@@ -3657,14 +3657,14 @@ void QgisApp::attributeTable()
   // the dialog will be deleted by itself on close
 }
 
-void QgisApp::saveAsShapefile()
+void QgisApp::saveAsVectorFile()
 {
-  mMapLegend->currentLegendLayer()->saveAsShapefile();
+  mMapLegend->currentLegendLayer()->saveAsVectorFile();
 }
 
-void QgisApp::saveSelectionAsShapefile()
+void QgisApp::saveSelectionAsVectorFile()
 {
-  mMapLegend->currentLegendLayer()->saveSelectionAsShapefile();
+  mMapLegend->currentLegendLayer()->saveSelectionAsVectorFile();
 }
 
 void QgisApp::layerProperties()
@@ -5669,9 +5669,9 @@ void QgisApp::addRasterLayer()
 // This is the method that does the actual work of adding a raster layer - the others
 // here simply create a raster layer object and delegate here. It is the responsibility
 // of the calling method to manage things such as the frozen state of the mapcanvas and
-// using waitcursors etc. - this method wont and SHOULDNT do it
+// using waitcursors etc. - this method won't and SHOULDN'T do it
 //
-bool QgisApp::addRasterLayer( QgsRasterLayer * theRasterLayer )
+bool QgisApp::addRasterLayer( QgsRasterLayer *theRasterLayer )
 {
   if ( mMapCanvas && mMapCanvas->isDrawing() )
   {
@@ -5697,16 +5697,12 @@ bool QgisApp::addRasterLayer( QgsRasterLayer * theRasterLayer )
   QgsMapLayerRegistry::instance()->addMapLayer( theRasterLayer );
 
   // connect up any request the raster may make to update the app progress
-  QObject::connect( theRasterLayer,
-                    SIGNAL( drawingProgress( int, int ) ),
-                    this,
-                    SLOT( showProgress( int, int ) ) );
+  QObject::connect( theRasterLayer, SIGNAL( drawingProgress( int, int ) ),
+                    this, SLOT( showProgress( int, int ) ) );
 
   // connect up any request the raster may make to update the statusbar message
-  QObject::connect( theRasterLayer,
-                    SIGNAL( statusChanged( QString ) ),
-                    this,
-                    SLOT( showStatusMessage( QString ) ) );
+  QObject::connect( theRasterLayer, SIGNAL( statusChanged( QString ) ),
+                    this, SLOT( showStatusMessage( QString ) ) );
 
   return true;
 }

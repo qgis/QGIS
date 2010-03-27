@@ -36,7 +36,7 @@
 #include "qgsvectorfilewriter.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgsattributetabledialog.h"
-#include "qgsencodingfiledialog.h"
+#include "ogr/qgsvectorlayersaveasdialog.h"
 
 #include "qgsrendererv2.h"
 #include "qgssymbolv2.h"
@@ -53,6 +53,7 @@
 #include <QMessageBox>
 #include <QPainter>
 #include <QSettings>
+#include <QFileDialog>
 
 
 QgsLegendLayer::QgsLegendLayer( QgsMapLayer* layer )
@@ -450,16 +451,6 @@ void QgsLegendLayer::table()
   // the dialog will be deleted by itself on close
 }
 
-void QgsLegendLayer::saveAsShapefile()
-{
-  saveAsShapefileGeneral( FALSE );
-}
-
-void QgsLegendLayer::saveSelectionAsShapefile()
-{
-  saveAsShapefileGeneral( TRUE );
-}
-
 void QgsLegendLayer::saveAsVectorFile()
 {
   saveAsVectorFileGeneral( false );
@@ -504,83 +495,6 @@ void QgsLegendLayer::showInOverview()
 
 void QgsLegendLayer::saveAsVectorFileGeneral( bool saveOnlySelection )
 {
-  if ( mLyr.layer()->type() != QgsMapLayer::VectorLayer )
-    return;
-
-  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( mLyr.layer() );
-
-  //get output name and format
-  QSettings settings;
-  QString filter =  QString( "Shapefiles (*.shp)" );
-  QString dirName = settings.value( "/UI/lastVectorfileDir", "." ).toString();
-  QString filterString = QgsVectorFileWriter::fileFilterString();
-  QString selectedFilter = settings.value( "/UI/lastVectorFilter", "[OGR] ESRI Shapefiles (*.shp *.SHP)" ).toString();
-  QString outputFile = QFileDialog::getSaveFileName( 0, tr( "Save layer as..." ), dirName, filterString, &selectedFilter );
-  if ( outputFile.isNull() )
-  {
-    return; //cancelled
-  }
-
-  settings.setValue( "/UI/lastVectorfileDir", QFileInfo( outputFile ).absolutePath() );
-  settings.setValue( "/UI/lastVectorFilter", selectedFilter );
-
-  QMap< QString, QString> filterDriverMap = QgsVectorFileWriter::supportedFiltersAndFormats();
-  QMap< QString, QString>::const_iterator it = filterDriverMap.find( selectedFilter + ";;" );
-  if ( it == filterDriverMap.constEnd() )
-  {
-    return; //unknown format
-  }
-
-  QString driverKey = *it;
-
-  //output CRS
-  QgsCoordinateReferenceSystem destCRS = vlayer->srs();
-  // Find out if we have projections enabled or not
-  if ( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() )
-  {
-    destCRS = QgisApp::instance()->mapCanvas()->mapRenderer()->destinationSrs();
-  }
-
-  QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector();
-  mySelector->setSelectedCrsId( destCRS.srsid() );
-  mySelector->setMessage( tr( "Select the coordinate reference system for the saved shapefile. "
-                              "The data points will be transformed from the layer coordinate reference system." ) );
-
-  if ( mySelector->exec() )
-  {
-    QgsCoordinateReferenceSystem srs( mySelector->selectedCrsId(), QgsCoordinateReferenceSystem::InternalCrsId );
-    destCRS = srs;
-    //   destCRS->createFromId(mySelector->selectedCrsId(), QgsCoordinateReferenceSystem::InternalCrsId)
-  }
-  else
-  {
-    // Aborted CS selection, don't save.
-    delete mySelector;
-    return;
-  }
-  delete mySelector;
-
-  // overwrite the file - user will already have been prompted
-  // to verify they want to overwrite by the file dialog above
-  // might not even exists in the given case.
-  if ( driverKey == "ESRI Shapefile" )
-  {
-    // add the extension if not present
-    if ( !outputFile.endsWith( ".shp", Qt::CaseInsensitive ) )
-    {
-      outputFile += ".shp";
-    }
-    QgsVectorFileWriter::deleteShapeFile( outputFile );
-  }
-
-  QString errorMessage;
-  QgsVectorFileWriter::WriterError error;
-  error = QgsVectorFileWriter::writeAsVectorFormat( vlayer, outputFile, "utf-8", &destCRS, driverKey, saveOnlySelection, &errorMessage );
-}
-
-
-void QgsLegendLayer::saveAsShapefileGeneral( bool saveOnlySelection )
-{
   QgsCoordinateReferenceSystem destCRS;
 
   if ( mLyr.layer()->type() != QgsMapLayer::VectorLayer )
@@ -588,92 +502,65 @@ void QgsLegendLayer::saveAsShapefileGeneral( bool saveOnlySelection )
 
   QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( mLyr.layer() );
 
-  // get a name for the shapefile
-  // Get a file to process, starting at the current directory
-  QSettings settings;
-  QString filter =  QString( "Shapefiles (*.shp)" );
-  QString dirName = settings.value( "/UI/lastShapefileDir", "." ).toString();
+  QgsVectorLayerSaveAsDialog *dialog = new QgsVectorLayerSaveAsDialog( QgisApp::instance() );
 
-  QgsEncodingFileDialog* openFileDialog = new QgsEncodingFileDialog( 0,
-      tr( "Save layer as..." ),
-      dirName,
-      filter,
-      QString( "" ) );
-  openFileDialog->setAcceptMode( QFileDialog::AcceptSave );
-
-  // allow for selection of more than one file
-  //openFileDialog->setMode(QFileDialog::AnyFile);
-
-  if ( openFileDialog->exec() != QDialog::Accepted )
-    return;
-
-
-  QString encoding = openFileDialog->encoding();
-  QString shapefileName = openFileDialog->selectedFiles().first();
-  settings.setValue( "/UI/lastShapefileDir", QFileInfo( shapefileName ).absolutePath() );
-
-
-  if ( shapefileName.isNull() )
-    return;
-
-  // add the extension if not present
-  if ( !shapefileName.endsWith( ".shp", Qt::CaseInsensitive ) )
+  if( dialog->exec() == QDialog::Accepted )
   {
-    shapefileName += ".shp";
+    QString encoding = dialog->encoding();
+    QString vectorFilename = dialog->filename();
+    QString format = dialog->format();
+    
+    if( dialog->crs() < 0 )
+    {
+      // Find out if we have projections enabled or not
+      if ( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() )
+      {
+        destCRS = QgisApp::instance()->mapCanvas()->mapRenderer()->destinationSrs();
+      }
+      else
+      {
+        destCRS = vlayer->srs();
+      }
+    }
+    else
+    {
+      destCRS = QgsCoordinateReferenceSystem( dialog->crs(), QgsCoordinateReferenceSystem::InternalCrsId );
+    }
+
+    // overwrite the file - user will already have been prompted
+    // to verify they want to overwrite by the file dialog above
+    // might not even exists in the given case.
+    // add the extension if not present
+    if( format == "ESRI Shapefile" )
+    {
+      if ( !vectorFilename.endsWith( ".shp", Qt::CaseInsensitive ) )
+      {
+        vectorFilename += ".shp";
+      }
+      QgsVectorFileWriter::deleteShapeFile( vectorFilename );
+    }
+  
+    // ok if the file existed it should be deleted now so we can continue...
+    QApplication::setOverrideCursor( Qt::WaitCursor );
+  
+    QgsVectorFileWriter::WriterError error;
+    QString errorMessage;
+    error = QgsVectorFileWriter::writeAsVectorFormat( vlayer, vectorFilename, encoding, &destCRS, format, saveOnlySelection, &errorMessage );
+
+    QApplication::restoreOverrideCursor();
+  
+    if ( error == QgsVectorFileWriter::NoError )
+    {
+      QMessageBox::information( 0, tr( "Saving done" ), tr( "Export to vector file has been completed" ) );
+    }
+    else
+    {
+      QMessageBox::warning( 0, tr( "Save error" ), tr( "Export to vector file failed.\nError: %1").arg( errorMessage ) );
+    }
   }
 
-  destCRS = vlayer->srs();
-  // Find out if we have projections enabled or not
-  if ( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() )
-  {
-    destCRS = QgisApp::instance()->mapCanvas()->mapRenderer()->destinationSrs();
-  }
-
-  QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector();
-  mySelector->setSelectedCrsId( destCRS.srsid() );
-  mySelector->setMessage( tr( "Select the coordinate reference system for the saved shapefile. "
-                              "The data points will be transformed from the layer coordinate reference system." ) );
-
-  if ( mySelector->exec() )
-  {
-    QgsCoordinateReferenceSystem srs( mySelector->selectedCrsId(), QgsCoordinateReferenceSystem::InternalCrsId );
-    destCRS = srs;
-    //   destCRS->createFromId(mySelector->selectedCrsId(), QgsCoordinateReferenceSystem::InternalCrsId)
-  }
-  else
-  {
-    // Aborted CS selection, don't save.
-    delete mySelector;
-    return;
-  }
-
-  delete mySelector;
-
-  // overwrite the file - user will already have been prompted
-  // to verify they want to overwrite by the file dialog above
-  // might not even exists in the given case.
-  QgsVectorFileWriter::deleteShapeFile( shapefileName );
-
-  // ok if the file existed it should be deleted now so we can continue...
-  QApplication::setOverrideCursor( Qt::WaitCursor );
-
-  QgsVectorFileWriter::WriterError error;
-  QString errorMessage;
-  error = QgsVectorFileWriter::writeAsShapefile( vlayer, shapefileName, encoding, &destCRS, saveOnlySelection, &errorMessage );
-
-  QApplication::restoreOverrideCursor();
-
-  if ( error == QgsVectorFileWriter::NoError )
-  {
-    QMessageBox::information( 0, tr( "Saving done" ), tr( "Export to Shapefile has been completed" ) );
-  }
-  else
-  {
-    QMessageBox::warning( 0, tr( "Save error" ), errorMessage );
-  }
+  delete dialog;
 }
-
-
 
 QString QgsLegendLayer::nameFromLayer( QgsMapLayer* layer )
 {

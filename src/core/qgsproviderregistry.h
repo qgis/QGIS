@@ -99,7 +99,6 @@ class CORE_EXPORT QgsProviderRegistry
     */
     virtual QString protocolDrivers() const;
 
-
     /** open the given vector data source
 
     Similar to open(QString const &), except that the user specifies a data provider
@@ -126,7 +125,6 @@ class CORE_EXPORT QgsProviderRegistry
 
     /** type for data provider metadata associative container */
     typedef std::map<QString, QgsProviderMetadata*> Providers;
-
 
   private:
 

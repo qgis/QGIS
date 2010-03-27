@@ -348,6 +348,9 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
           @note: added in version 1.4*/
     virtual bool doesStrictFeatureTypeCheck() const { return true;}
 
+
+    static const QStringList &availableEncodings();
+
   protected:
     QVariant convertValue( QVariant::Type type, QString value );
 
@@ -374,6 +377,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
   private:
     /** old notation **/
     QMap<QString, QVariant::Type> mOldTypeList;
+
+    static QStringList smEncodings;
 };
 
 #endif
