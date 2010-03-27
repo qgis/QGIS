@@ -262,6 +262,8 @@ def showPluginHelp(packageName=None,filename="index",section=""):
     helpfile = os.path.join(path,filename+"-en.html")
   if not os.path.exists(helpfile):    
     helpfile = os.path.join(path,filename+"-en_US.html")
+  if not os.path.exists(helpfile):    
+    helpfile = os.path.join(path,filename+".html")
   if os.path.exists(helpfile):
     url = "file://"+helpfile
     if section != "":
