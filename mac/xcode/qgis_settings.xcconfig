@@ -29,7 +29,7 @@ QGIS_VERSION_INT = 10500
 // ***TODO*** - detect current version, only used in bundle script
 QT_MVER = $(QT_VER_MAJOR) // keep for now so I don't have to change all scripts and deps
 QT_VER_MAJOR = 4 // the install_name/major version
-QT_VER_MINOR = 5 // minor version
+QT_VER_MINOR = 6 // minor version
 QT_FWVER = $(QT_VER_MAJOR) // the Versions/ folder name, normally same as Qt ver
 
 QT_DIR = /usr
@@ -51,7 +51,7 @@ PYRCC4 = $(PYTHON_USRBIN)/pyrcc4
 SIP_INC = /usr/local/include
 // from pyqtconfig.py
 PYQT_SIP_DIR = /usr/local/share/sip/PyQt4
-PYQT_SIP_FLAGS = -x VendorID -t WS_MACX -x PyQt_NoPrintRangeBug -t Qt_4_5_0 -x Py_v3 -g
+PYQT_SIP_FLAGS = -x VendorID -t WS_MACX -x PyQt_NoPrintRangeBug -t Qt_$(QT_VER_MAJOR)_$(QT_VER_MINOR)_0 -x Py_v3 -g
 
 BISON = /usr/bin/bison
 GPSBABEL = /usr/local/bin/gpsbabel
@@ -232,13 +232,20 @@ QT_LIB_XML = -framework QtXml
 QT_LIB_SVG = -framework QtSvg
 QT_LIB_SQL = -framework QtSql
 QT_LIB_WEBKIT = -framework QtWebKit
-QT_LIB_DBUS = -framework QtDBus
 QT_LIB_PHONON = -framework phonon
 QT_LIB_UITOOLS = -L$(QT_DIR_SDK)/lib -lQtUiTools
+// needed by webkit starting in Qt 4.5
+QT_LIB_DBUS_4_4 = 
+QT_LIB_DBUS_4_5 = -framework QtDBus
+QT_LIB_DBUS_4_6 = -framework QtDBus
+QT_LIB_DBUS = $(QT_LIB_DBUS_$(QT_VER_MAJOR)_$(QT_VER_MINOR))
 // convenience for all Qt:
 QT_LIB = $(QT_LIB_CORE) $(QT_LIB_GUI) $(QT_LIB_NET) $(QT_LIB_XML) $(QT_LIB_SVG) $(QT_LIB_SQL)
 // list of Qt frameworks used
-QTLISTQG = QtCore QtGui QtNetwork QtSql QtSvg QtXml QtWebKit QtDBus phonon
+QT_USE_4_4 = 
+QT_USE_4_5 = QtDBus
+QT_USE_4_6 = QtDBus
+QTLISTQG = QtCore QtGui QtNetwork QtSql QtSvg QtXml QtWebKit $(QT_USE_$(QT_VER_MAJOR)_$(QT_VER_MINOR)) phonon
 // list of PyQt modules used
 PYQTLIST = Qt QtCore QtGui QtNetwork QtSql QtSvg QtXml QtWebKit phonon
 
