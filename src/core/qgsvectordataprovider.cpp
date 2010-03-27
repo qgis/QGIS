@@ -417,3 +417,59 @@ QVariant QgsVectorDataProvider::convertValue( QVariant::Type type, QString value
 
   return v;
 }
+
+const QStringList &QgsVectorDataProvider::availableEncodings()
+{
+  if( smEncodings.isEmpty() )
+  {
+    smEncodings << "BIG5";
+    smEncodings << "BIG5-HKSCS";
+    smEncodings << "EUCJP";
+    smEncodings << "EUCKR";
+    smEncodings << "GB2312";
+    smEncodings << "GBK";
+    smEncodings << "GB18030";
+    smEncodings << "JIS7";
+    smEncodings << "SHIFT-JIS";
+    smEncodings << "TSCII";
+    smEncodings << "UTF-8";
+    smEncodings << "UTF-16";
+    smEncodings << "KOI8-R";
+    smEncodings << "KOI8-U";
+    smEncodings << "ISO8859-1";
+    smEncodings << "ISO8859-2";
+    smEncodings << "ISO8859-3";
+    smEncodings << "ISO8859-4";
+    smEncodings << "ISO8859-5";
+    smEncodings << "ISO8859-6";
+    smEncodings << "ISO8859-7";
+    smEncodings << "ISO8859-8";
+    smEncodings << "ISO8859-8-I";
+    smEncodings << "ISO8859-9";
+    smEncodings << "ISO8859-10";
+    smEncodings << "ISO8859-11";
+    smEncodings << "ISO8859-12";
+    smEncodings << "ISO8859-13";
+    smEncodings << "ISO8859-14";
+    smEncodings << "ISO8859-15";
+    smEncodings << "IBM 850";
+    smEncodings << "IBM 866";
+    smEncodings << "CP874";
+    smEncodings << "CP1250";
+    smEncodings << "CP1251";
+    smEncodings << "CP1252";
+    smEncodings << "CP1253";
+    smEncodings << "CP1254";
+    smEncodings << "CP1255";
+    smEncodings << "CP1256";
+    smEncodings << "CP1257";
+    smEncodings << "CP1258";
+    smEncodings << "Apple Roman";
+    smEncodings << "TIS-620";
+    smEncodings << "System";
+  }
+
+  return smEncodings;
+}
+
+QStringList QgsVectorDataProvider::smEncodings;

@@ -1321,8 +1321,16 @@ QString createFilters( QString type )
       }
       else if ( driverName.startsWith( "XPlane" ) )
       {
-        myFileFilters += createFileFilter_( "X-Plane/Flighgear",
+        myFileFilters += createFileFilter_( "X-Plane/Flightgear",
                                             "apt.dat nav.dat fix.dat awy.dat" );
+      }
+      else if ( driverName.startsWith( "Geoconcept" ) )
+      {
+        myFileFilters += createFileFilter_( "Geoconcept", "*.gxt *.txt" );
+      }
+      else if ( driverName.startsWith( "DXF" ) )
+      {
+        myFileFilters += createFileFilter_( "AutoCAD DXF", "*.dxf" );
       }
       else
       {

@@ -296,4 +296,7 @@ class QgsVectorDataProvider : QgsDataProvider
           (e.g. no multipolygon in a polygon layer)
           @note: added in version 1.4*/
       bool doesStrictFeatureTypeCheck() const;
+
+      /** Returns a list of available encodings */
+      static const QStringList &availableEncodings();
 };

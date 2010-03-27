@@ -105,6 +105,7 @@ SET(QGIS_APP_SRCS
   ogr/qgsopenvectorlayerdialog.cpp
   ogr/qgsnewogrconnection.cpp
   ogr/qgsogrsublayersdialog.cpp
+  ogr/qgsvectorlayersaveasdialog.cpp
   
   attributetable/qgsattributetabledialog.cpp
   attributetable/qgsattributetablemodel.cpp
@@ -199,6 +200,7 @@ SET (QGIS_APP_MOC_HDRS
   ogr/qgsopenvectorlayerdialog.h
   ogr/qgsnewogrconnection.h
   ogr/qgsogrsublayersdialog.h
+  ogr/qgsvectorlayersaveasdialog.h
   
   attributetable/qgsattributetableview.h
   attributetable/qgsattributetablemodel.h

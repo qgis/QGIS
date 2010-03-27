@@ -22,9 +22,11 @@
 #include <QMessageBox>
 #include <QInputDialog>
 #include <QTextCodec>
+
 #include "qgslogger.h"
-#include "qgsencodingfiledialog.h"
 #include "qgsopenvectorlayerdialog.h"
+#include "qgsvectordataprovider.h"
+
 #include <ogr_api.h>
 #include "qgsproviderregistry.h"
 #include "qgsnewogrconnection.h"
@@ -40,8 +42,10 @@ QgsOpenVectorLayerDialog::QgsOpenVectorLayerDialog( QWidget* parent, Qt::WFlags 
   cmbConnections->blockSignals( true );
   radioSrcFile->setChecked( true );
   mDataSourceType = "file";
+
   //set encoding
-  // cmbEncodings->setItemText( cmbEncodings->currentIndex(), QString( QTextCodec::codecForLocale()->name() ) );
+  cmbEncodings->addItems( QgsVectorDataProvider::availableEncodings() );
+
   QSettings settings;
   QString enc = settings.value( "/UI/encoding", QString( "System" ) ).toString();
 

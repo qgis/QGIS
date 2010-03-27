@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2005 by Tim Sutton   *
- *   aps02ts@macbuntu   *
+ *   Copyright (C) 2005 by Tim Sutton                                      *
+ *   aps02ts@macbuntu                                                      *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -84,9 +84,6 @@ class QgsLegendLayer : public QgsLegendItem
     /**Show layer attribute table*/
     void table();
 
-    void saveAsShapefile();
-    void saveSelectionAsShapefile();
-
     void saveAsVectorFile();
     void saveSelectionAsVectorFile();
 
@@ -110,9 +107,6 @@ class QgsLegendLayer : public QgsLegendItem
     void changeSymbologySettings( const QgsMapLayer* mapLayer, const SymbologyList& newSymbologyItems );
 
     QPixmap getOriginalPixmap();
-
-    /**Save as shapefile (called from saveAsShapefile and saveSelectionAsShapefile)*/
-    void saveAsShapefileGeneral( bool saveOnlySelection );
 
     void saveAsVectorFileGeneral( bool saveOnlySelection );
 

@@ -23,6 +23,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsfield.h"
 
+#include <QPair>
+
 typedef void *OGRDataSourceH;
 typedef void *OGRLayerH;
 typedef void *OGRGeometryH;
@@ -83,6 +85,9 @@ class CORE_EXPORT QgsVectorFileWriter
     /**Returns map with format filter string as key and OGR format key as value*/
     static QMap< QString, QString> supportedFiltersAndFormats();
 
+    /**Returns driver list that can be used for dialogs*/
+    static QMap< QString, QString> ogrDriverList();
+
     /**Returns filter string that can be used for dialogs*/
     static QString fileFilterString();
 
@@ -108,6 +113,7 @@ class CORE_EXPORT QgsVectorFileWriter
      * @return bool true if the file was deleted successfully
      */
     static bool deleteShapeFile( QString theFileName );
+
   protected:
 
     OGRGeometryH createEmptyGeometry( QGis::WkbType wkbType );
@@ -129,6 +135,9 @@ class CORE_EXPORT QgsVectorFileWriter
 
     /** map attribute indizes to OGR field indexes */
     QMap<int, int> mAttrIdxToOgrIdx;
+
+  private:
+    static QPair<QString, QString> nameAndGlob( QString driverName ); 
 };
 
 #endif

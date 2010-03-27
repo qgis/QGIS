@@ -108,5 +108,5 @@ void FormatsRegistry::init()
   add( Format( "UK.NTF", "UK National Transfer Format", Format::eFile ) );
   add( Format( "TIGER", "U.S. Census TIGER/Line", Format::eFile ) );
   add( Format( "VRT", "Virtual Datasource", Format::eFile ) );
-  add( Format( "XPLANE", "X-Plane/Flighgear Aeronautical Data", Format::eFile ) );
+  add( Format( "XPLANE", "X-Plane/Flightgear Aeronautical Data", Format::eFile ) );
 }

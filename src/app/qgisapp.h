@@ -625,8 +625,8 @@ class QgisApp : public QMainWindow
     void toggleEditing( QgsMapLayer *layer );
 
     //! save current vector layer
-    void saveAsShapefile();
-    void saveSelectionAsShapefile();
+    void saveAsVectorFile();
+    void saveSelectionAsVectorFile();
 
     //! open the properties dialog for the currently selected layer
     void layerProperties();

@@ -387,92 +387,6 @@ QgsVectorFileWriter::writeAsShapefile( QgsVectorLayer* layer,
                                        QString *errorMessage )
 {
   return writeAsVectorFormat( layer, shapefileName, fileEncoding, destCRS, "ESRI Shapefile", onlySelected, errorMessage );
-#if 0
-  const QgsCoordinateReferenceSystem* outputCRS;
-  QgsCoordinateTransform* ct = 0;
-  int shallTransform = false;
-
-  if ( destCRS && destCRS->isValid() )
-  {
-    // This means we should transform
-    outputCRS = destCRS;
-    shallTransform = true;
-  }
-  else
-  {
-    // This means we shouldn't transform, use source CRS as output (if defined)
-    outputCRS = &layer->srs();
-  }
-  QgsVectorFileWriter* writer =
-    new QgsVectorFileWriter( shapefileName, fileEncoding, layer->pendingFields(), layer->wkbType(), outputCRS );
-
-  // check whether file creation was successful
-  WriterError err = writer->hasError();
-  if ( err != NoError )
-  {
-    if ( errorMessage )
-      *errorMessage = writer->errorMessage();
-    delete writer;
-    return err;
-  }
-
-  QgsAttributeList allAttr = layer->pendingAllAttributesList();
-  QgsFeature fet;
-
-  layer->select( allAttr, QgsRectangle(), true );
-
-  const QgsFeatureIds& ids = layer->selectedFeaturesIds();
-
-  // Create our transform
-  if ( destCRS )
-  {
-    ct = new QgsCoordinateTransform( layer->srs(), *destCRS );
-  }
-
-  // Check for failure
-  if ( ct == NULL )
-  {
-    shallTransform = false;
-  }
-
-  // write all features
-  while ( layer->nextFeature( fet ) )
-  {
-    if ( onlySelected && !ids.contains( fet.id() ) )
-      continue;
-
-    if ( shallTransform )
-    {
-      try
-      {
-        fet.geometry()->transform( *ct );
-      }
-      catch ( QgsCsException &e )
-      {
-        delete ct;
-        delete writer;
-
-        QString msg = QObject::tr( "Failed to transform a point while drawing a feature of type '%1'. Writing stopped. (Exception: %2)" )
-                      .arg( fet.typeName() ).arg( e.what() );
-        QgsLogger::warning( msg );
-        if ( errorMessage )
-          *errorMessage = msg;
-
-        return ErrProjection;
-      }
-    }
-    writer->addFeature( fet );
-  }
-
-  delete writer;
-
-  if ( shallTransform )
-  {
-    delete ct;
-  }
-
-  return NoError;
-#endif //0
 }
 
 QgsVectorFileWriter::WriterError
@@ -603,22 +517,46 @@ QMap< QString, QString> QgsVectorFileWriter::supportedFiltersAndFormats()
   QgsApplication::registerOgrDrivers();
   int const drvCount = OGRGetDriverCount();
 
-  QString drvName;
-  QString filterString;
   for ( int i = 0; i < drvCount; ++i )
   {
     OGRSFDriverH drv = OGRGetDriver( i );
     if ( drv )
     {
-      drvName = OGR_Dr_GetName( drv );
-      if ( OGR_Dr_TestCapability( drv, ODrCCreateDataSource ) != 0 )
+      QString drvName = OGR_Dr_GetName( drv );
+      if ( OGR_Dr_TestCapability( drv, "CreateDataSource" ) != 0 )
       {
-        //add driver name and filter to map
-        filterString = QgsVectorFileWriter::filterForDriver( drvName );
-        if ( !filterString.isEmpty() )
-        {
-          resultMap.insert( filterString, drvName );
-        }
+        QString filterString = filterForDriver( drvName );
+        if( filterString.isEmpty() )
+          continue;
+
+        resultMap.insert( filterString, drvName );
+      }
+    }
+  }
+
+  return resultMap;
+}
+
+QMap<QString, QString> QgsVectorFileWriter::ogrDriverList()
+{
+  QMap<QString, QString> resultMap;
+
+  QgsApplication::registerOgrDrivers();
+  int const drvCount = OGRGetDriverCount();
+
+  for ( int i = 0; i < drvCount; ++i )
+  {
+    OGRSFDriverH drv = OGRGetDriver( i );
+    if ( drv )
+    {
+      QString drvName = OGR_Dr_GetName( drv );
+      if ( OGR_Dr_TestCapability( drv, "CreateDataSource" ) != 0 )
+      {
+        QPair<QString, QString> p = nameAndGlob( drvName );
+        if( p.first.isEmpty() )
+          continue;
+
+        resultMap.insert( p.first, drvName );
       }
     }
   }
@@ -629,16 +567,29 @@ QMap< QString, QString> QgsVectorFileWriter::supportedFiltersAndFormats()
 QString QgsVectorFileWriter::fileFilterString()
 {
   QString filterString;
-  QMap< QString, QString> driverFormatMap = QgsVectorFileWriter::supportedFiltersAndFormats();
+  QMap< QString, QString> driverFormatMap = supportedFiltersAndFormats();
   QMap< QString, QString>::const_iterator it = driverFormatMap.constBegin();
   for ( ; it != driverFormatMap.constEnd(); ++it )
   {
+    if( filterString.isEmpty() )
+      filterString += ";;";
+
     filterString += it.key();
   }
   return filterString;
 }
 
 QString QgsVectorFileWriter::filterForDriver( const QString& driverName )
+{
+  QPair<QString, QString> p = nameAndGlob( driverName );
+
+  if( p.first.isEmpty() || p.second.isEmpty() )
+    return "";
+
+  return "[OGR] " + p.first + " (" + p.second.toLower() + " " + p.second.toUpper() + ")";
+}
+
+QPair<QString, QString> QgsVectorFileWriter::nameAndGlob( QString driverName )
 {
   QString longName;
   QString glob;
@@ -660,7 +611,7 @@ QString QgsVectorFileWriter::filterForDriver( const QString& driverName )
   }
   else if ( driverName.startsWith( "ESRI" ) )
   {
-    longName = "ESRI Shapefiles";
+    longName = "ESRI Shapefile";
     glob = "*.shp";
   }
   else if ( driverName.startsWith( "FMEObjects Gateway" ) )
@@ -685,12 +636,12 @@ QString QgsVectorFileWriter::filterForDriver( const QString& driverName )
   }
   else if ( driverName.startsWith( "GMT" ) )
   {
-    longName = "GMT";
+    longName = "Generic Mapping Tools";
     glob = "*.gmt";
   }
   else if ( driverName.startsWith( "GPX" ) )
   {
-    longName = "GPX";
+    longName = "GPS eXchange Format";
     glob = "*.gpx";
   }
   else if ( driverName.startsWith( "Interlis 1" ) )
@@ -705,7 +656,7 @@ QString QgsVectorFileWriter::filterForDriver( const QString& driverName )
   }
   else if ( driverName.startsWith( "KML" ) )
   {
-    longName = "KML";
+    longName = "Keyhole Markup Language";
     glob = "*.kml" ;
   }
   else if ( driverName.startsWith( "MapInfo File" ) )
@@ -733,19 +684,16 @@ QString QgsVectorFileWriter::filterForDriver( const QString& driverName )
     longName = "SQLite";
     glob = "*.sqlite";
   }
-  else if ( driverName.startsWith( "VRT" ) )
+  else if ( driverName.startsWith( "DXF" ) )
   {
-    longName = "VRT - Virtual Datasource ";
-    glob = "*.vrt";
+    longName = "AutoCAD DXF";
+    glob = "*.dxf";
   }
-  else if ( driverName.startsWith( "XPlane" ) )
+  else if ( driverName.startsWith( "Geoconcept" ) )
   {
-    longName = "X-Plane/Flighgear";
-    glob = "apt.dat nav.dat fix.dat awy.dat";
+    longName = "Geoconcept";
+    glob = "*.gxt *.txt";
   }
-  else
-  {
-    return QString();
-  }
-  return "[OGR] " + longName + " (" + glob.toLower() + " " + glob.toUpper() + ");;";
+
+  return QPair<QString, QString>( longName, glob );
 }
