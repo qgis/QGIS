@@ -194,6 +194,8 @@
 		720383810F8BA8C50083B883 /* problem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 720382F90F8B8B540083B883 /* problem.cpp */; };
 		720383820F8BA8C50083B883 /* util.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 720382FD0F8B8B540083B883 /* util.cpp */; };
 		72038CA310893F3100439C44 /* qgscomposition.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6730F39E57A003DC336 /* qgscomposition.h */; };
+		72095D7A115E53CF000AE45E /* qgsvectorlayersaveasdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72095D78115E5385000AE45E /* qgsvectorlayersaveasdialog.cpp */; };
+		72095D7B115E53CF000AE45E /* qgsvectorlayersaveasdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72095D79115E5385000AE45E /* qgsvectorlayersaveasdialog.h */; };
 		7209F03B0F39E6A1003DC336 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F03A0F39E6A1003DC336 /* ApplicationServices.framework */; };
 		7209F1D70F39EA3E003DC336 /* qgsprovidercountcalcevent.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6B90F39E57A003DC336 /* qgsprovidercountcalcevent.cpp */; };
 		7209F1D80F39EA3E003DC336 /* qgsprovidermetadata.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209E6BD0F39E57A003DC336 /* qgsprovidermetadata.cpp */; };
@@ -3514,6 +3516,9 @@
 		7203835A0F8B90B50083B883 /* qgsapplydialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsapplydialog.h; path = ../../src/plugins/qgsapplydialog.h; sourceTree = SOURCE_ROOT; };
 		7203835B0F8B90B50083B883 /* qgsvectoroverlayplugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsvectoroverlayplugin.h; path = ../../src/plugins/qgsvectoroverlayplugin.h; sourceTree = SOURCE_ROOT; };
 		72038CA210893EA900439C44 /* testqgscoordinatereferencesystem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = testqgscoordinatereferencesystem.cpp; path = ../../tests/src/core/testqgscoordinatereferencesystem.cpp; sourceTree = SOURCE_ROOT; };
+		72095D78115E5385000AE45E /* qgsvectorlayersaveasdialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsvectorlayersaveasdialog.cpp; path = ../../src/app/ogr/qgsvectorlayersaveasdialog.cpp; sourceTree = SOURCE_ROOT; };
+		72095D79115E5385000AE45E /* qgsvectorlayersaveasdialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsvectorlayersaveasdialog.h; path = ../../src/app/ogr/qgsvectorlayersaveasdialog.h; sourceTree = SOURCE_ROOT; };
+		72095D7C115E540C000AE45E /* qgsvectorlayersaveasdialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgsvectorlayersaveasdialogbase.ui; path = ../../src/ui/qgsvectorlayersaveasdialogbase.ui; sourceTree = SOURCE_ROOT; };
 		7209E56E0F39E477003DC336 /* qgis_settings.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = qgis_settings.xcconfig; sourceTree = SOURCE_ROOT; };
 		7209E56F0F39E481003DC336 /* qgis_user.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = qgis_user.xcconfig; sourceTree = SOURCE_ROOT; };
 		7209E5BC0F39E57A003DC336 /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../src/app/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
@@ -9532,6 +9537,7 @@
 				7225EFA610B22C4400D23EA2 /* qgssymbolv2selectordialogbase.ui */,
 				7225EFA710B22C4400D23EA2 /* qgsvectorcolorbrewercolorrampv2dialogbase.ui */,
 				7225EFA810B22C4400D23EA2 /* qgsvectorgradientcolorrampv2dialogbase.ui */,
+				72095D7C115E540C000AE45E /* qgsvectorlayersaveasdialogbase.ui */,
 				7225EFA910B22C4400D23EA2 /* qgsvectorrandomcolorrampv2dialogbase.ui */,
 				7225EFAA10B22C5000D23EA2 /* symbollayer */,
 			);
@@ -11338,6 +11344,8 @@
 				726979A70F71369A00AFA402 /* qgsopenvectorlayerdialog.h */,
 				72EBC9620F49D4130016BA3C /* qgsogrsublayersdialog.cpp */,
 				72EBC9610F49D4130016BA3C /* qgsogrsublayersdialog.h */,
+				72095D78115E5385000AE45E /* qgsvectorlayersaveasdialog.cpp */,
+				72095D79115E5385000AE45E /* qgsvectorlayersaveasdialog.h */,
 			);
 			name = ogr;
 			path = ../../src/app/ogr;
@@ -15882,6 +15890,8 @@
 				721362EF111720350088753A /* qgsmanageconnectionsdialog.cpp in Sources */,
 				721362F0111720350088753A /* qgsmanageconnectionsdialog.h in Sources */,
 				72AB24BD11550EF2001B5F50 /* qgsnetworkproxyfactory.cpp in Sources */,
+				72095D7A115E53CF000AE45E /* qgsvectorlayersaveasdialog.cpp in Sources */,
+				72095D7B115E53CF000AE45E /* qgsvectorlayersaveasdialog.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -19568,7 +19578,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 13161;
+				QGIS_VERSION_BUILD = 13169;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -19579,7 +19589,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 13161;
+				QGIS_VERSION_BUILD = 13169;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
