@@ -152,6 +152,7 @@ class QgisAppInterface : public QgisInterface
     virtual QToolBar *layerToolBar();
     virtual QToolBar *mapNavToolToolBar();
     virtual QToolBar *digitizeToolBar();
+    virtual QToolBar *advancedDigitizeToolBar();
     virtual QToolBar *attributesToolBar();
     virtual QToolBar *pluginToolBar();
     virtual QToolBar *helpToolBar();
