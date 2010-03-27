@@ -147,6 +147,7 @@ class QgisInterface : QObject
     virtual QToolBar *layerToolBar() = 0;
     virtual QToolBar *mapNavToolToolBar() = 0;
     virtual QToolBar *digitizeToolBar() = 0;
+    virtual QToolBar *advancedDigitizeToolBar() = 0; // added in v1.5
     virtual QToolBar *attributesToolBar() = 0;
     virtual QToolBar *pluginToolBar() = 0;
     virtual QToolBar *helpToolBar() = 0;
