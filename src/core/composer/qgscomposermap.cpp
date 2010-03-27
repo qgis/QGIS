@@ -1409,8 +1409,6 @@ void QgsComposerMap::drawCanvasItems( QPainter* painter, const QStyleOptionGraph
 
   QList<QGraphicsItem*> itemList = mMapCanvas->items();
 
-  int nItems = itemList.size();
-
   QList<QGraphicsItem*>::iterator itemIt = itemList.begin();
   for ( ; itemIt != itemList.end(); ++itemIt )
   {
@@ -1432,11 +1430,6 @@ void QgsComposerMap::drawCanvasItem( QGraphicsItem* item, QPainter* painter, con
 
   painter->save();
 
-  //only for debugging
-  double itemPosX = item->scenePos().x();
-  double itemPosY = item->scenePos().y();
-  double cWidth = mMapCanvas->width();
-  double cHeight = mMapCanvas->height();
   QgsRectangle rendererExtent = mMapRenderer->extent();
   QgsRectangle composerMapExtent = mExtent;
 
