@@ -22,7 +22,7 @@
 
 //QT_MVER = $(QT_VER_MAJOR)
 //QT_VER_MAJOR = 4 // the install_name/major version
-//QT_VER_MINOR = 5 // minor version, currently unused
+//QT_VER_MINOR = 6 // minor version, currently unused
 //QT_FWVER = $(QT_VER_MAJOR) // the Versions/ folder name, normally same as Qt ver
 
 //QT_DIR = /usr
@@ -34,7 +34,7 @@
 //QTBIN = /Developer/Tools/Qt // bin dir
 //SIP_INC = /usr/local/include
 //PYQT_SIP_DIR = /usr/local/share/sip/PyQt4
-//PYQT_SIP_FLAGS = -x VendorID -t WS_MACX -x PyQt_NoPrintRangeBug -t Qt_4_5_0 -x Py_v3 -g
+//PYQT_SIP_FLAGS = -x VendorID -t WS_MACX -x PyQt_NoPrintRangeBug -t Qt_$(QT_VER_MAJOR)_$(QT_VER_MINOR)_0 -x Py_v3 -g
 //BISON = /usr/bin/bison // Tiger requires user-installed bison 2.3
 //GPSBABEL = /usr/local/bin/gpsbabel
 
