@@ -55,6 +55,9 @@ QgsProjectionSelector::QgsProjectionSelector( QWidget* parent, const char * name
   lstCoordinateSystems->header()->resizeSection( QGIS_CRS_ID_COLUMN, 0 );
   lstCoordinateSystems->header()->setResizeMode( QGIS_CRS_ID_COLUMN, QHeaderView::Fixed );
 
+  cbxAuthority->addItem( tr( "All" ) );
+  cbxAuthority->addItems( authorities() );
+
   // Read settings from persistent storage
   QSettings settings;
   mRecentProjections = settings.value( "/UI/recentProjections" ).toStringList();
@@ -723,7 +726,7 @@ void QgsProjectionSelector::loadUserCrsList( QSet<QString> * crsFilter )
   mUserProjListDone = true;
 }
 
-void QgsProjectionSelector::loadCrsList( QSet<QString> * crsFilter )
+void QgsProjectionSelector::loadCrsList( QSet<QString> *crsFilter )
 {
   // convert our Coordinate Reference System filter into the SQL expression
   QString sqlFilter = ogcWmsCrsFilterAsSqlExpression( crsFilter );
@@ -942,39 +945,40 @@ void QgsProjectionSelector::on_pbnFind_clicked()
   QgsDebugMsg( "pbnFind..." );
 
   QString mySearchString( sqlSafeString( leSearch->text() ) );
+
   // Set up the query to retrieve the projection information needed to populate the list
-  QString mySql;
-  if ( radAuthId->isChecked() )
+  QString mySql = "select srs_id from tbl_srs where ";
+  if ( cbxAuthority->currentIndex() > 0 )
   {
-    mySql = QString( "select srs_id from tbl_srs where upper(auth_name||':'||auth_id)='%1'" ).arg( mySearchString.toUpper() );
+    mySql += QString( "auth_name='%1' AND " ).arg( cbxAuthority->currentText() );
   }
-  else if ( radName->isChecked() ) //name search
+
+  if ( cbxHideDeprecated->isChecked() )
   {
-    //we need to find what the largest srsid matching our query so we know whether to
-    //loop backto the beginning
-    mySql = "select srs_id from tbl_srs where upper(description) like '%" + mySearchString.toUpper() + "%'";
-    if ( cbxHideDeprecated->isChecked() )
-      mySql += " and not deprecated";
-    mySql += " order by srs_id desc limit 1";
-    long myLargestSrsId = getLargestCRSIDMatch( mySql );
+    mySql += "not deprecated AND ";
+  }
+
+  if ( cbxMode->currentIndex() == 0 )
+  {
+    mySql += QString( "auth_id='%1'" ).arg( mySearchString );
+  }
+  else
+  {
+    mySql += "upper(description) like '%" + mySearchString.toUpper() + "%' ";
+
+    long myLargestSrsId = getLargestCRSIDMatch( QString( "%1 order by srs_id desc limit 1" ).arg( mySql ) );
     QgsDebugMsg( QString( "Largest CRSID%1" ).arg( myLargestSrsId ) );
-    //a name search is ambiguous, so we find the first srsid after the current seelcted srsid
+
+    //a name search is ambiguous, so we find the first srsid after the current selected srsid
     // each time the find button is pressed. This means we can loop through all matches.
     if ( myLargestSrsId <= selectedCrsId() )
     {
-      //roll search around to the beginning
-      mySql = "select srs_id from tbl_srs where upper(description) like '%" + mySearchString.toUpper() + "%'";
-      if ( cbxHideDeprecated->isChecked() )
-        mySql += " and not deprecated";
-      mySql += " order by srs_id limit 1";
+      mySql = QString( "%1 order by srs_id limit 1" ).arg( mySql );
     }
     else
     {
       // search ahead of the current position
-      mySql = "select srs_id from tbl_srs where upper(description) like '%" + mySearchString.toUpper() + "%'";
-      if ( cbxHideDeprecated->isChecked() )
-        mySql += " and not deprecated";
-      mySql += " and srs_id > " + QString::number( selectedCrsId() ) + " order by srs_id limit 1";
+      mySql = QString( "%1 and srs_id > %2 order by srs_id limit 1" ).arg( mySql ).arg( selectedCrsId() );
     }
   }
   QgsDebugMsg( QString( " Search sql: %1" ).arg( mySql ) );
@@ -1128,6 +1132,42 @@ long QgsProjectionSelector::getLargestCRSIDMatch( QString theSql )
   }
   return mySrsId;
 }
+
+QStringList QgsProjectionSelector::authorities()
+{
+  sqlite3      *myDatabase;
+  const char   *myTail;
+  sqlite3_stmt *myPreparedStatement;
+  int           myResult;
+
+  myResult = sqlite3_open( mSrsDatabaseFileName.toUtf8().data(), &myDatabase );
+  if ( myResult )
+  {
+    QgsDebugMsg( QString( "Can't open * user * database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
+    //no need for assert because user db may not have been created yet
+    return QStringList();
+  }
+
+  QString theSql = "select distinct auth_name from tbl_srs";
+  myResult = sqlite3_prepare( myDatabase, theSql.toUtf8(), theSql.toUtf8().length(), &myPreparedStatement, &myTail );
+
+  QStringList authorities;
+
+  if ( myResult == SQLITE_OK )
+  {
+    while ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
+    {
+      authorities << QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 0 ) );
+    }
+
+    // close the sqlite3 statement
+    sqlite3_finalize( myPreparedStatement );
+    sqlite3_close( myDatabase );
+  }
+
+  return authorities;
+}
+
 /*!
 * \brief Make the string safe for use in SQL statements.
 *  This involves escaping single quotes, double quotes, backslashes,

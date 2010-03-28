@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>428</width>
-    <height>316</height>
+    <width>374</width>
+    <height>464</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -31,34 +31,6 @@
    <property name="margin">
     <number>3</number>
    </property>
-   <item row="0" column="0">
-    <widget class="QTreeWidget" name="lstCoordinateSystems">
-     <property name="alternatingRowColors">
-      <bool>true</bool>
-     </property>
-     <property name="uniformRowHeights">
-      <bool>true</bool>
-     </property>
-     <property name="columnCount">
-      <number>3</number>
-     </property>
-     <column>
-      <property name="text">
-       <string>Coordinate Reference System</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Authority ID</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>ID</string>
-      </property>
-     </column>
-    </widget>
-   </item>
    <item row="1" column="0">
     <widget class="QTextEdit" name="teProjection">
      <property name="sizePolicy">
@@ -93,6 +65,46 @@
      </property>
     </widget>
    </item>
+   <item row="3" column="0">
+    <widget class="QPushButton" name="pbnPopular1"/>
+   </item>
+   <item row="4" column="0">
+    <widget class="QPushButton" name="pbnPopular2"/>
+   </item>
+   <item row="5" column="0">
+    <widget class="QPushButton" name="pbnPopular3"/>
+   </item>
+   <item row="6" column="0">
+    <widget class="QPushButton" name="pbnPopular4"/>
+   </item>
+   <item row="0" column="0">
+    <widget class="QTreeWidget" name="lstCoordinateSystems">
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
+     <property name="uniformRowHeights">
+      <bool>true</bool>
+     </property>
+     <property name="columnCount">
+      <number>3</number>
+     </property>
+     <column>
+      <property name="text">
+       <string>Coordinate Reference System</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Authority ID</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>ID</string>
+      </property>
+     </column>
+    </widget>
+   </item>
    <item row="2" column="0">
     <widget class="QGroupBox" name="groupBox">
      <property name="sizePolicy">
@@ -105,32 +117,34 @@
       <string>Search</string>
      </property>
      <layout class="QGridLayout">
+      <item row="1" column="1">
+       <widget class="QComboBox" name="cbxMode">
+        <item>
+         <property name="text">
+          <string>ID</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Name</string>
+         </property>
+        </item>
+       </widget>
+      </item>
       <item row="0" column="0">
-       <widget class="QRadioButton" name="radAuthId">
+       <widget class="QLabel" name="label">
         <property name="text">
-         <string>AuthorityID</string>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>16</width>
-          <height>10</height>
-         </size>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
+         <string>Authority</string>
         </property>
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QRadioButton" name="radName">
+       <widget class="QComboBox" name="cbxAuthority"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Name</string>
-        </property>
-        <property name="iconSize">
-         <size>
-          <width>16</width>
-          <height>10</height>
-         </size>
+         <string>Search for</string>
         </property>
        </widget>
       </item>
@@ -153,7 +167,7 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0" colspan="4">
+      <item row="1" column="2" colspan="2">
        <widget class="QCheckBox" name="cbxHideDeprecated">
         <property name="text">
          <string>Hide deprecated CRSs</string>
@@ -162,18 +176,6 @@
       </item>
      </layout>
     </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QPushButton" name="pbnPopular1"/>
-   </item>
-   <item row="4" column="0">
-    <widget class="QPushButton" name="pbnPopular2"/>
-   </item>
-   <item row="5" column="0">
-    <widget class="QPushButton" name="pbnPopular3"/>
-   </item>
-   <item row="6" column="0">
-    <widget class="QPushButton" name="pbnPopular4"/>
    </item>
   </layout>
  </widget>
