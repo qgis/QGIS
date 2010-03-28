@@ -24,10 +24,10 @@
 #include <QString>
 #include <QVariant>
 
-#include <qgsdistancearea.h>
 #include <qgsfield.h>
 #include <qgsfeature.h>
 
+class QgsDistanceArea;
 class QgsSearchTreeValue;
 
 /** \ingroup core
@@ -147,6 +147,9 @@ class CORE_EXPORT QgsSearchTreeNode
     //! strips mText when node is of string type
     void stripText();
 
+    //! initialize node's internals
+    void init();
+
   private:
 
     //! node type
@@ -164,7 +167,7 @@ class CORE_EXPORT QgsSearchTreeNode
     QgsSearchTreeNode* mRight;
 
     /**For length() and area() functions*/
-    QgsDistanceArea mCalc;
+    QgsDistanceArea* mCalc;
 };
 
 // TODO: put it into separate file

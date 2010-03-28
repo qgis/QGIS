@@ -18,6 +18,7 @@
 /* $Id$ */
 
 #include "qgslogger.h"
+#include "qgsdistancearea.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
 #include "qgssearchtreenode.h"
@@ -42,6 +43,8 @@ QgsSearchTreeNode::QgsSearchTreeNode( double number )
   mNumber = number;
   mLeft   = NULL;
   mRight  = NULL;
+
+  init();
 }
 
 
@@ -53,14 +56,7 @@ QgsSearchTreeNode::QgsSearchTreeNode( Operator op, QgsSearchTreeNode* left,
   mLeft  = left;
   mRight = right;
 
-  if ( mOp == opLENGTH || mOp == opAREA )
-  {
-    //initialize QgsDistanceArea
-    mCalc.setProjectionsEnabled( false );
-    QSettings settings;
-    QString ellipsoid = settings.value( "/qgis/measure/ellipsoid", "WGS84" ).toString();
-    mCalc.setEllipsoid( ellipsoid );
-  }
+  init();
 }
 
 
@@ -80,6 +76,8 @@ QgsSearchTreeNode::QgsSearchTreeNode( QString text, bool isColumnRef )
     mText = text;
     stripText();
   }
+
+  init();
 }
 
 
@@ -100,6 +98,8 @@ QgsSearchTreeNode::QgsSearchTreeNode( const QgsSearchTreeNode& node )
     mRight = new QgsSearchTreeNode( *node.mRight );
   else
     mRight = NULL;
+
+  init();
 }
 
 
@@ -112,6 +112,26 @@ QgsSearchTreeNode::~QgsSearchTreeNode()
 
   if ( mRight )
     delete mRight;
+
+  delete mCalc;
+}
+
+
+void QgsSearchTreeNode::init()
+{
+  if ( mType == tOperator && ( mOp == opLENGTH || mOp == opAREA ) )
+  {
+    //initialize QgsDistanceArea
+    mCalc = new QgsDistanceArea;
+    mCalc->setProjectionsEnabled( false );
+    QSettings settings;
+    QString ellipsoid = settings.value( "/qgis/measure/ellipsoid", "WGS84" ).toString();
+    mCalc->setEllipsoid( ellipsoid );
+  }
+  else
+  {
+    mCalc = NULL;
+  }
 }
 
 void QgsSearchTreeNode::stripText()
@@ -432,7 +452,7 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, c
         {
           return QgsSearchTreeValue( 0 );
         }
-        return QgsSearchTreeValue( mCalc.measure( geom ) );
+        return QgsSearchTreeValue( mCalc->measure( geom ) );
       }
 
       //string operations with one argument
