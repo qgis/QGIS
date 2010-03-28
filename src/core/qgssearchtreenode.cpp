@@ -320,15 +320,21 @@ bool QgsSearchTreeNode::checkAgainst( const QgsFieldMap& fields, const QgsAttrib
         return false;
       }
 
+      // TODO: reuse QRegExp
+
       QString str = value2.string();
       if ( mOp == opLike ) // change from LIKE syntax to regexp
       {
         // XXX escape % and _  ???
         str.replace( "%", ".*" );
         str.replace( "_", "." );
+        return QRegExp( str ).exactMatch( value1.string() );
+      }
+      else
+      {
+        return ( QRegExp( str ).indexIn( value1.string() ) != -1 );
       }
 
-      return QRegExp( str ).exactMatch( value1.string() );
     }
 
     default:
