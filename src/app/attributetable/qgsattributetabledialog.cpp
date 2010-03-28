@@ -604,7 +604,7 @@ void QgsAttributeTableDialog::search()
   else
     str += " ~ '";
 
-  str += mQuery->displayText();
+  str += mQuery->displayText().replace("'", "''"); // escape quotes
   str += "'";
 
   doSearch( str );
