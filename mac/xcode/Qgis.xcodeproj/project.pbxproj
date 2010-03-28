@@ -1130,6 +1130,8 @@
 		7295BC7A10F57D9E005D1408 /* qgscomposertablewidget.h in Sources */ = {isa = PBXBuildFile; fileRef = 7295BC7810F57D8C005D1408 /* qgscomposertablewidget.h */; };
 		7296CD9E10C2ED18001EAD92 /* qgscomposershape.h in Sources */ = {isa = PBXBuildFile; fileRef = 72C93CE110B58AD2003A618E /* qgscomposershape.h */; };
 		7296CE1A10C2FE91001EAD92 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
+		7298A493115FF4F8001BF2E9 /* qgstilescalewidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7298A491115FF4E8001BF2E9 /* qgstilescalewidget.cpp */; };
+		7298A494115FF4F8001BF2E9 /* qgstilescalewidget.h in Sources */ = {isa = PBXBuildFile; fileRef = 7298A492115FF4E8001BF2E9 /* qgstilescalewidget.h */; };
 		7299E8BA0F90F06C002F58DE /* AUTHORS in Copy - doc */ = {isa = PBXBuildFile; fileRef = 7256F2E50F4147890022BE1F /* AUTHORS */; };
 		7299E8BB0F90F06C002F58DE /* CODING in Copy - doc */ = {isa = PBXBuildFile; fileRef = 7256F2E40F4147890022BE1F /* CODING */; };
 		7299E8BC0F90F06C002F58DE /* SPONSORS in Copy - doc */ = {isa = PBXBuildFile; fileRef = 7256F2DD0F4147890022BE1F /* SPONSORS */; };
@@ -5845,6 +5847,9 @@
 		7295BC7710F57D8C005D1408 /* qgscomposertablewidget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgscomposertablewidget.cpp; path = ../../src/app/composer/qgscomposertablewidget.cpp; sourceTree = SOURCE_ROOT; };
 		7295BC7810F57D8C005D1408 /* qgscomposertablewidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgscomposertablewidget.h; path = ../../src/app/composer/qgscomposertablewidget.h; sourceTree = SOURCE_ROOT; };
 		7296CD8610C2E667001EAD92 /* chstroke.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = chstroke.sh; path = ../../scripts/chstroke.sh; sourceTree = SOURCE_ROOT; };
+		7298A491115FF4E8001BF2E9 /* qgstilescalewidget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgstilescalewidget.cpp; path = ../../src/app/qgstilescalewidget.cpp; sourceTree = SOURCE_ROOT; };
+		7298A492115FF4E8001BF2E9 /* qgstilescalewidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgstilescalewidget.h; path = ../../src/app/qgstilescalewidget.h; sourceTree = SOURCE_ROOT; };
+		7298A495115FF51A001BF2E9 /* qgstilescalewidgetbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgstilescalewidgetbase.ui; path = ../../src/ui/qgstilescalewidgetbase.ui; sourceTree = SOURCE_ROOT; };
 		7299396A0FE3037600244D1A /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = "../../src/plugins/grass/modules-6.3/CMakeLists.txt"; sourceTree = SOURCE_ROOT; };
 		7299396B0FE3037600244D1A /* r.surf.fractal.1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.surf.fractal.1.png; path = "../../src/plugins/grass/modules-6.3/r.surf.fractal.1.png"; sourceTree = SOURCE_ROOT; };
 		7299396C0FE3037600244D1A /* r.surf.fractal.2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = r.surf.fractal.2.png; path = "../../src/plugins/grass/modules-6.3/r.surf.fractal.2.png"; sourceTree = SOURCE_ROOT; };
@@ -8129,6 +8134,8 @@
 				7216329410EFCE6C00588EAD /* qgsmaptoolmeasureangle.h */,
 				721362ED111720130088753A /* qgsmanageconnectionsdialog.cpp */,
 				721362EE111720130088753A /* qgsmanageconnectionsdialog.h */,
+				7298A491115FF4E8001BF2E9 /* qgstilescalewidget.cpp */,
+				7298A492115FF4E8001BF2E9 /* qgstilescalewidget.h */,
 				72A239420F74A62200AFC35B /* attributetable */,
 				7209E5BD0F39E57A003DC336 /* composer */,
 				72AF7B3010F8F02100BD549A /* gps */,
@@ -9535,6 +9542,7 @@
 				7225EFA410B22C4400D23EA2 /* qgssymbollevelsv2dialogbase.ui */,
 				7225EFA510B22C4400D23EA2 /* qgssymbolv2propertiesdialogbase.ui */,
 				7225EFA610B22C4400D23EA2 /* qgssymbolv2selectordialogbase.ui */,
+				7298A495115FF51A001BF2E9 /* qgstilescalewidgetbase.ui */,
 				7225EFA710B22C4400D23EA2 /* qgsvectorcolorbrewercolorrampv2dialogbase.ui */,
 				7225EFA810B22C4400D23EA2 /* qgsvectorgradientcolorrampv2dialogbase.ui */,
 				72095D7C115E540C000AE45E /* qgsvectorlayersaveasdialogbase.ui */,
@@ -15892,6 +15900,8 @@
 				72AB24BD11550EF2001B5F50 /* qgsnetworkproxyfactory.cpp in Sources */,
 				72095D7A115E53CF000AE45E /* qgsvectorlayersaveasdialog.cpp in Sources */,
 				72095D7B115E53CF000AE45E /* qgsvectorlayersaveasdialog.h in Sources */,
+				7298A493115FF4F8001BF2E9 /* qgstilescalewidget.cpp in Sources */,
+				7298A494115FF4F8001BF2E9 /* qgstilescalewidget.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -19578,7 +19588,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 13172;
+				QGIS_VERSION_BUILD = 13185;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -19589,7 +19599,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 13172;
+				QGIS_VERSION_BUILD = 13185;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
