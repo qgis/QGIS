@@ -183,15 +183,16 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     QString selectedImageEncoding();
 
     QList<QTreeWidgetItem*> mCurrentSelection;
+    QTableWidgetItem* mCurrentTileset;
 
   private slots:
     void on_btnSearch_clicked();
     void on_btnAddWMS_clicked();
-    void wmsSelectionChanged();
+    void on_tableWidgetWMSList_itemSelectionChanged();
+    void on_lstTilesets_itemClicked( QTableWidgetItem *item );
     void on_mLayerUpButton_clicked();
     void on_mLayerDownButton_clicked();
     void updateButtons();
-
 };
 
 

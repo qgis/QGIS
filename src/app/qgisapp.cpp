@@ -153,6 +153,7 @@
 #include "qgsvectorfilewriter.h"
 #include "qgscredentialdialog.h"
 #include "qgsnetworkproxyfactory.h"
+#include "qgstilescalewidget.h"
 
 #ifdef HAVE_QWT
 #include "qgsgpsinformationwidget.h"
@@ -342,6 +343,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
     , mSplash( splash )
     , mPythonUtils( NULL )
     , mNAM( NULL )
+    , mpTileScaleWidget( NULL )
 #ifdef HAVE_QWT
     , mpGpsWidget( NULL )
 #endif
@@ -373,8 +375,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
   mSplash->showMessage( tr( "Setting up the GUI" ), Qt::AlignHCenter | Qt::AlignBottom );
   qApp->processEvents();
-
-
 
   createActions();
   createActionGroups();
@@ -586,6 +586,11 @@ void QgisApp::readSettings()
   // Add the recently accessed project file paths to the File menu
   mRecentProjectPaths = settings.value( "/UI/recentProjectsList" ).toStringList();
 
+  // Restore state of tile scale widget
+  if ( settings.value( "/UI/tileScaleEnabled", false ).toBool() )
+  {
+    showTileScale();
+  }
 #if HAVE_QWT
   // Restore state of GPS Tracker
   if ( settings.value( "/gps/widgetEnabled", false ).toBool() )
@@ -983,6 +988,12 @@ void QgisApp::createActions()
   connect( mActionRemoveLayer, SIGNAL( triggered() ), this, SLOT( removeLayer() ) );
   mActionRemoveLayer->setEnabled( false );
 
+  mActionTileScale = new QAction( getThemeIcon( "mActionTileScale.png" ), tr( "Tile scale slider" ), this );
+  shortcuts->registerAction( mActionTileScale, tr( "", "Tile scale slider" ) );
+  mActionTileScale->setStatusTip( tr( "Show tile scale slider" ) );
+  connect( mActionTileScale, SIGNAL( triggered() ), this, SLOT( showTileScale() ) );
+  mActionTileScale->setEnabled( true );
+
 #ifdef HAVE_QWT
   mActionGpsTool = new QAction( getThemeIcon( "mActionGpsTool.png" ), tr( "Live GPS tracking" ), this );
   shortcuts->registerAction( mActionGpsTool, tr( "", "Live GPS tracking" ) );
@@ -1352,6 +1363,9 @@ void QgisApp::createMenus()
     mViewMenu->addMenu( mToolbarMenu );
     mViewMenu->addAction( mActionToggleFullScreen );
   }
+
+  mViewMenu->addAction( mActionTileScale );
+
 #ifdef HAVE_QWT
   mViewMenu->addAction( mActionGpsTool );
 #endif
@@ -2192,6 +2206,17 @@ void QgisApp::saveWindowState()
 
   // store window geometry
   settings.setValue( "/UI/geometry", saveGeometry() );
+
+  // Persist state of tile scale slider
+  if ( mpTileScaleWidget )
+  {
+    settings.setValue( "/UI/tileScaleEnabled", true );
+    delete mpTileScaleWidget;
+  }
+  else
+  {
+    settings.setValue( "/UI/tileScaleEnabled", false );
+  }
 
 #if HAVE_QWT
   // Persist state of GPS Tracker
@@ -4497,6 +4522,32 @@ void QgisApp::showGpsTool()
     mpGpsDock->toggleViewAction();
   }
 #endif
+}
+
+void QgisApp::showTileScale()
+{
+  if ( !mpTileScaleWidget )
+  {
+    mpTileScaleWidget = new QgsTileScaleWidget( mMapCanvas );
+    //create the dock widget
+    mpTileScaleDock = new QDockWidget( tr( "Tile scale" ), this );
+    mpTileScaleDock->setObjectName( "TileScale" );
+    mpTileScaleDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+    addDockWidget( Qt::RightDockWidgetArea, mpTileScaleDock );
+    // add to the Panel submenu
+    mPanelMenu->addAction( mpTileScaleDock->toggleViewAction() );
+    // now add our widget to the dock - ownership of the widget is passed to the dock
+    mpTileScaleDock->setWidget( mpTileScaleWidget );
+    mpTileScaleWidget->show();
+
+    connect( mMapLegend, SIGNAL( currentLayerChanged( QgsMapLayer* ) ),
+             mpTileScaleWidget, SLOT( layerChanged( QgsMapLayer* ) ) );
+
+  }
+  else
+  {
+    mpTileScaleDock->toggleViewAction();
+  }
 }
 
 void QgisApp::zoomToLayerExtent()

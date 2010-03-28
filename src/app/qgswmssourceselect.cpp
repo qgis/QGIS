@@ -36,6 +36,7 @@
 #include <qgisinterface.h>
 
 #include <QButtonGroup>
+#include <QRadioButton>
 #include <QDomDocument>
 #include <QHeaderView>
 #include <QImageReader>
@@ -52,6 +53,7 @@
 
 QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WFlags fl )
     : QDialog( parent, fl )
+    , mCurrentTileset( 0 )
 {
   setupUi( this );
 
@@ -156,9 +158,6 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WFlags fl )
   tabServers->setTabEnabled( tabServers->indexOf( tabLayerOrder ), false );
   tabServers->setTabEnabled( tabServers->indexOf( tabTilesets ), false );
 
-  connect( tableWidgetWMSList, SIGNAL( itemSelectionChanged() ), this, SLOT( wmsSelectionChanged() ) );
-  connect( lstTilesets, SIGNAL( itemSelectionChanged() ), this, SLOT( updateButtons() ) );
-
   QSettings settings;
   QgsDebugMsg( "restoring geometry" );
   restoreGeometry( settings.value( "/Windows/WMSSourceSelect/geometry" ).toByteArray() );
@@ -170,6 +169,7 @@ QgsWMSSourceSelect::~QgsWMSSourceSelect()
   QgsDebugMsg( "saving geometry" );
   settings.setValue( "/Windows/WMSSourceSelect/geometry", saveGeometry() );
 }
+
 
 void QgsWMSSourceSelect::populateConnectionList()
 {
@@ -204,6 +204,8 @@ void QgsWMSSourceSelect::on_btnNew_clicked()
   {
     populateConnectionList();
   }
+
+  delete nc;
 }
 
 void QgsWMSSourceSelect::on_btnEdit_clicked()
@@ -214,6 +216,8 @@ void QgsWMSSourceSelect::on_btnEdit_clicked()
   {
     populateConnectionList();
   }
+
+  delete nc;
 }
 
 void QgsWMSSourceSelect::on_btnDelete_clicked()
@@ -367,6 +371,12 @@ bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
       lstTilesets->setItem( i, 2, new QTableWidgetItem( QString( "%1x%2" ).arg( tilesets[i].tileWidth ).arg( tilesets[i].tileHeight ) ) );
       lstTilesets->setItem( i, 3, new QTableWidgetItem( tilesets[i].format ) );
       lstTilesets->setItem( i, 4, new QTableWidgetItem( tilesets[i].crs ) );
+
+      for ( int j = 0; j < 5; j++ )
+      {
+        QTableWidgetItem *item = lstTilesets->item( i, j );
+        item->setFlags( item->flags() & ~Qt::ItemIsEditable );
+      }
 
       if ( !mMimeMap.contains( tilesets[i].format ) )
       {
@@ -765,8 +775,49 @@ void QgsWMSSourceSelect::on_lstLayers_itemSelectionChanged()
   updateButtons();
 }
 
+void QgsWMSSourceSelect::on_lstTilesets_itemClicked( QTableWidgetItem *item )
+{
+  QTableWidgetItem *rowItem = lstTilesets->item( lstTilesets->currentRow(), 0 );
+  bool wasSelected = mCurrentTileset == rowItem;
+
+  lstTilesets->blockSignals( true );
+  lstTilesets->clearSelection();
+  if ( !wasSelected )
+  {
+    QgsDebugMsg( QString( "selecting current row %1" ).arg( lstTilesets->currentRow() ) );
+    lstTilesets->selectRow( lstTilesets->currentRow() );
+    mCurrentTileset = rowItem;
+  }
+  else
+  {
+    mCurrentTileset = 0;
+  }
+  lstTilesets->blockSignals( false );
+
+  updateButtons();
+}
+
 void QgsWMSSourceSelect::updateButtons()
 {
+  if ( !lstTilesets->selectedItems().isEmpty() )
+  {
+    // tileset selected => disable layer selection and layer order
+    lstLayers->setEnabled( false );
+    tabServers->setTabEnabled( tabServers->indexOf( tabLayerOrder ), false );
+    tabServers->setTabEnabled( tabServers->indexOf( tabTilesets ), lstTilesets->rowCount() > 0 );
+    btnGrpImageEncoding->setEnabled( false );
+  }
+  else
+  {
+    // no tileset selected =>
+    //   disable layerorder, when no layers selected
+    //   disable tilesets, when layer are selected or no tilesets available
+    lstLayers->setEnabled( true );
+    tabServers->setTabEnabled( tabServers->indexOf( tabLayerOrder ), mLayerOrderTreeWidget->topLevelItemCount() > 0 );
+    tabServers->setTabEnabled( tabServers->indexOf( tabTilesets ),  mLayerOrderTreeWidget->topLevelItemCount() == 0  && lstTilesets->rowCount() );
+    btnGrpImageEncoding->setEnabled( true );
+  }
+
   if ( lstTilesets->selectedItems().isEmpty() && mLayerOrderTreeWidget->topLevelItemCount() == 0 )
   {
     if ( lstTilesets->rowCount() == 0 )
@@ -1079,7 +1130,7 @@ void QgsWMSSourceSelect::on_btnAddWMS_clicked()
   tabServers->setCurrentIndex( 0 );
 }
 
-void QgsWMSSourceSelect::wmsSelectionChanged()
+void QgsWMSSourceSelect::on_tableWidgetWMSList_itemSelectionChanged()
 {
   btnAddWMS->setEnabled( tableWidgetWMSList->currentRow() != -1 );
 }
