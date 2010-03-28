@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id: $ */
+/* $Id$ */
 #include <iostream>
 
 #include <QSettings>

@@ -63,7 +63,7 @@
  *   DON'T: separate variable names using underscores: my_variable_name ( NO! )
  *
  * **************************************************************************/
-/*  $Id: $ */
+/*  $Id$ */
 #ifndef eVis_H
 #define eVis_H
 
