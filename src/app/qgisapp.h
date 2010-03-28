@@ -58,6 +58,7 @@ class QgsRasterLayer;
 class QgsRectangle;
 class QgsUndoWidget;
 class QgsVectorLayer;
+class QgsTileScaleWidget;
 
 class QDomDocument;
 class QNetworkAccessManager;
@@ -274,6 +275,7 @@ class QgisApp : public QMainWindow
     QAction *actionLayerSaveAs() { return mActionLayerSaveAs; }
     QAction *actionLayerSelectionSaveAs() { return mActionLayerSelectionSaveAs; }
     QAction *actionRemoveLayer() { return mActionRemoveLayer; }
+    QAction *actionTileScale() { return mActionTileScale; }
 #ifdef HAVE_QWT
     QAction *actionGpsTool() { return mActionGpsTool; }
 #endif
@@ -444,6 +446,8 @@ class QgisApp : public QMainWindow
     void removeLayer();
     //! Show GPS tool
     void showGpsTool();
+    //! Show tile scale slider
+    void showTileScale();
     //! zoom to extent of layer
     void zoomToLayerExtent();
     //! zoom to actual size of raster layer
@@ -848,6 +852,7 @@ class QgisApp : public QMainWindow
     QAction *mActionLayerSaveAs;
     QAction *mActionLayerSelectionSaveAs;
     QAction *mActionRemoveLayer;
+    QAction *mActionTileScale;
 #ifdef HAVE_QWT
     QAction *mActionGpsTool;
 #endif
@@ -911,6 +916,7 @@ class QgisApp : public QMainWindow
     // docks ------------------------------------------
     QDockWidget *mLegendDock;
     QDockWidget *mOverviewDock;
+    QDockWidget *mpTileScaleDock;
 #ifdef HAVE_QWT
     QDockWidget *mpGpsDock;
 #endif
@@ -1061,6 +1067,9 @@ class QgisApp : public QMainWindow
     QNetworkAccessManager *mNAM;
 
     int mLastComposerId;
+
+    //! Persistent tile scale slider
+    QgsTileScaleWidget * mpTileScaleWidget;
 
 #ifdef HAVE_QWT
     //! Persistent GPS toolbox

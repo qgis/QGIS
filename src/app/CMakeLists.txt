@@ -67,6 +67,7 @@ SET(QGIS_APP_SRCS
   qgssinglesymboldialog.cpp
   qgssnappingdialog.cpp
   qgsundowidget.cpp
+  qgstilescalewidget.cpp
   qgsuniquevaluedialog.cpp
   qgsvectorlayerproperties.cpp
   qgsquerybuilder.cpp
@@ -176,6 +177,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsdbtablemodel.h
   qgsspatialitetablemodel.h
   qgsundowidget.h
+  qgstilescalewidget.h
   qgsquerybuilder.h
 
   composer/qgsattributeselectiondialog.h
