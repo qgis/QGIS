@@ -243,6 +243,9 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
      */
     void coordinateSystemSelected( QTreeWidgetItem* );
 
+    //! get list of authorities
+    QStringList authorities();
+
   signals:
     void sridSelected( QString theSRID );
     //! Refresh any listening canvases
