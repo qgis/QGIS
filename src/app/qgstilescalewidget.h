@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id: $ */
+/* $Id$ */
 
 #ifndef QGSTILESCALEWIDGET_H
 #define QGSTILESCALEWIDGET_H

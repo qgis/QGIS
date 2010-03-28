@@ -158,7 +158,7 @@ example:
 ```
 
 === SVN Keyword ===
-Each source file should contain the $Id$ keyword. This will be expanded by CVS
+Each source file should contain the $Id$ keyword. This will be expanded by SVN
 to contain useful information about the file, revision, last committer, and
 date/time of last checkin.
 
@@ -167,6 +167,12 @@ top of each source file:
 ```
   /* $Id$ */
 ```
+
+You also need to set 
+
+svn propset svn:keywords "Id"
+
+for the new files.
 
 == Variable Names ==
 Variable names begin with a lower case letter and are formed using mixed case.

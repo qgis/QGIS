@@ -24,7 +24,7 @@
 ** National Oceanic and Atmospheric Administration or the Department of Commerce.
 **
 **/
-/*  $Id: $ */
+/*  $Id$ */
 #ifndef EVISEVENTIDTOOL_H
 #define EVISEVENTIDTOOL_H
 

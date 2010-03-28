@@ -17,7 +17,7 @@
 #include "qgsoracle_plugin.h"
 #include "qgsselectgeoraster_ui.h"
 
-static const char * const sIdent = "$Id: oracleplugin.cpp  $";
+static const char * const sIdent = "$Id$";
 static const QString sName = QObject::tr( "Oracle Spatial GeoRaster" );
 static const QString sDescription = QObject::tr( "Access Oracle Spatial GeoRaster" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
