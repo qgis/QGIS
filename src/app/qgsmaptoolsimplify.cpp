@@ -259,7 +259,7 @@ void QgsMapToolSimplify::canvasPressEvent( QMouseEvent * e )
   vlayer->select( QgsAttributeList(), selectRect, true );
 
   QgsGeometry* geometry = QgsGeometry::fromPoint( layerCoords );
-  double minDistance = 10000000;
+  double minDistance = DBL_MAX;
   double currentDistance;
   QgsFeature f;
 
@@ -274,16 +274,18 @@ void QgsMapToolSimplify::canvasPressEvent( QMouseEvent * e )
       mSelectedFeature = f;
     }
   }
-  if ( mSelectedFeature.geometry()->isMultipart() )
-  {
-    QMessageBox::critical( 0, tr( "Unsupported operation" ), tr( "Multipart features are not supported for simplification." ) );
-    return;
-  }
+
   // delete previous rubberband (if any)
   removeRubberBand();
 
   if ( mSelectedFeature.isValid() )
   {
+    if ( mSelectedFeature.geometry()->isMultipart() )
+    {
+      QMessageBox::critical( 0, tr( "Unsupported operation" ), tr( "Multipart features are not supported for simplification." ) );
+      return;
+    }
+
     mRubberBand = new QgsRubberBand( mCanvas );
     mRubberBand->setToGeometry( mSelectedFeature.geometry(), false );
     mRubberBand->setColor( Qt::red );
