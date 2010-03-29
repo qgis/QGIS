@@ -31,11 +31,13 @@ SET(QGIS_APP_SRCS
   qgsmaptooladdvertex.cpp
   qgsmaptooladdisland.cpp
   qgsmaptooladdring.cpp
+  qgsmaptoolannotation.cpp
   qgsmaptoolcapture.cpp
   qgsmaptooldeletering.cpp
   qgsmaptooldeletepart.cpp
   qgsmaptooldeletevertex.cpp
   qgsmaptooledit.cpp
+  qgsmaptoolformannotation.cpp
   qgsmaptoolidentify.cpp
   qgsmaptoolmeasureangle.cpp
   qgsmaptoolmovefeature.cpp
@@ -46,6 +48,7 @@ SET(QGIS_APP_SRCS
   qgsmaptoolselect.cpp
   qgsmaptoolsimplify.cpp
   qgsmaptoolsplitfeatures.cpp
+  qgsmaptooltextannotation.cpp
   qgsmaptoolvertexedit.cpp
   qgsmeasuredialog.cpp
   qgsmeasuretool.cpp

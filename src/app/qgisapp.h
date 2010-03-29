@@ -39,6 +39,7 @@ class QTcpSocket;
 class QValidator;
 
 class QgisAppInterface;
+class QgsAnnotationItem;
 class QgsClipboard;
 class QgsComposer;
 class QgsComposerView;
@@ -622,6 +623,11 @@ class QgisApp : public QMainWindow
     //! Measure angle
     void measureAngle();
 
+    //annotations
+    void addFormAnnotation();
+    void addTextAnnotation();
+    void modifyAnnotation();
+
     //! show the attribute table for the currently selected layer
     void attributeTable();
 
@@ -666,6 +672,8 @@ class QgisApp : public QMainWindow
     void stopRendering();
 
     void showStyleManagerV2();
+
+    void writeAnnotationItemsToProject( QDomDocument& doc );
 
   signals:
     /** emitted when a key is pressed and we want non widget sublasses to be able
@@ -741,6 +749,13 @@ class QgisApp : public QMainWindow
     void deletePrintComposers();
     /**Creates the composer instances in a project file and adds them to the menu*/
     bool loadComposersFromProject( const QString& projectFilePath );
+
+    /**Returns all annotation items in the canvas*/
+    QList<QgsAnnotationItem*> annotationItems();
+    /**Removes annotation items in the canvas*/
+    void removeAnnotationItems();
+
+    bool loadAnnotationItemsFromProject( const QString& projectFilePath );
 
     /// QgisApp aren't copyable
     QgisApp( QgisApp const & );
@@ -839,6 +854,9 @@ class QgisApp : public QMainWindow
     QAction *mActionShowBookmarks;
     QAction *mActionDraw;
     QAction *mActionViewSeparator3;
+    QAction *mActionTextAnnotation;
+    QAction *mActionFormAnnotation;
+    QAction *mActionAnnotation;
 
     QAction *mActionNewVectorLayer;
     QAction *mActionAddOgrLayer;
@@ -953,6 +971,9 @@ class QgisApp : public QMainWindow
         QgsMapTool* mDeletePart;
         QgsMapTool* mNodeTool;
         QgsMapTool* mRotatePointSymbolsTool;
+        QgsMapTool* mAnnotation;
+        QgsMapTool* mFormAnnotation;
+        QgsMapTool* mTextAnnotation;
     } mMapTools;
 
     QgsMapTool *mNonEditMapTool;

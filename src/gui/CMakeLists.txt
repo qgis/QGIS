@@ -21,6 +21,8 @@ symbology-ng/characterwidget.cpp
 
 qgisgui.cpp
 qgisinterface.cpp
+qgsannotationitem.cpp
+qgsannotationwidget.cpp
 qgsattributeeditor.cpp
 qgslegendinterface.cpp
 qgscolorbutton.cpp
@@ -31,6 +33,8 @@ qgsdetaileditemwidget.cpp
 qgsdetaileditemdata.cpp
 qgsencodingfiledialog.cpp
 qgsfiledropedit.cpp
+qgsformannotationdialog.cpp
+qgsformannotationitem.cpp
 qgsgenericprojectionselector.cpp
 qgsmapcanvas.cpp
 qgsmapcanvasitem.cpp
@@ -48,6 +52,8 @@ qgsprojectbadlayerguihandler.cpp
 qgsprojectionselector.cpp
 qgsquickprint.cpp
 qgsrubberband.cpp
+qgstextannotationdialog.cpp
+qgstextannotationitem.cpp
 qgsvertexmarker.cpp
 qgsludialog.cpp
 )
@@ -69,6 +75,7 @@ symbology-ng/qgsvectorrandomcolorrampv2dialog.h
 symbology-ng/qgsvectorcolorbrewercolorrampv2dialog.h
 symbology-ng/characterwidget.h
 
+qgsannotationwidget.h
 qgsattributeeditor.h
 qgscomposerview.h
 qgsdetaileditemdelegate.h
@@ -76,6 +83,8 @@ qgsdetaileditemwidget.h
 qgslegendinterface.h
 qgisinterface.h
 qgsencodingfiledialog.h
+qgsformannotationdialog.h
+qgsformannotationitem.h
 qgsgenericprojectionselector.h
 qgsmapcanvas.h
 qgsmapoverviewcanvas.h
@@ -84,17 +93,26 @@ qgsmessageviewer.h
 qgscredentialdialog.h
 qgsprojectionselector.h
 qgsquickprint.h
+qgstextannotationdialog.h
 qgsludialog.h
 qgsprojectbadlayerguihandler.h
 )
 
 QT4_WRAP_CPP(QGIS_GUI_MOC_SRCS ${QGIS_GUI_MOC_HDRS})
 
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/symbology-ng ../core
-     ../core/composer ../core/raster ../core/renderer ../core/symbology ../core/symbology-ng
-     ${CMAKE_CURRENT_BINARY_DIR}
-     ${CMAKE_CURRENT_BINARY_DIR}/../ui
-     ${GEOS_INCLUDE_DIR}
+INCLUDE_DIRECTORIES(
+${QT_QTUITOOLS_INCLUDE_DIR}
+${CMAKE_CURRENT_SOURCE_DIR}
+${CMAKE_CURRENT_SOURCE_DIR}/symbology-ng
+../core
+../core/composer
+../core/raster
+../core/renderer
+../core/symbology
+../core/symbology-ng
+${CMAKE_CURRENT_BINARY_DIR}
+${CMAKE_CURRENT_BINARY_DIR}/../ui
+${GEOS_INCLUDE_DIR}
 )
 IF (WITH_INTERNAL_SPATIALITE)
   INCLUDE_DIRECTORIES(../core/spatialite/headers/spatialite)
