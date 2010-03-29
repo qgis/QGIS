@@ -6,7 +6,7 @@
 
 class QgsAnnotationWidget;
 
-class GUI_EXPORT QgsFormAnnotationDialog: public QDialog, private Ui::QgsFormAnnotationDialogBase
+class QgsFormAnnotationDialog: public QDialog, private Ui::QgsFormAnnotationDialogBase
 {
     Q_OBJECT
   public:
