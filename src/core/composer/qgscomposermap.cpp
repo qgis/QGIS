@@ -270,7 +270,7 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
     painter->restore();
 
     //draw canvas items
-    //drawCanvasItems( painter, itemStyle );
+    drawCanvasItems( painter, itemStyle );
   }
   else if ( mComposition->plotStyle() == QgsComposition::Print ||
             mComposition->plotStyle() == QgsComposition::Postscript )
@@ -311,7 +311,7 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
     painter->restore();
 
     //draw canvas items
-    //drawCanvasItems( painter, itemStyle );
+    drawCanvasItems( painter, itemStyle );
 
     mDrawing = false;
   }
@@ -1478,7 +1478,7 @@ QPointF QgsComposerMap::composerMapPosForItem( const QGraphicsItem* item ) const
   double mapX = item->scenePos().x() / mMapCanvas->width() * mMapRenderer->extent().width() + mMapRenderer->extent().xMinimum();
   double mapY = mMapRenderer->extent().yMaximum() - item->scenePos().y() / mMapCanvas->height() * mMapRenderer->extent().height();
 
-  double itemX = rect().width() * ( mapX - mExtent.xMinimum() ) / mExtent.width();
-  double itemY = rect().height() * ( mExtent.yMaximum() - mapY ) / mExtent.height();
+  double itemX = rect().width() * ( mapX - mExtent.xMinimum() ) / mExtent.width() + mXOffset;
+  double itemY = rect().height() * ( mExtent.yMaximum() - mapY ) / mExtent.height() + mYOffset;
   return QPointF( itemX, itemY );
 }

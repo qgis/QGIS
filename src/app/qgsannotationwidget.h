@@ -25,7 +25,7 @@ class QgsMarkerSymbolV2;
 
 /**A configuration widget to configure the annotation item properties. Usually embedded by QgsAnnotationItem
 subclass configuration dialogs*/
-class GUI_EXPORT QgsAnnotationWidget: public QWidget, private Ui::QgsAnnotationWidgetBase
+class QgsAnnotationWidget: public QWidget, private Ui::QgsAnnotationWidgetBase
 {
     Q_OBJECT
   public:
