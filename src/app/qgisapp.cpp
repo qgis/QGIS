@@ -110,6 +110,7 @@
 #include "qgsencodingfiledialog.h"
 #include "qgsexception.h"
 #include "qgsfeature.h"
+#include "qgsformannotationitem.h"
 #include "qgsnewvectorlayerdialog.h"
 #include "qgshelpviewer.h"
 #include "qgsgenericprojectionselector.h"
@@ -142,6 +143,7 @@
 #include "qgsvectorlayerproperties.h"
 #include "qgsrectangle.h"
 #include "qgsrenderer.h"
+#include "qgstextannotationitem.h"
 #include "qgswmssourceselect.h"
 #include "qgsshortcutsmanager.h"
 #include "qgsundowidget.h"
@@ -183,9 +185,11 @@
 #include "qgsmaptooladdisland.h"
 #include "qgsmaptooladdring.h"
 #include "qgsmaptooladdvertex.h"
+#include "qgsmaptoolannotation.h"
 #include "qgsmaptooldeletering.h"
 #include "qgsmaptooldeletepart.h"
 #include "qgsmaptooldeletevertex.h"
+#include "qgsmaptoolformannotation.h"
 #include "qgsmaptoolidentify.h"
 #include "qgsmaptoolmeasureangle.h"
 #include "qgsmaptoolmovefeature.h"
@@ -196,6 +200,7 @@
 #include "qgsmaptoolreshape.h"
 #include "qgsmaptoolrotatepointsymbols.h"
 #include "qgsmaptoolsplitfeatures.h"
+#include "qgsmaptooltextannotation.h"
 #include "qgsmaptoolvertexedit.h"
 #include "qgsmaptoolzoom.h"
 #include "qgsmaptoolsimplify.h"
@@ -510,6 +515,10 @@ QgisApp::~QgisApp()
   delete mMapTools.mIdentify;
   delete mMapTools.mMeasureDist;
   delete mMapTools.mMeasureArea;
+  delete mMapTools.mMeasureAngle;
+  delete mMapTools.mTextAnnotation;
+  delete mMapTools.mFormAnnotation;
+  delete mMapTools.mAnnotation;
   delete mMapTools.mCapturePoint;
   delete mMapTools.mCaptureLine;
   delete mMapTools.mCapturePolygon;
@@ -534,6 +543,7 @@ QgisApp::~QgisApp()
   delete mPythonUtils;
 
   deletePrintComposers();
+  removeAnnotationItems();
 
   // delete map layer registry and provider registry
   QgsApplication::exitQgis();
@@ -911,6 +921,18 @@ void QgisApp::createActions()
   mActionDraw->setStatusTip( tr( "Refresh Map" ) );
   connect( mActionDraw, SIGNAL( triggered() ), this, SLOT( refreshMapCanvas() ) );
 
+  mActionTextAnnotation = new QAction( getThemeIcon( "mActionTextAnnotation.png" ), tr( "Text Annotation" ), this );
+  mActionTextAnnotation->setCheckable( true );
+  connect( mActionTextAnnotation, SIGNAL( triggered() ), this, SLOT( addTextAnnotation() ) );
+
+  mActionFormAnnotation = new QAction( getThemeIcon( "mActionFormAnnotation.png" ), tr( "Form annotation" ), this );
+  mActionFormAnnotation->setCheckable( true );
+  connect( mActionFormAnnotation, SIGNAL( triggered() ), this, SLOT( addFormAnnotation() ) );
+
+  mActionAnnotation = new QAction( getThemeIcon( "mActionAnnotation.png" ), tr( "Move Annotation" ), this );
+  mActionAnnotation->setCheckable( true );
+  connect( mActionAnnotation, SIGNAL( triggered() ), this, SLOT( modifyAnnotation() ) );
+
   // Layer Menu Items
 
   mActionNewVectorLayer = new QAction( getThemeIcon( "mActionNewVectorLayer.png" ), tr( "New Vector Layer..." ), this );
@@ -1136,6 +1158,20 @@ void QgisApp::showStyleManagerV2()
 {
   QgsStyleV2ManagerDialog dlg( QgsStyleV2::defaultStyle(), this );
   dlg.exec();
+}
+
+void QgisApp::writeAnnotationItemsToProject( QDomDocument& doc )
+{
+  QList<QgsAnnotationItem*> items = annotationItems();
+  QList<QgsAnnotationItem*>::const_iterator itemIt = items.constBegin();
+  for ( ; itemIt != items.constEnd(); ++itemIt )
+  {
+    if ( ! *itemIt )
+    {
+      continue;
+    }
+    ( *itemIt )->writeXML( doc );
+  }
 }
 
 void QgisApp::showPythonDialog()
@@ -1570,6 +1606,19 @@ void QgisApp::createToolBars()
   mAttributesToolBar->addAction( mActionMapTips );
   mAttributesToolBar->addAction( mActionShowBookmarks );
   mAttributesToolBar->addAction( mActionNewBookmark );
+  // Annotation tools
+  QToolButton* mAnnotationToolButton = new QToolButton();
+  mAnnotationToolButton->setPopupMode( QToolButton::InstantPopup );
+  mAnnotationToolButton->setAutoRaise( true );
+  mAnnotationToolButton->setToolButtonStyle( Qt::ToolButtonIconOnly );
+  mAnnotationToolButton->setCheckable( true );
+  mAnnotationToolButton->addAction( mActionTextAnnotation );
+  mAnnotationToolButton->addAction( mActionFormAnnotation );
+  mAnnotationToolButton->addAction( mActionAnnotation );
+  mAnnotationToolButton->setDefaultAction( mActionTextAnnotation );
+  QObject::connect( mAnnotationToolButton, SIGNAL( triggered( QAction* ) ), \
+                    mAnnotationToolButton, SLOT( setDefaultAction( QAction* ) ) );
+  mAttributesToolBar->addWidget( mAnnotationToolButton );
   mToolbarMenu->addAction( mAttributesToolBar->toggleViewAction() );
   //
   // Plugins Toolbar
@@ -1896,6 +1945,8 @@ void QgisApp::setupConnections()
            this, SLOT( readProject( const QDomDocument & ) ) );
   connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ),
            this, SLOT( writeProject( QDomDocument & ) ) );
+
+  connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument& ) ), this, SLOT( writeAnnotationItemsToProject( QDomDocument& ) ) );
 }
 
 void QgisApp::createCanvas()
@@ -1924,6 +1975,12 @@ void QgisApp::createCanvas()
   mMapTools.mMeasureArea->setAction( mActionMeasureArea );
   mMapTools.mMeasureAngle = new QgsMapToolMeasureAngle( mMapCanvas );
   mMapTools.mMeasureAngle->setAction( mActionMeasureAngle );
+  mMapTools.mTextAnnotation = new QgsMapToolTextAnnotation( mMapCanvas );
+  mMapTools.mTextAnnotation->setAction( mActionTextAnnotation );
+  mMapTools.mFormAnnotation = new QgsMapToolFormAnnotation( mMapCanvas );
+  mMapTools.mFormAnnotation->setAction( mActionFormAnnotation );
+  mMapTools.mAnnotation = new QgsMapToolAnnotation( mMapCanvas );
+  mMapTools.mAnnotation->setAction( mActionAnnotation );
   mMapTools.mCapturePoint = new QgsMapToolAddFeature( mMapCanvas, QgsMapToolCapture::CapturePoint );
   mMapTools.mCapturePoint->setAction( mActionCapturePoint );
   mActionCapturePoint->setVisible( false );
@@ -2795,6 +2852,7 @@ void QgisApp::fileExit()
   if ( saveDirty() )
   {
     deletePrintComposers();
+    removeAnnotationItems();
     mMapCanvas->freeze( true );
     removeAllLayers();
     qApp->exit( 0 );
@@ -2826,6 +2884,7 @@ void QgisApp::fileNew( bool thePromptToSaveFlag )
   }
 
   deletePrintComposers();
+  removeAnnotationItems();
 
   mMapCanvas->freeze( true );
   removeAllLayers();
@@ -3050,6 +3109,7 @@ void QgisApp::fileOpen()
     settings.setValue( "/UI/lastProjectDir", myPath );
 
     deletePrintComposers();
+    removeAnnotationItems();
     // clear out any stuff from previous project
     mMapCanvas->freeze( true );
     removeAllLayers();
@@ -3073,6 +3133,7 @@ void QgisApp::fileOpen()
 
     //load the composers in the project
     loadComposersFromProject( fullPath );
+    loadAnnotationItemsFromProject( fullPath );
 
     // add this to the list of recently used project files
     saveRecentProjectPath( fullPath, settings );
@@ -3095,6 +3156,8 @@ bool QgisApp::addProject( QString projectFile )
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   deletePrintComposers();
+  removeAnnotationItems();
+
   // clear the map canvas
   removeAllLayers();
 
@@ -3127,6 +3190,7 @@ bool QgisApp::addProject( QString projectFile )
   // specific plug-in state
 
   loadComposersFromProject( projectFile );
+  loadAnnotationItemsFromProject( projectFile );
 
   // add this to the list of recently used project files
   QSettings settings;
@@ -3664,6 +3728,21 @@ void QgisApp::measureAngle()
   mMapCanvas->setMapTool( mMapTools.mMeasureAngle );
 }
 
+void QgisApp::addFormAnnotation()
+{
+  mMapCanvas->setMapTool( mMapTools.mFormAnnotation );
+}
+
+void QgisApp::addTextAnnotation()
+{
+  mMapCanvas->setMapTool( mMapTools.mTextAnnotation );
+}
+
+void QgisApp::modifyAnnotation()
+{
+  mMapCanvas->setMapTool( mMapTools.mAnnotation );
+}
+
 void QgisApp::attributeTable()
 {
   if ( mMapCanvas && mMapCanvas->isDrawing() )
@@ -3905,6 +3984,97 @@ void QgisApp::deletePrintComposers()
   }
   mPrintComposers.clear();
   mLastComposerId = 0;
+}
+
+bool QgisApp::loadAnnotationItemsFromProject( const QString& projectFilePath )
+{
+  //create dom document from file
+  QDomDocument doc;
+  QFile projectFile( projectFilePath );
+  if ( !projectFile.open( QIODevice::ReadOnly ) )
+  {
+    return false;
+  }
+
+  if ( !doc.setContent( &projectFile, false ) )
+  {
+    return false;
+  }
+
+  if ( !mMapCanvas )
+  {
+    return false;
+  }
+
+  removeAnnotationItems();
+
+  if ( doc.isNull() )
+  {
+    return false;
+  }
+
+  QDomNodeList textItemList = doc.elementsByTagName( "TextAnnotationItem" );
+  for ( int i = 0; i < textItemList.size(); ++i )
+  {
+    QgsTextAnnotationItem* newTextItem = new QgsTextAnnotationItem( mMapCanvas );
+    newTextItem->readXML( doc, textItemList.at( i ).toElement() );
+  }
+
+  QDomNodeList formItemList = doc.elementsByTagName( "FormAnnotationItem" );
+  for ( int i = 0; i < formItemList.size(); ++i )
+  {
+    QgsFormAnnotationItem* newFormItem = new QgsFormAnnotationItem( mMapCanvas );
+    newFormItem->readXML( doc, formItemList.at( i ).toElement() );
+  }
+  return true;
+}
+
+QList<QgsAnnotationItem*> QgisApp::annotationItems()
+{
+  QList<QgsAnnotationItem*> itemList;
+
+  if ( !mMapCanvas )
+  {
+    return itemList;
+  }
+
+  if ( mMapCanvas )
+  {
+    QList<QGraphicsItem*> graphicsItems = mMapCanvas->items();
+    QList<QGraphicsItem*>::iterator gIt = graphicsItems.begin();
+    for ( ; gIt != graphicsItems.end(); ++gIt )
+    {
+      QgsAnnotationItem* currentItem = dynamic_cast<QgsAnnotationItem*>( *gIt );
+      if ( currentItem )
+      {
+        itemList.push_back( currentItem );
+      }
+    }
+  }
+  return itemList;
+}
+
+void QgisApp::removeAnnotationItems()
+{
+  if ( !mMapCanvas )
+  {
+    return;
+  }
+  QGraphicsScene* scene = mMapCanvas->scene();
+  if ( !scene )
+  {
+    return;
+  }
+  QList<QgsAnnotationItem*> itemList = annotationItems();
+  QList<QgsAnnotationItem*>::iterator itemIt = itemList.begin();
+  for ( ; itemIt != itemList.end(); ++itemIt )
+  {
+    if ( *itemIt )
+    {
+      scene->removeItem( *itemIt );
+      delete *itemIt;
+    }
+  }
 }
 
 void QgisApp::mergeSelectedFeatures()

@@ -108,6 +108,7 @@
     <file>themes/default/mActionAddSpatiaLiteLayer.png</file>
     <file>themes/default/mActionAddVertex.png</file>
     <file>themes/default/mActionAddWmsLayer.png</file>
+    <file>themes/default/mActionAnnotation.png</file>
     <file>themes/default/mActionAlignBottom.png</file>
     <file>themes/default/mActionAlignHCenter.png</file>
     <file>themes/default/mActionAlignLeft.png</file>
@@ -146,6 +147,7 @@
     <file>themes/default/mActionFileSaveAs.png</file>
     <file>themes/default/mActionFileSmall.png</file>
     <file>themes/default/mActionFolder.png</file>
+    <file>themes/default/mActionFormAnnotation.png</file>
     <file>themes/default/mActionFromSelectedFeature.png</file>
     <file>themes/default/mActionGroupItems.png</file>
     <file>themes/default/mActionHelpAbout.png</file>
@@ -198,6 +200,7 @@
     <file>themes/default/mActionShowPluginManager.png</file>
     <file>themes/default/mActionSimplify.png</file>
     <file>themes/default/mActionSplitFeatures.png</file>
+    <file>themes/default/mActionTextAnnotation.png</file>
     <file>themes/default/mActionToggleEditing.png</file>
     <file>themes/default/mActionUndo.png</file>
     <file>themes/default/mActionUngroupItems.png</file>
