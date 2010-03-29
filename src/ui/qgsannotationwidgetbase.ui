@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>213</width>
-    <height>150</height>
+    <height>152</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,7 +26,10 @@
      <item>
       <widget class="QLabel" name="mMapMarkerLabel">
        <property name="text">
-        <string>Map marker:</string>
+        <string>Map marker</string>
+       </property>
+       <property name="buddy">
+        <cstring>mMapMarkerButton</cstring>
        </property>
       </widget>
      </item>
@@ -44,7 +47,10 @@
      <item>
       <widget class="QLabel" name="mFrameWidthLabel">
        <property name="text">
-        <string>Frame width:</string>
+        <string>Frame width</string>
+       </property>
+       <property name="buddy">
+        <cstring>mFrameWidthSpinBox</cstring>
        </property>
       </widget>
      </item>
@@ -58,7 +64,10 @@
      <item>
       <widget class="QLabel" name="mFrameColorLabel">
        <property name="text">
-        <string>Frame color:</string>
+        <string>Frame color</string>
+       </property>
+       <property name="buddy">
+        <cstring>mFrameColorButton</cstring>
        </property>
       </widget>
      </item>
