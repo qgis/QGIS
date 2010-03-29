@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsformannotationitem.h"
-#include "qgsformannotationdialog.h"
 #include "qgsattributeeditor.h"
 #include "qgsfeature.h"
 #include "qgslogger.h"
@@ -140,11 +139,6 @@ void QgsFormAnnotationItem::paint( QPainter * painter, const QStyleOptionGraphic
   {
     drawSelectionBoxes( painter );
   }
-}
-
-QDialog* QgsFormAnnotationItem::createEditor()
-{
-  return new QgsFormAnnotationDialog( this );
 }
 
 QSizeF QgsFormAnnotationItem::minimumFrameSize() const

@@ -16,9 +16,11 @@
  ***************************************************************************/
 
 #include "qgsmaptoolannotation.h"
+#include "qgsformannotationdialog.h"
 #include "qgsformannotationitem.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgstextannotationdialog.h"
 #include "qgstextannotationitem.h"
 #include <QDialog>
 #include <QMouseEvent>
@@ -36,6 +38,28 @@ QgsMapToolAnnotation::~QgsMapToolAnnotation()
 
 QgsAnnotationItem* QgsMapToolAnnotation::createItem( QMouseEvent* e )
 {
+  return 0;
+}
+
+QDialog* QgsMapToolAnnotation::createItemEditor( QgsAnnotationItem* item )
+{
+  if ( !item )
+  {
+    return 0;
+  }
+
+  QgsTextAnnotationItem* tItem = dynamic_cast<QgsTextAnnotationItem*>( item );
+  if ( tItem )
+  {
+    return new QgsTextAnnotationDialog( tItem );
+  }
+
+  QgsFormAnnotationItem* fItem = dynamic_cast<QgsFormAnnotationItem*>( item );
+  if ( fItem )
+  {
+    return new QgsFormAnnotationDialog( fItem );
+  }
+
   return 0;
 }
 
@@ -193,7 +217,7 @@ void QgsMapToolAnnotation::canvasDoubleClickEvent( QMouseEvent * e )
   {
     return;
   }
-  QDialog* itemEditor = item->createEditor();
+  QDialog* itemEditor = createItemEditor( item );
   if ( itemEditor )
   {
     itemEditor->exec();

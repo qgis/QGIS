@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgstextannotationitem.h"
-#include "qgstextannotationdialog.h"
 #include <QDomDocument>
 #include <QPainter>
 
@@ -44,11 +43,6 @@ void QgsTextAnnotationItem::setDocument( const QTextDocument* doc )
 {
   delete mDocument;
   mDocument = doc->clone();
-}
-
-QDialog* QgsTextAnnotationItem::createEditor()
-{
-  return new QgsTextAnnotationDialog( this );
 }
 
 void QgsTextAnnotationItem::paint( QPainter * painter )
