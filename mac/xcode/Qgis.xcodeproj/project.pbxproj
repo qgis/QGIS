@@ -1130,6 +1130,19 @@
 		7295BC7A10F57D9E005D1408 /* qgscomposertablewidget.h in Sources */ = {isa = PBXBuildFile; fileRef = 7295BC7810F57D8C005D1408 /* qgscomposertablewidget.h */; };
 		7296CD9E10C2ED18001EAD92 /* qgscomposershape.h in Sources */ = {isa = PBXBuildFile; fileRef = 72C93CE110B58AD2003A618E /* qgscomposershape.h */; };
 		7296CE1A10C2FE91001EAD92 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
+		7297AA471160EC5400DC6F2D /* qgsannotationwidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7297AA3B1160EBEE00DC6F2D /* qgsannotationwidget.cpp */; };
+		7297AA481160EC5400DC6F2D /* qgsannotationwidget.h in Sources */ = {isa = PBXBuildFile; fileRef = 7297AA3C1160EBEE00DC6F2D /* qgsannotationwidget.h */; };
+		7297AA491160EC5400DC6F2D /* qgsformannotationdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7297AA3D1160EBEE00DC6F2D /* qgsformannotationdialog.cpp */; };
+		7297AA4A1160EC5400DC6F2D /* qgsformannotationdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7297AA3E1160EBEE00DC6F2D /* qgsformannotationdialog.h */; };
+		7297AA4B1160EC5400DC6F2D /* qgsmaptoolannotation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7297AA3F1160EBEE00DC6F2D /* qgsmaptoolannotation.cpp */; };
+		7297AA4C1160EC5400DC6F2D /* qgsmaptoolformannotation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7297AA411160EBEE00DC6F2D /* qgsmaptoolformannotation.cpp */; };
+		7297AA4D1160EC5400DC6F2D /* qgsmaptooltextannotation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7297AA431160EBEE00DC6F2D /* qgsmaptooltextannotation.cpp */; };
+		7297AA4E1160EC5400DC6F2D /* qgstextannotationdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7297AA451160EBEE00DC6F2D /* qgstextannotationdialog.cpp */; };
+		7297AA4F1160EC5400DC6F2D /* qgstextannotationdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7297AA461160EBEE00DC6F2D /* qgstextannotationdialog.h */; };
+		7297AA561160ECC700DC6F2D /* qgsannotationitem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7297AA501160EC9E00DC6F2D /* qgsannotationitem.cpp */; };
+		7297AA571160ECC700DC6F2D /* qgsformannotationitem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7297AA521160EC9E00DC6F2D /* qgsformannotationitem.cpp */; };
+		7297AA581160ECC700DC6F2D /* qgsformannotationitem.h in Sources */ = {isa = PBXBuildFile; fileRef = 7297AA531160EC9E00DC6F2D /* qgsformannotationitem.h */; };
+		7297AA591160ECC700DC6F2D /* qgstextannotationitem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7297AA541160EC9E00DC6F2D /* qgstextannotationitem.cpp */; };
 		7298A493115FF4F8001BF2E9 /* qgstilescalewidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7298A491115FF4E8001BF2E9 /* qgstilescalewidget.cpp */; };
 		7298A494115FF4F8001BF2E9 /* qgstilescalewidget.h in Sources */ = {isa = PBXBuildFile; fileRef = 7298A492115FF4E8001BF2E9 /* qgstilescalewidget.h */; };
 		7299E8BA0F90F06C002F58DE /* AUTHORS in Copy - doc */ = {isa = PBXBuildFile; fileRef = 7256F2E50F4147890022BE1F /* AUTHORS */; };
@@ -5847,6 +5860,33 @@
 		7295BC7710F57D8C005D1408 /* qgscomposertablewidget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgscomposertablewidget.cpp; path = ../../src/app/composer/qgscomposertablewidget.cpp; sourceTree = SOURCE_ROOT; };
 		7295BC7810F57D8C005D1408 /* qgscomposertablewidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgscomposertablewidget.h; path = ../../src/app/composer/qgscomposertablewidget.h; sourceTree = SOURCE_ROOT; };
 		7296CD8610C2E667001EAD92 /* chstroke.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = chstroke.sh; path = ../../scripts/chstroke.sh; sourceTree = SOURCE_ROOT; };
+		7297AA381160EB3400DC6F2D /* qgsannotationitem.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsannotationitem.sip; path = ../../python/gui/qgsannotationitem.sip; sourceTree = SOURCE_ROOT; };
+		7297AA391160EB3400DC6F2D /* qgsformannotationitem.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsformannotationitem.sip; path = ../../python/gui/qgsformannotationitem.sip; sourceTree = SOURCE_ROOT; };
+		7297AA3A1160EB3400DC6F2D /* qgstextannotationitem.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgstextannotationitem.sip; path = ../../python/gui/qgstextannotationitem.sip; sourceTree = SOURCE_ROOT; };
+		7297AA3B1160EBEE00DC6F2D /* qgsannotationwidget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsannotationwidget.cpp; path = ../../src/app/qgsannotationwidget.cpp; sourceTree = SOURCE_ROOT; };
+		7297AA3C1160EBEE00DC6F2D /* qgsannotationwidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsannotationwidget.h; path = ../../src/app/qgsannotationwidget.h; sourceTree = SOURCE_ROOT; };
+		7297AA3D1160EBEE00DC6F2D /* qgsformannotationdialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsformannotationdialog.cpp; path = ../../src/app/qgsformannotationdialog.cpp; sourceTree = SOURCE_ROOT; };
+		7297AA3E1160EBEE00DC6F2D /* qgsformannotationdialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsformannotationdialog.h; path = ../../src/app/qgsformannotationdialog.h; sourceTree = SOURCE_ROOT; };
+		7297AA3F1160EBEE00DC6F2D /* qgsmaptoolannotation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsmaptoolannotation.cpp; path = ../../src/app/qgsmaptoolannotation.cpp; sourceTree = SOURCE_ROOT; };
+		7297AA401160EBEE00DC6F2D /* qgsmaptoolannotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsmaptoolannotation.h; path = ../../src/app/qgsmaptoolannotation.h; sourceTree = SOURCE_ROOT; };
+		7297AA411160EBEE00DC6F2D /* qgsmaptoolformannotation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsmaptoolformannotation.cpp; path = ../../src/app/qgsmaptoolformannotation.cpp; sourceTree = SOURCE_ROOT; };
+		7297AA421160EBEE00DC6F2D /* qgsmaptoolformannotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsmaptoolformannotation.h; path = ../../src/app/qgsmaptoolformannotation.h; sourceTree = SOURCE_ROOT; };
+		7297AA431160EBEE00DC6F2D /* qgsmaptooltextannotation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsmaptooltextannotation.cpp; path = ../../src/app/qgsmaptooltextannotation.cpp; sourceTree = SOURCE_ROOT; };
+		7297AA441160EBEE00DC6F2D /* qgsmaptooltextannotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsmaptooltextannotation.h; path = ../../src/app/qgsmaptooltextannotation.h; sourceTree = SOURCE_ROOT; };
+		7297AA451160EBEE00DC6F2D /* qgstextannotationdialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgstextannotationdialog.cpp; path = ../../src/app/qgstextannotationdialog.cpp; sourceTree = SOURCE_ROOT; };
+		7297AA461160EBEE00DC6F2D /* qgstextannotationdialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgstextannotationdialog.h; path = ../../src/app/qgstextannotationdialog.h; sourceTree = SOURCE_ROOT; };
+		7297AA501160EC9E00DC6F2D /* qgsannotationitem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsannotationitem.cpp; path = ../../src/gui/qgsannotationitem.cpp; sourceTree = SOURCE_ROOT; };
+		7297AA511160EC9E00DC6F2D /* qgsannotationitem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsannotationitem.h; path = ../../src/gui/qgsannotationitem.h; sourceTree = SOURCE_ROOT; };
+		7297AA521160EC9E00DC6F2D /* qgsformannotationitem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsformannotationitem.cpp; path = ../../src/gui/qgsformannotationitem.cpp; sourceTree = SOURCE_ROOT; };
+		7297AA531160EC9E00DC6F2D /* qgsformannotationitem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsformannotationitem.h; path = ../../src/gui/qgsformannotationitem.h; sourceTree = SOURCE_ROOT; };
+		7297AA541160EC9E00DC6F2D /* qgstextannotationitem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgstextannotationitem.cpp; path = ../../src/gui/qgstextannotationitem.cpp; sourceTree = SOURCE_ROOT; };
+		7297AA551160EC9E00DC6F2D /* qgstextannotationitem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgstextannotationitem.h; path = ../../src/gui/qgstextannotationitem.h; sourceTree = SOURCE_ROOT; };
+		7297AA5A1160ECF500DC6F2D /* qgsannotationwidgetbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgsannotationwidgetbase.ui; path = ../../src/ui/qgsannotationwidgetbase.ui; sourceTree = SOURCE_ROOT; };
+		7297AA5B1160ECF500DC6F2D /* qgsformannotationdialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgsformannotationdialogbase.ui; path = ../../src/ui/qgsformannotationdialogbase.ui; sourceTree = SOURCE_ROOT; };
+		7297AA5C1160ECF500DC6F2D /* qgstextannotationdialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgstextannotationdialogbase.ui; path = ../../src/ui/qgstextannotationdialogbase.ui; sourceTree = SOURCE_ROOT; };
+		7297AA5D1160ED3100DC6F2D /* mActionAnnotation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionAnnotation.png; path = ../../images/themes/default/mActionAnnotation.png; sourceTree = SOURCE_ROOT; };
+		7297AA5E1160ED3100DC6F2D /* mActionFormAnnotation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionFormAnnotation.png; path = ../../images/themes/default/mActionFormAnnotation.png; sourceTree = SOURCE_ROOT; };
+		7297AA5F1160ED3100DC6F2D /* mActionTextAnnotation.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionTextAnnotation.png; path = ../../images/themes/default/mActionTextAnnotation.png; sourceTree = SOURCE_ROOT; };
 		7298A491115FF4E8001BF2E9 /* qgstilescalewidget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgstilescalewidget.cpp; path = ../../src/app/qgstilescalewidget.cpp; sourceTree = SOURCE_ROOT; };
 		7298A492115FF4E8001BF2E9 /* qgstilescalewidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgstilescalewidget.h; path = ../../src/app/qgstilescalewidget.h; sourceTree = SOURCE_ROOT; };
 		7298A495115FF51A001BF2E9 /* qgstilescalewidgetbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgstilescalewidgetbase.ui; path = ../../src/ui/qgstilescalewidgetbase.ui; sourceTree = SOURCE_ROOT; };
@@ -8136,6 +8176,18 @@
 				721362EE111720130088753A /* qgsmanageconnectionsdialog.h */,
 				7298A491115FF4E8001BF2E9 /* qgstilescalewidget.cpp */,
 				7298A492115FF4E8001BF2E9 /* qgstilescalewidget.h */,
+				7297AA3B1160EBEE00DC6F2D /* qgsannotationwidget.cpp */,
+				7297AA3C1160EBEE00DC6F2D /* qgsannotationwidget.h */,
+				7297AA3D1160EBEE00DC6F2D /* qgsformannotationdialog.cpp */,
+				7297AA3E1160EBEE00DC6F2D /* qgsformannotationdialog.h */,
+				7297AA3F1160EBEE00DC6F2D /* qgsmaptoolannotation.cpp */,
+				7297AA401160EBEE00DC6F2D /* qgsmaptoolannotation.h */,
+				7297AA411160EBEE00DC6F2D /* qgsmaptoolformannotation.cpp */,
+				7297AA421160EBEE00DC6F2D /* qgsmaptoolformannotation.h */,
+				7297AA431160EBEE00DC6F2D /* qgsmaptooltextannotation.cpp */,
+				7297AA441160EBEE00DC6F2D /* qgsmaptooltextannotation.h */,
+				7297AA451160EBEE00DC6F2D /* qgstextannotationdialog.cpp */,
+				7297AA461160EBEE00DC6F2D /* qgstextannotationdialog.h */,
 				72A239420F74A62200AFC35B /* attributetable */,
 				7209E5BD0F39E57A003DC336 /* composer */,
 				72AF7B3010F8F02100BD549A /* gps */,
@@ -8633,6 +8685,12 @@
 				7209E7750F39E57A003DC336 /* qgsvertexmarker.h */,
 				72DAAF41111A60D2000DC8B7 /* qgscredentialdialog.cpp */,
 				72DAAF42111A60D2000DC8B7 /* qgscredentialdialog.h */,
+				7297AA501160EC9E00DC6F2D /* qgsannotationitem.cpp */,
+				7297AA511160EC9E00DC6F2D /* qgsannotationitem.h */,
+				7297AA521160EC9E00DC6F2D /* qgsformannotationitem.cpp */,
+				7297AA531160EC9E00DC6F2D /* qgsformannotationitem.h */,
+				7297AA541160EC9E00DC6F2D /* qgstextannotationitem.cpp */,
+				7297AA551160EC9E00DC6F2D /* qgstextannotationitem.h */,
 				7225EF3110B2275E00D23EA2 /* symbology-ng */,
 			);
 			name = gui;
@@ -9547,6 +9605,9 @@
 				7225EFA810B22C4400D23EA2 /* qgsvectorgradientcolorrampv2dialogbase.ui */,
 				72095D7C115E540C000AE45E /* qgsvectorlayersaveasdialogbase.ui */,
 				7225EFA910B22C4400D23EA2 /* qgsvectorrandomcolorrampv2dialogbase.ui */,
+				7297AA5A1160ECF500DC6F2D /* qgsannotationwidgetbase.ui */,
+				7297AA5B1160ECF500DC6F2D /* qgsformannotationdialogbase.ui */,
+				7297AA5C1160ECF500DC6F2D /* qgstextannotationdialogbase.ui */,
 				7225EFAA10B22C5000D23EA2 /* symbollayer */,
 			);
 			name = ui;
@@ -9897,6 +9958,9 @@
 				7209EDCE0F39E5D9003DC336 /* qgsrubberband.sip */,
 				7209EDCF0F39E5D9003DC336 /* qgsvertexmarker.sip */,
 				7225EF0310B225DD00D23EA2 /* symbology-ng-gui.sip */,
+				7297AA381160EB3400DC6F2D /* qgsannotationitem.sip */,
+				7297AA391160EB3400DC6F2D /* qgsformannotationitem.sip */,
+				7297AA3A1160EB3400DC6F2D /* qgstextannotationitem.sip */,
 			);
 			name = gui;
 			path = ../../python/gui;
@@ -10513,6 +10577,9 @@
 				7225EFDB10B22E5B00D23EA2 /* symbologyLock.png */,
 				7225EFDC10B22E5B00D23EA2 /* symbologyRemove.png */,
 				7225EFDD10B22E5B00D23EA2 /* symbologyUp.png */,
+				7297AA5D1160ED3100DC6F2D /* mActionAnnotation.png */,
+				7297AA5E1160ED3100DC6F2D /* mActionFormAnnotation.png */,
+				7297AA5F1160ED3100DC6F2D /* mActionTextAnnotation.png */,
 				72AF7B2910F8EDBD00BD549A /* gpsicons */,
 				72EB12940F7E9B51002C38FA /* plugins */,
 				72EEBDFF10BCE23000003328 /* propertyicons */,
@@ -15091,6 +15158,10 @@
 				72491FB811074E930035D7E5 /* characterwidget.h in Sources */,
 				72DAAF43111A60EF000DC8B7 /* qgscredentialdialog.cpp in Sources */,
 				72DAAF44111A60EF000DC8B7 /* qgscredentialdialog.h in Sources */,
+				7297AA561160ECC700DC6F2D /* qgsannotationitem.cpp in Sources */,
+				7297AA571160ECC700DC6F2D /* qgsformannotationitem.cpp in Sources */,
+				7297AA581160ECC700DC6F2D /* qgsformannotationitem.h in Sources */,
+				7297AA591160ECC700DC6F2D /* qgstextannotationitem.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15902,6 +15973,15 @@
 				72095D7B115E53CF000AE45E /* qgsvectorlayersaveasdialog.h in Sources */,
 				7298A493115FF4F8001BF2E9 /* qgstilescalewidget.cpp in Sources */,
 				7298A494115FF4F8001BF2E9 /* qgstilescalewidget.h in Sources */,
+				7297AA471160EC5400DC6F2D /* qgsannotationwidget.cpp in Sources */,
+				7297AA481160EC5400DC6F2D /* qgsannotationwidget.h in Sources */,
+				7297AA491160EC5400DC6F2D /* qgsformannotationdialog.cpp in Sources */,
+				7297AA4A1160EC5400DC6F2D /* qgsformannotationdialog.h in Sources */,
+				7297AA4B1160EC5400DC6F2D /* qgsmaptoolannotation.cpp in Sources */,
+				7297AA4C1160EC5400DC6F2D /* qgsmaptoolformannotation.cpp in Sources */,
+				7297AA4D1160EC5400DC6F2D /* qgsmaptooltextannotation.cpp in Sources */,
+				7297AA4E1160EC5400DC6F2D /* qgstextannotationdialog.cpp in Sources */,
+				7297AA4F1160EC5400DC6F2D /* qgstextannotationdialog.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16378,6 +16458,7 @@
 					../../src/core/renderer,
 					../../src/core/symbology,
 					"../../src/core/symbology-ng",
+					"$(QT_INC_UITOOLS)",
 					"$(GEOS_INC)",
 					"$(SQLITE_INC)",
 				);
@@ -16392,6 +16473,7 @@
 					"$(QT_LIB_SVG)",
 					"$(QT_LIB_SQL)",
 					"$(SQLITE_LIB)",
+					"$(QT_LIB_UITOOLS)",
 				);
 				PRODUCT_NAME = qgis_gui;
 			};
@@ -16416,6 +16498,7 @@
 					../../src/core/renderer,
 					../../src/core/symbology,
 					"../../src/core/symbology-ng",
+					"$(QT_INC_UITOOLS)",
 					"$(GEOS_INC)",
 					"$(SQLITE_INC)",
 				);
@@ -16430,6 +16513,7 @@
 					"$(QT_LIB_SVG)",
 					"$(QT_LIB_SQL)",
 					"$(SQLITE_LIB)",
+					"$(QT_LIB_UITOOLS)",
 				);
 				PRODUCT_NAME = qgis_gui;
 			};
@@ -19588,7 +19672,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 13185;
+				QGIS_VERSION_BUILD = 13192;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -19599,7 +19683,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 13185;
+				QGIS_VERSION_BUILD = 13192;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
