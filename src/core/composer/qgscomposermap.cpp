@@ -1423,7 +1423,7 @@ void QgsComposerMap::drawCanvasItems( QPainter* painter, const QStyleOptionGraph
 
 void QgsComposerMap::drawCanvasItem( QGraphicsItem* item, QPainter* painter, const QStyleOptionGraphicsItem* itemStyle )
 {
-  if ( !item || !mMapCanvas || !mMapRenderer )
+  if ( !item || !mMapCanvas || !mMapRenderer  || !item->isVisible() )
   {
     return;
   }
