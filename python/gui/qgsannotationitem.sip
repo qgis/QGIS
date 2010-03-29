@@ -25,9 +25,6 @@ class QgsAnnotationItem: QgsMapCanvasItem
     QgsAnnotationItem( QgsMapCanvas* mapCanvas );
     virtual ~QgsAnnotationItem();
 
-    /**Creates an editor widget (caller takes ownership)*/
-    virtual QDialog* createEditor() = 0;
-
     void updatePosition();
 
     QRectF boundingRect() const;

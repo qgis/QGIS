@@ -4,6 +4,7 @@ SET(QGIS_APP_SRCS
   qgisappinterface.cpp
   qgsabout.cpp
   qgsaddattrdialog.cpp
+  qgsannotationwidget.cpp
   qgsattributeactiondialog.cpp
   qgsattributedialog.cpp
   qgsattributetypedialog.cpp
@@ -17,6 +18,7 @@ SET(QGIS_APP_SRCS
   qgscustomprojectiondialog.cpp
   qgsdbfilterproxymodel.cpp
   qgsdbtablemodel.cpp
+  qgsformannotationdialog.cpp
   qgsspatialitefilterproxymodel.cpp
   qgsspatialitetablemodel.cpp
   qgsdelattrdialog.cpp
@@ -65,6 +67,7 @@ SET(QGIS_APP_SRCS
   qgsprojectproperties.cpp
   qgsrasterlayerproperties.cpp
   qgssearchquerybuilder.cpp
+  qgstextannotationdialog.cpp
   qgswmssourceselect.cpp
   qgsshortcutsmanager.cpp
   qgssinglesymboldialog.cpp
@@ -126,6 +129,7 @@ SET (QGIS_APP_MOC_HDRS
   qgisappinterface.h
   qgsabout.h
   qgsaddattrdialog.h
+  qgsannotationwidget.h
   qgsattributeactiondialog.h
   qgsattributedialog.h
   qgsattributetypedialog.h
@@ -137,15 +141,14 @@ SET (QGIS_APP_MOC_HDRS
   qgscustomprojectiondialog.h
   qgsdelattrdialog.h
   qgsfieldcalculator.h
+  qgsformannotationdialog.h
   qgsmaptoolmeasureangle.h
   qgsnewvectorlayerdialog.h
   qgsgraduatedsymboldialog.h
   qgshelpviewer.h
   qgsidentifyresults.h
   qgslabeldialog.h
-
   qgsmanageconnectionsdialog.h
-
   qgsmaptoolidentify.h
   qgsmaptoolsplitfeatures.h
   qgsmaptoolvertexedit.h
@@ -161,7 +164,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptooldeletevertex.h
   qgsmaptoolmovevertex.h
   qgsmaptoolsimplify.h
-
   qgsmeasuretool.h
   qgsmeasuredialog.h
   qgsmergeattributesdialog.h
@@ -172,6 +174,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsprojectproperties.h
   qgsrasterlayerproperties.h
   qgssearchquerybuilder.h
+  qgstextannotationdialog.h
   qgswmssourceselect.h
   qgssinglesymboldialog.h
   qgssnappingdialog.h

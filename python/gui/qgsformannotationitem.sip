@@ -13,9 +13,6 @@ class QgsFormAnnotationItem: QObject, QgsAnnotationItem
     //! paint function called by map canvas
     void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 );
 
-    /**Create a configuration dialog*/
-    QDialog* createEditor();
-
     QSizeF minimumFrameSize() const;
     /**Returns the optimal frame size*/
     QSizeF preferredFrameSize() const;

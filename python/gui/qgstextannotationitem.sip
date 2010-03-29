@@ -7,8 +7,6 @@ class QgsTextAnnotationItem: QgsAnnotationItem
     QgsTextAnnotationItem( QgsMapCanvas* canvas );
     ~QgsTextAnnotationItem();
 
-    QDialog* createEditor();
-
     /**Returns document (caller takes ownership)*/
     QTextDocument* document() const;
     /**Sets document (does not take ownership)*/

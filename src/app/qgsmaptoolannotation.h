@@ -36,6 +36,8 @@ class QgsMapToolAnnotation: public QgsMapTool
   protected:
     /**Creates a new item. To be implemented by subclasses. Returns 0 by default*/
     virtual QgsAnnotationItem* createItem( QMouseEvent* e );
+    /**Creates an editor widget (caller takes ownership)*/
+    QDialog* createItemEditor( QgsAnnotationItem* item );
 
   private:
     /**Returns the topmost annotation item at the position (or 0 if none)*/
