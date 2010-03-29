@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>419</width>
+    <width>517</width>
     <height>364</height>
    </rect>
   </property>
@@ -78,7 +78,10 @@
      <item>
       <widget class="QLabel" name="mBackgroundColorLabel">
        <property name="text">
-        <string>Background color: </string>
+        <string>Background color</string>
+       </property>
+       <property name="buddy">
+        <cstring>mBackgroundColorButton</cstring>
        </property>
       </widget>
      </item>
@@ -99,6 +102,9 @@
    </item>
    <item row="3" column="0">
     <widget class="QStackedWidget" name="mStackedWidget">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
      <widget class="QWidget" name="page"/>
      <widget class="QWidget" name="page_2"/>
     </widget>
@@ -122,6 +128,16 @@
    <header>qgscolorbutton.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>mFontComboBox</tabstop>
+  <tabstop>mFontSizeSpinBox</tabstop>
+  <tabstop>mBoldPushButton</tabstop>
+  <tabstop>mItalicsPushButton</tabstop>
+  <tabstop>mFontColorButton</tabstop>
+  <tabstop>mTextEdit</tabstop>
+  <tabstop>mBackgroundColorButton</tabstop>
+  <tabstop>mButtonBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
