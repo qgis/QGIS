@@ -41,6 +41,7 @@
         <file>icons/default/sum_lines.png</file>
         <file>icons/default/vector_grid.png</file>
         <file>icons/default/split_layer.png</file>
+        <file>icons/default/merge_shapes.png</file>
 		<file>icons/default/neighbour.png</file>
 		<file>icons/default/delaunay.png</file>
 		<file>icons/default/layer_extent.png</file>

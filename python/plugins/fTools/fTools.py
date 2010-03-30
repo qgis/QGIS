@@ -1,5 +1,6 @@
+# -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# 
+#
 # fTools
 # Copyright (C) 2009  Carson Farmer
 # EMAIL: carson.farmer (at) gmail.com
@@ -7,27 +8,27 @@
 #
 # A collection of data management and analysis tools for vector data
 #
-# Geoprocessing functions adapted from 'Geoprocessing Plugin', 
+# Geoprocessing functions adapted from 'Geoprocessing Plugin',
 # (C) 2008 by Dr. Horst Duester, Stefan Ziegler
 #
 #-----------------------------------------------------------
-# 
+#
 # licensed under the terms of GNU GPL 2
-# 
+#
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License along
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-# 
+#
 #---------------------------------------------------------------------
 
 from PyQt4.QtCore import *
@@ -44,7 +45,8 @@ import doGeometry, doGeoprocessing, doVisual
 # TODO: Eliminate the following modules in favour of above multi-function formats
 import doIntersectLines, doJoinAttributes, doSelectByLocation, doVectorSplit, doMeanCoords
 import doPointDistance, doPointsInPolygon, doRandom, doRandPoints, doRegPoints, doDefineProj
-import doReProject, doSpatialJoin, doSubsetSelect, doSumLines, doVectorGrid, doAbout
+import doReProject, doSpatialJoin, doSubsetSelect, doSumLines, doVectorGrid, doMergeShapes
+import doAbout
 
 class fToolsPlugin:
   def __init__( self,iface ):
@@ -53,7 +55,7 @@ class fToolsPlugin:
       self.QgisVersion = unicode( QGis.QGIS_VERSION_INT )
     except:
       self.QgisVersion = unicode( QGis.qgisVersion )[ 0 ]
-      
+
   def getThemeIcon( self, icon ):
     settings = QSettings()
     pluginPath = QString( os.path.dirname( __file__ ) )
@@ -65,7 +67,7 @@ class fToolsPlugin:
       return QIcon( ":" + defaultPath )
     else:
       return QIcon()
-      
+
   def updateThemeIcons( self, theme ):
     self.analysisMenu.setIcon( QIcon( self.getThemeIcon( "analysis.png" ) ) )
     self.distMatrix.setIcon( QIcon( self.getThemeIcon( "matrix.png" ) ) )
@@ -75,13 +77,13 @@ class fToolsPlugin:
     self.listUnique.setIcon( QIcon( self.getThemeIcon( "unique.png" ) ) )
     self.nearestNeigh.setIcon( QIcon( self.getThemeIcon( "neighbour.png" ) ) )
     self.meanCoords.setIcon( QIcon( self.getThemeIcon( "mean.png" ) ) )
-    self.intLines.setIcon( QIcon( self.getThemeIcon( "intersections.png" ) ) ) 
+    self.intLines.setIcon( QIcon( self.getThemeIcon( "intersections.png" ) ) )
 
     self.researchMenu.setIcon( QIcon( self.getThemeIcon( "sampling.png" ) ) )
-    self.randSel.setIcon( QIcon( self.getThemeIcon( "random_selection.png" ) ) ) 
-    self.randSub.setIcon( QIcon( self.getThemeIcon( "sub_selection.png" ) ) ) 
-    self.randPoints.setIcon( QIcon( self.getThemeIcon( "random_points.png" ) ) ) 
-    self.regPoints.setIcon( QIcon( self.getThemeIcon( "regular_points.png" ) ) ) 
+    self.randSel.setIcon( QIcon( self.getThemeIcon( "random_selection.png" ) ) )
+    self.randSub.setIcon( QIcon( self.getThemeIcon( "sub_selection.png" ) ) )
+    self.randPoints.setIcon( QIcon( self.getThemeIcon( "random_points.png" ) ) )
+    self.regPoints.setIcon( QIcon( self.getThemeIcon( "regular_points.png" ) ) )
     self.vectGrid.setIcon( QIcon( self.getThemeIcon( "vector_grid.png" ) ) )
     self.selectLocation.setIcon( QIcon( self.getThemeIcon( "select_location.png" ) ) )
     self.layerExtent.setIcon( QIcon( self.getThemeIcon( "layer_extent.png" ) ) )
@@ -104,27 +106,28 @@ class fToolsPlugin:
     self.extNodes.setIcon( QIcon( self.getThemeIcon( "extract_nodes.png") ) )
     self.simplify.setIcon( QIcon( self.getThemeIcon( "simplify.png") ) )
     self.multiToSingle.setIcon( QIcon( self.getThemeIcon( "multi_to_single.png") ) )
-    self.singleToMulti.setIcon( QIcon( self.getThemeIcon( "single_to_multi.png") ) ) 
+    self.singleToMulti.setIcon( QIcon( self.getThemeIcon( "single_to_multi.png") ) )
     self.polysToLines.setIcon( QIcon( self.getThemeIcon( "to_lines.png") ) )
-    
+
     self.dataManageMenu.setIcon( QIcon( self.getThemeIcon( "management.png") ) )
     self.project.setIcon( QIcon( self.getThemeIcon( "export_projection.png") ) )
-    self.define.setIcon( QIcon( self.getThemeIcon( "define_projection.png" ) ) ) 
-    self.joinAttr.setIcon( QIcon( self.getThemeIcon( "join_attributes.png" ) ) ) 
+    self.define.setIcon( QIcon( self.getThemeIcon( "define_projection.png" ) ) )
+    self.joinAttr.setIcon( QIcon( self.getThemeIcon( "join_attributes.png" ) ) )
     self.spatJoin.setIcon( QIcon( self.getThemeIcon( "join_location.png" ) ) )
     self.splitVect.setIcon( QIcon( self.getThemeIcon( "split_layer.png" ) ) )
+    self.mergeShapes.setIcon( QIcon( self.getThemeIcon( "merge_shapes.png" ) ) )
     self.ftools_aboot.setIcon( QIcon( self.getThemeIcon( "ftools_logo.png" ) ) )
 
   def initGui( self ):
     if int( self.QgisVersion ) < 1:
-      QMessageBox.warning( self.iface.getMainWindow(), "fTools", 
+      QMessageBox.warning( self.iface.getMainWindow(), "fTools",
       QCoreApplication.translate( "fTools", "Quantum GIS version detected: " ) +unicode( self.QgisVersion )+".xx\n"
       + QCoreApplication.translate( "fTools", "This version of fTools requires at least QGIS version 1.0.0\nPlugin will not be enabled." ) )
       return None
     QObject.connect( self.iface, SIGNAL( "currentThemeChanged ( QString )" ), self.updateThemeIcons )
     self.menu = QMenu()
     self.menu.setTitle( QCoreApplication.translate( "fTools", "&Vector" ) )
-    
+
     self.analysisMenu = QMenu( QCoreApplication.translate( "fTools", "&Analysis Tools" ) )
     self.distMatrix = QAction( QCoreApplication.translate( "fTools", "Distance matrix" ),self.iface.mainWindow( ) )
     self.sumLines = QAction( QCoreApplication.translate( "fTools", "Sum line lengths" ), self.iface.mainWindow() )
@@ -145,7 +148,7 @@ class fToolsPlugin:
     self.vectGrid = QAction( QCoreApplication.translate( "fTools", "Vector grid" ), self.iface.mainWindow() )
     self.selectLocation = QAction( QCoreApplication.translate( "fTools", "Select by location" ), self.iface.mainWindow() )
     self.layerExtent = QAction( QCoreApplication.translate( "fTools", "Polygon from layer extent" ), self.iface.mainWindow() )
-    self.researchMenu.addActions( [ self.randSel, self.randSub, self.randPoints, 
+    self.researchMenu.addActions( [ self.randSel, self.randSub, self.randPoints,
     self.regPoints, self.vectGrid, self.selectLocation, self.layerExtent ] )
 
     self.geoMenu = QMenu( QCoreApplication.translate( "fTools", "&Geoprocessing Tools" ) )
@@ -157,7 +160,7 @@ class fToolsPlugin:
     self.clip = QAction( QCoreApplication.translate( "fTools", "Clip" ),self.iface.mainWindow() )
     self.dissolve = QAction( QCoreApplication.translate( "fTools", "Dissolve" ),self.iface.mainWindow() )
     self.erase = QAction( QCoreApplication.translate( "fTools", "Difference" ),self.iface.mainWindow() )
-    self.geoMenu.addActions( [ self.minConvex, self.dynaBuffer, self.intersect, 
+    self.geoMenu.addActions( [ self.minConvex, self.dynaBuffer, self.intersect,
     self.union, self.symDifference, self.clip, self.erase, self.dissolve ] )
 
     self.conversionMenu = QMenu( QCoreApplication.translate( "fTools", "G&eometry Tools" ) )
@@ -170,7 +173,7 @@ class fToolsPlugin:
     self.multiToSingle = QAction( QCoreApplication.translate( "fTools", "Multipart to singleparts" ),self.iface.mainWindow() )
     self.singleToMulti = QAction( QCoreApplication.translate( "fTools", "Singleparts to multipart" ),self.iface.mainWindow() )
     self.polysToLines = QAction( QCoreApplication.translate( "fTools", "Polygons to lines" ),self.iface.mainWindow() )
-    self.conversionMenu.addActions( [ self.checkGeom, self.compGeo, self.centroids, self.delaunay, 
+    self.conversionMenu.addActions( [ self.checkGeom, self.compGeo, self.centroids, self.delaunay,
     self.simplify, self.multiToSingle, self.singleToMulti, self.polysToLines, self.extNodes] )
 
     self.dataManageMenu = QMenu( QCoreApplication.translate( "fTools", "&Data Management Tools") )
@@ -179,10 +182,11 @@ class fToolsPlugin:
     self.joinAttr = QAction( QCoreApplication.translate( "fTools", "Join attributes" ), self.iface.mainWindow() )
     self.spatJoin = QAction( QCoreApplication.translate( "fTools", "Join attributes by location" ), self.iface.mainWindow() )
     self.splitVect = QAction( QCoreApplication.translate( "fTools", "Split vector layer" ), self.iface.mainWindow() )
-    self.dataManageMenu.addActions( [ self.project, self.define, self.joinAttr, self.spatJoin, self.splitVect ] )
+    self.mergeShapes = QAction( QCoreApplication.translate( "fTools", "Merge shapefiles to one" ), self.iface.mainWindow() )
+    self.dataManageMenu.addActions( [ self.project, self.define, self.joinAttr, self.spatJoin, self.splitVect, self.mergeShapes ] )
     self.ftools_aboot = QAction( QCoreApplication.translate( "fTools", "fTools Information" ), self.iface.mainWindow() )
     self.updateThemeIcons( "theme" )
-    
+
     self.menu.addMenu( self.analysisMenu )
     self.menu.addMenu( self.researchMenu )
     self.menu.addMenu( self.geoMenu )
@@ -195,7 +199,7 @@ class fToolsPlugin:
     actions = menu_bar.actions()
     lastAction = actions[ len( actions ) - 1 ]
     menu_bar.insertMenu( lastAction, self.menu )
-        
+
     QObject.connect( self.distMatrix, SIGNAL("triggered()"), self.dodistMatrix )
     QObject.connect( self.sumLines, SIGNAL("triggered()"), self.dosumLines )
     QObject.connect( self.pointsPoly, SIGNAL("triggered()"), self.dopointsPoly )
@@ -237,6 +241,7 @@ class fToolsPlugin:
     QObject.connect( self.joinAttr, SIGNAL("triggered()"), self.dojoinAttr )
     QObject.connect( self.spatJoin, SIGNAL("triggered()"), self.dospatJoin )
     QObject.connect( self.splitVect, SIGNAL("triggered()"), self.dosplitVect )
+    QObject.connect( self.mergeShapes, SIGNAL( "triggered()" ), self.doMergeShapes )
 
     QObject.connect( self.ftools_aboot, SIGNAL("triggered()"), self.doaboot )
 
@@ -314,11 +319,11 @@ class fToolsPlugin:
   def docentroids( self ):
     d = doGeometry.GeometryDialog( self.iface, 7 )
     d.exec_()
-    
+
   def dodelaunay( self ):
     d = doGeometry.GeometryDialog( self.iface, 8 )
     d.exec_()
-    
+
   def doextent( self ):
     d = doGeometry.GeometryDialog( self.iface, 9 )
     d.exec_()
@@ -389,6 +394,10 @@ class fToolsPlugin:
 
   def dospatJoin( self ):
     d = doSpatialJoin.Dialog( self.iface )
+    d.exec_()
+
+  def doMergeShapes( self ):
+    d = doMergeShapes.Dialog( self.iface )
     d.exec_()
 
   def doaboot( self ):
