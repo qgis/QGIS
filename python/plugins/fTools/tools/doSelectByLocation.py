@@ -55,23 +55,29 @@ class Dialog(QDialog, Ui_Dialog):
         inputLayer = ftools_utils.getVectorLayerByName(inPoly)
         selectLayer = ftools_utils.getVectorLayerByName(inPts)
         inputProvider = inputLayer.dataProvider()
+        allAttrs = inputProvider.attributeIndexes()
+        inputProvider.select(allAttrs)
         selectProvider = selectLayer.dataProvider()
+        allAttrs = selectProvider.attributeIndexes()
+        selectProvider.select(allAttrs)
         feat = QgsFeature()
+        infeat = QgsFeature()
         geom = QgsGeometry()
         selectedSet = []
-        selectProvider.nextFeature(feat)
-        geomLayer = QgsGeometry(feat.geometry())
-
-        self.progressBar.setMaximum( inputProvider.featureCount() + selectProvider.featureCount() )
-
+        index = ftools_utils.createIndex(inputProvider)
+        #selectProvider.nextFeature(feat)
+        #geomLayer = QgsGeometry(feat.geometry())
+        self.progressBar.setMaximum(selectProvider.featureCount())
+        
         while selectProvider.nextFeature(feat):
-            geomLayer = geomLayer.combine(QgsGeometry(feat.geometry()))
-            self.progressBar.setValue( self.progressBar.value() + 1 )
-        while inputProvider.nextFeature(feat):
             geom = QgsGeometry(feat.geometry())
-            if geom.intersects(geomLayer):
-                selectedSet.append(feat.id())
-            self.progressBar.setValue( self.progressBar.value() + 1 )
+            intersects = index.intersects(geom.boundingBox())
+            for id in intersects:
+                inputProvider.featureAtId(int(id), infeat, True)
+                tmpGeom = QgsGeometry( infeat.geometry() )
+                if geom.intersects(tmpGeom):
+                    selectedSet.append(infeat.id())
+            self.progressBar.setValue(self.progressBar.value()+1)
         if modify == self.tr("adding to current selection"):
             selectedSet = list(set(inputLayer.selectedFeaturesIds()).union(selectedSet))
         elif modify == self.tr("removing from current selection"):
