@@ -804,6 +804,8 @@
 		72463E511122FF7300BE5F17 /* qgis.g.browser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72463E3C1122FEC500BE5F17 /* qgis.g.browser.cpp */; };
 		72491FB711074E930035D7E5 /* characterwidget.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72491FB511074E700035D7E5 /* characterwidget.cpp */; };
 		72491FB811074E930035D7E5 /* characterwidget.h in Sources */ = {isa = PBXBuildFile; fileRef = 72491FB611074E700035D7E5 /* characterwidget.h */; };
+		724A9A581162CEF2005DCB28 /* doMergeShapes.py in Copy - fTools-tools */ = {isa = PBXBuildFile; fileRef = 724A9A561162CEC0005DCB28 /* doMergeShapes.py */; };
+		724A9A5B1162CF5A005DCB28 /* merge_shapes.png in Copy - ftools-icons-default */ = {isa = PBXBuildFile; fileRef = 724A9A5A1162CF4B005DCB28 /* merge_shapes.png */; };
 		724D05C610A910F200F9680A /* north-arrow_10_with_map_layers.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 724D05BE10A910B400F9680A /* north-arrow_10_with_map_layers.svg */; };
 		724D05C710A910F200F9680A /* north-arrow_11_simple_corner.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 724D05BF10A910B400F9680A /* north-arrow_11_simple_corner.svg */; };
 		724D05C810A910F200F9680A /* north-arrow_12_triangular_arrows_with_worldmap.svg in Copy - svg-n_arrow */ = {isa = PBXBuildFile; fileRef = 724D05C010A910B400F9680A /* north-arrow_12_triangular_arrows_with_worldmap.svg */; };
@@ -3292,6 +3294,7 @@
 				72EBCA7C0F49DDF80016BA3C /* doIntersectLines.py in Copy - fTools-tools */,
 				72EBCA7D0F49DDF80016BA3C /* doJoinAttributes.py in Copy - fTools-tools */,
 				72EBCA7E0F49DDF80016BA3C /* doMeanCoords.py in Copy - fTools-tools */,
+				724A9A581162CEF2005DCB28 /* doMergeShapes.py in Copy - fTools-tools */,
 				72EBCA7F0F49DDF80016BA3C /* doPointDistance.py in Copy - fTools-tools */,
 				72EBCA800F49DDF80016BA3C /* doPointsInPolygon.py in Copy - fTools-tools */,
 				72EBCA810F49DDF80016BA3C /* doRandom.py in Copy - fTools-tools */,
@@ -3357,6 +3360,7 @@
 				72EBCACB0F49DE800016BA3C /* management.png in Copy - ftools-icons-default */,
 				72EBCACC0F49DE800016BA3C /* matrix.png in Copy - ftools-icons-default */,
 				72EBCACD0F49DE800016BA3C /* mean.png in Copy - ftools-icons-default */,
+				724A9A5B1162CF5A005DCB28 /* merge_shapes.png in Copy - ftools-icons-default */,
 				72EBCACE0F49DE800016BA3C /* multi_to_single.png in Copy - ftools-icons-default */,
 				72EBCACF0F49DE800016BA3C /* neighbour.png in Copy - ftools-icons-default */,
 				72EBCAD00F49DE800016BA3C /* random_points.png in Copy - ftools-icons-default */,
@@ -5572,6 +5576,9 @@
 		72491FB511074E700035D7E5 /* characterwidget.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = characterwidget.cpp; path = "../../src/gui/symbology-ng/characterwidget.cpp"; sourceTree = SOURCE_ROOT; };
 		72491FB611074E700035D7E5 /* characterwidget.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = characterwidget.h; path = "../../src/gui/symbology-ng/characterwidget.h"; sourceTree = SOURCE_ROOT; };
 		72491FB911074EC20035D7E5 /* widget_fontmarker.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = widget_fontmarker.ui; path = ../../src/ui/symbollayer/widget_fontmarker.ui; sourceTree = SOURCE_ROOT; };
+		724A9A561162CEC0005DCB28 /* doMergeShapes.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = doMergeShapes.py; path = ../../python/plugins/fTools/tools/doMergeShapes.py; sourceTree = SOURCE_ROOT; };
+		724A9A571162CEC0005DCB28 /* frmMergeShapes.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = frmMergeShapes.ui; path = ../../python/plugins/fTools/tools/frmMergeShapes.ui; sourceTree = SOURCE_ROOT; };
+		724A9A5A1162CF4B005DCB28 /* merge_shapes.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = merge_shapes.png; path = ../../python/plugins/fTools/icons/default/merge_shapes.png; sourceTree = SOURCE_ROOT; };
 		724C9FE11019EDE700A1E1D4 /* mActionSaveAsPDF.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionSaveAsPDF.png; path = ../../images/themes/default/mActionSaveAsPDF.png; sourceTree = SOURCE_ROOT; };
 		724C9FEC1019EE2500A1E1D4 /* mActionSaveAsPDF.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionSaveAsPDF.png; path = ../../images/themes/gis/mActionSaveAsPDF.png; sourceTree = SOURCE_ROOT; };
 		724D05B510A910B400F9680A /* north-arrow_1_simple_half_arrow.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = "north-arrow_1_simple_half_arrow.svg"; path = "../../images/svg/north_arrows/north-arrow_1_simple_half_arrow.svg"; sourceTree = SOURCE_ROOT; };
@@ -12981,6 +12988,7 @@
 				72EBC9E80F49DC120016BA3C /* management.png */,
 				72EBC9E90F49DC120016BA3C /* matrix.png */,
 				72EBC9EA0F49DC120016BA3C /* mean.png */,
+				724A9A5A1162CF4B005DCB28 /* merge_shapes.png */,
 				72EBC9EB0F49DC120016BA3C /* multi_to_single.png */,
 				72EBC9EC0F49DC120016BA3C /* neighbour.png */,
 				72EBC9ED0F49DC120016BA3C /* random_points.png */,
@@ -13099,6 +13107,8 @@
 				72EBCA650F49DC130016BA3C /* frmVisual.ui */,
 				72EBCA660F49DC130016BA3C /* ftools_utils.py */,
 				726FD9A40F6BF86600D50560 /* voronoi.py */,
+				724A9A561162CEC0005DCB28 /* doMergeShapes.py */,
+				724A9A571162CEC0005DCB28 /* frmMergeShapes.ui */,
 			);
 			name = tools;
 			path = ../../python/plugins/fTools/tools;
@@ -19672,7 +19682,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 13192;
+				QGIS_VERSION_BUILD = 13205;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -19683,7 +19693,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 13192;
+				QGIS_VERSION_BUILD = 13205;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
