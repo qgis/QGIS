@@ -107,7 +107,11 @@ void QgsAnnotationWidget::on_mFrameColorButton_clicked()
     return;
   }
 
+#if QT_VERSION >= 0x040500
   QColor c = QColorDialog::getColor( mFrameColorButton->color(), 0, tr( "Select frame color" ), QColorDialog::ShowAlphaChannel );
+#else
+  QColor c = QColorDialog::getColor( mFrameColorButton->color() );
+#endif
   if ( c.isValid() )
   {
     mFrameColorButton->setColor( c );
