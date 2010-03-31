@@ -66,7 +66,7 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     QStringList checkRegion();
     bool inputRegion( struct Cell_head *window, bool all );
     QStringList output( int type );
-    bool hasOutput ( int type ) { return true; }
+    bool hasOutput( int type ) { return true; }
 
     /** \brief recieves contentsMousePressEvent from view */
     void mousePressEvent( QMouseEvent* );
@@ -220,8 +220,8 @@ class QgsGrassMapcalcFunction
 
     QgsGrassMapcalcFunction() {};
     QgsGrassMapcalcFunction( int type, QString name, int count = 2,
-                             QString description = 0, QString label = 0,
-                             QString labels = 0, bool drawLabel = true );
+                             QString description = "", QString label = "",
+                             QString labels = "", bool drawLabel = true );
     ~QgsGrassMapcalcFunction() {};
 
     QString name() { return mName; }
@@ -332,7 +332,7 @@ class QgsGrassMapcalcObject: public QGraphicsRectItem, public QgsGrassMapcalcIte
     ~QgsGrassMapcalcObject();
 
     // Set map name, constant value or function/operator
-    void setValue( QString val, QString lab = 0 );
+    void setValue( QString val, QString lab = "" );
 
     // Set function
     void setFunction( QgsGrassMapcalcFunction f );
