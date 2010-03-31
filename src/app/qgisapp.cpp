@@ -399,6 +399,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
   // create undo widget
   mUndoWidget = new QgsUndoWidget( NULL, mMapCanvas );
+  mUndoWidget->setObjectName( "Undo" );
   addDockWidget( Qt::LeftDockWidgetArea, mUndoWidget );
   mUndoWidget->hide();
 
@@ -5211,6 +5212,7 @@ QMenu* QgisApp::getPluginMenu( QString menuName )
    * present, there is no python separator and the plugin list is at the bottom
    * of the menu.
    */
+
 #ifdef Q_WS_MAC
   // Mac doesn't have '&' keyboard shortcuts.
   // Other platforms ignore the prefix char when comparing strings.
