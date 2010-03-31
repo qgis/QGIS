@@ -242,7 +242,7 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
   QFile manFile( manPath );
   if ( manFile.exists() )
   {
-    mManualTextBrowser->setOpenExternalLinks ( true );
+    mManualTextBrowser->setOpenExternalLinks( true );
     mManualTextBrowser->setSource( QUrl::fromLocalFile( manPath ) );
   }
   else
@@ -784,7 +784,8 @@ QStringList QgsGrassModuleStandardOptions::output( int type )
       if ( opt->outputType() == type )
       {
         QString out = opt->value();
-        if ( !out.isEmpty() ) {
+        if ( !out.isEmpty() )
+        {
           list.append( out );
         }
       }
@@ -1575,7 +1576,7 @@ void QgsGrassModule::viewOutput()
 
     //mIface->addRasterLayer( uri, map );
     mIface->addRasterLayer( uri, map, "grassraster", QStringList(), QStringList(),
-                                   QString(), QString() );
+                            QString(), QString() );
   }
 }
 
@@ -2048,10 +2049,13 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
     QgsGrassModuleStandardOptions *options, QString key,
     QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
     QWidget * parent )
-    : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, parent ),
-    mModuleStandardOptions( options ),
-    mGeometryTypeOption( 0 ), mVectorLayerOption( 0 ),
-    mRegionButton( 0 ), mUpdate( false ), mRequired( false )
+    : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, parent )
+    , mModuleStandardOptions( options )
+    , mGeometryTypeOption( "" )
+    , mVectorLayerOption( "" )
+    , mRegionButton( 0 )
+    , mUpdate( false )
+    , mRequired( false )
 {
   QgsDebugMsg( "called." );
   mGeometryTypeMask = GV_POINT | GV_LINE | GV_AREA;
@@ -2682,8 +2686,10 @@ void QgsGrassModuleGroupBoxItem::adjustTitle()
 QgsGrassModuleGdalInput::QgsGrassModuleGdalInput(
   QgsGrassModule *module, int type, QString key, QDomElement &qdesc,
   QDomElement &gdesc, QDomNode &gnode, QWidget * parent )
-    : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, parent ),
-    mType( type ), mOgrLayerOption( 0 ), mOgrWhereOption( 0 )
+    : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, parent )
+    , mType( type )
+    , mOgrLayerOption( "" )
+    , mOgrWhereOption( "" )
 {
   if ( mTitle.isEmpty() )
   {

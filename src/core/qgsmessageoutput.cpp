@@ -44,7 +44,7 @@ QgsMessageOutput::~QgsMessageOutput()
 // QgsMessageOutputConsole
 
 QgsMessageOutputConsole::QgsMessageOutputConsole()
-    : mMessage( NULL )
+    : mMessage( "" )
 {
 }
 

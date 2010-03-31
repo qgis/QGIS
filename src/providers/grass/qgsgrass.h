@@ -47,8 +47,8 @@ class QgsGrass
     */
     struct Exception : public std::runtime_error
     {
-      //Exception( const std::string &msg ) : std::runtime_error( msg ) {} 
-      Exception( const QString &msg ) : std::runtime_error( msg.toUtf8().constData() ) {} 
+      //Exception( const std::string &msg ) : std::runtime_error( msg ) {}
+      Exception( const QString &msg ) : std::runtime_error( msg.toUtf8().constData() ) {}
     };
 
     //! Get info about the mode
@@ -179,7 +179,7 @@ class QgsGrass
 
     // ! Get info string from qgis.g.info module
     static GRASS_EXPORT QString getInfo( QString info, QString gisdbase,
-                                         QString location, QString mapset = 0, QString map = 0, MapType type = None, double x = 0, double y = 0 );
+                                         QString location, QString mapset = "", QString map = "", MapType type = None, double x = 0.0, double y = 0.0 );
 
     // ! Get location projection
     static GRASS_EXPORT QgsCoordinateReferenceSystem crs( QString gisdbase, QString location );
@@ -199,7 +199,7 @@ class QgsGrass
     static GRASS_EXPORT QString versionString();
 
     // set environment variable
-    static GRASS_EXPORT void putEnv (QString name, QString value);
+    static GRASS_EXPORT void putEnv( QString name, QString value );
 
 #if defined(WIN32)
     static GRASS_EXPORT QString shortPath( const QString &path );

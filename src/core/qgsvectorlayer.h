@@ -92,8 +92,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     };
 
     /** Constructor */
-    QgsVectorLayer( QString path = 0, QString baseName = 0,
-                    QString providerLib = 0, bool loadDefaultStyleFlag = true );
+    QgsVectorLayer( QString path = QString::null, QString baseName = QString::null,
+                    QString providerLib = QString::null, bool loadDefaultStyleFlag = true );
 
     /** Destructor */
     virtual ~QgsVectorLayer();
@@ -108,7 +108,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QString dataComment() const;
 
     /** Set the primary display field to be used in the identify results dialog */
-    void setDisplayField( QString fldName = 0 );
+    void setDisplayField( QString fldName = "" );
 
     /** Returns the primary display field name used in the identify results dialog */
     const QString displayField() const;
