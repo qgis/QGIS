@@ -1459,7 +1459,10 @@ void QgsComposerMap::drawCanvasItem( QGraphicsItem* item, QPainter* painter, con
 
   painter->scale( scaleFactor, scaleFactor );
 
+  //a little trick to let the item know that the paint request comes from the composer
+  item->setData( 0, "composer" );
   item->paint( painter, itemStyle, 0 );
+  item->setData( 0, "" );
   painter->restore();
 }
 
