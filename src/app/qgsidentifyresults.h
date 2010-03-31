@@ -82,6 +82,7 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
     void layerDestroyed();
     void editingToggled();
     void featureDeleted( int fid );
+    void attributeValueChanged( int fid, int idx, const QVariant & );
 
     void featureForm();
     void zoomToFeature();
