@@ -161,12 +161,12 @@ void QgsIdentifyResults::addFeature( QgsMapLayer *layer, int fid,
     layItem->setData( 0, Qt::UserRole, QVariant::fromValue( qobject_cast<QObject *>( layer ) ) );
     lstResults->addTopLevelItem( layItem );
 
-    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
     if ( vlayer )
     {
       connect( vlayer, SIGNAL( layerDeleted() ), this, SLOT( layerDestroyed() ) );
       connect( vlayer, SIGNAL( layerCrsChanged() ), this, SLOT( layerDestroyed() ) );
       connect( vlayer, SIGNAL( featureDeleted( int ) ), this, SLOT( featureDeleted( int ) ) );
+      connect( vlayer, SIGNAL( attributeValueChanged( int, int, const QVariant & ) ), this, SLOT( attributeValueChanged( int, int, const QVariant & ) ) );
       connect( vlayer, SIGNAL( editingStarted() ), this, SLOT( editingToggled() ) );
       connect( vlayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
     }
@@ -182,7 +182,12 @@ void QgsIdentifyResults::addFeature( QgsMapLayer *layer, int fid,
 
   for ( QMap<QString, QString>::const_iterator it = attributes.begin(); it != attributes.end(); it++ )
   {
-    featItem->addChild( new QTreeWidgetItem( QStringList() << it.key() << it.value() ) );
+    QTreeWidgetItem *attrItem = new QTreeWidgetItem( QStringList() << it.key() << it.value() );
+    if ( vlayer )
+    {
+      attrItem->setData( 0, Qt::UserRole, vlayer->fieldNameIndex( it.key() ) );
+    }
+    featItem->addChild( attrItem );
   }
 
   if ( derivedAttributes.size() >= 0 )
@@ -644,6 +649,7 @@ void QgsIdentifyResults::disconnectLayer( QObject *layer )
   {
     disconnect( vlayer, SIGNAL( layerDeleted() ), this, SLOT( layerDestroyed() ) );
     disconnect( vlayer, SIGNAL( featureDeleted( int ) ), this, SLOT( featureDeleted( int ) ) );
+    disconnect( vlayer, SIGNAL( attributeValueChanged( int, int, const QVariant & ) ), this, SLOT( attributeValueChanged( int, int, const QVariant & ) ) );
     disconnect( vlayer, SIGNAL( editingStarted() ), this, SLOT( editingToggled() ) );
     disconnect( vlayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
   }
@@ -680,6 +686,35 @@ void QgsIdentifyResults::featureDeleted( int fid )
   if ( lstResults->topLevelItemCount() == 0 )
   {
     close();
+  }
+}
+
+void QgsIdentifyResults::attributeValueChanged( int fid, int idx, const QVariant &val )
+{
+  QTreeWidgetItem *layItem = layerItem( sender() );
+
+  if ( !layItem )
+    return;
+
+  for ( int i = 0; i < layItem->childCount(); i++ )
+  {
+    QTreeWidgetItem *featItem = layItem->child( i );
+
+    if ( featItem && featItem->data( 0, Qt::UserRole ).toInt() == fid )
+    {
+      for ( int j = 0; j < featItem->childCount(); j++ )
+      {
+        QTreeWidgetItem *item = featItem->child( j );
+        if ( item->childCount() > 0 )
+          continue;
+
+        if ( item->data( 0, Qt::UserRole ).toInt() == idx )
+        {
+          item->setData( 1, Qt::DisplayRole, val );
+          return;
+        }
+      }
+    }
   }
 }
 
