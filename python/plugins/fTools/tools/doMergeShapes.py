@@ -38,7 +38,7 @@ class Dialog( QDialog, Ui_Dialog ):
     workDir.setNameFilters( nameFilter )
     self.inputFiles = workDir.entryList()
     if self.inputFiles.count() == 0:
-      QMessageBox.warning( self, self.tr( "No images found" ),
+      QMessageBox.warning( self, self.tr( "No shapefiles found" ),
         self.tr( "There are no shapefiles in this directory. Please select another one." ) )
       self.inputFiles = None
       return
