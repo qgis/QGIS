@@ -48,7 +48,7 @@ QgsHttpTransaction::QgsHttpTransaction( QString uri,
     : httpresponsecontenttype( 0 ),
     httpurl( uri ),
     httphost( proxyHost ),
-    mError( 0 )
+    mError( "" )
 {
   QSettings s;
   mNetworkTimeoutMsec = s.value( "/qgis/networkAndProxy/networkTimeout", "20000" ).toInt();
