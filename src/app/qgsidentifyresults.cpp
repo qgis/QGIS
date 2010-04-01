@@ -691,6 +691,7 @@ void QgsIdentifyResults::featureDeleted( int fid )
 
 void QgsIdentifyResults::attributeValueChanged( int fid, int idx, const QVariant &val )
 {
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( sender() );
   QTreeWidgetItem *layItem = layerItem( sender() );
 
   if ( !layItem )
@@ -702,6 +703,9 @@ void QgsIdentifyResults::attributeValueChanged( int fid, int idx, const QVariant
 
     if ( featItem && featItem->data( 0, Qt::UserRole ).toInt() == fid )
     {
+      if ( featItem->data( 0, Qt::DisplayRole ).toString() == vlayer->displayField() )
+        featItem->setData( 1, Qt::DisplayRole, val );
+
       for ( int j = 0; j < featItem->childCount(); j++ )
       {
         QTreeWidgetItem *item = featItem->child( j );
