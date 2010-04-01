@@ -234,28 +234,6 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
 
   // Kick off the long running threads
 
-#ifdef POSTGRESQL_THREADS
-  QgsDebugMsg( "About to touch mExtentThread" );
-  mExtentThread.setConnInfo( mUri.connectionInfo );
-  mExtentThread.setTableName( mTableName );
-  mExtentThread.setSqlWhereClause( sqlWhereClause );
-  mExtentThread.setGeometryColumn( geometryColumn );
-  mExtentThread.setCallback( this );
-  QgsDebugMsg( "About to start mExtentThread" );
-  mExtentThread.start();
-  QgsDebugMsg( "Main thread just dispatched mExtentThread" );
-
-  QgsDebugMsg( "About to touch mCountThread" );
-  mCountThread.setConnInfo( mUri.connectionInfo );
-  mCountThread.setTableName( mTableName );
-  mCountThread.setSqlWhereClause( sqlWhereClause );
-  mCountThread.setGeometryColumn( geometryColumn );
-  mCountThread.setCallback( this );
-  QgsDebugMsg( "About to start mCountThread" );
-  mCountThread.start();
-  QgsDebugMsg( "Main thread just dispatched mCountThread" );
-#endif
-
   //fill type names into sets
   mNativeTypes
   // integer types
@@ -292,25 +270,6 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
 
 QgsPostgresProvider::~QgsPostgresProvider()
 {
-#ifdef POSTGRESQL_THREADS
-  QgsDebugMsg( "About to wait for mExtentThread" );
-
-  mExtentThread.wait();
-
-  QgsDebugMsg( "Finished waiting for mExtentThread" );
-
-  QgsDebugMsg( "About to wait for mCountThread" );
-
-  mCountThread.wait();
-
-  QgsDebugMsg( "Finished waiting for mCountThread" );
-
-  // Make sure all events from threads have been processed
-  // (otherwise they will get destroyed prematurely)
-  QApplication::sendPostedEvents( this, QGis::ProviderExtentCalcEvent );
-  QApplication::sendPostedEvents( this, QGis::ProviderCountCalcEvent );
-#endif
-
   disconnectDb();
 
   QgsDebugMsg( "deconstructing." );
@@ -2730,68 +2689,38 @@ long QgsPostgresProvider::getFeatureCount()
   return featuresCounted;
 }
 
-// TODO: use the estimateExtents procedure of PostGIS and PostgreSQL 8
-// This tip thanks to #qgis irc nick "creeping"
 void QgsPostgresProvider::calculateExtents()
 {
-#ifdef POSTGRESQL_THREADS
-  // get the approximate extent by retrieving the bounding box
-  // of the first few items with a geometry
-
-  QString sql = QString( "select box3d(%1) from %2 where " )
-                .arg( quotedIdentifier( geometryColumn ) )
-                .arg( mSchemaTableName );
-
-  if ( sqlWhereClause.length() > 0 )
-  {
-    sql += QString( "(%1) and " ).arg( sqlWhereClause );
-  }
-
-  sql += QString( "not IsEmpty(%1) limit 5" ).arg( quotedIdentifier( geometryColumn ) );
-
-  QgsDebugMsg( "Getting approximate extent using: '" + sql + "'" );
-
-  Result result = connectionRO->PQexec( sql );
-
-  // TODO: Guard against the result having no rows
-  for ( int i = 0; i < PQntuples( result ); i++ )
-  {
-    QString box3d = PQgetvalue( result, i, 0 );
-
-    if ( 0 == i )
-    {
-      // create the initial extent
-      layerExtent = QgsPostGisBox3d( box3d );
-    }
-    else
-    {
-      // extend the initial extent
-      QgsPostGisBox3d b = QgsPostGisBox3d( box3d );
-      layerExtent.combineExtentWith( &b );
-    }
-
-    QgsDebugMsg( QString( "After row %1, extent is %2" ).arg( i ).arg( layerExtent.toString() ) );
-  }
-
-#else // non-postgresql threads version
   QString sql;
   Result result;
   QString ext;
 
   // get the extents
-  if (( mUseEstimatedMetadata || sqlWhereClause.isEmpty() ) && !connectionRO->hasNoExtentEstimate() )
+  if ( mUseEstimatedMetadata || sqlWhereClause.isEmpty() )
   {
-    result = connectionRO->PQexec( QString( "select estimated_extent(%1,%2,%3)" )
-                                   .arg( quotedValue( mSchemaName ) )
-                                   .arg( quotedValue( mTableName ) )
-                                   .arg( quotedValue( geometryColumn ) ) );
-    if ( PQresultStatus( result ) != PGRES_TUPLES_OK )
+    // do stats exists?
+    sql = QString( "SELECT COUNT(*) FROM pg_stats WHERE schemaname=%1 AND tablename=%2 AND attname=%3" )
+          .arg( quotedValue( mSchemaName ) )
+          .arg( quotedValue( mTableName ) )
+          .arg( quotedValue( geometryColumn ) );
+    result = connectionRO->PQexec( sql );
+    if ( PQresultStatus( result ) == PGRES_TUPLES_OK && PQntuples( result ) == 1 )
     {
-      connectionRO->PQexecNR( "ROLLBACK" );
-      connectionRO->setNoExtentEstimate();
+      if ( QString::fromUtf8( PQgetvalue( result, 0, 0 ) ).toInt() > 0 )
+      {
+        sql = QString( "select estimated_extent(%1,%2,%3)" )
+              .arg( quotedValue( mSchemaName ) )
+              .arg( quotedValue( mTableName ) )
+              .arg( quotedValue( geometryColumn ) );
+        result = connectionRO->PQexec( sql );
+        if ( PQresultStatus( result ) == PGRES_TUPLES_OK && PQntuples( result ) == 1 )
+          ext = PQgetvalue( result, 0, 0 );
+      }
     }
-    else if ( PQntuples( result ) == 1 )
-      ext = PQgetvalue( result, 0, 0 );
+    else
+    {
+      QgsDebugMsg( QString( "no column statistics for %1.%2.%3" ).arg( mSchemaName ).arg( mTableName ).arg( geometryColumn ) );
+    }
   }
 
   if ( ext.isEmpty() )
@@ -2810,7 +2739,7 @@ void QgsPostgresProvider::calculateExtents()
       ext = PQgetvalue( result, 0, 0 );
   }
 
-  QgsDebugMsg( "Getting extents using schema.table: " + sql );
+  QgsDebugMsg( "Got extents using: " + sql );
 
   QRegExp rx( "\\((.+) (.+),(.+) (.+)\\)" );
   if ( ext.contains( rx ) )
@@ -2826,7 +2755,6 @@ void QgsPostgresProvider::calculateExtents()
   {
     QgsDebugMsg( "extents query failed" );
   }
-#endif
 
   QgsDebugMsg( "Set extents to: " + layerExtent.toString() );
 }
