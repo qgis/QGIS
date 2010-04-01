@@ -185,6 +185,9 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
 
     //! Alters pkg data path - used by 3rd party apps
     static void setPkgDataPath(const QString thePkgDataPath);
+
+    //! Alters default svg paths - used by 3rd party apps. Added in QGIS 1.5
+    static void setDefaultSvgPaths( const QStringList& pathList );
     
     //! loads providers
     static void initQgis();

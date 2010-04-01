@@ -142,6 +142,9 @@ class CORE_EXPORT QgsApplication: public QApplication
     //! Alters pkg data path - used by 3rd party apps
     static void setPkgDataPath( const QString thePkgDataPath );
 
+    //! Alters default svg paths - used by 3rd party apps. Added in QGIS 1.5
+    static void setDefaultSvgPaths( const QStringList& pathList );
+
     //! loads providers
     static void initQgis();
 
@@ -184,6 +187,7 @@ class CORE_EXPORT QgsApplication: public QApplication
     static QString mPluginPath;
     static QString mPkgDataPath;
     static QString mThemeName;
+    static QStringList mDefaultSvgPaths;
 };
 
 #endif
