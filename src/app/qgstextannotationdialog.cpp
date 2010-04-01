@@ -106,7 +106,7 @@ void QgsTextAnnotationDialog::on_mFontColorButton_clicked()
 #if QT_VERSION >= 0x040500
   QColor newColor = QColorDialog::getColor( mFontColorButton->color(), 0, tr( "Select font color" ), QColorDialog::ShowAlphaChannel );
 #else
-  QColor newColor = QColorDialog::getColor( mFontColorButton->arrowColor() );
+  QColor newColor = QColorDialog::getColor( mFontColorButton->color() );
 #endif
   if ( !newColor.isValid() )
   {
