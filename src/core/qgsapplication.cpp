@@ -43,6 +43,7 @@ QString QgsApplication::mPrefixPath;
 QString QgsApplication::mPluginPath;
 QString QgsApplication::mPkgDataPath;
 QString QgsApplication::mThemeName;
+QStringList QgsApplication::mDefaultSvgPaths;
 
 /*!
   \class QgsApplication
@@ -73,6 +74,9 @@ QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled )
 #if ! defined(Q_WS_WIN) && ! defined(Q_WS_MAC)
   setWindowIcon( QPixmap( qgis_xpm ) );        // Linux
 #endif
+
+  mDefaultSvgPaths << mPkgDataPath + QString( "/svg/" );
+  mDefaultSvgPaths << qgisSettingsDirPath() + QString( "svg/" );
 }
 
 QgsApplication::~QgsApplication()
@@ -127,6 +131,11 @@ void QgsApplication::setPluginPath( const QString thePluginPath )
 void QgsApplication::setPkgDataPath( const QString thePkgDataPath )
 {
   mPkgDataPath = thePkgDataPath;
+}
+
+void QgsApplication::setDefaultSvgPaths( const QStringList& pathList )
+{
+  mDefaultSvgPaths = pathList;
 }
 
 const QString QgsApplication::prefixPath()
@@ -313,12 +322,9 @@ const QStringList QgsApplication::svgPaths()
   {
     myPathList = myPaths.split( "|" );
   }
-  //additional default paths
-  myPathList
-  << mPkgDataPath + QString( "/svg/" )
-  << qgisSettingsDirPath() + QString( "svg/" );
-  return myPathList;
 
+  myPathList << mDefaultSvgPaths;
+  return myPathList;
 }
 
 /*!

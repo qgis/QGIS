@@ -445,9 +445,14 @@ void QgsComposerPictureWidget::addStandardDirectoriesToPreview()
     QDir svgDirectory( svgPaths[i] );
     if ( !svgDirectory.exists() || !svgDirectory.isReadable() )
     {
-      return; //error
+      continue;
     }
+    
+    //add directory itself
+    mSearchDirectoriesComboBox->addItem( svgDirectory.absolutePath() );
+    addDirectoryToPreview( svgDirectory.absolutePath() );
 
+    //and also subdirectories
     QFileInfoList directoryList = svgDirectory.entryInfoList( QDir::Dirs | QDir::NoDotAndDotDot );
     QFileInfoList::const_iterator dirIt = directoryList.constBegin();
     for ( ; dirIt != directoryList.constEnd(); ++dirIt )
