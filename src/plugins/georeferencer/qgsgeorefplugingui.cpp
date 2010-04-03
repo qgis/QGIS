@@ -1181,7 +1181,7 @@ QString QgsGeorefPluginGui::gdal_translateCommand( bool generateTFW )
 
   QFileInfo rasterFileInfo( mRasterFileName );
   mTranslatedRasterFileName = QDir::tempPath() + "/" + rasterFileInfo.fileName();
-  gdalCommand << mRasterFileName << mTranslatedRasterFileName;
+  gdalCommand << QString("\"%1\"").arg(mRasterFileName) << QString("\"%1\"").arg(mTranslatedRasterFileName);
 
   return gdalCommand.join( " " );
 }
@@ -1199,7 +1199,7 @@ QString QgsGeorefPluginGui::gdalwarpCommandGCP( QString resampling, QString comp
     gdalCommand << "-tr" << QString::number( targetResX, 'f' ) << QString::number( targetResY, 'f' );
   }
 
-  gdalCommand << mTranslatedRasterFileName << mModifiedRasterFileName;
+  gdalCommand << QString("\"%1\"").arg(mTranslatedRasterFileName) << QString("\"%1\"").arg(mModifiedRasterFileName);
 
   return gdalCommand.join( " " );
 }
@@ -1216,7 +1216,7 @@ QString QgsGeorefPluginGui::gdalwarpCommandTPS( QString resampling, QString comp
     gdalCommand << "-tr" << QString::number( targetResX, 'f' ) << QString::number( targetResY, 'f' );
   }
 
-  gdalCommand << mTranslatedRasterFileName << mModifiedRasterFileName;
+  gdalCommand << QString("\"%1\"").arg(mTranslatedRasterFileName) << QString("\"%1\"").arg(mModifiedRasterFileName);
 
   return gdalCommand.join( " " );
 }
