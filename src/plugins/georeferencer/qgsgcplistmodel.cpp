@@ -124,7 +124,7 @@ void QgsGCPListModel::updateModel()
     setItem( i, j++, QGSSTANDARDITEM( p->mapCoords().x() ) /*create_item<double>( p->mapCoords().x() )*/ );
     setItem( i, j++, QGSSTANDARDITEM( p->mapCoords().y() ) /*create_item<double>( p->mapCoords().y() )*/ );
 
-    double residual = -1.f;
+    double residual;
     double dX, dY;
     // Calculate residual if transform is available and up-to-date
     if ( mGeorefTransform && bTransformUpdated && mGeorefTransform->parametersInitialized() )
@@ -135,18 +135,24 @@ void QgsGCPListModel::updateModel()
       // As transforms of order >=2 are not invertible, we are only
       // interested in the residual in this direction
       mGeorefTransform->transformWorldToRaster( p->mapCoords(), dst );
-      dX = ( dst.x() - p->pixelCoords().x() );
-      dY = ( dst.y() - p->pixelCoords().y() );
+      dX =  ( dst.x() - p->pixelCoords().x() );
+      dY = -( dst.y() - p->pixelCoords().y() );
       residual = sqrt( dX * dX + dY * dY );
     }
     else
     {
       dX = dY = residual = 0;
     }
+
+    if ( p )
+    {
+      p->setResidual( QPointF( dX, dY ) );
+    }
+
     if ( residual >= 0.f )
     {
       setItem( i, j++, QGSSTANDARDITEM( dX ) /*create_item<double>(dX)*/ );
-      setItem( i, j++, QGSSTANDARDITEM( -dY ) /*create_item<double>(-dY)*/ );
+      setItem( i, j++, QGSSTANDARDITEM( dY ) /*create_item<double>(-dY)*/);
       setItem( i, j++, QGSSTANDARDITEM( residual ) /*create_item<double>(residual)*/ );
     }
     else
