@@ -1382,7 +1382,7 @@ QString QgsGeorefPluginGui::convertResamplingEnumToString( QgsImageWarper::Resam
     case QgsImageWarper::CubicSpline:
       return "cubicspline";
     case QgsImageWarper::Lanczos:
-      return "lanczons";
+      return "lanczos";
   }
   return "";
 }
