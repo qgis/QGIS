@@ -16,7 +16,10 @@
 
 #include "qgscomposermanager.h"
 #include "qgisapp.h"
+#include "qgsapplication.h"
 #include "qgscomposer.h"
+#include "qgslogger.h"
+#include <QDir>
 #include <QInputDialog>
 #include <QListWidgetItem>
 #include <QMessageBox>
@@ -47,6 +50,26 @@ void QgsComposerManager::initialize()
     QListWidgetItem* item = new QListWidgetItem(( *it )->title(), mComposerListWidget );
     item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
     mItemComposerMap.insert( item, *it );
+  }
+
+  //search for default templates in $pkgDataPath/composer_templates
+  QDir defaultTemplateDir( QgsApplication::pkgDataPath() + "/composer_templates" );
+  if ( !defaultTemplateDir.exists() )
+  {
+    return;
+  }
+
+  QFileInfoList defaultTemplateFiles = defaultTemplateDir.entryInfoList( QDir::Files );
+  QFileInfoList::const_iterator fileIt = defaultTemplateFiles.constBegin();
+
+  for ( ; fileIt != defaultTemplateFiles.constEnd(); ++fileIt )
+  {
+    mDefaultTemplateMap.insert( fileIt->baseName(), fileIt->absoluteFilePath() );
+    if ( mComposerListWidget->findItems( fileIt->baseName(), Qt::MatchExactly ).size() < 1 )
+    {
+      QListWidgetItem* item = new QListWidgetItem( fileIt->baseName(), mComposerListWidget );
+      mItemComposerMap.insert( item, 0 );
+    }
   }
 }
 
@@ -110,13 +133,48 @@ void QgsComposerManager::on_mShowPushButton_clicked()
     return;
   }
 
-  //delete composer
   QMap<QListWidgetItem*, QgsComposer*>::iterator it = mItemComposerMap.find( item );
   if ( it != mItemComposerMap.end() )
   {
-    it.value()->show();
-    it.value()->activate();
-    it.value()->stackUnder( this );
+    QgsComposer* c = 0;
+    if ( it.value() ) //a normal composer
+    {
+      c = it.value();
+      it.value()->show();
+    }
+    else //create composer from default template
+    {
+      QMap<QString, QString>::const_iterator templateIt = mDefaultTemplateMap.find( it.key()->text() );
+      if ( templateIt == mDefaultTemplateMap.constEnd() )
+      {
+        return;
+      }
+
+      QDomDocument templateDoc;
+      QFile templateFile( templateIt.value() );
+      if ( !templateFile.open( QIODevice::ReadOnly ) )
+      {
+        return;
+      }
+
+      if ( !templateDoc.setContent( &templateFile, false ) )
+      {
+        return;
+      }
+      c = mQgisApp->createNewComposer();
+      c->setTitle( it.key()->text() );
+      if ( c )
+      {
+        c->readXML( templateDoc );
+      }
+    }
+
+    if ( c )
+    {
+      c->show();
+      c->activate();
+      c->stackUnder( this );
+    }
   }
 }
 
@@ -155,5 +213,21 @@ void QgsComposerManager::on_mComposerListWidget_itemChanged( QListWidgetItem * i
   if ( it != mItemComposerMap.end() )
   {
     it.value()->setTitle( item->text() );
+  }
+}
+
+void QgsComposerManager::on_mComposerListWidget_currentItemChanged( QListWidgetItem* current, QListWidgetItem* previous )
+{
+  if ( !current )
+  {
+    return;
+  }
+  if ( mDefaultTemplateMap.contains( current->text() ) )
+  {
+    mRenamePushButton->setEnabled( false );
+  }
+  else
+  {
+    mRenamePushButton->setEnabled( true );
   }
 }
