@@ -903,9 +903,6 @@ void QgsComposer::on_mActionLoadFromTemplate_triggered()
 
   deleteItems();
   readXML( templateDocument );
-
-  //clean up after template read (e.g. legend and map extent)
-  cleanupAfterTemplateRead();
 }
 
 void QgsComposer::on_mActionMoveItemContent_triggered()
@@ -1103,6 +1100,7 @@ void QgsComposer::readXML( const QDomDocument& doc )
     return;
   }
   readXML( composerNodeList.at( 0 ).toElement(), doc, true );
+  cleanupAfterTemplateRead();
 }
 
 void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& doc, bool fromTemplate )
