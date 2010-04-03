@@ -225,9 +225,11 @@ void QgsComposerManager::on_mComposerListWidget_currentItemChanged( QListWidgetI
   if ( mDefaultTemplateMap.contains( current->text() ) )
   {
     mRenamePushButton->setEnabled( false );
+    mRemoveButton->setEnabled( false );
   }
   else
   {
     mRenamePushButton->setEnabled( true );
+    mRemoveButton->setEnabled( true );
   }
 }
