@@ -39,13 +39,16 @@ class QgsGeorefDataPoint : public QObject
     bool isEnabled() const { return mEnabled; };
     void setEnabled( bool enabled );
 
-    int id() { return mId; }
+    int id() const { return mId; }
     void setId( int id );
 
     bool contains( const QPoint &p );
 
     QgsMapCanvas *srcCanvas() const { return mSrcCanvas; }
     QgsMapCanvas *dstCanvas() const { return mDstCanvas; }
+
+    QPointF residual() const { return mResidual; }
+    void setResidual( const QPointF& r );
 
   public slots:
     void moveTo( const QPoint & );
@@ -61,4 +64,5 @@ class QgsGeorefDataPoint : public QObject
 
     int mId;
     bool mEnabled;
+    QPointF mResidual;
 };

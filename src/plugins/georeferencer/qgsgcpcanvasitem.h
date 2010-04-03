@@ -20,11 +20,12 @@
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvasitem.h"
 
+class QgsGeorefDataPoint;
+
 class QgsGCPCanvasItem : public QgsMapCanvasItem
 {
   public:
-    QgsGCPCanvasItem( QgsMapCanvas* mapCanvas, const QgsPoint& rasterCoords,
-                      const QgsPoint& worldCoords, bool isGCPSource/* = true*/ );
+    QgsGCPCanvasItem( QgsMapCanvas* mapCanvas, const QgsGeorefDataPoint* dataPoint, bool isGCPSource/* = true*/ );
 
     //! draws point information
     void paint( QPainter* p );
@@ -34,26 +35,23 @@ class QgsGCPCanvasItem : public QgsMapCanvasItem
 
     QPainterPath shape() const;
 
-    void setEnabled( bool enabled );
-
-    void setRasterCoords( QgsPoint p );
-    void setWorldCoords( QgsPoint p );
-
-    int id() { return mId; }
-    void setId( int id );
-
     void updatePosition();
 
+    /**Calls prepareGeometryChange()*/
+    void checkBoundingRectChange();
+
   private:
+
+    const QgsGeorefDataPoint* mDataPoint;
     QSizeF mTextBounds;
     QBrush mPointBrush;
     QBrush mLabelBrush;
-    QgsPoint mRasterCoords;
-    QgsPoint mWorldCoords;
-
-    int mId;
     bool mIsGCPSource;
-    bool mEnabled;
+    QPen mResidualPen;
+
+    void drawResidualArrow( QPainter* p );
+    /**Calculates scale factor for residual display*/
+    double residualToScreenFactor() const;
 };
 
 #endif // QGSGCPCANVASITEM_H

@@ -30,8 +30,8 @@ QgsGeorefDataPoint::QgsGeorefDataPoint( QgsMapCanvas* srcCanvas, QgsMapCanvas *d
     , mId( -1 )
     , mEnabled( enable )
 {
-  mGCPSourceItem = new QgsGCPCanvasItem( srcCanvas, pixelCoords, mapCoords, true );
-  mGCPDestinationItem = new QgsGCPCanvasItem( dstCanvas, pixelCoords, mapCoords, false );
+  mGCPSourceItem = new QgsGCPCanvasItem( srcCanvas, this, true );
+  mGCPDestinationItem = new QgsGCPCanvasItem( dstCanvas, this, false );
 
   mGCPSourceItem->setEnabled( enable );
   mGCPDestinationItem->setEnabled( enable );
@@ -58,36 +58,66 @@ QgsGeorefDataPoint::~QgsGeorefDataPoint()
 void QgsGeorefDataPoint::setPixelCoords( const QgsPoint &p )
 {
   mPixelCoords = p;
-  mGCPSourceItem->setRasterCoords( p );
-  mGCPDestinationItem->setRasterCoords( p );
+  mGCPSourceItem->update();
+  mGCPDestinationItem->update();
 }
 
 void QgsGeorefDataPoint::setMapCoords( const QgsPoint &p )
 {
   mMapCoords = p;
-  mGCPSourceItem->setWorldCoords( p );
-  mGCPDestinationItem->setWorldCoords( p );
+  if ( mGCPSourceItem )
+  {
+    mGCPSourceItem->update();
+  }
+  if ( mGCPDestinationItem )
+  {
+    mGCPDestinationItem->update();
+  }
 }
 
 void QgsGeorefDataPoint::setEnabled( bool enabled )
 {
-  mGCPSourceItem->setEnabled( enabled );
   mEnabled = enabled;
+  if ( mGCPSourceItem )
+  {
+    mGCPSourceItem->update();
+  }
 }
 
 void QgsGeorefDataPoint::setId( int id )
 {
   mId = id;
-  mGCPSourceItem->setId( id );
-  mGCPDestinationItem->setId( id );
+  if ( mGCPSourceItem )
+  {
+    mGCPSourceItem->update();
+  }
+  if ( mGCPDestinationItem )
+  {
+    mGCPDestinationItem->update();
+  }
+}
+
+void QgsGeorefDataPoint::setResidual( const QPointF& r )
+{
+  mResidual = r;
+  if ( mGCPSourceItem )
+  {
+    mGCPSourceItem->checkBoundingRectChange();
+  }
 }
 
 void QgsGeorefDataPoint::updateCoords()
 {
-  mGCPSourceItem->updatePosition();
-  mGCPDestinationItem->updatePosition();
-  mGCPSourceItem->update();
-  mGCPDestinationItem->update();
+  if ( mGCPSourceItem )
+  {
+    mGCPSourceItem->updatePosition();
+    mGCPSourceItem->update();
+  }
+  if ( mGCPDestinationItem )
+  {
+    mGCPDestinationItem->updatePosition();
+    mGCPDestinationItem->update();
+  }
 }
 
 bool QgsGeorefDataPoint::contains( const QPoint &p )
