@@ -37,7 +37,6 @@ class QgsCustomProjectionDialog : public QDialog, private Ui::QgsCustomProjectio
     //a recursive function to make a directory and its ancestors
   public slots:
     void on_pbnCalculate_clicked();
-    void on_pbnClose_clicked();
     void on_pbnDelete_clicked();
     //
     // Database navigation controles
@@ -67,15 +66,13 @@ class QgsCustomProjectionDialog : public QDialog, private Ui::QgsCustomProjectio
     QString getProjFromParameters();
     QString getEllipseFromParameters();
 
-
     QString mCurrentRecordId;
     long mCurrentRecordLong;
     //the record previous to starting an insert operation
     //so that we can return to it if the record insert is aborted
     long mLastRecordLong;
     long mRecordCountLong;
-    const QString sqlSafeString( const QString theSQL );
-
+    QString quotedValue( QString value );
 };
 
 #endif
