@@ -527,7 +527,7 @@ void QgsWMSSourceSelect::enableLayersForCrs( QTreeWidgetItem *item )
   if ( !layerName.isEmpty() && styleName.isEmpty() )
   {
     // layer
-    bool disable = !item->data( 0, Qt::UserRole + 1 ).toStringList().contains( mCRS );
+    bool disable = !item->data( 0, Qt::UserRole + 2 ).toStringList().contains( mCRS );
 
     item->setDisabled( disable );
 
