@@ -166,6 +166,7 @@ void QgsComposerManager::on_mShowPushButton_clicked()
       if ( c )
       {
         c->readXML( templateDoc );
+        mItemComposerMap.insert( it.key(), c );
       }
     }
 
@@ -174,6 +175,8 @@ void QgsComposerManager::on_mShowPushButton_clicked()
       c->show();
       c->activate();
       c->stackUnder( this );
+      raise();
+      activateWindow();
     }
   }
 }
