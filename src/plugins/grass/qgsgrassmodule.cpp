@@ -131,6 +131,13 @@ QStringList QgsGrassModule::execArguments( QString module )
     return arguments;
   }
 
+#if defined(WIN32)
+  if ( exe.endsWith( ".py" ) )
+  {
+    arguments.append( "python" );
+  }
+#endif
+
   arguments.append( exe );
 
   return arguments;
