@@ -34,7 +34,6 @@
 const int NAME_COLUMN = 0;
 const int AUTHID_COLUMN = 1;
 const int QGIS_CRS_ID_COLUMN = 2;
-const int POPULAR_CRSES = 3;
 
 QgsProjectionSelector::QgsProjectionSelector( QWidget* parent, const char * name, Qt::WFlags fl )
     : QWidget( parent, fl )
@@ -47,7 +46,6 @@ QgsProjectionSelector::QgsProjectionSelector( QWidget* parent, const char * name
   setupUi( this );
   connect( lstCoordinateSystems, SIGNAL( currentItemChanged( QTreeWidgetItem*, QTreeWidgetItem* ) ),
            this, SLOT( coordinateSystemSelected( QTreeWidgetItem* ) ) );
-  connect( leSearch, SIGNAL( returnPressed() ), pbnFind, SLOT( animateClick() ) );
 
   // Get the full path name to the sqlite3 spatial reference database.
   mSrsDatabaseFileName = QgsApplication::srsDbFilePath();
@@ -55,13 +53,17 @@ QgsProjectionSelector::QgsProjectionSelector( QWidget* parent, const char * name
   lstCoordinateSystems->header()->resizeSection( QGIS_CRS_ID_COLUMN, 0 );
   lstCoordinateSystems->header()->setResizeMode( QGIS_CRS_ID_COLUMN, QHeaderView::Fixed );
 
+  lstRecent->header()->setResizeMode( AUTHID_COLUMN, QHeaderView::Stretch );
+  lstRecent->header()->resizeSection( QGIS_CRS_ID_COLUMN, 0 );
+  lstRecent->header()->setResizeMode( QGIS_CRS_ID_COLUMN, QHeaderView::Fixed );
+
   cbxAuthority->addItem( tr( "All" ) );
   cbxAuthority->addItems( authorities() );
 
   // Read settings from persistent storage
   QSettings settings;
   mRecentProjections = settings.value( "/UI/recentProjections" ).toStringList();
-  /*** The reading (above) of internal id from persistent storage should be removed sometims in the future */
+  /*** The reading (above) of internal id from persistent storage should be removed sometime in the future */
   /*** This is kept now for backwards compatibility */
 
   QStringList projectionsEpsg  = settings.value( "/UI/recentProjectionsEpsg" ).toStringList();
@@ -135,10 +137,13 @@ QgsProjectionSelector::~QgsProjectionSelector()
 
 void QgsProjectionSelector::resizeEvent( QResizeEvent * theEvent )
 {
-
   lstCoordinateSystems->header()->resizeSection( NAME_COLUMN, theEvent->size().width() - 240 );
   lstCoordinateSystems->header()->resizeSection( AUTHID_COLUMN, 240 );
   lstCoordinateSystems->header()->resizeSection( QGIS_CRS_ID_COLUMN, 0 );
+
+  lstRecent->header()->resizeSection( NAME_COLUMN, theEvent->size().width() - 240 );
+  lstRecent->header()->resizeSection( AUTHID_COLUMN, 240 );
+  lstRecent->header()->resizeSection( QGIS_CRS_ID_COLUMN, 0 );
 }
 
 void QgsProjectionSelector::showEvent( QShowEvent * theEvent )
@@ -171,43 +176,8 @@ void QgsProjectionSelector::showEvent( QShowEvent * theEvent )
     applyAuthIDSelection();
   }
 
-  // Update buttons
-  pbnPopular1->setDisabled( true );
-  pbnPopular2->setDisabled( true );
-  pbnPopular3->setDisabled( true );
-  pbnPopular4->setDisabled( true );
-  pbnPopular1->hide();
-  pbnPopular2->hide();
-  pbnPopular3->hide();
-  pbnPopular4->hide();
-
-  if ( mRecentProjections.size() > 0 )
-  {
-    pbnPopular1->setText( getCrsIdName( mRecentProjections.at( 0 ).toLong() ) );
-    pbnPopular1->setDisabled( false );
-    pbnPopular1->show();
-  }
-
-  if ( mRecentProjections.size() > 1 )
-  {
-    pbnPopular2->setText( getCrsIdName( mRecentProjections.at( 1 ).toLong() ) );
-    pbnPopular2->setDisabled( false );
-    pbnPopular2->show();
-  }
-
-  if ( mRecentProjections.size() > 2 )
-  {
-    pbnPopular3->setText( getCrsIdName( mRecentProjections.at( 2 ).toLong() ) );
-    pbnPopular3->setDisabled( false );
-    pbnPopular3->show();
-  }
-
-  if ( mRecentProjections.size() > 3 )
-  {
-    pbnPopular4->setText( getCrsIdName( mRecentProjections.at( 3 ).toLong() ) );
-    pbnPopular4->setDisabled( false );
-    pbnPopular4->show();
-  }
+  for ( int i = mRecentProjections.size() - 1; i >= 0; i-- )
+    insertRecent( mRecentProjections.at( i ).toLong() );
 
   // Pass up the inheritance hierarchy
   QWidget::showEvent( theEvent );
@@ -347,26 +317,20 @@ void QgsProjectionSelector::applyCRSNameSelection()
   }
 }
 
-QString QgsProjectionSelector::getCrsIdName( long theCrsId )
+void QgsProjectionSelector::insertRecent( long theCrsId )
 {
-  QString retvalue( "" );
-  if ( mProjListDone && mUserProjListDone )
-  {
-    QString myCRSIDString = QString::number( theCrsId );
+  if ( !mProjListDone || !mUserProjListDone )
+    return;
 
-    QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems( myCRSIDString, Qt::MatchExactly | Qt::MatchRecursive, QGIS_CRS_ID_COLUMN );
+  QList<QTreeWidgetItem*> nodes = lstCoordinateSystems->findItems( QString::number( theCrsId ), Qt::MatchExactly | Qt::MatchRecursive, QGIS_CRS_ID_COLUMN );
 
-    if ( nodes.count() > 0 )
-    {
-      retvalue = nodes.first()->text( NAME_COLUMN );
-      if ( nodes.first()->text( AUTHID_COLUMN ) != "" )
-      {
-        retvalue += " " + nodes.first()->text( AUTHID_COLUMN );
-      }
-    }
-  }
-  return retvalue;
+  if ( nodes.count() == 0 )
+    return;
 
+  lstRecent->insertTopLevelItem( 0, new QTreeWidgetItem( lstRecent, QStringList()
+                                 << nodes.first()->text( NAME_COLUMN )
+                                 << nodes.first()->text( AUTHID_COLUMN )
+                                 << nodes.first()->text( QGIS_CRS_ID_COLUMN ) ) );
 }
 
 void QgsProjectionSelector::applyAuthIDSelection()
@@ -889,6 +853,8 @@ void QgsProjectionSelector::coordinateSystemSelected( QTreeWidgetItem * theItem 
     QString myProjString = selectedProj4String();
     lstCoordinateSystems->scrollToItem( theItem );
     teProjection->setText( myProjString );
+
+    lstRecent->clearSelection();
   }
   else
   {
@@ -920,24 +886,9 @@ void QgsProjectionSelector::on_cbxHideDeprecated_stateChanged()
     hideDeprecated( lstCoordinateSystems->topLevelItem( i ) );
 }
 
-void QgsProjectionSelector::on_pbnPopular1_clicked()
+void QgsProjectionSelector::on_lstRecent_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous )
 {
-  setSelectedCrsId( mRecentProjections.at( 0 ).toLong() );
-}
-
-void QgsProjectionSelector::on_pbnPopular2_clicked()
-{
-  setSelectedCrsId( mRecentProjections.at( 1 ).toLong() );
-}
-
-void QgsProjectionSelector::on_pbnPopular3_clicked()
-{
-  setSelectedCrsId( mRecentProjections.at( 2 ).toLong() );
-}
-
-void QgsProjectionSelector::on_pbnPopular4_clicked()
-{
-  setSelectedCrsId( mRecentProjections.at( 3 ).toLong() );
+  setSelectedCrsId( current->text( QGIS_CRS_ID_COLUMN ).toLong() );
 }
 
 void QgsProjectionSelector::on_pbnFind_clicked()
