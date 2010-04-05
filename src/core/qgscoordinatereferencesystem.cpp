@@ -190,7 +190,7 @@ bool QgsCoordinateReferenceSystem::loadFromDb( QString db, QString expression, Q
   int           myResult;
   //check the db is available
   myResult = openDb( db, &myDatabase );
-  if ( myResult )
+  if ( myResult != SQLITE_OK )
   {
     QgsDebugMsg( "failed : " + db + " could not be opened!" );
     return mIsValidFlag;
@@ -266,7 +266,7 @@ bool QgsCoordinateReferenceSystem::createFromWkt( QString theWkt )
   char *proj4src = NULL;
   OSRExportToProj4( mCRS, &proj4src );
 
-  //now that we have the proj4string, delegate to createFromProj4String so
+  //now that we have the proj4string, delegate to createFromProj4 so
   // that we can try to fill in the remaining class members...
   //create from Proj will set the isValidFlag
   createFromProj4( QString( proj4src ) );
@@ -330,13 +330,13 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
   }
 
   /*
-  * We try to match the proj string to and srsid using the following logic:
-  *
-  * - perform a whole text search on srs name (if not null). The srs name will
-  *   have been set if this method has been delegated to from createFromWkt.
-  * Normally we wouldnt expect this to work, but its worth trying first
-  * as its quicker than methods below..
-  */
+   * We try to match the proj string to and srsid using the following logic:
+   *
+   * - perform a whole text search on srs name (if not null). The srs name will
+   *   have been set if this method has been delegated to from createFromWkt.
+   * Normally we wouldnt expect this to work, but its worth trying first
+   * as its quicker than methods below..
+   */
   long mySrsId = 0;
   QgsCoordinateReferenceSystem::RecordMap myRecord;
 
@@ -347,8 +347,8 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
   //}
 
   /*
-  * - if the above does not match perform a whole text search on proj4 string (if not null)
-  */
+   * - if the above does not match perform a whole text search on proj4 string (if not null)
+   */
   // QgsDebugMsg( "wholetext match on name failed, trying proj4string match" );
   myRecord = getRecord( "select * from tbl_srs where parameters='" + theProj4String.trimmed() + "'" );
   if ( !myRecord.empty() )
@@ -430,30 +430,44 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
   {
     QgsDebugMsg( "Projection is not found in databases." );
     setProj4String( theProj4String );
+
     // Is the SRS is valid now, we know it's a decent +proj string that can be entered into the srs.db
     if ( mIsValidFlag )
     {
-      // Try to save. If not possible, set to invalid. Problems on read only systems?
-      QgsDebugMsg( "Projection appears to be valid. Save to database!" );
-      mIsValidFlag = saveAsUserCRS();
-      // The srsid is not set, we should do that now.
-      if ( mIsValidFlag )
+      // but the proj.4 parsed string might already be in our database
+      myRecord = getRecord( "select * from tbl_srs where parameters='" + toProj4() + "'" );
+      if ( myRecord.empty() )
       {
-        myRecord = getRecord( "select * from tbl_srs where parameters='" + theProj4String.trimmed() + "'" );
-        if ( !myRecord.empty() )
-        {
-          mySrsId = myRecord["srs_id"].toLong();
-          QgsDebugMsg( "proj4string match search for srsid returned srsid: " + QString::number( mySrsId ) );
-          if ( mySrsId > 0 )
-          {
-            createFromSrsId( mySrsId );
-          }
-          else
-          {
-            QgsDebugMsg( "Couldn't find newly added proj string?" );
-            mIsValidFlag = false;
-          }
-        }
+	// It's not, so try to add it
+	QgsDebugMsg( "Projection appears to be valid. Save to database!" );
+	mIsValidFlag = saveAsUserCRS();
+
+	if ( mIsValidFlag )
+	{
+	  // but validate that it's there afterwards
+	  myRecord = getRecord( "select * from tbl_srs where parameters='" + toProj4() + "'" );
+	}
+      }
+
+      if ( !myRecord.empty() )
+      {
+	// take the srid from the record
+	mySrsId = myRecord["srs_id"].toLong();
+	QgsDebugMsg( "proj4string match search for srsid returned srsid: " + QString::number( mySrsId ) );
+	if ( mySrsId > 0 )
+	{
+	  createFromSrsId( mySrsId );
+	}
+	else
+	{
+	  QgsDebugMsg( QString( "invalid srid %1 found" ).arg( mySrsId ) );
+	  mIsValidFlag = false;
+	}
+      }
+      else
+      {
+	QgsDebugMsg( "Couldn't find newly added proj string?" );
+	mIsValidFlag = false;
       }
     }
   }
@@ -487,7 +501,7 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
 
   //check the db is available
   myResult = openDb( myDatabaseFileName, &myDatabase );
-  if ( myResult )
+  if ( myResult != SQLITE_OK )
   {
     return myMap;
   }
@@ -523,7 +537,7 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
 
     //check the db is available
     myResult = openDb( myDatabaseFileName, &myDatabase );
-    if ( myResult )
+    if ( myResult != SQLITE_OK )
     {
       return myMap;
     }
@@ -795,7 +809,7 @@ long QgsCoordinateReferenceSystem::findMatchingProj()
 
   //check the db is available
   myResult = openDb( myDatabaseFileName, &myDatabase );
-  if ( myResult )
+  if ( myResult != SQLITE_OK )
   {
     return 0;
   }
@@ -834,7 +848,7 @@ long QgsCoordinateReferenceSystem::findMatchingProj()
   myDatabaseFileName = QgsApplication::qgisUserDbFilePath();
   //check the db is available
   myResult = openDb( myDatabaseFileName, &myDatabase );
-  if ( myResult )
+  if ( myResult != SQLITE_OK )
   {
     return 0;
   }
@@ -1138,7 +1152,7 @@ int QgsCoordinateReferenceSystem::openDb( QString path, sqlite3 **db )
   QgsDebugMsgLevel( "path = " + path, 3 );
   int myResult = sqlite3_open( path.toUtf8().data(), db );
 
-  if ( myResult )
+  if ( myResult != SQLITE_OK )
   {
     QgsDebugMsg( "Can't open database: " + QString( sqlite3_errmsg( *db ) ) );
     // XXX This will likely never happen since on open, sqlite creates the
@@ -1201,7 +1215,6 @@ QString QgsCoordinateReferenceSystem::validationHint()
 
 bool QgsCoordinateReferenceSystem::saveAsUserCRS()
 {
-
   if ( ! mIsValidFlag )
   {
     QgsDebugMsg( "Can't save an invalid CRS!" );
@@ -1219,17 +1232,21 @@ bool QgsCoordinateReferenceSystem::saveAsUserCRS()
   //the autoinc related system tables.
   if ( getRecordCount() == 0 )
   {
-    mySql = QString( "insert into tbl_srs (srs_id,description,projection_acronym,ellipsoid_acronym,parameters,is_geo) " )
-            + " values (" + QString::number( USER_CRS_START_ID ) + ",'"
-            + sqlSafeString( myName ) + "','" + projectionAcronym()
-            + "','" + ellipsoidAcronym()  + "','" + sqlSafeString( toProj4() )
+    mySql = "insert into tbl_srs (srs_id,description,projection_acronym,ellipsoid_acronym,parameters,is_geo) values ("
+            + QString::number( USER_CRS_START_ID ) + ",'"
+            + sqlSafeString( myName ) + "','"
+            + projectionAcronym() + "','"
+            + ellipsoidAcronym()  + "','"
+            + sqlSafeString( toProj4() )
             + "',0)"; // <-- is_geo shamelessly hard coded for now
   }
   else
   {
     mySql = "insert into tbl_srs (description,projection_acronym,ellipsoid_acronym,parameters,is_geo) values ('"
-            + sqlSafeString( myName ) + "','" + projectionAcronym()
-            + "','" + ellipsoidAcronym()  + "','" + sqlSafeString( toProj4() )
+            + sqlSafeString( myName ) + "','"
+            + projectionAcronym() + "','"
+            + ellipsoidAcronym()  + "','"
+            + sqlSafeString( toProj4() )
             + "',0)"; // <-- is_geo shamelessly hard coded for now
   }
   sqlite3      *myDatabase;
@@ -1240,7 +1257,9 @@ bool QgsCoordinateReferenceSystem::saveAsUserCRS()
   myResult = sqlite3_open( QgsApplication::qgisUserDbFilePath().toUtf8().data(), &myDatabase );
   if ( myResult != SQLITE_OK )
   {
-    QgsDebugMsg( QString( "Can't open database: %1 \n please notify  QGIS developers of this error \n %2 (file name) " ).arg( sqlite3_errmsg( myDatabase ) ).arg( QgsApplication::qgisUserDbFilePath() ) );
+    QgsDebugMsg( QString( "Can't open database: %1 \n please notify  QGIS developers of this error \n %2 (file name) " )
+                 .arg( sqlite3_errmsg( myDatabase ) )
+                 .arg( QgsApplication::qgisUserDbFilePath() ) );
     // XXX This will likely never happen since on open, sqlite creates the
     //     database if it does not exist.
     assert( myResult == SQLITE_OK );
@@ -1250,7 +1269,6 @@ bool QgsCoordinateReferenceSystem::saveAsUserCRS()
   sqlite3_step( myPreparedStatement );
   // XXX Need to free memory from the error msg if one is set
   return myResult == SQLITE_OK;
-
 }
 
 long QgsCoordinateReferenceSystem::getRecordCount()
@@ -1285,7 +1303,6 @@ long QgsCoordinateReferenceSystem::getRecordCount()
   sqlite3_finalize( myPreparedStatement );
   sqlite3_close( myDatabase );
   return myRecordCount;
-
 }
 
 const QString QgsCoordinateReferenceSystem::sqlSafeString( const QString theSQL )
