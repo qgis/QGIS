@@ -93,6 +93,7 @@ void QgsNewSpatialiteLayerDialog::createNewDb()
   {
     mDatabaseComboBox->insertItem( 0, fileName );
     mDatabaseComboBox->setCurrentIndex(0);
+    createDb();
     needNewDb = true;
   }  
 }
@@ -313,6 +314,10 @@ bool QgsNewSpatialiteLayerDialog::createDb()
     {
       // QMessageBox::warning( this, "Spatialite Database", tr( "Unable to copy the template database to your new location" ));
       return false;
+    }
+    else
+    {
+      QMessageBox::information( 0, tr( "Spatialite Database" ), tr( "Created new database!" ) );
     }
   }
     return true;
