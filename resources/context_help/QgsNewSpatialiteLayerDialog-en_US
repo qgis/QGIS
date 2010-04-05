@@ -1,0 +1,20 @@
+<h3>Create a New Spatialite Layer</h3>
+You can use this dialog to create a new Spatialite database and/or an empty Spatialite layer for editing. See below for an explanation of the dialog inputs.
+<h4>Database</h4>
+Choose the database from the drop-down list. This list is created from your saved Spatialite connections. If you don't have a saved connection or want to create a new database, click on the button (<label>...</label>) to the right of the drop-down. If you create a new database you will have to add it to your Spatialite connections in the <i>Add Spatialite Table(s)</i> dialog.
+<h4>Layer name</h4>
+Enter a name for the layer you want to create. The name should be one word. You can use underscores in the name if you like.
+<h4>Geometry column</h4>
+Enter a name for the geometry column or accept the default.
+<h4>Type</h4>
+Choose the type of layer you want to create. 
+<h4>EPSG SRID</h4>
+Enter the EPSG number for the spatial reference id (SRID). By default the SRID for WGS 84 is filled in for you. Click on <label>Find SRID</label> button to change the coordinate reference system of the layer if needed. The SRID must exist within the spatial_ref_sys in your Spatialite database. You can search for the SRID using partial matches on both name and SRID.
+<h4>New attribute</h4>
+Add the desired attributes by clicking on the <label>Add to attributes list</label> button after you have specified a name and type for the attribute. Only real, integer, and string attributes are supported.<br/>
+Width and precision are irrelevant in a Spatialite database so you do not have to specify these.
+<h4>Attributes list</h4>
+In this section you can see the list of attributes. To delete one of them, click on it and choose <label>Remove selected attribute</label> button.
+
+<p>
+To create the layer, click on <label>Apply</label>. The layer will be created and you will be returned to the dialog. From here you can click <label>Close</label> or change the parameters to create additional layers.

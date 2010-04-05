@@ -24,6 +24,7 @@ SET(QGIS_APP_SRCS
   qgsdelattrdialog.cpp
   qgsdisplayangle.cpp
   qgsfieldcalculator.cpp
+  qgsnewspatialitelayerdialog.cpp
   qgsnewvectorlayerdialog.cpp
   qgsgraduatedsymboldialog.cpp
   qgshelpviewer.cpp
@@ -58,6 +59,7 @@ SET(QGIS_APP_SRCS
   qgsnewhttpconnection.cpp
   qgsnumericsortlistviewitem.cpp
   qgsoptions.cpp
+  qgsspatialitesridsdialog.cpp
   qgspastetransformations.cpp
   qgspointrotationitem.cpp
   qgspluginitem.cpp
@@ -143,6 +145,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsfieldcalculator.h
   qgsformannotationdialog.h
   qgsmaptoolmeasureangle.h
+  qgsnewspatialitelayerdialog.h
   qgsnewvectorlayerdialog.h
   qgsgraduatedsymboldialog.h
   qgshelpviewer.h
@@ -178,6 +181,7 @@ SET (QGIS_APP_MOC_HDRS
   qgswmssourceselect.h
   qgssinglesymboldialog.h
   qgssnappingdialog.h
+  qgsspatialitesridsdialog.h
   qgsuniquevaluedialog.h
   qgsvectorlayerproperties.h
   qgsdbtablemodel.h
@@ -330,6 +334,7 @@ IF (WITH_INTERNAL_SPATIALITE)
   INCLUDE_DIRECTORIES(../core/spatialite/headers/spatialite)
 ELSE (WITH_INTERNAL_SPATIALITE)
   INCLUDE_DIRECTORIES(${SQLITE3_INCLUDE_DIR})
+  ADD_DEFINITIONS(-DEXTERNAL_SPATIALITE)
 ENDIF (WITH_INTERNAL_SPATIALITE)
 
 IF (POSTGRES_FOUND)

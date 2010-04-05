@@ -89,6 +89,9 @@ class CORE_EXPORT QgsApplication: public QApplication
     //! Returns the path to the master qgis.db file.
     static const QString qgisMasterDbFilePath();
 
+    //! Returns the path to the spatialite template db file.
+    static const QString qgisSpatialiteDbTemplatePath();
+
     //! Returns the path to the settings directory in user's home dir
     static const QString qgisSettingsDirPath();
 

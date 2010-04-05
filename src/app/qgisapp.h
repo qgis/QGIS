@@ -265,6 +265,7 @@ class QgisApp : public QMainWindow
     QAction *actionViewSeparator3() { return mActionViewSeparator3; }
 
     QAction *actionNewVectorLayer() { return mActionNewVectorLayer; }
+    QAction *actionNewSpatialLiteLayer() { return mActionNewSpatialiteLayer; }
     QAction *actionAddOgrLayer() { return mActionAddOgrLayer; }
     QAction *actionAddRasterLayer() { return mActionAddRasterLayer; }
     QAction *actionAddPgLayer() { return mActionAddPgLayer; }
@@ -488,6 +489,8 @@ class QgisApp : public QMainWindow
     void fileNew( bool thePromptToSaveFlag );
     //! Create a new empty vector layer
     void newVectorLayer();
+    //! Create a new empty spatialite layer
+    void newSpatialiteLayer();
     //! Print the current map view frame
     void newPrintComposer();
     void showComposerManager();
@@ -859,6 +862,7 @@ class QgisApp : public QMainWindow
     QAction *mActionAnnotation;
 
     QAction *mActionNewVectorLayer;
+    QAction *mActionNewSpatialiteLayer;
     QAction *mActionAddOgrLayer;
     QAction *mActionAddRasterLayer;
     QAction *mActionAddPgLayer;
