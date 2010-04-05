@@ -69,7 +69,8 @@ QWidget *QgsAttributeTableDelegate::createEditor(
     QgsAttributeTableView *tv = dynamic_cast<QgsAttributeTableView *>( parent->parentWidget() );
     w->setMinimumWidth( tv->columnWidth( index.column() ) );
 
-    if ( vl->editType( fieldIdx( index ) ) == QgsVectorLayer::FileName )
+    if ( vl->editType( fieldIdx( index ) ) == QgsVectorLayer::FileName ||
+         vl->editType( fieldIdx( index ) ) == QgsVectorLayer::Calendar )
     {
       QLineEdit *le = w->findChild<QLineEdit*>();
       le->adjustSize();

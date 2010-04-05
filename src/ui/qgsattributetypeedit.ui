@@ -71,6 +71,11 @@
        <string>Text edit</string>
       </property>
      </item>
+     <item>
+      <property name="text">
+       <string>Calendar</string>
+      </property>
+     </item>
     </widget>
    </item>
    <item>
@@ -148,6 +153,9 @@
             <bool>true</bool>
            </property>
           </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="rangeWidget"/>
          </item>
          <item>
           <layout class="QGridLayout" name="gridRangeLayout">
@@ -242,23 +250,6 @@
             </widget>
            </item>
           </layout>
-         </item>
-         <item>
-          <widget class="QRadioButton" name="sliderRadioButton">
-           <property name="text">
-            <string>Slider</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QRadioButton" name="editableRadioButton">
-           <property name="text">
-            <string>Editable</string>
-           </property>
-          </widget>
          </item>
          <item>
           <widget class="QLabel" name="valuesLabel">
@@ -570,6 +561,30 @@
           <size>
            <width>20</width>
            <height>302</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="calendarPage">
+      <layout class="QVBoxLayout" name="verticalLayout_6">
+       <item>
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>A calendar widget to enter a date.</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_9">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>303</height>
           </size>
          </property>
         </spacer>

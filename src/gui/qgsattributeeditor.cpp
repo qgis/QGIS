@@ -33,6 +33,9 @@
 #include <QCompleter>
 #include <QHBoxLayout>
 #include <QPlainTextEdit>
+#include <QDial>
+#include <QCalendarWidget>
+#include <QDialogButtonBox>
 
 void QgsAttributeEditor::selectFileName( void )
 {
@@ -53,6 +56,42 @@ void QgsAttributeEditor::selectFileName( void )
     return;
 
   le->setText( fileName );
+}
+
+void QgsAttributeEditor::selectDate( void )
+{
+  QPushButton *pb = qobject_cast<QPushButton *>( sender() );
+  if ( !pb )
+    return;
+
+  QWidget *hbox = qobject_cast<QWidget *>( pb->parent() );
+  if ( !hbox )
+    return;
+
+  QLineEdit *le = hbox->findChild<QLineEdit *>();
+  if ( !le )
+    return;
+
+  QDialog *dlg = new QDialog();
+  dlg->setWindowTitle( tr( "Select a date" ) );
+  QVBoxLayout *vl = new QVBoxLayout( dlg );
+
+  QCalendarWidget *cw = new QCalendarWidget( dlg );
+  cw->setSelectedDate( QDate::fromString( le->text(), Qt::ISODate ) );
+  vl->addWidget( cw );
+
+  QDialogButtonBox *buttonBox = new QDialogButtonBox( dlg );
+  buttonBox->addButton( QDialogButtonBox::Ok );
+  buttonBox->addButton( QDialogButtonBox::Cancel );
+  vl->addWidget( buttonBox );
+
+  connect( buttonBox, SIGNAL( accepted() ), dlg, SLOT( accept() ) );
+  connect( buttonBox, SIGNAL( rejected() ), dlg, SLOT( reject() ) );
+
+  if ( dlg->exec() == QDialog::Accepted )
+  {
+    le->setText( cw->selectedDate().toString( Qt::ISODate ) );
+  }
 }
 
 QComboBox *QgsAttributeEditor::comboBox( QWidget *editor, QWidget *parent )
@@ -180,6 +219,8 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
     }
     break;
 
+
+    case QgsVectorLayer::DialRange:
     case QgsVectorLayer::SliderRange:
     case QgsVectorLayer::EditRange:
     {
@@ -208,12 +249,20 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
         }
         else
         {
-          QSlider *sl = NULL;
+          QAbstractSlider *sl = NULL;
 
           if ( editor )
-            sl = qobject_cast<QSlider*>( editor );
+          {
+            sl = qobject_cast<QAbstractSlider*>( editor );
+          }
+          else if ( editType == QgsVectorLayer::DialRange )
+          {
+            sl = new QDial( parent );
+          }
           else
+          {
             sl = new QSlider( Qt::Horizontal, parent );
+          }
 
           if ( sl )
           {
@@ -335,6 +384,7 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
       break;
 
     case QgsVectorLayer::FileName:
+    case QgsVectorLayer::Calendar:
     {
       QPushButton *pb = NULL;
       QLineEdit *le = qobject_cast<QLineEdit *>( editor );
@@ -365,18 +415,17 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
       }
 
       if ( pb )
-        connect( pb, SIGNAL( clicked() ), new QgsAttributeEditor( pb ), SLOT( selectFileName() ) );
+      {
+        if ( editType == QgsVectorLayer::FileName )
+          connect( pb, SIGNAL( clicked() ), new QgsAttributeEditor( pb ), SLOT( selectFileName() ) );
+        if ( editType == QgsVectorLayer::Calendar )
+          connect( pb, SIGNAL( clicked() ), new QgsAttributeEditor( pb ), SLOT( selectDate() ) );
+      }
     }
     break;
 
     case QgsVectorLayer::Immutable:
       return NULL;
-
-  }
-
-  if ( editType == QgsVectorLayer::Immutable )
-  {
-    myWidget->setEnabled( false );
   }
 
   setValue( myWidget, vl, idx, value );
@@ -448,7 +497,7 @@ bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int
     text = QString::number( sb->value() );
   }
 
-  QSlider *slider = qobject_cast<QSlider *>( widget );
+  QAbstractSlider *slider = qobject_cast<QAbstractSlider *>( widget );
   if ( slider )
   {
     text = QString::number( slider->value() );
@@ -465,6 +514,12 @@ bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int
   {
     QPair<QString, QString> states = vl->checkedState( idx );
     text = ckb->isChecked() ? states.first : states.second;
+  }
+
+  QCalendarWidget *cw = qobject_cast<QCalendarWidget *>( widget );
+  if ( cw )
+  {
+    text = cw->selectedDate().toString();
   }
 
   le = widget->findChild<QLineEdit *>();
@@ -497,6 +552,20 @@ bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int
       if ( ok && !text.isEmpty() )
       {
         value = QVariant( myDblValue );
+        modified = true;
+      }
+      else if ( modified )
+      {
+        value = QVariant( theField.type() );
+      }
+    }
+    break;
+    case QVariant::Date:
+    {
+      QDate myDateValue = QDate::fromString( text, Qt::ISODate );
+      if ( myDateValue.isValid() && !text.isEmpty() )
+      {
+        value = myDateValue;
         modified = true;
       }
       else if ( modified )
@@ -542,6 +611,7 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
     }
     break;
 
+    case QgsVectorLayer::DialRange:
     case QgsVectorLayer::SliderRange:
     case QgsVectorLayer::EditRange:
     {
@@ -556,7 +626,7 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
         }
         else
         {
-          QSlider *sl = qobject_cast<QSlider *>( editor );
+          QAbstractSlider *sl = qobject_cast<QAbstractSlider *>( editor );
           if ( sl == NULL )
             return false;
           sl->setValue( value.toInt() );
@@ -615,6 +685,7 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
     break;
 
     case QgsVectorLayer::FileName:
+    case QgsVectorLayer::Calendar:
     {
       QLineEdit *le = editor->findChild<QLineEdit *>();
       if ( le == NULL )
