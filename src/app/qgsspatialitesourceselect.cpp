@@ -300,7 +300,7 @@ void QgsSpatiaLiteSourceSelect::on_btnNew_clicked()
 
   QString myFile = QFileDialog::getOpenFileName( this,
                    tr( "Choose a SpatiaLite/SQLite DB to open" ),
-                   lastUsedDir, QObject::tr( "SQLite DB (*.sqlite);;All files (*.*)" ) );
+                   lastUsedDir, QObject::tr( "SQLite DB (*.sqlite *.db);;All files (*.*)" ) );
 
   if ( myFile.isEmpty() )
     return;
@@ -507,8 +507,8 @@ bool QgsSpatiaLiteSourceSelect::getTableInfo( sqlite3 * handle )
   {
     for ( i = 1; i <= rows; i++ )
     {
-      QString tableName = results[( i * columns ) + 0];
-      QString column = results[( i * columns ) + 1];
+      QString tableName = QString::fromUtf8( results[( i * columns ) + 0] );
+      QString column = QString::fromUtf8( results[( i * columns ) + 1] );
       QString type = results[( i * columns ) + 2];
       if ( isDeclaredHidden( handle, tableName, column ) )
         continue;
@@ -534,8 +534,8 @@ bool QgsSpatiaLiteSourceSelect::getTableInfo( sqlite3 * handle )
     {
       for ( i = 1; i <= rows; i++ )
       {
-        QString tableName = results[( i * columns ) + 0];
-        QString column = results[( i * columns ) + 1];
+        QString tableName = QString::fromUtf8( results[( i * columns ) + 0] );
+        QString column = QString::fromUtf8( results[( i * columns ) + 1] );
         QString type = results[( i * columns ) + 2];
         if ( isDeclaredHidden( handle, tableName, column ) )
           continue;
@@ -561,8 +561,8 @@ bool QgsSpatiaLiteSourceSelect::getTableInfo( sqlite3 * handle )
     {
       for ( i = 1; i <= rows; i++ )
       {
-        QString tableName = results[( i * columns ) + 0];
-        QString column = results[( i * columns ) + 1];
+        QString tableName = QString::fromUtf8( results[( i * columns ) + 0] );
+        QString column = QString::fromUtf8( results[( i * columns ) + 1] );
         QString type = results[( i * columns ) + 2];
         if ( isDeclaredHidden( handle, tableName, column ) )
           continue;

@@ -23,20 +23,24 @@
 #include "qgscontexthelp.h"
 
 #include "qgis.h"
-#include <sqlite3.h>
 
-class QgsSpatialiteSridsDialog: public QDialog, private Ui::QgsSpatialiteSridsDialogBase 
+extern "C"
 {
-  Q_OBJECT
-public:
-  QgsSpatialiteSridsDialog( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags);
-  ~QgsSpatialiteSridsDialog();
-  bool load(QString dbName);
-  QString selectedSrid();
-public slots:
-  void on_pbnFilter_clicked();
-private:
-  sqlite3 *db;
-  QString mDbName;
+#include <sqlite3.h>
+}
+
+class QgsSpatialiteSridsDialog: public QDialog, private Ui::QgsSpatialiteSridsDialogBase
+{
+    Q_OBJECT
+  public:
+    QgsSpatialiteSridsDialog( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
+    ~QgsSpatialiteSridsDialog();
+    bool load( QString dbName );
+    QString selectedSrid();
+  public slots:
+    void on_pbnFilter_clicked();
+  private:
+    sqlite3 *db;
+    QString mDbName;
 };
 #endif //QgsSpatialiteSridsDialog_H

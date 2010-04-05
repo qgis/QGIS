@@ -1,7 +1,7 @@
 /***************************************************************************
                          QgsNewSpatialiteLayerDialog.h  -  description
                              -------------------
-    begin                : 2010-03-19 
+    begin                : 2010-03-19
     copyright            : (C) 2010 by Gary Sherman
     email                : gsherman@mrcc.com
  ***************************************************************************/
@@ -17,17 +17,17 @@
 /* $Id$ */
 #ifndef qgsnewspatialitelayerdialog_H
 #define qgsnewspatialitelayerdialog_H
-#include <sqlite3.h>
-extern "C"
-{
-#include <spatialite/headers/spatialite.h>
-}
-//#include <sqlite3.h>
+
 #include "ui_qgsnewspatialitelayerdialogbase.h"
 #include "qgisgui.h"
 #include "qgscontexthelp.h"
 
 #include "qgis.h"
+
+extern "C"
+{
+#include <sqlite3.h>
+}
 
 class QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNewSpatialiteLayerDialogBase
 {
@@ -45,6 +45,8 @@ class QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNewSpatialiteL
     QString databaseName() const;
     /**Returns the layer name to be created */
     QString layerName() const;
+    /**Returns the geometry column name */
+    QString geometryColumn() const;
     /**Returns the selected crs id*/
     QString selectedCrsId() const;
     /** Create a new database */
@@ -57,11 +59,11 @@ class QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNewSpatialiteL
     void on_pbnFindSRID_clicked();
     void on_leLayerName_textChanged( QString text );
     void createNewDb();
-    void apply();
+
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
   private:
-    QPushButton *mApplyButton;
+    QPushButton *mOkButton;
     int mCrsId;
     sqlite3 *db;
     bool needNewDb;

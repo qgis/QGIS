@@ -213,6 +213,11 @@
 #include "postgres/qgspgsourceselect.h"
 #endif
 #ifdef HAVE_SPATIALITE
+extern "C"
+{
+#include <sqlite3.h>
+#include <spatialite.h>
+}
 #include "qgsspatialitesourceselect.h"
 #include "qgsnewspatialitelayerdialog.h"
 #endif
@@ -937,15 +942,15 @@ void QgisApp::createActions()
 
   // Layer Menu Items
 
-  mActionNewVectorLayer = new QAction( getThemeIcon( "mActionNewVectorLayer.png" ), tr( "New Vector Layer (shapefile)..." ), this );
-  shortcuts->registerAction( mActionNewVectorLayer, tr( "Ctrl+Shift+N", "Create a New Vector Layer (shapefile)" ) );
-  mActionNewVectorLayer->setStatusTip( tr( "Create a New Vector Layer (shapefile)" ) );
+  mActionNewVectorLayer = new QAction( getThemeIcon( "mActionNewVectorLayer.png" ), tr( "New Shapefile Layer..." ), this );
+  shortcuts->registerAction( mActionNewVectorLayer, tr( "Ctrl+Shift+N", "Create a New Shapefile layer" ) );
+  mActionNewVectorLayer->setStatusTip( tr( "Create a New Shapefile layer" ) );
   connect( mActionNewVectorLayer, SIGNAL( triggered() ), this, SLOT( newVectorLayer() ) );
 
 #ifdef HAVE_SPATIALITE
-  mActionNewSpatialiteLayer = new QAction( getThemeIcon( "mActionNewVectorLayer.png" ), tr( "New Spatialite Layer ..." ), this );
-  shortcuts->registerAction( mActionNewSpatialiteLayer, tr( "Ctrl+Shift+S", "Create a New Spatialite Layer " ) );
-  mActionNewSpatialiteLayer->setStatusTip( tr( "Create a New Spatialite Layer " ) );
+  mActionNewSpatialiteLayer = new QAction( getThemeIcon( "mActionNewVectorLayer.png" ), tr( "New SpatiaLite Layer ..." ), this );
+  shortcuts->registerAction( mActionNewSpatialiteLayer, tr( "Ctrl+Shift+S", "Create a New SpatiaLite Layer " ) );
+  mActionNewSpatialiteLayer->setStatusTip( tr( "Create a New SpatiaLite Layer " ) );
   connect( mActionNewSpatialiteLayer, SIGNAL( triggered() ), this, SLOT( newSpatialiteLayer() ) );
 #endif
 
@@ -1420,13 +1425,13 @@ void QgisApp::createMenus()
   mLayerMenu = menuBar()->addMenu( tr( "&Layer" ) );
 
 #ifdef HAVE_SPATIALITE
-  QMenu *newLayerMenu = mLayerMenu->addMenu( tr( "New ") );
+  QMenu *newLayerMenu = mLayerMenu->addMenu( tr( "New" ) );
   newLayerMenu->addAction( mActionNewVectorLayer );
   newLayerMenu->addAction( mActionNewSpatialiteLayer );
 #else
   mLayerMenu->addAction( mActionNewVectorLayer );
 #endif
-  
+
   mLayerMenu->addAction( mActionAddOgrLayer );
   mLayerMenu->addAction( mActionAddRasterLayer );
 #ifdef HAVE_POSTGRESQL
@@ -3097,6 +3102,18 @@ void QgisApp::newVectorLayer()
   addVectorLayers( fileNames, enc, "file" );
 }
 
+static QString quotedIdentifier( QString id )
+{
+  id.replace( "\"", "\"\"" );
+  return id.prepend( "\"" ).append( "\"" );
+}
+
+static QString quotedValue( QString value )
+{
+  value.replace( "'", "''" );
+  return value.prepend( "'" ).append( "'" );
+}
+
 void QgisApp::newSpatialiteLayer()
 {
   if ( mMapCanvas && mMapCanvas->isDrawing() )
@@ -3115,6 +3132,7 @@ void QgisApp::newSpatialiteLayer()
   QString crsId = spatialiteDialog.selectedCrsId();
   QString databaseName = spatialiteDialog.databaseName();
   QString newLayerName = spatialiteDialog.layerName();
+  QString newGeometryColumn = spatialiteDialog.geometryColumn();
   //QgsDebugMsg( QString( "New file format will be: %1" ).arg( fileformat ) );
 
   // Get the list containing the name/type pairs for each attribute
@@ -3122,188 +3140,95 @@ void QgisApp::newSpatialiteLayer()
 
   // Build up the sql statement for creating the table
   //
-  QString sql = QString("create table %1 (id integer primary key autoincrement").arg(newLayerName);
+  QString sql = QString( "create table %1(" ).arg( quotedIdentifier( newLayerName ) );
   // iterate through the field names and add them to the create statement
   // (use indexed access since this is just as fast as iterators
-  for ( int i = 0; i < items->size(); ++i ) 
+  for ( int i = 0; i < items->size(); ++i )
   {
-    QStringList field = items->at(i);
-    sql += QString(", %1 %2").arg(field.at(0)).arg(field.at(1));
+    QStringList field = items->at( i );
+    if ( i > 0 )
+      sql += ",";
+    sql += QString( "%1 %2" ).arg( quotedIdentifier( field.at( 0 ) ) ).arg( field.at( 1 ) );
   }
   // complete the create table statement
   sql += ")";
-  std::cout << "Creating table in database " << databaseName.toUtf8().data() << std::endl; 
-  std::cout << sql.toUtf8().data() << std::endl; // OK
+  QgsDebugMsg( QString( "Creating table in database %1" ).arg( databaseName ) );
+  QgsDebugMsg( sql ); // OK
 
-  QString sqlAddGeom = QString("select AddGeometryColumn('%1', 'geom', %2, '%3', 2)").arg(newLayerName).arg(crsId).arg(geometrytype);
-  std::cout << sqlAddGeom.toUtf8().data() << std::endl; // OK
-  QString sqlCreateIndex = QString("select CreateSpatialIndex('%1', 'geom')").arg(newLayerName);
-  std::cout << sqlCreateIndex.toUtf8().data() << std::endl; // OK
+  QString sqlAddGeom = QString( "select AddGeometryColumn(%1,%2,%3,%4,2)" )
+                       .arg( quotedValue( newLayerName ) )
+                       .arg( quotedValue( newGeometryColumn ) )
+                       .arg( crsId )
+                       .arg( quotedValue( geometrytype ) );
+  QgsDebugMsg( sqlAddGeom ); // OK
+
+  QString sqlCreateIndex = QString( "select CreateSpatialIndex(%1,%2)" ).arg( quotedValue( newLayerName ) ).arg( quotedValue( newGeometryColumn ) );
+  QgsDebugMsg( sqlCreateIndex ); // OK
+
+  spatialite_init( 0 );
 
   sqlite3 *db;
   int rc = sqlite3_open( databaseName.toUtf8(), &db );
   if ( rc != SQLITE_OK )
   {
-    QMessageBox::warning( this, "Spatialite Database", tr( "Unable to open the database: %1").arg(databaseName ) );
+    QMessageBox::warning( this,
+                          tr( "SpatiaLite Database" ),
+                          tr( "Unable to open the database: %1" ).arg( databaseName ) );
   }
   else
   {
     char * errmsg;
-    rc = sqlite3_exec( db, sql.toUtf8(), NULL, NULL, &errmsg);
+    rc = sqlite3_exec( db, sql.toUtf8(), NULL, NULL, &errmsg );
     if ( rc != SQLITE_OK )
     {
-      QMessageBox::warning( this, tr( "Error deleting bookmark" ),
-          tr( "Failed to create the Spatialite table %1. The database returned:\n%2" ).arg( newLayerName ).arg( errmsg ) );
+      QMessageBox::warning( this,
+                            tr( "Error Creating SpatiaLite Table" ),
+                            tr( "Failed to create the SpatiaLite table %1. The database returned:\n%2" ).arg( newLayerName ).arg( errmsg ) );
       sqlite3_free( errmsg );
     }
     else
     {
       // create the geometry column and the spatial index
-      rc = sqlite3_exec( db, sqlAddGeom.toUtf8(), NULL, NULL, &errmsg);
+      rc = sqlite3_exec( db, sqlAddGeom.toUtf8(), NULL, NULL, &errmsg );
       if ( rc != SQLITE_OK )
       {
-        QMessageBox::warning( this, tr( "Error Creating Geometry Column" ),
-            tr( "Failed to create the geometry column. The database returned:\n%1" ).arg( errmsg ) );
+        QMessageBox::warning( this,
+                              tr( "Error Creating Geometry Column" ),
+                              tr( "Failed to create the geometry column. The database returned:\n%1" ).arg( errmsg ) );
         sqlite3_free( errmsg );
       }
       else
       {
-      // create the spatial index
-      rc = sqlite3_exec( db, sqlCreateIndex.toUtf8(), NULL, NULL, &errmsg);
-      if ( rc != SQLITE_OK )
-      {
-        QMessageBox::warning( this, tr( "Error Creating Spatial Index" ),
-            tr( "Failed to create the spatial index. The database returned:\n%1" ).arg( errmsg ) );
-        sqlite3_free( errmsg );
-      }
-      }
-    }
+        // create the spatial index
+        rc = sqlite3_exec( db, sqlCreateIndex.toUtf8(), NULL, NULL, &errmsg );
+        if ( rc != SQLITE_OK )
+        {
+          QMessageBox::warning( this,
+                                tr( "Error Creating Spatial Index" ),
+                                tr( "Failed to create the spatial index. The database returned:\n%1" ).arg( errmsg ) );
+          sqlite3_free( errmsg );
+        }
 
-    
-  }
-
-
-  /*
-  bool haveLastUsedFilter = false; // by default, there is no last
-  // used filter
-  QString enc;
-  QString fileName;
-
-  QSettings settings;         // where we keep last used filter in
-  // persistent state
-
-  haveLastUsedFilter = settings.contains( "/UI/lastVectorFileFilter" );
-  QString lastUsedFilter = settings.value( "/UI/lastVectorFileFilter",
-                           QVariant( QString::null ) ).toString();
-
-  QString lastUsedDir = settings.value( "/UI/lastVectorFileFilterDir",
-                                        "." ).toString();
-
-  QgsDebugMsg( "Saving vector file dialog without filters: " );
-
-  QgsEncodingFileDialog* openFileDialog = new QgsEncodingFileDialog( this,
-      tr( "Save As" ), lastUsedDir, "", QString( "" ) );
-
-  // allow for selection of more than one file
-  openFileDialog->setFileMode( QFileDialog::AnyFile );
-  openFileDialog->setAcceptMode( QFileDialog::AcceptSave );
-  openFileDialog->setConfirmOverwrite( true );
-
-  if ( haveLastUsedFilter )     // set the filter to the last one used
-  {
-    openFileDialog->selectFilter( lastUsedFilter );
-  }
-
-  int res;
-  while (( res = openFileDialog->exec() ) == QDialog::Accepted )
-  {
-    fileName = openFileDialog->selectedFiles().first();
-
-    if ( fileformat == "ESRI Shapefile" )
-    {
-      if ( !isValidShapeFileName( fileName ) )
-      {
-        fileName += ".shp";
-      }
-
-      if ( !isValidShapeFileName( fileName ) )
-      {
-        QMessageBox::information( this,
-                                  tr( "New Shapefile" ),
-                                  tr( "Shapefiles must end on .shp" ) );
-        continue;
+        QgsVectorLayer *layer = new QgsVectorLayer( QString( "dbname=%1 table=%2(%3) sql=" )
+            .arg( databaseName )
+            .arg( newLayerName )
+            .arg( newGeometryColumn ), newLayerName, "spatialite" );
+        if ( layer->isValid() )
+        {
+          // register this layer with the central layers registry
+          QgsMapLayerRegistry::instance()->addMapLayer( layer );
+        }
+        else
+        {
+          QgsDebugMsg( newLayerName + " is an invalid layer - not loaded" );
+          QMessageBox::critical( this, tr( "Invalid Layer" ), tr( "%1 is an invalid layer and cannot be loaded." ).arg( newLayerName ) );
+          delete layer;
+        }
       }
     }
-
-    break;
   }
-
-  if ( res == QDialog::Rejected )
-  {
-    delete openFileDialog;
-    return;
-  }
-
-  enc = openFileDialog->encoding();
-
-  // If the file exists, delete it otherwise we'll end up loading that
-  // file, which can cause problems (e.g., if the file contains
-  // linestrings, but we're wanting to create points, we'll end up
-  // with a linestring file).
-  if ( fileformat == "ESRI Shapefile" )
-  {
-    QgsVectorFileWriter::deleteShapeFile( fileName );
-  }
-  else
-  {
-    QFile::remove( fileName );
-  }
-
-  settings.setValue( "/UI/lastVectorFileFilter", openFileDialog->selectedFilter() );
-
-  settings.setValue( "/UI/lastVectorFileFilterDir", openFileDialog->directory().absolutePath() );
-
-  delete openFileDialog;
-
-  //try to create the new layer with OGRProvider instead of QgsVectorFileWriter
-  QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
-  QString ogrlib = pReg->library( "ogr" );
-  // load the data provider
-  QLibrary* myLib = new QLibrary( ogrlib );
-  bool loaded = myLib->load();
-  if ( loaded )
-  {
-    QgsDebugMsg( "ogr provider loaded" );
-
-    typedef bool ( *createEmptyDataSourceProc )( const QString&, const QString&, const QString&, QGis::WkbType,
-        const std::list<std::pair<QString, QString> >&, const QgsCoordinateReferenceSystem * );
-    createEmptyDataSourceProc createEmptyDataSource = ( createEmptyDataSourceProc ) cast_to_fptr( myLib->resolve( "createEmptyDataSource" ) );
-    if ( createEmptyDataSource )
-    {
-      if ( geometrytype != QGis::WKBUnknown )
-      {
-        QgsCoordinateReferenceSystem srs( crsId, QgsCoordinateReferenceSystem::InternalCrsId );
-        createEmptyDataSource( fileName, fileformat, enc, geometrytype, attributes, &srs );
-      }
-      else
-      {
-        QgsDebugMsg( "geometry type not recognised" );
-        return;
-      }
-    }
-    else
-    {
-      QgsDebugMsg( "Resolving newEmptyDataSource(...) failed" );
-    }
-  }
-
-  //then add the layer to the view
-  QStringList fileNames;
-  fileNames.append( fileName );
-  //todo: the last parameter will change accordingly to layer type
-  addVectorLayers( fileNames, enc, "file" );
-  */
 }
+
 void QgisApp::fileOpen()
 {
   if ( mMapCanvas && mMapCanvas->isDrawing() )
@@ -5026,6 +4951,7 @@ void QgisApp::loadPythonSupport()
     mActionPluginSeparator2 = mPluginMenu->addSeparator();
     mPluginMenu->addAction( mActionShowPythonDialog );
     std::cout << "Python support ENABLED :-) " << std::endl; // OK
+
   }
 }
 
