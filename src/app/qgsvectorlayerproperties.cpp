@@ -271,6 +271,7 @@ void QgsVectorLayerProperties::attributeTypeDialog( )
       break;
     case QgsVectorLayer::EditRange:
     case QgsVectorLayer::SliderRange:
+    case QgsVectorLayer::DialRange:
       mRanges.insert( index, attributeTypeDialog.rangeData() );
       break;
     case QgsVectorLayer::CheckBox:
@@ -532,12 +533,14 @@ void QgsVectorLayerProperties::setupEditTypes()
   editTypeMap.insert( QgsVectorLayer::ValueMap, tr( "Value map" ) );
   editTypeMap.insert( QgsVectorLayer::EditRange, tr( "Edit range" ) );
   editTypeMap.insert( QgsVectorLayer::SliderRange, tr( "Slider range" ) );
+  editTypeMap.insert( QgsVectorLayer::DialRange, tr( "Dial range" ) );
   editTypeMap.insert( QgsVectorLayer::FileName, tr( "File name" ) );
   editTypeMap.insert( QgsVectorLayer::Enumeration, tr( "Enumeration" ) );
   editTypeMap.insert( QgsVectorLayer::Immutable, tr( "Immutable" ) );
   editTypeMap.insert( QgsVectorLayer::Hidden, tr( "Hidden" ) );
   editTypeMap.insert( QgsVectorLayer::CheckBox, tr( "Checkbox" ) );
   editTypeMap.insert( QgsVectorLayer::TextEdit, tr( "Text edit" ) );
+  editTypeMap.insert( QgsVectorLayer::Calendar, tr( "Calendar" ) );
 }
 
 QString QgsVectorLayerProperties::editTypeButtonText( QgsVectorLayer::EditType type )
@@ -604,7 +607,8 @@ void QgsVectorLayerProperties::apply()
       }
     }
     else if ( editType == QgsVectorLayer::EditRange ||
-              editType == QgsVectorLayer::SliderRange )
+              editType == QgsVectorLayer::SliderRange ||
+              editType == QgsVectorLayer::DialRange )
     {
       if ( mRanges.contains( idx ) )
       {
@@ -628,7 +632,6 @@ void QgsVectorLayerProperties::apply()
   }
   else
   {
-
     QgsSingleSymbolDialog *sdialog =
       qobject_cast < QgsSingleSymbolDialog * >( widgetStackRenderers->currentWidget() );
     QgsGraduatedSymbolDialog *gdialog =

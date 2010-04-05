@@ -40,6 +40,7 @@ class GUI_EXPORT QgsAttributeEditor : public QObject
 
   public slots:
     void selectFileName( void );
+    void selectDate( void );
 };
 
 

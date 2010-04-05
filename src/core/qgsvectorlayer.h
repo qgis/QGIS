@@ -75,9 +75,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       CheckBox,    /* added in 1.4 */
       FileName,
       Enumeration,
-      Immutable,   /*The attribute value should not be changed in the attribute form*/
-      Hidden,      /*The attribute value should not be shown in the attribute form @added in 1.4 */
-      TextEdit     /*multiline edit @added in 1.4*/
+      Immutable,   /* The attribute value should not be changed in the attribute form*/
+      Hidden,      /* The attribute value should not be shown in the attribute form @added in 1.4 */
+      TextEdit,    /* multiline edit @added in 1.4*/
+      Calendar,    /* calendar widget @added in 1.5 */
+      DialRange,   /* dial range @added in 1.5 */
     };
 
     struct RangeData

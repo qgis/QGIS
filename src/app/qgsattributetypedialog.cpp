@@ -217,6 +217,7 @@ void QgsAttributeTypeDialog::setPageForEditType( QgsVectorLayer::EditType editTy
 
     case QgsVectorLayer::EditRange:
     case QgsVectorLayer::SliderRange:
+    case QgsVectorLayer::DialRange:
       setPage( 2 );
       break;
 
@@ -251,6 +252,9 @@ void QgsAttributeTypeDialog::setPageForEditType( QgsVectorLayer::EditType editTy
 
     case QgsVectorLayer::TextEdit:
       setPage( 10 );
+
+    case QgsVectorLayer::Calendar:
+      setPage( 11 );
 
     case QgsVectorLayer::LineEdit:
       setPage( 0 );
@@ -297,7 +301,8 @@ void QgsAttributeTypeDialog::setIndex( int index, int editTypeInt )
   //calculate min and max for range for this field
   if ( mLayer->pendingFields()[index].type() == QVariant::Int )
   {
-    sliderRadioButton->setDisabled( false );
+    rangeWidget->clear();
+    rangeWidget->addItems( QStringList() << tr( "Editable" ) << tr( "Slider" ) << tr( "Dial" ) );
     int min = INT_MIN;
     int max = INT_MAX;
     while ( mLayer->nextFeature( f ) )
@@ -319,8 +324,8 @@ void QgsAttributeTypeDialog::setIndex( int index, int editTypeInt )
     double dMin = -DBL_MAX;
     double dMax = DBL_MAX;
 
-    sliderRadioButton->setDisabled( true );
-    editableRadioButton->setChecked( true );
+    rangeWidget->clear();
+    rangeWidget->addItems( QStringList() << tr( "Editable" ) << tr( "Slider" ) );
     while ( mLayer->nextFeature( f ) )
     {
       QVariant val = f.attributeMap()[index];
@@ -386,6 +391,7 @@ void QgsAttributeTypeDialog::setIndex( int index, int editTypeInt )
 
     case QgsVectorLayer::EditRange:
     case QgsVectorLayer::SliderRange:
+    case QgsVectorLayer::DialRange:
     {
       if ( mLayer->pendingFields()[mIndex].type() != QVariant::Int )
       {
@@ -400,9 +406,17 @@ void QgsAttributeTypeDialog::setIndex( int index, int editTypeInt )
         stepDoubleSpinBox->setValue( mLayer->range( index ).mStep.toDouble() );
       }
       if ( editType == QgsVectorLayer::EditRange )
-        editableRadioButton->setChecked( true );
-      else //slider range
-        sliderRadioButton->setChecked( true );
+      {
+        rangeWidget->setCurrentIndex( 0 );
+      }
+      else if ( editType == QgsVectorLayer::SliderRange )
+      {
+        rangeWidget->setCurrentIndex( 1 );
+      }
+      else
+      {
+        rangeWidget->setCurrentIndex( 2 );
+      }
     }
     break;
 
@@ -418,13 +432,13 @@ void QgsAttributeTypeDialog::setIndex( int index, int editTypeInt )
 
 void QgsAttributeTypeDialog::setPage( int index )
 {
-  this->selectionComboBox->setCurrentIndex( index );
+  selectionComboBox->setCurrentIndex( index );
   setStackPage( index );
 }
 
 void QgsAttributeTypeDialog::setStackPage( int index )
 {
-  this->stackedWidget->setCurrentIndex( index );
+  stackedWidget->setCurrentIndex( index );
 
   bool okDisabled = false;
   if ( index == 2 )
@@ -436,7 +450,7 @@ void QgsAttributeTypeDialog::setStackPage( int index )
     }
     else if ( mLayer->pendingFields()[mIndex].type() != QVariant::Double )
     {
-      this->rangeStackedWidget->setCurrentIndex( 0 );
+      rangeStackedWidget->setCurrentIndex( 0 );
       //load data
       minimumSpinBox->setValue( mRangeData.mMin.toInt() );
       maximumSpinBox->setValue( mRangeData.mMax.toInt() );
@@ -444,7 +458,7 @@ void QgsAttributeTypeDialog::setStackPage( int index )
     }
     else
     {
-      this->rangeStackedWidget->setCurrentIndex( 1 );
+      rangeStackedWidget->setCurrentIndex( 1 );
       //load data
       minimumDoubleSpinBox->setValue( mRangeData.mMin.toDouble() );
       maximumDoubleSpinBox->setValue( mRangeData.mMax.toDouble() );
@@ -497,13 +511,17 @@ void QgsAttributeTypeDialog::accept()
                                                 stepDoubleSpinBox->value() );
       }
       //select correct one
-      if ( editableRadioButton->isChecked() )
+      switch ( rangeWidget->currentIndex() )
       {
-        mEditType = QgsVectorLayer::EditRange;
-      }
-      else
-      {
-        mEditType = QgsVectorLayer::SliderRange;
+        case 0:
+          mEditType = QgsVectorLayer::EditRange;
+          break;
+        case 1:
+          mEditType = QgsVectorLayer::SliderRange;
+          break;
+        case 2:
+          mEditType = QgsVectorLayer::DialRange;
+          break;
       }
       break;
     case 3:
@@ -549,6 +567,9 @@ void QgsAttributeTypeDialog::accept()
       break;
     case 10:
       mEditType = QgsVectorLayer::TextEdit;
+      break;
+    case 11:
+      mEditType = QgsVectorLayer::Calendar;
       break;
   }
 
