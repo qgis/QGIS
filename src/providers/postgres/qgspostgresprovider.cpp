@@ -1097,7 +1097,7 @@ QString QgsPostgresProvider::getPrimaryKey()
       {
         showMessageBox( tr( "No suitable key column in table" ),
                         tr( "The table has no column suitable for use as a key.\n\n"
-                            "Qgis requires that the table either has a column of type\n"
+                            "Quantum GIS requires that the table either has a column of type\n"
                             "int4 with a unique constraint on it (which includes the\n"
                             "primary key), has a PostgreSQL oid column or has a ctid\n"
                             "column with a 16bit block number.\n" ) );
@@ -1171,7 +1171,7 @@ QString QgsPostgresProvider::getPrimaryKey()
           QString columnType = QString::fromUtf8( PQgetvalue( types, 0, 1 ) );
 
           if ( columnType != "int4" )
-            log.append( tr( "The unique index on column '%1' is unsuitable because Qgis does not currently "
+            log.append( tr( "The unique index on column '%1' is unsuitable because Quantum GIS does not currently "
                             "support non-int4 type columns as a key into the table.\n" ).arg( columnName ) );
           else
           {
@@ -1202,7 +1202,7 @@ QString QgsPostgresProvider::getPrimaryKey()
             colNames += ",";
         }
 
-        log.append( tr( "The unique index based on columns %1 is unsuitable because Qgis does not currently "
+        log.append( tr( "The unique index based on columns %1 is unsuitable because Quantum GIS does not currently "
                         "support multiple columns as a key into the table.\n" ).arg( colNames ) );
       }
     }
@@ -1262,11 +1262,11 @@ QString QgsPostgresProvider::getPrimaryKey()
 
   if ( !primaryKey.isNull() )
   {
-    QgsDebugMsg( "Qgis row key is " + primaryKey );
+    QgsDebugMsg( "row key is " + primaryKey );
   }
   else
   {
-    QgsDebugMsg( "Qgis row key was not set." );
+    QgsDebugMsg( "row key was not set." );
   }
 
   return primaryKey;
@@ -1490,7 +1490,7 @@ QString QgsPostgresProvider::chooseViewColumn( const tableCols &cols )
   {
     valid = false;
     log.prepend( tr( "The view '%1.%2' has no column suitable for use as a unique key.\n"
-                     "Qgis requires that the view has a column that can be used "
+                     "Quantum GIS requires that the view has a column that can be used "
                      "as a unique key. Such a column should be derived from "
                      "a table column of type int4 and be a primary key, "
                      "have a unique constraint on it, or be a PostgreSQL "
@@ -2966,14 +2966,14 @@ bool QgsPostgresProvider::getGeometryDetails()
     else
     {
       showMessageBox( tr( "Unknown geometry type" ),
-                      tr( "Column %1 in %2 has a geometry type of %3, which Qgis does not currently support." )
+                      tr( "Column %1 in %2 has a geometry type of %3, which Quantum GIS does not currently support." )
                       .arg( geometryColumn ).arg( mSchemaTableName ).arg( fType ) );
       valid = false;
     }
   }
   else // something went wrong...
   {
-    log.prepend( tr( "Qgis was unable to determine the type and srid of column %1 in %2. The database communication log was:\n%3" )
+    log.prepend( tr( "Quantum GIS was unable to determine the type and srid of column %1 in %2. The database communication log was:\n%3" )
                  .arg( geometryColumn )
                  .arg( mSchemaTableName )
                  .arg( QString::fromUtf8( PQresultErrorMessage( result ) ) ) );
