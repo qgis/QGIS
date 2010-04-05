@@ -356,6 +356,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     */
     //void sqliteOpen();
     void closeDb();
+    QString quotedIdentifier( QString id ) const;
     QString quotedValue( QString value ) const;
     bool checkLayerType();
     bool getGeometryDetails();
