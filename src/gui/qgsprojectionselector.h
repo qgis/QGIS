@@ -110,12 +110,8 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
     void setOgcWmsCrsFilter( QSet<QString> crsFilter );
 
     void on_pbnFind_clicked();
+    void on_lstRecent_currentItemChanged( QTreeWidgetItem *, QTreeWidgetItem * );
     void on_cbxHideDeprecated_stateChanged();
-
-    void on_pbnPopular1_clicked();
-    void on_pbnPopular2_clicked();
-    void on_pbnPopular3_clicked();
-    void on_pbnPopular4_clicked();
 
   protected:
     /** Used to ensure the projection list view is actually populated */
@@ -201,8 +197,8 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
      */
     long getLargestCRSIDMatch( QString theSql );
 
-    //! Returns name from CRS Id
-    QString getCrsIdName( long theCrsId );
+    //! add recently used CRS
+    void insertRecent( long theCrsId );
 
     //! Has the Projection List been populated?
     bool mProjListDone;

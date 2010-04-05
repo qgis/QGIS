@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>374</width>
-    <height>464</height>
+    <width>590</width>
+    <height>358</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -65,18 +65,6 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
-    <widget class="QPushButton" name="pbnPopular1"/>
-   </item>
-   <item row="4" column="0">
-    <widget class="QPushButton" name="pbnPopular2"/>
-   </item>
-   <item row="5" column="0">
-    <widget class="QPushButton" name="pbnPopular3"/>
-   </item>
-   <item row="6" column="0">
-    <widget class="QPushButton" name="pbnPopular4"/>
-   </item>
    <item row="0" column="0">
     <widget class="QTreeWidget" name="lstCoordinateSystems">
      <property name="alternatingRowColors">
@@ -116,65 +104,142 @@
      <property name="title">
       <string>Search</string>
      </property>
-     <layout class="QGridLayout">
-      <item row="1" column="1">
-       <widget class="QComboBox" name="cbxMode">
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
-         <property name="text">
-          <string>ID</string>
-         </property>
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Authority</string>
+          </property>
+         </widget>
         </item>
         <item>
-         <property name="text">
-          <string>Name</string>
-         </property>
+         <widget class="QComboBox" name="cbxAuthority"/>
         </item>
-       </widget>
+        <item>
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>Search for</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="cbxMode">
+          <item>
+           <property name="text">
+            <string>ID</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Name</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="cbxHideDeprecated">
+          <property name="text">
+           <string>Hide deprecated CRSs</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Authority</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QComboBox" name="cbxAuthority"/>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Search for</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="2">
-       <widget class="QLineEdit" name="leSearch"/>
-      </item>
-      <item row="0" column="3">
-       <widget class="QPushButton" name="pbnFind">
-        <property name="maximumSize">
-         <size>
-          <width>100</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Find</string>
-        </property>
-        <property name="default">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2" colspan="2">
-       <widget class="QCheckBox" name="cbxHideDeprecated">
-        <property name="text">
-         <string>Hide deprecated CRSs</string>
-        </property>
-       </widget>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLineEdit" name="leSearch"/>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pbnFind">
+          <property name="maximumSize">
+           <size>
+            <width>100</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="text">
+           <string>Find</string>
+          </property>
+          <property name="default">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
      </layout>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Recently used coordinate references systems</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QTreeWidget" name="lstRecent">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>105</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>105</height>
+      </size>
+     </property>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
+     <property name="rootIsDecorated">
+      <bool>false</bool>
+     </property>
+     <property name="uniformRowHeights">
+      <bool>true</bool>
+     </property>
+     <property name="columnCount">
+      <number>3</number>
+     </property>
+     <column>
+      <property name="text">
+       <string>Coordinate Reference System</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Authority ID</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>ID</string>
+      </property>
+     </column>
     </widget>
    </item>
   </layout>
