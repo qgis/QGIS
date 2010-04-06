@@ -623,8 +623,12 @@ class Qgis2Map:
 
 
   def getEpsg(self, lyr):
-    srs = lyr.getElementsByTagName('srs')[0].getElementsByTagName('spatialrefsys')[0]
-    return srs.getElementsByTagName('epsg')[0].childNodes[0].nodeValue.encode('utf-8')
+    try:
+      srs = lyr.getElementsByTagName('srs')[0].getElementsByTagName('spatialrefsys')[0]
+      return srs.getElementsByTagName('epsg')[0].childNodes[0].nodeValue.encode('utf-8')
+    except:  
+      #Use 4326 as a sensible default if the above fails
+      return "4326"
 
 
   def getPrimaryKey(self, layerId, tableName):
