@@ -51,6 +51,26 @@ static const QString TEXT_PROVIDER_DESCRIPTION =
   + GDALVersionInfo( "RELEASE_NAME" )
   + ")";
 
+class QgsCPLErrorHandler
+{
+    static void CPL_STDCALL showError( CPLErr errClass, int errNo, const char *msg )
+    {
+      QgsDebugMsg( QString( "OGR[%1] error %2: %3" ).arg( errClass ).arg( errNo ).arg( msg ) );
+    }
+
+  public:
+    QgsCPLErrorHandler()
+    {
+      CPLPushErrorHandler( showError );
+    }
+
+    ~QgsCPLErrorHandler()
+    {
+      CPLPopErrorHandler();
+    }
+
+};
+
 QgsOgrProvider::QgsOgrProvider( QString const & uri )
     : QgsVectorDataProvider( uri ),
     ogrDataSource( 0 ),
@@ -60,6 +80,8 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
     ogrDriver( 0 ),
     featuresCounted( -1 )
 {
+  QgsCPLErrorHandler handler;
+
   QgsApplication::registerOgrDrivers();
 
   // set the selection rectangle pointer to 0
@@ -122,9 +144,7 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
   QgsDebugMsg( "mLayerName: " + mLayerName );
   QgsDebugMsg( "mSubsetString: " + mSubsetString );
   CPLSetConfigOption( "OGR_ORGANIZE_POLYGONS", "ONLY_CCW" );  // "SKIP" returns MULTIPOLYGONs for multiringed POLYGONs
-  CPLPushErrorHandler( CPLQuietErrorHandler );
   ogrDataSource = OGROpen( QFile::encodeName( mFilePath ).constData(), TRUE, &ogrDriver );
-  CPLPopErrorHandler();
 
   if ( ogrDataSource == NULL )
   {
@@ -196,6 +216,8 @@ QgsOgrProvider::~QgsOgrProvider()
 
 bool QgsOgrProvider::setSubsetString( QString theSQL )
 {
+  QgsCPLErrorHandler handler;
+
   if ( theSQL == mSubsetString && featuresCounted >= 0 )
     return true;
 
@@ -208,6 +230,7 @@ bool QgsOgrProvider::setSubsetString( QString theSQL )
     QString sql = QString( "SELECT * FROM %1 WHERE %2" )
                   .arg( quotedIdentifier( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) ) ) )
                   .arg( mSubsetString );
+    QgsDebugMsg( QString( "SQL: %1" ).arg( sql ) );
     ogrLayer = OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).constData(), NULL, NULL );
 
     if ( !ogrLayer )
@@ -937,9 +960,12 @@ bool QgsOgrProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 
 bool QgsOgrProvider::createSpatialIndex()
 {
+  QgsCPLErrorHandler handler;
+
   QString layerName = OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) );
 
   QString sql = QString( "CREATE SPATIAL INDEX ON %1" ).arg( quotedIdentifier( layerName ) );  // quote the layer name so spaces are handled
+  QgsDebugMsg( QString( "SQL: %1" ).arg( sql ) );
   OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).data(), OGR_L_GetSpatialFilter( ogrOrigLayer ), "" );
 
   QFileInfo fi( mFilePath );     // to get the base name
@@ -950,6 +976,8 @@ bool QgsOgrProvider::createSpatialIndex()
 
 bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds & id )
 {
+  QgsCPLErrorHandler handler;
+
   bool returnvalue = true;
   for ( QgsFeatureIds::const_iterator it = id.begin(); it != id.end(); ++it )
   {
@@ -966,17 +994,19 @@ bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds & id )
 
   QString layerName = OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) );
 
-  QFileInfo fi( dataSourceUri() );     // to get the base name
   QString sql = QString( "REPACK %1" ).arg( layerName );   // don't quote the layer name as it works with spaces in the name and won't work if the name is quoted
+  QgsDebugMsg( QString( "SQL: %1" ).arg( sql ) );
   OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).data(), NULL, NULL );
   featuresCounted = OGR_L_GetFeatureCount( ogrLayer, TRUE ); //new feature count
+
+  OGR_L_GetExtent( ogrOrigLayer, ( OGREnvelope * ) extent_, TRUE );
+
   return returnvalue;
 }
 
 bool QgsOgrProvider::deleteFeature( int id )
 {
-  OGRErr res = OGR_L_DeleteFeature( ogrLayer, id );
-  return ( res == OGRERR_NONE );
+  return OGR_L_DeleteFeature( ogrLayer, id ) == OGRERR_NONE;
 }
 
 int QgsOgrProvider::capabilities() const
