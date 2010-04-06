@@ -2810,7 +2810,6 @@ void QgisApp::addSpatiaLiteLayer()
         layername.truncate( idx );
 
       // create the layer
-      //qWarning("creating layer");
       QgsVectorLayer *layer = new QgsVectorLayer( "dbname='" + connectionInfo + "' table=" + *it + ") sql=", layername, "spatialite" );
       if ( layer->isValid() )
       {
@@ -3209,7 +3208,7 @@ void QgisApp::newSpatialiteLayer()
           sqlite3_free( errmsg );
         }
 
-        QgsVectorLayer *layer = new QgsVectorLayer( QString( "dbname=%1 table=%2(%3) sql=" )
+        QgsVectorLayer *layer = new QgsVectorLayer( QString( "dbname='%1' table='%2'(%3) sql=" )
             .arg( databaseName )
             .arg( newLayerName )
             .arg( newGeometryColumn ), newLayerName, "spatialite" );
