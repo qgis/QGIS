@@ -211,6 +211,11 @@
 //
 #ifdef HAVE_POSTGRESQL
 #include "postgres/qgspgsourceselect.h"
+#ifdef HAVE_PGCONFIG
+#include <pg_config.h>
+#else
+#define PG_VERSION "unknown"
+#endif
 #endif
 #ifdef HAVE_SPATIALITE
 extern "C"
@@ -2353,13 +2358,13 @@ void QgisApp::about()
                             .arg( QGis::QGIS_VERSION )
                             .arg( QGis::QGIS_SVN_VERSION );
 #ifdef HAVE_POSTGRESQL
-    versionString += tr( "\nThis copy of QGIS has been built with PostgreSQL support." );
+    versionString += tr( "\nThis copy of QGIS has been built with PostgreSQL support (%1)." ).arg( PG_VERSION );
 #else
     versionString += tr( "\nThis copy of QGIS has been built without PostgreSQL support." );
 #endif
 
 #ifdef HAVE_SPATIALITE
-    versionString += tr( "\nThis copy of QGIS has been built with SpatiaLite support." );
+    versionString += tr( "\nThis copy of QGIS has been built with SpatiaLite support (%1)." ).arg( spatialite_version() );
 #else
     versionString += tr( "\nThis copy of QGIS has been built without SpatiaLite support." );
 #endif
