@@ -18,6 +18,7 @@
 #include "qgsapplegendinterface.h"
 
 #include "qgslegend.h"
+#include "qgslegendlayer.h"
 #include "qgsmaplayer.h"
 
 QgsAppLegendInterface::QgsAppLegendInterface( QgsLegend * legend )
@@ -56,6 +57,22 @@ void QgsAppLegendInterface::updateIndex( QModelIndex oldIndex, QModelIndex newIn
 QStringList QgsAppLegendInterface::groups()
 {
   return mLegend->groups();
+}
+
+QList< QgsMapLayer * > QgsAppLegendInterface::layers() const
+{
+  QList< QgsMapLayer * > items;
+  QTreeWidgetItemIterator it( mLegend );
+  while ( *it )
+  {
+    QgsLegendLayer *llayer = dynamic_cast<QgsLegendLayer *>( *it );
+    if ( llayer )
+      items.append( llayer->layer() );
+
+    ++it;
+  }
+
+  return items;
 }
 
 void QgsAppLegendInterface::refreshLayerSymbology( QgsMapLayer *ml )
