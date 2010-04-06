@@ -16,7 +16,12 @@ class QgsLegendInterface : QObject
     /** Virtual destructor */
     ~QgsLegendInterface();
 
+    //! Return a string list of groups
     virtual QStringList groups() =0;
+
+    //! Return all layers in the project in legend order
+    //! @note added in 1.5
+    virtual QList< QgsMapLayer * > layers() const = 0;
 
   signals:
 

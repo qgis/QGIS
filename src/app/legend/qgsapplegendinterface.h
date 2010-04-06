@@ -44,6 +44,9 @@ class QgsAppLegendInterface : public QgsLegendInterface
     //! Return a string list of groups
     QStringList groups();
 
+    //! Return all layers in the project in legend order
+    QList< QgsMapLayer * > layers() const;
+
   public slots:
 
     //! Add a new group
