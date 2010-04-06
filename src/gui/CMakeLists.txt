@@ -95,24 +95,26 @@ qgsprojectbadlayerguihandler.h
 QT4_WRAP_CPP(QGIS_GUI_MOC_SRCS ${QGIS_GUI_MOC_HDRS})
 
 INCLUDE_DIRECTORIES(
-${QT_QTUITOOLS_INCLUDE_DIR}
-${CMAKE_CURRENT_SOURCE_DIR}
-${CMAKE_CURRENT_SOURCE_DIR}/symbology-ng
-../core
-../core/composer
-../core/raster
-../core/renderer
-../core/symbology
-../core/symbology-ng
-${CMAKE_CURRENT_BINARY_DIR}
-${CMAKE_CURRENT_BINARY_DIR}/../ui
-${GEOS_INCLUDE_DIR}
+  ${QT_QTUITOOLS_INCLUDE_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}/symbology-ng
+  ../core
+  ../core/composer
+  ../core/raster
+  ../core/renderer
+  ../core/symbology
+  ../core/symbology-ng
+  ${CMAKE_CURRENT_BINARY_DIR}
+  ${CMAKE_CURRENT_BINARY_DIR}/../ui
 )
 IF (WITH_INTERNAL_SPATIALITE)
+  INCLUDE_DIRECTORIES(../core/spatialite/headers)
   INCLUDE_DIRECTORIES(../core/spatialite/headers/spatialite)
 ELSE (WITH_INTERNAL_SPATIALITE)
   INCLUDE_DIRECTORIES(${SQLITE3_INCLUDE_DIR})
 ENDIF (WITH_INTERNAL_SPATIALITE)
+
+INCLUDE_DIRECTORIES(${GEOS_INCLUDE_DIR})
 
 IF (WIN32)
   IF (MSVC)

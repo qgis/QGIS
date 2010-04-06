@@ -25,7 +25,7 @@
 
 extern "C"
 {
-#include <spatialite/sqlite3.h>
+#include <sqlite3.h>
 }
 
 #include <QThread>
