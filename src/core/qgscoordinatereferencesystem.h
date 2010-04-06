@@ -405,8 +405,8 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     //! Helper for getting number of user CRS already in db
     long getRecordCount();
 
-    //! Helper for sql-safin strings
-    const QString sqlSafeString( const QString theSQL );
+    //! Helper for sql-safe value quoting
+    QString quotedValue( QString value );
 
     void *mCRS;
 
