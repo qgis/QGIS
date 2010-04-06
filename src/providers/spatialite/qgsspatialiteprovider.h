@@ -16,7 +16,7 @@ email                : a.furieri@lqt.it
 
 extern "C"
 {
-#include <spatialite/sqlite3.h>
+#include <sqlite3.h>
 #include <spatialite/gaiageo.h>
 #include <spatialite.h>
 }
