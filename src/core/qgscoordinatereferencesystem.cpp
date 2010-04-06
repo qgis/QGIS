@@ -208,7 +208,7 @@ bool QgsCoordinateReferenceSystem::loadFromDb( QString db, QString expression, Q
     is_geo integer NOT NULL);
   */
 
-  QString mySql = "select srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,auth_name||':'||auth_id,is_geo from tbl_srs where " + expression + "='" + value + "'";
+  QString mySql = "select srs_id,description,projection_acronym,ellipsoid_acronym,parameters,srid,auth_name||':'||auth_id,is_geo from tbl_srs where " + expression + "=" + quotedValue( value );
   myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
   // XXX Need to free memory from the error msg if one is set
   if ( myResult == SQLITE_OK && sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
@@ -343,14 +343,14 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
   // *** Matching on descriptions feels iffy. Different projs can have same description. Homann ***
   // if ( !mDescription.trimmed().isEmpty() )
   //{
-  //  myRecord = getRecord( "select * from tbl_srs where description='" + mDescription.trimmed() + "'" );
+  //  myRecord = getRecord( "select * from tbl_srs where description=" + quotedValue( mDescription.trimmed() ) );
   //}
 
   /*
    * - if the above does not match perform a whole text search on proj4 string (if not null)
    */
   // QgsDebugMsg( "wholetext match on name failed, trying proj4string match" );
-  myRecord = getRecord( "select * from tbl_srs where parameters='" + theProj4String.trimmed() + "'" );
+  myRecord = getRecord( "select * from tbl_srs where parameters=" + quotedValue( theProj4String.trimmed() ) );
   if ( !myRecord.empty() )
   {
     mySrsId = myRecord["srs_id"].toLong();
@@ -394,7 +394,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
       myStart2 = myLat2RegExp.indexIn( theProj4String, myStart2 );
       theProj4StringModified.replace( myStart2 + LAT_PREFIX_LEN, myLength2 - LAT_PREFIX_LEN, lat1Str );
       QgsDebugMsg( "trying proj4string match with swapped lat_1,lat_2" );
-      myRecord = getRecord( "select * from tbl_srs where parameters='" + theProj4StringModified.trimmed() + "'" );
+      myRecord = getRecord( "select * from tbl_srs where parameters=" + quotedValue( theProj4StringModified.trimmed() ) );
       if ( !myRecord.empty() )
       {
         // Success!  We have found the proj string by swapping the lat_1 and lat_2
@@ -435,39 +435,39 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
     if ( mIsValidFlag )
     {
       // but the proj.4 parsed string might already be in our database
-      myRecord = getRecord( "select * from tbl_srs where parameters='" + toProj4() + "'" );
+      myRecord = getRecord( "select * from tbl_srs where parameters=" + quotedValue( toProj4() ) );
       if ( myRecord.empty() )
       {
-	// It's not, so try to add it
-	QgsDebugMsg( "Projection appears to be valid. Save to database!" );
-	mIsValidFlag = saveAsUserCRS();
+        // It's not, so try to add it
+        QgsDebugMsg( "Projection appears to be valid. Save to database!" );
+        mIsValidFlag = saveAsUserCRS();
 
-	if ( mIsValidFlag )
-	{
-	  // but validate that it's there afterwards
-	  myRecord = getRecord( "select * from tbl_srs where parameters='" + toProj4() + "'" );
-	}
+        if ( mIsValidFlag )
+        {
+          // but validate that it's there afterwards
+          myRecord = getRecord( "select * from tbl_srs where parameters=" + quotedValue( toProj4() ) );
+        }
       }
 
       if ( !myRecord.empty() )
       {
-	// take the srid from the record
-	mySrsId = myRecord["srs_id"].toLong();
-	QgsDebugMsg( "proj4string match search for srsid returned srsid: " + QString::number( mySrsId ) );
-	if ( mySrsId > 0 )
-	{
-	  createFromSrsId( mySrsId );
-	}
-	else
-	{
-	  QgsDebugMsg( QString( "invalid srid %1 found" ).arg( mySrsId ) );
-	  mIsValidFlag = false;
-	}
+        // take the srid from the record
+        mySrsId = myRecord["srs_id"].toLong();
+        QgsDebugMsg( "proj4string match search for srsid returned srsid: " + QString::number( mySrsId ) );
+        if ( mySrsId > 0 )
+        {
+          createFromSrsId( mySrsId );
+        }
+        else
+        {
+          QgsDebugMsg( QString( "invalid srid %1 found" ).arg( mySrsId ) );
+          mIsValidFlag = false;
+        }
       }
       else
       {
-	QgsDebugMsg( "Couldn't find newly added proj string?" );
-	mIsValidFlag = false;
+        QgsDebugMsg( "Couldn't find newly added proj string?" );
+        mIsValidFlag = false;
       }
     }
   }
@@ -802,8 +802,9 @@ long QgsCoordinateReferenceSystem::findMatchingProj()
   int           myResult;
 
   // Set up the query to retrieve the projection information needed to populate the list
-  QString mySql = QString( "select srs_id,parameters from tbl_srs where projection_acronym='" +
-                           mProjectionAcronym + "' and ellipsoid_acronym='" + mEllipsoidAcronym + "'" );
+  QString mySql = QString( "select srs_id,parameters from tbl_srs where projection_acronym=%1 and ellipsoid_acronym=%2" )
+                  .arg( quotedValue( mProjectionAcronym ) )
+                  .arg( quotedValue( mEllipsoidAcronym ) );
   // Get the full path name to the sqlite3 spatial reference database.
   QString myDatabaseFileName = QgsApplication::srsDbFilePath();
 
@@ -815,7 +816,7 @@ long QgsCoordinateReferenceSystem::findMatchingProj()
   }
 
   myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
-  // XXX Need to free memory from the error msg if one is set
+// XXX Need to free memory from the error msg if one is set
   if ( myResult == SQLITE_OK )
   {
 
@@ -854,7 +855,7 @@ long QgsCoordinateReferenceSystem::findMatchingProj()
   }
 
   myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
-  // XXX Need to free memory from the error msg if one is set
+// XXX Need to free memory from the error msg if one is set
   if ( myResult == SQLITE_OK )
   {
 
@@ -1233,21 +1234,21 @@ bool QgsCoordinateReferenceSystem::saveAsUserCRS()
   if ( getRecordCount() == 0 )
   {
     mySql = "insert into tbl_srs (srs_id,description,projection_acronym,ellipsoid_acronym,parameters,is_geo) values ("
-            + QString::number( USER_CRS_START_ID ) + ",'"
-            + sqlSafeString( myName ) + "','"
-            + projectionAcronym() + "','"
-            + ellipsoidAcronym()  + "','"
-            + sqlSafeString( toProj4() )
+            + QString::number( USER_CRS_START_ID )
+            + "," + quotedValue( myName )
+            + "," + quotedValue( projectionAcronym() )
+            + "," + quotedValue( ellipsoidAcronym() )
+            + "," + quotedValue( toProj4() )
             + "',0)"; // <-- is_geo shamelessly hard coded for now
   }
   else
   {
-    mySql = "insert into tbl_srs (description,projection_acronym,ellipsoid_acronym,parameters,is_geo) values ('"
-            + sqlSafeString( myName ) + "','"
-            + projectionAcronym() + "','"
-            + ellipsoidAcronym()  + "','"
-            + sqlSafeString( toProj4() )
-            + "',0)"; // <-- is_geo shamelessly hard coded for now
+    mySql = "insert into tbl_srs (description,projection_acronym,ellipsoid_acronym,parameters,is_geo) values ("
+            + quotedValue( myName )
+            + "," + quotedValue( projectionAcronym() )
+            + "," + quotedValue( ellipsoidAcronym() )
+            + "," + quotedValue( toProj4() )
+            + ",0)"; // <-- is_geo shamelessly hard coded for now
   }
   sqlite3      *myDatabase;
   const char   *myTail;
@@ -1305,34 +1306,8 @@ long QgsCoordinateReferenceSystem::getRecordCount()
   return myRecordCount;
 }
 
-const QString QgsCoordinateReferenceSystem::sqlSafeString( const QString theSQL )
+QString QgsCoordinateReferenceSystem::quotedValue( QString value )
 {
-
-  QString myRetval;
-  QChar *it = ( QChar * )theSQL.unicode();
-  for ( int i = 0; i < theSQL.length(); i++ )
-  {
-    if ( *it == '\"' )
-    {
-      myRetval += "\\\"";
-    }
-    else if ( *it == '\'' )
-    {
-      myRetval += "\\'";
-    }
-    else if ( *it == '\\' )
-    {
-      myRetval += "\\\\";
-    }
-    else if ( *it == '%' )
-    {
-      myRetval += "\\%";
-    }
-    else
-    {
-      myRetval += *it;
-    }
-    it++;
-  }
-  return myRetval;
+  value.replace( "'", "''" );
+  return value.prepend( "'" ).append( "'" );
 }
