@@ -382,8 +382,11 @@ class Qgis2Map:
     self.outFile.write("\n")
 
     destsrs = self.qgs.getElementsByTagName("destinationsrs")[0]
-    epsg = destsrs.getElementsByTagName("epsg")[0].childNodes[0].nodeValue.encode("utf-8")
-
+    try:
+      epsg = destsrs.getElementsByTagName("epsg")[0].childNodes[0].nodeValue.encode("utf-8")
+    except:
+      # default to epsg
+      epsg="4326"
     self.outFile.write("    # WMS server settings\n")
     self.outFile.write("    METADATA\n")
     self.outFile.write("      'ows_title'           '" + self.mapName + "'\n")
