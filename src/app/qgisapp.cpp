@@ -5707,9 +5707,33 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionRemoveLayer->setEnabled( false );
     mActionLayerProperties->setEnabled( false );
     mActionAddToOverview->setEnabled( false );
+
+    mActionCapturePoint->setEnabled( false );
+    mActionCaptureLine->setEnabled( false );
+    mActionCapturePolygon->setEnabled( false );
+    mActionMoveFeature->setEnabled( false );
+    mActionNodeTool->setEnabled( false );
+    mActionDeleteSelected->setEnabled( false );
+    mActionCutFeatures->setEnabled( false );
     mActionCopyFeatures->setEnabled( false );
+    mActionPasteFeatures->setEnabled( false );
+
     mActionUndo->setEnabled( false );
     mActionRedo->setEnabled( false );
+    mActionSimplifyFeature->setEnabled( false );
+    mActionAddRing->setEnabled( false );
+    mActionAddIsland->setEnabled( false );
+    mActionDeleteRing->setEnabled( false );
+    mActionDeletePart->setEnabled( false );
+    mActionReshapeFeatures->setEnabled( false );
+    mActionSplitFeatures->setEnabled( false );
+    mActionMergeFeatures->setEnabled( false );
+    mActionRotatePointSymbols->setEnabled( false );
+
+    mActionCapturePoint->setVisible( false );
+    mActionCaptureLine->setVisible( false );
+    mActionCapturePolygon->setVisible( false );
+
     return;
   }
 
