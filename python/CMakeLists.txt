@@ -1,6 +1,11 @@
-
 SUBDIRS(plugins)
 
+IF (WITH_INTERNAL_SPATIALITE)
+  INCLUDE_DIRECTORIES(
+    ../src/core/spatialite/headers
+    ../src/core/spatialite/headers/spatialite
+  )
+ENDIF (WITH_INTERNAL_SPATIALITE)
 
 INCLUDE_DIRECTORIES(
     ${PYTHON_INCLUDE_PATH}
