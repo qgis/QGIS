@@ -17,8 +17,8 @@ INCLUDE_DIRECTORIES(../../core)
 
 IF(WITH_INTERNAL_SPATIALITE)
   INCLUDE_DIRECTORIES(
-    ../core/spatialite/headers
-    ../core/spatialite/headers/spatialite
+    ../../core/spatialite/headers
+    ../../core/spatialite/headers/spatialite
   )
 ELSE(WITH_INTERNAL_SPATIALITE)
   INCLUDE_DIRECTORIES(${SPATIALITE_INCLUDE_DIR})
