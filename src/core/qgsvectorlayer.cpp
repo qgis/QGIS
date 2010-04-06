@@ -70,7 +70,6 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayerundocommand.h"
 #include "qgsvectoroverlay.h"
-#include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsclipper.h"
 #include "qgsproject.h"
@@ -365,7 +364,7 @@ void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
     catch ( QgsCsException &e )
     {
       Q_UNUSED( e );
-      QgsLogger::critical( "Error projecting label locations, caught in " + QString( __FILE__ ) + ", line " + QString( __LINE__ ) );
+      QgsDebugMsg( "Error projecting label locations" );
     }
 
     if ( mRendererV2 )
@@ -373,9 +372,7 @@ void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
       mRendererV2->stopRender( rendererContext );
     }
 
-#ifdef QGISDEBUG
-    QgsLogger::debug( "Total features processed", featureCount, 1, __FILE__, __FUNCTION__, __LINE__ );
-#endif
+    QgsDebugMsg( QString( "Total features processed %1" ).arg( featureCount ) );
 
     // XXX Something in our draw event is triggering an additional draw event when resizing [TE 01/26/06]
     // XXX Calling this will begin processing the next draw event causing image havoc and recursion crashes.
@@ -768,10 +765,8 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
     }
     catch ( const QgsCsException &cse )
     {
-      QString msg( "Failed to transform a point while drawing a feature of type '"
-                   + fet.typeName() + "'. Ignoring this feature." );
-      msg += cse.what();
-      QgsLogger::warning( msg );
+      QgsDebugMsg( QString( "Failed to transform a point while drawing a feature of type '%1'. Ignoring this feature. %2" )
+                   .arg( fet.typeName() ).arg( cse.what() ) );
     }
 #ifndef Q_WS_MAC
     ++featureCount;
@@ -898,10 +893,8 @@ void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bo
         }
         catch ( const QgsCsException &cse )
         {
-          QString msg( "Failed to transform a point while drawing a feature of type '"
-                       + fet.typeName() + "'. Ignoring this feature." );
-          msg += cse.what();
-          QgsLogger::warning( msg );
+          QgsDebugMsg( QString( "Failed to transform a point while drawing a feature of type '%1'. Ignoring this feature. %2" )
+                       .arg( fet.typeName() ).arg( cse.what() ) );
         }
 #ifndef Q_WS_MAC
         ++featureCount;
@@ -1090,16 +1083,14 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     }
     catch ( QgsCsException &cse )
     {
-      QString msg( "Failed to transform a point while drawing a feature of type '"
-                   + fet.typeName() + "'. Rendering stopped." );
-      msg += cse.what();
-      QgsLogger::warning( msg );
+      QgsDebugMsg( QString( "Failed to transform a point while drawing a feature of type '%1'. Rendering stopped. %2" )
+                   .arg( fet.typeName() ).arg( cse.what() ) );
       return false;
     }
   }
   else
   {
-    QgsLogger::warning( "QgsRenderer is null in QgsVectorLayer::draw()" );
+    QgsDebugMsg( "QgsRenderer is null" );
   }
 
   if ( mEditable )
@@ -1392,18 +1383,18 @@ long QgsVectorLayer::featureCount() const
 {
   if ( !mDataProvider )
   {
-    QgsLogger::warning( " QgsVectorLayer::featureCount() invoked with null mDataProvider" );
+    QgsDebugMsg( "invoked with null mDataProvider" );
     return 0;
   }
 
   return mDataProvider->featureCount();
-} // QgsVectorLayer::featureCount
+}
 
 long QgsVectorLayer::updateFeatureCount() const
 {
   if ( !mDataProvider )
   {
-    QgsLogger::warning( " QgsVectorLayer::updateFeatureCount() invoked with null mDataProvider" );
+    QgsDebugMsg( "invoked with null mDataProvider" );
     return 0;
   }
   return mDataProvider->updateFeatureCount();
@@ -1414,7 +1405,7 @@ void QgsVectorLayer::updateExtents()
   mLayerExtent.setMinimal();
 
   if ( !mDataProvider )
-    QgsLogger::warning( " QgsVectorLayer::updateExtents() invoked with null mDataProvider" );
+    QgsDebugMsg( "invoked with null mDataProvider" );
 
   if ( mDeletedFeatureIds.isEmpty() && mChangedGeometries.isEmpty() )
   {
@@ -1461,7 +1452,7 @@ QString QgsVectorLayer::subsetString()
 {
   if ( ! mDataProvider )
   {
-    QgsLogger::warning( " QgsVectorLayer::subsetString() invoked with null mDataProvider" );
+    QgsDebugMsg( "invoked with null mDataProvider" );
     return 0;
   }
   return mDataProvider->subsetString();
@@ -1471,7 +1462,7 @@ bool QgsVectorLayer::setSubsetString( QString subset )
 {
   if ( ! mDataProvider )
   {
-    QgsLogger::warning( " QgsVectorLayer::setSubsetString() invoked with null mDataProvider" );
+    QgsDebugMsg( "invoked with null mDataProvider" );
     return false;
   }
 
@@ -1611,7 +1602,7 @@ bool QgsVectorLayer::nextFeature( QgsFeature &f )
             }
 
             if ( !found )
-              QgsLogger::warning( QString( "No attributes for the added feature %1 found" ).arg( f.id() ) );
+              QgsDebugMsg( QString( "No attributes for the added feature %1 found" ).arg( f.id() ) );
           }
           else
           {
@@ -1712,7 +1703,7 @@ bool QgsVectorLayer::featureAtId( int featureId, QgsFeature& f, bool fetchGeomet
         }
 
         if ( !found )
-          QgsLogger::warning( QString( "No attributes for the added feature %1 found" ).arg( f.id() ) );
+          QgsDebugMsg( QString( "No attributes for the added feature %1 found" ).arg( f.id() ) );
       }
       else
       {
@@ -3379,23 +3370,24 @@ bool QgsVectorLayer::commitChanges()
     //
     if ( mAddedFeatures.size() > 0 )
     {
-      for ( QgsFeatureList::iterator iter = mAddedFeatures.begin(); iter != mAddedFeatures.end(); ++iter )
+      for ( int i = 0; i < mAddedFeatures.size(); i++ )
       {
-        if ( mDeletedFeatureIds.contains( iter->id() ) )
+        QgsFeature &f = mAddedFeatures[i];
+
+        if ( mDeletedFeatureIds.contains( f.id() ) )
         {
-          mDeletedFeatureIds.remove( iter->id() );
+          mDeletedFeatureIds.remove( f.id() );
 
-          if ( mChangedGeometries.contains( iter->id() ) )
-            mChangedGeometries.remove( iter->id() );
+          if ( mChangedGeometries.contains( f.id() ) )
+            mChangedGeometries.remove( f.id() );
 
-          mAddedFeatures.erase( iter );
-
+          mAddedFeatures.removeAt( i-- );
           continue;
         }
 
-        if ( mChangedGeometries.contains( iter->id() ) )
+        if ( mChangedGeometries.contains( f.id() ) )
         {
-          iter->setGeometry( mChangedGeometries.take( iter->id() ) );
+          f.setGeometry( mChangedGeometries.take( f.id() ) );
         }
       }
 
