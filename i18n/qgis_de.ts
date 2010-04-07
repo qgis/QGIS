@@ -4627,7 +4627,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="865"/>
         <source>Measure Line </source>
-        <translation>Linie messen</translation>
+        <translation>Linie messen </translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="867"/>
@@ -5368,7 +5368,7 @@ Bitte nehmen Sie Kontakt zu den Entwicklern auf.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="953"/>
         <source>Create a New SpatiaLite Layer </source>
-        <translation>Einen neuen SpatiaLite-Layer erzeugen</translation>
+        <translation>Einen neuen SpatiaLite-Layer erzeugen </translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="957"/>
@@ -7432,7 +7432,7 @@ Fehler war:%2</translation>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="45"/>
         <source>Line width </source>
-        <translation>Linienstärke</translation>
+        <translation>Linienstärke </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerarrowwidgetbase.ui" line="52"/>
@@ -7908,7 +7908,7 @@ Fehler war:%2</translation>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="102"/>
         <source>Symbol width </source>
-        <translation type="unfinished">Symbolbreite </translation>
+        <translation>Symbolbreite </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="105"/>
@@ -7923,27 +7923,27 @@ Fehler war:%2</translation>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="112"/>
         <source>Symbol height </source>
-        <translation type="unfinished">Symbolhöhe </translation>
+        <translation>Symbolhöhe </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="122"/>
         <source>Layer space </source>
-        <translation type="unfinished">Layerraum </translation>
+        <translation>Layerraum </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="132"/>
         <source>Symbol space </source>
-        <translation type="unfinished">Symbolraum </translation>
+        <translation>Symbolraum </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="142"/>
         <source>Icon label space </source>
-        <translation type="unfinished">Iconbeschriftungsraum </translation>
+        <translation>Iconbeschriftungsraum </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="152"/>
         <source>Box space </source>
-        <translation type="unfinished">Rahmenabstand </translation>
+        <translation>Rahmenabstand </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="203"/>
@@ -8465,12 +8465,12 @@ Fehler war:%2</translation>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="90"/>
         <source> Right segments</source>
-        <translation type="unfinished"> Rechte Segmente</translation>
+        <translation> Rechte Segmente</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="97"/>
         <source> Left segments</source>
-        <translation type="unfinished"> Linke Segmente</translation>
+        <translation> Linke Segmente</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="149"/>
@@ -8483,12 +8483,12 @@ Fehler war:%2</translation>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="152"/>
         <source>Height </source>
-        <translation type="unfinished">Höhe </translation>
+        <translation>Höhe </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="165"/>
         <source>Line width </source>
-        <translation type="unfinished">Linienstärke </translation>
+        <translation>Linienstärke </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="184"/>
@@ -9221,7 +9221,7 @@ Fehler war:%2</translation>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="425"/>
         <source>The destination spatial reference system (CRS) is not valid. </source>
-        <translation>Das Zielkoordinatenbezugssystem (KBS) ist nicht gültig.</translation>
+        <translation>Das Zielkoordinatenbezugssystem (KBS) ist nicht gültig. </translation>
     </message>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="456"/>
@@ -10063,7 +10063,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsfieldcalculator.cpp" line="50"/>
         <source> (not supported by provider)</source>
-        <translation>(vom Datenlieferanten nicht unterstützt)</translation>
+        <translation> (vom Datenlieferanten nicht unterstützt)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsfieldcalculator.cpp" line="84"/>
@@ -10758,7 +10758,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="174"/>
         <source>Unable to create a GPX file with the given name. </source>
-        <translation>Kann die GPX-Datei mit dem angegebenen Namen nicht erzeugen.</translation>
+        <translation>Kann die GPX-Datei mit dem angegebenen Namen nicht erzeugen. </translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="175"/>
@@ -12056,7 +12056,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1420"/>
         <source>Cannot delete orphan record: </source>
-        <translation>Kann den verwaisten Eintrag nicht löschen:</translation>
+        <translation>Kann den verwaisten Eintrag nicht löschen: </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="407"/>
@@ -20600,52 +20600,52 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2640"/>
         <source>GDT_UInt16 - Sixteen bit unsigned integer </source>
-        <translation>GDT_UInt16 - Sixteen bit unsigned integer</translation>
+        <translation>GDT_UInt16 - Sixteen bit unsigned integer </translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2643"/>
         <source>GDT_Int16 - Sixteen bit signed integer </source>
-        <translation>GDT_Int16 - Sixteen bit signed integer</translation>
+        <translation>GDT_Int16 - Sixteen bit signed integer </translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2646"/>
         <source>GDT_UInt32 - Thirty two bit unsigned integer </source>
-        <translation>GDT_UInt32 - Thirty two bit unsigned integer</translation>
+        <translation>GDT_UInt32 - Thirty two bit unsigned integer </translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2649"/>
         <source>GDT_Int32 - Thirty two bit signed integer </source>
-        <translation>GDT_Int32 - Thirty two bit signed integer</translation>
+        <translation>GDT_Int32 - Thirty two bit signed integer </translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2652"/>
         <source>GDT_Float32 - Thirty two bit floating point </source>
-        <translation>GDT_Float32 - Thirty two bit floating point</translation>
+        <translation>GDT_Float32 - Thirty two bit floating point </translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2655"/>
         <source>GDT_Float64 - Sixty four bit floating point </source>
-        <translation>GDT_Float64 - Sixty four bit floating point</translation>
+        <translation>GDT_Float64 - Sixty four bit floating point </translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2658"/>
         <source>GDT_CInt16 - Complex Int16 </source>
-        <translation>GDT_CInt16 - Complex Int16</translation>
+        <translation>GDT_CInt16 - Complex Int16 </translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2661"/>
         <source>GDT_CInt32 - Complex Int32 </source>
-        <translation>GDT_CInt32 - Complex Int32</translation>
+        <translation>GDT_CInt32 - Complex Int32 </translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2664"/>
         <source>GDT_CFloat32 - Complex Float32 </source>
-        <translation>GDT_CFloat32 - Complex Float32</translation>
+        <translation>GDT_CFloat32 - Complex Float32 </translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2667"/>
         <source>GDT_CFloat64 - Complex Float64 </source>
-        <translation>GDT_CFloat64 - Complex Float64</translation>
+        <translation>GDT_CFloat64 - Complex Float64 </translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2670"/>
@@ -20665,7 +20665,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2696"/>
         <source>Layer Spatial Reference System: </source>
-        <translation>Referenzsystem des Layers:</translation>
+        <translation>Referenzsystem des Layers: </translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1890"/>
@@ -24135,7 +24135,7 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="789"/>
         <source>In layer spatial reference system units : </source>
-        <translation>In Bezugssystemeinheiten des Projekts: </translation>
+        <translation>In Bezugssystemeinheiten des Projekts : </translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="448"/>
@@ -24202,7 +24202,7 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="803"/>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="841"/>
         <source>In project spatial reference system units : </source>
-        <translation>In Bezugssystemeinheiten des Projekts: </translation>
+        <translation>In Bezugssystemeinheiten des Projekts : </translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="842"/>
@@ -26311,7 +26311,7 @@ p, li { white-space: pre-wrap; }
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="192"/>
         <source>Enter the database host. If the database resides on your desktop you should enter ¨localhost¨. If you selected ¨MSAccess¨ as the database type this option will not be available. </source>
-        <translation>Einen Datenbank-Host eingeben. Wenn die Datenbank sich auf Ihrer Arbeitsstation befindet sollten Sie &quot;localhost&quot; eingeben. Wenn Sie &quot;MSAccess&quot; als Datenbanktyp gewählt haben, ist diese Option nicht verfügbar.</translation>
+        <translation>Einen Datenbank-Host eingeben. Wenn die Datenbank sich auf Ihrer Arbeitsstation befindet sollten Sie &quot;localhost&quot; eingeben. Wenn Sie &quot;MSAccess&quot; als Datenbanktyp gewählt haben, ist diese Option nicht verfügbar. </translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="202"/>
@@ -26336,7 +26336,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="249"/>
         <source>Connect to the database using the parameters selected above. If the connection was successful a message will be displayed in the Output Console below saying the connection was established. </source>
-        <translation>Verbindung zur Datenbank mit den oben angegebenen Parametern aufnehmen.  Wenn die Verbindung erfolgreich war, wird unten in der Ausgabekonsole eine entsprechende Nachricht angezeigt.</translation>
+        <translation>Verbindung zur Datenbank mit den oben angegebenen Parametern aufnehmen.  Wenn die Verbindung erfolgreich war, wird unten in der Ausgabekonsole eine entsprechende Nachricht angezeigt. </translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaseconnectionguibase.ui" line="252"/>
@@ -26613,7 +26613,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="324"/>
         <source>Use the drop-down list to select the field containing the compass bearing for the image. This bearing usually references the direction the camera was pointing when the image was acquired. </source>
-        <translation>Nutzen Sie die Drop-Down-Liste, um das Feld der Kompaßrichtung des Bildes zu wählen. Dies Richtung bezieht sich normalerweise auf die Richtung in die die Kamera zeigte als das Bild aufgenommen wurde.</translation>
+        <translation>Nutzen Sie die Drop-Down-Liste, um das Feld der Kompaßrichtung des Bildes zu wählen. Dies Richtung bezieht sich normalerweise auf die Richtung in die die Kamera zeigte als das Bild aufgenommen wurde. </translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="373"/>
@@ -26623,7 +26623,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="446"/>
         <source>A value to be added to the compass bearing. This allows you to compensate for declination (adjust bearings collected using magnetic bearings to true north bearings). East declinations should be entered using positive values and west declinations should use negative values. </source>
-        <translation>Ein Wert, der zur Kompaßrichtung addiert wird. Dies gestattet den Ausgleich der Deklination (Richtungsanpassung von magnetischer zur echter Nord-Richtung).  Östliche Deklinationen sollten positive und westliche negative Werte eingeben.</translation>
+        <translation>Ein Wert, der zur Kompaßrichtung addiert wird. Dies gestattet den Ausgleich der Deklination (Richtungsanpassung von magnetischer zur echter Nord-Richtung).  Östliche Deklinationen sollten positive und westliche negative Werte eingeben. </translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="481"/>
@@ -26638,7 +26638,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="506"/>
         <source>Use the drop-down list to select the field containing the compass bearing offset. This allows you to compensate for declination (adjust bearings collected using magnetic bearings to true north bearings). East declinations should be entered using positive values and west declinations should use negative values. </source>
-        <translation>Die Drop-Down-Liste benutzen, um das Feld, das die Kompaßrichtung enthält, festzulegen. Dies gestattet Ihnen die Deklination zur kompensieren (Richtungsanpassung von magnetischer zur echter Nord-Richtung). Östliche Deklinationen sollten positive und westliche negative Werte eingeben.</translation>
+        <translation>Die Drop-Down-Liste benutzen, um das Feld, das die Kompaßrichtung enthält, festzulegen. Dies gestattet Ihnen die Deklination zur kompensieren (Richtungsanpassung von magnetischer zur echter Nord-Richtung). Östliche Deklinationen sollten positive und westliche negative Werte eingeben. </translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="427"/>
@@ -26749,7 +26749,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="690"/>
         <source>If checked, the Base Path will append only the file name instead of the entire relative path (defined above) to create the full directory path to the file. </source>
-        <translation>Wenn angehakt, wird der Grundpfad nur dem Dateiname statt dem ganzen, oben festgelegten, relativen Pfad vorangestellt, um den vollständigen Verzeichnispfad der Datei zu erzeugen.</translation>
+        <translation>Wenn angehakt, wird der Grundpfad nur dem Dateiname statt dem ganzen, oben festgelegten, relativen Pfad vorangestellt, um den vollständigen Verzeichnispfad der Datei zu erzeugen. </translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="693"/>
@@ -26782,7 +26782,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="823"/>
         <source>Clicking on Save will save the settings without closing the Options pane. Clicking on Restore Defaults will reset all of the fields to their default settings. It has the same effect as clicking all of the “Reset to default” buttons. </source>
-        <translation>Speichern sichert die Einstellungen ohne die Optionsseite zu schließen. &quot;Voreinstellungen wiederherstellen&quot; wird alle Felder auf ihre Voreinstellungen zurücksetzen.  Es hat den gleichen Effekt wie alle &quot;Auf Voreinstellungen zurücksetzen&quot; einzel anzuklicken.</translation>
+        <translation>Speichern sichert die Einstellungen ohne die Optionsseite zu schließen. &quot;Voreinstellungen wiederherstellen&quot; wird alle Felder auf ihre Voreinstellungen zurücksetzen.  Es hat den gleichen Effekt wie alle &quot;Auf Voreinstellungen zurücksetzen&quot; einzel anzuklicken. </translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="834"/>
@@ -26797,7 +26797,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="880"/>
         <source>A table containing file types that can be opened using eVis. Each file type needs a file extension and the path to an application that can open that type of file. This provides the capability of opening a broad range of files such as movies, sound recording, and text documents instead of only images. </source>
-        <translation>Eine Tabelle, die Dateitypen enthält, die mit eVis geöffnet werden können. Jeder Dateityp braucht eine Dateierweiterung und einen Pfad zur Anwendung, die diesen Typ öffnen kann. Dies ermöglicht es eine große Breite von Dateien wie Filmen, Audioaufnahmen und Textdokumenten statt nur Bildern zu öffnen.</translation>
+        <translation>Eine Tabelle, die Dateitypen enthält, die mit eVis geöffnet werden können. Jeder Dateityp braucht eine Dateierweiterung und einen Pfad zur Anwendung, die diesen Typ öffnen kann. Dies ermöglicht es eine große Breite von Dateien wie Filmen, Audioaufnahmen und Textdokumenten statt nur Bildern zu öffnen. </translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="884"/>
@@ -26867,7 +26867,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>fTools</name>
     <message>
         <source>Quantum GIS version detected: </source>
-        <translation>Festgestellte Quantum GIS-Version:</translation>
+        <translation>Festgestellte Quantum GIS-Version: </translation>
     </message>
     <message>
         <source>&amp;Analysis Tools</source>
