@@ -303,7 +303,7 @@ void QgsRasterLayer::buildSupportedRasterFileFilter( QString & theFileFiltersStr
   // "DMD_EXTENSION=.*".  We'll also store the long name of the
   // driver, which will be found in DMD_LONGNAME, which will have the
   // same form.
-  
+
   // start with the default case
   theFileFiltersString = tr( "All files (*)" );
 
@@ -414,8 +414,10 @@ void QgsRasterLayer::buildSupportedRasterFileFilter( QString & theFileFiltersStr
       }
       else if ( myGdalDriverDescription.startsWith( "DTED" ) )
       {
-        // DTED use "*.dt0"
+        // DTED use "*.dt0, *.dt1, *.dt2"
         QString glob = "*.dt0";
+        glob += " *.dt1";
+        glob += " *.dt2";
         theFileFiltersString += ";;" + myGdalDriverLongName + " (" + glob.toLower() + " " + glob.toUpper() + ")";
       }
       else if ( myGdalDriverDescription.startsWith( "MrSID" ) )
@@ -5550,8 +5552,8 @@ bool QgsRasterImageBuffer::nextScanLine( QRgb** imageScanLine, void** rasterScan
 {
   if ( !mValid )
     return false;
-    
-  if( !mCurrentImage && !mCurrentGDALData )
+
+  if ( !mCurrentImage && !mCurrentGDALData )
   {
     return false;
   }
