@@ -8465,12 +8465,12 @@ Fehler war:%2</translation>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="90"/>
         <source> Right segments</source>
-        <translation>Rechte Segmente</translation>
+        <translation type="unfinished"> Rechte Segmente</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="97"/>
         <source> Left segments</source>
-        <translation>Linke Segmente</translation>
+        <translation type="unfinished"> Linke Segmente</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="149"/>
@@ -8483,12 +8483,12 @@ Fehler war:%2</translation>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="152"/>
         <source>Height </source>
-        <translation>Höhe</translation>
+        <translation type="unfinished">Höhe </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="165"/>
         <source>Line width </source>
-        <translation>Linienstärke</translation>
+        <translation type="unfinished">Linienstärke </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="184"/>
