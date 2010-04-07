@@ -324,7 +324,6 @@ QgsAnnotationItem::MouseMoveAction QgsAnnotationItem::moveActionForPosition( con
 
   if ( abs( itemPos.x() ) < cursorSensitivity && abs( itemPos.y() ) < cursorSensitivity ) //move map point if position is close to the origin
   {
-    qWarning( "move map position" );
     return MoveMapPosition;
   }
 
