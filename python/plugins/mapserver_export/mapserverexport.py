@@ -59,7 +59,7 @@ class MapServerExport:
     self.action = QAction(self.getThemeIcon("mapserver_export.png"), \
         "MapServer Export", self.iface.mainWindow())
     # connect the action to the run method
-    QObject.connect(self.action, SIGNAL("activated()"), self.run) 
+    QObject.connect(self.action, SIGNAL("triggered()"), self.run) 
     QObject.connect(self.iface, SIGNAL("currentThemeChanged ( QString )"), self.setCurrentTheme)
     # Add toolbar button and menu item
     self.iface.addToolBarIcon(self.action)
