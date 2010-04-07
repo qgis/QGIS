@@ -359,6 +359,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
     , mSplash( splash )
     , mPythonUtils( NULL )
     , mNAM( NULL )
+    , mProxyFactory( NULL )
     , mpTileScaleWidget( NULL )
 #ifdef HAVE_QWT
     , mpGpsWidget( NULL )
@@ -972,26 +973,12 @@ void QgisApp::createActions()
   mActionAddPgLayer = new QAction( getThemeIcon( "mActionAddLayer.png" ), tr( "Add PostGIS Layer..." ), this );
   shortcuts->registerAction( mActionAddPgLayer, tr( "Ctrl+Shift+D", "Add a PostGIS Layer" ) );
   mActionAddPgLayer->setStatusTip( tr( "Add a PostGIS Layer" ) );
-//#ifdef HAVE_POSTGRESQL
-  // QgsDebugMsg("HAVE_POSTGRESQL is defined");
-//  assert(0);
-//#else
-  // QgsDebugMsg("HAVE_POSTGRESQL not defined");
-//  assert(0);
-//#endif
   connect( mActionAddPgLayer, SIGNAL( triggered() ), this, SLOT( addDatabaseLayer() ) );
 
   mActionAddSpatiaLiteLayer = new QAction( getThemeIcon( "mActionAddSpatiaLiteLayer.png" ), tr( "Add SpatiaLite Layer..." ), this );
   shortcuts->registerAction( mActionAddSpatiaLiteLayer, tr( "Ctrl+Shift+L", "Add a SpatiaLite Layer" ) );
   mActionAddSpatiaLiteLayer->setStatusTip( tr( "Add a SpatiaLite Layer" ) );
   connect( mActionAddSpatiaLiteLayer, SIGNAL( triggered() ), this, SLOT( addSpatiaLiteLayer() ) );
-//#ifdef HAVE_SPATIALITE
-  // QgsDebugMsg("HAVE_SPATIALITE is defined");
-//  assert(0);
-//#else
-  // QgsDebugMsg("HAVE_SPATIALITE not defined");
-//  assert(0);
-//#endif
 
   mActionAddWmsLayer = new QAction( getThemeIcon( "mActionAddWmsLayer.png" ), tr( "Add WMS Layer..." ), this );
   shortcuts->registerAction( mActionAddWmsLayer, tr( "Ctrl+Shift+W", "Add a Web Mapping Server Layer" ) );
@@ -6724,7 +6711,13 @@ void QgisApp::namUpdate()
   }
 
 #if QT_VERSION >= 0x40500
-  mNAM->setProxyFactory( new QgsNetworkProxyFactory( proxy, excludes ) );
+  if( !mProxyFactory )
+  {
+    mProxyFactory = new QgsNetworkProxyFactory();
+    mNAM->setProxyFactory( mProxyFactory );
+  }
+
+  mProxyFactory->setProxyAndExcludes( proxy, excludes );
 
   QNetworkDiskCache *cache = qobject_cast<QNetworkDiskCache*>( nam()->cache() );
   if ( !cache )
