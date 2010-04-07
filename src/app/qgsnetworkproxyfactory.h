@@ -26,9 +26,11 @@
 class QgsNetworkProxyFactory : public QNetworkProxyFactory
 {
   public:
-    QgsNetworkProxyFactory( const QNetworkProxy &proxy, const QStringList &excludes );
+    QgsNetworkProxyFactory();
     virtual ~QgsNetworkProxyFactory();
     virtual QList<QNetworkProxy> queryProxy( const QNetworkProxyQuery & query = QNetworkProxyQuery() );
+
+    void setProxyAndExcludes( const QNetworkProxy &proxy, const QStringList &excludes );
 
   private:
     QStringList mExcludedURLs;

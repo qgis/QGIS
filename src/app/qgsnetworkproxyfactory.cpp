@@ -26,7 +26,11 @@
 #include "qgsnetworkproxyfactory.h"
 #include "qgslogger.h"
 
-QgsNetworkProxyFactory::QgsNetworkProxyFactory( const QNetworkProxy &proxy, const QStringList &excludes )
+QgsNetworkProxyFactory::QgsNetworkProxyFactory()
+{
+}
+
+void QgsNetworkProxyFactory::setProxyAndExcludes( const QNetworkProxy &proxy, const QStringList &excludes )
 {
   mProxy = proxy;
   mExcludedURLs = excludes;

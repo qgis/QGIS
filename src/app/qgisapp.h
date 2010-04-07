@@ -80,6 +80,10 @@ class QgsGPSInformationWidget;
 #include "qgsfeature.h"
 #include "qgspoint.h"
 
+#if QT_VERSION >= 0x40500
+class QgsNetworkProxyFactory;
+#endif
+
 /*! \class QgisApp
  * \brief Main window for the Qgis application
  */
@@ -1090,6 +1094,9 @@ class QgisApp : public QMainWindow
     QgsUndoWidget* mUndoWidget;
 
     QNetworkAccessManager *mNAM;
+#if QT_VERSION >= 0x40500
+    QgsNetworkProxyFactory *mProxyFactory;
+#endif
 
     int mLastComposerId;
 
