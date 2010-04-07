@@ -7908,7 +7908,7 @@ Fehler war:%2</translation>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="102"/>
         <source>Symbol width </source>
-        <translation>Symbolbreite</translation>
+        <translation type="unfinished">Symbolbreite </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="105"/>
@@ -7923,27 +7923,27 @@ Fehler war:%2</translation>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="112"/>
         <source>Symbol height </source>
-        <translation>Symbolhöhe</translation>
+        <translation type="unfinished">Symbolhöhe </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="122"/>
         <source>Layer space </source>
-        <translation>Layerraum</translation>
+        <translation type="unfinished">Layerraum </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="132"/>
         <source>Symbol space </source>
-        <translation>Symbolraum</translation>
+        <translation type="unfinished">Symbolraum </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="142"/>
         <source>Icon label space </source>
-        <translation>Iconbeschriftungsraum</translation>
+        <translation type="unfinished">Iconbeschriftungsraum </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="152"/>
         <source>Box space </source>
-        <translation>Rahmenabstand</translation>
+        <translation type="unfinished">Rahmenabstand </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="203"/>
