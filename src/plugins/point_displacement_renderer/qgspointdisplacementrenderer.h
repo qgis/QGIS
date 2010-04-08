@@ -54,6 +54,8 @@ class QgsPointDisplacementRenderer: public QgsFeatureRendererV2
 
     QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
 
+    QgsLegendSymbolList legendSymbolItems();
+
     void setLabelAttributeName( const QString& name ) { mLabelAttributeName = name; }
     QString labelAttributeName() const { return mLabelAttributeName; }
 
