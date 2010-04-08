@@ -649,7 +649,21 @@ make
 sudo make install
 ```
 
-Make sure to use the qwt install path from the Qwt build above.
+Make sure to use the qwt install path from the Qwt build above. 
+
+If you run into a problem with the configure script not finding qmake, you may need to edit configure.py and change this line:
+```
+qmake = os.path.join(configuration.qt_dir, 'bin', 'qmake')
+```
+to:
+```
+qmake = os.path.join(configuration.qt_dir, 'usr', 'bin', 'qmake')
+```
+
+Finally, if you run into problems with the library not being properly linked after you build qgis, you may need to fix that as follows and then rebuild qgis:
+```
+sudo install_name_tool -id /usr/local/qwt-5.2.1-svn/lib/libqwt.5.dylib /usr/local/qwt-5.2.1-svn/lib/libqwt.5.dylib
+```
 
 __Snow Leopard note__
 
