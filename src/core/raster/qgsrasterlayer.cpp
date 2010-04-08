@@ -305,7 +305,7 @@ void QgsRasterLayer::buildSupportedRasterFileFilter( QString & theFileFiltersStr
   // same form.
 
   // start with the default case
-  theFileFiltersString = tr( "All files (*)" );
+  theFileFiltersString = tr( "[GDAL] All files (*)" );
 
   for ( int i = 0; i < GDALGetDriverCount(); ++i )
   {
@@ -364,7 +364,7 @@ void QgsRasterLayer::buildSupportedRasterFileFilter( QString & theFileFiltersStr
       if ( !( myGdalDriverExtension.isEmpty() || myGdalDriverLongName.isEmpty() ) )
       {
         // XXX add check for SDTS; in that case we want (*CATD.DDF)
-        QString glob = "*." + myGdalDriverExtension;
+        QString glob = "*." + myGdalDriverExtension.replace("/", " *.");
         // Add only the first JP2 driver found to the filter list (it's the one GDAL uses)
         if ( myGdalDriverDescription == "JPEG2000" ||
              myGdalDriverDescription.startsWith( "JP2" ) ) // JP2ECW, JP2KAK, JP2MrSID
@@ -384,7 +384,7 @@ void QgsRasterLayer::buildSupportedRasterFileFilter( QString & theFileFiltersStr
           glob += " *.jpeg";
         }
 
-        theFileFiltersString += ";;" + myGdalDriverLongName + " (" + glob.toLower() + " " + glob.toUpper() + ")";
+        theFileFiltersString += ";;[GDAL] " + myGdalDriverLongName + " (" + glob.toLower() + " " + glob.toUpper() + ")";
 
         break;            // ... to next driver, if any.
       }
@@ -410,7 +410,7 @@ void QgsRasterLayer::buildSupportedRasterFileFilter( QString & theFileFiltersStr
       if ( myGdalDriverDescription.startsWith( "USGSDEM" ) )
       {
         QString glob = "*.dem";
-        theFileFiltersString += ";;" + myGdalDriverLongName + " (" + glob.toLower() + " " + glob.toUpper() + ")";
+        theFileFiltersString += ";;[GDAL] " + myGdalDriverLongName + " (" + glob.toLower() + " " + glob.toUpper() + ")";
       }
       else if ( myGdalDriverDescription.startsWith( "DTED" ) )
       {
@@ -418,13 +418,13 @@ void QgsRasterLayer::buildSupportedRasterFileFilter( QString & theFileFiltersStr
         QString glob = "*.dt0";
         glob += " *.dt1";
         glob += " *.dt2";
-        theFileFiltersString += ";;" + myGdalDriverLongName + " (" + glob.toLower() + " " + glob.toUpper() + ")";
+        theFileFiltersString += ";;[GDAL] " + myGdalDriverLongName + " (" + glob.toLower() + " " + glob.toUpper() + ")";
       }
       else if ( myGdalDriverDescription.startsWith( "MrSID" ) )
       {
         // MrSID use "*.sid"
         QString glob = "*.sid";
-        theFileFiltersString += ";;" + myGdalDriverLongName + " (" + glob.toLower() + " " + glob.toUpper() + ")";
+        theFileFiltersString += ";;[GDAL] " + myGdalDriverLongName + " (" + glob.toLower() + " " + glob.toUpper() + ")";
       }
       else
       {
