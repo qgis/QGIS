@@ -651,6 +651,11 @@ sudo make install
 
 Make sure to use the qwt install path from the Qwt build above.
 
+Finally, if you run into problems with the library not being properly linked after you build qgis, you may need to fix that as follows and then rebuild qgis (this is not needed when bundling all Qt/PyQt related components, which is recommended, and default in the Xcode build):
+```
+sudo install_name_tool -id /usr/local/qwt-5.2.1-svn/lib/libqwt.5.dylib /usr/local/qwt-5.2.1-svn/lib/libqwt.5.dylib
+```
+
 __Snow Leopard note__
 
 If using Qt Carbon, you need to specify which architectures to build, otherwise
