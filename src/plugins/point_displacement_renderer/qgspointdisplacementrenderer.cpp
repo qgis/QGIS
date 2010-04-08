@@ -324,6 +324,15 @@ QgsLegendSymbologyList QgsPointDisplacementRenderer::legendSymbologyItems( QSize
   return QgsLegendSymbologyList();
 }
 
+QgsLegendSymbolList QgsPointDisplacementRenderer::legendSymbolItems()
+{
+  if ( mRenderer )
+  {
+    return mRenderer->legendSymbolItems();
+  }
+  return QgsLegendSymbolList();
+}
+
 void QgsPointDisplacementRenderer::createDisplacementGroups( QgsVectorLayer* vlayer, const QgsRectangle& viewExtent )
 {
   if ( !vlayer || ( vlayer->wkbType() != QGis::WKBPoint && vlayer->wkbType() != QGis::WKBPoint25D ) )
