@@ -3134,7 +3134,7 @@ void QgisApp::newSpatialiteLayer()
   QString baseSQL;
   if ( spatialiteDialog.includePrimaryKey() )
   {
-    baseSQL = "create table %1(pkuid integer primary key autoincrement, "; 
+    baseSQL = "create table %1(pkuid integer primary key autoincrement, ";
   }
   else
   {
@@ -3911,12 +3911,26 @@ void QgisApp::attributeTable()
 
 void QgisApp::saveAsVectorFile()
 {
-  mMapLegend->currentLegendLayer()->saveAsVectorFile();
+  if ( mMapLegend )
+  {
+    QgsLegendLayer* currentLegendLayer = mMapLegend->currentLegendLayer();
+    if ( currentLegendLayer )
+    {
+      currentLegendLayer->saveAsVectorFile();
+    }
+  }
 }
 
 void QgisApp::saveSelectionAsVectorFile()
 {
-  mMapLegend->currentLegendLayer()->saveSelectionAsVectorFile();
+  if ( mMapLegend )
+  {
+    QgsLegendLayer* currentLegendLayer = mMapLegend->currentLegendLayer();
+    if ( currentLegendLayer )
+    {
+      currentLegendLayer->saveSelectionAsVectorFile();
+    }
+  }
 }
 
 void QgisApp::layerProperties()
@@ -6720,7 +6734,7 @@ void QgisApp::namUpdate()
   }
 
 #if QT_VERSION >= 0x40500
-  if( !mProxyFactory )
+  if ( !mProxyFactory )
   {
     mProxyFactory = new QgsNetworkProxyFactory();
     mNAM->setProxyFactory( mProxyFactory );
