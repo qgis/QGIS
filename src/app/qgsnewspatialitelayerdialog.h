@@ -49,6 +49,8 @@ class QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNewSpatialiteL
     QString geometryColumn() const;
     /**Returns the selected crs id*/
     QString selectedCrsId() const;
+    /**Returns the state of the primary key checkbox*/
+    bool includePrimaryKey() const;
     /** Create a new database */
     bool createDb();
 
