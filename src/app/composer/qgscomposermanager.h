@@ -38,11 +38,12 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
     /**Stores the relation between items and composer pointers. A 0 pointer for the composer means that
       this composer needs to be created from a default template*/
     QMap<QListWidgetItem*, QgsComposer*> mItemComposerMap;
-    /**Key: name of the default template (=filename without suffix). Value: absolute path of the template*/
-    QMap<QString, QString > mDefaultTemplateMap;
 
     /**Enters the composer instances and created the item-composer map*/
     void initialize();
+
+    /**Returns the default templates (key: template name, value: absolute path to template file)*/
+    QMap<QString, QString> defaultTemplates() const;
 
   private slots:
     void on_mAddButton_clicked();
@@ -50,7 +51,6 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
     void on_mShowPushButton_clicked();
     void on_mRenamePushButton_clicked();
     void on_mComposerListWidget_itemChanged( QListWidgetItem * item );
-    void on_mComposerListWidget_currentItemChanged( QListWidgetItem* current, QListWidgetItem* previous );
 };
 
 #endif // QGSCOMPOSERMANAGER_H

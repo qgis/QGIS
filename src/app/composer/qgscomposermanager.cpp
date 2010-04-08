@@ -51,26 +51,26 @@ void QgsComposerManager::initialize()
     item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
     mItemComposerMap.insert( item, *it );
   }
+}
+
+QMap<QString, QString> QgsComposerManager::defaultTemplates() const
+{
+  QMap<QString, QString> templateMap;
 
   //search for default templates in $pkgDataPath/composer_templates
   QDir defaultTemplateDir( QgsApplication::pkgDataPath() + "/composer_templates" );
   if ( !defaultTemplateDir.exists() )
   {
-    return;
+    return templateMap;
   }
 
-  QFileInfoList defaultTemplateFiles = defaultTemplateDir.entryInfoList( QDir::Files );
-  QFileInfoList::const_iterator fileIt = defaultTemplateFiles.constBegin();
-
-  for ( ; fileIt != defaultTemplateFiles.constEnd(); ++fileIt )
+  QFileInfoList fileInfoList = defaultTemplateDir.entryInfoList( QDir::Files );
+  QFileInfoList::const_iterator infoIt = fileInfoList.constBegin();
+  for ( ; infoIt != fileInfoList.constEnd(); ++infoIt )
   {
-    mDefaultTemplateMap.insert( fileIt->baseName(), fileIt->absoluteFilePath() );
-    if ( mComposerListWidget->findItems( fileIt->baseName(), Qt::MatchExactly ).size() < 1 )
-    {
-      QListWidgetItem* item = new QListWidgetItem( fileIt->baseName(), mComposerListWidget );
-      mItemComposerMap.insert( item, 0 );
-    }
+    templateMap.insert( infoIt->baseName(), infoIt->absoluteFilePath() );
   }
+  return templateMap;
 }
 
 void QgsComposerManager::on_mAddButton_clicked()
@@ -79,11 +79,56 @@ void QgsComposerManager::on_mAddButton_clicked()
   {
     return;
   }
-  QgsComposer* newComposer = mQgisApp->createNewComposer();
+
+  QMap<QString, QString> templateMap = defaultTemplates();
+  QString composerTemplate;
+  QgsComposer* newComposer = 0;
+
+  if ( templateMap.size() > 0 )
+  {
+    //show template dialog
+    QStringList templateNameList;
+    templateNameList.append( tr( "Empty composer" ) );
+    QMap<QString, QString>::const_iterator templateIt = templateMap.constBegin();
+    for ( ; templateIt != templateMap.constEnd(); ++templateIt )
+    {
+      templateNameList.append( templateIt.key() );
+    }
+
+    QInputDialog templateDialog;
+    templateDialog.setLabelText( tr( "Select a composer template" ) );
+    templateDialog.setComboBoxItems( templateNameList );
+    if ( templateDialog.exec() == QDialog::Rejected )
+    {
+      return;
+    }
+
+    QMap<QString, QString>::const_iterator selectedTemplate = templateMap.find( templateDialog.textValue() );
+    if ( selectedTemplate != templateMap.constEnd() )
+    {
+      composerTemplate = selectedTemplate.value();
+    }
+  }
+
+  newComposer = mQgisApp->createNewComposer();
   if ( !newComposer )
   {
     return;
   }
+
+  if ( !composerTemplate.isEmpty() ) //create composer from template
+  {
+    QDomDocument templateDoc;
+    QFile templateFile( composerTemplate );
+    if ( templateFile.open( QIODevice::ReadOnly ) )
+    {
+      if ( templateDoc.setContent( &templateFile, false ) )
+      {
+        newComposer->readXML( templateDoc );
+      }
+    }
+  }
+
   QListWidgetItem* item = new QListWidgetItem( newComposer->title(), mComposerListWidget );
   item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
   mItemComposerMap.insert( item, newComposer );
@@ -140,45 +185,55 @@ void QgsComposerManager::on_mShowPushButton_clicked()
     if ( it.value() ) //a normal composer
     {
       c = it.value();
-      it.value()->show();
-    }
-    else //create composer from default template
-    {
-      QMap<QString, QString>::const_iterator templateIt = mDefaultTemplateMap.find( it.key()->text() );
-      if ( templateIt == mDefaultTemplateMap.constEnd() )
-      {
-        return;
-      }
-
-      QDomDocument templateDoc;
-      QFile templateFile( templateIt.value() );
-      if ( !templateFile.open( QIODevice::ReadOnly ) )
-      {
-        return;
-      }
-
-      if ( !templateDoc.setContent( &templateFile, false ) )
-      {
-        return;
-      }
-      c = mQgisApp->createNewComposer();
-      c->setTitle( it.key()->text() );
       if ( c )
       {
-        c->readXML( templateDoc );
-        mItemComposerMap.insert( it.key(), c );
+        c->show();
+        c->activate();
+        c->stackUnder( this );
+        raise();
+        activateWindow();
       }
     }
+  }
+#if 0
+  else //create composer from default template
+  {
+    QMap<QString, QString>::const_iterator templateIt = mDefaultTemplateMap.find( it.key()->text() );
+    if ( templateIt == mDefaultTemplateMap.constEnd() )
+    {
+      return;
+    }
 
+    QDomDocument templateDoc;
+    QFile templateFile( templateIt.value() );
+    if ( !templateFile.open( QIODevice::ReadOnly ) )
+    {
+      return;
+    }
+
+    if ( !templateDoc.setContent( &templateFile, false ) )
+    {
+      return;
+    }
+    c = mQgisApp->createNewComposer();
+    c->setTitle( it.key()->text() );
     if ( c )
     {
-      c->show();
-      c->activate();
-      c->stackUnder( this );
-      raise();
-      activateWindow();
+      c->readXML( templateDoc );
+      mItemComposerMap.insert( it.key(), c );
     }
   }
+
+  if ( c )
+  {
+    c->show();
+    c->activate();
+    c->stackUnder( this );
+    raise();
+    activateWindow();
+  }
+}
+#endif //0
 }
 
 void QgsComposerManager::on_mRenamePushButton_clicked()
@@ -216,23 +271,5 @@ void QgsComposerManager::on_mComposerListWidget_itemChanged( QListWidgetItem * i
   if ( it != mItemComposerMap.end() )
   {
     it.value()->setTitle( item->text() );
-  }
-}
-
-void QgsComposerManager::on_mComposerListWidget_currentItemChanged( QListWidgetItem* current, QListWidgetItem* previous )
-{
-  if ( !current )
-  {
-    return;
-  }
-  if ( mDefaultTemplateMap.contains( current->text() ) )
-  {
-    mRenamePushButton->setEnabled( false );
-    mRemoveButton->setEnabled( false );
-  }
-  else
-  {
-    mRenamePushButton->setEnabled( true );
-    mRemoveButton->setEnabled( true );
   }
 }
