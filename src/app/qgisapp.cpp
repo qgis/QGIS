@@ -2470,7 +2470,7 @@ void QgisApp::about()
 */
 static QString createFileFilter_( QString const &longName, QString const &glob )
 {
-  return longName + " (" + glob.toLower() + " " + glob.toUpper() + ");;";
+  return longName + " (" + glob.toLower() + " " + glob.toUpper() + ")";
 }                               // createFileFilter_
 
 
@@ -3575,7 +3575,6 @@ void QgisApp::saveMapAsImage()
   QString myLastUsedFilter = myQSettings.value( "/UI/saveAsImageFilter" ).toString();
   QString myLastUsedDir = myQSettings.value( "/UI/lastSaveAsImageDir", "." ).toString();
 
-
   // get a list of supported output image types
   int myCounterInt = 0;
   QString myFilters;
@@ -3585,8 +3584,12 @@ void QgisApp::saveMapAsImage()
   {
     QString myFormat = QString( formats.at( myCounterInt ) );
     //svg doesnt work so skip it
-    if ( myFormat ==  "svg" ) continue;
+    if ( myFormat ==  "svg" )
+      continue;
+
     QString myFilter = createFileFilter_( myFormat + " format", "*." + myFormat );
+    if( !myFilters.isEmpty() )
+      myFilters += ";;";
     myFilters += myFilter;
     myFilterMap[myFilter] = myFormat;
   }
