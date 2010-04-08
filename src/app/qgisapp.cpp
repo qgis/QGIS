@@ -587,6 +587,7 @@ void QgisApp::dropEvent( QDropEvent *event )
       if ( fi.completeSuffix() == "qgs" )
       {
         QgsDebugMsg( "Opening project " + fileName );
+        openProject( fileName );
       }
       else
       {
@@ -3588,7 +3589,7 @@ void QgisApp::saveMapAsImage()
       continue;
 
     QString myFilter = createFileFilter_( myFormat + " format", "*." + myFormat );
-    if( !myFilters.isEmpty() )
+    if ( !myFilters.isEmpty() )
       myFilters += ";;";
     myFilters += myFilter;
     myFilterMap[myFilter] = myFormat;
