@@ -90,7 +90,6 @@
 
 //BUNDLE_PGSQL = YES
 //BUNDLE_GPSBABEL = YES
-//BUNDLE_QWT = YES
 
 // frameworks not bundled
 //BUNDLE_GSL = YES
