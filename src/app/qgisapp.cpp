@@ -3131,7 +3131,16 @@ void QgisApp::newSpatialiteLayer()
 
   // Build up the sql statement for creating the table
   //
-  QString sql = QString( "create table %1(" ).arg( quotedIdentifier( newLayerName ) );
+  QString baseSQL;
+  if ( spatialiteDialog.includePrimaryKey() )
+  {
+    baseSQL = "create table %1(pkuid integer primary key autoincrement, "; 
+  }
+  else
+  {
+    baseSQL = "create table %1(";
+  }
+  QString sql = baseSQL.arg( quotedIdentifier( newLayerName ) );
   // iterate through the field names and add them to the create statement
   // (use indexed access since this is just as fast as iterators
   for ( int i = 0; i < items->size(); ++i )

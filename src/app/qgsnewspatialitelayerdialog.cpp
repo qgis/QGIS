@@ -232,6 +232,11 @@ QString QgsNewSpatialiteLayerDialog::geometryColumn() const
   return leGeometryColumn->text();
 }
 
+bool QgsNewSpatialiteLayerDialog::includePrimaryKey() const
+{
+  return checkBoxPrimaryKey->isChecked();
+}
+
 bool QgsNewSpatialiteLayerDialog::createDb()
 {
   QFile newDb( mDatabaseComboBox->currentText() );

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>411</width>
-    <height>593</height>
+    <width>431</width>
+    <height>648</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -227,6 +227,16 @@
     </layout>
    </item>
    <item row="5" column="0">
+    <widget class="QCheckBox" name="checkBoxPrimaryKey">
+     <property name="toolTip">
+      <string>Add an integer id field as the primary key for the new layer</string>
+     </property>
+     <property name="text">
+      <string>Create an autoincrementing primary key</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>New attribute</string>
@@ -284,7 +294,7 @@
      </layout>
     </widget>
    </item>
-   <item row="6" column="0">
+   <item row="7" column="0">
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
       <string>Attributes list</string>
@@ -397,7 +407,7 @@
      </layout>
     </widget>
    </item>
-   <item row="7" column="0">
+   <item row="8" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
