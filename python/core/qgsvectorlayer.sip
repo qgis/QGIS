@@ -444,6 +444,15 @@ public:
    */
   void setEditForm( QString ui );
 
+  /** get annotation form
+      @note added in 1.5*/
+  QString annotationForm() const;
+
+  /** set annotation form for layer
+      @note added in 1.5*/
+  void setAnnotationForm( const QString& ui );
+
+
   /** get edit form init function
     @note added in 1.4
    */

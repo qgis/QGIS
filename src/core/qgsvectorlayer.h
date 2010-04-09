@@ -480,6 +480,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** set edit form (added in 1.4) */
     void setEditForm( QString ui );
 
+    /** get annotation form (added in 1.5)*/
+    QString annotationForm() const { return mAnnotationForm; }
+
+    /** set annotation form for layer (added in 1.5)*/
+    void setAnnotationForm( const QString& ui );
+
     /** get python function for edit form initialization (added in 1.4) */
     QString editFormInit();
 
@@ -775,6 +781,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QMap< QString, QPair<QString, QString> > mCheckedStates;
 
     QString mEditForm, mEditFormInit;
+    //annotation form for this layer
+    QString mAnnotationForm;
 
     bool mFetching;
     QgsRectangle mFetchRect;

@@ -49,6 +49,8 @@ class GUI_EXPORT QgsFormAnnotationItem: public QObject, public QgsAnnotationItem
     void writeXML( QDomDocument& doc ) const;
     void readXML( const QDomDocument& doc, const QDomElement& itemElem );
 
+    QgsVectorLayer* vectorLayer() const { return mVectorLayer; }
+
   private slots:
     /**Sets a feature for the current map position and updates the dialog*/
     void setFeatureForMapPosition();

@@ -1,5 +1,6 @@
 #include "qgsformannotationdialog.h"
 #include "qgsannotationwidget.h"
+#include "qgsvectorlayer.h"
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QGraphicsScene>
@@ -40,6 +41,12 @@ void QgsFormAnnotationDialog::applySettingsToItem()
   if ( mItem )
   {
     mItem->setDesignerForm( mFileLineEdit->text() );
+    QgsVectorLayer* layer = mItem->vectorLayer();
+    if ( layer )
+    {
+      //set last used annotation form as default for the layer
+      layer->setAnnotationForm( mFileLineEdit->text() );
+    }
     mItem->update();
   }
 }
