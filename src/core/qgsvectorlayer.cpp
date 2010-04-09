@@ -2797,6 +2797,13 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
     mEditFormInit = editFormInitNode.toElement().text();
   }
 
+  QDomNode annotationFormNode = node.namedItem( "annotationform" );
+  if ( !annotationFormNode.isNull() )
+  {
+    QDomElement e = annotationFormNode.toElement();
+    mAnnotationForm = QgsProject::instance()->readPath( e.text() );
+  }
+
   mAttributeAliasMap.clear();
   QDomNode aliasesNode = node.namedItem( "aliases" );
   if ( !aliasesNode.isNull() )
@@ -2942,6 +2949,11 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   QDomText efiText = doc.createTextNode( mEditFormInit );
   efiField.appendChild( efiText );
   node.appendChild( efiField );
+
+  QDomElement afField = doc.createElement( "annotationform" );
+  QDomText afText = doc.createTextNode( QgsProject::instance()->writePath( mAnnotationForm ) );
+  afField.appendChild( afText );
+  node.appendChild( afField );
 
   //attribute aliases
   if ( mAttributeAliasMap.size() > 0 )
@@ -4140,6 +4152,11 @@ QString QgsVectorLayer::editForm()
 void QgsVectorLayer::setEditForm( QString ui )
 {
   mEditForm = ui;
+}
+
+void QgsVectorLayer::setAnnotationForm( const QString& ui )
+{
+  mAnnotationForm = ui;
 }
 
 QString QgsVectorLayer::editFormInit()

@@ -39,7 +39,7 @@ QgsFormAnnotationItem::QgsFormAnnotationItem( QgsMapCanvas* canvas, QgsVectorLay
   mWidgetContainer = new QGraphicsProxyWidget( this );
   if ( mVectorLayer && mMapCanvas ) //default to the layers edit form
   {
-    mDesignerForm = mVectorLayer->editForm();
+    mDesignerForm = mVectorLayer->annotationForm();
     QObject::connect( mVectorLayer, SIGNAL( layerModified( bool ) ), this, SLOT( setFeatureForMapPosition() ) );
     QObject::connect( mMapCanvas, SIGNAL( renderComplete( QPainter* ) ), this, SLOT( setFeatureForMapPosition() ) );
     QObject::connect( mMapCanvas, SIGNAL( layersChanged() ), this, SLOT( updateVisibility() ) );
