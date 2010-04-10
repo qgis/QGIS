@@ -14,6 +14,9 @@
    <string>Identify Results</string>
   </property>
   <layout class="QVBoxLayout">
+   <property name="margin">
+    <number>2</number>
+   </property>
    <item>
     <widget class="QTreeWidget" name="lstResults">
      <property name="lineWidth">
