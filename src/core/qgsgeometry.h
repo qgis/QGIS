@@ -505,6 +505,9 @@ class CORE_EXPORT QgsGeometry
       @return 0 not contained, 1 if contained, <0 in case of error*/
     static int pointContainedInLine( const GEOSGeometry* point, const GEOSGeometry* line );
 
+    /**Tests if geom bounding rect is within -180 <= x <= 180, -90 <= y <= 90. Other methods may use more accurate tolerances if this is true*/
+    static bool geomInDegrees( const GEOSGeometry* geom );
+
     /**Returns number of single geometry in a geos geometry. Is save for geos 2 and 3*/
     int numberOfGeometries( GEOSGeometry* g ) const;
 
