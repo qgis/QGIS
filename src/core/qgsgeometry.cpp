@@ -5441,7 +5441,12 @@ int QgsGeometry::lineContainedInLine( const GEOSGeometry* line1, const GEOSGeome
     return -1;
   }
 
+
   double bufferDistance = 0.00001;
+  if ( geomInDegrees( line2 ) ) //use more accurate tolerance for degrees
+  {
+    bufferDistance = 0.00000001;
+  }
   GEOSGeometry* bufferGeom = GEOSBuffer( line2, bufferDistance, DEFAULT_QUADRANT_SEGMENTS );
   if ( !bufferGeom )
   {
@@ -5476,6 +5481,10 @@ int QgsGeometry::pointContainedInLine( const GEOSGeometry* point, const GEOSGeom
   }
 
   double bufferDistance = 0.000001;
+  if ( geomInDegrees( line ) )
+  {
+    bufferDistance = 0.00000001;
+  }
   GEOSGeometry* lineBuffer = GEOSBuffer( line, bufferDistance, 8 );
   if ( !lineBuffer )
   {
@@ -5490,6 +5499,50 @@ int QgsGeometry::pointContainedInLine( const GEOSGeometry* point, const GEOSGeom
 
   GEOSGeom_destroy( lineBuffer );
   return contained;
+}
+
+bool QgsGeometry::geomInDegrees( const GEOSGeometry* geom )
+{
+  GEOSGeometry* bbox = GEOSEnvelope( geom );
+  if ( !bbox )
+  {
+    return false;
+  }
+
+  const GEOSGeometry* bBoxRing = GEOSGetExteriorRing( bbox );
+  if ( !bBoxRing )
+  {
+    return false;
+  }
+  const GEOSCoordSequence* bBoxCoordSeq = GEOSGeom_getCoordSeq( bBoxRing );
+
+  if ( !bBoxCoordSeq )
+  {
+    return false;
+  }
+
+  unsigned int nCoords = 0;
+  if ( !GEOSCoordSeq_getSize( bBoxCoordSeq, &nCoords ) )
+  {
+    return false;
+  }
+
+  double x, y;
+  for ( int i = 0; i < ( nCoords - 1 ); ++i )
+  {
+    GEOSCoordSeq_getX( bBoxCoordSeq, i, &x );
+    if ( x > 180 || x < -180 )
+    {
+      return false;
+    }
+    GEOSCoordSeq_getY( bBoxCoordSeq, i, &y );
+    if ( y > 90 || y < -90 )
+    {
+      return false;
+    }
+  }
+
+  return true;
 }
 
 int QgsGeometry::numberOfGeometries( GEOSGeometry* g ) const
