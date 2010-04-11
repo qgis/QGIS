@@ -217,10 +217,10 @@
 #define PG_VERSION "unknown"
 #endif
 #endif
+#include <sqlite3.h>
 #ifdef HAVE_SPATIALITE
 extern "C"
 {
-#include <sqlite3.h>
 #include <spatialite.h>
 }
 #include "qgsspatialitesourceselect.h"
@@ -956,7 +956,7 @@ void QgisApp::createActions()
 
 #ifdef HAVE_SPATIALITE
   mActionNewSpatialiteLayer = new QAction( getThemeIcon( "mActionNewVectorLayer.png" ), tr( "New SpatiaLite Layer ..." ), this );
-  shortcuts->registerAction( mActionNewSpatialiteLayer, tr( "Ctrl+Shift+S", "Create a New SpatiaLite Layer " ) );
+  shortcuts->registerAction( mActionNewSpatialiteLayer, tr( "Ctrl+Shift+A", "Create a New SpatiaLite Layer " ) );
   mActionNewSpatialiteLayer->setStatusTip( tr( "Create a New SpatiaLite Layer " ) );
   connect( mActionNewSpatialiteLayer, SIGNAL( triggered() ), this, SLOT( newSpatialiteLayer() ) );
 #endif
@@ -3106,13 +3106,13 @@ static QString quotedValue( QString value )
   return value.prepend( "'" ).append( "'" );
 }
 
+#ifdef HAVE_SPATIALITE
 void QgisApp::newSpatialiteLayer()
 {
   if ( mMapCanvas && mMapCanvas->isDrawing() )
   {
     return;
   }
-
   QgsNewSpatialiteLayerDialog spatialiteDialog( this );
   if ( spatialiteDialog.exec() == QDialog::Rejected )
   {
@@ -3229,6 +3229,7 @@ void QgisApp::newSpatialiteLayer()
     }
   }
 }
+#endif
 
 void QgisApp::fileOpen()
 {
