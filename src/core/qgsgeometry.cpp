@@ -5528,7 +5528,7 @@ bool QgsGeometry::geomInDegrees( const GEOSGeometry* geom )
   }
 
   double x, y;
-  for ( int i = 0; i < ( nCoords - 1 ); ++i )
+  for ( unsigned int i = 0; i < ( nCoords - 1 ); ++i )
   {
     GEOSCoordSeq_getX( bBoxCoordSeq, i, &x );
     if ( x > 180 || x < -180 )

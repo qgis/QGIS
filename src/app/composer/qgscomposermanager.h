@@ -19,7 +19,6 @@
 
 #include "ui_qgscomposermanagerbase.h"
 
-class QgisApp;
 class QListWidgetItem;
 class QgsComposer;
 
@@ -29,12 +28,11 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
 {
     Q_OBJECT
   public:
-    QgsComposerManager( QgisApp* app, QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    QgsComposerManager( QWidget * parent = 0, Qt::WindowFlags f = 0 );
     ~QgsComposerManager();
 
 
   private:
-    QgisApp* mQgisApp;
     /**Stores the relation between items and composer pointers. A 0 pointer for the composer means that
       this composer needs to be created from a default template*/
     QMap<QListWidgetItem*, QgsComposer*> mItemComposerMap;
@@ -47,9 +45,9 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
 
   private slots:
     void on_mAddButton_clicked();
-    void on_mRemoveButton_clicked();
-    void on_mShowPushButton_clicked();
-    void on_mRenamePushButton_clicked();
+    void remove_clicked();
+    void show_clicked();
+    void rename_clicked();
     void on_mComposerListWidget_itemChanged( QListWidgetItem * item );
 };
 
