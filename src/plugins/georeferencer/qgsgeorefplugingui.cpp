@@ -1175,7 +1175,7 @@ QString QgsGeorefPluginGui::gdal_translateCommand( bool generateTFW )
 
   foreach( QgsGeorefDataPoint *pt, mPoints )
   {
-    gdalCommand << QString( "-gcp %1 %2 %3 %4" ).arg( pt->pixelCoords().x() ).arg( pt->pixelCoords().y() )
+    gdalCommand << QString( "-gcp %1 %2 %3 %4" ).arg( pt->pixelCoords().x() ).arg( -pt->pixelCoords().y() )
     .arg( pt->mapCoords().x() ).arg( pt->mapCoords().y() );
   }
 
