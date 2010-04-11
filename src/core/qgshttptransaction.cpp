@@ -206,7 +206,7 @@ bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int red
   http = 0;
 
   // Did we get an error? If so, bail early
-  if ( !mError.isNull() )
+  if ( !mError.isEmpty() )
   {
     QgsDebugMsg( "Processing an error '" + mError + "'." );
     return FALSE;
