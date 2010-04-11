@@ -135,15 +135,12 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
 
     // gdal script
     void showGDALScript( int argNum... );
-    QString gdal_translateCommand( bool generateTFW = true );
-    QString gdalwarpCommandGCP( QString resampling, QString compress, bool useZeroForTrans, int order,
-                                double targetResX, double targetResY );
-    QString gdalwarpCommandTPS( QString resampling, QString compress, bool useZeroForTrans,
-                                double targetResX, double targetResY );
-
-    // log
-    void showMessageInLog( const QString &description, const QString &msg );
-    void clearLog();
+    QString generateGDALtranslateCommand( bool generateTFW = true);   
+    /* Generate command-line for gdalwarp based on current GCPs and given parameters.
+     * For values in the range 1 to 3, the parameter "order" prescribes the degree of the interpolating polynomials to use, 
+     * a value of -1 indicates that thin plate spline interpolation should be used for warping.*/
+    QString generateGDALwarpCommand( QString resampling, QString compress, bool useZeroForTrans, int order,
+                                     double targetResX, double targetResY );
 
     // utils
     bool checkReadyGeoref();
@@ -152,7 +149,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
         bool rasterToWorld = true, uint numSamples = 4 );
     QString convertTransformEnumToString( QgsGeorefTransform::TransformParametrisation transform );
     QString convertResamplingEnumToString( QgsImageWarper::ResamplingMethod resampling );
-    int polynomeOrder( QgsGeorefTransform::TransformParametrisation transform );
+    int polynomialOrder( QgsGeorefTransform::TransformParametrisation transform );
     QString guessWorldFileName( const QString &rasterFileName );
     QIcon getThemeIcon( const QString &theName );
     bool checkFileExisting( QString fileName, QString title, QString question );
@@ -165,7 +162,6 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     QMenu *mPanelMenu;
     QMenu *mToolbarMenu;
 
-//  QPlainTextEdit *mLogViewer;
     QAction *mActionHelp;
 
     QgsGCPListWidget *mGCPListWidget;
