@@ -17,6 +17,7 @@
 #include <QPushButton>
 
 #include "qgsmapcanvas.h"
+#include "qgsmapcanvassnapper.h"
 
 #include "qgsgeorefvalidators.h"
 #include "qgsmapcoordsdialog.h"
@@ -40,6 +41,9 @@ QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas* qgisCanvas, QgsPoint pixel
 
   mToolEmitPoint = new QgsGeorefMapToolEmitPoint( qgisCanvas );
   mToolEmitPoint->setButton( mPointFromCanvasPushButton );
+
+  QSettings s;
+  mSnapToBackgroundLayerBox->setChecked( s.value( "/Plugin-GeoReferencer/snapToBackgroundLayers", QVariant(false) ).toBool() );
 
   connect( mPointFromCanvasPushButton, SIGNAL( clicked( bool ) ), this, SLOT( setToolEmitPoint( bool ) ) );
 
@@ -81,7 +85,8 @@ void QgsMapCoordsDialog::on_buttonBox_accepted()
     y = dmsToDD( leYCoord->text() );
 
   emit pointAdded( mPixelCoords, QgsPoint( x, y ) );
-
+  QSettings s;
+  s.setValue( "/Plugin-GeoReferencer/snapToBackgroundLayers", mSnapToBackgroundLayerBox->isChecked() );
   close();
 }
 
@@ -90,10 +95,30 @@ void QgsMapCoordsDialog::maybeSetXY( const QgsPoint & xy, Qt::MouseButton button
   // Only LeftButton should set point
   if ( Qt::LeftButton == button )
   {
+    QgsPoint mapCoordPoint = xy;
+    if ( mQgisCanvas && mSnapToBackgroundLayerBox->isChecked() )
+    {
+      const QgsMapToPixel* mtp = mQgisCanvas->getCoordinateTransform();
+      if ( mtp )
+      {
+        QgsPoint canvasPos = mtp->transform( xy.x(), xy.y() );
+        QPoint snapStartPoint( canvasPos.x(), canvasPos.y() );
+        QgsMapCanvasSnapper snapper( mQgisCanvas );
+        QList<QgsSnappingResult> snapResults;
+        if ( snapper.snapToBackgroundLayers( snapStartPoint, snapResults ) == 0 )
+        {
+          if ( snapResults.size() > 0 )
+          {
+            mapCoordPoint = snapResults.at( 0 ).snappedVertex;
+          }
+        }
+      }
+    }
+
     leXCoord->clear();
     leYCoord->clear();
-    leXCoord->setText( QString::number( xy.x(), 'f', 7 ) );
-    leYCoord->setText( QString::number( xy.y(), 'f', 7 ) );
+    leXCoord->setText( QString::number( mapCoordPoint.x(), 'f', 7 ) );
+    leYCoord->setText( QString::number( mapCoordPoint.y(), 'f', 7 ) );
   }
 
   parentWidget()->showNormal();
