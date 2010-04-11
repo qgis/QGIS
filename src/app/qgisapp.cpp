@@ -359,8 +359,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
     , mSplash( splash )
     , mPythonUtils( NULL )
     , mNAM( NULL )
-    , mProxyFactory( NULL )
     , mpTileScaleWidget( NULL )
+#if QT_VERSION >= 0x40500
+    , mProxyFactory( NULL )
+#endif
 #ifdef HAVE_QWT
     , mpGpsWidget( NULL )
 #endif
