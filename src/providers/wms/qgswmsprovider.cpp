@@ -102,7 +102,11 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri )
                      .arg( proxy.hostName() ).arg( proxy.port() )
                      .arg( proxy.type() )
                      .arg( proxy.user() ).arg( proxy.password() )
+#if QT_VERSION >= 0x40500
                      .arg( proxy.capabilities() )
+#else
+                     .arg( 0 )
+#endif
                    );
 
       }
@@ -682,8 +686,9 @@ void QgsWmsProvider::tileReplyFinished()
 {
   QNetworkReply *reply = qobject_cast<QNetworkReply*>( sender() );
 
+  bool fromCache;
 #if QT_VERSION >= 0x40500
-  bool fromCache = reply->attribute( QNetworkRequest::SourceIsFromCacheAttribute ).toBool();
+  fromCache = reply->attribute( QNetworkRequest::SourceIsFromCacheAttribute ).toBool();
   if ( fromCache )
     mCacheHits++;
   else
