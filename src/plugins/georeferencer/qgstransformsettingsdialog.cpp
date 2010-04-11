@@ -34,12 +34,13 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
 {
   setupUi( this );
 
-  cmbTransformType->addItems( QStringList() << tr( "Linear" )
-                              << tr( "Helmert" )
-                              << tr( "Polynomial 1" )
-                              << tr( "Polynomial 2" )
-                              << tr( "Polynomial 3" ) );
-
+  cmbTransformType->addItem( tr( "Linear" ) ,           (int)QgsGeorefTransform::Linear ) ;
+  cmbTransformType->addItem( tr( "Helmert" ),           (int)QgsGeorefTransform::Helmert );
+  cmbTransformType->addItem( tr( "Polynomial 1" ),      (int)QgsGeorefTransform::PolynomialOrder1 );
+  cmbTransformType->addItem( tr( "Polynomial 2" ),      (int)QgsGeorefTransform::PolynomialOrder2 );
+  cmbTransformType->addItem( tr( "Polynomial 3" ),      (int)QgsGeorefTransform::PolynomialOrder3 );
+  cmbTransformType->addItem( tr( "Thin Plate Spline" ), (int)QgsGeorefTransform::ThinPlateSpline );
+  
   leOutputRaster->setText( output );
 
   mRegExpValidator = new QRegExpValidator( QRegExp( "(^epsg:{1}\\s*\\d+)|(^\\+proj.*)", Qt::CaseInsensitive ), leTargetSRS );
