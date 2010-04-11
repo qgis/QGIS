@@ -294,32 +294,32 @@ void QgsGeorefPluginGui::generateGDALScript()
   if ( !checkReadyGeoref() )
     return;
 
-  if ( QgsGeorefTransform::Linear != mTransformParam
-       && QgsGeorefTransform::Helmert != mTransformParam )
+  switch (mTransformParam)
   {
-    // CAVEAT: gdalwarpCommand*() rely on some member variables being set
-    // by gdal_translateCommand(), so this method must be called before
-    // gdalwarpCommand*()!
-    QString translateCommand = gdal_translateCommand();
-    QString gdalwarpCommand;
-    QString resamplingStr = convertResamplingEnumToString( mResamplingMethod );
-    if ( QgsGeorefTransform::ThinPlateSpline == mTransformParam )
+    case QgsGeorefTransform::PolynomialOrder1:
+    case QgsGeorefTransform::PolynomialOrder2:
+    case QgsGeorefTransform::PolynomialOrder3:
+    case QgsGeorefTransform::ThinPlateSpline:
     {
-      gdalwarpCommand = gdalwarpCommandTPS( resamplingStr, mCompressionMethod, mUseZeroForTrans,
-                                            mUserResX, mUserResY );
+      // CAVEAT: generateGDALwarpCommand() relies on some member variables being set
+      // by generateGDALtranslateCommand(), so this method must be called before
+      // gdalwarpCommand*()!
+      QString translateCommand = generateGDALtranslateCommand( false );
+      QString gdalwarpCommand;
+      QString resamplingStr = convertResamplingEnumToString( mResamplingMethod );
+
+      int order = polynomialOrder( mTransformParam );
+      if (order != 0)
+      {
+        gdalwarpCommand = generateGDALwarpCommand( resamplingStr, mCompressionMethod, mUseZeroForTrans, order,
+                                                   mUserResX, mUserResY );
+        showGDALScript( 2, translateCommand.toAscii().data(), gdalwarpCommand.toAscii().data() );
+        break;
+      }
     }
-    else
-    {
-      gdalwarpCommand = gdalwarpCommandGCP( resamplingStr, mCompressionMethod, mUseZeroForTrans,
-                                            polynomeOrder( mTransformParam ),
-                                            mUserResX, mUserResY );
-    }
-    showGDALScript( 2, translateCommand.toAscii().data(), gdalwarpCommand.toAscii().data() );
-  }
-  else
-  {
-    QMessageBox::information( this, tr( "Info" ), tr( "GDAL scripting is not supported for %1 transformation" )
-                              .arg( convertTransformEnumToString( mTransformParam ) ) );
+    default:
+      QMessageBox::information( this, tr( "Info" ), tr( "GDAL scripting is not supported for %1 transformation" )
+                                .arg( convertTransformEnumToString( mTransformParam ) ) );
   }
 }
 
@@ -1163,7 +1163,7 @@ void QgsGeorefPluginGui::showGDALScript( int argNum... )
   }
 }
 
-QString QgsGeorefPluginGui::gdal_translateCommand( bool generateTFW )
+QString QgsGeorefPluginGui::generateGDALtranslateCommand( bool generateTFW )
 {
   QStringList gdalCommand;
   gdalCommand << "gdal_translate" << "-of GTiff";
@@ -1186,30 +1186,23 @@ QString QgsGeorefPluginGui::gdal_translateCommand( bool generateTFW )
   return gdalCommand.join( " " );
 }
 
-QString QgsGeorefPluginGui::gdalwarpCommandGCP( QString resampling, QString compress,
-    bool useZeroForTrans, int order,
-    double targetResX, double targetResY )
+QString QgsGeorefPluginGui::generateGDALwarpCommand( QString resampling, QString compress,
+    bool useZeroForTrans, int order, double targetResX, double targetResY )
 {
   QStringList gdalCommand;
-  gdalCommand << "gdalwarp" << "-r" << resampling << "-order" << QString::number( order )
-  << "-co COMPRESS=" + compress << ( useZeroForTrans ? "-dstalpha" : "" );
-
-  if ( targetResX != 0.0 && targetResY != 0.0 )
+  gdalCommand << "gdalwarp" << "-r" << resampling;
+ 
+  if (order > 0 && order <= 3)
   {
-    gdalCommand << "-tr" << QString::number( targetResX, 'f' ) << QString::number( targetResY, 'f' );
+    // Let gdalwarp use polynomial warp with the given degree
+    gdalCommand << "-order" << QString::number( order );
   }
-
-  gdalCommand << QString("\"%1\"").arg(mTranslatedRasterFileName) << QString("\"%1\"").arg(mModifiedRasterFileName);
-
-  return gdalCommand.join( " " );
-}
-
-QString QgsGeorefPluginGui::gdalwarpCommandTPS( QString resampling, QString compress, bool useZeroForTrans,
-    double targetResX, double targetResY )
-{
-  QStringList gdalCommand;
-  gdalCommand << "gdalwarp" << "-r" << resampling << "-tps"
-  << "-co COMPRESS=" + compress << ( useZeroForTrans ? "-dstalpha" : "" );
+  else
+  {
+    // Otherwise, use thin plate spline interpolation
+    gdalCommand << "-tps";
+  }
+  gdalCommand<< "-co COMPRESS=" + compress << ( useZeroForTrans ? "-dstalpha" : "" );
 
   if ( targetResX != 0.0 && targetResY != 0.0 )
   {
@@ -1387,7 +1380,7 @@ QString QgsGeorefPluginGui::convertResamplingEnumToString( QgsImageWarper::Resam
   return "";
 }
 
-int QgsGeorefPluginGui::polynomeOrder( QgsGeorefTransform::TransformParametrisation transform )
+int QgsGeorefPluginGui::polynomialOrder( QgsGeorefTransform::TransformParametrisation transform )
 {
   switch ( transform )
   {
@@ -1397,8 +1390,11 @@ int QgsGeorefPluginGui::polynomeOrder( QgsGeorefTransform::TransformParametrisat
       return 2;
     case QgsGeorefTransform::PolynomialOrder3:
       return 3;
-    default:
+    case QgsGeorefTransform::ThinPlateSpline:
       return -1;
+
+    default:
+      return 0;
   }
 }
 
