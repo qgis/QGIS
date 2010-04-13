@@ -341,11 +341,13 @@ static void customSrsValidation_( QgsCoordinateReferenceSystem* srs )
     // XXX TODO: Change project to store selected CS as 'projectCRS' not 'selectedWkt'
     toProj4 = QgsProject::instance()->readEntry( "SpatialRefSys", "//ProjectCRSProj4String", GEOPROJ4 );
     QgsDebugMsg( "Layer srs set from project: " + toProj4 );
+    QgisApp::instance()->statusBar()->showMessage( QObject::tr( "CRS undefined - defaulting to project CRS" ) );
     srs->createFromProj4( toProj4 );
   }
   else ///Projections/defaultBehaviour==useGlobal
   {
     srs->createFromProj4( mySettings.value( "/Projections/defaultProjectionString", GEOPROJ4 ).toString() );
+    QgisApp::instance()->statusBar()->showMessage( QObject::tr( "CRS undefined - defaulting to default CRS" ) );
   }
 
 }
@@ -2603,7 +2605,7 @@ bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QS
 // Let render() do its own cursor management
 //  QApplication::restoreOverrideCursor();
 
-  statusBar()->showMessage( mMapCanvas->extent().toString( 2 ) );
+  // statusBar()->showMessage( mMapCanvas->extent().toString( 2 ) );
 
   return true;
 } // QgisApp::addVectorLayer()

@@ -245,7 +245,7 @@ bool QgsCoordinateReferenceSystem::createFromWkt( QString theWkt )
   }
   QgsDebugMsg( "QgsCoordinateReferenceSystem::createFromWkt(QString theWkt) using: " + theWkt );
   QByteArray ba = theWkt.toLatin1();
-  const char *pWkt = ba;
+  const char *pWkt = ba.data();
 
   OGRErr myInputResult = OSRImportFromWkt( mCRS, ( char ** ) & pWkt );
 
@@ -254,6 +254,7 @@ bool QgsCoordinateReferenceSystem::createFromWkt( QString theWkt )
     QgsDebugMsg( "\n---------------------------------------------------------------" );
     QgsDebugMsg( "This CRS could *** NOT *** be set from the supplied Wkt " );
     QgsDebugMsg( "INPUT: " + theWkt );
+    QgsDebugMsg( QString( "UNUSED WKT: %1" ).arg( pWkt ) );
     QgsDebugMsg( "---------------------------------------------------------------\n" );
     return mIsValidFlag;
   }
