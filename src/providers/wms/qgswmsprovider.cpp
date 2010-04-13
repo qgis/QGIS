@@ -98,17 +98,20 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri )
       if ( smNAM )
       {
         QNetworkProxy proxy = smNAM->proxy();
+#if QT_VERSION >= 0x40500
         QgsDebugMsg( QString( "proxy host:%1:%2 type:%3 user:%4 password:%5 capabilities:%6" )
                      .arg( proxy.hostName() ).arg( proxy.port() )
                      .arg( proxy.type() )
                      .arg( proxy.user() ).arg( proxy.password() )
-#if QT_VERSION >= 0x40500
                      .arg( proxy.capabilities() )
-#else
-                     .arg( 0 )
-#endif
                    );
-
+#else
+        QgsDebugMsg( QString( "proxy host:%1:%2 type:%3 user:%4 password:%5" )
+                     .arg( proxy.hostName() ).arg( proxy.port() )
+                     .arg( proxy.type() )
+                     .arg( proxy.user() ).arg( proxy.password() )
+                   );
+#endif
       }
     }
 
@@ -433,6 +436,9 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
   cachedViewWidth = pixelWidth;
   cachedViewHeight = pixelHeight;
 
+  QSettings s;
+  bool bkLayerCaching = s.value( "/qgis/enable_render_caching", false ).toBool();
+
   if ( !mTiled )
   {
     // Calculate active layers that are also visible.
@@ -529,7 +535,9 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     }
 
     QgsDebugMsg( QString( "getmap: %1" ).arg( url ) );
-    cacheReply = smNAM->get( QNetworkRequest( url ) );
+    QNetworkRequest request( url );
+    request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
+    cacheReply = smNAM->get( request );
     connect( cacheReply, SIGNAL( finished() ), this, SLOT( cacheReplyFinished() ) );
     connect( cacheReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( cacheReplyProgress( qint64, qint64 ) ) );
 
@@ -538,7 +546,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     QTime t;
     t.start();
 
-    while ( cacheReply && t.elapsed() < WMS_THRESHOLD )
+    while ( cacheReply && ( !bkLayerCaching || t.elapsed() < WMS_THRESHOLD ) )
     {
       QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, WMS_THRESHOLD );
     }
@@ -663,7 +671,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
 
     // draw everything that is retrieved within a second
     // and the rest asynchronously
-    while ( !tileReplies.isEmpty() && t.elapsed() < WMS_THRESHOLD )
+    while ( !tileReplies.isEmpty() && ( !bkLayerCaching || t.elapsed() < WMS_THRESHOLD ) )
     {
       QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents, WMS_THRESHOLD );
     }
