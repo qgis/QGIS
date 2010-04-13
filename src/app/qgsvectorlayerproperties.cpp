@@ -153,6 +153,8 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/VectorLayerProperties/geometry" ).toByteArray() );
   listWidget->setCurrentRow( settings.value( "/Windows/VectorLayerProperties/row" ).toInt() );
+
+  setWindowTitle( tr( "Layer Properties - %1" ).arg( layer->name() ) );
 } // QgsVectorLayerProperties ctor
 
 void QgsVectorLayerProperties::loadRows()
