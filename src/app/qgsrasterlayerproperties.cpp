@@ -324,6 +324,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QWidget *p
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/RasterLayerProperties/geometry" ).toByteArray() );
   listWidget->setCurrentRow( settings.value( "/Windows/RasterLayerProperties/row" ).toInt() );
+
+  setWindowTitle( tr( "Layer Properties - %1" ).arg( lyr->name() ) );
 } // QgsRasterLayerProperties ctor
 
 
