@@ -202,7 +202,7 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
           QString value = categories[i].value().toString();
           if ( label.isEmpty() )
             label = value;
-          classes.insert( label, value );
+          classes.insert( value, label );
         }
       }
 
