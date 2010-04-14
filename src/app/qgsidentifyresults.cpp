@@ -822,7 +822,7 @@ void QgsIdentifyResults::featureForm()
 
   QgsAttributeDialog *ad = new QgsAttributeDialog( vlayer, &f );
 
-  if ( !vlayer->isEditable() && vlayer->actions()->size() > 0 )
+  if ( vlayer->actions()->size() > 0 )
   {
     ad->dialog()->setContextMenuPolicy( Qt::ActionsContextMenu );
 
@@ -841,7 +841,7 @@ void QgsIdentifyResults::featureForm()
       ad->dialog()->addAction( a );
       connect( a, SIGNAL( triggered() ), a, SLOT( execute() ) );
 
-      QPushButton *pb = ad->dialog()->findChild<QPushButton *>( action.name() );
+      QAbstractButton *pb = ad->dialog()->findChild<QAbstractButton *>( action.name() );
       if ( pb )
         connect( pb, SIGNAL( clicked() ), a, SLOT( execute() ) );
     }

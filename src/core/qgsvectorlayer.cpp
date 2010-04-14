@@ -21,7 +21,6 @@
  ***************************************************************************/
 /*  $Id$ */
 
-#include <cassert>
 #include <cfloat>
 #include <cstring>
 #include <climits>

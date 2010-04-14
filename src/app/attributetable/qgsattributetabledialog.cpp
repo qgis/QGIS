@@ -250,16 +250,19 @@ void QgsAttributeTableDialog::on_cbxShowSelectedOnly_toggled( bool theFlag )
 
 void QgsAttributeTableDialog::columnBoxInit()
 {
-  QgsFieldMap fieldMap = mLayer->dataProvider()->fields();
+  QgsFieldMap fieldMap = mLayer->pendingFields();
   QgsFieldMap::Iterator it = fieldMap.begin();
 
   for ( ; it != fieldMap.end(); ++it )
-    mColumnBox->addItem( it.value().name() );
+    if ( mLayer->editType( it.key() ) != QgsVectorLayer::Hidden )
+      mColumnBox->addItem( it.value().name() );
+
+  mColumnBox->setCurrentIndex( mColumnBox->findText( mLayer->displayField() ) );
 }
 
 int QgsAttributeTableDialog::columnBoxColumnId()
 {
-  QgsFieldMap fieldMap = mLayer->dataProvider()->fields();
+  QgsFieldMap fieldMap = mLayer->pendingFields();
   QgsFieldMap::Iterator it = fieldMap.begin();
 
   for ( ; it != fieldMap.end(); ++it )
@@ -594,8 +597,8 @@ void QgsAttributeTableDialog::search()
 
   QString str = mColumnBox->currentText();
 
-  const QgsFieldMap& flds = mLayer->dataProvider()->fields();
-  int fldIndex = mLayer->dataProvider()->fieldNameIndex( str );
+  const QgsFieldMap& flds = mLayer->pendingFields();
+  int fldIndex = mLayer->fieldNameIndex( str );
   QVariant::Type fldType = flds[fldIndex].type();
   bool numeric = ( fldType == QVariant::Int || fldType == QVariant::Double );
 
@@ -604,7 +607,7 @@ void QgsAttributeTableDialog::search()
   else
     str += " ~ '";
 
-  str += mQuery->displayText().replace("'", "''"); // escape quotes
+  str += mQuery->displayText().replace( "'", "''" ); // escape quotes
   str += "'";
 
   doSearch( str );
@@ -673,7 +676,7 @@ void QgsAttributeTableDialog::on_mAddAttribute_clicked()
     return;
   }
 
-  QgsAddAttrDialog dialog( mLayer->dataProvider(), this );
+  QgsAddAttrDialog dialog( mLayer, this );
   if ( dialog.exec() == QDialog::Accepted )
   {
     mLayer->beginEditCommand( tr( "Attribute added" ) );

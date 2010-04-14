@@ -315,7 +315,7 @@ void QgsVectorLayerProperties::attributeDeleted( int idx )
 
 void QgsVectorLayerProperties::addAttribute()
 {
-  QgsAddAttrDialog dialog( layer->dataProvider(), this );
+  QgsAddAttrDialog dialog( layer, this );
   if ( dialog.exec() == QDialog::Accepted )
   {
     layer->beginEditCommand( "Attribute added" );
