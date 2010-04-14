@@ -3634,7 +3634,7 @@ void QgisApp::saveMapAsImage()
     myOutputFileNameQString = myQFileDialog->selectedFiles().first();
   }
 
-  QString myFilterString = myQFileDialog->selectedFilter() + ";;";
+  QString myFilterString = myQFileDialog->selectedFilter();
   QgsDebugMsg( "Selected filter: " + myFilterString );
   QgsDebugMsg( "Image type to be passed to mapcanvas: " + myFilterMap[myFilterString] );
 
