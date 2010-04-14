@@ -137,23 +137,8 @@ void QgsAttributeTableModel::loadAttributes()
   }
 
   bool ins = false, rm = false;
-  int pendingFieldCount = mLayer->pendingFields().size();
 
-  if ( mFieldCount < pendingFieldCount )
-  {
-    ins = true;
-    beginInsertColumns( QModelIndex(), mFieldCount, pendingFieldCount - 1 );
-  }
-  else if ( pendingFieldCount < mFieldCount )
-  {
-    rm = true;
-    beginRemoveColumns( QModelIndex(), pendingFieldCount, mFieldCount - 1 );
-  }
-
-  mFieldCount = 0;
-  mAttributes.clear();
-  mValueMaps.clear();
-
+  QgsAttributeList attributes;
   for ( QgsFieldMap::const_iterator it = mLayer->pendingFields().constBegin(); it != mLayer->pendingFields().end(); it++ )
   {
     switch ( mLayer->editType( it.key() ) )
@@ -169,9 +154,23 @@ void QgsAttributeTableModel::loadAttributes()
         break;
     }
 
-    mFieldCount++;
-    mAttributes << it.key();
+    attributes << it.key();
   }
+
+  if ( mFieldCount < attributes.size() )
+  {
+    ins = true;
+    beginInsertColumns( QModelIndex(), mFieldCount, attributes.size() - 1 );
+  }
+  else if ( attributes.size() < mFieldCount )
+  {
+    rm = true;
+    beginRemoveColumns( QModelIndex(), attributes.size(), mFieldCount - 1 );
+  }
+
+  mFieldCount = attributes.size();
+  mAttributes = attributes;
+  mValueMaps.clear();
 
   if ( ins )
   {
