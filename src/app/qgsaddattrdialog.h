@@ -22,13 +22,13 @@
 #include "qgisgui.h"
 #include "qgsfield.h"
 
-class QgsVectorDataProvider;
+class QgsVectorLayer;
 
 class QgsAddAttrDialog: public QDialog, private Ui::QgsAddAttrDialogBase
 {
     Q_OBJECT
   public:
-    QgsAddAttrDialog( QgsVectorDataProvider* provider,
+    QgsAddAttrDialog( QgsVectorLayer *vlayer,
                       QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
     QgsAddAttrDialog( const std::list<QString>& typelist,
                       QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
@@ -38,8 +38,6 @@ class QgsAddAttrDialog: public QDialog, private Ui::QgsAddAttrDialogBase
   public slots:
     void on_mTypeBox_currentIndexChanged( int idx );
 
-  protected:
-    QgsVectorDataProvider* mDataProvider;
 };
 
 #endif

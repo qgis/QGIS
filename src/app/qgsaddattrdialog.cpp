@@ -16,16 +16,17 @@
  ***************************************************************************/
 
 #include "qgsaddattrdialog.h"
+#include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgslogger.h"
 
-QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorDataProvider* provider, QWidget *parent, Qt::WFlags fl )
-    : QDialog( parent, fl ), mDataProvider( provider )
+QgsAddAttrDialog::QgsAddAttrDialog( QgsVectorLayer *vlayer, QWidget *parent, Qt::WFlags fl )
+    : QDialog( parent, fl )
 {
   setupUi( this );
 
   //fill data types into the combo box
-  const QList< QgsVectorDataProvider::NativeType > &typelist = mDataProvider->nativeTypes();
+  const QList< QgsVectorDataProvider::NativeType > &typelist = vlayer->dataProvider()->nativeTypes();
 
   for ( int i = 0; i < typelist.size(); i++ )
   {
