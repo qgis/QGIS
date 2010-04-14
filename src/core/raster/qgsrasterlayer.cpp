@@ -364,7 +364,7 @@ void QgsRasterLayer::buildSupportedRasterFileFilter( QString & theFileFiltersStr
       if ( !( myGdalDriverExtension.isEmpty() || myGdalDriverLongName.isEmpty() ) )
       {
         // XXX add check for SDTS; in that case we want (*CATD.DDF)
-        QString glob = "*." + myGdalDriverExtension.replace("/", " *.");
+        QString glob = "*." + myGdalDriverExtension.replace( "/", " *." );
         // Add only the first JP2 driver found to the filter list (it's the one GDAL uses)
         if ( myGdalDriverDescription == "JPEG2000" ||
              myGdalDriverDescription.startsWith( "JP2" ) ) // JP2ECW, JP2KAK, JP2MrSID
@@ -1558,14 +1558,23 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
 
     int currentPixelOffsetY = 0; //top y-coordinate of current raster part
     //the width of a WMS image part
-    int pixelWidth = ( myRasterExtent.xMaximum() - myRasterExtent.xMinimum() ) / theQgsMapToPixel.mapUnitsPerPixel();
+    int pixelWidth = ( myRasterExtent.xMaximum() - myRasterExtent.xMinimum() ) / theQgsMapToPixel.mapUnitsPerPixel() + 0.5;
     for ( int i = 0; i < numParts; ++i )
     {
       //fetch a small overlap of 2 pixels between two adjacent tiles to avoid white stripes
       QgsRectangle rasterPartRect( myRasterExtent.xMinimum(), myRasterExtent.yMaximum() - ( currentPixelOffsetY + numRowsPerPart + 2 ) * theQgsMapToPixel.mapUnitsPerPixel(),
                                    myRasterExtent.xMaximum(), myRasterExtent.yMaximum() - currentPixelOffsetY * theQgsMapToPixel.mapUnitsPerPixel() );
 
-      int pixelHeight = rasterPartRect.height() / theQgsMapToPixel.mapUnitsPerPixel();
+      int pixelHeight = rasterPartRect.height() / theQgsMapToPixel.mapUnitsPerPixel() + 0.5;
+
+      /*
+      QgsDebugMsg( "**********WMS tile parameter***************" );
+      QgsDebugMsg( "pixelWidth: " + QString::number( pixelWidth ) );
+      QgsDebugMsg( "pixelHeight: " + QString::number( pixelHeight ) );
+      QgsDebugMsg( "mapWidth: " + QString::number( rasterPartRect.width() ) );
+      QgsDebugMsg( "mapHeight: " + QString::number( rasterPartRect.height(), 'f', 8 ) );
+      QgsDebugMsg( "mapUnitsPerPixel: " + QString::number( theQgsMapToPixel.mapUnitsPerPixel() ) );*/
+
       QImage* image = mDataProvider->draw( rasterPartRect, pixelWidth, pixelHeight );
 
       if ( !image )
