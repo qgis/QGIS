@@ -18,14 +18,14 @@
 #include "qgscomposertablewidget.h"
 #include "qgsattributeselectiondialog.h"
 #include "qgscomposeritemwidget.h"
-#include "qgscomposertable.h"
+#include "qgscomposerattributetable.h"
 #include "qgscomposermap.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
 #include <QColorDialog>
 #include <QFontDialog>
 
-QgsComposerTableWidget::QgsComposerTableWidget( QgsComposerTable* table ): QWidget( 0 ), mComposerTable( table )
+QgsComposerTableWidget::QgsComposerTableWidget( QgsComposerAttributeTable* table ): QWidget( 0 ), mComposerTable( table )
 {
   setupUi( this );
   //add widget for general composer item properties

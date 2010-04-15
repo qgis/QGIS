@@ -20,17 +20,17 @@
 
 #include "ui_qgscomposertablewidgetbase.h"
 
-class QgsComposerTable;
+class QgsComposerAttributeTable;
 
 class QgsComposerTableWidget: public QWidget, private Ui::QgsComposerTableWidgetBase
 {
     Q_OBJECT
   public:
-    QgsComposerTableWidget( QgsComposerTable* table );
+    QgsComposerTableWidget( QgsComposerAttributeTable* table );
     ~QgsComposerTableWidget();
 
   private:
-    QgsComposerTable* mComposerTable;
+    QgsComposerAttributeTable* mComposerTable;
 
     /**Sets the GUI elements to the values of mComposerTable*/
     void updateGuiElements();

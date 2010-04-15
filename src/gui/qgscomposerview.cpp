@@ -28,7 +28,7 @@
 #include "qgscomposerpicture.h"
 #include "qgscomposerscalebar.h"
 #include "qgscomposershape.h"
-#include "qgscomposertable.h"
+#include "qgscomposerattributetable.h"
 
 QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags f ) :
     QGraphicsView( parent ), mShiftKeyPressed( false ), mRubberBandItem( 0 ), mRubberBandLineItem( 0 ), mMoveContentItem( 0 )
@@ -162,7 +162,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
     }
     case AddTable:
     {
-      QgsComposerTable* newTable = new QgsComposerTable( composition() );
+      QgsComposerAttributeTable* newTable = new QgsComposerAttributeTable( composition() );
       addComposerTable( newTable );
       newTable->setSceneRect( QRectF( snappedScenePoint.x(), snappedScenePoint.y(), 50, 50 ) );
       emit actionFinished();
@@ -541,7 +541,7 @@ void QgsComposerView::addComposerShape( QgsComposerShape* shape )
   emit selectedItemChanged( shape );
 }
 
-void QgsComposerView::addComposerTable( QgsComposerTable* table )
+void QgsComposerView::addComposerTable( QgsComposerAttributeTable* table )
 {
   scene()->addItem( table );
   emit composerTableAdded( table );
