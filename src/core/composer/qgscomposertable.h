@@ -22,31 +22,20 @@
 #include "qgsfeature.h"
 #include <QSet>
 
-class QgsComposerMap;
-class QgsVectorLayer;
+
 
 /**A class to display feature attributes in the print composer*/
 class CORE_EXPORT QgsComposerTable: public QgsComposerItem
 {
-    Q_OBJECT
   public:
     QgsComposerTable( QgsComposition* composition );
-    ~QgsComposerTable();
+    virtual ~QgsComposerTable();
 
     /** \brief Reimplementation of QCanvasItem::paint*/
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
+    virtual void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
 
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
-
-    void setVectorLayer( QgsVectorLayer* vl );// { mVectorLayer = vl; }
-    const QgsVectorLayer* vectorLayer() const { return mVectorLayer; }
-
-    void setComposerMap( const QgsComposerMap* map );
-    const QgsComposerMap* composerMap() const { return mComposerMap; }
-
-    void setMaximumNumberOfFeatures( int nr ) { mMaximumNumberOfFeatures = nr; }
-    int maximumNumberOfFeatures() const { return mMaximumNumberOfFeatures; }
+    virtual bool writeXML( QDomElement& elem, QDomDocument & doc ) const = 0;
+    virtual bool readXML( const QDomElement& itemElem, const QDomDocument& doc ) = 0;
 
     void setLineTextDistance( double d ) { mLineTextDistance = d; }
     double lineTextDistance() const { return mLineTextDistance; }
@@ -66,25 +55,7 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
     void setGridColor( const QColor& c ) { mGridColor = c; }
     QColor gridColor() const { return mGridColor; }
 
-    void setDisplayOnlyVisibleFeatures( bool b ) { mShowOnlyVisibleFeatures = b; }
-    bool displayOnlyVisibleFeatures() const { return mShowOnlyVisibleFeatures; }
-
-    QSet<int> displayAttributes() const { return mDisplayAttributes; }
-    void setDisplayAttributes( const QSet<int>& attr ) { mDisplayAttributes = attr;}
-
-    QMap<int, QString> fieldAliasMap() const { return mFieldAliasMap; }
-    void setFieldAliasMap( const QMap<int, QString>& map ) { mFieldAliasMap = map; }
-
-    /**Adapts mMaximumNumberOfFeatures depending on the rectangle height*/
-    void setSceneRect( const QRectF& rectangle );
-
-  private:
-    /**Associated vector layer*/
-    QgsVectorLayer* mVectorLayer;
-    /**Associated composer map (used to display the visible features)*/
-    const QgsComposerMap* mComposerMap;
-    /**Maximum number of features that is displayed*/
-    int mMaximumNumberOfFeatures;
+  protected:
     /**Distance between table lines and text*/
     double mLineTextDistance;
 
@@ -94,30 +65,19 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
     bool mShowGrid;
     double mGridStrokeWidth;
     QColor mGridColor;
-    /**Shows only the features that are visible in the associated composer map (true by default)*/
-    bool mShowOnlyVisibleFeatures;
-
-    /**List of attribute indices to display (or all attributes if list is empty)*/
-    QSet<int> mDisplayAttributes;
-    /**Map of attribute name aliases. The aliases might be different to those of QgsVectorLayer (but those from the vector layer are the default)*/
-    QMap<int, QString> mFieldAliasMap;
 
     /**Retrieves feature attributes*/
-    bool getFeatureAttributes( QList<QgsAttributeMap>& attributes );
+    virtual bool getFeatureAttributes( QList<QgsAttributeMap>& attributes ) = 0;
+    virtual QMap<int, QString> getHeaderLabels() const = 0;
     /**Calculate the maximum width values of the vector attributes*/
-    bool calculateMaxColumnWidths( QMap<int, double>& maxWidthMap, const QList<QgsAttributeMap>& attributeList ) const;
+    virtual bool calculateMaxColumnWidths( QMap<int, double>& maxWidthMap, const QList<QgsAttributeMap>& attributeList ) const;
     /**Adapts the size of the item frame to match the content*/
     void adaptItemFrame( const QMap<int, double>& maxWidthMap, const QList<QgsAttributeMap>& attributeList );
     void drawHorizontalGridLines( QPainter* p, int nAttributes );
     void drawVerticalGridLines( QPainter* p, const QMap<int, double>& maxWidthMap );
-    /**Inserts aliases from vector layer as starting configuration to the alias map*/
-    void initializeAliasMap();
-    /**Returns the attribute name to display in the item (attribute name or an alias if present)*/
-    QString attributeDisplayName( int attributeIndex, const QString& name ) const;
 
-  signals:
-    /**This signal is emitted if the maximum number of feature changes (interactively)*/
-    void maximumNumerOfFeaturesChanged( int n );
+    bool tableWriteXML( QDomElement& itemElem, QDomDocument& doc ) const;
+    bool tableReadXML( const QDomElement& itemElem, const QDomDocument& doc );
 };
 
 #endif // QGSCOMPOSERTABLE_H

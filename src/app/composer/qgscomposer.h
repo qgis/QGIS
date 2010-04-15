@@ -29,7 +29,7 @@ class QgsComposerMap;
 class QgsComposerPicture;
 class QgsComposerScaleBar;
 class QgsComposerShape;
-class QgsComposerTable;
+class QgsComposerAttributeTable;
 class QgsComposerView;
 class QgsComposition;
 class QgsMapCanvas;
@@ -223,7 +223,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void addComposerShape( QgsComposerShape* shape );
 
     /**Adds a composer table to the item/widget map and creates a configuration widget*/
-    void addComposerTable( QgsComposerTable* table );
+    void addComposerTable( QgsComposerAttributeTable* table );
 
     /**Removes item from the item/widget map and deletes the configuration widget*/
     void deleteItem( QgsComposerItem* item );

@@ -32,7 +32,7 @@ class QgsComposerMap;
 class QgsComposerPicture;
 class QgsComposerScaleBar;
 class QgsComposerShape;
-class QgsComposerTable;
+class QgsComposerAttributeTable;
 
 /** \ingroup MapComposer
  * \ingroup gui
@@ -93,7 +93,7 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     /**Adds a composer shape to the graphics scene and advices composer to create a widget for it (through signal)*/
     void addComposerShape( QgsComposerShape* shape );
     /**Adds a composer table to the graphics scene and advices composer to create a widget for it (through signal)*/
-    void addComposerTable( QgsComposerTable* table );
+    void addComposerTable( QgsComposerAttributeTable* table );
 
     /**Returns the composer main window*/
     QMainWindow* composerWindow();
@@ -147,7 +147,7 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     /**Is emitted when a new composer shape has been added*/
     void composerShapeAdded( QgsComposerShape* shape );
     /**Is emitted when a new composer table has been added*/
-    void composerTableAdded( QgsComposerTable* table );
+    void composerTableAdded( QgsComposerAttributeTable* table );
     /**Is emitted when a composer item has been removed from the scene*/
     void itemRemoved( QgsComposerItem* );
     /**Current action (e.g. adding composer map) has been finished. The purpose of this signal is that

@@ -35,7 +35,7 @@
 #include "qgscomposerscalebarwidget.h"
 #include "qgscomposershape.h"
 #include "qgscomposershapewidget.h"
-#include "qgscomposertable.h"
+#include "qgscomposerattributetable.h"
 #include "qgscomposertablewidget.h"
 #include "qgsexception.h"
 #include "qgsproject.h"
@@ -283,7 +283,7 @@ void QgsComposer::connectSlots()
   connect( mView, SIGNAL( composerPictureAdded( QgsComposerPicture* ) ), this, SLOT( addComposerPicture( QgsComposerPicture* ) ) );
   connect( mView, SIGNAL( composerShapeAdded( QgsComposerShape* ) ), this, SLOT( addComposerShape( QgsComposerShape* ) ) );
   connect( mView, SIGNAL( composerArrowAdded( QgsComposerArrow* ) ), this, SLOT( addComposerArrow( QgsComposerArrow* ) ) );
-  connect( mView, SIGNAL( composerTableAdded( QgsComposerTable* ) ), this, SLOT( addComposerTable( QgsComposerTable* ) ) );
+  connect( mView, SIGNAL( composerTableAdded( QgsComposerAttributeTable* ) ), this, SLOT( addComposerTable( QgsComposerAttributeTable* ) ) );
   connect( mView, SIGNAL( actionFinished() ), this, SLOT( setSelectionTool() ) );
 }
 
@@ -1263,11 +1263,11 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
   }
 
   //composer tables
-  QDomNodeList composerTableList = composerElem.elementsByTagName( "ComposerTable" );
+  QDomNodeList composerTableList = composerElem.elementsByTagName( "ComposerAttributeTable" );
   for ( int i = 0; i < composerTableList.size(); ++i )
   {
     QDomElement currentTableElem = composerTableList.at( i ).toElement();
-    QgsComposerTable* newTable = new QgsComposerTable( mComposition );
+    QgsComposerAttributeTable* newTable = new QgsComposerAttributeTable( mComposition );
     newTable->readXML( currentTableElem, doc );
     addComposerTable( newTable );
     mComposition->addItem( newTable );
@@ -1373,7 +1373,7 @@ void QgsComposer::addComposerShape( QgsComposerShape* shape )
   mItemWidgetMap.insert( shape, sWidget );
 }
 
-void QgsComposer::addComposerTable( QgsComposerTable* table )
+void QgsComposer::addComposerTable( QgsComposerAttributeTable* table )
 {
   if ( !table )
   {
