@@ -44,6 +44,10 @@ class Dialog(QDialog, Ui_Dialog):
         QDialog.__init__(self)
         self.iface = iface
         self.setupUi(self)
+        self.xMin.setValidator(QDoubleValidator(self.xMin))
+        self.xMax.setValidator(QDoubleValidator(self.xMax))
+        self.yMin.setValidator(QDoubleValidator(self.yMin))
+        self.yMax.setValidator(QDoubleValidator(self.yMax))
         QObject.connect(self.toolOut, SIGNAL("clicked()"), self.outFile)
         self.setWindowTitle( self.tr("Regular points") )
         self.progressBar.setValue(0)

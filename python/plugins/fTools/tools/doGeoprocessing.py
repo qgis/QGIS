@@ -12,6 +12,7 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
     QDialog.__init__( self )
     self.iface = iface
     self.setupUi( self )
+    self.param.setValidator(QDoubleValidator(self.param))
     self.myFunction = function
     QObject.connect( self.btnBrowse, SIGNAL( "clicked()" ), self.outFile )
     QObject.connect( self.inShapeA, SIGNAL( "currentIndexChanged(QString)" ), self.checkA )
@@ -541,12 +542,14 @@ class geoprocessingThread( QThread ):
     vproviderA = self.vlayerA.dataProvider()
     allAttrsA = vproviderA.attributeIndexes()
     fields = vproviderA.fields()
-    writer = QgsVectorFileWriter( self.myName, self.myEncoding, 
+    writer = QgsVectorFileWriter( self.myName, self.myEncoding,
     fields, vproviderA.geometryType(), vproviderA.crs() )
     inFeat = QgsFeature()
     outFeat = QgsFeature()
     vproviderA.rewind()
     nElement = 0
+    inGeom = QgsGeometry()
+    geoms = []
     # there is selection in input layer
     if self.mySelectionA:
       nFeat = self.vlayerA.selectedFeatureCount()
@@ -556,24 +559,21 @@ class geoprocessingThread( QThread ):
         self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
         first = True
         for inFeat in selectionA:
-          nElement += 1
+          nElement += 0.5
           self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
           if first:
             attrs = inFeat.attributeMap()
-            tmpInGeom = QgsGeometry( inFeat.geometry() )
-            outFeat.setGeometry( tmpInGeom )
+            inGeom = QgsGeometry( inFeat.geometry() )
             first = False
           else:
-            tmpInGeom = QgsGeometry( inFeat.geometry() )
-            tmpOutGeom = QgsGeometry( outFeat.geometry() )
-            try:
-              tmpOutGeom = QgsGeometry( tmpOutGeom.combine( tmpInGeom ) )
-              outFeat.setGeometry( tmpOutGeom )
-            except:
-              GEOS_EXCEPT = False
-              continue
-        outFeat.setAttributeMap( attrs )
-        writer.addFeature( outFeat )
+            tmp_geom = QgsGeometry( inFeat.geometry() )
+            geoms.append(tmp_geom)
+        outGeom = QgsGeometry(inGeom.combineCascaded(geoms))
+        nElement += nFeat/2
+        self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
+        outFeat.setGeometry(outGeom)
+        outFeat.setAttributeMap(attrs)
+        writer.addFeature(outFeat)
       else:
         unique = vproviderA.uniqueValues( int( self.myParam ) )
         nFeat = nFeat * len( unique )
@@ -584,31 +584,25 @@ class geoprocessingThread( QThread ):
           add = False
           vproviderA.select( allAttrsA )
           vproviderA.rewind()
-          for inFeat in selectionA:
-            nElement += 1
+          filtered = [feat for feat in selectionA if feat.attributeMap()[
+              self.myParam].toString().trimmed() == item.toString().trimmed()]
+          for inFeat in filtered:
+            nElement += 0.5
             self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
             atMap = inFeat.attributeMap()
-            tempItem = atMap[ self.myParam ]
-            if tempItem.toString().trimmed() == item.toString().trimmed():
-              add = True
-              if first:
-                QgsGeometry( inFeat.geometry() )
-                tmpInGeom = QgsGeometry( inFeat.geometry() )
-                outFeat.setGeometry( tmpInGeom )
-                first = False
-                attrs = inFeat.attributeMap()
-              else:
-                tmpInGeom = QgsGeometry( inFeat.geometry() )
-                tmpOutGeom = QgsGeometry( outFeat.geometry() )
-                try:
-                  tmpOutGeom = QgsGeometry( tmpOutGeom.combine( tmpInGeom ) )
-                  outFeat.setGeometry( tmpOutGeom )
-                except:
-                  GEOS_EXCEPT = False
-                  add = False
-          if add:
-            outFeat.setAttributeMap( attrs )
-            writer.addFeature( outFeat )
+            if first:
+              inGeom = QgsGeometry( inFeat.geometry() )
+              first = False
+              attrs = inFeat.attributeMap()
+            else:
+              tmp_geom = QgsGeometry( inFeat.geometry() )
+              geoms.append(tmp_geom)
+          outGeom = QgsGeometry(inGeom.combineCascaded(geoms))
+          nElement += nFeat/2
+          self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
+          outFeat.setGeometry(outGeom)
+          outFeat.setAttributeMap(attrs)
+          writer.addFeature(outFeat)
     # there is no selection in input layer
     else:
       nFeat = vproviderA.featureCount()
@@ -617,58 +611,51 @@ class geoprocessingThread( QThread ):
         self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
         first = True
         while vproviderA.nextFeature( inFeat ):
-          nElement += 1
+          nElement += 0.5
           self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
           if first:
             attrs = inFeat.attributeMap()
-            tmpInGeom = QgsGeometry( inFeat.geometry() )
-            outFeat.setGeometry( tmpInGeom )
+            inGeom = QgsGeometry( inFeat.geometry() )
             first = False
           else:
-            tmpInGeom = QgsGeometry( inFeat.geometry() )
-            tmpOutGeom = QgsGeometry( outFeat.geometry() )
-            try:
-              tmpOutGeom = QgsGeometry( tmpOutGeom.combine( tmpInGeom ) )
-              outFeat.setGeometry( tmpOutGeom )
-            except:
-              GEOS_EXCEPT = False
-              continue
-        outFeat.setAttributeMap( attrs )
-        writer.addFeature( outFeat )
+            tmp_geom = QgsGeometry( inFeat.geometry() )
+            geoms.append(tmp_geom)
+        outGeom = QgsGeometry(inGeom.combineCascaded(geoms))
+        nElement += nFeat/2
+        self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
+        outFeat.setGeometry(outGeom)
+        outFeat.setAttributeMap(attrs)
+        writer.addFeature(outFeat)
       else:
         unique = vproviderA.uniqueValues( int( self.myParam ) )
         nFeat = nFeat * len( unique )
         self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0)
         self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
         for item in unique:
+          geoms = []
           first = True
           add = True
           vproviderA.select( allAttrsA )
           vproviderA.rewind()
           while vproviderA.nextFeature( inFeat ):
-            nElement += 1
+            nElement += 0.5
             self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
             atMap = inFeat.attributeMap()
             tempItem = atMap[ self.myParam ]
             if tempItem.toString().trimmed() == item.toString().trimmed():
               if first:
-                QgsGeometry( inFeat.geometry() )
-                tmpInGeom = QgsGeometry( inFeat.geometry() )
-                outFeat.setGeometry( tmpInGeom )
+                inGeom = QgsGeometry( inFeat.geometry() )
                 first = False
                 attrs = inFeat.attributeMap()
               else:
-                tmpInGeom = QgsGeometry( inFeat.geometry() )
-                tmpOutGeom = QgsGeometry( outFeat.geometry() )
-                try:
-                  tmpOutGeom = QgsGeometry( tmpOutGeom.combine( tmpInGeom ) )
-                  outFeat.setGeometry( tmpOutGeom )
-                except:
-                  GEOS_EXCEPT = False
-                  add = False
-          if add:
-            outFeat.setAttributeMap( attrs )
-            writer.addFeature( outFeat )
+                tmp_geom = QgsGeometry( inFeat.geometry() )
+                geoms.append(tmp_geoms)
+          outGeom = QgsGeometry(inGeom.combineCascaded(geoms))
+          nElement += nFeat/2
+          self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
+          outFeat.setGeometry(outGeom)
+          outFeat.setAttributeMap(attrs)
+          writer.addFeature(outFeat)
     del writer
     return GEOS_EXCEPT, FEATURE_EXCEPT, True
   
