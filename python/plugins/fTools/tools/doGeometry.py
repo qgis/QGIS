@@ -421,52 +421,22 @@ class geometryThread( QThread ):
     writer = QgsVectorFileWriter( self.myName, self.myEncoding, 
     fields, QGis.WKBPoint, vprovider.crs() )
     inFeat = QgsFeature()
-    outfeat = QgsFeature()
+    outFeat = QgsFeature()
     nFeat = vprovider.featureCount()
     nElement = 0
     self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
     self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
     while vprovider.nextFeature( inFeat ):
-      geom = inFeat.geometry()
-      area = 0.00
-      bounding = inFeat.geometry().boundingBox()
-      xmin = bounding.xMinimum()
-      ymin = bounding.yMinimum() 
-      if geom.type() == 2:
-        cx = 0
-        cy = 0
-        factor = 0
-        if geom.isMultipart():
-          polygons = geom.asMultiPolygon()
-          for polygon in polygons:
-            for line in polygon: 
-              for i in range(0,len(line)-1):
-                j = (i + 1) % len(line)
-                factor=((line[i].x()-xmin)*(line[j].y()-ymin)-(line[j].x()-xmin)*(line[i].y()-ymin))
-                cx+=((line[i].x()-xmin)+(line[j].x()-xmin))*factor
-                cy+=((line[i].y()-ymin)+(line[j].y()-ymin))*factor
-                area+=factor
-        else:
-          polygon = geom.asPolygon()
-          for line in polygon:
-            for i in range(0,len(line)-1):
-              j = (i + 1) % len(line)
-              factor=((line[i].x()-xmin)*(line[j].y()-ymin)-(line[j].x()-xmin)*(line[i].y()-ymin))
-              cx+=((line[i].x()-xmin)+(line[j].x()-xmin))*factor
-              cy+=((line[i].y()-ymin)+(line[j].y()-ymin))*factor
-              area+=factor
-
-        if area==0:
-          continue
-		 
-        cx/=area*3.00
-        cy/=area*3.00
-        outfeat.setGeometry( QgsGeometry.fromPoint( QgsPoint( cx+xmin, cy+ymin ) ) )
-        atMap = inFeat.attributeMap()
-        outfeat.setAttributeMap( atMap )
-        writer.addFeature( outfeat )
       nElement += 1
       self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
+      inGeom = inFeat.geometry()
+      atMap = inFeat.attributeMap()
+      outGeom = QgsGeometry(inGeom.centroid())
+      if outGeom is None:
+        return "math_error"
+      outFeat.setAttributeMap( atMap )
+      outFeat.setGeometry( outGeom )
+      writer.addFeature( outFeat )
     del writer
     return True
     
