@@ -88,8 +88,11 @@ class Dialog(QDialog, Ui_Dialog):
                 outName = outName.left(outName.length() - 4)
             self.compute(inName, joinName, outPath, summary, sumList, keep, self.progressBar)
             self.outShape.clear()
-            addToTOC = QMessageBox.question(self, self.tr("Spatial Join"), self.tr("Created output shapefile:\n%1\n\nWould you like to add the new layer to the TOC?").arg(unicode(outPath)), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
-            if addToTOC == QMessageBox.Yes:
+            if res:
+              addToTOC = QMessageBox.question(self, self.tr("Spatial Join"),
+                      self.tr("Created output shapefile:\n%1\n\nWould you like to add the new layer to the TOC?")
+                      .arg(unicode(outPath)), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
+              if addToTOC == QMessageBox.Yes:
                 self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
                 QgsMapLayerRegistry.instance().addMapLayer(self.vlayer)
         self.progressBar.setValue(0)
@@ -135,13 +138,23 @@ class Dialog(QDialog, Ui_Dialog):
             fieldList1.extend(fieldList)
             seq = range(0, len(fieldList1))
             fieldList1 = dict(zip(seq, fieldList1))
-
+        
+        # check for correct field names
+        longNames = ftools_utils.checkFieldNameLenght( fieldList1 )
+        if not longNames.isEmpty():
+            QMessageBox.warning( self, self.tr( 'Incorrect field names' ),
+                        self.tr( 'No output will be created.\nFollowing field names are longer then 10 characters:\n%1' )
+                        .arg( longNames.join( '\n' ) ) )
+            return False
+        
         sRs = provider1.crs()
         progressBar.setValue(13)
         check = QFile(self.shapefileName)
         if check.exists():
             if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):
-                return
+                QMessageBox.warning( self, self.tr( 'Error deleting shapefile' ),
+                            self.tr( "Can't delete existing shapefile\n%1" ).arg( self.shapefileName ) )
+                return False
         writer = QgsVectorFileWriter(self.shapefileName, self.encoding, fieldList1, provider1.geometryType(), sRs)
         #writer = QgsVectorFileWriter(outName, "UTF-8", fieldList1, provider1.geometryType(), sRs)
         inFeat = QgsFeature()
@@ -215,3 +228,4 @@ class Dialog(QDialog, Ui_Dialog):
             start = start + add
             progressBar.setValue(start)
         del writer
+        return True

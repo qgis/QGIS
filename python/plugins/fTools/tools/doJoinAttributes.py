@@ -103,10 +103,14 @@ class Dialog(QDialog, Ui_Dialog):
       outPath = self.outShape.text()
       self.compute(inName, inField, joinName, joinField, outPath, keep, useTable, self.progressBar)
       self.outShape.clear()
-      addToTOC = QMessageBox.question(self, self.tr("Join Attributes"), self.tr("Created output shapefile:\n%1\n\nWould you like to add the new layer to the TOC?").arg( unicode(self.shapefileName) ), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
-      if addToTOC == QMessageBox.Yes:
-        if not ftools_utils.addShapeToCanvas( unicode( outPath ) ):
-          QMessageBox.warning( self, self.tr("Geoprocessing"), self.tr( "Error loading output shapefile:\n%1" ).arg( unicode( outPath ) ))
+      if res:
+        addToTOC = QMessageBox.question(self, self.tr("Join Attributes"),
+            self.tr("Created output shapefile:\n%1\n\nWould you like to add the new layer to the TOC?")
+            .arg( unicode(self.shapefileName) ), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
+        if addToTOC == QMessageBox.Yes:
+          if not ftools_utils.addShapeToCanvas( unicode( outPath ) ):
+            QMessageBox.warning( self, self.tr("Geoprocessing"), self.tr( "Error loading output shapefile:\n%1" )
+            .arg( unicode( outPath ) ))
     self.progressBar.setValue(0)
 
   def outFile(self):
@@ -171,12 +175,21 @@ class Dialog(QDialog, Ui_Dialog):
     seq = range(0, len(fieldList1) + len(fieldList2))
     fieldList1.extend(fieldList2)
     fieldList1 = dict(zip(seq, fieldList1))
+    # check for correct field names
+    longNames = ftools_utils.checkFieldNameLenght( fieldList1 )
+    if not longNames.isEmpty():
+      QMessageBox.warning( self, self.tr( 'Incorrect field names' ),
+                  self.tr( 'No output will be created.\nFollowing field names are longer then 10 characters:\n%1' )
+                  .arg( longNames.join( '\n' ) ) )
+      return False
     sRs = provider1.crs()
     progressBar.setValue(13)
     check = QFile(self.shapefileName)
     if check.exists():
       if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):
-        return
+        QMessageBox.warning( self, self.tr( 'Error deleting shapefile' ),
+                    self.tr( "Can't delete existing shapefile\n%1" ).arg( self.shapefileName ) )
+        return False
     writer = QgsVectorFileWriter(self.shapefileName, self.encoding, fieldList1, provider1.geometryType(), sRs)
     inFeat = QgsFeature()
     outFeat = QgsFeature()
@@ -215,6 +228,7 @@ class Dialog(QDialog, Ui_Dialog):
       nElement += 1
       progressBar.setValue(nElement)
     del writer
+    return True
 
   def createFieldList(self, table, joinField):
     fieldList = {}
@@ -236,14 +250,3 @@ class Dialog(QDialog, Ui_Dialog):
       fieldList[item] = field
       item = item + 1
     return (fieldList, index2)
-
-  def testForUniqueness(self, fieldList1, fieldList2):
-    changed = True
-    while changed:
-      changed = False
-      for i in fieldList1:
-        for j in fieldList2:
-          if j.name() == i.name():
-            j = ftools_utils.createUniqueFieldName(j)
-            changed = True
-    return fieldList2
