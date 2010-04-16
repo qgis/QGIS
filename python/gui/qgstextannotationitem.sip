@@ -4,7 +4,7 @@ class QgsTextAnnotationItem: QgsAnnotationItem
   #include <qgstextannotationitem.h>
 %End
   public:
-    QgsTextAnnotationItem( QgsMapCanvas* canvas );
+    QgsTextAnnotationItem( QgsMapCanvas* canvas /TransferThis/ );
     ~QgsTextAnnotationItem();
 
     /**Returns document (caller takes ownership)*/
