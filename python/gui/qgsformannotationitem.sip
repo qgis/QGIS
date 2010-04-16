@@ -5,7 +5,7 @@ class QgsFormAnnotationItem: QObject, QgsAnnotationItem
 %End
 
   public:
-    QgsFormAnnotationItem( QgsMapCanvas* canvas, QgsVectorLayer* vlayer = 0, bool hasFeature = false, int feature = 0);
+    QgsFormAnnotationItem( QgsMapCanvas* canvas /TransferThis/, QgsVectorLayer* vlayer = 0, bool hasFeature = false, int feature = 0);
     ~QgsFormAnnotationItem();
 
     void paint( QPainter * painter );
