@@ -443,7 +443,7 @@ void QgsMapCanvas::saveAsImage( QString theFileName, QPixmap * theQPixmap, QStri
   myHeader += QString::number( myRect.yMaximum() - ( mapUnitsPerPixel() / 2 ), 'g', 17 ) + "\r\n";
   QFileInfo myInfo  = QFileInfo( theFileName );
   // allow dotted names
-  QString myWorldFileName = myInfo.absolutePath() + myInfo.completeBaseName() + "." + theFormat + "w";
+  QString myWorldFileName = myInfo.absolutePath() + "/" + myInfo.completeBaseName() + "." + theFormat + "w";
   QFile myWorldFile( myWorldFileName );
   if ( !myWorldFile.open( QIODevice::WriteOnly ) ) //don't use QIODevice::Text
   {
