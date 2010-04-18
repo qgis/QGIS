@@ -242,7 +242,7 @@ class GUI_EXPORT QgsSVGFillSymbolLayerWidget : public QgsSymbolLayerV2Widget, pr
     void on_mBrowseToolButton_clicked();
     void on_mTextureWidthSpinBox_valueChanged( double d );
     void on_mSVGLineEdit_textChanged( const QString & text );
-    void on_mSvgListWidget_itemActivated( QListWidgetItem* item );
+    void on_mSvgListWidget_currentItemChanged( QListWidgetItem* item, QListWidgetItem* previous );
     void on_mChangeOutlinePushButton_clicked();
 };
 
