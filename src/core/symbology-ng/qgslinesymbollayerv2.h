@@ -64,6 +64,7 @@ class CORE_EXPORT QgsSimpleLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     Qt::PenJoinStyle mPenJoinStyle;
     Qt::PenCapStyle mPenCapStyle;
     QPen mPen;
+    QPen mSelPen;
     double mOffset;
     //use a custom dash dot pattern instead of the predefined ones
     bool mUseCustomDashPattern;
@@ -159,6 +160,7 @@ class CORE_EXPORT QgsLineDecorationSymbolLayerV2 : public QgsLineSymbolLayerV2
 
   protected:
     QPen mPen;
+    QPen mSelPen;
 
 };
 

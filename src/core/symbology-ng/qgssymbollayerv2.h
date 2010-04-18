@@ -18,7 +18,6 @@ class QgsRenderContext;
 class QgsSymbolV2;
 
 
-
 class CORE_EXPORT QgsSymbolLayerV2
 {
   public:
@@ -61,6 +60,12 @@ class CORE_EXPORT QgsSymbolLayerV2
     bool mLocked;
     QColor mColor;
     int mRenderingPass;
+
+    // Configuration of selected symbology implementation
+    static const bool selectionIsOpaque = true;  // Selection ignores symbol alpha
+    static const bool selectFillBorder = false;  // Fill symbol layer also selects border symbology
+    static const bool selectFillStyle = false;   // Fill symbol uses symbol layer style..
+
 };
 
 //////////////////////

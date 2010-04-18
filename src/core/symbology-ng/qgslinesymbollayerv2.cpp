@@ -83,6 +83,11 @@ void QgsSimpleLineSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
   }
   mPen.setJoinStyle( mPenJoinStyle );
   mPen.setCapStyle( mPenCapStyle );
+
+  mSelPen = mPen;
+  QColor selColor = context.selectionColor();
+  if ( ! selectionIsOpaque ) selColor.setAlphaF( context.alpha() );
+  mSelPen.setColor( selColor );
 }
 
 void QgsSimpleLineSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
@@ -97,7 +102,7 @@ void QgsSimpleLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSym
     return;
   }
 
-  p->setPen( mPen );
+  p->setPen( context.selected() ? mSelPen : mPen );
   if ( mOffset == 0 )
   {
     p->drawPolyline( points );
@@ -309,7 +314,7 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineNoOffset( const QPolygonF& points
     // draw first marker
     if ( first )
     {
-      mMarker->renderPoint( lastPt, rc );
+      mMarker->renderPoint( lastPt, rc, -1, context.selected() );
       first = false;
     }
 
@@ -319,7 +324,7 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineNoOffset( const QPolygonF& points
       // "c" is 1 for regular point or in interval (0,1] for begin of line segment
       lastPt += c * diff;
       lengthLeft -= painterUnitInterval;
-      mMarker->renderPoint( lastPt, rc );
+      mMarker->renderPoint( lastPt, rc, -1, context.selected() );
       c = 1; // reset c (if wasn't 1 already)
     }
 
@@ -401,6 +406,9 @@ void QgsLineDecorationSymbolLayerV2::startRender( QgsSymbolV2RenderContext& cont
   QColor penColor = mColor;
   penColor.setAlphaF( context.alpha() );
   mPen.setColor( penColor );
+  QColor selColor = context.selectionColor();
+  if ( ! selectionIsOpaque ) selColor.setAlphaF( context.alpha() );
+  mSelPen.setColor( selColor );
 }
 
 void QgsLineDecorationSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
@@ -442,7 +450,7 @@ void QgsLineDecorationSymbolLayerV2::renderPolyline( const QPolygonF& points, Qg
   QPointF p2_1 = p2 - QPointF( size * cos( angle1 ), size * sin( angle1 ) );
   QPointF p2_2 = p2 - QPointF( size * cos( angle2 ), size * sin( angle2 ) );
 
-  p->setPen( mPen );
+  p->setPen( context.selected() ? mSelPen : mPen );
   p->drawLine( p2, p2_1 );
   p->drawLine( p2, p2_2 );
 }

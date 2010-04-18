@@ -59,6 +59,9 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     QPolygonF mPolygon;
     QString mName;
     QImage mCache;
+    QPen mSelPen;
+    QBrush mSelBrush;
+    QImage mSelCache;
 };
 
 //////////
@@ -110,6 +113,7 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 
     QString mPath;
     QPicture mPicture;
+    QPicture mSelPicture;
 };
 
 

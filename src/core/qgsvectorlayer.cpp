@@ -705,15 +705,6 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
 
   mRendererV2->startRender( rendererContext, this );
 
-  QgsSingleSymbolRendererV2* selRenderer = NULL;
-  if ( !mSelectedFeatureIds.isEmpty() )
-  {
-    selRenderer = new QgsSingleSymbolRendererV2( QgsSymbolV2::defaultSymbol( geometryType() ) );
-    selRenderer->symbol()->setColor( QgsRenderer::selectionColor() );
-    selRenderer->setVertexMarkerAppearance( currentVertexMarkerType(), currentVertexMarkerSize() );
-    selRenderer->startRender( rendererContext, this );
-  }
-
 #ifndef Q_WS_MAC
   int totalFeatures = pendingFeatureCount();
   int featureCount = 0;
@@ -747,10 +738,7 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
       bool drawMarker = ( mEditable && ( !vertexMarkerOnlyForSelection || sel ) );
 
       // render feature
-      if ( sel )
-        selRenderer->renderFeature( fet, rendererContext, -1, drawMarker );
-      else
-        mRendererV2->renderFeature( fet, rendererContext, -1, drawMarker );
+      mRendererV2->renderFeature( fet, rendererContext, -1, sel, drawMarker );
 
       // labeling - register feature
       if ( labeling && mRendererV2->symbolForFeature( fet ) != NULL )
@@ -771,8 +759,6 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
     ++featureCount;
 #endif //Q_WS_MAC
   }
-
-  stopRendererV2( rendererContext, selRenderer );
 }
 
 void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bool labeling )
@@ -885,10 +871,7 @@ void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bo
 
         try
         {
-          if ( sel )
-            selRenderer->renderFeature( *fit, rendererContext, -1, drawMarker );
-          else
-            mRendererV2->renderFeature( *fit, rendererContext, layer, drawMarker );
+          mRendererV2->renderFeature( *fit, rendererContext, layer, sel, drawMarker );
         }
         catch ( const QgsCsException &cse )
         {
