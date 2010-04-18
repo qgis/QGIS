@@ -47,6 +47,10 @@ void QgsSimpleFillSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
 {
   mColor.setAlphaF( context.alpha() );
   mBrush = QBrush( mColor, mBrushStyle );
+  QColor selColor = context.selectionColor();
+  // selColor.setAlphaF( context.alpha() );
+  mSelBrush = QBrush( selColor );
+  if ( selectFillStyle )  mSelBrush.setStyle( mBrushStyle );
   mBorderColor.setAlphaF( context.alpha() );
   mPen = QPen( mBorderColor );
   mPen.setStyle( mBorderStyle );
@@ -65,7 +69,7 @@ void QgsSimpleFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QList<Q
     return;
   }
 
-  p->setBrush( mBrush );
+  p->setBrush( context.selected() ? mSelBrush : mBrush );
   p->setPen( mPen );
 
   _renderPolygon( p, points, rings );
@@ -209,18 +213,25 @@ void QgsSVGFillSymbolLayer::renderPolygon( const QPolygonF& points, QList<QPolyg
   {
     return;
   }
-  p->setBrush( mBrush );
   p->setPen( QPen( Qt::NoPen ) );
+  if ( context.selected() )
+  {
+    QColor selColor = context.selectionColor();
+    if ( ! selectionIsOpaque ) selColor.setAlphaF( context.alpha() );
+    p->setBrush( QBrush( selColor ) );
+    _renderPolygon( p, points, rings );
+  }
+  p->setBrush( mBrush );
   _renderPolygon( p, points, rings );
   if ( mOutline )
   {
-    mOutline->renderPolyline( points, context.renderContext() );
+    mOutline->renderPolyline( points, context.renderContext(), -1, selectFillBorder && context.selected() );
     if ( rings )
     {
       QList<QPolygonF>::const_iterator ringIt = rings->constBegin();
       for ( ; ringIt != rings->constEnd(); ++ringIt )
       {
-        mOutline->renderPolyline( *ringIt, context.renderContext() );
+        mOutline->renderPolyline( *ringIt, context.renderContext(), -1, selectFillBorder && context.selected() );
       }
     }
   }

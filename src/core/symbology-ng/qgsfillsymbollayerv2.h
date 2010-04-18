@@ -54,6 +54,7 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
 
   protected:
     QBrush mBrush;
+    QBrush mSelBrush;
     Qt::BrushStyle mBrushStyle;
     QColor mBorderColor;
     Qt::PenStyle mBorderStyle;

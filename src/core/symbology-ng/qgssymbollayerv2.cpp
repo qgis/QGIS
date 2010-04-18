@@ -1,6 +1,7 @@
 
 #include "qgssymbollayerv2.h"
 
+#include "qgsrenderer.h"
 #include "qgsrendercontext.h"
 
 #include <QSize>

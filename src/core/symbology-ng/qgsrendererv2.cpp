@@ -151,7 +151,7 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::defaultRenderer( QGis::GeometryType 
 }
 
 
-void QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool drawVertexMarker )
+void QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
 {
   QgsSymbolV2* symbol = symbolForFeature( feature );
   if ( symbol == NULL )
@@ -172,7 +172,7 @@ void QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext&
       }
       QPointF pt;
       _getPoint( pt, context, geom->asWkb() );
-      (( QgsMarkerSymbolV2* )symbol )->renderPoint( pt, context, layer );
+      (( QgsMarkerSymbolV2* )symbol )->renderPoint( pt, context, layer, selected );
 
       //if ( drawVertexMarker )
       //  renderVertexMarker( pt, context );
@@ -189,7 +189,7 @@ void QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext&
       }
       QPolygonF pts;
       _getLineString( pts, context, geom->asWkb() );
-      (( QgsLineSymbolV2* )symbol )->renderPolyline( pts, context, layer );
+      (( QgsLineSymbolV2* )symbol )->renderPolyline( pts, context, layer, selected );
 
       if ( drawVertexMarker )
         renderVertexMarkerPolyline( pts, context );
@@ -207,7 +207,7 @@ void QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext&
       QPolygonF pts;
       QList<QPolygonF> holes;
       _getPolygon( pts, holes, context, geom->asWkb() );
-      (( QgsFillSymbolV2* )symbol )->renderPolygon( pts, ( holes.count() ? &holes : NULL ), context, layer );
+      (( QgsFillSymbolV2* )symbol )->renderPolygon( pts, ( holes.count() ? &holes : NULL ), context, layer, selected );
 
       if ( drawVertexMarker )
         renderVertexMarkerPolygon( pts, ( holes.count() ? &holes : NULL ), context );
@@ -231,7 +231,7 @@ void QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext&
       for ( unsigned int i = 0; i < num; ++i )
       {
         ptr = _getPoint( pt, context, ptr );
-        (( QgsMarkerSymbolV2* )symbol )->renderPoint( pt, context, layer );
+        (( QgsMarkerSymbolV2* )symbol )->renderPoint( pt, context, layer, selected );
 
         //if ( drawVertexMarker )
         //  renderVertexMarker( pt, context );
@@ -256,7 +256,7 @@ void QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext&
       for ( unsigned int i = 0; i < num; ++i )
       {
         ptr = _getLineString( pts, context, ptr );
-        (( QgsLineSymbolV2* )symbol )->renderPolyline( pts, context, layer );
+        (( QgsLineSymbolV2* )symbol )->renderPolyline( pts, context, layer, selected );
 
         if ( drawVertexMarker )
           renderVertexMarkerPolyline( pts, context );
@@ -282,7 +282,7 @@ void QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext&
       for ( unsigned int i = 0; i < num; ++i )
       {
         ptr = _getPolygon( pts, holes, context, ptr );
-        (( QgsFillSymbolV2* )symbol )->renderPolygon( pts, ( holes.count() ? &holes : NULL ), context, layer );
+        (( QgsFillSymbolV2* )symbol )->renderPolygon( pts, ( holes.count() ? &holes : NULL ), context );
 
         if ( drawVertexMarker )
           renderVertexMarkerPolygon( pts, ( holes.count() ? &holes : NULL ), context );

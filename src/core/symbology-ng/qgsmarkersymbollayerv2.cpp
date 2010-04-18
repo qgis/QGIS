@@ -68,6 +68,10 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
   mBrush = QBrush( mColor );
   mPen = QPen( mBorderColor );
   mPen.setWidthF( context.outputLineWidth( mPen.widthF() ) );
+  QColor selColor = context.selectionColor();
+  mSelBrush = QBrush( selColor );
+  mSelPen = QPen( selColor == mColor ? selColor : mBorderColor );
+  mSelPen.setWidthF( mPen.widthF() );
 
   mPolygon.clear();
 
@@ -148,6 +152,9 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
   else
   {
     // some markers can't be drawn as a polygon (circle, cross)
+    // For these set the selected border color to the selected color
+
+    if ( mName != "circle" ) mSelPen.setColor( selColor );
   }
 
   // rotate if needed
@@ -176,10 +183,40 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
   drawMarker( &p, context );
   p.end();
 
+  // Construct the selected version of the Cache
+
+  mSelCache = QImage( QSize( imageSize, imageSize ), QImage::Format_ARGB32_Premultiplied );
+  mSelCache.fill( 0 );
+
+  p.begin( &mSelCache );
+  p.setRenderHint( QPainter::Antialiasing );
+  p.setBrush( mSelBrush );
+  p.setPen( mSelPen );
+  p.translate( QPointF( center, center ) );
+  drawMarker( &p, context );
+  p.end();
+
+  // Check that the selected version is different.  If not, then re-render,
+  // filling the background with the selection colour and using the normal
+  // colours for the symbol .. could be ugly!
+
+  if ( mSelCache == mCache )
+  {
+    p.begin( &mSelCache );
+    p.setRenderHint( QPainter::Antialiasing );
+    p.fillRect( 0, 0, imageSize, imageSize, selColor );
+    p.setBrush( mBrush );
+    p.setPen( mPen );
+    p.translate( QPointF( center, center ) );
+    drawMarker( &p, context );
+    p.end();
+  }
+
   //opacity
   if ( context.alpha() < 1.0 )
   {
     QgsSymbolLayerV2Utils::multiplyImageOpacity( &mCache, context.alpha() );
+    if ( ! selectionIsOpaque ) QgsSymbolLayerV2Utils::multiplyImageOpacity( &mSelCache, context.alpha() );
   }
 }
 
@@ -203,11 +240,12 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
   //p->translate(point);
 
   //drawMarker(p);
-  //mCache.save("/home/marco/tmp/marker.png", "PNG");
-  double s = mCache.width() / context.renderContext().rasterScaleFactor();
+  //mCache.save("/home/marco/tmp/marker.png","PNG");
+  QImage &img = context.selected() ? mSelCache : mCache;
+  double s = img.width() / context.renderContext().rasterScaleFactor();
   p->drawImage( QRectF( point.x() - s / 2.0 + context.outputLineWidth( mOffset.x() ),
                         point.y() - s / 2.0 + context.outputLineWidth( mOffset.y() ),
-                        s, s ), mCache );
+                        s, s ), img );
   //p->restore();
 }
 
@@ -328,6 +366,13 @@ void QgsSvgMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
   QSvgRenderer renderer( mPath );
   QPainter painter( &mPicture );
   renderer.render( &painter, rect );
+  double selPictureSize = pictureSize * 1.2;
+  QPainter selPainter( &mSelPicture );
+  selPainter.setRenderHint( QPainter::Antialiasing );
+  selPainter.setBrush( QBrush( context.selectionColor() ) );
+  selPainter.setPen( Qt::NoPen );
+  selPainter.drawEllipse( QPointF( 0, 0 ), pictureSize*0.6, pictureSize*0.6 );
+  renderer.render( &selPainter, rect );
 }
 
 void QgsSvgMarkerSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
@@ -350,7 +395,8 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
   if ( mAngle != 0 )
     p->rotate( mAngle );
 
-  p->drawPicture( 0, 0, mPicture );
+  QPicture &pct = context.selected() ? mSelPicture : mPicture;
+  p->drawPicture( 0, 0, pct );
 
   if ( mAngle != 0 )
     p->rotate( -mAngle );
@@ -515,7 +561,7 @@ QString QgsFontMarkerSymbolLayerV2::layerType() const
 
 void QgsFontMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
 {
-  mFont = QFont( mFontFamily, MM2POINT( mSize ) );
+  mFont = QFont( mFontFamily, MM2POINT( mSize ) / context.renderContext().rasterScaleFactor() );
   QFontMetrics fm( mFont );
   mChrOffset = QPointF( fm.width( mChr ) / 2, -fm.ascent() / 2 );
 
@@ -529,7 +575,7 @@ void QgsFontMarkerSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
 void QgsFontMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context )
 {
   QPainter* p = context.renderContext().painter();
-  QColor penColor = mColor;
+  QColor penColor = context.selected() ? context.selectionColor() : mColor;
   penColor.setAlphaF( context.alpha() );
   p->setPen( penColor );
   p->setFont( mFont );

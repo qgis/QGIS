@@ -1,4 +1,5 @@
 
+#include "qgsrenderer.h"
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2.h"
 
@@ -244,8 +245,8 @@ QgsSymbolLayerV2List QgsSymbolV2::cloneLayers() const
 
 ////////////////////
 
-QgsSymbolV2RenderContext::QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u, qreal alpha )
-    : mRenderContext( c ), mOutputUnit( u ), mAlpha( alpha )
+QgsSymbolV2RenderContext::QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u, qreal alpha, bool selected )
+    : mRenderContext( c ), mOutputUnit( u ), mAlpha( alpha ), mSelected( selected )
 {
 
 }
@@ -254,6 +255,12 @@ QgsSymbolV2RenderContext::~QgsSymbolV2RenderContext()
 {
 
 }
+
+QColor QgsSymbolV2RenderContext::selectionColor()
+{
+  return QgsRenderer::selectionColor();
+}
+
 
 double QgsSymbolV2RenderContext::outputLineWidth( double width ) const
 {
@@ -271,7 +278,7 @@ QgsSymbolV2RenderContext& QgsSymbolV2RenderContext::operator=( const QgsSymbolV2
   // sip 4.7 generates a piece of code that needs this function to exist.
   // It's not generated automatically by the compiler because of
   // mRenderContext member which is a reference (and thus can't be changed).
-  Q_ASSERT(false);
+  Q_ASSERT( false );
   return *this;
 }
 
@@ -338,9 +345,9 @@ double QgsMarkerSymbolV2::size()
   return maxSize;
 }
 
-void QgsMarkerSymbolV2::renderPoint( const QPointF& point, QgsRenderContext& context, int layer )
+void QgsMarkerSymbolV2::renderPoint( const QPointF& point, QgsRenderContext& context, int layer, bool selected )
 {
-  QgsSymbolV2RenderContext symbolContext( context, mOutputUnit, mAlpha );
+  QgsSymbolV2RenderContext symbolContext( context, mOutputUnit, mAlpha, selected );
   if ( layer != -1 )
   {
     if ( layer >= 0 && layer < mLayers.count() )
@@ -407,9 +414,9 @@ double QgsLineSymbolV2::width()
   return maxWidth;
 }
 
-void QgsLineSymbolV2::renderPolyline( const QPolygonF& points, QgsRenderContext& context, int layer )
+void QgsLineSymbolV2::renderPolyline( const QPolygonF& points, QgsRenderContext& context, int layer, bool selected )
 {
-  QgsSymbolV2RenderContext symbolContext( context, mOutputUnit, mAlpha );
+  QgsSymbolV2RenderContext symbolContext( context, mOutputUnit, mAlpha, selected );
   if ( layer != -1 )
   {
     if ( layer >= 0 && layer < mLayers.count() )
@@ -443,9 +450,9 @@ QgsFillSymbolV2::QgsFillSymbolV2( QgsSymbolLayerV2List layers )
     mLayers.append( new QgsSimpleFillSymbolLayerV2() );
 }
 
-void QgsFillSymbolV2::renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsRenderContext& context, int layer )
+void QgsFillSymbolV2::renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsRenderContext& context, int layer, bool selected )
 {
-  QgsSymbolV2RenderContext symbolContext( context, mOutputUnit, mAlpha );
+  QgsSymbolV2RenderContext symbolContext( context, mOutputUnit, mAlpha, selected );
   if ( layer != -1 )
   {
     if ( layer >= 0 && layer < mLayers.count() )

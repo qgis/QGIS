@@ -79,7 +79,7 @@ public:
 
   virtual QgsSymbolV2List symbols()=0;
 
-  virtual void renderFeature(QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool drawVertexMarker = false );
+  virtual void renderFeature(QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 
   bool usingSymbolLevels() const;
   void setUsingSymbolLevels(bool usingSymbolLevels);
@@ -453,7 +453,7 @@ class QgsSymbolV2RenderContext
 %End
 
     public:
-    QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u , qreal alpha = 1.0 );
+    QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u , qreal alpha = 1.0, bool selected = false );
     ~QgsSymbolV2RenderContext();
 
     QgsRenderContext& renderContext();
@@ -464,6 +464,11 @@ class QgsSymbolV2RenderContext
 
     qreal alpha() const;
     void setAlpha( qreal alpha );
+
+    bool selected() const;
+    void setSelected( bool selected ) const;
+
+    static QColor selectionColor();
 
     double outputLineWidth(double width) const;
     double outputPixelSize(double size) const;
@@ -574,7 +579,7 @@ public:
   void setSize(double size);
   double size();
 
-  void renderPoint(const QPointF& point, QgsRenderContext& context, int layer = -1);
+  void renderPoint(const QPointF& point, QgsRenderContext& context, int layer = -1, bool selected = false );
 
   virtual QgsSymbolV2* clone() const /Factory/;
 };
@@ -593,7 +598,7 @@ public:
   void setWidth(double width);
   double width();
 
-  void renderPolyline(const QPolygonF& points, QgsRenderContext& context, int layer = -1);
+  void renderPolyline(const QPolygonF& points, QgsRenderContext& context, int layer = -1, bool selected = false );
 
   virtual QgsSymbolV2* clone() const /Factory/;
 };
@@ -609,7 +614,7 @@ class QgsFillSymbolV2 : QgsSymbolV2
 public:
   QgsFillSymbolV2(QgsSymbolLayerV2List layers /Transfer/ = QgsSymbolLayerV2List());
 
-  void renderPolygon(const QPolygonF& points, QList<QPolygonF>* rings, QgsRenderContext& context, int layer = -1);
+  void renderPolygon(const QPolygonF& points, QList<QPolygonF>* rings, QgsRenderContext& context, int layer = -1, bool selected = false );
 
   virtual QgsSymbolV2* clone() const /Factory/;
 };
