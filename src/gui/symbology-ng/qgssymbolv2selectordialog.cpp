@@ -260,5 +260,5 @@ void QgsSymbolV2SelectorDialog::on_mTransparencySlider_valueChanged( int value )
 void QgsSymbolV2SelectorDialog::displayTransparency( double alpha )
 {
   double transparencyPercent = ( 1 - alpha ) * 100;
-  mTransparencyLabel->setText( tr( "Transparency: %1%" ).arg( transparencyPercent ) );
+  mTransparencyLabel->setText( tr( "Transparency: %1%" ).arg(( int ) transparencyPercent ) );
 }
