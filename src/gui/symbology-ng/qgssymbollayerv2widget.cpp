@@ -628,7 +628,7 @@ void QgsSVGFillSymbolLayerWidget::on_mSVGLineEdit_textChanged( const QString & t
   emit changed();
 }
 
-void QgsSVGFillSymbolLayerWidget::on_mSvgListWidget_itemActivated( QListWidgetItem* item )
+void QgsSVGFillSymbolLayerWidget::on_mSvgListWidget_currentItemChanged( QListWidgetItem* item, QListWidgetItem* previous )
 {
   mSVGLineEdit->setText( item->data( Qt::UserRole ).toString() );
 }
