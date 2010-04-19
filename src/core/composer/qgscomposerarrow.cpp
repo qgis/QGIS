@@ -105,43 +105,15 @@ void QgsComposerArrow::setSceneRect( const QRectF& rectangle )
 
 void QgsComposerArrow::drawHardcodedMarker( QPainter* p, MarkerType type )
 {
-  double angle = arrowAngle();
-  //qWarning(QString::number(angle).toLocal8Bit().data());
-  double angleRad = angle / 180.0 * M_PI;
-  QPointF middlePoint = QPointF( mStopPoint.x() - transform().dx(), mStopPoint.y() - transform().dy() );
-
-  //rotate both arrow points
-  QPointF p1 = QPointF( -mArrowHeadWidth / 2.0, mArrowHeadWidth );
-  QPointF p2 = QPointF( mArrowHeadWidth / 2.0, mArrowHeadWidth );
-
-  QPointF p1Rotated, p2Rotated;
-  p1Rotated.setX( p1.x() * cos( angleRad ) + p1.y() * -sin( angleRad ) );
-  p1Rotated.setY( p1.x() * sin( angleRad ) + p1.y() * cos( angleRad ) );
-  p2Rotated.setX( p2.x() * cos( angleRad ) + p2.y() * -sin( angleRad ) );
-  p2Rotated.setY( p2.x() * sin( angleRad ) + p2.y() * cos( angleRad ) );
-
-  QPolygonF arrowHeadPoly;
-  arrowHeadPoly << middlePoint;
-  arrowHeadPoly << QPointF( middlePoint.x() + p1Rotated.x(), middlePoint.y() + p1Rotated.y() );
-  arrowHeadPoly << QPointF( middlePoint.x() + p2Rotated.x(), middlePoint.y() + p2Rotated.y() );
-
-  p->save();
-
-  QPen arrowPen = p->pen();
-  arrowPen.setJoinStyle( Qt::RoundJoin );
   QBrush arrowBrush = p->brush();
   arrowBrush.setColor( mArrowColor );
-  arrowBrush.setStyle( Qt::SolidPattern );
-  p->setPen( arrowPen );
   p->setBrush( arrowBrush );
-  p->drawPolygon( arrowHeadPoly );
-
-  p->restore();
+  drawArrowHead( p, mStopPoint.x() - transform().dx(), mStopPoint.y() - transform().dy(), angle( mStartPoint, mStopPoint ), mArrowHeadWidth );
 }
 
 void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QString& markerPath )
 {
-  double angle = arrowAngle();
+  double ang = angle( mStartPoint, mStopPoint );
 
   double arrowHeadHeight;
   if ( type == StartMarker )
@@ -211,7 +183,7 @@ void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QStrin
     fixPoint.setX( 0 ); fixPoint.setY( -arrowHeadHeight / 2.0 );
   }
   QPointF rotatedFixPoint;
-  double angleRad = angle / 180 * M_PI;
+  double angleRad = ang / 180 * M_PI;
   rotatedFixPoint.setX( fixPoint.x() * cos( angleRad ) + fixPoint.y() * -sin( angleRad ) );
   rotatedFixPoint.setY( fixPoint.x() * sin( angleRad ) + fixPoint.y() * cos( angleRad ) );
 
@@ -221,27 +193,13 @@ void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QStrin
 
   p->save();
   p->translate( canvasPoint.x() - rotatedFixPoint.x() , canvasPoint.y() - rotatedFixPoint.y() );
-  p->rotate( angle );
+  p->rotate( ang );
   p->translate( -mArrowHeadWidth / 2.0, -arrowHeadHeight / 2.0 );
 
   p->drawImage( QRectF( 0, 0, mArrowHeadWidth, arrowHeadHeight ), markerImage, QRectF( 0, 0, imageWidth, imageHeight ) );
   p->restore();
 
   return;
-}
-
-double QgsComposerArrow::arrowAngle() const
-{
-  double xDiff = mStopPoint.x() - mStartPoint.x();
-  double yDiff = mStopPoint.y() - mStartPoint.y();
-  double length = sqrt( xDiff * xDiff + yDiff * yDiff );
-
-  double angle = acos(( -yDiff * length ) / ( length * length ) ) * 180 / M_PI;
-  if ( xDiff < 0 )
-  {
-    return ( 360 - angle );
-  }
-  return angle;
 }
 
 void QgsComposerArrow::setStartMarker( const QString& svgPath )

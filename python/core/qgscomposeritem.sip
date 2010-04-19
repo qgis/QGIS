@@ -181,6 +181,12 @@ class QgsComposerItem: QObject, QGraphicsRectItem
     /**Draw background*/
     virtual void drawBackground( QPainter* p );
 
+    /**Draws arrowhead*/
+    void drawArrowHead( QPainter* p, double x, double y, double angle, double arrowHeadWidth ) const;
+
+    /**Returns angle of the line from p1 to p2 (clockwise, starting at N)*/
+    double angle( const QPointF& p1, const QPointF& p2 ) const;
+
     /**Returns the current (zoom level dependent) tolerance to decide if mouse position is close enough to the \
     item border for resizing*/
     double rectHandlerBorderTolerance() const;
