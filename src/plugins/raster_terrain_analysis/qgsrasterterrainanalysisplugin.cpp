@@ -66,12 +66,6 @@ void QgsRasterTerrainAnalysisPlugin::unload()
 
 void QgsRasterTerrainAnalysisPlugin::run()
 {
-  //testcode, remove it after debugging and show a dialog
-  //QgsRuggednessFilter r("/home/marco/geodaten/raster/albis/mmal25.agr", "/home/marco/tmp/ruggedtest.tif", "GTiff");
-  //QgsSlopeFilter slopeFilter("/home/marco/geodaten/raster/albis/mmal25.agr", "/home/marco/tmp/ruggedtest.tif", "GTiff");
-  //QgsAspectFilter aspectFilter("/home/marco/geodaten/raster/albis/mmal25.agr", "/home/marco/tmp/ruggedtest.tif", "GTiff");
-  //slopeFilter.processRaster(0);
-
   QgsRasterTerrainAnalysisDialog d( mIface );
   if ( d.exec() == QDialog::Accepted )
   {
