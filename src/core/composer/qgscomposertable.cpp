@@ -110,6 +110,22 @@ void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   }
 }
 
+void QgsComposerTable::adjustFrameToSize()
+{
+  QList<QgsAttributeMap> attributes;
+  if ( !getFeatureAttributes( attributes ) )
+  {
+    return;
+  }
+
+  QMap<int, double> maxWidthMap;
+  if ( !calculateMaxColumnWidths( maxWidthMap, attributes ) )
+  {
+    return;
+  }
+  adaptItemFrame( maxWidthMap, attributes );
+}
+
 bool QgsComposerTable::tableWriteXML( QDomElement& elem, QDomDocument & doc ) const
 {
   elem.setAttribute( "lineTextDist", mLineTextDistance );
