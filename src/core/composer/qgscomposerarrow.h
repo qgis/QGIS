@@ -108,8 +108,6 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
     void drawHardcodedMarker( QPainter* p, MarkerType type );
     /**Draws a user-defined marker (must be an svg file)*/
     void drawSVGMarker( QPainter* p, MarkerType type, const QString& markerPath );
-    /**Calculates arrow angle (for marker rotation)*/
-    double arrowAngle() const;
     /**Apply default graphics settings*/
     void initGraphicsSettings();
 };

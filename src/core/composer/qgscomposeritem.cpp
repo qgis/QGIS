@@ -721,6 +721,43 @@ void QgsComposerItem::drawText( QPainter* p, const QRectF& rect, const QString& 
   p->restore();
 }
 
+void QgsComposerItem::drawArrowHead( QPainter* p, double x, double y, double angle, double arrowHeadWidth ) const
+{
+  if ( !p )
+  {
+    return;
+  }
+  double angleRad = angle / 180.0 * M_PI;
+  QPointF middlePoint( x, y );
+  //rotate both arrow points
+  QPointF p1 = QPointF( -arrowHeadWidth / 2.0, arrowHeadWidth );
+  QPointF p2 = QPointF( arrowHeadWidth / 2.0, arrowHeadWidth );
+
+  QPointF p1Rotated, p2Rotated;
+  p1Rotated.setX( p1.x() * cos( angleRad ) + p1.y() * -sin( angleRad ) );
+  p1Rotated.setY( p1.x() * sin( angleRad ) + p1.y() * cos( angleRad ) );
+  p2Rotated.setX( p2.x() * cos( angleRad ) + p2.y() * -sin( angleRad ) );
+  p2Rotated.setY( p2.x() * sin( angleRad ) + p2.y() * cos( angleRad ) );
+
+  QPolygonF arrowHeadPoly;
+  arrowHeadPoly << middlePoint;
+  arrowHeadPoly << QPointF( middlePoint.x() + p1Rotated.x(), middlePoint.y() + p1Rotated.y() );
+  arrowHeadPoly << QPointF( middlePoint.x() + p2Rotated.x(), middlePoint.y() + p2Rotated.y() );
+
+  p->save();
+
+  QPen arrowPen = p->pen();
+  arrowPen.setJoinStyle( Qt::RoundJoin );
+  QBrush arrowBrush = p->brush();
+  arrowBrush.setStyle( Qt::SolidPattern );
+  p->setPen( arrowPen );
+  p->setBrush( arrowBrush );
+  arrowBrush.setStyle( Qt::SolidPattern );
+  p->drawPolygon( arrowHeadPoly );
+
+  p->restore();
+}
+
 double QgsComposerItem::textWidthMillimeters( const QFont& font, const QString& text ) const
 {
   QFont metricsFont = scaledFontPixelSize( font );
@@ -746,6 +783,24 @@ QFont QgsComposerItem::scaledFontPixelSize( const QFont& font ) const
   double pixelSize = pixelFontSize( font.pointSizeF() ) * FONT_WORKAROUND_SCALE + 0.5;
   scaledFont.setPixelSize( pixelSize );
   return scaledFont;
+}
+
+double QgsComposerItem::angle( const QPointF& p1, const QPointF& p2 ) const
+{
+  double xDiff = p2.x() - p1.x();
+  double yDiff = p2.y() - p1.y();
+  double length = sqrt( xDiff * xDiff + yDiff * yDiff );
+  if ( length <= 0 )
+  {
+    return 0;
+  }
+
+  double angle = acos(( -yDiff * length ) / ( length * length ) ) * 180 / M_PI;
+  if ( xDiff < 0 )
+  {
+    return ( 360 - angle );
+  }
+  return angle;
 }
 
 double QgsComposerItem::horizontalViewScaleFactor() const
