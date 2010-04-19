@@ -48,9 +48,6 @@ void QgsComposerArrow::initGraphicsSettings()
   mPen.setColor( QColor( 0, 0, 0 ) );
   mPen.setWidthF( 1 );
 
-  //setStartMarker( "/home/marco/src/qgis/images/svg/north_arrows/NorthArrow11.svg" );
-  //setEndMarker( "/home/marco/src/qgis/images/svg/north_arrows/NorthArrow11.svg" );
-
   //set composer item brush and pen to transparent white by default
   setPen( QPen( QColor( 255, 255, 255, 0 ) ) );
   setBrush( QBrush( QColor( 255, 255, 255, 0 ) ) );
