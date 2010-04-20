@@ -55,6 +55,8 @@ class GUI_EXPORT QgsStyleV2ManagerDialog : public QDialog, private Ui::QgsStyleV
     QgsStyleV2* mStyle;
 
     QString mStyleFilename;
+
+    bool mModified;
 };
 
 #endif

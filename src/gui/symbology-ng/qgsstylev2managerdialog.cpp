@@ -33,7 +33,7 @@ static QString iconPath( QString iconFile )
 ///////
 
 QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* parent )
-    : QDialog( parent ), mStyle( style )
+    : QDialog( parent ), mStyle( style ), mModified( false )
 {
 
   setupUi( this );
@@ -64,8 +64,10 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
 
 void QgsStyleV2ManagerDialog::onFinished()
 {
-  // TODO: save only when modified
-  mStyle->save();
+  if ( mModified )
+  {
+    mStyle->save();
+  }
 }
 
 void QgsStyleV2ManagerDialog::populateTypes()
@@ -227,6 +229,7 @@ bool QgsStyleV2ManagerDialog::addSymbol()
 
   // add new symbol to style and re-populate the list
   mStyle->addSymbol( name, symbol );
+  mModified = true;
   return true;
 }
 
@@ -292,6 +295,7 @@ bool QgsStyleV2ManagerDialog::addColorRamp()
 
   // add new symbol to style and re-populate the list
   mStyle->addColorRamp( name, ramp );
+  mModified = true;
   return true;
 }
 
@@ -332,6 +336,7 @@ bool QgsStyleV2ManagerDialog::editSymbol()
 
   // by adding symbol to style with the same name the old effectively gets overwritten
   mStyle->addSymbol( symbolName, symbol );
+  mModified = true;
   return true;
 }
 
@@ -379,6 +384,7 @@ bool QgsStyleV2ManagerDialog::editColorRamp()
   }
 
   mStyle->addColorRamp( name, ramp );
+  mModified = true;
   return true;
 }
 
@@ -410,6 +416,7 @@ bool QgsStyleV2ManagerDialog::removeSymbol()
 
   // delete from style and update list
   mStyle->removeSymbol( symbolName );
+  mModified = true;
   return true;
 }
 
@@ -419,5 +426,7 @@ bool QgsStyleV2ManagerDialog::removeColorRamp()
   if ( rampName.isEmpty() )
     return false;
 
-  return mStyle->removeColorRamp( rampName );
+  mStyle->removeColorRamp( rampName );
+  mModified = true;
+  return true;
 }
