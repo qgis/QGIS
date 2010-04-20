@@ -1,7 +1,7 @@
 <h3>Create a New Spatialite Layer</h3>
 You can use this dialog to create a new Spatialite database and/or an empty Spatialite layer for editing. See below for an explanation of the dialog inputs.
 <h4>Database</h4>
-Choose the database from the drop-down list. This list is created from your saved Spatialite connections. If you don't have a saved connection or want to create a new database, click on the button (<label>...</label>) to the right of the drop-down. If you create a new database you will have to add it to your Spatialite connections in the <i>Add Spatialite Table(s)</i> dialog.
+Choose the database from the drop-down list. This list is created from your saved Spatialite connections. If you don't have a saved connection or want to create a new database, click on the button (<label>...</label>) to the right of the drop-down.
 <h4>Layer name</h4>
 Enter a name for the layer you want to create. The name should be one word. You can use underscores in the name if you like.
 <h4>Geometry column</h4>
@@ -19,4 +19,4 @@ Width and precision are irrelevant in a Spatialite database so you do not have t
 In this section you can see the list of attributes. To delete one of them, click on it and choose <label>Remove selected attribute</label> button.
 
 <p>
-To create the layer, click on <label>Apply</label>. The layer will be created and you will be returned to the dialog. From here you can click <label>Close</label> or change the parameters to create additional layers.
+Click on <label>Ok</label> to create the layer and close the dialog.  Clicking <label>Apply</label> also creates the layer, but keeps the dialog open, thereby allowing you to create more similar layers. <label>Cancel</label> will close the layer without further changes.

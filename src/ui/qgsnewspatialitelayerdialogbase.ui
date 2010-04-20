@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>431</width>
-    <height>648</height>
+    <width>477</width>
+    <height>596</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -413,7 +413,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok|QDialogButtonBox::Apply</set>
      </property>
     </widget>
    </item>
@@ -440,8 +440,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>355</x>
-     <y>568</y>
+     <x>364</x>
+     <y>585</y>
     </hint>
     <hint type="destinationlabel">
      <x>387</x>
@@ -456,8 +456,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>281</x>
-     <y>568</y>
+     <x>290</x>
+     <y>585</y>
     </hint>
     <hint type="destinationlabel">
      <x>242</x>
@@ -465,24 +465,5 @@
     </hint>
    </hints>
   </connection>
-  <connection>
-   <sender>toolButtonNewDatabase</sender>
-   <signal>clicked()</signal>
-   <receiver>QgsNewSpatialiteLayerDialogBase</receiver>
-   <slot>createNewDb()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>403</x>
-     <y>28</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>52</x>
-     <y>39</y>
-    </hint>
-   </hints>
-  </connection>
  </connections>
- <slots>
-  <slot>createNewDb()</slot>
- </slots>
 </ui>
