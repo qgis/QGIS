@@ -333,6 +333,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     QString whereClause( int featureId ) const;
 
+    bool hasSufficientPermsAndCapabilities();
+
     const QgsField &field( int index ) const;
 
     /** Double quote a PostgreSQL identifier for placement in a SQL string.
@@ -349,7 +351,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     /** Load the field list
     */
-    void loadFields();
+    bool loadFields();
 
     /**Parses the enum_range of an attribute and inserts the possible values into a stringlist
     @param enumValues the stringlist where the values are appended
@@ -383,14 +385,20 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * Flag indicating if the layer data source is a valid PostgreSQL layer
      */
     bool valid;
+
+    /**
+     * provider references query (instead of a table)
+     */
+    bool isQuery;
+
     /**
      * Name of the table with no schema
      */
     QString mTableName;
     /**
-     * Name of the table with schema included
+     * Name of the table or subquery
      */
-    QString mSchemaTableName;
+    QString mQuery;
     /**
      * Name of the schema
      */
@@ -403,6 +411,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * SQL statement used to limit the features retrieved
      */
     QString sqlWhereClause;
+
     /**
      * Primary key column for fetching features. If there is no primary key
      * the oid is used to fetch features.
@@ -546,7 +555,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     // A function that determines if the given schema.table.column
     // contains unqiue entries
-    bool uniqueData( QString schemaName, QString tableName, QString colName );
+    bool uniqueData( QString query, QString colName );
 
     // Function that populates the given cols structure.
     void findColumns( tableCols& cols );

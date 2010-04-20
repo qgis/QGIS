@@ -82,19 +82,34 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
   mTableName = mUri.table();
   geometryColumn = mUri.geometryColumn();
   sqlWhereClause = mUri.sql();
+
+  if ( mSchemaName.isEmpty() &&
+       mTableName.startsWith( "(select", Qt::CaseInsensitive ) &&
+       mTableName.endsWith( ")" ) )
+  {
+    isQuery = true;
+    mQuery = mTableName;
+    mTableName = "";
+  }
+  else
+  {
+    isQuery = false;
+    if ( !mSchemaName.isEmpty() )
+    {
+      mQuery += quotedIdentifier( mSchemaName ) + ".";
+    }
+    mQuery += quotedIdentifier( mTableName );
+  }
+
   primaryKey = mUri.keyColumn();
   mUseEstimatedMetadata = mUri.useEstimatedMetadata();
 
-  // Keep a schema qualified table name for convenience later on.
-  mSchemaTableName = mUri.quotedTablename();
-
-  QgsDebugMsg( "Table name is " + mTableName );
-  QgsDebugMsg( "SQL is " + sqlWhereClause );
   QgsDebugMsg( "Connection info is " + mUri.connectionInfo() );
-
   QgsDebugMsg( "Geometry column is: " + geometryColumn );
   QgsDebugMsg( "Schema is: " + mSchemaName );
   QgsDebugMsg( "Table name is: " + mTableName );
+  QgsDebugMsg( "Query is: " + mQuery );
+  QgsDebugMsg( "Where clause is: " + sqlWhereClause );
 
   connectionRW = NULL;
   connectionRO = Conn::connectDb( mUri.connectionInfo(), true );
@@ -104,105 +119,11 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
     return;
   }
 
-  QgsDebugMsg( "Checking for permissions on the relation" );
-
-  // Check that we can read from the table (i.e., we have
-  // select permission).
-  QString sql = QString( "select * from %1 limit 1" ).arg( mSchemaTableName );
-  Result testAccess = connectionRO->PQexec( sql );
-  if ( PQresultStatus( testAccess ) != PGRES_TUPLES_OK )
+  if ( !hasSufficientPermsAndCapabilities() ) // check permissions and set capabilities
   {
-    showMessageBox( tr( "Unable to access relation" ),
-                    tr( "Unable to access the %1 relation.\nThe error message from the database was:\n%2.\nSQL: %3" )
-                    .arg( mSchemaTableName )
-                    .arg( QString::fromUtf8( PQresultErrorMessage( testAccess ) ) )
-                    .arg( sql ) );
     valid = false;
     disconnectDb();
     return;
-  }
-
-  if ( connectionRO->pgVersion() >= 80400 )
-  {
-    sql = QString( "SELECT "
-                   "has_table_privilege(%1,'DELETE'),"
-                   "has_any_column_privilege(%1,'UPDATE'),"
-                   "has_column_privilege(%1,%2,'UPDATE'),"
-                   "has_table_privilege(%1,'INSERT'),"
-                   "current_schema()" )
-          .arg( quotedValue( mSchemaTableName ) ).arg( quotedValue( geometryColumn ) );
-  }
-  else
-  {
-    sql = QString( "SELECT "
-                   "has_table_privilege(%1,'DELETE'),"
-                   "has_table_privilege(%1,'UPDATE'),"
-                   "has_table_privilege(%1,'UPDATE'),"
-                   "has_table_privilege(%1,'INSERT'),"
-                   "current_schema()" )
-          .arg( quotedValue( mSchemaTableName ) );
-  }
-
-  testAccess = connectionRO->PQexec( sql );
-  if ( PQresultStatus( testAccess ) != PGRES_TUPLES_OK )
-  {
-    showMessageBox( tr( "Unable to access relation" ),
-                    tr( "Unable to determine table access privileges for the %1 relation.\nThe error message from the database was:\n%2.\nSQL: %3" )
-                    .arg( mSchemaTableName )
-                    .arg( QString::fromUtf8( PQresultErrorMessage( testAccess ) ) )
-                    .arg( sql ) );
-    valid = false;
-    disconnectDb();
-    return;
-  }
-
-  // postgres has fast access to features at id (thanks to primary key / unique index)
-  // the latter flag is here just for compatibility
-  enabledCapabilities = QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::SelectGeometryAtId;
-
-  if ( QString::fromUtf8( PQgetvalue( testAccess, 0, 0 ) ) == "t" )
-  {
-    // DELETE
-    enabledCapabilities |= QgsVectorDataProvider::DeleteFeatures;
-  }
-
-  if ( QString::fromUtf8( PQgetvalue( testAccess, 0, 1 ) ) == "t" )
-  {
-    // UPDATE
-    enabledCapabilities |= QgsVectorDataProvider::ChangeAttributeValues;
-  }
-
-  if ( QString::fromUtf8( PQgetvalue( testAccess, 0, 2 ) ) == "t" )
-  {
-    // UPDATE
-    enabledCapabilities |= QgsVectorDataProvider::ChangeGeometries;
-  }
-
-  if ( QString::fromUtf8( PQgetvalue( testAccess, 0, 3 ) ) == "t" )
-  {
-    // INSERT
-    enabledCapabilities |= QgsVectorDataProvider::AddFeatures;
-  }
-
-  mCurrentSchema = QString::fromUtf8( PQgetvalue( testAccess, 0, 4 ) );
-  if ( mCurrentSchema == mSchemaName )
-  {
-    mUri.clearSchema();
-  }
-
-  if ( mSchemaName == "" )
-    mSchemaName = mCurrentSchema;
-
-  sql = QString( "SELECT 1 FROM pg_class,pg_namespace WHERE "
-                 "pg_class.relnamespace=pg_namespace.oid AND "
-                 "pg_get_userbyid(relowner)=current_user AND "
-                 "relname=%1 AND nspname=%2" )
-        .arg( quotedValue( mTableName ) )
-        .arg( quotedValue( mSchemaName ) );
-  testAccess = connectionRO->PQexec( sql );
-  if ( PQresultStatus( testAccess ) == PGRES_TUPLES_OK && PQntuples( testAccess ) == 1 )
-  {
-    enabledCapabilities |= QgsVectorDataProvider::AddAttributes | QgsVectorDataProvider::DeleteAttributes;
   }
 
   if ( !getGeometryDetails() ) // gets srid and geometry type
@@ -224,7 +145,12 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
   getPrimaryKey();
 
   // load the field list
-  loadFields();
+  if ( !loadFields() )
+  {
+    valid = false;
+    disconnectDb();
+    return;
+  }
 
   // Set the postgresql message level so that we don't get the
   // 'there is no transaction in progress' warning.
@@ -485,7 +411,7 @@ bool QgsPostgresProvider::declareCursor(
       query += "," + fieldExpression( fld );
     }
 
-    query += " from " + mSchemaTableName;
+    query += " from " + mQuery;
 
     if ( !whereClause.isEmpty() )
       query += QString( " where %1" ).arg( whereClause );
@@ -675,7 +601,7 @@ bool QgsPostgresProvider::nextFeature( QgsFeature& feature )
     QString fetch = QString( "fetch forward %1 from %2" ).arg( mFeatureQueueSize ).arg( cursorName );
     if ( connectionRO->PQsendQuery( fetch ) == 0 ) // fetch features asynchronously
     {
-      QgsDebugMsg( "PQsendQuery failed (1)" );
+      QgsDebugMsg( "PQsendQuery failed" );
     }
 
     Result queryResult;
@@ -874,30 +800,34 @@ QString QgsPostgresProvider::endianString()
   }
 }
 
-void QgsPostgresProvider::loadFields()
+bool QgsPostgresProvider::loadFields()
 {
-  QgsDebugMsg( "Loading fields for table " + mTableName );
+  if ( !isQuery )
+  {
+    QgsDebugMsg( "Loading fields for table " + mTableName );
 
-  // Get the relation oid for use in later queries
-  QString sql = QString( "SELECT regclass(%1)::oid" ).arg( quotedValue( mSchemaTableName ) );
-  Result tresult = connectionRO->PQexec( sql );
-  QString tableoid = QString::fromUtf8( PQgetvalue( tresult, 0, 0 ) );
+    // Get the relation oid for use in later queries
+    QString sql = QString( "SELECT regclass(%1)::oid" ).arg( quotedValue( mQuery ) );
+    Result tresult = connectionRO->PQexec( sql );
+    QString tableoid = QString::fromUtf8( PQgetvalue( tresult, 0, 0 ) );
 
-  // Get the table description
-  sql = QString( "SELECT description FROM pg_description WHERE objoid=%1 AND objsubid=0" ).arg( tableoid );
-  tresult = connectionRO->PQexec( sql );
-  if ( PQntuples( tresult ) > 0 )
-    mDataComment = QString::fromUtf8( PQgetvalue( tresult, 0, 0 ) );
+    // Get the table description
+    sql = QString( "SELECT description FROM pg_description WHERE objoid=%1 AND objsubid=0" ).arg( tableoid );
+    tresult = connectionRO->PQexec( sql );
+    if ( PQntuples( tresult ) > 0 )
+      mDataComment = QString::fromUtf8( PQgetvalue( tresult, 0, 0 ) );
+  }
 
   // Populate the field vector for this layer. The field vector contains
   // field name, type, length, and precision (if numeric)
-  sql = QString( "select * from %1 limit 0" ).arg( mSchemaTableName );
+  QString sql = QString( "select * from %1 limit 0" ).arg( mQuery );
 
   Result result = connectionRO->PQexec( sql );
 
+  QSet<QString> fields;
+
   // The queries inside this loop could possibly be combined into one
   // single query - this would make the code run faster.
-
   attributeFields.clear();
   for ( int i = 0; i < PQnfields( result ); i++ )
   {
@@ -909,6 +839,7 @@ void QgsPostgresProvider::loadFields()
     QString typOid = QString().setNum( fldtyp );
     int fieldModifier = PQfmod( result, i );
     QString fieldComment( "" );
+    int tableoid = PQftable( result, i );
 
     sql = QString( "SELECT typname,typtype,typelem,typlen FROM pg_type WHERE oid=%1" ).arg( typOid );
     // just oid; needs more work to support array type
@@ -921,18 +852,21 @@ void QgsPostgresProvider::loadFields()
     QString fieldElem = QString::fromUtf8( PQgetvalue( oidResult, 0, 2 ) );
     int fieldSize = QString::fromUtf8( PQgetvalue( oidResult, 0, 3 ) ).toInt();
 
-    sql = QString( "SELECT attnum FROM pg_attribute WHERE attrelid=%1 AND attname=%2" )
-          .arg( tableoid ).arg( quotedValue( fieldName ) );
+    if ( tableoid >= 0 )
+    {
+      sql = QString( "SELECT attnum FROM pg_attribute WHERE attrelid=%1 AND attname=%2" )
+            .arg( tableoid ).arg( quotedValue( fieldName ) );
 
-    Result tresult = connectionRO->PQexec( sql );
-    QString attnum = QString::fromUtf8( PQgetvalue( tresult, 0, 0 ) );
+      Result tresult = connectionRO->PQexec( sql );
+      QString attnum = QString::fromUtf8( PQgetvalue( tresult, 0, 0 ) );
 
-    sql = QString( "SELECT description FROM pg_description WHERE objoid=%1 AND objsubid=%2" )
-          .arg( tableoid ).arg( attnum );
+      sql = QString( "SELECT description FROM pg_description WHERE objoid=%1 AND objsubid=%2" )
+            .arg( tableoid ).arg( attnum );
 
-    tresult = connectionRO->PQexec( sql );
-    if ( PQntuples( tresult ) > 0 )
-      fieldComment = QString::fromUtf8( PQgetvalue( tresult, 0, 0 ) );
+      tresult = connectionRO->PQexec( sql );
+      if ( PQntuples( tresult ) > 0 )
+        fieldComment = QString::fromUtf8( PQgetvalue( tresult, 0, 0 ) );
+    }
 
     QVariant::Type fieldType;
 
@@ -1003,8 +937,168 @@ void QgsPostgresProvider::loadFields()
       continue;
     }
 
+    if ( fields.contains( fieldName ) )
+    {
+      showMessageBox( tr( "Ambiguous field!" ),
+                      tr( "Duplicate field %1 found\n" ).arg( fieldName ) );
+      return false;
+    }
+
+    fields << fieldName;
+
     attributeFields.insert( i, QgsField( fieldName, fieldType, fieldTypeName, fieldSize, fieldModifier, fieldComment ) );
   }
+
+  return true;
+}
+
+bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
+{
+  QgsDebugMsg( "Checking for permissions on the relation" );
+
+  Result testAccess;
+  if ( !isQuery )
+  {
+    // Check that we can read from the table (i.e., we have
+    // select permission).
+    QString sql = QString( "select * from %1 limit 1" ).arg( mQuery );
+    Result testAccess = connectionRO->PQexec( sql );
+    if ( PQresultStatus( testAccess ) != PGRES_TUPLES_OK )
+    {
+      showMessageBox( tr( "Unable to access relation" ),
+                      tr( "Unable to access the %1 relation.\nThe error message from the database was:\n%2.\nSQL: %3" )
+                      .arg( mQuery )
+                      .arg( QString::fromUtf8( PQresultErrorMessage( testAccess ) ) )
+                      .arg( sql ) );
+      return false;
+    }
+
+    if ( connectionRO->pgVersion() >= 80400 )
+    {
+      sql = QString( "SELECT "
+                     "has_table_privilege(%1,'DELETE'),"
+                     "has_any_column_privilege(%1,'UPDATE'),"
+                     "has_column_privilege(%1,%2,'UPDATE'),"
+                     "has_table_privilege(%1,'INSERT'),"
+                     "current_schema()" )
+            .arg( quotedValue( mQuery ) ).arg( quotedValue( geometryColumn ) );
+    }
+    else
+    {
+      sql = QString( "SELECT "
+                     "has_table_privilege(%1,'DELETE'),"
+                     "has_table_privilege(%1,'UPDATE'),"
+                     "has_table_privilege(%1,'UPDATE'),"
+                     "has_table_privilege(%1,'INSERT'),"
+                     "current_schema()" )
+            .arg( quotedValue( mQuery ) );
+    }
+
+    testAccess = connectionRO->PQexec( sql );
+    if ( PQresultStatus( testAccess ) != PGRES_TUPLES_OK )
+    {
+      showMessageBox( tr( "Unable to access relation" ),
+                      tr( "Unable to determine table access privileges for the %1 relation.\nThe error message from the database was:\n%2.\nSQL: %3" )
+                      .arg( mQuery )
+                      .arg( QString::fromUtf8( PQresultErrorMessage( testAccess ) ) )
+                      .arg( sql ) );
+      return false;
+    }
+
+    // postgres has fast access to features at id (thanks to primary key / unique index)
+    // the latter flag is here just for compatibility
+    enabledCapabilities = QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::SelectGeometryAtId;
+
+    if ( QString::fromUtf8( PQgetvalue( testAccess, 0, 0 ) ) == "t" )
+    {
+      // DELETE
+      enabledCapabilities |= QgsVectorDataProvider::DeleteFeatures;
+    }
+
+    if ( QString::fromUtf8( PQgetvalue( testAccess, 0, 1 ) ) == "t" )
+    {
+      // UPDATE
+      enabledCapabilities |= QgsVectorDataProvider::ChangeAttributeValues;
+    }
+
+    if ( QString::fromUtf8( PQgetvalue( testAccess, 0, 2 ) ) == "t" )
+    {
+      // UPDATE
+      enabledCapabilities |= QgsVectorDataProvider::ChangeGeometries;
+    }
+
+    if ( QString::fromUtf8( PQgetvalue( testAccess, 0, 3 ) ) == "t" )
+    {
+      // INSERT
+      enabledCapabilities |= QgsVectorDataProvider::AddFeatures;
+    }
+
+    mCurrentSchema = QString::fromUtf8( PQgetvalue( testAccess, 0, 4 ) );
+    if ( mCurrentSchema == mSchemaName )
+    {
+      mUri.clearSchema();
+    }
+
+    if ( mSchemaName == "" )
+      mSchemaName = mCurrentSchema;
+
+    sql = QString( "SELECT 1 FROM pg_class,pg_namespace WHERE "
+                   "pg_class.relnamespace=pg_namespace.oid AND "
+                   "pg_get_userbyid(relowner)=current_user AND "
+                   "relname=%1 AND nspname=%2" )
+          .arg( quotedValue( mTableName ) )
+          .arg( quotedValue( mSchemaName ) );
+    testAccess = connectionRO->PQexec( sql );
+    if ( PQresultStatus( testAccess ) == PGRES_TUPLES_OK && PQntuples( testAccess ) == 1 )
+    {
+      enabledCapabilities |= QgsVectorDataProvider::AddAttributes | QgsVectorDataProvider::DeleteAttributes;
+    }
+  }
+  else
+  {
+    // Check if the sql is a select query
+    if ( !mQuery.startsWith( "(select", Qt::CaseInsensitive ) &&
+         !mQuery.endsWith( ")" ) )
+    {
+      QgsDebugMsg( "The custom query is not a select query." );
+      //TODO show a message by showMessageBox()
+      return false;
+    }
+
+    // get a new alias for the subquery
+    int index = 0;
+    QString alias;
+    QRegExp regex;
+    do
+    {
+      alias = QString( "subQuery_%1" ).arg( QString::number( index++ ) );
+      QString pattern = QString( "(\\\"?)%1\\1" ).arg( QRegExp::escape( alias ) );
+      regex.setPattern( pattern );
+      regex.setCaseSensitivity( Qt::CaseInsensitive );
+    }
+    while ( mQuery.contains( regex ) );
+
+    // convert the custom query into a subquery
+    mQuery = QString( "%1 as %2" )
+             .arg( mQuery )
+             .arg( quotedIdentifier( alias ) );
+
+    QString sql = QString( "select * from %1 limit 1" ).arg( mQuery );
+
+    testAccess = connectionRO->PQexec( sql );
+    if ( PQresultStatus( testAccess ) != PGRES_TUPLES_OK )
+    {
+      showMessageBox( tr( "Unable execute the query" ),
+                      tr( "Unable to execute the query.\nThe error message from the database was:\n%1.\nSQL: %2" )
+                      .arg( QString::fromUtf8( PQresultErrorMessage( testAccess ) ) )
+                      .arg( sql ) );
+      return false;
+    }
+
+    enabledCapabilities = QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::SelectGeometryAtId;
+  }
+
+  return true;
 }
 
 QString QgsPostgresProvider::getPrimaryKey()
@@ -1017,90 +1111,238 @@ QString QgsPostgresProvider::getPrimaryKey()
   // can be used as a key into the table. Primary keys are always
   // unique indices, so we catch them as well.
 
-  QString sql = QString( "select indkey from pg_index where indisunique and indrelid=regclass(%1)::oid and indpred is null" )
-                .arg( quotedValue( mSchemaTableName ) );
-
-  QgsDebugMsg( "Getting unique index using '" + sql + "'" );
-
-  Result pk = connectionRO->PQexec( sql );
-
-  QgsDebugMsg( "Got " + QString::number( PQntuples( pk ) ) + " rows." );
-
-  QStringList log;
-
-  // if we got no tuples we ain't got no unique index :)
-  if ( PQntuples( pk ) == 0 )
+  QString sql;
+  if ( !isQuery )
   {
-    QgsDebugMsg( "Relation has no unique index -- investigating alternatives" );
+    sql = QString( "select indkey from pg_index where indisunique and indrelid=regclass(%1)::oid and indpred is null" )
+          .arg( quotedValue( mQuery ) );
 
-    // Two options here. If the relation is a table, see if there is
-    // an oid column that can be used instead.
-    // If the relation is a view try to find a suitable column to use as
-    // the primary key.
+    QgsDebugMsg( "Getting unique index using '" + sql + "'" );
 
-    sql = QString( "SELECT relkind FROM pg_class WHERE oid=regclass(%1)::oid" )
-          .arg( quotedValue( mSchemaTableName ) );
-    Result tableType = connectionRO->PQexec( sql );
-    QString type = QString::fromUtf8( PQgetvalue( tableType, 0, 0 ) );
+    Result pk = connectionRO->PQexec( sql );
 
-    if ( type == "r" ) // the relation is a table
+    QgsDebugMsg( "Got " + QString::number( PQntuples( pk ) ) + " rows." );
+
+    QStringList log;
+
+    // if we got no tuples we ain't got no unique index :)
+    if ( PQntuples( pk ) == 0 )
     {
-      QgsDebugMsg( "Relation is a table. Checking to see if it has an oid column." );
+      QgsDebugMsg( "Relation has no unique index -- investigating alternatives" );
 
-      primaryKey = "";
+      // Two options here. If the relation is a table, see if there is
+      // an oid column that can be used instead.
+      // If the relation is a view try to find a suitable column to use as
+      // the primary key.
 
-      // If there is an oid on the table, use that instead,
-      // otherwise give up
-      sql = QString( "SELECT attname FROM pg_attribute WHERE attname='oid' AND attrelid=regclass(%1)" )
-            .arg( quotedValue( mSchemaTableName ) );
+      sql = QString( "SELECT relkind FROM pg_class WHERE oid=regclass(%1)::oid" )
+            .arg( quotedValue( mQuery ) );
+      Result tableType = connectionRO->PQexec( sql );
+      QString type = QString::fromUtf8( PQgetvalue( tableType, 0, 0 ) );
 
-      Result oidCheck = connectionRO->PQexec( sql );
-
-      if ( PQntuples( oidCheck ) != 0 )
+      if ( type == "r" ) // the relation is a table
       {
-        // Could warn the user here that performance will suffer if
-        // oid isn't indexed (and that they may want to add a
-        // primary key to the table)
-        primaryKey = "oid";
-        primaryKeyType = "int4";
-        mIsDbPrimaryKey = true;
-      }
-      else
-      {
-        sql = QString( "SELECT attname FROM pg_attribute WHERE attname='ctid' AND attrelid=regclass(%1)" )
-              .arg( quotedValue( mSchemaTableName ) );
+        QgsDebugMsg( "Relation is a table. Checking to see if it has an oid column." );
 
-        Result ctidCheck = connectionRO->PQexec( sql );
+        primaryKey = "";
 
-        if ( PQntuples( ctidCheck ) == 1 )
+        // If there is an oid on the table, use that instead,
+        // otherwise give up
+        sql = QString( "SELECT attname FROM pg_attribute WHERE attname='oid' AND attrelid=regclass(%1)" )
+              .arg( quotedValue( mQuery ) );
+
+        Result oidCheck = connectionRO->PQexec( sql );
+
+        if ( PQntuples( oidCheck ) != 0 )
         {
-          sql = QString( "SELECT max(substring(ctid::text from E'\\\\((\\\\d+),\\\\d+\\\\)')::integer) from %1" )
-                .arg( mSchemaTableName );
+          // Could warn the user here that performance will suffer if
+          // oid isn't indexed (and that they may want to add a
+          // primary key to the table)
+          primaryKey = "oid";
+          primaryKeyType = "int4";
+          mIsDbPrimaryKey = true;
+        }
+        else
+        {
+          sql = QString( "SELECT attname FROM pg_attribute WHERE attname='ctid' AND attrelid=regclass(%1)" )
+                .arg( quotedValue( mQuery ) );
 
           Result ctidCheck = connectionRO->PQexec( sql );
+
           if ( PQntuples( ctidCheck ) == 1 )
           {
-            int id = QString( PQgetvalue( ctidCheck, 0, 0 ) ).toInt();
+            sql = QString( "SELECT max(substring(ctid::text from E'\\\\((\\\\d+),\\\\d+\\\\)')::integer) from %1" )
+                  .arg( mQuery );
 
-            if ( id < 0x10000 )
+            Result ctidCheck = connectionRO->PQexec( sql );
+            if ( PQntuples( ctidCheck ) == 1 )
             {
-              // fallback to ctid
-              primaryKey = "ctid";
-              primaryKeyType = "tid";
-              mIsDbPrimaryKey = true;
+              int id = QString( PQgetvalue( ctidCheck, 0, 0 ) ).toInt();
+
+              if ( id < 0x10000 )
+              {
+                // fallback to ctid
+                primaryKey = "ctid";
+                primaryKeyType = "tid";
+                mIsDbPrimaryKey = true;
+              }
             }
           }
         }
+
+        if ( primaryKey.isEmpty() )
+        {
+          showMessageBox( tr( "No suitable key column in table" ),
+                          tr( "The table has no column suitable for use as a key.\n\n"
+                              "Quantum GIS requires that the table either has a column of type\n"
+                              "int4 with a unique constraint on it (which includes the\n"
+                              "primary key), has a PostgreSQL oid column or has a ctid\n"
+                              "column with a 16bit block number.\n" ) );
+        }
+        else
+        {
+          mPrimaryKeyDefault = defaultValue( primaryKey ).toString();
+          if ( mPrimaryKeyDefault.isNull() )
+          {
+            mPrimaryKeyDefault = QString( "max(%1)+1 from %2.%3" )
+                                 .arg( quotedIdentifier( primaryKey ) )
+                                 .arg( quotedIdentifier( mSchemaName ) )
+                                 .arg( quotedIdentifier( mTableName ) );
+          }
+        }
+      }
+      else if ( type == "v" ) // the relation is a view
+      {
+        if ( !primaryKey.isEmpty() )
+        {
+          // check last used candidate
+          sql = QString( "select pg_type.typname from pg_attribute,pg_type where atttypid=pg_type.oid and attname=%1 and attrelid=regclass(%2)" )
+                .arg( quotedValue( primaryKey ) ).arg( quotedValue( mQuery ) );
+
+          QgsDebugMsg( "checking candidate: " + sql );
+
+          Result result = connectionRO->PQexec( sql );
+
+          QString type;
+          if ( PQresultStatus( result ) == PGRES_TUPLES_OK &&
+               PQntuples( result ) == 1 )
+          {
+            type = PQgetvalue( result, 0, 0 );
+          }
+
+          // mPrimaryKeyDefault stays null and is retrieved later on demand
+
+          if (( type != "int4" && type != "oid" ) ||
+              !uniqueData( mQuery, primaryKey ) )
+          {
+            primaryKey = "";
+          }
+        }
+
+        if ( primaryKey.isEmpty() )
+        {
+          parseView();
+        }
+      }
+      else
+        QgsDebugMsg( "Unexpected relation type of '" + type + "'." );
+    }
+    else // have some unique indices on the table. Now choose one...
+    {
+      // choose which (if more than one) unique index to use
+      std::vector<std::pair<QString, QString> > suitableKeyColumns;
+      for ( int i = 0; i < PQntuples( pk ); ++i )
+      {
+        QString col = QString::fromUtf8( PQgetvalue( pk, i, 0 ) );
+        QStringList columns = col.split( " ", QString::SkipEmptyParts );
+        if ( columns.count() == 1 )
+        {
+          // Get the column name and data type
+          sql = QString( "select attname,pg_type.typname from pg_attribute,pg_type where atttypid=pg_type.oid and attnum=%1 and attrelid=regclass(%2)" )
+                .arg( col ).arg( quotedValue( mQuery ) );
+          Result types = connectionRO->PQexec( sql );
+
+          if ( PQntuples( types ) > 0 )
+          {
+            QString columnName = QString::fromUtf8( PQgetvalue( types, 0, 0 ) );
+            QString columnType = QString::fromUtf8( PQgetvalue( types, 0, 1 ) );
+
+            if ( columnType != "int4" )
+              log.append( tr( "The unique index on column '%1' is unsuitable because Quantum GIS does not currently "
+                              "support non-int4 type columns as a key into the table.\n" ).arg( columnName ) );
+            else
+            {
+              mIsDbPrimaryKey = true;
+              suitableKeyColumns.push_back( std::make_pair( columnName, columnType ) );
+            }
+          }
+          else
+          {
+            //QgsDebugMsg( QString("name and type of %3. column of %1.%2 not found").arg(mSchemaName).arg(mTables).arg(col) );
+          }
+        }
+        else
+        {
+          sql = QString( "select attname from pg_attribute, pg_type where atttypid=pg_type.oid and attnum in (%1) and attrelid=regclass(%2)::oid" )
+                .arg( col.replace( " ", "," ) )
+                .arg( quotedValue( mQuery ) );
+
+          Result types = connectionRO->PQexec( sql );
+          QString colNames;
+          int numCols = PQntuples( types );
+          for ( int j = 0; j < numCols; ++j )
+          {
+            if ( j == numCols - 1 )
+              colNames += tr( "and " );
+            colNames += quotedValue( QString::fromUtf8( PQgetvalue( types, j, 0 ) ) );
+            if ( j < numCols - 2 )
+              colNames += ",";
+          }
+
+          log.append( tr( "The unique index based on columns %1 is unsuitable because Quantum GIS does not currently "
+                          "support multiple columns as a key into the table.\n" ).arg( colNames ) );
+        }
       }
 
+      // suitableKeyColumns now contains the name of columns (and their
+      // data type) that
+      // are suitable for use as a key into the table. If there is
+      // more than one we need to choose one. For the moment, just
+      // choose the first in the list.
+
+      if ( suitableKeyColumns.size() > 0 )
+      {
+        primaryKey = suitableKeyColumns[0].first;
+        primaryKeyType = suitableKeyColumns[0].second;
+      }
+      else
+      {
+        // If there is an oid on the table, use that instead,
+        // otherwise give up
+        sql = QString( "select attname from pg_attribute where attname='oid' and attrelid=regclass(%1)::oid" ).arg( quotedValue( mQuery ) );
+        Result oidCheck = connectionRO->PQexec( sql );
+
+        if ( PQntuples( oidCheck ) != 0 )
+        {
+          primaryKey = "oid";
+          primaryKeyType = "int4";
+        }
+        else
+        {
+          log.prepend( "There were no columns in the table that were suitable "
+                       "as a qgis key into the table (either a column with a "
+                       "unique index and type int4 or a PostgreSQL oid column.\n" );
+        }
+      }
+
+      // Either primaryKey has been set by the above code, or it
+      // hasn't. If not, present some info to the user to give them some
+      // idea of why not.
       if ( primaryKey.isEmpty() )
       {
-        showMessageBox( tr( "No suitable key column in table" ),
-                        tr( "The table has no column suitable for use as a key.\n\n"
-                            "Quantum GIS requires that the table either has a column of type\n"
-                            "int4 with a unique constraint on it (which includes the\n"
-                            "primary key), has a PostgreSQL oid column or has a ctid\n"
-                            "column with a 16bit block number.\n" ) );
+        // Give some info to the user about why things didn't work out.
+        valid = false;
+        showMessageBox( tr( "Unable to find a key column" ), log );
       }
       else
       {
@@ -1112,150 +1354,6 @@ QString QgsPostgresProvider::getPrimaryKey()
                                .arg( quotedIdentifier( mSchemaName ) )
                                .arg( quotedIdentifier( mTableName ) );
         }
-      }
-    }
-    else if ( type == "v" ) // the relation is a view
-    {
-      if ( !primaryKey.isEmpty() )
-      {
-        // check last used candidate
-        sql = QString( "select pg_type.typname from pg_attribute,pg_type where atttypid=pg_type.oid and attname=%1 and attrelid=regclass(%2)" )
-              .arg( quotedValue( primaryKey ) ).arg( quotedValue( mSchemaTableName ) );
-
-        QgsDebugMsg( "checking candidate: " + sql );
-
-        Result result = connectionRO->PQexec( sql );
-
-        QString type;
-        if ( PQresultStatus( result ) == PGRES_TUPLES_OK &&
-             PQntuples( result ) == 1 )
-        {
-          type = PQgetvalue( result, 0, 0 );
-        }
-
-        // mPrimaryKeyDefault stays null and is retrieved later on demand
-
-        if (( type != "int4" && type != "oid" ) ||
-            !uniqueData( mSchemaName, mTableName, primaryKey ) )
-        {
-          primaryKey = "";
-        }
-      }
-
-      if ( primaryKey.isEmpty() )
-      {
-        parseView();
-      }
-    }
-    else
-      QgsDebugMsg( "Unexpected relation type of '" + type + "'." );
-  }
-  else // have some unique indices on the table. Now choose one...
-  {
-    // choose which (if more than one) unique index to use
-    std::vector<std::pair<QString, QString> > suitableKeyColumns;
-    for ( int i = 0; i < PQntuples( pk ); ++i )
-    {
-      QString col = QString::fromUtf8( PQgetvalue( pk, i, 0 ) );
-      QStringList columns = col.split( " ", QString::SkipEmptyParts );
-      if ( columns.count() == 1 )
-      {
-        // Get the column name and data type
-        sql = QString( "select attname,pg_type.typname from pg_attribute,pg_type where atttypid=pg_type.oid and attnum=%1 and attrelid=regclass(%2)" )
-              .arg( col ).arg( quotedValue( mSchemaTableName ) );
-        Result types = connectionRO->PQexec( sql );
-
-        if ( PQntuples( types ) > 0 )
-        {
-          QString columnName = QString::fromUtf8( PQgetvalue( types, 0, 0 ) );
-          QString columnType = QString::fromUtf8( PQgetvalue( types, 0, 1 ) );
-
-          if ( columnType != "int4" )
-            log.append( tr( "The unique index on column '%1' is unsuitable because Quantum GIS does not currently "
-                            "support non-int4 type columns as a key into the table.\n" ).arg( columnName ) );
-          else
-          {
-            mIsDbPrimaryKey = true;
-            suitableKeyColumns.push_back( std::make_pair( columnName, columnType ) );
-          }
-        }
-        else
-        {
-          //QgsDebugMsg( QString("name and type of %3. column of %1.%2 not found").arg(mSchemaName).arg(mTables).arg(col) );
-        }
-      }
-      else
-      {
-        sql = QString( "select attname from pg_attribute, pg_type where atttypid=pg_type.oid and attnum in (%1) and attrelid=regclass(%2)::oid" )
-              .arg( col.replace( " ", "," ) )
-              .arg( quotedValue( mSchemaTableName ) );
-
-        Result types = connectionRO->PQexec( sql );
-        QString colNames;
-        int numCols = PQntuples( types );
-        for ( int j = 0; j < numCols; ++j )
-        {
-          if ( j == numCols - 1 )
-            colNames += tr( "and " );
-          colNames += quotedValue( QString::fromUtf8( PQgetvalue( types, j, 0 ) ) );
-          if ( j < numCols - 2 )
-            colNames += ",";
-        }
-
-        log.append( tr( "The unique index based on columns %1 is unsuitable because Quantum GIS does not currently "
-                        "support multiple columns as a key into the table.\n" ).arg( colNames ) );
-      }
-    }
-
-    // suitableKeyColumns now contains the name of columns (and their
-    // data type) that
-    // are suitable for use as a key into the table. If there is
-    // more than one we need to choose one. For the moment, just
-    // choose the first in the list.
-
-    if ( suitableKeyColumns.size() > 0 )
-    {
-      primaryKey = suitableKeyColumns[0].first;
-      primaryKeyType = suitableKeyColumns[0].second;
-    }
-    else
-    {
-      // If there is an oid on the table, use that instead,
-      // otherwise give up
-      sql = QString( "select attname from pg_attribute where attname='oid' and attrelid=regclass(%1)::oid" ).arg( quotedValue( mSchemaTableName ) );
-      Result oidCheck = connectionRO->PQexec( sql );
-
-      if ( PQntuples( oidCheck ) != 0 )
-      {
-        primaryKey = "oid";
-        primaryKeyType = "int4";
-      }
-      else
-      {
-        log.prepend( "There were no columns in the table that were suitable "
-                     "as a qgis key into the table (either a column with a "
-                     "unique index and type int4 or a PostgreSQL oid column.\n" );
-      }
-    }
-
-    // Either primaryKey has been set by the above code, or it
-    // hasn't. If not, present some info to the user to give them some
-    // idea of why not.
-    if ( primaryKey.isEmpty() )
-    {
-      // Give some info to the user about why things didn't work out.
-      valid = false;
-      showMessageBox( tr( "Unable to find a key column" ), log );
-    }
-    else
-    {
-      mPrimaryKeyDefault = defaultValue( primaryKey ).toString();
-      if ( mPrimaryKeyDefault.isNull() )
-      {
-        mPrimaryKeyDefault = QString( "max(%1)+1 from %2.%3" )
-                             .arg( quotedIdentifier( primaryKey ) )
-                             .arg( quotedIdentifier( mSchemaName ) )
-                             .arg( quotedIdentifier( mTableName ) );
       }
     }
   }
@@ -1436,7 +1534,7 @@ QString QgsPostgresProvider::chooseViewColumn( const tableCols &cols )
           .arg( quotedValue( i->second.column ) );
     Result result = connectionRO->PQexec( sql );
 
-    if ( PQntuples( result ) > 0 && uniqueData( mSchemaName, mTableName, i->first ) )
+    if ( PQntuples( result ) > 0 && uniqueData( mQuery, i->first ) )
     {
       // Got one. Use it.
       key = i->first;
@@ -1451,7 +1549,7 @@ QString QgsPostgresProvider::chooseViewColumn( const tableCols &cols )
     // exists). This is legacy support and could be removed in
     // future.
     i = suitable.find( "oid" );
-    if ( i != suitable.end() && uniqueData( mSchemaName, mTableName, i->first ) )
+    if ( i != suitable.end() && uniqueData( mQuery, i->first ) )
     {
       key = i->first;
 
@@ -1466,7 +1564,7 @@ QString QgsPostgresProvider::chooseViewColumn( const tableCols &cols )
       tableCols::const_iterator i = suitable.begin();
       for ( ; i != suitable.end(); ++i )
       {
-        if ( uniqueData( mSchemaName, mTableName, i->first ) )
+        if ( uniqueData( mQuery, i->first ) )
         {
           key = i->first;
 
@@ -1503,17 +1601,15 @@ QString QgsPostgresProvider::chooseViewColumn( const tableCols &cols )
   return key;
 }
 
-bool QgsPostgresProvider::uniqueData( QString schemaName,
-                                      QString tableName, QString colName )
+bool QgsPostgresProvider::uniqueData( QString query, QString colName )
 {
   // Check to see if the given column contains unique data
 
   bool isUnique = false;
 
-  QString sql = QString( "select count(distinct %1)=count(%1) from %2.%3" )
+  QString sql = QString( "select count(distinct %1)=count(%1) from %2" )
                 .arg( quotedIdentifier( colName ) )
-                .arg( quotedIdentifier( schemaName ) )
-                .arg( quotedIdentifier( tableName ) );
+                .arg( mQuery );
 
   if ( !sqlWhereClause.isEmpty() )
   {
@@ -1780,20 +1876,15 @@ QVariant QgsPostgresProvider::minimumValue( int index )
   {
     // get the field name
     const QgsField &fld = field( index );
-    QString sql;
-    if ( sqlWhereClause.isEmpty() )
+    QString sql = QString( "select min(%1) from %2" )
+                  .arg( quotedIdentifier( fld.name() ) )
+                  .arg( mQuery );
+
+    if ( !sqlWhereClause.isEmpty() )
     {
-      sql = QString( "select min(%1) from %2" )
-            .arg( quotedIdentifier( fld.name() ) )
-            .arg( mSchemaTableName );
+      sql += QString( " where %1" ).arg( sqlWhereClause );
     }
-    else
-    {
-      sql = QString( "select min(%1) from %2 where %3" )
-            .arg( quotedIdentifier( fld.name() ) )
-            .arg( mSchemaTableName )
-            .arg( sqlWhereClause );
-    }
+
     Result rmin = connectionRO->PQexec( sql );
     return convertValue( fld.type(), QString::fromUtf8( PQgetvalue( rmin, 0, 0 ) ) );
   }
@@ -1812,20 +1903,17 @@ void QgsPostgresProvider::uniqueValues( int index, QList<QVariant> &uniqueValues
   {
     // get the field name
     const QgsField &fld = field( index );
-    QString sql;
-    if ( sqlWhereClause.isEmpty() )
+    QString sql = QString( "select distinct %1 from %2" )
+                  .arg( quotedIdentifier( fld.name() ) )
+                  .arg( mQuery );
+
+    if ( !sqlWhereClause.isEmpty() )
     {
-      sql = QString( "select distinct %1 from %2 order by %1" )
-            .arg( quotedIdentifier( fld.name() ) )
-            .arg( mSchemaTableName );
+      sql += QString( " where %1" ).arg( sqlWhereClause );
     }
-    else
-    {
-      sql = QString( "select distinct %1 from %2 where %3 order by %1" )
-            .arg( quotedIdentifier( fld.name() ) )
-            .arg( mSchemaTableName )
-            .arg( sqlWhereClause );
-    }
+
+    sql +=  QString( " order by %1" )
+            .arg( quotedIdentifier( fld.name() ) );
 
     if ( limit >= 0 )
     {
@@ -1891,7 +1979,9 @@ void QgsPostgresProvider::enumValues( int index, QStringList& enumList )
 bool QgsPostgresProvider::parseEnumRange( QStringList& enumValues, const QString& attributeName ) const
 {
   enumValues.clear();
-  QString enumRangeSql = QString( "SELECT enum_range(%1) from %2 limit 1" ).arg( quotedIdentifier( attributeName ) ).arg( mSchemaTableName );
+  QString enumRangeSql = QString( "SELECT enum_range(%1) from %2 limit 1" )
+                         .arg( quotedIdentifier( attributeName ) )
+                         .arg( mQuery );
   Result enumRangeRes = connectionRO->PQexec( enumRangeSql );
   if ( PQresultStatus( enumRangeRes ) == PGRES_TUPLES_OK && PQntuples( enumRangeRes ) > 0 )
   {
@@ -1979,20 +2069,15 @@ QVariant QgsPostgresProvider::maximumValue( int index )
   {
     // get the field name
     const QgsField &fld = field( index );
-    QString sql;
-    if ( sqlWhereClause.isEmpty() )
+    QString sql = QString( "select max(%1) from %2" )
+                  .arg( quotedIdentifier( fld.name() ) )
+                  .arg( mQuery );
+
+    if ( !sqlWhereClause.isEmpty() )
     {
-      sql = QString( "select max(%1) from %2" )
-            .arg( quotedIdentifier( fld.name() ) )
-            .arg( mSchemaTableName );
+      sql += QString( " where %1" ).arg( sqlWhereClause );
     }
-    else
-    {
-      sql = QString( "select max(%1) from %2 where %3" )
-            .arg( quotedIdentifier( fld.name() ) )
-            .arg( mSchemaTableName )
-            .arg( sqlWhereClause );
-    }
+
     Result rmax = connectionRO->PQexec( sql );
     return convertValue( fld.type(), QString::fromUtf8( PQgetvalue( rmax, 0, 0 ) ) );
   }
@@ -2151,6 +2236,9 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
   if ( flist.size() == 0 )
     return true;
 
+  if ( isQuery )
+    return false;
+
   if ( !connectRW() )
     return false;
 
@@ -2162,7 +2250,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
 
     // Prepare the INSERT statement
     QString insert = QString( "INSERT INTO %1(%2" )
-                     .arg( mSchemaTableName )
+                     .arg( mQuery )
                      .arg( quotedIdentifier( geometryColumn ) ),
                      values = QString( ") VALUES (GeomFromWKB($1%1,%2)" )
                               .arg( connectionRW->useWkbHex() ? "" : "::bytea" )
@@ -2316,6 +2404,9 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds & id )
 {
   bool returnvalue = true;
 
+  if ( isQuery )
+    return false;
+
   if ( !connectRW() )
     return false;
 
@@ -2326,7 +2417,7 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds & id )
     for ( QgsFeatureIds::const_iterator it = id.begin(); it != id.end(); ++it )
     {
       QString sql = QString( "DELETE FROM %1 WHERE %2" )
-                    .arg( mSchemaTableName ).arg( whereClause( *it ) );
+                    .arg( mQuery ).arg( whereClause( *it ) );
       QgsDebugMsg( "delete sql: " + sql );
 
       //send DELETE statement and do error handling
@@ -2354,6 +2445,9 @@ bool QgsPostgresProvider::addAttributes( const QList<QgsField> &attributes )
 {
   bool returnvalue = true;
 
+  if ( isQuery )
+    return false;
+
   if ( !connectRW() )
     return false;
 
@@ -2374,7 +2468,7 @@ bool QgsPostgresProvider::addAttributes( const QList<QgsField> &attributes )
       }
 
       QString sql = QString( "ALTER TABLE %1 ADD COLUMN %2 %3" )
-                    .arg( mSchemaTableName )
+                    .arg( mQuery )
                     .arg( quotedIdentifier( iter->name() ) )
                     .arg( type );
       QgsDebugMsg( sql );
@@ -2388,7 +2482,7 @@ bool QgsPostgresProvider::addAttributes( const QList<QgsField> &attributes )
       if ( !iter->comment().isEmpty() )
       {
         sql = QString( "COMMENT ON COLUMN %1.%2 IS %3" )
-              .arg( mSchemaTableName )
+              .arg( mQuery )
               .arg( quotedIdentifier( iter->name() ) )
               .arg( quotedValue( iter->comment() ) );
         result = connectionRW->PQexec( sql );
@@ -2415,6 +2509,9 @@ bool QgsPostgresProvider::deleteAttributes( const QgsAttributeIds& ids )
 {
   bool returnvalue = true;
 
+  if ( !isQuery )
+    return false;
+
   if ( !connectRW() )
     return false;
 
@@ -2430,7 +2527,7 @@ bool QgsPostgresProvider::deleteAttributes( const QgsAttributeIds& ids )
 
       QString column = field_it->name();
       QString sql = QString( "ALTER TABLE %1 DROP COLUMN %2" )
-                    .arg( mSchemaTableName )
+                    .arg( mQuery )
                     .arg( quotedIdentifier( column ) );
 
       //send sql statement and do error handling
@@ -2460,6 +2557,9 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
 {
   bool returnvalue = true;
 
+  if ( !isQuery )
+    return false;
+
   if ( !connectRW() )
     return false;
 
@@ -2476,7 +2576,7 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
       if ( fid < 0 )
         continue;
 
-      QString sql = QString( "UPDATE %1 SET " ).arg( mSchemaTableName );
+      QString sql = QString( "UPDATE %1 SET " ).arg( mQuery );
       bool first = true;
 
       const QgsAttributeMap& attrs = iter.value();
@@ -2541,6 +2641,9 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 {
   QgsDebugMsg( "entering." );
 
+  if ( !isQuery )
+    return false;
+
   if ( !connectRW() )
     return false;
 
@@ -2552,7 +2655,7 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
     connectionRW->PQexecNR( "BEGIN" );
 
     QString update = QString( "UPDATE %1 SET %2=GeomFromWKB($1%3,%4) WHERE %5=$2" )
-                     .arg( mSchemaTableName )
+                     .arg( mQuery )
                      .arg( quotedIdentifier( geometryColumn ) )
                      .arg( connectionRW->useWkbHex() ? "" : "::bytea" )
                      .arg( srid )
@@ -2636,7 +2739,7 @@ bool QgsPostgresProvider::setSubsetString( QString theSQL )
 
   sqlWhereClause = theSQL;
 
-  if ( !mIsDbPrimaryKey && !uniqueData( mSchemaName, mTableName, primaryKey ) )
+  if ( !mIsDbPrimaryKey && !uniqueData( mQuery, primaryKey ) )
   {
     sqlWhereClause = prevWhere;
     return false;
@@ -2663,15 +2766,15 @@ long QgsPostgresProvider::getFeatureCount()
   // a thread the task of getting the full count.
   QString sql;
 
-  if ( mUseEstimatedMetadata )
+  if ( !isQuery && mUseEstimatedMetadata )
   {
-    sql = QString( "select reltuples::int from pg_catalog.pg_class where oid=regclass(%1)::oid" ).arg( quotedValue( mSchemaTableName ) );
+    sql = QString( "select reltuples::int from pg_catalog.pg_class where oid=regclass(%1)::oid" ).arg( quotedValue( mQuery ) );
   }
   else
   {
-    sql = QString( "select count(*) from %1" ).arg( mSchemaTableName );
+    sql = QString( "select count(*) from %1" ).arg( mQuery );
 
-    if ( sqlWhereClause.length() > 0 )
+    if ( !sqlWhereClause.isEmpty() )
     {
       sql += " where " + sqlWhereClause;
     }
@@ -2696,7 +2799,7 @@ void QgsPostgresProvider::calculateExtents()
   QString ext;
 
   // get the extents
-  if ( mUseEstimatedMetadata || sqlWhereClause.isEmpty() )
+  if ( !isQuery && ( mUseEstimatedMetadata || sqlWhereClause.isEmpty() ) )
   {
     // do stats exists?
     sql = QString( "SELECT COUNT(*) FROM pg_stats WHERE schemaname=%1 AND tablename=%2 AND attname=%3" )
@@ -2727,10 +2830,10 @@ void QgsPostgresProvider::calculateExtents()
   {
     sql = QString( "select extent(%1) from %2" )
           .arg( quotedIdentifier( geometryColumn ) )
-          .arg( mSchemaTableName );
+          .arg( mQuery );
 
     if ( !sqlWhereClause.isEmpty() )
-      sql += QString( "where %1" ).arg( sqlWhereClause );
+      sql += QString( " where %1" ).arg( sqlWhereClause );
 
     result = connectionRO->PQexec( sql );
     if ( PQresultStatus( result ) != PGRES_TUPLES_OK )
@@ -2823,15 +2926,50 @@ bool QgsPostgresProvider::deduceEndian()
   // version 7.4, binary cursors return data in XDR whereas previous versions
   // return data in the endian of the server
 
-  QString firstOid = QString( "select regclass(%1)::oid" ).arg( quotedValue( mSchemaTableName ) );
-  Result oidResult = connectionRO->PQexec( firstOid );
-  // get the int value from a "normal" select
-  QString oidValue = QString::fromUtf8( PQgetvalue( oidResult, 0, 0 ) );
+  QString oidValue;
+  QString query;
+
+  if ( isQuery )
+  {
+    QString sql = QString( "select * from %1 limit 0" ).arg( mQuery );
+    Result res = connectionRO->PQexec( sql );
+
+    // loop through the returned fields to get a valid oid
+    int i;
+    for ( i = 0; i < PQnfields( res ); i++ )
+    {
+      int tableoid = PQftable( res, i );
+      if ( tableoid >= 0 )
+      {
+        oidValue = QString::number( tableoid );
+        break;
+      }
+    }
+
+    if ( i < PQnfields( res ) )
+    {
+      // get the table name
+      res = connectionRO->PQexec( QString( "SELECT relname FROM pg_class WHERE oid=%1" ).arg( oidValue ) );
+      query = QString::fromUtf8( PQgetvalue( res, 0, 0 ) );
+    }
+    else
+    {
+      QgsDebugMsg( "no oid found" );
+      return false;
+    }
+  }
+  else
+  {
+    QString firstOid = QString( "select regclass(%1)::oid" ).arg( quotedValue( mQuery ) );
+    Result oidResult = connectionRO->PQexec( firstOid );
+    // get the int value from a "normal" select
+    oidValue = QString::fromUtf8( PQgetvalue( oidResult, 0, 0 ) );
+  }
 
   QgsDebugMsg( "Creating binary cursor" );
 
   // get the same value using a binary cursor
-  connectionRO->openCursor( "oidcursor", QString( "select regclass(%1)::oid" ).arg( quotedValue( mSchemaTableName ) ) );
+  connectionRO->openCursor( "oidcursor", QString( "select regclass(%1)::oid" ).arg( quotedValue( query ) ) );
 
   QgsDebugMsg( "Fetching a record and attempting to get check endian-ness" );
 
@@ -2861,31 +2999,38 @@ bool QgsPostgresProvider::getGeometryDetails()
   valid = false;
   QStringList log;
 
-  QString sql = QString( "select type,srid from geometry_columns"
-                         " where f_table_name=%1 and f_geometry_column=%2 and f_table_schema=%3" )
-                .arg( quotedValue( mTableName ) )
-                .arg( quotedValue( geometryColumn ) )
-                .arg( quotedValue( mSchemaName ) );
+  Result result;
+  QString sql;
 
-  QgsDebugMsg( "Getting geometry column: " + sql );
-
-  Result result = connectionRO->PQexec( sql );
-
-  QgsDebugMsg( "geometry column query returned " + QString::number( PQntuples( result ) ) );
-
-  if ( PQntuples( result ) > 0 )
+  if ( !isQuery )
   {
-    fType = QString::fromUtf8( PQgetvalue( result, 0, 0 ) );
-    srid = QString::fromUtf8( PQgetvalue( result, 0, 1 ) );
+    sql = QString( "select type,srid from geometry_columns"
+                   " where f_table_name=%1 and f_geometry_column=%2 and f_table_schema=%3" )
+          .arg( quotedValue( mTableName ) )
+          .arg( quotedValue( geometryColumn ) )
+          .arg( quotedValue( mSchemaName ) );
+
+    QgsDebugMsg( "Getting geometry column: " + sql );
+
+    Result result = connectionRO->PQexec( sql );
+
+    QgsDebugMsg( "geometry column query returned " + QString::number( PQntuples( result ) ) );
+
+    if ( PQntuples( result ) > 0 )
+    {
+      fType = QString::fromUtf8( PQgetvalue( result, 0, 0 ) );
+      srid = QString::fromUtf8( PQgetvalue( result, 0, 1 ) );
+    }
   }
-  else
+
+  if ( srid.isEmpty() || fType.isEmpty() )
   {
     // Didn't find what we need in the geometry_columns table, so
     // get stuff from the relevant column instead. This may (will?)
     // fail if there is no data in the relevant table.
-    sql = QString( "select srid(%1),geometrytype(%1) from %2" )
+    sql = QString( "select srid(%1), geometrytype(%1) from %2" )
           .arg( quotedIdentifier( geometryColumn ) )
-          .arg( mSchemaTableName );
+          .arg( mQuery );
 
     //it is possible that the where clause restricts the feature type
     if ( !sqlWhereClause.isEmpty() )
@@ -2921,16 +3066,16 @@ bool QgsPostgresProvider::getGeometryDetails()
       {
         sql += QString( "(select %1 from %2 where %1 is not null limit %3) as t" )
                .arg( quotedIdentifier( geometryColumn ) )
-               .arg( mSchemaTableName )
+               .arg( mQuery )
                .arg( sGeomTypeSelectLimit );
       }
       else
       {
-        sql += mSchemaTableName;
+        sql += mQuery;
       }
 
-      if ( mUri.sql() != "" )
-        sql += " where " + mUri.sql();
+      if ( !sqlWhereClause.isEmpty() )
+        sql += " where " + sqlWhereClause;
 
       result = connectionRO->PQexec( sql );
 
@@ -2967,7 +3112,7 @@ bool QgsPostgresProvider::getGeometryDetails()
     {
       showMessageBox( tr( "Unknown geometry type" ),
                       tr( "Column %1 in %2 has a geometry type of %3, which Quantum GIS does not currently support." )
-                      .arg( geometryColumn ).arg( mSchemaTableName ).arg( fType ) );
+                      .arg( geometryColumn ).arg( mQuery ).arg( fType ) );
       valid = false;
     }
   }
@@ -2975,7 +3120,7 @@ bool QgsPostgresProvider::getGeometryDetails()
   {
     log.prepend( tr( "Quantum GIS was unable to determine the type and srid of column %1 in %2. The database communication log was:\n%3" )
                  .arg( geometryColumn )
-                 .arg( mSchemaTableName )
+                 .arg( mQuery )
                  .arg( QString::fromUtf8( PQresultErrorMessage( result ) ) ) );
     showMessageBox( tr( "Unable to get feature type and srid" ), log );
   }
@@ -3040,6 +3185,10 @@ PGresult *QgsPostgresProvider::Conn::PQexec( QString query )
       QgsDebugMsgLevel( err, 3 );
     }
   }
+  else
+  {
+    QgsDebugMsgLevel( QString( "Query failed: %1" ).arg( query ), 3 );
+  }
 #endif
 
   return res;
@@ -3081,13 +3230,22 @@ bool QgsPostgresProvider::Conn::PQexecNR( QString query )
       QString err = QString( "Query: %1 returned %2 [%3]" )
                     .arg( query )
                     .arg( errorStatus )
-                    .arg( PQresultErrorMessage( res ) );
+                    .arg( QString::fromUtf8( PQresultErrorMessage( res ) ) );
       QgsDebugMsgLevel( err, 3 );
 #endif
       if ( openCursors )
       {
         PQexecNR( "ROLLBACK" );
-        QgsDebugMsg( QString( "Re-starting read-only transaction after errornous statement - state of %1 cursors lost" ).arg( openCursors ) );
+
+        QgsPostgresProvider::showMessageBox(
+          tr( "Query failed" ),
+          tr( "%1 cursor states lost.\nSQL: %2\nResult: %3 (%4)" )
+          .arg( openCursors )
+          .arg( query )
+          .arg( errorStatus )
+          .arg( QString::fromUtf8( PQresultErrorMessage( res ) ) ) );
+        openCursors = 0;
+
         PQexecNR( "BEGIN READ ONLY" );
       }
     }
