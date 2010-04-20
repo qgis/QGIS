@@ -18,21 +18,68 @@ QgsVectorColorRampV2* QgsVectorGradientColorRampV2::create( const QgsStringMap& 
     color1 = QgsSymbolLayerV2Utils::decodeColor( props["color1"] );
   if ( props.contains( "color2" ) )
     color2 = QgsSymbolLayerV2Utils::decodeColor( props["color2"] );
-  return new QgsVectorGradientColorRampV2( color1, color2 );
+
+  StopsMap stops;
+  if ( props.contains( "stops" ) )
+  {
+    foreach( QString stop, props["stops"].split( ':' ) )
+    {
+      int i = stop.indexOf( ';' );
+      if ( i == -1 ) continue;
+
+      QColor c = QgsSymbolLayerV2Utils::decodeColor( stop.mid( i + 1 ) );
+      stops.insert( stop.left( i ).toDouble(), c );
+    }
+  }
+
+  QgsVectorGradientColorRampV2* r = new QgsVectorGradientColorRampV2( color1, color2 );
+  r->setStops( stops );
+  return r;
 }
 
-QColor QgsVectorGradientColorRampV2::color( double value ) const
+static QColor _interpolate( QColor c1, QColor c2, double value )
 {
-  int r = ( int )( mColor1.red() + value * ( mColor2.red() - mColor1.red() ) );
-  int g = ( int )( mColor1.green() + value * ( mColor2.green() - mColor1.green() ) );
-  int b = ( int )( mColor1.blue() + value * ( mColor2.blue() - mColor1.blue() ) );
+  int r = ( int )( c1.red() + value * ( c2.red() - c1.red() ) );
+  int g = ( int )( c1.green() + value * ( c2.green() - c1.green() ) );
+  int b = ( int )( c1.blue() + value * ( c2.blue() - c1.blue() ) );
 
   return QColor::fromRgb( r, g, b );
 }
 
+QColor QgsVectorGradientColorRampV2::color( double value ) const
+{
+  if ( mStops.isEmpty() )
+  {
+    return _interpolate( mColor1, mColor2, value );
+  }
+  else
+  {
+    double lower = 0, upper;
+    QColor c1 = mColor1, c2;
+    for ( StopsMap::const_iterator it = mStops.begin(); it != mStops.end(); ++it )
+    {
+      if ( it.key() >= value )
+      {
+        upper = it.key();
+        c2 = it.value();
+
+        return upper == lower ? c1 : _interpolate( c1, c2, ( value - lower ) / ( upper - lower ) );
+      }
+      lower = it.key();
+      c1 = it.value();
+    }
+
+    upper = 1;
+    c2 = mColor2;
+    return upper == lower ? c1 : _interpolate( c1, c2, ( value - lower ) / ( upper - lower ) );
+  }
+}
+
 QgsVectorColorRampV2* QgsVectorGradientColorRampV2::clone() const
 {
-  return new QgsVectorGradientColorRampV2( mColor1, mColor2 );
+  QgsVectorGradientColorRampV2* r = new QgsVectorGradientColorRampV2( mColor1, mColor2 );
+  r->setStops( mStops );
+  return r;
 }
 
 QgsStringMap QgsVectorGradientColorRampV2::properties() const
@@ -40,6 +87,15 @@ QgsStringMap QgsVectorGradientColorRampV2::properties() const
   QgsStringMap map;
   map["color1"] = QgsSymbolLayerV2Utils::encodeColor( mColor1 );
   map["color2"] = QgsSymbolLayerV2Utils::encodeColor( mColor2 );
+  if ( !mStops.isEmpty() )
+  {
+    QStringList lst;
+    for ( StopsMap::const_iterator it = mStops.begin(); it != mStops.end(); ++it )
+    {
+      lst.append( QString( "%1;%2" ).arg( it.key() ).arg( QgsSymbolLayerV2Utils::encodeColor( it.value() ) ) );
+    }
+    map["stops"] = lst.join( ":" );
+  }
   return map;
 }
 

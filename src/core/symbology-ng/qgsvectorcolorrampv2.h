@@ -46,8 +46,14 @@ class CORE_EXPORT QgsVectorGradientColorRampV2 : public QgsVectorColorRampV2
     void setColor1( QColor color ) { mColor1 = color; }
     void setColor2( QColor color ) { mColor2 = color; }
 
+    typedef QMap<double, QColor> StopsMap;
+
+    void setStops( const StopsMap& stops ) { mStops = stops; }
+    const StopsMap& stops() const { return mStops; }
+
   protected:
     QColor mColor1, mColor2;
+    StopsMap mStops;
 };
 
 #define DEFAULT_RANDOM_COUNT   10
