@@ -42,11 +42,11 @@
 #include <QVBoxLayout>
 
 QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature )
-    : mDialog( 0 ),
-    mSettingsPath( "/Windows/AttributeDialog/" ),
-    mLayer( vl ),
-    mpFeature( thepFeature ),
-    mRubberBand( 0 )
+    : mDialog( 0 )
+    , mSettingsPath( "/Windows/AttributeDialog/" )
+    , mLayer( vl )
+    , mpFeature( thepFeature )
+    , mRubberBand( 0 )
 {
   if ( mpFeature == NULL || vl->dataProvider() == NULL )
     return;
@@ -69,7 +69,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
 
       QFileInfo fi( vl->editForm() );
       loader.setWorkingDirectory( fi.dir() );
-      QWidget *myWidget = loader.load( &file, NULL );
+      QWidget *myWidget = loader.load( &file, QgisApp::instance() );
       file.close();
 
       mDialog = qobject_cast<QDialog*>( myWidget );
@@ -79,7 +79,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
 
   if ( !mDialog )
   {
-    mDialog = new QDialog();
+    mDialog = new QDialog( QgisApp::instance() );
 
     QGridLayout *gridLayout;
     QFrame *mFrame;
@@ -103,12 +103,12 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
     //
     //Set up dynamic inside a scroll box
     //
-    QVBoxLayout * mypOuterLayout = new QVBoxLayout();
+    QVBoxLayout *mypOuterLayout = new QVBoxLayout();
     mypOuterLayout->setContentsMargins( 0, 0, 0, 0 );
     //transfers layout ownership so no need to call delete
 
     mFrame->setLayout( mypOuterLayout );
-    QScrollArea * mypScrollArea = new QScrollArea();
+    QScrollArea *mypScrollArea = new QScrollArea();
     //transfers scroll area ownership so no need to call delete
     mypOuterLayout->addWidget( mypScrollArea );
     QFrame *mypInnerFrame = new QFrame();
@@ -117,7 +117,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
     //transfers frame ownership so no need to call delete
     mypScrollArea->setWidget( mypInnerFrame );
     mypScrollArea->setWidgetResizable( true );
-    QGridLayout * mypInnerLayout = new QGridLayout( mypInnerFrame );
+    QGridLayout *mypInnerLayout = new QGridLayout( mypInnerFrame );
 
     int index = 0;
     for ( QgsAttributeMap::const_iterator it = myAttributes.begin(); it != myAttributes.end(); ++it )
@@ -205,6 +205,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
     }
 
     connect( buttonBox, SIGNAL( rejected() ), mDialog, SLOT( reject() ) );
+    connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
   }
 
   QMetaObject::connectSlotsByName( mDialog );
@@ -245,12 +246,12 @@ QgsAttributeDialog::~QgsAttributeDialog()
     delete mRubberBand;
   }
 
+  saveGeometry();
+
   if ( mDialog )
   {
     delete mDialog;
   }
-
-  saveGeometry();
 }
 
 void QgsAttributeDialog::accept()
