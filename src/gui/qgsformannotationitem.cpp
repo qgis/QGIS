@@ -145,7 +145,8 @@ QSizeF QgsFormAnnotationItem::minimumFrameSize() const
 {
   if ( mDesignerWidget )
   {
-    return mDesignerWidget->minimumSize();
+    QSizeF widgetMinSize = mDesignerWidget->minimumSize();
+    return QSizeF( 2 * mFrameBorderWidth + widgetMinSize.width(), 2 * mFrameBorderWidth + widgetMinSize.width() );
   }
   else
   {
