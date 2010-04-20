@@ -1096,14 +1096,15 @@ class QgisApp : public QMainWindow
     QgsUndoWidget* mUndoWidget;
 
     QNetworkAccessManager *mNAM;
+
+    //! Persistent tile scale slider
+    QgsTileScaleWidget * mpTileScaleWidget;
+
 #if QT_VERSION >= 0x40500
     QgsNetworkProxyFactory *mProxyFactory;
 #endif
 
     int mLastComposerId;
-
-    //! Persistent tile scale slider
-    QgsTileScaleWidget * mpTileScaleWidget;
 
 #ifdef HAVE_QWT
     //! Persistent GPS toolbox
