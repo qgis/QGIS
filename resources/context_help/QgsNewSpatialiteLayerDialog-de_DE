@@ -1,0 +1,29 @@
+<h3>Einen neuen SpatiaLite-Layer erzeugen</h3>
+In diesem Dialog können Sie eine neue SpatiaLite-Datenbank und/oder einen leeren SpatiaLite Layer zur Bearbeitung erzeugen.  Unten werden die Eingabemöglichkeiten des Dialogs beschrieben.
+<h4>Datenbank</h4>
+Wählen Sie die Datenbank aus der Liste.  Diese Liste wird aus den gespeicherten
+SpatiaLite-Verbindungen erzeugt.  Wenn sie keine gespeicherten Verbindungen
+haben oder oder eine neue Datenbank erzeugen wollen Klicken Sie auf
+<label>...</label> rechts der Liste.
+<h4>Layername</h4>
+Geben Sie dem Layer, den Sie erzeugen wollen, einen Namen.  Der Name sollte nur ein Wort sein.  Wenn Sie wollen, können Sie auch Unterstriche verwenden
+<h4>Geometriespalte</h4>
+Geben Sie der Geometriespalte einen Namen oder übernehmen Sie die Voreinstellung.
+<h4>Typ</h4>
+Legen Sie den Layertyp fest, den Sie erzeugen wollen.
+<h4>EPSG-SRID</h4>
+Geben Sie einen EPSG-Code für die SRID (räumliche Bezugskennung) an.  Für die SRID wird Ihnen WGS 84 vorgeschlagen.  
+Klicken Sie auf den Knopf <label>SRID finden</label> um das Koordinatenbezugssystem ggf. zu ändern.
+Die SRID muss in der Tabelle spatial_ref_sys in Ihre Datenbank existieren. Sie können SRIDs suchen indem Sie Suchbegriffe verwenden, die 
+ganz oder teilweise zu Namen oder SRIDs passen.
+<h4>Einen automatisch inkrementierenden Primärschlüssel erzeugen</h4>
+Das Anwählen dieses Kontrolkästchen fügt dem Layer einen Primärschlüssel hinzu.  Diese Feld wird automatisch inkrementiert, sodaß Sie keinen
+keinen Wert dafür beim Hinzufügen von Objekten zum Layer eingeben müssen.
+<h4>Neues Attribute</h4>
+Fügen Sie die gewünschten Attribute durch Klicken auf den Knopf <label>Attribute zur Liste hinzufügen</label> nachdem Sie Namen und Type des Attributes festgelegt haben.  Nur Fließkomma-, ganzzahlige und Zeichenkettenattribute werden unterstützt.<br/>
+Breite und Genauigkeit sind irrelevant in einer SpatiaLite-Datenbank, daher brauchen Sie sie nicht anzugeben.
+<h4>Attributliste</h4>
+In diesem Abschnitt sehen Sie die Attributliste.  Um eins davon zu löschen, klicken Sie auf den Knopf <label>Gewähltes Attribut löschen</label>.
+
+<p>
+Klicken Sie auf <label>Ok</label> um den Layer anzulegen und den Dialog zu schließen.  Ein Klick auf <label>Anwenden</label> erzeugt den Layer auch, aber hält den Dialog auf und erlaubt so mehr ähnliche Layer zu erzeugen. <label>Abbruch</label> schließt den Dialog ohne weitere Änderung.

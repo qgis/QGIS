@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
-#ifndef qgsnewspatialitelayerdialog_H
-#define qgsnewspatialitelayerdialog_H
+#ifndef QGSNEWSPATIALITELAYERDIALOG_H
+#define QGSNEWSPATIALITELAYERDIALOG_H
 
 #include "ui_qgsnewspatialitelayerdialogbase.h"
 #include "qgisgui.h"
@@ -27,6 +27,7 @@
 extern "C"
 {
 #include <sqlite3.h>
+#include <spatialite.h>
 }
 
 class QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNewSpatialiteLayerDialogBase
@@ -36,23 +37,6 @@ class QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNewSpatialiteL
   public:
     QgsNewSpatialiteLayerDialog( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
     ~QgsNewSpatialiteLayerDialog();
-    /**Returns the selected geometry type*/
-    QString selectedType() const;
-    /**Appends the chosen attribute names and types to at*/
-    //void attributes( std::list<std::pair<QString, QString> >& at ) const;
-    QList<QStringList> * attributes() const;
-    /**Returns the database name */
-    QString databaseName() const;
-    /**Returns the layer name to be created */
-    QString layerName() const;
-    /**Returns the geometry column name */
-    QString geometryColumn() const;
-    /**Returns the selected crs id*/
-    QString selectedCrsId() const;
-    /**Returns the state of the primary key checkbox*/
-    bool includePrimaryKey() const;
-    /** Create a new database */
-    bool createDb();
 
   protected slots:
     void on_mAddAttributeButton_clicked();
@@ -60,15 +44,23 @@ class QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNewSpatialiteL
     void on_mTypeBox_currentIndexChanged( int index );
     void on_pbnFindSRID_clicked();
     void on_leLayerName_textChanged( QString text );
-    void createNewDb();
+    void on_toolButtonNewDatabase_clicked();
 
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_accepted();
+    void on_buttonBox_rejected();
+
+    bool apply();
 
   private:
-    QPushButton *mOkButton;
-    int mCrsId;
-    sqlite3 *db;
-    bool needNewDb;
+    /**Returns the selected geometry type*/
+    QString selectedType() const;
+
+    /** Create a new database */
+    bool createDb();
+
+    static QString quotedIdentifier( QString id );
+    static QString quotedValue( QString value );
 };
 
-#endif //qgsnewvectorlayerdialog_H
+#endif // QGSNEWVECTORLAYERDIALOG_H

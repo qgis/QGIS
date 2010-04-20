@@ -3098,18 +3098,6 @@ void QgisApp::newVectorLayer()
   addVectorLayers( fileNames, enc, "file" );
 }
 
-static QString quotedIdentifier( QString id )
-{
-  id.replace( "\"", "\"\"" );
-  return id.prepend( "\"" ).append( "\"" );
-}
-
-static QString quotedValue( QString value )
-{
-  value.replace( "'", "''" );
-  return value.prepend( "'" ).append( "'" );
-}
-
 #ifdef HAVE_SPATIALITE
 void QgisApp::newSpatialiteLayer()
 {
@@ -3118,120 +3106,7 @@ void QgisApp::newSpatialiteLayer()
     return;
   }
   QgsNewSpatialiteLayerDialog spatialiteDialog( this );
-  if ( spatialiteDialog.exec() == QDialog::Rejected )
-  {
-    return;
-  }
-
-  QString geometrytype = spatialiteDialog.selectedType();
-  //QString fileformat = geomDialog.selectedFileFormat();
-  QString crsId = spatialiteDialog.selectedCrsId();
-  QString databaseName = spatialiteDialog.databaseName();
-  QString newLayerName = spatialiteDialog.layerName();
-  QString newGeometryColumn = spatialiteDialog.geometryColumn();
-  //QgsDebugMsg( QString( "New file format will be: %1" ).arg( fileformat ) );
-
-  // Get the list containing the name/type pairs for each attribute
-  QList<QStringList> * items = spatialiteDialog.attributes( );
-
-  // Build up the sql statement for creating the table
-  //
-  QString baseSQL;
-  if ( spatialiteDialog.includePrimaryKey() )
-  {
-    baseSQL = "create table %1(pkuid integer primary key autoincrement, ";
-  }
-  else
-  {
-    baseSQL = "create table %1(";
-  }
-  QString sql = baseSQL.arg( quotedIdentifier( newLayerName ) );
-  // iterate through the field names and add them to the create statement
-  // (use indexed access since this is just as fast as iterators
-  for ( int i = 0; i < items->size(); ++i )
-  {
-    QStringList field = items->at( i );
-    if ( i > 0 )
-      sql += ",";
-    sql += QString( "%1 %2" ).arg( quotedIdentifier( field.at( 0 ) ) ).arg( field.at( 1 ) );
-  }
-  // complete the create table statement
-  sql += ")";
-  QgsDebugMsg( QString( "Creating table in database %1" ).arg( databaseName ) );
-  QgsDebugMsg( sql ); // OK
-
-  QString sqlAddGeom = QString( "select AddGeometryColumn(%1,%2,%3,%4,2)" )
-                       .arg( quotedValue( newLayerName ) )
-                       .arg( quotedValue( newGeometryColumn ) )
-                       .arg( crsId )
-                       .arg( quotedValue( geometrytype ) );
-  QgsDebugMsg( sqlAddGeom ); // OK
-
-  QString sqlCreateIndex = QString( "select CreateSpatialIndex(%1,%2)" ).arg( quotedValue( newLayerName ) ).arg( quotedValue( newGeometryColumn ) );
-  QgsDebugMsg( sqlCreateIndex ); // OK
-
-  spatialite_init( 0 );
-
-  sqlite3 *db;
-  int rc = sqlite3_open( databaseName.toUtf8(), &db );
-  if ( rc != SQLITE_OK )
-  {
-    QMessageBox::warning( this,
-                          tr( "SpatiaLite Database" ),
-                          tr( "Unable to open the database: %1" ).arg( databaseName ) );
-  }
-  else
-  {
-    char * errmsg;
-    rc = sqlite3_exec( db, sql.toUtf8(), NULL, NULL, &errmsg );
-    if ( rc != SQLITE_OK )
-    {
-      QMessageBox::warning( this,
-                            tr( "Error Creating SpatiaLite Table" ),
-                            tr( "Failed to create the SpatiaLite table %1. The database returned:\n%2" ).arg( newLayerName ).arg( errmsg ) );
-      sqlite3_free( errmsg );
-    }
-    else
-    {
-      // create the geometry column and the spatial index
-      rc = sqlite3_exec( db, sqlAddGeom.toUtf8(), NULL, NULL, &errmsg );
-      if ( rc != SQLITE_OK )
-      {
-        QMessageBox::warning( this,
-                              tr( "Error Creating Geometry Column" ),
-                              tr( "Failed to create the geometry column. The database returned:\n%1" ).arg( errmsg ) );
-        sqlite3_free( errmsg );
-      }
-      else
-      {
-        // create the spatial index
-        rc = sqlite3_exec( db, sqlCreateIndex.toUtf8(), NULL, NULL, &errmsg );
-        if ( rc != SQLITE_OK )
-        {
-          QMessageBox::warning( this,
-                                tr( "Error Creating Spatial Index" ),
-                                tr( "Failed to create the spatial index. The database returned:\n%1" ).arg( errmsg ) );
-          sqlite3_free( errmsg );
-        }
-
-        QgsVectorLayer *layer = new QgsVectorLayer( QString( "dbname='%1' table='%2'(%3) sql=" )
-            .arg( databaseName )
-            .arg( newLayerName )
-            .arg( newGeometryColumn ), newLayerName, "spatialite" );
-        if ( layer->isValid() )
-        {
-          // register this layer with the central layers registry
-          QgsMapLayerRegistry::instance()->addMapLayer( layer );
-        }
-        else
-        {
-          QgsDebugMsg( newLayerName + " is an invalid layer - not loaded" );
-          QMessageBox::critical( this, tr( "Invalid Layer" ), tr( "%1 is an invalid layer and cannot be loaded." ).arg( newLayerName ) );
-          delete layer;
-        }
-      }
-    }
-  }
+  spatialiteDialog.exec();
 }
 #endif
 
