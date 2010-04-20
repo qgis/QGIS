@@ -607,7 +607,7 @@ void QgsComposerView::sendItemRemovedSignal( QgsComposerItem* item )
 
 QMainWindow* QgsComposerView::composerWindow()
 {
-  QObject* composerObject = 0;
+  QMainWindow* composerObject = 0;
   QObject* currentObject = parent();
   if ( !currentObject )
   {
@@ -616,14 +616,14 @@ QMainWindow* QgsComposerView::composerWindow()
 
   while ( true )
   {
-    if ( currentObject->parent() == 0 )
+    composerObject = qobject_cast<QMainWindow*>( currentObject );
+    if ( composerObject || currentObject->parent() == 0 )
     {
-      composerObject = currentObject;
-      break;
+      return composerObject;
     }
     currentObject = currentObject->parent();
   }
 
-  return qobject_cast<QMainWindow *>( composerObject );
+  return 0;
 }
 
