@@ -9,6 +9,7 @@ which are not wrapped by PyQt:
 - QMap<int, QMap<int, TYPE> >
 - QMap<QString, QVariant::Type>
 - QMap<TYPE1, TYPE2*>
+- QMap<double, TYPE>
 - QMultiMap<double, TYPE2>
 - QMap<int, QgsOverlayObject*>*
 */
@@ -729,6 +730,107 @@ template<TYPE1, TYPE2>
     return sipGetState(sipTransferObj);
 %End
 };
+
+
+
+template<double, TYPE>
+%MappedType QMap<double, TYPE>
+{
+%TypeHeaderCode
+#include <QMap>
+%End
+
+%ConvertFromTypeCode
+    // Create the dictionary.
+    PyObject *d = PyDict_New();
+
+    if (!d)
+        return NULL;
+
+    // Set the dictionary elements.
+    QMap<double, TYPE>::iterator i;
+
+    for (i = sipCpp->begin(); i != sipCpp->end(); ++i)
+    {
+        PyObject *t1obj = PyFloat_FromDouble(i.key());
+        TYPE* t2 = &i.value();
+        PyObject *t2obj = sipConvertFromInstance(t2, sipClass_TYPE, sipTransferObj);
+
+        if (t1obj == NULL || t2obj == NULL || PyDict_SetItem(d, t1obj, t2obj) < 0)
+        {
+            Py_DECREF(d);
+
+            if (t1obj)
+                Py_DECREF(t1obj);
+
+            if (t2obj)
+                Py_DECREF(t2obj);
+
+            return NULL;
+        }
+
+        Py_DECREF(t1obj);
+        Py_DECREF(t2obj);
+   }
+
+    return d;
+%End
+
+%ConvertToTypeCode
+    PyObject *t1obj, *t2obj;
+#if PY_VERSION_HEX >= 0x02050000
+    Py_ssize_t i = 0;
+#else
+    int i = 0;
+#endif
+
+    // Check the type if that is all that is required.
+    if (sipIsErr == NULL)
+    {
+        if (!PyDict_Check(sipPy))
+            return 0;
+
+        while (PyDict_Next(sipPy, &i, &t1obj, &t2obj))
+        {
+            if (!PyFloat_Check(t1obj))
+                return 0;
+
+            if (!sipCanConvertToInstance(t2obj, sipClass_TYPE, SIP_NOT_NONE))
+                return 0;
+        }
+
+        return 1;
+    }
+
+    QMap<double, TYPE> *qm = new QMap<double, TYPE>;
+
+    while (PyDict_Next(sipPy, &i, &t1obj, &t2obj))
+    {
+        int state;
+
+        double k = PyFloat_AsDouble(t1obj);
+        TYPE *t2 = reinterpret_cast<TYPE *>(sipConvertToInstance(t2obj, sipClass_TYPE, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
+
+        if (*sipIsErr)
+        {
+            sipReleaseInstance(t2, sipClass_TYPE, state);
+            delete qm;
+            return 0;
+        }
+
+        qm->insert(k, *t2);
+
+        sipReleaseInstance(t2, sipClass_TYPE, state);
+    }
+
+    *sipCppPtr = qm;
+
+    return sipGetState(sipTransferObj);
+%End
+};
+
+
+
 
 template<double, TYPE2>
 %MappedType QMultiMap<double, TYPE2>

@@ -762,6 +762,15 @@ class QgsVectorColorRampV2
 #include <qgsvectorcolorrampv2.h>
 %End
 
+%ConvertToSubClassCode
+  if (sipCpp->type() == "gradient")
+  {
+    sipClass = sipClass_QgsVectorGradientColorRampV2;
+  }
+  else
+    sipClass = 0;
+%End
+
 public:
   virtual ~QgsVectorColorRampV2();
 
@@ -769,11 +778,42 @@ public:
 
   virtual QString type() const = 0;
 
-  virtual QgsVectorColorRampV2* clone() const = 0;
+  virtual QgsVectorColorRampV2* clone() const = 0 /Factory/;
 
   virtual QgsStringMap properties() const = 0;
 
 };
+
+class QgsVectorGradientColorRampV2 : QgsVectorColorRampV2
+{
+  public:
+    QgsVectorGradientColorRampV2( QColor color1 = QColor(0,0,255),
+                                  QColor color2 = QColor(0,255,0) );
+
+    static QgsVectorColorRampV2* create( const QgsStringMap& properties = QgsStringMap() ) /Factory/;
+
+    virtual QColor color( double value ) const;
+
+    virtual QString type() const;
+
+    virtual QgsVectorColorRampV2* clone() const /Factory/;
+
+    virtual QgsStringMap properties() const;
+
+    QColor color1() const;
+    QColor color2() const;
+
+    void setColor1( QColor color );
+    void setColor2( QColor color );
+
+    typedef QMultiMap<double, QColor> StopsMap;
+
+    void setStops(const StopsMap& stops);
+    const StopsMap& stops() const;
+
+};
+
+
 
 //////////
 
@@ -858,3 +898,5 @@ class QgsRendererV2Registry
     QgsRendererV2Registry();
     ~QgsRendererV2Registry();
 };
+
+///////////////
