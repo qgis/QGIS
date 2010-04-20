@@ -107,7 +107,7 @@ class CORE_EXPORT QgsDataSourceURI
   private:
     void skipBlanks( const QString &uri, int &i );
     QString getValue( const QString &uri, int &i );
-    QString escape( const QString &uri ) const;
+    QString escape( const QString &uri, QChar delim ) const;
 
     /* data */
 
@@ -123,7 +123,7 @@ class CORE_EXPORT QgsDataSourceURI
     QString mTable;
     //! geometry column
     QString mGeometryColumn;
-    //! SQL where clause used to limit features returned from the layer
+    //! SQL query or where clause used to limit features returned from the layer
     QString mSql;
     //! username
     QString mUsername;

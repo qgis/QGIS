@@ -306,12 +306,12 @@ void QgsDataSourceURI::clearSchema()
   mSchema = "";
 }
 
-QString QgsDataSourceURI::escape( const QString &theVal ) const
+QString QgsDataSourceURI::escape( const QString &theVal, QChar delim = '\'' ) const
 {
   QString val = theVal;
 
   val.replace( "\\", "\\\\" );
-  val.replace( "\'", "\\'" );
+  val.replace( delim, QString( "\\%1" ).arg( delim ) );
 
   return val;
 }
@@ -349,7 +349,7 @@ QString QgsDataSourceURI::getValue( const QString &uri, int &i )
         i++;
         if ( i == uri.length() )
           continue;
-        if ( uri[i] != '\'' && uri[i] != '\\' )
+        if ( uri[i] != delim && uri[i] != '\\' )
           i--;
       }
       else if ( uri[i] == delim )
@@ -449,10 +449,13 @@ QString QgsDataSourceURI::uri() const
 
 QString QgsDataSourceURI::quotedTablename() const
 {
-  if ( mSchema != "" )
-    return QString( "\"%1\".\"%2\"" ).arg( mSchema ).arg( mTable );
+  if ( !mSchema.isEmpty() )
+    return QString( "\"%1\".\"%2\"" )
+           .arg( escape( mSchema, '"' ) )
+           .arg( escape( mTable, '"' ) );
   else
-    return QString( "\"%1\"" ).arg( mTable );
+    return QString( "\"%1\"" )
+           .arg( escape( mTable, '"' ) );
 }
 
 void QgsDataSourceURI::setConnection( const QString &host,
