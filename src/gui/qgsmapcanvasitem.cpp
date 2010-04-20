@@ -17,7 +17,9 @@
 
 #include "qgsmapcanvasitem.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaprenderer.h"
 #include "qgsmaptopixel.h"
+#include "qgsrendercontext.h"
 #include <QGraphicsScene>
 #include <QRect>
 #include <QPen>
@@ -99,6 +101,44 @@ void QgsMapCanvasItem::updateCanvas()
   update();
   // porting: update below should not be needed anymore
   //mMapCanvas->scene()->update(); //Contents();
+}
+
+bool QgsMapCanvasItem::setRenderContextVariables( QPainter* p, QgsRenderContext& context ) const
+{
+  if ( !mMapCanvas || !p )
+  {
+    return false;
+  }
+  QgsMapRenderer* mapRenderer = mMapCanvas->mapRenderer();
+  if ( !mapRenderer )
+  {
+    return false;
+  }
+
+  context.setPainter( p );
+  context.setRendererScale( mMapCanvas->scale() );
+
+  int dpi = mapRenderer->outputDpi();
+  int painterDpi = p->device()->logicalDpiX();
+  double scaleFactor = 1.0;
+  double rasterScaleFactor = 1.0;
+
+  //little trick to find out if painting origines from composer or main map canvas
+  if ( data( 0 ).toString() == "composer" )
+  {
+    rasterScaleFactor = painterDpi / 25.4;
+    scaleFactor = dpi / 25.4;
+  }
+  else
+  {
+    if ( mapRenderer->outputUnits() == QgsMapRenderer::Millimeters )
+    {
+      scaleFactor = dpi / 25.4;
+    }
+  }
+  context.setScaleFactor( scaleFactor );
+  context.setRasterScaleFactor( rasterScaleFactor );
+  return true;
 }
 
 void QgsMapCanvasItem::updatePosition()

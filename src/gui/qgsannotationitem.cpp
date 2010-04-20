@@ -17,7 +17,6 @@
 
 #include "qgsannotationitem.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaprenderer.h"
 #include "qgsrendercontext.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgssymbolv2.h"
@@ -246,44 +245,6 @@ void QgsAnnotationItem::drawSelectionBoxes( QPainter* p )
   p->drawRect( QRectF( mBoundingRect.right() - handlerSize, mBoundingRect.top(), handlerSize, handlerSize ) );
   p->drawRect( QRectF( mBoundingRect.right() - handlerSize, mBoundingRect.bottom() - handlerSize, handlerSize, handlerSize ) );
   p->drawRect( QRectF( mBoundingRect.left(), mBoundingRect.bottom() - handlerSize, handlerSize, handlerSize ) );
-}
-
-bool QgsAnnotationItem::setRenderContextVariables( QPainter* p, QgsRenderContext& context ) const
-{
-  if ( !mMapCanvas || !p )
-  {
-    return false;
-  }
-  QgsMapRenderer* mapRenderer = mMapCanvas->mapRenderer();
-  if ( !mapRenderer )
-  {
-    return false;
-  }
-
-  context.setPainter( p );
-  context.setRendererScale( mMapCanvas->scale() );
-
-  int dpi = mapRenderer->outputDpi();
-  int painterDpi = p->device()->logicalDpiX();
-  double scaleFactor = 1.0;
-  double rasterScaleFactor = 1.0;
-
-  //little trick to find out if painting origines from composer or main map canvas
-  if ( data( 0 ).toString() == "composer" )
-  {
-    rasterScaleFactor = painterDpi / 25.4;
-    scaleFactor = dpi / 25.4;
-  }
-  else
-  {
-    if ( mapRenderer->outputUnits() == QgsMapRenderer::Millimeters )
-    {
-      scaleFactor = dpi / 25.4;
-    }
-  }
-  context.setScaleFactor( scaleFactor );
-  context.setRasterScaleFactor( rasterScaleFactor );
-  return true;
 }
 
 QLineF QgsAnnotationItem::segment( int index )

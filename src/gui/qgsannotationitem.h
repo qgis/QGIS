@@ -23,7 +23,6 @@
 class QDomDocument;
 class QDomElement;
 class QDialog;
-class QgsRenderContext;
 class QgsVectorLayer;
 class QgsMarkerSymbolV2;
 
@@ -129,11 +128,6 @@ class GUI_EXPORT QgsAnnotationItem: public QgsMapCanvasItem
     void drawFrame( QPainter* p );
     void drawMarkerSymbol( QPainter* p );
     void drawSelectionBoxes( QPainter* p );
-    /**Sets render context parameters
-    @param p painter for rendering
-    @param context out: configured context
-    @return true in case of success*/
-    bool setRenderContextVariables( QPainter* p, QgsRenderContext& context ) const;
     /**Returns frame width in painter units*/
     //double scaledFrameWidth( QPainter* p) const;
     /**Gets the frame line (0 is the top line, 1 right, 2 bottom, 3 left)*/
