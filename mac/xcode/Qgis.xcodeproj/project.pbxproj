@@ -965,6 +965,7 @@
 		727E6B040FEA9BC000DF6F64 /* x_spatialite.c in Sources */ = {isa = PBXBuildFile; fileRef = 727E6B030FEA9BC000DF6F64 /* x_spatialite.c */; };
 		727E6B110FEAA0CF00DF6F64 /* x_qgsspatialitesourceselect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 727E6B0C0FEAA06B00DF6F64 /* x_qgsspatialitesourceselect.cpp */; };
 		727E6B150FEAA14C00DF6F64 /* x_qgsspatialitesourceselect.h in Sources */ = {isa = PBXBuildFile; fileRef = 727E6B0B0FEAA06B00DF6F64 /* x_qgsspatialitesourceselect.h */; };
+		727EEEB8117E94EA005CFF65 /* QgsNewSpatialiteLayerDialog-de_DE in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 727EEEB7117E94D6005CFF65 /* QgsNewSpatialiteLayerDialog-de_DE */; };
 		72820FE10FACCE770011C963 /* qgsmaptooldeletering.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72820FDE0FACCE520011C963 /* qgsmaptooldeletering.cpp */; };
 		72820FE20FACCE770011C963 /* qgsmaptooldeletepart.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72820FDD0FACCE520011C963 /* qgsmaptooldeletepart.cpp */; };
 		72820FE30FACCE770011C963 /* qgsmaptoolsimplify.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72820FE00FACCE520011C963 /* qgsmaptoolsimplify.cpp */; };
@@ -3040,6 +3041,7 @@
 				7216324D10EFCDAC00588EAD /* QgsNewOgrConnection-it_IT in Copy - context_help */,
 				7216324E10EFCDAC00588EAD /* QgsNewOgrConnection-pt_BR in Copy - context_help */,
 				7216324F10EFCDAC00588EAD /* QgsNewOgrConnection-ru_RU in Copy - context_help */,
+				727EEEB8117E94EA005CFF65 /* QgsNewSpatialiteLayerDialog-de_DE in Copy - context_help */,
 				72BDC39A116E262C0088DEB4 /* QgsNewSpatialiteLayerDialog-en_US in Copy - context_help */,
 				7216325010EFCDAC00588EAD /* QgsNewVectorLayerDialog-de_DE in Copy - context_help */,
 				7216325110EFCDAC00588EAD /* QgsNewVectorLayerDialog-en_US in Copy - context_help */,
@@ -5848,6 +5850,7 @@
 		727E6B030FEA9BC000DF6F64 /* x_spatialite.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = x_spatialite.c; sourceTree = "<group>"; };
 		727E6B0B0FEAA06B00DF6F64 /* x_qgsspatialitesourceselect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = x_qgsspatialitesourceselect.h; sourceTree = "<group>"; };
 		727E6B0C0FEAA06B00DF6F64 /* x_qgsspatialitesourceselect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = x_qgsspatialitesourceselect.cpp; sourceTree = "<group>"; };
+		727EEEB7117E94D6005CFF65 /* QgsNewSpatialiteLayerDialog-de_DE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsNewSpatialiteLayerDialog-de_DE"; path = "../../resources/context_help/QgsNewSpatialiteLayerDialog-de_DE"; sourceTree = SOURCE_ROOT; };
 		72820FDB0FACCE520011C963 /* qgsmaptooldeletering.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsmaptooldeletering.h; path = ../../src/app/qgsmaptooldeletering.h; sourceTree = SOURCE_ROOT; };
 		72820FDC0FACCE520011C963 /* qgsmaptooldeletepart.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsmaptooldeletepart.h; path = ../../src/app/qgsmaptooldeletepart.h; sourceTree = SOURCE_ROOT; };
 		72820FDD0FACCE520011C963 /* qgsmaptooldeletepart.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsmaptooldeletepart.cpp; path = ../../src/app/qgsmaptooldeletepart.cpp; sourceTree = SOURCE_ROOT; };
@@ -11647,6 +11650,7 @@
 				721631AC10EFCD9B00588EAD /* QgsNewOgrConnection-it_IT */,
 				721631AD10EFCD9B00588EAD /* QgsNewOgrConnection-pt_BR */,
 				721631AE10EFCD9B00588EAD /* QgsNewOgrConnection-ru_RU */,
+				727EEEB7117E94D6005CFF65 /* QgsNewSpatialiteLayerDialog-de_DE */,
 				72BDC399116E261C0088DEB4 /* QgsNewSpatialiteLayerDialog-en_US */,
 				721631AF10EFCD9B00588EAD /* QgsNewVectorLayerDialog-de_DE */,
 				721631B010EFCD9B00588EAD /* QgsNewVectorLayerDialog-en_US */,
@@ -19720,7 +19724,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 13317;
+				QGIS_VERSION_BUILD = 13340;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -19731,7 +19735,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 13317;
+				QGIS_VERSION_BUILD = 13340;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
