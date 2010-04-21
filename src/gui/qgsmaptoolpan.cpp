@@ -17,6 +17,7 @@
 #include "qgsmaptoolpan.h"
 #include "qgsmapcanvas.h"
 #include "qgscursors.h"
+#include "qgsmaptopixel.h"
 #include <QBitmap>
 #include <QCursor>
 #include <QMouseEvent>
@@ -34,28 +35,29 @@ QgsMapToolPan::QgsMapToolPan( QgsMapCanvas* canvas )
 
 void QgsMapToolPan::canvasMoveEvent( QMouseEvent * e )
 {
-  if ( mDragging && ( e->buttons() & Qt::LeftButton ) )
+  if (( e->buttons() & Qt::LeftButton ) )
   {
+    mDragging = true;
     // move map and other canvas items
     mCanvas->panAction( e );
   }
 }
 
-
-void QgsMapToolPan::canvasPressEvent( QMouseEvent * e )
+void QgsMapToolPan::canvasReleaseEvent( QMouseEvent * e )
 {
   if ( e->button() == Qt::LeftButton )
   {
-    mDragging = TRUE;
-  }
-}
-
-
-void QgsMapToolPan::canvasReleaseEvent( QMouseEvent * e )
-{
-  if ( mDragging && e->button() == Qt::LeftButton )
-  {
-    mCanvas->panActionEnd( e->pos() );
-    mDragging = FALSE;
+    if ( mDragging )
+    {
+      mCanvas->panActionEnd( e->pos() );
+      mDragging = FALSE;
+    }
+    else // add pan to mouse cursor
+    {
+      // transform the mouse pos to map coordinates
+      QgsPoint center = mCanvas->getCoordinateTransform()->toMapPoint( e->x(), e->y() );
+      mCanvas->setExtent( QgsRectangle( center, center ) );
+      mCanvas->refresh();
+    }
   }
 }
