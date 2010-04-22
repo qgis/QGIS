@@ -107,8 +107,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
                          bool useIntersect = false ) = 0;
 
     /**
-     * Update the feature count based on current spatial filter. If not
-     * overridden in the data provider this function returns -1
+     * This function does nothing useful, it's kept only for compatibility.
+     * @todo to be removed
      */
     virtual long updateFeatureCount();
 

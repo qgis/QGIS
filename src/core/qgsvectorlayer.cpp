@@ -911,9 +911,6 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
       mRendererV2->setVertexMarkerAppearance( currentVertexMarkerType(), currentVertexMarkerSize() );
     }
 
-    // TODO: really needed?
-    updateFeatureCount();
-
     QgsAttributeList attributes;
     foreach( QString attrName, mRendererV2->usedAttributes() )
     {
@@ -973,7 +970,6 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
       mVertexMarkerOnlyForSelection = settings.value( "/qgis/digitizing/marker_only_for_selected", false ).toBool();
     }
 
-    updateFeatureCount();
     int totalFeatures = pendingFeatureCount();
     int featureCount = 0;
     QgsFeature fet;
@@ -1374,12 +1370,7 @@ long QgsVectorLayer::featureCount() const
 
 long QgsVectorLayer::updateFeatureCount() const
 {
-  if ( !mDataProvider )
-  {
-    QgsDebugMsg( "invoked with null mDataProvider" );
-    return 0;
-  }
-  return mDataProvider->updateFeatureCount();
+  return -1;
 }
 
 void QgsVectorLayer::updateExtents()
@@ -3451,7 +3442,6 @@ bool QgsVectorLayer::commitChanges()
   }
 
   mDataProvider->updateExtents();
-  mDataProvider->updateFeatureCount();
 
   triggerRepaint();
 
