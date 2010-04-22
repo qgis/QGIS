@@ -228,8 +228,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     virtual long featureCount() const;
 
-    /** Update the feature count
-     * @return long containing the number of features in the datasource
+    /** This function does nothing useful, it's kept only for compatibility.
+     * @todo to be removed
      */
     virtual long updateFeatureCount() const;
 
