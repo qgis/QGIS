@@ -245,7 +245,8 @@ class QgsOgrProvider : public QgsVectorDataProvider
     /**Get an attribute associated with a feature*/
     void getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature & f, int attindex );
 
-
+    /** find out the number of features of the whole layer */
+    void recalculateFeatureCount();
 
   private:
     unsigned char *getGeometryPointer( OGRFeatureH fet );
