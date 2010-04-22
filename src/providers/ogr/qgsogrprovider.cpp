@@ -271,7 +271,7 @@ bool QgsOgrProvider::setSubsetString( QString theSQL )
 
   // getting the total number of features in the layer
   // TODO: This can be expensive, do we really need it!
-  featuresCounted = OGR_L_GetFeatureCount( ogrLayer, TRUE );
+  recalculateFeatureCount();
 
   // get the extent_ (envelope) of the layer
   QgsDebugMsg( "Starting get extent" );
@@ -771,7 +771,6 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
   {
     f.setFeatureId( OGR_F_GetFID( feature ) );
   }
-  ++featuresCounted;
   OGR_F_Destroy( feature );
   return returnValue;
 }
@@ -792,7 +791,7 @@ bool QgsOgrProvider::addFeatures( QgsFeatureList & flist )
   {
     returnvalue = false;
   }
-  featuresCounted = OGR_L_GetFeatureCount( ogrLayer, TRUE ); //new feature count
+  recalculateFeatureCount();
 
   return returnvalue;
 }
@@ -997,7 +996,8 @@ bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds & id )
   QString sql = QString( "REPACK %1" ).arg( layerName );   // don't quote the layer name as it works with spaces in the name and won't work if the name is quoted
   QgsDebugMsg( QString( "SQL: %1" ).arg( sql ) );
   OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).data(), NULL, NULL );
-  featuresCounted = OGR_L_GetFeatureCount( ogrLayer, TRUE ); //new feature count
+
+  recalculateFeatureCount();
 
   OGR_L_GetExtent( ogrOrigLayer, ( OGREnvelope * ) extent_, TRUE );
 
@@ -1859,4 +1859,23 @@ bool QgsOgrProvider::syncToDisc()
   }
 
   return true;
+}
+
+void QgsOgrProvider::recalculateFeatureCount()
+{
+  OGRGeometryH filter = OGR_L_GetSpatialFilter( ogrLayer );
+  if ( filter )
+  {
+    filter = OGR_G_Clone( filter );
+    OGR_L_SetSpatialFilter( ogrLayer, 0 );
+  }
+
+  // feature count returns number of features within current spatial filter
+  // so we remove it if there's any and then put it back
+  featuresCounted = OGR_L_GetFeatureCount( ogrLayer, TRUE );
+
+  if ( filter )
+  {
+    OGR_L_SetSpatialFilter( ogrLayer, filter );
+  }
 }
