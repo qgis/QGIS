@@ -34,9 +34,6 @@ class GUI_EXPORT QgsMapToolPan : public QgsMapTool
     //! Overridden mouse move event
     virtual void canvasMoveEvent( QMouseEvent * e );
 
-    //! Overridden mouse press event
-    virtual void canvasPressEvent( QMouseEvent * e );
-
     //! Overridden mouse release event
     virtual void canvasReleaseEvent( QMouseEvent * e );
 
