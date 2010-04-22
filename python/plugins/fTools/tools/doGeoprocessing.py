@@ -198,6 +198,11 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
     self.cancel_close.setText( self.tr("Close") )
     QObject.disconnect( self.cancel_close, SIGNAL( "clicked()" ), self.cancelThread )
     out_text = ""
+    if results[3] is not None:
+      QMessageBox.warning( self, self.tr( "Geoprocessing" ),
+                  self.tr( "No output created. File creation error:\n%1" )
+                  .arg( results[3] ) )
+      return
     if not results[2] or not results[1] or not results [0]:
       out_text = self.tr( "\nWarnings:" )
       end_text = self.tr( "\nSome output geometries may be missing or invalid.\n\nWould you like to add the new layer anyway?" )
@@ -240,6 +245,7 @@ class geoprocessingThread( QThread ):
   def run( self ):
     self.running = True
     self.vlayerA = ftools_utils.getVectorLayerByName( self.myLayerA )
+    error = None
     if self.myFunction == 1 or self.myFunction == 2 or self.myFunction == 4:
       ( self.myParam, useField ) = self.checkParameter( self.vlayerA, self.myParam )
       if not self.myParam is None:
@@ -254,14 +260,14 @@ class geoprocessingThread( QThread ):
       if self.myFunction == 3:
         geos, feature, match = self.difference()
       elif self.myFunction == 5:
-        geos, feature, match = self.intersect()
+        geos, feature, match, error = self.intersect()
       elif self.myFunction == 6:
-        geos, feature, match = self.union()
+        geos, feature, match, error = self.union()
       elif self.myFunction == 7:
-        geos, feature, match = self.symetrical_difference()
+        geos, feature, match, error = self.symetrical_difference()
       elif self.myFunction == 8:
         geos, feature, match = self.clip()
-    self.emit( SIGNAL( "runFinished(PyQt_PyObject)" ), (geos, feature, match) )
+    self.emit( SIGNAL( "runFinished(PyQt_PyObject)" ), (geos, feature, match, error) )
     self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
   
   def stop(self):
@@ -836,8 +842,14 @@ class geoprocessingThread( QThread ):
     vproviderB.select( allAttrsB )
     crs_match = vproviderA.crs() == vproviderB.crs()
     fields = ftools_utils.combineVectorFields( self.vlayerA, self.vlayerB )
+    longNames = ftools_utils.checkFieldNameLenght( fields )
+    if not longNames.isEmpty():
+      message = QString( 'Following field names are longer then 10 characters:\n%1' ).arg( longNames.join( '\n' ) )
+      return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match, message
     writer = QgsVectorFileWriter( self.myName, self.myEncoding, 
     fields, vproviderA.geometryType(), vproviderA.crs() )
+    if writer.hasError():
+      return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match, writer.errorMessage()
     inFeatA = QgsFeature()
     inFeatB = QgsFeature()
     outFeat = QgsFeature()
@@ -979,7 +991,7 @@ class geoprocessingThread( QThread ):
               break
     del writer
     print crs_match
-    return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match
+    return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match, None
   
   def union( self ):
     GEOS_EXCEPT = True
@@ -993,8 +1005,14 @@ class geoprocessingThread( QThread ):
     if vproviderA.crs() == vproviderB.crs(): crs_match = True
     else: crs_match = False
     fields = ftools_utils.combineVectorFields( self.vlayerA, self.vlayerB )
+    longNames = ftools_utils.checkFieldNameLenght( fields )
+    if not longNames.isEmpty():
+      message = QString( 'Following field names are longer then 10 characters:\n%1' ).arg( longNames.join( '\n' ) )
+      return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match, message
     writer = QgsVectorFileWriter( self.myName, self.myEncoding, 
     fields, vproviderA.geometryType(), vproviderA.crs() )
+    if writer.hasError():
+      return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match, writer.errorMessage()
     inFeatA = QgsFeature()
     inFeatB = QgsFeature()
     outFeat = QgsFeature()
@@ -1102,7 +1120,7 @@ class geoprocessingThread( QThread ):
       self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
       nElement += 1
     del writer
-    return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match
+    return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match, None
   
   def symetrical_difference( self ):
     GEOS_EXCEPT = True
@@ -1116,8 +1134,14 @@ class geoprocessingThread( QThread ):
     if vproviderA.crs() == vproviderB.crs(): crs_match = True
     else: crs_match = False
     fields = ftools_utils.combineVectorFields( self.vlayerA, self.vlayerB )
+    longNames = ftools_utils.checkFieldNameLenght( fields )
+    if not longNames.isEmpty():
+      message = QString( 'Following field names are longer then 10 characters:\n%1' ).arg( longNames.join( '\n' ) )
+      return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match, message
     writer = QgsVectorFileWriter( self.myName, self.myEncoding, 
     fields, vproviderA.geometryType(), vproviderA.crs() )
+    if writer.hasError():
+      return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match, writer.errorMessage()
     inFeatA = QgsFeature()
     inFeatB = QgsFeature()
     outFeat = QgsFeature()
@@ -1184,7 +1208,7 @@ class geoprocessingThread( QThread ):
           FEATURE_EXCEPT = False
           continue
     del writer
-    return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match
+    return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match, None
   
   def clip( self ):
     GEOS_EXCEPT = True
