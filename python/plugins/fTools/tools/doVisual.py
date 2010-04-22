@@ -25,7 +25,7 @@ class VisualDialog( QDialog, Ui_Dialog ):
     Reimplemented key press event:
     '''
     if ( e.modifiers() == Qt.ControlModifier or e.modifiers() == Qt.MetaModifier ) and e.key() == Qt.Key_C:
-      selection = self.lstUnique.selectedItems()
+      #selection = self.tblUnique.selectedItems()
       items = QString()
       if self.myFunction in ( 1, 2 ):
         for rec in range( self.tblUnique.rowCount() ):
