@@ -43,6 +43,10 @@ void QgsMapToolPan::canvasMoveEvent( QMouseEvent * e )
   }
 }
 
+void QgsMapToolPan::canvasPressEvent( QMouseEvent * e )
+{
+}
+
 void QgsMapToolPan::canvasReleaseEvent( QMouseEvent * e )
 {
   if ( e->button() == Qt::LeftButton )
