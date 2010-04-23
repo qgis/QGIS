@@ -104,6 +104,12 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     //! Returns the path to the authors file.
     static const QString authorsFilePath();
 
+    /** Returns the path to the contributors file.
+     * Contributors are people who have submitted patches
+     * but don't have svn write access.
+     * @note this function was added in version 1.3 */
+    static const QString contributorsFilePath();
+
     /**Returns the path to the sponsors file.
       @note this function was added in version 1.2*/
     static const QString sponsorsFilePath();
@@ -160,12 +166,6 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     //! @note deprecated
     static const QString svgPath();
 
-    //! Returns the path to user's style. Added in QGIS 1.4
-    static const QString userStyleV2Path();
-
-    //! Returns the path to default style (works as a starting point). Added in QGIS 1.4
-    static const QString defaultStyleV2Path();
-
     //! Returns the path to the application prefix directory.
     static const QString prefixPath();
 
@@ -181,6 +181,17 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     //! Returns the path to the default theme directory.
     static const QString defaultThemePath(); 
     
+    //! Returns path to the desired icon file.
+    //! First it tries to use the active theme path, then default theme path
+    //! @note Added in 1.5
+    static QString iconPath( QString iconFile );
+
+    //! Returns the path to user's style. Added in QGIS 1.4
+    static const QString userStyleV2Path();
+
+    //! Returns the path to default style (works as a starting point). Added in QGIS 1.4
+    static const QString defaultStyleV2Path();
+
     //! Alters prefix path - used by 3rd party apps
     static void setPrefixPath(const QString thePrefixPath, bool useDefaultPaths = FALSE);
     
