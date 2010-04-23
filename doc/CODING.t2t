@@ -769,6 +769,9 @@ one special include all tests should have:
 #include <QtTest>
 ```
 
+**Note** that we use the new style Qt4 includes - i.e. QtTest is included not
+qttest.h
+
 Beyond that you just continue implementing your class as per normal, pulling 
 in whatever headers you may need:
 
