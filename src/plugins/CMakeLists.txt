@@ -13,6 +13,7 @@ SUBDIRS (copyright_label
   evis
   labeling
   point_displacement_renderer
+  spatialquery
   )
 
 IF (POSTGRES_FOUND)
