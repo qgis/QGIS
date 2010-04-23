@@ -282,7 +282,7 @@ void QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext&
       for ( unsigned int i = 0; i < num; ++i )
       {
         ptr = _getPolygon( pts, holes, context, ptr );
-        (( QgsFillSymbolV2* )symbol )->renderPolygon( pts, ( holes.count() ? &holes : NULL ), context );
+        (( QgsFillSymbolV2* )symbol )->renderPolygon( pts, ( holes.count() ? &holes : NULL ), context, layer, selected );
 
         if ( drawVertexMarker )
           renderVertexMarkerPolygon( pts, ( holes.count() ? &holes : NULL ), context );
