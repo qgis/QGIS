@@ -24,6 +24,7 @@
 #include "qgssearchtreenode.h"
 #include <QRegExp>
 #include <QObject>
+#include <QSet>
 #include <QSettings>
 #include <iostream>
 
@@ -223,6 +224,29 @@ QString QgsSearchTreeNode::makeSearchString()
   }
 
   return str;
+}
+
+QStringList QgsSearchTreeNode::referencedColumns()
+{
+  if ( mType == tOperator )
+  {
+    QStringList lst;
+    if ( mLeft )
+      lst += mLeft->referencedColumns();
+    if ( mRight )
+      lst += mRight->referencedColumns();
+    return lst.toSet().toList(); // make union and convert back to list
+  }
+  else if ( mType == tColumnRef )
+  {
+    return QStringList( mText );
+  }
+  else
+  {
+    // string or number - do nothing
+    return QStringList();
+  }
+
 }
 
 

@@ -22,6 +22,7 @@
 
 #include <QMap>
 #include <QString>
+#include <QStringList>
 #include <QVariant>
 
 #include <qgsfield.h>
@@ -137,6 +138,10 @@ class CORE_EXPORT QgsSearchTreeNode
     //! wrapper around valueAgainst()
     bool getValue( QgsSearchTreeValue& value, QgsSearchTreeNode* node,
                    const QgsFieldMap& fields, const QgsAttributeMap& attributes, QgsGeometry* geom = 0 );
+
+    //! return a list of referenced columns in the tree
+    //! @note added in 1.5
+    QStringList referencedColumns();
 
   protected:
 
