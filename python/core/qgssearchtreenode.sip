@@ -102,6 +102,10 @@ class QgsSearchTreeNode
     bool getValue( QgsSearchTreeValue& value /Out/, QgsSearchTreeNode* node,
                    const QMap<int,QgsField>& fields, const QMap<int,QVariant>& attributes, QgsGeometry* geom = 0 );
 
+    //! return a list of referenced columns in the tree
+    //! @note added in 1.5
+    QStringList referencedColumns();
+
   protected:
 
 
