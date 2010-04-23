@@ -864,7 +864,7 @@ void QgsMapToolNodeTool::keyReleaseEvent( QKeyEvent* e )
     mCtrl = false;
     return;
   }
-  if ( e->key() == Qt::Key_Delete )
+  if ( mSelectionFeature && e->key() == Qt::Key_Delete )
   {
     mChangingGeometry = true;
     mSelectionFeature->deleteSelectedVertexes();
