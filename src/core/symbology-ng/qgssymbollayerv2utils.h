@@ -79,8 +79,6 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     /**Creates a render context for a pixel based device*/
     static QgsRenderContext createRenderContext( QPainter* p );
 
-    static QString iconPath( QString iconFile );
-
     /**Multiplies opacity of image pixel values with a (global) transparency value*/
     static void multiplyImageOpacity( QImage* image, qreal alpha );
 };

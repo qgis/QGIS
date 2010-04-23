@@ -131,6 +131,11 @@ class CORE_EXPORT QgsApplication: public QApplication
     //! Returns the path to the default theme directory.
     static const QString defaultThemePath();
 
+    //! Returns path to the desired icon file.
+    //! First it tries to use the active theme path, then default theme path
+    //! @note Added in 1.5
+    static QString iconPath( QString iconFile );
+
     //! Returns the path to user's style. Added in QGIS 1.4
     static const QString userStyleV2Path();
 

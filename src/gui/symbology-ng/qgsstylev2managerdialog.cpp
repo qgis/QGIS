@@ -19,18 +19,6 @@
 #include "qgslogger.h"
 
 
-static QString iconPath( QString iconFile )
-{
-  // try active theme
-  QString path = QgsApplication::activeThemePath();
-  if ( QFile::exists( path + iconFile ) )
-    return path + iconFile;
-
-  // use default theme
-  return QgsApplication::defaultThemePath() + iconFile;
-}
-
-///////
 
 QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* parent )
     : QDialog( parent ), mStyle( style ), mModified( false )
@@ -39,9 +27,9 @@ QgsStyleV2ManagerDialog::QgsStyleV2ManagerDialog( QgsStyleV2* style, QWidget* pa
   setupUi( this );
 
   // setup icons
-  btnAddItem->setIcon( QIcon( iconPath( "symbologyAdd.png" ) ) );
-  btnEditItem->setIcon( QIcon( iconPath( "symbologyEdit.png" ) ) );
-  btnRemoveItem->setIcon( QIcon( iconPath( "symbologyRemove.png" ) ) );
+  btnAddItem->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.png" ) ) );
+  btnEditItem->setIcon( QIcon( QgsApplication::iconPath( "symbologyEdit.png" ) ) );
+  btnRemoveItem->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.png" ) ) );
 
   connect( this, SIGNAL( finished( int ) ), this, SLOT( onFinished() ) );
 
