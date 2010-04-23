@@ -57,18 +57,6 @@ class SymbolLayerItem : public QStandardItem
 
 //////////
 
-static QString iconPath( QString iconFile )
-{
-  // try active theme
-  QString path = QgsApplication::activeThemePath();
-  if ( QFile::exists( path + iconFile ) )
-    return path + iconFile;
-
-  // use default theme
-  return QgsApplication::defaultThemePath() + iconFile;
-}
-
-//////////
 
 static bool _initWidgetFunction( QString name, QgsSymbolLayerV2WidgetFunc f )
 {
@@ -119,11 +107,11 @@ QgsSymbolV2PropertiesDialog::QgsSymbolV2PropertiesDialog( QgsSymbolV2* symbol, Q
   setupUi( this );
 
   // setup icons
-  btnAddLayer->setIcon( QIcon( iconPath( "symbologyAdd.png" ) ) );
-  btnRemoveLayer->setIcon( QIcon( iconPath( "symbologyRemove.png" ) ) );
-  btnLock->setIcon( QIcon( iconPath( "symbologyLock.png" ) ) );
-  btnUp->setIcon( QIcon( iconPath( "symbologyUp.png" ) ) );
-  btnDown->setIcon( QIcon( iconPath( "symbologyDown.png" ) ) );
+  btnAddLayer->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.png" ) ) );
+  btnRemoveLayer->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.png" ) ) );
+  btnLock->setIcon( QIcon( QgsApplication::iconPath( "symbologyLock.png" ) ) );
+  btnUp->setIcon( QIcon( QgsApplication::iconPath( "symbologyUp.png" ) ) );
+  btnDown->setIcon( QIcon( QgsApplication::iconPath( "symbologyDown.png" ) ) );
 
   // set widget functions
   // (should be probably moved somewhere else)

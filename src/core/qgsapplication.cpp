@@ -159,6 +159,18 @@ const QString QgsApplication::activeThemePath()
   return ":/images/themes/" + mThemeName + "/";
 }
 
+
+QString QgsApplication::iconPath( QString iconFile )
+{
+  // try active theme
+  QString path = activeThemePath();
+  if ( QFile::exists( path + iconFile ) )
+    return path + iconFile;
+
+  // use default theme
+  return defaultThemePath() + iconFile;
+}
+
 /*!
   Set the theme path to the specified theme.
 */
