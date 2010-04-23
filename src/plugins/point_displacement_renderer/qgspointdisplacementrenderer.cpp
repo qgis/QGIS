@@ -66,7 +66,7 @@ QgsFeatureRendererV2* QgsPointDisplacementRenderer::clone()
   return r;
 }
 
-void QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool drawVertexMarker )
+void QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
 {
   //point position in screen coords
   QgsGeometry* geom = feature.geometry();
@@ -147,7 +147,7 @@ void QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRender
   }
 
 
-  QgsSymbolV2RenderContext symbolContext( context, QgsSymbolV2::MM );
+  QgsSymbolV2RenderContext symbolContext( context, QgsSymbolV2::MM, 1.0, selected );
   double circleAdditionPainterUnits = symbolContext.outputLineWidth( mCircleRadiusAddition );
   double radius = std::max(( diagonal / 2 ), labelAttributeList.size() * diagonal / 2 / M_PI ) + circleAdditionPainterUnits;
 
@@ -163,7 +163,7 @@ void QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRender
   {
     if ( mCenterSymbol )
     {
-      mCenterSymbol->renderPoint( pt, context );
+      mCenterSymbol->renderPoint( pt, context, layer, selected );
     }
     else
     {
@@ -172,7 +172,7 @@ void QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRender
   }
 
   //draw symbols on the circle
-  drawSymbols( context, symbolList, symbolPositions );
+  drawSymbols( context, symbolList, symbolPositions, selected );
   //and also the labels
   drawLabels( pt, symbolContext, labelPositions, labelAttributeList );
 }
@@ -508,7 +508,7 @@ void QgsPointDisplacementRenderer::drawCircle( double radiusPainterUnits, QgsSym
   p->drawArc( QRectF( centerPoint.x() - radiusPainterUnits, centerPoint.y() - radiusPainterUnits, 2 * radiusPainterUnits, 2 * radiusPainterUnits ), 0, 5760 );
 }
 
-void QgsPointDisplacementRenderer::drawSymbols( QgsRenderContext& context, const QList<QgsMarkerSymbolV2*>& symbolList, const QList<QPointF>& symbolPositions )
+void QgsPointDisplacementRenderer::drawSymbols( QgsRenderContext& context, const QList<QgsMarkerSymbolV2*>& symbolList, const QList<QPointF>& symbolPositions, bool selected )
 {
   QList<QPointF>::const_iterator symbolPosIt = symbolPositions.constBegin();
   QList<QgsMarkerSymbolV2*>::const_iterator symbolIt = symbolList.constBegin();
@@ -516,7 +516,7 @@ void QgsPointDisplacementRenderer::drawSymbols( QgsRenderContext& context, const
   {
     if ( *symbolIt )
     {
-      ( *symbolIt )->renderPoint( *symbolPosIt, context );
+      ( *symbolIt )->renderPoint( *symbolPosIt, context, -1, selected );
     }
   }
 }
