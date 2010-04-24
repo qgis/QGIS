@@ -5,16 +5,50 @@
 # 3. remove the .pro
 # Note the .pro file must NOT be named qgis.pro as this
 # name is reserved for the Windows qmake project file
-# update_ts_files.sh,v 1.3 2004/07/14 18:16:24 gsherman Exp
+# $Id$
 
 set -e
+
+cleanup() {
+	if [ -f i18n/qt_ts.tar ]; then
+		echo Restoring Qt translations
+		tar -xf i18n/qt_ts.tar
+	fi
+	if [ -f i18n/qgis_ts.tar ]; then
+		echo Restoring excluded translations
+		tar -xf i18n/qgis_ts.tar
+	fi
+
+	echo Removing temporary files
+	perl -i.bak -ne 'print unless /^\s+<location.*python-i18n\.cpp.*$/;' i18n/qgis_*.ts
+	for i in \
+		python/python-i18n.{ts,cpp} \
+		python/plugins/*/python-i18n.{ts,cpp} \
+		i18n/qgis_*.ts.bak \
+		src/plugins/grass/grasslabels-i18n.cpp \
+		i18n/qt_ts.tar \
+		i18n/qgis_ts.tar \
+		qgis_ts.pro
+	do
+		[ -f "$i" ] && rm "$i"
+	done
+
+	for i in \
+		src/plugins/plugin_template/plugingui.cpp \
+		src/plugins/plugin_template/plugin.cpp
+	do
+		[ -f "$i.save" ] && mv "$i.save" "$i"
+	done
+}
+
+trap cleanup EXIT
 
 PATH=$QTDIR/bin:$PATH
 
 #first tar the qt_xx.ts files in i18n folder such that lupdate does not 
 #merge the qgis strings to them
-echo Creating qt_ts.tar
-tar --remove-files -cvf i18n/qt_ts.tar i18n/qt_*.ts
+echo Saving Qt translations
+tar --remove-files -cf i18n/qt_ts.tar i18n/qt_*.ts
 exclude=
 opts=
 for i in "$@"; do
@@ -25,7 +59,8 @@ for i in "$@"; do
   fi
 done
 if [ -n "$exclude" ]; then
-  tar --remove-files -cvf i18n/qgis_ts.tar i18n/qgis_*.ts$exclude
+  echo Saving excluded translations
+  tar --remove-files -cf i18n/qgis_ts.tar i18n/qgis_*.ts$exclude
 fi
 echo Updating python translations
 cd python
@@ -40,21 +75,16 @@ for i in python/plugins/*/CMakeLists.txt; do
 	rm python-i18n.ts
 	cd ../../..
 done
+echo Updating GRASS module translations
 perl scripts/qgm2cpp.pl >src/plugins/grass/grasslabels-i18n.cpp
+mv src/plugins/plugin_template/plugingui.cpp src/plugins/plugin_template/plugingui.cpp.save
 echo Creating qmake project file
+for i in \
+	src/plugins/plugin_template/plugingui.cpp \
+	src/plugins/plugin_template/plugin.cpp
+do
+	[ -f "$i" ] && mv "$i" "$i.save"
+done
 qmake -project -o qgis_ts.pro -nopwd src python i18n
-echo Updating translation files
+echo Updating translations
 lupdate$opts -verbose qgis_ts.pro
-echo Removing temporary python translation files
-perl -i.bak -ne 'print unless /^\s+<location.*python-i18n\.cpp.*$/;' i18n/qgis_*.ts
-rm python/python-i18n.cpp python/plugins/*/python-i18n.cpp i18n/qgis_*.ts.bak src/plugins/grass/grasslabels-i18n.cpp
-echo Removing qmake project file
-rm qgis_ts.pro
-echo Unpacking qt_ts.tar
-tar -xvf i18n/qt_ts.tar 
-rm i18n/qt_ts.tar
-if [ -f i18n/qgis_ts.tar ]; then
-  echo Unpacking i18n/qgis_ts.tar
-  tar -xvf i18n/qgis_ts.tar 
-  rm i18n/qgis_ts.tar
-fi

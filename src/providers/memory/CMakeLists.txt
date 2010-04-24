@@ -7,7 +7,8 @@ INCLUDE_DIRECTORIES(
   ${GEOS_INCLUDE_DIR}
 )
 
-ADD_LIBRARY(memoryprovider MODULE ${MEMORY_SRCS})
+QT4_WRAP_CPP(MEMORY_MOC_SRCS qgsmemoryprovider.h)
+ADD_LIBRARY(memoryprovider MODULE ${MEMORY_SRCS} ${MEMORY_MOC_SRCS})
 
 TARGET_LINK_LIBRARIES(memoryprovider
   qgis_core

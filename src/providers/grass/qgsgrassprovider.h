@@ -110,6 +110,8 @@ struct GMAP
 */
 class GRASS_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 {
+    Q_OBJECT
+
   public:
 
     QgsGrassProvider( QString uri = QString() );
@@ -282,7 +284,7 @@ class GRASS_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
     /** Get isle area
      *   @param isle number
-     *   @return area number 
+     *   @return area number
      */
     int isleArea( int isle );
 

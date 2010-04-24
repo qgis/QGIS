@@ -28,8 +28,6 @@
 #ifndef EVISDATABASECONNECTION_H
 #define EVISDATABASECONNECTION_H
 
-#include "evisquerydefinition.h"
-
 #include <QStringList>
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlQuery>

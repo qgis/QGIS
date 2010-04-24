@@ -20,7 +20,6 @@
 
 #include <ui_qgscredentialdialog.h>
 #include <qgisgui.h>
-#include "qgscredentialdialog.h"
 #include "qgscredentials.h"
 
 #include <QString>

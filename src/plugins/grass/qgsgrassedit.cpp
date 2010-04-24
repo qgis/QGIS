@@ -43,6 +43,7 @@
 #include <QMessageBox>
 #include <QSettings>
 #include <QToolBar>
+#include <QDebug>
 
 extern "C"
 {
@@ -116,7 +117,6 @@ QWidget *QgsGrassEditAttributeTableItemDelegate::createEditor( QWidget *parent,
   return editor;
 }
 
-#include<QDebug>
 void QgsGrassEditAttributeTableItemDelegate::setEditorData( QWidget *editor,
     const QModelIndex &index ) const
 {
@@ -894,8 +894,8 @@ int QgsGrassEdit::lineSymbFromMap( int line )
 
       /* Count areas on both sides */
       nareas = 0;
-      if ( left > 0 || (left < 0 && mProvider->isleArea(-left) > 0 ) ) nareas++;
-      if ( right > 0 || (right < 0 && mProvider->isleArea(-right) > 0 ) ) nareas++;
+      if ( left > 0 || ( left < 0 && mProvider->isleArea( -left ) > 0 ) ) nareas++;
+      if ( right > 0 || ( right < 0 && mProvider->isleArea( -right ) > 0 ) ) nareas++;
       if ( nareas == 0 ) return SYMB_BOUNDARY_0;
       else if ( nareas == 1 ) return SYMB_BOUNDARY_1;
       else return SYMB_BOUNDARY_2;

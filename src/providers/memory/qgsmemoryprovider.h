@@ -22,6 +22,8 @@ class QgsSpatialIndex;
 
 class QgsMemoryProvider : public QgsVectorDataProvider
 {
+    Q_OBJECT
+
   public:
     QgsMemoryProvider( QString uri = QString() );
 

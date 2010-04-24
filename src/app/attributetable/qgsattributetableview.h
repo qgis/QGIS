@@ -28,6 +28,8 @@ class QMenu;
 
 class QgsAttributeTableView: public QTableView
 {
+    Q_OBJECT
+
   public:
     QgsAttributeTableView( QWidget* parent = NULL );
     virtual ~QgsAttributeTableView();

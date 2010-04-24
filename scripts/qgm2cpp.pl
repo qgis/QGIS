@@ -46,10 +46,10 @@ sub parse {
 
 open I, "find src/plugins/grass -name '*.qgm' -o -name '*.qgc'|";
 while($file = <I>) {
-	print STDERR "$file\n";
+	#print STDERR "$file\n";
 	chop $file;
 	parse XMLin($file, ForceArray=>1);
-	print STDERR "$file DONE\n";
+	#print STDERR "$file DONE\n";
 }
 close I;
 

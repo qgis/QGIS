@@ -21,6 +21,8 @@
 /**A class that displays results of angle measurements with the proper unit*/
 class QgsDisplayAngle: public QDialog, private Ui::QgsDisplayAngleBase
 {
+    Q_OBJECT
+
   public:
     QgsDisplayAngle( QWidget * parent = 0, Qt::WindowFlags f = 0 );
     ~QgsDisplayAngle();
