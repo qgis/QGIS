@@ -22,8 +22,6 @@
 #ifndef __tools_pool_pointer_h
 #define __tools_pool_pointer_h
 
-#include "PointerPool.h"
-
 namespace Tools
 {
   template <class X> class PointerPool;

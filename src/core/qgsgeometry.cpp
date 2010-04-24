@@ -3751,22 +3751,60 @@ bool QgsGeometry::contains( QgsPoint* p )
   return returnval;
 }
 
-bool QgsGeometry::contains( QgsGeometry* geometry )
+bool QgsGeometry::geosRelOp(
+  char GEOS_DLL( *op )( const GEOSGeometry*, const GEOSGeometry * ),
+  QgsGeometry *a,
+  QgsGeometry *b )
 {
   try // geos might throw exception on error
   {
     // ensure that both geometries have geos geometry
-    exportWkbToGeos();
-    geometry->exportWkbToGeos();
+    a->exportWkbToGeos();
+    b->exportWkbToGeos();
 
-    if ( !mGeos || !geometry->mGeos )
+    if ( !a->mGeos || !b->mGeos )
     {
       QgsDebugMsg( "GEOS geometry not available!" );
       return false;
     }
-    return GEOSContains( mGeos, geometry->mGeos );
+    return op( a->mGeos, b->mGeos );
   }
   CATCH_GEOS( false )
+}
+
+bool QgsGeometry::contains( QgsGeometry* geometry )
+{
+  return geosRelOp( GEOSContains, this, geometry );
+}
+
+bool QgsGeometry::disjoint( QgsGeometry* geometry )
+{
+  return geosRelOp( GEOSDisjoint, this, geometry );
+}
+
+bool QgsGeometry::equals( QgsGeometry* geometry )
+{
+  return geosRelOp( GEOSEquals, this, geometry );
+}
+
+bool QgsGeometry::touches( QgsGeometry* geometry )
+{
+  return geosRelOp( GEOSTouches, this, geometry );
+}
+
+bool QgsGeometry::overlaps( QgsGeometry* geometry )
+{
+  return geosRelOp( GEOSOverlaps, this, geometry );
+}
+
+bool QgsGeometry::within( QgsGeometry* geometry )
+{
+  return geosRelOp( GEOSWithin, this, geometry );
+}
+
+bool QgsGeometry::crosses( QgsGeometry* geometry )
+{
+  return geosRelOp( GEOSCrosses, this, geometry );
 }
 
 QString QgsGeometry::exportToWkt()
@@ -6542,12 +6580,19 @@ bool QgsGeometry::isGeosValid()
 
 bool QgsGeometry::isGeosEqual( QgsGeometry &g )
 {
+  return geosRelOp( GEOSEquals, this, &g );
+}
+
+bool QgsGeometry::isGeosEmpty()
+{
   try
   {
-    GEOSGeometry *g0 = asGeos();
-    GEOSGeometry *g1 = g.asGeos();
+    GEOSGeometry *g = asGeos();
 
-    return g0 && g1 && GEOSEquals( g0, g1 );
+    if ( !g )
+      return false;
+
+    return GEOSisEmpty( g );
   }
   catch ( GEOSException &e )
   {
