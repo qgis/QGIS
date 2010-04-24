@@ -928,11 +928,6 @@
 		7268C0611182963E001BC9C4 /* qgsspatialquery.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7268C03E118294E5001BC9C4 /* qgsspatialquery.cpp */; };
 		7268C0621182963E001BC9C4 /* qgsspatialquerydialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7268C040118294E5001BC9C4 /* qgsspatialquerydialog.cpp */; };
 		7268C0631182963E001BC9C4 /* qgsspatialqueryplugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7268C044118294E5001BC9C4 /* qgsspatialqueryplugin.cpp */; };
-		7268C06411829664001BC9C4 /* qgsgeometrycoordinatetransform.h in Sources */ = {isa = PBXBuildFile; fileRef = 7268C037118294E5001BC9C4 /* qgsgeometrycoordinatetransform.h */; };
-		7268C06511829664001BC9C4 /* qgsmngprogressbar.h in Sources */ = {isa = PBXBuildFile; fileRef = 7268C039118294E5001BC9C4 /* qgsmngprogressbar.h */; };
-		7268C06611829664001BC9C4 /* qgsreaderfeatures.h in Sources */ = {isa = PBXBuildFile; fileRef = 7268C03B118294E5001BC9C4 /* qgsreaderfeatures.h */; };
-		7268C06711829664001BC9C4 /* qgsrubberselectid.h in Sources */ = {isa = PBXBuildFile; fileRef = 7268C03D118294E5001BC9C4 /* qgsrubberselectid.h */; };
-		7268C06811829664001BC9C4 /* qgsspatialquery.h in Sources */ = {isa = PBXBuildFile; fileRef = 7268C03F118294E5001BC9C4 /* qgsspatialquery.h */; };
 		7268C06911829664001BC9C4 /* qgsspatialquerydialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7268C041118294E5001BC9C4 /* qgsspatialquerydialog.h */; };
 		7268C06A11829664001BC9C4 /* qgsspatialqueryplugin.h in Sources */ = {isa = PBXBuildFile; fileRef = 7268C045118294E5001BC9C4 /* qgsspatialqueryplugin.h */; };
 		7268C06B11829683001BC9C4 /* qgsspatialquerydialogbase.qrc in Sources */ = {isa = PBXBuildFile; fileRef = 7268C042118294E5001BC9C4 /* qgsspatialquerydialogbase.qrc */; };
@@ -2636,7 +2631,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 7268C04C118294F2001BC9C4 /* spatialqueryplugin */;
+			remoteGlobalIDString = 7268C04C118294F2001BC9C4;
 			remoteInfo = spatialqueryplugin;
 		};
 		7268E8A4110241A400B96374 /* PBXContainerItemProxy */ = {
@@ -15457,11 +15452,6 @@
 				7268C0611182963E001BC9C4 /* qgsspatialquery.cpp in Sources */,
 				7268C0621182963E001BC9C4 /* qgsspatialquerydialog.cpp in Sources */,
 				7268C0631182963E001BC9C4 /* qgsspatialqueryplugin.cpp in Sources */,
-				7268C06411829664001BC9C4 /* qgsgeometrycoordinatetransform.h in Sources */,
-				7268C06511829664001BC9C4 /* qgsmngprogressbar.h in Sources */,
-				7268C06611829664001BC9C4 /* qgsreaderfeatures.h in Sources */,
-				7268C06711829664001BC9C4 /* qgsrubberselectid.h in Sources */,
-				7268C06811829664001BC9C4 /* qgsspatialquery.h in Sources */,
 				7268C06911829664001BC9C4 /* qgsspatialquerydialog.h in Sources */,
 				7268C06A11829664001BC9C4 /* qgsspatialqueryplugin.h in Sources */,
 				7268C06B11829683001BC9C4 /* qgsspatialquerydialogbase.qrc in Sources */,
@@ -19979,7 +19969,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 13357;
+				QGIS_VERSION_BUILD = 13363;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -19990,7 +19980,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 13357;
+				QGIS_VERSION_BUILD = 13363;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
