@@ -152,7 +152,7 @@ void QgsSpatialQueryDialog::evaluateCheckBox( bool isTarget )
   checkbox->setChecked( isCheckBoxValid );
   checkbox->setEnabled( isCheckBoxValid );
   QString textCheckBox  = isCheckBoxValid
-                          ? QString::number( selectedCount ) + " " + tr( "Selected geometries" )
+                          ? tr( "%n selected geometries", "selected geometries", selectedCount )
                           : tr( "Selected geometries" );
   checkbox->setText( textCheckBox );
 
@@ -185,30 +185,37 @@ void QgsSpatialQueryDialog::runQuery()
   buttonBox->setEnabled( true );
 
   grpResults->show();
-  grpInputs->hide();
+  setInputsVisible( false );
   progressBarStatus->hide();
   buttonBox->button( QDialogButtonBox::Close )->show();
   buttonBox->button( QDialogButtonBox::Cancel )->hide();
   buttonBox->button( QDialogButtonBox::Ok )->hide();
 } // void QgsSpatialQueryDialog::runQuery()
 
+void QgsSpatialQueryDialog::setInputsVisible( bool show )
+{
+  grpTargetGroupBox->setVisible( show );
+  grpReferenceGroupBox->setVisible( show );
+  grpOperationGroupBox->setVisible( show );
+}
+
 void QgsSpatialQueryDialog::showLogProcessing( bool hasShow )
 {
   static int heightDialogNoStatus = 0;
 
   hasShow ? textEditStatus->show() : textEditStatus->hide();
-  this->adjustSize();
+  adjustSize();
 
   if ( ! hasShow )
   {
     if ( heightDialogNoStatus == 0 )
     {
-      heightDialogNoStatus = this->geometry().height();
+      heightDialogNoStatus = geometry().height();
     }
     else
     {
-      this->setGeometry( this->geometry().x(), this->geometry().y(),
-                         this->geometry().width(), heightDialogNoStatus );
+      setGeometry( geometry().x(), geometry().y(),
+                   geometry().width(), heightDialogNoStatus );
     }
   }
 
@@ -613,18 +620,18 @@ void QgsSpatialQueryDialog::on_selectedFeatureListWidget_currentTextChanged( con
   mRubberSelectId->reset();
   selectedFeatureListWidget->setEnabled( false );
 
-  QCursor cursor;
-  cursor.setShape( Qt::WaitCursor );
-  Qt::CursorShape shapeCurrent = this->cursor().shape();
-  this->setCursor( cursor );
-  cursor.setShape( shapeCurrent );
+  QCursor c;
+  c.setShape( Qt::WaitCursor );
+  Qt::CursorShape shapeCurrent = cursor().shape();
+  setCursor( c );
+  c.setShape( shapeCurrent );
 
   bool ok;
   int Id = currentText.toInt( &ok );
   mRubberSelectId->addFeature( mLayerTarget, Id );
 
   selectedFeatureListWidget->setEnabled( true );
-  this->setCursor( cursor );
+  setCursor( c );
   selectedFeatureListWidget->setFocus();
   mRubberSelectId->show();
 
