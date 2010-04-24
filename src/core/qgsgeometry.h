@@ -288,7 +288,7 @@ class CORE_EXPORT QgsGeometry
     /** Test for containment of a point (uses GEOS) */
     bool contains( QgsPoint* p );
 
-    /** Test for if geometry is contain in an other (uses GEOS)
+    /** Test for if geometry is contained in an other (uses GEOS)
      *  @note added in 1.5 */
     bool contains( QgsGeometry* geometry );
 
