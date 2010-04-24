@@ -55,7 +55,7 @@ void QgsSpatialQuery::runQuery( QSet<int> & qsetIndexResult, int relation, QgsVe
   setQuery( lyrTarget, lyrReference );
 
   // Create Spatial index for Reference - Set mIndexReference
-  mPb->setFormat( "Processing 1/2 - %p%" );
+  mPb->setFormat( QObject::tr( "Processing 1/2 - %p%" ) );
   int totalStep = mUseReferenceSelection
                   ? mLayerReference->selectedFeatureCount()
                   : ( int )( mLayerReference->featureCount() );
@@ -63,7 +63,7 @@ void QgsSpatialQuery::runQuery( QSet<int> & qsetIndexResult, int relation, QgsVe
   setSpatialIndexReference(); // Need set mLayerReference before
 
   // Make Query
-  mPb->setFormat( "Processing 2/2 - %p%" );
+  mPb->setFormat( QObject::tr( "Processing 2/2 - %p%" ) );
   totalStep = mUseTargetSelection
               ? mLayerTarget->selectedFeatureCount()
               : ( int )( mLayerTarget->featureCount() );
@@ -181,9 +181,7 @@ bool QgsSpatialQuery::hasValidGeometry( QgsFeature &feature )
     return false;
   }
 
-  GEOSGeometry *geomGeos = geom->asGeos();
-
-  if ( GEOSisEmpty( geomGeos ) || 1 !=  GEOSisValid( geomGeos ) )
+  if ( geom->isGeosEmpty() || !geom->isGeosValid() )
   {
     return false;
   }
@@ -218,33 +216,32 @@ void QgsSpatialQuery::setSpatialIndexReference()
 
 void QgsSpatialQuery::execQuery( QSet<int> & qsetIndexResult, int relation )
 {
-  // Set GEOS function
-  char( *operation )( const GEOSGeometry *, const GEOSGeometry* );
+  bool ( QgsGeometry::* operation )( QgsGeometry * );
   switch ( relation )
   {
     case Disjoint:
-      operation = &GEOSDisjoint;
+      operation = &QgsGeometry::disjoint;
       break;
     case Equals:
-      operation = &GEOSEquals;
+      operation = &QgsGeometry::equals;
       break;
     case Touches:
-      operation = &GEOSTouches;
+      operation = &QgsGeometry::touches;
       break;
     case Overlaps:
-      operation = &GEOSOverlaps;
+      operation = &QgsGeometry::overlaps;
       break;
     case Within:
-      operation = &GEOSWithin;
+      operation = &QgsGeometry::within;
       break;
     case Contains:
-      operation = &GEOSContains;
+      operation = &QgsGeometry::contains;
       break;
     case Crosses:
-      operation = &GEOSCrosses;
+      operation = &QgsGeometry::crosses;
       break;
     case Intersects:
-      operation = &GEOSIntersects;
+      operation = &QgsGeometry::intersects;
       break;
   }
 
@@ -253,9 +250,7 @@ void QgsSpatialQuery::execQuery( QSet<int> & qsetIndexResult, int relation )
   coordinateTransform->setCoordinateTransform( mLayerTarget, mLayerReference );
 
   // Set function for populate result
-  void ( QgsSpatialQuery::* funcPopulateIndexResult )
-  ( QSet<int> &, int, QgsGeometry *,
-    char( * )( const GEOSGeometry *, const GEOSGeometry * ) );
+  void ( QgsSpatialQuery::* funcPopulateIndexResult )( QSet<int> &, int, QgsGeometry *, bool ( QgsGeometry::* )( QgsGeometry * ) );
   funcPopulateIndexResult = ( relation == Disjoint )
                             ? &QgsSpatialQuery::populateIndexResultDisjoint
                             : &QgsSpatialQuery::populateIndexResult;
@@ -263,10 +258,8 @@ void QgsSpatialQuery::execQuery( QSet<int> & qsetIndexResult, int relation )
   QgsFeature featureTarget;
   QgsGeometry * geomTarget;
   int step = 1;
-  while ( true )
+  while ( mReaderFeaturesTarget->nextFeature( featureTarget ) )
   {
-    if ( ! mReaderFeaturesTarget->nextFeature( featureTarget ) ) break;
-
     mPb->step( step++ );
 
     if ( ! hasValidGeometry( featureTarget ) )
@@ -285,7 +278,7 @@ void QgsSpatialQuery::execQuery( QSet<int> & qsetIndexResult, int relation )
 
 void QgsSpatialQuery::populateIndexResult(
   QSet<int> &qsetIndexResult, int idTarget, QgsGeometry * geomTarget,
-  char( *operation )( const GEOSGeometry *, const GEOSGeometry * ) )
+  bool ( QgsGeometry::* op )( QgsGeometry * ) )
 {
   QList<int> listIdReference;
   listIdReference = mIndexReference.intersects( geomTarget->boundingBox() );
@@ -293,7 +286,6 @@ void QgsSpatialQuery::populateIndexResult(
   {
     return;
   }
-  GEOSGeometry * geosTarget = geomTarget->asGeos();
   QgsFeature featureReference;
   QgsGeometry * geomReference;
   QList<int>::iterator iterIdReference = listIdReference.begin();
@@ -301,7 +293,7 @@ void QgsSpatialQuery::populateIndexResult(
   {
     mLayerReference->featureAtId( *iterIdReference, featureReference );
     geomReference = featureReference.geometry();
-    if (( *operation )( geosTarget, geomReference->asGeos() ) == 1 )
+    if (( geomTarget->*op )( geomReference ) == 1 )
     {
       qsetIndexResult.insert( idTarget );
       break;
@@ -312,7 +304,7 @@ void QgsSpatialQuery::populateIndexResult(
 
 void QgsSpatialQuery::populateIndexResultDisjoint(
   QSet<int> &qsetIndexResult, int idTarget, QgsGeometry * geomTarget,
-  char( *operation )( const GEOSGeometry *, const GEOSGeometry * ) )
+  bool ( QgsGeometry::* op )( QgsGeometry * ) )
 {
   QList<int> listIdReference;
   listIdReference = mIndexReference.intersects( geomTarget->boundingBox() );
@@ -321,7 +313,6 @@ void QgsSpatialQuery::populateIndexResultDisjoint(
     qsetIndexResult.insert( idTarget );
     return;
   }
-  GEOSGeometry * geosTarget = geomTarget->asGeos();
   QgsFeature featureReference;
   QgsGeometry * geomReference;
   QList<int>::iterator iterIdReference = listIdReference.begin();
@@ -330,7 +321,7 @@ void QgsSpatialQuery::populateIndexResultDisjoint(
   {
     mLayerReference->featureAtId( *iterIdReference, featureReference );
     geomReference = featureReference.geometry();
-    if (( *operation )( geosTarget, geomReference->asGeos() ) == 0 )
+    if (( geomTarget->*op )( geomTarget ) == 0 )
     {
       addIndex = false;
       break;

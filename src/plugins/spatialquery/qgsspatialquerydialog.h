@@ -122,10 +122,13 @@ class QgsSpatialQueryDialog : public QDialog, private Ui::QgsSpatialQueryDialogB
     //! Rubber band for features result
     QgsRubberSelectId* mRubberSelectId;
 
-    // Menssage
+    // Message
     QString mMsgLayersLessTwo;
 
     void MsgDEBUG( QString sMSg );
+
+    //! show/hide target, reference and operation group box
+    void setInputsVisible( bool show );
 };
 
 #endif // SPATIALQUERYDIALOG_H

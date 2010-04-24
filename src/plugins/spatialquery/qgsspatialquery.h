@@ -19,8 +19,6 @@
 #ifndef SPATIALQUERY_H
 #define SPATIALQUERY_H
 
-#include <geos_c.h>
-
 #include <qgsvectorlayer.h>
 #include <qgsspatialindex.h>
 
@@ -137,7 +135,7 @@ class QgsSpatialQuery
     */
     void populateIndexResult(
       QSet<int> & qsetIndexResult, int idTarget, QgsGeometry * geomTarget,
-      char( *operation )( const GEOSGeometry *, const GEOSGeometry * ) );
+      bool ( QgsGeometry::* operation )( QgsGeometry * ) );
     /**
     * \brief Populate index Result Disjoint
     * \param qsetIndexResult    Reference to QSet contains the result query
@@ -147,7 +145,7 @@ class QgsSpatialQuery
     */
     void populateIndexResultDisjoint(
       QSet<int> & qsetIndexResult, int idTarget, QgsGeometry * geomTarget,
-      char( *operation )( const GEOSGeometry *, const GEOSGeometry * ) );
+      bool ( QgsGeometry::* operation )( QgsGeometry * ) );
 
     MngProgressBar *mPb;
     bool mUseReferenceSelection;
