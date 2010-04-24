@@ -141,6 +141,11 @@ class CORE_EXPORT QgsGeometry
      */
     bool isGeosValid();
 
+    /** check if geometry is empty using GEOS
+      @note added in 1.5
+     */
+    bool isGeosEmpty();
+
     double distance( QgsGeometry& geom );
 
     /**
@@ -276,15 +281,40 @@ class CORE_EXPORT QgsGeometry
 
     /** Test for intersection with a rectangle (uses GEOS) */
     bool intersects( const QgsRectangle& r );
+
     /** Test for intersection with a geometry (uses GEOS) */
     bool intersects( QgsGeometry* geometry );
 
     /** Test for containment of a point (uses GEOS) */
     bool contains( QgsPoint* p );
 
-    /** Test for containment with a geometry (uses GEOS)
+    /** Test for if geometry is contain in an other (uses GEOS)
      *  @note added in 1.5 */
     bool contains( QgsGeometry* geometry );
+
+    /** Test for if geometry is disjoint of an other (uses GEOS)
+     *  @note added in 1.5 */
+    bool disjoint( QgsGeometry* geometry );
+
+    /** Test for if geometry equals an other (uses GEOS)
+     *  @note added in 1.5 */
+    bool equals( QgsGeometry* geometry );
+
+    /** Test for if geometry touch an other (uses GEOS)
+     *  @note added in 1.5 */
+    bool touches( QgsGeometry* geometry );
+
+    /** Test for if geometry overlaps an other (uses GEOS)
+     *  @note added in 1.5 */
+    bool overlaps( QgsGeometry* geometry );
+
+    /** Test for if geometry is within an other (uses GEOS)
+     *  @note added in 1.5 */
+    bool within( QgsGeometry* geometry );
+
+    /** Test for if geometry crosses an other (uses GEOS)
+     *  @note added in 1.5 */
+    bool crosses( QgsGeometry* geometry );
 
     /** Returns a buffer region around this geometry having the given width and with a specified number
         of segments used to approximate curves */
@@ -525,6 +555,10 @@ class CORE_EXPORT QgsGeometry
     static void checkRingIntersections( QList<Error> &errors,
                                         int p0, int i0, const QgsPolyline &ring0,
                                         int p1, int i1, const QgsPolyline &ring1 );
+
+    static bool geosRelOp( char GEOS_DLL( *op )( const GEOSGeometry*, const GEOSGeometry * ),
+                           QgsGeometry *a, QgsGeometry *b );
+
 
     static int refcount;
 }; // class QgsGeometry
