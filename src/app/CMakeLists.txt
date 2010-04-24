@@ -131,6 +131,7 @@ SET (QGIS_APP_MOC_HDRS
   qgisappinterface.h
   qgsabout.h
   qgsaddattrdialog.h
+  qgsdisplayangle.h
   qgsannotationwidget.h
   qgsattributeactiondialog.h
   qgsattributedialog.h
@@ -160,6 +161,8 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptooladdring.h
   qgsmaptoolmovefeature.h
   qgsmaptoolnodetool.h
+  qgsmaptoolreshape.h
+  qgsmaptoolrotatepointsymbols.h
   qgsmaptoolselect.h
   qgsmaptooladdvertex.h
   qgsmaptooldeletering.h

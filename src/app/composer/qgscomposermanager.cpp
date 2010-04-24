@@ -211,7 +211,6 @@ void QgsComposerManager::show_clicked()
     raise();
     activateWindow();
   }
-}
 #endif //0
 }
 

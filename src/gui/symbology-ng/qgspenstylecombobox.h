@@ -6,6 +6,8 @@
 
 class GUI_EXPORT QgsPenStyleComboBox : public QComboBox
 {
+    Q_OBJECT
+
   public:
     QgsPenStyleComboBox( QWidget* parent = NULL );
 
@@ -20,6 +22,8 @@ class GUI_EXPORT QgsPenStyleComboBox : public QComboBox
 
 class GUI_EXPORT QgsPenJoinStyleComboBox : public QComboBox
 {
+    Q_OBJECT
+
   public:
     QgsPenJoinStyleComboBox( QWidget* parent = NULL );
 
@@ -30,6 +34,8 @@ class GUI_EXPORT QgsPenJoinStyleComboBox : public QComboBox
 
 class GUI_EXPORT QgsPenCapStyleComboBox : public QComboBox
 {
+    Q_OBJECT
+
   public:
     QgsPenCapStyleComboBox( QWidget* parent = NULL );
 
