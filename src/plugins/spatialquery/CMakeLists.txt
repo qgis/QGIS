@@ -41,6 +41,7 @@ INCLUDE_DIRECTORIES(
      ../../core/symbology
      ../../gui
      ..
+     ${GEOS_INCLUDE_DIR}
 )
 
 TARGET_LINK_LIBRARIES(spatialqueryplugin

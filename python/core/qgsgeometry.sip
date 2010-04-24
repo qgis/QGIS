@@ -100,6 +100,11 @@ class QgsGeometry
      */
     bool isGeosValid();
 
+    /** check if geometry is empty using GEOS
+      @note added in 1.5
+     */
+    bool isGeosEmpty();
+
     /**
        Set the geometry, feeding in a geometry in GEOS format.
     */
@@ -239,9 +244,33 @@ not disjoint with existing polygons of the feature*/
     /** Test for containment of a point (uses GEOS) */
     bool contains(QgsPoint* p);
     
-    /** Test for containment with a geometry (uses GEOS)
-    *  @note added in 1.5 */
+    /** Test for if geometry is contained in an other (uses GEOS)
+     *  @note added in 1.5 */
     bool contains( QgsGeometry* geometry );
+
+    /** Test for if geometry is disjoint of an other (uses GEOS)
+     *  @note added in 1.5 */
+    bool disjoint( QgsGeometry* geometry );
+
+    /** Test for if geometry equals an other (uses GEOS)
+     *  @note added in 1.5 */
+    bool equals( QgsGeometry* geometry );
+
+    /** Test for if geometry touch an other (uses GEOS)
+     *  @note added in 1.5 */
+    bool touches( QgsGeometry* geometry );
+
+    /** Test for if geometry overlaps an other (uses GEOS)
+     *  @note added in 1.5 */
+    bool overlaps( QgsGeometry* geometry );
+
+    /** Test for if geometry is within an other (uses GEOS)
+     *  @note added in 1.5 */
+    bool within( QgsGeometry* geometry );
+
+    /** Test for if geometry crosses an other (uses GEOS)
+     *  @note added in 1.5 */
+    bool crosses( QgsGeometry* geometry );
 
     /** Returns a buffer region around this geometry having the given width and with a specified number
         of segments used to approximate curves */
