@@ -150,9 +150,10 @@ short int QgsSpatialQuery::dimensionGeometry( QGis::GeometryType geomType )
       break;
     case QGis::Polygon:
       dimGeom = 2;
+      break;
     default:
       Q_ASSERT( 0 );
-      dimGeom = 0;
+      break;
   }
   return dimGeom;
 
@@ -217,7 +218,7 @@ void QgsSpatialQuery::setSpatialIndexReference()
 
 void QgsSpatialQuery::execQuery( QSet<int> & qsetIndexResult, int relation )
 {
-  // Set function GEOS
+  // Set GEOS function
   char( *operation )( const GEOSGeometry *, const GEOSGeometry* );
   switch ( relation )
   {
@@ -276,8 +277,7 @@ void QgsSpatialQuery::execQuery( QSet<int> & qsetIndexResult, int relation )
     geomTarget = featureTarget.geometry();
     coordinateTransform->transform( geomTarget );
 
-    ( this->*funcPopulateIndexResult )
-    ( qsetIndexResult, featureTarget.id(), geomTarget, operation );
+    ( this->*funcPopulateIndexResult )( qsetIndexResult, featureTarget.id(), geomTarget, operation );
   }
   delete coordinateTransform;
 
