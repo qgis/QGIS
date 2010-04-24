@@ -3228,25 +3228,26 @@ bool QgsPostgresProvider::Conn::PQexecNR( QString query )
     return false;
   }
 
-  if ( PQresultStatus( res ) == PGRES_COMMAND_OK )
+  ExecStatusType errorStatus = PQresultStatus( res );
+  if ( errorStatus == PGRES_COMMAND_OK )
     return true;
 
 #ifdef QGISDEBUG
   QString err = QString( "Query: %1 returned %2 [%3]" )
-    .arg( query )
-    .arg( errorStatus )
-    .arg( QString::fromUtf8( PQresultErrorMessage( res ) ) );
+                .arg( query )
+                .arg( errorStatus )
+                .arg( QString::fromUtf8( PQresultErrorMessage( res ) ) );
   QgsDebugMsg( err );
 #endif
   if ( openCursors )
   {
     QgsPostgresProvider::showMessageBox(
-	tr( "Query failed" ),
-	tr( "%1 cursor states lost.\nSQL: %2\nResult: %3 (%4)" )
-	.arg( openCursors )
-	.arg( query )
-	.arg( errorStatus )
-	.arg( QString::fromUtf8( PQresultErrorMessage( res ) ) ) );
+      tr( "Query failed" ),
+      tr( "%1 cursor states lost.\nSQL: %2\nResult: %3 (%4)" )
+      .arg( openCursors )
+      .arg( query )
+      .arg( errorStatus )
+      .arg( QString::fromUtf8( PQresultErrorMessage( res ) ) ) );
     openCursors = 0;
   }
 
