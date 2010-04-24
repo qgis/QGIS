@@ -3752,7 +3752,7 @@ bool QgsGeometry::contains( QgsPoint* p )
 }
 
 bool QgsGeometry::geosRelOp(
-  char GEOS_DLL( *op )( const GEOSGeometry*, const GEOSGeometry * ),
+  char( *op )( const GEOSGeometry*, const GEOSGeometry * ),
   QgsGeometry *a,
   QgsGeometry *b )
 {

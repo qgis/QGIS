@@ -556,7 +556,7 @@ class CORE_EXPORT QgsGeometry
                                         int p0, int i0, const QgsPolyline &ring0,
                                         int p1, int i1, const QgsPolyline &ring1 );
 
-    static bool geosRelOp( char GEOS_DLL( *op )( const GEOSGeometry*, const GEOSGeometry * ),
+    static bool geosRelOp( char( *op )( const GEOSGeometry*, const GEOSGeometry * ),
                            QgsGeometry *a, QgsGeometry *b );
 
 
