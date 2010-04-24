@@ -2737,7 +2737,7 @@ bool QgsPostgresProvider::setSubsetString( QString theSQL )
 {
   QString prevWhere = sqlWhereClause;
 
-  sqlWhereClause = theSQL;
+  sqlWhereClause = theSQL.trimmed();
 
   if ( !mIsDbPrimaryKey && !uniqueData( mQuery, primaryKey ) )
   {
@@ -3207,7 +3207,8 @@ bool QgsPostgresProvider::Conn::openCursor( QString cursorName, QString sql )
 
 bool QgsPostgresProvider::Conn::closeCursor( QString cursorName )
 {
-  bool res = PQexecNR( QString( "CLOSE %1" ).arg( cursorName ) );
+  if ( !PQexecNR( QString( "CLOSE %1" ).arg( cursorName ) ) )
+    return false;
 
   if ( --openCursors == 0 )
   {
@@ -3215,46 +3216,42 @@ bool QgsPostgresProvider::Conn::closeCursor( QString cursorName )
     PQexecNR( "COMMIT" );
   }
 
-  return res;
+  return true;
 }
 
 bool QgsPostgresProvider::Conn::PQexecNR( QString query )
 {
   Result res = ::PQexec( conn, query.toUtf8() );
-  if ( res )
-  {
-    int errorStatus = PQresultStatus( res );
-    if ( errorStatus != PGRES_COMMAND_OK )
-    {
-#ifdef QGISDEBUG
-      QString err = QString( "Query: %1 returned %2 [%3]" )
-                    .arg( query )
-                    .arg( errorStatus )
-                    .arg( QString::fromUtf8( PQresultErrorMessage( res ) ) );
-      QgsDebugMsgLevel( err, 3 );
-#endif
-      if ( openCursors )
-      {
-        PQexecNR( "ROLLBACK" );
-
-        QgsPostgresProvider::showMessageBox(
-          tr( "Query failed" ),
-          tr( "%1 cursor states lost.\nSQL: %2\nResult: %3 (%4)" )
-          .arg( openCursors )
-          .arg( query )
-          .arg( errorStatus )
-          .arg( QString::fromUtf8( PQresultErrorMessage( res ) ) ) );
-        openCursors = 0;
-
-        PQexecNR( "BEGIN READ ONLY" );
-      }
-    }
-    return errorStatus == PGRES_COMMAND_OK;
-  }
-  else
+  if ( !res )
   {
     QgsDebugMsgLevel( QString( "Query: %1 returned no result buffer" ).arg( query ), 3 );
+    return false;
   }
+
+  if ( PQresultStatus( res ) == PGRES_COMMAND_OK )
+    return true;
+
+#ifdef QGISDEBUG
+  QString err = QString( "Query: %1 returned %2 [%3]" )
+    .arg( query )
+    .arg( errorStatus )
+    .arg( QString::fromUtf8( PQresultErrorMessage( res ) ) );
+  QgsDebugMsg( err );
+#endif
+  if ( openCursors )
+  {
+    QgsPostgresProvider::showMessageBox(
+	tr( "Query failed" ),
+	tr( "%1 cursor states lost.\nSQL: %2\nResult: %3 (%4)" )
+	.arg( openCursors )
+	.arg( query )
+	.arg( errorStatus )
+	.arg( QString::fromUtf8( PQresultErrorMessage( res ) ) ) );
+    openCursors = 0;
+  }
+
+  PQexecNR( "ROLLBACK" );
+
   return false;
 }
 
