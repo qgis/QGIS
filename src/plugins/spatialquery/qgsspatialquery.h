@@ -35,14 +35,14 @@
 */
 enum Topologic_Relation
 {
-    Intersects,
-    Disjoint,
-    Touches,
-    Crosses,
-    Within,
-    Equals,
-    Overlaps,
-    Contains
+  Intersects,
+  Disjoint,
+  Touches,
+  Crosses,
+  Within,
+  Equals,
+  Overlaps,
+  Contains
 };
 
 
@@ -53,12 +53,12 @@ enum Topologic_Relation
 */
 class QgsSpatialQuery
 {
-public:
+  public:
     /**
     * \brief Constructor for a Spatial query.
     * \param pb Pointer to the MngProgressBar object.
     */
-    QgsSpatialQuery(MngProgressBar *pb);
+    QgsSpatialQuery( MngProgressBar *pb );
 
     /**
     * \brief Destructor
@@ -69,13 +69,13 @@ public:
     * \brief Sets if using selected features in Target layer
     * \param useSelected TRUE if use selected.
     */
-    void setSelectedFeaturesTarget(bool useSelected);
+    void setSelectedFeaturesTarget( bool useSelected );
 
     /**
     * \brief Sets if using selected features in Reference layer
     * \param useSelected TRUE if use selected.
     */
-    void setSelectedFeaturesReference(bool useSelected);
+    void setSelectedFeaturesReference( bool useSelected );
 
     /**
     * \brief Execute the query
@@ -99,9 +99,9 @@ public:
     * \param geomType          Geometry Type
     * \returns short int       Topologic Dimension
     */
-    static short int dimensionGeometry(QGis::GeometryType geomType);
+    static short int dimensionGeometry( QGis::GeometryType geomType );
 
-private:
+  private:
 
     /**
     * \brief Sets the target layer and reference layer
@@ -114,7 +114,7 @@ private:
     * \brief Verify has valid Geometry in feature
     * \param QgsFeature       Feature
     */
-    bool hasValidGeometry(QgsFeature &feature);
+    bool hasValidGeometry( QgsFeature &feature );
 
     /**
     * \brief Build the Spatial Index
@@ -126,7 +126,7 @@ private:
     * \param qsetIndexResult    Reference to QSet contains the result query
     * \param relation           Enum Topologic Relation
     */
-    void execQuery(QSet<int> & qsetIndexResult, int relation);
+    void execQuery( QSet<int> & qsetIndexResult, int relation );
 
     /**
     * \brief Populate index Result
@@ -136,8 +136,8 @@ private:
     * \param operation          Pointer to function of GEOS operation
     */
     void populateIndexResult(
-            QSet<int> & qsetIndexResult, int idTarget, QgsGeometry * geomTarget,
-            char(*operation)(const GEOSGeometry *, const GEOSGeometry *) );
+      QSet<int> & qsetIndexResult, int idTarget, QgsGeometry * geomTarget,
+      char( *operation )( const GEOSGeometry *, const GEOSGeometry * ) );
     /**
     * \brief Populate index Result Disjoint
     * \param qsetIndexResult    Reference to QSet contains the result query
@@ -146,8 +146,8 @@ private:
     * \param operation          Pointer to function of GEOS operation
     */
     void populateIndexResultDisjoint(
-            QSet<int> & qsetIndexResult, int idTarget, QgsGeometry * geomTarget,
-            char(*operation)(const GEOSGeometry *, const GEOSGeometry *) );
+      QSet<int> & qsetIndexResult, int idTarget, QgsGeometry * geomTarget,
+      char( *operation )( const GEOSGeometry *, const GEOSGeometry * ) );
 
     MngProgressBar *mPb;
     bool mUseReferenceSelection;

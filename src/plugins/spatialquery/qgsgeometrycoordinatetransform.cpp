@@ -23,33 +23,33 @@
 
 QgsGeometryCoordinateTransform::~QgsGeometryCoordinateTransform()
 {
-    delete mCoordTransform;
+  delete mCoordTransform;
 
 } // QgsGeometryCoordinateTransform::~QgsGeometryCoordinateTransform()
 
-void QgsGeometryCoordinateTransform::setCoordinateTransform(QgsVectorLayer* lyrTarget, QgsVectorLayer* lyrReference)
+void QgsGeometryCoordinateTransform::setCoordinateTransform( QgsVectorLayer* lyrTarget, QgsVectorLayer* lyrReference )
 {
-    // Transform Forward: Target to Reference
-    // * Use srs() to use old versions QGis - will be deprecited in 2.0 (after use crs())
-    QgsCoordinateReferenceSystem srsTarget = lyrTarget->srs();
-    QgsCoordinateReferenceSystem srsReference = lyrReference->srs();
+  // Transform Forward: Target to Reference
+  // * Use srs() to use old versions QGis - will be deprecited in 2.0 (after use crs())
+  QgsCoordinateReferenceSystem srsTarget = lyrTarget->srs();
+  QgsCoordinateReferenceSystem srsReference = lyrReference->srs();
 
-    mCoordTransform = new QgsCoordinateTransform(srsTarget, srsReference);
+  mCoordTransform = new QgsCoordinateTransform( srsTarget, srsReference );
 
-    mFuncTransform = ( srsTarget != srsReference)
+  mFuncTransform = ( srsTarget != srsReference )
                    ? &QgsGeometryCoordinateTransform::setGeomTransform
                    : &QgsGeometryCoordinateTransform::setNoneGeomTransform;
 
 } // void QgsGeometryCoordinateTransform::setCoordinateTransform(QgsVectorLayer* lyrTarget, QgsVectorLayer* lyrReference)
 
-void QgsGeometryCoordinateTransform::transform(QgsGeometry *geom)
+void QgsGeometryCoordinateTransform::transform( QgsGeometry *geom )
 {
-    (this->*mFuncTransform)(geom);
+  ( this->*mFuncTransform )( geom );
 
 } // void QgsGeometryCoordinateTransform::transformCoordenate()
 
-void QgsGeometryCoordinateTransform::setGeomTransform(QgsGeometry *geom)
+void QgsGeometryCoordinateTransform::setGeomTransform( QgsGeometry *geom )
 {
-    geom->transform(*mCoordTransform);
+  geom->transform( *mCoordTransform );
 
 } // void QgsGeometryCoordinateTransform::setGeomTransform(QgsGeometry *geom)

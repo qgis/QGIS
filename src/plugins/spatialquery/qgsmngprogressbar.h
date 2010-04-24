@@ -27,39 +27,39 @@
 */
 class MngProgressBar
 {
-public:
+  public:
     /**
     * \brief Constructor for a MngProgressBar.
     * \param pb Pointer to the MngProgressBar object.
     */
-    MngProgressBar(QProgressBar *pb);
+    MngProgressBar( QProgressBar *pb );
     /**
     * \brief Destructor
     */
     ~MngProgressBar() { mPb->reset(); };
-    
+
     /**
     * \brief Sets the progress bar's minimum and maximum values to minimum and maximum respectively
     * \param minimum minimun value.
     * \param maximum maximum value.
     */
-    void init(int minimum, int maximum);
+    void init( int minimum, int maximum );
 
     /**
     * \brief Sets the format the current text.
     * \param format This property holds the string used to generate the current text.
     */
-    void setFormat(QString format);
+    void setFormat( QString format );
 
     /**
     * \brief Sets current value progress bar's
     * \param step current value
     */
-    void step(int step );
+    void step( int step );
 
-private:
+  private:
     QProgressBar * mPb;
-    
+
 };
 
 #endif // QGSMNGPROGRESSBAR_H

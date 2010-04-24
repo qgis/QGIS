@@ -22,62 +22,62 @@
 
 #include "qgsfeature.h"
 
-QgsRubberSelectId::QgsRubberSelectId( QgsMapCanvas* mapCanvas)
+QgsRubberSelectId::QgsRubberSelectId( QgsMapCanvas* mapCanvas )
 {
-    mIsPolygon = true;
-    mMapCanvas = mapCanvas;
-    mRubberBand = new QgsRubberBand( mMapCanvas, mIsPolygon );
+  mIsPolygon = true;
+  mMapCanvas = mapCanvas;
+  mRubberBand = new QgsRubberBand( mMapCanvas, mIsPolygon );
 
 } // QgsRubberSelectId::QgsRubberSelectId( QgsMapCanvas* mapCanvas, bool isPolygon = true )
 
 QgsRubberSelectId::~QgsRubberSelectId()
 {
-    reset();
-    delete mRubberBand;
+  reset();
+  delete mRubberBand;
 
 } // QgsRubberSelectId::~QgsRubberSelectId()
 
-void QgsRubberSelectId::isGeometryNotPolygon(bool isPolygon = false)
+void QgsRubberSelectId::isGeometryNotPolygon( bool isPolygon = false )
 {
-    reset();
-    delete mRubberBand;
-    mIsPolygon = isPolygon;
-    mRubberBand = new QgsRubberBand( mMapCanvas, mIsPolygon );
+  reset();
+  delete mRubberBand;
+  mIsPolygon = isPolygon;
+  mRubberBand = new QgsRubberBand( mMapCanvas, mIsPolygon );
 
 } // void QgsRubberSelectId::isGeometryNotPolygon(bool isPolygon)
 
 void QgsRubberSelectId::reset()
 {
-    mRubberBand->reset( mIsPolygon );
+  mRubberBand->reset( mIsPolygon );
 
 } // void QgsRubberSelectId::reset()
 
-void QgsRubberSelectId::setColor(int colorRed, int colorGreen, int colorBlue, int width, float alfa = 0)
+void QgsRubberSelectId::setColor( int colorRed, int colorGreen, int colorBlue, int width, float alfa = 0 )
 {
-    QColor color = QColor( colorRed, colorGreen, colorBlue );
-    color.setAlpha( alfa );
-    mRubberBand->setColor( color );
-    mRubberBand->setWidth( width );
+  QColor color = QColor( colorRed, colorGreen, colorBlue );
+  color.setAlpha( alfa );
+  mRubberBand->setColor( color );
+  mRubberBand->setWidth( width );
 
 } // void QgsRubberSelectId::setColor(int colorRed, int colorGreen, int colorBlue, float alfa, width)
 
 void QgsRubberSelectId::addFeature( QgsVectorLayer* mLayer, int fid )
 {
-    QgsFeature feat;
-    if ( !mLayer->featureAtId( fid, feat, true, false ) )
-    {
-        return;
-    }
-    if ( !feat.geometry() )
-    {
-        return;
-    }
+  QgsFeature feat;
+  if ( !mLayer->featureAtId( fid, feat, true, false ) )
+  {
+    return;
+  }
+  if ( !feat.geometry() )
+  {
+    return;
+  }
 
-    mRubberBand->setToGeometry( feat.geometry(), mLayer );
+  mRubberBand->setToGeometry( feat.geometry(), mLayer );
 
 } // void QgsRubberSelectId::addFeature( QgsVectorLayer* mLayer, int Id )
 
 void QgsRubberSelectId::show()
 {
-    mRubberBand->show();
+  mRubberBand->show();
 } // QgsRubberSelectId::show()
