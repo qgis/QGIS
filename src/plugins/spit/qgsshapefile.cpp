@@ -291,7 +291,7 @@ bool QgsShapeFile::insertLayer( QString dbname, QString schema, QString primary_
   import_canceled = false;
   bool result = true;
 
-  QString query = QString( "CREATE TABLE %1.%2(%3 int4 PRIMARY KEY" )
+  QString query = QString( "CREATE TABLE %1.%2(%3 SERIAL PRIMARY KEY" )
                   .arg( QgsPgUtil::quotedIdentifier( schema ) )
                   .arg( QgsPgUtil::quotedIdentifier( table_name ) )
                   .arg( QgsPgUtil::quotedIdentifier( primary_key ) );
@@ -397,10 +397,10 @@ bool QgsShapeFile::insertLayer( QString dbname, QString schema, QString primary_
       OGRGeometryH geom = OGR_F_GetGeometryRef( feat );
       if ( geom )
       {
-        query = QString( "INSERT INTO %1.%2 VALUES(%3" )
+        query = QString( "INSERT INTO %1.%2(" )
                 .arg( QgsPgUtil::quotedIdentifier( schema ) )
-                .arg( QgsPgUtil::quotedIdentifier( table_name ) )
-                .arg( m );
+                .arg( QgsPgUtil::quotedIdentifier( table_name ) );
+        QString values = " VALUES (";
 
         char *geo_temp;
         // 'GeometryFromText' supports only 2D coordinates
@@ -426,11 +426,20 @@ bool QgsShapeFile::insertLayer( QString dbname, QString schema, QString primary_
           else
             val = QgsPgUtil::quotedValue( val );
 
-          query += "," + val;
+          if ( n > 0 )
+          {
+            query += ",";
+            values += ",";
+          }
+          query += QgsPgUtil::quotedIdentifier( column_names[n] );
+          values += val;
         }
-        query += QString( ",GeometryFromText(%1,%2))" )
-                 .arg( QgsPgUtil::quotedValue( geometry ) )
-                 .arg( srid );
+        query += "," + QgsPgUtil::quotedIdentifier( geom_col );
+        values += QString( ",GeometryFromText(%1,%2)" )
+                  .arg( QgsPgUtil::quotedValue( geometry ) )
+                  .arg( srid );
+
+        query += ")" + values + ")";
 
         if ( result )
           res = PQexec( conn, query.toUtf8() );
