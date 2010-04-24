@@ -11,6 +11,14 @@ class QgsComposerView: QGraphicsView
 #include "qgscomposerview.h"
 %End
 
+%ConvertToSubClassCode
+  if (sipCpp->inherits("QgsComposerView"))
+    sipClass = sipClass_QgsComposerView;
+  else
+    sipClass = NULL;
+%End
+
+
   public:
 
     /**Current tool*/
