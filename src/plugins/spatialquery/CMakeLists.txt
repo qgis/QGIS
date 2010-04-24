@@ -14,11 +14,6 @@ SET (SPATIALQUERY_SRCS
 SET (SPATIALQUERY_MOC_HDRS 
      qgsspatialqueryplugin.h
      qgsspatialquerydialog.h
-     qgsspatialquery.h
-     qgsreaderfeatures.h
-     qgsrubberselectid.h
-     qgsgeometrycoordinatetransform.h
-     qgsmngprogressbar.h
 )
 
 SET( SPATIALQUERY_UIS qgsspatialquerydialogbase.ui)

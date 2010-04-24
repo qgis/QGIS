@@ -30,12 +30,12 @@
 */
 class QgsRubberSelectId
 {
-public:
+  public:
     /**
     * Constructor for a class RubberSelectedId.
     * @param mapCanvas Pointer to the iface.mapCanvas().
     */
-    QgsRubberSelectId( QgsMapCanvas* mapCanvas);
+    QgsRubberSelectId( QgsMapCanvas* mapCanvas );
     /**
     * \brief Destructor
     */
@@ -45,7 +45,7 @@ public:
     * \brief Set if is geometry polygon for rubber band
     * \param isPolygon   boolean for type geometry is polygon
     */
-    void isGeometryNotPolygon(bool isPolygon);
+    void isGeometryNotPolygon( bool isPolygon );
 
     /**
     * \brief Reset rubber band
@@ -72,7 +72,7 @@ public:
     * \brief Show rubber band
     */
     void show();
-private:
+  private:
     //! RubberBand
     QgsRubberBand* mRubberBand;
     bool mIsPolygon;

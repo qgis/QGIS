@@ -34,13 +34,13 @@
 class QgsSpatialQueryDialog : public QDialog, private Ui::QgsSpatialQueryDialogBase
 {
     Q_OBJECT
-public:
+  public:
     /**
     * Constructor for a dialog. The QgisInterface pointer is passed by
     * QGIS when it attempts to instantiate the plugin.
     * @param iface Pointer to the QgisInterface object.
     */
-    QgsSpatialQueryDialog(QWidget *parent = 0, QgisInterface* iface = 0);
+    QgsSpatialQueryDialog( QWidget *parent = 0, QgisInterface* iface = 0 );
     //! Destructor
     ~QgsSpatialQueryDialog();
 
@@ -50,24 +50,24 @@ public:
     //! Unload plugins by QGIS - Disconnect signal from QGIS
     void disconnectQGis();
 
-private slots:
+  private slots:
     //! Slots for signs of Dialog
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
     void on_targetLayerComboBox_currentIndexChanged( int index );
     void on_referenceLayerComboBox_currentIndexChanged( int index );
-    void on_selectedFeatureListWidget_currentTextChanged ( const QString& currentText );
-    void on_showLogProcessingCheckBox_clicked(bool checked);
+    void on_selectedFeatureListWidget_currentTextChanged( const QString& currentText );
+    void on_showLogProcessingCheckBox_clicked( bool checked );
 
     //! Slots for signs of QGIS
-    void signal_qgis_layerWasAdded ( QgsMapLayer* mapLayer );
-    void signal_qgis_layerWillBeRemoved ( QString idLayer );
+    void signal_qgis_layerWasAdded( QgsMapLayer* mapLayer );
+    void signal_qgis_layerWillBeRemoved( QString idLayer );
 
     //! Slots for signs of Layers (Target or Reference)
     void signal_layerTarget_selectionFeaturesChanged();
     void signal_layerReference_selectionFeaturesChanged();
 
- private:
+  private:
     //! Initialize the Gui
     void initGui();
     //! Set Color mRubberSelectId
@@ -79,11 +79,11 @@ private slots:
     //! Run Query
     void runQuery();
     //! Show Log Processing
-    void showLogProcessing(bool hasShow);
+    void showLogProcessing( bool hasShow );
     //! Show result of query
-    void showResultQuery(QDateTime *datetimeStart, QDateTime *datetimeEnd);
+    void showResultQuery( QDateTime *datetimeStart, QDateTime *datetimeEnd );
     //! Get Description Layer to show result
-    QString getDescriptionLayerShow(bool isTarget);
+    QString getDescriptionLayerShow( bool isTarget );
     //! Connect all slots
     void connectAll();
     //! Disconnect all slots
@@ -91,15 +91,15 @@ private slots:
     //! reject - override
     void reject();
     //! Get Vector layer from combobox
-    QgsVectorLayer * getLayerFromCombobox(bool isTarget, int index);
+    QgsVectorLayer * getLayerFromCombobox( bool isTarget, int index );
     //! Get Icon for vector layer
-    QIcon getIconTypeGeometry(QGis::GeometryType geomType);
+    QIcon getIconTypeGeometry( QGis::GeometryType geomType );
     //! Add layer in combobox (text, data and  tooltips)
-    void addLayerCombobox(bool isTarget, QgsVectorLayer* vectorLayer);
+    void addLayerCombobox( bool isTarget, QgsVectorLayer* vectorLayer );
     //! Find Layer in combobox
-    int getIndexLayerCombobox(bool isTarget, QgsVectorLayer* vectorLayer);
+    int getIndexLayerCombobox( bool isTarget, QgsVectorLayer* vectorLayer );
     //! Remove layer in combobox and setting GUI
-    void removeLayer(bool isTarget, QgsVectorLayer* lyrRemove);
+    void removeLayer( bool isTarget, QgsVectorLayer* lyrRemove );
     //! Populates targetLayerComboBox with all layers
     void populateTargetLayerComboBox();
     //! Populates referenceLayerComboBox with all layers except the current target layer
@@ -125,7 +125,7 @@ private slots:
     // Menssage
     QString mMsgLayersLessTwo;
 
-    void MsgDEBUG(QString sMSg);
+    void MsgDEBUG( QString sMSg );
 };
 
 #endif // SPATIALQUERYDIALOG_H

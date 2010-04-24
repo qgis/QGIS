@@ -28,13 +28,13 @@
 */
 class QgsReaderFeatures
 {
-public:
+  public:
     /**
     * \brief Constructor for a Reader Features.
     * \param layer Pointer to the layer.
     * \param useSelection Use or not use the features selected
     */
-    QgsReaderFeatures(QgsVectorLayer *layer, bool useSelection);
+    QgsReaderFeatures( QgsVectorLayer *layer, bool useSelection );
 
     /**
     * \brief Destructor
@@ -46,33 +46,33 @@ public:
     * \param feature reference to next Feature.
     * \returns True if has next feature.
     */
-    bool nextFeature(QgsFeature & feature);
+    bool nextFeature( QgsFeature & feature );
 
-private:
+  private:
     /**
     * \brief init Reader
     * \param useSelection Use or not use the features selected
     */
-    void initReader(bool useSelection);
+    void initReader( bool useSelection );
 
     /**
     * \brief Next feature, not using the features selected
     * \param feature reference to next Feature.
     * \returns True if has next feature.
     */
-    bool nextFeatureTotal(QgsFeature & feature);
+    bool nextFeatureTotal( QgsFeature & feature );
 
     /**
     * \brief Next feature, using the features selected
     * \param feature reference to next Feature.
     * \returns True if has next feature.
     */
-    bool nextFeatureSelected(QgsFeature & feature);
+    bool nextFeatureSelected( QgsFeature & feature );
 
     QgsVectorLayer * mLayer;
     QgsFeatureList   mListSelectedFeature;
     QList<QgsFeature>::iterator mIterSelectedFeature;
-    bool (QgsReaderFeatures::* mFuncNextFeature) ( QgsFeature &);
+    bool ( QgsReaderFeatures::* mFuncNextFeature )( QgsFeature & );
 };
 
 #endif // READERFEATURES_H
