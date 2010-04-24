@@ -87,6 +87,7 @@
 				7256F1C50F411C7C0022BE1F /* PBXTargetDependency */,
 				72BD9FF010A49CEE00FEA70F /* PBXTargetDependency */,
 				7256F1A90F411C120022BE1F /* PBXTargetDependency */,
+				7268C07111829AE3001BC9C4 /* PBXTargetDependency */,
 			);
 			name = "Base Plugins";
 			productName = "Base Plugins";
@@ -918,6 +919,23 @@
 		7264FE9F1024D183004D4CDD /* qgsogrprovider.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC650F39E57B003DC336 /* qgsogrprovider.h */; };
 		726840010FD6B2D200D90FFC /* qgsmergeattributesdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 726840000FD6B29100D90FFC /* qgsmergeattributesdialog.cpp */; };
 		726840020FD6B2D200D90FFC /* qgsmergeattributesdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72683FFF0FD6B29100D90FFC /* qgsmergeattributesdialog.h */; };
+		7268C050118294F2001BC9C4 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
+		7268C051118294F2001BC9C4 /* libqgis_gui.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F38E0F3A2F2B003DC336 /* libqgis_gui.dylib */; };
+		7268C05D1182963E001BC9C4 /* qgsgeometrycoordinatetransform.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7268C036118294E5001BC9C4 /* qgsgeometrycoordinatetransform.cpp */; };
+		7268C05E1182963E001BC9C4 /* qgsmngprogressbar.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7268C038118294E5001BC9C4 /* qgsmngprogressbar.cpp */; };
+		7268C05F1182963E001BC9C4 /* qgsreaderfeatures.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7268C03A118294E5001BC9C4 /* qgsreaderfeatures.cpp */; };
+		7268C0601182963E001BC9C4 /* qgsrubberselectid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7268C03C118294E5001BC9C4 /* qgsrubberselectid.cpp */; };
+		7268C0611182963E001BC9C4 /* qgsspatialquery.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7268C03E118294E5001BC9C4 /* qgsspatialquery.cpp */; };
+		7268C0621182963E001BC9C4 /* qgsspatialquerydialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7268C040118294E5001BC9C4 /* qgsspatialquerydialog.cpp */; };
+		7268C0631182963E001BC9C4 /* qgsspatialqueryplugin.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7268C044118294E5001BC9C4 /* qgsspatialqueryplugin.cpp */; };
+		7268C06411829664001BC9C4 /* qgsgeometrycoordinatetransform.h in Sources */ = {isa = PBXBuildFile; fileRef = 7268C037118294E5001BC9C4 /* qgsgeometrycoordinatetransform.h */; };
+		7268C06511829664001BC9C4 /* qgsmngprogressbar.h in Sources */ = {isa = PBXBuildFile; fileRef = 7268C039118294E5001BC9C4 /* qgsmngprogressbar.h */; };
+		7268C06611829664001BC9C4 /* qgsreaderfeatures.h in Sources */ = {isa = PBXBuildFile; fileRef = 7268C03B118294E5001BC9C4 /* qgsreaderfeatures.h */; };
+		7268C06711829664001BC9C4 /* qgsrubberselectid.h in Sources */ = {isa = PBXBuildFile; fileRef = 7268C03D118294E5001BC9C4 /* qgsrubberselectid.h */; };
+		7268C06811829664001BC9C4 /* qgsspatialquery.h in Sources */ = {isa = PBXBuildFile; fileRef = 7268C03F118294E5001BC9C4 /* qgsspatialquery.h */; };
+		7268C06911829664001BC9C4 /* qgsspatialquerydialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 7268C041118294E5001BC9C4 /* qgsspatialquerydialog.h */; };
+		7268C06A11829664001BC9C4 /* qgsspatialqueryplugin.h in Sources */ = {isa = PBXBuildFile; fileRef = 7268C045118294E5001BC9C4 /* qgsspatialqueryplugin.h */; };
+		7268C06B11829683001BC9C4 /* qgsspatialquerydialogbase.qrc in Sources */ = {isa = PBXBuildFile; fileRef = 7268C042118294E5001BC9C4 /* qgsspatialquerydialogbase.qrc */; };
 		7268D7B70F9695AA00CA1705 /* qgscentralpointpositionmanager.h in Headers */ = {isa = PBXBuildFile; fileRef = 720383010F8B8C2D0083B883 /* qgscentralpointpositionmanager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7268D7B80F9695AA00CA1705 /* qgsoverlayobjectpositionmanager.h in Headers */ = {isa = PBXBuildFile; fileRef = 720383060F8B8C2D0083B883 /* qgsoverlayobjectpositionmanager.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7268D7B90F9695AA00CA1705 /* qgspalobjectpositionmanager.h in Headers */ = {isa = PBXBuildFile; fileRef = 720383040F8B8C2D0083B883 /* qgspalobjectpositionmanager.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1739,6 +1757,28 @@
 			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		7262ED980F7A770300498385 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.h";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
+			);
+			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+		};
+		7268C052118294F2001BC9C4 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.qrc";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"$(DERIVED_FILES_DIR)/qrc_$(INPUT_FILE_BASE).cpp",
+			);
+			script = "$QTRCC -name $INPUT_FILE_BASE -o \"$DERIVED_FILES_DIR/qrc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+		};
+		7268C053118294F2001BC9C4 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.proxy.script;
 			filePatterns = "*.h";
@@ -2591,6 +2631,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 8D0C4E890486CD37000505A6;
 			remoteInfo = Qgis;
+		};
+		7268C07011829AE3001BC9C4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 20286C28FDCF999611CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7268C04C118294F2001BC9C4 /* spatialqueryplugin */;
+			remoteInfo = spatialqueryplugin;
 		};
 		7268E8A4110241A400B96374 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -5763,6 +5810,28 @@
 		72683FFE0FD6B26E00D90FFC /* qgsmergeattributesdialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsmergeattributesdialogbase.ui; path = ../../src/ui/qgsmergeattributesdialogbase.ui; sourceTree = SOURCE_ROOT; };
 		72683FFF0FD6B29100D90FFC /* qgsmergeattributesdialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsmergeattributesdialog.h; path = ../../src/app/qgsmergeattributesdialog.h; sourceTree = SOURCE_ROOT; };
 		726840000FD6B29100D90FFC /* qgsmergeattributesdialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsmergeattributesdialog.cpp; path = ../../src/app/qgsmergeattributesdialog.cpp; sourceTree = SOURCE_ROOT; };
+		7268C035118294E5001BC9C4 /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../src/plugins/spatialquery/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
+		7268C036118294E5001BC9C4 /* qgsgeometrycoordinatetransform.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsgeometrycoordinatetransform.cpp; path = ../../src/plugins/spatialquery/qgsgeometrycoordinatetransform.cpp; sourceTree = SOURCE_ROOT; };
+		7268C037118294E5001BC9C4 /* qgsgeometrycoordinatetransform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsgeometrycoordinatetransform.h; path = ../../src/plugins/spatialquery/qgsgeometrycoordinatetransform.h; sourceTree = SOURCE_ROOT; };
+		7268C038118294E5001BC9C4 /* qgsmngprogressbar.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsmngprogressbar.cpp; path = ../../src/plugins/spatialquery/qgsmngprogressbar.cpp; sourceTree = SOURCE_ROOT; };
+		7268C039118294E5001BC9C4 /* qgsmngprogressbar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsmngprogressbar.h; path = ../../src/plugins/spatialquery/qgsmngprogressbar.h; sourceTree = SOURCE_ROOT; };
+		7268C03A118294E5001BC9C4 /* qgsreaderfeatures.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsreaderfeatures.cpp; path = ../../src/plugins/spatialquery/qgsreaderfeatures.cpp; sourceTree = SOURCE_ROOT; };
+		7268C03B118294E5001BC9C4 /* qgsreaderfeatures.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsreaderfeatures.h; path = ../../src/plugins/spatialquery/qgsreaderfeatures.h; sourceTree = SOURCE_ROOT; };
+		7268C03C118294E5001BC9C4 /* qgsrubberselectid.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsrubberselectid.cpp; path = ../../src/plugins/spatialquery/qgsrubberselectid.cpp; sourceTree = SOURCE_ROOT; };
+		7268C03D118294E5001BC9C4 /* qgsrubberselectid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsrubberselectid.h; path = ../../src/plugins/spatialquery/qgsrubberselectid.h; sourceTree = SOURCE_ROOT; };
+		7268C03E118294E5001BC9C4 /* qgsspatialquery.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsspatialquery.cpp; path = ../../src/plugins/spatialquery/qgsspatialquery.cpp; sourceTree = SOURCE_ROOT; };
+		7268C03F118294E5001BC9C4 /* qgsspatialquery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsspatialquery.h; path = ../../src/plugins/spatialquery/qgsspatialquery.h; sourceTree = SOURCE_ROOT; };
+		7268C040118294E5001BC9C4 /* qgsspatialquerydialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsspatialquerydialog.cpp; path = ../../src/plugins/spatialquery/qgsspatialquerydialog.cpp; sourceTree = SOURCE_ROOT; };
+		7268C041118294E5001BC9C4 /* qgsspatialquerydialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsspatialquerydialog.h; path = ../../src/plugins/spatialquery/qgsspatialquerydialog.h; sourceTree = SOURCE_ROOT; };
+		7268C042118294E5001BC9C4 /* qgsspatialquerydialogbase.qrc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsspatialquerydialogbase.qrc; path = ../../src/plugins/spatialquery/qgsspatialquerydialogbase.qrc; sourceTree = SOURCE_ROOT; };
+		7268C043118294E5001BC9C4 /* qgsspatialquerydialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgsspatialquerydialogbase.ui; path = ../../src/plugins/spatialquery/qgsspatialquerydialogbase.ui; sourceTree = SOURCE_ROOT; };
+		7268C044118294E5001BC9C4 /* qgsspatialqueryplugin.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsspatialqueryplugin.cpp; path = ../../src/plugins/spatialquery/qgsspatialqueryplugin.cpp; sourceTree = SOURCE_ROOT; };
+		7268C045118294E5001BC9C4 /* qgsspatialqueryplugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsspatialqueryplugin.h; path = ../../src/plugins/spatialquery/qgsspatialqueryplugin.h; sourceTree = SOURCE_ROOT; };
+		7268C046118294E5001BC9C4 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README; path = ../../src/plugins/spatialquery/README; sourceTree = SOURCE_ROOT; };
+		7268C047118294E5001BC9C4 /* spatialquery.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = spatialquery.png; path = ../../src/plugins/spatialquery/spatialquery.png; sourceTree = SOURCE_ROOT; };
+		7268C049118294E5001BC9C4 /* spatialquery_pt_BR.qm */ = {isa = PBXFileReference; lastKnownFileType = file; name = spatialquery_pt_BR.qm; path = ../../src/plugins/spatialquery/ts/spatialquery_pt_BR.qm; sourceTree = SOURCE_ROOT; };
+		7268C04A118294E5001BC9C4 /* spatialquery_pt_BR.ts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = spatialquery_pt_BR.ts; path = ../../src/plugins/spatialquery/ts/spatialquery_pt_BR.ts; sourceTree = SOURCE_ROOT; };
+		7268C057118294F2001BC9C4 /* libspatialqueryplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libspatialqueryplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		7268E7F61102157C00B96374 /* qgscolorbutton.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgscolorbutton.sip; path = ../../python/gui/qgscolorbutton.sip; sourceTree = SOURCE_ROOT; };
 		7268E7F7110215C900B96374 /* FindLibPython.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = FindLibPython.py; path = ../../cmake/FindLibPython.py; sourceTree = SOURCE_ROOT; };
 		7268E7F8110215C900B96374 /* FindPyQt.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = FindPyQt.py; path = ../../cmake/FindPyQt.py; sourceTree = SOURCE_ROOT; };
@@ -7481,6 +7550,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		7268C04F118294F2001BC9C4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7268C050118294F2001BC9C4 /* libqgis_core.dylib in Frameworks */,
+				7268C051118294F2001BC9C4 /* libqgis_gui.dylib in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7268E80611021E6B00B96374 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -7863,6 +7941,7 @@
 				72FEE3C8111D378800D28C1A /* qgis.g.info */,
 				72463E451122FEF200BE5F17 /* qgis.g.browser */,
 				72B236B711570743007B4803 /* libdisplacementplugin.so */,
+				7268C057118294F2001BC9C4 /* libspatialqueryplugin.so */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -8812,6 +8891,7 @@
 				7209EC150F39E57B003DC336 /* quick_print */,
 				726C671C104602FB00EFEDCC /* raster_terrain_analysis */,
 				7209EC1E0F39E57B003DC336 /* scale_bar */,
+				7268C034118294E5001BC9C4 /* spatialquery */,
 				7209E79A0F39E57A003DC336 /* CMakeLists.txt */,
 				7209E7F50F39E57B003DC336 /* georeferencer */,
 				7209E8160F39E57B003DC336 /* gps_importer */,
@@ -11447,6 +11527,44 @@
 			path = ../../src/providers/spatialite;
 			sourceTree = SOURCE_ROOT;
 		};
+		7268C034118294E5001BC9C4 /* spatialquery */ = {
+			isa = PBXGroup;
+			children = (
+				7268C035118294E5001BC9C4 /* CMakeLists.txt */,
+				7268C036118294E5001BC9C4 /* qgsgeometrycoordinatetransform.cpp */,
+				7268C037118294E5001BC9C4 /* qgsgeometrycoordinatetransform.h */,
+				7268C038118294E5001BC9C4 /* qgsmngprogressbar.cpp */,
+				7268C039118294E5001BC9C4 /* qgsmngprogressbar.h */,
+				7268C03A118294E5001BC9C4 /* qgsreaderfeatures.cpp */,
+				7268C03B118294E5001BC9C4 /* qgsreaderfeatures.h */,
+				7268C03C118294E5001BC9C4 /* qgsrubberselectid.cpp */,
+				7268C03D118294E5001BC9C4 /* qgsrubberselectid.h */,
+				7268C03E118294E5001BC9C4 /* qgsspatialquery.cpp */,
+				7268C03F118294E5001BC9C4 /* qgsspatialquery.h */,
+				7268C040118294E5001BC9C4 /* qgsspatialquerydialog.cpp */,
+				7268C041118294E5001BC9C4 /* qgsspatialquerydialog.h */,
+				7268C042118294E5001BC9C4 /* qgsspatialquerydialogbase.qrc */,
+				7268C043118294E5001BC9C4 /* qgsspatialquerydialogbase.ui */,
+				7268C044118294E5001BC9C4 /* qgsspatialqueryplugin.cpp */,
+				7268C045118294E5001BC9C4 /* qgsspatialqueryplugin.h */,
+				7268C046118294E5001BC9C4 /* README */,
+				7268C047118294E5001BC9C4 /* spatialquery.png */,
+				7268C048118294E5001BC9C4 /* ts */,
+			);
+			name = spatialquery;
+			path = ../../src/plugins/spatialquery;
+			sourceTree = SOURCE_ROOT;
+		};
+		7268C048118294E5001BC9C4 /* ts */ = {
+			isa = PBXGroup;
+			children = (
+				7268C049118294E5001BC9C4 /* spatialquery_pt_BR.qm */,
+				7268C04A118294E5001BC9C4 /* spatialquery_pt_BR.ts */,
+			);
+			name = ts;
+			path = ../../src/plugins/spatialquery/ts;
+			sourceTree = SOURCE_ROOT;
+		};
 		726979A10F71369A00AFA402 /* ogr */ = {
 			isa = PBXGroup;
 			children = (
@@ -13563,6 +13681,25 @@
 			productReference = 7262ED9C0F7A770300498385 /* libspatialiteprovider.so */;
 			productType = "com.apple.product-type.tool";
 		};
+		7268C04C118294F2001BC9C4 /* spatialqueryplugin */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7268C054118294F2001BC9C4 /* Build configuration list for PBXNativeTarget "spatialqueryplugin" */;
+			buildPhases = (
+				7268C04D118294F2001BC9C4 /* Script - ui */,
+				7268C04E118294F2001BC9C4 /* Sources */,
+				7268C04F118294F2001BC9C4 /* Frameworks */,
+			);
+			buildRules = (
+				7268C052118294F2001BC9C4 /* PBXBuildRule */,
+				7268C053118294F2001BC9C4 /* PBXBuildRule */,
+			);
+			dependencies = (
+			);
+			name = spatialqueryplugin;
+			productName = testprog;
+			productReference = 7268C057118294F2001BC9C4 /* libspatialqueryplugin.so */;
+			productType = "com.apple.product-type.tool";
+		};
 		7268E80411021E6B00B96374 /* python analysis */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7268E80911021E6B00B96374 /* Build configuration list for PBXNativeTarget "python analysis" */;
@@ -14333,6 +14470,7 @@
 				72A56B800F3C824400BA32A1 /* quickprintplugin */,
 				726C67361046030F00EFEDCC /* rasterterrain */,
 				72A56B8A0F3C824900BA32A1 /* scalebarplugin */,
+				7268C04C118294F2001BC9C4 /* spatialqueryplugin */,
 				72A56B430F3C822800BA32A1 /* georefplugin */,
 				72A56B4E0F3C823800BA32A1 /* gpsimporterplugin */,
 				72A56B580F3C823800BA32A1 /* grassplugin */,
@@ -14478,6 +14616,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# Note: quoting messes up the -change action in install_name_tool, so for now\n# dependency libraries should have no spaces in paths.  ***FIXME***\n\nQGISPYDIR=\"$QGIS_BUILD_PATH/MacOS/$APPDIR/$QGIS_DATA_SUBDIR/python\"\n\n# arches\nQARCHS=\"\"\nfor a in $ARCHS\ndo\n\tQARCHS=\"$QARCHS -arch $a\"\ndone\n\ncd \"$QGIS_BUILD_PATH/MacOS/$QGIS_PLUGIN_SUBDIR\"\npluglist=`ls *.so`\n\ncd \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR\"\nliblist=`ls *.dylib`\n\ncd \"$PROJECT_DIR\"\n\n# Postgres\n\nPGSQLROOT=\"$PGSQL_PREFIX/lib\"\nif [ \"$BUNDLE_PGSQL\" = \"YES\" ] && [ -f \"$PGSQLROOT/libpq.dylib\" ] ; then\n\tditto $QARCHS \"$PGSQLROOT/libpq.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libpq.dylib\"\n\tplib=`otool -L \"$PGSQLROOT/libpq.dylib\" | grep -E -m 1 \"libpq.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tPGSQL_CHG=\"-change $plib @executable_path/$QGIS_LIB_SUBDIR/libpq.dylib\"\nfi\n\n# GDAL\n# *** Note: may need support files also ***\n\nGDALROOT=\"$GDAL_PREFIX/lib\"\nif [ \"$BUNDLE_GDAL\" = \"YES\" ] && [ \"$GDAL_FORM\" = \"shared\" ] && [ -f \"$GDALROOT/libgdal.dylib\" ] ; then\n\tditto $QARCHS \"$GDALROOT/libgdal.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libgdal.dylib\"\n\tglib=`otool -L \"$GDALROOT/libgdal.dylib\" | grep -E -m 1 \"libgdal.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tGDAL_CHG=\"-change $glib @executable_path/$QGIS_LIB_SUBDIR/libgdal.dylib\"\nfi\n\n# PROJ\n# *** Note: may need support files also ***\n\nPROJROOT=\"$PROJ_PREFIX/lib\"\nif [ \"$BUNDLE_PROJ\" = \"YES\" ] && [ \"$PROJ_FORM\" = \"shared\" ] && [ -f \"$PROJROOT/libproj.dylib\" ] ; then\n\tditto $QARCHS \"$PROJROOT/libproj.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libproj.dylib\"\n\tplib=`otool -L \"$PROJROOT/libproj.dylib\" | grep -E -m 1 \"libproj.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tPROJ_CHG=\"-change $plib @executable_path/$QGIS_LIB_SUBDIR/libproj.dylib\"\nfi\n\n# GEOS\n\nGEOSROOT=\"$GEOS_PREFIX/lib\"\nif [ \"$BUNDLE_GEOS\" = \"YES\" ] && [ \"$GEOS_FORM\" = \"shared\" ] && [ -f \"$GEOSROOT/libgeos.dylib\" ] ; then\n\tditto $QARCHS \"$GEOSROOT/libgeos.dylib\" \"$GEOSROOT/libgeos_c.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/\"\n\tglib=`otool -L \"$GEOSROOT/libgeos.dylib\" | grep -E -m 1 \"libgeos.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tgclib=`otool -L \"$GEOSROOT/libgeos_c.dylib\" | grep -E -m 1 \"libgeos_c.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tGEOS_CHG=\"-change $glib @executable_path/$QGIS_LIB_SUBDIR/libgeos.dylib -change $gclib @executable_path/$QGIS_LIB_SUBDIR/libgeos_c.dylib\"\nfi\n\n# SQLite & SpatiaLite\n\nSQLITEROOT=\"$SQLITE_PREFIX/lib\"\nif [ \"$BUNDLE_SQLITE\" = \"YES\" ] && [ \"$SQLITE_FORM\" = \"shared\" ] && [ -f \"$SQLITEROOT/libsqlite3.dylib\" ] ; then\n\tditto $QARCHS \"$SQLITEROOT/libsqlite3.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libsqlite3.dylib\"\n\tslib=`otool -L \"$SQLITEROOT/libsqlite3.dylib\" | grep -E -m 1 \"libsqlite3.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tSQLITE_CHG=\"-change $slib @executable_path/$QGIS_LIB_SUBDIR/libsqlite3.dylib\"\n\tif [ -f \"$SQLITEROOT/libspatialite.dylib\" ] ; then\n\t\tditto $QARCHS \"$SQLITEROOT/libspatialite.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libspatialite.dylib\"\n\t\tslib=`otool -L \"$SQLITEROOT/libspatialite.dylib\" | grep -E -m 1 \"libspatialite.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\t\tSPATIALITE_CHG=\"-change $slib @executable_path/$QGIS_LIB_SUBDIR/libspatialite.dylib\"\n\tfi\nfi\n\n# GSL\n\nGSLROOT=\"$GSL_PREFIX/lib\"\nif [ \"$BUNDLE_GSL\" = \"YES\" ] && [ \"$GSL_FORM\" = \"shared\" ] && [ -f \"$GSLROOT/libgsl.dylib\" ] ; then\n\tditto $QARCHS \"$GSLROOT/libgsl.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libgsl.dylib\"\n\tditto $QARCHS \"$GSLROOT/libgslcblas.dylib\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/libgslcblas.dylib\"\n\tglib=`otool -L \"$GSLROOT/libgsl.dylib\" | grep -E -m 1 \"libgsl.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tgclib=`otool -L \"$GSLROOT/libgslcblas.dylib\" | grep -E -m 1 \"libgslcblas.+ \" | cut -d \\( -f 1 | sed -E -e 's/^[[:space:]]//' -e 's/[[:space:]]$//'`\n\tGSL_CHG=\"-change $glib @executable_path/$QGIS_LIB_SUBDIR/libgsl.dylib -change $gclib @executable_path/$QGIS_LIB_SUBDIR/libgslcblas.dylib\"\nfi\n\n# change for all bundled libs now\n\necho \"install_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \\\"$QGIS_BUILD_PATH/MacOS/Qgis\\\"\"\ninstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/Qgis\"\n\nfor p in $pluglist\ndo\n\tinstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/$QGIS_PLUGIN_SUBDIR/$p\"\ndone\n\nfor l in $liblist\ndo\n\tinstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/$QGIS_LIB_SUBDIR/$l\"\ndone\n\nif [ -f \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/qgis/core.so\" ] ; then\n\tinstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/qgis/core.so\"\n\tinstall_name_tool $PGSQL_CHG $GDAL_CHG $PROJ_CHG $GEOS_CHG $SQLITE_CHG $SPATIALITE_CHG $GSL_CHG \"$QGIS_BUILD_PATH/MacOS/$QGIS_DATA_SUBDIR/python/qgis/gui.so\"\nfi\n\n# other bundling\n\n# gpsbabel\n\nif [ \"$BUNDLE_GPSBABEL\" = \"YES\" ] && [ -f \"$GPSBABEL\" ] ; then\n\tmkdir -p \"$QGIS_BUILD_PATH/MacOS/$QGIS_BIN_SUBDIR\"\n\tcp -f \"$GPSBABEL\" \"$QGIS_BUILD_PATH/MacOS/$QGIS_BIN_SUBDIR\"/\nfi\n\n# user bundling from bundle.sh\n\nif [ -f bundle.sh ] ; then\n\t./bundle.sh\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		7268C04D118294F2001BC9C4 /* Script - ui */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Script - ui";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# generate ui headers in separate script because:\n#  1. Xcode will attempt to process generated *.h with moc rule\n#  2. parallel processing might not finish ui's before a cpp source needs it\n\n# derived sources dir created by Compile Sources phase, we need it NOW\nmkdir -p \"$DERIVED_FILES_DIR\"\n\ncd ../../src/plugins/$TARGET_PLUGINDIR\n\nUIUI=`ls *.ui`\n\nfor u in $UIUI\ndo\n\tuh=`echo $u | sed 's,\\.ui$,.h,'`\n\t# compare times because output files spec below doesn't seem to work with wildcards\n\tif [ ! -f \"$DERIVED_FILES_DIR/ui_$uh\" ] || [ $u -nt \"$DERIVED_FILES_DIR/ui_$uh\" ] ; then\n\t\trm -f \"$DERIVED_FILES_DIR/ui_$uh\"\n\t\techo \"$QTUIC -o \\\"$DERIVED_FILES_DIR/ui_$uh\\\" $u\"\n\t\t$QTUIC -o \"$DERIVED_FILES_DIR/ui_$uh\" $u\n\tfi\ndone\n\nexit 0\n";
 			showEnvVarsInLog = 0;
 		};
 		726C67371046030F00EFEDCC /* Script - ui */ = {
@@ -15290,6 +15443,28 @@
 			files = (
 				7262ED9E0F7A777700498385 /* qgsspatialiteprovider.cpp in Sources */,
 				7262ED9F0F7A777700498385 /* qgsspatialiteprovider.h in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7268C04E118294F2001BC9C4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7268C05D1182963E001BC9C4 /* qgsgeometrycoordinatetransform.cpp in Sources */,
+				7268C05E1182963E001BC9C4 /* qgsmngprogressbar.cpp in Sources */,
+				7268C05F1182963E001BC9C4 /* qgsreaderfeatures.cpp in Sources */,
+				7268C0601182963E001BC9C4 /* qgsrubberselectid.cpp in Sources */,
+				7268C0611182963E001BC9C4 /* qgsspatialquery.cpp in Sources */,
+				7268C0621182963E001BC9C4 /* qgsspatialquerydialog.cpp in Sources */,
+				7268C0631182963E001BC9C4 /* qgsspatialqueryplugin.cpp in Sources */,
+				7268C06411829664001BC9C4 /* qgsgeometrycoordinatetransform.h in Sources */,
+				7268C06511829664001BC9C4 /* qgsmngprogressbar.h in Sources */,
+				7268C06611829664001BC9C4 /* qgsreaderfeatures.h in Sources */,
+				7268C06711829664001BC9C4 /* qgsrubberselectid.h in Sources */,
+				7268C06811829664001BC9C4 /* qgsspatialquery.h in Sources */,
+				7268C06911829664001BC9C4 /* qgsspatialquerydialog.h in Sources */,
+				7268C06A11829664001BC9C4 /* qgsspatialqueryplugin.h in Sources */,
+				7268C06B11829683001BC9C4 /* qgsspatialquerydialogbase.qrc in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16208,6 +16383,11 @@
 			target = 8D0C4E890486CD37000505A6 /* Qgis */;
 			targetProxy = 7256F1D00F411D080022BE1F /* PBXContainerItemProxy */;
 		};
+		7268C07111829AE3001BC9C4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7268C04C118294F2001BC9C4 /* spatialqueryplugin */;
+			targetProxy = 7268C07011829AE3001BC9C4 /* PBXContainerItemProxy */;
+		};
 		7268E8A5110241A400B96374 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 7268E88511023DF700B96374 /* python gui */;
@@ -16969,6 +17149,81 @@
 					"$(SQLITE_LIB)",
 				);
 				PRODUCT_NAME = spatialiteprovider.so;
+			};
+			name = Release;
+		};
+		7268C055118294F2001BC9C4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
+				EXECUTABLE_PREFIX = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					plugin_EXPORTS,
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					../../src/plugins,
+					../../src/plugins/plugin,
+					../../src/core,
+					../../src/core/raster,
+					../../src/core/renderer,
+					../../src/core/spatialindex,
+					../../src/core/symbology,
+					../../src/gui,
+					"$(TARGET_TEMP_DIR)/../qgis_gui.build/DerivedSources",
+					"$(GEOS_INC)",
+				);
+				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"$(QT_LIB_CORE)",
+					"$(QT_LIB_GUI)",
+					"$(GEOS_LIB)",
+				);
+				PRODUCT_NAME = spatialqueryplugin.so;
+				TARGET_PLUGINDIR = spatialquery;
+			};
+			name = Debug;
+		};
+		7268C056118294F2001BC9C4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_PLUGIN_SUBDIR)";
+				EXECUTABLE_PREFIX = lib;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					plugin_EXPORTS,
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					../../src/plugins,
+					../../src/plugins/plugin,
+					../../src/core,
+					../../src/core/raster,
+					../../src/core/renderer,
+					../../src/core/spatialindex,
+					../../src/core/symbology,
+					../../src/gui,
+					"$(TARGET_TEMP_DIR)/../qgis_gui.build/DerivedSources",
+					"$(GEOS_INC)",
+				);
+				LIBRARY_SEARCH_PATHS = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_LIB_SUBDIR)";
+				MACH_O_TYPE = mh_bundle;
+				OTHER_CFLAGS = "$(QT_CXXFLAGS)";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"$(QT_LIB_CORE)",
+					"$(QT_LIB_GUI)",
+					"$(GEOS_LIB)",
+				);
+				PRODUCT_NAME = spatialqueryplugin.so;
+				TARGET_PLUGINDIR = spatialquery;
 			};
 			name = Release;
 		};
@@ -19724,7 +19979,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 13340;
+				QGIS_VERSION_BUILD = 13357;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -19735,7 +19990,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 13340;
+				QGIS_VERSION_BUILD = 13357;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
@@ -19856,6 +20111,15 @@
 			buildConfigurations = (
 				7262ED9A0F7A770300498385 /* Debug */,
 				7262ED9B0F7A770300498385 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		7268C054118294F2001BC9C4 /* Build configuration list for PBXNativeTarget "spatialqueryplugin" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7268C055118294F2001BC9C4 /* Debug */,
+				7268C056118294F2001BC9C4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
