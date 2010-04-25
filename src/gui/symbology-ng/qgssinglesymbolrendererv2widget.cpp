@@ -3,9 +3,12 @@
 #include "qgssinglesymbolrendererv2.h"
 #include "qgssymbolv2.h"
 
+#include "qgslogger.h"
 #include "qgsvectorlayer.h"
 
 #include "qgssymbolv2selectordialog.h"
+
+#include <QMenu>
 
 QgsRendererV2Widget* QgsSingleSymbolRendererV2Widget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
 {
@@ -43,6 +46,44 @@ QgsSingleSymbolRendererV2Widget::QgsSingleSymbolRendererV2Widget( QgsVectorLayer
   layout->addWidget( mSelector );
   setLayout( layout );
 
+  // advanced actions - data defined rendering
+  QMenu* advMenu = mSelector->advancedMenu();
+
+  mRotationMenu = new QMenu( tr( "Rotation field" ) );
+  mSizeScaleMenu = new QMenu( tr( "Size scale field" ) );
+
+  populateMenu( mRotationMenu, SLOT( rotationFieldSelected() ), mRenderer->rotationField() );
+  populateMenu( mSizeScaleMenu, SLOT( sizeScaleFieldSelected() ), mRenderer->sizeScaleField() );
+
+  advMenu->addMenu( mRotationMenu );
+  advMenu->addMenu( mSizeScaleMenu );
+}
+
+void QgsSingleSymbolRendererV2Widget::populateMenu( QMenu* menu, const char* slot, QString fieldName )
+{
+  QAction* aNo = menu->addAction( tr( "- no field -" ), this, slot );
+  aNo->setCheckable( true );
+  menu->addSeparator();
+
+  bool hasField = false;
+  const QgsFieldMap& flds = mLayer->pendingFields();
+  for ( QgsFieldMap::const_iterator it = flds.begin(); it != flds.end(); ++it )
+  {
+    const QgsField& fld = it.value();
+    if ( fld.type() == QVariant::Int || fld.type() == QVariant::Double )
+    {
+      QAction* a = menu->addAction( fld.name(), this, slot );
+      a->setCheckable( true );
+      if ( fieldName == fld.name() )
+      {
+        a->setChecked( true );
+        hasField = true;
+      }
+    }
+  }
+
+  if ( !hasField )
+    aNo->setChecked( true );
 }
 
 QgsSingleSymbolRendererV2Widget::~QgsSingleSymbolRendererV2Widget()
@@ -66,3 +107,50 @@ void QgsSingleSymbolRendererV2Widget::changeSingleSymbol()
   mRenderer->setSymbol( mSingleSymbol->clone() );
 }
 
+void QgsSingleSymbolRendererV2Widget::rotationFieldSelected()
+{
+  QObject* s = sender();
+  if ( s == NULL )
+    return;
+
+  QAction* a = qobject_cast<QAction*>( s );
+  if ( a == NULL )
+    return;
+
+  QString fldName = a->text();
+
+  updateMenu( mRotationMenu, fldName );
+
+  if ( fldName == tr( "- no field -" ) )
+    fldName = QString();
+
+  mRenderer->setRotationField( fldName );
+}
+
+void QgsSingleSymbolRendererV2Widget::sizeScaleFieldSelected()
+{
+  QObject* s = sender();
+  if ( s == NULL )
+    return;
+
+  QAction* a = qobject_cast<QAction*>( s );
+  if ( a == NULL )
+    return;
+
+  QString fldName = a->text();
+
+  updateMenu( mSizeScaleMenu, fldName );
+
+  if ( fldName == tr( "- no field -" ) )
+    fldName = QString();
+
+  mRenderer->setSizeScaleField( fldName );
+}
+
+void QgsSingleSymbolRendererV2Widget::updateMenu( QMenu* menu, QString fieldName )
+{
+  foreach( QAction* a, menu->actions() )
+  {
+    a->setChecked( a->text() == fieldName );
+  }
+}

@@ -53,10 +53,16 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 
     void drawMarker( QPainter* p, QgsSymbolV2RenderContext& context );
 
+    bool prepareShape();
+    bool preparePath();
+
+    void prepareCache( QgsSymbolV2RenderContext& context );
+
     QColor mBorderColor;
     QPen mPen;
     QBrush mBrush;
     QPolygonF mPolygon;
+    QPainterPath mPath;
     QString mName;
     QImage mCache;
     QPen mSelPen;
@@ -114,6 +120,7 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     QString mPath;
     QPicture mPicture;
     QPicture mSelPicture;
+    double mOrigSize;
 };
 
 
@@ -170,6 +177,7 @@ class CORE_EXPORT QgsFontMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
 
     QPointF mChrOffset;
     QFont mFont;
+    double mOrigSize;
 };
 
 
