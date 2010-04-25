@@ -22,10 +22,14 @@ class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
     QgsSymbolV2* symbol() const;
     void setSymbol( QgsSymbolV2* s );
 
+    //! @note added in 1.5
     void setRotationField( QString fieldName ) { mRotationField = fieldName; }
+    //! @note added in 1.5
     QString rotationField() const { return mRotationField; }
 
+    //! @note added in 1.5
     void setSizeScaleField( QString fieldName ) { mSizeScaleField = fieldName; }
+    //! @note added in 1.5
     QString sizeScaleField() const { return mSizeScaleField; }
 
     virtual QString dump();

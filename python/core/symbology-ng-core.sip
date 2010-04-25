@@ -133,10 +133,14 @@ public:
   QgsSymbolV2* symbol() const;
   void setSymbol(QgsSymbolV2* s /Transfer/);
 
+  //! @note added in 1.5
   void setRotationField(QString fieldName);
+  //! @note added in 1.5
   QString rotationField() const;
 
+  //! @note added in 1.5
   void setSizeScaleField(QString fieldName);
+  //! @note added in 1.5
   QString sizeScaleField() const;
 
   virtual QString dump();
@@ -474,7 +478,9 @@ class QgsSymbolV2RenderContext
     bool selected() const;
     void setSelected( bool selected ) const;
 
+    //! @note added in 1.5
     int renderHints() const;
+    //! @note added in 1.5
     void setRenderHints( int hints );
 
     // Colour used for selections
@@ -521,6 +527,7 @@ public:
   	Fill
   };
 
+    //! @note added in 1.5
     enum RenderHint
     {
       DataDefinedSizeScale = 1,
@@ -576,7 +583,9 @@ public:
     qreal alpha() const;
     void setAlpha( qreal alpha );
 
+    //! @note added in 1.5
     int renderHints() const;
+    //! @note added in 1.5
     void setRenderHints( int hints );
 
 protected:

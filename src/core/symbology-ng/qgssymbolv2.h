@@ -35,6 +35,7 @@ class CORE_EXPORT QgsSymbolV2
       Fill
     };
 
+    //! @note added in 1.5
     enum RenderHint
     {
       DataDefinedSizeScale = 1,
@@ -90,7 +91,9 @@ class CORE_EXPORT QgsSymbolV2
     qreal alpha() const { return mAlpha; }
     void setAlpha( qreal alpha ) { mAlpha = alpha; }
 
+    //! @note added in 1.5
     void setRenderHints( int hints ) { mRenderHints = hints; }
+    //! @note added in 1.5
     int renderHints() { return mRenderHints; }
 
   protected:
@@ -129,7 +132,9 @@ class CORE_EXPORT QgsSymbolV2RenderContext
     bool selected() const { return mSelected; }
     void setSelected( bool selected ) { mSelected = selected; }
 
+    //! @note added in 1.5
     int renderHints() const { return mRenderHints; }
+    //! @note added in 1.5
     void setRenderHints( int hints ) { mRenderHints = hints; }
 
     // Colour used for selections
