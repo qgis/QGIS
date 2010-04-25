@@ -54,9 +54,57 @@ void QgsAppLegendInterface::updateIndex( QModelIndex oldIndex, QModelIndex newIn
   }
 }
 
+void QgsAppLegendInterface::setGroupExpanded( int groupIndex, bool expand )
+{
+  mLegend->setExpanded( mLegend->model()->index( groupIndex, 0 ), expand );
+}
+
+void QgsAppLegendInterface::setGroupVisible( int groupIndex, bool visible )
+{
+  if ( !groupExists( groupIndex ) )
+  {
+    return;
+  }
+
+  Qt::CheckState state = visible ? Qt::Checked : Qt::Unchecked;
+  mLegend->topLevelItem( groupIndex )->setCheckState( 0, state );
+}
+
+void QgsAppLegendInterface::setLayerVisible( QgsMapLayer * ml, bool visible )
+{
+  mLegend->setLayerVisible( ml, visible );
+}
+
 QStringList QgsAppLegendInterface::groups()
 {
   return mLegend->groups();
+}
+
+bool QgsAppLegendInterface::groupExists( int groupIndex )
+{
+  QModelIndex mi = mLegend->model()->index( groupIndex, 0 );
+  return ( mi.isValid() &&
+           mLegend->isLegendGroup( mi ) );
+}
+
+bool QgsAppLegendInterface::isGroupExpanded( int groupIndex )
+{
+  return mLegend->isExpanded( mLegend->model()->index( groupIndex, 0 ) );
+}
+
+bool QgsAppLegendInterface::isGroupVisible( int groupIndex )
+{
+  if ( !groupExists( groupIndex ) )
+  {
+    return false;
+  }
+
+  return ( Qt::Checked == mLegend->topLevelItem( groupIndex )->checkState( 0 ) );
+}
+
+bool QgsAppLegendInterface::isLayerVisible( QgsMapLayer * ml )
+{
+  return ( Qt::Checked == mLegend->layerCheckState( ml ) );
 }
 
 QList< QgsMapLayer * > QgsAppLegendInterface::layers() const
