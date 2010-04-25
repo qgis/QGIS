@@ -844,7 +844,7 @@ Soll sie als neuer Layer eingefügt werden?</translation>
     </message>
     <message>
         <source>Please specify valid extent coordinates</source>
-        <translation>Bitte geben Sie gültige Grenzkoordinaten an</translation>
+        <translation>Bitte gültige Grenzkoordinaten angeben</translation>
     </message>
     <message>
         <source>Invalid extent coordinates entered</source>
@@ -867,7 +867,7 @@ Soll sie als neuer Layer eingefügt werden?</translation>
     </message>
     <message>
         <source>Please select the projection system that defines the current layer.</source>
-        <translation>Bitte wählen Sie das Projektionssystem für den aktuellen Layer.</translation>
+        <translation>Bitte Projektionssystem für den aktuellen Layer wählen.</translation>
     </message>
     <message>
         <source>Layer CRS information will be updated to the selected CRS.</source>
@@ -967,7 +967,7 @@ Soll es als neuer Layer hinzugefügt werden?</translation>
 Are you sure you want to proceed?</source>
         <translation>Identisches Ausgabekoordinatenbezugssystem gewählt
 
-Wollen Sie wirklich fortfahren?</translation>
+Soll wirklich fortgefahren werden?</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="14"/>
@@ -994,7 +994,7 @@ Wollen Sie wirklich fortfahren?</translation>
     </message>
     <message>
         <source>There are no shapefiles in this directory. Please select another one.</source>
-        <translation>Es gibt keine Shapedateien in diesem Verzeichnis. Bitte wählen Sie ein anderes.</translation>
+        <translation>Es gibt keine Shapedateien in diesem Verzeichnis. Bitte ein anderes wählen.</translation>
     </message>
     <message>
         <source>Delete error</source>
@@ -1245,7 +1245,7 @@ Alle die Fehler gemeldet/Fehlerkorrekturen/Vorschläge/Kommentare usw. beigetrag
     </message>
     <message>
         <source>No input shapefile specified</source>
-        <translation>Kein Eingabeshapedatei angegeben</translation>
+        <translation>Keine Eingabeshapedatei angegeben</translation>
     </message>
     <message>
         <source>Created output shapefiles in folder:
@@ -1301,7 +1301,7 @@ Alle die Fehler gemeldet/Fehlerkorrekturen/Vorschläge/Kommentare usw. beigetrag
     <message>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="158"/>
         <source>Press Ctrl+C to copy results to the clipboard</source>
-        <translation>Drücken Sie Strg+C um die Ergebnisse in
+        <translation>Strg+C drücken, um die Ergebnisse in
 die Zwischenablage zu kopieren</translation>
     </message>
     <message>
@@ -1605,7 +1605,7 @@ Soll sie dem Projekt als neuer Layer hinzugefügt werden?</translation>
         <source>Error processing specified tolerance!
 Please choose larger tolerance...</source>
         <translation>Fehler beim Verarbeiten der angebenen Toleranz!
-Bitte wählen Sie eine größere Toleranz...</translation>
+Bitte eine größere Toleranz wählen...</translation>
     </message>
     <message>
         <source>Created output shapefile:
@@ -2771,7 +2771,7 @@ GEOS-Verarbeitugnsfehler: Eine oder mehrere Objekte haben ungültige Geometrie.<
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="108"/>
         <source>Comment on your changes:</source>
-        <translation>Kommentieren Sie Ihre Änderungen:</translation>
+        <translation>Kommentar zur Änderungen:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="134"/>
@@ -2934,7 +2934,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="165"/>
         <source>Choose GRASS installation path (GISBASE)</source>
-        <translation>Bitte wählen Sie einen GRASS-Installationspfad (GISBASE)</translation>
+        <translation>Bitte einen GRASS-Installationspfad (GISBASE) wählen</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="182"/>
@@ -3131,7 +3131,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/core/qgssearchtreenode.cpp" line="343"/>
         <source>Regular expressions on numeric values don&apos;t make sense. Use comparison instead.</source>
-        <translation>Reguläre Ausdrücke auf numerische Werte haben keinen Sinn. Bitte benutzen Sie Vergleichsoperatoren.</translation>
+        <translation>Reguläre Ausdrücke auf nummerische Werte haben keinen Sinn. Bitte Vergleichsoperatoren benutzen.</translation>
     </message>
     <message>
         <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="45"/>
@@ -4631,7 +4631,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="872"/>
         <source>Click on features to identify them</source>
-        <translation>Klicken Sie auf Objekte, um Informationen dazu zu erhalten</translation>
+        <translation>Auf Objekte klicken, um Informationen dazu zu erhalten</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="858"/>
@@ -4858,7 +4858,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6300"/>
         <source>Enter a name for the new bookmark:</source>
-        <translation>Bitte geben Sie einen Namen für das Lesezeichen ein:</translation>
+        <translation>Bitte einen Namen für das Lesezeichen eingeben:</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1201"/>
@@ -4948,7 +4948,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3859"/>
         <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
-        <translation>Der aktuelle Layer kann nicht bearbeitet werden. Bitte wählen Sie &apos;Bearbeitungsstatus umschalten&apos; aus der Digitalisierwerkzeugleiste.</translation>
+        <translation>Der aktuelle Layer kann nicht bearbeitet werden. Bitte &apos;Bearbeitungsstatus umschalten&apos; aus der Digitalisierwerkzeugleiste wählen.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="999"/>
@@ -4989,7 +4989,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5195"/>
         <source>Do you want to save the current project?</source>
-        <translation>Wollen Sie das aktuelle Projekt speichern?</translation>
+        <translation>Soll das aktuelle Projekt gespeichert werden?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="749"/>
@@ -5732,7 +5732,7 @@ Dies QGIS-Kopie schreibt Debugausgaben.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4132"/>
         <source>No active layer found. Please select a layer in the layer list</source>
-        <translation>Keinen aktiven Layer gefunden. Bitte wählen Sie einen Layer aus der Layerliste</translation>
+        <translation>Keinen aktiven Layer gefunden. Bitte einen Layer aus der Liste wählen</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4138"/>
@@ -5742,12 +5742,12 @@ Dies QGIS-Kopie schreibt Debugausgaben.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4138"/>
         <source>The merge features tool only works on vector layers. Please select a vector layer from the layer list</source>
-        <translation>Das Verschmelzen von Objekte funktioniert nur mit Vektorlayern. Bitte wählen Sie einen Vektorlayer aus der Layerliste</translation>
+        <translation>Das Verschmelzen von Objekte funktioniert nur mit Vektorlayern. Bitte einen Vektorlayer aus der Liste wählen</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4143"/>
         <source>Merging features can only be done for layers in editing mode. To use the merge tool, go to  Layer-&gt;Toggle editing</source>
-        <translation>Objekte können nur auf Layern im Bearbeitungsmodus verschmolzen werden. Benutzen Sie Layer-&gt;Bearbeitungsmodus umschalten, um das Verschmelzungswerkzeug zu benutzen</translation>
+        <translation>Objekte können nur auf Layern im Bearbeitungsmodus verschmolzen werden. Bitte mit Layer-&gt;Bearbeitungsmodus umschalten, um das Verschmelzungswerkzeug zu benutzen</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4158"/>
@@ -6184,7 +6184,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsabout.ui" line="140"/>
         <source>Join our user mailing list</source>
-        <translation>Abonnieren Sie unsere Mailingliste</translation>
+        <translation>Unsere Mailingliste abonnieren</translation>
     </message>
     <message>
         <location filename="../src/app/qgsabout.cpp" line="132"/>
@@ -6345,7 +6345,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsattributeactiondialog.cpp" line="188"/>
         <source>To create an attribute action, you must provide both a name and the action to perform.</source>
-        <translation>Um eine Attributaktion zu erstellen, müssen Sie sowohl einen Namen als auch eine auszuführende Aktion angeben.</translation>
+        <translation>Um eine Attributaktion zu erstellen, muss sowohl ein Name als auch eine auszuführende Aktion angegeben werden.</translation>
     </message>
 </context>
 <context>
@@ -6574,7 +6574,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsattributeeditor.cpp" line="76"/>
         <source>Select a date</source>
-        <translation>Wählen Sie ein Datum</translation>
+        <translation>Datum wählen</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsattributeeditor.cpp" line="405"/>
@@ -6655,7 +6655,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="532"/>
         <source>You&apos;ve supplied an empty search string.</source>
-        <translation>Sie haben einen leeren Suchbegriff eingegeben.</translation>
+        <translation>Ein leerer Suchbegriff wurde eingegeben.</translation>
     </message>
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="572"/>
@@ -7117,7 +7117,7 @@ Fehler war:%2</translation>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="157"/>
         <source>Are you sure you want to delete the %1 bookmark?</source>
-        <translation>Sind Sie sicher, dass Sie das Lesezeichen %1 löschen wollen?</translation>
+        <translation>Soll das Lesezeichen %1 wirklich gelöscht werden?</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="174"/>
@@ -7175,7 +7175,7 @@ Fehler war:%2</translation>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="76"/>
         <source>Color ramp:</source>
-        <translation>Farbanstieg:</translation>
+        <translation>Farbverlauf:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="113"/>
@@ -7206,7 +7206,7 @@ Fehler war:%2</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="264"/>
         <source>There are no available color ramps. You can add them in Style Manager.</source>
-        <translation>Es sind keine Farbverläufe verfügbar. Sie können sie im Stilmanager ergänzen.</translation>
+        <translation>Es sind keine Farbverläufe verfügbar. Im Stilmanager können welche ergänzt werden.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="266"/>
@@ -7977,7 +7977,7 @@ Fehler war:%2</translation>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="135"/>
         <source>Do you really want to remove the map composer &apos;%1&apos;?</source>
-        <translation>Wollen Sie wirklich die Zusammenstellung &apos;%1&apos; löschen?</translation>
+        <translation>Soll die Zusammenstellung &apos;%1&apos; wirklich gelöscht werden?</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="237"/>
@@ -9426,17 +9426,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="642"/>
         <source> Please give the projection a name before pressing save.</source>
-        <translation> Bitte geben Sie der Projektion vor dem Speichern einen Namen.</translation>
+        <translation> Bitte der Projektion vor dem Speichern einen Namen geben.</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="649"/>
         <source> Please add the parameters before pressing save.</source>
-        <translation> Bitte fügen Sie vor dem Speichern Parameter hinzu.</translation>
+        <translation> Bitte vor dem Speichern Parameter hinzufügen.</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="665"/>
         <source> Please add a proj= clause before pressing save.</source>
-        <translation> Bitte fügen Sie vor dem Speichern eine proj=-Klausel hinzu.</translation>
+        <translation> Bitte vor dem Speichern eine proj=-Klausel hinzufügen.</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="681"/>
@@ -9677,7 +9677,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugingui.cpp" line="108"/>
         <source>Please enter a layer name before adding the layer to the map</source>
-        <translation>Bitte geben Sie einen Layernamen ein, bevor Sie den Layer zum Kartenfenster hinzufügen</translation>
+        <translation>Bitte vor dem Hinzufügen des Layers zur Karte einen Layernamen eingeben</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugingui.cpp" line="190"/>
@@ -9725,12 +9725,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="217"/>
         <source>Name of the field containing x values</source>
-        <translation>Nennen Sie das Feld, das die X-Werte enthält</translation>
+        <translation>Name des Feldes, das die X-Werte enthält</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="220"/>
         <source>Name of the field containing x values. Choose a field from the list. The list is generated by parsing the header row of the delimited text file.</source>
-        <translation>Nennen Sie das Feld, das die X-Werte enthält. Wähle ein Feld aus der Liste, die aus der Kopfzeile der Textdatei erzeugt wurde.</translation>
+        <translation>Name des Feldes, das die X-Werte enthält. Wähle ein Feld aus der Liste, die aus der Kopfzeile der Textdatei erzeugt wurde.</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="255"/>
@@ -9740,12 +9740,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="242"/>
         <source>Name of the field containing y values</source>
-        <translation>Nennen Sie das Feld, das die y-Werte enthält</translation>
+        <translation>Name des Feldes, das die y-Werte enthält</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="245"/>
         <source>Name of the field containing y values. Choose a field from the list. The list is generated by parsing the header row of the delimited text file.</source>
-        <translation>Nennen Sie das Feld, das die y-Werte enthält. Wähle ein Feld aus der Liste, die aus der Kopfzeile der Textdatei erzeugt wurde.</translation>
+        <translation>Name des Feldes, das die y-Werte enthält. Wähle ein Feld aus der Liste, die aus der Kopfzeile der Textdatei erzeugt wurde.</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="78"/>
@@ -10284,7 +10284,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsdevicedialog.cpp" line="56"/>
         <source>Are you sure that you want to delete this device?</source>
-        <translation>Sind Sie sicher, dass sie dieses Gerät löschen wollen?</translation>
+        <translation>Soll dieses Gerät wirklich gelöscht?</translation>
     </message>
 </context>
 <context>
@@ -10438,7 +10438,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="313"/>
         <source>No path to the GPS port is specified. Please enter a path then try again.</source>
-        <translation>Kein Pfad zum GPS-Port angegeben. Bitte gehen Sie einen Pfad an und versuchen es erneut.</translation>
+        <translation>Kein Pfad zum GPS-Port angegeben. Bitte einen angeben und erneut versuchen.</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="350"/>
@@ -10473,7 +10473,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="568"/>
         <source>Adding features to multipart shapetypes is not supported yet. Please select a different editable, non 2.5D layer and try again.</source>
-        <translation>Objekte zu mehrteiligen Shapetypen noch nicht unterstützt. Bitt wählen Sie einen bearbeitbaren einteiligen Layer und versuchen es erneut.</translation>
+        <translation>Hinzufügen von Objekte zu mehrteiligen Shapetypen noch nicht unterstützt. Bitte einen Layer, der nicht mehrteilig ist, wählen und erneut versuchen.</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="580"/>
@@ -10493,7 +10493,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="589"/>
         <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation>Der Vektorlayer kann nicht geändert werden. Um ihn zu bearbeiten, klicken Sie bitte erst mit der rechten Maustaste auf den Dateieintrag des Layers und dann auf &apos;Bearbeitungsstatus umschalten&apos;.</translation>
+        <translation>Der Vektorlayer kann nicht geändert werden. Um ihn zu bearbeiten, bitte erst mit der rechten Maustaste auf den Dateieintrag des Layers klicken und dann auf &apos;Bearbeitungsstatus umschalten&apos;.</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="598"/>
@@ -10728,18 +10728,8 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="174"/>
-        <source>Unable to create a GPX file with the given name. </source>
-        <translation>Kann die GPX-Datei mit dem angegebenen Namen nicht erzeugen. </translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="175"/>
-        <source>Try again with another name or in another </source>
-        <translation>Bitte probieren Sie es mit einem anderen Namen oder in einem anderen </translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="176"/>
-        <source>directory.</source>
-        <translation>Ordner.</translation>
+        <source>Unable to create a GPX file with the given name. Try again with an other name or in an other directory.</source>
+        <translation>Kann die GPX-Datei mit dem angegebenen Namen nicht erzeugen. Bitte einem anderen Namen probieren oder in einem anderen Ordner.</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="217"/>
@@ -10781,7 +10771,7 @@ p, li { white-space: pre-wrap; }
         <source>Could not import data from %1!
 
 </source>
-        <translation>Konnte die daten von %1 nicht importieren!</translation>
+        <translation>Konnte die Daten von %1 nicht importieren!</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="290"/>
@@ -10851,12 +10841,12 @@ Bitte wählen Sie eine gültige Datei.</translation>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="416"/>
         <source>This device does not support downloading of %1.</source>
-        <translation>Von diesem Gerät unterstützt das Herunterladen von %1 nicht.</translation>
+        <translation>Dieses Gerät unterstützt das Herunterladen von %1 nicht.</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="509"/>
         <source>This device does not support uploading of %1.</source>
-        <translation>Diese Gerät unterstützt das Hochladen von %1 nicht.</translation>
+        <translation>Dieses Gerät unterstützt das Hochladen von %1 nicht.</translation>
     </message>
 </context>
 <context>
@@ -11678,7 +11668,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="72"/>
         <source>Color ramp:</source>
-        <translation>Farbanstieg:</translation>
+        <translation>Farbverlauf:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="82"/>
@@ -19632,13 +19622,13 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsPostgresProvider</name>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="968"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1000"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="969"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1001"/>
         <source>Unable to access relation</source>
         <translation>Auf die Relation kann nicht zugegriffen werden</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="969"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="970"/>
         <source>Unable to access the %1 relation.
 The error message from the database was:
 %2.
@@ -19649,7 +19639,7 @@ Der Error den die Datenbank lieferte war:
 SQL: %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1001"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1002"/>
         <source>Unable to determine table access privileges for the %1 relation.
 The error message from the database was:
 %2.
@@ -19715,24 +19705,24 @@ Objektauswahl und -identifizierung kann nicht richtig funktionieren.
 Bitte PostGIS mit GEOS-Unterstützung installieren (http://geos.refractions.net)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="942"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="943"/>
         <source>Ambiguous field!</source>
         <translation>Mehrdeutiger Feldname!</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="943"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="944"/>
         <source>Duplicate field %1 found
 </source>
         <translation>Doppelter Feldname %1 gefunden
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1091"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1092"/>
         <source>Unable execute the query</source>
         <translation>Konnte die Abfrage nicht ausführen</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1092"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1093"/>
         <source>Unable to execute the query.
 The error message from the database was:
 %1.
@@ -19743,12 +19733,12 @@ Dei Fehlermeldung der Datenbank war:
 SQL: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1195"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1196"/>
         <source>No suitable key column in table</source>
         <translation>Keine passende Schlüsselspalte in der Tabelle</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1196"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1197"/>
         <source>The table has no column suitable for use as a key.
 
 Quantum GIS requires that the table either has a column of type
@@ -19764,46 +19754,46 @@ einschließt), eine PostgreSQL-oid-Spalte oder eine ctid-Spalte
 mit einer 16bit-Blocknummer hat.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1271"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1272"/>
         <source>The unique index on column &apos;%1&apos; is unsuitable because Quantum GIS does not currently support non-int4 type columns as a key into the table.
 </source>
         <translation>Der eindeutige Index auf Spalte &apos;%1&apos; ist ungeeignet, weil Quantum GIS zur Zeit nur Spalten vom Typ int4 als Tabellenschlüssel unterstützt.
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1296"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1297"/>
         <source>and </source>
         <translation>und </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1302"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1303"/>
         <source>The unique index based on columns %1 is unsuitable because Quantum GIS does not currently support multiple columns as a key into the table.
 </source>
         <translation>Der eindeutige Index auf den Spalten &apos;%1&apos; ist ungeeignet, weil Quantum GIS zur Zeit nur einzelne Spalten als Tabellenschlüssel unterstützt.
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1345"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1346"/>
         <source>Unable to find a key column</source>
         <translation>Kann die Schlüsselspalte nicht finden</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1487"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1488"/>
         <source>and is suitable.</source>
         <translation>und ist geeignet.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1493"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1494"/>
         <source> and has a suitable constraint)</source>
         <translation> und hat einen geeigneten Constraint)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1495"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1496"/>
         <source> and does not have a suitable constraint)</source>
         <translation> und hat keinen geeigneten Constraint)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1590"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1591"/>
         <source>The view &apos;%1.%2&apos; has no column suitable for use as a unique key.
 Quantum GIS requires that the view has a column that can be used as a unique key. Such a column should be derived from a table column of type int4 and be a primary key, have a unique constraint on it, or be a PostgreSQL oid column. To improve performance the column should also be indexed.
 The view you selected has the following columns, none of which satisfy the above conditions:</source>
@@ -19812,39 +19802,39 @@ Quantum GIS erwartet jedoch eine solche Spalte. Sie sollte von einer Tabellespal
 Der ausgewählte View hat folgende Spalten von denen keine die obigen Bedingungen erfüllt:</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1598"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1599"/>
         <source>No suitable key column in view</source>
         <translation>Keine geeignete Schlüsselspalte im View</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3113"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3114"/>
         <source>Unknown geometry type</source>
         <translation>Unbekannter Geometrietyp</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3114"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3115"/>
         <source>Column %1 in %2 has a geometry type of %3, which Quantum GIS does not currently support.</source>
         <translation>Spalte %1 in %2 hat den Geometrietyp %3, den Quantum GIS zur Zeit nicht unterstützt.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3121"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3122"/>
         <source>Quantum GIS was unable to determine the type and srid of column %1 in %2. The database communication log was:
 %3</source>
         <translation>Quantum GIS konnte den Typ und die SRID der Spalte %1 in %2 nicht bestimmen. Das Datenbankkommunikationsprotokoll war:
 %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3125"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3126"/>
         <source>Unable to get feature type and srid</source>
         <translation>Kann den Objekttyp und die SRID nicht ermitteln</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3241"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3246"/>
         <source>Query failed</source>
         <translation>Abfrage gescheitert</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3242"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3247"/>
         <source>%1 cursor states lost.
 SQL: %2
 Result: %3 (%4)</source>
@@ -19853,32 +19843,32 @@ SQL: %2
 Ergebnis: %3 (%4)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2393"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2394"/>
         <source>Error while adding features</source>
         <translation>Fehler beim Hinzufügen von Objekten</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2436"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2437"/>
         <source>Error while deleting features</source>
         <translation>Fehler beim Löschen von Objekten</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2499"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2500"/>
         <source>Error while adding attributes</source>
         <translation>Fehler beim Hinzufügen von Attributen</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2547"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2548"/>
         <source>Error while deleting attributes</source>
         <translation>Fehler beim Löschen von Attributen</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2618"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2619"/>
         <source>Error while changing attributes</source>
         <translation>Fehler beim Ändern von Attributen</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2707"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2708"/>
         <source>Error while changing geometry values</source>
         <translation>Fehler beim Ändern von Geometrien</translation>
     </message>
@@ -19888,17 +19878,17 @@ Ergebnis: %3 (%4)</translation>
         <translation>Nicht erwarteter PostgeSQL-Fehler</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1483"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1484"/>
         <source>&apos;%1&apos; derives from &apos;%2.%3.%4&apos; </source>
         <translation>&apos;%1&apos; ist von &apos;%2.%3.%4&apos; abgeleitet </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1491"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1492"/>
         <source>and is not suitable (type is %1)</source>
         <translation>und ist ungeeignet (Typ ist %1)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1579"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1580"/>
         <source>Note: &apos;%1&apos; initially appeared suitable but does not contain unique data, so is not suitable.
 </source>
         <translation>Bemerkung: &apos;%1&apos; schien anfänglich geeignet, ist es allerdings nicht, da sie keine eindeutigen Daten enthält.</translation>
@@ -23523,6 +23513,87 @@ Wollen Sie die Relation [%2] überschreiben?</translation>
     </message>
 </context>
 <context>
+    <name>QgsStyleV2ManagerDialog</name>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="81"/>
+        <source>Marker symbol (%1)</source>
+        <translation>Markierungssymbol (%1)</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="82"/>
+        <source>Line symbol (%1)</source>
+        <translation>Liniensymbol (%1)</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="83"/>
+        <source>Fill symbol (%1)</source>
+        <translation>Füllungssymbol (%1)</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="85"/>
+        <source>Color ramp (%1)</source>
+        <translation>Farbverlauf (%1)</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="210"/>
+        <source>Symbol name</source>
+        <translation>Symbolname</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="211"/>
+        <source>Please enter name for new symbol:</source>
+        <translation>Bitte geben Sie einen Name für das neue Symbol ein:</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="211"/>
+        <source>new symbol</source>
+        <translation>Neues Symbol</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="228"/>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="236"/>
+        <source>Gradient</source>
+        <translation>Gradiente</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="228"/>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="247"/>
+        <source>Random</source>
+        <translation>Zufällig</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="228"/>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="258"/>
+        <source>ColorBrewer</source>
+        <translation>Farbbrauer</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="230"/>
+        <source>Color ramp type</source>
+        <translation>Farbverlauftyp</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="231"/>
+        <source>Please select color ramp type:</source>
+        <translation>Bitte einen Farbverlauftyp wählen:</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="275"/>
+        <source>Color ramp name</source>
+        <translation>Farbverlaufname</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="276"/>
+        <source>Please enter name for new color ramp:</source>
+        <translation>Bitte einen Name für den Farbverlauf angeben:</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="276"/>
+        <source>new color ramp</source>
+        <translation>Neuer Farbverlauf</translation>
+    </message>
+</context>
+<context>
     <name>QgsStyleV2ManagerDialogBase</name>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="14"/>
@@ -23548,6 +23619,14 @@ Wollen Sie die Relation [%2] überschreiben?</translation>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="71"/>
         <source>Remove item</source>
         <translation>Element löschen</translation>
+    </message>
+</context>
+<context>
+    <name>QgsSymbolLevelsV2Dialog</name>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgssymbollevelsv2dialog.cpp" line="38"/>
+        <source>Layer %1</source>
+        <translation>Layer %1</translation>
     </message>
 </context>
 <context>
@@ -24013,7 +24092,7 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     <message>
         <location filename="../src/ui/qgsvectorcolorbrewercolorrampv2dialogbase.ui" line="14"/>
         <source>ColorBrewer ramp</source>
-        <translation>Farbbrauer-Anstieg</translation>
+        <translation>Farbbrauer-Verlauf</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorcolorbrewercolorrampv2dialogbase.ui" line="22"/>
@@ -24034,16 +24113,20 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
 <context>
     <name>QgsVectorGradientColorRampV2Dialog</name>
     <message>
-        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="129"/>
-        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="152"/>
+        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="130"/>
+        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="134"/>
+        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="163"/>
+        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="167"/>
         <source>Offset of the stop</source>
-        <translation>Versatz des Stopps</translation>
+        <translation>Versatz des Wechsels</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="130"/>
-        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="153"/>
+        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="131"/>
+        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="135"/>
+        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="164"/>
+        <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="168"/>
         <source>Please enter offset in percents (%) of the new stop</source>
-        <translation>Bitte geben sie den Versatz in Prozent (%) des neuen Stopps an</translation>
+        <translation>Bitte geben sie den Versatz in Prozent (%) des neuen Wechsels an</translation>
     </message>
 </context>
 <context>
@@ -24051,7 +24134,7 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="14"/>
         <source>Gradient color ramp</source>
-        <translation>Abgestufter Farbanstieg</translation>
+        <translation>Abgestufter Farbverlauf</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="22"/>
@@ -24072,7 +24155,7 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="68"/>
         <source>Multiple stops</source>
-        <translation>Mehrere Unterbrechungen</translation>
+        <translation>Mehrere Wechsel</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="80"/>
@@ -24851,7 +24934,7 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     <message>
         <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="14"/>
         <source>Random color ramp</source>
-        <translation>Zufälliger Farbanstieg</translation>
+        <translation>Zufälliger Farbverlauf</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="22"/>
@@ -27653,7 +27736,7 @@ Erweiterung wird nicht aktiviert.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="44"/>
         <source>Calculate univariate statistics for numeric attributes in a data table</source>
-        <translation>Eindimensionale Statistik numerischer Attribute einer Datentabelle berechnen</translation>
+        <translation>Eindimensionale Statistik nummerischer Attribute einer Datentabelle berechnen</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="45"/>

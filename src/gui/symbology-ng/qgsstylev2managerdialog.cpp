@@ -78,11 +78,11 @@ void QgsStyleV2ManagerDialog::populateTypes()
   }
 
   cboItemType->clear();
-  cboItemType->addItem( QString( "Marker symbol (%1)" ).arg( markerCount ), QVariant( QgsSymbolV2::Marker ) );
-  cboItemType->addItem( QString( "Line symbol (%1)" ).arg( lineCount ), QVariant( QgsSymbolV2::Line ) );
-  cboItemType->addItem( QString( "Fill symbol (%1)" ).arg( fillCount ), QVariant( QgsSymbolV2::Fill ) );
+  cboItemType->addItem( tr( "Marker symbol (%1)" ).arg( markerCount ), QVariant( QgsSymbolV2::Marker ) );
+  cboItemType->addItem( tr( "Line symbol (%1)" ).arg( lineCount ), QVariant( QgsSymbolV2::Line ) );
+  cboItemType->addItem( tr( "Fill symbol (%1)" ).arg( fillCount ), QVariant( QgsSymbolV2::Fill ) );
 
-  cboItemType->addItem( QString( "Color ramp (%1)" ).arg( mStyle->colorRampCount() ), QVariant( 3 ) );
+  cboItemType->addItem( tr( "Color ramp (%1)" ).arg( mStyle->colorRampCount() ), QVariant( 3 ) );
 
   // update current index to previous selection
   cboItemType->setCurrentIndex( current );
@@ -207,8 +207,8 @@ bool QgsStyleV2ManagerDialog::addSymbol()
 
   // get name
   bool ok;
-  QString name = QInputDialog::getText( this, "Symbol name",
-                                        "Please enter name for new symbol:", QLineEdit::Normal, "new symbol", &ok );
+  QString name = QInputDialog::getText( this, tr( "Symbol name" ),
+                                        tr( "Please enter name for new symbol:" ), QLineEdit::Normal, tr( "new symbol" ), &ok );
   if ( !ok || name.isEmpty() )
   {
     delete symbol;
@@ -225,15 +225,15 @@ bool QgsStyleV2ManagerDialog::addColorRamp()
 {
   // let the user choose the color ramp type
   QStringList rampTypes;
-  rampTypes << "Gradient" << "Random" << "ColorBrewer";
+  rampTypes << tr( "Gradient" ) << tr( "Random" ) << tr( "ColorBrewer" );
   bool ok;
-  QString rampType = QInputDialog::getItem( this, "Color ramp type",
-                     "Please select color ramp type:", rampTypes, 0, false, &ok );
+  QString rampType = QInputDialog::getItem( this, tr( "Color ramp type" ),
+                     tr( "Please select color ramp type:" ), rampTypes, 0, false, &ok );
   if ( !ok || rampType.isEmpty() )
     return false;
 
   QgsVectorColorRampV2 *ramp = NULL;
-  if ( rampType == "Gradient" )
+  if ( rampType == tr( "Gradient" ) )
   {
     QgsVectorGradientColorRampV2* gradRamp = new QgsVectorGradientColorRampV2();
     QgsVectorGradientColorRampV2Dialog dlg( gradRamp, this );
@@ -244,7 +244,7 @@ bool QgsStyleV2ManagerDialog::addColorRamp()
     }
     ramp = gradRamp;
   }
-  else if ( rampType == "Random" )
+  else if ( rampType == tr( "Random" ) )
   {
     QgsVectorRandomColorRampV2* randRamp = new QgsVectorRandomColorRampV2();
     QgsVectorRandomColorRampV2Dialog dlg( randRamp, this );
@@ -255,7 +255,7 @@ bool QgsStyleV2ManagerDialog::addColorRamp()
     }
     ramp = randRamp;
   }
-  else if ( rampType == "ColorBrewer" )
+  else if ( rampType == tr( "ColorBrewer" ) )
   {
     QgsVectorColorBrewerColorRampV2* brewerRamp = new QgsVectorColorBrewerColorRampV2();
     QgsVectorColorBrewerColorRampV2Dialog dlg( brewerRamp, this );
@@ -272,8 +272,8 @@ bool QgsStyleV2ManagerDialog::addColorRamp()
   }
 
   // get name
-  QString name = QInputDialog::getText( this, "Color ramp name",
-                                        "Please enter name for new color ramp:", QLineEdit::Normal, "new color ramp", &ok );
+  QString name = QInputDialog::getText( this, tr( "Color ramp name" ),
+                                        tr( "Please enter name for new color ramp:" ), QLineEdit::Normal, tr( "new color ramp" ), &ok );
   if ( !ok || name.isEmpty() )
   {
     if ( ramp )

@@ -171,9 +171,9 @@ void QgsGPSPlugin::createGPX()
     if ( !ofs )
     {
       QMessageBox::warning( NULL, tr( "Could not create file" ),
-                            tr( "Unable to create a GPX file with the given name. " ) +
-                            tr( "Try again with another name or in another " ) +
-                            tr( "directory." ) );
+                            tr( "Unable to create a GPX file with the given name. "
+				"Try again with an other name or in an other "
+				"directory." ) );
       return;
     }
     ofs << "<gpx></gpx>" << std::endl;
