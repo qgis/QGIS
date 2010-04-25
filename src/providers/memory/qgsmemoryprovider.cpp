@@ -69,7 +69,7 @@ QString QgsMemoryProvider::storageType() const
 bool QgsMemoryProvider::nextFeature( QgsFeature& feature )
 {
   feature.setValid( false );
-  bool hasFeature = FALSE;
+  bool hasFeature = false;
 
   // option 1: using spatial index
   if ( mSelectUsingSpatialIndex )
@@ -80,10 +80,10 @@ bool QgsMemoryProvider::nextFeature( QgsFeature& feature )
       if ( mSelectUseIntersect )
       {
         if ( mFeatures[*mSelectSI_Iterator].geometry()->intersects( mSelectRectGeom ) )
-          hasFeature = TRUE;
+          hasFeature = true;
       }
       else
-        hasFeature = TRUE;
+        hasFeature = true;
 
       if ( hasFeature )
         break;
@@ -106,7 +106,7 @@ bool QgsMemoryProvider::nextFeature( QgsFeature& feature )
     if ( mSelectRect.isEmpty() )
     {
       // selection rect empty => using all features
-      hasFeature = TRUE;
+      hasFeature = true;
     }
     else
     {
@@ -114,13 +114,13 @@ bool QgsMemoryProvider::nextFeature( QgsFeature& feature )
       {
         // using exact test when checking for intersection
         if ( mSelectIterator->geometry()->intersects( mSelectRectGeom ) )
-          hasFeature = TRUE;
+          hasFeature = true;
       }
       else
       {
         // check just bounding box against rect when not using intersection
         if ( mSelectIterator->geometry()->boundingBox().intersects( mSelectRect ) )
-          hasFeature = TRUE;
+          hasFeature = true;
       }
     }
 
@@ -147,13 +147,15 @@ bool QgsMemoryProvider::featureAtId( int featureId,
                                      bool fetchGeometry,
                                      QgsAttributeList fetchAttributes )
 {
+  feature.setValid( false );
   QgsFeatureMap::iterator it = mFeatures.find( featureId );
 
   if ( it == mFeatures.end() )
-    return FALSE;
+    return false;
 
   feature = *it;
-  return TRUE;
+  feature.setValid( true );
+  return true;
 }
 
 
@@ -173,13 +175,13 @@ void QgsMemoryProvider::select( QgsAttributeList fetchAttributes,
   // (but don't use it when selection rect is not specified)
   if ( mSpatialIndex && !mSelectRect.isEmpty() )
   {
-    mSelectUsingSpatialIndex = TRUE;
+    mSelectUsingSpatialIndex = true;
     mSelectSI_Features = mSpatialIndex->intersects( rect );
     QgsDebugMsg( "Features returned by spatial index: " + QString::number( mSelectSI_Features.count() ) );
   }
   else
   {
-    mSelectUsingSpatialIndex = FALSE;
+    mSelectUsingSpatialIndex = false;
     mSelectSI_Features.clear();
   }
 
@@ -252,7 +254,7 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList & flist )
 
   updateExtent();
 
-  return TRUE;
+  return true;
 }
 
 bool QgsMemoryProvider::deleteFeatures( const QgsFeatureIds & id )
@@ -274,7 +276,7 @@ bool QgsMemoryProvider::deleteFeatures( const QgsFeatureIds & id )
 
   updateExtent();
 
-  return TRUE;
+  return true;
 }
 
 bool QgsMemoryProvider::addAttributes( const QList<QgsField> &attributes )
@@ -298,14 +300,14 @@ bool QgsMemoryProvider::addAttributes( const QList<QgsField> &attributes )
       if ( it2.key() > nextId ) nextId = it2.key();
     mFields[nextId+1] = *it;
   }
-  return TRUE;
+  return true;
 }
 
 bool QgsMemoryProvider::deleteAttributes( const QgsAttributeIds& attributes )
 {
   for ( QgsAttributeIds::const_iterator it = attributes.begin(); it != attributes.end(); ++it )
     mFields.remove( *it );
-  return TRUE;
+  return true;
 }
 
 bool QgsMemoryProvider::changeAttributeValues( const QgsChangedAttributesMap & attr_map )
@@ -320,7 +322,7 @@ bool QgsMemoryProvider::changeAttributeValues( const QgsChangedAttributesMap & a
     for ( QgsAttributeMap::const_iterator it2 = attrs.begin(); it2 != attrs.end(); ++it2 )
       fit->changeAttribute( it2.key(), it2.value() );
   }
-  return TRUE;
+  return true;
 }
 
 bool QgsMemoryProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
@@ -344,7 +346,7 @@ bool QgsMemoryProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 
   updateExtent();
 
-  return TRUE;
+  return true;
 }
 
 bool QgsMemoryProvider::createSpatialIndex()
@@ -359,7 +361,7 @@ bool QgsMemoryProvider::createSpatialIndex()
       mSpatialIndex->insertFeature( *it );
     }
   }
-  return TRUE;
+  return true;
 }
 
 int QgsMemoryProvider::capabilities() const

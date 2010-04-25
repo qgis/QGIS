@@ -222,6 +222,8 @@ bool QgsSpatiaLiteProvider::featureAtId( int featureId, QgsFeature & feature, bo
 {
   sqlite3_stmt *stmt = NULL;
 
+  feature.setValid( false );
+
   QString sql = "SELECT ROWID";
   for ( QgsAttributeList::const_iterator it = fetchAttributes.constBegin(); it != fetchAttributes.constEnd(); ++it )
   {
@@ -346,6 +348,8 @@ bool QgsSpatiaLiteProvider::featureAtId( int featureId, QgsFeature & feature, bo
     return false;
   }
   sqlite3_finalize( stmt );
+
+  feature.setValid( true );
 
   return true;
 }
@@ -1433,7 +1437,7 @@ QgsSpatiaLiteProvider::SqliteHandles * QgsSpatiaLiteProvider::SqliteHandles::ope
   }
 
   // checking the DB for sanity
-  if ( checkMetadata( sqlite_handle ) == false )
+  if ( !checkMetadata( sqlite_handle ) )
   {
     // failure
     QgsDebugMsg( QString( "Failure while connecting to: %1\n\ninvalid metadata tables" ).arg( dbPath ) );
