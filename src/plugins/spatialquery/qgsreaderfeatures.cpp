@@ -15,7 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id: $ */
+/*  $Id$ */
 
 #include <qgsvectordataprovider.h>
 
@@ -54,10 +54,7 @@ void QgsReaderFeatures::initReader( bool useSelection )
   }
   else
   {
-    QgsAttributeList attListGeom;
-    int idGeom = 0;
-    attListGeom.append( idGeom );
-    mLayer->select( attListGeom, mLayer->extent(), true, false );
+    mLayer->select( QgsAttributeList() );
     mFuncNextFeature = &QgsReaderFeatures::nextFeatureTotal;
   }
 
@@ -65,8 +62,7 @@ void QgsReaderFeatures::initReader( bool useSelection )
 
 bool QgsReaderFeatures::nextFeatureTotal( QgsFeature & feature )
 {
-  return mLayer->dataProvider()->nextFeature( feature );
-
+  return mLayer->nextFeature( feature );
 } // bool QgsReaderFeatures::nextFeatureTotal ( QgsFeature & feature )
 
 bool QgsReaderFeatures::nextFeatureSelected( QgsFeature & feature )
@@ -82,7 +78,4 @@ bool QgsReaderFeatures::nextFeatureSelected( QgsFeature & feature )
     mIterSelectedFeature++;
   }
   return bReturn;
-
 } // bool QgsReaderFeatures::nextFeatureSelected( QgsFeature &feature )
-
-

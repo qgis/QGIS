@@ -15,7 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id: $ */
+/*  $Id$ */
 #ifndef GEOMETRYCOORDINATETRANSFORM_H
 #define GEOMETRYCOORDINATETRANSFORM_H
 

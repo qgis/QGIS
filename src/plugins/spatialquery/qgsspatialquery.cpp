@@ -15,7 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id: $ */
+/*  $Id$ */
 
 #include <QMessageBox>
 
@@ -195,12 +195,8 @@ void QgsSpatialQuery::setSpatialIndexReference()
   QgsReaderFeatures * readerFeaturesReference = new QgsReaderFeatures( mLayerReference, mUseReferenceSelection );
   QgsFeature feature;
   int step = 1;
-  while ( true )
+  while ( readerFeaturesReference->nextFeature( feature ) )
   {
-    if ( ! readerFeaturesReference->nextFeature( feature ) )
-    {
-      break;
-    }
     mPb->step( step++ );
 
     if ( ! hasValidGeometry( feature ) )
@@ -293,7 +289,7 @@ void QgsSpatialQuery::populateIndexResult(
   {
     mLayerReference->featureAtId( *iterIdReference, featureReference );
     geomReference = featureReference.geometry();
-    if (( geomTarget->*op )( geomReference ) == 1 )
+    if (( geomTarget->*op )( geomReference ) )
     {
       qsetIndexResult.insert( idTarget );
       break;
@@ -321,7 +317,8 @@ void QgsSpatialQuery::populateIndexResultDisjoint(
   {
     mLayerReference->featureAtId( *iterIdReference, featureReference );
     geomReference = featureReference.geometry();
-    if (( geomTarget->*op )( geomTarget ) == 0 )
+
+    if ( !( geomTarget->*op )( geomTarget ) )
     {
       addIndex = false;
       break;
