@@ -581,7 +581,6 @@ void QgsPostgresProvider::select( QgsAttributeList fetchAttributes, QgsRectangle
 bool QgsPostgresProvider::nextFeature( QgsFeature& feature )
 {
   feature.setValid( false );
-
   if ( !valid )
   {
     QgsDebugMsg( "Read attempt on an invalid postgresql data source" );
@@ -678,6 +677,7 @@ QString QgsPostgresProvider::whereClause( int featureId ) const
 
 bool QgsPostgresProvider::featureAtId( int featureId, QgsFeature& feature, bool fetchGeometry, QgsAttributeList fetchAttributes )
 {
+  feature.setValid( false );
   QString cursorName = QString( "qgisfid%1" ).arg( providerId );
 
   if ( !declareCursor( cursorName, fetchAttributes, fetchGeometry, whereClause( featureId ) ) )
@@ -703,6 +703,7 @@ bool QgsPostgresProvider::featureAtId( int featureId, QgsFeature& feature, bool 
 
   connectionRO->closeCursor( cursorName );
 
+  feature.setValid( gotit );
   return gotit;
 }
 
