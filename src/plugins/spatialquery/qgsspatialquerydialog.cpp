@@ -287,7 +287,7 @@ void QgsSpatialQueryDialog::connectAll()
            this, SLOT( signal_qgis_layerWasAdded( QgsMapLayer* ) ) ) ;
   connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ),
            this, SLOT( signal_qgis_layerWillBeRemoved( QString ) ) );
-  connect( showLogProcessingCheckBox, SIGNAL( clicked() ),
+  connect( showLogProcessingCheckBox, SIGNAL( clicked( bool ) ),
            this, SLOT( on_showLogProcessingCheckBox_clicked( bool ) ) );
 
 } // QgsSpatialQueryDialog::connectAll()
