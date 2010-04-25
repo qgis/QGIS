@@ -708,7 +708,7 @@ bool QgsSpatiaLiteSourceSelect::isDeclaredHidden( sqlite3 * handle, QString tabl
   char *errMsg = NULL;
   bool isHidden = false;
 
-  if ( checkGeometryColumnsAuth( handle ) == false )
+  if ( !checkGeometryColumnsAuth( handle ) )
     return false;
   // checking if some Layer has been declared as HIDDEN
   QString sql = QString( "SELECT hidden FROM geometry_columns_auth"

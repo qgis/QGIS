@@ -767,7 +767,7 @@ void DualEdgeTriangulation::draw( QPainter* p, double xlowleft, double ylowleft,
         {continue;}
 
       //check, if the edge belongs to a flat triangle, remove this later
-      if ( control2[i] == false )
+      if ( !control2[i] )
       {
         double p1, p2, p3;
         if ( mHalfEdge[i]->getPoint() != -1 && mHalfEdge[mHalfEdge[i]->getNext()]->getPoint() != -1 && mHalfEdge[mHalfEdge[mHalfEdge[i]->getNext()]->getNext()]->getPoint() != -1 )
@@ -792,7 +792,7 @@ void DualEdgeTriangulation::draw( QPainter* p, double xlowleft, double ylowleft,
         control2[mHalfEdge[mHalfEdge[i]->getNext()]->getNext()] = true;
       }//end of the section, which has to be removed later
 
-      if ( control[i] == true )//check, if edge has already been drawn
+      if ( control[i] )//check, if edge has already been drawn
         {continue;}
 
       //draw the edge;
@@ -830,7 +830,7 @@ void DualEdgeTriangulation::draw( QPainter* p, double xlowleft, double ylowleft,
         {continue;}
 
       //check, if the edge belongs to a flat triangle, remove this section later
-      if ( control2[i] == false )
+      if ( !control2[i] )
       {
         double p1, p2, p3;
         if ( mHalfEdge[i]->getPoint() != -1 && mHalfEdge[mHalfEdge[i]->getNext()]->getPoint() != -1 && mHalfEdge[mHalfEdge[mHalfEdge[i]->getNext()]->getNext()]->getPoint() != -1 )
@@ -856,7 +856,7 @@ void DualEdgeTriangulation::draw( QPainter* p, double xlowleft, double ylowleft,
       }//end of the section, which has to be removed later
 
 
-      if ( control[i] == true )//check, if edge has already been drawn
+      if ( control[i] )//check, if edge has already been drawn
         {continue;}
 
       //draw the edge
@@ -944,7 +944,7 @@ QList<int>* DualEdgeTriangulation::getSurroundingTriangles( int pointno )
     vlist->append( mHalfEdge[nextedge]->getPoint() );//add the number of the endpoint of the second edge to the value list
     nextnextedge = mHalfEdge[nextedge]->getNext();
     vlist->append( mHalfEdge[nextnextedge]->getPoint() );//add the number of endpoint of the third edge to the value list
-    if ( mHalfEdge[nextnextedge]->getBreak() == true )//add, whether the third edge is a breakline or not
+    if ( mHalfEdge[nextnextedge]->getBreak() )//add, whether the third edge is a breakline or not
     {
       vlist->append( -10 );
     }
@@ -1606,7 +1606,7 @@ void DualEdgeTriangulation::eliminateHorizontalTriangles()
 
     for ( int i = 0; i <= mHalfEdge.count() - 1; i++ )
     {
-      if ( control[i] == true )//edge has already been examined
+      if ( control[i] )//edge has already been examined
       {
         continue;
       }
@@ -1666,7 +1666,7 @@ void DualEdgeTriangulation::eliminateHorizontalTriangles()
         continue;
       }
     }
-    if ( swaped == false )
+    if ( !swaped )
     {
       delete[] control;
       break;
@@ -1691,7 +1691,7 @@ void DualEdgeTriangulation::ruppertRefinement()
   //first, go through all the forced edges and subdivide if they are encroached by a point
   bool stop = false;//flag to ensure that the for-loop is repeated until no half edge is split any more
 
-  while ( stop == false )
+  while ( !stop )
   {
     stop = true;
     int nhalfedges = mHalfEdge.count();
@@ -1736,7 +1736,7 @@ void DualEdgeTriangulation::ruppertRefinement()
     bool twoforcededges;//flag to decide, if edges should be added to the maps. Do not add them if true
 
 
-    if (( mHalfEdge[i]->getForced() == true || edgeOnConvexHull( i ) ) && ( mHalfEdge[mHalfEdge[i]->getNext()]->getForced() == true || edgeOnConvexHull( mHalfEdge[i]->getNext() ) ) )
+    if (( mHalfEdge[i]->getForced() || edgeOnConvexHull( i ) ) && ( mHalfEdge[mHalfEdge[i]->getNext()]->getForced() || edgeOnConvexHull( mHalfEdge[i]->getNext() ) ) )
     {
       twoforcededges = true;
     }
@@ -1853,7 +1853,7 @@ void DualEdgeTriangulation::ruppertRefinement()
             //don't put the edges on the maps if two segments are forced or on a hull
             bool twoforcededges1, twoforcededges2, twoforcededges3;//flag to indicate, if angle1, angle2 and angle3 are between forced edges or hull edges
 
-            if (( mHalfEdge[ed1]->getForced() == true || edgeOnConvexHull( ed1 ) ) && ( mHalfEdge[ed2]->getForced() == true || edgeOnConvexHull( ed2 ) ) )
+            if (( mHalfEdge[ed1]->getForced() || edgeOnConvexHull( ed1 ) ) && ( mHalfEdge[ed2]->getForced() || edgeOnConvexHull( ed2 ) ) )
             {
               twoforcededges1 = true;
             }
@@ -1862,7 +1862,7 @@ void DualEdgeTriangulation::ruppertRefinement()
               twoforcededges1 = false;
             }
 
-            if (( mHalfEdge[ed2]->getForced() == true || edgeOnConvexHull( ed2 ) ) && ( mHalfEdge[ed3]->getForced() == true || edgeOnConvexHull( ed3 ) ) )
+            if (( mHalfEdge[ed2]->getForced() || edgeOnConvexHull( ed2 ) ) && ( mHalfEdge[ed3]->getForced() || edgeOnConvexHull( ed3 ) ) )
             {
               twoforcededges2 = true;
             }
@@ -1871,7 +1871,7 @@ void DualEdgeTriangulation::ruppertRefinement()
               twoforcededges2 = false;
             }
 
-            if (( mHalfEdge[ed3]->getForced() == true || edgeOnConvexHull( ed3 ) ) && ( mHalfEdge[ed1]->getForced() == true || edgeOnConvexHull( ed1 ) ) )
+            if (( mHalfEdge[ed3]->getForced() || edgeOnConvexHull( ed3 ) ) && ( mHalfEdge[ed1]->getForced() || edgeOnConvexHull( ed1 ) ) )
             {
               twoforcededges3 = true;
             }
@@ -2024,7 +2024,7 @@ void DualEdgeTriangulation::ruppertRefinement()
 
     for ( std::set<int>::iterator it = influenceedges.begin(); it != influenceedges.end(); ++it )
     {
-      if (( mHalfEdge[*it]->getForced() == true || edgeOnConvexHull( *it ) ) && MathUtils::inDiametral( mPointVector[mHalfEdge[*it]->getPoint()], mPointVector[mHalfEdge[mHalfEdge[*it]->getDual()]->getPoint()], &circumcenter ) )
+      if (( mHalfEdge[*it]->getForced() || edgeOnConvexHull( *it ) ) && MathUtils::inDiametral( mPointVector[mHalfEdge[*it]->getPoint()], mPointVector[mHalfEdge[mHalfEdge[*it]->getDual()]->getPoint()], &circumcenter ) )
       {
         //split segment
         QgsDebugMsg( "segment split" );
@@ -2063,7 +2063,7 @@ void DualEdgeTriangulation::ruppertRefinement()
 
 
 
-          if (( mHalfEdge[ed1]->getForced() == true || edgeOnConvexHull( ed1 ) ) && ( mHalfEdge[ed2]->getForced() == true || edgeOnConvexHull( ed2 ) ) )
+          if (( mHalfEdge[ed1]->getForced() || edgeOnConvexHull( ed1 ) ) && ( mHalfEdge[ed2]->getForced() || edgeOnConvexHull( ed2 ) ) )
           {
             twoforcededges1 = true;
           }
@@ -2072,7 +2072,7 @@ void DualEdgeTriangulation::ruppertRefinement()
             twoforcededges1 = false;
           }
 
-          if (( mHalfEdge[ed2]->getForced() == true || edgeOnConvexHull( ed2 ) ) && ( mHalfEdge[ed3]->getForced() == true || edgeOnConvexHull( ed3 ) ) )
+          if (( mHalfEdge[ed2]->getForced() || edgeOnConvexHull( ed2 ) ) && ( mHalfEdge[ed3]->getForced() || edgeOnConvexHull( ed3 ) ) )
           {
             twoforcededges2 = true;
           }
@@ -2081,7 +2081,7 @@ void DualEdgeTriangulation::ruppertRefinement()
             twoforcededges2 = false;
           }
 
-          if (( mHalfEdge[ed3]->getForced() == true || edgeOnConvexHull( ed3 ) ) && ( mHalfEdge[ed1]->getForced() == true || edgeOnConvexHull( ed1 ) ) )
+          if (( mHalfEdge[ed3]->getForced() || edgeOnConvexHull( ed3 ) ) && ( mHalfEdge[ed1]->getForced() || edgeOnConvexHull( ed1 ) ) )
           {
             twoforcededges3 = true;
           }
@@ -2197,7 +2197,7 @@ void DualEdgeTriangulation::ruppertRefinement()
     } //end fast method
 
 
-    if ( encroached == true )
+    if ( encroached )
     {
       continue;
     }
@@ -2228,7 +2228,7 @@ void DualEdgeTriangulation::ruppertRefinement()
             flag = true;
           }
         }
-        if ( flag == false )
+        if ( !flag )
         {
           QgsDebugMsg( "point is not present in the triangulation" );
         }
@@ -2279,7 +2279,7 @@ void DualEdgeTriangulation::ruppertRefinement()
         //todo: put all three edges on the dontexamine list if two edges are forced or convex hull edges
         bool twoforcededges1, twoforcededges2, twoforcededges3;
 
-        if (( mHalfEdge[ed1]->getForced() == true || edgeOnConvexHull( ed1 ) ) && ( mHalfEdge[ed2]->getForced() == true || edgeOnConvexHull( ed2 ) ) )
+        if (( mHalfEdge[ed1]->getForced() || edgeOnConvexHull( ed1 ) ) && ( mHalfEdge[ed2]->getForced() || edgeOnConvexHull( ed2 ) ) )
         {
           twoforcededges1 = true;
         }
@@ -2288,7 +2288,7 @@ void DualEdgeTriangulation::ruppertRefinement()
           twoforcededges1 = false;
         }
 
-        if (( mHalfEdge[ed2]->getForced() == true || edgeOnConvexHull( ed2 ) ) && ( mHalfEdge[ed3]->getForced() == true || edgeOnConvexHull( ed3 ) ) )
+        if (( mHalfEdge[ed2]->getForced() || edgeOnConvexHull( ed2 ) ) && ( mHalfEdge[ed3]->getForced() || edgeOnConvexHull( ed3 ) ) )
         {
           twoforcededges2 = true;
         }
@@ -2297,7 +2297,7 @@ void DualEdgeTriangulation::ruppertRefinement()
           twoforcededges2 = false;
         }
 
-        if (( mHalfEdge[ed3]->getForced() == true || edgeOnConvexHull( ed3 ) ) && ( mHalfEdge[ed1]->getForced() == true || edgeOnConvexHull( ed1 ) ) )
+        if (( mHalfEdge[ed3]->getForced() || edgeOnConvexHull( ed3 ) ) && ( mHalfEdge[ed1]->getForced() || edgeOnConvexHull( ed1 ) ) )
         {
           twoforcededges3 = true;
         }
@@ -2424,7 +2424,7 @@ void DualEdgeTriangulation::ruppertRefinement()
 bool DualEdgeTriangulation::swapPossible( unsigned int edge )
 {
   //test, if edge belongs to a forced edge
-  if ( mHalfEdge[edge]->getForced() == true )
+  if ( mHalfEdge[edge]->getForced() )
   {
     return false;
   }
@@ -2926,7 +2926,7 @@ bool DualEdgeTriangulation::saveToTAFF( QString filename ) const
 
   for ( unsigned int i = 0; i < mHalfEdge.count(); i++ )
   {
-    if ( cont[i] == true )
+    if ( cont[i] )
     {
       continue;
     }
@@ -3276,7 +3276,7 @@ void DualEdgeTriangulation::evaluateInfluenceRegion( Point3D* point, int edge, s
     return;
   }
 
-  if ( mHalfEdge[edge]->getForced() == false && !edgeOnConvexHull( edge ) )
+  if ( !mHalfEdge[edge]->getForced() && !edgeOnConvexHull( edge ) )
   {
     //test, if point is in the circle through both endpoints of edge and the endpoint of edge->dual->next->point
     if ( MathUtils::inCircle( point, mPointVector[mHalfEdge[mHalfEdge[edge]->getDual()]->getPoint()], mPointVector[mHalfEdge[edge]->getPoint()], mPointVector[mHalfEdge[mHalfEdge[edge]->getNext()]->getPoint()] ) )

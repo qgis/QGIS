@@ -63,7 +63,7 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
        Not emitting signal is useful when you want to use registry also for layers
        which won't be used in main map canvas but will be used in a special one
     */
-    QgsMapLayer *  addMapLayer( QgsMapLayer * theMapLayer, bool theEmitSignal = TRUE );
+    QgsMapLayer *  addMapLayer( QgsMapLayer * theMapLayer, bool theEmitSignal = true );
 
     /** Remove a layer from qgis
        @note
@@ -73,7 +73,7 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
        The layer being removed is deleted as well as the registry
        table entry.
     */
-    void removeMapLayer( QString theLayerId, bool theEmitSignal = TRUE );
+    void removeMapLayer( QString theLayerId, bool theEmitSignal = true );
 
     /** Remove all registered layers
        @note raises removedAll()

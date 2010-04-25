@@ -64,11 +64,11 @@ class QgsLegendLayer : public QgsLegendItem
     void addToPopupMenu( QMenu& theMenu, QAction* toggleEditingAction );
 
     /** Set layer to be visible in canvas */
-    void setVisible( bool visible = TRUE );
+    void setVisible( bool visible = true );
     /** Find out whether the layer is visible */
     bool isVisible();
 
-    void setInOverview( bool isInOverview = TRUE );
+    void setInOverview( bool isInOverview = true );
     /**Determines whether there are layers in overview*/
     bool isInOverview();
 

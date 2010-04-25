@@ -52,7 +52,7 @@ void QgsMapToolSelect::canvasMoveEvent( QMouseEvent * e )
 
   if ( !mDragging )
   {
-    mDragging = TRUE;
+    mDragging = true;
     mRubberBand = new QRubberBand( QRubberBand::Rectangle, mCanvas );
     mSelectRect.setTopLeft( e->pos() );
   }
@@ -113,7 +113,7 @@ void QgsMapToolSelect::canvasReleaseEvent( QMouseEvent * e )
     }
   }
 
-  mDragging = FALSE;
+  mDragging = false;
 
   const QgsMapToPixel* transform = mCanvas->getCoordinateTransform();
   QgsPoint ll = transform->toMapCoordinates( mSelectRect.left(), mSelectRect.bottom() );

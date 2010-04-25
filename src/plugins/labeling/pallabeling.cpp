@@ -277,8 +277,8 @@ PalLabeling::PalLabeling()
     case FALP: mSearch = Falp; break;
   }
 
-  mShowingCandidates = FALSE;
-  mShowingAllLabels = FALSE;
+  mShowingCandidates = false;
+  mShowingAllLabels = false;
 }
 
 
@@ -356,7 +356,7 @@ int PalLabeling::prepareLayer( QgsVectorLayer* layer, int& attrIndex, QgsRenderC
 
   // set font size from points to output size
   double size = 0.3527 * lyr.textFont.pointSizeF() * ctx.scaleFactor(); //* ctx.rasterScaleFactor();
-  lyr.textFont.setPixelSize((int)size);
+  lyr.textFont.setPixelSize(( int )size );
 
   // save the pal layer to our layer context (with some additional info)
   lyr.palLayer = l;

@@ -307,7 +307,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
 
     /**
      * Set whether provider should also return features that don't have
-     * associated geometry. FALSE by default
+     * associated geometry. false by default
      */
     void enableGeometrylessFeatures( bool fetch );
 

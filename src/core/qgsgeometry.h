@@ -175,7 +175,7 @@ class CORE_EXPORT QgsGeometry
      *  If the requested vertex number (beforeVertex.back()) is greater
      *  than the last actual vertex on the requested ring and item,
      *  it is assumed that the vertex is to be appended instead of inserted.
-     *  Returns FALSE if atVertex does not correspond to a valid vertex
+     *  Returns false if atVertex does not correspond to a valid vertex
      *  on this geometry (including if this geometry is a Point).
      *  It is up to the caller to distinguish between
      *  these error conditions.  (Or maybe we add another method to this
@@ -186,14 +186,14 @@ class CORE_EXPORT QgsGeometry
     /** Moves the vertex at the given position number
      *  and item (first number is index 0)
      *  to the given coordinates.
-     *  Returns FALSE if atVertex does not correspond to a valid vertex
+     *  Returns false if atVertex does not correspond to a valid vertex
      *  on this geometry
      */
     bool moveVertex( double x, double y, int atVertex );
 
     /** Deletes the vertex at the given position number and item
      *  (first number is index 0)
-     *  Returns FALSE if atVertex does not correspond to a valid vertex
+     *  Returns false if atVertex does not correspond to a valid vertex
      *  on this geometry (including if this geometry is a Point),
      *  or if the number of remaining verticies in the linestring
      *  would be less than two.
@@ -382,12 +382,12 @@ class CORE_EXPORT QgsGeometry
 
     /** delete a ring in polygon or multipolygon.
       Ring 0 is outer ring and can't be deleted.
-      @return TRUE on success
+      @return true on success
       @note added in version 1.2 */
     bool deleteRing( int ringNum, int partNum = 0 );
 
     /** delete part identified by the part number
-      @return TRUE on success
+      @return true on success
       @note added in version 1.2 */
     bool deletePart( int partNum );
 
@@ -469,8 +469,8 @@ class CORE_EXPORT QgsGeometry
      *  than the last actual vertex,
      *  it is assumed that the vertex is to be appended instead of inserted.
      *  @param old_sequence   The sequence to update (The caller remains the owner).
-     *  @param new_sequence   The updated sequence (The caller becomes the owner if the function returns TRUE).
-     *  Returns FALSE if beforeVertex does not correspond to a valid vertex number
+     *  @param new_sequence   The updated sequence (The caller becomes the owner if the function returns true).
+     *  Returns false if beforeVertex does not correspond to a valid vertex number
      *  on the Coordinate Sequence.
      */
     bool insertVertex( double x, double y,

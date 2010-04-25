@@ -110,7 +110,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
   mScene->addItem( mMap );
   mScene->update(); // porting??
 
-  moveCanvasContents( TRUE );
+  moveCanvasContents( true );
 
   //connect(mMapRenderer, SIGNAL(updateMap()), this, SLOT(updateMap()));
   connect( mMapRenderer, SIGNAL( drawError( QgsMapLayer* ) ), this, SLOT( showError( QgsMapLayer* ) ) );
@@ -543,7 +543,7 @@ void QgsMapCanvas::updateScale()
 void QgsMapCanvas::clear()
 {
   // Indicate to the next paint event that we need to rebuild the canvas contents
-  setDirty( TRUE );
+  setDirty( true );
 
 } // clear
 
@@ -1270,7 +1270,7 @@ void QgsMapCanvas::panActionEnd( QPoint releasePoint )
   }
 
   // move map image and other items to standard position
-  moveCanvasContents( TRUE ); // TRUE means reset
+  moveCanvasContents( true ); // true means reset
 
   // use start and end box points to calculate the extent
   QgsPoint start = getCoordinateTransform()->toMapCoordinates( mCanvasProperties->rubberStartPoint );

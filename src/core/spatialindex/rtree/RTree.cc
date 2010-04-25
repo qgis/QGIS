@@ -283,7 +283,7 @@ void SpatialIndex::RTree::RTree::insertData( unsigned long len, const byte* pDat
 #ifdef PTHREADS
   Tools::ExclusiveLock lock( &m_rwLock );
 #else
-  if ( m_rwLock == false ) m_rwLock = true;
+  if ( !m_rwLock ) m_rwLock = true;
   else throw Tools::ResourceLockedException( "insertData: cannot acquire an exclusive lock" );
 #endif
 
@@ -324,7 +324,7 @@ bool SpatialIndex::RTree::RTree::deleteData( const IShape& shape, long id )
 #ifdef PTHREADS
   Tools::ExclusiveLock lock( &m_rwLock );
 #else
-  if ( m_rwLock == false ) m_rwLock = true;
+  if ( !m_rwLock ) m_rwLock = true;
   else throw Tools::ResourceLockedException( "deleteData: cannot acquire an exclusive lock" );
 #endif
 
@@ -375,7 +375,7 @@ void SpatialIndex::RTree::RTree::nearestNeighborQuery( long k, const IShape& que
 #ifdef PTHREADS
   Tools::SharedLock lock( &m_rwLock );
 #else
-  if ( m_rwLock == false ) m_rwLock = true;
+  if ( !m_rwLock ) m_rwLock = true;
   else throw Tools::ResourceLockedException( "nearestNeighborQuery: cannot acquire a shared lock" );
 #endif
 
@@ -465,7 +465,7 @@ void SpatialIndex::RTree::RTree::selfJoinQuery( const IShape& query, IVisitor& v
 #ifdef PTHREADS
   Tools::SharedLock lock( &m_rwLock );
 #else
-  if ( m_rwLock == false ) m_rwLock = true;
+  if ( !m_rwLock ) m_rwLock = true;
   else throw Tools::ResourceLockedException( "selfJoinQuery: cannot acquire a shared lock" );
 #endif
 
@@ -493,7 +493,7 @@ void SpatialIndex::RTree::RTree::queryStrategy( IQueryStrategy& qs )
 #ifdef PTHREADS
   Tools::SharedLock lock( &m_rwLock );
 #else
-  if ( m_rwLock == false ) m_rwLock = true;
+  if ( !m_rwLock ) m_rwLock = true;
   else throw Tools::ResourceLockedException( "queryStrategy: cannot acquire a shared lock" );
 #endif
 
@@ -1293,7 +1293,7 @@ void SpatialIndex::RTree::RTree::rangeQuery( RangeQueryType type, const IShape& 
 #ifdef PTHREADS
   Tools::SharedLock lock( &m_rwLock );
 #else
-  if ( m_rwLock == false ) m_rwLock = true;
+  if ( !m_rwLock ) m_rwLock = true;
   else throw Tools::ResourceLockedException( "rangeQuery: cannot acquire a shared lock" );
 #endif
 

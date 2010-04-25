@@ -180,13 +180,13 @@ bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int red
   connect( mWatchdogTimer, SIGNAL( timeout() ),
            this,     SLOT( networkTimedOut() ) );
 
-  mWatchdogTimer->setSingleShot( TRUE );
+  mWatchdogTimer->setSingleShot( true );
   mWatchdogTimer->start( mNetworkTimeoutMsec );
 
   QgsDebugMsg( "Starting get with id " + QString::number( httpid ) + "." );
-  QgsDebugMsg( "Setting httpactive = TRUE" );
+  QgsDebugMsg( "Setting httpactive = true" );
 
-  httpactive = TRUE;
+  httpactive = true;
 
   // A little trick to make this function blocking
   while ( httpactive )
@@ -209,7 +209,7 @@ bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int red
   if ( !mError.isEmpty() )
   {
     QgsDebugMsg( "Processing an error '" + mError + "'." );
-    return FALSE;
+    return false;
   }
 
   // Do one level of redirection
@@ -229,12 +229,12 @@ bool QgsHttpTransaction::getSynchronously( QByteArray &respondedContent, int red
     );
 
     httprecurse.getSynchronously( respondedContent, ( redirections + 1 ) );
-    return TRUE;
+    return true;
 
   }
 
   respondedContent = httpresponse;
-  return TRUE;
+  return true;
 
 }
 
@@ -336,13 +336,13 @@ void QgsHttpTransaction::dataFinished( int id, bool error )
   // still working at the time of the destruction.
   //
   // This situation may occur when we've detected a timeout and
-  // we already set httpactive = FALSE.
+  // we already set httpactive = false.
   //
   // We have to detect this special case so that the last known error string is
   // not overwritten (it should rightfully refer to the timeout event).
   if ( !httpactive )
   {
-    QgsDebugMsg( "http activity loop already FALSE." );
+    QgsDebugMsg( "http activity loop already false." );
     return;
   }
 
@@ -366,8 +366,8 @@ void QgsHttpTransaction::dataFinished( int id, bool error )
   // TODO
   httpresponse = http->readAll();
 
-// QgsDebugMsg("Setting httpactive = FALSE");
-  httpactive = FALSE;
+// QgsDebugMsg("Setting httpactive = false");
+  httpactive = false;
 #endif
 }
 
@@ -384,13 +384,13 @@ void QgsHttpTransaction::transactionFinished( bool error )
   // still working at the time of the destruction.
   //
   // This situation may occur when we've detected a timeout and
-  // we already set httpactive = FALSE.
+  // we already set httpactive = false.
   //
   // We have to detect this special case so that the last known error string is
   // not overwritten (it should rightfully refer to the timeout event).
   if ( !httpactive )
   {
-// QgsDebugMsg("http activity loop already FALSE.");
+// QgsDebugMsg("http activity loop already false.");
     return;
   }
 #endif
@@ -411,8 +411,8 @@ void QgsHttpTransaction::transactionFinished( bool error )
   // TODO
   httpresponse = http->readAll();
 
-  QgsDebugMsg( "Setting httpactive = FALSE" );
-  httpactive = FALSE;
+  QgsDebugMsg( "Setting httpactive = false" );
+  httpactive = false;
 }
 
 
@@ -476,8 +476,8 @@ void QgsHttpTransaction::networkTimedOut()
   mError = tr( "Network timed out after %n second(s) of inactivity.\n"
                "This may be a problem in your network connection or at the WMS server.", "inactivity timeout", mNetworkTimeoutMsec / 1000 );
 
-  QgsDebugMsg( "Setting httpactive = FALSE" );
-  httpactive = FALSE;
+  QgsDebugMsg( "Setting httpactive = false" );
+  httpactive = false;
   QgsDebugMsg( "exiting." );
 }
 

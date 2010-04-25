@@ -459,7 +459,7 @@ int main( int argc, char *argv[] )
 #ifdef Q_WS_X11
   bool myUseGuiFlag = getenv( "DISPLAY" ) != 0;
 #else
-  bool myUseGuiFlag = TRUE;
+  bool myUseGuiFlag = true;
 #endif
   if ( !myUseGuiFlag )
   {

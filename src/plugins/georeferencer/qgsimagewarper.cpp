@@ -285,15 +285,15 @@ int QgsImageWarper::GeoToPixelTransform( void *pTransformerArg, int bDstToSrc, i
   TransformChain *chain = static_cast<TransformChain*>( pTransformerArg );
   if ( chain == NULL )
   {
-    return FALSE;
+    return false;
   }
 
-  if ( bDstToSrc == FALSE )
+  if ( !bDstToSrc )
   {
     // Transform to georeferenced coordinates
     if ( !chain->GDALTransformer( chain->GDALTransformerArg, bDstToSrc, nPointCount, x, y, z, panSuccess ) )
     {
-      return FALSE;
+      return false;
     }
     // Transform from georeferenced to pixel/line
     for ( int i = 0; i < nPointCount; ++i )
@@ -318,10 +318,10 @@ int QgsImageWarper::GeoToPixelTransform( void *pTransformerArg, int bDstToSrc, i
     // Transform from georeferenced coordinates to source pixel/line
     if ( !chain->GDALTransformer( chain->GDALTransformerArg, bDstToSrc, nPointCount, x, y, z, panSuccess ) )
     {
-      return FALSE;
+      return false;
     }
   }
-  return TRUE;
+  return true;
 }
 
 void *QgsImageWarper::createWarpProgressArg( QProgressDialog *progressDialog ) const
@@ -338,9 +338,9 @@ int CPL_STDCALL QgsImageWarper::updateWarpProgress( double dfComplete, const cha
   if ( progress->wasCanceled() )
   {
     mWarpCanceled = true;
-    return FALSE;
+    return false;
   }
 
   mWarpCanceled = false;
-  return TRUE;
+  return true;
 }

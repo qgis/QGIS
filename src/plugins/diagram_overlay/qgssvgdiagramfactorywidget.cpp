@@ -237,10 +237,5 @@ void QgsSVGDiagramFactoryWidget::addStandardDirectoriesToPreview()
 bool QgsSVGDiagramFactoryWidget::testSvgFile( const QString& filename ) const
 {
   QSvgRenderer svgRenderer( filename );
-  if ( svgRenderer.isValid() )
-  {
-    return true;
-  }
-  return false;
+  return svgRenderer.isValid();
 }
-

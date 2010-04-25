@@ -357,7 +357,6 @@ void QgsSvgMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
   QSvgRenderer renderer( mPath );
   QPainter painter( &mPicture );
   renderer.render( &painter, rect );
-  double selPictureSize = pictureSize * 1.2;
   QPainter selPainter( &mSelPicture );
   selPainter.setRenderHint( QPainter::Antialiasing );
   selPainter.setBrush( QBrush( context.selectionColor() ) );

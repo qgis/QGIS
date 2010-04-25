@@ -41,20 +41,6 @@
 #include "qgsmessageviewer.h"
 #include "qgslogger.h"
 
-// Qt implementation of alignment() + changed the numeric types to be shown on the left as well
-/* Is this still needed? Numbers in Qt4 table seem to be left justified by default.
-int Q3TableItem::alignment() const
-{
-  bool num;
-  bool ok1 = FALSE, ok2 = FALSE;
-  ( void ) txt.toInt( &ok1 );
-  if ( !ok1 )
-    ( void ) txt.toDouble( &ok2 );
-  num = ok1 || ok2;
-
-  return ( num ? Qt::AlignLeft : Qt::AlignLeft ) | Qt::AlignVCenter;
-}
-*/
 
 QgsSpit::QgsSpit( QWidget *parent, Qt::WFlags fl ) : QDialog( parent, fl )
 {

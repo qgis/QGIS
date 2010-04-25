@@ -66,14 +66,14 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QWidget *p
   if ( mRasterLayer->dataProvider() == 0 )
   {
     // This is a GDAL-based layer
-    mRasterLayerIsGdal = TRUE;
-    mRasterLayerIsWms = FALSE;
+    mRasterLayerIsGdal = true;
+    mRasterLayerIsWms = false;
   }
   else if ( mRasterLayer->dataProvider()->name() == "wms" )
   {
     // This is a WMS-based layer
-    mRasterLayerIsWms = TRUE;
-    mRasterLayerIsGdal = FALSE;
+    mRasterLayerIsWms = true;
+    mRasterLayerIsGdal = false;
   }
 
   setupUi( this );
@@ -280,7 +280,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QWidget *p
           myRasterPyramidIterator != myPyramidList.end();
           ++myRasterPyramidIterator )
     {
-      if (( *myRasterPyramidIterator ).exists == true )
+      if ( myRasterPyramidIterator->exists )
       {
         lbxPyramidResolutions->addItem( new QListWidgetItem( myPyramidPixmap,
                                         QString::number( myRasterPyramidIterator->xDim ) + QString( " x " ) +
@@ -1622,7 +1622,7 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
         myRasterPyramidIterator != myPyramidList.end();
         ++myRasterPyramidIterator )
   {
-    if (( *myRasterPyramidIterator ).exists == true )
+    if ( myRasterPyramidIterator->exists )
     {
       lbxPyramidResolutions->addItem( new QListWidgetItem( myPyramidPixmap,
                                       QString::number( myRasterPyramidIterator->xDim ) + QString( " x " ) +

@@ -61,7 +61,7 @@ class CORE_EXPORT QgsVectorFileWriter
                                          const QString& shapefileName,
                                          const QString& fileEncoding,
                                          const QgsCoordinateReferenceSystem *destCRS,
-                                         bool onlySelected = FALSE,
+                                         bool onlySelected = false,
                                          QString *errorMessage = 0 );
 
     /** Write contents of vector layer to an (OGR supported) vector formt
@@ -71,7 +71,7 @@ class CORE_EXPORT QgsVectorFileWriter
                                             const QString& fileEncoding,
                                             const QgsCoordinateReferenceSystem *destCRS,
                                             const QString& driverName = "ESRI Shapefile",
-                                            bool onlySelected = FALSE,
+                                            bool onlySelected = false,
                                             QString *errorMessage = 0 );
 
     /** create shapefile and initialize it */
@@ -137,7 +137,7 @@ class CORE_EXPORT QgsVectorFileWriter
     QMap<int, int> mAttrIdxToOgrIdx;
 
   private:
-    static QPair<QString, QString> nameAndGlob( QString driverName ); 
+    static QPair<QString, QString> nameAndGlob( QString driverName );
 };
 
 #endif

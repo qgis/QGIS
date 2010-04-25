@@ -45,10 +45,10 @@ bool QgsGrassAttributesKeyPress::eventFilter( QObject *o, QEvent *e )
       {
         mTable->setCurrentCell( mTable->currentRow() + 1, mTable->currentColumn() );
       }
-      return TRUE; // eat event
+      return true; // eat event
     }
   }
-  return FALSE; // standard event processing
+  return false; // standard event processing
 }
 
 QgsGrassAttributes::QgsGrassAttributes( QgsGrassEdit *edit, QgsGrassProvider *provider, int line,
@@ -162,7 +162,7 @@ void QgsGrassAttributes::setField( int tab, int field )
 
   tb->setItem( 0, 2, new QTableWidgetItem() );
 
-  setRowReadOnly( tb, 0, TRUE );
+  setRowReadOnly( tb, 0, true );
 }
 
 void QgsGrassAttributes::setCat( int tab, const QString & name, int cat )
@@ -180,7 +180,7 @@ void QgsGrassAttributes::setCat( int tab, const QString & name, int cat )
 
   tb->setItem( 1, 2, new QTableWidgetItem() );
 
-  setRowReadOnly( tb, 1, TRUE );
+  setRowReadOnly( tb, 1, true );
 }
 
 void QgsGrassAttributes::addAttribute( int tab, const QString &name, const QString &value,

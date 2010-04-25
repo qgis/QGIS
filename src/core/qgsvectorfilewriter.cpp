@@ -219,7 +219,7 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString& vectorFileName,
                  " type " + QString( QVariant::typeToName( attrField.type() ) ) +
                  " width " + QString::number( ogrWidth ) +
                  " precision " + QString::number( ogrPrecision ) );
-    if ( OGR_L_CreateField( mLayer, fld, TRUE ) != OGRERR_NONE )
+    if ( OGR_L_CreateField( mLayer, fld, true ) != OGRERR_NONE )
     {
       QgsDebugMsg( "error creating field " + attrField.name() );
       mErrorMessage = QObject::tr( "creation of field %1 failed (OGR error: %2)" )
@@ -526,7 +526,7 @@ QMap< QString, QString> QgsVectorFileWriter::supportedFiltersAndFormats()
       if ( OGR_Dr_TestCapability( drv, "CreateDataSource" ) != 0 )
       {
         QString filterString = filterForDriver( drvName );
-        if( filterString.isEmpty() )
+        if ( filterString.isEmpty() )
           continue;
 
         resultMap.insert( filterString, drvName );
@@ -553,7 +553,7 @@ QMap<QString, QString> QgsVectorFileWriter::ogrDriverList()
       if ( OGR_Dr_TestCapability( drv, "CreateDataSource" ) != 0 )
       {
         QPair<QString, QString> p = nameAndGlob( drvName );
-        if( p.first.isEmpty() )
+        if ( p.first.isEmpty() )
           continue;
 
         resultMap.insert( p.first, drvName );
@@ -571,7 +571,7 @@ QString QgsVectorFileWriter::fileFilterString()
   QMap< QString, QString>::const_iterator it = driverFormatMap.constBegin();
   for ( ; it != driverFormatMap.constEnd(); ++it )
   {
-    if( filterString.isEmpty() )
+    if ( filterString.isEmpty() )
       filterString += ";;";
 
     filterString += it.key();
@@ -583,7 +583,7 @@ QString QgsVectorFileWriter::filterForDriver( const QString& driverName )
 {
   QPair<QString, QString> p = nameAndGlob( driverName );
 
-  if( p.first.isEmpty() || p.second.isEmpty() )
+  if ( p.first.isEmpty() || p.second.isEmpty() )
     return "";
 
   return "[OGR] " + p.first + " (" + p.second.toLower() + " " + p.second.toUpper() + ")";

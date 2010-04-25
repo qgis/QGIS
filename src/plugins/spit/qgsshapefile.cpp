@@ -53,12 +53,12 @@ QgsShapeFile::QgsShapeFile( QString name, QString encoding )
   fileName = name;
   features = 0;
   QgsApplication::registerOgrDrivers();
-  ogrDataSource = OGROpen( QFile::encodeName( fileName ).constData(), FALSE, NULL );
+  ogrDataSource = OGROpen( QFile::encodeName( fileName ).constData(), false, NULL );
   if ( ogrDataSource != NULL )
   {
     valid = true;
     ogrLayer = OGR_DS_GetLayer( ogrDataSource, 0 );
-    features = OGR_L_GetFeatureCount( ogrLayer, TRUE );
+    features = OGR_L_GetFeatureCount( ogrLayer, true );
   }
   else
     valid = false;

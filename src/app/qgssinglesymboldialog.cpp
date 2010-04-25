@@ -260,7 +260,7 @@ void QgsSingleSymbolDialog::selectTextureImage()
                      mTexturePath,
                      "Images (*.png *.xpm *.jpg)" ); //should we allow other types of images?
 
-  if ( fileName.isNull() == false )
+  if ( !fileName.isNull() )
   { //only process the string if the user clicked OK
     mTexturePath = fileName;
     resendSettingsChanged();

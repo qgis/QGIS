@@ -140,7 +140,7 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     /**
      * \brief Populate the layer list - private for now.
      *
-     * \retval FALSE if the layers could not be retrieved or parsed -
+     * \retval false if the layers could not be retrieved or parsed -
      *         see mWmsProvider->errorString() for more info
      */
     bool populateLayerList( QgsWmsProvider *wmsProvider );

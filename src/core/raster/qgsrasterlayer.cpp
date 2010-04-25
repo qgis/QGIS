@@ -605,7 +605,7 @@ int CPL_STDCALL progressCallback( double dfComplete,
   }
   dfLastComplete = dfComplete;
 
-  return TRUE;
+  return true;
 }
 
 
@@ -1374,14 +1374,14 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
 
   // Don't waste time drawing if transparency is at 0 (completely transparent)
   if ( mTransparencyLevel == 0 )
-    return TRUE;
+    return true;
 
   QgsDebugMsg( "checking timestamp." );
 
   // Check timestamp
   if ( !update() )
   {
-    return FALSE;
+    return false;
   }
 
   const QgsMapToPixel& theQgsMapToPixel = rendererContext.mapToPixel();
@@ -1399,7 +1399,7 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
   {
     QgsDebugMsg( "draw request outside view extent." );
     // nothing to do
-    return TRUE;
+    return true;
   }
 
   QgsDebugMsg( "theViewExtent is " + theViewExtent.toString() );
@@ -1584,7 +1584,7 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
         mError        = mDataProvider->lastError();
 
         delete myRasterViewPort;
-        return FALSE;
+        return false;
       }
 
       QgsDebugMsg( "done mDataProvider->draw." );
@@ -1650,7 +1650,7 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
   delete myRasterViewPort;
   QgsDebugMsg( "exiting." );
 
-  return TRUE;
+  return true;
 
 }
 
@@ -2130,7 +2130,7 @@ QPixmap QgsRasterLayer::legendAsPixmap( bool theWithNameFlag )
             }
             myQPainter.setPen( QPen( QColor( myRed, myGreen, myBlue ), 0 ) );
           }
-        }                   //end of invert histogram == false check
+        }                   //end of invert !histogram false check
         else                  //invert histogram toggle is off
         {
           //check if we are in the first class break
@@ -2388,7 +2388,7 @@ QPixmap QgsRasterLayer::legendAsPixmap( int theLabelCount )
             }
             myQPainter.setPen( QPen( QColor( myRed, myGreen, myBlue ), 0 ) );
           }
-        }                   //end of invert histogram == false check
+        }                   //end of invert !histogram check
         else                  //invert histogram toggle is off
         {
           //check if we are in the first class break
@@ -4889,7 +4889,7 @@ void QgsRasterLayer::drawSingleBandPseudoColor( QPainter * theQPainter,
 void QgsRasterLayer::closeDataset()
 {
   if ( !mValid ) return;
-  mValid = FALSE;
+  mValid = false;
 
   GDALDereferenceDataset( mGdalBaseDataset );
   mGdalBaseDataset = NULL;
@@ -5165,7 +5165,7 @@ bool QgsRasterLayer::readFile( QString const &theFilename )
 
   if ( mGdalBaseDataset == NULL )
   {
-    mValid = FALSE;
+    mValid = false;
     return false;
   }
 
@@ -5207,7 +5207,7 @@ bool QgsRasterLayer::readFile( QString const &theFilename )
 
     GDALClose( mGdalDataset );
     mGdalDataset = NULL;
-    mValid = FALSE;
+    mValid = false;
     return false;
   }
   if ( GDALGetOverviewCount( myGDALBand ) > 0 )
@@ -5377,7 +5377,7 @@ bool QgsRasterLayer::readFile( QString const &theFilename )
   }
 
   //mark the layer as valid
-  mValid = TRUE;
+  mValid = true;
   return true;
 
 } // QgsRasterLayer::readFile
@@ -5437,14 +5437,7 @@ bool QgsRasterLayer::update()
 
 bool QgsRasterLayer::usesProvider()
 {
-  if ( mProviderKey.isEmpty() )
-  {
-    return FALSE;
-  }
-  else
-  {
-    return TRUE;
-  }
+  return !mProviderKey.isEmpty();
 }
 
 QString QgsRasterLayer::validateBandName( QString const & theBandName )

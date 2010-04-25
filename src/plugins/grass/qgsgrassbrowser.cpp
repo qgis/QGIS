@@ -100,7 +100,7 @@ QgsGrassBrowser::QgsGrassBrowser( QgisInterface *iface,
   mTree->setContextMenuPolicy( Qt::CustomContextMenu );
 
   mTextBrowser = new QTextBrowser( 0 );
-  mTextBrowser->setReadOnly( TRUE );
+  mTextBrowser->setReadOnly( true );
 
   mSplitter = new QSplitter( 0 );
   mSplitter->addWidget( mTree );
@@ -151,7 +151,7 @@ void QgsGrassBrowser::addMap()
       QgsDebugMsg( QString( "add raster: %1" ).arg( uri ) );
       //mIface->addRasterLayer( uri, map );
       mIface->addRasterLayer( uri, map, "grassraster", QStringList(), QStringList(),
-                                   QString(), QString() );
+                              QString(), QString() );
       mapSelected = true;
     }
     else if ( type == QgsGrassModel::Vector )
