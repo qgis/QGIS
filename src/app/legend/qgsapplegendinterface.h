@@ -38,7 +38,7 @@ class QgsAppLegendInterface : public QgsLegendInterface
     /** Constructor */
     explicit QgsAppLegendInterface( QgsLegend * legend );
 
-    /** Virtual destructor */
+    /** Destructor */
     ~QgsAppLegendInterface();
 
     //! Return a string list of groups
@@ -46,6 +46,18 @@ class QgsAppLegendInterface : public QgsLegendInterface
 
     //! Return all layers in the project in legend order
     QList< QgsMapLayer * > layers() const;
+
+    //! Check if a group exists
+    bool groupExists( int groupIndex );
+
+    //! Check if a group is expanded
+    bool isGroupExpanded( int groupIndex );
+
+    //! Check if a group is visible
+    bool isGroupVisible( int groupIndex );
+
+    //! Check if a layer is visible
+    bool isLayerVisible( QgsMapLayer * ml );
 
   public slots:
 
@@ -60,6 +72,15 @@ class QgsAppLegendInterface : public QgsLegendInterface
 
     //! Update an index
     void updateIndex( QModelIndex oldIndex, QModelIndex newIndex );
+
+    //! Collapse or expand a group
+    virtual void setGroupExpanded( int groupIndex, bool expand );
+
+    //! Set the visibility of a group
+    virtual void setGroupVisible( int groupIndex, bool visible );
+
+    //! Set the visibility of a layer
+    virtual void setLayerVisible( QgsMapLayer * ml, bool visible );
 
     //! refresh layer symbology
     void refreshLayerSymbology( QgsMapLayer *ml );

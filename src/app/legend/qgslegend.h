@@ -179,6 +179,9 @@ class QgsLegend : public QTreeWidget
     /**Returns structure with legend pixmaps*/
     QgsLegendPixmaps& pixmaps() { return mPixmaps; }
 
+    /**Returns a layers check state*/
+    Qt::CheckState layerCheckState( QgsMapLayer * layer );
+
 
     void updateCheckStates( QTreeWidgetItem* item, Qt::CheckState state ) { item->setData( 0, Qt::UserRole, state ); }
 
@@ -186,6 +189,8 @@ class QgsLegend : public QTreeWidget
 
     /*!Adds a new layer group with the maplayer to the canvas*/
     void addLayer( QgsMapLayer * layer );
+
+    void setLayerVisible( QgsMapLayer * layer, bool visible );
 
     void setMapCanvas( QgsMapCanvas * canvas );
 

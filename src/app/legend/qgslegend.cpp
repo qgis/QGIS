@@ -480,6 +480,13 @@ void QgsLegend::initPixmaps()
   mPixmaps.mProjectionErrorPixmap = QgisApp::getThemePixmap( "/mIconProjectionProblem.png" );
 }
 
+Qt::CheckState QgsLegend::layerCheckState( QgsMapLayer * layer )
+{
+  QgsLegendLayer * ll = findLegendLayer( layer );
+
+  return ll ? ll->checkState( 0 ) : Qt::Unchecked;
+}
+
 int QgsLegend::getItemPos( QTreeWidgetItem* item )
 {
   int counter = 1;
@@ -546,6 +553,16 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
   }
   //make the QTreeWidget item up-to-date
   doItemsLayout();
+}
+
+void QgsLegend::setLayerVisible( QgsMapLayer * layer, bool visible )
+{
+  QgsLegendLayer * ll = findLegendLayer( layer );
+  if ( ll )
+  {
+    Qt::CheckState cs = visible ? Qt::Checked : Qt::Unchecked;
+    ll->setCheckState( 0, cs );
+  }
 }
 
 void QgsLegend::setMapCanvas( QgsMapCanvas * canvas )
