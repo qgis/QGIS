@@ -14,14 +14,17 @@
 #include <QStandardItemModel>
 #include <QInputDialog>
 #include <QKeyEvent>
+#include <QMenu>
 
 QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsStyleV2* style, QWidget* parent, bool embedded )
-    : QDialog( parent )
+    : QDialog( parent ), mAdvancedMenu( NULL )
 {
   mStyle = style;
   mSymbol = symbol;
 
   setupUi( this );
+
+  btnAdvanced->hide(); // advanced button is hidden by default
 
   // can be embedded in renderer properties dialog
   if ( embedded )
@@ -261,4 +264,15 @@ void QgsSymbolV2SelectorDialog::displayTransparency( double alpha )
 {
   double transparencyPercent = ( 1 - alpha ) * 100;
   mTransparencyLabel->setText( tr( "Transparency: %1%" ).arg(( int ) transparencyPercent ) );
+}
+
+QMenu* QgsSymbolV2SelectorDialog::advancedMenu()
+{
+  if ( mAdvancedMenu == NULL )
+  {
+    mAdvancedMenu = new QMenu;
+    btnAdvanced->setMenu( mAdvancedMenu );
+    btnAdvanced->show();
+  }
+  return mAdvancedMenu;
 }

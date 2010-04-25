@@ -133,6 +133,12 @@ public:
   QgsSymbolV2* symbol() const;
   void setSymbol(QgsSymbolV2* s /Transfer/);
 
+  void setRotationField(QString fieldName);
+  QString rotationField() const;
+
+  void setSizeScaleField(QString fieldName);
+  QString sizeScaleField() const;
+
   virtual QString dump();
 
   virtual QgsFeatureRendererV2* clone() /Factory/;
@@ -453,7 +459,7 @@ class QgsSymbolV2RenderContext
 %End
 
     public:
-    QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u , qreal alpha = 1.0, bool selected = false );
+    QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u , qreal alpha = 1.0, bool selected = false, int renderHints = 0 );
     ~QgsSymbolV2RenderContext();
 
     QgsRenderContext& renderContext();
@@ -467,6 +473,11 @@ class QgsSymbolV2RenderContext
 
     bool selected() const;
     void setSelected( bool selected ) const;
+
+    int renderHints() const;
+    void setRenderHints( int hints );
+
+    // Colour used for selections
 
     static QColor selectionColor();
 
@@ -509,6 +520,12 @@ public:
   	Line,
   	Fill
   };
+
+    enum RenderHint
+    {
+      DataDefinedSizeScale = 1,
+      DataDefinedRotation = 2
+    };
 
   virtual ~QgsSymbolV2();
 
@@ -555,6 +572,12 @@ public:
 
     OutputUnit outputUnit() const;
     void setOutputUnit( OutputUnit u );
+
+    qreal alpha() const;
+    void setAlpha( qreal alpha );
+
+    int renderHints() const;
+    void setRenderHints( int hints );
 
 protected:
   QgsSymbolV2(SymbolType type, QgsSymbolLayerV2List layers /Transfer/); // can't be instantiated

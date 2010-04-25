@@ -35,6 +35,12 @@ class CORE_EXPORT QgsSymbolV2
       Fill
     };
 
+    enum RenderHint
+    {
+      DataDefinedSizeScale = 1,
+      DataDefinedRotation = 2
+    };
+
     virtual ~QgsSymbolV2();
 
     //! return new default symbol for specified geometry type
@@ -84,6 +90,9 @@ class CORE_EXPORT QgsSymbolV2
     qreal alpha() const { return mAlpha; }
     void setAlpha( qreal alpha ) { mAlpha = alpha; }
 
+    void setRenderHints( int hints ) { mRenderHints = hints; }
+    int renderHints() { return mRenderHints; }
+
   protected:
     QgsSymbolV2( SymbolType type, QgsSymbolLayerV2List layers ); // can't be instantiated
 
@@ -96,6 +105,8 @@ class CORE_EXPORT QgsSymbolV2
 
     /**Symbol opacity (in the range 0 - 1)*/
     qreal mAlpha;
+
+    int mRenderHints;
 };
 
 ///////////////////////
@@ -103,7 +114,7 @@ class CORE_EXPORT QgsSymbolV2
 class CORE_EXPORT QgsSymbolV2RenderContext
 {
   public:
-    QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u , qreal alpha = 1.0, bool selected = false );
+    QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u , qreal alpha = 1.0, bool selected = false, int renderHints = 0 );
     ~QgsSymbolV2RenderContext();
 
     QgsRenderContext& renderContext() { return mRenderContext; }
@@ -117,6 +128,9 @@ class CORE_EXPORT QgsSymbolV2RenderContext
 
     bool selected() const { return mSelected; }
     void setSelected( bool selected ) { mSelected = selected; }
+
+    int renderHints() const { return mRenderHints; }
+    void setRenderHints( int hints ) { mRenderHints = hints; }
 
     // Colour used for selections
 
@@ -133,6 +147,7 @@ class CORE_EXPORT QgsSymbolV2RenderContext
     QgsSymbolV2::OutputUnit mOutputUnit;
     qreal mAlpha;
     bool mSelected;
+    int mRenderHints;
 };
 
 

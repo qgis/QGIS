@@ -22,6 +22,12 @@ class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
     QgsSymbolV2* symbol() const;
     void setSymbol( QgsSymbolV2* s );
 
+    void setRotationField( QString fieldName ) { mRotationField = fieldName; }
+    QString rotationField() const { return mRotationField; }
+
+    void setSizeScaleField( QString fieldName ) { mSizeScaleField = fieldName; }
+    QString sizeScaleField() const { return mSizeScaleField; }
+
     virtual QString dump();
 
     virtual QgsFeatureRendererV2* clone();
@@ -43,6 +49,13 @@ class CORE_EXPORT QgsSingleSymbolRendererV2 : public QgsFeatureRendererV2
 
   protected:
     QgsSymbolV2* mSymbol;
+    QString mRotationField;
+    QString mSizeScaleField;
+
+    // temporary stuff for rendering
+    int mRotationFieldIdx, mSizeScaleFieldIdx;
+    QgsSymbolV2* mTempSymbol;
+    double mOrigSize;
 };
 
 

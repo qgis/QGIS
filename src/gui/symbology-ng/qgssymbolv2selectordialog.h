@@ -9,12 +9,17 @@
 class QgsStyleV2;
 class QgsSymbolV2;
 
+class QMenu;
+
 class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog, private Ui::QgsSymbolV2SelectorDialogBase
 {
     Q_OBJECT
 
   public:
     QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsStyleV2* style, QWidget* parent = NULL, bool embedded = false );
+
+    //! return menu for "advanced" button - create it if doesn't exist and show the advanced button
+    QMenu* advancedMenu();
 
   protected:
     void populateSymbolView();
@@ -46,6 +51,7 @@ class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog, private Ui::QgsSymb
   protected:
     QgsStyleV2* mStyle;
     QgsSymbolV2* mSymbol;
+    QMenu* mAdvancedMenu;
 };
 
 #endif
