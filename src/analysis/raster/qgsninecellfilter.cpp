@@ -220,7 +220,7 @@ GDALDriverH QgsNineCellFilter::openOutputDriver()
   }
 
   driverMetadata = GDALGetMetadata( outputDriver, NULL );
-  if ( !CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, FALSE ) )
+  if ( !CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) )
   {
     return NULL; //driver exist, but it does not support the create operation
   }

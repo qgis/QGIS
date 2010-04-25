@@ -263,7 +263,7 @@ void QgsMapToolSimplify::canvasPressEvent( QMouseEvent * e )
   double currentDistance;
   QgsFeature f;
 
-  mSelectedFeature.setValid( FALSE );
+  mSelectedFeature.setValid( false );
 
   while ( vlayer->nextFeature( f ) )
   {
@@ -347,12 +347,12 @@ bool QgsSimplifyFeature::simplifyLine( QgsFeature& lineFeature,  double toleranc
   QgsGeometry* line = lineFeature.geometry();
   if ( line->type() != QGis::Line )
   {
-    return FALSE;
+    return false;
   }
 
   QVector<QgsPoint> resultPoints = simplifyPoints( line->asPolyline(), tolerance );
   lineFeature.setGeometry( QgsGeometry::fromPolyline( resultPoints ) );
-  return TRUE;
+  return true;
 }
 
 bool QgsSimplifyFeature::simplifyPolygon( QgsFeature& polygonFeature,  double tolerance )
@@ -360,7 +360,7 @@ bool QgsSimplifyFeature::simplifyPolygon( QgsFeature& polygonFeature,  double to
   QgsGeometry* polygon = polygonFeature.geometry();
   if ( polygon->type() != QGis::Polygon )
   {
-    return FALSE;
+    return false;
   }
 
   QVector<QgsPoint> resultPoints = simplifyPoints( polygon->asPolygon()[0], tolerance );
@@ -368,7 +368,7 @@ bool QgsSimplifyFeature::simplifyPolygon( QgsFeature& polygonFeature,  double to
   QVector<QgsPolyline> poly;
   poly.append( resultPoints );
   polygonFeature.setGeometry( QgsGeometry::fromPolygon( poly ) );
-  return TRUE;
+  return true;
 }
 
 

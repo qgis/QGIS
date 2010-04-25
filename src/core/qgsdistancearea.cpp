@@ -41,7 +41,7 @@
 QgsDistanceArea::QgsDistanceArea()
 {
   // init with default settings
-  mProjectionsEnabled = FALSE;
+  mProjectionsEnabled = false;
   mCoordTransform = new QgsCoordinateTransform;
   setSourceCrs( GEOCRS_ID ); // WGS 84
   setEllipsoid( "WGS84" );

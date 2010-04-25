@@ -263,7 +263,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
         @param lastFeatureInBatch  If True, will also go to the effort of e.g. updating the extents.
         @return                    True in case of success and False in case of error
      */
-    bool addFeature( QgsFeature& f, bool alsoUpdateExtent = TRUE );
+    bool addFeature( QgsFeature& f, bool alsoUpdateExtent = true );
 
 
     /** Insert a new vertex before the given vertex number,
@@ -381,7 +381,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
                          QgsSnapper::SnappingType snap_to );
 
     /** Draws the layer
-     *  @return FALSE if an error occurred during drawing
+     *  @return false if an error occurred during drawing
      */
     bool draw( QgsRenderContext& rendererContext );
 
@@ -398,7 +398,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     int pendingFeatureCount();
 
     /** Sets whether some features are modified or not */
-    void setModified( bool modified = TRUE, bool onlyGeometryWasModified = FALSE );
+    void setModified( bool modified = true, bool onlyGeometryWasModified = false );
 
     /** Make layer editable */
     bool startEditing();
@@ -436,7 +436,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     bool deleteAttribute( int attr );
 
     /** Insert a copy of the given features into the layer  (but does not commit it) */
-    bool addFeatures( QgsFeatureList features, bool makeSelected = TRUE );
+    bool addFeatures( QgsFeatureList features, bool makeSelected = true );
 
     /** delete a feature from the layer (but does not commit it) */
     bool deleteFeature( int fid );
@@ -557,13 +557,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
   public slots:
     /** Select feature by its ID, optionally emit signal selectionChanged() */
-    void select( int featureId, bool emitSignal = TRUE );
+    void select( int featureId, bool emitSignal = true );
 
     /** Deselect feature by its ID, optionally emit signal selectionChanged() */
-    void deselect( int featureId, bool emitSignal = TRUE );
+    void deselect( int featureId, bool emitSignal = true );
 
     /** Clear selection */
-    void removeSelection( bool emitSignal = TRUE );
+    void removeSelection( bool emitSignal = true );
 
     void triggerRepaint();
 

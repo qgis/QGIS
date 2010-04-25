@@ -281,23 +281,25 @@ bool QgsGrass::isValidGrassBaseDir( QString const gisBase )
   // GRASS currently doesn't handle paths with blanks
   if ( gisBase.isEmpty() || gisBase.contains( " " ) )
   {
-    return FALSE;
+    return false;
   }
 
   /* TODO: G_is_gisbase() was added to GRASS 6.1 06-05-24,
            enable its use after some period (others do update) */
-  /*
+#if 0
   if ( QgsGrass::versionMajor() > 6 || QgsGrass::versionMinor() > 0 )
   {
-  if ( G_is_gisbase( gisBase.toUtf8().constData() ) ) return TRUE;
+    if ( G_is_gisbase( gisBase.toUtf8().constData() ) ) return true;
   }
   else
   {
-  */
-  QFileInfo gbi( gisBase + "/etc/element_list" );
-  if ( gbi.exists() ) return TRUE;
-  //}
-  return FALSE;
+#endif
+    QFileInfo gbi( gisBase + "/etc/element_list" );
+    if ( gbi.exists() ) return true;
+#if 0
+  }
+#endif
+  return false;
 }
 
 bool QgsGrass::activeMode( void )

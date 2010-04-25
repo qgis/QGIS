@@ -57,7 +57,7 @@ QgsRasterTerrainAnalysisDialog::QgsRasterTerrainAnalysisDialog( QgisInterface* i
     if ( driver != NULL )
     {
       char** driverMetadata = GDALGetMetadata( driver, NULL );
-      if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, FALSE ) )
+      if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, true ) )
       {
         mOutputFormatComboBox->addItem( GDALGetDriverLongName( driver ), QVariant( GDALGetDriverShortName( driver ) ) );
 
@@ -159,14 +159,7 @@ QString QgsRasterTerrainAnalysisDialog::selectedOuputFilePath() const
 
 bool QgsRasterTerrainAnalysisDialog::addLayerToProject() const
 {
-  if ( mAddResultToProjectCheckBox->checkState() == Qt::Checked )
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  return mAddResultToProjectCheckBox->checkState() == Qt::Checked;
 }
 
 void QgsRasterTerrainAnalysisDialog::on_mOutputLayerPushButton_clicked()

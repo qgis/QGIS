@@ -230,7 +230,7 @@ class CORE_EXPORT QgsProject : public QObject
     QString readEntry( QString const & scope, const QString & key, const QString & def = QString::null, bool * ok = 0 ) const;
     int readNumEntry( QString const & scope, const QString & key, int def = 0, bool * ok = 0 ) const;
     double readDoubleEntry( QString const & scope, const QString & key, double def = 0, bool * ok = 0 ) const;
-    bool readBoolEntry( QString const & scope, const QString & key, bool def = FALSE, bool * ok = 0 ) const;
+    bool readBoolEntry( QString const & scope, const QString & key, bool def = false, bool * ok = 0 ) const;
     //@}
 
 

@@ -447,7 +447,7 @@ void QgsComposerPictureWidget::addStandardDirectoriesToPreview()
     {
       continue;
     }
-    
+
     //add directory itself
     mSearchDirectoriesComboBox->addItem( svgDirectory.absolutePath() );
     addDirectoryToPreview( svgDirectory.absolutePath() );
@@ -475,19 +475,11 @@ bool QgsComposerPictureWidget::testSvgFile( const QString& filename ) const
   }
 
   QSvgRenderer svgRenderer( filename );
-  if ( svgRenderer.isValid() )
-  {
-    return true;
-  }
-  return false;
+  return svgRenderer.isValid();
 }
 
 bool QgsComposerPictureWidget::testImageFile( const QString& filename ) const
 {
   QString formatName = QString( QImageReader::imageFormat( filename ) );
-  if ( !formatName.isEmpty() )
-  {
-    return true; //file is in a supported pixel format
-  }
-  return false;
+  return !formatName.isEmpty(); //file is in a supported pixel format
 }

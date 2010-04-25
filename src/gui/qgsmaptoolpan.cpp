@@ -24,7 +24,7 @@
 
 
 QgsMapToolPan::QgsMapToolPan( QgsMapCanvas* canvas )
-    : QgsMapTool( canvas ), mDragging( FALSE )
+    : QgsMapTool( canvas ), mDragging( false )
 {
   // set cursor
   QBitmap panBmp = QBitmap::fromData( QSize( 16, 16 ), pan_bits );
@@ -50,7 +50,7 @@ void QgsMapToolPan::canvasReleaseEvent( QMouseEvent * e )
     if ( mDragging )
     {
       mCanvas->panActionEnd( e->pos() );
-      mDragging = FALSE;
+      mDragging = false;
     }
     else // add pan to mouse cursor
     {

@@ -144,12 +144,12 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
   QgsDebugMsg( "mLayerName: " + mLayerName );
   QgsDebugMsg( "mSubsetString: " + mSubsetString );
   CPLSetConfigOption( "OGR_ORGANIZE_POLYGONS", "ONLY_CCW" );  // "SKIP" returns MULTIPOLYGONs for multiringed POLYGONs
-  ogrDataSource = OGROpen( QFile::encodeName( mFilePath ).constData(), TRUE, &ogrDriver );
+  ogrDataSource = OGROpen( QFile::encodeName( mFilePath ).constData(), true, &ogrDriver );
 
   if ( ogrDataSource == NULL )
   {
     // try to open read-only
-    ogrDataSource = OGROpen( QFile::encodeName( mFilePath ).constData(), FALSE, &ogrDriver );
+    ogrDataSource = OGROpen( QFile::encodeName( mFilePath ).constData(), false, &ogrDriver );
 
     //TODO Need to set a flag or something to indicate that the layer
     //TODO is in read-only mode, otherwise edit ops will fail
@@ -277,7 +277,7 @@ bool QgsOgrProvider::setSubsetString( QString theSQL )
   QgsDebugMsg( "Starting get extent" );
 
   // TODO: This can be expensive, do we really need it!
-  OGR_L_GetExtent( ogrLayer, ( OGREnvelope * ) extent_, TRUE );
+  OGR_L_GetExtent( ogrLayer, ( OGREnvelope * ) extent_, true );
 
   QgsDebugMsg( "Finished get extent" );
 
@@ -825,7 +825,7 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
     OGR_Fld_SetWidth( fielddefn, iter->length() );
     OGR_Fld_SetPrecision( fielddefn, iter->precision() );
 
-    if ( OGR_L_CreateField( ogrLayer, fielddefn, TRUE ) != OGRERR_NONE )
+    if ( OGR_L_CreateField( ogrLayer, fielddefn, true ) != OGRERR_NONE )
     {
       QgsLogger::warning( "QgsOgrProvider.cpp: writing of field failed" );
       returnvalue = false;
@@ -999,7 +999,7 @@ bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds & id )
 
   recalculateFeatureCount();
 
-  OGR_L_GetExtent( ogrOrigLayer, ( OGREnvelope * ) extent_, TRUE );
+  OGR_L_GetExtent( ogrOrigLayer, ( OGREnvelope * ) extent_, true );
 
   return returnvalue;
 }
@@ -1024,7 +1024,7 @@ int QgsOgrProvider::capabilities() const
     // the #defines we want to test for here.
 
     if ( OGR_L_TestCapability( ogrLayer, "RandomRead" ) )
-      // TRUE if the GetFeature() method works *efficiently* for this layer.
+      // true if the GetFeature() method works *efficiently* for this layer.
       // TODO: Perhaps influence if QGIS caches into memory
       //       (vs read from disk every time) based on this setting.
     {
@@ -1033,19 +1033,19 @@ int QgsOgrProvider::capabilities() const
     }
 
     if ( OGR_L_TestCapability( ogrLayer, "SequentialWrite" ) )
-      // TRUE if the CreateFeature() method works for this layer.
+      // true if the CreateFeature() method works for this layer.
     {
       ability |= QgsVectorDataProvider::AddFeatures;
     }
 
     if ( OGR_L_TestCapability( ogrLayer, "DeleteFeature" ) )
-      // TRUE if this layer can delete its features
+      // true if this layer can delete its features
     {
       ability |= DeleteFeatures;
     }
 
     if ( OGR_L_TestCapability( ogrLayer, "RandomWrite" ) )
-      // TRUE if the SetFeature() method is operational on this layer.
+      // true if the SetFeature() method is operational on this layer.
     {
       // TODO According to http://shapelib.maptools.org/ (Shapefile C Library V1.2)
       // TODO "You can't modify the vertices of existing structures".
@@ -1058,9 +1058,9 @@ int QgsOgrProvider::capabilities() const
 
 #if 0
     if ( OGR_L_TestCapability( ogrLayer, "FastSpatialFilter" ) )
-      // TRUE if this layer implements spatial filtering efficiently.
+      // true if this layer implements spatial filtering efficiently.
       // Layers that effectively read all features, and test them with the
-      // OGRFeature intersection methods should return FALSE.
+      // OGRFeature intersection methods should return false.
       // This can be used as a clue by the application whether it should build
       // and maintain it's own spatial index for features in this layer.
     {
@@ -1068,25 +1068,25 @@ int QgsOgrProvider::capabilities() const
     }
 
     if ( OGR_L_TestCapability( ogrLayer, "FastFeatureCount" ) )
-      // TRUE if this layer can return a feature count
+      // true if this layer can return a feature count
       // (via OGRLayer::GetFeatureCount()) efficiently ... ie. without counting
-      // the features. In some cases this will return TRUE until a spatial
-      // filter is installed after which it will return FALSE.
+      // the features. In some cases this will return true until a spatial
+      // filter is installed after which it will return false.
     {
       // TODO: Perhaps use as a clue by QGIS whether it should spawn a thread to count features.
     }
 
     if ( OGR_L_TestCapability( ogrLayer, "FastGetExtent" ) )
-      // TRUE if this layer can return its data extent
+      // true if this layer can return its data extent
       // (via OGRLayer::GetExtent()) efficiently ... ie. without scanning
-      // all the features. In some cases this will return TRUE until a
-      // spatial filter is installed after which it will return FALSE.
+      // all the features. In some cases this will return true until a
+      // spatial filter is installed after which it will return false.
     {
       // TODO: Perhaps use as a clue by QGIS whether it should spawn a thread to calculate extent.
     }
 
     if ( OGR_L_TestCapability( ogrLayer, "FastSetNextByIndex" ) )
-      // TRUE if this layer can perform the SetNextByIndex() call efficiently.
+      // true if this layer can perform the SetNextByIndex() call efficiently.
     {
       // No use required for this QGIS release.
     }
@@ -1636,7 +1636,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
       continue;
     }
 
-    if ( OGR_L_CreateField( layer, field, TRUE ) != OGRERR_NONE )
+    if ( OGR_L_CreateField( layer, field, true ) != OGRERR_NONE )
     {
       QgsLogger::warning( "creation of field failed" );
     }
@@ -1872,7 +1872,7 @@ void QgsOgrProvider::recalculateFeatureCount()
 
   // feature count returns number of features within current spatial filter
   // so we remove it if there's any and then put it back
-  featuresCounted = OGR_L_GetFeatureCount( ogrLayer, TRUE );
+  featuresCounted = OGR_L_GetFeatureCount( ogrLayer, true );
 
   if ( filter )
   {

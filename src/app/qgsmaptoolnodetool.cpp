@@ -1365,7 +1365,7 @@ void SelectionFeature::deselectAllVertexes()
 void SelectionFeature::invertVertexSelection( int vertexNr, bool invert )
 {
   //inverting of selection of vertex
-  if ( mVertexMap[vertexNr].selected == false )
+  if ( !mVertexMap[vertexNr].selected )
   {
     //case vertex is not selected
     mVertexMap[vertexNr].selected = true;

@@ -46,7 +46,7 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
                           QString lyrname,
                           QString source ) :
     mTransparencyLevel( 255 ), // 0 is completely transparent
-    mValid( FALSE ), // assume the layer is invalid
+    mValid( false ), // assume the layer is invalid
     mDataSource( source ),
     mID( "" ),
     mLayerType( type )

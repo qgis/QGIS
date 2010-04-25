@@ -116,8 +116,7 @@ QString QgsGrassModule::findExec( QString file )
 
 bool QgsGrassModule::inExecPath( QString file )
 {
-  if ( findExec( file ).isNull() ) return false;
-  return true;
+  return !findExec( file ).isNull();
 }
 
 QStringList QgsGrassModule::execArguments( QString module )
@@ -269,7 +268,7 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
   strcpy( envstr, env );
   putenv( envstr );
 
-  mOutputTextBrowser->setReadOnly( TRUE );
+  mOutputTextBrowser->setReadOnly( true );
 }
 
 /******************* QgsGrassModuleOptions *******************/
@@ -2263,13 +2262,7 @@ bool QgsGrassModuleInput::useRegion()
 {
   QgsDebugMsg( "called." );
 
-  if ( mUsesRegion && mType == Raster && mRegionButton &&
-       mRegionButton->isChecked() )
-  {
-    return true;
-  }
-
-  return false;
+  return mUsesRegion && mType == Raster && mRegionButton && mRegionButton->isChecked();
 }
 
 void QgsGrassModuleInput::updateQgisLayers()

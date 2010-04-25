@@ -54,7 +54,7 @@ QgsMapRenderer::QgsMapRenderer()
 
   mSize = QSize( 0, 0 );
 
-  mProjectionsEnabled = FALSE;
+  mProjectionsEnabled = false;
   mDestCRS = new QgsCoordinateReferenceSystem( GEOCRS_ID, QgsCoordinateReferenceSystem::InternalCrsId ); //WGS 84
 
   mOutputUnits = QgsMapRenderer::Millimeters;

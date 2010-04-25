@@ -93,7 +93,7 @@ QgsGeorefPluginGui::~QgsGeorefPluginGui()
   // delete layer (and don't signal it as it's our private layer)
   if ( mLayer )
   {
-    QgsMapLayerRegistry::instance()->removeMapLayer( mLayer->getLayerID(), FALSE );
+    QgsMapLayerRegistry::instance()->removeMapLayer( mLayer->getLayerID(), false );
   }
 
   delete mToolZoomIn;
@@ -196,14 +196,14 @@ void QgsGeorefPluginGui::openRaster()
 
   //delete any old rasterlayers
   if ( mLayer )
-    QgsMapLayerRegistry::instance()->removeMapLayer( mLayer->getLayerID(), FALSE );
+    QgsMapLayerRegistry::instance()->removeMapLayer( mLayer->getLayerID(), false );
 
   //add new raster layer
   mLayer = new QgsRasterLayer( mRasterFileName, "Raster" );;
 
   // add to map layer registry, do not signal addition
   // so layer is not added to legend
-  QgsMapLayerRegistry::instance()->addMapLayer( mLayer, FALSE );
+  QgsMapLayerRegistry::instance()->addMapLayer( mLayer, false );
 
   // add layer to map canvas
   QList<QgsMapCanvasLayer> layers;
@@ -294,7 +294,7 @@ void QgsGeorefPluginGui::generateGDALScript()
   if ( !checkReadyGeoref() )
     return;
 
-  switch (mTransformParam)
+  switch ( mTransformParam )
   {
     case QgsGeorefTransform::PolynomialOrder1:
     case QgsGeorefTransform::PolynomialOrder2:
@@ -309,10 +309,10 @@ void QgsGeorefPluginGui::generateGDALScript()
       QString resamplingStr = convertResamplingEnumToString( mResamplingMethod );
 
       int order = polynomialOrder( mTransformParam );
-      if (order != 0)
+      if ( order != 0 )
       {
         gdalwarpCommand = generateGDALwarpCommand( resamplingStr, mCompressionMethod, mUseZeroForTrans, order,
-                                                   mUserResX, mUserResY );
+                          mUserResX, mUserResY );
         showGDALScript( 2, translateCommand.toAscii().data(), gdalwarpCommand.toAscii().data() );
         break;
       }
@@ -1181,7 +1181,7 @@ QString QgsGeorefPluginGui::generateGDALtranslateCommand( bool generateTFW )
 
   QFileInfo rasterFileInfo( mRasterFileName );
   mTranslatedRasterFileName = QDir::tempPath() + "/" + rasterFileInfo.fileName();
-  gdalCommand << QString("\"%1\"").arg(mRasterFileName) << QString("\"%1\"").arg(mTranslatedRasterFileName);
+  gdalCommand << QString( "\"%1\"" ).arg( mRasterFileName ) << QString( "\"%1\"" ).arg( mTranslatedRasterFileName );
 
   return gdalCommand.join( " " );
 }
@@ -1191,8 +1191,8 @@ QString QgsGeorefPluginGui::generateGDALwarpCommand( QString resampling, QString
 {
   QStringList gdalCommand;
   gdalCommand << "gdalwarp" << "-r" << resampling;
- 
-  if (order > 0 && order <= 3)
+
+  if ( order > 0 && order <= 3 )
   {
     // Let gdalwarp use polynomial warp with the given degree
     gdalCommand << "-order" << QString::number( order );
@@ -1202,14 +1202,14 @@ QString QgsGeorefPluginGui::generateGDALwarpCommand( QString resampling, QString
     // Otherwise, use thin plate spline interpolation
     gdalCommand << "-tps";
   }
-  gdalCommand<< "-co COMPRESS=" + compress << ( useZeroForTrans ? "-dstalpha" : "" );
+  gdalCommand << "-co COMPRESS=" + compress << ( useZeroForTrans ? "-dstalpha" : "" );
 
   if ( targetResX != 0.0 && targetResY != 0.0 )
   {
     gdalCommand << "-tr" << QString::number( targetResX, 'f' ) << QString::number( targetResY, 'f' );
   }
 
-  gdalCommand << QString("\"%1\"").arg(mTranslatedRasterFileName) << QString("\"%1\"").arg(mModifiedRasterFileName);
+  gdalCommand << QString( "\"%1\"" ).arg( mTranslatedRasterFileName ) << QString( "\"%1\"" ).arg( mModifiedRasterFileName );
 
   return gdalCommand.join( " " );
 }

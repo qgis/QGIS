@@ -297,16 +297,16 @@ int QgsLinearGeorefTransform::linear_transform( void *pTransformerArg, int bDstT
   LinearParameters* t = static_cast<LinearParameters*>( pTransformerArg );
   if ( t == NULL )
   {
-    return FALSE;
+    return false;
   }
 
-  if ( bDstToSrc == FALSE )
+  if ( !bDstToSrc )
   {
     for ( int i = 0; i < nPointCount; ++i )
     {
       x[i] = x[i] * t->scaleX + t->origin.x();
       y[i] = -y[i] * t->scaleY + t->origin.y();
-      panSuccess[i] = TRUE;
+      panSuccess[i] = true;
     }
   }
   else
@@ -317,19 +317,19 @@ int QgsLinearGeorefTransform::linear_transform( void *pTransformerArg, int bDstT
     {
       for ( int i = 0; i < nPointCount; ++i )
       {
-        panSuccess[i] = FALSE;
+        panSuccess[i] = false;
       }
-      return FALSE;
+      return false;
     }
     for ( int i = 0; i < nPointCount; ++i )
     {
       x[i] = ( x[i] - t->origin.x() ) / t->scaleX;
       y[i] = ( y[i] - t->origin.y() ) / ( -t->scaleY );
-      panSuccess[i] = TRUE;
+      panSuccess[i] = true;
     }
   }
 
-  return TRUE;
+  return true;
 }
 
 bool QgsHelmertGeorefTransform::updateParametersFromGCPs( const std::vector<QgsPoint> &mapCoords, const std::vector<QgsPoint> &pixelCoords )
@@ -364,11 +364,11 @@ int QgsHelmertGeorefTransform::helmert_transform( void *pTransformerArg, int bDs
   HelmertParameters* t = static_cast<HelmertParameters*>( pTransformerArg );
   if ( t == NULL )
   {
-    return FALSE;
+    return false;
   }
 
   double a = cos( t->angle ), b = sin( t->angle ), x0 = t->origin.x(), y0 = t->origin.y(), s = t->scale;
-  if ( bDstToSrc == FALSE )
+  if ( !bDstToSrc )
   {
     a *= s;
     b *= s;
@@ -381,7 +381,7 @@ int QgsHelmertGeorefTransform::helmert_transform( void *pTransformerArg, int bDs
       // |sin a, cos a| |0,-1| = | sin a, -cos a|
       x[i] = x0 + ( a * xT + b * yT );
       y[i] = y0 + ( b * xT - a * yT );
-      panSuccess[i] = TRUE;
+      panSuccess[i] = true;
     }
   }
   else
@@ -391,9 +391,9 @@ int QgsHelmertGeorefTransform::helmert_transform( void *pTransformerArg, int bDs
     {
       for ( int i = 0; i < nPointCount; ++i )
       {
-        panSuccess[i] = FALSE;
+        panSuccess[i] = false;
       }
-      return FALSE;
+      return false;
     }
     a /= s;
     b /= s;
@@ -406,10 +406,10 @@ int QgsHelmertGeorefTransform::helmert_transform( void *pTransformerArg, int bDs
       // | sin a, -cos a |    = |sin a, -cos a|
       x[i] =  a * xT + b * yT;
       y[i] =  b * xT - a * yT;
-      panSuccess[i] = TRUE;
+      panSuccess[i] = true;
     }
   }
-  return TRUE;
+  return true;
 }
 
 QgsGDALGeorefTransform::QgsGDALGeorefTransform( bool useTPS, unsigned int polynomialOrder ) : mPolynomialOrder( std::min( 3u, polynomialOrder ) ), mIsTPSTransform( useTPS )

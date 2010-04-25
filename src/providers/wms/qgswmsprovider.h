@@ -366,7 +366,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      *
      * \param[out] layers   The list of layers will be placed here.
      *
-     * \retval FALSE if the layers could not be retrieved or parsed -
+     * \retval false if the layers could not be retrieved or parsed -
      *         see lastError() for more info
      *
      * \todo Document this better, make static
@@ -378,7 +378,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      *
      * \param[out] tileset  The list of tile sets will be placed here.
      *
-     * \retval FALSE if the tile sets could not be retrieved or parsed -
+     * \retval false if the tile sets could not be retrieved or parsed -
      *         see lastError() for more info
      */
     virtual bool supportedTileSets( QVector<QgsWmsTileSetProfile> &tilesets );
@@ -606,16 +606,16 @@ class QgsWmsProvider : public QgsRasterDataProvider
      *
      * \param forceRefresh  if true, ignores any previous response cached in memory
      *                      and always contact the server for a new copy.
-     * \retval FALSE if the capabilities document could not be retrieved or parsed -
+     * \retval false if the capabilities document could not be retrieved or parsed -
      *         see lastError() for more info
      *
      * When this returns, "layers" will make sense.
      *
      * TODO: Make network-timeout tolerant
      */
-    bool retrieveServerCapabilities( bool forceRefresh = FALSE );
+    bool retrieveServerCapabilities( bool forceRefresh = false );
 
-    //! \return FALSE if the capabilities document could not be parsed - see lastError() for more info
+    //! \return false if the capabilities document could not be parsed - see lastError() for more info
     bool parseCapabilitiesDom( QByteArray const &xml, QgsWmsCapabilitiesProperty &capabilitiesProperty );
 
     //! parse the WMS Service XML element
@@ -685,7 +685,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     /**
      * \brief Calculates the combined extent of the layers selected by layersDrawn
      *
-     * \retval FALSE if the capabilities document could not be retrieved or parsed -
+     * \retval false if the capabilities document could not be retrieved or parsed -
      *         see lastError() for more info
      */
     bool calculateExtent();

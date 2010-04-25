@@ -197,7 +197,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
 
     void mapUnitsChanged();
 
-    //! emitted when layer's draw() returned FALSE
+    //! emitted when layer's draw() returned false
     void drawError( QgsMapLayer* );
 
   public slots:

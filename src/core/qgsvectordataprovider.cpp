@@ -27,8 +27,8 @@
 
 QgsVectorDataProvider::QgsVectorDataProvider( QString uri )
     : QgsDataProvider( uri ),
-    mCacheMinMaxDirty( TRUE ),
-    mFetchFeaturesWithoutGeom( TRUE )
+    mCacheMinMaxDirty( true ),
+    mFetchFeaturesWithoutGeom( true )
 {
   QSettings settings;
   setEncoding( settings.value( "/UI/encoding", QString( "System" ) ).toString() );
@@ -59,10 +59,10 @@ bool QgsVectorDataProvider::featureAtId( int featureId,
   while ( nextFeature( feature ) )
   {
     if ( feature.id() == featureId )
-      return TRUE;
+      return true;
   }
 
-  return FALSE;
+  return false;
 }
 
 QString QgsVectorDataProvider::dataComment() const
@@ -405,7 +405,7 @@ void QgsVectorDataProvider::fillMinMaxCache()
     }
   }
 
-  mCacheMinMaxDirty = FALSE;
+  mCacheMinMaxDirty = false;
 }
 
 QVariant QgsVectorDataProvider::convertValue( QVariant::Type type, QString value )
@@ -420,7 +420,7 @@ QVariant QgsVectorDataProvider::convertValue( QVariant::Type type, QString value
 
 const QStringList &QgsVectorDataProvider::availableEncodings()
 {
-  if( smEncodings.isEmpty() )
+  if ( smEncodings.isEmpty() )
   {
     smEncodings << "BIG5";
     smEncodings << "BIG5-HKSCS";

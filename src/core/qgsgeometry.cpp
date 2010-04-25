@@ -184,8 +184,8 @@ QgsGeometry::QgsGeometry()
     : mGeometry( 0 ),
     mGeometrySize( 0 ),
     mGeos( 0 ),
-    mDirtyWkb( FALSE ),
-    mDirtyGeos( FALSE )
+    mDirtyWkb( false ),
+    mDirtyGeos( false )
 {
 }
 
@@ -564,8 +564,8 @@ void QgsGeometry::fromWkb( unsigned char * wkb, size_t length )
   mGeometry = wkb;
   mGeometrySize = length;
 
-  mDirtyWkb   = FALSE;
-  mDirtyGeos  = TRUE;
+  mDirtyWkb   = false;
+  mDirtyGeos  = true;
 }
 
 unsigned char * QgsGeometry::asWkb()
@@ -678,8 +678,8 @@ void QgsGeometry::fromGeos( GEOSGeometry* geos )
 
   mGeos = geos;
 
-  mDirtyWkb   = TRUE;
-  mDirtyGeos  = FALSE;
+  mDirtyWkb   = true;
+  mDirtyGeos  = false;
 }
 
 QgsPoint QgsGeometry::closestVertex( const QgsPoint& point, int& atVertex, int& beforeVertex, int& afterVertex, double& sqrDist )
@@ -1254,7 +1254,7 @@ bool QgsGeometry::moveVertex( double x, double y, int atVertex )
   if ( !mGeometry )
   {
     QgsDebugMsg( "WKB geometry not available!" );
-    return FALSE;
+    return false;
   }
 
   QGis::WkbType wkbType;
@@ -1504,7 +1504,7 @@ bool QgsGeometry::deleteVertex( int atVertex )
   if ( !mGeometry )
   {
     QgsDebugMsg( "WKB geometry not available!" );
-    return FALSE;
+    return false;
   }
 
   //create a new geometry buffer for the modified geometry
@@ -1832,7 +1832,7 @@ bool QgsGeometry::insertVertex( double x, double y, int beforeVertex )
   if ( !mGeometry )
   {
     QgsDebugMsg( "WKB geometry not available!" );
-    return FALSE;
+    return false;
   }
 
   //create a new geometry buffer for the modified geometry
@@ -4094,7 +4094,7 @@ bool QgsGeometry::exportWkbToGeos()
   if ( !mDirtyGeos )
   {
     // No need to convert again
-    return TRUE;
+    return true;
   }
 
   if ( mGeos )
@@ -4103,12 +4103,12 @@ bool QgsGeometry::exportWkbToGeos()
     mGeos = 0;
   }
 
-  // this probably shouldn't return TRUE
+  // this probably shouldn't return true
   if ( !mGeometry )
   {
     // no WKB => no GEOS
-    mDirtyGeos = FALSE;
-    return TRUE;
+    mDirtyGeos = false;
+    return true;
   }
 
   double *x;
@@ -4138,7 +4138,7 @@ bool QgsGeometry::exportWkbToGeos()
         y = ( double * )( mGeometry + 5 + sizeof( double ) );
 
         mGeos = createGeosPoint( QgsPoint( *x, *y ) );
-        mDirtyGeos = FALSE;
+        mDirtyGeos = false;
         break;
       }
 
@@ -4165,7 +4165,7 @@ bool QgsGeometry::exportWkbToGeos()
           points << createGeosPoint( QgsPoint( *x, *y ) );
         }
         mGeos = createGeosCollection( GEOS_MULTIPOINT, points );
-        mDirtyGeos = FALSE;
+        mDirtyGeos = false;
         break;
       }
 
@@ -4193,7 +4193,7 @@ bool QgsGeometry::exportWkbToGeos()
 
           sequence << QgsPoint( *x, *y );
         }
-        mDirtyGeos = FALSE;
+        mDirtyGeos = false;
         mGeos = createGeosLineString( sequence );
         break;
       }
@@ -4229,7 +4229,7 @@ bool QgsGeometry::exportWkbToGeos()
           lines << createGeosLineString( sequence );
         }
         mGeos = createGeosCollection( GEOS_MULTILINESTRING, lines );
-        mDirtyGeos = FALSE;
+        mDirtyGeos = false;
         break;
       }
 
@@ -4271,7 +4271,7 @@ bool QgsGeometry::exportWkbToGeos()
           rings << createGeosLinearRing( sequence );
         }
         mGeos = createGeosPolygon( rings );
-        mDirtyGeos = FALSE;
+        mDirtyGeos = false;
         break;
       }
 
@@ -4326,7 +4326,7 @@ bool QgsGeometry::exportWkbToGeos()
           polygons << createGeosPolygon( rings );
         }
         mGeos = createGeosCollection( GEOS_MULTIPOLYGON, polygons );
-        mDirtyGeos = FALSE;
+        mDirtyGeos = false;
         break;
       }
 
@@ -4345,7 +4345,7 @@ bool QgsGeometry::exportGeosToWkb()
   if ( !mDirtyWkb )
   {
     // No need to convert again
-    return TRUE;
+    return true;
   }
 
   // clear the WKB, ready to replace with the new one
@@ -4358,8 +4358,8 @@ bool QgsGeometry::exportGeosToWkb()
   if ( !mGeos )
   {
     // GEOS is null, therefore WKB is null.
-    mDirtyWkb = FALSE;
-    return TRUE;
+    mDirtyWkb = false;
+    return true;
   }
 
   // set up byteOrder
@@ -4440,7 +4440,7 @@ bool QgsGeometry::exportGeosToWkb()
         ptr += sizeof( double );
       }
 
-      mDirtyWkb = FALSE;
+      mDirtyWkb = false;
       return true;
 
       // TODO: Deal with endian-ness
@@ -4530,7 +4530,7 @@ bool QgsGeometry::exportGeosToWkb()
           position += sizeof( double );
         }
       }
-      mDirtyWkb = FALSE;
+      mDirtyWkb = false;
       return true;
     } // case GEOS_GEOM::GEOS_POLYGON
     break;
@@ -4577,7 +4577,7 @@ bool QgsGeometry::exportGeosToWkb()
         GEOSCoordSeq_getY( cs, 0, ( double* )&mGeometry[wkbPosition] );
         wkbPosition += sizeof( double );
       }
-      mDirtyWkb = FALSE;
+      mDirtyWkb = false;
       return true;
     } // case GEOS_GEOM::GEOS_MULTIPOINT
 
@@ -4633,7 +4633,7 @@ bool QgsGeometry::exportGeosToWkb()
           wkbPosition += sizeof( double );
         }
       }
-      mDirtyWkb = FALSE;
+      mDirtyWkb = false;
       return true;
     } // case GEOS_GEOM::GEOS_MULTILINESTRING
 
@@ -4718,7 +4718,7 @@ bool QgsGeometry::exportGeosToWkb()
           }
         }
       }
-      mDirtyWkb = FALSE;
+      mDirtyWkb = false;
       return true;
     } // case GEOS_GEOM::GEOS_MULTIPOLYGON
 
@@ -4731,7 +4731,7 @@ bool QgsGeometry::exportGeosToWkb()
 
   } // switch (mGeos->getGeometryTypeId())
 
-  return FALSE;
+  return false;
 }
 
 bool QgsGeometry::convertToMultiType()
@@ -6113,7 +6113,7 @@ QList<QgsGeometry*> QgsGeometry::asGeometryCollection()
 bool QgsGeometry::deleteRing( int ringNum, int partNum )
 {
   if ( ringNum <= 0 || partNum < 0 )
-    return FALSE;
+    return false;
 
   switch ( wkbType() )
   {
@@ -6121,18 +6121,18 @@ bool QgsGeometry::deleteRing( int ringNum, int partNum )
     case QGis::WKBPolygon:
     {
       if ( partNum != 0 )
-        return FALSE;
+        return false;
 
       QgsPolygon polygon = asPolygon();
       if ( ringNum >= polygon.count() )
-        return FALSE;
+        return false;
 
       polygon.remove( ringNum );
 
       QgsGeometry* g2 = QgsGeometry::fromPolygon( polygon );
       *this = *g2;
       delete g2;
-      return TRUE;
+      return true;
     }
 
     case QGis::WKBMultiPolygon25D:
@@ -6141,21 +6141,21 @@ bool QgsGeometry::deleteRing( int ringNum, int partNum )
       QgsMultiPolygon mpolygon = asMultiPolygon();
 
       if ( partNum >= mpolygon.count() )
-        return FALSE;
+        return false;
 
       if ( ringNum >= mpolygon[partNum].count() )
-        return FALSE;
+        return false;
 
       mpolygon[partNum].remove( ringNum );
 
       QgsGeometry* g2 = QgsGeometry::fromMultiPolygon( mpolygon );
       *this = *g2;
       delete g2;
-      return TRUE;
+      return true;
     }
 
     default:
-      return FALSE; // only makes sense with polygons and multipolygons
+      return false; // only makes sense with polygons and multipolygons
   }
 }
 
@@ -6163,7 +6163,7 @@ bool QgsGeometry::deleteRing( int ringNum, int partNum )
 bool QgsGeometry::deletePart( int partNum )
 {
   if ( partNum < 0 )
-    return FALSE;
+    return false;
 
   switch ( wkbType() )
   {
@@ -6173,7 +6173,7 @@ bool QgsGeometry::deletePart( int partNum )
       QgsMultiPoint mpoint = asMultiPoint();
 
       if ( partNum >= mpoint.size() || mpoint.size() == 1 )
-        return FALSE;
+        return false;
 
       mpoint.remove( partNum );
 
@@ -6189,7 +6189,7 @@ bool QgsGeometry::deletePart( int partNum )
       QgsMultiPolyline mline = asMultiPolyline();
 
       if ( partNum >= mline.size() || mline.size() == 1 )
-        return FALSE;
+        return false;
 
       mline.remove( partNum );
 
@@ -6205,7 +6205,7 @@ bool QgsGeometry::deletePart( int partNum )
       QgsMultiPolygon mpolygon = asMultiPolygon();
 
       if ( partNum >= mpolygon.size() || mpolygon.size() == 1 )
-        return FALSE;
+        return false;
 
       mpolygon.remove( partNum );
 
@@ -6217,10 +6217,10 @@ bool QgsGeometry::deletePart( int partNum )
 
     default:
       // single part geometries are ignored
-      return FALSE;
+      return false;
   }
 
-  return TRUE;
+  return true;
 }
 
 int QgsGeometry::avoidIntersections()

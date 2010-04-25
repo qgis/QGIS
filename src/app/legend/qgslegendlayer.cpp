@@ -76,7 +76,7 @@ QgsLegendLayer::QgsLegendLayer( QgsMapLayer* layer )
   mLyr.setVisible( visible );
 
   // not in overview by default
-  mLyr.setInOverview( FALSE );
+  mLyr.setInOverview( false );
 
   // setup connections that will update the layer icons
   if ( qobject_cast<QgsVectorLayer *>( layer ) )
@@ -504,13 +504,13 @@ void QgsLegendLayer::saveAsVectorFileGeneral( bool saveOnlySelection )
 
   QgsVectorLayerSaveAsDialog *dialog = new QgsVectorLayerSaveAsDialog( QgisApp::instance() );
 
-  if( dialog->exec() == QDialog::Accepted )
+  if ( dialog->exec() == QDialog::Accepted )
   {
     QString encoding = dialog->encoding();
     QString vectorFilename = dialog->filename();
     QString format = dialog->format();
-    
-    if( dialog->crs() < 0 )
+
+    if ( dialog->crs() < 0 )
     {
       // Find out if we have projections enabled or not
       if ( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() )
@@ -531,7 +531,7 @@ void QgsLegendLayer::saveAsVectorFileGeneral( bool saveOnlySelection )
     // to verify they want to overwrite by the file dialog above
     // might not even exists in the given case.
     // add the extension if not present
-    if( format == "ESRI Shapefile" )
+    if ( format == "ESRI Shapefile" )
     {
       if ( !vectorFilename.endsWith( ".shp", Qt::CaseInsensitive ) )
       {
@@ -539,23 +539,23 @@ void QgsLegendLayer::saveAsVectorFileGeneral( bool saveOnlySelection )
       }
       QgsVectorFileWriter::deleteShapeFile( vectorFilename );
     }
-  
+
     // ok if the file existed it should be deleted now so we can continue...
     QApplication::setOverrideCursor( Qt::WaitCursor );
-  
+
     QgsVectorFileWriter::WriterError error;
     QString errorMessage;
     error = QgsVectorFileWriter::writeAsVectorFormat( vlayer, vectorFilename, encoding, &destCRS, format, saveOnlySelection, &errorMessage );
 
     QApplication::restoreOverrideCursor();
-  
+
     if ( error == QgsVectorFileWriter::NoError )
     {
       QMessageBox::information( 0, tr( "Saving done" ), tr( "Export to vector file has been completed" ) );
     }
     else
     {
-      QMessageBox::warning( 0, tr( "Save error" ), tr( "Export to vector file failed.\nError: %1").arg( errorMessage ) );
+      QMessageBox::warning( 0, tr( "Save error" ), tr( "Export to vector file failed.\nError: %1" ).arg( errorMessage ) );
     }
   }
 

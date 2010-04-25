@@ -65,13 +65,13 @@ class QgsSpatialQuery
 
     /**
     * \brief Sets if using selected features in Target layer
-    * \param useSelected TRUE if use selected.
+    * \param useSelected true if use selected.
     */
     void setSelectedFeaturesTarget( bool useSelected );
 
     /**
     * \brief Sets if using selected features in Reference layer
-    * \param useSelected TRUE if use selected.
+    * \param useSelected true if use selected.
     */
     void setSelectedFeaturesReference( bool useSelected );
 

@@ -242,7 +242,7 @@ void QgsGraduatedSymbolDialog::apply()
         ubcontainsletter = true;
       }
     }
-    if ( lbcontainsletter == false && ubcontainsletter == false && lower_bound.length() > 0 && upper_bound.length() > 0 ) //only add the item if the value bounds do not contain letters and are not null strings
+    if ( !lbcontainsletter && !ubcontainsletter && lower_bound.length() > 0 && upper_bound.length() > 0 ) //only add the item if the value bounds do not contain letters and are not null strings
     {
       renderer->addSymbol( sy );
     }

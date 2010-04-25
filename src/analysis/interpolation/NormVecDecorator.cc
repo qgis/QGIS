@@ -82,7 +82,7 @@ int NormVecDecorator::addPoint( Point3D* p )
 
 bool NormVecDecorator::calcNormal( double x, double y, Vector3D* result )
 {
-  if ( alreadyestimated == false )
+  if ( !alreadyestimated )
   {
     estimateFirstDerivatives();
     alreadyestimated = true;
@@ -102,7 +102,7 @@ bool NormVecDecorator::calcNormal( double x, double y, Vector3D* result )
 
 bool NormVecDecorator::calcNormalForPoint( double x, double y, int point, Vector3D* result )
 {
-  if ( alreadyestimated == false )
+  if ( !alreadyestimated )
   {
     estimateFirstDerivatives();
     alreadyestimated = true;
@@ -186,9 +186,9 @@ bool NormVecDecorator::calcNormalForPoint( double x, double y, int point, Vector
           lfirstbp = p3;
         }
 
-        if ( p2 == ffirstbp && p3 == lfirstbp && firstrun == false )//we are back at the first breakline
+        if ( p2 == ffirstbp && p3 == lfirstbp && !firstrun )//we are back at the first breakline
         {
-          if ( pointfound == false )//the point with coordinates x, y was in no triangle
+          if ( !pointfound )//the point with coordinates x, y was in no triangle
           {
             QgsDebugMsg( "warning: point (x,y) was in no triangle" );
             return false;
@@ -197,7 +197,7 @@ bool NormVecDecorator::calcNormalForPoint( double x, double y, int point, Vector
           break;
         }
 
-        if ( numberofbreaks > 0 && pointfound == true )//we found the second break line and the point is between the first and the second
+        if ( numberofbreaks > 0 && pointfound )//we found the second break line and the point is between the first and the second
         {
           result->standardise();
           numberofbreaks++;//to make the distinction between endpoints and points on a breakline easier
@@ -234,7 +234,7 @@ bool NormVecDecorator::calcNormalForPoint( double x, double y, int point, Vector
 bool NormVecDecorator::calcPoint( double x, double y, Point3D* result )
 {
 
-  if ( alreadyestimated == false )
+  if ( !alreadyestimated )
   {
     estimateFirstDerivatives();
     alreadyestimated = true;

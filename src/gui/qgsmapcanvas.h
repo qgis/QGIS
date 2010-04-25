@@ -64,7 +64,7 @@ class QgsMapTool;
 class GUI_EXPORT QgsMapCanvasLayer
 {
   public:
-    QgsMapCanvasLayer( QgsMapLayer* layer, bool visible = TRUE, bool isInOverview = FALSE )
+    QgsMapCanvasLayer( QgsMapLayer* layer, bool visible = true, bool isInOverview = false )
         : mLayer( layer ), mVisible( visible ), mInOverview( isInOverview ) {}
 
     void setVisible( bool visible ) { mVisible = visible; }
@@ -365,7 +365,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     void resizeEvent( QResizeEvent * e );
 
     //! called when panning is in action, reset indicates end of panning
-    void moveCanvasContents( bool reset = FALSE );
+    void moveCanvasContents( bool reset = false );
 
     //! called on resize or changed extent to notify canvas items to change their rectangle
     void updateCanvasItemPositions();

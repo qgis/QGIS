@@ -102,7 +102,7 @@ double MathUtils::calcBernsteinPoly( int n, int i, double t )
     return 0;
   }
 
-  return( lower( n, i )*power( t, i )*power(( 1 - t ), ( n - i ) ) );
+  return lower( n, i )*power( t, i )*power(( 1 - t ), ( n - i ) );
 }
 
 double MathUtils::cFDerBernsteinPoly( int n, int i, double t )
@@ -265,7 +265,7 @@ bool MathUtils::inCircle( Point3D* testp, Point3D* p1, Point3D* p2, Point3D* p3 
     aValue = aValue - (( bx * bx + by * by ) * triArea( p1, p3, testp ) );
     aValue = aValue + (( cx * cx + cy * cy ) * triArea( p1, p2, testp ) );
     aValue = aValue - (( px * px + py * py ) * triArea( p1, p2, p3 ) );
-    //return(aValue>0.0);
+    //return aValue>0.0;
     if ( aValue > tolerance )
     {
       return true;
@@ -277,7 +277,7 @@ bool MathUtils::inCircle( Point3D* testp, Point3D* p1, Point3D* p2, Point3D* p3 
     else//point is approximately on the circle
     {
       //cout << "aValue " << aValue << endl << flush;
-      //return(aValue>0.0);
+      //return aValue>0.0;
       return false;
     }
   }
@@ -324,7 +324,7 @@ double MathUtils::leftOf( Point3D* thepoint, Point3D* p1, Point3D* p2 )
     double f3 = thepoint->getY() - p1->getY();
     double f4 = p2->getX() - p1->getX();
     return f1*f2 - f3*f4;
-    //return(thepoint->getX()-p1->getX())*(p2->getY()-p1->getY())-(thepoint->getY()-p1->getY())*(p2->getX()-p1->getX());//calculating the vectorproduct
+    //return thepoint->getX()-p1->getX())*(p2->getY()-p1->getY())-(thepoint->getY()-p1->getY())*(p2->getX()-p1->getX();//calculating the vectorproduct
   }
   else
   {

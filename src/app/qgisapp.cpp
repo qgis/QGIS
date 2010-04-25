@@ -1979,17 +1979,17 @@ void QgisApp::createCanvas()
   mMapCanvas->setFocus();
 
   // create tools
-  mMapTools.mZoomIn = new QgsMapToolZoom( mMapCanvas, FALSE /* zoomIn */ );
+  mMapTools.mZoomIn = new QgsMapToolZoom( mMapCanvas, false /* zoomIn */ );
   mMapTools.mZoomIn->setAction( mActionZoomIn );
-  mMapTools.mZoomOut = new QgsMapToolZoom( mMapCanvas, TRUE /* zoomOut */ );
+  mMapTools.mZoomOut = new QgsMapToolZoom( mMapCanvas, true /* zoomOut */ );
   mMapTools.mZoomOut->setAction( mActionZoomOut );
   mMapTools.mPan = new QgsMapToolPan( mMapCanvas );
   mMapTools.mPan->setAction( mActionPan );
   mMapTools.mIdentify = new QgsMapToolIdentify( mMapCanvas );
   mMapTools.mIdentify->setAction( mActionIdentify );
-  mMapTools.mMeasureDist = new QgsMeasureTool( mMapCanvas, FALSE /* area */ );
+  mMapTools.mMeasureDist = new QgsMeasureTool( mMapCanvas, false /* area */ );
   mMapTools.mMeasureDist->setAction( mActionMeasure );
-  mMapTools.mMeasureArea = new QgsMeasureTool( mMapCanvas, TRUE /* area */ );
+  mMapTools.mMeasureArea = new QgsMeasureTool( mMapCanvas, true /* area */ );
   mMapTools.mMeasureArea->setAction( mActionMeasureArea );
   mMapTools.mMeasureAngle = new QgsMapToolMeasureAngle( mMapCanvas );
   mMapTools.mMeasureAngle->setAction( mActionMeasureAngle );
@@ -2142,7 +2142,7 @@ bool QgisApp::createDB()
     if ( !isDbFileCopied )
     {
       QgsDebugMsg( "[ERROR] Can not make qgis.db private copy" );
-      return FALSE;
+      return false;
     }
   }
   else
@@ -2880,7 +2880,7 @@ void QgisApp::fileExit()
 
 void QgisApp::fileNew()
 {
-  fileNew( TRUE ); // prompts whether to save project
+  fileNew( true ); // prompts whether to save project
 } // fileNew()
 
 
@@ -2949,7 +2949,7 @@ void QgisApp::fileNew( bool thePromptToSaveFlag )
   mMapCanvas->refresh();
   mMapCanvas->clearExtentHistory();
 
-  mMapCanvas->mapRenderer()->setProjectionsEnabled( FALSE );
+  mMapCanvas->mapRenderer()->setProjectionsEnabled( false );
 
   // set the initial map tool
   mMapCanvas->setMapTool( mMapTools.mPan );
@@ -3576,9 +3576,9 @@ void QgisApp::removeAllFromOverview()
 
 void QgisApp::toggleFullScreen()
 {
-  if ( true == mFullScreenMode )
+  if ( mFullScreenMode )
   {
-    if ( true == mPrevScreenModeMaximized )
+    if ( mPrevScreenModeMaximized )
     {
       // Change to maximized state. Just calling showMaximized() results in
       // the window going to the normal state. Calling showNormal() then

@@ -143,7 +143,7 @@ class CORE_EXPORT QgsApplication: public QApplication
     static const QString defaultStyleV2Path();
 
     //! Alters prefix path - used by 3rd party apps
-    static void setPrefixPath( const QString thePrefixPath, bool useDefaultPaths = FALSE );
+    static void setPrefixPath( const QString thePrefixPath, bool useDefaultPaths = false );
 
     //! Alters plugin path - used by 3rd party apps
     static void setPluginPath( const QString thePluginPath );

@@ -117,9 +117,9 @@ class QgsSimplifyFeature
     };
 
   public:
-    /** simplify line feature with specified tolerance. Returns TRUE on success */
+    /** simplify line feature with specified tolerance. Returns true on success */
     static bool simplifyLine( QgsFeature &lineFeature, double tolerance );
-    /** simplify polygon feature with specified tolerance. Returns TRUE on success */
+    /** simplify polygon feature with specified tolerance. Returns true on success */
     static bool simplifyPolygon( QgsFeature &polygonFeature, double tolerance );
     /** simplify a line given by a vector of points and tolerance. Returns simplified vector of points */
     static QVector<QgsPoint> simplifyPoints( const QVector<QgsPoint>& pts, double tolerance );

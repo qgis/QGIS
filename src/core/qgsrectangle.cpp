@@ -149,11 +149,11 @@ bool QgsRectangle::intersects( const QgsRectangle& rect ) const
 {
   double x1 = ( xmin > rect.xmin ? xmin : rect.xmin );
   double x2 = ( xmax < rect.xmax ? xmax : rect.xmax );
-  if ( x1 > x2 ) return FALSE;
+  if ( x1 > x2 ) return false;
   double y1 = ( ymin > rect.ymin ? ymin : rect.ymin );
   double y2 = ( ymax < rect.ymax ? ymax : rect.ymax );
-  if ( y1 > y2 ) return FALSE;
-  return TRUE;
+  if ( y1 > y2 ) return false;
+  return true;
 }
 
 bool QgsRectangle::contains( const QgsRectangle& rect ) const
@@ -191,14 +191,7 @@ void QgsRectangle::combineExtentWith( double x, double y )
 
 bool QgsRectangle::isEmpty() const
 {
-  if ( xmax <= xmin || ymax <= ymin )
-  {
-    return TRUE;
-  }
-  else
-  {
-    return FALSE;
-  }
+  return xmax <= xmin || ymax <= ymin;
 }
 
 QString QgsRectangle::asWktCoordinates() const

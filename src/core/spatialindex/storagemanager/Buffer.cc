@@ -95,14 +95,14 @@ void Buffer::storeByteArray( long& id, const unsigned long len, const byte* cons
     }
 
     Entry* e = new Entry( len, data );
-    if ( m_bWriteThrough == false ) e->m_bDirty = true;
+    if ( !m_bWriteThrough ) e->m_bDirty = true;
 
     map<long, Entry*>::iterator it = m_buffer.find( id );
     if ( it != m_buffer.end() )
     {
       delete( *it ).second;
       ( *it ).second = e;
-      if ( m_bWriteThrough == false ) m_hits++;
+      if ( !m_bWriteThrough ) m_hits++;
     }
     else
     {

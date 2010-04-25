@@ -133,7 +133,7 @@ DiskStorageManager::DiskStorageManager( Tools::PropertySet& ps ) : m_pageSize( 0
     if ( ! bFileExists ) bOverwrite = true;
 
     // check if file can be read/written.
-    if ( bOverwrite == false )
+    if ( !bOverwrite )
     {
       int e1 = access( pIndexFile, R_OK | W_OK );
       int e2 = access( pDataFile, R_OK | W_OK );
@@ -173,7 +173,7 @@ DiskStorageManager::DiskStorageManager( Tools::PropertySet& ps ) : m_pageSize( 0
   }
 
   // find page size.
-  if ( bOverwrite == true )
+  if ( bOverwrite )
   {
     var = ps.getProperty( "PageSize" );
 
@@ -201,7 +201,7 @@ DiskStorageManager::DiskStorageManager( Tools::PropertySet& ps ) : m_pageSize( 0
   m_buffer = new byte[m_pageSize];
   memset( m_buffer, 0, m_pageSize );
 
-  if ( bOverwrite == false )
+  if ( !bOverwrite )
   {
     unsigned long count;
     long id, page;

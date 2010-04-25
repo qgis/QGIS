@@ -897,7 +897,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
   if ( mUsingRendererV2 )
   {
     if ( mRendererV2 == NULL )
-      return FALSE;
+      return false;
 
     QgsDebugMsg( "rendering v2:\n" + mRendererV2->dump() );
 
@@ -919,7 +919,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
       QgsDebugMsg( "attrs: " + attrName + " - " + QString::number( attrNum ) );
     }
 
-    bool labeling = FALSE;
+    bool labeling = false;
     if ( rendererContext.labelingEngine() )
     {
       int attrIndex;
@@ -927,7 +927,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
       {
         if ( !attributes.contains( attrIndex ) )
           attributes << attrIndex;
-        labeling = TRUE;
+        labeling = true;
       }
     }
 
@@ -938,7 +938,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     else
       drawRendererV2( rendererContext, labeling );
 
-    return TRUE;
+    return true;
   }
 
   //draw ( p, viewExtent, theMapToPixelTransform, ct, drawingToEditingCanvas, 1., 1.);
@@ -975,7 +975,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     QgsFeature fet;
     QgsAttributeList attributes = mRenderer->classificationAttributes();
 
-    bool labeling = FALSE;
+    bool labeling = false;
     if ( rendererContext.labelingEngine() )
     {
       int attrIndex;
@@ -983,7 +983,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
       {
         if ( !attributes.contains( attrIndex ) )
           attributes << attrIndex;
-        labeling = TRUE;
+        labeling = true;
       }
     }
 
@@ -1133,9 +1133,9 @@ void QgsVectorLayer::select( QgsRectangle & rect, bool lock )
   // normalize the rectangle
   rect.normalize();
 
-  if ( lock == false )
+  if ( !lock )
   {
-    removeSelection( FALSE ); // don't emit signal
+    removeSelection( false ); // don't emit signal
   }
 
   //select all the elements
@@ -1158,7 +1158,7 @@ void QgsVectorLayer::invertSelection()
   // copy the ids of selected features to tmp
   QgsFeatureIds tmp = mSelectedFeatureIds;
 
-  removeSelection( FALSE ); // don't emit signal
+  removeSelection( false ); // don't emit signal
 
   select( QgsAttributeList(), QgsRectangle(), false );
 
@@ -3433,7 +3433,7 @@ bool QgsVectorLayer::commitChanges()
   if ( success )
   {
     mEditable = false;
-    setModified( FALSE );
+    setModified( false );
 
     mUpdatedFields.clear();
     mMaxUpdatedIndex = -1;
@@ -3504,7 +3504,7 @@ bool QgsVectorLayer::rollBack()
   mEditable = false;
   emit editingStopped();
 
-  setModified( FALSE );
+  setModified( false );
   // invalidate the cache so the layer updates properly to show its original
   // after the rollback
   setCacheImage( 0 );
@@ -3550,7 +3550,7 @@ QgsFeatureList QgsVectorLayer::selectedFeatures()
   {
     QgsFeature feat;
 
-    bool selectionIsAddedFeature = FALSE;
+    bool selectionIsAddedFeature = false;
 
     // Check this selected item against the uncommitted added features
     for ( QgsFeatureList::iterator iter = mAddedFeatures.begin(); iter != mAddedFeatures.end(); ++iter )
@@ -3558,7 +3558,7 @@ QgsFeatureList QgsVectorLayer::selectedFeatures()
       if ( *it == iter->id() )
       {
         feat = QgsFeature( *iter );
-        selectionIsAddedFeature = TRUE;
+        selectionIsAddedFeature = true;
         break;
       }
     }

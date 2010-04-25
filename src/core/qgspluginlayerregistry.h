@@ -34,7 +34,7 @@ class CORE_EXPORT QgsPluginLayerType
 {
   public:
 
-    QgsPluginLayerType(QString name);
+    QgsPluginLayerType( QString name );
     virtual ~QgsPluginLayerType();
 
     QString name();
@@ -42,10 +42,10 @@ class CORE_EXPORT QgsPluginLayerType
     /** return new layer of this type. Return NULL on error */
     virtual QgsPluginLayer* createLayer();
 
-    /** show plugin layer properties dialog. Return FALSE if the dialog cannot be shown. */
-    virtual bool showLayerProperties(QgsPluginLayer* layer);
+    /** show plugin layer properties dialog. Return false if the dialog cannot be shown. */
+    virtual bool showLayerProperties( QgsPluginLayer* layer );
 
-protected:
+  protected:
     QString mName;
 };
 
@@ -65,17 +65,17 @@ class CORE_EXPORT QgsPluginLayerRegistry
 
     ~QgsPluginLayerRegistry();
 
-    /** add plugin layer type (take ownership) and return TRUE on success */
-    bool addPluginLayerType(QgsPluginLayerType* pluginLayerType);
+    /** add plugin layer type (take ownership) and return true on success */
+    bool addPluginLayerType( QgsPluginLayerType* pluginLayerType );
 
-    /** remove plugin layer type and return TRUE on success */
-    bool removePluginLayerType(QString typeName);
+    /** remove plugin layer type and return true on success */
+    bool removePluginLayerType( QString typeName );
 
     /** return plugin layer type metadata or NULL if doesn't exist */
-    QgsPluginLayerType* pluginLayerType(QString typeName);
+    QgsPluginLayerType* pluginLayerType( QString typeName );
 
     /** return new layer if corresponding plugin has been found, else return NULL */
-    QgsPluginLayer* createLayer(QString typeName);
+    QgsPluginLayer* createLayer( QString typeName );
 
   private:
 

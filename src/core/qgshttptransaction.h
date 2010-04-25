@@ -62,7 +62,7 @@ class CORE_EXPORT QgsHttpTransaction : public QObject
     //! while in this function.
 
     /*!
-        The function returns FALSE if there is an error while getting the response.
+        The function returns false if there is an error while getting the response.
         @param[out] respondedContent is replaced with the new content.
 
         @param[in]  redirections     is used to measure how many http redirections we've been through.

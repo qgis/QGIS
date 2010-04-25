@@ -88,7 +88,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      *
      * \note This function only deals with EpsgCrsId labels only at this time.
      *
-     * \retval FALSE if not given an EpsgCrsId label
+     * \retval false if not given an EpsgCrsId label
      */
     bool createFromOgcWmsCrs( QString theCrs );
 

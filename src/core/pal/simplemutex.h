@@ -50,7 +50,7 @@
 #ifdef _HAVE_WINDOWS_H_
 #include <windows.h>
 #define THREAD_TYPE HANDLE
-#define CREATE_MUTEX(mutex) (mutex = CreateMutex(0, FALSE, 0))
+#define CREATE_MUTEX(mutex) (mutex = CreateMutex(0, false, 0))
 #define LOCK(mutex)  (WaitForSingleObject(mutex, INFINITE))
 #define UNLOCK(mutex)  (ReleaseMutex(mutex))
 #define DESTROY_MUTEX(mutex) (CloseHandle(mutex))

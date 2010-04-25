@@ -1987,12 +1987,8 @@ bool QgsGrassMapcalcConnector::tryConnectEnd( int end )
     }
   }
 
-  if ( !object ) return false;
-
   // try to connect
-  if ( !object->tryConnect( this, end ) ) return false;
-
-  return true;
+  return object && object->tryConnect( this, end );
 }
 
 void QgsGrassMapcalcConnector::setSocket( int end,

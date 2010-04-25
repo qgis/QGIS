@@ -74,17 +74,17 @@ void QgsWFSSourceSelect::populateConnectionList()
   if ( keys.begin() != keys.end() )
   {
     // Connections available - enable various buttons
-    btnConnect->setEnabled( TRUE );
-    btnEdit->setEnabled( TRUE );
-    btnDelete->setEnabled( TRUE );
+    btnConnect->setEnabled( true );
+    btnEdit->setEnabled( true );
+    btnDelete->setEnabled( true );
   }
 
   else
   {
     // No connections available - disable various buttons
-    btnConnect->setEnabled( FALSE );
-    btnEdit->setEnabled( FALSE );
-    btnDelete->setEnabled( FALSE );
+    btnConnect->setEnabled( false );
+    btnEdit->setEnabled( false );
+    btnDelete->setEnabled( false );
   }
 }
 
