@@ -35,7 +35,7 @@ QgsSymbolLevelsV2Dialog::QgsSymbolLevelsV2Dialog( QgsSymbolV2List symbols, bool 
   tableLevels->setColumnCount( maxLayers );
   for ( int i = 0; i < maxLayers; i++ )
   {
-    QString name = QString( "Layer %1" ).arg( i );
+    QString name = tr( "Layer %1" ).arg( i );
     tableLevels->setHorizontalHeaderItem( i, new QTableWidgetItem( name ) );
   }
 
