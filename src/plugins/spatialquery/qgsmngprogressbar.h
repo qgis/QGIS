@@ -15,7 +15,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id: $ */
+/*  $Id$ */
 #ifndef QGSMNGPROGRESSBAR_H
 #define QGSMNGPROGRESSBAR_H
 

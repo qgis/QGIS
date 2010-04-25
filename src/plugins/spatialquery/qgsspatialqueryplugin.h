@@ -16,7 +16,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id: $ */
+/*  $Id$ */
 
 #ifndef SPATIALQUERYPLUGIN_H
 #define SPATIALQUERYPLUGIN_H
