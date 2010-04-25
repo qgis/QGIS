@@ -1623,6 +1623,12 @@
 		72F22FB70FDAC209000E8CB0 /* qgsmaptoolnodetool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72F22FB50FDAC1F4000E8CB0 /* qgsmaptoolnodetool.cpp */; };
 		72F4862210AB755200E7BFEE /* qgscomposermanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72F4862010AB753D00E7BFEE /* qgscomposermanager.cpp */; };
 		72F4862310AB755200E7BFEE /* qgscomposermanager.h in Sources */ = {isa = PBXBuildFile; fileRef = 72F4862110AB753D00E7BFEE /* qgscomposermanager.h */; };
+		72F70B0911848B5B001369AD /* qgsdisplayangle.h in Sources */ = {isa = PBXBuildFile; fileRef = 7216329210EFCE6C00588EAD /* qgsdisplayangle.h */; };
+		72F70B0A11848B5B001369AD /* qgsmaptoolreshape.h in Sources */ = {isa = PBXBuildFile; fileRef = 72D84C1E1044BBFD009F8F39 /* qgsmaptoolreshape.h */; };
+		72F70B0B11848B5B001369AD /* qgsmaptoolrotatepointsymbols.h in Sources */ = {isa = PBXBuildFile; fileRef = 7286D63D1062769D008D83A6 /* qgsmaptoolrotatepointsymbols.h */; };
+		72F70B1011848BA2001369AD /* qgspenstylecombobox.h in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF3910B2275E00D23EA2 /* qgspenstylecombobox.h */; };
+		72F70B1211848C3D001369AD /* qgsmemoryprovider.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC600F39E57B003DC336 /* qgsmemoryprovider.h */; };
+		72F70B2111848EE1001369AD /* qgsgrassprovider.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC5C0F39E57B003DC336 /* qgsgrassprovider.h */; };
 		72F8D9450F89251100D10CE5 /* qgstolerance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72F8D9430F8924F100D10CE5 /* qgstolerance.cpp */; };
 		72FA6DD51124D7F6003CD56B /* QgsAttributeTableDialog-pt_BR in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72FA6DCF1124D7E4003CD56B /* QgsAttributeTableDialog-pt_BR */; };
 		72FA6DD61124D7F6003CD56B /* QgsGPSPluginGui-pt_BR in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72FA6DD01124D7E4003CD56B /* QgsGPSPluginGui-pt_BR */; };
@@ -2354,6 +2360,17 @@
 			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		72DB68DF1021D08400ED5F3A /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			filePatterns = "*.h";
+			fileType = pattern.proxy;
+			isEditable = 1;
+			outputFiles = (
+				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
+			);
+			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+		};
+		72F70B2C11849076001369AD /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
 			compilerSpec = com.apple.compilers.proxy.script;
 			filePatterns = "*.h";
@@ -5824,8 +5841,6 @@
 		7268C045118294E5001BC9C4 /* qgsspatialqueryplugin.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsspatialqueryplugin.h; path = ../../src/plugins/spatialquery/qgsspatialqueryplugin.h; sourceTree = SOURCE_ROOT; };
 		7268C046118294E5001BC9C4 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README; path = ../../src/plugins/spatialquery/README; sourceTree = SOURCE_ROOT; };
 		7268C047118294E5001BC9C4 /* spatialquery.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = spatialquery.png; path = ../../src/plugins/spatialquery/spatialquery.png; sourceTree = SOURCE_ROOT; };
-		7268C049118294E5001BC9C4 /* spatialquery_pt_BR.qm */ = {isa = PBXFileReference; lastKnownFileType = file; name = spatialquery_pt_BR.qm; path = ../../src/plugins/spatialquery/ts/spatialquery_pt_BR.qm; sourceTree = SOURCE_ROOT; };
-		7268C04A118294E5001BC9C4 /* spatialquery_pt_BR.ts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = spatialquery_pt_BR.ts; path = ../../src/plugins/spatialquery/ts/spatialquery_pt_BR.ts; sourceTree = SOURCE_ROOT; };
 		7268C057118294F2001BC9C4 /* libspatialqueryplugin.so */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = libspatialqueryplugin.so; sourceTree = BUILT_PRODUCTS_DIR; };
 		7268E7F61102157C00B96374 /* qgscolorbutton.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgscolorbutton.sip; path = ../../python/gui/qgscolorbutton.sip; sourceTree = SOURCE_ROOT; };
 		7268E7F7110215C900B96374 /* FindLibPython.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = FindLibPython.py; path = ../../cmake/FindLibPython.py; sourceTree = SOURCE_ROOT; };
@@ -11544,20 +11559,9 @@
 				7268C045118294E5001BC9C4 /* qgsspatialqueryplugin.h */,
 				7268C046118294E5001BC9C4 /* README */,
 				7268C047118294E5001BC9C4 /* spatialquery.png */,
-				7268C048118294E5001BC9C4 /* ts */,
 			);
 			name = spatialquery;
 			path = ../../src/plugins/spatialquery;
-			sourceTree = SOURCE_ROOT;
-		};
-		7268C048118294E5001BC9C4 /* ts */ = {
-			isa = PBXGroup;
-			children = (
-				7268C049118294E5001BC9C4 /* spatialquery_pt_BR.qm */,
-				7268C04A118294E5001BC9C4 /* spatialquery_pt_BR.ts */,
-			);
-			name = ts;
-			path = ../../src/plugins/spatialquery/ts;
 			sourceTree = SOURCE_ROOT;
 		};
 		726979A10F71369A00AFA402 /* ogr */ = {
@@ -13963,6 +13967,7 @@
 				72A07E350F3BEE16004FC2A4 /* Frameworks */,
 			);
 			buildRules = (
+				72F70B2C11849076001369AD /* PBXBuildRule */,
 			);
 			comments = "had -undefined dynamic_lookup in old project\n";
 			dependencies = (
@@ -15356,6 +15361,7 @@
 				7297AA571160ECC700DC6F2D /* qgsformannotationitem.cpp in Sources */,
 				7297AA581160ECC700DC6F2D /* qgsformannotationitem.h in Sources */,
 				7297AA591160ECC700DC6F2D /* qgstextannotationitem.cpp in Sources */,
+				72F70B1011848BA2001369AD /* qgspenstylecombobox.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15523,6 +15529,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				72A07CC90F3BC2DE004FC2A4 /* qgsmemoryprovider.cpp in Sources */,
+				72F70B1211848C3D001369AD /* qgsmemoryprovider.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -15608,6 +15615,7 @@
 			files = (
 				72A07E3C0F3BEECB004FC2A4 /* qgsgrass.cpp in Sources */,
 				72A07E3D0F3BEECD004FC2A4 /* qgsgrassprovider.cpp in Sources */,
+				72F70B2111848EE1001369AD /* qgsgrassprovider.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16197,6 +16205,9 @@
 				72BDC396116E1DF10088DEB4 /* qgsnewspatialitelayerdialog.h in Sources */,
 				72BDC390116E1CDD0088DEB4 /* qgsspatialitesridsdialog.cpp in Sources */,
 				72BDC391116E1CDD0088DEB4 /* qgsspatialitesridsdialog.h in Sources */,
+				72F70B0911848B5B001369AD /* qgsdisplayangle.h in Sources */,
+				72F70B0A11848B5B001369AD /* qgsmaptoolreshape.h in Sources */,
+				72F70B0B11848B5B001369AD /* qgsmaptoolrotatepointsymbols.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -17173,7 +17184,6 @@
 					"$(inherited)",
 					"$(QT_LIB_CORE)",
 					"$(QT_LIB_GUI)",
-					"$(GEOS_LIB)",
 				);
 				PRODUCT_NAME = spatialqueryplugin.so;
 				TARGET_PLUGINDIR = spatialquery;
@@ -17210,7 +17220,6 @@
 					"$(inherited)",
 					"$(QT_LIB_CORE)",
 					"$(QT_LIB_GUI)",
-					"$(GEOS_LIB)",
 				);
 				PRODUCT_NAME = spatialqueryplugin.so;
 				TARGET_PLUGINDIR = spatialquery;
@@ -19969,7 +19978,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 13363;
+				QGIS_VERSION_BUILD = 13381;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -19980,7 +19989,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 13363;
+				QGIS_VERSION_BUILD = 13381;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
