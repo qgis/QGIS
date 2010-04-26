@@ -5261,7 +5261,6 @@ QMenu* QgisApp::getPluginMenu( QString menuName )
 
 #ifdef Q_WS_MAC
   // Mac doesn't have '&' keyboard shortcuts.
-  // Other platforms ignore the prefix char when comparing strings.
   menuName.remove( QChar( '&' ) );
 #endif
   QAction *before = mActionPluginSeparator2;  // python separator or end of list
@@ -5272,12 +5271,18 @@ QMenu* QgisApp::getPluginMenu( QString menuName )
   }
   else
   {
+    QString dst = menuName;
+    dst.remove( QChar( '&' ) );
+
     // Plugins exist - search between plugin separator and python separator or end of list
     QList<QAction*> actions = mPluginMenu->actions();
     int end = mActionPluginSeparator2 ? actions.indexOf( mActionPluginSeparator2 ) : actions.count();
     for ( int i = actions.indexOf( mActionPluginSeparator1 ) + 1; i < end; i++ )
     {
-      int comp = menuName.localeAwareCompare( actions.at( i )->text() );
+      QString src = actions.at( i )->text();
+      src.remove( QChar( '&' ) );
+
+      int comp = dst.localeAwareCompare( src );
       if ( comp < 0 )
       {
         // Add item before this one
@@ -5292,7 +5297,7 @@ QMenu* QgisApp::getPluginMenu( QString menuName )
     }
   }
   // It doesn't exist, so create
-  QMenu* menu = new QMenu( menuName, this );
+  QMenu *menu = new QMenu( menuName, this );
   // Where to put it? - we worked that out above...
   mPluginMenu->insertMenu( before, menu );
 
