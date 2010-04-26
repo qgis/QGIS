@@ -266,10 +266,8 @@ bool QgsSimpleMarkerSymbolLayerV2::prepareShape()
   }
   else if ( mName == "arrow" )
   {
-    double eight = 1.0 / 4;
-    double quarter = 1.0 / 2;
-
-    mPolygon << QPointF( 0, -1 )
+    mPolygon
+    << QPointF( 0, -1 )
     << QPointF( 0.5,  -0.5 )
     << QPointF( 0.25, -0.25 )
     << QPointF( 0.25,  1 )
