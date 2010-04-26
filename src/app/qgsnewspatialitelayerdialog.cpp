@@ -181,7 +181,6 @@ void QgsNewSpatialiteLayerDialog::on_pbnFindSRID_clicked()
     if ( sridDlg->exec() )
     {
       // set the srid field to the selection
-      sridDlg->selectedSrid();
       leSRID->setText( sridDlg->selectedSrid() );
       sridDlg->accept();
     }
