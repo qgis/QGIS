@@ -838,7 +838,7 @@ class QgsVectorGradientColorRampV2 : QgsVectorColorRampV2
     void setColor1( QColor color );
     void setColor2( QColor color );
 
-    typedef QMultiMap<double, QColor> StopsMap;
+    typedef QMap<double, QColor> StopsMap;
 
     void setStops(const StopsMap& stops);
     const StopsMap& stops() const;
@@ -961,8 +961,8 @@ class QgsSymbolLayerV2Utils
     static QString encodePoint( QPointF point );
     static QPointF decodePoint( QString str );
 
-    static QString encodeRealVector( const QVector<qreal>& v );
-    static QVector<qreal> decodeRealVector( const QString& s );
+    static QString encodeRealVector( const QVector<double>& v );
+    static QVector<double> decodeRealVector( const QString& s );
 
     static QString encodeOutputUnit( QgsSymbolV2::OutputUnit unit );
     static QgsSymbolV2::OutputUnit decodeOutputUnit( QString str );
