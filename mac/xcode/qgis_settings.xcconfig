@@ -243,7 +243,7 @@ QT_LIB = $(QT_LIB_CORE) $(QT_LIB_GUI) $(QT_LIB_NET) $(QT_LIB_XML) $(QT_LIB_SVG) 
 // list of Qt frameworks used
 QT_USE_4_4 = 
 QT_USE_4_5 = QtDBus
-QT_USE_4_6 = QtDBus
+QT_USE_4_6 = QtDBus QtXmlPatterns
 QTLISTQG = QtCore QtGui QtNetwork QtSql QtSvg QtXml QtWebKit $(QT_USE_$(QT_VER_MAJOR)_$(QT_VER_MINOR)) phonon
 // list of PyQt modules used
 PYQTLIST = Qt QtCore QtGui QtNetwork QtSql QtSvg QtXml QtWebKit phonon
