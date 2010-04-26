@@ -86,7 +86,7 @@ class Dialog(QDialog, Ui_Dialog):
                 outName = outPath.right((outPath.length() - outPath.lastIndexOf("/")) - 1)
             if outName.endsWith(".shp"):
                 outName = outName.left(outName.length() - 4)
-            self.compute(inName, joinName, outPath, summary, sumList, keep, self.progressBar)
+            res = self.compute(inName, joinName, outPath, summary, sumList, keep, self.progressBar)
             self.outShape.clear()
             if res:
               addToTOC = QMessageBox.question(self, self.tr("Spatial Join"),
