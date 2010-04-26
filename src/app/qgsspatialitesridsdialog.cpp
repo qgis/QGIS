@@ -33,7 +33,10 @@ QgsSpatialiteSridsDialog::~QgsSpatialiteSridsDialog()
 }
 QString QgsSpatialiteSridsDialog::selectedSrid()
 {
-  return twSrids->currentItem()->text( 0 );
+  if ( twSrids->currentItem() )
+    return twSrids->currentItem()->text( 0 );
+  else
+    return "-1";
 }
 bool QgsSpatialiteSridsDialog::load( QString dbName )
 {
