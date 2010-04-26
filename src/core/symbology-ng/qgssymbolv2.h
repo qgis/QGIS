@@ -137,8 +137,7 @@ class CORE_EXPORT QgsSymbolV2RenderContext
     //! @note added in 1.5
     void setRenderHints( int hints ) { mRenderHints = hints; }
 
-    // Colour used for selections
-
+    // Color used for selections
     static QColor selectionColor();
 
     double outputLineWidth( double width ) const;

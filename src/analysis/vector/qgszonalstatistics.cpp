@@ -285,7 +285,7 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( void* band, QgsGeome
       pixelRectGeometry = QgsGeometry::fromRect( QgsRectangle( currentX - hCellSizeX, currentY - hCellSizeY, currentX + hCellSizeX, currentY + hCellSizeY ) );
       if ( pixelRectGeometry )
       {
-        //intersecton
+        //intersection
         intersectGeometry = pixelRectGeometry->intersection( poly );
         if ( intersectGeometry )
         {

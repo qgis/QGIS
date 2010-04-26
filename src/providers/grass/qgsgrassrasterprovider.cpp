@@ -109,7 +109,7 @@ QImage* QgsGrassRasterProvider::draw( QgsRectangle  const & viewExtent, int pixe
     QMessageBox::warning( 0, QObject::tr( "Warning" ), QObject::tr( "Cannot draw raster" ) + "\n"
                               + e.what() );
 
-    // We dont set mValid to false, because the raster can be recreated and work next time
+    // We don't set mValid to false, because the raster can be recreated and work next time
     return image;
   }
   QgsDebugMsg( QString("%1 bytes read from modules stdout").arg(data.size()) );

@@ -169,8 +169,8 @@ void QgsSimpleMarkerSymbolLayerV2::prepareCache( QgsSymbolV2RenderContext& conte
   p.end();
 
   // Check that the selected version is different.  If not, then re-render,
-  // filling the background with the selection colour and using the normal
-  // colours for the symbol .. could be ugly!
+  // filling the background with the selection color and using the normal
+  // colors for the symbol .. could be ugly!
 
   if ( mSelCache == mCache )
   {

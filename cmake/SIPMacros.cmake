@@ -54,7 +54,7 @@ MACRO(ADD_SIP_PYTHON_MODULE MODULE_NAME MODULE_SIP)
 
     # We give this target a long logical target name.
     # (This is to avoid having the library name clash with any already
-    # install library names. If that happens then cmake dependancy
+    # install library names. If that happens then cmake dependency
     # tracking get confused.)
     STRING(REPLACE "." "_" _logical_name ${MODULE_NAME})
     SET(_logical_name "python_module_${_logical_name}")
