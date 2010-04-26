@@ -1334,6 +1334,7 @@ QString QgsProject::readPath( QString src ) const
   {
 #if defined(Q_OS_WIN)
     if ( src.startsWith( "\\\\" ) ||
+         src.startsWith( "//" ) ||
          ( src[0].isLetter() && src[1] == ':' ) )
     {
       // UNC or absolute path
@@ -1371,10 +1372,20 @@ QString QgsProject::readPath( QString src ) const
 #if defined(Q_OS_WIN)
   srcPath.replace( "\\", "/" );
   projPath.replace( "\\", "/" );
+
+  bool uncPath = projPath.startsWith( "//" );
 #endif
 
   QStringList srcElems = srcPath.split( "/", QString::SkipEmptyParts );
   QStringList projElems = projPath.split( "/", QString::SkipEmptyParts );
+
+#if defined(Q_OS_WIN)
+  if ( uncPath )
+  {
+    projElems.insert( 0, "" );
+    projElems.insert( 0, "" );
+  }
+#endif
 
   // remove project file element
   projElems.removeLast();
