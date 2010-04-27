@@ -844,7 +844,7 @@ class geoprocessingThread( QThread ):
     fields = ftools_utils.combineVectorFields( self.vlayerA, self.vlayerB )
     longNames = ftools_utils.checkFieldNameLenght( fields )
     if not longNames.isEmpty():
-      message = QString( 'Following field names are longer then 10 characters:\n%1' ).arg( longNames.join( '\n' ) )
+      message = QString( 'Following field names are longer than 10 characters:\n%1' ).arg( longNames.join( '\n' ) )
       return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match, message
     writer = QgsVectorFileWriter( self.myName, self.myEncoding, 
     fields, vproviderA.geometryType(), vproviderA.crs() )
@@ -1007,7 +1007,7 @@ class geoprocessingThread( QThread ):
     fields = ftools_utils.combineVectorFields( self.vlayerA, self.vlayerB )
     longNames = ftools_utils.checkFieldNameLenght( fields )
     if not longNames.isEmpty():
-      message = QString( 'Following field names are longer then 10 characters:\n%1' ).arg( longNames.join( '\n' ) )
+      message = QString( 'Following field names are longer than 10 characters:\n%1' ).arg( longNames.join( '\n' ) )
       return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match, message
     writer = QgsVectorFileWriter( self.myName, self.myEncoding, 
     fields, vproviderA.geometryType(), vproviderA.crs() )
@@ -1136,7 +1136,7 @@ class geoprocessingThread( QThread ):
     fields = ftools_utils.combineVectorFields( self.vlayerA, self.vlayerB )
     longNames = ftools_utils.checkFieldNameLenght( fields )
     if not longNames.isEmpty():
-      message = QString( 'Following field names are longer then 10 characters:\n%1' ).arg( longNames.join( '\n' ) )
+      message = QString( 'Following field names are longer than 10 characters:\n%1' ).arg( longNames.join( '\n' ) )
       return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match, message
     writer = QgsVectorFileWriter( self.myName, self.myEncoding, 
     fields, vproviderA.geometryType(), vproviderA.crs() )

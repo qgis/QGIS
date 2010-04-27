@@ -206,7 +206,7 @@ p.navbuttons a:hover, p.navbuttons a:active {
 					core QGIS and python libraries. It provides a growing suite of spatial data 
 					management and analysis functions that are both quick and functional. In addition, 
 					the geoprocessing functions of  Dr. Horst Duester and Stefan ZieglerI have been 
-					incorporated to futher facilitate and streamline GIS based research and analysis.</p>
+					incorporated to further facilitate and streamline GIS based research and analysis.</p>
 					<p>I have made every attempt to use the most common GIS terms to describe the individual
 					fTools functions. However, if you think the tools could be more useful under a different
 					name or category, please email me with your suggestions. Indeed, if you would like 
