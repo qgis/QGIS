@@ -130,7 +130,7 @@ bool eVisDatabaseConnection::connect( )
   }
   else if ( MSACCESS == databaseType( ) )
   {
-    mDatabase.setDatabaseName( "DRIVER = {Microsoft Access Driver ( *.mdb )};FIL = {MS Access};DBQ = " + mDatabaseName );
+    mDatabase.setDatabaseName( "DRIVER={Microsoft Access Driver (*.mdb)};FIL={MS Access};DBQ=" + mDatabaseName );
   }
   else
   {
