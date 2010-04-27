@@ -2510,7 +2510,7 @@ bool QgsPostgresProvider::deleteAttributes( const QgsAttributeIds& ids )
 {
   bool returnvalue = true;
 
-  if ( !isQuery )
+  if ( isQuery )
     return false;
 
   if ( !connectRW() )
@@ -2558,7 +2558,7 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
 {
   bool returnvalue = true;
 
-  if ( !isQuery )
+  if ( isQuery )
     return false;
 
   if ( !connectRW() )
@@ -2642,7 +2642,7 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 {
   QgsDebugMsg( "entering." );
 
-  if ( !isQuery )
+  if ( isQuery )
     return false;
 
   if ( !connectRW() )
