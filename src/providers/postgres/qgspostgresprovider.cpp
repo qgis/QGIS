@@ -3003,25 +3003,65 @@ bool QgsPostgresProvider::getGeometryDetails()
   Result result;
   QString sql;
 
-  if ( !isQuery )
+  QString schemaName = mSchemaName;
+  QString tableName = mTableName;
+  QString geomCol = geometryColumn;
+
+  if ( isQuery )
   {
-    sql = QString( "select type,srid from geometry_columns"
-                   " where f_table_name=%1 and f_geometry_column=%2 and f_table_schema=%3" )
-          .arg( quotedValue( mTableName ) )
-          .arg( quotedValue( geometryColumn ) )
-          .arg( quotedValue( mSchemaName ) );
+    sql = QString( "select %1 from %2 limit 0" ).arg( quotedIdentifier( geometryColumn ) ).arg( mQuery );
 
     QgsDebugMsg( "Getting geometry column: " + sql );
 
     Result result = connectionRO->PQexec( sql );
-
-    QgsDebugMsg( "geometry column query returned " + QString::number( PQntuples( result ) ) );
-
-    if ( PQntuples( result ) > 0 )
+    if ( PGRES_TUPLES_OK == PQresultStatus( result ) )
     {
-      fType = QString::fromUtf8( PQgetvalue( result, 0, 0 ) );
-      srid = QString::fromUtf8( PQgetvalue( result, 0, 1 ) );
+      Oid tableOid = PQftable( result, 0 );
+      int column = PQftablecol( result, 0 );
+
+      result = connectionRO->PQexec( sql );
+      if ( tableOid >= 0 && PGRES_TUPLES_OK == PQresultStatus( result ) )
+      {
+        sql = QString( "SELECT pg_namespace.nspname,pg_class.relname FROM pg_class,pg_namespace WHERE pg_class.relnamespace=pg_namespace.oid AND pg_class.oid=%1" ).arg( tableOid );
+        result = connectionRO->PQexec( sql );
+
+        if ( PGRES_TUPLES_OK == PQresultStatus( result ) && 1 == PQntuples( result ) )
+        {
+          schemaName = QString::fromUtf8( PQgetvalue( result, 0, 0 ) );
+          tableName = QString::fromUtf8( PQgetvalue( result, 0, 1 ) );
+
+          sql = QString( "SELECT attname FROM pg_attribute WHERE attrelid=%1 AND attnum=%2" ).arg( tableOid ).arg( column );
+          result = connectionRO->PQexec( sql );
+          if ( PGRES_TUPLES_OK == PQresultStatus( result ) && 1 == PQntuples( result ) )
+          {
+            geomCol = QString::fromUtf8( PQgetvalue( result, 0, 0 ) );
+          }
+					else
+					{
+						schemaName = mSchemaName;
+						tableName = mTableName;
+					}
+        }
+      }
     }
+  }
+
+  sql = QString( "select type,srid from geometry_columns"
+                 " where f_table_name=%1 and f_geometry_column=%2 and f_table_schema=%3" )
+        .arg( quotedValue( tableName ) )
+        .arg( quotedValue( geomCol ) )
+        .arg( quotedValue( schemaName ) );
+
+  QgsDebugMsg( "Getting geometry column: " + sql );
+
+  result = connectionRO->PQexec( sql );
+
+  QgsDebugMsg( "geometry column query returned " + QString::number( PQntuples( result ) ) );
+
+  if ( PQntuples( result ) > 0 )
+  {
+    fType = QString::fromUtf8( PQgetvalue( result, 0, 0 ) );
+    srid = QString::fromUtf8( PQgetvalue( result, 0, 1 ) );
   }
 
   if ( srid.isEmpty() || fType.isEmpty() )
