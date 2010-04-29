@@ -271,6 +271,8 @@ QgsSimpleFillSymbolLayerV2Widget::QgsSimpleFillSymbolLayerV2Widget( QWidget* par
   connect( btnChangeBorderColor, SIGNAL( clicked() ), this, SLOT( setBorderColor() ) );
   connect( spinBorderWidth, SIGNAL( valueChanged( double ) ), this, SLOT( borderWidthChanged() ) );
   connect( cboBorderStyle, SIGNAL( currentIndexChanged( int ) ), this, SLOT( borderStyleChanged() ) );
+  connect( spinOffsetX, SIGNAL( valueChanged( double ) ), this, SLOT( offsetChanged() ) );
+  connect( spinOffsetY, SIGNAL( valueChanged( double ) ), this, SLOT( offsetChanged() ) );
 }
 
 void QgsSimpleFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
@@ -287,6 +289,8 @@ void QgsSimpleFillSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   btnChangeBorderColor->setColor( mLayer->borderColor() );
   cboBorderStyle->setPenStyle( mLayer->borderStyle() );
   spinBorderWidth->setValue( mLayer->borderWidth() );
+  spinOffsetX->setValue( mLayer->offset().x() );
+  spinOffsetY->setValue( mLayer->offset().y() );
 }
 
 QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2Widget::symbolLayer()
@@ -329,6 +333,12 @@ void QgsSimpleFillSymbolLayerV2Widget::borderWidthChanged()
 void QgsSimpleFillSymbolLayerV2Widget::borderStyleChanged()
 {
   mLayer->setBorderStyle( cboBorderStyle->penStyle() );
+  emit changed();
+}
+
+void QgsSimpleFillSymbolLayerV2Widget::offsetChanged()
+{
+  mLayer->setOffset( QPointF( spinOffsetX->value(), spinOffsetY->value() ) );
   emit changed();
 }
 

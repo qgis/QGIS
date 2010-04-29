@@ -52,6 +52,9 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     double borderWidth() const { return mBorderWidth; }
     void setBorderWidth( double borderWidth ) { mBorderWidth = borderWidth; }
 
+    void setOffset( QPointF offset ) { mOffset = offset; }
+    QPointF offset() { return mOffset; }
+
   protected:
     QBrush mBrush;
     QBrush mSelBrush;
@@ -60,6 +63,8 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     Qt::PenStyle mBorderStyle;
     double mBorderWidth;
     QPen mPen;
+
+    QPointF mOffset;
 };
 
 /**A class for svg fill patterns. The class automatically scales the pattern to
