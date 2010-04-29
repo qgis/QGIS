@@ -655,7 +655,9 @@ QString QgsFontMarkerSymbolLayerV2::layerType() const
 
 void QgsFontMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
 {
-  mFont = QFont( mFontFamily, MM2POINT( mSize ) / context.renderContext().rasterScaleFactor() );
+  double pixelSize = context.outputPixelSize( mSize );
+  mFont = QFont( mFontFamily );
+  mFont.setPixelSize( pixelSize / context.renderContext().rasterScaleFactor() );
   QFontMetrics fm( mFont );
   mChrOffset = QPointF( fm.width( mChr ) / 2, -fm.ascent() / 2 );
 
