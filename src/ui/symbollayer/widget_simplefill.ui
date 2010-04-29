@@ -13,9 +13,9 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout">
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QGridLayout">
+    <layout class="QGridLayout" name="gridLayout">
      <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
@@ -30,7 +30,7 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="2" rowspan="5">
+     <item row="0" column="2" rowspan="6">
       <spacer>
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -40,11 +40,21 @@
        </property>
        <property name="sizeHint" stdset="0">
         <size>
-         <width>91</width>
-         <height>51</height>
+         <width>28</width>
+         <height>158</height>
         </size>
        </property>
       </spacer>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Fill style:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QgsBrushStyleComboBox" name="cboFillStyle"/>
      </item>
      <item row="2" column="0">
       <widget class="QLabel" name="label_3">
@@ -57,16 +67,6 @@
       <widget class="QgsColorButtonV2" name="btnChangeBorderColor">
        <property name="text">
         <string>Change</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QgsBrushStyleComboBox" name="cboFillStyle"/>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Fill style:</string>
        </property>
       </widget>
      </item>
@@ -96,6 +96,37 @@
         <double>100000.000000000000000</double>
        </property>
       </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string>Offset X,Y:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QDoubleSpinBox" name="spinOffsetX">
+         <property name="minimum">
+          <double>-999.000000000000000</double>
+         </property>
+         <property name="maximum">
+          <double>999.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QDoubleSpinBox" name="spinOffsetY">
+         <property name="minimum">
+          <double>-999.000000000000000</double>
+         </property>
+         <property name="maximum">
+          <double>999.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>

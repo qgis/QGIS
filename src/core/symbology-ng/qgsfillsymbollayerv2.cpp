@@ -22,6 +22,7 @@ QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2::create( const QgsStringMap& props 
   QColor borderColor = DEFAULT_SIMPLEFILL_BORDERCOLOR;
   Qt::PenStyle borderStyle = DEFAULT_SIMPLEFILL_BORDERSTYLE;
   double borderWidth = DEFAULT_SIMPLEFILL_BORDERWIDTH;
+  QPointF offset;
 
   if ( props.contains( "color" ) )
     color = QgsSymbolLayerV2Utils::decodeColor( props["color"] );
@@ -33,8 +34,12 @@ QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2::create( const QgsStringMap& props 
     borderStyle = QgsSymbolLayerV2Utils::decodePenStyle( props["style_border"] );
   if ( props.contains( "width_border" ) )
     borderWidth = props["width_border"].toDouble();
+  if ( props.contains( "offset" ) )
+    offset = QgsSymbolLayerV2Utils::decodePoint( props["offset"] );
 
-  return new QgsSimpleFillSymbolLayerV2( color, style, borderColor, borderStyle, borderWidth );
+  QgsSimpleFillSymbolLayerV2* sl = new QgsSimpleFillSymbolLayerV2( color, style, borderColor, borderStyle, borderWidth );
+  sl->setOffset( offset );
+  return sl;
 }
 
 
@@ -72,7 +77,13 @@ void QgsSimpleFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QList<Q
   p->setBrush( context.selected() ? mSelBrush : mBrush );
   p->setPen( mPen );
 
+  if ( !mOffset.isNull() )
+    p->translate( mOffset );
+
   _renderPolygon( p, points, rings );
+
+  if ( !mOffset.isNull() )
+    p->translate( -mOffset );
 }
 
 QgsStringMap QgsSimpleFillSymbolLayerV2::properties() const
@@ -83,12 +94,15 @@ QgsStringMap QgsSimpleFillSymbolLayerV2::properties() const
   map["color_border"] = QgsSymbolLayerV2Utils::encodeColor( mBorderColor );
   map["style_border"] = QgsSymbolLayerV2Utils::encodePenStyle( mBorderStyle );
   map["width_border"] = QString::number( mBorderWidth );
+  map["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
   return map;
 }
 
 QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2::clone() const
 {
-  return new QgsSimpleFillSymbolLayerV2( mColor, mBrushStyle, mBorderColor, mBorderStyle, mBorderWidth );
+  QgsSimpleFillSymbolLayerV2* sl = new QgsSimpleFillSymbolLayerV2( mColor, mBrushStyle, mBorderColor, mBorderStyle, mBorderWidth );
+  sl->setOffset( mOffset );
+  return sl;
 }
 
 //QgsSVGFillSymbolLayer
