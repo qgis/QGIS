@@ -228,6 +228,10 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QAction *actionMoveVertex() = 0;
     virtual QAction *actionAddRing() = 0;
     virtual QAction *actionAddIsland() = 0;
+    virtual QAction *actionSimplifyFeature() = 0;
+    virtual QAction *actionDeleteRing() = 0;
+    virtual QAction *actionDeletePart() = 0;
+    virtual QAction *actionNodeTool() = 0;
     virtual QAction *actionEditSeparator2() = 0;
 
     //! View menu actions
