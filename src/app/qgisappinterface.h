@@ -187,6 +187,10 @@ class QgisAppInterface : public QgisInterface
     virtual QAction *actionMoveVertex();
     virtual QAction *actionAddRing();
     virtual QAction *actionAddIsland();
+    virtual QAction *actionSimplifyFeature();
+    virtual QAction *actionDeleteRing();
+    virtual QAction *actionDeletePart();
+    virtual QAction *actionNodeTool();
     virtual QAction *actionEditSeparator2();
 
     //! View menu actions

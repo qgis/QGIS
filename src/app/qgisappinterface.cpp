@@ -274,6 +274,10 @@ QAction *QgisAppInterface::actionDeleteVertex() { return 0; }
 QAction *QgisAppInterface::actionMoveVertex() { return 0; }
 QAction *QgisAppInterface::actionAddRing() { return qgis->actionAddRing(); }
 QAction *QgisAppInterface::actionAddIsland() { return qgis->actionAddIsland(); }
+QAction *QgisAppInterface::actionSimplifyFeature() { return qgis->actionSimplifyFeature(); }
+QAction *QgisAppInterface::actionDeleteRing() { return qgis->actionDeleteRing(); }
+QAction *QgisAppInterface::actionDeletePart() { return qgis->actionDeletePart(); }
+QAction *QgisAppInterface::actionNodeTool() { return qgis->actionNodeTool(); }
 QAction *QgisAppInterface::actionEditSeparator2() { return qgis->actionEditSeparator2(); }
 
 //! View menu actions
