@@ -5891,6 +5891,10 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionPasteFeatures->setEnabled( false );
     mActionRotatePointSymbols->setEnabled( false );
     mActionDeletePart->setEnabled( false );
+    mActionDeleteRing->setEnabled( false );
+    mActionSimplifyFeature->setEnabled( false );
+    mActionReshapeFeatures->setEnabled( false );
+    mActionSplitFeatures->setEnabled( false );
 
     //NOTE: This check does not really add any protection, as it is called on load not on layer select/activate
     //If you load a layer with a provider and idenitfy ability then load another without, the tool would be disabled for both
