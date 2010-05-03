@@ -147,6 +147,8 @@ public:
 
   virtual QgsFeatureRendererV2* clone() /Factory/;
 
+  virtual QgsSymbolV2List symbols();
+
   //! create a renderer from XML element
   static QgsFeatureRendererV2* load(QDomElement& symbologyElem) /Factory/;
 
@@ -210,6 +212,8 @@ public:
   virtual QString dump();
 
   virtual QgsFeatureRendererV2* clone() /Factory/;
+
+  virtual QgsSymbolV2List symbols();
 
   const QgsCategoryList& categories();
 
@@ -295,6 +299,8 @@ public:
   virtual QString dump();
 
   virtual QgsFeatureRendererV2* clone() /Factory/;
+
+  virtual QgsSymbolV2List symbols();
 
   QString classAttribute() const;
   void setClassAttribute(QString attr);
