@@ -3,6 +3,7 @@
 
 <qgisgrassmodule label="Simplify vector" module="v.generalize">
 	<option key="input" typeoption="type" layeroption="layer" />
+        <flag key="c" answer="on" hidden="yes" />
 	<option key="type" />
 	<option key="method" />
 	<option key="threshold" answer="1.0" />
