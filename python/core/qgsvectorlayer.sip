@@ -125,7 +125,7 @@ public:
   /** Return renderer V2. Added in QGIS 1.4 */
   QgsFeatureRendererV2* rendererV2();
   /** Set renderer V2. Added in QGIS 1.4 */
-  void setRendererV2(QgsFeatureRendererV2* r);
+  void setRendererV2(QgsFeatureRendererV2* r /Transfer/);
   /** Return whether using renderer V2. Added in QGIS 1.4 */
   bool isUsingRendererV2();
   /** set whether to use renderer V2 for drawing. Added in QGIS 1.4 */
