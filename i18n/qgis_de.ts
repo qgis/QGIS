@@ -11352,17 +11352,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1353"/>
         <source>Polynomial 1</source>
-        <translation>Polynominal 1</translation>
+        <translation>Polynomial 1</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1355"/>
         <source>Polynomial 2</source>
-        <translation>Polynominal 2</translation>
+        <translation>Polynomial 2</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1357"/>
         <source>Polynomial 3</source>
-        <translation>Polynominal 3</translation>
+        <translation>Polynomial 3</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1359"/>
@@ -23839,17 +23839,17 @@ Wollen Sie die Relation [%2] überschreiben?</translation>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformtypedialogbase.ui" line="33"/>
         <source>Polynomial 1</source>
-        <translation>Polynominal 1</translation>
+        <translation>Polynomial 1</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformtypedialogbase.ui" line="38"/>
         <source>Polynomial 2</source>
-        <translation>Polynominal 2</translation>
+        <translation>Polynomial 2</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformtypedialogbase.ui" line="43"/>
         <source>Polynomial 3</source>
-        <translation>Polynominal 3</translation>
+        <translation>Polynomial 3</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformtypedialogbase.ui" line="48"/>
@@ -23878,17 +23878,17 @@ Wollen Sie die Relation [%2] überschreiben?</translation>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="39"/>
         <source>Polynomial 1</source>
-        <translation>Polynominal 1</translation>
+        <translation>Polynomial 1</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="40"/>
         <source>Polynomial 2</source>
-        <translation>Polynominal 2</translation>
+        <translation>Polynomial 2</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="41"/>
         <source>Polynomial 3</source>
-        <translation>Polynominal 3</translation>
+        <translation>Polynomial 3</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="42"/>
