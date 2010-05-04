@@ -366,7 +366,7 @@ void QgsMarkerLineSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   mLayer = static_cast<QgsMarkerLineSymbolLayerV2*>( layer );
 
   // set values
-  spinInterval->setValue(( int ) mLayer->interval() );
+  spinInterval->setValue( mLayer->interval() );
   chkRotateMarker->setChecked( mLayer->rotateMarker() );
   spinOffset->setValue( mLayer->offset() );
   updateMarker();
