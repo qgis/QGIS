@@ -77,6 +77,11 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
   bool hasDataDefinedRotation = context.renderHints() & QgsSymbolV2::DataDefinedRotation;
   bool hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale;
 
+  // use caching only when:
+  // - the size and rotation is not data-defined
+  // - drawing to screen (not printer)
+  mUsingCache = !hasDataDefinedRotation && !hasDataDefinedSize && !context.renderContext().forceVectorOutput();
+
   // use either QPolygonF or QPainterPath for drawing
   // TODO: find out whether drawing directly doesn't bring overhead - if not, use it for all shapes
   if ( !prepareShape() ) // drawing as a polygon
@@ -101,7 +106,9 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
   // scale the shape (if the size is not going to be modified)
   if ( !hasDataDefinedSize )
   {
-    double scaledSize = context.outputPixelSize( mSize );
+    double scaledSize = context.outputLineWidth( mSize );
+    if ( mUsingCache )
+      scaledSize *= context.renderContext().rasterScaleFactor();
     double half = scaledSize / 2.0;
     transform.scale( half, half );
   }
@@ -117,10 +124,8 @@ void QgsSimpleMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& contex
   else
     mPath = transform.map( mPath );
 
-  if ( !hasDataDefinedRotation && !hasDataDefinedSize )
+  if ( mUsingCache )
   {
-    // we can use the cached marker
-    // TODO: use caching only when drawing to screen (not printer)
     prepareCache( context );
   }
   else
@@ -324,10 +329,7 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
     return;
   }
 
-  bool hasDataDefinedRotation = context.renderHints() & QgsSymbolV2::DataDefinedRotation;
-  bool hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale;
-
-  if ( !hasDataDefinedRotation && !hasDataDefinedSize )
+  if ( mUsingCache )
   {
     // we will use cached image
     QImage &img = context.selected() ? mSelCache : mCache;
@@ -340,6 +342,9 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
   {
     QMatrix transform;
 
+    bool hasDataDefinedRotation = context.renderHints() & QgsSymbolV2::DataDefinedRotation;
+    bool hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale;
+
     // move to the desired position
     transform.translate( point.x() + context.outputLineWidth( mOffset.x() ),
                          point.y() + context.outputLineWidth( mOffset.y() ) );
@@ -347,7 +352,7 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
     // resize if necessary
     if ( hasDataDefinedSize )
     {
-      double scaledSize = context.outputPixelSize( mSize );
+      double scaledSize = context.outputLineWidth( mSize );
       double half = scaledSize / 2.0;
       transform.scale( half, half );
     }
@@ -655,9 +660,8 @@ QString QgsFontMarkerSymbolLayerV2::layerType() const
 
 void QgsFontMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
 {
-  double pixelSize = context.outputPixelSize( mSize );
   mFont = QFont( mFontFamily );
-  mFont.setPixelSize( pixelSize / context.renderContext().rasterScaleFactor() );
+  mFont.setPixelSize( context.outputLineWidth( mSize ) );
   QFontMetrics fm( mFont );
   mChrOffset = QPointF( fm.width( mChr ) / 2, -fm.ascent() / 2 );
 
