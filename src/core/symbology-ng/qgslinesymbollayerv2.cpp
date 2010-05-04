@@ -246,20 +246,19 @@ void QgsMarkerLineSymbolLayerV2::setColor( QColor color )
 
 void QgsMarkerLineSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
 {
+  mMarker->setAlpha( context.alpha() );
+  mMarker->setOutputUnit( context.outputUnit() );
+
   // if being rotated, it gets initialized with every line segment
-  if ( !mRotateMarker )
-  {
-    mMarker->setAlpha( context.alpha() );
-    mMarker->startRender( context.renderContext() );
-  }
+  if ( mRotateMarker )
+    mMarker->setRenderHints( QgsSymbolV2::DataDefinedRotation );
+
+  mMarker->startRender( context.renderContext() );
 }
 
 void QgsMarkerLineSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
 {
-  if ( !mRotateMarker )
-  {
-    mMarker->stopRender( context.renderContext() );
-  }
+  mMarker->stopRender( context.renderContext() );
 }
 
 void QgsMarkerLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSymbolV2RenderContext& context )
@@ -282,7 +281,7 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineNoOffset( const QPolygonF& points
   bool first = true;
   double origAngle = mMarker->angle();
 
-  double painterUnitInterval = context.outputLineWidth( mInterval );
+  double painterUnitInterval = context.outputLineWidth( mInterval > 0 ? mInterval : 0.1 );
 
   QgsRenderContext& rc = context.renderContext();
 
@@ -306,9 +305,7 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineNoOffset( const QPolygonF& points
     // rotate marker (if desired)
     if ( mRotateMarker )
     {
-      mMarker->setAlpha( context.alpha() );
       mMarker->setAngle( origAngle + ( l.angle() * 180 / M_PI ) );
-      mMarker->startRender( rc );
     }
 
     // draw first marker
@@ -329,9 +326,6 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineNoOffset( const QPolygonF& points
     }
 
     lastPt = pt;
-
-    if ( mRotateMarker )
-      mMarker->stopRender( rc );
   }
 
   // restore original rotation
@@ -373,6 +367,16 @@ QgsSymbolLayerV2* QgsMarkerLineSymbolLayerV2::clone() const
   x->setSubSymbol( mMarker->clone() );
   x->setOffset( mOffset );
   return x;
+}
+
+void QgsMarkerLineSymbolLayerV2::setWidth( double width )
+{
+  mMarker->setSize( width );
+}
+
+double QgsMarkerLineSymbolLayerV2::width() const
+{
+  return mMarker->size();
 }
 
 /////////////
