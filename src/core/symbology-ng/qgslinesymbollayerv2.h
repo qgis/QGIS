@@ -108,6 +108,9 @@ class CORE_EXPORT QgsMarkerLineSymbolLayerV2 : public QgsLineSymbolLayerV2
     QgsSymbolV2* subSymbol();
     bool setSubSymbol( QgsSymbolV2* symbol );
 
+    virtual void setWidth( double width );
+    virtual double width() const;
+
     // new stuff
 
     bool rotateMarker() const { return mRotateMarker; }

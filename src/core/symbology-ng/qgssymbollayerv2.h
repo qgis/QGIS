@@ -99,8 +99,8 @@ class CORE_EXPORT QgsLineSymbolLayerV2 : public QgsSymbolLayerV2
   public:
     virtual void renderPolyline( const QPolygonF& points, QgsSymbolV2RenderContext& context ) = 0;
 
-    void setWidth( double width ) { mWidth = width; }
-    double width() const { return mWidth; }
+    virtual void setWidth( double width ) { mWidth = width; }
+    virtual double width() const { return mWidth; }
 
     void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size );
 
