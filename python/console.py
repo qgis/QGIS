@@ -126,7 +126,8 @@ class PythonEdit(QTextEdit, code.InteractiveInterpreter):
     self.setMinimumSize(30, 30)
     self.setUndoRedoEnabled(False)
     self.setAcceptRichText(False)
-    monofont = QFont("Bitstream Vera Sans Mono", 10)
+    monofont = QFont("Monospace")
+    monofont.setStyleHint(QFont.TypeWriter)
     self.setFont(monofont)
 
     self.buffer = []
