@@ -68,6 +68,7 @@ class CORE_EXPORT QgsSimpleMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     QPen mSelPen;
     QBrush mSelBrush;
     QImage mSelCache;
+    bool mUsingCache;
 };
 
 //////////
