@@ -47,6 +47,8 @@ class QgsRenderContext
   void setRasterScaleFactor(double factor);
   void setRendererScale( double scale );
   void setPainter(QPainter* p);
+  //! Added in QGIS v1.5
+  void setForceVectorOutput( bool force );
   //! Added in QGIS v1.4
   void setLabelingEngine(QgsLabelingEngineInterface* iface);
 };

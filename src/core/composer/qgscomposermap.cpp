@@ -142,6 +142,9 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
     theRendererContext->setRenderingStopped( false );
   }
 
+  // force vector output (no caching of marker images etc.)
+  theRendererContext->setForceVectorOutput( true );
+
   //force composer map scale for scale dependent visibility
   double bk_scale = theMapRenderer.scale();
   theMapRenderer.setScale( scale() );

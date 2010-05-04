@@ -75,6 +75,8 @@ class CORE_EXPORT QgsRenderContext
     void setRasterScaleFactor( double factor ) {mRasterScaleFactor = factor;}
     void setRendererScale( double scale ) {mRendererScale = scale;}
     void setPainter( QPainter* p ) {mPainter = p;}
+    //! Added in QGIS v1.5
+    void setForceVectorOutput( bool force ) {mForceVectorOutput = force;}
     //! Added in QGIS v1.4
     void setLabelingEngine( QgsLabelingEngineInterface* iface ) { mLabelingEngine = iface; }
 
