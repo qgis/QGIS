@@ -853,7 +853,7 @@ bool QgsPostgresProvider::loadFields()
     QString fieldElem = QString::fromUtf8( PQgetvalue( oidResult, 0, 2 ) );
     int fieldSize = QString::fromUtf8( PQgetvalue( oidResult, 0, 3 ) ).toInt();
 
-    if ( tableoid >= 0 )
+    if ( tableoid > 0 )
     {
       sql = QString( "SELECT attnum FROM pg_attribute WHERE attrelid=%1 AND attname=%2" )
             .arg( tableoid ).arg( quotedValue( fieldName ) );
@@ -2940,7 +2940,7 @@ bool QgsPostgresProvider::deduceEndian()
     for ( i = 0; i < PQnfields( res ); i++ )
     {
       int tableoid = PQftable( res, i );
-      if ( tableoid >= 0 )
+      if ( tableoid > 0 )
       {
         oidValue = QString::number( tableoid );
         break;
@@ -3016,13 +3016,13 @@ bool QgsPostgresProvider::getGeometryDetails()
     Result result = connectionRO->PQexec( sql );
     if ( PGRES_TUPLES_OK == PQresultStatus( result ) )
     {
-      Oid tableOid = PQftable( result, 0 );
+      Oid tableoid = PQftable( result, 0 );
       int column = PQftablecol( result, 0 );
 
       result = connectionRO->PQexec( sql );
-      if ( tableOid >= 0 && PGRES_TUPLES_OK == PQresultStatus( result ) )
+      if ( tableoid > 0 && PGRES_TUPLES_OK == PQresultStatus( result ) )
       {
-        sql = QString( "SELECT pg_namespace.nspname,pg_class.relname FROM pg_class,pg_namespace WHERE pg_class.relnamespace=pg_namespace.oid AND pg_class.oid=%1" ).arg( tableOid );
+        sql = QString( "SELECT pg_namespace.nspname,pg_class.relname FROM pg_class,pg_namespace WHERE pg_class.relnamespace=pg_namespace.oid AND pg_class.oid=%1" ).arg( tableoid );
         result = connectionRO->PQexec( sql );
 
         if ( PGRES_TUPLES_OK == PQresultStatus( result ) && 1 == PQntuples( result ) )
@@ -3030,17 +3030,17 @@ bool QgsPostgresProvider::getGeometryDetails()
           schemaName = QString::fromUtf8( PQgetvalue( result, 0, 0 ) );
           tableName = QString::fromUtf8( PQgetvalue( result, 0, 1 ) );
 
-          sql = QString( "SELECT attname FROM pg_attribute WHERE attrelid=%1 AND attnum=%2" ).arg( tableOid ).arg( column );
+          sql = QString( "SELECT attname FROM pg_attribute WHERE attrelid=%1 AND attnum=%2" ).arg( tableoid ).arg( column );
           result = connectionRO->PQexec( sql );
           if ( PGRES_TUPLES_OK == PQresultStatus( result ) && 1 == PQntuples( result ) )
           {
             geomCol = QString::fromUtf8( PQgetvalue( result, 0, 0 ) );
           }
-					else
-					{
-						schemaName = mSchemaName;
-						tableName = mTableName;
-					}
+          else
+          {
+            schemaName = mSchemaName;
+            tableName = mTableName;
+          }
         }
       }
     }
