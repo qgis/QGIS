@@ -850,7 +850,7 @@ QString QgsGPXProvider::description() const
 
 QgsCoordinateReferenceSystem QgsGPXProvider::crs()
 {
-  return QgsCoordinateReferenceSystem(); // use default CRS - it's WGS84
+  return QgsCoordinateReferenceSystem( GEOSRID, QgsCoordinateReferenceSystem::PostgisCrsId ); // use WGS84
 }
 
 
