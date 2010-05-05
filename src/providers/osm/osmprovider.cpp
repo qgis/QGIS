@@ -937,7 +937,7 @@ const QgsFieldMap & QgsOSMDataProvider::fields() const
 
 QgsCoordinateReferenceSystem QgsOSMDataProvider::crs()
 {
-  return QgsCoordinateReferenceSystem();    // use default CRS - it's WGS84
+  return QgsCoordinateReferenceSystem( GEOSRID, QgsCoordinateReferenceSystem::PostgisCrsId ); // use WGS84
 }
 
 
