@@ -26683,7 +26683,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="17"/>
         <source>Assign new value as result of operation on columns to column in attribute table</source>
-        <translation type="unfinished">Assegna un nuovo valore ad una colonna nella tabella attributi derivante dall&apos;operazione sulle colonne</translation>
+        <translation>Assegna un nuovo valore ad una colonna nella tabella attributi derivante dall&apos;operazione sulle colonne</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="18"/>
@@ -26728,7 +26728,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="26"/>
         <source>Blend red, green, raster layers to obtain one color raster</source>
-        <translation type="unfinished">Mescola layer rosso, verde per ottenre un raster monocromatico</translation>
+        <translation>Mescola layer rosso, verde per ottenre un raster monocromatico</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="27"/>
@@ -26873,7 +26873,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="55"/>
         <source>Change the type of boundary dangle to line</source>
-        <translation type="unfinished">Cambia il tipo di confine in una linea</translation>
+        <translation>Cambia il tipo di confine in una linea</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="56"/>
@@ -28128,12 +28128,12 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="306"/>
         <source>Raster file matrix filter</source>
-        <translation type="unfinished">Filtro di matrice raster</translation>
+        <translation>Filtro di matrice raster</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="307"/>
         <source>Raster neighbours analysis</source>
-        <translation type="unfinished">Analisi raster dei punti vicini</translation>
+        <translation>Analisi raster dei punti vicini</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="308"/>
@@ -28153,7 +28153,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="311"/>
         <source>Recategorize contiguous cells to unique categories</source>
-        <translation type="unfinished">Ricategorizza celle contigue a categoria unica</translation>
+        <translation>Ricategorizza celle contigue a categoria unica</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="312"/>
@@ -28178,22 +28178,22 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="316"/>
         <source>Reclass raster with patches larger than user-defined area size (in hectares)</source>
-        <translation type="unfinished">Riclassifica un raster con aggiustamenti più grandi dell&apos;area definita dall&apos;utente (in ettari)</translation>
+        <translation>Riclassifica un raster con aggiustamenti più grandi dell&apos;area definita dall&apos;utente (in ettari)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="317"/>
         <source>Reclass raster with patches smaller than user-defined area size (in hectares)</source>
-        <translation type="unfinished">Riclassifica un raster con aggiustamenti più piccoli dell&apos;area definita dall&apos;utente (in ettari)</translation>
+        <translation>Riclassifica un raster con aggiustamenti più piccoli dell&apos;area definita dall&apos;utente (in ettari)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="318"/>
         <source>Reclassify raster greater or less than user-defined area size (in hectares)</source>
-        <translation type="unfinished">Riclassifica un raster maggiore o minore dell&apos;area definita dall&apos;utente (in ettari)</translation>
+        <translation>Riclassifica un raster maggiore o minore dell&apos;area definita dall&apos;utente (in ettari)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="319"/>
         <source>Recode categorical raster using reclassification rules</source>
-        <translation type="unfinished">Ricodifica categorica di un raster mediante regole di classificazione</translation>
+        <translation>Ricodifica categorica di un raster mediante regole di classificazione</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="320"/>
@@ -28223,12 +28223,12 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="325"/>
         <source>Regularized spline with tension raster interpolation based on vector points</source>
-        <translation type="unfinished">Interpolazione spline regolarizzata con tensione di un raster basata su punti vettoriali</translation>
+        <translation>Interpolazione spline regolarizzata con tensione di un raster basata su punti vettoriali</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="326"/>
         <source>Reinterpolate and compute topographic analysis using regularized spline with tension and smoothing</source>
-        <translation type="unfinished">Re-interploazione e calcolo di analisi topografica mediante spline regolarizzata con tensione e appiattimento</translation>
+        <translation>Re-interploazione e calcolo di analisi topografica mediante spline regolarizzata con tensione e appiattimento</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="327"/>
@@ -28238,12 +28238,12 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="328"/>
         <source>Remove bridges connecting area and island or 2 islands</source>
-        <translation type="unfinished">Rimuovi punti di connessione tra area e isola o 2 isole</translation>
+        <translation>Rimuovi punti di connessione tra area e isola o 2 isole</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="329"/>
         <source>Remove dangles</source>
-        <translation type="unfinished">Rimuovi nodi appesi</translation>
+        <translation>Rimuovi nodi appesi</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="330"/>
@@ -28268,17 +28268,17 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="334"/>
         <source>Remove small angles between lines at nodes</source>
-        <translation type="unfinished">Rimuovi piccoli angoli tra linee e nodi</translation>
+        <translation>Rimuovi piccoli angoli tra linee e nodi</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="335"/>
         <source>Remove small areas, the longest boundary with adjacent area is removed</source>
-        <translation type="unfinished">Rimuovi piccole aree, viene rimosso il contorno più lungo con area adiacente</translation>
+        <translation>Rimuovi piccole aree, viene rimosso il contorno più lungo con area adiacente</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="336"/>
         <source>Remove vertices in threshold from lines and boundaries, boundary is pruned only if topology is not damaged (new intersection, changed attachement of centroid), first and last segment of the boundary is never changed</source>
-        <translation type="unfinished">Rimuovi i vertici sotto una certa soglia di tolleranza da linee e contorni, il contorno viene tagliato solo se la topolgia non è danneggiata (nuove intersezioni, attachement cambiato), il primo e l&apos;ultimo segmento del contorno non viene mai cambiato</translation>
+        <translation>Rimuovi i vertici sotto una certa soglia di tolleranza da linee e contorni, il contorno viene tagliato solo se la topologia non è danneggiata (nuove intersezioni, attachement cambiato), il primo e l&apos;ultimo segmento del contorno non viene mai cambiato</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="337"/>
@@ -28328,12 +28328,12 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="346"/>
         <source>Rescale the range of category values in raster</source>
-        <translation type="unfinished">Rigraduazione del range dei valori di categoria nel raster</translation>
+        <translation>Rigraduazione del range dei valori di categoria nel raster</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="347"/>
         <source>Sample raster at site locations</source>
-        <translation type="unfinished">Campiona raster a determinate posizioni</translation>
+        <translation>Campiona raster a determinate posizioni</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="348"/>
@@ -28348,7 +28348,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="350"/>
         <source>Select features overlapped by features in another map</source>
-        <translation type="unfinished">Seleziona gli oggetti sovrapposte agli oggetti di un&apos;altra mappa</translation>
+        <translation>Seleziona gli oggetti sovrapposti agli oggetti di un&apos;altra mappa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="351"/>
@@ -28358,27 +28358,27 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="352"/>
         <source>Set boundary definitions by edge (n-s-e-w)</source>
-        <translation type="unfinished">Imposta la definizione del contorno in base ai bordi (n-s-e-w)</translation>
+        <translation>Imposta la definizione del contorno in base ai bordi (n-s-e-w)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="353"/>
         <source>Set boundary definitions for raster</source>
-        <translation type="unfinished">Imposta la definizione del contorno per un raster</translation>
+        <translation>Imposta la definizione del contorno per un raster</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="354"/>
         <source>Set boundary definitions from raster</source>
-        <translation type="unfinished">Imposta la definizione del contorno da un raster</translation>
+        <translation>Imposta la definizione del contorno da un raster</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="355"/>
         <source>Set boundary definitions from vector</source>
-        <translation type="unfinished">Imposta la definizione del contorno da un vettore</translation>
+        <translation>Imposta la definizione del contorno da un vettore</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="356"/>
         <source>Set boundary definitions to current or default region</source>
-        <translation type="unfinished">Imposta la definizione del contorno alla region attuale o alla region di default</translation>
+        <translation>Imposta la definizione del contorno alla region attuale o alla region di default</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="357"/>
@@ -28413,12 +28413,12 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="363"/>
         <source>Set raster color table from user-defined rules</source>
-        <translation>Imposta tabella colori da mpostazioni dell&apos;utente</translation>
+        <translation>Imposta tabella colori da impostazioni dell&apos;utente</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="364"/>
         <source>Set region to align to raster</source>
-        <translation type="unfinished">Imposta la region in base al raster</translation>
+        <translation>Imposta la region in base al raster</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="365"/>
@@ -28438,12 +28438,12 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="368"/>
         <source>Set/Show database connection for vector</source>
-        <translation>Imposta/Visualizza la connessione al datbase per il vettore</translation>
+        <translation>Imposta/Visualizza la connessione al database per il vettore</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="369"/>
         <source>Sets the boundary definitions for a raster map</source>
-        <translation type="unfinished">Definisce le impostazioni del contorno (boundary) per una mappa raster</translation>
+        <translation>Definisce le impostazioni del contorno (boundary) per una mappa raster</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="370"/>
@@ -28463,7 +28463,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="373"/>
         <source>Snap lines to vertex in threshold</source>
-        <translation type="unfinished">Aggancia le linee al vertice all&apos;interno della soglia</translation>
+        <translation>Aggancia le linee al vertice all&apos;interno della soglia</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="374"/>
@@ -28553,7 +28553,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="391"/>
         <source>Thin no-zero cells that denote line features</source>
-        <translation type="unfinished">Affina le celle no-zero che delineano elementi lineari</translation>
+        <translation>Affina le celle non-zero che delineano elementi lineari</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="392"/>
