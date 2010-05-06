@@ -345,19 +345,15 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
                           .arg( process.readAllStandardError().constData() ) );
     return;
   }
-  QByteArray gDescArray = process.readAllStandardOutput();
-  QByteArray errArray = process.readAllStandardError();
 
   QDomDocument gDoc( "task" );
   QString err;
   int line, column;
-  if ( !gDoc.setContent(( QByteArray )gDescArray, &err, &line, &column ) )
+  if ( !gDoc.setContent( &process, false, &err, &line, &column ) )
   {
     QString errmsg = tr( "Cannot read module description (%1):" ).arg( mXName )
                      + tr( "\n%1\nat line %2 column %3" ).arg( err ).arg( line ).arg( column );
     QgsDebugMsg( errmsg );
-    QgsDebugMsg( QString( gDescArray ) );
-    QgsDebugMsg( QString( errArray ) );
     QMessageBox::warning( 0, tr( "Warning" ), errmsg );
     return;
   }
