@@ -19,12 +19,9 @@ SET(QGIS_APP_SRCS
   qgsdbfilterproxymodel.cpp
   qgsdbtablemodel.cpp
   qgsformannotationdialog.cpp
-  qgsspatialitefilterproxymodel.cpp
-  qgsspatialitetablemodel.cpp
   qgsdelattrdialog.cpp
   qgsdisplayangle.cpp
   qgsfieldcalculator.cpp
-  qgsnewspatialitelayerdialog.cpp
   qgsnewvectorlayerdialog.cpp
   qgsgraduatedsymboldialog.cpp
   qgshelpviewer.cpp
@@ -59,7 +56,6 @@ SET(QGIS_APP_SRCS
   qgsnewhttpconnection.cpp
   qgsnumericsortlistviewitem.cpp
   qgsoptions.cpp
-  qgsspatialitesridsdialog.cpp
   qgspastetransformations.cpp
   qgspointrotationitem.cpp
   qgspluginitem.cpp
@@ -146,7 +142,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsfieldcalculator.h
   qgsformannotationdialog.h
   qgsmaptoolmeasureangle.h
-  qgsnewspatialitelayerdialog.h
   qgsnewvectorlayerdialog.h
   qgsgraduatedsymboldialog.h
   qgshelpviewer.h
@@ -184,11 +179,9 @@ SET (QGIS_APP_MOC_HDRS
   qgswmssourceselect.h
   qgssinglesymboldialog.h
   qgssnappingdialog.h
-  qgsspatialitesridsdialog.h
   qgsuniquevaluedialog.h
   qgsvectorlayerproperties.h
   qgsdbtablemodel.h
-  qgsspatialitetablemodel.h
   qgsundowidget.h
   qgstilescalewidget.h
   qgsquerybuilder.h
@@ -275,9 +268,16 @@ ENDIF (POSTGRES_FOUND)
 IF (HAVE_SPATIALITE)
   SET (QGIS_APP_SRCS ${QGIS_APP_SRCS}
     qgsspatialitesourceselect.cpp
+    qgsnewspatialitelayerdialog.cpp
+    qgsspatialitesridsdialog.cpp
+    qgsspatialitefilterproxymodel.cpp
+    qgsspatialitetablemodel.cpp
     )
   SET (QGIS_APP_MOC_HDRS ${QGIS_APP_MOC_HDRS}
     qgsspatialitesourceselect.h
+    qgsnewspatialitelayerdialog.h
+    qgsspatialitesridsdialog.h
+    qgsspatialitetablemodel.h
     )
 ENDIF (HAVE_SPATIALITE)
 
