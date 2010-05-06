@@ -6,8 +6,9 @@ qgis (1.5.0) UNRELEASED; urgency=low
   * remove circular dependencies
   * integrate new GRASS raster provider
   * add spatialquery plugin
+  * include qgis.g.browser in grass plugin
 
- -- Jürgen E. Fischer <jef@norbit.de>  Sat, 24 Apr 2010 10:57:21 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Thu, 06 May 2010 19:21:09 +0200
 
 qgis (1.4.0) UNRELEASED; urgency=low
 
