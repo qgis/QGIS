@@ -8,6 +8,7 @@
 	<option key="day" />
 	<option key="hour" />
 	<option key="minute" />
+        <option key="second" answer="0"/>
 	<option key="timezone" />
 	<flag key="z" answer="off"/>
 	<option key="output" />
