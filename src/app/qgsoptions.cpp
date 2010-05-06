@@ -454,8 +454,6 @@ void QgsOptions::saveOptions()
   settings.setValue( "cache/directory", mCacheDirectory->text() );
   settings.setValue( "cache/size", QVariant::fromValue( mCacheSize->value()*1024L ) );
 
-  QgisApp::instance()->namUpdate();
-
   //url to exclude from proxys
   QString proxyExcludeString;
   for ( int i = 0; i < mExcludeUrlListWidget->count(); ++i )
@@ -467,6 +465,8 @@ void QgsOptions::saveOptions()
     proxyExcludeString += mExcludeUrlListWidget->item( i )->text();
   }
   settings.setValue( "proxy/proxyExcludedUrls", proxyExcludeString );
+
+  QgisApp::instance()->namUpdate();
 
   //wms search url
   settings.setValue( "/qgis/WMSSearchUrl", leWmsSearch->text() );
