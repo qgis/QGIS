@@ -131,13 +131,14 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
 
     // georeference
     bool georeference();
-    bool writeWorldFile( QgsPoint origin, double pixelXSize, double pixelYSize );
+    bool writeWorldFile( QgsPoint origin, double pixelXSize, double pixelYSize, double rotation );
+    bool writePDFReportFile( const QString& fileName, const QgsGeorefTransform& transform );
 
     // gdal script
     void showGDALScript( int argNum... );
-    QString generateGDALtranslateCommand( bool generateTFW = true);   
+    QString generateGDALtranslateCommand( bool generateTFW = true );
     /* Generate command-line for gdalwarp based on current GCPs and given parameters.
-     * For values in the range 1 to 3, the parameter "order" prescribes the degree of the interpolating polynomials to use, 
+     * For values in the range 1 to 3, the parameter "order" prescribes the degree of the interpolating polynomials to use,
      * a value of -1 indicates that thin plate spline interpolation should be used for warping.*/
     QString generateGDALwarpCommand( QString resampling, QString compress, bool useZeroForTrans, int order,
                                      double targetResX, double targetResY );
@@ -177,6 +178,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     QString mTranslatedRasterFileName;
     QString mGCPpointsFileName;
     QString mProjection;
+    QString mPdfOutputFile;
     double  mUserResX, mUserResY;  // User specified target scale
 
     QgsGeorefTransform::TransformParametrisation mTransformParam;

@@ -47,6 +47,8 @@ QgsGeorefDataPoint::QgsGeorefDataPoint( const QgsGeorefDataPoint &p )
   mPixelCoords = p.pixelCoords();
   mMapCoords = p.mapCoords();
   mEnabled = p.isEnabled();
+  mResidual = p.residual();
+  mId = p.id();
 }
 
 QgsGeorefDataPoint::~QgsGeorefDataPoint()

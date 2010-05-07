@@ -32,7 +32,7 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
                                 int countGCPpoints, QWidget *parent = 0 );
     void getTransformSettings( QgsGeorefTransform::TransformParametrisation &tp,
                                QgsImageWarper::ResamplingMethod &rm, QString &comprMethod,
-                               QString &raster, QString &proj, bool &zt, bool &loadInQgis,
+                               QString &raster, QString &proj, QString& pdfReportFile, bool &zt, bool &loadInQgis,
                                double& resX, double& resY );
     static void resetSettings();
 
@@ -43,6 +43,7 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
   private slots:
     void on_tbnOutputRaster_clicked();
     void on_tbnTargetSRS_clicked();
+    void on_tbnReportFile_clicked();
     void on_leTargetSRS_textChanged( const QString &text );
     QIcon getThemeIcon( const QString &theName );
 

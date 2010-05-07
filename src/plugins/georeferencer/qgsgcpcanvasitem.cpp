@@ -35,6 +35,12 @@ QgsGCPCanvasItem::QgsGCPCanvasItem( QgsMapCanvas* mapCanvas, const QgsGeorefData
 
 void QgsGCPCanvasItem::paint( QPainter* p )
 {
+  QgsRenderContext context;
+  if ( !setRenderContextVariables( p, context ) )
+  {
+    return;
+  }
+
   p->setRenderHint( QPainter::Antialiasing );
 
   bool enabled = true;
@@ -57,29 +63,39 @@ void QgsGCPCanvasItem::paint( QPainter* p )
 
   QSettings s;
   bool showIDs = s.value( "/Plugin-GeoReferencer/Config/ShowId" ).toBool();
-  if ( !showIDs && mIsGCPSource )
+  bool showCoords = s.value( "/Plugin-GeoReferencer/Config/ShowCoords" ).toBool();
+
+  QString msg;
+  if ( showIDs && showCoords )
   {
-    QString msg = QString( "X %1\nY %2" ).arg( QString::number( worldCoords.x(), 'f' ) ).
-                  arg( QString::number( worldCoords.y(), 'f' ) );
-    p->setFont( QFont( "helvetica", 9 ) );
-    QRect textBounds = p->boundingRect( 6, 6, 10, 10, Qt::AlignLeft, msg );
-    p->setBrush( mLabelBrush );
-    p->drawRect( textBounds.x() - 2, textBounds.y() - 2, textBounds.width() + 4, textBounds.height() + 4 );
-    p->drawText( textBounds, Qt::AlignLeft, msg );
-    mTextBounds = QSizeF( textBounds.width() + 4, textBounds.height() + 4 );
+    msg = QString( "%1\nX %2\nY %3" ).arg( QString::number( id ) ).arg( QString::number( worldCoords.x(), 'f' ) ).arg( QString::number( worldCoords.y(), 'f' ) );
   }
   else if ( showIDs )
   {
-    p->setFont( QFont( "helvetica", 12 ) );
-    QString msg = QString::number( id );
-    p->setBrush( mLabelBrush );
-    p->drawRect( 5, 4, p->fontMetrics().width( msg ) + 2, 14 );
-    p->drawText( 6, 16, msg );
-    QFontMetrics fm = p->fontMetrics();
-    mTextBounds = QSize( fm.width( msg ) + 4, fm.height() + 4 );
+    msg = msg = QString::number( id );
+  }
+  else if ( showCoords )
+  {
+    msg = QString( "X %1\nY %2" ).arg( QString::number( worldCoords.x(), 'f' ) ).arg( QString::number( worldCoords.y(), 'f' ) );
   }
 
-  drawResidualArrow( p );
+  if ( !msg.isEmpty() )
+  {
+    p->setBrush( mLabelBrush );
+    QFont textFont( "helvetica" );
+    textFont.setPixelSize( fontSizePainterUnits( 12, context ) );
+    p->setFont( textFont );
+    QRectF textBounds = p->boundingRect( 3 * context.scaleFactor(), 3 * context.scaleFactor(), 5 * context.scaleFactor(), 5 * context.scaleFactor(), Qt::AlignLeft, msg );
+    mTextBoxRect = QRectF( textBounds.x() - context.scaleFactor() * 1, textBounds.y() - context.scaleFactor() * 1, \
+                           textBounds.width() + 2 * context.scaleFactor(), textBounds.height() + 2 * context.scaleFactor() );
+    p->drawRect( mTextBoxRect );
+    p->drawText( textBounds, Qt::AlignLeft, msg );
+  }
+
+  if ( data( 0 ) != "composer" ) //draw residuals only on screen
+  {
+    drawResidualArrow( p, context );
+  }
 }
 
 QRectF QgsGCPCanvasItem::boundingRect() const
@@ -91,6 +107,8 @@ QRectF QgsGCPCanvasItem::boundingRect() const
   {
     residual = mDataPoint->residual();
   }
+
+  //only considering screen resolution is ok for the bounding box function
   double rf = residualToScreenFactor();
 
   if ( residual.x() > 0 )
@@ -116,7 +134,12 @@ QRectF QgsGCPCanvasItem::boundingRect() const
 
   QRectF residualArrowRect( QPointF( residualLeft, residualTop ), QPointF( residualRight, residualBottom ) );
   QRectF markerRect( -2, -2, mTextBounds.width() + 6, mTextBounds.height() + 6 );
-  return residualArrowRect.united( markerRect );
+  QRectF boundingRect =  residualArrowRect.united( markerRect );
+  if ( !mTextBoxRect.isNull() )
+  {
+    boundingRect = boundingRect.united( mTextBoxRect );
+  }
+  return boundingRect;
 }
 
 QPainterPath QgsGCPCanvasItem::shape() const
@@ -138,9 +161,9 @@ void QgsGCPCanvasItem::updatePosition()
   setPos( toCanvasCoordinates( mIsGCPSource ? mDataPoint->pixelCoords() : mDataPoint->mapCoords() ) );
 }
 
-void QgsGCPCanvasItem::drawResidualArrow( QPainter* p )
+void QgsGCPCanvasItem::drawResidualArrow( QPainter* p, const QgsRenderContext& context )
 {
-  if ( !mDataPoint || !mIsGCPSource )
+  if ( !mDataPoint || !mIsGCPSource || !mMapCanvas )
   {
     return;
   }
@@ -188,3 +211,9 @@ void QgsGCPCanvasItem::checkBoundingRectChange()
 {
   prepareGeometryChange();
 }
+
+double QgsGCPCanvasItem::fontSizePainterUnits( double points, const QgsRenderContext& c )
+{
+  return points * 0.3527 * c.scaleFactor();
+}
+

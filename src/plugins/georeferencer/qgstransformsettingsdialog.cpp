@@ -34,13 +34,13 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
 {
   setupUi( this );
 
-  cmbTransformType->addItem( tr( "Linear" ) ,           (int)QgsGeorefTransform::Linear ) ;
-  cmbTransformType->addItem( tr( "Helmert" ),           (int)QgsGeorefTransform::Helmert );
-  cmbTransformType->addItem( tr( "Polynomial 1" ),      (int)QgsGeorefTransform::PolynomialOrder1 );
-  cmbTransformType->addItem( tr( "Polynomial 2" ),      (int)QgsGeorefTransform::PolynomialOrder2 );
-  cmbTransformType->addItem( tr( "Polynomial 3" ),      (int)QgsGeorefTransform::PolynomialOrder3 );
-  cmbTransformType->addItem( tr( "Thin Plate Spline" ), (int)QgsGeorefTransform::ThinPlateSpline );
-  
+  cmbTransformType->addItem( tr( "Linear" ) , ( int )QgsGeorefTransform::Linear ) ;
+  cmbTransformType->addItem( tr( "Helmert" ), ( int )QgsGeorefTransform::Helmert );
+  cmbTransformType->addItem( tr( "Polynomial 1" ), ( int )QgsGeorefTransform::PolynomialOrder1 );
+  cmbTransformType->addItem( tr( "Polynomial 2" ), ( int )QgsGeorefTransform::PolynomialOrder2 );
+  cmbTransformType->addItem( tr( "Polynomial 3" ), ( int )QgsGeorefTransform::PolynomialOrder3 );
+  cmbTransformType->addItem( tr( "Thin Plate Spline" ), ( int )QgsGeorefTransform::ThinPlateSpline );
+
   leOutputRaster->setText( output );
 
   mRegExpValidator = new QRegExpValidator( QRegExp( "(^epsg:{1}\\s*\\d+)|(^\\+proj.*)", Qt::CaseInsensitive ), leTargetSRS );
@@ -70,12 +70,13 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
 
   tbnOutputRaster->setIcon( getThemeIcon( "/mPushButtonFileOpen.png" ) );
   tbnTargetSRS->setIcon( getThemeIcon( "/mPushButtonTargetSRSDisabled.png" ) );
+  tbnReportFile->setIcon( getThemeIcon( "/mActionSaveAsPDF.png" ) );
 }
 
 void QgsTransformSettingsDialog::getTransformSettings( QgsGeorefTransform::TransformParametrisation &tp,
     QgsImageWarper::ResamplingMethod &rm,
     QString &comprMethod, QString &raster,
-    QString &proj, bool &zt, bool &loadInQgis,
+    QString &proj, QString& pdfReportFile, bool &zt, bool &loadInQgis,
     double& resX, double& resY )
 {
   if ( cmbTransformType->currentIndex() == -1 )
@@ -87,6 +88,7 @@ void QgsTransformSettingsDialog::getTransformSettings( QgsGeorefTransform::Trans
   comprMethod = cmbCompressionComboBox->currentText();
   raster = leOutputRaster->text();
   proj = leTargetSRS->text();
+  pdfReportFile = mReportFileLineEdit->text();
   zt = cbxZeroAsTrans->isChecked();
   loadInQgis = cbxLoadInQgisWhenDone->isChecked();
   resX = 0.0;
@@ -130,7 +132,7 @@ void QgsTransformSettingsDialog::accept()
   int minGCPpoints;
   if ( checkGCPpoints( cmbTransformType->currentIndex(), minGCPpoints ) )
   {
-    if ( leOutputRaster->text().isEmpty() && cmbTransformType->currentIndex() != 0 )
+    if ( leOutputRaster->text().isEmpty() && cmbTransformType->currentIndex() > 1 )
     {
       QMessageBox::information( this, tr( "Info" ), tr( "Please set output name" ) );
       return;
@@ -156,6 +158,12 @@ void QgsTransformSettingsDialog::accept()
   s.setValue( "/Plugin-GeoReferencer/user_specified_resolution", cbxUserResolution->isChecked() );
   s.setValue( "/Plugin-GeoReferencer/user_specified_resx", dsbHorizRes->value() );
   s.setValue( "/Plugin-GeoReferencer/user_specified_resy", dsbVerticalRes->value() );
+  QString pdfReportFileName = mReportFileLineEdit->text();
+  if ( !pdfReportFileName.isEmpty() )
+  {
+    QFileInfo fi( pdfReportFileName );
+    s.setValue( "/Plugin-GeoReferencer/lastPDFReportDir", fi.absolutePath() );
+  }
 }
 
 void QgsTransformSettingsDialog::on_tbnOutputRaster_clicked()
@@ -198,6 +206,17 @@ void QgsTransformSettingsDialog::on_tbnTargetSRS_clicked()
       srs = projSelector->selectedAuthId();
     }
     leTargetSRS->setText( srs );
+  }
+}
+
+void QgsTransformSettingsDialog::on_tbnReportFile_clicked()
+{
+  QSettings s;
+  QString myLastUsedDir = s.value( "/Plugin-GeoReferencer/lastPDFReportDir", "" ).toString();
+  QString outputFileName = QFileDialog::getSaveFileName( 0, tr( "Select save PDF file" ), myLastUsedDir, tr( "PDF Format" ) + " (*.pdf *PDF)" );
+  if ( !outputFileName.isNull() )
+  {
+    mReportFileLineEdit->setText( outputFileName );
   }
 }
 
