@@ -127,7 +127,8 @@ class CORE_EXPORT QgsSearchTreeNode
     QString makeSearchString();
 
     //! checks whether the node tree is valid against supplied attributes
-    bool checkAgainst( const QgsFieldMap& fields, const QgsAttributeMap& attributes );
+    //! @note optional geom parameter added in 1.5
+    bool checkAgainst( const QgsFieldMap& fields, const QgsAttributeMap& attributes, QgsGeometry* geom = 0 );
 
     //! checks if there were errors during evaluation
     bool hasError() { return ( !mError.isEmpty() ); }
@@ -136,6 +137,7 @@ class CORE_EXPORT QgsSearchTreeNode
     const QString& errorMsg() { return mError; }
 
     //! wrapper around valueAgainst()
+    //! @note added in 1.4
     bool getValue( QgsSearchTreeValue& value, QgsSearchTreeNode* node,
                    const QgsFieldMap& fields, const QgsAttributeMap& attributes, QgsGeometry* geom = 0 );
 
