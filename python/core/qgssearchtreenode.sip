@@ -90,7 +90,8 @@ class QgsSearchTreeNode
     QString makeSearchString();
 
     //! checks whether the node tree is valid against supplied attributes
-    bool checkAgainst( const QMap<int,QgsField>& fields, const QMap<int, QVariant>& attributes );
+    //! @note optional geom parameter added in 1.5
+    bool checkAgainst( const QMap<int,QgsField>& fields, const QMap<int, QVariant>& attributes, QgsGeometry* geom = 0 );
 
     //! checks if there were errors during evaluation
     bool hasError();
@@ -99,6 +100,7 @@ class QgsSearchTreeNode
     const QString& errorMsg();
 
     //! wrapper around valueAgainst()
+    //! @note added in 1.4
     bool getValue( QgsSearchTreeValue& value /Out/, QgsSearchTreeNode* node,
                    const QMap<int,QgsField>& fields, const QMap<int,QVariant>& attributes, QgsGeometry* geom = 0 );
 

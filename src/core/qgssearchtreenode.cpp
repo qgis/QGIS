@@ -250,7 +250,7 @@ QStringList QgsSearchTreeNode::referencedColumns()
 }
 
 
-bool QgsSearchTreeNode::checkAgainst( const QgsFieldMap& fields, const QgsAttributeMap& attributes )
+bool QgsSearchTreeNode::checkAgainst( const QgsFieldMap& fields, const QgsAttributeMap& attributes, QgsGeometry* geom )
 {
   QgsDebugMsgLevel( "checkAgainst: " + makeSearchString(), 2 );
 
@@ -269,21 +269,21 @@ bool QgsSearchTreeNode::checkAgainst( const QgsFieldMap& fields, const QgsAttrib
   switch ( mOp )
   {
     case opNOT:
-      return !mLeft->checkAgainst( fields, attributes );
+      return !mLeft->checkAgainst( fields, attributes, geom );
 
     case opAND:
-      if ( !mLeft->checkAgainst( fields, attributes ) )
+      if ( !mLeft->checkAgainst( fields, attributes, geom ) )
         return false;
-      return mRight->checkAgainst( fields, attributes );
+      return mRight->checkAgainst( fields, attributes, geom );
 
     case opOR:
-      if ( mLeft->checkAgainst( fields, attributes ) )
+      if ( mLeft->checkAgainst( fields, attributes, geom ) )
         return true;
-      return mRight->checkAgainst( fields, attributes );
+      return mRight->checkAgainst( fields, attributes, geom );
 
     case opISNULL:
     case opISNOTNULL:
-      if ( !getValue( value1, mLeft, fields, attributes ) )
+      if ( !getValue( value1, mLeft, fields, attributes, geom ) )
         return false;
 
       if ( mOp == opISNULL )
@@ -302,7 +302,7 @@ bool QgsSearchTreeNode::checkAgainst( const QgsFieldMap& fields, const QgsAttrib
     case opGE:
     case opLE:
 
-      if ( !getValue( value1, mLeft, fields, attributes ) || !getValue( value2, mRight, fields, attributes ) )
+      if ( !getValue( value1, mLeft, fields, attributes, geom ) || !getValue( value2, mRight, fields, attributes, geom ) )
         return false;
 
       if ( value1.isNull() || value2.isNull() )
@@ -329,8 +329,8 @@ bool QgsSearchTreeNode::checkAgainst( const QgsFieldMap& fields, const QgsAttrib
     case opRegexp:
     case opLike:
     {
-      if ( !getValue( value1, mLeft, fields, attributes ) ||
-           !getValue( value2, mRight, fields, attributes ) )
+      if ( !getValue( value1, mLeft, fields, attributes, geom ) ||
+           !getValue( value2, mRight, fields, attributes, geom ) )
         return false;
 
       // value1 is string to be matched
