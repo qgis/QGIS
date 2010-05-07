@@ -68,8 +68,7 @@ class QgsSearchTreeNode
     Type type();
 
     //! node value getters
-    // TODO: for some reason this function is not found by dynamic linker
-    //Operator op();
+    Operator op();
     double number();
     QString columnRef();
     QString string();
@@ -107,6 +106,10 @@ class QgsSearchTreeNode
     //! return a list of referenced columns in the tree
     //! @note added in 1.5
     QStringList referencedColumns();
+
+    //! check whether there are any operators that need geometry (for area, length)
+    //! @note added in 1.5
+    bool needsGeometry();
 
   protected:
 

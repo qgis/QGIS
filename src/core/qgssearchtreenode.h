@@ -106,7 +106,7 @@ class CORE_EXPORT QgsSearchTreeNode
     Type type()   { return mType; }
 
     //! node value getters
-    Operator op();
+    Operator op() { return mOp; }
     double number() { return mNumber; }
     QString columnRef() { return mText; }
     QString string() { return mText; }
@@ -144,6 +144,10 @@ class CORE_EXPORT QgsSearchTreeNode
     //! return a list of referenced columns in the tree
     //! @note added in 1.5
     QStringList referencedColumns();
+
+    //! check whether there are any operators that need geometry (for area, length)
+    //! @note added in 1.5
+    bool needsGeometry();
 
   protected:
 

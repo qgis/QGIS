@@ -533,15 +533,19 @@ void QgsAttributeTableDialog::doSearch( QString searchString )
     return;
   }
 
+  // TODO: fetch only necessary columns
+  // QStringList columns = searchTree->referencedColumns();
+  bool fetchGeom = searchTree->needsGeometry();
+
   QApplication::setOverrideCursor( Qt::WaitCursor );
   mSelectedFeatures.clear();
 
   if ( cbxSearchSelectedOnly->isChecked() )
   {
     QgsFeatureList selectedFeatures = mLayer->selectedFeatures();
-    for ( QgsFeatureList::ConstIterator it = selectedFeatures.begin(); it != selectedFeatures.end(); ++it )
+    for ( QgsFeatureList::Iterator it = selectedFeatures.begin(); it != selectedFeatures.end(); ++it )
     {
-      if ( searchTree->checkAgainst( mLayer->pendingFields(), it->attributeMap() ) )
+      if ( searchTree->checkAgainst( mLayer->pendingFields(), it->attributeMap(), it->geometry() ) )
         mSelectedFeatures << it->id();
 
       // check if there were errors during evaluating
@@ -551,12 +555,12 @@ void QgsAttributeTableDialog::doSearch( QString searchString )
   }
   else
   {
-    mLayer->select( mLayer->pendingAllAttributesList(), QgsRectangle(), false );
+    mLayer->select( mLayer->pendingAllAttributesList(), QgsRectangle(), fetchGeom );
     QgsFeature f;
 
     while ( mLayer->nextFeature( f ) )
     {
-      if ( searchTree->checkAgainst( mLayer->pendingFields(), f.attributeMap() ) )
+      if ( searchTree->checkAgainst( mLayer->pendingFields(), f.attributeMap(), f.geometry() ) )
         mSelectedFeatures << f.id();
 
       // check if there were errors during evaluating
