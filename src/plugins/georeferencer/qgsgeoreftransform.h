@@ -129,6 +129,10 @@ class QgsGeorefTransform : public QgsGeorefTransformInterface
 
     //! \brief Returns origin and scale if this is a linear transform, fails otherwise.
     bool getLinearOriginScale( QgsPoint &origin, double &scaleX, double &scaleY ) const;
+
+    //! \brief Returns origin, scale and rotation for linear and helmert transform, fails otherwise.
+    bool getOriginScaleRotation( QgsPoint &origin, double &scaleX, double &scaleY, double& rotation ) const;
+
   private:
     // shallow copy constructor
     QgsGeorefTransform( const QgsGeorefTransform &other );

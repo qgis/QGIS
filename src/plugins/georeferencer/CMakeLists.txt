@@ -15,6 +15,7 @@ SET (GEOREF_SRCS
      qgsgeorefvalidators.cpp
      qgsleastsquares.cpp
      qgsmapcoordsdialog.cpp
+     qgsresidualplotitem.cpp
      qgstransformsettingsdialog.cpp
 
      qgsgcplist.cpp
@@ -67,7 +68,7 @@ ADD_LIBRARY (georefplugin MODULE ${GEOREF_SRCS} ${GEOREF_MOC_SRCS} ${GEOREF_RCC_
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_SOURCE_DIR}
      ${CMAKE_CURRENT_BINARY_DIR}
-     ../../core ../../core/raster ../../core/renderer ../../core/symbology
+     ../../core ../../core/raster ../../core/renderer ../../core/symbology ../../core/composer
      ../../gui
      ..
      ${GSL_INCLUDE_DIR}

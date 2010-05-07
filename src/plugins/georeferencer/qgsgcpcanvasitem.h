@@ -49,9 +49,14 @@ class QgsGCPCanvasItem : public QgsMapCanvasItem
     bool mIsGCPSource;
     QPen mResidualPen;
 
-    void drawResidualArrow( QPainter* p );
+    //text box rect for bounding rect calculation (updated in the paint event)
+    QRectF mTextBoxRect;
+
+    void drawResidualArrow( QPainter* p, const QgsRenderContext& context );
     /**Calculates scale factor for residual display*/
     double residualToScreenFactor() const;
+    /**Calculates pixel size for a font point size*/
+    double fontSizePainterUnits( double points, const QgsRenderContext& c );
 };
 
 #endif // QGSGCPCANVASITEM_H

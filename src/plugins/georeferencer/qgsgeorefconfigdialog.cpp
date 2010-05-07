@@ -54,13 +54,27 @@ void QgsGeorefConfigDialog::readSettings()
 {
   QSettings s;
   if ( s.value( "/Plugin-GeoReferencer/Config/ShowId" ).toBool() )
-    mShowIDsRadioButton->setChecked( true );
+  {
+    mShowIDsCheckBox->setChecked( true );
+  }
   else
-    mShowCoordsRadioButton->setChecked( true );
+  {
+    mShowIDsCheckBox->setChecked( false );
+  }
+
+  if ( s.value( "/Plugin-GeoReferencer/Config/ShowCoords" ).toBool() )
+  {
+    mShowCoordsCheckBox->setChecked( true );
+  }
+  else
+  {
+    mShowCoordsCheckBox->setChecked( false );
+  }
 }
 
 void QgsGeorefConfigDialog::writeSettings()
 {
   QSettings s;
-  s.setValue( "/Plugin-GeoReferencer/Config/ShowId", mShowIDsRadioButton->isChecked() );
+  s.setValue( "/Plugin-GeoReferencer/Config/ShowId", mShowIDsCheckBox->isChecked() );
+  s.setValue( "/Plugin-GeoReferencer/Config/ShowCoords", mShowCoordsCheckBox->isChecked() );
 }

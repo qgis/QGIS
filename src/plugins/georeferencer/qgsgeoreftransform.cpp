@@ -71,6 +71,7 @@ class QgsHelmertGeorefTransform : public QgsGeorefTransformInterface
       double   angle;
     };
 
+    bool getOriginScaleRotation( QgsPoint &origin, double& scale, double& rotation ) const;
     bool updateParametersFromGCPs( const std::vector<QgsPoint> &mapCoords, const std::vector<QgsPoint> &pixelCoords );
     uint getMinimumGCPCount() const;
 
@@ -246,6 +247,28 @@ bool QgsGeorefTransform::getLinearOriginScale( QgsPoint &origin, double &scaleX,
   return dynamic_cast<QgsLinearGeorefTransform *>( mGeorefTransformImplementation )->getOriginScale( origin, scaleX, scaleY );
 }
 
+bool QgsGeorefTransform::getOriginScaleRotation( QgsPoint &origin, double &scaleX, double &scaleY, double& rotation ) const
+{
+
+  if ( mTransformParametrisation == Linear )
+  {
+    rotation = 0.0;
+    return dynamic_cast<QgsLinearGeorefTransform *>( mGeorefTransformImplementation )->getOriginScale( origin, scaleX, scaleY );
+  }
+  else if ( mTransformParametrisation == Helmert )
+  {
+    double scale;
+    if ( ! dynamic_cast<QgsHelmertGeorefTransform*>( mGeorefTransformImplementation )->getOriginScaleRotation( origin, scale, rotation ) )
+    {
+      return false;
+    }
+    scaleX = scale;
+    scaleY = scale;
+    return true;
+  }
+  return false;
+}
+
 
 bool QgsGeorefTransform::gdal_transform( const QgsPoint &src, QgsPoint &dst, int dstToSrc ) const
 {
@@ -357,6 +380,13 @@ void *QgsHelmertGeorefTransform::GDALTransformerArgs() const
   return ( void* )&mHelmertParameters;
 }
 
+bool QgsHelmertGeorefTransform::getOriginScaleRotation( QgsPoint &origin, double& scale, double& rotation ) const
+{
+  origin = mHelmertParameters.origin;
+  scale = mHelmertParameters.scale;
+  rotation = mHelmertParameters.angle;
+  return true;
+}
 
 int QgsHelmertGeorefTransform::helmert_transform( void *pTransformerArg, int bDstToSrc, int nPointCount,
     double *x, double *y, double *z, int *panSuccess )

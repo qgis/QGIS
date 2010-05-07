@@ -13,6 +13,10 @@
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
+
+#ifndef QGSGEOREFDATAPOINT_H
+#define QGSGEOREFDATAPOINT_H
+
 #include "qgsmapcanvasitem.h"
 
 class QgsGCPCanvasItem;
@@ -66,3 +70,5 @@ class QgsGeorefDataPoint : public QObject
     bool mEnabled;
     QPointF mResidual;
 };
+
+#endif //QGSGEOREFDATAPOINT_H

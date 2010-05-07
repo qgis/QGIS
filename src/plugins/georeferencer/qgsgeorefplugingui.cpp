@@ -23,6 +23,7 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPlainTextEdit>
+#include <QPrinter>
 #include <QProgressDialog>
 #include <QPushButton>
 #include <QSettings>
@@ -32,9 +33,13 @@
 #include "qgslegendinterface.h"
 #include "qgsapplication.h"
 
+#include "qgscomposerlabel.h"
+#include "qgscomposermap.h"
+#include "qgscomposertexttable.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcoordsdialog.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsmaprenderer.h"
 #include "qgsmaptoolzoom.h"
 #include "qgsmaptoolpan.h"
 
@@ -52,9 +57,25 @@
 
 #include "qgsgeorefconfigdialog.h"
 #include "qgsgeorefdescriptiondialog.h"
+#include "qgsresidualplotitem.h"
 #include "qgstransformsettingsdialog.h"
 
 #include "qgsgeorefplugingui.h"
+
+class QgsGeorefDockWidget : public QDockWidget
+{
+  public:
+    QgsGeorefDockWidget( const QString & title, QWidget * parent = 0, Qt::WindowFlags flags = 0 )
+        : QDockWidget( title, parent, flags )
+    {
+      setObjectName( "GeorefDockWidget" ); // set object name so the position can be saved
+    }
+
+    virtual void closeEvent( QCloseEvent * ev )
+    {
+      deleteLater();
+    }
+};
 
 QgsGeorefPluginGui::QgsGeorefPluginGui( QgisInterface* theQgisInterface, QWidget* parent, Qt::WFlags fl )
     : QMainWindow( parent, fl )
@@ -232,7 +253,7 @@ void QgsGeorefPluginGui::doGeoreference()
   {
     if ( mLoadInQgis )
     {
-      if ( QgsGeorefTransform::Linear == mTransformParam )
+      if ( mModifiedRasterFileName.isEmpty() )
       {
         mIface->addRasterLayer( mRasterFileName );
       }
@@ -264,7 +285,7 @@ bool QgsGeorefPluginGui::getTransformSettings()
   }
 
   d.getTransformSettings( mTransformParam, mResamplingMethod, mCompressionMethod,
-                          mModifiedRasterFileName, mProjection, mUseZeroForTrans, mLoadInQgis, mUserResX, mUserResY );
+                          mModifiedRasterFileName, mProjection, mPdfOutputFile, mUseZeroForTrans, mLoadInQgis, mUserResX, mUserResY );
   mTransformParamLabel->setText( tr( "Transform: " ) + convertTransformEnumToString( mTransformParam ) );
   mGeorefTransform.selectTransformParametrisation( mTransformParam );
   mGCPListWidget->setGeorefTransform( &mGeorefTransform );
@@ -543,9 +564,11 @@ void QgsGeorefPluginGui::showRasterPropertiesDialog()
 void QgsGeorefPluginGui::showGeorefConfigDialog()
 {
   QgsGeorefConfigDialog config;
-  config.exec();
-  mCanvas->refresh();
-  mIface->mapCanvas()->refresh();
+  if ( config.exec() == QDialog::Accepted )
+  {
+    mCanvas->refresh();
+    mIface->mapCanvas()->refresh();
+  }
 }
 
 // Info slots
@@ -1042,11 +1065,12 @@ bool QgsGeorefPluginGui::georeference()
   if ( !checkReadyGeoref() )
     return false;
 
-  if ( QgsGeorefTransform::Linear == mGeorefTransform.transformParametrisation() )
+  if ( mModifiedRasterFileName.isEmpty() && ( QgsGeorefTransform::Linear == mGeorefTransform.transformParametrisation() || \
+       QgsGeorefTransform::Helmert == mGeorefTransform.transformParametrisation() ) )
   {
     QgsPoint origin;
-    double pixelXSize, pixelYSize;
-    if ( !mGeorefTransform.getLinearOriginScale( origin, pixelXSize, pixelYSize ) )
+    double pixelXSize, pixelYSize, rotation;
+    if ( !mGeorefTransform.getOriginScaleRotation( origin, pixelXSize, pixelYSize, rotation ) )
     {
       QMessageBox::information( this, tr( "Info" ),
                                 tr( "Failed to get linear transform parameters" ) );
@@ -1076,7 +1100,11 @@ bool QgsGeorefPluginGui::georeference()
       return false;
     }
 
-    return writeWorldFile( origin, pixelXSize, pixelYSize );
+    bool success = writeWorldFile( origin, pixelXSize, pixelYSize, rotation );
+    if ( success && !mPdfOutputFile.isEmpty() )
+    {
+      writePDFReportFile( mPdfOutputFile, mGeorefTransform );
+    }
   }
   else // Helmert, Polinom 1, Polinom 2, Polinom 3
   {
@@ -1097,12 +1125,16 @@ bool QgsGeorefPluginGui::georeference()
     }
     else // 1 all right
     {
+      if ( !mPdfOutputFile.isEmpty() )
+      {
+        writePDFReportFile( mPdfOutputFile, mGeorefTransform );
+      }
       return true;
     }
   }
 }
 
-bool QgsGeorefPluginGui::writeWorldFile( QgsPoint origin, double pixelXSize, double pixelYSize )
+bool QgsGeorefPluginGui::writeWorldFile( QgsPoint origin, double pixelXSize, double pixelYSize, double rotation )
 {
   // write the world file
   QFile file( mWorldFileName );
@@ -1112,13 +1144,230 @@ bool QgsGeorefPluginGui::writeWorldFile( QgsPoint origin, double pixelXSize, dou
                            tr( "Could not write to %1" ).arg( mWorldFileName ) );
     return false;
   }
+
+  double rotationX = 0;
+  double rotationY = 0;
+
+  if ( !doubleNear( rotation, 0.0 ) )
+  {
+    rotationX = pixelXSize * sin( rotation );
+    rotationY = pixelYSize * sin( rotation );
+    pixelXSize *= cos( rotation );
+    pixelYSize *= cos( rotation );
+  }
+
   QTextStream stream( &file );
   stream << QString::number( pixelXSize, 'f', 15 ) << endl
-  << 0 << endl
-  << 0 << endl
+  << rotationX << endl
+  << rotationY << endl
   << QString::number( -pixelYSize, 'f', 15 ) << endl
   << QString::number( origin.x(), 'f', 15 ) << endl
   << QString::number( origin.y(), 'f', 15 ) << endl;
+  return true;
+}
+
+bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsGeorefTransform& transform )
+{
+  if ( !mCanvas )
+  {
+    return false;
+  }
+
+  QgsMapRenderer* canvasRenderer = mCanvas->mapRenderer();
+  if ( !canvasRenderer )
+  {
+    return false;
+  }
+
+  QPrinter printer;
+  printer.setOutputFormat( QPrinter::PdfFormat );
+  printer.setOutputFileName( fileName );
+
+  //create composition A4 with 300 dpi
+  QgsComposition* composition = new QgsComposition( mCanvas->mapRenderer() );
+  composition->setPaperSize( 210, 297 ); //A4
+  composition->setPrintResolution( 300 );
+  printer.setPaperSize( QSizeF( composition->paperWidth(), composition->paperHeight() ), QPrinter::Millimeter );
+
+  //title
+  QFileInfo rasterFi( mRasterFileName );
+  QgsComposerLabel* titleLabel = new QgsComposerLabel( composition );
+  titleLabel->setText( rasterFi.fileName() );
+  composition->addItem( titleLabel );
+  titleLabel->setSceneRect( QRectF( 10, 5, composition->paperWidth(), 8 ) );
+  titleLabel->setFrame( false );
+
+  //composer map
+  QgsComposerMap* composerMap = new QgsComposerMap( composition, 10, titleLabel->rect().bottom() + titleLabel->transform().dy(), 190, 277 );
+  composerMap->setLayerSet( canvasRenderer->layerSet() );
+  composerMap->setNewExtent( mCanvas->extent() );
+  composerMap->setMapCanvas( mCanvas );
+  composition->addItem( composerMap );
+  printer.setFullPage( true );
+  printer.setColorMode( QPrinter::Color );
+
+  QgsComposerTextTable* parameterTable = 0;
+  double scaleX, scaleY, rotation;
+  QgsPoint origin;
+
+  QgsComposerLabel* parameterLabel = 0;
+  //transformation that involves only scaling and rotation (linear or helmert) ?
+  bool wldTransform = transform.getOriginScaleRotation( origin, scaleX, scaleY, rotation );
+
+  //consider rotation in scale parameter
+  double wldScaleX = scaleX;
+  double wldScaleY = scaleY;
+  if ( wldTransform && !doubleNear( rotation, 0.0 ) )
+  {
+    wldScaleX *= cos( rotation );
+    wldScaleY *= cos( rotation );
+  }
+
+  if ( wldTransform )
+  {
+    parameterLabel = new QgsComposerLabel( composition );
+    parameterLabel->setText( tr( "Transformation parameters" ) );
+    parameterLabel->adjustSizeToText();
+    composition->addItem( parameterLabel );
+    parameterLabel->setSceneRect( QRectF( 10, composerMap->rect().bottom() + composerMap->transform().dy() + 5, composition->paperWidth(), 8 ) );
+    parameterLabel->setFrame( false );
+
+    //calculate mean error (in map units)
+    double meanError = 0;
+    if ( mPoints.size() > 4 )
+    {
+      double sumVxSquare = 0;
+      double sumVySquare = 0;
+      double resXMap, resYMap;
+
+      int nPointsEnabled = 0;
+      QgsGCPList::const_iterator gcpIt = mPoints.constBegin();
+      for ( ; gcpIt != mPoints.constEnd(); ++gcpIt )
+      {
+        if (( *gcpIt )->isEnabled() )
+        {
+          resXMap = ( *gcpIt )->residual().x() * wldScaleX;
+          resYMap = ( *gcpIt )->residual().x() * wldScaleY;
+          sumVxSquare += ( resXMap * resXMap );
+          sumVySquare += ( resYMap * resYMap );
+          ++nPointsEnabled;
+        }
+      }
+
+      if ( nPointsEnabled > 4 )
+      {
+        meanError = sqrt(( sumVxSquare + sumVySquare ) / ( 2 * nPointsEnabled - 4 ) ) * sqrt( 2 );
+      }
+    }
+
+
+    parameterTable = new QgsComposerTextTable( composition );
+    QStringList headers;
+    headers << tr( "Translation x" ) << tr( "Translation y" ) << tr( "Scale x" ) << tr( "Scale y" ) << tr( "Rotation [degrees]" ) << tr( "Mean error [map units]" );
+    parameterTable->setHeaderLabels( headers );
+    QStringList row;
+    row << QString::number( origin.x() ) << QString::number( origin.y() ) << QString::number( scaleX ) << QString::number( scaleY ) << QString::number( rotation * 180 / M_PI ) << QString::number( meanError );
+    parameterTable->addRow( row );
+    composition->addItem( parameterTable );
+    parameterTable->setSceneRect( QRectF( 10, parameterLabel->rect().bottom() + parameterLabel->transform().dy() + 5, 50, 20 ) );
+    parameterTable->setGridStrokeWidth( 0.1 );
+    parameterTable->adjustFrameToSize();
+  }
+
+  QGraphicsRectItem* previousItem = composerMap;
+  if ( parameterTable )
+  {
+    previousItem = parameterTable;
+  }
+
+  QgsComposerLabel* residualLabel = new QgsComposerLabel( composition );
+  residualLabel->setText( tr( "Residuals" ) );
+  composition->addItem( residualLabel );
+  residualLabel->setSceneRect( QRectF( 10, previousItem->rect().bottom() + previousItem->transform().dy() + 5, composition->paperWidth(), 6 ) );
+  residualLabel->setFrame( false );
+
+  //residual plot
+  QgsResidualPlotItem* resPlotItem = new QgsResidualPlotItem( composition );
+  composition->addItem( resPlotItem );
+  resPlotItem->setSceneRect( QRectF( 10, residualLabel->rect().bottom() + residualLabel->transform().dy() + 5, composerMap->rect().width(), composerMap->rect().height() ) );
+  resPlotItem->setExtent( composerMap->extent() );
+  resPlotItem->setGCPList( mPoints );
+
+  //convert residual scale bar plot to map units if scaling is equal in x- and y-direction (e.g. helmert)
+  if ( wldTransform )
+  {
+    if ( doubleNear( wldScaleX, wldScaleY ) )
+    {
+      resPlotItem->setPixelToMapUnits( scaleX );
+      resPlotItem->setConvertScaleToMapUnits( true );
+    }
+  }
+
+  QString residualUnits;
+  if ( wldTransform )
+  {
+    residualUnits = tr( "map units" );
+  }
+  else
+  {
+    residualUnits = tr( "pixels" );
+  }
+  QgsComposerTextTable* gcpTable = new QgsComposerTextTable( composition );
+  QStringList gcpHeader;
+  gcpHeader << "id" << "enabled" << "pixelCoordX" << "pixelCoordY" << "mapCoordX" << "mapCoordY" << "resX[" + residualUnits + "]" << "resY[" + residualUnits + "]" << "resTot[" + residualUnits + "]";
+  gcpTable->setHeaderLabels( gcpHeader );
+
+  QgsGCPList::const_iterator gcpIt = mPoints.constBegin();
+  for ( ; gcpIt != mPoints.constEnd(); ++gcpIt )
+  {
+    QStringList currentGCPStrings;
+    QPointF residual = ( *gcpIt )->residual();
+    double residualX = residual.x();
+    if ( wldTransform )
+    {
+      residualX *= wldScaleX;
+    }
+    double residualY = residual.y();
+    if ( wldTransform )
+    {
+      residualY *= wldScaleY;
+    }
+    double residualTot = sqrt( residualX * residualX + residualY * residualY );
+
+    currentGCPStrings << QString::number(( *gcpIt )->id() );
+    if (( *gcpIt )->isEnabled() )
+    {
+      currentGCPStrings << tr( "yes" );
+    }
+    else
+    {
+      currentGCPStrings << tr( "no" );
+    }
+    currentGCPStrings << QString::number(( *gcpIt )->pixelCoords().x() ) << QString::number(( *gcpIt )->pixelCoords().y() ) << QString::number(( *gcpIt )->mapCoords().x() )\
+    <<  QString::number(( *gcpIt )->mapCoords().y() ) <<  QString::number( residualX ) <<  QString::number( residualY ) << QString::number( residualTot );
+    gcpTable->addRow( currentGCPStrings );
+  }
+
+  composition->addItem( gcpTable );
+
+  gcpTable->setSceneRect( QRectF( 10,  resPlotItem->rect().bottom() + resPlotItem->transform().dy() + 5, 170, 100 ) );
+  gcpTable->setGridStrokeWidth( 0.1 );
+
+  printer.setResolution( composition->printResolution() );
+  QPainter p( &printer );
+  composition->setPlotStyle( QgsComposition::Print );
+  QRectF paperRectMM = printer.pageRect( QPrinter::Millimeter );
+  QRectF paperRectPixel = printer.pageRect( QPrinter::DevicePixel );
+  composition->render( &p, paperRectPixel, paperRectMM );
+
+  delete titleLabel;
+  delete parameterLabel;
+  delete residualLabel;
+  delete resPlotItem;
+  delete parameterTable;
+  delete gcpTable;
+  delete composerMap;
+  delete composition;
   return true;
 }
 
@@ -1248,7 +1497,8 @@ bool QgsGeorefPluginGui::checkReadyGeoref()
       continue;
     }
 
-    if ( mModifiedRasterFileName.isEmpty() && QgsGeorefTransform::Linear != mTransformParam )
+    //MH: helmert transformation without warping disabled until qgis is able to read rotated rasters efficiently
+    if ( mModifiedRasterFileName.isEmpty() && QgsGeorefTransform::Linear != mTransformParam /*&& QgsGeorefTransform::Helmert != mTransformParam*/ )
     {
       QMessageBox::information( this, tr( "Info" ), tr( "Please set output raster name" ) );
       if ( !getTransformSettings() )
