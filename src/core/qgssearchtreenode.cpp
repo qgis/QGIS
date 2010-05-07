@@ -249,6 +249,25 @@ QStringList QgsSearchTreeNode::referencedColumns()
 
 }
 
+bool QgsSearchTreeNode::needsGeometry()
+{
+  if ( mType == tOperator )
+  {
+    if ( mOp == opLENGTH || mOp == opAREA )
+      return true;
+
+    if ( mLeft && mLeft->needsGeometry() )
+      return true;
+    if ( mRight && mRight->needsGeometry() )
+      return true;
+    return false;
+  }
+  else
+  {
+    return false;
+  }
+}
+
 
 bool QgsSearchTreeNode::checkAgainst( const QgsFieldMap& fields, const QgsAttributeMap& attributes, QgsGeometry* geom )
 {

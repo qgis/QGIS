@@ -190,6 +190,8 @@ long QgsSearchQueryBuilder::countRecords( QString searchString )
     return mLayer->featureCount();
   }
 
+  bool fetchGeom = searchTree->needsGeometry();
+
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   int count = 0;
@@ -198,11 +200,11 @@ long QgsSearchQueryBuilder::countRecords( QString searchString )
   const QgsFieldMap& fields = provider->fields();
   QgsAttributeList allAttributes = provider->attributeIndexes();
 
-  provider->select( allAttributes, QgsRectangle(), false );
+  provider->select( allAttributes, QgsRectangle(), fetchGeom );
 
   while ( provider->nextFeature( feat ) )
   {
-    if ( searchTree->checkAgainst( fields, feat.attributeMap() ) )
+    if ( searchTree->checkAgainst( fields, feat.attributeMap(), feat.geometry() ) )
     {
       count++;
     }
