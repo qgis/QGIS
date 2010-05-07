@@ -4,11 +4,12 @@ qgis (1.5.0) UNRELEASED; urgency=low
   * adapted Francesco Paolo Lovergine's updates to Debian qgis 1.4 package
   * require CMake >2.6 and Qt 4.4 for sid
   * remove circular dependencies
-  * integrate new GRASS raster provider
+  * integrate new GRASS raster provider and remove dependency to
+    libgdal1-$VERSION-grass
   * add spatialquery plugin
   * include qgis.g.browser in grass plugin
 
- -- Jürgen E. Fischer <jef@norbit.de>  Thu, 06 May 2010 19:21:09 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 07 May 2010 13:11:22 +0200
 
 qgis (1.4.0) UNRELEASED; urgency=low
 
