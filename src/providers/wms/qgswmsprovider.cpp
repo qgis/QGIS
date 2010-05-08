@@ -571,6 +571,8 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     }
 
     double tres = mResolutions[i];
+    double dx = mTileWidth * tres;
+    double dy = mTileHeight * tres;
 
     // clip view extent to layer extent
     double xmin = std::max( viewExtent.xMinimum(), layerExtent.xMinimum() );
@@ -579,12 +581,12 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     double ymax = std::min( viewExtent.yMaximum(), layerExtent.yMaximum() );
 
     // snap to tile coordinates
-    double x0 = floor(( xmin - layerExtent.xMinimum() ) / mTileWidth / tres ) * mTileWidth * tres + layerExtent.xMinimum();
-    double y0 = floor(( ymin - layerExtent.yMinimum() ) / mTileHeight / tres ) * mTileHeight * tres + layerExtent.yMinimum();
+    double x0 = floor(( xmin - layerExtent.xMinimum() ) / dx ) * dx + layerExtent.xMinimum();
+    double y0 = floor(( ymin - layerExtent.yMinimum() ) / dy ) * dy + layerExtent.yMinimum();
 
 #ifdef QGISDEBUG
     // calculate number of tiles
-    int n = ceil(( xmax - xmin ) / mTileWidth / tres ) * ceil(( ymax - ymin ) / mTileHeight / tres );
+    int n = ceil(( xmax - xmin ) / dx ) * ceil(( ymax - ymin ) / dy );
 #endif
 
     QgsDebugMsg( QString( "layer extent: %1,%2 %3x%4" )
@@ -602,13 +604,13 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
                );
     QgsDebugMsg( QString( "tile extent: %1,%2 %3x%4 pixel:%5x%6 res:%7" )
                  .arg( x0, 0, 'f' ).arg( y0, 0, 'f' )
-                 .arg( mTileWidth * tres, 0, 'f' ).arg( mTileHeight * tres, 0, 'f' )
+                 .arg( dx, 0, 'f' ).arg( dy, 0, 'f' )
                  .arg( mTileWidth ).arg( mTileHeight )
                  .arg( tres, 0, 'f' )
                );
     QgsDebugMsg( QString( "tile number: %1x%2 = %3" )
-                 .arg( ceil(( xmax - xmin ) / mTileWidth / tres ) )
-                 .arg( ceil(( ymax - ymin ) / mTileHeight / tres ) )
+                 .arg( ceil(( xmax - xmin ) / dx ) )
+                 .arg( ceil(( ymax - ymin ) / dy ) )
                  .arg( n )
                );
 
@@ -633,40 +635,33 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     urlargs += QString( "&FORMAT=%1" ).arg( imageMimeType );
     urlargs += QString( "&TILED=true" );
 
-    i = 0;
     int j = 0;
-    double y = y0;
-    while ( y < ymax )
+    for ( double y = y0; y < ymax; y += dy )
     {
-      int k = 0;
-      double x = x0;
-      while ( x < xmax )
+      for ( double x = x0; x <= xmax; x += dx )
       {
         QString turl;
         turl += url;
         turl += QString( changeXY ? "&BBOX=%2,%1,%4,%3" : "&BBOX=%1,%2,%3,%4" )
                 .arg( x, 0, 'f' )
                 .arg( y, 0, 'f' )
-                .arg( x + mTileWidth * tres, 0, 'f' )
-                .arg( y + mTileHeight * tres, 0, 'f' );
+                .arg( x + dx, 0, 'f' )
+                .arg( y + dy, 0, 'f' );
         turl += urlargs;
 
         QNetworkRequest request( turl );
-        QgsDebugMsg( QString( "tileRequest %1 %2/%3: %4" ).arg( mTileReqNo ).arg( i++ ).arg( n ).arg( turl ) );
+        QgsDebugMsg( QString( "tileRequest %1 %2/%3: %4" ).arg( mTileReqNo ).arg( j++ ).arg( n ).arg( turl ) );
         request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
         request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
         request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 0 ), mTileReqNo );
         request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 1 ), j );
-        request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 2 ), QRectF( x, y, mTileWidth * tres, mTileHeight * tres ) );
+        request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 2 ), QRectF( x, y, dx, dy ) );
 
         QgsDebugMsg( QString( "gettile: %1" ).arg( turl ) );
         QNetworkReply *reply = smNAM->get( request );
         tileReplies << reply;
         connect( reply, SIGNAL( finished() ), this, SLOT( tileReplyFinished() ) );
-
-        x = x0 + k++*mTileWidth * tres;
       }
-      y = y0 + j++*mTileHeight * tres;
     }
 
     mWaiting = true;

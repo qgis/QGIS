@@ -190,7 +190,6 @@ void QgsSpatialQueryDialog::runQuery()
   buttonBox->button( QDialogButtonBox::Close )->show();
   buttonBox->button( QDialogButtonBox::Cancel )->hide();
   buttonBox->button( QDialogButtonBox::Ok )->hide();
-  adjustSize();
 } // void QgsSpatialQueryDialog::runQuery()
 
 void QgsSpatialQueryDialog::setInputsVisible( bool show )
@@ -587,17 +586,8 @@ void QgsSpatialQueryDialog::on_buttonBox_accepted()
 
 void QgsSpatialQueryDialog::on_buttonBox_rejected()
 {
-  if ( grpResults->isHidden() )
-    reject();
-  else
-  {
-    grpResults->hide();
-    setInputsVisible( true );
-    progressBarStatus->show();
-    buttonBox->button( QDialogButtonBox::Close )->hide();
-    buttonBox->button( QDialogButtonBox::Cancel )->show();
-    buttonBox->button( QDialogButtonBox::Ok )->show();
-  }
+  reject();
+
 } // void QgsSpatialQueryDialog::on_buttonBox_rejected()
 
 void QgsSpatialQueryDialog::on_targetLayerComboBox_currentIndexChanged( int index )

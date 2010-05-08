@@ -166,7 +166,7 @@ bool QgsMapToolSimplify::calculateSliderBoudaries()
   {
     count++;
     if ( count == 30 && !maximized )
-    { //special case when tolerance is too low to be correct so it's near 0
+    { //special case when tolerance is tool low to be correct so it's similat to 0
       // else in some special cases this algorithm would create infinite loop
       found = true;
       minTolerance = 0;

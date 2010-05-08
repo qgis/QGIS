@@ -154,11 +154,8 @@
 #include "qgsattributetabledialog.h"
 #include "qgsvectorfilewriter.h"
 #include "qgscredentialdialog.h"
-#include "qgstilescalewidget.h"
-
-#if QT_VERSION >= 0x40500
 #include "qgsnetworkproxyfactory.h"
-#endif
+#include "qgstilescalewidget.h"
 
 #ifdef HAVE_QWT
 #include "qgsgpsinformationwidget.h"
@@ -365,6 +362,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
     , mPythonUtils( NULL )
     , mNAM( NULL )
     , mpTileScaleWidget( NULL )
+#if QT_VERSION >= 0x40500
+    , mProxyFactory( NULL )
+#endif
 #ifdef HAVE_QWT
     , mpGpsWidget( NULL )
 #endif
@@ -6627,16 +6627,13 @@ void QgisApp::namUpdate()
   }
 
 #if QT_VERSION >= 0x40500
-  if( !mNAM->proxyFactory() )
+  if ( !mProxyFactory )
   {
-    mNAM->setProxyFactory( new QgsNetworkProxyFactory() ); 
-  } 
-
-  QgsNetworkProxyFactory *pf = dynamic_cast<QgsNetworkProxyFactory *>( mNAM->proxyFactory() );
-  if( pf )
-  {
-    pf->setProxyAndExcludes( proxy, excludes );
+    mProxyFactory = new QgsNetworkProxyFactory();
+    mNAM->setProxyFactory( mProxyFactory );
   }
+
+  mProxyFactory->setProxyAndExcludes( proxy, excludes );
 
   QNetworkDiskCache *cache = qobject_cast<QNetworkDiskCache*>( nam()->cache() );
   if ( !cache )

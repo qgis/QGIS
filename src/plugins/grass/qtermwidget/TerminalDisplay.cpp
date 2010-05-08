@@ -2423,8 +2423,6 @@ QVariant TerminalDisplay::inputMethodQuery( Qt::InputMethodQuery query ) const
     case Qt::ImCurrentSelection:
       return QString();
       break;
-    default:
-      break;
   }
 
   return QVariant();
