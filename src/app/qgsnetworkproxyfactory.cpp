@@ -57,7 +57,7 @@ QList<QNetworkProxy> QgsNetworkProxyFactory::queryProxy( const QNetworkProxyQuer
   }
 
   QgsDebugMsg( QString("using user proxy for %1").arg( url ) );
-  return QList<QNetworkProxy>() << mProxy; 
+  return QList<QNetworkProxy>() << mProxy;
 }
 
 #endif // QT_VERSION >= 0x40500

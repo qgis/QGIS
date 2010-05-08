@@ -25,7 +25,7 @@
 #include <QDialog>
 #include <QMouseEvent>
 
-QgsMapToolAnnotation::QgsMapToolAnnotation( QgsMapCanvas* canvas ): QgsMapTool( canvas ), \
+QgsMapToolAnnotation::QgsMapToolAnnotation( QgsMapCanvas* canvas ): QgsMapTool( canvas ),
     mActiveItem( 0 ), mCurrentMoveAction( QgsAnnotationItem::NoAction ), mLastMousePosition( 0, 0 )
 {
   mCursor = QCursor( Qt::ArrowCursor );
@@ -158,26 +158,26 @@ void QgsMapToolAnnotation::canvasMoveEvent( QMouseEvent * e )
       double xmax = xmin + size.width();
       double ymax = ymin + size.height();
 
-      if ( mCurrentMoveAction == QgsAnnotationItem::ResizeFrameRight || \
-           mCurrentMoveAction == QgsAnnotationItem::ResizeFrameRightDown || \
+      if ( mCurrentMoveAction == QgsAnnotationItem::ResizeFrameRight ||
+           mCurrentMoveAction == QgsAnnotationItem::ResizeFrameRightDown ||
            mCurrentMoveAction == QgsAnnotationItem::ResizeFrameRightUp )
       {
         xmax += e->posF().x() - mLastMousePosition.x();
       }
-      if ( mCurrentMoveAction == QgsAnnotationItem::ResizeFrameLeft || \
-           mCurrentMoveAction == QgsAnnotationItem::ResizeFrameLeftDown || \
+      if ( mCurrentMoveAction == QgsAnnotationItem::ResizeFrameLeft ||
+           mCurrentMoveAction == QgsAnnotationItem::ResizeFrameLeftDown ||
            mCurrentMoveAction == QgsAnnotationItem::ResizeFrameLeftUp )
       {
         xmin += e->posF().x() - mLastMousePosition.x();
       }
-      if ( mCurrentMoveAction == QgsAnnotationItem::ResizeFrameUp || \
-           mCurrentMoveAction == QgsAnnotationItem::ResizeFrameLeftUp || \
+      if ( mCurrentMoveAction == QgsAnnotationItem::ResizeFrameUp ||
+           mCurrentMoveAction == QgsAnnotationItem::ResizeFrameLeftUp ||
            mCurrentMoveAction == QgsAnnotationItem::ResizeFrameRightUp )
       {
         ymin += e->posF().y() - mLastMousePosition.y();
       }
-      if ( mCurrentMoveAction == QgsAnnotationItem::ResizeFrameDown || \
-           mCurrentMoveAction == QgsAnnotationItem::ResizeFrameLeftDown || \
+      if ( mCurrentMoveAction == QgsAnnotationItem::ResizeFrameDown ||
+           mCurrentMoveAction == QgsAnnotationItem::ResizeFrameLeftDown ||
            mCurrentMoveAction == QgsAnnotationItem::ResizeFrameRightDown )
       {
         ymax += e->posF().y() - mLastMousePosition.y();
