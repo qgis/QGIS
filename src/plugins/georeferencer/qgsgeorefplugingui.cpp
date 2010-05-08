@@ -1132,6 +1132,8 @@ bool QgsGeorefPluginGui::georeference()
       return true;
     }
   }
+
+  return false;
 }
 
 bool QgsGeorefPluginGui::writeWorldFile( QgsPoint origin, double pixelXSize, double pixelYSize, double rotation )
@@ -1256,7 +1258,7 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
 
       if ( nPointsEnabled > 4 )
       {
-        meanError = sqrt(( sumVxSquare + sumVySquare ) / ( 2 * nPointsEnabled - 4 ) ) * sqrt( 2 );
+        meanError = sqrt(( sumVxSquare + sumVySquare ) / ( 2 * nPointsEnabled - 4 ) ) * sqrt( 2.0 );
       }
     }
 
