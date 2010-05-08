@@ -48,4 +48,7 @@ class QgsNetworkAccessManager : QNetworkAccessManager
 
     //! set fallback proxy and URL that shouldn't use it.
     void setFallbackProxyAndExcludes( const QNetworkProxy &proxy, const QStringList &excludes );
+    
+  private:
+    QgsNetworkAccessManager( QObject * );
 };
