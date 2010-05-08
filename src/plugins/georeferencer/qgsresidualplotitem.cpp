@@ -141,7 +141,6 @@ double QgsResidualPlotItem::maxMMToPixelRatioForGCP( const QgsGeorefDataPoint* p
   QPointF residual = p->residual();
   QLineF residualLine( pixelXMM, pixelYMM, pixelXMM + residual.x(), pixelYMM + residual.y() );
   QPointF intersectionPoint;
-  double dx, dy;
 
   if ( residual.y() > 0 )
   {
