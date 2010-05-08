@@ -904,6 +904,7 @@
 		7256F5350F41C5EF0022BE1F /* qgis.db in Copy - resources */ = {isa = PBXBuildFile; fileRef = 7209ED820F39E5D9003DC336 /* qgis.db */; };
 		7256F5360F41C5EF0022BE1F /* qgis_help.db in Copy - resources */ = {isa = PBXBuildFile; fileRef = 7209ED830F39E5D9003DC336 /* qgis_help.db */; };
 		7256F5370F41C5EF0022BE1F /* srs.db in Copy - resources */ = {isa = PBXBuildFile; fileRef = 7209ED840F39E5D9003DC336 /* srs.db */; };
+		7261A9B51195BB69006BD962 /* qgsresidualplotitem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7261A9B31195BB3F006BD962 /* qgsresidualplotitem.cpp */; };
 		72624BF610E30451006F0A26 /* OsmTags.py in Copy - osm */ = {isa = PBXBuildFile; fileRef = 72624BF510E30437006F0A26 /* OsmTags.py */; };
 		7262ED830F7A750F00498385 /* qgsspatialitefilterproxymodel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7262ED7E0F7A74B700498385 /* qgsspatialitefilterproxymodel.cpp */; };
 		7262ED840F7A750F00498385 /* qgsspatialitetablemodel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7262ED820F7A74B700498385 /* qgsspatialitetablemodel.cpp */; };
@@ -5788,6 +5789,8 @@
 		7256F2E50F4147890022BE1F /* AUTHORS */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = AUTHORS; path = ../../AUTHORS; sourceTree = SOURCE_ROOT; };
 		725B4FEF0F936E1700084072 /* qgsrunprocess.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsrunprocess.sip; path = ../../python/core/qgsrunprocess.sip; sourceTree = SOURCE_ROOT; };
 		725B4FF00F936E3300084072 /* qgsmaptip.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsmaptip.sip; path = ../../python/gui/qgsmaptip.sip; sourceTree = SOURCE_ROOT; };
+		7261A9B31195BB3F006BD962 /* qgsresidualplotitem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsresidualplotitem.cpp; path = ../../src/plugins/georeferencer/qgsresidualplotitem.cpp; sourceTree = SOURCE_ROOT; };
+		7261A9B41195BB3F006BD962 /* qgsresidualplotitem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsresidualplotitem.h; path = ../../src/plugins/georeferencer/qgsresidualplotitem.h; sourceTree = SOURCE_ROOT; };
 		72624BCF10E30376006F0A26 /* qgssearchstring.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgssearchstring.sip; path = ../../python/core/qgssearchstring.sip; sourceTree = SOURCE_ROOT; };
 		72624BD010E30376006F0A26 /* qgssearchtreenode.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgssearchtreenode.sip; path = ../../python/core/qgssearchtreenode.sip; sourceTree = SOURCE_ROOT; };
 		72624BF510E30437006F0A26 /* OsmTags.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = OsmTags.py; path = ../../python/plugins/osm/OsmTags.py; sourceTree = SOURCE_ROOT; };
@@ -9113,6 +9116,8 @@
 				72DCB877112ADEE4000F1C25 /* qgsopenrasterdialog.cpp */,
 				72DCB878112ADEE4000F1C25 /* qgsopenrasterdialog.h */,
 				72DCB879112ADEE4000F1C25 /* qgsopenrasterdialogbase.ui */,
+				7261A9B31195BB3F006BD962 /* qgsresidualplotitem.cpp */,
+				7261A9B41195BB3F006BD962 /* qgsresidualplotitem.h */,
 				72DCB87A112ADEE4000F1C25 /* qgstransformsettingsdialog.cpp */,
 				72DCB87B112ADEE4000F1C25 /* qgstransformsettingsdialog.h */,
 				72DCB87C112ADEE4000F1C25 /* qgstransformsettingsdialogbase.ui */,
@@ -15665,6 +15670,7 @@
 				72DCB88E112ADF84000F1C25 /* qgsimagewarper.cpp in Sources */,
 				72DCB88F112ADF84000F1C25 /* qgsleastsquares.cpp in Sources */,
 				72DCB890112ADF84000F1C25 /* qgsmapcoordsdialog.cpp in Sources */,
+				7261A9B51195BB69006BD962 /* qgsresidualplotitem.cpp in Sources */,
 				72DCB891112ADF84000F1C25 /* qgstransformsettingsdialog.cpp in Sources */,
 				72DCB892112AE023000F1C25 /* qgsgcplistmodel.h in Sources */,
 				72DCB893112AE023000F1C25 /* qgsgcplistwidget.h in Sources */,
@@ -18458,6 +18464,7 @@
 					../../src/plugins,
 					../../src/plugins/georeferencer,
 					../../src/core,
+					../../src/core/composer,
 					../../src/core/raster,
 					../../src/core/renderer,
 					../../src/core/symbology,
@@ -18497,6 +18504,7 @@
 					../../src/plugins,
 					../../src/plugins/georeferencer,
 					../../src/core,
+					../../src/core/composer,
 					../../src/core/raster,
 					../../src/core/renderer,
 					../../src/core/symbology,
@@ -19978,7 +19986,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 13398;
+				QGIS_VERSION_BUILD = 13439;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -19989,7 +19997,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 13398;
+				QGIS_VERSION_BUILD = 13439;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
