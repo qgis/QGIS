@@ -31,8 +31,8 @@
 #include "qgscoordinatetransform.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsnetworkaccessmanager.h"
 
-#include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QNetworkProxy>
@@ -83,50 +83,6 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri )
     , mCacheMisses( 0 )
     , mErrors( 0 )
 {
-  if ( !smNAM )
-  {
-    QList<QByteArray> propertyNames = QCoreApplication::instance()->dynamicPropertyNames();
-    foreach( QByteArray name, propertyNames )
-    {
-      QgsDebugMsg( QString( "property name: %1" ).arg( QString::fromUtf8( name ) ) );
-    }
-
-    if ( propertyNames.contains( "qgisNetworkAccessManager" ) )
-    {
-      smNAM = qobject_cast<QNetworkAccessManager*>( QCoreApplication::instance()->property( "qgisNetworkAccessManager" ).value<QObject*>() );
-
-      if ( smNAM )
-      {
-        QNetworkProxy proxy = smNAM->proxy();
-#if QT_VERSION >= 0x40500
-        QgsDebugMsg( QString( "proxy host:%1:%2 type:%3 user:%4 password:%5 capabilities:%6" )
-                     .arg( proxy.hostName() ).arg( proxy.port() )
-                     .arg( proxy.type() )
-                     .arg( proxy.user() ).arg( proxy.password() )
-                     .arg( proxy.capabilities() )
-                   );
-#else
-        QgsDebugMsg( QString( "proxy host:%1:%2 type:%3 user:%4 password:%5" )
-                     .arg( proxy.hostName() ).arg( proxy.port() )
-                     .arg( proxy.type() )
-                     .arg( proxy.user() ).arg( proxy.password() )
-                   );
-#endif
-      }
-    }
-
-#if QT_VERSION >= 0x40500
-    if ( !smNAM )
-    {
-      QgsDebugMsg( "application doesn't have a network access manager - creating wmscache" );
-      smNAM = new QNetworkAccessManager( this );
-      QNetworkDiskCache *ndc = new QNetworkDiskCache( this );
-      ndc->setCacheDirectory( "wmsCache" );
-      smNAM->setCache( ndc );
-    }
-#endif
-  }
-
   // URL may contain username/password information for a WMS
   // requiring authentication. In this case the URL is prefixed
   // with username=user,password=pass,url=http://xxx.xxx.xx/yyy...
@@ -537,7 +493,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     QgsDebugMsg( QString( "getmap: %1" ).arg( url ) );
     QNetworkRequest request( url );
     request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
-    cacheReply = smNAM->get( request );
+    cacheReply = QgsNetworkAccessManager::instance()->get( request );
     connect( cacheReply, SIGNAL( finished() ), this, SLOT( cacheReplyFinished() ) );
     connect( cacheReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( cacheReplyProgress( qint64, qint64 ) ) );
 
@@ -571,8 +527,6 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     }
 
     double tres = mResolutions[i];
-    double dx = mTileWidth * tres;
-    double dy = mTileHeight * tres;
 
     // clip view extent to layer extent
     double xmin = std::max( viewExtent.xMinimum(), layerExtent.xMinimum() );
@@ -581,12 +535,12 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     double ymax = std::min( viewExtent.yMaximum(), layerExtent.yMaximum() );
 
     // snap to tile coordinates
-    double x0 = floor(( xmin - layerExtent.xMinimum() ) / dx ) * dx + layerExtent.xMinimum();
-    double y0 = floor(( ymin - layerExtent.yMinimum() ) / dy ) * dy + layerExtent.yMinimum();
+    double x0 = floor(( xmin - layerExtent.xMinimum() ) / mTileWidth / tres ) * mTileWidth * tres + layerExtent.xMinimum();
+    double y0 = floor(( ymin - layerExtent.yMinimum() ) / mTileHeight / tres ) * mTileHeight * tres + layerExtent.yMinimum();
 
 #ifdef QGISDEBUG
     // calculate number of tiles
-    int n = ceil(( xmax - xmin ) / dx ) * ceil(( ymax - ymin ) / dy );
+    int n = ceil(( xmax - xmin ) / mTileWidth / tres ) * ceil(( ymax - ymin ) / mTileHeight / tres );
 #endif
 
     QgsDebugMsg( QString( "layer extent: %1,%2 %3x%4" )
@@ -604,13 +558,13 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
                );
     QgsDebugMsg( QString( "tile extent: %1,%2 %3x%4 pixel:%5x%6 res:%7" )
                  .arg( x0, 0, 'f' ).arg( y0, 0, 'f' )
-                 .arg( dx, 0, 'f' ).arg( dy, 0, 'f' )
+                 .arg( mTileWidth * tres, 0, 'f' ).arg( mTileHeight * tres, 0, 'f' )
                  .arg( mTileWidth ).arg( mTileHeight )
                  .arg( tres, 0, 'f' )
                );
     QgsDebugMsg( QString( "tile number: %1x%2 = %3" )
-                 .arg( ceil(( xmax - xmin ) / dx ) )
-                 .arg( ceil(( ymax - ymin ) / dy ) )
+                 .arg( ceil(( xmax - xmin ) / mTileWidth / tres ) )
+                 .arg( ceil(( ymax - ymin ) / mTileHeight / tres ) )
                  .arg( n )
                );
 
@@ -635,33 +589,40 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     urlargs += QString( "&FORMAT=%1" ).arg( imageMimeType );
     urlargs += QString( "&TILED=true" );
 
+    i = 0;
     int j = 0;
-    for ( double y = y0; y < ymax; y += dy )
+    double y = y0;
+    while ( y < ymax )
     {
-      for ( double x = x0; x <= xmax; x += dx )
+      int k = 0;
+      double x = x0;
+      while ( x < xmax )
       {
         QString turl;
         turl += url;
         turl += QString( changeXY ? "&BBOX=%2,%1,%4,%3" : "&BBOX=%1,%2,%3,%4" )
                 .arg( x, 0, 'f' )
                 .arg( y, 0, 'f' )
-                .arg( x + dx, 0, 'f' )
-                .arg( y + dy, 0, 'f' );
+                .arg( x + mTileWidth * tres, 0, 'f' )
+                .arg( y + mTileHeight * tres, 0, 'f' );
         turl += urlargs;
 
         QNetworkRequest request( turl );
-        QgsDebugMsg( QString( "tileRequest %1 %2/%3: %4" ).arg( mTileReqNo ).arg( j++ ).arg( n ).arg( turl ) );
+        QgsDebugMsg( QString( "tileRequest %1 %2/%3: %4" ).arg( mTileReqNo ).arg( i++ ).arg( n ).arg( turl ) );
         request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
         request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
         request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 0 ), mTileReqNo );
         request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 1 ), j );
-        request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 2 ), QRectF( x, y, dx, dy ) );
+        request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 2 ), QRectF( x, y, mTileWidth * tres, mTileHeight * tres ) );
 
         QgsDebugMsg( QString( "gettile: %1" ).arg( turl ) );
-        QNetworkReply *reply = smNAM->get( request );
+        QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( request );
         tileReplies << reply;
         connect( reply, SIGNAL( finished() ), this, SLOT( tileReplyFinished() ) );
+
+        x = x0 + k++*mTileWidth * tres;
       }
+      y = y0 + j++*mTileHeight * tres;
     }
 
     mWaiting = true;
@@ -729,7 +690,7 @@ void QgsWmsProvider::tileReplyFinished()
       reply->deleteLater();
 
       QgsDebugMsg( QString( "redirected gettile: %1" ).arg( redirect.toString() ) );
-      reply = smNAM->get( request );
+      reply = QgsNetworkAccessManager::instance()->get( request );
       tileReplies << reply;
 
       connect( reply, SIGNAL( finished() ), this, SLOT( tileReplyFinished() ) );
@@ -807,7 +768,7 @@ void QgsWmsProvider::cacheReplyFinished()
       cacheReply->deleteLater();
 
       QgsDebugMsg( QString( "redirected getmap: %1" ).arg( redirect.toString() ) );
-      cacheReply = smNAM->get( QNetworkRequest( redirect.toUrl() ) );
+      cacheReply = QgsNetworkAccessManager::instance()->get( QNetworkRequest( redirect.toUrl() ) );
       connect( cacheReply, SIGNAL( finished() ), this, SLOT( cacheReplyFinished() ) );
       return;
     }
@@ -861,7 +822,7 @@ bool QgsWmsProvider::retrieveServerCapabilities( bool forceRefresh )
     request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
     QgsDebugMsg( QString( "getcapabilities: %1" ).arg( url ) );
-    mCapabilitiesReply = smNAM->get( request );
+    mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
 
     connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ) );
     connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ) );
@@ -916,7 +877,7 @@ void QgsWmsProvider::capabilitiesReplyFinished()
 
       mCapabilitiesReply->deleteLater();
       QgsDebugMsg( QString( "redirected getcapabilities: %1" ).arg( redirect.toString() ) );
-      mCapabilitiesReply = smNAM->get( request );
+      mCapabilitiesReply = QgsNetworkAccessManager::instance()->get( request );
 
       connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ) );
       connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ) );
@@ -2637,7 +2598,7 @@ QString QgsWmsProvider::identifyAsText( const QgsPoint& point )
         //   requestUrl += QString( "&I=%1&J=%2" ).arg( point.x() ).arg( point.y() );
 
         QgsDebugMsg( QString( "getfeatureinfo: %1" ).arg( requestUrl ) );
-        mIdentifyReply = smNAM->get( QNetworkRequest( requestUrl ) );
+        mIdentifyReply = QgsNetworkAccessManager::instance()->get( QNetworkRequest( requestUrl ) );
         connect( mIdentifyReply, SIGNAL( finished() ), this, SLOT( identifyReplyFinished() ) );
 
         while ( mIdentifyReply )
@@ -2676,7 +2637,7 @@ void QgsWmsProvider::identifyReplyFinished()
       mIdentifyReply->deleteLater();
 
       QgsDebugMsg( QString( "redirected getfeatureinfo: %1" ).arg( redirect.toString() ) );
-      mIdentifyReply = smNAM->get( QNetworkRequest( redirect.toUrl() ) );
+      mIdentifyReply = QgsNetworkAccessManager::instance()->get( QNetworkRequest( redirect.toUrl() ) );
       connect( mIdentifyReply, SIGNAL( finished() ), this, SLOT( identifyReplyFinished() ) );
 
       return;
@@ -2735,8 +2696,6 @@ QString  QgsWmsProvider::description() const
 {
   return WMS_DESCRIPTION;
 } //  QgsWmsProvider::description()
-
-QNetworkAccessManager *QgsWmsProvider::smNAM = 0;
 
 
 /**

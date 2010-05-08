@@ -62,7 +62,6 @@ class QgsVectorLayer;
 class QgsTileScaleWidget;
 
 class QDomDocument;
-class QNetworkAccessManager;
 class QNetworkReply;
 class QNetworkProxy;
 class QAuthenticator;
@@ -79,10 +78,6 @@ class QgsGPSInformationWidget;
 #include "qgsconfig.h"
 #include "qgsfeature.h"
 #include "qgspoint.h"
-
-#if QT_VERSION >= 0x40500
-class QgsNetworkProxyFactory;
-#endif
 
 /*! \class QgisApp
  * \brief Main window for the Qgis application
@@ -173,9 +168,6 @@ class QgisApp : public QMainWindow
 
     //! update proxy settings
     void namUpdate();
-
-    //! retrieve network manager
-    QNetworkAccessManager *nam();
 
     //! Helper to get a theme icon. It will fall back to the
     //default theme if the active theme does not have the required
@@ -1095,14 +1087,8 @@ class QgisApp : public QMainWindow
 
     QgsUndoWidget* mUndoWidget;
 
-    QNetworkAccessManager *mNAM;
-
     //! Persistent tile scale slider
     QgsTileScaleWidget * mpTileScaleWidget;
-
-#if QT_VERSION >= 0x40500
-    QgsNetworkProxyFactory *mProxyFactory;
-#endif
 
     int mLastComposerId;
 

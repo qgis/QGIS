@@ -67,7 +67,8 @@
 #include <QVBoxLayout>
 #include <QWhatsThis>
 
-#include <QNetworkAccessManager>
+#include <qgsnetworkaccessmanager.h>
+
 #include <QNetworkReply>
 #include <QNetworkProxy>
 #include <QAuthenticator>
@@ -154,7 +155,6 @@
 #include "qgsattributetabledialog.h"
 #include "qgsvectorfilewriter.h"
 #include "qgscredentialdialog.h"
-#include "qgsnetworkproxyfactory.h"
 #include "qgstilescalewidget.h"
 
 #ifdef HAVE_QWT
@@ -360,11 +360,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
     : QMainWindow( parent, fl )
     , mSplash( splash )
     , mPythonUtils( NULL )
-    , mNAM( NULL )
     , mpTileScaleWidget( NULL )
-#if QT_VERSION >= 0x40500
-    , mProxyFactory( NULL )
-#endif
 #ifdef HAVE_QWT
     , mpGpsWidget( NULL )
 #endif
@@ -6523,26 +6519,15 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
 
 void QgisApp::namSetup()
 {
-  if ( mNAM )
-    return;
-
-  mNAM = new QNetworkAccessManager( this );
+  QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
 
   namUpdate();
 
-  connect( mNAM, SIGNAL( authenticationRequired( QNetworkReply *, QAuthenticator * ) ),
+  connect( nam, SIGNAL( authenticationRequired( QNetworkReply *, QAuthenticator * ) ),
            this, SLOT( namAuthenticationRequired( QNetworkReply *, QAuthenticator * ) ) );
 
-  connect( mNAM, SIGNAL( proxyAuthenticationRequired( const QNetworkProxy &, QAuthenticator * ) ),
+  connect( nam, SIGNAL( proxyAuthenticationRequired( const QNetworkProxy &, QAuthenticator * ) ),
            this, SLOT( namProxyAuthenticationRequired( const QNetworkProxy &, QAuthenticator * ) ) );
-
-  QCoreApplication::instance()->setProperty( "qgisNetworkAccessManager", qVariantFromValue<QObject*>( mNAM ) );
-}
-
-QNetworkAccessManager *QgisApp::nam()
-{
-  namSetup();
-  return mNAM;
 }
 
 void QgisApp::namAuthenticationRequired( QNetworkReply *reply, QAuthenticator *auth )
@@ -6627,15 +6612,11 @@ void QgisApp::namUpdate()
   }
 
 #if QT_VERSION >= 0x40500
-  if ( !mProxyFactory )
-  {
-    mProxyFactory = new QgsNetworkProxyFactory();
-    mNAM->setProxyFactory( mProxyFactory );
-  }
+  QgsNetworkAccessManager *nam = QgsNetworkAccessManager::instance();
 
-  mProxyFactory->setProxyAndExcludes( proxy, excludes );
+  nam->setFallbackProxyAndExcludes( proxy, excludes );
 
-  QNetworkDiskCache *cache = qobject_cast<QNetworkDiskCache*>( nam()->cache() );
+  QNetworkDiskCache *cache = qobject_cast<QNetworkDiskCache*>( nam->cache() );
   if ( !cache )
     cache = new QNetworkDiskCache( this );
 
@@ -6648,9 +6629,9 @@ void QgisApp::namUpdate()
   QgsDebugMsg( QString( "cacheDirectory: %1" ).arg( cache->cacheDirectory() ) );
   QgsDebugMsg( QString( "maximumCacheSize: %1" ).arg( cache->maximumCacheSize() ) );
 
-  if ( mNAM->cache() != cache )
-    mNAM->setCache( cache );
+  if ( nam->cache() != cache )
+    nam->setCache( cache );
 #else
-  mNAM->setProxy( proxy );
+  QgsNetworkAccessManager::instance()->setProxy( proxy );
 #endif
 }
