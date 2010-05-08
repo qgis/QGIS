@@ -315,22 +315,4 @@ p, li { white-space: pre-wrap; }
   </layout>
  </widget>
  <resources/>
- <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>rejected()</signal>
-   <receiver>QgsSpatialQueryDialogBase</receiver>
-   <slot>reject()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>288</x>
-     <y>438</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>292</x>
-     <y>459</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
 </ui>
