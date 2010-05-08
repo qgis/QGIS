@@ -33,7 +33,7 @@
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgswmssourceselect.h"
-#include <qgisinterface.h>
+#include "qgsnetworkaccessmanager.h"
 
 #include <QButtonGroup>
 #include <QRadioButton>
@@ -47,7 +47,6 @@
 #include <QSettings>
 #include <QUrl>
 
-#include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
@@ -1051,7 +1050,7 @@ void QgsWMSSourceSelect::on_btnSearch_clicked()
   QUrl url( mySearchUrl.arg( leSearchTerm->text() ) );
   QgsDebugMsg( url.toString() );
 
-  QNetworkReply *r = QgisApp::instance()->nam()->get( QNetworkRequest( url ) );
+  QNetworkReply *r = QgsNetworkAccessManager::instance()->get( QNetworkRequest( url ) );
   connect( r, SIGNAL( finished() ), SLOT( searchFinished() ) );
 }
 

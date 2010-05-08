@@ -23,12 +23,12 @@
 #include "qgsgenericprojectionselector.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgstolerance.h"
+#include "qgsnetworkaccessmanager.h"
 
 #include <QFileDialog>
 #include <QSettings>
 #include <QColorDialog>
 #include <QLocale>
-#include <QNetworkAccessManager>
 
 #if QT_VERSION >= 0x40500
 #include <QNetworkDiskCache>
@@ -121,7 +121,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
 #if QT_VERSION >= 0x40500
   // cache settings
-  QNetworkDiskCache *cache = qobject_cast<QNetworkDiskCache*>( QgisApp::instance()->nam()->cache() );
+  QNetworkDiskCache *cache = qobject_cast<QNetworkDiskCache*>( QgsNetworkAccessManager::instance()->cache() );
   if ( cache )
   {
     mCacheDirectory->setText( cache->cacheDirectory() );
@@ -873,6 +873,6 @@ void QgsOptions::on_mBrowseCacheDirectory_clicked()
 void QgsOptions::on_mClearCache_clicked()
 {
 #if QT_VERSION >= 0x40500
-  QgisApp::instance()->nam()->cache()->clear();
+  QgsNetworkAccessManager::instance()->cache()->clear();
 #endif
 }

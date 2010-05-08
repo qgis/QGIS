@@ -883,9 +883,6 @@ class QgsWmsProvider : public QgsRasterDataProvider
     int mTileWidth;
     int mTileHeight;
     QVector<double> mResolutions;
-
-    //! wms provider's network access manager
-    static QNetworkAccessManager *smNAM;
 };
 
 #endif

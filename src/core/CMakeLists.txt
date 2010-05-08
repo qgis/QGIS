@@ -88,6 +88,8 @@ SET(QGIS_CORE_SRCS
   qgsvectorlayerundocommand.cpp
   qgsvectoroverlay.cpp
 
+  qgsnetworkaccessmanager.cpp
+
   composer/qgscomposerarrow.cpp
   composer/qgscomposeritem.cpp
   composer/qgscomposeritemgroup.cpp
@@ -232,6 +234,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsrunprocess.h
   qgsvectorlayer.h
   qgsrasterdataprovider.h
+  qgsnetworkaccessmanager.h
 
   composer/qgscomposerlegend.h
   composer/qgscomposermap.h
