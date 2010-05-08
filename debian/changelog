@@ -8,8 +8,9 @@ qgis (1.5.0) UNRELEASED; urgency=low
     libgdal1-$VERSION-grass
   * add spatialquery plugin
   * include qgis.g.browser in grass plugin
+  * drop symbol tracking, C++ ABIs change too frequently 
 
- -- Jürgen E. Fischer <jef@norbit.de>  Fri, 07 May 2010 13:11:22 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Sat, 08 May 2010 13:26:13 +0200
 
 qgis (1.4.0) UNRELEASED; urgency=low
 

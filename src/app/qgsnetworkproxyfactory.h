@@ -18,12 +18,10 @@
 #ifndef QGSNETWORKPROXYFACTORY_H
 #define QGSNETWORKPROXYFACTORY_H
 
-#if QT_VERSION >= 0x40500
-
 #include <QNetworkProxyFactory>
 #include <QStringList>
 
-class QgsNetworkProxyFactory : public QNetworkProxyFactory
+class QgsNetworkProxyFactory : public QObject, public QNetworkProxyFactory
 {
   public:
     QgsNetworkProxyFactory();
@@ -36,7 +34,5 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
     QStringList mExcludedURLs;
     QNetworkProxy mProxy;
 };
-
-#endif // QT_VERSION >= 0x40500
 
 #endif
