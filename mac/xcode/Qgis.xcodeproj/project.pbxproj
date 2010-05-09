@@ -1296,7 +1296,6 @@
 		72A892CE0FAF7B9400108152 /* qgsconfigureshortcutsdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72A892CB0FAF7B6100108152 /* qgsconfigureshortcutsdialog.h */; };
 		72AA0BE9107394D900D00B43 /* qgsfieldcalculator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72AA0BE71073949C00D00B43 /* qgsfieldcalculator.cpp */; };
 		72AA0BEA107394D900D00B43 /* qgsfieldcalculator.h in Sources */ = {isa = PBXBuildFile; fileRef = 72AA0BE81073949C00D00B43 /* qgsfieldcalculator.h */; };
-		72AB24BD11550EF2001B5F50 /* qgsnetworkproxyfactory.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72AB24BB11550EE7001B5F50 /* qgsnetworkproxyfactory.cpp */; };
 		72AF7B1510F8EC6300BD549A /* qgsgpsconnectionregistry.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72AF7B0510F8EC1600BD549A /* qgsgpsconnectionregistry.cpp */; };
 		72AF7B1710F8EC6300BD549A /* qgsnmeaconnection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72AF7B0910F8EC1600BD549A /* qgsnmeaconnection.cpp */; };
 		72AF7B1810F8EC8800BD549A /* context.c in Sources */ = {isa = PBXBuildFile; fileRef = 72AF7AF310F8EC1600BD549A /* context.c */; };
@@ -1630,6 +1629,8 @@
 		72F70B1011848BA2001369AD /* qgspenstylecombobox.h in Sources */ = {isa = PBXBuildFile; fileRef = 7225EF3910B2275E00D23EA2 /* qgspenstylecombobox.h */; };
 		72F70B1211848C3D001369AD /* qgsmemoryprovider.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC600F39E57B003DC336 /* qgsmemoryprovider.h */; };
 		72F70B2111848EE1001369AD /* qgsgrassprovider.h in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC5C0F39E57B003DC336 /* qgsgrassprovider.h */; };
+		72F8205511971C9B00822E90 /* qgsnetworkaccessmanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72F8205311971C7800822E90 /* qgsnetworkaccessmanager.cpp */; };
+		72F8205611971C9B00822E90 /* qgsnetworkaccessmanager.h in Sources */ = {isa = PBXBuildFile; fileRef = 72F8205411971C7800822E90 /* qgsnetworkaccessmanager.h */; };
 		72F8D9450F89251100D10CE5 /* qgstolerance.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72F8D9430F8924F100D10CE5 /* qgstolerance.cpp */; };
 		72FA6DD51124D7F6003CD56B /* QgsAttributeTableDialog-pt_BR in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72FA6DCF1124D7E4003CD56B /* QgsAttributeTableDialog-pt_BR */; };
 		72FA6DD61124D7F6003CD56B /* QgsGPSPluginGui-pt_BR in Copy - context_help */ = {isa = PBXBuildFile; fileRef = 72FA6DD01124D7E4003CD56B /* QgsGPSPluginGui-pt_BR */; };
@@ -6846,8 +6847,6 @@
 		72AA0BE71073949C00D00B43 /* qgsfieldcalculator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsfieldcalculator.cpp; path = ../../src/app/qgsfieldcalculator.cpp; sourceTree = SOURCE_ROOT; };
 		72AA0BE81073949C00D00B43 /* qgsfieldcalculator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsfieldcalculator.h; path = ../../src/app/qgsfieldcalculator.h; sourceTree = SOURCE_ROOT; };
 		72AB24BA11550E97001B5F50 /* qgis_fi.ts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgis_fi.ts; path = ../../i18n/qgis_fi.ts; sourceTree = SOURCE_ROOT; };
-		72AB24BB11550EE7001B5F50 /* qgsnetworkproxyfactory.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsnetworkproxyfactory.cpp; path = ../../src/app/qgsnetworkproxyfactory.cpp; sourceTree = SOURCE_ROOT; };
-		72AB24BC11550EE7001B5F50 /* qgsnetworkproxyfactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsnetworkproxyfactory.h; path = ../../src/app/qgsnetworkproxyfactory.h; sourceTree = SOURCE_ROOT; };
 		72AB64E210DD66B200A7BD3A /* qgis_is.ts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgis_is.ts; path = ../../i18n/qgis_is.ts; sourceTree = SOURCE_ROOT; };
 		72ACC813100E126A00894938 /* r.bilinear.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = r.bilinear.qgm; path = "../../src/plugins/grass/modules-6.4/r.bilinear.qgm"; sourceTree = SOURCE_ROOT; };
 		72ACC814100E126A00894938 /* r.grow.distance.qgm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = r.grow.distance.qgm; path = "../../src/plugins/grass/modules-6.4/r.grow.distance.qgm"; sourceTree = SOURCE_ROOT; };
@@ -7426,6 +7425,9 @@
 		72F4862110AB753D00E7BFEE /* qgscomposermanager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgscomposermanager.h; path = ../../src/app/composer/qgscomposermanager.h; sourceTree = SOURCE_ROOT; };
 		72F6FCDE0FE7D78F00D5B53B /* default.qgc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = default.qgc; path = "../../src/plugins/grass/modules-6.3/default.qgc"; sourceTree = SOURCE_ROOT; };
 		72F6FCDF0FE7D79C00D5B53B /* default.qgc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = default.qgc; path = "../../src/plugins/grass/modules-6.4/default.qgc"; sourceTree = SOURCE_ROOT; };
+		72F8205211971C3100822E90 /* qgsnetworkaccessmanager.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgsnetworkaccessmanager.sip; path = ../../python/core/qgsnetworkaccessmanager.sip; sourceTree = SOURCE_ROOT; };
+		72F8205311971C7800822E90 /* qgsnetworkaccessmanager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsnetworkaccessmanager.cpp; path = ../../src/core/qgsnetworkaccessmanager.cpp; sourceTree = SOURCE_ROOT; };
+		72F8205411971C7800822E90 /* qgsnetworkaccessmanager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsnetworkaccessmanager.h; path = ../../src/core/qgsnetworkaccessmanager.h; sourceTree = SOURCE_ROOT; };
 		72F8D9350F89234600D10CE5 /* FindIconv.cmake */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = FindIconv.cmake; path = ../../cmake/FindIconv.cmake; sourceTree = SOURCE_ROOT; };
 		72F8D9390F8924AE00D10CE5 /* qgstolerance.sip */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgstolerance.sip; path = ../../python/core/qgstolerance.sip; sourceTree = SOURCE_ROOT; };
 		72F8D9420F8924F100D10CE5 /* qgstolerance.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgstolerance.h; path = ../../src/core/qgstolerance.h; sourceTree = SOURCE_ROOT; };
@@ -8231,8 +8233,6 @@
 				7209E6380F39E57A003DC336 /* qgsmeasuretool.h */,
 				72683FFF0FD6B29100D90FFC /* qgsmergeattributesdialog.h */,
 				726840000FD6B29100D90FFC /* qgsmergeattributesdialog.cpp */,
-				72AB24BB11550EE7001B5F50 /* qgsnetworkproxyfactory.cpp */,
-				72AB24BC11550EE7001B5F50 /* qgsnetworkproxyfactory.h */,
 				7209E63B0F39E57A003DC336 /* qgsnewhttpconnection.cpp */,
 				7209E63C0F39E57A003DC336 /* qgsnewhttpconnection.h */,
 				72BDC393116E1DCE0088DEB4 /* qgsnewspatialitelayerdialog.cpp */,
@@ -8503,6 +8503,8 @@
 				72ED33A3110FCB4D00526CF5 /* qgspluginlayer.h */,
 				72ED33A4110FCB4D00526CF5 /* qgspluginlayerregistry.cpp */,
 				72ED33A5110FCB4D00526CF5 /* qgspluginlayerregistry.h */,
+				72F8205311971C7800822E90 /* qgsnetworkaccessmanager.cpp */,
+				72F8205411971C7800822E90 /* qgsnetworkaccessmanager.h */,
 				7209E6630F39E57A003DC336 /* composer */,
 				72AF7AF110F8EC1600BD549A /* gps */,
 				720382E10F8B8B540083B883 /* pal */,
@@ -10016,6 +10018,7 @@
 				7209EDA10F39E5D9003DC336 /* qgsmaptopixel.sip */,
 				7209EDA20F39E5D9003DC336 /* qgsmarkercatalogue.sip */,
 				7209EDA30F39E5D9003DC336 /* qgsmessageoutput.sip */,
+				72F8205211971C3100822E90 /* qgsnetworkaccessmanager.sip */,
 				72ED33A0110FCB1E00526CF5 /* qgspluginlayer.sip */,
 				72ED33A1110FCB1E00526CF5 /* qgspluginlayerregistry.sip */,
 				7209EDA40F39E5D9003DC336 /* qgspoint.sip */,
@@ -15276,6 +15279,8 @@
 				72C8D7D71178B6D0005B5B87 /* qgscomposerattributetable.cpp in Sources */,
 				72C8D7D81178B6D0005B5B87 /* qgscomposerattributetable.h in Sources */,
 				72C8D7D91178B6D0005B5B87 /* qgscomposertexttable.cpp in Sources */,
+				72F8205511971C9B00822E90 /* qgsnetworkaccessmanager.cpp in Sources */,
+				72F8205611971C9B00822E90 /* qgsnetworkaccessmanager.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -16193,7 +16198,6 @@
 				72AF7B6610F8F1EB00BD549A /* qwt_polar_plot.h in Sources */,
 				721362EF111720350088753A /* qgsmanageconnectionsdialog.cpp in Sources */,
 				721362F0111720350088753A /* qgsmanageconnectionsdialog.h in Sources */,
-				72AB24BD11550EF2001B5F50 /* qgsnetworkproxyfactory.cpp in Sources */,
 				72095D7A115E53CF000AE45E /* qgsvectorlayersaveasdialog.cpp in Sources */,
 				72095D7B115E53CF000AE45E /* qgsvectorlayersaveasdialog.h in Sources */,
 				7298A493115FF4F8001BF2E9 /* qgstilescalewidget.cpp in Sources */,
@@ -19986,7 +19990,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 13439;
+				QGIS_VERSION_BUILD = 13447;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -19997,7 +20001,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 13439;
+				QGIS_VERSION_BUILD = 13447;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
