@@ -16,29 +16,31 @@
  *
  */
 
+%Feature PROXY_FACTORY
+
 class QgsNetworkAccessManager : QNetworkAccessManager
 {
 %TypeHeaderCode
 #include <qgsnetworkaccessmanager.h>
 %End
-    //! returns a point to the single instance
+  public:
+    //! returns a pointer to the single instance
     // and creates that instance on the first call.
     static QgsNetworkAccessManager *instance();
 
     //! destructor
     ~QgsNetworkAccessManager();
 
+%If (PROXY_FACTORY)
     //! insert a factory into the proxy factories list
     void insertProxyFactory(QNetworkProxyFactory *factory /TransferTo/);
 
     //! remove a factory from the proxy factories list
     void removeProxyFactory(QNetworkProxyFactory *factory /TransferBack/);
 
-    //! retrieve proxy factory list
-    void setDiskCache( QString directory, qint64 size );
-
     //! retrieve fall back proxy (for urls that no factory returned proxies for)
     const QList<QNetworkProxyFactory *> proxyFactories() const; 
+%End
 
     //! retrieve exclude list (urls shouldn't use the fallback proxy)
     const QStringList &excludeList() const;

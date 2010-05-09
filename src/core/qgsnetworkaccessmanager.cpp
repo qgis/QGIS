@@ -25,6 +25,7 @@
 
 #include <QUrl>
 
+#if QT_VERSION >= 0x40500
 class QgsNetworkProxyFactory : public QNetworkProxyFactory
 {
   public:
@@ -62,6 +63,7 @@ class QgsNetworkProxyFactory : public QNetworkProxyFactory
       return QList<QNetworkProxy>() << nam->fallbackProxy();
     }
 };
+#endif
 
 QgsNetworkAccessManager *QgsNetworkAccessManager::smNAM = 0;
 
@@ -78,13 +80,16 @@ QgsNetworkAccessManager *QgsNetworkAccessManager::instance()
 QgsNetworkAccessManager::QgsNetworkAccessManager( QObject *parent )
     : QNetworkAccessManager( parent )
 {
+#if QT_VERSION >= 0x40500
   setProxyFactory( new QgsNetworkProxyFactory() );
+#endif
 }
 
 QgsNetworkAccessManager::~QgsNetworkAccessManager()
 {
 }
 
+#if QT_VERSION >= 0x40500
 void QgsNetworkAccessManager::insertProxyFactory( QNetworkProxyFactory *factory )
 {
   mProxyFactories.insert( 0, factory );
@@ -99,6 +104,7 @@ const QList<QNetworkProxyFactory *> QgsNetworkAccessManager::proxyFactories() co
 {
   return mProxyFactories;
 }
+#endif
 
 const QStringList &QgsNetworkAccessManager::excludeList() const
 {
