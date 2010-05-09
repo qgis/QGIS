@@ -239,6 +239,9 @@ void QgsSpatialQuery::execQuery( QSet<int> & qsetIndexResult, int relation )
     case Intersects:
       operation = &QgsGeometry::intersects;
       break;
+    default:
+      qWarning( "undefined operation" );
+      return;
   }
 
   // Transform referencer Target = Reference

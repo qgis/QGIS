@@ -46,13 +46,14 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     Q_OBJECT
 
   public:
-    //! returns a point to the single instance
+    //! returns a pointer to the single instance
     // and creates that instance on the first call.
     static QgsNetworkAccessManager *instance();
 
     //! destructor
     ~QgsNetworkAccessManager();
 
+#if QT_VERSION >= 0x40500
     //! insert a factory into the proxy factories list
     void insertProxyFactory( QNetworkProxyFactory *factory );
 
@@ -61,6 +62,7 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 
     //! retrieve proxy factory list
     const QList<QNetworkProxyFactory *> proxyFactories() const;
+#endif
 
     //! retrieve fall back proxy (for urls that no factory returned proxies for)
     const QNetworkProxy &fallbackProxy() const;
@@ -73,7 +75,9 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
 
   private:
     QgsNetworkAccessManager( QObject *parent = 0 );
+#if QT_VERSION >= 0x40500
     QList<QNetworkProxyFactory*> mProxyFactories;
+#endif
     QNetworkProxy mFallbackProxy;
     QStringList mExcludedURLs;
 
