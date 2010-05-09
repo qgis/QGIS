@@ -74,6 +74,7 @@ class QgsGPSInformationWidget;
 #include <QToolBar>
 #include <QAbstractSocket>
 #include <QPointer>
+#include <QSslError>
 
 #include "qgsconfig.h"
 #include "qgsfeature.h"
@@ -403,6 +404,7 @@ class QgisApp : public QMainWindow
     //! request credentials for network manager
     void namAuthenticationRequired( QNetworkReply *reply, QAuthenticator *auth );
     void namProxyAuthenticationRequired( const QNetworkProxy &proxy, QAuthenticator *auth );
+    void namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors );
 
   protected:
 

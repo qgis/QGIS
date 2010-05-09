@@ -6528,6 +6528,9 @@ void QgisApp::namSetup()
 
   connect( nam, SIGNAL( proxyAuthenticationRequired( const QNetworkProxy &, QAuthenticator * ) ),
            this, SLOT( namProxyAuthenticationRequired( const QNetworkProxy &, QAuthenticator * ) ) );
+
+  connect( nam, SIGNAL( sslErrors( QNetworkReply *, const QList<QSslError> & ) ),
+           this, SLOT( namSslErrors( QNetworkReply *, const QList<QSslError> & ) ) );
 }
 
 void QgisApp::namAuthenticationRequired( QNetworkReply *reply, QAuthenticator *auth )
@@ -6560,6 +6563,31 @@ void QgisApp::namProxyAuthenticationRequired( const QNetworkProxy &proxy, QAuthe
 
   auth->setUser( username );
   auth->setPassword( password );
+}
+
+void QgisApp::namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors )
+{
+  QString msg = tr( "SSL errors occured accessing URL %1:" ).arg( reply->request().url().toString() );
+  bool otherError = false;
+
+  foreach( QSslError error, errors )
+  {
+    if ( error.error() != QSslError::SelfSignedCertificate &&
+         error.error() != QSslError::HostNameMismatch )
+      otherError = true;
+    msg += "\n" + error.errorString();
+  }
+
+  msg += tr( "\n\nIgnore errors?" );
+
+  if ( !otherError ||
+       QMessageBox::warning( this,
+                             tr( "SSL errors occured" ),
+                             msg,
+                             QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Ok )
+  {
+    reply->ignoreSslErrors();
+  }
 }
 
 void QgisApp::namUpdate()
