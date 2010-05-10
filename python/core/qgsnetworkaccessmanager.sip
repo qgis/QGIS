@@ -56,7 +56,7 @@ class QgsNetworkAccessManager : QNetworkAccessManager
     void requestCreated( QNetworkReply * );
 
   protected:
-    virtual QNetworkReply *createRequest( Operation op, const QNetworkRequest & req, QIODevice * outgoingData = 0 );
+    virtual QNetworkReply *createRequest( Operation op, const QNetworkRequest & req, QIODevice *outgoingData = 0 );
     
   private:
     QgsNetworkAccessManager( QObject * );

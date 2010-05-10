@@ -6529,8 +6529,10 @@ void QgisApp::namSetup()
   connect( nam, SIGNAL( proxyAuthenticationRequired( const QNetworkProxy &, QAuthenticator * ) ),
            this, SLOT( namProxyAuthenticationRequired( const QNetworkProxy &, QAuthenticator * ) ) );
 
+#ifdef QT_OPENSSL
   connect( nam, SIGNAL( sslErrors( QNetworkReply *, const QList<QSslError> & ) ),
            this, SLOT( namSslErrors( QNetworkReply *, const QList<QSslError> & ) ) );
+#endif
 }
 
 void QgisApp::namAuthenticationRequired( QNetworkReply *reply, QAuthenticator *auth )
@@ -6565,6 +6567,7 @@ void QgisApp::namProxyAuthenticationRequired( const QNetworkProxy &proxy, QAuthe
   auth->setPassword( password );
 }
 
+#ifdef QT_OPENSSL
 void QgisApp::namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors )
 {
   QString msg = tr( "SSL errors occured accessing URL %1:" ).arg( reply->request().url().toString() );
@@ -6589,6 +6592,7 @@ void QgisApp::namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors
     reply->ignoreSslErrors();
   }
 }
+#endif
 
 void QgisApp::namUpdate()
 {
