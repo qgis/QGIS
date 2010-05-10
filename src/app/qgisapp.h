@@ -404,7 +404,7 @@ class QgisApp : public QMainWindow
     //! request credentials for network manager
     void namAuthenticationRequired( QNetworkReply *reply, QAuthenticator *auth );
     void namProxyAuthenticationRequired( const QNetworkProxy &proxy, QAuthenticator *auth );
-#ifdef QT_OPENSSL
+#ifndef QT_NO_OPENSSL
     void namSslErrors( QNetworkReply *reply, const QList<QSslError> &errors );
 #endif
 
