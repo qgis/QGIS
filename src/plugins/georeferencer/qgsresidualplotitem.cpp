@@ -111,6 +111,7 @@ void QgsResidualPlotItem::paint( QPainter* painter, const QStyleOptionGraphicsIt
   painter->drawLine( QPointF( 5, rect().height() - 5 ), QPointF( 5, rect().height() - 7 ) );
   painter->drawLine( QPointF( 5 + scaleBarWidth, rect().height() - 5 ), QPointF( 5 + scaleBarWidth, rect().height() - 7 ) );
   QFont scaleBarFont;
+  scaleBarFont.setPointSize( 9 );
   if ( mConvertScaleToMapUnits )
   {
     drawText( painter, 5, rect().height() - 4 + fontAscentMillimeters( scaleBarFont ), QString( "%1 map units" ).arg( nUnits ), QFont() );
