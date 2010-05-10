@@ -540,6 +540,15 @@ void QgsLegendLayer::saveAsVectorFileGeneral( bool saveOnlySelection )
       QgsVectorFileWriter::deleteShapeFile( vectorFilename );
     }
 
+    //GE does not open files without extensions. Therefore we append it automatically for kml files
+    if ( format == "KML" )
+    {
+      if ( !vectorFilename.endsWith( ".kml", Qt::CaseInsensitive ) )
+      {
+        vectorFilename += ".kml";
+      }
+    }
+
     // ok if the file existed it should be deleted now so we can continue...
     QApplication::setOverrideCursor( Qt::WaitCursor );
 
