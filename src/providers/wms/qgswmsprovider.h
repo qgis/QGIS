@@ -468,8 +468,24 @@ class QgsWmsProvider : public QgsRasterDataProvider
     bool isValid();
 
     /**Returns true if layer has tile set profiles
+     * @added in 1.5
      */
     virtual bool hasTiles() const;
+
+    /**Returns the base url
+     * @added in 1.5
+     */
+    virtual QString baseUrl() const;
+
+    /**Returns the GetMap url
+     * @added in 1.5
+     */
+    virtual QString getMapUrl() const;
+
+    /**Returns the GetFeatureInfo url
+     * @added in 1.5
+     */
+    virtual QString getFeatureInfoUrl() const;
 
     //! get WMS Server version string
     QString wmsVersion();
@@ -706,7 +722,9 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * \param uri uri to prepare
      * \retval prepared uri
      */
-    QString prepareUri( QString uri );
+    QString prepareUri( QString uri ) const;
+
+    QString layerMetadata( QgsWmsLayerProperty &layer );
 
     //! Data source URI of the WMS for this layer
     QString httpuri;
@@ -715,7 +733,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     QString connectionName;
 
     //! URL part of URI (httpuri)
-    QString baseUrl;
+    QString mBaseUrl;
 
     /**
      * Flag indicating if the layer data source is a valid WMS layer
@@ -883,6 +901,11 @@ class QgsWmsProvider : public QgsRasterDataProvider
     int mTileWidth;
     int mTileHeight;
     QVector<double> mResolutions;
+
+    //! whether to use hrefs from GetCapabilities (default) or
+    // the given base urls for GetMap and GetFeatureInfo
+    bool mIgnoreGetMapUrl;
+    bool mIgnoreGetFeatureInfoUrl;
 };
 
 #endif

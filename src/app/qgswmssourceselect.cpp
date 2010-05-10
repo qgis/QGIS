@@ -77,6 +77,9 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WFlags fl )
   mAddButton->setEnabled( false );
   populateConnectionList();
 
+  cbxIgnoreGetMap->setEnabled( false );
+  cbxIgnoreGetFeatureInfo->setEnabled( false );
+
   QHBoxLayout *layout = new QHBoxLayout;
   mImageFormatGroup = new QButtonGroup;
 
@@ -403,6 +406,49 @@ bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
     lstLayers->expandItem( lstLayers->topLevelItem( 0 ) );
   }
 
+  if ( wmsProvider->baseUrl() != wmsProvider->getMapUrl() )
+  {
+    if ( QMessageBox::information( this,
+                                   tr( "WMS Provider" ),
+                                   tr( "Advertised GetMap URL\n\n  %2\n\nis different from GetCapabilities URL\n\n  %1\n\n"
+                                       "This might be an server configuration error. Should the URL be used?" )
+                                   .arg( wmsProvider->baseUrl() )
+                                   .arg( wmsProvider->getMapUrl() ),
+                                   QMessageBox::Yes | QMessageBox::No ) == QMessageBox::Yes )
+    {
+      cbxIgnoreGetMap->setChecked( false );
+    }
+    else
+    {
+      cbxIgnoreGetMap->setChecked( true );
+    }
+    cbxIgnoreGetMap->setEnabled( true );
+  }
+  else
+  {
+    cbxIgnoreGetMap->setEnabled( false );
+    cbxIgnoreGetMap->setChecked( false );
+  }
+
+  if ( wmsProvider->baseUrl() != wmsProvider->getFeatureInfoUrl() )
+  {
+    if ( QMessageBox::information( this,
+                                   tr( "WMS Provider" ),
+                                   tr( "Advertised GetFeatureInfo URL\n\n  %2\n\nis different from GetCapabilities URL\n\n  %1\n\n"
+                                       "This might be an server configuration error. Should the URL be used?" )
+                                   .arg( wmsProvider->baseUrl() )
+                                   .arg( wmsProvider->getFeatureInfoUrl() ),
+                                   QMessageBox::Yes | QMessageBox::No ) == QMessageBox::Yes )
+    {
+      cbxIgnoreGetFeatureInfo->setChecked( false );
+    }
+    else
+    {
+      cbxIgnoreGetFeatureInfo->setChecked( true );
+    }
+    cbxIgnoreGetFeatureInfo->setEnabled( true );
+  }
+
   return true;
 }
 
@@ -502,6 +548,31 @@ void QgsWMSSourceSelect::addClicked()
                        .arg( item->data( Qt::UserRole + 4 ).toInt() )
                        .arg( item->data( Qt::UserRole + 5 ).toInt() )
                        .arg( item->data( Qt::UserRole + 6 ).toStringList().join( ";" ) );
+
+    if ( connInfo.startsWith( "username=" ) )
+    {
+      connInfo.prepend( connArgs + "," );
+    }
+    else
+    {
+      connInfo.prepend( connArgs + ",url=" );
+    }
+  }
+
+  if ( cbxIgnoreGetMap->isChecked() || cbxIgnoreGetFeatureInfo->isChecked() )
+  {
+    QString connArgs = "ignoreUrl=";
+
+    if ( cbxIgnoreGetMap->isChecked() )
+    {
+      connArgs += "GetMap";
+      if ( cbxIgnoreGetFeatureInfo->isChecked() )
+        connArgs += ";GetFeatureInfo";
+    }
+    else
+    {
+      connArgs += "GetFeatureInfo";
+    }
 
     if ( connInfo.startsWith( "username=" ) )
     {
