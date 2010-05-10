@@ -300,7 +300,7 @@ void QgsSpatiaLiteSourceSelect::on_btnNew_clicked()
 
   QString myFile = QFileDialog::getOpenFileName( this,
                    tr( "Choose a SpatiaLite/SQLite DB to open" ),
-                   lastUsedDir, QObject::tr( "SQLite DB (*.sqlite *.db);;All files (*.*)" ) );
+                   lastUsedDir, QObject::tr( "SQLite DB (*.sqlite *.db);;All files (*)" ) );
 
   if ( myFile.isEmpty() )
     return;

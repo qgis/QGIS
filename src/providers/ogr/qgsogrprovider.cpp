@@ -1373,7 +1373,7 @@ QString createFilters( QString type )
 
     // can't forget the default case
 
-    myFileFilters += "All files (*.*)";
+    myFileFilters += "All files (*)";
   }
 
   if ( type == "file" )
