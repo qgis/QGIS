@@ -6818,7 +6818,7 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="347"/>
         <source>Combo box with predefined items. Value is stored in the attribute, description is shown in the combo box.</source>
-        <translation>Combo box con oggetti predefiniti. Il valore è archiviato nell´attributi, la descrizione presentata nel combo box.</translation>
+        <translation>Combo box con oggetti predefiniti. Il valore è archiviato negli attributi, la descrizione presentata nel combo box.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="357"/>
@@ -23715,7 +23715,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="528"/>
         <source>Line edit</source>
-        <translation>Modifica linea</translation>
+        <translation>Modifica valore</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="529"/>
