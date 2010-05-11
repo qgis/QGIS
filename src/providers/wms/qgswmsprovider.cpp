@@ -101,6 +101,8 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri )
 
   mBaseUrl = prepareUri( httpuri );
 
+  mSupportedGetFeatureFormats = QStringList() << "text/html" << "text/plain" << "text/xml";
+
   QgsDebugMsg( "mBaseUrl = " + mBaseUrl );
 
   QgsDebugMsg( "exiting constructor." );
@@ -2098,10 +2100,17 @@ int QgsWmsProvider::capabilities() const
     }
   }
 
-  // Collect all the test results into one bitmask
   if ( canIdentify )
   {
-    capability = ( capability | QgsRasterDataProvider::Identify );
+    foreach( QString f, mCapabilities.capability.request.getFeatureInfo.format )
+    {
+      if ( mSupportedGetFeatureFormats.contains( f ) )
+      {
+        // Collect all the test results into one bitmask
+        capability |= QgsRasterDataProvider::Identify;
+        break;
+      }
+    }
   }
 
   QgsDebugMsg( "exiting with '"  + QString( capability )  + "'." );
@@ -2599,10 +2608,10 @@ QString QgsWmsProvider::metadata()
   return myMetadataQString;
 }
 
-
-QString QgsWmsProvider::identifyAsText( const QgsPoint& point )
+QStringList QgsWmsProvider::identifyAs( const QgsPoint& point, QString format )
 {
   QgsDebugMsg( "Entering." );
+  QStringList results;
 
   // Collect which layers to query on
 
@@ -2628,8 +2637,8 @@ QString QgsWmsProvider::identifyAsText( const QgsPoint& point )
 
         //! \todo Need to tie this into the options provided by GetCapabilities
         requestUrl += QString( "&QUERY_LAYERS=%1" ).arg( layer );
-        requestUrl += QString( "&INFO_FORMAT=text/plain&X=%1&Y=%2" )
-                      .arg( point.x() ).arg( point.y() );
+        requestUrl += QString( "&INFO_FORMAT=%1&X=%2&Y=%3" )
+                      .arg( format ).arg( point.x() ).arg( point.y() );
 
         // X,Y in WMS 1.1.1; I,J in WMS 1.3.0
         //   requestUrl += QString( "&I=%1&J=%2" ).arg( point.x() ).arg( point.y() );
@@ -2643,22 +2652,58 @@ QString QgsWmsProvider::identifyAsText( const QgsPoint& point )
           QCoreApplication::processEvents( QEventLoop::ExcludeUserInputEvents );
         }
 
-        text += "---------------\n" + mIdentifyResult;
+        results << mIdentifyResult;
       }
     }
   }
 
-  if ( text.isEmpty() )
-  {
-    // No layers were queryably. This can happen if identify tool was
-    // active when this non-queriable layer was selected.
-    // Return a descriptive text.
+  QgsDebugMsg( "Exiting with: " + results.join( "\n------\n" ) );
+  return results;
+}
 
-    text = tr( "Layer cannot be queried." );
+QString QgsWmsProvider::identifyAsText( const QgsPoint &point )
+{
+  if ( !mCapabilities.capability.request.getFeatureInfo.format.contains( "text/plain" ) )
+    return tr( "Layer cannot be queried in plain text." );
+
+  QStringList list = identifyAs( point, "text/plain" );
+
+  if ( list.isEmpty() )
+  {
+    return tr( "Layer cannot be queried." );
+  }
+  else
+  {
+    return list.join( "\n-------------\n" );
+  }
+}
+
+QString QgsWmsProvider::identifyAsHtml( const QgsPoint &point )
+{
+  QString format;
+
+  foreach( QString f, mSupportedGetFeatureFormats )
+  {
+    if ( mCapabilities.capability.request.getFeatureInfo.format.contains( f ) )
+    {
+      format = f;
+      break;
+    }
   }
 
-  QgsDebugMsg( "Exiting with: " + text );
-  return text;
+  Q_ASSERT( !format.isEmpty() );
+
+  QStringList results = identifyAs( point, format );
+
+  if ( format == "text/html" )
+  {
+    return "<table>\n<tr><td>" + results.join( "</td></tr>\n<tr><td>" ) + "</td></tr>\n</table>";
+  }
+  else
+  {
+    // TODO format text/xml
+    return "<table>\n<tr><td><pre>\n" + results.join( "\n</pre></td></tr>\n<tr><td><pre>\n" ) + "\n</pre></td></tr>\n</table>";
+  }
 }
 
 void QgsWmsProvider::identifyReplyFinished()

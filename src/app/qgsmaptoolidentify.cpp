@@ -373,7 +373,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QgsRasterLayer *layer, int x, int 
         yMaxView > yMaxLayer ? floor( y - ( yMaxView - yMaxLayer ) / mapUnitsPerPixel ) : y
       );
 
-      attributes.insert( tr( "Feature info" ), layer->identifyAsText( idPoint ) );
+      attributes.insert( tr( "Feature info" ), layer->identifyAsHtml( idPoint ) );
     }
     else
     {

@@ -1969,7 +1969,24 @@ QString QgsRasterLayer::identifyAsText( const QgsPoint& thePoint )
     return QString();
   }
 
-  return ( mDataProvider->identifyAsText( thePoint ) );
+  return mDataProvider->identifyAsText( thePoint );
+}
+
+/**
+ * @note  The arbitraryness of the returned document is enforced by WMS standards up to at least v1.3.0
+ *
+ * @param thePoint  an image pixel coordinate in the last requested extent of layer.
+ * @return  A html document containing the return from the WMS server
+ */
+QString QgsRasterLayer::identifyAsHtml( const QgsPoint& thePoint )
+{
+  if ( mProviderKey != "wms" )
+  {
+    // Currently no meaning for anything other than OGC WMS layers
+    return QString();
+  }
+
+  return mDataProvider->identifyAsHtml( thePoint );
 }
 
 /**

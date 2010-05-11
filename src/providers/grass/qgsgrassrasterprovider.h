@@ -127,6 +127,23 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     QString identifyAsText( const QgsPoint& point );
 
     /**
+     * \brief Identify details from a WMS Server from the last screen update
+     *
+     * \param point[in]  The pixel coordinate (as it was displayed locally on screen)
+     *
+     * \return  A text document containing the return from the WMS server
+     *
+     * \note WMS Servers prefer to receive coordinates in image space, therefore
+     *       this function expects coordinates in that format.
+     *
+     * \note  The arbitraryness of the returned document is enforced by WMS standards
+     *        up to at least v1.3.0
+     *
+     * \note  added in 1.5
+     */
+    QString identifyAsHtml( const QgsPoint& point );
+
+    /**
      * \brief   Returns the caption error text for the last error in this provider
      *
      * If an operation returns 0 (e.g. draw()), this function
@@ -160,12 +177,12 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
      */
     QString metadata() { return QString(); }
 
-    // Following methods specific for  WMS are not used at all in this provider and should be removed IMO from qgsdataprovider.h 
+    // Following methods specific for  WMS are not used at all in this provider and should be removed IMO from qgsdataprovider.h
     void addLayers( QStringList const &  layers, QStringList const &  styles = QStringList() ) {}
-    QStringList supportedImageEncodings() { return QStringList();} 
+    QStringList supportedImageEncodings() { return QStringList();}
     QString imageEncoding() const { return QString(); }
     void setImageEncoding( QString const & mimeType ) {}
-    void setImageCrs( QString const & crs ) {} 
+    void setImageCrs( QString const & crs ) {}
 
   private:
 
@@ -177,8 +194,8 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     QString mGisdbase;      // map gisdabase
     QString mLocation;      // map location name (not path!)
     QString mMapset;        // map mapset
-    QString mMapName;       // map name 
-   
+    QString mMapName;       // map name
+
     QgsCoordinateReferenceSystem mCrs;
 };
 

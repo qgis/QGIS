@@ -536,6 +536,21 @@ class QgsWmsProvider : public QgsRasterDataProvider
      *
      * \param point[in]  The pixel coordinate (as it was displayed locally on screen)
      *
+     * \return  A html document containing the return from the WMS server
+     *
+     * \note WMS Servers prefer to receive coordinates in image space, therefore
+     *       this function expects coordinates in that format.
+     *
+     * \note  The arbitraryness of the returned document is enforced by WMS standards
+     *        up to at least v1.3.0
+     */
+    QString identifyAsHtml( const QgsPoint& point );
+
+    /**
+     * \brief Identify details from a WMS Server from the last screen update
+     *
+     * \param point[in]  The pixel coordinate (as it was displayed locally on screen)
+     *
      * \return  A text document containing the return from the WMS server
      *
      * \note WMS Servers prefer to receive coordinates in image space, therefore
@@ -724,6 +739,8 @@ class QgsWmsProvider : public QgsRasterDataProvider
      */
     QString prepareUri( QString uri ) const;
 
+    QStringList identifyAs( const QgsPoint &point, QString format );
+
     QString layerMetadata( QgsWmsLayerProperty &layer );
 
     //! Data source URI of the WMS for this layer
@@ -906,6 +923,9 @@ class QgsWmsProvider : public QgsRasterDataProvider
     // the given base urls for GetMap and GetFeatureInfo
     bool mIgnoreGetMapUrl;
     bool mIgnoreGetFeatureInfoUrl;
+
+    //! supported formats for GetFeatureInfo in order of preference
+    QStringList mSupportedGetFeatureFormats;
 };
 
 #endif

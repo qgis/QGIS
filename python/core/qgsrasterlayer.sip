@@ -322,6 +322,11 @@ public:
     /** \brief Identify arbitrary details from the WMS server found on the point position */
     QString identifyAsText( const QgsPoint & point );
 
+    /** \brief Identify arbitrary details from the WMS server found on the point position
+     * @added in 1.5
+     */
+    QString identifyAsHtml( const QgsPoint & point );
+
     /** \brief Currently returns always false */
     bool isEditable() const;
 

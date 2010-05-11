@@ -22,6 +22,7 @@
 #include "qgisapp.h"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
+#include "qgsrasterlayer.h"
 #include "qgsrubberband.h"
 #include "qgsgeometry.h"
 #include "qgsattributedialog.h"
@@ -39,6 +40,7 @@
 #include <QDockWidget>
 #include <QMenuBar>
 #include <QPushButton>
+#include <QTextBrowser>
 
 #include "qgslogger.h"
 
@@ -154,6 +156,7 @@ void QgsIdentifyResults::addFeature( QgsMapLayer *layer, int fid,
 {
   QTreeWidgetItem *layItem = layerItem( layer );
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+  QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
 
   if ( layItem == 0 )
   {
@@ -179,15 +182,28 @@ void QgsIdentifyResults::addFeature( QgsMapLayer *layer, int fid,
 
   QTreeWidgetItem *featItem = new QTreeWidgetItem( QStringList() << displayField << displayValue );
   featItem->setData( 0, Qt::UserRole, fid );
+  layItem->addChild( featItem );
 
-  for ( QMap<QString, QString>::const_iterator it = attributes.begin(); it != attributes.end(); it++ )
+  if ( !rlayer || rlayer->providerKey() != "wms" )
   {
-    QTreeWidgetItem *attrItem = new QTreeWidgetItem( QStringList() << it.key() << it.value() );
-    if ( vlayer )
+    for ( QMap<QString, QString>::const_iterator it = attributes.begin(); it != attributes.end(); it++ )
     {
-      attrItem->setData( 0, Qt::UserRole, vlayer->fieldNameIndex( it.key() ) );
+      QTreeWidgetItem *attrItem = new QTreeWidgetItem( QStringList() << it.key() << it.value() );
+      if ( vlayer )
+      {
+        attrItem->setData( 0, Qt::UserRole, vlayer->fieldNameIndex( it.key() ) );
+      }
+      featItem->addChild( attrItem );
     }
+  }
+  else
+  {
+    QTreeWidgetItem *attrItem = new QTreeWidgetItem( QStringList() << attributes.begin().key() << "" );
     featItem->addChild( attrItem );
+
+    QTextBrowser *tb = new QTextBrowser( attrItem->treeWidget() );
+    tb->setHtml( attributes.begin().value() );
+    attrItem->treeWidget()->setItemWidget( attrItem, 1, tb );
   }
 
   if ( derivedAttributes.size() >= 0 )
@@ -227,8 +243,6 @@ void QgsIdentifyResults::addFeature( QgsMapLayer *layer, int fid,
       actionItem->addChild( twi );
     }
   }
-
-  layItem->addChild( featItem );
 
   highlightFeature( featItem );
 }
