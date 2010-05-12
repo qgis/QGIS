@@ -378,7 +378,10 @@ void QgsIdentifyResults::contextMenuEvent( QContextMenuEvent* event )
   QTreeWidgetItem *featItem = featureItem( item );
   if ( featItem )
   {
-    mActionPopup->addAction( vlayer->isEditable() ? tr( "Edit feature form" ) : tr( "View feature form" ), this, SLOT( featureForm() ) );
+    mActionPopup->addAction(
+      QgisApp::getThemeIcon( vlayer->isEditable() ? "/mIconEditable.png" : "/mIconEditable.png" ),
+      vlayer->isEditable() ? tr( "Edit feature form" ) : tr( "View feature form" ),
+      this, SLOT( featureForm() ) );
     mActionPopup->addAction( tr( "Zoom to feature" ), this, SLOT( zoomToFeature() ) );
     mActionPopup->addAction( tr( "Copy attribute value" ), this, SLOT( copyAttributeValue() ) );
     mActionPopup->addAction( tr( "Copy feature attributes" ), this, SLOT( copyFeatureAttributes() ) );
@@ -393,7 +396,7 @@ void QgsIdentifyResults::contextMenuEvent( QContextMenuEvent* event )
   mActionPopup->addAction( tr( "Expand all" ), this, SLOT( expandAll() ) );
   mActionPopup->addAction( tr( "Collapse all" ), this, SLOT( collapseAll() ) );
 
-  if ( vlayer->actions()->size() > 0 )
+  if ( featItem && vlayer->actions()->size() > 0 )
   {
     mActionPopup->addSeparator();
 
@@ -401,9 +404,6 @@ void QgsIdentifyResults::contextMenuEvent( QContextMenuEvent* event )
     // created for each new Identify Results dialog box, and that the
     // contents of the popup menu doesn't change during the time that
     // such a dialog box is around.
-    QAction *a = mActionPopup->addAction( tr( "Run action" ) );
-    a->setEnabled( false );
-
     for ( int i = 0; i < vlayer->actions()->size(); i++ )
     {
       const QgsAction &action = vlayer->actions()->at( i );
@@ -411,8 +411,8 @@ void QgsIdentifyResults::contextMenuEvent( QContextMenuEvent* event )
       if ( !action.runable() )
         continue;
 
-      QgsFeatureAction *a = new QgsFeatureAction( action.name(), this, vlayer, i, featureItem( item ) );
-      mActionPopup->addAction( action.name(), a, SLOT( execute() ) );
+      QgsFeatureAction *a = new QgsFeatureAction( action.name(), this, vlayer, i, featItem );
+      mActionPopup->addAction( QgisApp::getThemeIcon( "/mAction.png" ), action.name(), a, SLOT( execute() ) );
     }
   }
 
@@ -525,6 +525,9 @@ void QgsIdentifyResults::doAction( QTreeWidgetItem *item, int action )
 
 QTreeWidgetItem *QgsIdentifyResults::featureItem( QTreeWidgetItem *item )
 {
+  if ( !item )
+    return 0;
+
   QTreeWidgetItem *featItem;
   if ( item->parent() )
   {
