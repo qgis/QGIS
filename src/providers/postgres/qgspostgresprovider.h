@@ -588,7 +588,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     void customEvent( QEvent *e );
 
     void appendGeomString( QgsGeometry *geom, QString &geomParam ) const;
-    QByteArray paramValue( QString fieldvalue, const QString &defaultValue ) const;
+    QString paramValue( QString fieldvalue, const QString &defaultValue ) const;
 
     class Conn
     {

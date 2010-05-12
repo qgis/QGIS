@@ -2205,10 +2205,10 @@ QString QgsPostgresProvider::Conn::postgisVersion()
   return postgisVersionInfo;
 }
 
-QByteArray QgsPostgresProvider::paramValue( QString fieldValue, const QString &defaultValue ) const
+QString QgsPostgresProvider::paramValue( QString fieldValue, const QString &defaultValue ) const
 {
   if ( fieldValue.isNull() )
-    return QByteArray( 0 );  // QByteArray(0).isNull() is true
+    return QString::null;
 
   if ( fieldValue == defaultValue && !defaultValue.isNull() )
   {
@@ -2219,17 +2219,17 @@ QByteArray QgsPostgresProvider::paramValue( QString fieldValue, const QString &d
     if ( PQgetisnull( result, 0, 0 ) )
     {
       PQclear( result );
-      return QByteArray( 0 );  // QByteArray(0).isNull() is true
+      return QString::null;
     }
     else
     {
       QString val = QString::fromUtf8( PQgetvalue( result, 0, 0 ) );
       PQclear( result );
-      return val.toUtf8();
+      return val;
     }
   }
 
-  return fieldValue.toUtf8();
+  return fieldValue;
 }
 
 bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
