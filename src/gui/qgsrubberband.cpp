@@ -202,19 +202,20 @@ void QgsRubberBand::setToGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
       for ( int i = 0; i < mpt.size(); ++i )
       {
         QgsPoint pt = mpt[i];
+        mPoints.push_back( QList<QgsPoint>() );
         if ( layer )
         {
-          addPoint( mr->layerToMapCoordinates( layer, QgsPoint( pt.x() - d, pt.y() - d ) ), false );
-          addPoint( mr->layerToMapCoordinates( layer, QgsPoint( pt.x() + d, pt.y() - d ) ), false );
-          addPoint( mr->layerToMapCoordinates( layer, QgsPoint( pt.x() + d, pt.y() + d ) ), false );
-          addPoint( mr->layerToMapCoordinates( layer, QgsPoint( pt.x() - d, pt.y() + d ) ), false );
+          addPoint( mr->layerToMapCoordinates( layer, QgsPoint( pt.x() - d, pt.y() - d ) ), false, i );
+          addPoint( mr->layerToMapCoordinates( layer, QgsPoint( pt.x() + d, pt.y() - d ) ), false, i );
+          addPoint( mr->layerToMapCoordinates( layer, QgsPoint( pt.x() + d, pt.y() + d ) ), false, i );
+          addPoint( mr->layerToMapCoordinates( layer, QgsPoint( pt.x() - d, pt.y() + d ) ), false, i );
         }
         else
         {
-          addPoint( QgsPoint( pt.x() - d, pt.y() - d ), false );
-          addPoint( QgsPoint( pt.x() + d, pt.y() - d ), false );
-          addPoint( QgsPoint( pt.x() + d, pt.y() + d ), false );
-          addPoint( QgsPoint( pt.x() - d, pt.y() + d ), false );
+          addPoint( QgsPoint( pt.x() - d, pt.y() - d ), false, i );
+          addPoint( QgsPoint( pt.x() + d, pt.y() - d ), false, i );
+          addPoint( QgsPoint( pt.x() + d, pt.y() + d ), false, i );
+          addPoint( QgsPoint( pt.x() - d, pt.y() + d ), false, i );
         }
       }
     }
@@ -248,8 +249,7 @@ void QgsRubberBand::setToGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
       QgsMultiPolyline mline = geom->asMultiPolyline();
       for ( int i = 0; i < mline.size(); ++i )
       {
-        QList<QgsPoint> newList;
-        mPoints.push_back( newList );
+        mPoints.push_back( QList<QgsPoint>() );
         QgsPolyline line = mline[i];
         for ( int j = 0; j < line.size(); ++j )
         {
@@ -295,8 +295,7 @@ void QgsRubberBand::setToGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
       QgsMultiPolygon multipoly = geom->asMultiPolygon();
       for ( int i = 0; i < multipoly.size(); ++i )
       {
-        QList<QgsPoint> newList;
-        mPoints.push_back( newList );
+        mPoints.push_back( QList<QgsPoint>() );
         QgsPolygon poly = multipoly[i];
         QgsPolyline line = poly[0];
         for ( int j = 0; j < line.count(); ++j )
