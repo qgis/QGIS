@@ -22,6 +22,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
+#include "qgsattributeeditor.h"
 #include <limits>
 #include <QComboBox>
 
@@ -74,12 +75,13 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
   QgsFieldMap::const_iterator fieldIt = fieldMap.constBegin();
 
   //insert attribute names
-  QStringList horizontalHeaderLabels;
+  int col = 0;
   for ( ; fieldIt != fieldMap.constEnd(); ++fieldIt )
   {
-    horizontalHeaderLabels << fieldIt.value().name();
+    QTableWidgetItem *item = new QTableWidgetItem( fieldIt.value().name() );
+    item->setData( Qt::UserRole, fieldIt.key() );
+    mTableWidget->setHorizontalHeaderItem( col++, item );
   }
-  mTableWidget->setHorizontalHeaderLabels( horizontalHeaderLabels );
 
   //insert the attribute values
   int currentRow = 1;
@@ -97,7 +99,7 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
       QTableWidgetItem* attributeValItem = new QTableWidgetItem( currentMapIt.value().toString() );
       attributeValItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
       mTableWidget->setItem( currentRow, col, attributeValItem );
-      ++col;
+      mTableWidget->setCellWidget( currentRow, col++, QgsAttributeEditor::createAttributeEditor( mTableWidget, NULL, mVectorLayer, currentMapIt.key(), currentMapIt.value() ) );
     }
     ++currentRow;
   }
@@ -105,7 +107,6 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
   //merge
   verticalHeaderLabels << tr( "Merge" );
   mTableWidget->setVerticalHeaderLabels( verticalHeaderLabels );
-
 
   //insert currently merged values
   for ( int i = 0; i < fieldMap.size(); ++i )
@@ -254,21 +255,22 @@ void QgsMergeAttributesDialog::refreshMergedValue( int col )
 
 QString QgsMergeAttributesDialog::featureAttributeString( int featureId, int col )
 {
-  QString resultText;
-  for ( int i = 0; i < mFeatureList.size(); ++i )
+  int idx = mTableWidget->horizontalHeaderItem( col )->data( Qt::UserRole ).toInt();
+
+  int i;
+  for ( i = 0; i < mFeatureList.size() && mFeatureList[i].id() != featureId; i++ )
+    ;
+
+  QVariant value;
+  if ( i < mFeatureList.size() &&
+       QgsAttributeEditor::retrieveValue( mTableWidget->cellWidget( i + 1, col ), mVectorLayer, idx, value ) )
   {
-    int currentFid = mFeatureList[i].id();
-    if ( currentFid == featureId )
-    {
-      QTableWidgetItem* currentItem = mTableWidget->item( i + 1, col );
-      if ( !currentItem )
-      {
-        continue;
-      }
-      resultText = currentItem->text();
-    }
+    return value.toString();
   }
-  return resultText;
+  else
+  {
+    return "";
+  }
 }
 
 QString QgsMergeAttributesDialog::minimumAttributeString( int col )
