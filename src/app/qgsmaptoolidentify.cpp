@@ -295,7 +295,8 @@ bool QgsMapToolIdentify::identifyVectorLayer( QgsVectorLayer *layer, int x, int 
       convertMeasurement( calc, dist, myDisplayUnits, false );
       QString str = calc.textUnit( dist, 3, myDisplayUnits, false );  // dist and myDisplayUnits are out params
       derivedAttributes.insert( tr( "Length" ), str );
-      if ( f_it->geometry()->wkbType() == QGis::WKBLineString )
+      if ( f_it->geometry()->wkbType() == QGis::WKBLineString ||
+           f_it->geometry()->wkbType() == QGis::WKBLineString25D )
       {
         // Add the start and end points in as derived attributes
         str = QLocale::system().toString( f_it->geometry()->asPolyline().first().x(), 'g', 10 );
@@ -316,7 +317,9 @@ bool QgsMapToolIdentify::identifyVectorLayer( QgsVectorLayer *layer, int x, int 
       QString str = calc.textUnit( area, 3, myDisplayUnits, true );
       derivedAttributes.insert( tr( "Area" ), str );
     }
-    else if ( layer->geometryType() == QGis::Point )
+    else if ( layer->geometryType() == QGis::Point &&
+              ( f_it->geometry()->wkbType() == QGis::WKBPoint ||
+                f_it->geometry()->wkbType() == QGis::WKBPoint25D ) )
     {
       // Include the x and y coordinates of the point as a derived attribute
       QString str;
