@@ -43,6 +43,7 @@ class QgsComposerLegendWidget: public QWidget, private Ui::QgsComposerLegendWidg
     void on_mSymbolSpaceSpinBox_valueChanged( double d );
     void on_mIconLabelSpaceSpinBox_valueChanged( double d );
     void on_mTitleFontButton_clicked();
+    void on_mGroupFontButton_clicked();
     void on_mLayerFontButton_clicked();
     void on_mItemFontButton_clicked();
     void on_mBoxSpaceSpinBox_valueChanged( double d );
@@ -54,11 +55,14 @@ class QgsComposerLegendWidget: public QWidget, private Ui::QgsComposerLegendWidg
     void on_mEditPushButton_clicked();
     void on_mUpdatePushButton_clicked();
     void on_mUpdateAllPushButton_clicked();
+    void on_mAddGroupButton_clicked();
 
   private:
     QgsComposerLegendWidget();
     /**Sets GUI according to state of mLegend*/
     void setGuiElements();
+    /**Updates the legend layers and groups*/
+    void updateLegend();
 
     QgsComposerLegend* mLegend;
 };

@@ -36,6 +36,11 @@ class QDomNode;
 class QMouseEvent;
 class QTreeWidgetItem;
 
+//Information about relationship between groups and layers
+//key: group name (or null strings for single layers without groups)
+//value: containter with layer ids contained in the group
+typedef QPair< QString, QList<QString> > GroupLayerInfo;
+
 /**
    \class QgsLegend
    \brief A Legend treeview for QGIS
@@ -122,6 +127,9 @@ class QgsLegend : public QTreeWidget
 
     /**Returns a string list of groups*/
     QStringList groups();
+
+    //! Return the relationship between groups and layers in the legend
+    QList< GroupLayerInfo > groupLayerRelationship();
 
     /**Returns the first item in the hierarchy*/
     QTreeWidgetItem* firstItem();

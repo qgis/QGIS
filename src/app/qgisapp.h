@@ -155,6 +155,9 @@ class QgisApp : public QMainWindow
     /** Get the mapcanvas object from the app */
     QgsMapCanvas * mapCanvas() { return mMapCanvas; };
 
+    //! returns pointer to map legend
+    QgsLegend *legend() { return mMapLegend; }
+
     //! Set theme (icons)
     void setTheme( QString themeName = "default" );
     //! Setup the toolbar popup menus for a given theme
@@ -586,8 +589,6 @@ class QgisApp : public QMainWindow
 
     //! refresh map canvas
     void refreshMapCanvas();
-    //! returns pointer to map legend
-    QgsLegend *legend() { return mMapLegend; }
 
     //! starts/stops editing mode of the current layer
     void toggleEditing();

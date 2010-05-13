@@ -80,6 +80,15 @@ QStringList QgsAppLegendInterface::groups()
   return mLegend->groups();
 }
 
+QList< GroupLayerInfo > QgsAppLegendInterface::groupLayerRelationship()
+{
+  if ( mLegend )
+  {
+    return mLegend->groupLayerRelationship();
+  }
+  return QList< GroupLayerInfo >();
+}
+
 bool QgsAppLegendInterface::groupExists( int groupIndex )
 {
   QModelIndex mi = mLegend->model()->index( groupIndex, 0 );

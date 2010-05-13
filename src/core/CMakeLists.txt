@@ -94,6 +94,7 @@ SET(QGIS_CORE_SRCS
   composer/qgscomposeritem.cpp
   composer/qgscomposeritemgroup.cpp
   composer/qgscomposerlabel.cpp
+  composer/qgscomposerlegenditem.cpp
   composer/qgscomposerpicture.cpp
   composer/qgscomposermap.cpp
   composer/qgscomposertable.cpp

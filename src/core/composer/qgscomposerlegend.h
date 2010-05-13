@@ -23,6 +23,8 @@
 
 class QgsSymbol;
 class QgsSymbolV2;
+class QgsComposerGroupItem;
+class QgsComposerLayerItem;
 
 /** \ingroup MapComposer
  * A legend that can be placed onto a map composition
@@ -53,6 +55,9 @@ class CORE_EXPORT QgsComposerLegend: public QgsComposerItem
 
     QFont titleFont() const;
     void setTitleFont( const QFont& f );
+
+    QFont groupFont() const;
+    void setGroupFont( const QFont& f );
 
     QFont layerFont() const;
     void setLayerFont( const QFont& f );
@@ -101,6 +106,7 @@ class CORE_EXPORT QgsComposerLegend: public QgsComposerItem
 
     //different fonts for entries
     QFont mTitleFont;
+    QFont mGroupFont;
     QFont mLayerFont;
     QFont mItemFont;
 
@@ -122,6 +128,11 @@ class CORE_EXPORT QgsComposerLegend: public QgsComposerItem
 
   private:
     QgsComposerLegend(); //forbidden
+
+    /**Draws a group item and all subitems*/
+    void drawGroupItem( QPainter* p, QgsComposerGroupItem* groupItem, double& currentYCoord, double& maxXCoord );
+    /**Draws a layer item and all subitems*/
+    void drawLayerItem( QPainter* p, QgsComposerLayerItem* layerItem, double& currentYCoord, double& maxXCoord );
 
     /**Draws child items of a layer item
        @param layerItem parent model item (layer)
