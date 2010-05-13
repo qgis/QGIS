@@ -85,6 +85,7 @@ class Dialog(QDialog, Ui_Dialog):
         QObject.connect(self.btnFile, SIGNAL("clicked()"), self.saveFile)
         QObject.connect(self.inPoint1, SIGNAL("currentIndexChanged(QString)"), self.update1)
         QObject.connect(self.inPoint2, SIGNAL("currentIndexChanged(QString)"), self.update2)
+        self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
         # populate layer list
         self.setWindowTitle(self.tr("Distance matrix"))
         self.progressBar.setValue(0)
@@ -112,6 +113,7 @@ class Dialog(QDialog, Ui_Dialog):
                 self.inField2.addItem(unicode(changedField[i].name()))
 
     def accept(self):
+        self.buttonOk.setEnabled( False )
         if self.inPoint1.currentText() == "":
             QMessageBox.information(self, self.tr("Create Point Distance Matrix"), self.tr("Please specify input point layer"))
         elif self.outFile.text() == "":
@@ -144,6 +146,7 @@ class Dialog(QDialog, Ui_Dialog):
             self.progressBar.setValue(100)
             addToTOC = QMessageBox.information(self, "Create Point Distance Matrix", self.tr("Created output matrix:\n") + outPath)
         self.progressBar.setValue(0)
+        self.buttonOk.setEnabled( True )
 
     def saveFile(self):
         self.outFile.clear()
@@ -239,14 +242,14 @@ class Dialog(QDialog, Ui_Dialog):
                 outGeom = outFeat.geometry()
                 dist = distArea.measureLine(inGeom.asPoint(), outGeom.asPoint())
                 if dist > 0:
-                    if matType == "Linear": writer.writerow([unicode(inID), unicode(outID), float(dist)])
+                    if matType == "Linear": writer.writerow([unicode(inID), unicode(outID), str(dist)])
                     else: distList.append(float(dist))
             if matType == "Summary":
                 mean = sum(distList) / len(distList)
                 for i in distList:
                     vari = vari + ((i - mean)*(i - mean))
                 vari = sqrt(vari / len(distList))
-                writer.writerow([unicode(inID), float(mean), float(vari), float(min(distList)), float(max(distList))])
+                writer.writerow([unicode(inID), str(mean), str(vari), str(min(distList)), str(max(distList))])
             start = start + add
             progressBar.setValue(start)
         del writer
