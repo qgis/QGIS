@@ -333,7 +333,9 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
 
   // ? Does binary on Win need .exe extension ?
   // Return code 255 (-1) was correct in GRASS < 6.1.0
-  if ( !process.waitForFinished()
+  if ( !process.waitForStarted()
+       || !process.waitForReadyRead()
+       || !process.waitForFinished()
        || ( process.exitCode() != 0 && process.exitCode() != 255 ) )
   {
     QgsDebugMsg( "process.exitCode() = " + QString::number( process.exitCode() ) );
