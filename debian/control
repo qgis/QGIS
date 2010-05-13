@@ -3,7 +3,7 @@ Section: science
 Priority: extra
 Maintainer: Quantum GIS developers <qgis-developer@lists.osgeo.org>
 Build-Depends: debhelper (>= 7), libgdal1-dev, libpq-dev, 
- libgeos-dev (>= 3.0.0), grass-dev, libsqlite3-dev, libgsl0-dev, libproj-dev, libexpat1-dev, 
+ libgeos-dev (>= 3.0.0), grass-dev, libsqlite3-dev, libgsl0-dev, proj (< 4.7.0) | libproj-dev (>= 4.7.0), libexpat1-dev, 
  flex, bison, python-dev, cmake (>= 2.6), python-sip4 (>= 4.5.0), python-central (>=0.5), python,
  sharutils, sip4 (>= 4.5), libqt4-core (>=4.4.0), libqt4-dev (>=4.4.0), libqt4-gui (>=4.4.0),
  libqt4-sql (>=4.4.0), python-qt4 (>=4.1.0), python-qt4-dev (>=4.1.0),
