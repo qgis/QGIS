@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgscomposerlegend.h"
+#include "qgscomposerlegenditem.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaprenderer.h"
@@ -28,10 +29,11 @@
 
 QgsComposerLegend::QgsComposerLegend( QgsComposition* composition ): QgsComposerItem( composition ), mTitle( tr( "Legend" ) ), mBoxSpace( 2 ), mLayerSpace( 3 ), mSymbolSpace( 2 ), mIconLabelSpace( 2 )
 {
-  QStringList idList = layerIdList();
-  mLegendModel.setLayerSet( idList );
+  //QStringList idList = layerIdList();
+  //mLegendModel.setLayerSet( idList );
 
-  mTitleFont.setPointSizeF( 14.0 );
+  mTitleFont.setPointSizeF( 16.0 );
+  mGroupFont.setPointSizeF( 14.0 );
   mLayerFont.setPointSizeF( 12.0 );
   mItemFont.setPointSizeF( 12.0 );
 
@@ -95,48 +97,20 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
 
   maxXCoord = 2 * mBoxSpace + textWidthMillimeters( mTitleFont, mTitle );
 
-  //draw only visible layer items
-  QgsMapRenderer* theMapRenderer = mComposition->mapRenderer();
-  QStringList visibleLayerIds;
-  if ( theMapRenderer )
-  {
-    visibleLayerIds = theMapRenderer->layerSet();
-  }
-
-
   for ( int i = 0; i < numLayerItems; ++i )
   {
     currentLayerItem = rootItem->child( i );
-    if ( currentLayerItem )
+    QgsComposerLegendItem* currentLegendItem = dynamic_cast<QgsComposerLegendItem*>( currentLayerItem );
+    if ( currentLegendItem )
     {
-      QString currentLayerId = currentLayerItem->data().toString();
-      int opacity = 255;
-      QgsMapLayer* currentLayer = QgsMapLayerRegistry::instance()->mapLayer( currentLayerId );
-      if ( currentLayer )
+      QgsComposerLegendItem::ItemType type = currentLegendItem->itemType();
+      if ( type == QgsComposerLegendItem::GroupItem )
       {
-        opacity = currentLayer->getTransparency();
+        drawGroupItem( painter, dynamic_cast<QgsComposerGroupItem*>( currentLegendItem ), currentYCoordinate, maxXCoord );
       }
-
-      if ( visibleLayerIds.contains( currentLayerId ) )
+      else if ( type == QgsComposerLegendItem::LayerItem )
       {
-        //Let the user omit the layer title item by having an empty layer title string
-        if ( !currentLayerItem->text().isEmpty() )
-        {
-          currentYCoordinate += mLayerSpace;
-          currentYCoordinate += fontAscentMillimeters( mLayerFont );
-
-          //draw layer Item
-          if ( painter )
-          {
-            painter->setPen( QColor( 0, 0, 0 ) );
-            drawText( painter, mBoxSpace, currentYCoordinate, currentLayerItem->text(), mLayerFont );
-          }
-        }
-
-        maxXCoord = std::max( maxXCoord, 2 * mBoxSpace + textWidthMillimeters( mLayerFont, currentLayerItem->text() ) );
-
-        //and child items
-        drawLayerChildItems( painter, currentLayerItem, currentYCoordinate, maxXCoord, opacity );
+        drawLayerItem( painter, dynamic_cast<QgsComposerLayerItem*>( currentLegendItem ), currentYCoordinate, maxXCoord );
       }
     }
   }
@@ -169,6 +143,74 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
   }
 
   return size;
+}
+
+void QgsComposerLegend::drawGroupItem( QPainter* p, QgsComposerGroupItem* groupItem, double& currentYCoord, double& maxXCoord )
+{
+  if ( !p || !groupItem )
+  {
+    return;
+  }
+
+  currentYCoord += mLayerSpace;
+  currentYCoord += fontAscentMillimeters( mGroupFont );
+
+  p->setPen( QColor( 0, 0, 0 ) );
+  drawText( p, mBoxSpace, currentYCoord, groupItem->text(), mGroupFont );
+  maxXCoord = std::max( maxXCoord, 2 * mBoxSpace + textWidthMillimeters( mGroupFont, groupItem->text() ) );
+
+  //children can be other group items or layer items
+  int numChildItems = groupItem->rowCount();
+  QStandardItem* currentChildItem = 0;
+
+  for ( int i = 0; i < numChildItems; ++i )
+  {
+    currentChildItem = groupItem->child( i );
+    QgsComposerLegendItem* currentLegendItem = dynamic_cast<QgsComposerLegendItem*>( currentChildItem );
+    QgsComposerLegendItem::ItemType type = currentLegendItem->itemType();
+    if ( type == QgsComposerLegendItem::GroupItem )
+    {
+      drawGroupItem( p, dynamic_cast<QgsComposerGroupItem*>( currentLegendItem ), currentYCoord, maxXCoord );
+    }
+    else if ( type == QgsComposerLegendItem::LayerItem )
+    {
+      drawLayerItem( p, dynamic_cast<QgsComposerLayerItem*>( currentLegendItem ), currentYCoord, maxXCoord );
+    }
+  }
+}
+
+void QgsComposerLegend::drawLayerItem( QPainter* p, QgsComposerLayerItem* layerItem, double& currentYCoord, double& maxXCoord )
+{
+  if ( !layerItem )
+  {
+    return;
+  }
+
+  int opacity = 255;
+  QgsMapLayer* currentLayer = QgsMapLayerRegistry::instance()->mapLayer( layerItem->layerID() );
+  if ( currentLayer )
+  {
+    opacity = currentLayer->getTransparency();
+  }
+
+  //Let the user omit the layer title item by having an empty layer title string
+  if ( !layerItem->text().isEmpty() )
+  {
+    currentYCoord += mLayerSpace;
+    currentYCoord += fontAscentMillimeters( mLayerFont );
+
+    //draw layer Item
+    if ( p )
+    {
+      p->setPen( QColor( 0, 0, 0 ) );
+      drawText( p, mBoxSpace, currentYCoord, layerItem->text(), mLayerFont );
+    }
+
+    maxXCoord = std::max( maxXCoord, 2 * mBoxSpace + textWidthMillimeters( mLayerFont, layerItem->text() ) );
+
+    //and child items
+    drawLayerChildItems( p, layerItem, currentYCoord, maxXCoord, opacity );
+  }
 }
 
 void QgsComposerLegend::adjustBoxSize()
@@ -210,22 +252,18 @@ void QgsComposerLegend::drawLayerChildItems( QPainter* p, QStandardItem* layerIt
       continue;
     }
 
-    //take QgsSymbol* from user data
-    QVariant symbolVariant = currentItem->data();
     QgsSymbol* symbol = 0;
-    if ( symbolVariant.canConvert<void*>() )
+    QgsComposerSymbolItem* symbolItem = dynamic_cast<QgsComposerSymbolItem*>( currentItem );
+    if ( symbolItem )
     {
-      void* symbolData = symbolVariant.value<void*>();
-      symbol = ( QgsSymbol* )( symbolData );
+      symbol = symbolItem->symbol();
     }
 
-    //take QgsSymbolV2* from user data if there
-    QVariant symbolNgVariant = currentItem->data( Qt::UserRole + 2 );
     QgsSymbolV2* symbolNg = 0;
-    if ( symbolNgVariant.canConvert<void*>() )
+    QgsComposerSymbolV2Item* symbolV2Item = dynamic_cast<QgsComposerSymbolV2Item*>( currentItem );
+    if ( symbolV2Item )
     {
-      void* symbolNgData = symbolNgVariant.value<void*>();
-      symbolNg = ( QgsSymbolV2* )symbolNgData;
+      symbolNg = symbolV2Item->symbolV2();
     }
 
     if ( symbol )  //item with symbol?
@@ -416,16 +454,16 @@ void QgsComposerLegend::drawPolygonSymbol( QPainter* p, QgsSymbol* s, double cur
 
 QStringList QgsComposerLegend::layerIdList() const
 {
-  QStringList layerIdList;
-  QMap<QString, QgsMapLayer*> layerMap =  QgsMapLayerRegistry::instance()->mapLayers();
-  QMap<QString, QgsMapLayer*>::const_iterator mapIt = layerMap.constBegin();
-
-  for ( ; mapIt != layerMap.constEnd(); ++mapIt )
+  //take layer list from map renderer (to have legend order)
+  if ( mComposition )
   {
-    layerIdList.push_back( mapIt.key() );
+    QgsMapRenderer* r = mComposition->mapRenderer();
+    if ( r )
+    {
+      return r->layerSet();
+    }
   }
-
-  return layerIdList;
+  return QStringList();
 }
 
 void QgsComposerLegend::synchronizeWithModel()
@@ -437,6 +475,13 @@ void QgsComposerLegend::synchronizeWithModel()
 void QgsComposerLegend::setTitleFont( const QFont& f )
 {
   mTitleFont = f;
+  adjustBoxSize();
+  update();
+}
+
+void QgsComposerLegend::setGroupFont( const QFont& f )
+{
+  mGroupFont = f;
   adjustBoxSize();
   update();
 }
@@ -458,6 +503,11 @@ void QgsComposerLegend::setItemFont( const QFont& f )
 QFont QgsComposerLegend::titleFont() const
 {
   return mTitleFont;
+}
+
+QFont QgsComposerLegend::groupFont() const
+{
+  return mGroupFont;
 }
 
 QFont QgsComposerLegend::layerFont() const
@@ -489,6 +539,7 @@ bool QgsComposerLegend::writeXML( QDomElement& elem, QDomDocument & doc ) const
   //write general properties
   composerLegendElem.setAttribute( "title", mTitle );
   composerLegendElem.setAttribute( "titleFont", mTitleFont.toString() );
+  composerLegendElem.setAttribute( "groupFont", mGroupFont.toString() );
   composerLegendElem.setAttribute( "layerFont", mLayerFont.toString() );
   composerLegendElem.setAttribute( "itemFont", mItemFont.toString() );
   composerLegendElem.setAttribute( "boxSpace", QString::number( mBoxSpace ) );
@@ -520,6 +571,13 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
   {
     mTitleFont.fromString( titleFontString );
   }
+  //group font
+  QString groupFontString = itemElem.attribute( "groupFont" );
+  if ( !groupFontString.isEmpty() )
+  {
+    mGroupFont.fromString( groupFontString );
+  }
+
   //layer font
   QString layerFontString = itemElem.attribute( "layerFont" );
   if ( !layerFontString.isEmpty() )

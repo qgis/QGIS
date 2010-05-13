@@ -1240,6 +1240,51 @@ QStringList QgsLegend::groups()
   return groupList;
 }
 
+QList< GroupLayerInfo > QgsLegend::groupLayerRelationship()
+{
+  QList< GroupLayerInfo > groupLayerList;
+
+  int nTopLevelItems = topLevelItemCount();
+  QTreeWidgetItem* currentTopLevelItem = 0;
+
+  for ( int i = 0; i < nTopLevelItems; ++i )
+  {
+    currentTopLevelItem = topLevelItem( i );
+    //layer?
+    QgsLegendLayer* lLayer = dynamic_cast<QgsLegendLayer*>( currentTopLevelItem );
+    if ( lLayer )
+    {
+      if ( lLayer->layer() )
+      {
+        QList<QString> layerList;
+        layerList.push_back( lLayer->layer()->getLayerID() );
+        groupLayerList.push_back( qMakePair( QString(), layerList ) );
+      }
+    }
+    //group?
+    QgsLegendGroup* lGroup = dynamic_cast<QgsLegendGroup*>( currentTopLevelItem );
+    if ( lGroup )
+    {
+      int nLayers =  lGroup->childCount();
+      QList<QString> layerList;
+      for ( int i = 0; i < nLayers; ++i )
+      {
+        QgsLegendLayer* lLayer = dynamic_cast<QgsLegendLayer*>( lGroup->child( i ) );
+        if ( lLayer )
+        {
+          if ( lLayer->layer() )
+          {
+            layerList.push_back( lLayer->layer()->getLayerID() );
+          }
+        }
+      }
+      groupLayerList.push_back( qMakePair( lGroup->text( 0 ), layerList ) );
+    }
+  }
+
+  return groupLayerList;
+}
+
 /**Returns the first item in the hierarchy*/
 QTreeWidgetItem* QgsLegend::firstItem()
 {

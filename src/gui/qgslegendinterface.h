@@ -19,9 +19,15 @@
 #define QGSLEGENDINTERFACE_H
 
 #include <QObject>
+#include <QPair>
 #include <QStringList>
 
 class QgsMapLayer;
+
+//Information about relationship between groups and layers
+//key: group name (or null strings for single layers without groups)
+//value: containter with layer ids contained in the group
+typedef QPair< QString, QList<QString> > GroupLayerInfo;
 
 /** \ingroup gui
  * QgsLegendInterface
@@ -43,6 +49,9 @@ class GUI_EXPORT QgsLegendInterface : public QObject
 
     //! Return a string list of groups
     virtual QStringList groups() = 0;
+
+    //! Return the relationship between groups and layers in the legend
+    virtual QList< GroupLayerInfo > groupLayerRelationship() {}
 
     //! Return all layers in the project in legend order
     //! @note added in 1.5

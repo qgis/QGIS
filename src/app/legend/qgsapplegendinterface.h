@@ -44,6 +44,9 @@ class QgsAppLegendInterface : public QgsLegendInterface
     //! Return a string list of groups
     QStringList groups();
 
+    //! Return the relationship between groups and layers in the legend
+    QList< GroupLayerInfo > groupLayerRelationship();
+
     //! Return all layers in the project in legend order
     QList< QgsMapLayer * > layers() const;
 

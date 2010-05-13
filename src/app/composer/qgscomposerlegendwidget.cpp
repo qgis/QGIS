@@ -21,6 +21,11 @@
 #include "qgscomposeritemwidget.h"
 #include <QFontDialog>
 
+#include "qgsapplegendinterface.h"
+#include "qgisapp.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaprenderer.h"
+
 QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend ): mLegend( legend )
 {
   setupUi( this );
@@ -33,6 +38,14 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend ): m
   {
     mItemTreeView->setModel( legend->model() );
   }
+
+  updateLegend();
+
+  mItemTreeView->setDragEnabled( true );
+  mItemTreeView->setAcceptDrops( true );
+  mItemTreeView->setDropIndicatorShown( true );
+  mItemTreeView->setDefaultDropAction( Qt::MoveAction );
+  mItemTreeView->setDragDropMode( QAbstractItemView::InternalMove );
 
   setGuiElements();
 }
@@ -141,6 +154,26 @@ void QgsComposerLegendWidget::on_mTitleFontButton_clicked()
     if ( ok )
     {
       mLegend->setTitleFont( newFont );
+      mLegend->adjustBoxSize();
+      mLegend->update();
+    }
+  }
+}
+
+void QgsComposerLegendWidget::on_mGroupFontButton_clicked()
+{
+  if ( mLegend )
+  {
+    bool ok;
+#if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && !defined(__LP64__)
+    // Native Mac dialog works only for 64 bit Cocoa (observed in Qt 4.5.2, probably a Qt bug)
+    QFont newFont = QFontDialog::getFont( &ok, mLegend->groupFont(), this, QString(), QFontDialog::DontUseNativeDialog );
+#else
+    QFont newFont = QFontDialog::getFont( &ok, mLegend->groupFont() );
+#endif
+    if ( ok )
+    {
+      mLegend->setGroupFont( newFont );
       mLegend->adjustBoxSize();
       mLegend->update();
     }
@@ -388,8 +421,43 @@ void QgsComposerLegendWidget::on_mUpdatePushButton_clicked()
 
 void QgsComposerLegendWidget::on_mUpdateAllPushButton_clicked()
 {
+  updateLegend();
+}
+
+void QgsComposerLegendWidget::on_mAddGroupButton_clicked()
+{
+  if ( mLegend && mLegend->model() )
+  {
+    mLegend->model()->addGroup();
+    mLegend->update();
+  }
+}
+
+void QgsComposerLegendWidget::updateLegend()
+{
   if ( mLegend )
   {
-    mLegend->updateLegend();
+    QgisApp* app = QgisApp::instance();
+    if ( !app )
+    {
+      return;
+    }
+
+    //get layer id list
+    QStringList layerIdList;
+    QgsMapCanvas* canvas = app->mapCanvas();
+    if ( canvas )
+    {
+      QgsMapRenderer* renderer = canvas->mapRenderer();
+      if ( renderer )
+      {
+        layerIdList = renderer->layerSet();
+      }
+    }
+
+    //and also group info
+    QgsAppLegendInterface legendIface( app->legend() );
+    QList< GroupLayerInfo > groupInfo = legendIface.groupLayerRelationship();
+    mLegend->model()->setLayerSetAndGroups( layerIdList, groupInfo );
   }
 }
