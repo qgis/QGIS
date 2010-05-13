@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #-----------------------------------------------------------
-# 
+#
 # Join Attributes
 #
 # A QGIS plugin for performing an attribute join between vector layers.
@@ -13,23 +13,23 @@
 # WEB  : www.geog.uvic.ca/spar/carson
 #
 #-----------------------------------------------------------
-# 
+#
 # licensed under the terms of GNU GPL 2
-# 
+#
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License along
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-# 
+#
 #---------------------------------------------------------------------
 
 from PyQt4.QtCore import *
@@ -53,6 +53,7 @@ class Dialog(QDialog, Ui_Dialog):
     QObject.connect(self.rdoTable, SIGNAL("clicked()"), self.updateTableFields)
     QObject.connect(self.rdoVector, SIGNAL("clicked()"), self.jupdate)
     self.setWindowTitle( self.tr("Join attributes") )
+    self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
     # populate layer list
     self.progressBar.setValue(0)
     mapCanvas = self.iface.mapCanvas()
@@ -75,8 +76,9 @@ class Dialog(QDialog, Ui_Dialog):
       self.joinField.clear()
       for i in changedField:
         self.joinField.addItem(unicode(changedField[i].name()))
-  
+
   def accept(self):
+    self.buttonOk.setEnabled( False )
     if self.inShape.currentText() == "":
       QMessageBox.information(self, self.tr("Join Attributes"), self.tr("Please specify target vector layer"))
     elif self.outShape.text() == "":
@@ -101,7 +103,7 @@ class Dialog(QDialog, Ui_Dialog):
         useTable = True
       joinField = self.joinField.currentText()
       outPath = self.outShape.text()
-      self.compute(inName, inField, joinName, joinField, outPath, keep, useTable, self.progressBar)
+      res = self.compute(inName, inField, joinName, joinField, outPath, keep, useTable, self.progressBar)
       self.outShape.clear()
       if res:
         addToTOC = QMessageBox.question(self, self.tr("Join Attributes"),
@@ -112,6 +114,7 @@ class Dialog(QDialog, Ui_Dialog):
             QMessageBox.warning( self, self.tr("Geoprocessing"), self.tr( "Error loading output shapefile:\n%1" )
             .arg( unicode( outPath ) ))
     self.progressBar.setValue(0)
+    self.buttonOk.setEnabled( True )
 
   def outFile(self):
     self.outShape.clear()
@@ -171,7 +174,7 @@ class Dialog(QDialog, Ui_Dialog):
     provider2.select(allAttrs, QgsRectangle(), False, False)
     fieldList2 = ftools_utils.getFieldList(layer2)
     index2 = provider2.fieldNameIndex(joinField)
-    fieldList2 = self.testForUniqueness(fieldList1, fieldList2.values())
+    fieldList2 = ftools_utils.testForUniqueness(fieldList1, fieldList2.values())
     seq = range(0, len(fieldList1) + len(fieldList2))
     fieldList1.extend(fieldList2)
     fieldList1 = dict(zip(seq, fieldList1))
