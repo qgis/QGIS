@@ -22,6 +22,7 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
     self.manageGui()
     self.success = False
     self.cancel_close = self.buttonBox_2.button( QDialogButtonBox.Close )
+    self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
     self.progressBar.setValue (0 )
   
   def checkA( self ):
@@ -180,6 +181,7 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
       if not QgsVectorFileWriter.deleteShapeFile( self.shapefileName ):
         QMessageBox.warning( self, self.tr("Geoprocessing"), self.tr( "Unable to delete existing shapefile." ) )
         return
+    self.buttonOk.setEnabled( False )
     self.testThread = geoprocessingThread( self.iface.mainWindow(), self, self.myFunction, myLayerA, 
     myLayerB, myParam, myMerge, mySelectionA, mySelectionB, self.shapefileName, self.encoding )
     QObject.connect( self.testThread, SIGNAL( "runFinished(PyQt_PyObject)" ), self.runFinishedFromThread )
@@ -192,9 +194,11 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
   
   def cancelThread( self ):
     self.testThread.stop()
+    self.buttonOk.setEnabled( True )
   
   def runFinishedFromThread( self, results ):
     self.testThread.stop()
+    self.buttonOk.setEnabled( True )
     self.cancel_close.setText( self.tr("Close") )
     QObject.disconnect( self.cancel_close, SIGNAL( "clicked()" ), self.cancelThread )
     out_text = ""

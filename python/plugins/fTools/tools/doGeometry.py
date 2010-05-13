@@ -14,6 +14,7 @@ class GeometryDialog(QDialog, Ui_Dialog):
     self.iface = iface
     self.setupUi(self)
     self.myFunction = function
+    self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
     QObject.connect(self.toolOut, SIGNAL("clicked()"), self.outFile)
     if self.myFunction == 1:
       QObject.connect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.update)
@@ -126,7 +127,7 @@ class GeometryDialog(QDialog, Ui_Dialog):
     elif self.myFunction == 9:
       myList = ftools_utils.getLayerNames( "all" )
     else:
-      myList = ftools_utils.getLayerNames( [ QGis.Point, QGis.Line, QGis.Polygon ] )    
+      myList = ftools_utils.getLayerNames( [ QGis.Point, QGis.Line, QGis.Polygon ] )
     self.inShape.addItems( myList )
     return
 
@@ -151,6 +152,7 @@ class GeometryDialog(QDialog, Ui_Dialog):
       if not QgsVectorFileWriter.deleteShapeFile( self.shapefileName ):
         QMessageBox.warning( self, self.tr("Geoprocessing"), self.tr( "Unable to delete existing shapefile." ) )
         return
+    self.buttonOk.setEnabled( False )
     self.testThread = geometryThread( self.iface.mainWindow(), self, self.myFunction, vlayer, myParam, 
     myField, self.shapefileName, self.encoding )
     QObject.connect( self.testThread, SIGNAL( "runFinished(PyQt_PyObject)" ), self.runFinishedFromThread )
@@ -162,11 +164,17 @@ class GeometryDialog(QDialog, Ui_Dialog):
 
   def cancelThread( self ):
     self.testThread.stop()
+    self.buttonOk.setEnabled( True )
     
   def runFinishedFromThread( self, success ):
     self.testThread.stop()
+    self.buttonOk.setEnabled( True )
     if success == "math_error":
       QMessageBox.warning( self, self.tr("Geometry"), self.tr("Error processing specified tolerance!\nPlease choose larger tolerance...") )
+      if not QgsVectorFileWriter.deleteShapeFile( self.shapefileName ):
+        QMessageBox.warning( self, self.tr("Geometry"), self.tr( "Unable to delete incomplete shapefile." ) )
+    elif success == "attr_error":
+      QMessageBox.warning( self, self.tr("Geometry"), self.tr("At least two features must have same attribute value!\nPlease choose another field...") )
       if not QgsVectorFileWriter.deleteShapeFile( self.shapefileName ):
         QMessageBox.warning( self, self.tr("Geometry"), self.tr( "Unable to delete incomplete shapefile." ) )
     else: 
@@ -267,6 +275,8 @@ class geometryThread( QThread ):
         outFeat.setGeometry( outGeom )
         writer.addFeature( outFeat )
       del writer
+    else:
+      return "attr_error"
     return True
 
   def multi_to_single( self ):

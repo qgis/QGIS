@@ -18,6 +18,7 @@ class Dialog(QDialog, Ui_Dialog):
         QObject.connect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.updateProj1)
         QObject.connect(self.cmbLayer, SIGNAL("currentIndexChanged(QString)"), self.updateProj2)
         self.setWindowTitle( self.tr("Export to new projection") )
+        self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
         self.progressBar.setValue(0)
         mapCanvas = self.iface.mapCanvas()
         layers = ftools_utils.getLayerNames([QGis.Point, QGis.Line, QGis.Polygon])
@@ -37,6 +38,7 @@ class Dialog(QDialog, Ui_Dialog):
         self.outRef.insert(unicode(crs))
 
     def accept(self):
+        self.buttonOk.setEnabled( False )
         if self.inShape.currentText() == "":
             QMessageBox.information(self, self.tr("Export to new projection"), self.tr("No input layer specified"))
         elif self.outShape.text() == "":
@@ -64,6 +66,7 @@ class Dialog(QDialog, Ui_Dialog):
                     self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
                     QgsMapLayerRegistry.instance().addMapLayer(self.vlayer)
         self.progressBar.setValue(0)
+        self.buttonOk.setEnabled( True )
 
     def outProjFile(self):
         format = QString( "<h2>%1</h2>%2 <br/> %3" )

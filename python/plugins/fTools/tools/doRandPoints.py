@@ -48,11 +48,12 @@ class Dialog(QDialog, Ui_Dialog):
         QObject.connect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.update)
         self.progressBar.setValue(0)
         self.setWindowTitle(self.tr("Random Points"))
+        self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
         self.mapCanvas = self.iface.mapCanvas()
         layers = ftools_utils.getLayerNames([QGis.Polygon, "Raster"])
         self.inShape.addItems(layers)
 
-# If input layer is changed, update field list                
+# If input layer is changed, update field list
     def update(self, inputLayer):
         self.cmbField.clear()
         changedLayer = ftools_utils.getMapLayerByName(unicode(inputLayer))
@@ -75,8 +76,9 @@ class Dialog(QDialog, Ui_Dialog):
             self.cmbField.setEnabled(False)
             self.label_4.setEnabled(False)
 
-# when 'OK' button is pressed, gather required inputs, and initiate random points generation            
+# when 'OK' button is pressed, gather required inputs, and initiate random points generation
     def accept(self):
+        self.buttonOk.setEnabled( False )
         if self.inShape.currentText() == "":
             QMessageBox.information(self, self.tr("Random Points"), self.tr("No input layer specified"))
         elif self.outShape.text() == "":
@@ -127,7 +129,8 @@ class Dialog(QDialog, Ui_Dialog):
             if addToTOC == QMessageBox.Yes:
                 self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
                 QgsMapLayerRegistry.instance().addMapLayer(self.vlayer)
-            self.progressBar.setValue(0)
+        self.progressBar.setValue(0)
+        self.buttonOk.setEnabled( True )
 
     def outFile(self):
         self.outShape.clear()
@@ -136,7 +139,7 @@ class Dialog(QDialog, Ui_Dialog):
             return
         self.outShape.setText( QString( self.shapefileName ) )
     
-# combine all polygons in layer to create single polygon (slow for complex polygons)     
+# combine all polygons in layer to create single polygon (slow for complex polygons)
     def createSinglePolygon(self, vlayer):
         provider = vlayer.dataProvider()
         allAttrs = provider.attributeIndexes()
@@ -157,7 +160,7 @@ class Dialog(QDialog, Ui_Dialog):
             self.progressBar.setValue(count)
         return geom
     
-# Generate list of random points     
+# Generate list of random points
     def simpleRandom(self, n, bound, xmin, xmax, ymin, ymax):
         seed()
         points = []

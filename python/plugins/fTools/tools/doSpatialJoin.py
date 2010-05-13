@@ -48,6 +48,7 @@ class Dialog(QDialog, Ui_Dialog):
         self.setupUi(self)
         QObject.connect(self.toolOut, SIGNAL("clicked()"), self.outFile)
         self.setWindowTitle( self.tr("Join attributes by location") )
+        self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
         # populate layer list
         self.progressBar.setValue(0)
         mapCanvas = self.iface.mapCanvas()
@@ -56,6 +57,7 @@ class Dialog(QDialog, Ui_Dialog):
         self.joinShape.addItems(layers)
     
     def accept(self):
+        self.buttonOk.setEnabled( False )
         if self.inShape.currentText() == "":
             QMessageBox.information(self, self.tr("Spatial Join"), self.tr("Please specify target vector layer") )
         elif self.outShape.text() == "":
@@ -96,6 +98,7 @@ class Dialog(QDialog, Ui_Dialog):
                 self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
                 QgsMapLayerRegistry.instance().addMapLayer(self.vlayer)
         self.progressBar.setValue(0)
+        self.buttonOk.setEnabled( True )
 
     def outFile(self):
         self.outShape.clear()
