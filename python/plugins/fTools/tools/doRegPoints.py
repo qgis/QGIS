@@ -50,12 +50,14 @@ class Dialog(QDialog, Ui_Dialog):
         self.yMax.setValidator(QDoubleValidator(self.yMax))
         QObject.connect(self.toolOut, SIGNAL("clicked()"), self.outFile)
         self.setWindowTitle( self.tr("Regular points") )
+        self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
         self.progressBar.setValue(0)
         self.mapCanvas = self.iface.mapCanvas()
         layers = ftools_utils.getLayerNames("all")
         self.inShape.addItems(layers)
 
     def accept(self):
+        self.buttonOk.setEnabled( False )
         if not self.rdoCoordinates.isChecked() and self.inShape.currentText() == "":
             QMessageBox.information(self, self.tr("Generate Regular Points"), self.tr("Please specify input layer"))
         elif self.rdoCoordinates.isChecked() and (self.xMin.text() == "" or self.xMax.text() == "" or self.yMin.text() == "" or self.yMax.text() == ""):
@@ -90,7 +92,8 @@ class Dialog(QDialog, Ui_Dialog):
             if addToTOC == QMessageBox.Yes:
                 self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
                 QgsMapLayerRegistry.instance().addMapLayer(self.vlayer)
-            self.progressBar.setValue(0)
+        self.progressBar.setValue(0)
+        self.buttonOk.setEnabled( True )
 
     def outFile(self):
         self.outShape.clear()
@@ -99,7 +102,7 @@ class Dialog(QDialog, Ui_Dialog):
             return
         self.outShape.setText( QString( self.shapefileName ) )
     
-# Generate list of random points     
+# Generate list of random points
     def simpleRandom(self, n, bound, xmin, xmax, ymin, ymax):
         seed()
         points = []

@@ -45,6 +45,7 @@ class Dialog(QDialog, Ui_Dialog):
         self.setupUi(self)
         QObject.connect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.update)
         self.setWindowTitle(self.tr("Random selection within subsets"))
+        self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
         # populate layer list
         self.progressBar.setValue(0)
         mapCanvas = self.iface.mapCanvas()
@@ -61,6 +62,7 @@ class Dialog(QDialog, Ui_Dialog):
         self.spnNumber.setMaximum( maxFeatures )
 
     def accept(self):
+        self.buttonOk.setEnabled( False )
         if self.inShape.currentText() == "":
             QMessageBox.information(self, self.tr("Random selection within subsets"), self.tr("Please specify input vector layer"))
         elif self.inField.currentText() == "":
@@ -77,26 +79,12 @@ class Dialog(QDialog, Ui_Dialog):
             self.compute(inVect, uidField, value, perc, self.progressBar)
             self.progressBar.setValue(100)
         self.progressBar.setValue(0)
-
-    def outFile(self):
-        self.outShape.clear()
-        fileDialog = QFileDialog()
-        fileDialog.setConfirmOverwrite(False)
-        outName = fileDialog.getSaveFileName(self, self.tr("Output Shapefile"),".", self.tr("Shapefiles (*.shp)"))
-        fileCheck = QFile(outName)
-        if fileCheck.exists():
-            QMessageBox.warning(self, self.tr("Random selection within subsets"), self.tr("Cannot overwrite existing shapefile..."))
-        else:
-            filePath = QFileInfo(outName).absoluteFilePath()
-            if filePath.right(4) != ".shp": filePath = filePath + ".shp"
-            if not outName.isEmpty():
-                self.outShape.clear()
-                self.outShape.insert(filePath)
+        self.buttonOk.setEnabled( True )
 
     def compute(self, inVect, inField, value, perc, progressBar):
         vlayer = ftools_utils.getVectorLayerByName(inVect)
         vprovider = vlayer.dataProvider()
-        mlayer = self.getMapLayerByName(inVect)
+        mlayer = ftools_utils.getMapLayerByName(inVect)
         allAttrs = vprovider.attributeIndexes()
         vprovider.select(allAttrs)
         index = vprovider.fieldNameIndex(inField)
@@ -129,11 +117,3 @@ class Dialog(QDialog, Ui_Dialog):
                 mlayer.setSelectedFeatures(selran)
         else:
             mlayer.setSelectedFeatures(range(0, mlayer.featureCount()))
-
-    def getMapLayerByName(self, myName):
-        mc = self.iface.mapCanvas()
-        nLayers = mc.layerCount()
-        for l in range(nLayers):
-            layer = mc.layer(l)
-            if layer.name() == unicode(myName,'latin1'):
-                return layer

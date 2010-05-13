@@ -46,6 +46,7 @@ class Dialog(QDialog, Ui_Dialog):
         #QObject.connect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.updateInput)
         QObject.connect(self.btnUpdate, SIGNAL("clicked()"), self.updateLayer)
         QObject.connect(self.btnCanvas, SIGNAL("clicked()"), self.updateCanvas)
+        self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
         self.setWindowTitle(self.tr("Vector grid"))
         self.xMin.setValidator(QDoubleValidator(self.xMin))
         self.xMax.setValidator(QDoubleValidator(self.xMax))
@@ -78,6 +79,7 @@ class Dialog(QDialog, Ui_Dialog):
         self.yMax.setText( unicode( boundBox.yMaximum() ) )
 
     def accept(self):
+        self.buttonOk.setEnabled( False )
         if self.xMin.text() == "" or self.xMax.text() == "" or self.yMin.text() == "" or self.yMax.text() == "":
             QMessageBox.information(self, self.tr("Vector grid"), self.tr("Please specify valid extent coordinates"))
         elif self.outShape.text() == "":
@@ -100,7 +102,8 @@ class Dialog(QDialog, Ui_Dialog):
             addToTOC = QMessageBox.question(self, self.tr("Generate Vector Grid"), self.tr("Created output shapefile:\n%1\n\nWould you like to add the new layer to the TOC?").arg(unicode(self.shapefileName)), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
             if addToTOC == QMessageBox.Yes:
                 ftools_utils.addShapeToCanvas( self.shapefileName )
-            self.progressBar.setValue( 0 )
+        self.progressBar.setValue( 0 )
+        self.buttonOk.setEnabled( True )
 
     def compute( self, bound, xOffset, yOffset, polygon ):
         crs = self.iface.mapCanvas().mapRenderer().destinationSrs()

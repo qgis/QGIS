@@ -48,6 +48,7 @@ class Dialog(QDialog, Ui_Dialog):
         QObject.connect(self.inLine1, SIGNAL("currentIndexChanged(QString)"), self.update1)
         QObject.connect(self.inLine2, SIGNAL("currentIndexChanged(QString)"), self.update2)
         self.setWindowTitle( self.tr("Line intersections") )
+        self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
         # populate layer list
         self.progressBar.setValue(0)
         mapCanvas = self.iface.mapCanvas()
@@ -70,6 +71,7 @@ class Dialog(QDialog, Ui_Dialog):
             self.inField2.addItem(unicode(changedField[i].name()))
 
     def accept(self):
+        self.buttonOk.setEnabled( False )
         if self.inLine1.currentText() == "":
             QMessageBox.information(self, self.tr("Locate Line Intersections"), self.tr("Please specify input line layer") )
         elif self.outShape.text() == "":
@@ -94,6 +96,7 @@ class Dialog(QDialog, Ui_Dialog):
                 if not ftools_utils.addShapeToCanvas( unicode( outPath ) ):
                     QMessageBox.warning( self, self.tr("Geoprocessing"), self.tr( "Error loading output shapefile:\n%1" ).arg( unicode( outPath ) ))
         self.progressBar.setValue(0)
+        self.buttonOk.setEnabled( True )
 
     def outFile(self):
         self.outShape.clear()

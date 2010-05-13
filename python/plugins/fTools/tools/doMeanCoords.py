@@ -15,6 +15,7 @@ class Dialog(QDialog, Ui_Dialog):
         self.updateUi()
         QObject.connect(self.toolOut, SIGNAL("clicked()"), self.outFile)
         QObject.connect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.update)
+        self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
 
         # populate layer list
         self.progressBar.setValue(0)
@@ -44,6 +45,7 @@ class Dialog(QDialog, Ui_Dialog):
             self.uniqueField.addItem(unicode(changedField[i].name()))
 
     def accept(self):
+        self.buttonOk.setEnabled( False )
         if self.inShape.currentText() == "":
             QMessageBox.information(self, self.tr("Coordinate statistics"), self.tr("No input vector layer specified"))
         elif self.outShape.text() == "":
@@ -74,7 +76,8 @@ class Dialog(QDialog, Ui_Dialog):
                     render.addSymbol(symbol)
                     self.vlayer.setRenderer(render)
                 QgsMapLayerRegistry.instance().addMapLayer(self.vlayer)
-            self.progressBar.setValue(0)
+        self.progressBar.setValue(0)
+        self.buttonOk.setEnabled( True )
 
     def outFile(self):
         self.outShape.clear()
@@ -137,7 +140,7 @@ class Dialog(QDialog, Ui_Dialog):
                     else:
                         weight = float(feat.attributeMap()[weightIndex].toDouble()[0])
                     geom = QgsGeometry(feat.geometry())
-                    geom = self.extract(geom)
+                    geom = ftools_utils.extractPoints(geom)
                     for i in geom:
                         cx += i.x()
                         cy += i.y()
@@ -180,31 +183,3 @@ class Dialog(QDialog, Ui_Dialog):
             if single:
                 break
         del writer
-
-    def extract(self, geom):
-        multi_geom = QgsGeometry()
-        temp_geom = []
-        if geom.type() == 0: # it's a point
-            if geom.isMultipart():
-                temp_geom = geom.asMultiPoint()
-            else:
-                temp_geom.append(geom.asPoint())
-        if geom.type() == 1: # it's a line
-            if geom.isMultipart():
-                multi_geom = geom.asMultiPolyline() #multi_geog is a multiline
-                for i in multi_geom: #i is a line
-                    temp_geom.extend(i)
-            else:
-                temp_geom = geom.asPolyline()
-        elif geom.type() == 2: # it's a polygon
-            if geom.isMultipart():
-                multi_geom = geom.asMultiPolygon() #multi_geom is a multipolygon
-                for i in multi_geom: #i is a polygon
-                    for j in i: #j is a line
-                        temp_geom.extend(j)
-            else:
-                multi_geom = geom.asPolygon() #multi_geom is a polygon
-                for i in multi_geom: #i is a line
-                    temp_geom.extend(i)
-        return temp_geom
-

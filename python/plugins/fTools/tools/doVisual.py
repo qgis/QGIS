@@ -16,6 +16,7 @@ class VisualDialog( QDialog, Ui_Dialog ):
       QObject.connect( self.inShape, SIGNAL( "currentIndexChanged(QString)" ), self.update )
     self.manageGui()
     self.cancel_close = self.buttonBox_2.button( QDialogButtonBox.Close )
+    self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
     self.progressBar.setValue( 0 )
     self.partProgressBar.setValue( 0 )
     self.partProgressBar.setVisible( False )
@@ -110,6 +111,7 @@ class VisualDialog( QDialog, Ui_Dialog ):
     self.tblUnique.clearContents()
     self.tblUnique.setRowCount( 0 )
     self.lstCount.clear()
+    self.buttonOk.setEnabled( False )
     self.testThread = visualThread( self.iface.mainWindow(), self, self.myFunction, vlayer, myField, mySelection )
     QObject.connect( self.testThread, SIGNAL( "runFinished(PyQt_PyObject)" ), self.runFinishedFromThread )
     QObject.connect( self.testThread, SIGNAL( "runStatus(PyQt_PyObject)" ), self.runStatusFromThread )
@@ -123,9 +125,11 @@ class VisualDialog( QDialog, Ui_Dialog ):
 
   def cancelThread( self ):
     self.testThread.stop()
+    self.buttonOk.setEnabled( True )
     
   def runFinishedFromThread( self, output ):
     self.testThread.stop()
+    self.buttonOk.setEnabled( True )
     result = output[ 0 ]
     numRows = len( result )
     self.tblUnique.setRowCount( numRows )
@@ -195,7 +199,7 @@ class visualThread( QThread ):
     self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
 
   def stop(self):
-    self.running = False        
+    self.running = False
 
   def list_unique_values( self, vlayer, myField ):
     vprovider = vlayer.dataProvider()

@@ -19,6 +19,7 @@ class Dialog(QDialog, Ui_Dialog):
         self.label_2.setVisible(False)
         self.label_2.setEnabled(False)
         self.setWindowTitle(self.tr("Define current projection"))
+        self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
         QObject.connect(self.btnProjection, SIGNAL("clicked()"), self.outProjFile)
         QObject.connect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.updateProj1)
         QObject.connect(self.cmbLayer, SIGNAL("currentIndexChanged(QString)"), self.updateProj2)
@@ -42,6 +43,7 @@ class Dialog(QDialog, Ui_Dialog):
         self.outRef.insert(unicode(crs))
 
     def accept(self):
+        self.buttonOk.setEnabled( False )
         if self.inShape.currentText() == "":
             QMessageBox.information(self, self.tr("Define current projection"), self.tr("No input shapefile specified"))
         elif self.txtProjection.text() == "" and self.rdoProjection.isChecked():
@@ -103,6 +105,7 @@ class Dialog(QDialog, Ui_Dialog):
                     self.progressBar.setValue(100)
                     QMessageBox.information(self, self.tr("Define current projection"), self.tr("Defined Projection For:\n%1.shp").arg( inPath ) )
         self.progressBar.setValue(0)
+        self.buttonOk.setEnabled( True )
 
     def outProjFile(self):
         format = QString( "<h2>%1</h2>%2 <br/> %3" )

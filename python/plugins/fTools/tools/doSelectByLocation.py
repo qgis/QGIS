@@ -12,6 +12,7 @@ class Dialog(QDialog, Ui_Dialog):
         self.iface = iface
         # Set up the user interface from Designer.
         self.setupUi(self)
+        self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
 
         # populate layer list
         self.progressBar.setValue(0)
@@ -41,6 +42,7 @@ class Dialog(QDialog, Ui_Dialog):
         self.resize(381, 100)
 
     def accept(self):
+        self.buttonOk.setEnabled( False )
         if self.inPolygon.currentText() == "":
             QMessageBox.information(self, self.tr("Select by location"), self.tr( "Please specify input layer"))
         elif self.inPoint.currentText() == "":
@@ -50,6 +52,7 @@ class Dialog(QDialog, Ui_Dialog):
             inPts = self.inPoint.currentText()
             self.compute(inPoly, inPts, self.cmbModify.currentText())
         self.progressBar.setValue(0)
+        self.buttonOk.setEnabled( True )
 
     def compute(self, inPoly, inPts, modify):
         inputLayer = ftools_utils.getVectorLayerByName(inPoly)
