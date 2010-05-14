@@ -51,7 +51,7 @@ class GUI_EXPORT QgsLegendInterface : public QObject
     virtual QStringList groups() = 0;
 
     //! Return the relationship between groups and layers in the legend
-    virtual QList< GroupLayerInfo > groupLayerRelationship() {}
+    virtual QList< GroupLayerInfo > groupLayerRelationship() { return QList< GroupLayerInfo >(); }
 
     //! Return all layers in the project in legend order
     //! @note added in 1.5
