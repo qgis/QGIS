@@ -27798,12 +27798,12 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="240"/>
         <source>Import loaded raster</source>
-        <translation>Importa un raster caricato</translation>
+        <translation>Importa raster caricato</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="241"/>
         <source>Import loaded raster and create a fitted location</source>
-        <translation>Importa un raster caricato e crea una location adatta</translation>
+        <translation>Importa raster caricato e crea una location adatta</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="242"/>
@@ -28088,7 +28088,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="298"/>
         <source>Projection conversion of vector</source>
-        <translation>Conversione di proiezione di un vettore</translation>
+        <translation>Riproietta un vettore da una location alla location attuale</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="299"/>
@@ -28143,12 +28143,12 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="309"/>
         <source>Re-project raster from a location to the current location</source>
-        <translation>Ri-proietta un raster da una location alla location attuale</translation>
+        <translation>Riproietta un raster da una location alla location attuale</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="310"/>
         <source>Rebuild topology of all vectors in mapset</source>
-        <translation>Riscotruisce la topologia per tutti i vettori nel mapset</translation>
+        <translation>Ricostruisce la topologia per tutti i vettori nel mapset</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="311"/>
@@ -28343,12 +28343,12 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="349"/>
         <source>Select features by attributes</source>
-        <translation>Seleziona gli oggetti in base agli attributi</translation>
+        <translation>Estrai gli oggetti in base agli attributi</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="350"/>
         <source>Select features overlapped by features in another map</source>
-        <translation>Seleziona gli oggetti sovrapposti agli oggetti di un&apos;altra mappa</translation>
+        <translation>Estrai gli oggetti sovrapposti agli oggetti di un&apos;altra mappa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="351"/>
