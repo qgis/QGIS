@@ -1339,6 +1339,7 @@
 		72B236BE11570801007B4803 /* qgspointdisplacementrendererwidget.h in Sources */ = {isa = PBXBuildFile; fileRef = 72B236A911570705007B4803 /* qgspointdisplacementrendererwidget.h */; };
 		72BD9FE510A499D700FEA70F /* qgszonalstatistics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72BD9FE310A4998600FEA70F /* qgszonalstatistics.cpp */; };
 		72BD9FE610A499FA00FEA70F /* qgszonalstatistics.h in Headers */ = {isa = PBXBuildFile; fileRef = 72BD9FE410A4998600FEA70F /* qgszonalstatistics.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		72BDBF39119D93480036158D /* qgscomposerlegenditem.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72BDBF37119D931B0036158D /* qgscomposerlegenditem.cpp */; };
 		72BDC390116E1CDD0088DEB4 /* qgsspatialitesridsdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72BDC38E116E1CBB0088DEB4 /* qgsspatialitesridsdialog.cpp */; };
 		72BDC391116E1CDD0088DEB4 /* qgsspatialitesridsdialog.h in Sources */ = {isa = PBXBuildFile; fileRef = 72BDC38F116E1CBB0088DEB4 /* qgsspatialitesridsdialog.h */; };
 		72BDC395116E1DF10088DEB4 /* qgsnewspatialitelayerdialog.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 72BDC393116E1DCE0088DEB4 /* qgsnewspatialitelayerdialog.cpp */; };
@@ -7010,6 +7011,8 @@
 		72B957270F45C24200E3FF98 /* ReadMe.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = ReadMe.rtf; sourceTree = SOURCE_ROOT; };
 		72BD9FE310A4998600FEA70F /* qgszonalstatistics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgszonalstatistics.cpp; path = ../../src/analysis/vector/qgszonalstatistics.cpp; sourceTree = SOURCE_ROOT; };
 		72BD9FE410A4998600FEA70F /* qgszonalstatistics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgszonalstatistics.h; path = ../../src/analysis/vector/qgszonalstatistics.h; sourceTree = SOURCE_ROOT; };
+		72BDBF37119D931B0036158D /* qgscomposerlegenditem.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgscomposerlegenditem.cpp; path = ../../src/core/composer/qgscomposerlegenditem.cpp; sourceTree = SOURCE_ROOT; };
+		72BDBF38119D931B0036158D /* qgscomposerlegenditem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgscomposerlegenditem.h; path = ../../src/core/composer/qgscomposerlegenditem.h; sourceTree = SOURCE_ROOT; };
 		72BDC38E116E1CBB0088DEB4 /* qgsspatialitesridsdialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsspatialitesridsdialog.cpp; path = ../../src/app/qgsspatialitesridsdialog.cpp; sourceTree = SOURCE_ROOT; };
 		72BDC38F116E1CBB0088DEB4 /* qgsspatialitesridsdialog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsspatialitesridsdialog.h; path = ../../src/app/qgsspatialitesridsdialog.h; sourceTree = SOURCE_ROOT; };
 		72BDC393116E1DCE0088DEB4 /* qgsnewspatialitelayerdialog.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsnewspatialitelayerdialog.cpp; path = ../../src/app/qgsnewspatialitelayerdialog.cpp; sourceTree = SOURCE_ROOT; };
@@ -8533,6 +8536,8 @@
 				7209E6690F39E57A003DC336 /* qgscomposerlabel.h */,
 				7209E66A0F39E57A003DC336 /* qgscomposerlegend.cpp */,
 				7209E66B0F39E57A003DC336 /* qgscomposerlegend.h */,
+				72BDBF37119D931B0036158D /* qgscomposerlegenditem.cpp */,
+				72BDBF38119D931B0036158D /* qgscomposerlegenditem.h */,
 				7209E66C0F39E57A003DC336 /* qgscomposermap.cpp */,
 				7209E66D0F39E57A003DC336 /* qgscomposermap.h */,
 				7209E66E0F39E57A003DC336 /* qgscomposerpicture.cpp */,
@@ -15278,6 +15283,7 @@
 				72DAAF40111A6090000DC8B7 /* qgscredentials.h in Sources */,
 				72C8D7D71178B6D0005B5B87 /* qgscomposerattributetable.cpp in Sources */,
 				72C8D7D81178B6D0005B5B87 /* qgscomposerattributetable.h in Sources */,
+				72BDBF39119D93480036158D /* qgscomposerlegenditem.cpp in Sources */,
 				72C8D7D91178B6D0005B5B87 /* qgscomposertexttable.cpp in Sources */,
 				72F8205511971C9B00822E90 /* qgsnetworkaccessmanager.cpp in Sources */,
 				72F8205611971C9B00822E90 /* qgsnetworkaccessmanager.h in Sources */,
@@ -19990,7 +19996,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 13447;
+				QGIS_VERSION_BUILD = 13485;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -20001,7 +20007,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 13447;
+				QGIS_VERSION_BUILD = 13485;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
