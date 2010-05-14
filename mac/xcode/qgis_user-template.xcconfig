@@ -32,6 +32,8 @@
 
 //QT_PLUGINS_DIR = /Developer/Applications/Qt/plugins
 //QTBIN = /Developer/Tools/Qt // bin dir
+//PYQT4_VER_MAJOR = 4
+//PYQT4_VER_MINOR = 7
 //SIP_INC = /usr/local/include
 //PYQT_SIP_DIR = /usr/local/share/sip/PyQt4
 //PYQT_SIP_FLAGS = -x VendorID -t WS_MACX -x PyQt_NoPrintRangeBug -t Qt_$(QT_VER_MAJOR)_$(QT_VER_MINOR)_0 -x Py_v3 -g
