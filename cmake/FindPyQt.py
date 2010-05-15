@@ -6,6 +6,7 @@ import PyQt4.pyqtconfig
 
 pyqtcfg = PyQt4.pyqtconfig.Configuration()
 print("pyqt_version:%06.0x" % pyqtcfg.pyqt_version)
+print("pyqt_version_num:%d" % pyqtcfg.pyqt_version)
 print("pyqt_version_str:%s" % pyqtcfg.pyqt_version_str)
 
 pyqt_version_tag = ""
