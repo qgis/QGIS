@@ -117,6 +117,19 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
 
   currentYCoordinate += mBoxSpace;
 
+  size.setHeight( currentYCoordinate );
+  size.setWidth( maxXCoord );
+
+  //adjust box if width or height is to small
+  if ( painter && currentYCoordinate > rect().height() )
+  {
+    setSceneRect( QRectF( transform().dx(), transform().dy(), rect().width(), currentYCoordinate ) );
+  }
+  if ( painter && maxXCoord > rect().width() )
+  {
+    setSceneRect( QRectF( transform().dx(), transform().dy(), maxXCoord, rect().height() ) );
+  }
+
   if ( painter )
   {
     painter->restore();
@@ -127,19 +140,6 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
     {
       drawSelectionBoxes( painter );
     }
-  }
-
-  size.setHeight( currentYCoordinate );
-  size.setWidth( maxXCoord );
-
-  //adjust box if width or height is to small
-  if ( painter && currentYCoordinate > rect().width() )
-  {
-    setSceneRect( QRectF( transform().dx(), transform().dy(), rect().width(), currentYCoordinate ) );
-  }
-  if ( painter && maxXCoord > rect().height() )
-  {
-    setSceneRect( QRectF( transform().dx(), transform().dy(), maxXCoord, rect().height() ) );
   }
 
   return size;
@@ -295,9 +295,11 @@ void QgsComposerLegend::drawLayerChildItems( QPainter* p, QStandardItem* layerIt
     {
       p->setPen( QColor( 0, 0, 0 ) );
       drawText( p, currentXCoord, currentYCoord + fontAscentMillimeters( mItemFont ) + ( realItemHeight - fontAscentMillimeters( mItemFont ) ) / 2, currentItem->text(), mItemFont );
+      currentXCoord += textWidthMillimeters( mItemFont, currentItem->text() );
     }
+    currentXCoord += mBoxSpace;
 
-    maxXCoord = std::max( maxXCoord, currentXCoord + textWidthMillimeters( mItemFont, currentItem->text() ) + mBoxSpace );
+    maxXCoord = std::max( maxXCoord, currentXCoord );
 
     currentYCoord += realItemHeight;
   }
