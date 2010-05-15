@@ -77,8 +77,6 @@ class CORE_EXPORT QgsLegendModel: public QStandardItemModel
     /**Implemented to support drag operations*/
     virtual bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() );
 
-    QgsLegendModel::ItemType itemType( const QStandardItem& item ) const;
-
     /**For the drag operation*/
     QMimeData* mimeData( const QModelIndexList &indexes ) const;
     QStringList mimeTypes() const;
