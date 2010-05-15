@@ -146,7 +146,7 @@ class Dialog(QDialog, Ui_Dialog):
         longNames = ftools_utils.checkFieldNameLenght( fieldList1 )
         if not longNames.isEmpty():
             QMessageBox.warning( self, self.tr( 'Incorrect field names' ),
-                        self.tr( 'No output will be created.\nFollowing field names are longer then 10 characters:\n%1' )
+                        self.tr( 'No output will be created.\nFollowing field names are longer than 10 characters:\n%1' )
                         .arg( longNames.join( '\n' ) ) )
             return False
         
