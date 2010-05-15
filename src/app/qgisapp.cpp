@@ -2381,7 +2381,7 @@ void QgisApp::about()
                 + tr( "Please note that this is a release in our 'cutting edge' release series. As "
                       "such it contains new features and extends the programmatic interface over "
                       "QGIS 1.0.x and QGIS 1.3.0. If an unchanging user interface, programmatic API "
-                      "and long term support is more important to you then cool new and untested "
+                      "and long term support is more important to you than cool new and untested "
                       "features, we recommend that you use a copy of QGIS from our Long Term Support "
                       "(LTS)1.0.x release series. In all other cases we recommend that you use this "
                       "version." )
