@@ -39,13 +39,9 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend ): m
     mItemTreeView->setModel( legend->model() );
   }
 
-  updateLegend();
-
   mItemTreeView->setDragEnabled( true );
   mItemTreeView->setAcceptDrops( true );
   mItemTreeView->setDropIndicatorShown( true );
-  //only available in 4.6
-  //mItemTreeView->setDefaultDropAction( Qt::MoveAction );
   mItemTreeView->setDragDropMode( QAbstractItemView::InternalMove );
 
   setGuiElements();

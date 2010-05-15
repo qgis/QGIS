@@ -604,7 +604,6 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
   if ( modelNodeList.size() > 0 )
   {
     QDomElement modelElem = modelNodeList.at( 0 ).toElement();
-    mLegendModel.clear();
     mLegendModel.readXML( modelElem, doc );
   }
 

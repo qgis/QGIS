@@ -79,6 +79,14 @@ class CORE_EXPORT QgsLegendModel: public QStandardItemModel
 
     QgsLegendModel::ItemType itemType( const QStandardItem& item ) const;
 
+    /**For the drag operation*/
+    QMimeData* mimeData( const QModelIndexList &indexes ) const;
+    QStringList mimeTypes() const;
+
+    /**Implements the drop operation*/
+    bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent );
+
+
   public slots:
     void removeLayer( const QString& layerId );
     void addLayer( QgsMapLayer* theMapLayer );
@@ -99,7 +107,7 @@ class CORE_EXPORT QgsLegendModel: public QStandardItemModel
     int addRasterLayerItem( QStandardItem* layerItem, QgsMapLayer* rlayer );
 
     /**Creates a model item for a vector symbol. The calling function takes ownership*/
-    QStandardItem* itemFromSymbol( QgsSymbol* s, int opacity );
+    QStandardItem* itemFromSymbol( QgsSymbol* s, int opacity, const QString& layerID );
 
   protected:
     QStringList mLayerIds;

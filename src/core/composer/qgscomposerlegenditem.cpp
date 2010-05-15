@@ -16,9 +16,11 @@
  ***************************************************************************/
 
 #include "qgscomposerlegenditem.h"
+#include "qgsmaplayerregistry.h"
 #include "qgssymbol.h"
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2utils.h"
+#include "qgsvectorlayer.h"
 #include <QDomDocument>
 #include <QDomElement>
 
@@ -79,7 +81,6 @@ void QgsComposerSymbolItem::setSymbol( QgsSymbol* s )
 
 QStandardItem* QgsComposerSymbolItem::clone() const
 {
-  qWarning( "QgsComposerSymbolItem::clone" );
   QgsComposerSymbolItem* cloneItem = new QgsComposerSymbolItem();
   *cloneItem = *this;
   if ( mSymbol )
@@ -97,12 +98,48 @@ void QgsComposerSymbolItem::writeXML( QDomElement& elem, QDomDocument& doc ) con
     mSymbol->writeXML( vectorClassElem, doc, 0 );
   }
   vectorClassElem.setAttribute( "text", text() );
+  vectorClassElem.setAttribute( "layerId", mLayerID );
+
   elem.appendChild( vectorClassElem );
 }
 
 void QgsComposerSymbolItem::readXML( const QDomElement& itemElem )
 {
-  //soon...
+  if ( itemElem.isNull() )
+  {
+    return;
+  }
+  setText( itemElem.attribute( "text", "" ) );
+  setLayerID( itemElem.attribute( "layerId", "" ) );
+
+  QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( mLayerID ) );
+  if ( vLayer )
+  {
+    QDomElement symbolElem = itemElem.firstChildElement( "symbol" );
+    if ( !symbolElem.isNull() )
+    {
+      QgsSymbol* symbol = new QgsSymbol( vLayer->geometryType() );
+      symbol->readXML( symbolElem, vLayer );
+      setSymbol( symbol );
+
+      //add icon
+      switch ( symbol->type() )
+      {
+        case QGis::Point:
+          setIcon( QIcon( QPixmap::fromImage( symbol->getPointSymbolAsImage() ) ) );
+          break;
+        case QGis::Line:
+          setIcon( QIcon( QPixmap::fromImage( symbol->getLineSymbolAsImage() ) ) );
+          break;
+        case QGis::Polygon:
+          setIcon( QIcon( QPixmap::fromImage( symbol->getPolygonSymbolAsImage() ) ) );
+          break;
+        case QGis::UnknownGeometry:
+          // should not occur
+          break;
+      }
+    }
+  }
 }
 
 ////////////////QgsComposerSymbolV2Item
@@ -153,7 +190,28 @@ void QgsComposerSymbolV2Item::writeXML( QDomElement& elem, QDomDocument& doc ) c
 
 void QgsComposerSymbolV2Item::readXML( const QDomElement& itemElem )
 {
-  //soon...
+  if ( itemElem.isNull() )
+  {
+    return;
+  }
+
+  setText( itemElem.attribute( "text", "" ) );
+  QDomElement symbolsElem = itemElem.firstChildElement( "symbols" );
+  if ( !symbolsElem.isNull() )
+  {
+    QgsSymbolV2Map loadSymbolMap = QgsSymbolLayerV2Utils::loadSymbols( symbolsElem );
+    //we assume there is only one symbol in the map...
+    QgsSymbolV2Map::iterator mapIt = loadSymbolMap.begin();
+    if ( mapIt != loadSymbolMap.end() )
+    {
+      QgsSymbolV2* symbolNg = mapIt.value();
+      if ( symbolNg )
+      {
+        setSymbolV2( symbolNg );
+        setIcon( QgsSymbolLayerV2Utils::symbolPreviewIcon( symbolNg, QSize( 30, 30 ) ) );
+      }
+    }
+  }
 }
 
 void QgsComposerSymbolV2Item::setSymbolV2( QgsSymbolV2* s )
@@ -195,7 +253,45 @@ void QgsComposerLayerItem::writeXML( QDomElement& elem, QDomDocument& doc ) cons
 
 void QgsComposerLayerItem::readXML( const QDomElement& itemElem )
 {
-  //soon...
+  if ( itemElem.isNull() )
+  {
+    return;
+  }
+  setText( itemElem.attribute( "text", "" ) );
+  setLayerID( itemElem.attribute( "layerId", "" ) );
+
+  //now call readXML for all the child items
+  QDomNodeList childList = itemElem.childNodes();
+  QDomNode currentNode;
+  QDomElement currentElem;
+  QgsComposerLegendItem* currentChildItem = 0;
+
+  int nChildItems = childList.count();
+  for ( int i = 0; i < nChildItems; ++i )
+  {
+    currentNode = childList.at( i );
+    if ( !currentNode.isElement() )
+    {
+      continue;
+    }
+
+    currentElem = currentNode.toElement();
+    QString elemTag = currentElem.tagName();
+    if ( elemTag == "VectorClassificationItem" )
+    {
+      currentChildItem = new QgsComposerSymbolItem();
+    }
+    else if ( elemTag == "VectorClassificationItemNg" )
+    {
+      currentChildItem = new QgsComposerSymbolV2Item();
+    }
+    else
+    {
+      continue; //unsupported child type
+    }
+    currentChildItem->readXML( currentElem );
+    appendRow( currentChildItem );
+  }
 }
 
 ////////////////////QgsComposerGroupItem
@@ -229,5 +325,43 @@ void QgsComposerGroupItem::writeXML( QDomElement& elem, QDomDocument& doc ) cons
 
 void QgsComposerGroupItem::readXML( const QDomElement& itemElem )
 {
-  //soon...
+  if ( itemElem.isNull() )
+  {
+    return;
+  }
+  setText( itemElem.attribute( "text", "" ) );
+
+  //now call readXML for all the child items
+  QDomNodeList childList = itemElem.childNodes();
+  QDomNode currentNode;
+  QDomElement currentElem;
+  QgsComposerLegendItem* currentChildItem = 0;
+
+  int nChildItems = childList.count();
+  for ( int i = 0; i < nChildItems; ++i )
+  {
+    currentNode = childList.at( i );
+    if ( !currentNode.isElement() )
+    {
+      continue;
+    }
+
+    currentElem = currentNode.toElement();
+    QString elemTag = currentElem.tagName();
+
+    if ( elemTag == "GroupItem" )
+    {
+      currentChildItem = new QgsComposerGroupItem();
+    }
+    else if ( elemTag == "LayerItem" )
+    {
+      currentChildItem = new QgsComposerLayerItem();
+    }
+    else
+    {
+      continue; //unsupported child item type
+    }
+    currentChildItem->readXML( currentElem );
+    appendRow( currentChildItem );
+  }
 }
