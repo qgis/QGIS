@@ -24,11 +24,6 @@
 #include <QPalette>
 #include <QSettings>
 
-// (if Windows/Mac, use icon from resource)
-#if ! defined(Q_WS_WIN) && ! defined(Q_WS_MAC)
-#include "../../images/themes/default/qgis.xpm" // Linux
-#include <QIcon>
-#endif
 #ifndef Q_WS_WIN
 #include <netinet/in.h>
 #else
@@ -68,11 +63,6 @@ QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled )
   myDir.cdUp();
   QString myPrefix = myDir.absolutePath();
   setPrefixPath( myPrefix, true );
-#endif
-
-  // set application's icon (if Windows/Mac, use icon from resource)
-#if ! defined(Q_WS_WIN) && ! defined(Q_WS_MAC)
-  setWindowIcon( QPixmap( qgis_xpm ) );        // Linux
 #endif
 
   mDefaultSvgPaths << mPkgDataPath + QString( "/svg/" );
