@@ -96,6 +96,9 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WFlags fl )
     mFormats << "image/png8";    // used by geoserver
     mLabels << "PNG8";
 
+    mFormats << "png";    // used by french IGN geoportail
+    mLabels << "PNG";
+  
     mFormats << "pngt";    // used by french IGN geoportail
     mLabels << "PNGT";
   }
@@ -128,12 +131,14 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WFlags fl )
 
     QRadioButton *btn = new QRadioButton( mLabels[i] );
     btn->setToolTip( mFormats[i] );
+    btn->setHidden( true );
     mImageFormatGroup->addButton( btn, i );
     layout->addWidget( btn );
   }
 
   // default to first encoding
   mImageFormatGroup->button( 0 )->setChecked( true );
+  btnGrpImageEncoding->setDisabled( true );
 
   layout->addStretch();
   btnGrpImageEncoding->setLayout( layout );
@@ -291,7 +296,7 @@ bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
 
   foreach( QAbstractButton *b, mImageFormatGroup->buttons() )
   {
-    b->setEnabled( false );
+    b->setHidden( true );
   }
 
   foreach( QString encoding, wmsProvider->supportedImageEncodings() )
@@ -303,8 +308,10 @@ bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
       continue;
     }
 
-    mImageFormatGroup->button( id )->setEnabled( true );
+    mImageFormatGroup->button( id )->setVisible( true );
   }
+
+  btnGrpImageEncoding->setEnabled( true );
 
   QMap<int, QgsNumericSortTreeWidgetItem *> items;
   QMap<int, int> layerParents;
