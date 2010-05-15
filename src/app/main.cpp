@@ -73,6 +73,12 @@ typedef SInt32 SRefCon;
 #include "qgsrectangle.h"
 #include "qgslogger.h"
 
+// (if Windows/Mac, use icon from resource)
+#if ! defined(Q_WS_WIN) && ! defined(Q_WS_MAC)
+#include "../../images/themes/default/qgis.xpm" // Linux
+#include <QIcon>
+#endif
+
 static const char * const ident_ = "$Id$";
 
 /** print usage text
@@ -469,6 +475,12 @@ int main( int argc, char *argv[] )
     exit( 1 ); //exit for now until a version of qgis is capabable of running non interactive
   }
   QgsApplication myApp( argc, argv, myUseGuiFlag );
+
+// (if Windows/Mac, use icon from resource)
+#if ! defined(Q_WS_WIN) && ! defined(Q_WS_MAC)
+  myApp.setWindowIcon( QPixmap( qgis_xpm ) );        // Linux
+#endif
+
   //
   // Set up the QSettings environment must be done after qapp is created
   QCoreApplication::setOrganizationName( "QuantumGIS" );
