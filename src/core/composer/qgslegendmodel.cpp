@@ -694,18 +694,25 @@ Qt::DropActions QgsLegendModel::supportedDropActions() const
 
 Qt::ItemFlags QgsLegendModel::flags( const QModelIndex &index ) const
 {
-  Qt::ItemFlags flags = QStandardItemModel::flags( index );
+  Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+  if ( !index.isValid() )
+  {
+    flags |= Qt::ItemIsDropEnabled;
+    return flags;
+  }
 
   QStandardItem* item = itemFromIndex( index );
-  if ( item )
+  QgsComposerLegendItem* cItem = dynamic_cast<QgsComposerLegendItem*>( item );
+
+  if ( cItem )
   {
-    ItemType type = itemType( *item );
-    if ( type == QgsLegendModel::GroupItem )
+    QgsComposerLegendItem::ItemType type = cItem->itemType();
+    if ( type == QgsComposerLegendItem::GroupItem )
     {
       flags |= Qt::ItemIsDragEnabled;
       flags |= Qt::ItemIsDropEnabled;
     }
-    else if ( type == QgsLegendModel::LayerItem )
+    else if ( type == QgsComposerLegendItem::LayerItem )
     {
       flags |= Qt::ItemIsDragEnabled;
     }
@@ -739,11 +746,6 @@ bool QgsLegendModel::removeRows( int row, int count, const QModelIndex & parent 
     }
   }
   return true;
-}
-
-QgsLegendModel::ItemType QgsLegendModel::itemType( const QStandardItem& item ) const
-{
-  return ( QgsLegendModel::ItemType )item.data( Qt::UserRole + 1 ).toInt();
 }
 
 QMimeData* QgsLegendModel::mimeData( const QModelIndexList &indexes ) const
