@@ -40,6 +40,13 @@ extern "C"
 #include <grass/version.h>
 }
 
+#if !defined(GRASS_VERSION_MAJOR) || \
+    !defined(GRASS_VERSION_MINOR) || \
+    GRASS_VERSION_MAJOR<6 || \
+    (GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR <= 2)
+#define G__setenv(name,value) G__setenv( ( char * ) (name), (char *) (value) )
+#endif
+
 #if defined(WIN32)
 #include <windows.h>
 QString GRASS_EXPORT QgsGrass::shortPath( const QString &path )
@@ -333,14 +340,14 @@ void QgsGrass::setLocation( QString gisdbase, QString location )
 
   // Set principal GRASS variables (in memory)
 #if defined(WIN32)
-  G__setenv(( char * ) "GISDBASE", shortPath( gisdbase ).toLocal8Bit().data() );
+  G__setenv( "GISDBASE", shortPath( gisdbase ).toLocal8Bit().data() );
 #else
-  // This does not work for GISBAS with non ascii chars on Windows XP,
+  // This does not work for GISBASE with non ascii chars on Windows XP,
   // gives error 'LOCATION ... not available':
-  G__setenv(( char * ) "GISDBASE", gisdbase.toUtf8().constData() );
+  G__setenv( "GISDBASE", gisdbase.toUtf8().constData() );
 #endif
-  G__setenv(( char * ) "LOCATION_NAME", location.toUtf8().constData() );
-  G__setenv(( char * ) "MAPSET", ( char * ) "PERMANENT" ); // PERMANENT must always exist
+  G__setenv( "LOCATION_NAME", location.toUtf8().constData() );
+  G__setenv( "MAPSET", "PERMANENT" ); // PERMANENT must always exist
 
   // Add all available mapsets to search path
   char **ms = G_available_mapsets();
@@ -354,12 +361,12 @@ void QgsGrass::setMapset( QString gisdbase, QString location, QString mapset )
 
   // Set principal GRASS variables (in memory)
 #if defined(WIN32)
-  G__setenv(( char * ) "GISDBASE", shortPath( gisdbase ).toUtf8().data() );
+  G__setenv( "GISDBASE", shortPath( gisdbase ).toUtf8().data() );
 #else
-  G__setenv(( char * ) "GISDBASE", gisdbase.toUtf8().data() );
+  G__setenv( "GISDBASE", gisdbase.toUtf8().data() );
 #endif
-  G__setenv(( char * ) "LOCATION_NAME", location.toUtf8().data() );
-  G__setenv(( char * ) "MAPSET", mapset.toUtf8().data() );
+  G__setenv( "LOCATION_NAME", location.toUtf8().data() );
+  G__setenv( "MAPSET", mapset.toUtf8().data() );
 
   // Add all available mapsets to search path
   char **ms = G_available_mapsets();
@@ -560,14 +567,14 @@ QString GRASS_EXPORT QgsGrass::openMapset( QString gisdbase, QString location, Q
   putEnv( "GISRC", mGisrc );
 
   // Reinitialize GRASS
-  G__setenv(( char * ) "GISRC", mGisrc.toUtf8().data() );
+  G__setenv( "GISRC", mGisrc.toUtf8().data() );
 #if defined(WIN32)
-  G__setenv(( char * ) "GISDBASE", shortPath( gisdbase ).toLocal8Bit().data() );
+  G__setenv( "GISDBASE", shortPath( gisdbase ).toLocal8Bit().data() );
 #else
-  G__setenv(( char * ) "GISDBASE", gisdbase.toUtf8().data() );
+  G__setenv( "GISDBASE", gisdbase.toUtf8().data() );
 #endif
-  G__setenv(( char * ) "LOCATION_NAME", location.toLocal8Bit().data() );
-  G__setenv(( char * ) "MAPSET", mapset.toLocal8Bit().data() );
+  G__setenv( "LOCATION_NAME", location.toLocal8Bit().data() );
+  G__setenv( "MAPSET", mapset.toLocal8Bit().data() );
   defaultGisdbase = gisdbase;
   defaultLocation = location;
   defaultMapset = mapset;
@@ -602,15 +609,15 @@ QString QgsGrass::closeMapset( )
     putenv(( char * ) "GISRC" );
 
     // Reinitialize GRASS
-    G__setenv(( char * ) "GISRC", ( char * ) "" );
+    G__setenv( "GISRC", ( char * ) "" );
 
     // Temporarily commented because of
     //   http://trac.osgeo.org/qgis/ticket/1900
     //   http://trac.osgeo.org/gdal/ticket/3313
     // it can be uncommented once GDAL with patch gets deployed (probably GDAL 1.8)
-    //G__setenv(( char * ) "GISDBASE", ( char * ) "" );
-    //G__setenv(( char * ) "LOCATION_NAME", ( char * ) "" );
-    //G__setenv(( char * ) "MAPSET", ( char * ) "" );
+    //G__setenv( "GISDBASE", ( char * ) "" );
+    //G__setenv( "LOCATION_NAME", ( char * ) "" );
+    //G__setenv( "MAPSET", ( char * ) "" );
 
     defaultGisdbase = "";
     defaultLocation = "";

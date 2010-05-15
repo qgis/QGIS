@@ -108,7 +108,12 @@ int main( int argc, char **argv )
         void *ptr;
         double val;
 
+#if defined(GRASS_VERSION_MAJOR) && defined(GRASS_VERSION_MINOR) && \
+    ( ( GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR > 2 ) || GRASS_VERSION_MAJOR > 6 )
         rast_type = G_get_raster_map_type( fd );
+#else
+        rast_type = G_raster_map_type( rast_opt->answer, "" );
+#endif
         cell = G_allocate_c_raster_buf();
         dcell = G_allocate_d_raster_buf();
 
@@ -120,7 +125,7 @@ int main( int argc, char **argv )
                           rast_opt->answer, row );
           }
           val = cell[col];
-          ptr = &(cell[col]);
+          ptr = &( cell[col] );
         }
         else
         {
@@ -130,7 +135,7 @@ int main( int argc, char **argv )
                           rast_opt->answer, row );
           }
           val = dcell[col];
-          ptr = &(dcell[col]);
+          ptr = &( dcell[col] );
         }
         if ( G_is_null_value( ptr, rast_type ) )
         {
