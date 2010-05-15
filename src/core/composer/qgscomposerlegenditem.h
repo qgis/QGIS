@@ -69,10 +69,14 @@ class CORE_EXPORT QgsComposerSymbolItem: public QgsComposerLegendItem
     void setSymbol( QgsSymbol* s );
     QgsSymbol* symbol() {return mSymbol;}
 
+    void setLayerID( const QString& id ) { mLayerID = id; }
+    QString layerID() const { return mLayerID; }
+
     ItemType itemType() const { return SymbologyItem; }
 
   private:
     QgsSymbol* mSymbol;
+    QString mLayerID; //this is needed to read the symbol from XML
 };
 
 class QgsSymbolV2;

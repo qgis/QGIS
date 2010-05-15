@@ -34,6 +34,9 @@ class QgsComposerLegendWidget: public QWidget, private Ui::QgsComposerLegendWidg
     QgsComposerLegendWidget( QgsComposerLegend* legend );
     ~QgsComposerLegendWidget();
 
+    /**Updates the legend layers and groups*/
+    void updateLegend();
+
   public slots:
 
     void on_mTitleLineEdit_textChanged( const QString& text );
@@ -61,8 +64,6 @@ class QgsComposerLegendWidget: public QWidget, private Ui::QgsComposerLegendWidg
     QgsComposerLegendWidget();
     /**Sets GUI according to state of mLegend*/
     void setGuiElements();
-    /**Updates the legend layers and groups*/
-    void updateLegend();
 
     QgsComposerLegend* mLegend;
 };
