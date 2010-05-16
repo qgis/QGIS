@@ -960,7 +960,12 @@ void QgsMapCanvas::resizeEvent( QResizeEvent * e )
     updateCanvasItemPositions();
 
     updateScale();
+#if QT_VERSION >= 0x40600
+    // FIXME: temporary workaround for #2714
+    QTimer::singleShot( 1, this, SLOT( refresh() ) );
+#else
     refresh();
+#endif
     emit extentsChanged();
   }
   isAlreadyIn = false;
@@ -1435,8 +1440,7 @@ void QgsMapCanvas::zoomByFactor( double scaleFactor )
 void QgsMapCanvas::selectionChangedSlot()
 {
   // Find out which layer it was that sent the signal.
-  QgsMapLayer * layer = ( QgsMapLayer * )QObject::sender();
-
+  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() );
   emit selectionChanged( layer );
   refresh();
 }
