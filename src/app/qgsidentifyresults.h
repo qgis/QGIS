@@ -124,7 +124,6 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
     void setColumnText( int column, const QString & label );
     void expandColumnsToFit();
     void saveWindowLocation();
-    void restorePosition();
 
     void highlightFeature( QTreeWidgetItem *item );
 
