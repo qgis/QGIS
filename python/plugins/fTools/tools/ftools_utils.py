@@ -12,7 +12,7 @@
 # extractPoints( QgsGeometry )
 # testForUniqueness( QList *QgsField, QList *QgsField )
 # createUniqueFieldName( QgsField.name() )
-# checkFieldNameLenght( QgsFieldMap )
+# checkFieldNameLength( QgsFieldMap )
 # getLayerNames( QGis.vectorType() )
 # getFieldNames( QgsVectorLayer )
 # getVectorLayerByName( QgsVectorLayer.name() )
@@ -161,7 +161,7 @@ def createUniqueFieldName( field ):
     return field
 
 # Return list of field names with more than 10 characters length
-def checkFieldNameLenght( fieldList ):
+def checkFieldNameLength( fieldList ):
     longNames = QStringList()
     for num, field in fieldList.iteritems():
         if field.name().size() > 10:

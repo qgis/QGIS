@@ -179,7 +179,7 @@ class Dialog(QDialog, Ui_Dialog):
     fieldList1.extend(fieldList2)
     fieldList1 = dict(zip(seq, fieldList1))
     # check for correct field names
-    longNames = ftools_utils.checkFieldNameLenght( fieldList1 )
+    longNames = ftools_utils.checkFieldNameLength( fieldList1 )
     if not longNames.isEmpty():
       QMessageBox.warning( self, self.tr( 'Incorrect field names' ),
                   self.tr( 'No output will be created.\nFollowing field names are longer than 10 characters:\n%1' )
