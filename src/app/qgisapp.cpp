@@ -754,9 +754,9 @@ void QgisApp::createActions()
   connect( mActionCapturePolygon, SIGNAL( triggered() ), this, SLOT( capturePolygon() ) );
   mActionCapturePolygon->setEnabled( false );
 
-  mActionMoveFeature = new QAction( getThemeIcon( "mActionMoveFeature.png" ), tr( "Move Feature" ), this );
+  mActionMoveFeature = new QAction( getThemeIcon( "mActionMoveFeature.png" ), tr( "Move Feature(s)" ), this );
   shortcuts->registerAction( mActionMoveFeature );
-  mActionMoveFeature->setStatusTip( tr( "Move Feature" ) );
+  mActionMoveFeature->setStatusTip( tr( "Move Feature(s)" ) );
   connect( mActionMoveFeature, SIGNAL( triggered() ), this, SLOT( moveFeature() ) );
   mActionMoveFeature->setEnabled( false );
 
@@ -4645,16 +4645,13 @@ void QgisApp::layerSubsetString()
 
 bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
 {
-  if ( !layer )
-  {
-    return false;
-  }
-
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer )
   {
     return false;
   }
+
+  bool res = true;
 
   if ( !vlayer->isEditable() )
   {
@@ -4662,7 +4659,7 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
     if ( !( vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::EditingCapabilities ) )
     {
       QMessageBox::information( 0, tr( "Start editing failed" ), tr( "Provider cannot be opened for editing" ) );
-      return false;
+      res = false;
     }
   }
   else if ( vlayer->isModified() )
@@ -4677,8 +4674,8 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
                                        buttons ) )
     {
       case QMessageBox::Cancel:
-        mActionToggleEditing->setChecked( vlayer->isEditable() );
-        return false;
+        res = false;
+        break;
 
       case QMessageBox::Save:
         if ( !vlayer->commitChanges() )
@@ -4691,7 +4688,7 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
           // Leave the in-memory editing state alone,
           // to give the user a chance to enter different values
           // and try the commit again later
-          return false;
+          res = false;
         }
         break;
 
@@ -4699,7 +4696,7 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
         if ( !vlayer->rollBack() )
         {
           QMessageBox::information( 0, tr( "Error" ), tr( "Problems during roll back" ) );
-          return false;
+          res = false;
         }
         break;
 
@@ -4710,6 +4707,7 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
   else //layer not modified
   {
     vlayer->rollBack();
+    res = true;
   }
 
   if ( layer == activeLayer() )
@@ -4717,10 +4715,9 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
     activateDeactivateLayerRelatedActions( layer );
   }
 
-  //ensure the toolbar icon state is consistent with the layer editing state
-  mActionToggleEditing->setChecked( vlayer->isEditable() );
   vlayer->triggerRepaint();
-  return true;
+
+  return res;
 }
 
 void QgisApp::showMouseCoordinate( const QgsPoint & p )
