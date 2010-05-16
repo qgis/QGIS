@@ -105,6 +105,7 @@ QgsIdentifyResults::QgsIdentifyResults( QgsMapCanvas *canvas, QWidget *parent, Q
 {
   setupUi( this );
   QSettings mySettings;
+  restoreGeometry( mySettings.value( "/Windows/Identify/geometry" ).toByteArray() );
   bool myDockFlag = mySettings.value( "/qgis/dockIdentifyResults", false ).toBool();
   if ( myDockFlag )
   {
@@ -417,14 +418,6 @@ void QgsIdentifyResults::contextMenuEvent( QContextMenuEvent* event )
   }
 
   mActionPopup->popup( event->globalPos() );
-}
-
-// Restore last window position/size and show the window
-void QgsIdentifyResults::restorePosition()
-{
-  QSettings settings;
-  restoreGeometry( settings.value( "/Windows/Identify/geometry" ).toByteArray() );
-  show();
 }
 
 // Save the current window location (store in ~/.qt/qgisrc)
