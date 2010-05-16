@@ -2767,7 +2767,7 @@ long QgsPostgresProvider::getFeatureCount()
   // a thread the task of getting the full count.
   QString sql;
 
-  if ( !isQuery && mUseEstimatedMetadata )
+  if ( !isQuery && mUseEstimatedMetadata && sqlWhereClause.isEmpty() )
   {
     sql = QString( "select reltuples::int from pg_catalog.pg_class where oid=regclass(%1)::oid" ).arg( quotedValue( mQuery ) );
   }
