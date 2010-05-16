@@ -112,5 +112,11 @@ public:
 
     bool  multilineEnabled() const;
     void  setMultilineEnabled( bool useMultiline );
+  
+    /* label only selected features
+     * added in 1.5
+     */
+    bool  selectedOnly() const;
+    void  setSelectedOnly( bool selectedonly );
 };
 

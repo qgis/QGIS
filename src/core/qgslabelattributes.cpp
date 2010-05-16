@@ -26,35 +26,36 @@
 #include "qgslogger.h"
 
 QgsLabelAttributes::QgsLabelAttributes( bool def )
-    : mTextIsSet( false ),
-    mFamilyIsSet( false ),
-    mBoldIsSet( false ),
-    mItalicIsSet( false ),
-    mUnderlineIsSet( false ),
-    mStrikeOutIsSet( false ),
-    mSizeType( 0 ),
-    mSize( 0.0 ),
-    mSizeIsSet( false ),
-    mColorIsSet( false ),
-    mOffsetType( 0 ),
-    mXOffset( 0 ),
-    mYOffset( 0 ),
-    mOffsetIsSet( false ),
-    mAngle( 0.0 ),
-    mAngleIsSet( false ),
-    mAngleIsAuto( false ),
-    mAlignment( 0 ),
-    mAlignmentIsSet( false ),
-    mBufferEnabledFlag( false ),
-    mBufferSizeType( 0 ),
-    mBufferSize( 0.0 ),
-    mBufferSizeIsSet( false ),
-    mBufferColorIsSet( false ),
-    mBufferStyleIsSet( false ),
-    mBorderColorIsSet( false ),
-    mBorderWidthIsSet( false ),
-    mBorderStyleIsSet( false ),
-    mMultilineEnabledFlag( false )
+    : mTextIsSet( false )
+    , mFamilyIsSet( false )
+    , mBoldIsSet( false )
+    , mItalicIsSet( false )
+    , mUnderlineIsSet( false )
+    , mStrikeOutIsSet( false )
+    , mSizeType( 0 )
+    , mSize( 0.0 )
+    , mSizeIsSet( false )
+    , mColorIsSet( false )
+    , mOffsetType( 0 )
+    , mXOffset( 0 )
+    , mYOffset( 0 )
+    , mOffsetIsSet( false )
+    , mAngle( 0.0 )
+    , mAngleIsSet( false )
+    , mAngleIsAuto( false )
+    , mAlignment( 0 )
+    , mAlignmentIsSet( false )
+    , mBufferEnabledFlag( false )
+    , mBufferSizeType( 0 )
+    , mBufferSize( 0.0 )
+    , mBufferSizeIsSet( false )
+    , mBufferColorIsSet( false )
+    , mBufferStyleIsSet( false )
+    , mBorderColorIsSet( false )
+    , mBorderWidthIsSet( false )
+    , mBorderStyleIsSet( false )
+    , mMultilineEnabledFlag( false )
+    , mSelectedOnly( false )
 {
 
   if ( def )   // set defaults
@@ -427,6 +428,16 @@ bool QgsLabelAttributes::multilineEnabled() const
 void QgsLabelAttributes::setMultilineEnabled( bool useMultilineFlag )
 {
   mMultilineEnabledFlag = useMultilineFlag;
+}
+
+/* selected only */
+bool QgsLabelAttributes::selectedOnly() const
+{
+  return mSelectedOnly;
+}
+void QgsLabelAttributes::setSelectedOnly( bool selectedOnly )
+{
+  mSelectedOnly = selectedOnly;
 }
 
 /* units */

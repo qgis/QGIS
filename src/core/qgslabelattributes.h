@@ -185,6 +185,12 @@ class  CORE_EXPORT QgsLabelAttributes
     bool  multilineEnabled() const;
     void  setMultilineEnabled( bool useMultiline );
 
+    /* label only selected features
+     * added in 1.5
+     */
+    bool  selectedOnly() const;
+    void  setSelectedOnly( bool selectedonly );
+
   protected:
     /* Text */
     QString mText;
@@ -242,6 +248,9 @@ class  CORE_EXPORT QgsLabelAttributes
 
     /** Multiline enablement */
     bool mMultilineEnabledFlag;
+
+    /** Label only selected */
+    bool mSelectedOnly;
 };
 
 #endif
