@@ -237,7 +237,7 @@ class geometryThread( QThread ):
     allAttrs = vprovider.attributeIndexes()
     vprovider.select( allAttrs )
     fields = vprovider.fields()
-    writer = QgsVectorFileWriter( self.myName, self.myEncoding, 
+    writer = QgsVectorFileWriter( self.myName, self.myEncoding,
     fields, vprovider.geometryType(), vprovider.crs() )
     inFeat = QgsFeature()
     outFeat = QgsFeature()
@@ -247,20 +247,27 @@ class geometryThread( QThread ):
     if not index == -1:
       unique = ftools_utils.getUniqueValues( vprovider, int( index ) )
     else:
-      unique = range( 0, self.vlayer.featureCount() )
+      unique = [QVariant(QString())]
     nFeat = vprovider.featureCount() * len( unique )
     nElement = 0
     self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
     self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
-    if not len( unique ) == self.vlayer.featureCount():
+    merge_all = self.myField == QString("--- " + self.tr( "Merge all" ) + " ---")
+    if not len( unique ) == self.vlayer.featureCount() \
+    or merge_all:
       for i in unique:
         vprovider.rewind()
         multi_feature= []
         first = True
+        vprovider.select(allAttrs)
         while vprovider.nextFeature( inFeat ):
           atMap = inFeat.attributeMap()
-          idVar = atMap[ index ]
-          if idVar.toString().trimmed() == i.toString().trimmed():
+          if not merge_all:
+            idVar = atMap[ index ]
+          else:
+            idVar = QVariant(QString())
+          if idVar.toString().trimmed() == i.toString().trimmed() \
+          or merge_all:
             if first:
               atts = atMap
               first = False
