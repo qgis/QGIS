@@ -51,9 +51,6 @@ class QgsAttributeDialog : public QObject
     QDialog *dialog() { return mDialog; }
 
   public slots:
-    /** Overloaded accept method which will write the feature field
-     * values, then delegate to QDialog::accept()
-     */
     void accept();
 
     int exec();

@@ -96,7 +96,7 @@ class QgsLegend : public QTreeWidget
     * @param theParent An optional parent widget
     * @param theName An optional name for the widget
     */
-    QgsLegend( QWidget * parent = 0, const char *name = 0 );
+    QgsLegend( QgsMapCanvas *canvas, QWidget * parent = 0, const char *name = 0 );
 
     //! Destructor
     ~QgsLegend();
@@ -181,9 +181,6 @@ class QgsLegend : public QTreeWidget
     /**Removes an entry from mPixmapHeightValues*/
     void removePixmapHeightValue( int height );
 
-    /**Sets the toggle editing action. Usually called from QgisApp*/
-    void setToggleEditingAction( QAction* editingAction ) {mToggleEditingAction = editingAction;}
-
     /**Returns structure with legend pixmaps*/
     QgsLegendPixmaps& pixmaps() { return mPixmaps; }
 
@@ -199,8 +196,6 @@ class QgsLegend : public QTreeWidget
     void addLayer( QgsMapLayer * layer );
 
     void setLayerVisible( QgsMapLayer * layer, bool visible );
-
-    void setMapCanvas( QgsMapCanvas * canvas );
 
     /**Updates symbology items for a layer*/
     void refreshLayerSymbology( QString key, bool expandItem = true );
@@ -243,16 +238,6 @@ class QgsLegend : public QTreeWidget
     /** called to write legend settings to project */
     void writeProject( QDomDocument & );
 
-    /**Removes the current LegendLayer*/
-    void removeCurrentLayer();
-
-    /**Removes a layer. If the layer is editable, a dialog is shown where user can select 'save', 'discard' and optionally 'cancel'. Cancel
-      is useful if a single layer is removed whereas on closing of the whole project or application, the cancel option may not be possible
-      @param ml the maplayer to remove
-      @param askCancelOnEditable gibe cancel option in the dialog for editable (and changed) layers
-      @param return false if canceled or in case of error, true else*/
-    bool removeLayer( QgsMapLayer* ml, bool askCancelOnEditable );
-
     /*!
      * Moves a layer to a group.
      * @param ml the maplayer to move
@@ -271,12 +256,6 @@ class QgsLegend : public QTreeWidget
     /***Zooms so that the pixels of the raster layer occupies exactly one screen pixel.
         Only works on raster layers*/
     void legendLayerZoomNative();
-
-    /**Show attribute table*/
-    void legendLayerAttributeTable();
-
-    /**Shows the property dialog of the first legend layer file in a legend layer*/
-    void legendLayerShowProperties();
 
     /**Updates check states when the map canvas layer set is changed */
     void refreshCheckStates();
@@ -439,9 +418,6 @@ class QgsLegend : public QTreeWidget
     /**Stores the layer ordering before a mouse Move. After the move, this is used to
      decide if the mapcanvas really has to be refreshed*/
     std::deque<QString> mLayersPriorToMove;
-
-    /**Action for the legendlayer right click menu*/
-    QAction* mToggleEditingAction;
 
     /*!
      * A function to determine how far down in the list an item is (starting with one for the first Item).

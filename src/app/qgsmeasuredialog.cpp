@@ -76,7 +76,7 @@ void QgsMeasureDialog::mousePress( QgsPoint &point )
   if ( mTool->points().size() == 0 )
   {
     addPoint( point );
-    this->show();
+    show();
   }
   raise();
 

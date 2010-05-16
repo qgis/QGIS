@@ -153,10 +153,7 @@ class QgisApp : public QMainWindow
     //!Overloaded version of the private function with same name that takes the imagename as a parameter
     void saveMapAsImage( QString, QPixmap * );
     /** Get the mapcanvas object from the app */
-    QgsMapCanvas * mapCanvas() { return mMapCanvas; };
-
-    //! returns pointer to map legend
-    QgsLegend *legend() { return mMapLegend; }
+    QgsMapCanvas * mapCanvas();
 
     //! Set theme (icons)
     void setTheme( QString themeName = "default" );
@@ -274,6 +271,7 @@ class QgisApp : public QMainWindow
     QAction *actionLayerSeparator1() { return mActionLayerSeparator1; }
     QAction *actionOpenTable() { return mActionOpenTable; }
     QAction *actionToggleEditing() { return mActionToggleEditing; }
+    QAction *actionSaveEdits() { return mActionSaveEdits; }
     QAction *actionLayerSaveAs() { return mActionLayerSaveAs; }
     QAction *actionLayerSelectionSaveAs() { return mActionLayerSelectionSaveAs; }
     QAction *actionRemoveLayer() { return mActionRemoveLayer; }
@@ -282,6 +280,7 @@ class QgisApp : public QMainWindow
     QAction *actionGpsTool() { return mActionGpsTool; }
 #endif
     QAction *actionLayerProperties() { return mActionLayerProperties; }
+    QAction *actionLayerSubsetString() { return mActionLayerSubsetString; }
     QAction *actionLayerSeparator2() { return mActionLayerSeparator2; }
     QAction *actionAddToOverview() { return mActionAddToOverview; }
     QAction *actionAddAllToOverview() { return mActionAddAllToOverview; }
@@ -356,6 +355,9 @@ class QgisApp : public QMainWindow
     //! show layer properties
     void showLayerProperties( QgsMapLayer *ml );
 
+    //! returns pointer to map legend
+    QgsLegend *legend();
+
   public slots:
     //! Zoom to full extent
     void zoomFull();
@@ -366,11 +368,17 @@ class QgisApp : public QMainWindow
     //! Zoom to selected features
     void zoomToSelected();
 
+    //! open the properties dialog for the currently selected layer
+    void layerProperties();
+
     //! mark project dirty
     void markDirty();
 
     //! layer was added
     void layerWasAdded( QgsMapLayer * );
+
+    //! layer will be removed
+    void removingLayer( QString );
 
     void updateUndoActions();
 
@@ -593,12 +601,20 @@ class QgisApp : public QMainWindow
     //! starts/stops editing mode of the current layer
     void toggleEditing();
 
+    //! save current edits and start new transaction
+    void saveEdits();
+
+    //! change layer subset of current vector layer
+    void layerSubsetString();
+
     //! map tool changed
     void mapToolChanged( QgsMapTool *tool );
 
     /** Activates or deactivates actions depending on the current maplayer type.
     Is called from the legend when the current legend item has changed*/
     void activateDeactivateLayerRelatedActions( QgsMapLayer* layer );
+
+    void selectionChanged( QgsMapLayer *layer );
 
     void showProgress( int theProgress, int theTotalSteps );
     void extentsViewToggled( bool theFlag );
@@ -638,14 +654,11 @@ class QgisApp : public QMainWindow
     void attributeTable();
 
     //! starts/stops editing mode of a layer
-    void toggleEditing( QgsMapLayer *layer );
+    bool toggleEditing( QgsMapLayer *layer, bool allowCancel = true );
 
     //! save current vector layer
     void saveAsVectorFile();
     void saveSelectionAsVectorFile();
-
-    //! open the properties dialog for the currently selected layer
-    void layerProperties();
 
     //! show python console
     void showPythonDialog();
@@ -756,6 +769,8 @@ class QgisApp : public QMainWindow
     /**Creates the composer instances in a project file and adds them to the menu*/
     bool loadComposersFromProject( const QString& projectFilePath );
 
+    void saveAsVectorFileGeneral( bool saveOnlySelection );
+
     /**Returns all annotation items in the canvas*/
     QList<QgsAnnotationItem*> annotationItems();
     /**Removes annotation items in the canvas*/
@@ -776,9 +791,9 @@ class QgisApp : public QMainWindow
     void createToolBars();
     void createStatusBar();
     void setupConnections();
-    void createLegend();
+    void initLegend();
     void createOverview();
-    void createCanvas();
+    void createCanvasTools();
     bool createDB();
     void createMapTips();
 
@@ -874,6 +889,7 @@ class QgisApp : public QMainWindow
     QAction *mActionLayerSeparator1;
     QAction *mActionOpenTable;
     QAction *mActionToggleEditing;
+    QAction *mActionSaveEdits;
     QAction *mActionLayerSaveAs;
     QAction *mActionLayerSelectionSaveAs;
     QAction *mActionRemoveLayer;
@@ -882,6 +898,7 @@ class QgisApp : public QMainWindow
     QAction *mActionGpsTool;
 #endif
     QAction *mActionLayerProperties;
+    QAction *mActionLayerSubsetString;
     QAction *mActionLayerSeparator2;
     QAction *mActionAddToOverview;
     QAction *mActionAddAllToOverview;

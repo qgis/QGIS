@@ -2950,7 +2950,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   node.appendChild( dField );
 
   // add label node
-  QDomElement label  = doc.createElement( "label" );
+  QDomElement labelElem = doc.createElement( "label" );
   QDomText labelText = doc.createTextNode( "" );
 
   if ( hasLabelsEnabled() )
@@ -2961,9 +2961,9 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   {
     labelText.setData( "0" );
   }
-  label.appendChild( labelText );
+  labelElem.appendChild( labelText );
 
-  node.appendChild( label );
+  node.appendChild( labelElem );
 
   // add attribute actions
   mActions->writeXML( node, doc );
@@ -2974,7 +2974,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
   // XXX therefore becomes a candidate to be generalized into a separate
   // XXX function.  I think.
 
-  const QgsLabel *myLabel = this->label();
+  const QgsLabel *myLabel = label();
 
   if ( myLabel )
   {

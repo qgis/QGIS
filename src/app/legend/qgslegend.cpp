@@ -32,12 +32,7 @@
 #include "qgsmaprenderer.h"
 #include "qgsproject.h"
 #include "qgsrasterlayer.h"
-#include "qgsrasterlayerproperties.h"
-#include "qgsvectorlayerproperties.h"
-
-#include "qgsattributetabledialog.h"
-
-#include <cfloat>
+#include "qgsvectorlayer.h"
 
 #include <QFont>
 #include <QDomDocument>
@@ -57,14 +52,15 @@ const int AUTOSCROLL_MARGIN = 16;
 
    set mItemBeingMoved pointer to 0 to prevent SuSE 9.0 crash
 */
-QgsLegend::QgsLegend( QWidget * parent, const char *name )
+QgsLegend::QgsLegend( QgsMapCanvas *canvas, QWidget * parent, const char *name )
     : QTreeWidget( parent ),
     mMousePressedFlag( false ),
     mItemBeingMoved( 0 ),
-    mToggleEditingAction( 0 ),
-    mMapCanvas( 0 ),
+    mMapCanvas( canvas ),
     mMinimumIconSize( 20, 20 )
 {
+  setObjectName( name );
+
   connect( this, SIGNAL( itemChanged( QTreeWidgetItem*, int ) ),
            this, SLOT( handleItemChange( QTreeWidgetItem*, int ) ) );
 
@@ -76,6 +72,17 @@ QgsLegend::QgsLegend( QWidget * parent, const char *name )
            this, SLOT( readProject( const QDomDocument & ) ) );
   connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ),
            this, SLOT( writeProject( QDomDocument & ) ) );
+
+  // connect map layer registry signal to legend
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ),
+           this, SLOT( removeLayer( QString ) ) );
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( removedAll() ),
+           this, SLOT( removeAll() ) );
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ),
+           this, SLOT( addLayer( QgsMapLayer * ) ) );
+
+  connect( mMapCanvas, SIGNAL( layersChanged() ),
+           this, SLOT( refreshCheckStates() ) );
 
   // Initialise the line indicator widget.
   mInsertionLine = new QWidget( viewport() );
@@ -174,13 +181,8 @@ void QgsLegend::removeGroup( int groupIndex )
   }
 }
 
-void QgsLegend::removeLayer( QString layer_key )
+void QgsLegend::removeLayer( QString layerId )
 {
-  if ( !mMapCanvas || mMapCanvas->isDrawing() )
-  {
-    return;
-  }
-
   QgsDebugMsg( "called." );
 
   for ( QTreeWidgetItem* theItem = firstItem(); theItem; theItem = nextItem( theItem ) )
@@ -191,11 +193,10 @@ void QgsLegend::removeLayer( QString layer_key )
       // save legend layer (parent of a legend layer file we're going to delete)
       QgsLegendLayer* ll = qobject_cast<QgsLegendLayer *>( li );
 
-      if ( ll && ll->layer() && ll->layer()->getLayerID() == layer_key )
+      if ( ll && ll->layer() && ll->layer()->getLayerID() == layerId )
       {
         removeItem( ll );
         delete ll;
-
         break;
       }
 
@@ -422,11 +423,7 @@ void QgsLegend::mouseReleaseEvent( QMouseEvent * e )
 
 void QgsLegend::mouseDoubleClickEvent( QMouseEvent* e )
 {
-  if ( !mMapCanvas || mMapCanvas->isDrawing() )
-  {
-    return;
-  }
-  legendLayerShowProperties();
+  QgisApp::instance()->layerProperties();
 }
 
 void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& position )
@@ -444,7 +441,7 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
 
     if ( li->type() == QgsLegendItem::LEGEND_LAYER )
     {
-      ( static_cast<QgsLegendLayer*>( li ) )->addToPopupMenu( theMenu, mToggleEditingAction );
+      qobject_cast<QgsLegendLayer*>( li )->addToPopupMenu( theMenu );
 
       if ( li->parent() )
       {
@@ -565,17 +562,6 @@ void QgsLegend::setLayerVisible( QgsMapLayer * layer, bool visible )
   }
 }
 
-void QgsLegend::setMapCanvas( QgsMapCanvas * canvas )
-{
-  if ( mMapCanvas )
-  {
-    disconnect( mMapCanvas, SIGNAL( layersChanged() ) );
-  }
-
-  mMapCanvas = canvas;
-  connect( mMapCanvas, SIGNAL( layersChanged() ), this, SLOT( refreshCheckStates() ) );
-}
-
 QgsLegendLayer* QgsLegend::currentLegendLayer()
 {
   QgsLegendItem* citem = dynamic_cast<QgsLegendItem *>( currentItem() );
@@ -646,82 +632,14 @@ void QgsLegend::removeGroup( QgsLegendGroup * lg )
   QTreeWidgetItem * child = lg->child( 0 );
   while ( child )
   {
-    setCurrentItem( child );
-    removeCurrentLayer();
+    QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer *>( child );
+    if ( ll )
+      QgsMapLayerRegistry::instance()->removeMapLayer( ll->layer()->getLayerID() );
     child = lg->child( 0 );
   }
   delete lg;
-  adjustIconSize();
-}
-
-void QgsLegend::removeCurrentLayer()
-{
-  if ( !mMapCanvas || mMapCanvas->isDrawing() )
-  {
-    return;
-  }
-
-  //if the current item is a legend layer: remove all layers of the current legendLayer
-  QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer *>( currentItem() );
-  if ( !ll )
-    return;
-
-  removeLayer( ll->layer(), true );
 
   adjustIconSize();
-}
-
-bool QgsLegend::removeLayer( QgsMapLayer* ml, bool askCancelOnEditable )
-{
-  if ( !ml )
-  {
-    return false;
-  }
-
-  QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( ml );
-  if ( vl )
-  {
-    //is layer editable and changed?
-    if ( vl->isEditable() && vl->isModified() )
-    {
-      QMessageBox::StandardButton commit;
-      if ( askCancelOnEditable )
-      {
-        commit = QMessageBox::information( this,
-                                           tr( "Stop editing" ),
-                                           tr( "Do you want to save the changes to layer %1?" ).arg( vl->name() ),
-                                           QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel );
-        if ( commit == QMessageBox::Cancel )
-        {
-          return false;
-        }
-      }
-      else
-      {
-        commit = QMessageBox::information( this,
-                                           tr( "Stop editing" ),
-                                           tr( "Do you want to save the changes to layer %1?" ).arg( vl->name() ),
-                                           QMessageBox::Save | QMessageBox::Discard );
-      }
-
-      if ( commit == QMessageBox::Save )
-      {
-        if ( !vl->commitChanges() )
-        {
-          return false;
-        }
-      }
-      else if ( commit == QMessageBox::Discard )
-      {
-        if ( !vl->rollBack() )
-        {
-          return false;
-        }
-      }
-    }
-  }
-  QgsMapLayerRegistry::instance()->removeMapLayer( ml->getLayerID() );
-  return true;
 }
 
 void QgsLegend::moveLayer( QgsMapLayer * ml, int groupIndex )
@@ -738,35 +656,6 @@ void QgsLegend::moveLayer( QgsMapLayer * ml, int groupIndex )
     return;
 
   insertItem( layer, group );
-}
-
-void QgsLegend::legendLayerShowProperties()
-{
-  if ( !mMapCanvas || mMapCanvas->isDrawing() )
-  {
-    return;
-  }
-
-  QgsLegendItem* li = dynamic_cast<QgsLegendItem *>( currentItem() );
-
-  if ( !li )
-  {
-    return;
-  }
-
-  if ( li->type() != QgsLegendItem::LEGEND_LAYER )
-    return;
-
-  QgsLegendLayer* ll = qobject_cast<QgsLegendLayer *>( li );
-  if ( !ll )
-    return;
-
-  //QgsDebugMsg("Showing layer properties dialog");
-
-  QgisApp::instance()->showLayerProperties( ll->layer() );
-
-  ll->updateIcon();
-
 }
 
 void QgsLegend::legendLayerShowInOverview()
@@ -1729,35 +1618,6 @@ void QgsLegend::legendLayerZoomNative()
     mMapCanvas->refresh();
 
     QgsDebugMsg( "MapUnitsPerPixel after  : " + QString::number( mMapCanvas->mapUnitsPerPixel() ) );
-  }
-}
-
-void QgsLegend::legendLayerAttributeTable()
-{
-  if ( !mMapCanvas || mMapCanvas->isDrawing() )
-  {
-    return;
-  }
-
-  QgsVectorLayer *vlayer = 0;
-
-  // try whether it's a legend layer
-  QgsLegendLayer* ll = dynamic_cast<QgsLegendLayer *>( currentItem() );
-  if ( !ll )
-  {
-    // nothing selected
-    QMessageBox::information( this,
-                              tr( "No Layer Selected" ),
-                              tr( "To open an attribute table, you must select a vector layer in the legend" ) );
-    return;
-  }
-
-  vlayer = qobject_cast<QgsVectorLayer *>( ll->layer() );
-  if ( vlayer )
-  {
-    QgsAttributeTableDialog *mDialog = new QgsAttributeTableDialog( vlayer );
-    mDialog->show();
-    // the dialog will be deleted by itself on close
   }
 }
 

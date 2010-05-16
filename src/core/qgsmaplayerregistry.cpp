@@ -102,7 +102,6 @@ void QgsMapLayerRegistry::removeMapLayer( QString theLayerId, bool theEmitSignal
 
 void QgsMapLayerRegistry::removeAllMapLayers()
 {
-
   // moved before physically removing the layers
   emit removedAll();            // now let all canvas Observers know to clear
   // themselves, and then consequently any of

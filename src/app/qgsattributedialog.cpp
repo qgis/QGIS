@@ -205,7 +205,6 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
     }
 
     connect( buttonBox, SIGNAL( rejected() ), mDialog, SLOT( reject() ) );
-    connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
   }
 
   QMetaObject::connectSlotsByName( mDialog );

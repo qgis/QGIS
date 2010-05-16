@@ -374,5 +374,6 @@
     <file>themes/gis/plugins/spit.png</file>
     <file>themes/gis/plugins/wfs.png</file>
     <file>themes/gis/plugins/coordinate_capture/coordinate_capture.png</file>
+    <file>themes/default/mActionSaveEdits.png</file>
   </qresource>
 </RCC>
