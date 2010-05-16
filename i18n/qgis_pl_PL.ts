@@ -979,18 +979,18 @@ Czy chcesz dodać go do mapy?</translation>
     </message>
     <message>
         <source>Please specify join field</source>
-        <translation type="unfinished">Podaj pole złączenia</translation>
+        <translation>Podaj pole złączenia</translation>
     </message>
     <message>
         <source>Please specify input table</source>
-        <translation type="unfinished">Podaj tabelę wejściową</translation>
+        <translation>Podaj tabelę wejściową</translation>
     </message>
     <message>
         <source>Created output shapefile:
 %1
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished">Utworzono plik Shapefile:
+        <translation>Utworzono plik Shapefile:
 %1
 
 Czy chcesz dodać go do mapy?</translation>
@@ -1005,7 +1005,7 @@ Czy chcesz dodać go do mapy?</translation>
     </message>
     <message>
         <source>joined fields</source>
-        <translation type="unfinished">złączone pola</translation>
+        <translation>złączone pola</translation>
     </message>
     <message>
         <source>Mean coordinates</source>
@@ -1029,7 +1029,7 @@ Czy chcesz dodać go do mapy?</translation>
     </message>
     <message>
         <source>No input vector layer specified</source>
-        <translation type="unfinished">Nie podano wektorowej warstwy wejściowej</translation>
+        <translation>Nie podano wektorowej warstwy wejściowej</translation>
     </message>
     <message>
         <source>Please specify at least one summary statistic</source>
@@ -1097,7 +1097,7 @@ This may cause unexpected results.</source>
     </message>
     <message>
         <source>Please specify input line vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Podaj wejściową warstwę wektorową (liniową)</translation>
     </message>
     <message>
         <source>Please specify output length field</source>
@@ -7904,7 +7904,7 @@ Błąd brzmi:%2</translation>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="332"/>
         <source>Show grid?</source>
-        <translation>Pokaż siatkę</translation>
+        <translation type="unfinished">Pokaż siatkę</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="347"/>
@@ -14896,12 +14896,12 @@ Może to być spowodowane problemem w sieci lokalnej lub problemem serwera WMS.<
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="427"/>
         <source>Save as...</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz jako...</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="430"/>
         <source>Save selection as...</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisz wybrane jako...</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="441"/>
@@ -15988,7 +15988,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="239"/>
         <source>Inline</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="258"/>
@@ -16043,7 +16043,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="498"/>
         <source>Dump</source>
-        <translation type="unfinished"></translation>
+        <translation>Dump</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="230"/>
@@ -16697,22 +16697,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/ogr/qgsogrsublayersdialog.cpp" line="26"/>
         <source>Layer ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ID warstwy</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsogrsublayersdialog.cpp" line="26"/>
         <source>Layer name</source>
-        <translation type="unfinished">Nazwa warstwy</translation>
+        <translation>Nazwa warstwy</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsogrsublayersdialog.cpp" line="26"/>
         <source>Nb of features</source>
-        <translation type="unfinished"></translation>
+        <translation>Liczba obiektów</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsogrsublayersdialog.cpp" line="26"/>
         <source>Geometry type</source>
-        <translation type="unfinished"></translation>
+        <translation>Typ geometrii</translation>
     </message>
 </context>
 <context>
@@ -17475,7 +17475,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="368"/>
         <source>Add new layers to selected group</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Dodaj nowe warstwy do wybranych</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="385"/>
@@ -17550,27 +17550,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1412"/>
         <source>Cache settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Ustawienia cache</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1418"/>
         <source>Directory</source>
-        <translation type="unfinished">Katalog</translation>
+        <translation>Katalog</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1428"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1435"/>
         <source>Size</source>
-        <translation type="unfinished">Rozmiar</translation>
+        <translation>Rozmiar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1445"/>
         <source>Clear</source>
-        <translation type="unfinished">Wyczyść</translation>
+        <translation>Wyczyść</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1457"/>
@@ -18234,22 +18234,22 @@ Rozszerzona informacja o błędzie:
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="57"/>
         <source>&amp;Save</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Zapisz</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="58"/>
         <source>Save connections</source>
-        <translation type="unfinished">Zapisz połączenia</translation>
+        <translation>Zapisz połączenia</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="62"/>
         <source>&amp;Load</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Wczytaj</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="63"/>
         <source>Load connections</source>
-        <translation type="unfinished">Załaduj połączenia</translation>
+        <translation>Wczytaj połączenia</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="70"/>
@@ -18414,7 +18414,7 @@ Sprawdź czy masz uprawnienia SELECT do tabeli zawierającej geometrię PostGIS.
     <message>
         <location filename="../src/ui/qgspgsourceselectbase.ui" line="94"/>
         <source>Search options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opcje poszukiwań</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgsourceselectbase.ui" line="118"/>
@@ -22901,12 +22901,12 @@ Czy chcesz nadpisać relację [%2]?</translation>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="65"/>
         <source>Map unit</source>
-        <translation type="unfinished">Jednostki mapy</translation>
+        <translation>Jednostki mapy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="73"/>
         <source>Opacity</source>
-        <translation type="unfinished">Przezroczystość</translation>
+        <translation>Przezroczystość</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="96"/>
@@ -23041,7 +23041,7 @@ Czy chcesz nadpisać relację [%2]?</translation>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformtypedialogbase.ui" line="56"/>
         <source>Generate ESRI world file (.tfw)</source>
-        <translation type="unfinished">Twórz plik .tfw (ESRI)</translation>
+        <translation>Twórz plik .tfw (ESRI)</translation>
     </message>
 </context>
 <context>
@@ -24282,7 +24282,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="763"/>
         <source>Select layer(s)</source>
-        <translation type="unfinished">Wybierz warstwę(y)</translation>
+        <translation>Wybierz warstwę(y)</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="765"/>
@@ -24297,12 +24297,12 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="782"/>
         <source>No common CRS for selected layers.</source>
-        <translation type="unfinished">Wybrane warsrtwy nie mają wspólnego układu współrzędnych.</translation>
+        <translation>Wybrane warstwy nie mają wspólnego układu współrzędnych.</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="787"/>
         <source>No CRS selected</source>
-        <translation type="unfinished">Nie wybrano układu współrzędnych</translation>
+        <translation>Nie wybrano układu współrzędnych</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="792"/>
@@ -24314,6 +24314,8 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
         <source>%n Layer(s) selected</source>
         <comment>selected layer count</comment>
         <translation type="unfinished">
+            <numerusform>%n wybranych warstw</numerusform>
+            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -24779,7 +24781,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2380"/>
         <source>(and more)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">(i więcej)</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2388"/>
@@ -24824,7 +24826,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2515"/>
         <source>Hits</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Trafienia</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2521"/>
