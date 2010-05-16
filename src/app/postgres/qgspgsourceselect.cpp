@@ -134,8 +134,7 @@ void QgsPgSourceSelect::on_btnDelete_clicked()
   QString key = "/Postgresql/connections/" + cmbConnections->currentText();
   QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
                 .arg( cmbConnections->currentText() );
-  QMessageBox::StandardButton result = QMessageBox::information( this, tr( "Confirm Delete" ), msg, QMessageBox::Ok | QMessageBox::Cancel );
-  if ( result != QMessageBox::Ok )
+  if ( QMessageBox::Ok != QMessageBox::information( this, tr( "Confirm Delete" ), msg, QMessageBox::Ok | QMessageBox::Cancel ) )
     return;
 
   settings.remove( key + "/host" );
@@ -150,6 +149,7 @@ void QgsPgSourceSelect::on_btnDelete_clicked()
   settings.remove( key + "/saveUsername" );
   settings.remove( key + "/savePassword" );
   settings.remove( key + "/save" );
+  settings.remove( key );
 
   populateConnectionList();
 }
