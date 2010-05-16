@@ -61,8 +61,22 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     @param render the maprender object (used for coord transformation)*/
     void setToGeometry( QgsGeometry* geom, QgsVectorLayer* layer );
 
+    /**Add the geometry of an existing feature to a rubberband
+     This is useful for multi feature highlighting.
+    @param geom the geometry object
+    @param layer the layer containing the feature, used for coord transformation to map
+    crs. In case of 0 pointer, the coordinates are not going to be transformed.
+    @param render the maprender object (used for coord transformation)
+    @noted added in 1.5
+    */
+    void addGeometry( QgsGeometry* geom, QgsVectorLayer* layer );
+
     /**Adds translation to original coordinates (all in map coordinates)*/
     void setTranslationOffset( double dx, double dy );
+
+    /**Returns number of geometries
+     * added in 1.5 */
+    int size() const;
 
     /**Returns count of vertices in all lists of mPoint*/
     int numberOfVertices() const;

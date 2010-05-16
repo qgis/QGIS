@@ -65,10 +65,7 @@ void QgsRubberBand::setWidth( int width )
   */
 void QgsRubberBand::reset( bool isPolygon )
 {
-
   mPoints.clear();
-  QList< QgsPoint > initial_list;
-  mPoints.push_back( initial_list );
   mIsPolygon = isPolygon;
   updateRect();
   update();
@@ -79,12 +76,22 @@ void QgsRubberBand::reset( bool isPolygon )
   */
 void QgsRubberBand::addPoint( const QgsPoint & p, bool do_update /* = true */, int geometryIndex )
 {
-  if ( mPoints.size() < ( geometryIndex + 1 ) )
+  if ( geometryIndex < 0 )
+  {
+    geometryIndex = mPoints.size() - 1;
+  }
+
+  if ( geometryIndex < 0 || geometryIndex > mPoints.size() )
   {
     return;
   }
 
-  //we need to set two points at the begin of the ruber band for operations that move the last point
+  if ( geometryIndex == mPoints.size() )
+  {
+    mPoints.push_back( QList<QgsPoint>() );
+  }
+
+  //we need to set two points at the begin of the rubber band for operations that move the last point
   if ( mPoints[geometryIndex].size() == 0 )
   {
     mPoints[geometryIndex].push_back( p );
@@ -100,7 +107,7 @@ void QgsRubberBand::addPoint( const QgsPoint & p, bool do_update /* = true */, i
 
 void QgsRubberBand::removeLastPoint( int geometryIndex )
 {
-  if ( mPoints.size() < ( geometryIndex + 1 ) )
+  if ( mPoints.size() < geometryIndex + 1 )
   {
     return;
   }
@@ -119,7 +126,7 @@ void QgsRubberBand::removeLastPoint( int geometryIndex )
   */
 void QgsRubberBand::movePoint( const QgsPoint & p, int geometryIndex )
 {
-  if ( mPoints.size() < ( geometryIndex + 1 ) )
+  if ( mPoints.size() < geometryIndex + 1 )
   {
     return;
   }
@@ -137,7 +144,7 @@ void QgsRubberBand::movePoint( const QgsPoint & p, int geometryIndex )
 
 void QgsRubberBand::movePoint( int index, const QgsPoint& p, int geometryIndex )
 {
-  if ( mPoints.size() < ( geometryIndex + 1 ) )
+  if ( mPoints.size() < geometryIndex + 1 )
   {
     return;
   }
@@ -155,6 +162,12 @@ void QgsRubberBand::movePoint( int index, const QgsPoint& p, int geometryIndex )
 
 void QgsRubberBand::setToGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
 {
+  reset( mIsPolygon );
+  addGeometry( geom, layer );
+}
+
+void QgsRubberBand::addGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
+{
   if ( !geom )
   {
     return;
@@ -167,7 +180,7 @@ void QgsRubberBand::setToGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
     return;
   }
 
-  reset( mIsPolygon );
+  int idx = mPoints.size();
 
   switch ( geom->wkbType() )
   {
@@ -186,10 +199,10 @@ void QgsRubberBand::setToGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
       {
         pt = geom->asPoint();
       }
-      addPoint( QgsPoint( pt.x() - d, pt.y() - d ), false );
-      addPoint( QgsPoint( pt.x() + d, pt.y() - d ), false );
-      addPoint( QgsPoint( pt.x() + d, pt.y() + d ), false );
-      addPoint( QgsPoint( pt.x() - d, pt.y() + d ), false );
+      addPoint( QgsPoint( pt.x() - d, pt.y() - d ), false, idx );
+      addPoint( QgsPoint( pt.x() + d, pt.y() - d ), false, idx );
+      addPoint( QgsPoint( pt.x() + d, pt.y() + d ), false, idx );
+      addPoint( QgsPoint( pt.x() - d, pt.y() + d ), false, idx );
     }
     break;
 
@@ -199,23 +212,22 @@ void QgsRubberBand::setToGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
       mIsPolygon = true;
       double d = mMapCanvas->extent().width() * 0.005;
       QgsMultiPoint mpt = geom->asMultiPoint();
-      for ( int i = 0; i < mpt.size(); ++i )
+      for ( int i = 0; i < mpt.size(); ++i, ++idx )
       {
         QgsPoint pt = mpt[i];
-        mPoints.push_back( QList<QgsPoint>() );
         if ( layer )
         {
-          addPoint( mr->layerToMapCoordinates( layer, QgsPoint( pt.x() - d, pt.y() - d ) ), false, i );
-          addPoint( mr->layerToMapCoordinates( layer, QgsPoint( pt.x() + d, pt.y() - d ) ), false, i );
-          addPoint( mr->layerToMapCoordinates( layer, QgsPoint( pt.x() + d, pt.y() + d ) ), false, i );
-          addPoint( mr->layerToMapCoordinates( layer, QgsPoint( pt.x() - d, pt.y() + d ) ), false, i );
+          addPoint( mr->layerToMapCoordinates( layer, QgsPoint( pt.x() - d, pt.y() - d ) ), false, idx );
+          addPoint( mr->layerToMapCoordinates( layer, QgsPoint( pt.x() + d, pt.y() - d ) ), false, idx );
+          addPoint( mr->layerToMapCoordinates( layer, QgsPoint( pt.x() + d, pt.y() + d ) ), false, idx );
+          addPoint( mr->layerToMapCoordinates( layer, QgsPoint( pt.x() - d, pt.y() + d ) ), false, idx );
         }
         else
         {
-          addPoint( QgsPoint( pt.x() - d, pt.y() - d ), false, i );
-          addPoint( QgsPoint( pt.x() + d, pt.y() - d ), false, i );
-          addPoint( QgsPoint( pt.x() + d, pt.y() + d ), false, i );
-          addPoint( QgsPoint( pt.x() - d, pt.y() + d ), false, i );
+          addPoint( QgsPoint( pt.x() - d, pt.y() - d ), false, idx );
+          addPoint( QgsPoint( pt.x() + d, pt.y() - d ), false, idx );
+          addPoint( QgsPoint( pt.x() + d, pt.y() + d ), false, idx );
+          addPoint( QgsPoint( pt.x() - d, pt.y() + d ), false, idx );
         }
       }
     }
@@ -230,11 +242,11 @@ void QgsRubberBand::setToGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
       {
         if ( layer )
         {
-          addPoint( mr->layerToMapCoordinates( layer, line[i] ), false );
+          addPoint( mr->layerToMapCoordinates( layer, line[i] ), false, idx );
         }
         else
         {
-          addPoint( line[i], false );
+          addPoint( line[i], false, idx );
         }
       }
     }
@@ -247,19 +259,18 @@ void QgsRubberBand::setToGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
       mPoints.clear();
 
       QgsMultiPolyline mline = geom->asMultiPolyline();
-      for ( int i = 0; i < mline.size(); ++i )
+      for ( int i = 0; i < mline.size(); ++i, ++idx )
       {
-        mPoints.push_back( QList<QgsPoint>() );
         QgsPolyline line = mline[i];
         for ( int j = 0; j < line.size(); ++j )
         {
           if ( layer )
           {
-            addPoint( mr->layerToMapCoordinates( layer, line[j] ), false, i );
+            addPoint( mr->layerToMapCoordinates( layer, line[j] ), false, idx );
           }
           else
           {
-            addPoint( line[j], false, i );
+            addPoint( line[j], false, idx );
           }
         }
       }
@@ -276,11 +287,11 @@ void QgsRubberBand::setToGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
       {
         if ( layer )
         {
-          addPoint( mr->layerToMapCoordinates( layer, line[i] ), false );
+          addPoint( mr->layerToMapCoordinates( layer, line[i] ), false, idx );
         }
         else
         {
-          addPoint( line[i], false );
+          addPoint( line[i], false, idx );
         }
       }
     }
@@ -293,20 +304,19 @@ void QgsRubberBand::setToGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
       mPoints.clear();
 
       QgsMultiPolygon multipoly = geom->asMultiPolygon();
-      for ( int i = 0; i < multipoly.size(); ++i )
+      for ( int i = 0; i < multipoly.size(); ++i, ++idx )
       {
-        mPoints.push_back( QList<QgsPoint>() );
         QgsPolygon poly = multipoly[i];
         QgsPolyline line = poly[0];
         for ( int j = 0; j < line.count(); ++j )
         {
           if ( layer )
           {
-            addPoint( mr->layerToMapCoordinates( layer, line[j] ), false, i );
+            addPoint( mr->layerToMapCoordinates( layer, line[j] ), false, idx );
           }
           else
           {
-            addPoint( line[j], false, i );
+            addPoint( line[j], false, idx );
           }
         }
       }
@@ -317,6 +327,7 @@ void QgsRubberBand::setToGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
     default:
       return;
   }
+
   updateRect();
   update();
 }
@@ -391,6 +402,11 @@ void QgsRubberBand::setTranslationOffset( double dx, double dy )
   mTranslationOffsetX = dx;
   mTranslationOffsetY = dy;
   updateRect();
+}
+
+int QgsRubberBand::size() const
+{
+  return mPoints.size();
 }
 
 int QgsRubberBand::numberOfVertices() const

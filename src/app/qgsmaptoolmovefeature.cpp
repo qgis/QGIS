@@ -44,7 +44,6 @@ void QgsMapToolMoveFeature::canvasMoveEvent( QMouseEvent * e )
     double offsetX = pointCanvasCoords.x() - mStartPointMapCoords.x();
     double offsetY = pointCanvasCoords.y() - mStartPointMapCoords.y();
     mRubberBand->setTranslationOffset( offsetX, offsetY );
-    //QgsDebugMsg("move Rubber band by: " + QString::number(e->x() - mLastPointPixelCoords.x()) + " // " + QString::number(e->y() - mLastPointPixelCoords.y()));
     mRubberBand->updatePosition();
     mRubberBand->update();
   }
@@ -76,46 +75,64 @@ void QgsMapToolMoveFeature::canvasPressEvent( QMouseEvent * e )
   QgsRectangle selectRect( layerCoords.x() - searchRadius, layerCoords.y() - searchRadius,
                            layerCoords.x() + searchRadius, layerCoords.y() + searchRadius );
 
-  vlayer->select( QgsAttributeList(), selectRect, true );
-
-  //find the closest feature
-  QgsGeometry* pointGeometry = QgsGeometry::fromPoint( layerCoords );
-  if ( !pointGeometry )
+  if ( vlayer->selectedFeatureCount() == 0 )
   {
-    return;
-  }
+    vlayer->select( QgsAttributeList(), selectRect, true );
 
-  double minDistance = std::numeric_limits<double>::max();
-
-  QgsFeature cf;
-  QgsFeature f;
-  while ( vlayer->nextFeature( f ) )
-  {
-    if ( f.geometry() )
+    //find the closest feature
+    QgsGeometry* pointGeometry = QgsGeometry::fromPoint( layerCoords );
+    if ( !pointGeometry )
     {
-      double currentDistance = pointGeometry->distance( *f.geometry() );
-      if ( currentDistance < minDistance )
+      return;
+    }
+
+    double minDistance = std::numeric_limits<double>::max();
+
+    QgsFeature cf;
+    QgsFeature f;
+    while ( vlayer->nextFeature( f ) )
+    {
+      if ( f.geometry() )
       {
-        minDistance = currentDistance;
-        cf = f;
+        double currentDistance = pointGeometry->distance( *f.geometry() );
+        if ( currentDistance < minDistance )
+        {
+          minDistance = currentDistance;
+          cf = f;
+        }
       }
+
+    }
+
+    delete pointGeometry;
+
+    if ( minDistance == std::numeric_limits<double>::max() )
+    {
+      return;
+    }
+
+    mMovedFeatures.clear();
+    mMovedFeatures << cf.id(); //todo: take the closest feature, not the first one...
+
+    mRubberBand = createRubberBand();
+    mRubberBand->setToGeometry( cf.geometry(), vlayer );
+  }
+  else
+  {
+    mMovedFeatures = vlayer->selectedFeaturesIds();
+
+    mRubberBand = createRubberBand();
+    for ( int i = 0; i < vlayer->selectedFeatureCount(); i++ )
+    {
+      mRubberBand->addGeometry( vlayer->selectedFeatures()[i].geometry(), vlayer );
     }
   }
 
-  if ( minDistance == std::numeric_limits<double>::max() )
-  {
-    return;
-  }
-
   mStartPointMapCoords = toMapCoordinates( e->pos() );
-  mMovedFeature = cf.id(); //todo: take the closest feature, not the first one...
-  mRubberBand = createRubberBand();
-  mRubberBand->setToGeometry( cf.geometry(), vlayer );
   mRubberBand->setColor( Qt::red );
   mRubberBand->setWidth( 2 );
   mRubberBand->show();
 
-  delete pointGeometry;
 }
 
 void QgsMapToolMoveFeature::canvasReleaseEvent( QMouseEvent * e )
@@ -138,7 +155,10 @@ void QgsMapToolMoveFeature::canvasReleaseEvent( QMouseEvent * e )
   double dx = stopPointLayerCoords.x() - startPointLayerCoords.x();
   double dy = stopPointLayerCoords.y() - startPointLayerCoords.y();
   vlayer->beginEditCommand( tr( "Feature moved" ) );
-  vlayer->translateFeature( mMovedFeature, dx, dy );
+  foreach( int id, mMovedFeatures )
+  {
+    vlayer->translateFeature( id, dx, dy );
+  }
   delete mRubberBand;
   mRubberBand = 0;
   mCanvas->refresh();

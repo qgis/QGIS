@@ -18,6 +18,7 @@
 #define QGSMAPTOOLMOVEFEATURE_H
 
 #include "qgsmaptooledit.h"
+#include "qgsvectorlayer.h"
 
 /**Map tool for translating feature position by mouse drag*/
 class QgsMapToolMoveFeature: public QgsMapToolEdit
@@ -44,7 +45,7 @@ class QgsMapToolMoveFeature: public QgsMapToolEdit
     QgsRubberBand* mRubberBand;
 
     /**Id of moved feature*/
-    int mMovedFeature;
+    QgsFeatureIds mMovedFeatures;
 };
 
 #endif
