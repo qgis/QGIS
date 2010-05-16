@@ -31,7 +31,6 @@
 #include "qgsmessageoutput.h"
 #include "qgis.h" //const vals declared here
 
-#include <cassert>
 #include <sqlite3.h>
 
 //gdal and ogr includes (needed for == operator)
@@ -1145,7 +1144,7 @@ QString QgsCoordinateReferenceSystem::proj4FromSrsId( const int theSrsId )
   // close the database
   sqlite3_close( db );
 
-  //assert(myProjString.length() > 0);
+  //Q_ASSERT(myProjString.length() > 0);
   return myProjString;
 }
 
@@ -1259,12 +1258,10 @@ bool QgsCoordinateReferenceSystem::saveAsUserCRS()
   myResult = sqlite3_open( QgsApplication::qgisUserDbFilePath().toUtf8().data(), &myDatabase );
   if ( myResult != SQLITE_OK )
   {
-    QgsDebugMsg( QString( "Can't open database: %1 \n please notify  QGIS developers of this error \n %2 (file name) " )
-                 .arg( sqlite3_errmsg( myDatabase ) )
-                 .arg( QgsApplication::qgisUserDbFilePath() ) );
-    // XXX This will likely never happen since on open, sqlite creates the
-    //     database if it does not exist.
-    assert( myResult == SQLITE_OK );
+    QgsDebugMsg( QString( "Can't open or create database %1: %2" )
+                 .arg( QgsApplication::qgisUserDbFilePath() )
+                 .arg( sqlite3_errmsg( myDatabase ) ) );
+    return false;
   }
   QgsDebugMsg( QString( "Update or insert sql \n%1" ).arg( mySql ) );
   myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
@@ -1285,9 +1282,7 @@ long QgsCoordinateReferenceSystem::getRecordCount()
   if ( myResult != SQLITE_OK )
   {
     QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
-    // XXX This will likely never happen since on open, sqlite creates the
-    //     database if it does not exist.
-    assert( myResult == SQLITE_OK );
+    return 0;
   }
   // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
   QString mySql = "select count(*) from tbl_srs";
