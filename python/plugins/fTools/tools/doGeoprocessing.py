@@ -207,14 +207,17 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
                   self.tr( "No output created. File creation error:\n%1" )
                   .arg( results[3] ) )
       return
-    if not results[2] or not results[1] or not results [0]:
+    if (not results[2] is None and not results[2]) or not results[1] or not results [0]:
       out_text = self.tr( "\nWarnings:" )
       end_text = self.tr( "\nSome output geometries may be missing or invalid.\n\nWould you like to add the new layer anyway?" )
     else:
       out_text = "\n"
       end_text = self.tr( "\n\nWould you like to add the new layer to the TOC?" )
-    if not results[2]:
-      out_text = out_text + self.tr( "\nInput CRS error: Different input coordinate reference systems detected, results may not be as expected.")
+    if not results[2] is None:
+      if not results[2]:
+        out_text = out_text + self.tr( "\nInput CRS error: Different input coordinate reference systems detected, results may not be as expected.")
+    else:
+      out_text = out_text + self.tr( "\nInput CRS error: One or more input layers missing coordinate reference information, results may not be as expected.")
     if not results[1]:
       out_text = out_text + self.tr( "\nFeature geometry error: One or more output features ignored due to invalid geometry.")
     if not results[0]:
@@ -693,8 +696,13 @@ class geoprocessingThread( QThread ):
     allAttrsB = vproviderB.attributeIndexes()
     vproviderB.select( allAttrsB )
     fields = vproviderA.fields()
-    if vproviderA.crs() == vproviderB.crs(): crs_match = True
-    else: crs_match = False
+    # check for crs compatability
+    crsA = vproviderA.crs()
+    crsB = vproviderB.crs()
+    if not crsA.isValid() or not crsB.isValid():
+        crs_match = None
+    else:
+        crs_match = crsA == crsB
     writer = QgsVectorFileWriter( self.myName, self.myEncoding, 
     fields, vproviderA.geometryType(), vproviderA.crs() )
     inFeatA = QgsFeature()
@@ -844,7 +852,13 @@ class geoprocessingThread( QThread ):
     vproviderB = self.vlayerB.dataProvider()
     allAttrsB = vproviderB.attributeIndexes()
     vproviderB.select( allAttrsB )
-    crs_match = vproviderA.crs() == vproviderB.crs()
+    # check for crs compatability
+    crsA = vproviderA.crs()
+    crsB = vproviderB.crs()
+    if not crsA.isValid() or not crsB.isValid():
+        crs_match = None
+    else:
+        crs_match = crsA == crsB
     fields = ftools_utils.combineVectorFields( self.vlayerA, self.vlayerB )
     longNames = ftools_utils.checkFieldNameLength( fields )
     if not longNames.isEmpty():
@@ -1006,8 +1020,13 @@ class geoprocessingThread( QThread ):
     vproviderB = self.vlayerB.dataProvider()
     allAttrsB = vproviderB.attributeIndexes()
     vproviderB.select( allAttrsB )
-    if vproviderA.crs() == vproviderB.crs(): crs_match = True
-    else: crs_match = False
+    # check for crs compatability
+    crsA = vproviderA.crs()
+    crsB = vproviderB.crs()
+    if not crsA.isValid() or not crsB.isValid():
+        crs_match = None
+    else:
+        crs_match = crsA == crsB
     fields = ftools_utils.combineVectorFields( self.vlayerA, self.vlayerB )
     longNames = ftools_utils.checkFieldNameLength( fields )
     if not longNames.isEmpty():
@@ -1135,8 +1154,13 @@ class geoprocessingThread( QThread ):
     vproviderB = self.vlayerB.dataProvider()
     allAttrsB = vproviderB.attributeIndexes()
     vproviderB.select( allAttrsB )
-    if vproviderA.crs() == vproviderB.crs(): crs_match = True
-    else: crs_match = False
+    # check for crs compatability
+    crsA = vproviderA.crs()
+    crsB = vproviderB.crs()
+    if not crsA.isValid() or not crsB.isValid():
+        crs_match = None
+    else:
+        crs_match = crsA == crsB
     fields = ftools_utils.combineVectorFields( self.vlayerA, self.vlayerB )
     longNames = ftools_utils.checkFieldNameLength( fields )
     if not longNames.isEmpty():
@@ -1223,8 +1247,13 @@ class geoprocessingThread( QThread ):
     vproviderB = self.vlayerB.dataProvider()
     allAttrsB = vproviderB.attributeIndexes()
     vproviderB.select( allAttrsB )
-    if vproviderA.crs() == vproviderB.crs(): crs_match = True
-    else: crs_match = False
+    # check for crs compatability
+    crsA = vproviderA.crs()
+    crsB = vproviderB.crs()
+    if not crsA.isValid() or not crsB.isValid():
+        crs_match = None
+    else:
+        crs_match = crsA == crsB
     fields = vproviderA.fields()
     writer = QgsVectorFileWriter( self.myName, self.myEncoding, 
     fields, vproviderA.geometryType(), vproviderA.crs() )
