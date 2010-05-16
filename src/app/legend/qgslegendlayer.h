@@ -61,7 +61,7 @@ class QgsLegendLayer : public QgsLegendItem
     void refreshSymbology( const QString& key, double widthScale = 1.0 );
 
     /** called to add appropriate menu items to legend's popup menu */
-    void addToPopupMenu( QMenu& theMenu, QAction* toggleEditingAction );
+    void addToPopupMenu( QMenu& theMenu );
 
     /** Set layer to be visible in canvas */
     void setVisible( bool visible = true );
@@ -80,12 +80,6 @@ class QgsLegendLayer : public QgsLegendItem
 
     /**Toggle show in overview*/
     void showInOverview();
-
-    /**Show layer attribute table*/
-    void table();
-
-    void saveAsVectorFile();
-    void saveSelectionAsVectorFile();
 
     /**update the layer's icon to show whether is in editing mode or in overview */
     void updateIcon();
@@ -107,8 +101,6 @@ class QgsLegendLayer : public QgsLegendItem
     void changeSymbologySettings( const QgsMapLayer* mapLayer, const SymbologyList& newSymbologyItems );
 
     QPixmap getOriginalPixmap();
-
-    void saveAsVectorFileGeneral( bool saveOnlySelection );
 
   private:
     /** Helper method to make the font bold from all ctors.

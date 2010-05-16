@@ -2,6 +2,7 @@
 
 #include "qgsmaplayer.h"
 #include "qgsmapcanvas.h"
+#include "qgslegend.h"
 
 #include "qgisapp.h"
 
@@ -10,11 +11,12 @@ QgsUndoWidget::QgsUndoWidget( QWidget * parent, QgsMapCanvas * mapCanvas )
 {
   setupUi( this );
   setWidget( dockWidgetContents );
-  connect( this->undoButton, SIGNAL( clicked() ),
-           this, SLOT( undo( ) ) );
 
-  connect( this->redoButton, SIGNAL( clicked() ),
-           this, SLOT( redo( ) ) );
+  connect( undoButton, SIGNAL( clicked() ), this, SLOT( undo( ) ) );
+  connect( redoButton, SIGNAL( clicked() ), this, SLOT( redo( ) ) );
+  connect( QgisApp::instance()->legend(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ),
+           this, SLOT( layerChanged( QgsMapLayer* ) ) );
+
   undoButton->setDisabled( true );
   redoButton->setDisabled( true );
   mMapCanvas = mapCanvas;
@@ -99,17 +101,17 @@ void QgsUndoWidget::setUndoStack( QUndoStack* undoStack )
   mUndoView->setObjectName( "undoView" );
   gridLayout->addWidget( mUndoView, 0, 0, 1, 2 );
   setWidget( dockWidgetContents );
-  connect( this->mUndoStack,  SIGNAL( canUndoChanged( bool ) ), this, SLOT( undoChanged( bool ) ) );
-  connect( this->mUndoStack,  SIGNAL( canRedoChanged( bool ) ), this, SLOT( redoChanged( bool ) ) );
+  connect( mUndoStack,  SIGNAL( canUndoChanged( bool ) ), this, SLOT( undoChanged( bool ) ) );
+  connect( mUndoStack,  SIGNAL( canRedoChanged( bool ) ), this, SLOT( redoChanged( bool ) ) );
 
   // indexChanged() triggers a refresh. but it gets triggered also when a new action
   // is done, resulting in two refreshes. For now let's trigger the refresh from
   // vector layer: it causes potentially multiple refreshes when moving more commands
   // back, but avoids double refresh in common case when adding commands to the stack
-  //connect(this->mUndoStack,  SIGNAL(indexChanged(int)), this, SLOT(indexChanged(int)));
+  //connect(mUndoStack,  SIGNAL(indexChanged(int)), this, SLOT(indexChanged(int)));
 
-  this->undoButton->setDisabled( !mUndoStack->canUndo() );
-  this->redoButton->setDisabled( !mUndoStack->canRedo() );
+  undoButton->setDisabled( !mUndoStack->canUndo() );
+  redoButton->setDisabled( !mUndoStack->canRedo() );
 }
 
 

@@ -33,10 +33,6 @@
 #include "qgssymbol.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
-#include "qgsvectorfilewriter.h"
-#include "qgsgenericprojectionselector.h"
-#include "qgsattributetabledialog.h"
-#include "ogr/qgsvectorlayersaveasdialog.h"
 
 #include "qgsrendererv2.h"
 #include "qgssymbolv2.h"
@@ -171,6 +167,8 @@ void QgsLegendLayer::refreshSymbology( const QString& key, double widthScale )
     QgsRasterLayer* rlayer = qobject_cast<QgsRasterLayer *>( theMapLayer );
     rasterLayerSymbology( rlayer ); // get and change symbology
   }
+
+  updateIcon();
 }
 
 void QgsLegendLayer::changeSymbologySettings( const QgsMapLayer* theMapLayer,
@@ -302,8 +300,6 @@ void QgsLegendLayer::rasterLayerSymbology( QgsRasterLayer* layer )
   itemList.append( qMakePair( QString(), legendpixmap ) );
 
   changeSymbologySettings( layer, itemList );
-
-  updateIcon();
 }
 
 void QgsLegendLayer::updateIcon()
@@ -380,10 +376,10 @@ QPixmap QgsLegendLayer::getOriginalPixmap()
   return QgisApp::getThemePixmap( "/mIconLayer.png" );
 }
 
-void QgsLegendLayer::addToPopupMenu( QMenu& theMenu, QAction* toggleEditingAction )
+void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
 {
-
-  QgsMapLayer* lyr = layer();
+  QgsMapLayer *lyr = layer();
+  QAction *toggleEditingAction = QgisApp::instance()->actionToggleEditing();
 
   // zoom to layer extent
   theMenu.addAction( QgisApp::getThemeIcon( "/mActionZoomToLayer.png" ),
@@ -401,8 +397,7 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu, QAction* toggleEditingActio
   showInOverviewAction->blockSignals( false );
 
   // remove from canvas
-  theMenu.addAction( QgisApp::getThemeIcon( "/mActionRemove.png" ),
-                     tr( "&Remove" ), legend(), SLOT( removeCurrentLayer() ) );
+  theMenu.addAction( QgisApp::getThemeIcon( "/mActionRemove.png" ), tr( "&Remove" ), QgisApp::instance(), SLOT( removeLayer() ) );
 
   theMenu.addSeparator();
 
@@ -411,7 +406,8 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu, QAction* toggleEditingActio
     QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( lyr );
 
     // attribute table
-    theMenu.addAction( tr( "&Open attribute table" ), this, SLOT( table() ) );
+    theMenu.addAction( tr( "&Open attribute table" ),
+                       QgisApp::instance(), SLOT( attributeTable() ) );
 
     // allow editing
     int cap = vlayer->dataProvider()->capabilities();
@@ -425,40 +421,23 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu, QAction* toggleEditingActio
     }
 
     // save as vector file
-    theMenu.addAction( tr( "Save as..." ), this, SLOT( saveAsVectorFile() ) );
+    theMenu.addAction( tr( "Save as..." ), QgisApp::instance(), SLOT( saveAsVectorFile() ) );
 
     // save selection as vector file
-    QAction* saveSelectionAsAction = theMenu.addAction( tr( "Save selection as..." ), this, SLOT( saveSelectionAsVectorFile() ) );
+    QAction* saveSelectionAsAction = theMenu.addAction( tr( "Save selection as..." ), QgisApp::instance(), SLOT( saveSelectionAsVectorFile() ) );
     if ( vlayer->selectedFeatureCount() == 0 )
     {
       saveSelectionAsAction->setEnabled( false );
     }
+
+    theMenu.addAction( tr( "&Subset" ), QgisApp::instance(), SLOT( layerSubsetString() ) );
 
     theMenu.addSeparator();
   }
 
   // properties goes on bottom of menu for consistency with normal ui standards
   // e.g. kde stuff
-  theMenu.addAction( tr( "&Properties" ), legend(), SLOT( legendLayerShowProperties() ) );
-
-}
-
-void QgsLegendLayer::table()
-{
-  QgsVectorLayer * myLayer = qobject_cast<QgsVectorLayer *>( mLyr.layer() );
-  QgsAttributeTableDialog *mDialog = new QgsAttributeTableDialog( myLayer );
-  mDialog->show();
-  // the dialog will be deleted by itself on close
-}
-
-void QgsLegendLayer::saveAsVectorFile()
-{
-  saveAsVectorFileGeneral( false );
-}
-
-void QgsLegendLayer::saveSelectionAsVectorFile()
-{
-  saveAsVectorFileGeneral( true );
+  theMenu.addAction( tr( "&Properties" ), QgisApp::instance(), SLOT( layerProperties() ) );
 }
 
 //////////
@@ -493,84 +472,6 @@ void QgsLegendLayer::showInOverview()
   legend()->updateOverview();
 }
 
-void QgsLegendLayer::saveAsVectorFileGeneral( bool saveOnlySelection )
-{
-  QgsCoordinateReferenceSystem destCRS;
-
-  if ( mLyr.layer()->type() != QgsMapLayer::VectorLayer )
-    return;
-
-  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( mLyr.layer() );
-
-  QgsVectorLayerSaveAsDialog *dialog = new QgsVectorLayerSaveAsDialog( QgisApp::instance() );
-
-  if ( dialog->exec() == QDialog::Accepted )
-  {
-    QString encoding = dialog->encoding();
-    QString vectorFilename = dialog->filename();
-    QString format = dialog->format();
-
-    if ( dialog->crs() < 0 )
-    {
-      // Find out if we have projections enabled or not
-      if ( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() )
-      {
-        destCRS = QgisApp::instance()->mapCanvas()->mapRenderer()->destinationSrs();
-      }
-      else
-      {
-        destCRS = vlayer->srs();
-      }
-    }
-    else
-    {
-      destCRS = QgsCoordinateReferenceSystem( dialog->crs(), QgsCoordinateReferenceSystem::InternalCrsId );
-    }
-
-    // overwrite the file - user will already have been prompted
-    // to verify they want to overwrite by the file dialog above
-    // might not even exists in the given case.
-    // add the extension if not present
-    if ( format == "ESRI Shapefile" )
-    {
-      if ( !vectorFilename.endsWith( ".shp", Qt::CaseInsensitive ) )
-      {
-        vectorFilename += ".shp";
-      }
-      QgsVectorFileWriter::deleteShapeFile( vectorFilename );
-    }
-
-    //GE does not open files without extensions. Therefore we append it automatically for kml files
-    if ( format == "KML" )
-    {
-      if ( !vectorFilename.endsWith( ".kml", Qt::CaseInsensitive ) )
-      {
-        vectorFilename += ".kml";
-      }
-    }
-
-    // ok if the file existed it should be deleted now so we can continue...
-    QApplication::setOverrideCursor( Qt::WaitCursor );
-
-    QgsVectorFileWriter::WriterError error;
-    QString errorMessage;
-    error = QgsVectorFileWriter::writeAsVectorFormat( vlayer, vectorFilename, encoding, &destCRS, format, saveOnlySelection, &errorMessage );
-
-    QApplication::restoreOverrideCursor();
-
-    if ( error == QgsVectorFileWriter::NoError )
-    {
-      QMessageBox::information( 0, tr( "Saving done" ), tr( "Export to vector file has been completed" ) );
-    }
-    else
-    {
-      QMessageBox::warning( 0, tr( "Save error" ), tr( "Export to vector file failed.\nError: %1" ).arg( errorMessage ) );
-    }
-  }
-
-  delete dialog;
-}
-
 QString QgsLegendLayer::nameFromLayer( QgsMapLayer* layer )
 {
   QString sourcename = layer->publicSource(); //todo: move this duplicated code into a new function
@@ -588,7 +489,6 @@ QString QgsLegendLayer::nameFromLayer( QgsMapLayer* layer )
   return sourcename;
 }
 
-
 QgsMapCanvasLayer& QgsLegendLayer::canvasLayer()
 {
   return mLyr;
@@ -599,4 +499,3 @@ void QgsLegendLayer::layerNameChanged()
   QString name = mLyr.layer()->name();
   setText( 0, name );
 }
-

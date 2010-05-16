@@ -26,6 +26,7 @@
 #include <QMessageBox>
 #include "qgslogger.h"
 #include "qgisapp.h"
+#include "qgslegend.h"
 
 #include <QStatusBar>
 
@@ -69,6 +70,9 @@ QgsMapToolNodeTool::QgsMapToolNodeTool( QgsMapCanvas* canvas ): QgsMapToolVertex
   connect( canvas->mapRenderer(), SIGNAL( destinationSrsChanged() ), this, SLOT( coordinatesChanged() ) );
   //signal changing of coordinate renderer changed to repaint markers
   connect( canvas->mapRenderer(), SIGNAL( hasCrsTransformEnabled( bool ) ), this, SLOT( coordinatesChanged( ) ) );
+  //signal changing of current layer
+  connect( QgisApp::instance()->legend(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ),
+           this, SLOT( currentLayerChanged( QgsMapLayer* ) ) );
 }
 
 QgsMapToolNodeTool::~QgsMapToolNodeTool()
