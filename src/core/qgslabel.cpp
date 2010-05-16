@@ -90,6 +90,9 @@ void QgsLabel::renderLabel( QgsRenderContext &renderContext,
                             QgsFeature &feature, bool selected,
                             QgsLabelAttributes *classAttributes )
 {
+  if ( mLabelAttributes->selectedOnly() && !selected )
+    return;
+
   QPen pen;
   QFont font;
   QString value;
@@ -413,7 +416,6 @@ void QgsLabel::renderLabel( QgsRenderContext &renderContext,
 
   x = x + xoffset * cos( rad ) - yoffset * sin( rad );
   y = y - xoffset * sin( rad ) - yoffset * cos( rad );
-
 
   painter->save();
   painter->setFont( font );
@@ -1017,6 +1019,18 @@ void QgsLabel::readXML( const QDomNode& node )
     readLabelField( el, MultilineEnabled );
   }
 
+  scratchNode = node.namedItem( "selectedonly" );
+
+  if ( scratchNode.isNull() )
+  {
+    QgsDebugMsg( "couldn't find QgsLabel ``selectedonly'' attribute" );
+  }
+  else
+  {
+    el = scratchNode.toElement();
+    mLabelAttributes->setSelectedOnly(( bool )el.attribute( "on", "0" ).toInt() );
+  }
+
 } // QgsLabel::readXML()
 
 
@@ -1356,6 +1370,17 @@ void QgsLabel::writeXML( QDomNode & layer_node, QDomDocument & document ) const
     multilineenabled.setAttribute( "fieldname", "" );
   }
   labelattributes.appendChild( multilineenabled );
+
+  QDomElement selectedonly = document.createElement( "selectedonly" );
+  if ( mLabelAttributes->selectedOnly() )
+  {
+    selectedonly.setAttribute( "on", mLabelAttributes->selectedOnly() );
+  }
+  else
+  {
+    selectedonly.setAttribute( "on", "" );
+  }
+  labelattributes.appendChild( selectedonly );
 
   layer_node.appendChild( labelattributes );
 }

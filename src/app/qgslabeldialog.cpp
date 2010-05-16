@@ -264,6 +264,8 @@ void QgsLabelDialog::init( )
   }
   //set the state of the multiline enabled checkbox
   chkUseMultiline->setChecked( myLabelAttributes->multilineEnabled() );
+  //set the state of the selected features only checkbox
+  chkSelectedOnly->setChecked( myLabelAttributes->selectedOnly() );
   //set the state of the buffer enabled checkbox
   chkUseBuffer->setChecked( myLabelAttributes->bufferEnabled() );
 
@@ -373,6 +375,7 @@ void QgsLabelDialog::apply()
   if ( radioOver->isChecked() )        myLabelAttributes->setAlignment( Qt::AlignCenter );
 
   myLabelAttributes->setMultilineEnabled( chkUseMultiline->isChecked() );
+  myLabelAttributes->setSelectedOnly( chkSelectedOnly->isChecked() );
   myLabelAttributes->setBufferEnabled( chkUseBuffer->isChecked() );
   myLabelAttributes->setBufferColor( mBufferColor );
   myTypeInt = cboBufferSizeUnits->currentIndex() == 0 ? QgsLabelAttributes::PointUnits : QgsLabelAttributes::MapUnits;

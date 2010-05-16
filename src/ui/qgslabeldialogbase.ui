@@ -44,7 +44,7 @@
             <x>0</x>
             <y>0</y>
             <width>525</width>
-            <height>512</height>
+            <height>510</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_2">
@@ -420,16 +420,6 @@
                 </item>
                </widget>
               </item>
-              <item row="6" column="2">
-               <widget class="QCheckBox" name="chkUseMultiline">
-                <property name="text">
-                 <string>Multiline labels?</string>
-                </property>
-                <property name="checked">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
               <item row="3" column="3">
                <widget class="QPushButton" name="btnDefaultFont">
                 <property name="sizePolicy">
@@ -453,6 +443,23 @@
                 </property>
                 <property name="text">
                  <string>Color</string>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="0" colspan="2">
+               <widget class="QCheckBox" name="chkUseMultiline">
+                <property name="text">
+                 <string>Multiline labels?</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="7" column="2" colspan="2">
+               <widget class="QCheckBox" name="chkSelectedOnly">
+                <property name="text">
+                 <string>Label only selected features</string>
                 </property>
                </widget>
               </item>
@@ -484,7 +491,7 @@
             <x>0</x>
             <y>0</y>
             <width>525</width>
-            <height>623</height>
+            <height>592</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_7">
@@ -886,7 +893,6 @@
   <tabstop>cboFontSizeUnits</tabstop>
   <tabstop>btnDefaultFont</tabstop>
   <tabstop>spinAngle</tabstop>
-  <tabstop>chkUseMultiline</tabstop>
   <tabstop>pbnDefaultFontColor</tabstop>
   <tabstop>radioOver</tabstop>
   <tabstop>radioAboveLeft</tabstop>
