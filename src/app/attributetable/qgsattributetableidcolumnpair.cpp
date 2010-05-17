@@ -36,6 +36,6 @@ bool QgsAttributeTableIdColumnPair::operator<( const QgsAttributeTableIdColumnPa
       return mItem.toDouble() < b.mItem.toDouble();
 
     default:
-      return mItem.toString() < b.mItem.toString();
+      return mItem.toString().localeAwareCompare( b.mItem.toString() ) < 0;
   }
 }
