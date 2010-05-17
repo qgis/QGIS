@@ -1057,6 +1057,11 @@ void QgsMapCanvas::zoomOut()
   zoomByFactor( mWheelZoomFactor );
 }
 
+void QgsMapCanvas::zoomScale( double newScale )
+{
+  zoomByFactor( newScale / scale() );
+}
+
 void QgsMapCanvas::zoomWithCenter( int x, int y, bool zoomIn )
 {
   if ( mDrawing )

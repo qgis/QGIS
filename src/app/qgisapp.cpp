@@ -1220,6 +1220,12 @@ void QgisApp::showPythonDialog()
     mPythonUtils->getError( className, text );
     QMessageBox::critical( this, tr( "Error" ), tr( "Failed to open Python console:" ) + "\n" + className + ": " + text );
   }
+#ifdef Q_WS_MAC
+  else
+  {
+    addWindow( mActionShowPythonDialog );
+  }
+#endif
 }
 
 void QgisApp::createActionGroups()
@@ -4779,8 +4785,6 @@ void QgisApp::showScale( double theScale )
 
 void QgisApp::userScale()
 {
-  double currentScale = mMapCanvas->scale();
-
   QStringList parts = mScaleEdit->text().split( ':' );
   if ( parts.size() == 2 )
   {
@@ -4789,8 +4793,7 @@ void QgisApp::userScale()
     double rightSide = parts.at( 1 ).toDouble( &rightOk );
     if ( leftSide > 0.0 && leftOk && rightOk )
     {
-      double wantedScale = rightSide / leftSide;
-      mMapCanvas->zoomByFactor( wantedScale / currentScale );
+      mMapCanvas->zoomScale( rightSide / leftSide );
     }
   }
 }
@@ -4998,7 +5001,6 @@ void QgisApp::loadPythonSupport()
     mActionPluginSeparator2 = mPluginMenu->addSeparator();
     mPluginMenu->addAction( mActionShowPythonDialog );
     std::cout << "Python support ENABLED :-) " << std::endl; // OK
-
   }
 }
 
@@ -5255,7 +5257,7 @@ QgsVectorLayer* QgisApp::addVectorLayer( QString vectorLayerPath, QString baseNa
   else
   {
     QMessageBox::critical( this, tr( "Layer is not valid" ),
-                           tr( "The layer is not a valid layer and can not be added to the map" ) );
+                           tr( "The layer %1 is not a valid layer and can not be added to the map" ).arg( vectorLayerPath ) );
 
     delete layer;
     mMapCanvas->freeze( false );

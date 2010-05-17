@@ -170,6 +170,10 @@ class QgsMapCanvas : QGraphicsView
 
     //! Zoom out with fixed factor
     void zoomOut( );
+
+    //! Zoom to a specific scale
+    // added in 1.5
+    void zoomScale( double scale );
     
     //! Zoom with the factor supplied. Factor > 1 zooms in
     void zoomByFactor( double scaleFactor );
