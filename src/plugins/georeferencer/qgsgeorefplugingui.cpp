@@ -1245,32 +1245,37 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
     parameterLabel->setSceneRect( QRectF( 2, composerMap->rect().bottom() + composerMap->transform().dy() + 5, composition->paperWidth(), 8 ) );
     parameterLabel->setFrame( false );
 
+    int nPointsEnabled = 0;
+    QgsGCPList::const_iterator gcpIt = mPoints.constBegin();
+    for ( ; gcpIt != mPoints.constEnd(); ++gcpIt )
+    {
+      if (( *gcpIt )->isEnabled() )
+      {
+        ++nPointsEnabled;
+      }
+    }
+
     //calculate mean error (in map units)
     double meanError = 0;
-    if ( mPoints.size() > 4 )
+    if ( nPointsEnabled > 2 )
     {
       double sumVxSquare = 0;
       double sumVySquare = 0;
       double resXMap, resYMap;
 
-      int nPointsEnabled = 0;
       QgsGCPList::const_iterator gcpIt = mPoints.constBegin();
       for ( ; gcpIt != mPoints.constEnd(); ++gcpIt )
       {
         if (( *gcpIt )->isEnabled() )
         {
           resXMap = ( *gcpIt )->residual().x() * wldScaleX;
-          resYMap = ( *gcpIt )->residual().x() * wldScaleY;
+          resYMap = ( *gcpIt )->residual().y() * wldScaleY;
           sumVxSquare += ( resXMap * resXMap );
           sumVySquare += ( resYMap * resYMap );
-          ++nPointsEnabled;
         }
       }
 
-      if ( nPointsEnabled > 4 )
-      {
-        meanError = sqrt(( sumVxSquare + sumVySquare ) / ( 2 * nPointsEnabled - 4 ) ) * sqrt( 2.0 );
-      }
+      meanError = sqrt(( sumVxSquare + sumVySquare ) / ( 2 * nPointsEnabled - 4 ) ) * sqrt( 2.0 );
     }
 
 
