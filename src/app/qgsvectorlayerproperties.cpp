@@ -145,7 +145,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     mOverlayDialogs.push_back( d );
     //shamelessly hard coded - what will we do if other types of layer plugins exist? TS
     QListWidgetItem * mypItem = new QListWidgetItem( QgisApp::getThemeIcon( "propertyicons/diagram.png" ), ( *it )->name() );
-    listWidget->insertItem( stackedWidget->count(), mypItem );
+    listWidget->insertItem( stackedWidget->count()-1, mypItem );
   }
 
   stackedWidget->setCurrentIndex( 0 );

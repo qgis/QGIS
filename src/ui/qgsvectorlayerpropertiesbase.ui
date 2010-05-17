@@ -50,9 +50,6 @@
      <property name="showDropIndicator" stdset="0">
       <bool>false</bool>
      </property>
-     <property name="alternatingRowColors">
-      <bool>false</bool>
-     </property>
      <property name="iconSize">
       <size>
        <width>64</width>
@@ -77,15 +74,15 @@
      <property name="viewMode">
       <enum>QListView::IconMode</enum>
      </property>
-     <property name="uniformItemSizes">
-      <bool>false</bool>
-     </property>
      <property name="wordWrap">
       <bool>true</bool>
      </property>
      <item>
       <property name="text">
        <string>Symbology</string>
+      </property>
+      <property name="textAlignment">
+       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
       </property>
       <property name="icon">
        <iconset resource="../../images/images.qrc">
@@ -96,6 +93,9 @@
       <property name="text">
        <string>Labels</string>
       </property>
+      <property name="textAlignment">
+       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+      </property>
       <property name="icon">
        <iconset resource="../../images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/labels.png</normaloff>:/images/themes/default/propertyicons/labels.png</iconset>
@@ -104,6 +104,9 @@
      <item>
       <property name="text">
        <string>Attributes</string>
+      </property>
+      <property name="textAlignment">
+       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
       </property>
       <property name="icon">
        <iconset resource="../../images/images.qrc">
@@ -114,6 +117,9 @@
       <property name="text">
        <string>General</string>
       </property>
+      <property name="textAlignment">
+       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+      </property>
       <property name="icon">
        <iconset resource="../../images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/general.png</normaloff>:/images/themes/default/propertyicons/general.png</iconset>
@@ -122,6 +128,9 @@
      <item>
       <property name="text">
        <string>Metadata</string>
+      </property>
+      <property name="textAlignment">
+       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
       </property>
       <property name="icon">
        <iconset resource="../../images/images.qrc">
@@ -132,9 +141,20 @@
       <property name="text">
        <string>Actions</string>
       </property>
+      <property name="textAlignment">
+       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+      </property>
       <property name="icon">
        <iconset resource="../../images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/action.png</normaloff>:/images/themes/default/propertyicons/action.png</iconset>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string notr="true"/>
+      </property>
+      <property name="flags">
+       <set>NoItemFlags</set>
       </property>
      </item>
     </widget>
@@ -424,7 +444,7 @@
             <x>0</x>
             <y>0</y>
             <width>514</width>
-            <height>428</height>
+            <height>378</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">

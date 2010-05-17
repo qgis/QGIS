@@ -54,9 +54,6 @@
      <property name="showDropIndicator" stdset="0">
       <bool>false</bool>
      </property>
-     <property name="alternatingRowColors">
-      <bool>false</bool>
-     </property>
      <property name="iconSize">
       <size>
        <width>64</width>
@@ -81,9 +78,6 @@
      <property name="viewMode">
       <enum>QListView::IconMode</enum>
      </property>
-     <property name="uniformItemSizes">
-      <bool>false</bool>
-     </property>
      <property name="wordWrap">
       <bool>true</bool>
      </property>
@@ -91,63 +85,113 @@
       <property name="text">
        <string>Symbology</string>
       </property>
+      <property name="textAlignment">
+       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+      </property>
       <property name="icon">
        <iconset resource="../../images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/symbology.png</normaloff>:/images/themes/default/propertyicons/symbology.png</iconset>
+      </property>
+      <property name="flags">
+       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
       </property>
      </item>
      <item>
       <property name="text">
        <string>Transparency</string>
       </property>
+      <property name="textAlignment">
+       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+      </property>
       <property name="icon">
        <iconset resource="../../images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/transparency.png</normaloff>:/images/themes/default/propertyicons/transparency.png</iconset>
+      </property>
+      <property name="flags">
+       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
       </property>
      </item>
      <item>
       <property name="text">
        <string>Colormap</string>
       </property>
+      <property name="textAlignment">
+       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+      </property>
       <property name="icon">
        <iconset resource="../../images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/colormap.png</normaloff>:/images/themes/default/propertyicons/colormap.png</iconset>
+      </property>
+      <property name="flags">
+       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
       </property>
      </item>
      <item>
       <property name="text">
        <string>General</string>
       </property>
+      <property name="textAlignment">
+       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+      </property>
       <property name="icon">
        <iconset resource="../../images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/general.png</normaloff>:/images/themes/default/propertyicons/general.png</iconset>
+      </property>
+      <property name="flags">
+       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
       </property>
      </item>
      <item>
       <property name="text">
        <string>Metadata</string>
       </property>
+      <property name="textAlignment">
+       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+      </property>
       <property name="icon">
        <iconset resource="../../images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/metadata.png</normaloff>:/images/themes/default/propertyicons/metadata.png</iconset>
+      </property>
+      <property name="flags">
+       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
       </property>
      </item>
      <item>
       <property name="text">
        <string>Pyramids</string>
       </property>
+      <property name="textAlignment">
+       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+      </property>
       <property name="icon">
        <iconset resource="../../images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/pyramids.png</normaloff>:/images/themes/default/propertyicons/pyramids.png</iconset>
+      </property>
+      <property name="flags">
+       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
       </property>
      </item>
      <item>
       <property name="text">
        <string>Histogram</string>
       </property>
+      <property name="textAlignment">
+       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+      </property>
       <property name="icon">
        <iconset resource="../../images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/histogram.png</normaloff>:/images/themes/default/propertyicons/histogram.png</iconset>
+      </property>
+      <property name="flags">
+       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string notr="true"/>
+      </property>
+      <property name="flags">
+       <set>NoItemFlags</set>
       </property>
      </item>
     </widget>
