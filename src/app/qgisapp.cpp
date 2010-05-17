@@ -1055,7 +1055,7 @@ void QgisApp::createActions()
   connect( mActionLayerProperties, SIGNAL( triggered() ), this, SLOT( layerProperties() ) );
   mActionLayerProperties->setEnabled( false );
 
-  mActionLayerSubsetString = new QAction( tr( "Subset..." ), this );
+  mActionLayerSubsetString = new QAction( tr( "Query..." ), this );
   shortcuts->registerAction( mActionLayerSubsetString );
   mActionLayerProperties->setStatusTip( tr( "Set subset query of the current layer" ) );
   connect( mActionLayerSubsetString, SIGNAL( triggered() ), this, SLOT( layerSubsetString() ) );
@@ -5821,6 +5821,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionLayerSaveAs->setEnabled( true );
     mActionLayerSelectionSaveAs->setEnabled( true );
     mActionCopyFeatures->setEnabled( layerHasSelection );
+    mActionLayerSubsetString->setEnabled( true );
 
     if ( !vlayer->isEditable() && mMapCanvas->mapTool() && mMapCanvas->mapTool()->isEditTool() )
     {

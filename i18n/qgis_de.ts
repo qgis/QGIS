@@ -5445,7 +5445,7 @@ Bitte nehmen Sie Kontakt zu den Entwicklern auf.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1058"/>
-        <source>Subset...</source>
+        <source>Query...</source>
         <translation>Abfrage...</translation>
     </message>
     <message>
@@ -15296,8 +15296,8 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="433"/>
-        <source>&amp;Subset</source>
-        <translation>&amp;Untermenge</translation>
+        <source>&amp;Query...</source>
+        <translation>&amp;Abfrage...</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="440"/>

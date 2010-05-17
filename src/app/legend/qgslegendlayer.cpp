@@ -430,7 +430,7 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
       saveSelectionAsAction->setEnabled( false );
     }
 
-    theMenu.addAction( tr( "&Subset" ), QgisApp::instance(), SLOT( layerSubsetString() ) );
+    theMenu.addAction( tr( "&Query..." ), QgisApp::instance(), SLOT( layerSubsetString() ) );
 
     theMenu.addSeparator();
   }
