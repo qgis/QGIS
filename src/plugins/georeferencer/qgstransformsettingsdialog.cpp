@@ -216,6 +216,10 @@ void QgsTransformSettingsDialog::on_tbnReportFile_clicked()
   QString outputFileName = QFileDialog::getSaveFileName( 0, tr( "Select save PDF file" ), myLastUsedDir, tr( "PDF Format" ) + " (*.pdf *PDF)" );
   if ( !outputFileName.isNull() )
   {
+    if ( !outputFileName.endsWith( ".pdf", Qt::CaseInsensitive ) )
+    {
+      outputFileName.append( ".pdf" );
+    }
     mReportFileLineEdit->setText( outputFileName );
   }
 }
