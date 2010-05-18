@@ -139,7 +139,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
 
   deduceEndian();
   calculateExtents();
-  getFeatureCount();
+  featuresCounted = -1;
 
   // set the primary key
   getPrimaryKey();
@@ -733,14 +733,6 @@ QgsRectangle QgsPostgresProvider::extent()
 QGis::WkbType QgsPostgresProvider::geometryType() const
 {
   return geomType;
-}
-
-/**
- * Return the feature type
- */
-long QgsPostgresProvider::featureCount() const
-{
-  return featuresCounted;
 }
 
 const QgsField &QgsPostgresProvider::field( int index ) const
@@ -2753,14 +2745,20 @@ bool QgsPostgresProvider::setSubsetString( QString theSQL )
   setDataSourceUri( mUri.uri() );
 
   // need to recalculate the number of features...
-  getFeatureCount();
+  featuresCounted = -1;
   calculateExtents();
 
   return true;
 }
 
-long QgsPostgresProvider::getFeatureCount()
+/**
+ * Return the feature count
+ */
+long QgsPostgresProvider::featureCount() const
 {
+  if( featuresCounted >= 0 )
+    return featuresCounted;
+
   // get total number of features
 
   // First get an approximate count; then delegate to
@@ -2783,12 +2781,12 @@ long QgsPostgresProvider::getFeatureCount()
 
   Result result = connectionRO->PQexec( sql );
 
-  QgsDebugMsg( "Approximate Number of features as text: " +
+  QgsDebugMsg( "number of features as text: " +
                QString::fromUtf8( PQgetvalue( result, 0, 0 ) ) );
 
   featuresCounted = QString::fromUtf8( PQgetvalue( result, 0, 0 ) ).toLong();
 
-  QgsDebugMsg( "Approximate Number of features: " + QString::number( featuresCounted ) );
+  QgsDebugMsg( "number of features: " + QString::number( featuresCounted ) );
 
   return featuresCounted;
 }
