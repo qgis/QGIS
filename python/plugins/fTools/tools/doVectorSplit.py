@@ -84,10 +84,10 @@ class Dialog(QDialog, Ui_Dialog):
 
     def outFile(self):
         self.outShape.clear()
-        ( self.shapefileName, self.encoding ) = ftools_utils.saveDialog( self )
-        if self.shapefileName is None or self.encoding is None:
+        ( self.folderName, self.encoding ) = ftools_utils.dirDialog( self )
+        if self.folderName is None or self.encoding is None:
             return
-        self.outShape.setText( QString( self.shapefileName ) )
+        self.outShape.setText( QString( self.folderName ) )
 
     def split(self, vlayer, outPath, inField, progressBar):
         provider = vlayer.dataProvider()

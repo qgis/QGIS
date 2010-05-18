@@ -261,12 +261,11 @@ def getUniqueValues( provider, index ):
     return values
 
 # Generate a save file dialog with a dropdown box for choosing encoding style
-def saveDialog( parent ):
+def saveDialog( parent, filtering="Shapefiles (*.shp)"):
     settings = QSettings()
     dirName = settings.value( "/UI/lastShapefileDir" ).toString()
-    filtering = QString( "Shapefiles (*.shp)" )
     encode = settings.value( "/UI/encoding" ).toString()
-    fileDialog = QgsEncodingFileDialog( parent, "Save output shapefile", dirName, filtering, encode )
+    fileDialog = QgsEncodingFileDialog( parent, "Save output shapefile", dirName, QString(filtering), encode )
     fileDialog.setDefaultSuffix( QString( "shp" ) )
     fileDialog.setFileMode( QFileDialog.AnyFile )
     fileDialog.setAcceptMode( QFileDialog.AcceptSave )
@@ -276,6 +275,35 @@ def saveDialog( parent ):
     files = fileDialog.selectedFiles()
     settings.setValue("/UI/lastShapefileDir", QVariant( QFileInfo( unicode( files.first() ) ).absolutePath() ) )
     return ( unicode( files.first() ), unicode( fileDialog.encoding() ) )
+
+# Generate a save file dialog with a dropdown box for choosing encoding style
+def openDialog( parent, filtering="Shapefiles (*.shp)"):
+    settings = QSettings()
+    dirName = settings.value( "/UI/lastShapefileDir" ).toString()
+    encode = settings.value( "/UI/encoding" ).toString()
+    fileDialog = QgsEncodingFileDialog( parent, "Save output shapefile", dirName, QString(filtering), encode )
+    fileDialog.setFileMode( QFileDialog.AnyFile )
+    fileDialog.setAcceptMode( QFileDialog.AcceptOpen )
+    if not fileDialog.exec_() == QDialog.Accepted:
+            return None, None
+    files = fileDialog.selectedFiles()
+    settings.setValue("/UI/lastShapefileDir", QVariant( QFileInfo( unicode( files.first() ) ).absolutePath() ) )
+    return ( unicode( files.first() ), unicode( fileDialog.encoding() ) )
+
+# Generate a select directory dialog with a dropdown box for choosing encoding style
+def dirDialog( parent ):
+    settings = QSettings()
+    dirName = settings.value( "/UI/lastShapefileDir" ).toString()
+    encode = settings.value( "/UI/encoding" ).toString()
+    fileDialog = QgsEncodingFileDialog( parent, "Save output shapefile", dirName, encode )
+    fileDialog.setFileMode( QFileDialog.DirectoryOnly )
+    fileDialog.setAcceptMode( QFileDialog.AcceptSave )
+    fileDialog.setConfirmOverwrite( False )
+    if not fileDialog.exec_() == QDialog.Accepted:
+            return None, None
+    folders = fileDialog.selectedFiles()
+    settings.setValue("/UI/lastShapefileDir", QVariant( QFileInfo( unicode( folders.first() ) ) ) )
+    return ( unicode( folders.first() ), unicode( fileDialog.encoding() ) )
 
 # Return field type from it's name
 def getFieldType(vlayer, fieldName):
