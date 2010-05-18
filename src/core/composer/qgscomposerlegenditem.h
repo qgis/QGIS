@@ -37,7 +37,8 @@ class CORE_EXPORT QgsComposerLegendItem: public QStandardItem
       GroupItem = QStandardItem::UserType,
       LayerItem,
       SymbologyItem,
-      SymbologyV2Item
+      SymbologyV2Item,
+      RasterSymbolItem
     };
 
     virtual void writeXML( QDomElement& elem, QDomDocument& doc ) const = 0;
@@ -102,6 +103,27 @@ class CORE_EXPORT QgsComposerSymbolV2Item: public QgsComposerLegendItem
 
   private:
     QgsSymbolV2* mSymbolV2;
+};
+
+class CORE_EXPORT QgsComposerRasterSymbolItem: public QgsComposerLegendItem
+{
+  public:
+    QgsComposerRasterSymbolItem();
+    QgsComposerRasterSymbolItem( const QString& text );
+    QgsComposerRasterSymbolItem( const QIcon& icon, const QString& text );
+    virtual ~QgsComposerRasterSymbolItem();
+
+    virtual QStandardItem* clone() const;
+
+    virtual void writeXML( QDomElement& elem, QDomDocument& doc ) const;
+    virtual void readXML( const QDomElement& itemElem );
+
+    void setLayerID( const QString& id ) { mLayerID = id; }
+    QString layerID() const { return mLayerID; }
+    ItemType itemType() const { return RasterSymbolItem; }
+
+  private:
+    QString mLayerID;
 };
 
 class CORE_EXPORT QgsComposerLayerItem: public QgsComposerLegendItem

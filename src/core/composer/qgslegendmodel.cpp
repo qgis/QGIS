@@ -260,9 +260,9 @@ int QgsLegendModel::addRasterLayerItem( QStandardItem* layerItem, QgsMapLayer* r
     return 2;
   }
 
-  QStandardItem* currentSymbolItem = new QStandardItem( QIcon( rasterLayer->legendAsPixmap( true ) ), "" );
-  currentSymbolItem->setData( QgsLegendModel::ClassificationItem, Qt::UserRole + 1 ); //first user data stores the item type
-
+  //use a vector symbol item without symbol
+  QgsComposerRasterSymbolItem* currentSymbolItem = new QgsComposerRasterSymbolItem( QIcon( rasterLayer->legendAsPixmap( true ) ), "" );
+  currentSymbolItem->setLayerID( rasterLayer->getLayerID() );
   int currentRowCount = layerItem->rowCount();
   layerItem->setChild( currentRowCount, 0, currentSymbolItem );
 
@@ -478,6 +478,7 @@ void QgsLegendModel::updateRasterClassificationItem( QStandardItem* classificati
   }
 
   QStandardItem* currentSymbolItem = new QStandardItem( QIcon( rl->legendAsPixmap( true ) ), "" );
+
   currentSymbolItem->setData( QgsLegendModel::ClassificationItem, Qt::UserRole + 1 ); //first user data stores the item type
   parentItem->insertRow( 0, currentSymbolItem );
   parentItem->removeRow( 1 );

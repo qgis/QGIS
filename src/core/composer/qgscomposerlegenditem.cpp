@@ -17,6 +17,7 @@
 
 #include "qgscomposerlegenditem.h"
 #include "qgsmaplayerregistry.h"
+#include "qgsrasterlayer.h"
 #include "qgssymbol.h"
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2utils.h"
@@ -220,6 +221,56 @@ void QgsComposerSymbolV2Item::setSymbolV2( QgsSymbolV2* s )
   mSymbolV2 = s;
 }
 
+////////////////////QgsComposerRasterSymbolItem
+
+QgsComposerRasterSymbolItem::QgsComposerRasterSymbolItem(): QgsComposerLegendItem()
+{
+}
+
+QgsComposerRasterSymbolItem::QgsComposerRasterSymbolItem( const QString& text ): QgsComposerLegendItem( text )
+{
+}
+
+QgsComposerRasterSymbolItem::QgsComposerRasterSymbolItem( const QIcon& icon, const QString& text ): QgsComposerLegendItem( icon, text )
+{
+}
+
+QgsComposerRasterSymbolItem::~QgsComposerRasterSymbolItem()
+{
+}
+
+QStandardItem* QgsComposerRasterSymbolItem::clone() const
+{
+  QgsComposerRasterSymbolItem* cloneItem  = new QgsComposerRasterSymbolItem();
+  *cloneItem = *this;
+  cloneItem->setLayerID( mLayerID );
+  return cloneItem;
+}
+
+void QgsComposerRasterSymbolItem::writeXML( QDomElement& elem, QDomDocument& doc ) const
+{
+  QDomElement rasterClassElem = doc.createElement( "RasterClassificationItem" );
+  rasterClassElem.setAttribute( "layerId", mLayerID );
+  rasterClassElem.setAttribute( "text", text() );
+  elem.appendChild( rasterClassElem );
+}
+
+void QgsComposerRasterSymbolItem::readXML( const QDomElement& itemElem )
+{
+  if ( itemElem.isNull() )
+  {
+    return;
+  }
+  setText( itemElem.attribute( "text", "" ) );
+  setLayerID( itemElem.attribute( "layerId", "" ) );
+
+  QgsRasterLayer* rLayer = qobject_cast<QgsRasterLayer*>( QgsMapLayerRegistry::instance()->mapLayer( mLayerID ) );
+  if ( rLayer )
+  {
+    setIcon( QIcon( rLayer->legendAsPixmap( true ) ) );
+  }
+}
+
 ////////////////////QgsComposerLayerItem
 
 QgsComposerLayerItem::QgsComposerLayerItem(): QgsComposerLegendItem()
@@ -284,6 +335,10 @@ void QgsComposerLayerItem::readXML( const QDomElement& itemElem )
     else if ( elemTag == "VectorClassificationItemNg" )
     {
       currentChildItem = new QgsComposerSymbolV2Item();
+    }
+    else if ( elemTag == "RasterClassificationItem" )
+    {
+      currentChildItem = new QgsComposerRasterSymbolItem();
     }
     else
     {
