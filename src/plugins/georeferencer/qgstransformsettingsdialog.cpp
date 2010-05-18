@@ -58,6 +58,7 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
   if ( !ok ) dsbHorizRes->setValue( 1.0 );
   dsbVerticalRes->setValue( s.value( "/Plugin-GeoReferencer/user_specified_resy", -1.0 ).toDouble( &ok ) );
   if ( !ok ) dsbHorizRes->setValue( -1.0 );
+
   // Activate spin boxes for vertical/horizontal resolution, if the option is checked
   dsbHorizRes->setEnabled( cbxUserResolution->isChecked() );
   dsbVerticalRes->setEnabled( cbxUserResolution->isChecked() );
@@ -112,6 +113,7 @@ void QgsTransformSettingsDialog::resetSettings()
   s.setValue( "/Plugin-GeoReferencer/user_specified_resolution", false );
   s.setValue( "/Plugin-GeoReferencer/user_specified_resx",  1.0 );
   s.setValue( "/Plugin-GeoReferencer/user_specified_resy", -1.0 );
+  s.setValue( "/Plugin-GeoReferencer/lastPDFReportDir", "" );
 }
 
 void QgsTransformSettingsDialog::changeEvent( QEvent *e )
