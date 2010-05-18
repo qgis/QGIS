@@ -2541,32 +2541,30 @@ void QgisApp::addVectorLayer()
 bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QString& enc, const QString dataSourceType )
 {
 
-  for ( QStringList::ConstIterator it = theLayerQStringList.begin();
-        it != theLayerQStringList.end();
-        ++it )
+  foreach( QString src, theLayerQStringList )
   {
+    src = src.trimmed();
     QString base;
     if ( dataSourceType == "file" )
     {
-      QFileInfo fi( *it );
+      QFileInfo fi( src );
       base = fi.completeBaseName();
     }
     else if ( dataSourceType == "database" )
     {
-      base = *it;
+      base = src;
     }
     else //directory //protocol
     {
-      QFileInfo fi( *it );
+      QFileInfo fi( src );
       base = fi.completeBaseName();
     }
-
 
     QgsDebugMsg( "completeBaseName: " + base );
 
     // create the layer
 
-    QgsVectorLayer *layer = new QgsVectorLayer( *it, base, "ogr" );
+    QgsVectorLayer *layer = new QgsVectorLayer( src, base, "ogr" );
     Q_CHECK_PTR( layer );
 
     if ( ! layer )
@@ -2610,7 +2608,7 @@ bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QS
     }
     else
     {
-      QString msg = tr( "%1 is not a valid or recognized data source" ).arg( *it );
+      QString msg = tr( "%1 is not a valid or recognized data source" ).arg( src );
       QMessageBox::critical( this, tr( "Invalid Data Source" ), msg );
 
       // since the layer is bad, stomp on it
