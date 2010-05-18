@@ -207,10 +207,9 @@ void QgsComposerLegend::drawLayerItem( QPainter* p, QgsComposerLayerItem* layerI
     }
 
     maxXCoord = std::max( maxXCoord, 2 * mBoxSpace + textWidthMillimeters( mLayerFont, layerItem->text() ) );
-
-    //and child items
-    drawLayerChildItems( p, layerItem, currentYCoord, maxXCoord, opacity );
   }
+  //and child items
+  drawLayerChildItems( p, layerItem, currentYCoord, maxXCoord, opacity );
 }
 
 void QgsComposerLegend::adjustBoxSize()
