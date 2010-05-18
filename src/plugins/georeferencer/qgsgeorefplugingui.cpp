@@ -1237,9 +1237,18 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
 
   if ( wldTransform )
   {
+    QString parameterTitle = tr( "Transformation parameters" );
+    if ( transform.transformParametrisation() == QgsGeorefTransform::Helmert )
+    {
+      parameterTitle += " (Helmert)";
+    }
+    else if ( transform.transformParametrisation() == QgsGeorefTransform::Linear )
+    {
+      parameterTitle += " (Linear)";
+    }
     parameterLabel = new QgsComposerLabel( composition );
     parameterLabel->setFont( titleFont );
-    parameterLabel->setText( tr( "Transformation parameters" ) );
+    parameterLabel->setText( parameterTitle );
     parameterLabel->adjustSizeToText();
     composition->addItem( parameterLabel );
     parameterLabel->setSceneRect( QRectF( 2, composerMap->rect().bottom() + composerMap->transform().dy() + 5, composition->paperWidth(), 8 ) );
@@ -1366,8 +1375,8 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
     {
       currentGCPStrings << tr( "no" );
     }
-    currentGCPStrings << QString::number(( *gcpIt )->pixelCoords().x() ) << QString::number(( *gcpIt )->pixelCoords().y() ) << QString::number(( *gcpIt )->mapCoords().x() )\
-    <<  QString::number(( *gcpIt )->mapCoords().y() ) <<  QString::number( residualX ) <<  QString::number( residualY ) << QString::number( residualTot );
+    currentGCPStrings << QString::number(( *gcpIt )->pixelCoords().x(), 'f', 2 ) << QString::number(( *gcpIt )->pixelCoords().y(), 'f', 2 ) << QString::number(( *gcpIt )->mapCoords().x(), 'f', 2 )\
+    <<  QString::number(( *gcpIt )->mapCoords().y(), 'f', 2 ) <<  QString::number( residualX ) <<  QString::number( residualY ) << QString::number( residualTot );
     gcpTable->addRow( currentGCPStrings );
   }
 
