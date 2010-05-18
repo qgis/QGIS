@@ -446,7 +446,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     /**
      * Number of features in the layer
      */
-    long featuresCounted;
+    mutable long featuresCounted;
 
     /**
      * Feature queue that GetNextFeature will retrieve from
@@ -575,9 +575,6 @@ class QgsPostgresProvider : public QgsVectorDataProvider
                            const QString& attname_view, const QString& viewDefinition, SRC& result ) const;
 
     int enabledCapabilities;
-
-    //! Get the feature count based on the where clause
-    long getFeatureCount();
 
     //! Calculate the extents of the layer
     void calculateExtents();
