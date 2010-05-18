@@ -88,6 +88,9 @@
        <iconset resource="../../images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/symbology.png</normaloff>:/images/themes/default/propertyicons/symbology.png</iconset>
       </property>
+      <property name="flags">
+       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
+      </property>
      </item>
      <item>
       <property name="text">
@@ -99,6 +102,9 @@
       <property name="icon">
        <iconset resource="../../images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/labels.png</normaloff>:/images/themes/default/propertyicons/labels.png</iconset>
+      </property>
+      <property name="flags">
+       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
       </property>
      </item>
      <item>
@@ -112,6 +118,9 @@
        <iconset resource="../../images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/attributes.png</normaloff>:/images/themes/default/propertyicons/attributes.png</iconset>
       </property>
+      <property name="flags">
+       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
+      </property>
      </item>
      <item>
       <property name="text">
@@ -123,6 +132,9 @@
       <property name="icon">
        <iconset resource="../../images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/general.png</normaloff>:/images/themes/default/propertyicons/general.png</iconset>
+      </property>
+      <property name="flags">
+       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
       </property>
      </item>
      <item>
@@ -136,6 +148,9 @@
        <iconset resource="../../images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/metadata.png</normaloff>:/images/themes/default/propertyicons/metadata.png</iconset>
       </property>
+      <property name="flags">
+       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
+      </property>
      </item>
      <item>
       <property name="text">
@@ -147,6 +162,9 @@
       <property name="icon">
        <iconset resource="../../images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/action.png</normaloff>:/images/themes/default/propertyicons/action.png</iconset>
+      </property>
+      <property name="flags">
+       <set>ItemIsSelectable|ItemIsUserCheckable|ItemIsEnabled</set>
       </property>
      </item>
      <item>
@@ -421,20 +439,17 @@
      </widget>
      <widget class="QWidget" name="page_6">
       <layout class="QGridLayout" name="gridLayout_7">
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>9</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
+       <property name="margin">
         <number>0</number>
        </property>
        <item row="0" column="0">
         <widget class="QScrollArea" name="scrollArea_2">
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Plain</enum>
+         </property>
          <property name="widgetResizable">
           <bool>true</bool>
          </property>
