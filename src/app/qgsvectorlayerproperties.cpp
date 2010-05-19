@@ -65,9 +65,10 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   QWidget * parent,
   Qt::WFlags fl
 )
-    : QDialog( parent, fl ),
-    layer( lyr ),
-    mRendererDialog( 0 )
+    : QDialog( parent, fl )
+    , layer( lyr )
+    , mMetadataFilled( false )
+    , mRendererDialog( 0 )
 {
   setupUi( this );
   setupEditTypes();
@@ -110,7 +111,6 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   actionDialog = new QgsAttributeActionDialog( layer->actions(), fields, actionOptionsFrame );
   actionLayout->addWidget( actionDialog );
 
-
   reset();
 
   if ( layer->dataProvider() )//enable spatial index button group if supported by provider
@@ -145,7 +145,7 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     mOverlayDialogs.push_back( d );
     //shamelessly hard coded - what will we do if other types of layer plugins exist? TS
     QListWidgetItem * mypItem = new QListWidgetItem( QgisApp::getThemeIcon( "propertyicons/diagram.png" ), ( *it )->name() );
-    listWidget->insertItem( stackedWidget->count()-1, mypItem );
+    listWidget->insertItem( stackedWidget->count() - 1, mypItem );
   }
 
   stackedWidget->setCurrentIndex( 0 );
@@ -498,11 +498,6 @@ void QgsVectorLayerProperties::reset( void )
   // reset fields in label dialog
   layer->label()->setFields( layer->pendingFields() );
 
-  //set the metadata contents
-  QString myStyle = QgsApplication::reportStyleSheet();
-  teMetadata->clear();
-  teMetadata->document()->setDefaultStyleSheet( myStyle );
-  teMetadata->setHtml( metadata() );
   actionDialog->init();
   labelDialog->init();
   labelCheckBox->setChecked( layer->hasLabelsEnabled() );
@@ -561,15 +556,21 @@ void QgsVectorLayerProperties::apply()
   // Set up sql subset query if applicable
   //
   grpSubset->setEnabled( true );
-  // set the subset sql for the layer
-  layer->setSubsetString( txtSubsetSQL->toPlainText() );
-  // update the metadata with the updated sql subset
-  QString myStyle = QgsApplication::reportStyleSheet();
-  teMetadata->clear();
-  teMetadata->document()->setDefaultStyleSheet( myStyle );
-  teMetadata->setHtml( metadata() );
-  // update the extents of the layer (fetched from the provider)
-  layer->updateExtents();
+
+  if ( txtSubsetSQL->toPlainText() != layer->subsetString() )
+  {
+    // set the subset sql for the layer
+    layer->setSubsetString( txtSubsetSQL->toPlainText() );
+
+    // update the metadata with the updated sql subset
+    QString myStyle = QgsApplication::reportStyleSheet();
+    teMetadata->clear();
+    teMetadata->document()->setDefaultStyleSheet( myStyle );
+    teMetadata->setHtml( metadata() );
+
+    // update the extents of the layer (fetched from the provider)
+    layer->updateExtents();
+  }
 
   // set up the scale based layer visibility stuff....
   layer->toggleScaleBasedVisibility( chkUseScaleDependentRendering->isChecked() );
@@ -1189,6 +1190,17 @@ void QgsVectorLayerProperties::updateSymbologyPage()
     widgetStackRenderers->addWidget( mRendererDialog );
     widgetStackRenderers->setCurrentWidget( mRendererDialog );
   }
+}
 
+void QgsVectorLayerProperties::on_stackedWidget_currentChanged( int index )
+{
+  if ( index != 4 || mMetadataFilled )
+    return;
 
+  //set the metadata contents (which can be expensive)
+  QString myStyle = QgsApplication::reportStyleSheet();
+  teMetadata->clear();
+  teMetadata->document()->setDefaultStyleSheet( myStyle );
+  teMetadata->setHtml( metadata() );
+  mMetadataFilled = true;
 }
