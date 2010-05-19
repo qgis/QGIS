@@ -26494,7 +26494,7 @@ Il plugin non sarà abilitato.</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation>Seleziona per localizzazione</translation>
+        <translation>Seleziona per posizione</translation>
     </message>
     <message>
         <source>Polygon from layer extent</source>
@@ -26506,7 +26506,7 @@ Il plugin non sarà abilitato.</translation>
     </message>
     <message>
         <source>Convex hull(s)</source>
-        <translation>Inviluppo/i convesso/i</translation>
+        <translation>Poligono/i convesso/i</translation>
     </message>
     <message>
         <source>Buffer(s)</source>
@@ -26594,7 +26594,7 @@ Il plugin non sarà abilitato.</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
-        <translation>Unisci attributi per localizzazione</translation>
+        <translation>Unisci attributi per posizione</translation>
     </message>
     <message>
         <source>Split vector layer</source>
