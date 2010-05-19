@@ -64,9 +64,9 @@ class CORE_EXPORT QgsLegendModel: public QStandardItemModel
     /**Updates the whole symbology of a layer*/
     void updateLayer( QStandardItem* layerItem );
     /**Tries to update a single classification item*/
-    void updateVectorClassificationItem( QStandardItem* classificationItem, QgsSymbol* symbol, QString itemText );
-    void updateVectorV2ClassificationItem( QStandardItem* classificationItem, QgsSymbolV2* symbol, QString itemText );
-    void updateRasterClassificationItem( QStandardItem* classificationItem );
+    void updateVectorClassificationItem( QStandardItem* classificationItem, QgsSymbol* symbol, QString itemText ) {}
+    void updateVectorV2ClassificationItem( QStandardItem* classificationItem, QgsSymbolV2* symbol, QString itemText ) {}
+    void updateRasterClassificationItem( QStandardItem* classificationItem ) {}
 
     bool writeXML( QDomElement& composerLegendElem, QDomDocument& doc ) const;
     bool readXML( const QDomElement& legendModelElem, const QDomDocument& doc );
