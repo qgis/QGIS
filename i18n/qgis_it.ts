@@ -3779,7 +3779,7 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramoverlayplugin.cpp" line="35"/>
         <source>A plugin for placing diagrams on vector layers</source>
-        <translation>Un plugin che disegna una diagramma sopra un layer vettorial</translation>
+        <translation>Un plugin che disegna una diagramma sopra un layer vettoriale</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgsdiagramoverlayplugin.cpp" line="36"/>
@@ -4856,7 +4856,8 @@ Questa copia di QGIS è stata compilata senza il supporto a PostgreSQL.</transla
         <location filename="../src/app/qgisapp.cpp" line="2365"/>
         <source>
 This copy of QGIS has been built with QWT support (%1).</source>
-        <translation type="unfinished"></translation>
+        <translation>
+Questa copia di QGIS è stata compilata con il supporto QWT (%1).</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2207"/>
@@ -4869,7 +4870,8 @@ Questa copia di QGIS è stata compilata senza il supporto QWT.</translation>
         <location filename="../src/app/qgisapp.cpp" line="2371"/>
         <source>
 This copy of QGIS writes debugging output.</source>
-        <translation type="unfinished"></translation>
+        <translation>
+Questa copia di QGIS registra l&apos;output per il debugging.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2222"/>
@@ -5622,7 +5624,7 @@ Si prega di contattare gli sviluppatori.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1033"/>
         <source>Show GPS tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostra gli strumenti GPS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="998"/>
@@ -5799,7 +5801,7 @@ Si prega di contattare gli sviluppatori.
         <location filename="../src/app/qgisapp.cpp" line="4170"/>
         <location filename="../src/app/qgisapp.cpp" line="4212"/>
         <source>An error occured during the merge operation</source>
-        <translation type="unfinished"></translation>
+        <translation>Si è verificato un errore durante l&apos;operazione di merge</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3878"/>
@@ -5836,7 +5838,7 @@ Errori: %2
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4424"/>
         <source>GPS Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Informazioni sul GPS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4598"/>
@@ -6553,7 +6555,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="152"/>
         <source>Copy selected rows to clipboard (Ctrl+C)</source>
-        <translation>Copia le righe selezionate nel blocco degli appunti (Ctrl+C)</translation>
+        <translation>Copia le righe selezionate nel blocco appunti (Ctrl+C)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="171"/>
@@ -9148,7 +9150,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgscredentialdialog.ui" line="71"/>
         <source>Realm</source>
-        <translation type="unfinished">Dominio</translation>
+        <translation>Dominio</translation>
     </message>
 </context>
 <context>
@@ -10183,7 +10185,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="341"/>
         <source>Disconnect</source>
-        <translation type="unfinished"></translation>
+        <translation>Disconnessione</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="352"/>
@@ -10337,17 +10339,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="172"/>
         <source> Elevation</source>
-        <translation type="unfinished"></translation>
+        <translation> Altitudine</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="194"/>
         <source>Vertical Accuracy</source>
-        <translation type="unfinished"></translation>
+        <translation>Accuratezza verticale</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="207"/>
         <source>Horizonal Accuracy</source>
-        <translation type="unfinished"></translation>
+        <translation>Accuratezza orizzontale</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="220"/>
@@ -10377,7 +10379,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="313"/>
         <source>Use path / port below</source>
-        <translation type="unfinished"></translation>
+        <translation>Usa il percorso o la porta indicata</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="322"/>
@@ -11299,19 +11301,19 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="284"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="287"/>
         <source>Link Georeferencer to QGis</source>
-        <translation type="unfinished">Collega georeferenziatore a QGIS</translation>
+        <translation>Collega georeferenziatore a QGIS</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="295"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="298"/>
         <source>Link QGis to Georeferencer</source>
-        <translation type="unfinished">Collega georeferenziatore a QGIS</translation>
+        <translation>Collega QGIS al georeferenziatore</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="303"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="306"/>
         <source>Save GCP points as...</source>
-        <translation type="unfinished">Salva punti GCP come...</translation>
+        <translation>Salva punti GCP come...</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="309"/>
@@ -16446,7 +16448,7 @@ Ulteriori informazioni sull&apos;errore:
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="38"/>
         <source>Connection Information</source>
-        <translation>Informazioni Connessione</translation>
+        <translation>Informazioni connessione</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="58"/>
