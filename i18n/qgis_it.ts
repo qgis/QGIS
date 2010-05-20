@@ -105,7 +105,7 @@
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="226"/>
         <source>Open Directory</source>
-        <translation>Apri directory</translation>
+        <translation>Apri cartella</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="242"/>
@@ -1020,7 +1020,7 @@ Following field names are longer than 10 characters:
     </message>
     <message>
         <source>Select directory with shapefiles to merge</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleziona una cartella con gli shapefiles da unire</translation>
     </message>
     <message>
         <source>No shapefiles found</source>
@@ -1307,17 +1307,17 @@ Are you sure you want to proceed?</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="14"/>
         <source>Merge shapefiles</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="20"/>
         <source>Input directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Cartella in input</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="62"/>
         <source>Add result to map canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiungi il risultato all&apos;area di mappa</translation>
     </message>
 </context>
 <context>
@@ -1640,7 +1640,7 @@ Vuoi aggiungerlo alla legenda?</translation>
     </message>
     <message>
         <source>Difference layer</source>
-        <translation>Layer in differenza</translation>
+        <translation>Layer di differenza</translation>
     </message>
     <message>
         <source>Difference</source>
@@ -3707,12 +3707,12 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="507"/>
         <source>Temporary directory %1 exists but is not writable</source>
-        <translation>La directory %1 esiste ma non è scrivibile</translation>
+        <translation>La cartella %1 esiste ma non è scrivibile</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="513"/>
         <source>Cannot create temporary directory %1</source>
-        <translation>Impossibile creare la directory temporanea %1</translation>
+        <translation>Impossibile creare la cartella temporanea %1</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="527"/>
@@ -5752,7 +5752,7 @@ Si prega di contattare gli sviluppatori.
         <location filename="../src/app/qgisapp.cpp" line="977"/>
         <source>Ctrl+Shift+V</source>
         <comment>Add a Vector Layer</comment>
-        <translatorcomment>Aggiungi vettoriale</translatorcomment>
+        <translatorcomment>Aggiungi vettore</translatorcomment>
         <translation>Ctrl+Shift+V</translation>
     </message>
     <message>
@@ -5780,7 +5780,7 @@ Si prega di contattare gli sviluppatori.
         <location filename="../src/app/qgisapp.cpp" line="997"/>
         <source>Ctrl+Shift+W</source>
         <comment>Add a Web Mapping Server Layer</comment>
-        <translatorcomment>Aggiungi un Layer Web Mapping Server</translatorcomment>
+        <translatorcomment>Aggiungi layer Web Mapping Server</translatorcomment>
         <translation>Ctrl+Shift+W</translation>
     </message>
     <message>
@@ -5928,7 +5928,8 @@ Si prega di contattare gli sviluppatori.
         <location filename="../src/app/qgisapp.cpp" line="971"/>
         <source>Ctrl+Shift+A</source>
         <comment>Create a New SpatiaLite Layer </comment>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Crea nuovo vettore SpatiaLite</translatorcomment>
+        <translation>Ctrl+Shift+A</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="972"/>
@@ -6198,7 +6199,6 @@ Errori: %2
         <source>%n feature(s) selected on layer %1.</source>
         <comment>number of selected features</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -6504,7 +6504,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsannotationwidget.cpp" line="111"/>
         <source>Select frame color</source>
-        <translation type="unfinished"></translation>
+        <translation>Scegli il colore del riquadro</translation>
     </message>
 </context>
 <context>
@@ -6791,7 +6791,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsattributeeditor.cpp" line="76"/>
         <source>Select a date</source>
-        <translation type="unfinished"></translation>
+        <translation>Scegli una data</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsattributeeditor.cpp" line="405"/>
@@ -8162,7 +8162,7 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="252"/>
         <source>Add group</source>
-        <translation type="unfinished"></translation>
+        <translation>Aggiungi gruppo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="238"/>
@@ -8180,22 +8180,22 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="34"/>
         <source>&amp;Show</source>
-        <translation type="unfinished"></translation>
+        <translation>Mo&amp;stra</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="38"/>
         <source>&amp;Remove</source>
-        <translation type="unfinished">&amp;Rimuovi</translation>
+        <translation>&amp;Rimuovi</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="42"/>
         <source>Re&amp;name</source>
-        <translation type="unfinished">Ri&amp;nomina</translation>
+        <translation>Ri&amp;nomina</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="65"/>
         <source>Empty composer</source>
-        <translation type="unfinished"></translation>
+        <translation>Composer vuoto</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="135"/>
@@ -8518,7 +8518,7 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="172"/>
         <source>Select new preview directory</source>
-        <translation>Scegli una directory di anteprima</translation>
+        <translation>Scegli una cartella di anteprima</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerpicturewidget.cpp" line="292"/>
@@ -8547,7 +8547,7 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="53"/>
         <source>Search directories</source>
-        <translation>Cerca directory</translation>
+        <translation>Cerca cartelle</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerpicturewidgetbase.ui" line="82"/>
@@ -8773,7 +8773,7 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="179"/>
         <source>Select fill color</source>
-        <translation>Seleziona il colore di riempimento</translation>
+        <translation>Scegli il colore di riempimento</translation>
     </message>
 </context>
 <context>
@@ -9962,7 +9962,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="220"/>
         <source>Name of the field containing x values. Choose a field from the list. The list is generated by parsing the header row of the delimited text file.</source>
-        <translation>Nome del campo che contiene i valori di X. Seleziona un campo dalla lista. La lista è generata dall&apos;analisi della riga di intestazione del file contenente del testo delimitato.</translation>
+        <translation>Nome del campo che contiene i valori di X. Scegli un campo dalla lista. La lista è generata dall&apos;analisi della riga di intestazione del file contenente del testo delimitato.</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="255"/>
@@ -9982,7 +9982,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="245"/>
         <source>Name of the field containing y values. Choose a field from the list. The list is generated by parsing the header row of the delimited text file.</source>
-        <translation>Nome del campo che contiene i valori di Y. Seleziona un campo dalla lista. La lista è generata dall&apos;analisi della riga di intestazione del file contenente il testo delimitato.</translation>
+        <translation>Nome del campo che contiene i valori di Y. Scegli un campo dalla lista. La lista è generata dall&apos;analisi della riga di intestazione del file contenente il testo delimitato.</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="268"/>
@@ -10478,12 +10478,12 @@ Per selezionare il file da caricare utilizzare il bottone Sfoglia.</translation>
     <message>
         <location filename="../src/app/qgsformannotationdialog.cpp" line="23"/>
         <source>Delete</source>
-        <translation type="unfinished">Elimina</translation>
+        <translation>Elimina</translation>
     </message>
     <message>
         <location filename="../src/app/qgsformannotationdialog.cpp" line="62"/>
         <source>Qt designer file</source>
-        <translation type="unfinished"></translation>
+        <translation>File Qt designer</translation>
     </message>
 </context>
 <context>
@@ -10491,12 +10491,12 @@ Per selezionare il file da caricare utilizzare il bottone Sfoglia.</translation>
     <message>
         <location filename="../src/ui/qgsformannotationdialogbase.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Finestra di dialogo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsformannotationdialogbase.ui" line="25"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
@@ -10736,7 +10736,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="589"/>
         <source>Cannot edit the vector layer. To make it editable, go to the file item of the layer, right click and check &apos;Allow Editing&apos;.</source>
-        <translation>Impossibile modificare il vettore. Per entrare in modalità modifica, seleziona la voce del layer, fai clic con il tasto destro del mouse ed attiva &quot;Attiva/Disattiva modifica&quot;.</translation>
+        <translation>Impossibile modificare il vettore. Per entrare in modalità modifica, scegli la voce del layer, fai clic con il tasto destro del mouse ed attiva &quot;Attiva/Disattiva modifica&quot;.</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="598"/>
@@ -10834,7 +10834,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="207"/>
         <source>Horizontal Accuracy</source>
-        <translation type="unfinished"></translation>
+        <translation>Accuratezza orizzontale</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="220"/>
@@ -11575,62 +11575,62 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1240"/>
         <source>Transformation parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Parametri di trasformazione</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1295"/>
         <source>Translation x</source>
-        <translation type="unfinished"></translation>
+        <translation>Traslazione X</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1295"/>
         <source>Translation y</source>
-        <translation type="unfinished"></translation>
+        <translation>Traslazione Y</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1295"/>
         <source>Scale x</source>
-        <translation type="unfinished"></translation>
+        <translation>Scala X</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1295"/>
         <source>Scale y</source>
-        <translation type="unfinished"></translation>
+        <translation>Scala Y</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1295"/>
         <source>Rotation [degrees]</source>
-        <translation type="unfinished"></translation>
+        <translation>Rotazione [gradi]</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1295"/>
         <source>Mean error [map units]</source>
-        <translation type="unfinished"></translation>
+        <translation>Errore medio [unità mappa]</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1314"/>
         <source>Residuals</source>
-        <translation type="unfinished"></translation>
+        <translation>Residui</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1339"/>
         <source>map units</source>
-        <translation type="unfinished">unità mappa</translation>
+        <translation>unità mappa</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1343"/>
         <source>pixels</source>
-        <translation type="unfinished">pixel</translation>
+        <translation>pixel</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1372"/>
         <source>yes</source>
-        <translation type="unfinished">sì</translation>
+        <translation>sì</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1376"/>
         <source>no</source>
-        <translation type="unfinished">no</translation>
+        <translation>no</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1422"/>
@@ -13384,7 +13384,7 @@ alla linea %2 colonna %3</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3284"/>
         <source>%1:&amp;nbsp;directory does not exist</source>
-        <translation>%1:&amp;nbsp;directory non esistente</translation>
+        <translation>%1:&amp;nbsp;cartella non esistente</translation>
     </message>
 </context>
 <context>
@@ -13619,7 +13619,7 @@ alla linea %2 colonna %3</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="191"/>
         <source>The directory doesn&apos;t exist!</source>
-        <translation>La directory non esiste!</translation>
+        <translation>La cartella non esiste!</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="336"/>
@@ -13742,7 +13742,7 @@ alla linea %2 colonna %3</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1292"/>
         <source>Cannot create new mapset directory</source>
-        <translation>Impossibile creare una nuova directory di mapset</translation>
+        <translation>Impossibile creare una nuova cartella di mapset</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="844"/>
@@ -13946,7 +13946,7 @@ p, li { white-space: pre-wrap; }
         <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;
-&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;I dati GRASS sono archiviati in una directory con struttura ad albero. Il database GRASS è la directory in cima a questa struttura ad albero.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+&gt;&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;I dati GRASS sono archiviati in una cartella con struttura ad albero. Il database GRASS è la cartella in cima a questa struttura ad albero.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="596"/>
@@ -15304,7 +15304,7 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="462"/>
         <source>Label only selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>Etichetta solo le geometrie selezionate</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="477"/>
@@ -15496,7 +15496,7 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="433"/>
         <source>&amp;Query...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Query...</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="440"/>
@@ -15529,7 +15529,7 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
     <message>
         <location filename="../src/core/composer/qgslegendmodel.h" line="60"/>
         <source>Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Gruppo</translation>
     </message>
 </context>
 <context>
@@ -15806,7 +15806,7 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
     <message>
         <location filename="../src/core/qgsmaplayer.cpp" line="674"/>
         <source>The directory containing your dataset needs to be writeable!</source>
-        <translation>La directory che contiene il set di dati deve essere scrivibile!</translation>
+        <translation>La cartella che contiene il set di dati deve essere scrivibile!</translation>
     </message>
     <message>
         <location filename="../src/core/qgsmaplayer.cpp" line="688"/>
@@ -16500,7 +16500,7 @@ Lo si vuole sovrascrivere?</translation>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="156"/>
         <source>Width</source>
-        <translation>Largh.</translation>
+        <translation type="unfinished">Largh.</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="182"/>
@@ -16510,7 +16510,7 @@ Lo si vuole sovrascrivere?</translation>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="123"/>
         <source>Image type</source>
-        <translation>Tipo immag.</translation>
+        <translation type="unfinished">Tipo immag.</translation>
     </message>
     <message>
         <source>gif</source>
@@ -16794,17 +16794,17 @@ http://mio.server.it/cgi-bin/mapserver.exe</translation>
     <message>
         <location filename="../src/providers/memory/qgsmemoryprovider.cpp" line="52"/>
         <source>Whole number (integer)</source>
-        <translation type="unfinished">Numero intero (integer)</translation>
+        <translation>Numero intero (integer)</translation>
     </message>
     <message>
         <location filename="../src/providers/memory/qgsmemoryprovider.cpp" line="53"/>
         <source>Decimal number (real)</source>
-        <translation type="unfinished">Numero decimale (real)</translation>
+        <translation>Numero decimale (real)</translation>
     </message>
     <message>
         <location filename="../src/providers/memory/qgsmemoryprovider.cpp" line="54"/>
         <source>Text (string)</source>
-        <translation type="unfinished">Testo (string)</translation>
+        <translation>Testo (string)</translation>
     </message>
 </context>
 <context>
@@ -17060,17 +17060,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="46"/>
         <source>Text data</source>
-        <translation type="unfinished">Testo</translation>
+        <translation>Testo</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="47"/>
         <source>Whole number</source>
-        <translation type="unfinished">Numeri interi</translation>
+        <translation>Numeri interi</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="48"/>
         <source>Decimal number</source>
-        <translation type="unfinished">Numeri decimali</translation>
+        <translation>Numeri decimali</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="97"/>
@@ -17140,12 +17140,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="354"/>
         <source>Invalid Layer</source>
-        <translation type="unfinished">Layer non valido</translation>
+        <translation>Layer non valido</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="354"/>
         <source>%1 is an invalid layer and cannot be loaded.</source>
-        <translation type="unfinished">%1 non è un layer valido e non può essere caricato.</translation>
+        <translation>%1 non è un layer valido e non può essere caricato.</translation>
     </message>
 </context>
 <context>
@@ -17681,7 +17681,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="122"/>
         <source>Open Directory</source>
-        <translation>Apri Directory</translation>
+        <translation>Apri cartella</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="175"/>
@@ -18804,7 +18804,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="381"/>
         <source>No Active Layer</source>
-        <translation>Nessun Layer Attivo</translation>
+        <translation>Nessun layer attivo</translation>
     </message>
     <message>
         <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="382"/>
@@ -18814,7 +18814,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="374"/>
         <source>Not a PostgreSQL/PostGIS Layer</source>
-        <translation>Non è un Layer PostgreSQL/PostGIS</translation>
+        <translation>Non è un layer PostgreSQL/PostGIS</translation>
     </message>
     <message>
         <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="77"/>
@@ -19273,11 +19273,11 @@ geometry.</source>
     </message>
     <message>
         <source>Nothing to remove! Plugin directory doesn&apos;t exist:</source>
-        <translation>Niente da rimuovere! La directory dei plugin non esiste:</translation>
+        <translation>Niente da rimuovere! La cartella dei plugin non esiste:</translation>
     </message>
     <message>
         <source>Failed to remove the directory:</source>
-        <translation>Impossibile rimuovere la directory:</translation>
+        <translation>Impossibile rimuovere la cartella:</translation>
     </message>
     <message>
         <source>Check permissions or remove it manually</source>
@@ -19425,7 +19425,7 @@ geometry.</source>
     <message>
         <source>The plugin seems to have been installed but I don&apos;t know where. Probably the plugin package contained a wrong named directory.
 Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll find the plugin there, but I just can&apos;t determine which of them it is. It also means that I won&apos;t be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue.</source>
-        <translation>Il plugin sembra sia stato installato ma non è recuperabile. Probabilmente il pacchetto del plugin contiene un nome di directory sbagliato.È probabile che specificando la lista dei plugin installati si riesca a trovare il plugin. QGIS non è in grado di capire quale sia. Questo vuol dire che è impossibile capire se il plugin è installato o meno e quindi non è possibile informare circa la disponibilità di aggiornamenti. Il plugin può comunque funzionare. Contatta l&apos;autore del plugin e invia una notifica in merito a questo problema.</translation>
+        <translation>Il plugin sembra sia stato installato ma non è recuperabile. Probabilmente il pacchetto del plugin contiene un nome di cartella sbagliato.È probabile che specificando la lista dei plugin installati si riesca a trovare il plugin. QGIS non è in grado di capire quale sia. Questo vuol dire che è impossibile capire se il plugin è installato o meno e quindi non è possibile informare circa la disponibilità di aggiornamenti. Il plugin può comunque funzionare. Contatta l&apos;autore del plugin e invia una notifica in merito a questo problema.</translation>
     </message>
     <message>
         <source>Plugin installed successfully</source>
@@ -19921,7 +19921,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Failed to unzip the plugin package. Probably it&apos;s broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:</source>
-        <translation>Scompattazione (unzip) del plugin non riuscita. Probabilmente l&apos;archivio è corrotto o non esiste nel repository. Controllare i permessi in scrittura della directory dei plugin:</translation>
+        <translation>Scompattazione (unzip) del plugin non riuscita. Probabilmente l&apos;archivio è corrotto o non esiste nel repository. Controllare i permessi in scrittura della cartella dei plugin:</translation>
     </message>
     <message>
         <source>Aborted by user</source>
@@ -20070,7 +20070,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="58"/>
         <source>Plugin Directory:</source>
-        <translation>Plugin Directory:</translation>
+        <translation>Cartella dei plugin:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspluginmanagerbase.ui" line="71"/>
@@ -20807,7 +20807,7 @@ Cercare i layer mancanti?</translation>
     <message>
         <location filename="../src/gui/qgsprojectionselector.cpp" line="60"/>
         <source>All</source>
-        <translation type="unfinished">Tutto</translation>
+        <translation>Tutto</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsprojectionselector.cpp" line="627"/>
@@ -20827,12 +20827,12 @@ Cercare i layer mancanti?</translation>
     <message>
         <location filename="../src/gui/qgsprojectionselector.cpp" line="1005"/>
         <source>Find projection</source>
-        <translation type="unfinished"></translation>
+        <translation>Trova proiezione</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsprojectionselector.cpp" line="1005"/>
         <source>No matching projection found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nessuna proiezione corrispondente trovata.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsprojectionselector.cpp" line="1144"/>
@@ -21610,12 +21610,12 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="313"/>
         <source>You must have write access in the directory where the original data is stored to build pyramids.</source>
-        <translation>Per costruire piramidi devi avere accesso in scrittura sulla directory dove sono memorizzati i file di origine.</translation>
+        <translation>Per costruire piramidi devi avere accesso in scrittura sulla cartella dove sono memorizzati i file di origine.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="328"/>
         <source>Layer Properties - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Proprietà layer - %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="374"/>
@@ -21761,7 +21761,7 @@ p, li { white-space: pre-wrap; }(new line)
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3202"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3221"/>
         <source>QGIS Layer Style File (*.qml)</source>
-        <translation>QGIS File di Layer Stile (*.qml)</translation>
+        <translation>QGIS File di stile del layer (*.qml)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3181"/>
@@ -22639,7 +22639,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/diagram_overlay/qgssvgdiagramfactorywidget.cpp" line="133"/>
         <source>Select new preview directory</source>
-        <translation>Scegli una directory di anteprima</translation>
+        <translation>Scegli una cartella di anteprima</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgssvgdiagramfactorywidget.cpp" line="182"/>
@@ -22657,7 +22657,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/diagram_overlay/qgssvgdiagramfactorywidgetbase.ui" line="29"/>
         <source>Search directories</source>
-        <translation>Cerca directory</translation>
+        <translation>Cerca cartelle</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgssvgdiagramfactorywidgetbase.ui" line="48"/>
@@ -23089,19 +23089,19 @@ L´errore era:
     <message>
         <location filename="../src/gui/symbology-ng/qgssinglesymbolrendererv2widget.cpp" line="52"/>
         <source>Rotation field</source>
-        <translation type="unfinished"></translation>
+        <translation>Campo di rotazione</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssinglesymbolrendererv2widget.cpp" line="53"/>
         <source>Size scale field</source>
-        <translation type="unfinished"></translation>
+        <translation>Campo di dimensione della scala</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssinglesymbolrendererv2widget.cpp" line="64"/>
         <location filename="../src/gui/symbology-ng/qgssinglesymbolrendererv2widget.cpp" line="124"/>
         <location filename="../src/gui/symbology-ng/qgssinglesymbolrendererv2widget.cpp" line="144"/>
         <source>- no field -</source>
-        <translation type="unfinished"></translation>
+        <translation>- nessun campo -</translation>
     </message>
 </context>
 <context>
@@ -23449,7 +23449,6 @@ SQL: %2</translation>
         <comment>selected geometries</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -23647,12 +23646,12 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/spatialquery/qgsspatialqueryplugin.cpp" line="90"/>
         <location filename="../src/plugins/spatialquery/qgsspatialqueryplugin.cpp" line="99"/>
         <source>&amp;Spatial Query</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Spatial Query</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialqueryplugin.cpp" line="158"/>
         <source>DEBUG</source>
-        <translation type="unfinished"></translation>
+        <translation>DEBUG</translation>
     </message>
 </context>
 <context>
@@ -23729,7 +23728,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="164"/>
         <source>Shapefiles (*.shp);;All files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Shapefiles (*.shp);;Tutti i files (*)</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="258"/>
@@ -24304,7 +24303,7 @@ Si vuole realmente sovrascrivere la tabella [%2]?</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollevelsv2dialog.cpp" line="38"/>
         <source>Layer %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Layer %1</translation>
     </message>
 </context>
 <context>
@@ -24393,7 +24392,7 @@ Si vuole realmente sovrascrivere la tabella [%2]?</translation>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="227"/>
         <source>Advanced</source>
-        <translation type="unfinished">Avanzato</translation>
+        <translation>Avanzato</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="234"/>
@@ -24458,17 +24457,17 @@ Si vuole realmente sovrascrivere la tabella [%2]?</translation>
     <message>
         <location filename="../src/app/qgstextannotationdialog.cpp" line="47"/>
         <source>Delete</source>
-        <translation type="unfinished">Elimina</translation>
+        <translation>Elimina</translation>
     </message>
     <message>
         <location filename="../src/app/qgstextannotationdialog.cpp" line="107"/>
         <source>Select font color</source>
-        <translation type="unfinished"></translation>
+        <translation>Scegli il colore di riempimento</translation>
     </message>
     <message>
         <location filename="../src/app/qgstextannotationdialog.cpp" line="160"/>
         <source>Select background color</source>
-        <translation type="unfinished"></translation>
+        <translation>Scegli il colore di sfondo</translation>
     </message>
 </context>
 <context>
@@ -24576,7 +24575,7 @@ Si vuole realmente sovrascrivere la tabella [%2]?</translation>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="42"/>
         <source>Thin Plate Spline</source>
-        <translation type="unfinished"></translation>
+        <translation>Thin plate spline (TPS)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="139"/>
@@ -24607,7 +24606,7 @@ Si vuole realmente sovrascrivere la tabella [%2]?</translation>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="218"/>
         <source>PDF Format</source>
-        <translation type="unfinished">Formato PDF</translation>
+        <translation>Formato PDF</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="259"/>
@@ -24695,7 +24694,7 @@ Si vuole realmente sovrascrivere la tabella [%2]?</translation>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="163"/>
         <source>Generate pdf report:</source>
-        <translation type="unfinished"></translation>
+        <translation>Genera un rapporto pdf:</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="184"/>
@@ -24868,12 +24867,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="101"/>
         <source>Color</source>
-        <translation type="unfinished">Colore</translation>
+        <translation>Colore</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="106"/>
         <source>Offset</source>
-        <translation type="unfinished">Offset</translation>
+        <translation>Offset</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="117"/>
@@ -25135,7 +25134,7 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="967"/>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="996"/>
         <source>QGIS Layer Style File (*.qml)</source>
-        <translation>QGIS Layer file stile (*.qml)</translation>
+        <translation>QGIS File di stile del layer (*.qml)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="168"/>
@@ -25580,12 +25579,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="57"/>
         <source>Original CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>CRS originale</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="84"/>
         <source>Save layer as...</source>
-        <translation type="unfinished">Salva il layer come...</translation>
+        <translation>Salva il layer come...</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="96"/>
@@ -25803,7 +25802,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="14"/>
         <source>Add WFS Layer from a Server</source>
-        <translation>Aggiungi Layer WFS da un server</translation>
+        <translation>Aggiungi layer WFS da un server</translation>
     </message>
 </context>
 <context>
@@ -25976,7 +25975,6 @@ This might be an server configuration error. Should the URL be used?</source>
         <comment>selected layer count</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -26035,7 +26033,7 @@ This might be an server configuration error. Should the URL be used?</source>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="14"/>
         <source>Add Layer(s) from a Server</source>
-        <translation>Aggiungi Layer dal server</translation>
+        <translation>Aggiungi layer dal server</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="49"/>
@@ -26107,7 +26105,7 @@ This might be an server configuration error. Should the URL be used?</source>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="231"/>
         <source>Layer Order</source>
-        <translation>Ordine Layer</translation>
+        <translation>Ordine layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="268"/>
@@ -26188,7 +26186,7 @@ This might be an server configuration error. Should the URL be used?</source>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="170"/>
         <source>Layer name</source>
-        <translation>Nome Layer</translation>
+        <translation>Nome layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="183"/>
@@ -26528,7 +26526,6 @@ This might be an server configuration error. Should the URL be used?</source>
         <comment>tile request count</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -26537,7 +26534,6 @@ This might be an server configuration error. Should the URL be used?</source>
         <source>, %n cache hits</source>
         <comment>tile cache hits</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -26548,7 +26544,6 @@ This might be an server configuration error. Should the URL be used?</source>
         <comment>tile cache missed</comment>
         <translation type="unfinished">
             <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
     <message numerus="yes">
@@ -26557,7 +26552,6 @@ This might be an server configuration error. Should the URL be used?</source>
         <source>, %n errors.</source>
         <comment>errors</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -26633,7 +26627,6 @@ URL provata: %1</translation>
         <source>(and %n more)</source>
         <comment>crs</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
@@ -27136,7 +27129,7 @@ URL provata: %1</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="103"/>
         <source>Offset X,Y:</source>
-        <translation type="unfinished">Offset X,Y:</translation>
+        <translation>Offset X,Y:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="52"/>
@@ -27694,7 +27687,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisdatabaselayerfieldselectionguibase.ui" line="89"/>
         <source>Name of New Layer</source>
-        <translation>Nome del Nuovo Layer</translation>
+        <translation>Nome del nuovo layer</translation>
     </message>
 </context>
 <context>
@@ -27832,7 +27825,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="199"/>
         <source>Use the drop-down list to select the field containing a directory path to the image. This can be an absolute or relative path.</source>
-        <translation>Utilizza la lista drop down per selezionare il campo contenente il percorso della directory dell´immagine.Può essere un percorso assoluto o relativo.</translation>
+        <translation>Utilizza la lista drop down per selezionare il campo contenente il percorso della cartella dell´immagine.Può essere un percorso assoluto o relativo.</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="222"/>
@@ -27929,7 +27922,7 @@ p, li { white-space: pre-wrap; }
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="661"/>
         <source>Enters the default “Base Path” which is the path to the directory of the vector layer containing the image information.</source>
-        <translation>Inserisce il valore di &quot;Percorso base&quot; che è il percorso della directory del vettore che contiene le informazioni dell&apos;immagine.</translation>
+        <translation>Inserisce il valore di &quot;Percorso base&quot; che è il percorso della cartella del vettore che contiene le informazioni dell&apos;immagine.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="755"/>
@@ -28305,7 +28298,7 @@ Il plugin non sarà abilitato.</translation>
     </message>
     <message>
         <source>Merge shapefiles to one</source>
-        <translation type="unfinished"></translation>
+        <translation>Unisci shapefiles</translation>
     </message>
     <message>
         <source>fTools Information</source>
@@ -28316,7 +28309,7 @@ Il plugin non sarà abilitato.</translation>
     <name>geometryThread</name>
     <message>
         <source>Merge all</source>
-        <translation type="unfinished">Unisci tutto</translation>
+        <translation>Unisci tutto</translation>
     </message>
     <message>
         <source>Polygon area</source>
@@ -29304,12 +29297,12 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="199"/>
         <source>Fill lake from seed at given level</source>
-        <translation type="unfinished"></translation>
+        <translation>Riempi un lago da una origine ad un determinato livello</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="200"/>
         <source>Fill lake from seed point at given level</source>
-        <translation type="unfinished"></translation>
+        <translation>Riempi un lago da un punto di origine ad un determinato livello</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="201"/>
@@ -30399,7 +30392,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="418"/>
         <source>Write only features link to a record</source>
-        <translation>Scrivi soltanto gli elementi collegate ad un record</translation>
+        <translation>Scrivi soltanto gli elementi collegati ad un record</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="419"/>
