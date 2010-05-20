@@ -204,7 +204,7 @@
           <number>5</number>
          </property>
          <property name="format">
-          <string>Horizonal Accuracy</string>
+          <string>Horizontal Accuracy</string>
          </property>
         </widget>
        </item>
@@ -283,8 +283,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>190</width>
-            <height>532</height>
+            <width>168</width>
+            <height>505</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_7">
