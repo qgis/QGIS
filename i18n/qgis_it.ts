@@ -7540,7 +7540,7 @@ Questo è il widget predefinito per le operazioni di modifica.</translation>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="20"/>
         <source>Frame color...</source>
-        <translation>Colore frame...</translation>
+        <translation>Colore bordo...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="27"/>
@@ -11138,7 +11138,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1357"/>
         <source>Polynomial 3</source>
-        <translation type="unfinished">Polinomiale 3</translation>
+        <translation>Polinomiale 3</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1366"/>
@@ -15108,13 +15108,13 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="220"/>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="322"/>
         <source>The file is not an WMS connections exchange file.</source>
-        <translation type="unfinished">Il file non è un file di interscambio di connessione WFS.</translation>
+        <translation>Il file non è un file di interscambio di connessione WFS.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="232"/>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="378"/>
         <source>The file is not an PostGIS connections exchange file.</source>
-        <translation type="unfinished">Il file non è un file di interscambio di connessione PostGIS.</translation>
+        <translation>Il file non è un file di interscambio di connessione PostGIS.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="345"/>
@@ -17364,7 +17364,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1428"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1138"/>
@@ -18254,7 +18254,7 @@ Ulteriori informazioni sull&apos;errore:
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="186"/>
         <source>Only look in the geometry_columns table</source>
-        <translation type="unfinished">Cercare solamente nella tabella geometry_columns</translation>
+        <translation>Cercare solamente nella tabella geometry_columns</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="193"/>
@@ -19078,7 +19078,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerFetchingDialog</name>
     <message>
         <source>Success</source>
-        <translation type="unfinished">Avvenuto</translation>
+        <translation>Avvenuto</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
@@ -23138,7 +23138,7 @@ Si vuole realmente sovrascrivere la tabella [%2]?</translation>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="135"/>
         <source>Please set output name</source>
-        <translation type="unfinished"></translation>
+        <translation>Scegli il nome di output</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="141"/>
@@ -23148,7 +23148,7 @@ Si vuole realmente sovrascrivere la tabella [%2]?</translation>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="164"/>
         <source>Save raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Salva raster</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="233"/>
@@ -23164,7 +23164,7 @@ Si vuole realmente sovrascrivere la tabella [%2]?</translation>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="25"/>
         <source>Transformation type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipo di trasformazione:</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="42"/>
@@ -24274,7 +24274,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="66"/>
         <source>&amp;Load</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Carica</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="213"/>
@@ -24294,7 +24294,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="393"/>
         <source>CRS %1 not supported.</source>
-        <translation type="unfinished"></translation>
+        <translation>CRS %1 non supportato.</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="415"/>
@@ -24486,12 +24486,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="258"/>
         <source>Tilesets</source>
-        <translation type="unfinished">Set di tile</translation>
+        <translation>Set di tile</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="285"/>
         <source>Styles</source>
-        <translation type="unfinished">Stili</translation>
+        <translation>Stili</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="287"/>
@@ -24501,7 +24501,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="295"/>
         <source>Format</source>
-        <translation type="unfinished">Formato</translation>
+        <translation>Formato</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="297"/>
@@ -25307,7 +25307,7 @@ URL provata: %1</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="22"/>
         <source>Font family</source>
-        <translation type="unfinished">Famiglia di caratteri</translation>
+        <translation>Famiglia del carattere</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_fontmarker.ui" line="32"/>
@@ -25489,7 +25489,7 @@ URL provata: %1</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="120"/>
         <source>Use custom dash pattern</source>
-        <translation type="unfinished">Usa pattern tratteggiato personalizzato</translation>
+        <translation>Usa pattern tratteggiato personalizzato</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="151"/>
@@ -28788,11 +28788,11 @@ Il plugin non sarà abilitato.</translation>
     </message>
     <message>
         <source>Nearest neighbour index:</source>
-        <translation type="unfinished">Indice vicino più prossimo:</translation>
+        <translation>Indice vicino più prossimo:</translation>
     </message>
     <message>
         <source>Z-Score:</source>
-        <translation type="unfinished">Z-Score:</translation>
+        <translation>Z-Score:</translation>
     </message>
     <message>
         <source>Feature %1 contains an unnested hole</source>
