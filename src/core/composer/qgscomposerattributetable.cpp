@@ -23,7 +23,7 @@
 QgsComposerAttributeTable::QgsComposerAttributeTable( QgsComposition* composition ): QgsComposerTable( composition ), mVectorLayer( 0 ), mComposerMap( 0 ), \
     mMaximumNumberOfFeatures( 5 ), mShowOnlyVisibleFeatures( true )
 {
-
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( removeLayer( const QString& ) ) );
 }
 
 QgsComposerAttributeTable::~QgsComposerAttributeTable()
@@ -142,6 +142,17 @@ QString QgsComposerAttributeTable::attributeDisplayName( int attributeIndex, con
   else
   {
     return name;
+  }
+}
+
+void QgsComposerAttributeTable::removeLayer( QString layerId )
+{
+  if ( mVectorLayer )
+  {
+    if ( layerId == mVectorLayer->getLayerID() )
+    {
+      mVectorLayer = 0;
+    }
   }
 }
 

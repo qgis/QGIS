@@ -84,6 +84,10 @@ class CORE_EXPORT QgsComposerAttributeTable: public QgsComposerTable
     /**Returns the attribute name to display in the item (attribute name or an alias if present)*/
     QString attributeDisplayName( int attributeIndex, const QString& name ) const;
 
+  private slots:
+    /**Checks if this vector layer will be removed (and sets mVectorLayer to 0 if yes) */
+    void removeLayer( QString layerId );
+
   signals:
     /**This signal is emitted if the maximum number of feature changes (interactively)*/
     void maximumNumerOfFeaturesChanged( int n );
