@@ -561,15 +561,7 @@ void QgsVectorLayerProperties::apply()
   {
     // set the subset sql for the layer
     layer->setSubsetString( txtSubsetSQL->toPlainText() );
-
-    // update the metadata with the updated sql subset
-    QString myStyle = QgsApplication::reportStyleSheet();
-    teMetadata->clear();
-    teMetadata->document()->setDefaultStyleSheet( myStyle );
-    teMetadata->setHtml( metadata() );
-
-    // update the extents of the layer (fetched from the provider)
-    layer->updateExtents();
+    mMetadataFilled = false;
   }
 
   // set up the scale based layer visibility stuff....
