@@ -27505,7 +27505,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="181"/>
         <source>Export vector</source>
-        <translation>Esporta su file</translation>
+        <translation>Esporta vettore</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="182"/>
@@ -28180,12 +28180,12 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="316"/>
         <source>Reclass raster with patches larger than user-defined area size (in hectares)</source>
-        <translation>Riclassifica un raster con aggiustamenti più grandi dell&apos;area definita dall&apos;utente (in ettari)</translation>
+        <translation>Riclassifica un raster con aree più grandi dell&apos;area definita dall&apos;utente (in ettari)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="317"/>
         <source>Reclass raster with patches smaller than user-defined area size (in hectares)</source>
-        <translation>Riclassifica un raster con aggiustamenti più piccoli dell&apos;area definita dall&apos;utente (in ettari)</translation>
+        <translation>Riclassifica un raster con aree più piccoli dell&apos;area definita dall&apos;utente (in ettari)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="318"/>
