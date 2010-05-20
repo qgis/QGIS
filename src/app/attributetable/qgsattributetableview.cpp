@@ -32,7 +32,7 @@ QgsAttributeTableView::QgsAttributeTableView( QWidget* parent )
     : QTableView( parent ), mActionPopup( 0 )
 {
   QSettings settings;
-  restoreGeometry( settings.value( "/BetterTable/geometry" ).toByteArray() );
+  restoreGeometry( settings.value( "/BetterAttributeTable/geometry" ).toByteArray() );
 
   verticalHeader()->setDefaultSectionSize( 20 );
   horizontalHeader()->setHighlightSections( false );
