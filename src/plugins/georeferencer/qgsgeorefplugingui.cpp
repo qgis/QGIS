@@ -86,6 +86,7 @@ QgsGeorefPluginGui::QgsGeorefPluginGui( QgisInterface* theQgisInterface, QWidget
     , mMapCoordsDialog( 0 )
     , mUseZeroForTrans( false )
     , mLoadInQgis( false )
+    , mDock( 0 )
 {
   setupUi( this );
 
@@ -104,6 +105,33 @@ QgsGeorefPluginGui::QgsGeorefPluginGui( QgisInterface* theQgisInterface, QWidget
   mActionLinkQGisToGeoref->setEnabled( false );
 
   mCanvas->clearExtentHistory(); // reset zoomnext/zoomlast
+
+  QSettings s;
+  if ( s.value( "/Plugin-GeoReferencer/Config/ShowDocked" ).toBool() )
+  {
+    dockThisWindow( true );
+  }
+}
+
+void QgsGeorefPluginGui::dockThisWindow( bool dock )
+{
+  if ( mDock )
+  {
+    setParent( 0 );
+    show();
+    mIface->removeDockWidget( mDock );
+    mDock->setWidget( 0 );
+    delete mDock;
+    mDock = 0;
+  }
+
+  if ( dock )
+  {
+    mDock = new QgsGeorefDockWidget( tr( "Georeferencer" ), mIface->mainWindow() );
+    mDock->setWidget( this );
+    connect( this, SIGNAL( destroyed() ), mDock, SLOT( close() ) );
+    mIface->addDockWidget( Qt::BottomDockWidgetArea, mDock );
+  }
 }
 
 QgsGeorefPluginGui::~QgsGeorefPluginGui()
@@ -123,6 +151,7 @@ QgsGeorefPluginGui::~QgsGeorefPluginGui()
   delete mToolAddPoint;
   delete mToolDeletePoint;
   delete mToolMovePoint;
+  delete mDock;
 }
 
 // ----------------------------- protected --------------------------------- //
@@ -568,6 +597,17 @@ void QgsGeorefPluginGui::showGeorefConfigDialog()
   {
     mCanvas->refresh();
     mIface->mapCanvas()->refresh();
+    QSettings s;
+    //update dock state
+    bool dock = s.value( "/Plugin-GeoReferencer/Config/ShowDocked" ).toBool();
+    if ( dock && !mDock )
+    {
+      dockThisWindow( true );
+    }
+    else if ( !dock && mDock )
+    {
+      dockThisWindow( false );
+    }
   }
 }
 
