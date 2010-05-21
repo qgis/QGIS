@@ -19,15 +19,15 @@
      <property name="title">
       <string>Point tip</string>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
        <widget class="QCheckBox" name="mShowIDsCheckBox">
         <property name="text">
          <string>Show IDs</string>
         </property>
        </widget>
       </item>
-      <item>
+      <item row="1" column="0">
        <widget class="QCheckBox" name="mShowCoordsCheckBox">
         <property name="text">
          <string>Show coords</string>
@@ -38,6 +38,13 @@
     </widget>
    </item>
    <item row="1" column="0">
+    <widget class="QCheckBox" name="mShowDockedCheckBox">
+     <property name="text">
+      <string>Show Georeferencer window docked</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>

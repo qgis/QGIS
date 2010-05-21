@@ -70,6 +70,15 @@ void QgsGeorefConfigDialog::readSettings()
   {
     mShowCoordsCheckBox->setChecked( false );
   }
+
+  if ( s.value( "/Plugin-GeoReferencer/Config/ShowDocked" ).toBool() )
+  {
+    mShowDockedCheckBox->setChecked( true );
+  }
+  else
+  {
+    mShowDockedCheckBox->setChecked( false );
+  }
 }
 
 void QgsGeorefConfigDialog::writeSettings()
@@ -77,4 +86,5 @@ void QgsGeorefConfigDialog::writeSettings()
   QSettings s;
   s.setValue( "/Plugin-GeoReferencer/Config/ShowId", mShowIDsCheckBox->isChecked() );
   s.setValue( "/Plugin-GeoReferencer/Config/ShowCoords", mShowCoordsCheckBox->isChecked() );
+  s.setValue( "/Plugin-GeoReferencer/Config/ShowDocked", mShowDockedCheckBox->isChecked() );
 }

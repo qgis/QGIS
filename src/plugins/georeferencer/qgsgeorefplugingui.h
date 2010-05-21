@@ -159,6 +159,9 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     void logRequaredGCPs();
     void clearGCPData();
 
+    /**Docks / undocks this window*/
+    void dockThisWindow( bool dock );
+
 
     QMenu *mPanelMenu;
     QMenu *mToolbarMenu;
@@ -207,5 +210,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     bool mExtentsChangedRecursionGuard;
     bool mGCPsDirty;
     bool mLoadInQgis;
+
+    QDockWidget* mDock;
 };
 #endif
