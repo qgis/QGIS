@@ -108,40 +108,8 @@ void QgsLegendModel::setLayerSet( const QStringList& layerIds )
   for ( ; idIter != mLayerIds.constEnd(); ++idIter )
   {
     currentLayer = QgsMapLayerRegistry::instance()->mapLayer( *idIter );
-
-    //addItem for layer
-    QgsComposerLayerItem* layerItem = new QgsComposerLayerItem( currentLayer->name() );
-    layerItem->setLayerID( currentLayer->getLayerID() );
-    layerItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-
-    invisibleRootItem()->setChild( invisibleRootItem()->rowCount(), layerItem );
-
-    switch ( currentLayer->type() )
-    {
-      case QgsMapLayer::VectorLayer:
-      {
-        QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( currentLayer );
-        if ( vl )
-        {
-          if ( vl->isUsingRendererV2() )
-          {
-            addVectorLayerItemsV2( layerItem, vl );
-          }
-          else
-          {
-            addVectorLayerItems( layerItem, vl );
-          }
-        }
-        break;
-      }
-      case QgsMapLayer::RasterLayer:
-        addRasterLayerItem( layerItem, currentLayer );
-        break;
-      default:
-        break;
-    }
+    addLayer( currentLayer );
   }
-
 }
 
 QStandardItem* QgsLegendModel::addGroup( QString text, int position )
@@ -360,14 +328,12 @@ void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer )
     return;
   }
 
-  //append new layer item
-  QStandardItem* layerItem = new QStandardItem( theMapLayer->name() );
-  layerItem->setData( QgsLegendModel::LayerItem, Qt::UserRole + 1 ); //first user data stores the item type
-  layerItem->setData( QVariant( theMapLayer->getLayerID() ), Qt::UserRole + 2 );
+  QgsComposerLayerItem* layerItem = new QgsComposerLayerItem( theMapLayer->name() );
+  layerItem->setLayerID( theMapLayer->getLayerID() );
   layerItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+
   invisibleRootItem()->setChild( invisibleRootItem()->rowCount(), layerItem );
 
-  //and child items of layer
   switch ( theMapLayer->type() )
   {
     case QgsMapLayer::VectorLayer:
@@ -486,7 +452,7 @@ bool QgsLegendModel::writeXML( QDomElement& composerLegendElem, QDomDocument& do
   {
     currentItem = invisibleRootItem()->child( i, 0 );
     currentLegendItem = dynamic_cast<QgsComposerLegendItem*>( currentItem );
-    if ( currentItem )
+    if ( currentLegendItem )
     {
       currentLegendItem->writeXML( legendModelElem, doc );
     }
