@@ -706,7 +706,6 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
   mRendererV2->startRender( rendererContext, this );
 
 #ifndef Q_WS_MAC
-  int totalFeatures = pendingFeatureCount();
   int featureCount = 0;
 #endif //Q_WS_MAC
 
@@ -724,12 +723,12 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
       if ( mUpdateThreshold > 0 && 0 == featureCount % mUpdateThreshold )
       {
         emit screenUpdateRequested();
-        emit drawingProgress( featureCount, totalFeatures );
+        // emit drawingProgress( featureCount, totalFeatures );
         qApp->processEvents();
       }
       else if ( featureCount % 1000 == 0 )
       {
-        emit drawingProgress( featureCount, totalFeatures );
+        // emit drawingProgress( featureCount, totalFeatures );
         qApp->processEvents();
       }
 #endif //Q_WS_MAC
@@ -970,7 +969,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
       mVertexMarkerOnlyForSelection = settings.value( "/qgis/digitizing/marker_only_for_selected", false ).toBool();
     }
 
-    int totalFeatures = pendingFeatureCount();
+    // int totalFeatures = pendingFeatureCount();
     int featureCount = 0;
     QgsFeature fet;
     QgsAttributeList attributes = mRenderer->classificationAttributes();
@@ -1003,16 +1002,16 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
         if ( mUpdateThreshold > 0 && 0 == featureCount % mUpdateThreshold )
         {
           emit screenUpdateRequested();
-          emit drawingProgress( featureCount, totalFeatures );
+          // emit drawingProgress( featureCount, totalFeatures );
           qApp->processEvents();
         }
         else if ( featureCount % 1000 == 0 )
         {
-          emit drawingProgress( featureCount, totalFeatures );
+          // emit drawingProgress( featureCount, totalFeatures );
           qApp->processEvents();
         }
-#else
-        Q_UNUSED( totalFeatures );
+// #else
+//         Q_UNUSED( totalFeatures );
 #endif //Q_WS_MAC
 
         // check if feature is selected
