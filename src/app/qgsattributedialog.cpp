@@ -40,6 +40,7 @@
 #include <QUiLoader>
 #include <QDialog>
 #include <QVBoxLayout>
+#include <QLineEdit>
 
 QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature )
     : mDialog( 0 )
@@ -351,6 +352,10 @@ bool QgsAttributeDialog::eventFilter( QObject *obj, QEvent *e )
       default:
         break;
     }
+  }
+  else if ( e->type() == QEvent::FocusIn && qobject_cast<QLineEdit *>( obj ) )
+  {
+    qobject_cast<QLineEdit *>( obj )->selectAll();
   }
 
   return false;
