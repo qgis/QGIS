@@ -163,7 +163,7 @@ class QgsAttributeTableModel: public QAbstractTableModel
      * Rebuilds the model
      * @param onlyGeometry true if only geometry has changed
      */
-    virtual void layerModified( bool onlyGeometry );
+    virtual void layerModified( bool onlyGeometry = false );
 
   protected slots:
 #if 0

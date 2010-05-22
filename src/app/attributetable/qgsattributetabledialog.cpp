@@ -71,8 +71,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mColumnBox = columnBox;
   columnBoxInit();
 
-  QSettings mySettings;
-  bool myDockFlag = mySettings.value( "/qgis/dockAttributeTable", false ).toBool();
+  bool myDockFlag = settings.value( "/qgis/dockAttributeTable", false ).toBool();
   if ( myDockFlag )
   {
     mDock = new QgsAttributeTableDock( tr( "Attribute table - %1 (%n Feature(s))", "feature count", mModel->rowCount() ).arg( mLayer->name() ), QgisApp::instance() );
@@ -121,6 +120,11 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   connect( mView->verticalHeader(), SIGNAL( sectionClicked( int ) ), this, SLOT( updateRowSelection( int ) ) );
   connect( mView->verticalHeader(), SIGNAL( sectionPressed( int ) ), this, SLOT( updateRowPressed( int ) ) );
   connect( mModel, SIGNAL( modelChanged() ), this, SLOT( updateSelection() ) );
+
+  if ( settings.value( "/qgis/attributeTableBehaviour", 0 ).toInt() == 2 )
+  {
+    connect( QgisApp::instance()->mapCanvas(), SIGNAL( extentsChanged() ), mModel, SLOT( layerModified() ) );
+  }
 
   mLastClickedHeaderIndex = 0;
   mSelectionModel = new QItemSelectionModel( mFilterModel );
@@ -221,7 +225,19 @@ void QgsAttributeTableDialog::on_mCopySelectedRowsButton_clicked()
 
 void QgsAttributeTableDialog::on_mZoomMapToSelectedRowsButton_clicked()
 {
+  QSettings settings;
+  bool canvasFeatures = settings.value( "/qgis/attributeTableBehaviour", 0 ).toInt() == 2;
+  if ( canvasFeatures )
+  {
+    disconnect( QgisApp::instance()->mapCanvas(), SIGNAL( extentsChanged() ), mModel, SLOT( layerModified() ) );
+  }
+
   QgisApp::instance()->mapCanvas()->zoomToSelected( mLayer );
+
+  if ( canvasFeatures )
+  {
+    connect( QgisApp::instance()->mapCanvas(), SIGNAL( extentsChanged() ), mModel, SLOT( layerModified() ) );
+  }
 }
 
 void QgsAttributeTableDialog::on_mInvertSelectionButton_clicked()
