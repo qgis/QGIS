@@ -52,9 +52,9 @@
 #include <QMatrix>
 #include <QMenuBar>
 #include <QMessageBox>
+#include <QPageSetupDialog>
 #include <QPainter>
 
-#include <QPrinter>
 #include <QPrintDialog>
 #include <QSettings>
 #include <QIcon>
@@ -137,6 +137,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title ): QMainWindow(), 
   fileMenu->addAction( mActionExportAsPDF );
   fileMenu->addAction( mActionExportAsSVG );
   fileMenu->addSeparator();
+  fileMenu->addAction( mActionPageSetup );
   fileMenu->addAction( mActionPrint );
   fileMenu->addSeparator();
   fileMenu->addAction( mActionQuit );
@@ -486,26 +487,26 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
 
 void QgsComposer::on_mActionPrint_triggered()
 {
-  QPrinter printer;
+  //QPrinter printer;
   if ( mComposition )
   {
     if ( mComposition->paperWidth() >= mComposition->paperHeight() )
     {
-      printer.setOrientation( QPrinter::Landscape );
+      mPrinter.setOrientation( QPrinter::Landscape );
     }
     else
     {
-      printer.setOrientation( QPrinter::Portrait );
+      mPrinter.setOrientation( QPrinter::Portrait );
     }
   }
-  printer.setPaperSize( QSizeF( mComposition->paperWidth(), mComposition->paperHeight() ), QPrinter::Millimeter );
-  QPrintDialog printDialog( &printer, 0 );
+  mPrinter.setPaperSize( QSizeF( mComposition->paperWidth(), mComposition->paperHeight() ), QPrinter::Millimeter );
+  QPrintDialog printDialog( &mPrinter, 0 );
   if ( printDialog.exec() != QDialog::Accepted )
   {
     return;
   }
 
-  print( printer );
+  print( mPrinter );
 }
 
 void QgsComposer::print( QPrinter &printer )
@@ -1498,4 +1499,13 @@ void QgsComposer::cleanupAfterTemplateRead()
   }
 }
 
+void QgsComposer::on_mActionPageSetup_triggered()
+{
+  if ( !mComposition )
+  {
+    return;
+  }
 
+  QPageSetupDialog pageSetupDialog( &mPrinter, this );
+  pageSetupDialog.exec();
+}

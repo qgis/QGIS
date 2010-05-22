@@ -20,6 +20,7 @@
 #include "ui_qgscomposerbase.h"
 #include "qgscomposeritem.h"
 #include "qgscontexthelp.h"
+#include <QPrinter>
 
 class QgisApp;
 class QgsComposerArrow;
@@ -118,6 +119,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Print the composition
     void on_mActionPrint_triggered();
 
+    //! Page Setup for composition
+    void on_mActionPageSetup_triggered();
+
     //! Print as image
     void on_mActionExportAsImage_triggered();
 
@@ -201,7 +205,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Save window state
     void saveWindowState();
 
-    /**Add a composer arrow to the item/widget map and crete a configuration widget for it*/
+    /**Add a composer arrow to the item/widget map and creates a configuration widget for it*/
     void addComposerArrow( QgsComposerArrow* arrow );
 
     /**Add a composer map to the item/widget map and creates a configuration widget for it*/
@@ -299,6 +303,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 
     //! Window menu action to select this window
     QAction *mWindowAction;
+
+    //! Page & Printer Setup
+    QPrinter mPrinter;
 };
 
 #endif
