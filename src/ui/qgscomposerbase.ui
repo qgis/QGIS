@@ -474,6 +474,11 @@
     <string>Adds attribute table</string>
    </property>
   </action>
+  <action name="mActionPageSetup">
+   <property name="text">
+    <string>Page Setup</string>
+   </property>
+  </action>
  </widget>
  <tabstops>
   <tabstop>mCompositionNameComboBox</tabstop>
