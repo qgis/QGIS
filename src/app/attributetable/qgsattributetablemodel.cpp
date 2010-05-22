@@ -21,6 +21,7 @@
 #include "qgslogger.h"
 #include "qgisapp.h"
 #include "qgsattributeaction.h"
+#include "qgsmapcanvas.h"
 
 #include <QtGui>
 #include <QVariant>
@@ -35,9 +36,7 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayer *theLayer, QObjec
 {
   mFeat.setFeatureId( std::numeric_limits<int>::min() );
   mLayer = theLayer;
-  mFeatureCount = mLayer->pendingFeatureCount();
   loadAttributes();
-
 
   connect( mLayer, SIGNAL( layerModified( bool ) ), this, SLOT( layerModified( bool ) ) );
   //connect(mLayer, SIGNAL(attributeValueChanged(int, int, const QVariant&)), this, SLOT( attributeValueChanged(int, int, const QVariant&)));
@@ -52,6 +51,7 @@ bool QgsAttributeTableModel::featureAtId( int fid ) const
   return mLayer->featureAtId( fid, mFeat, false, true );
 }
 
+#if 0
 void QgsAttributeTableModel::featureDeleted( int fid )
 {
   QgsDebugMsg( "entered." );
@@ -83,6 +83,7 @@ void QgsAttributeTableModel::featureAdded( int fid )
   QgsDebugMsg( QString( "map sizes:%1, %2" ).arg( mRowIdMap.size() ).arg( mIdRowMap.size() ) );
   reload( index( 0, 0 ), index( rowCount(), columnCount() ) );
 }
+#endif
 
 void QgsAttributeTableModel::attributeAdded( int idx )
 {
@@ -189,37 +190,56 @@ void QgsAttributeTableModel::loadLayer()
   QgsFeature f;
   bool ins = false, rm = false;
 
+  int previousSize = mRowIdMap.size();
+
   mRowIdMap.clear();
   mIdRowMap.clear();
 
-  int pendingFeatureCount = mLayer->pendingFeatureCount();
-  if ( mFeatureCount < pendingFeatureCount )
+  QSettings settings;
+  int behaviour = settings.value( "/qgis/attributeTableBehaviour", 0 ).toInt();
+
+  if ( behaviour == 1 )
+  {
+    const QgsFeatureList &features = mLayer->selectedFeatures();
+
+    for ( int i = 0; i < features.size(); ++i )
+    {
+      mRowIdMap.insert( i, features[i].id() );
+      mIdRowMap.insert( features[i].id(), i );
+    }
+  }
+  else
+  {
+    QgsRectangle rect;
+    if ( behaviour == 2 )
+    {
+      // current canvas only
+      rect = QgisApp::instance()->mapCanvas()->extent();
+    }
+
+    mLayer->select( mAttributes, rect, false );
+
+    for ( int i = 0; mLayer->nextFeature( f ); ++i )
+    {
+      mRowIdMap.insert( i, f.id() );
+      mIdRowMap.insert( f.id(), i );
+    }
+  }
+
+  if ( previousSize < mRowIdMap.size() )
   {
     QgsDebugMsg( "ins" );
     ins = true;
-    beginInsertRows( QModelIndex(), mFeatureCount, pendingFeatureCount - 1 );
+    beginInsertRows( QModelIndex(), previousSize, mRowIdMap.size() - 1 );
   }
-  else if ( mFeatureCount > pendingFeatureCount )
+  else if ( previousSize > mRowIdMap.size() )
   {
     QgsDebugMsg( "rm" );
     rm = true;
-    beginRemoveRows( QModelIndex(), pendingFeatureCount, mFeatureCount - 1 );
-  }
-
-  mLayer->select( mAttributes, QgsRectangle(), false );
-
-  // preallocate data before inserting
-  mRowIdMap.reserve( pendingFeatureCount + 50 );
-  mIdRowMap.reserve( pendingFeatureCount + 50 );
-
-  for ( int i = 0; mLayer->nextFeature( f ); ++i )
-  {
-    mRowIdMap.insert( i, f.id() );
-    mIdRowMap.insert( f.id(), i );
+    beginRemoveRows( QModelIndex(), mRowIdMap.size(), previousSize - 1 );
   }
 
   // not needed when we have featureAdded signal
-  mFeatureCount = mLayer->pendingFeatureCount();
   mFieldCount = mAttributes.size();
 
   if ( ins )
@@ -287,7 +307,7 @@ int QgsAttributeTableModel::fieldIdx( int col ) const
 
 int QgsAttributeTableModel::rowCount( const QModelIndex &parent ) const
 {
-  return mFeatureCount;
+  return mRowIdMap.size();
 }
 
 int QgsAttributeTableModel::columnCount( const QModelIndex &parent ) const
