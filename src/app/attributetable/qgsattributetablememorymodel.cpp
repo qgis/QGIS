@@ -60,6 +60,7 @@ bool QgsAttributeTableMemoryModel::featureAtId( int fid )
   }
 }
 
+#if 0
 void QgsAttributeTableMemoryModel::featureDeleted( int fid )
 {
   QgsDebugMsg( "entered." );
@@ -75,6 +76,7 @@ void QgsAttributeTableMemoryModel::featureAdded( int fid )
   mFeatureMap.insert( fid, f );
   QgsAttributeTableModel::featureAdded( fid );
 }
+#endif
 
 void QgsAttributeTableMemoryModel::layerDeleted()
 {

@@ -166,6 +166,7 @@ class QgsAttributeTableModel: public QAbstractTableModel
     virtual void layerModified( bool onlyGeometry );
 
   protected slots:
+#if 0
     /**
      * Launched when a feature has been deleted
      * @param fid feature id
@@ -176,6 +177,7 @@ class QgsAttributeTableModel: public QAbstractTableModel
      * @param fid feature id
      */
     virtual void featureAdded( int fid );
+#endif
     /**
      * Launched when layer has been deleted
      */
@@ -183,7 +185,6 @@ class QgsAttributeTableModel: public QAbstractTableModel
 
   protected:
     QgsVectorLayer *mLayer;
-    int mFeatureCount;
     int mFieldCount;
 
     mutable QgsFeature mFeat;
