@@ -102,6 +102,8 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     void showMouseCoords( const QgsPoint pt );
     void updateMouseCoordinatePrecision();
 
+    bool updateGeorefTransform();
+
   private:
     enum SaveGCPs
     {
@@ -133,6 +135,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     bool georeference();
     bool writeWorldFile( QgsPoint origin, double pixelXSize, double pixelYSize, double rotation );
     bool writePDFReportFile( const QString& fileName, const QgsGeorefTransform& transform );
+    void updateTransformParamLabel();
 
     // gdal script
     void showGDALScript( int argNum... );
@@ -145,7 +148,6 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
 
     // utils
     bool checkReadyGeoref();
-    bool updateGeorefTransform();
     QgsRectangle transformViewportBoundingBox( const QgsRectangle &canvasExtent, const QgsGeorefTransform &t,
         bool rasterToWorld = true, uint numSamples = 4 );
     QString convertTransformEnumToString( QgsGeorefTransform::TransformParametrisation transform );
@@ -158,6 +160,16 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     void logTransformOptions();
     void logRequaredGCPs();
     void clearGCPData();
+
+    /**
+     * Calculates root mean squared error for the currently active
+     * ground control points and transform method.
+     * Note that he RMSE measure is adjusted for the degrees of freedom of the
+     * used polynomial transform.
+     * @param error out: the mean error
+     * @return true in case of success
+     */
+    bool calculateMeanError( double& error ) const;
 
     /**Docks / undocks this window*/
     void dockThisWindow( bool dock );

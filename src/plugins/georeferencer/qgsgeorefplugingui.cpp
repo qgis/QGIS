@@ -136,7 +136,6 @@ void QgsGeorefPluginGui::dockThisWindow( bool dock )
 
 QgsGeorefPluginGui::~QgsGeorefPluginGui()
 {
-  QgsTransformSettingsDialog::resetSettings();
   clearGCPData();
 
   // delete layer (and don't signal it as it's our private layer)
@@ -336,6 +335,7 @@ bool QgsGeorefPluginGui::getTransformSettings()
     mActionLinkQGisToGeoref->setEnabled( false );
   }
 
+  updateTransformParamLabel();
   return true;
 }
 
@@ -472,6 +472,7 @@ void QgsGeorefPluginGui::addPoint( const QgsPoint& pixelCoords, const QgsPoint& 
   }
 
   connect( mCanvas, SIGNAL( extentsChanged() ), pnt, SLOT( updateCoords() ) );
+  updateGeorefTransform();
 
   //  if (verbose)
   //    logRequaredGCPs();
@@ -498,6 +499,7 @@ void QgsGeorefPluginGui::deleteDataPoint( const QPoint &coords )
       break;
     }
   }
+  updateGeorefTransform();
 }
 
 void QgsGeorefPluginGui::deleteDataPoint( int index )
@@ -505,6 +507,7 @@ void QgsGeorefPluginGui::deleteDataPoint( int index )
   mGCPListWidget->model()->removeRow( index );
   delete mPoints.takeAt( index );
   mGCPListWidget->updateGCPList();
+  updateGeorefTransform();
 }
 
 void QgsGeorefPluginGui::selectPoint( const QPoint &p )
@@ -930,11 +933,23 @@ void QgsGeorefPluginGui::createDockWidgets()
            this, SLOT( replaceDataPoint( QgsGeorefDataPoint*, int ) ) );
   connect( mGCPListWidget, SIGNAL( deleteDataPoint( int ) ),
            this, SLOT( deleteDataPoint( int ) ) );
+  connect( mGCPListWidget, SIGNAL( pointEnabled( QgsGeorefDataPoint*, int ) ), this, SLOT( updateGeorefTransform() ) );
 }
 
 void QgsGeorefPluginGui::createStatusBar()
 {
   QFont myFont( "Arial", 9 );
+
+  mTransformParamLabel = new QLabel( statusBar() );
+  mTransformParamLabel->setFont( myFont );
+  mTransformParamLabel->setMinimumWidth( 10 );
+  mTransformParamLabel->setMaximumHeight( 20 );
+  mTransformParamLabel->setMargin( 3 );
+  mTransformParamLabel->setAlignment( Qt::AlignCenter );
+  mTransformParamLabel->setFrameStyle( QFrame::NoFrame );
+  mTransformParamLabel->setText( tr( "Transform: " ) + convertTransformEnumToString( mTransformParam ) );
+  mTransformParamLabel->setToolTip( tr( "Current transform parametrisation" ) );
+  statusBar()->addPermanentWidget( mTransformParamLabel, 0 );
 
   mCoordsLabel = new QLabel( QString(), statusBar() );
   mCoordsLabel->setFont( myFont );
@@ -947,17 +962,6 @@ void QgsGeorefPluginGui::createStatusBar()
   mCoordsLabel->setText( tr( "Coordinate: " ) );
   mCoordsLabel->setToolTip( tr( "Current map coordinate" ) );
   statusBar()->addPermanentWidget( mCoordsLabel, 0 );
-
-  mTransformParamLabel = new QLabel( statusBar() );
-  mTransformParamLabel->setFont( myFont );
-  mTransformParamLabel->setMinimumWidth( 10 );
-  mTransformParamLabel->setMaximumHeight( 20 );
-  mTransformParamLabel->setMargin( 3 );
-  mTransformParamLabel->setAlignment( Qt::AlignCenter );
-  mTransformParamLabel->setFrameStyle( QFrame::NoFrame );
-  mTransformParamLabel->setText( tr( "Transform: " ) + convertTransformEnumToString( mTransformParam ) );
-  mTransformParamLabel->setToolTip( tr( "Current transform parametrisation" ) );
-  statusBar()->addPermanentWidget( mTransformParamLabel, 0 );
 }
 
 void QgsGeorefPluginGui::setupConnections()
@@ -1208,6 +1212,53 @@ bool QgsGeorefPluginGui::writeWorldFile( QgsPoint origin, double pixelXSize, dou
   return true;
 }
 
+bool QgsGeorefPluginGui::calculateMeanError( double& error ) const
+{
+  if ( mGeorefTransform.transformParametrisation() == QgsGeorefTransform::InvalidTransform )
+  {
+    return false;
+  }
+
+  int nPointsEnabled = 0;
+  QgsGCPList::const_iterator gcpIt = mPoints.constBegin();
+  for ( ; gcpIt != mPoints.constEnd(); ++gcpIt )
+  {
+    if (( *gcpIt )->isEnabled() )
+    {
+      ++nPointsEnabled;
+    }
+  }
+
+  if ( nPointsEnabled == mGeorefTransform.getMinimumGCPCount() )
+  {
+    error = 0;
+    return true;
+  }
+  else if ( nPointsEnabled < mGeorefTransform.getMinimumGCPCount() )
+  {
+    return false;
+  }
+
+  double sumVxSquare = 0;
+  double sumVySquare = 0;
+  double resXMap, resYMap;
+
+  gcpIt = mPoints.constBegin();
+  for ( ; gcpIt != mPoints.constEnd(); ++gcpIt )
+  {
+    if (( *gcpIt )->isEnabled() )
+    {
+      sumVxSquare += (( *gcpIt )->residual().x() * ( *gcpIt )->residual().x() );
+      sumVySquare += (( *gcpIt )->residual().y() * ( *gcpIt )->residual().y() );
+    }
+  }
+
+  // Calculate the root mean square error, adjusted for degrees of freedom of the transform
+  // Caveat: The number of DoFs is assumed to be even (as each control point fixes two degrees of freedom).
+  error = sqrt(( sumVxSquare + sumVySquare ) / ( nPointsEnabled - mGeorefTransform.getMinimumGCPCount() ));
+  return true;
+}
+
 bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsGeorefTransform& transform )
 {
   if ( !mCanvas )
@@ -1250,7 +1301,24 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
   titleLabel->setFrame( false );
 
   //composer map
-  QgsComposerMap* composerMap = new QgsComposerMap( composition, 2, titleLabel->rect().bottom() + titleLabel->transform().dy(), 206, 277 );
+  QgsRectangle canvasExtent = mCanvas->extent();
+  //calculate width and height considering extent aspect ratio and max Width 206, maxHeight 70
+  double widthExtentRatio = 206 / canvasExtent.width();
+  double heightExtentRatio = 70 / canvasExtent.height();
+  double mapWidthMM = 0;
+  double mapHeightMM = 0;
+  if ( widthExtentRatio < heightExtentRatio )
+  {
+    mapWidthMM = 206;
+    mapHeightMM = 206 / canvasExtent.width() * canvasExtent.height();
+  }
+  else
+  {
+    mapHeightMM = 70;
+    mapWidthMM = 70 / canvasExtent.height() * canvasExtent.width();
+  }
+
+  QgsComposerMap* composerMap = new QgsComposerMap( composition, 2, titleLabel->rect().bottom() + titleLabel->transform().dy(), mapWidthMM, mapHeightMM );
   composerMap->setLayerSet( canvasRenderer->layerSet() );
   composerMap->setNewExtent( mCanvas->extent() );
   composerMap->setMapCanvas( mCanvas );
@@ -1266,26 +1334,9 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
   //transformation that involves only scaling and rotation (linear or helmert) ?
   bool wldTransform = transform.getOriginScaleRotation( origin, scaleX, scaleY, rotation );
 
-  //consider rotation in scale parameter
-  double wldScaleX = scaleX;
-  double wldScaleY = scaleY;
-  if ( wldTransform && !doubleNear( rotation, 0.0 ) )
-  {
-    wldScaleX *= cos( rotation );
-    wldScaleY *= cos( rotation );
-  }
-
   if ( wldTransform )
   {
-    QString parameterTitle = tr( "Transformation parameters" );
-    if ( transform.transformParametrisation() == QgsGeorefTransform::Helmert )
-    {
-      parameterTitle += " (Helmert)";
-    }
-    else if ( transform.transformParametrisation() == QgsGeorefTransform::Linear )
-    {
-      parameterTitle += " (Linear)";
-    }
+    QString parameterTitle = tr( "Transformation parameters" ) + QString( " (" ) + convertTransformEnumToString( transform.transformParametrisation() ) + QString( ")" );
     parameterLabel = new QgsComposerLabel( composition );
     parameterLabel->setFont( titleFont );
     parameterLabel->setText( parameterTitle );
@@ -1304,29 +1355,9 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
       }
     }
 
-    //calculate mean error (in map units)
+    //calculate mean error
     double meanError = 0;
-    if ( nPointsEnabled > 2 )
-    {
-      double sumVxSquare = 0;
-      double sumVySquare = 0;
-      double resXMap, resYMap;
-
-      QgsGCPList::const_iterator gcpIt = mPoints.constBegin();
-      for ( ; gcpIt != mPoints.constEnd(); ++gcpIt )
-      {
-        if (( *gcpIt )->isEnabled() )
-        {
-          resXMap = ( *gcpIt )->residual().x() * wldScaleX;
-          resYMap = ( *gcpIt )->residual().y() * wldScaleY;
-          sumVxSquare += ( resXMap * resXMap );
-          sumVySquare += ( resYMap * resYMap );
-        }
-      }
-
-      meanError = sqrt(( sumVxSquare + sumVySquare ) / ( 2 * nPointsEnabled - 4 ) ) * sqrt( 2.0 );
-    }
-
+    calculateMeanError( meanError );
 
     parameterTable = new QgsComposerTextTable( composition );
     parameterTable->setHeaderFont( tableHeaderFont );
@@ -1366,7 +1397,7 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
   //convert residual scale bar plot to map units if scaling is equal in x- and y-direction (e.g. helmert)
   if ( wldTransform )
   {
-    if ( doubleNear( wldScaleX, wldScaleY ) )
+    if ( doubleNear( scaleX, scaleX ) )
     {
       resPlotItem->setPixelToMapUnits( scaleX );
       resPlotItem->setConvertScaleToMapUnits( true );
@@ -1394,17 +1425,7 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
   {
     QStringList currentGCPStrings;
     QPointF residual = ( *gcpIt )->residual();
-    double residualX = residual.x();
-    if ( wldTransform )
-    {
-      residualX *= wldScaleX;
-    }
-    double residualY = residual.y();
-    if ( wldTransform )
-    {
-      residualY *= wldScaleY;
-    }
-    double residualTot = sqrt( residualX * residualX + residualY * residualY );
+    double residualTot = sqrt( residual.x() * residual.x() +  residual.y() * residual.y() );
 
     currentGCPStrings << QString::number(( *gcpIt )->id() );
     if (( *gcpIt )->isEnabled() )
@@ -1416,7 +1437,7 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
       currentGCPStrings << tr( "no" );
     }
     currentGCPStrings << QString::number(( *gcpIt )->pixelCoords().x(), 'f', 2 ) << QString::number(( *gcpIt )->pixelCoords().y(), 'f', 2 ) << QString::number(( *gcpIt )->mapCoords().x(), 'f', 2 )\
-    <<  QString::number(( *gcpIt )->mapCoords().y(), 'f', 2 ) <<  QString::number( residualX ) <<  QString::number( residualY ) << QString::number( residualTot );
+    <<  QString::number(( *gcpIt )->mapCoords().y(), 'f', 2 ) <<  QString::number( residual.x() ) <<  QString::number( residual.y() ) << QString::number( residualTot );
     gcpTable->addRow( currentGCPStrings );
   }
 
@@ -1441,6 +1462,35 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
   delete composerMap;
   delete composition;
   return true;
+}
+
+void QgsGeorefPluginGui::updateTransformParamLabel()
+{
+  if ( !mTransformParamLabel )
+  {
+    return;
+  }
+
+  QString transformName = convertTransformEnumToString( mGeorefTransform.transformParametrisation() );
+  QString labelString = tr( "Transform: " ) + transformName;
+
+  QgsPoint origin;
+  double scaleX, scaleY, rotation;
+  if ( mGeorefTransform.getOriginScaleRotation( origin, scaleX, scaleY, rotation ) )
+  {
+    labelString += " ";
+    labelString += tr( "Translation (%1, %2)" ).arg( origin.x() ).arg( origin.y() ); labelString += " ";
+    labelString += tr( "Scale (%1, %2)" ).arg( scaleX ).arg( scaleY ); labelString += " ";
+    labelString += tr( "Rotation: %1" ).arg( rotation );
+  }
+
+  double meanError = 0;
+  if ( calculateMeanError( meanError ) )
+  {
+    labelString += " ";
+    labelString += tr( "Mean error: %1" ).arg( meanError );
+  }
+  mTransformParamLabel->setText( labelString );
 }
 
 // Gdal script
@@ -1605,22 +1655,20 @@ bool QgsGeorefPluginGui::checkReadyGeoref()
 
 bool QgsGeorefPluginGui::updateGeorefTransform()
 {
-  if ( mGCPsDirty || !mGeorefTransform.parametersInitialized() )
+  std::vector<QgsPoint> mapCoords, pixelCoords;
+  if ( mGCPListWidget->gcpList() )
+    mGCPListWidget->gcpList()->createGCPVectors( mapCoords, pixelCoords );
+  else
+    return false;
+
+  // Parametrize the transform with GCPs
+  if ( !mGeorefTransform.updateParametersFromGCPs( mapCoords, pixelCoords ) )
   {
-    std::vector<QgsPoint> mapCoords, pixelCoords;
-    if ( mGCPListWidget->gcpList() )
-      mGCPListWidget->gcpList()->createGCPVectors( mapCoords, pixelCoords );
-    else
-      return false;
-
-    // Parametrize the transform with GCPs
-    if ( !mGeorefTransform.updateParametersFromGCPs( mapCoords, pixelCoords ) )
-    {
-      return false;
-    }
-
-    mGCPsDirty = false;
+    return false;
   }
+
+  mGCPsDirty = false;
+  updateTransformParamLabel();
   return true;
 }
 
