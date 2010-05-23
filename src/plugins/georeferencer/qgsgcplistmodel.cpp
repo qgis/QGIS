@@ -16,7 +16,7 @@
 
 #include "qgsgcplist.h"
 #include "qgsgcplistmodel.h"
-
+#include "qgis.h"
 #include "qgsgeorefdatapoint.h"
 #include "qgsgeoreftransform.h"
 
@@ -85,15 +85,11 @@ void QgsGCPListModel::updateModel()
   if ( !mGCPList )
     return;
 
-//  // Setup table header
-  QStringList itemLabels;
-//  // Set column headers
-  itemLabels << "on/off" << "id" << "srcX" << "srcY" << "dstX" << "dstY" << "dX" << "dY" << "residual";
-//  setColumnCount(itemLabels.size());
-  setHorizontalHeaderLabels( itemLabels );
-  setRowCount( mGCPList->size() );
-
   bool bTransformUpdated = false;
+  bool wldTransform = false;
+  double wldScaleX, wldScaleY, rotation;
+  QgsPoint origin;
+
   if ( mGeorefTransform )
   {
     vector<QgsPoint> mapCoords, pixelCoords;
@@ -101,7 +97,31 @@ void QgsGCPListModel::updateModel()
 
     // TODO: the parameters should probable be updated externally (by user interaction)
     bTransformUpdated = mGeorefTransform->updateParametersFromGCPs( mapCoords, pixelCoords );
+    //transformation that involves only scaling and rotation (linear or helmert) ?
+    wldTransform = mGeorefTransform->getOriginScaleRotation( origin, wldScaleX, wldScaleY, rotation );
+    if ( wldTransform && !doubleNear( rotation, 0.0 ) )
+    {
+      wldScaleX *= cos( rotation );
+      wldScaleY *= cos( rotation );
+    }
+    if ( wldTransform )
+    {
+
+    }
   }
+
+  //  // Setup table header
+  QStringList itemLabels;
+  if ( wldTransform )
+  {
+    itemLabels << "on/off" << "id" << "srcX" << "srcY" << "dstX" << "dstY" << QString( "dX[" ) + tr( "map units" ) + "]" << QString( "dY[" ) + tr( "map units" ) + "]" << "residual";
+  }
+  else
+  {
+    itemLabels << "on/off" << "id" << "srcX" << "srcY" << "dstX" << "dstY" << QString( "dX[" ) + tr( "pixels" ) + "]" << QString( "dY[" ) + tr( "pixels" ) + "]" << "residual";
+  }
+  setHorizontalHeaderLabels( itemLabels );
+  setRowCount( mGCPList->size() );
 
   for ( int i = 0; i < mGCPList->sizeAll(); ++i )
   {
@@ -135,8 +155,13 @@ void QgsGCPListModel::updateModel()
       // As transforms of order >=2 are not invertible, we are only
       // interested in the residual in this direction
       mGeorefTransform->transformWorldToRaster( p->mapCoords(), dst );
-      dX =  ( dst.x() - p->pixelCoords().x() );
+      dX = ( dst.x() - p->pixelCoords().x() );
       dY = -( dst.y() - p->pixelCoords().y() );
+      if ( wldTransform )
+      {
+        dX *= wldScaleX;
+        dY *= wldScaleY;
+      }
       residual = sqrt( dX * dX + dY * dY );
     }
     else
@@ -152,7 +177,7 @@ void QgsGCPListModel::updateModel()
     if ( residual >= 0.f )
     {
       setItem( i, j++, QGSSTANDARDITEM( dX ) /*create_item<double>(dX)*/ );
-      setItem( i, j++, QGSSTANDARDITEM( dY ) /*create_item<double>(-dY)*/);
+      setItem( i, j++, QGSSTANDARDITEM( dY ) /*create_item<double>(-dY)*/ );
       setItem( i, j++, QGSSTANDARDITEM( residual ) /*create_item<double>(residual)*/ );
     }
     else
