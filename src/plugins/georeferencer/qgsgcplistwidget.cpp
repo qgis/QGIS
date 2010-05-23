@@ -109,15 +109,14 @@ void QgsGCPListWidget::itemClicked( QModelIndex index )
     if ( item->checkState() == Qt::Checked )
     {
       p->setEnabled( true );
-      emit pointEnabled( p, index.row() );
     }
     else // Qt::Unchecked
     {
       p->setEnabled( false );
-      emit pointEnabled( p, index.row() );
     }
 
     mGCPListModel->updateModel();
+    emit pointEnabled( p, index.row() );
     adjustTableContent();
   }
 

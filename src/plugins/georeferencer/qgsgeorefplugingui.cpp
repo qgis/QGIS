@@ -1345,16 +1345,6 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
     parameterLabel->setSceneRect( QRectF( 2, composerMap->rect().bottom() + composerMap->transform().dy() + 5, composition->paperWidth(), 8 ) );
     parameterLabel->setFrame( false );
 
-    int nPointsEnabled = 0;
-    QgsGCPList::const_iterator gcpIt = mPoints.constBegin();
-    for ( ; gcpIt != mPoints.constEnd(); ++gcpIt )
-    {
-      if (( *gcpIt )->isEnabled() )
-      {
-        ++nPointsEnabled;
-      }
-    }
-
     //calculate mean error
     double meanError = 0;
     calculateMeanError( meanError );
