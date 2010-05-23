@@ -112,14 +112,9 @@ void QgsGCPListModel::updateModel()
 
   //  // Setup table header
   QStringList itemLabels;
-  if ( wldTransform )
-  {
-    itemLabels << "on/off" << "id" << "srcX" << "srcY" << "dstX" << "dstY" << QString( "dX[" ) + tr( "map units" ) + "]" << QString( "dY[" ) + tr( "map units" ) + "]" << "residual";
-  }
-  else
-  {
-    itemLabels << "on/off" << "id" << "srcX" << "srcY" << "dstX" << "dstY" << QString( "dX[" ) + tr( "pixels" ) + "]" << QString( "dY[" ) + tr( "pixels" ) + "]" << "residual";
-  }
+  QString unitType = wldTransform ? tr( "map units" ) : tr ("pixels");
+  itemLabels << "on/off" << "id" << "srcX" << "srcY" << "dstX" << "dstY" << QString( "dX[" ) + unitType + "]" << QString( "dY[" ) + unitType + "]" << "residual[" + unitType + "]";
+
   setHorizontalHeaderLabels( itemLabels );
   setRowCount( mGCPList->size() );
 
