@@ -1,4 +1,4 @@
-#if !SQLITE_SYSTEM
+#if !SQLITE_QSYSTEM
 
 #include "../../src/app/qgsspatialitesourceselect.cpp"
 
