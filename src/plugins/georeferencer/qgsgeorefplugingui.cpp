@@ -1219,7 +1219,7 @@ bool QgsGeorefPluginGui::calculateMeanError( double& error ) const
     return false;
   }
 
-  int nPointsEnabled = 0;
+  unsigned int nPointsEnabled = 0;
   QgsGCPList::const_iterator gcpIt = mPoints.constBegin();
   for ( ; gcpIt != mPoints.constEnd(); ++gcpIt )
   {
@@ -1241,7 +1241,6 @@ bool QgsGeorefPluginGui::calculateMeanError( double& error ) const
 
   double sumVxSquare = 0;
   double sumVySquare = 0;
-  double resXMap, resYMap;
 
   gcpIt = mPoints.constBegin();
   for ( ; gcpIt != mPoints.constEnd(); ++gcpIt )
