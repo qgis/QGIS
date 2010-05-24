@@ -36,9 +36,6 @@ class QgsGeometry;
 
 #include "qgsdatasourceuri.h"
 
-#include "qgspostgrescountthread.h"
-#include "qgspostgresextentthread.h"
-
 /**
   \class QgsPostgresProvider
   \brief Data provider for PostgreSQL/PostGIS layers.
@@ -374,12 +371,6 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     //! Data source URI struct for this layer
     QgsDataSourceURI mUri;
-
-    //! Child thread for calculating extents.
-    QgsPostgresExtentThread mExtentThread;
-
-    //! Child thread for calculating count.
-    QgsPostgresCountThread mCountThread;
 
     /**
      * Flag indicating if the layer data source is a valid PostgreSQL layer
