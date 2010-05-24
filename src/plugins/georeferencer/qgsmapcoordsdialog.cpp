@@ -134,6 +134,8 @@ void QgsMapCoordsDialog::setToolEmitPoint( bool isEnable )
   if ( isEnable )
   {
     parentWidget()->showMinimized();
+
+    assert( parentWidget()->parentWidget() != 0 );
     parentWidget()->parentWidget()->activateWindow();
     parentWidget()->parentWidget()->raise();
 

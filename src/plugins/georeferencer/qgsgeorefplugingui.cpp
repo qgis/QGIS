@@ -117,8 +117,9 @@ void QgsGeorefPluginGui::dockThisWindow( bool dock )
 {
   if ( mDock )
   {
-    setParent( 0 );
+    setParent( mIface->mainWindow(), Qt::Window );
     show();
+
     mIface->removeDockWidget( mDock );
     mDock->setWidget( 0 );
     delete mDock;
