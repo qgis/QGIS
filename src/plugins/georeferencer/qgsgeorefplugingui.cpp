@@ -62,20 +62,22 @@
 
 #include "qgsgeorefplugingui.h"
 
-class QgsGeorefDockWidget : public QDockWidget
-{
-  public:
-    QgsGeorefDockWidget( const QString & title, QWidget * parent = 0, Qt::WindowFlags flags = 0 )
-        : QDockWidget( title, parent, flags )
-    {
-      setObjectName( "GeorefDockWidget" ); // set object name so the position can be saved
-    }
 
-    virtual void closeEvent( QCloseEvent * ev )
-    {
-      deleteLater();
-    }
-};
+QgsGeorefDockWidget::QgsGeorefDockWidget( const QString & title, QWidget * parent, Qt::WindowFlags flags )
+    : QDockWidget( title, parent, flags )
+{
+  setObjectName( "GeorefDockWidget" ); // set object name so the position can be saved
+}
+
+void QgsGeorefDockWidget::closeEvent( QCloseEvent * ev )
+{
+  if (widget() && !widget()->close())
+  {
+    ev->ignore();
+    return;
+  }
+  deleteLater();
+}
 
 QgsGeorefPluginGui::QgsGeorefPluginGui( QgisInterface* theQgisInterface, QWidget* parent, Qt::WFlags fl )
     : QMainWindow( parent, fl )
@@ -130,7 +132,6 @@ void QgsGeorefPluginGui::dockThisWindow( bool dock )
   {
     mDock = new QgsGeorefDockWidget( tr( "Georeferencer" ), mIface->mainWindow() );
     mDock->setWidget( this );
-    connect( this, SIGNAL( destroyed() ), mDock, SLOT( close() ) );
     mIface->addDockWidget( Qt::BottomDockWidgetArea, mDock );
   }
 }
@@ -151,6 +152,7 @@ QgsGeorefPluginGui::~QgsGeorefPluginGui()
   delete mToolAddPoint;
   delete mToolDeletePoint;
   delete mToolMovePoint;
+
 }
 
 // ----------------------------- protected --------------------------------- //
@@ -929,8 +931,8 @@ void QgsGeorefPluginGui::createDockWidgets()
   dockWidgetGCPpoints->setWidget( mGCPListWidget );
 
   connect( mGCPListWidget, SIGNAL( jumpToGCP( uint ) ), this, SLOT( jumpToGCP( uint ) ) );
-  connect( mGCPListWidget, SIGNAL( replaceDataPoint( QgsGeorefDataPoint*, int ) ),
-           this, SLOT( replaceDataPoint( QgsGeorefDataPoint*, int ) ) );
+  /*connect( mGCPListWidget, SIGNAL( replaceDataPoint( QgsGeorefDataPoint*, int ) ),
+           this, SLOT( replaceDataPoint( QgsGeorefDataPoint*, int ) ) );*/
   connect( mGCPListWidget, SIGNAL( deleteDataPoint( int ) ),
            this, SLOT( deleteDataPoint( int ) ) );
   connect( mGCPListWidget, SIGNAL( pointEnabled( QgsGeorefDataPoint*, int ) ), this, SLOT( updateGeorefTransform() ) );

@@ -225,4 +225,13 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
 
     QDockWidget* mDock;
 };
+
+class QgsGeorefDockWidget : public QDockWidget
+{
+    Q_OBJECT
+  public:
+    QgsGeorefDockWidget( const QString & title, QWidget * parent = 0, Qt::WindowFlags flags = 0 );
+    virtual void closeEvent( QCloseEvent * ev );
+};
+
 #endif
