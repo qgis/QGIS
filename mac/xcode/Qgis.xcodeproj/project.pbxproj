@@ -1188,10 +1188,6 @@
 		72A07DA60F3BDFA3004FC2A4 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		72A07DBD0F3BDFC8004FC2A4 /* libqgis_core.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 7209F1D20F39E760003DC336 /* libqgis_core.dylib */; };
 		72A07DC60F3BE1B1004FC2A4 /* qgspostgresprovider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC720F39E57B003DC336 /* qgspostgresprovider.cpp */; };
-		72A07DC70F3BE1B4004FC2A4 /* qgspostgisbox2d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC6A0F39E57B003DC336 /* qgspostgisbox2d.cpp */; };
-		72A07DC80F3BE1B5004FC2A4 /* qgspostgisbox3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC6C0F39E57B003DC336 /* qgspostgisbox3d.cpp */; };
-		72A07DC90F3BE1B8004FC2A4 /* qgspostgrescountthread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC6E0F39E57B003DC336 /* qgspostgrescountthread.cpp */; };
-		72A07DCA0F3BE1BB004FC2A4 /* qgspostgresextentthread.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC700F39E57B003DC336 /* qgspostgresextentthread.cpp */; };
 		72A07DDA0F3BE4A0004FC2A4 /* gpsdata.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC510F39E57B003DC336 /* gpsdata.cpp */; };
 		72A07DDB0F3BE4A1004FC2A4 /* qgsgpxprovider.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC530F39E57B003DC336 /* qgsgpxprovider.cpp */; };
 		72A07DF00F3BE76B004FC2A4 /* qgswfsdata.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 7209EC760F39E57B003DC336 /* qgswfsdata.cpp */; };
@@ -4395,14 +4391,6 @@
 		7209EC650F39E57B003DC336 /* qgsogrprovider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsogrprovider.h; path = ../../src/providers/ogr/qgsogrprovider.h; sourceTree = SOURCE_ROOT; };
 		7209EC680F39E57B003DC336 /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../src/providers/postgres/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
 		7209EC690F39E57B003DC336 /* create_test_tables */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = create_test_tables; path = ../../src/providers/postgres/create_test_tables; sourceTree = SOURCE_ROOT; };
-		7209EC6A0F39E57B003DC336 /* qgspostgisbox2d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgspostgisbox2d.cpp; path = ../../src/providers/postgres/qgspostgisbox2d.cpp; sourceTree = SOURCE_ROOT; };
-		7209EC6B0F39E57B003DC336 /* qgspostgisbox2d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgspostgisbox2d.h; path = ../../src/providers/postgres/qgspostgisbox2d.h; sourceTree = SOURCE_ROOT; };
-		7209EC6C0F39E57B003DC336 /* qgspostgisbox3d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgspostgisbox3d.cpp; path = ../../src/providers/postgres/qgspostgisbox3d.cpp; sourceTree = SOURCE_ROOT; };
-		7209EC6D0F39E57B003DC336 /* qgspostgisbox3d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgspostgisbox3d.h; path = ../../src/providers/postgres/qgspostgisbox3d.h; sourceTree = SOURCE_ROOT; };
-		7209EC6E0F39E57B003DC336 /* qgspostgrescountthread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgspostgrescountthread.cpp; path = ../../src/providers/postgres/qgspostgrescountthread.cpp; sourceTree = SOURCE_ROOT; };
-		7209EC6F0F39E57B003DC336 /* qgspostgrescountthread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgspostgrescountthread.h; path = ../../src/providers/postgres/qgspostgrescountthread.h; sourceTree = SOURCE_ROOT; };
-		7209EC700F39E57B003DC336 /* qgspostgresextentthread.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgspostgresextentthread.cpp; path = ../../src/providers/postgres/qgspostgresextentthread.cpp; sourceTree = SOURCE_ROOT; };
-		7209EC710F39E57B003DC336 /* qgspostgresextentthread.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgspostgresextentthread.h; path = ../../src/providers/postgres/qgspostgresextentthread.h; sourceTree = SOURCE_ROOT; };
 		7209EC720F39E57B003DC336 /* qgspostgresprovider.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgspostgresprovider.cpp; path = ../../src/providers/postgres/qgspostgresprovider.cpp; sourceTree = SOURCE_ROOT; };
 		7209EC730F39E57B003DC336 /* qgspostgresprovider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgspostgresprovider.h; path = ../../src/providers/postgres/qgspostgresprovider.h; sourceTree = SOURCE_ROOT; };
 		7209EC750F39E57B003DC336 /* CMakeLists.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = CMakeLists.txt; path = ../../src/providers/wfs/CMakeLists.txt; sourceTree = SOURCE_ROOT; };
@@ -7021,6 +7009,7 @@
 		72BDC398116E1E690088DEB4 /* qgsspatialitesridsdialogbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgsspatialitesridsdialogbase.ui; path = ../../src/ui/qgsspatialitesridsdialogbase.ui; sourceTree = SOURCE_ROOT; };
 		72BDC399116E261C0088DEB4 /* QgsNewSpatialiteLayerDialog-en_US */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "QgsNewSpatialiteLayerDialog-en_US"; path = "../../resources/context_help/QgsNewSpatialiteLayerDialog-en_US"; sourceTree = SOURCE_ROOT; };
 		72BDC39B116E26470088DEB4 /* spatialite.db */ = {isa = PBXFileReference; lastKnownFileType = file; name = spatialite.db; path = ../../resources/spatialite.db; sourceTree = SOURCE_ROOT; };
+		72BE5A0C11A207EA0048A3C7 /* mActionSaveEdits.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionSaveEdits.png; path = ../../images/themes/default/mActionSaveEdits.png; sourceTree = SOURCE_ROOT; };
 		72C4241C103DE65D005CD18E /* qgis_srs.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = qgis_srs.sh; path = ../../scripts/qgis_srs.sh; sourceTree = SOURCE_ROOT; };
 		72C4241D103DE67F005CD18E /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README; path = ../../resources/README; sourceTree = SOURCE_ROOT; };
 		72C4241E103DE718005CD18E /* mActionAddMap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionAddMap.png; path = ../../images/themes/gis/mActionAddMap.png; sourceTree = SOURCE_ROOT; };
@@ -7423,6 +7412,7 @@
 		72F22FB50FDAC1F4000E8CB0 /* qgsmaptoolnodetool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsmaptoolnodetool.cpp; path = ../../src/app/qgsmaptoolnodetool.cpp; sourceTree = SOURCE_ROOT; };
 		72F22FB60FDAC1F4000E8CB0 /* qgsmaptoolnodetool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgsmaptoolnodetool.h; path = ../../src/app/qgsmaptoolnodetool.h; sourceTree = SOURCE_ROOT; };
 		72F22FB80FDAC236000E8CB0 /* mActionNodeTool.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = mActionNodeTool.png; path = ../../images/themes/default/mActionNodeTool.png; sourceTree = SOURCE_ROOT; };
+		72F4037711AB0C18001C3163 /* qgis_ca_ES.ts */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgis_ca_ES.ts; path = ../../i18n/qgis_ca_ES.ts; sourceTree = SOURCE_ROOT; };
 		72F4861F10AB752500E7BFEE /* qgscomposermanagerbase.ui */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; name = qgscomposermanagerbase.ui; path = ../../src/ui/qgscomposermanagerbase.ui; sourceTree = SOURCE_ROOT; };
 		72F4862010AB753D00E7BFEE /* qgscomposermanager.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgscomposermanager.cpp; path = ../../src/app/composer/qgscomposermanager.cpp; sourceTree = SOURCE_ROOT; };
 		72F4862110AB753D00E7BFEE /* qgscomposermanager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgscomposermanager.h; path = ../../src/app/composer/qgscomposermanager.h; sourceTree = SOURCE_ROOT; };
@@ -9610,14 +9600,6 @@
 			children = (
 				7209EC680F39E57B003DC336 /* CMakeLists.txt */,
 				7209EC690F39E57B003DC336 /* create_test_tables */,
-				7209EC6A0F39E57B003DC336 /* qgspostgisbox2d.cpp */,
-				7209EC6B0F39E57B003DC336 /* qgspostgisbox2d.h */,
-				7209EC6C0F39E57B003DC336 /* qgspostgisbox3d.cpp */,
-				7209EC6D0F39E57B003DC336 /* qgspostgisbox3d.h */,
-				7209EC6E0F39E57B003DC336 /* qgspostgrescountthread.cpp */,
-				7209EC6F0F39E57B003DC336 /* qgspostgrescountthread.h */,
-				7209EC700F39E57B003DC336 /* qgspostgresextentthread.cpp */,
-				7209EC710F39E57B003DC336 /* qgspostgresextentthread.h */,
 				7209EC720F39E57B003DC336 /* qgspostgresprovider.cpp */,
 				7209EC730F39E57B003DC336 /* qgspostgresprovider.h */,
 			);
@@ -10643,6 +10625,7 @@
 				72D84C131044BBB7009F8F39 /* mActionReshape.png */,
 				7286D63A10627610008D83A6 /* mActionRotatePointSymbols.png */,
 				7209EF330F39E5D9003DC336 /* mActionSaveAsSVG.png */,
+				72BE5A0C11A207EA0048A3C7 /* mActionSaveEdits.png */,
 				7209EF340F39E5D9003DC336 /* mActionSaveMapAsImage.png */,
 				7209EF350F39E5D9003DC336 /* mActionScaleBar.png */,
 				7209EF360F39E5D9003DC336 /* mActionSelect.png */,
@@ -10909,6 +10892,7 @@
 				7209EFD80F39E5D9003DC336 /* modifications_qt_xx.txt */,
 				7209EFD90F39E5D9003DC336 /* qgis_ar.ts */,
 				72AF7AF010F8EBC400BD549A /* qgis_bg.ts */,
+				72F4037711AB0C18001C3163 /* qgis_ca_ES.ts */,
 				7209EFDA0F39E5D9003DC336 /* qgis_cs_CZ.ts */,
 				7209EFDB0F39E5D9003DC336 /* qgis_de.ts */,
 				7209EFDC0F39E5D9003DC336 /* qgis_el_GR.ts */,
@@ -14673,7 +14657,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# optional moc sources, can't use dummy file with #if'd #include\n\nrm -f src/x_qgsspatialitesourceselect.h\nif [ \"$SQLITE_SYSTEM\" = \"1\" ] ; then\n\ttouch src/x_qgsspatialitesourceselect.h\nelse\n\tln -s ../../../src/app/qgsspatialitesourceselect.h src/x_qgsspatialitesourceselect.h\nfi\n";
+			shellScript = "# optional moc sources, can't use dummy file with #if'd #include\n\nrm -f src/x_qgsspatialitesourceselect.h\nif [ \"$SQLITE_QSYSTEM\" = \"1\" ] ; then\n\ttouch src/x_qgsspatialitesourceselect.h\nelse\n\tln -s ../../../src/app/qgsspatialitesourceselect.h src/x_qgsspatialitesourceselect.h\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		72832D1210362D61002E3B72 /* Script - osm ui+rc */ = {
@@ -15581,10 +15565,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				72A07DC60F3BE1B1004FC2A4 /* qgspostgresprovider.cpp in Sources */,
-				72A07DC70F3BE1B4004FC2A4 /* qgspostgisbox2d.cpp in Sources */,
-				72A07DC80F3BE1B5004FC2A4 /* qgspostgisbox3d.cpp in Sources */,
-				72A07DC90F3BE1B8004FC2A4 /* qgspostgrescountthread.cpp in Sources */,
-				72A07DCA0F3BE1BB004FC2A4 /* qgspostgresextentthread.cpp in Sources */,
 				729287C10F71DF47006D9489 /* qgspostgresprovider.h in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -19996,7 +19976,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 13485;
+				QGIS_VERSION_BUILD = 13566;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -20007,7 +19987,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 13485;
+				QGIS_VERSION_BUILD = 13566;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;

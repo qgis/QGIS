@@ -500,10 +500,10 @@ class QgisApp : public QMainWindow
     void fileNew( bool thePromptToSaveFlag );
     //! Create a new empty vector layer
     void newVectorLayer();
-#ifdef HAVE_SPATIALITE
+    //#ifdef HAVE_SPATIALITE
     //! Create a new empty spatialite layer
     void newSpatialiteLayer();
-#endif
+    //#endif
     //! Print the current map view frame
     void newPrintComposer();
     void showComposerManager();
