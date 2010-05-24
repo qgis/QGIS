@@ -2,14 +2,7 @@
 ########################################################
 # Files
 
-SET(PG_SRCS
-qgspostgresprovider.cpp
-qgspostgisbox2d.cpp
-qgspostgisbox3d.cpp
-qgspostgrescountthread.cpp
-qgspostgresextentthread.cpp
-)
-
+SET(PG_SRCS qgspostgresprovider.cpp)
 SET(PG_MOC_HDRS qgspostgresprovider.h)
 
 

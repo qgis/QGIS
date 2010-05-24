@@ -38,10 +38,6 @@
 
 #include "qgspostgresprovider.h"
 
-#include "qgspostgrescountthread.h"
-#include "qgspostgresextentthread.h"
-
-#include "qgspostgisbox3d.h"
 #include "qgslogger.h"
 
 #include "qgscredentials.h"
