@@ -150,7 +150,6 @@ QgsGeorefPluginGui::~QgsGeorefPluginGui()
   delete mToolAddPoint;
   delete mToolDeletePoint;
   delete mToolMovePoint;
-  delete mDock;
 }
 
 // ----------------------------- protected --------------------------------- //
