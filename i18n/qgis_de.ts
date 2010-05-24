@@ -6072,7 +6072,7 @@ Diese QGIS-Kopie unterstützt PostgreSQL (%1).</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5258"/>
         <source>The layer %1 is not a valid layer and can not be added to the map</source>
-        <translation>Der Layer %1 ist ungültig und kann der Karte nicht hinzugefügt werden.</translation>
+        <translation>Der Layer %1 ist ungültig und kann der Karte nicht hinzugefügt werden</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgisapp.cpp" line="5755"/>
