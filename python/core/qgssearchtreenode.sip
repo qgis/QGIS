@@ -65,19 +65,19 @@ class QgsSearchTreeNode
     ~QgsSearchTreeNode();
 
     //! returns type of current node
-    Type type();
+    Type type() const;
 
     //! node value getters
-    Operator op();
-    double number();
-    QString columnRef();
-    QString string();
+    Operator op() const;
+    double number() const;
+    QString columnRef() const;
+    QString string() const;
 
     //! node value setters (type is set also)
     void setOp( Operator o );
     void setNumber( double number );
-    void setColumnRef( QString& str );
-    void setString( QString& str );
+    void setColumnRef( const QString& str );
+    void setString( const QString& str );
 
     //! children
     QgsSearchTreeNode* Left();
@@ -106,6 +106,10 @@ class QgsSearchTreeNode
     //! return a list of referenced columns in the tree
     //! @note added in 1.5
     QStringList referencedColumns();
+
+    //! return a list of all attribute nodes
+    //! @note added in 1.5
+    QList<QgsSearchTreeNode*> columnRefNodes();
 
     //! check whether there are any operators that need geometry (for area, length)
     //! @note added in 1.5

@@ -87,6 +87,9 @@ class QgsSearchQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBase
      */
     void on_btnSampleValues_clicked();
 
+    void saveQuery();
+    void loadQuery();
+
   private:
 
     /*!
