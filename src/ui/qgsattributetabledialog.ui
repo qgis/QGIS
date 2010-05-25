@@ -347,9 +347,23 @@
  </customwidgets>
  <tabstops>
   <tabstop>mView</tabstop>
-  <tabstop>searchButton</tabstop>
-  <tabstop>query</tabstop>
   <tabstop>columnBox</tabstop>
+  <tabstop>query</tabstop>
+  <tabstop>searchButton</tabstop>
+  <tabstop>cbxShowSelectedOnly</tabstop>
+  <tabstop>cbxSearchSelectedOnly</tabstop>
+  <tabstop>mAdvancedSearchButton</tabstop>
+  <tabstop>mHelpButton</tabstop>
+  <tabstop>mRemoveSelectionButton</tabstop>
+  <tabstop>mSelectedToTopButton</tabstop>
+  <tabstop>mInvertSelectionButton</tabstop>
+  <tabstop>mCopySelectedRowsButton</tabstop>
+  <tabstop>mZoomMapToSelectedRowsButton</tabstop>
+  <tabstop>mToggleEditingButton</tabstop>
+  <tabstop>mDeleteSelectedButton</tabstop>
+  <tabstop>mAddAttribute</tabstop>
+  <tabstop>mRemoveAttribute</tabstop>
+  <tabstop>mOpenFieldCalculator</tabstop>
  </tabstops>
  <resources/>
  <connections/>

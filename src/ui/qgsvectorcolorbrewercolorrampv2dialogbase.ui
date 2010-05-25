@@ -19,7 +19,10 @@
      <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Scheme name:</string>
+        <string>Scheme name</string>
+       </property>
+       <property name="buddy">
+        <cstring>cboSchemeName</cstring>
        </property>
       </widget>
      </item>
@@ -42,7 +45,10 @@
      <item row="1" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>Colors:</string>
+        <string>Colors</string>
+       </property>
+       <property name="buddy">
+        <cstring>cboColors</cstring>
        </property>
       </widget>
      </item>

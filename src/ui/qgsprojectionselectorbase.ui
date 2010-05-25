@@ -245,6 +245,16 @@
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>lstCoordinateSystems</tabstop>
+  <tabstop>teProjection</tabstop>
+  <tabstop>cbxAuthority</tabstop>
+  <tabstop>cbxMode</tabstop>
+  <tabstop>cbxHideDeprecated</tabstop>
+  <tabstop>leSearch</tabstop>
+  <tabstop>pbnFind</tabstop>
+  <tabstop>lstRecent</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
@@ -254,12 +264,12 @@
    <slot>click()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>362</x>
-     <y>276</y>
+     <x>376</x>
+     <y>217</y>
     </hint>
     <hint type="destinationlabel">
-     <x>453</x>
-     <y>277</y>
+     <x>575</x>
+     <y>219</y>
     </hint>
    </hints>
   </connection>

@@ -39,6 +39,12 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>mComposerListWidget</tabstop>
+  <tabstop>mTemplate</tabstop>
+  <tabstop>mAddButton</tabstop>
+  <tabstop>mButtonBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
@@ -48,8 +54,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>251</x>
-     <y>193</y>
+     <x>260</x>
+     <y>185</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -64,8 +70,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>251</x>
-     <y>193</y>
+     <x>260</x>
+     <y>185</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>

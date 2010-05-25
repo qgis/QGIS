@@ -55,6 +55,8 @@
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
   <tabstop>txtMessage</tabstop>
+  <tabstop>checkBox</tabstop>
+  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>

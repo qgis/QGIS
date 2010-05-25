@@ -43,8 +43,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>525</width>
-            <height>510</height>
+            <width>524</width>
+            <height>468</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_2">
@@ -489,9 +489,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
-            <width>525</width>
-            <height>592</height>
+            <y>-183</y>
+            <width>524</width>
+            <height>560</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_7">
@@ -894,11 +894,13 @@
   <tabstop>btnDefaultFont</tabstop>
   <tabstop>spinAngle</tabstop>
   <tabstop>pbnDefaultFontColor</tabstop>
-  <tabstop>radioOver</tabstop>
+  <tabstop>chkUseMultiline</tabstop>
+  <tabstop>chkSelectedOnly</tabstop>
   <tabstop>radioAboveLeft</tabstop>
   <tabstop>radioAbove</tabstop>
   <tabstop>radioAboveRight</tabstop>
   <tabstop>radioLeft</tabstop>
+  <tabstop>radioOver</tabstop>
   <tabstop>radioRight</tabstop>
   <tabstop>radioBelowLeft</tabstop>
   <tabstop>radioBelow</tabstop>
@@ -914,6 +916,7 @@
   <tabstop>spinXOffset</tabstop>
   <tabstop>spinYOffset</tabstop>
   <tabstop>cboOffsetUnits</tabstop>
+  <tabstop>scrollArea_2</tabstop>
   <tabstop>cboAlignmentField</tabstop>
   <tabstop>cboAngleField</tabstop>
   <tabstop>cboFontField</tabstop>
@@ -930,7 +933,6 @@
   <tabstop>cboYCoordinateField</tabstop>
   <tabstop>cboXOffsetField</tabstop>
   <tabstop>cboYOffsetField</tabstop>
-  <tabstop>scrollArea_2</tabstop>
  </tabstops>
  <resources/>
  <connections/>

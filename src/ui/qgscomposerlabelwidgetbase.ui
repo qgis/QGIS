@@ -31,7 +31,7 @@
         <x>0</x>
         <y>0</y>
         <width>185</width>
-        <height>318</height>
+        <height>317</height>
        </rect>
       </property>
       <attribute name="label">
@@ -88,6 +88,7 @@
  <tabstops>
   <tabstop>mTextEdit</tabstop>
   <tabstop>mFontButton</tabstop>
+  <tabstop>mFontColorButton</tabstop>
   <tabstop>mMarginDoubleSpinBox</tabstop>
  </tabstops>
  <resources/>

@@ -77,7 +77,7 @@
       <item row="1" column="0">
        <widget class="QLabel" name="label_3">
         <property name="text">
-         <string>Encoding :</string>
+         <string>Encoding</string>
         </property>
        </widget>
       </item>
@@ -278,7 +278,6 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
-  <tabstop>buttonSelectSrc</tabstop>
   <tabstop>radioSrcFile</tabstop>
   <tabstop>radioSrcDirectory</tabstop>
   <tabstop>radioSrcDatabase</tabstop>
@@ -288,6 +287,7 @@
   <tabstop>protocolURI</tabstop>
   <tabstop>cmbDirectoryTypes</tabstop>
   <tabstop>inputSrcDataset</tabstop>
+  <tabstop>buttonSelectSrc</tabstop>
   <tabstop>cmbDatabaseTypes</tabstop>
   <tabstop>cmbConnections</tabstop>
   <tabstop>btnNew</tabstop>
@@ -304,8 +304,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>442</x>
-     <y>673</y>
+     <x>451</x>
+     <y>699</y>
     </hint>
     <hint type="destinationlabel">
      <x>481</x>
@@ -320,8 +320,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>383</x>
-     <y>673</y>
+     <x>392</x>
+     <y>699</y>
     </hint>
     <hint type="destinationlabel">
      <x>281</x>
@@ -336,8 +336,8 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>352</x>
-     <y>75</y>
+     <x>351</x>
+     <y>85</y>
     </hint>
     <hint type="destinationlabel">
      <x>245</x>

@@ -306,10 +306,13 @@
   <tabstop>mPointRadioButton</tabstop>
   <tabstop>mLineRadioButton</tabstop>
   <tabstop>mPolygonRadioButton</tabstop>
+  <tabstop>leSpatialRefSys</tabstop>
+  <tabstop>pbnChangeSpatialRefSys</tabstop>
   <tabstop>mNameEdit</tabstop>
   <tabstop>mTypeBox</tabstop>
   <tabstop>mWidth</tabstop>
   <tabstop>mPrecision</tabstop>
+  <tabstop>mAddAttributeButton</tabstop>
   <tabstop>mAttributeView</tabstop>
   <tabstop>mRemoveAttributeButton</tabstop>
   <tabstop>buttonBox</tabstop>

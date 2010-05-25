@@ -25,7 +25,7 @@
         <x>0</x>
         <y>0</y>
         <width>251</width>
-        <height>302</height>
+        <height>301</height>
        </rect>
       </property>
       <attribute name="label">
@@ -38,6 +38,9 @@
           <widget class="QLabel" name="mLayerLabel">
            <property name="text">
             <string>Layer</string>
+           </property>
+           <property name="buddy">
+            <cstring>mLayerComboBox</cstring>
            </property>
           </widget>
          </item>
@@ -80,6 +83,9 @@
            <property name="text">
             <string>Composer map</string>
            </property>
+           <property name="buddy">
+            <cstring>mComposerMapComboBox</cstring>
+           </property>
           </widget>
          </item>
          <item>
@@ -94,6 +100,9 @@
            <property name="text">
             <string>Maximum columns</string>
            </property>
+           <property name="buddy">
+            <cstring>mMaximumColumnsSpinBox</cstring>
+           </property>
           </widget>
          </item>
          <item>
@@ -107,6 +116,9 @@
           <widget class="QLabel" name="mMarginLabel">
            <property name="text">
             <string>Margin</string>
+           </property>
+           <property name="buddy">
+            <cstring>mMarginSpinBox</cstring>
            </property>
           </widget>
          </item>
@@ -129,6 +141,9 @@
            <property name="text">
             <string>Grid stroke width</string>
            </property>
+           <property name="buddy">
+            <cstring>mGridStrokeWidthSpinBox</cstring>
+           </property>
           </widget>
          </item>
          <item>
@@ -140,6 +155,9 @@
         <widget class="QLabel" name="mGridColorLabel">
          <property name="text">
           <string>Grid color</string>
+         </property>
+         <property name="buddy">
+          <cstring>mGridColorButton</cstring>
          </property>
         </widget>
        </item>

@@ -82,6 +82,9 @@
        <property name="text">
         <string>Layer name</string>
        </property>
+       <property name="buddy">
+        <cstring>leLayerName</cstring>
+       </property>
       </widget>
      </item>
      <item>
@@ -105,6 +108,9 @@
       <widget class="QLabel" name="label_2">
        <property name="text">
         <string>Geometry column</string>
+       </property>
+       <property name="buddy">
+        <cstring>leGeometryColumn</cstring>
        </property>
       </widget>
      </item>
@@ -413,7 +419,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok|QDialogButtonBox::Apply</set>
+      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
@@ -422,11 +428,21 @@
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
   <tabstop>mDatabaseComboBox</tabstop>
+  <tabstop>toolButtonNewDatabase</tabstop>
+  <tabstop>leLayerName</tabstop>
+  <tabstop>leGeometryColumn</tabstop>
   <tabstop>mPointRadioButton</tabstop>
   <tabstop>mLineRadioButton</tabstop>
   <tabstop>mPolygonRadioButton</tabstop>
+  <tabstop>mMultipointRadioButton</tabstop>
+  <tabstop>mMultilineRadioButton</tabstop>
+  <tabstop>mMultipolygonRadioButton</tabstop>
+  <tabstop>leSRID</tabstop>
+  <tabstop>pbnFindSRID</tabstop>
+  <tabstop>checkBoxPrimaryKey</tabstop>
   <tabstop>mNameEdit</tabstop>
   <tabstop>mTypeBox</tabstop>
+  <tabstop>mAddAttributeButton</tabstop>
   <tabstop>mAttributeView</tabstop>
   <tabstop>mRemoveAttributeButton</tabstop>
   <tabstop>buttonBox</tabstop>

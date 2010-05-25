@@ -16,7 +16,10 @@
      <item row="0" column="0">
       <widget class="QLabel" name="label_4">
        <property name="text">
-        <string>Column:</string>
+        <string>Column</string>
+       </property>
+       <property name="buddy">
+        <cstring>cboGraduatedColumn</cstring>
        </property>
       </widget>
      </item>
@@ -26,7 +29,10 @@
      <item row="1" column="0">
       <widget class="QLabel" name="label_6">
        <property name="text">
-        <string>Symbol:</string>
+        <string>Symbol</string>
+       </property>
+       <property name="buddy">
+        <cstring>btnChangeGraduatedSymbol</cstring>
        </property>
       </widget>
      </item>
@@ -46,10 +52,13 @@
      <item row="1" column="3">
       <widget class="QLabel" name="label_5">
        <property name="text">
-        <string>Classes:</string>
+        <string>Classes</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="buddy">
+        <cstring>spinGraduatedClasses</cstring>
        </property>
       </widget>
      </item>
@@ -69,7 +78,10 @@
      <item row="2" column="0">
       <widget class="QLabel" name="label_7">
        <property name="text">
-        <string>Color ramp:</string>
+        <string>Color ramp</string>
+       </property>
+       <property name="buddy">
+        <cstring>cboGraduatedColorRamp</cstring>
        </property>
       </widget>
      </item>
@@ -79,10 +91,13 @@
      <item row="2" column="3">
       <widget class="QLabel" name="label_8">
        <property name="text">
-        <string>Mode:</string>
+        <string>Mode</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+       <property name="buddy">
+        <cstring>cboGraduatedMode</cstring>
        </property>
       </widget>
      </item>
