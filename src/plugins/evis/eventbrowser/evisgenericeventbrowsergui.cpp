@@ -258,7 +258,7 @@ bool eVisGenericEventBrowserGui::initBrowser( )
    */
   if ( 0 == mVectorLayer->selectedFeatureCount( ) ) //if nothing is selected select everything
   {
-    QgsRectangle myRect = mDataProvider->extent( );
+    QgsRectangle myRect;
     mVectorLayer->select( myRect, true );
     mFeatureIds = mVectorLayer->selectedFeaturesIds( ).toList( );
   }
@@ -266,6 +266,8 @@ bool eVisGenericEventBrowserGui::initBrowser( )
   {
     mFeatureIds = mVectorLayer->selectedFeaturesIds( ).toList( );
   }
+
+  if ( 0 == mFeatureIds.size( ) ) { return false; }
 
   //get the first feature in the list so we can set the field in the pulldown menues
   QgsFeature* myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
