@@ -228,25 +228,36 @@ QString QgsSearchTreeNode::makeSearchString()
 
 QStringList QgsSearchTreeNode::referencedColumns()
 {
+  QList<QgsSearchTreeNode*> columnNodeList = columnRefNodes();
+  QSet<QString> columnStringSet;
+
+  QList<QgsSearchTreeNode*>::const_iterator nodeIt = columnNodeList.constBegin();
+  for ( ; nodeIt != columnNodeList.constEnd(); ++nodeIt )
+  {
+    columnStringSet.insert(( *nodeIt )->columnRef() );
+  }
+  return columnStringSet.toList();
+}
+
+QList<QgsSearchTreeNode*> QgsSearchTreeNode::columnRefNodes()
+{
+  QList<QgsSearchTreeNode*> nodeList;
   if ( mType == tOperator )
   {
-    QStringList lst;
     if ( mLeft )
-      lst += mLeft->referencedColumns();
+    {
+      nodeList += mLeft->columnRefNodes();
+    }
     if ( mRight )
-      lst += mRight->referencedColumns();
-    return lst.toSet().toList(); // make union and convert back to list
+    {
+      nodeList += mRight->columnRefNodes();
+    }
   }
   else if ( mType == tColumnRef )
   {
-    return QStringList( mText );
+    nodeList.push_back( this );
   }
-  else
-  {
-    // string or number - do nothing
-    return QStringList();
-  }
-
+  return nodeList;
 }
 
 bool QgsSearchTreeNode::needsGeometry()

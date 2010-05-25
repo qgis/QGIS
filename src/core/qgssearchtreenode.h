@@ -103,19 +103,19 @@ class CORE_EXPORT QgsSearchTreeNode
     ~QgsSearchTreeNode();
 
     //! returns type of current node
-    Type type()   { return mType; }
+    Type type() const  { return mType; }
 
     //! node value getters
-    Operator op() { return mOp; }
-    double number() { return mNumber; }
-    QString columnRef() { return mText; }
-    QString string() { return mText; }
+    Operator op() const { return mOp; }
+    double number() const { return mNumber; }
+    QString columnRef() const { return mText; }
+    QString string() const { return mText; }
 
     //! node value setters (type is set also)
     void setOp( Operator op )         { mType = tOperator;  mOp = op; }
     void setNumber( double number )   { mType = tNumber;    mNumber = number; }
-    void setColumnRef( QString& str ) { mType = tColumnRef; mText = str; }
-    void setString( QString& str )    { mType = tString;    mText = str; stripText(); }
+    void setColumnRef( const QString& str ) { mType = tColumnRef; mText = str; }
+    void setString( const QString& str )    { mType = tString;    mText = str; stripText(); }
 
     //! children
     QgsSearchTreeNode* Left()  { return mLeft;  }
@@ -144,6 +144,10 @@ class CORE_EXPORT QgsSearchTreeNode
     //! return a list of referenced columns in the tree
     //! @note added in 1.5
     QStringList referencedColumns();
+
+    //! return a list of all attribute nodes
+    //! @note added in 1.5
+    QList<QgsSearchTreeNode*> columnRefNodes();
 
     //! check whether there are any operators that need geometry (for area, length)
     //! @note added in 1.5
