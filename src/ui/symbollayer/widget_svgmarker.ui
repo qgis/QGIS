@@ -25,7 +25,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>Size:</string>
+        <string>Size</string>
        </property>
       </widget>
      </item>
@@ -45,7 +45,7 @@
      <item row="1" column="0">
       <widget class="QLabel" name="label_3">
        <property name="text">
-        <string>Angle:</string>
+        <string>Angle</string>
        </property>
       </widget>
      </item>
@@ -95,7 +95,7 @@
      <item row="2" column="0">
       <widget class="QLabel" name="label_4">
        <property name="text">
-        <string>Offset X,Y:</string>
+        <string>Offset X,Y</string>
        </property>
       </widget>
      </item>
@@ -123,7 +123,7 @@
    <item>
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>SVG Image:</string>
+      <string>SVG Image</string>
      </property>
     </widget>
    </item>
@@ -176,6 +176,8 @@
  <tabstops>
   <tabstop>spinSize</tabstop>
   <tabstop>spinAngle</tabstop>
+  <tabstop>spinOffsetX</tabstop>
+  <tabstop>spinOffsetY</tabstop>
   <tabstop>viewImages</tabstop>
  </tabstops>
  <resources/>

@@ -19,7 +19,7 @@
      <item>
       <widget class="QLabel" name="mTextureWidthLabel">
        <property name="text">
-        <string>Texture width:</string>
+        <string>Texture width</string>
        </property>
       </widget>
      </item>
@@ -37,7 +37,7 @@
      <item>
       <widget class="QLabel" name="mOutlineLabel">
        <property name="text">
-        <string>Outline:</string>
+        <string>Outline</string>
        </property>
       </widget>
      </item>

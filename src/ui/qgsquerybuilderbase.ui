@@ -270,10 +270,10 @@ p, li { white-space: pre-wrap; }
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
-  <tabstop>btnSampleValues</tabstop>
-  <tabstop>btnGetAllValues</tabstop>
   <tabstop>lstFields</tabstop>
   <tabstop>lstValues</tabstop>
+  <tabstop>btnSampleValues</tabstop>
+  <tabstop>btnGetAllValues</tabstop>
   <tabstop>btnEqual</tabstop>
   <tabstop>btnLessThan</tabstop>
   <tabstop>btnGreaterThan</tabstop>

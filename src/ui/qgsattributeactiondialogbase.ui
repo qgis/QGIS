@@ -282,6 +282,7 @@
   <tabstop>moveUpButton</tabstop>
   <tabstop>moveDownButton</tabstop>
   <tabstop>removeButton</tabstop>
+  <tabstop>actionType</tabstop>
   <tabstop>actionName</tabstop>
   <tabstop>actionAction</tabstop>
   <tabstop>browseButton</tabstop>

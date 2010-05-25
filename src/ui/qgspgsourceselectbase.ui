@@ -115,7 +115,7 @@
          <bool>true</bool>
         </property>
         <property name="text">
-         <string>Search:</string>
+         <string>Search</string>
         </property>
         <property name="buddy">
          <cstring>mSearchTableEdit</cstring>
@@ -128,7 +128,7 @@
          <bool>true</bool>
         </property>
         <property name="text">
-         <string>Search mode:</string>
+         <string>Search mode</string>
         </property>
         <property name="buddy">
          <cstring>mSearchModeComboBox</cstring>
@@ -148,7 +148,7 @@
          <bool>true</bool>
         </property>
         <property name="text">
-         <string>Search in columns:</string>
+         <string>Search in columns</string>
         </property>
         <property name="buddy">
          <cstring>mSearchColumnComboBox</cstring>
@@ -190,6 +190,7 @@
   <tabstop>btnDelete</tabstop>
   <tabstop>mTablesTreeView</tabstop>
   <tabstop>btnBuildQuery</tabstop>
+  <tabstop>mSearchGroupBox</tabstop>
   <tabstop>mSearchTableEdit</tabstop>
   <tabstop>mSearchColumnComboBox</tabstop>
   <tabstop>mSearchModeComboBox</tabstop>
@@ -220,8 +221,8 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>85</x>
-     <y>324</y>
+     <x>94</x>
+     <y>437</y>
     </hint>
     <hint type="destinationlabel">
      <x>177</x>
@@ -236,12 +237,12 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>88</x>
-     <y>325</y>
+     <x>97</x>
+     <y>437</y>
     </hint>
     <hint type="destinationlabel">
-     <x>254</x>
-     <y>381</y>
+     <x>343</x>
+     <y>402</y>
     </hint>
    </hints>
   </connection>
@@ -252,8 +253,8 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>106</x>
-     <y>333</y>
+     <x>115</x>
+     <y>437</y>
     </hint>
     <hint type="destinationlabel">
      <x>281</x>
@@ -268,8 +269,8 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>124</x>
-     <y>327</y>
+     <x>133</x>
+     <y>437</y>
     </hint>
     <hint type="destinationlabel">
      <x>58</x>
@@ -284,12 +285,12 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>42</x>
-     <y>327</y>
+     <x>51</x>
+     <y>437</y>
     </hint>
     <hint type="destinationlabel">
-     <x>39</x>
-     <y>379</y>
+     <x>57</x>
+     <y>402</y>
     </hint>
    </hints>
   </connection>
@@ -300,8 +301,8 @@
    <slot>setVisible(bool)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>73</x>
-     <y>322</y>
+     <x>82</x>
+     <y>437</y>
     </hint>
     <hint type="destinationlabel">
      <x>68</x>

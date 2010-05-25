@@ -19,7 +19,10 @@
      <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Color 1:</string>
+        <string>Color 1</string>
+       </property>
+       <property name="buddy">
+        <cstring>btnColor1</cstring>
        </property>
       </widget>
      </item>
@@ -49,7 +52,10 @@
      <item row="1" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>Color 2:</string>
+        <string>Color 2</string>
+       </property>
+       <property name="buddy">
+        <cstring>btnColor2</cstring>
        </property>
       </widget>
      </item>
@@ -152,6 +158,15 @@
    <header>qgscolorbutton.h</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>btnColor1</tabstop>
+  <tabstop>btnColor2</tabstop>
+  <tabstop>groupStops</tabstop>
+  <tabstop>treeStops</tabstop>
+  <tabstop>btnAddStop</tabstop>
+  <tabstop>btnRemoveStop</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>
@@ -161,8 +176,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>258</x>
-     <y>281</y>
+     <x>267</x>
+     <y>354</y>
     </hint>
     <hint type="destinationlabel">
      <x>168</x>
@@ -177,8 +192,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>363</x>
-     <y>273</y>
+     <x>372</x>
+     <y>354</y>
     </hint>
     <hint type="destinationlabel">
      <x>371</x>

@@ -143,6 +143,9 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="currentIndex">
+      <number>1</number>
+     </property>
      <widget class="QWidget" name="page"/>
      <widget class="QWidget" name="page_2"/>
     </widget>
@@ -176,8 +179,12 @@
  <tabstops>
   <tabstop>mClassificationComboBox</tabstop>
   <tabstop>mClassifyButton</tabstop>
+  <tabstop>mAddButton</tabstop>
   <tabstop>mDeletePushButton</tabstop>
+  <tabstop>mRandomizeColors</tabstop>
+  <tabstop>mResetColors</tabstop>
   <tabstop>mClassListWidget</tabstop>
+  <tabstop>mCommonPropertyLock</tabstop>
  </tabstops>
  <resources/>
  <connections/>

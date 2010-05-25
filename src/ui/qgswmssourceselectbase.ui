@@ -299,6 +299,9 @@
          <attribute name="verticalHeaderVisible">
           <bool>false</bool>
          </attribute>
+         <attribute name="verticalHeaderVisible">
+          <bool>false</bool>
+         </attribute>
          <column>
           <property name="text">
            <string>Layers</string>
@@ -360,6 +363,9 @@
          <attribute name="verticalHeaderVisible">
           <bool>false</bool>
          </attribute>
+         <attribute name="verticalHeaderVisible">
+          <bool>false</bool>
+         </attribute>
          <column>
           <property name="text">
            <string>Title</string>
@@ -415,12 +421,27 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
+  <tabstop>tabServers</tabstop>
   <tabstop>cmbConnections</tabstop>
   <tabstop>btnConnect</tabstop>
   <tabstop>btnNew</tabstop>
   <tabstop>btnEdit</tabstop>
   <tabstop>btnDelete</tabstop>
+  <tabstop>btnAddDefault</tabstop>
+  <tabstop>lstLayers</tabstop>
+  <tabstop>leLayerName</tabstop>
   <tabstop>btnChangeSpatialRefSys</tabstop>
+  <tabstop>cbxIgnoreGetMap</tabstop>
+  <tabstop>cbxIgnoreGetFeatureInfo</tabstop>
+  <tabstop>mLayerUpButton</tabstop>
+  <tabstop>mLayerDownButton</tabstop>
+  <tabstop>mLayerOrderTreeWidget</tabstop>
+  <tabstop>lstTilesets</tabstop>
+  <tabstop>leSearchTerm</tabstop>
+  <tabstop>btnSearch</tabstop>
+  <tabstop>tableWidgetWMSList</tabstop>
+  <tabstop>btnAddWMS</tabstop>
+  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>
@@ -431,8 +452,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>509</x>
-     <y>461</y>
+     <x>518</x>
+     <y>510</y>
     </hint>
     <hint type="destinationlabel">
      <x>551</x>

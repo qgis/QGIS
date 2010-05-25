@@ -110,6 +110,10 @@
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
   <tabstop>twSrids</tabstop>
+  <tabstop>leSearch</tabstop>
+  <tabstop>pbnFilter</tabstop>
+  <tabstop>radioButtonSrid</tabstop>
+  <tabstop>radioButtonName</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
@@ -121,8 +125,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>217</x>
-     <y>327</y>
+     <x>226</x>
+     <y>322</y>
     </hint>
     <hint type="destinationlabel">
      <x>274</x>

@@ -33,8 +33,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>365</width>
-        <height>467</height>
+        <width>367</width>
+        <height>469</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_3">
@@ -48,8 +48,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>347</width>
-            <height>393</height>
+            <width>349</width>
+            <height>397</height>
            </rect>
           </property>
           <attribute name="label">
@@ -183,8 +183,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>347</width>
-            <height>393</height>
+            <width>349</width>
+            <height>397</height>
            </rect>
           </property>
           <attribute name="label">
@@ -265,8 +265,10 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
+  <tabstop>scrollArea</tabstop>
   <tabstop>mTitleLineEdit</tabstop>
   <tabstop>mTitleFontButton</tabstop>
+  <tabstop>mGroupFontButton</tabstop>
   <tabstop>mLayerFontButton</tabstop>
   <tabstop>mItemFontButton</tabstop>
   <tabstop>mSymbolWidthSpinBox</tabstop>
@@ -276,6 +278,13 @@
   <tabstop>mIconLabelSpaceSpinBox</tabstop>
   <tabstop>mBoxSpaceSpinBox</tabstop>
   <tabstop>mItemTreeView</tabstop>
+  <tabstop>mMoveDownToolButton</tabstop>
+  <tabstop>mMoveUpToolButton</tabstop>
+  <tabstop>mRemoveToolButton</tabstop>
+  <tabstop>mEditPushButton</tabstop>
+  <tabstop>mUpdatePushButton</tabstop>
+  <tabstop>mUpdateAllPushButton</tabstop>
+  <tabstop>mAddGroupButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>

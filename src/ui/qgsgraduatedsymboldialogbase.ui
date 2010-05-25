@@ -50,6 +50,9 @@
          <property name="alignment">
           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
          </property>
+         <property name="buddy">
+          <cstring>classificationComboBox</cstring>
+         </property>
         </widget>
        </item>
        <item row="0" column="1">
@@ -88,6 +91,9 @@
          <property name="alignment">
           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
          </property>
+         <property name="buddy">
+          <cstring>modeComboBox</cstring>
+         </property>
         </widget>
        </item>
        <item row="1" column="1">
@@ -125,6 +131,9 @@
          </property>
          <property name="alignment">
           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         </property>
+         <property name="buddy">
+          <cstring>numberofclassesspinbox</cstring>
          </property>
         </widget>
        </item>
