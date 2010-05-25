@@ -30,7 +30,7 @@ To use 'on the fly' CRS transformation, click the <label>Enable 'on the fly' CRS
 <p>
 You can find a coordinate system by entering its name, EPSG code or the QGIS ID and clicking the <label>Find</label> button.
 <p>
-The 4 last used coordinate systems will be available as buttons on the bottom for quick access.
+The list of recently used coordinate systems will be available on the bottom for quick access.
 
 <a name="layers">
 <h4>Identifiable layers Tab</h4>
