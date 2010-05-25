@@ -2195,7 +2195,7 @@ QPixmap QgsRasterLayer::legendAsPixmap( bool theWithNameFlag )
       }
 
     }                           //end of pseudocolor check
-    else if ( mDrawingStyle == PalettedMultiBandColor || mDrawingStyle == MultiBandColor )
+    else if ( mDrawingStyle == PalettedMultiBandColor || mDrawingStyle == MultiBandColor || mDrawingStyle == PalettedColor )
     {
       //
       // Create the legend pixmap showing red green and blue band mappings
@@ -5539,7 +5539,7 @@ QgsRasterImageBuffer::~QgsRasterImageBuffer()
 
 void QgsRasterImageBuffer::reset( int maxPixelsInVirtualMemory )
 {
-  if ( !mRasterBand || !mPainter || !mViewPort || !mMapToPixel )
+  if ( !mRasterBand || !mPainter || !mViewPort )
   {
     mValid = false;
     return;
@@ -5615,22 +5615,33 @@ bool QgsRasterImageBuffer::createNextPartImage()
       }
       else
       {
-        int paintXoffset = static_cast<int>(
-                             ( mViewPort->rectXOffsetFloat -
-                               mViewPort->rectXOffset )
-                             / mMapToPixel->mapUnitsPerPixel()
-                             * fabs( mGeoTransform[1] )
-                           );
+        int paintXoffset = 0;
+        int paintYoffset = 0;
+        int imageX = 0;
+        int imageY = 0;
 
-        int paintYoffset = static_cast<int>(
-                             ( mViewPort->rectYOffsetFloat -
-                               mViewPort->rectYOffset )
-                             / mMapToPixel->mapUnitsPerPixel()
-                             * fabs( mGeoTransform[5] )
-                           );
+        if ( mMapToPixel )
+        {
+          paintXoffset = static_cast<int>(
+                           ( mViewPort->rectXOffsetFloat -
+                             mViewPort->rectXOffset )
+                           / mMapToPixel->mapUnitsPerPixel()
+                           * fabs( mGeoTransform[1] )
+                         );
 
-        mPainter->drawImage( static_cast<int>( mViewPort->topLeftPoint.x() + 0.5 ),
-                             static_cast<int>( mViewPort->topLeftPoint.y() + 0.5 +  fabs( mGeoTransform[5] ) * mCurrentPartRasterMin / mMapToPixel->mapUnitsPerPixel() ),
+          paintYoffset = static_cast<int>(
+                           ( mViewPort->rectYOffsetFloat -
+                             mViewPort->rectYOffset )
+                           / mMapToPixel->mapUnitsPerPixel()
+                           * fabs( mGeoTransform[5] )
+                         );
+
+          imageX = static_cast<int>( mViewPort->topLeftPoint.x() + 0.5 );
+          imageY = static_cast<int>( mViewPort->topLeftPoint.y() + 0.5 +  fabs( mGeoTransform[5] ) * mCurrentPartRasterMin / mMapToPixel->mapUnitsPerPixel() );
+        }
+
+        mPainter->drawImage( imageX,
+                             imageY,
                              *mCurrentImage,
                              paintXoffset,
                              paintYoffset );
@@ -5659,17 +5670,20 @@ bool QgsRasterImageBuffer::createNextPartImage()
   GDALDataType type = GDALGetRasterDataType( mRasterBand );
   int size = GDALGetDataTypeSize( type ) / 8;
   int xSize = mViewPort->drawableAreaXDim;
+  int ySize = mViewPort->drawableAreaYDim;
 
   //make the raster tiles overlap at least 2 pixels to avoid white stripes
   int overlapRows = 0;
-  overlapRows = mMapToPixel->mapUnitsPerPixel() / fabs( mGeoTransform[5] ) + 2;
+  if ( mMapToPixel )
+  {
+    overlapRows = mMapToPixel->mapUnitsPerPixel() / fabs( mGeoTransform[5] ) + 2;
+  }
   if ( mCurrentPartRasterMax + overlapRows >= mViewPort->clippedHeight )
   {
     overlapRows = 0;
   }
   int rasterYSize = mCurrentPartRasterMax - mCurrentPartRasterMin + overlapRows;
 
-  int ySize = 0;
   if ( 2 >= mViewPort->clippedWidth && 2 >= mViewPort->clippedHeight ) //for zoomed in rasters
   {
     rasterYSize = mViewPort->clippedHeight;
@@ -5677,7 +5691,10 @@ bool QgsRasterImageBuffer::createNextPartImage()
   }
   else //normal mode
   {
-    ySize = fabs((( rasterYSize ) / mMapToPixel->mapUnitsPerPixel() * mGeoTransform[5] ) ) + 0.5;
+    if ( mMapToPixel )
+    {
+      ySize = fabs((( rasterYSize ) / mMapToPixel->mapUnitsPerPixel() * mGeoTransform[5] ) ) + 0.5;
+    }
   }
   if ( ySize == 0 )
   {
