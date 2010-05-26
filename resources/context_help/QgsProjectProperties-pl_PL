@@ -6,6 +6,7 @@ To okno umożliwia zdefiniowanie wielu parametrów związanych z <label>Projekte
 
 <a name="general">
 <h4>Zakładka Ogólne</h4>
+</a>
 <table border=1>
 <tr>
 <td>Tytuł projektu</td><td>Opisowy tytuł projektu. Będzie on wyświetlany na pasku tytułowym okna QGIS</td>

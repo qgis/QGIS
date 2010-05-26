@@ -141,7 +141,7 @@
      </item>
      <item>
       <property name="text">
-       <string>Digitising</string>
+       <string>Digitizing</string>
       </property>
       <property name="textAlignment">
        <set>AlignHCenter|AlignVCenter|AlignCenter</set>
@@ -873,7 +873,7 @@
           <item>
            <widget class="QLabel" name="mAlgorithmLabel">
             <property name="text">
-             <string>Placement algorithm:</string>
+             <string>Placement algorithm</string>
             </property>
            </widget>
           </item>
@@ -1431,7 +1431,7 @@
           <item row="5" column="0" rowspan="2" colspan="5">
            <widget class="QGroupBox" name="grpUrlExclude">
             <property name="title">
-             <string>Exclude URLs (starting with):</string>
+             <string>Exclude URLs (starting with)</string>
             </property>
             <property name="flat">
              <bool>true</bool>
@@ -1551,7 +1551,7 @@
          <item>
           <widget class="QLabel" name="mNetworkTimeoutLabel">
            <property name="text">
-            <string>Timeout for network requests (ms):</string>
+            <string>Timeout for network requests (ms)</string>
            </property>
           </widget>
          </item>
