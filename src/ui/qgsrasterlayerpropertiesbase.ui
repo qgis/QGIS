@@ -900,7 +900,7 @@
        <item row="2" column="0" colspan="2">
         <widget class="QLabel" name="lblMinMaxEstimateWarning">
          <property name="text">
-          <string>Note:</string>
+          <string>Note</string>
          </property>
         </widget>
        </item>
@@ -1602,7 +1602,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Columns:</string>
+            <string>Columns</string>
            </property>
           </widget>
          </item>
@@ -1615,7 +1615,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Rows:</string>
+            <string>Rows</string>
            </property>
           </widget>
          </item>
@@ -1628,7 +1628,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>No Data:</string>
+            <string>No Data</string>
            </property>
           </widget>
          </item>

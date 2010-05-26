@@ -4,8 +4,9 @@ This dialog allows you to add PostGIS layers (tables with a geometry column) to 
 <a href="#connect">Connections</a><br/>
 <a href="#add">Adding Layers</a><br/>
 <a href="#filter">Filtering a Layer</a><br/>
+<a href="#search">Search options</a><br/>
 
-<a name="connect">
+<a href="#connect">
 <h4>Connections</h4>
 </a>
 <ul>
@@ -27,5 +28,9 @@ To add a layer:
 <a name="filter">
 <h4>Filtering a Layer</h4>
 </a>
-To filter a layer before adding it to the map, double click on its name. This will open the Query Builder, allowing you to build up a SQL statement to use in filtering the records.
+To filter a layer before adding it to the map, double click on its name or use <label>Build query</label> button. This will open the Query Builder, allowing you to build up a SQL statement to use in filtering the records.
 
+<a name="search">
+<h4>Search options</h4>
+</a>
+Ticking <label>Search options</label> enables additional options for searching in different column types and using 2 search modes: <label>Wildcard</label> or <label>RegExp</label>.

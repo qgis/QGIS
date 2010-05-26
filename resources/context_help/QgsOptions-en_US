@@ -34,8 +34,12 @@ By default, QGIS does not display any features for a layer until the entire laye
 <a name="map">
 <h4>Map tools</h4>
 </a>
+<h5>Identify</h5>
 The <label>Mode</label> setting determines which layers will be shown by the <label>Identify</label> tool. By switching to <label>Top down</label> instead of <label>Current layer</label> attributes for all identifiable layers will be shown with the <label>Identify</label> tool.
-
+<h5>Measure tool</h5>
+Here you can set an elipsoid for distance calculations, measurement units and preferred color of rubberband.
+<h5>Panning and zooming</h5>
+Allows to define mouse wheel action and zoom factor.
 <a name="over">
 <h4>Overlay</h4>
 </a>
@@ -44,10 +48,17 @@ Define placement algorithm for labels. Choose between <label>central point (fast
 <a name="digit">
 <h4>Digitizing</h4>
 </a>
-In the <label>Digitizing</label> tab you can define a general, project wide snapping tolerance. <p>
-You can select between <label>to vertex</label>, <label>to segment</label> or <label>to vertex and segment</label> as default snap mode. You can also define a default snapping tolerance and a search radius for vertex edits. The tolerance can be set either in map units or in pixels. The advantage of choosing pixels, is that the snapping tolerance doesn't have to be changed after zoom operations. <p>
+<h5>Rubberband</h5>
+In the <label>Digitizing</label> tab you can define settings for digitizing line width and color.
+<h5>Snapping</h5>
+Here you can define a general, project wide snapping tolerance. <p>
+You can select between <label>To vertex</label>, <label>To segment</label> or <label>To vertex and segment</label> as default snap mode. You can also define a default snapping tolerance and a search radius for vertex edits. The tolerance can be set either in map units or in pixels. The advantage of choosing pixels, is that the snapping tolerance doesn't have to be changed after zoom operations. <p>
 A layer based snapping tolerance can be defined by choosing <label>Settings</label> (or <label>File</label>)
 > <label>Project Properties...</label>. In the <label>General</label> tab, section <label>Digitize</label> you can click on <label>Snapping options...</label> to enable and adjust snapping mode and tolerance on a layer basis.
+<h5>Vertex markers</h5>
+You can define marker style as <label>Semi transparent circle</label>, <label>Cross</label> or <label>None</label> and size; you can also set showing markers only for selected features.
+<h5>Enter atribute values</h5>
+By default, after digitizing a new feature, QGIS asks you to enter attribute values for that feature. Ticking <label>Suppress attributes pop-up windows after each created feature</label> allows you to enter the attributes later.
 <a name="crs">
 <h4>CRS</h4>
 </a>
