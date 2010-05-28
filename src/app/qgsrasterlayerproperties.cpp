@@ -775,6 +775,8 @@ void QgsRasterLayerProperties::sync()
     labelDefaultContrastEnhancementAlgorithm->setText( tr( "No Stretch" ) );
   }
 
+  mDefaultStandardDeviation = myQSettings.value( "/Raster/defaultStandardDeviation", 1.0 ).toDouble();
+  sboxThreeBandStdDev->setValue( mDefaultStandardDeviation );
 
 
   QgsDebugMsg( "populate transparency tab" );
@@ -1191,6 +1193,8 @@ void QgsRasterLayerProperties::apply()
   myQSettings.setValue( "/Raster/defaultBlueBand", mDefaultBlueBand );
 
   myQSettings.setValue( "/Raster/defaultContrastEnhancementAlgorithm", mDefaultContrastEnhancementAlgorithm );
+
+  myQSettings.setValue( "/Raster/defaultStandardDeviation", mDefaultStandardDeviation );
 
   QgsDebugMsg( "processing transparency tab" );
   /*
@@ -2971,6 +2975,11 @@ void QgsRasterLayerProperties::on_pbtnMakeContrastEnhancementAlgorithmDefault_cl
       //do nothing
     }
   }
+}
+
+void QgsRasterLayerProperties::on_pbtnMakeStandardDeviationDefault_clicked()
+{
+  mDefaultStandardDeviation = sboxThreeBandStdDev->value();
 }
 
 void QgsRasterLayerProperties::on_pbtnSortColorMap_clicked()

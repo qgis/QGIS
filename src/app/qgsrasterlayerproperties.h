@@ -92,43 +92,45 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     void userDefinedMinMax_textEdited( QString );
 
   private slots:
-    /** This slow handles necessary interface modifiations (i.e., loading min max values) */
+    /** This slow handles necessary interface modifications (i.e. loading min max values) */
     void on_cboBlue_currentIndexChanged( const QString& );
-    /** This slow handles necessary interface modifiations (i.e., loading min max values) */
+    /** This slow handles necessary interface modifications (i.e. loading min max values) */
     void on_cboGray_currentIndexChanged( const QString& );
-    /** This slow handles necessary interface modifiations (i.e., loading min max values) */
+    /** This slow handles necessary interface modifications (i.e. loading min max values) */
     void on_cboGreen_currentIndexChanged( const QString& );
-    /** This slow handles necessary interface modifiations (i.e., loading min max values) */
+    /** This slow handles necessary interface modifications (i.e. loading min max values) */
     void on_cboRed_currentIndexChanged( const QString& );
-    /**The slot handles necessary interface modifications based when color map selected changes*/
+    /** This slot handles necessary interface modifications based when color map selected changes */
     void on_cboxColorMap_currentIndexChanged( const QString& );
-    /**This slot calculates classification values and colors for the tree widget on the colormap tab*/
+    /** This slot calculates classification values and colors for the tree widget on the colormap tab */
     void on_mClassifyButton_clicked();
-    /**This slot deletes the current class from the tree widget on the colormap tab*/
+    /** This slot deletes the current class from the tree widget on the colormap tab */
     void on_mDeleteEntryButton_clicked();
-    /**Callback for double clicks on the colormap entry widget*/
+    /** Callback for double clicks on the colormap entry widget */
     void handleColormapTreeWidgetDoubleClick( QTreeWidgetItem* item, int column );
-    /**This slot adds a new row to the color map table */
+    /** This slot adds a new row to the color map table */
     void on_pbtnAddColorMapEntry_clicked();
-    /**This slots saves the current color map to a file */
+    /** This slots saves the current color map to a file */
     void on_pbtnExportColorMapToFile_clicked();
-    /**This slots loads the current color map from a band */
+    /** This slots loads the current color map from a band */
     void on_pbtnLoadColorMapFromBand_clicked();
-    /**This slots loads the current color map from a file */
+    /** This slots loads the current color map from a file */
     void on_pbtnLoadColorMapFromFile_clicked();
-    /**This slot loads the minimum and maximum values from the raster band and updates the gui*/
+    /** This slot loads the minimum and maximum values from the raster band and updates the gui */
     void on_pbtnLoadMinMax_clicked();
-    /**This slot sets the default band combination varaible to current band combination */
+    /** This slot sets the default band combination variable to current band combination */
     void on_pbtnMakeBandCombinationDefault_clicked();
-    /**This slot sets the default contrast enhancement varaible  to current contrast enhancement algorithm */
+    /** This slot sets the default contrast enhancement variable  to current contrast enhancement algorithm */
     void on_pbtnMakeContrastEnhancementAlgorithmDefault_clicked();
-    /**This slot will sort the color map  in ascending order*/
+    /** This slot sets the standard deviation default */
+    void on_pbtnMakeStandardDeviationDefault_clicked();
+    /** This slot will sort the color map in ascending order */
     void on_pbtnSortColorMap_clicked();
-    /** Load the default style when appriate button is pressed. */
+    /** Load the default style when appropriate button is pressed. */
     void on_pbnLoadDefaultStyle_clicked();
-    /** Save the default style when appriate button is pressed. */
+    /** Save the default style when appropriate button is pressed. */
     void on_pbnSaveDefaultStyle_clicked();
-    /** Load a saved  style when appriate button is pressed. */
+    /** Load a saved style when appropriate button is pressed. */
     void on_pbnLoadStyle_clicked();
     /** Save a style when appriate button is pressed. */
     void on_pbnSaveStyleAs_clicked();
@@ -147,6 +149,9 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
 
     /** \brief Default contrast enhancement algorithm */
     QString mDefaultContrastEnhancementAlgorithm;
+
+    /** \brief default standard deviation */
+    double mDefaultStandardDeviation;
 
     /** \brief Default band combination */
     int mDefaultRedBand;
