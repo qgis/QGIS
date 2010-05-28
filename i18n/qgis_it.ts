@@ -5743,22 +5743,22 @@ Si prega di contattare gli sviluppatori.
         <location filename="../src/app/qgisapp.cpp" line="757"/>
         <location filename="../src/app/qgisapp.cpp" line="759"/>
         <source>Move Feature(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Muovi elemento/i</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="950"/>
         <source>Text Annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Nota testuale</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="954"/>
         <source>Form annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Nota con modulo</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="958"/>
         <source>Move Annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Muovi nota</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="964"/>
@@ -5791,37 +5791,37 @@ Si prega di contattare gli sviluppatori.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="972"/>
         <source>Create a New SpatiaLite Layer </source>
-        <translation type="unfinished"></translation>
+        <translation>Crea un nuovo layer SpatiaLite </translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1014"/>
         <source>Save edits</source>
-        <translation type="unfinished"></translation>
+        <translation>Salva modifiche</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1016"/>
         <source>Save edits to current layer , but continue editing</source>
-        <translation type="unfinished"></translation>
+        <translation>Salva modifiche al vettore in uso, ma continua a modificare</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1020"/>
         <source>Save as...</source>
-        <translation type="unfinished">Salva con nome...</translation>
+        <translation>Salva con nome...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1022"/>
         <source>Save the current layer as a vector file</source>
-        <translation type="unfinished"></translation>
+        <translation>Salva lo strato attuale come vettore</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1026"/>
         <source>Save Selection as vector file...</source>
-        <translation type="unfinished"></translation>
+        <translation>Salva la selezione come vettore...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1028"/>
         <source>Save the selection as a vector file</source>
-        <translation type="unfinished"></translation>
+        <translation>Salva la selezione come vettore</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1038"/>
@@ -5836,7 +5836,7 @@ Si prega di contattare gli sviluppatori.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1058"/>
         <source>Query...</source>
-        <translation type="unfinished"></translation>
+        <translation>Query...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1060"/>
@@ -5846,7 +5846,7 @@ Si prega di contattare gli sviluppatori.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1451"/>
         <source>New</source>
-        <translation type="unfinished">Nuovo</translation>
+        <translation>Nuovo</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2181"/>
@@ -5857,7 +5857,7 @@ Si prega di contattare gli sviluppatori.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2181"/>
         <source>Could not open qgis.db</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile aprire qgis.db</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2223"/>
@@ -5869,13 +5869,15 @@ Si prega di contattare gli sviluppatori.
         <location filename="../src/app/qgisapp.cpp" line="2380"/>
         <source>
 This copy of QGIS has been built with PostgreSQL support (%1).</source>
-        <translation type="unfinished"></translation>
+        <translation>
+Questa copia di QGIS è stata compilata con il supporto a PostgreSQL (%1).</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2386"/>
         <source>
 This copy of QGIS has been built with SpatiaLite support (%1).</source>
-        <translation type="unfinished"></translation>
+        <translation>
+Questa copia di QGIS è stata compilata con il supporto a SpatiaLite (%1).</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2412"/>
@@ -5909,7 +5911,7 @@ This copy of QGIS has been built with SpatiaLite support (%1).</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3900"/>
         <source>Saving done</source>
-        <translation type="unfinished">Salvato correttamente</translation>
+        <translation>Salvato correttamente</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3900"/>
@@ -5919,7 +5921,7 @@ This copy of QGIS has been built with SpatiaLite support (%1).</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3904"/>
         <source>Save error</source>
-        <translation type="unfinished">Errore di scrittura</translation>
+        <translation>Errore di scrittura</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3904"/>
@@ -6049,14 +6051,15 @@ Errori: %2
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5258"/>
         <source>The layer %1 is not a valid layer and can not be added to the map</source>
-        <translation type="unfinished"></translation>
+        <translation>Il layer %1 non è valido e non può essere aggiunto alla mappa</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgisapp.cpp" line="5755"/>
         <source>%n feature(s) selected on layer %1.</source>
         <comment>number of selected features</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n elemento selezionato dal layer %1.</numerusform>
+            <numerusform>%n elementi selezionati dal layer %1.</numerusform>
         </translation>
     </message>
     <message>
@@ -6084,7 +6087,9 @@ Errori: %2
         <source>
 
 Ignore errors?</source>
-        <translation type="unfinished"></translation>
+        <translation>
+
+Ignora gli errori?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6761"/>
@@ -6363,27 +6368,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsannotationwidgetbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Modulo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsannotationwidgetbase.ui" line="20"/>
         <source>Map position fixed</source>
-        <translation type="unfinished"></translation>
+        <translation>Posizione della mappa fissa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsannotationwidgetbase.ui" line="29"/>
         <source>Map marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Marcatore della mappa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsannotationwidgetbase.ui" line="50"/>
         <source>Frame width</source>
-        <translation type="unfinished"></translation>
+        <translation>Larghezza del riquadro</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsannotationwidgetbase.ui" line="67"/>
         <source>Frame color</source>
-        <translation type="unfinished"></translation>
+        <translation>Colore del riquadro</translation>
     </message>
 </context>
 <context>
@@ -22692,7 +22697,7 @@ L´errore era:
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="121"/>
         <source>Binary object (BLOB)</source>
-        <translation>Oggetto Binariot (BLOB)</translation>
+        <translation>Oggetto binario (BLOB)</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="123"/>
@@ -28667,7 +28672,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="178"/>
         <source>Export raster to binary array</source>
-        <translation>Esporta il raster in binary array</translation>
+        <translation>Esporta il raster in un array binario</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="179"/>
@@ -29087,17 +29092,17 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="262"/>
         <source>Link GDAL supported raster layer to a binary raster map layer</source>
-        <translation>Collega un raster GDAL ad un raster binary</translation>
+        <translation>Collega un raster GDAL ad un raster GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="263"/>
         <source>Link GDAL supported raster to binary raster</source>
-        <translation>Collega un layer raster GDAL ad un raster binario</translation>
+        <translation>Collega un layer raster GDAL ad un raster GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="264"/>
         <source>Link all GDAL supported rasters in a directory to binary rasters</source>
-        <translation>Collega tutti i raster GDAL di una cartella ai raster binary</translation>
+        <translation>Collega tutti i raster GDAL di una cartella ai raster GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="265"/>
@@ -29407,7 +29412,7 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="326"/>
         <source>Reinterpolate and compute topographic analysis using regularized spline with tension and smoothing</source>
-        <translation>Re-interploazione e calcolo di analisi topografica mediante spline regolarizzata con tensione e appiattimento</translation>
+        <translation>Re-interpolazione e calcolo di analisi topografica mediante spline regolarizzata con tensione e appiattimento</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="327"/>
@@ -29602,12 +29607,12 @@ Il plugin non sarà abilitato.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="365"/>
         <source>Set the region to match multiple rasters</source>
-        <translation>Imposta la region in base a piu&apos; raster</translation>
+        <translation>Imposta la region in base a più raster</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="366"/>
         <source>Set the region to match multiple vectors</source>
-        <translation>Imposta la region in base a piu&apos; vettori</translation>
+        <translation>Imposta la region in base a più vettori</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="367"/>
