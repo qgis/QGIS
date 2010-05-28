@@ -57,7 +57,7 @@ A layer based snapping tolerance can be defined by choosing <label>Settings</lab
 > <label>Project Properties...</label>. In the <label>General</label> tab, section <label>Digitize</label> you can click on <label>Snapping options...</label> to enable and adjust snapping mode and tolerance on a layer basis.
 <h5>Vertex markers</h5>
 You can define marker style as <label>Semi transparent circle</label>, <label>Cross</label> or <label>None</label> and size; you can also set showing markers only for selected features.
-<h5>Enter atribute values</h5>
+<h5>Enter attribute values</h5>
 By default, after digitizing a new feature, QGIS asks you to enter attribute values for that feature. Ticking <label>Suppress attributes pop-up windows after each created feature</label> allows you to enter the attributes later.
 <a name="crs">
 <h4>CRS</h4>

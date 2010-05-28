@@ -51,10 +51,19 @@ während des Laens laufend aktualisiert werden muss.  Ein guter Startwert ist
 <a name="map">
 <h4>Kartenwerkzeuge</h4>
 </a>
+
+<h5>Abfrage</h5>
 Die Einstellung <label>Modus</label> legt fest welche Layer durch Werkzeug 
 <label>Objekte abfragen</label> angezeigt werden. <label>Von oben nach 
 unten</label> statt <label>Aktueller Layer</label> bewirkt, dass alle 
 angezeigten Layer abgefragt werden. 
+
+<h5>Messwerkzeug</h5>
+Hier kännen Sie einen Ellipsoid für Entfernungsberechnungen, Maßeinheiten und
+die bevorzugte Farbe des Gummibandes einstellen.
+
+<h5>Verschieben und Zoomen</h5>
+Erlaubt die Einstellung von Mausradaktion und -zoomfaktor.
 
 <a name="over">
 <h4>Überlagerung</h4>
@@ -68,10 +77,14 @@ langsam)</label>.
 <a name="digit">
 <h4>Digitalisierung</h4>
 </a>
-Auf dem Reiter <label>Digitalisierung</label> können Sie eine projektweite 
-Objektfangtoleranz angeben.<p> Sie können den Fangmodus auf <label>zum 
-Stützpunkt</label>, <label>zum Segment</label> oder <label>zu Stützpunkt und 
-Segment</label> einstellen. Auch können Sie eine Fangtoleranz und einen 
+<h5>Gummiband</h5>
+Auf dem Reiter <label>Digitalisierung</label> können Sie die Linienbreite und
+-farbe des Gummibandes zum Digitalisierung einstellen.
+<h5>Objektfang</h5>
+Hier können Sie eine allgemeine, projektweite Objektfangtoleranz angeben. <p>
+Sie können den Fangmodus auf <label>zum Stützpunkt</label>, <label>zum
+Segment</label> oder <label>zu Stützpunkt und Segment</label> einstellen. Auch
+können Sie eine Fangtoleranz und einen 
 Suchradius für die Stützpunktbearbeitung angeben. Die Toleranz kann in 
 Karteneinheiten oder Pixeln angegeben werden. Wählen Sie Pixel haben Sie den 
 Vorteil, das die Fangtoleranz nicht nach Zoomoperationen geändert werden 
@@ -81,6 +94,17 @@ Eine Layer basierte Fangtoleranz können Sie über <label>Einstellungen</label>
 Dort können Sie im Reiter <label>Allgemein</label>, Abschnitt 
 <label>Digitalisierung</label> auf <label>Fangoptionen...</label> klicken, um 
 den Fangmodus auf Layerbasis zu konfigurieren. 
+
+<h5>Knickpunktmarken</h5>
+Sie können den Markerstil auf <label>Teiltransparenter Kreis</label>, <label>Kreuz</label> oder <label>Keine</label>
+und die Größe einstellen.
+
+<h5>Attributewerte eingeben</h5>
+Normalerweise wird der Benutzer nach dem Digitalisieren eines neuen Objekts
+aufgefordert Attributwerte dafür einzugeben.  Durch das Anhaken von
+<label>Eingabe der Attributwerte bei der Erstellung neuere Objekte
+unterdrücken</label> kann man dies unterdrücken und die Attribute nachträglich
+eingeben.
 
 <a name="crs">
 <h4>KBS</h4>
