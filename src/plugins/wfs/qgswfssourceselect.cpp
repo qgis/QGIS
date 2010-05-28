@@ -370,7 +370,11 @@ void QgsWFSSourceSelect::addLayer()
     if ( canvas && mBboxCheckBox->isChecked() )
     {
       QgsRectangle currentExtent = canvas->extent();
-      bBoxString = QString( "&BBOX=%1,%2,%3,%4" ).arg( currentExtent.xMinimum() ).arg( currentExtent.yMinimum() ).arg( currentExtent.xMaximum() ).arg( currentExtent.yMaximum() );
+      bBoxString = QString( "&BBOX=%1,%2,%3,%4" )
+                   .arg( currentExtent.xMinimum(), 0, 'f' )
+                   .arg( currentExtent.yMinimum(), 0, 'f' )
+                   .arg( currentExtent.xMaximum(), 0, 'f' )
+                   .arg( currentExtent.yMaximum(), 0, 'f' );
     }
     mIface->addVectorLayer( uri + "SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=" + typeName + crsString + bBoxString, typeName, "WFS" );
   }
