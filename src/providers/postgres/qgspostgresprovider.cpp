@@ -134,7 +134,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
   }
 
   deduceEndian();
-  calculateExtents();
+  layerExtent.setMinimal();
   featuresCounted = -1;
 
   // set the primary key
@@ -715,12 +715,6 @@ void QgsPostgresProvider::setExtent( QgsRectangle& newExtent )
   layerExtent.setXMinimum( newExtent.xMinimum() );
   layerExtent.setYMaximum( newExtent.yMaximum() );
   layerExtent.setYMinimum( newExtent.yMinimum() );
-}
-
-// TODO - make this function return the real extent_
-QgsRectangle QgsPostgresProvider::extent()
-{
-  return layerExtent;      //extent_->MinX, extent_->MinY, extent_->MaxX, extent_->MaxY);
 }
 
 /**
@@ -2740,9 +2734,8 @@ bool QgsPostgresProvider::setSubsetString( QString theSQL )
   // uri? Perhaps this needs some rationalisation.....
   setDataSourceUri( mUri.uri() );
 
-  // need to recalculate the number of features...
   featuresCounted = -1;
-  calculateExtents();
+  layerExtent.setMinimal();
 
   return true;
 }
@@ -2752,16 +2745,13 @@ bool QgsPostgresProvider::setSubsetString( QString theSQL )
  */
 long QgsPostgresProvider::featureCount() const
 {
-  if( featuresCounted >= 0 )
+  if ( featuresCounted >= 0 )
     return featuresCounted;
 
   // get total number of features
-
-  // First get an approximate count; then delegate to
-  // a thread the task of getting the full count.
   QString sql;
 
-  if ( !isQuery && mUseEstimatedMetadata && sqlWhereClause.isEmpty() )
+  if ( !isQuery && mUseEstimatedMetadata )
   {
     sql = QString( "select reltuples::int from pg_catalog.pg_class where oid=regclass(%1)::oid" ).arg( quotedValue( mQuery ) );
   }
@@ -2787,130 +2777,79 @@ long QgsPostgresProvider::featureCount() const
   return featuresCounted;
 }
 
-void QgsPostgresProvider::calculateExtents()
+QgsRectangle QgsPostgresProvider::extent()
 {
-  QString sql;
-  Result result;
-  QString ext;
-
-  // get the extents
-  if ( !isQuery && ( mUseEstimatedMetadata || sqlWhereClause.isEmpty() ) )
+  if ( layerExtent.isEmpty() )
   {
-    // do stats exists?
-    sql = QString( "SELECT COUNT(*) FROM pg_stats WHERE schemaname=%1 AND tablename=%2 AND attname=%3" )
-          .arg( quotedValue( mSchemaName ) )
-          .arg( quotedValue( mTableName ) )
-          .arg( quotedValue( geometryColumn ) );
-    result = connectionRO->PQexec( sql );
-    if ( PQresultStatus( result ) == PGRES_TUPLES_OK && PQntuples( result ) == 1 )
+    QString sql;
+    Result result;
+    QString ext;
+
+    // get the extents
+    if ( !isQuery && ( mUseEstimatedMetadata || sqlWhereClause.isEmpty() ) )
     {
-      if ( QString::fromUtf8( PQgetvalue( result, 0, 0 ) ).toInt() > 0 )
+      // do stats exists?
+      sql = QString( "SELECT COUNT(*) FROM pg_stats WHERE schemaname=%1 AND tablename=%2 AND attname=%3" )
+            .arg( quotedValue( mSchemaName ) )
+            .arg( quotedValue( mTableName ) )
+            .arg( quotedValue( geometryColumn ) );
+      result = connectionRO->PQexec( sql );
+      if ( PQresultStatus( result ) == PGRES_TUPLES_OK && PQntuples( result ) == 1 )
       {
-        sql = QString( "select estimated_extent(%1,%2,%3)" )
-              .arg( quotedValue( mSchemaName ) )
-              .arg( quotedValue( mTableName ) )
-              .arg( quotedValue( geometryColumn ) );
-        result = connectionRO->PQexec( sql );
-        if ( PQresultStatus( result ) == PGRES_TUPLES_OK && PQntuples( result ) == 1 )
-          ext = PQgetvalue( result, 0, 0 );
+        if ( QString::fromUtf8( PQgetvalue( result, 0, 0 ) ).toInt() > 0 )
+        {
+          sql = QString( "select estimated_extent(%1,%2,%3)" )
+                .arg( quotedValue( mSchemaName ) )
+                .arg( quotedValue( mTableName ) )
+                .arg( quotedValue( geometryColumn ) );
+          result = connectionRO->PQexec( sql );
+          if ( PQresultStatus( result ) == PGRES_TUPLES_OK && PQntuples( result ) == 1 )
+            ext = PQgetvalue( result, 0, 0 );
+        }
       }
+      else
+      {
+        QgsDebugMsg( QString( "no column statistics for %1.%2.%3" ).arg( mSchemaName ).arg( mTableName ).arg( geometryColumn ) );
+      }
+    }
+
+    if ( ext.isEmpty() )
+    {
+      sql = QString( "select extent(%1) from %2" )
+            .arg( quotedIdentifier( geometryColumn ) )
+            .arg( mQuery );
+
+      if ( !sqlWhereClause.isEmpty() )
+        sql += QString( " where %1" ).arg( sqlWhereClause );
+
+      result = connectionRO->PQexec( sql );
+      if ( PQresultStatus( result ) != PGRES_TUPLES_OK )
+        connectionRO->PQexecNR( "ROLLBACK" );
+      else if ( PQntuples( result ) == 1 )
+        ext = PQgetvalue( result, 0, 0 );
+    }
+
+    QgsDebugMsg( "Got extents using: " + sql );
+
+    QRegExp rx( "\\((.+) (.+),(.+) (.+)\\)" );
+    if ( ext.contains( rx ) )
+    {
+      QStringList ex = rx.capturedTexts();
+
+      layerExtent.setXMinimum( ex[1].toDouble() );
+      layerExtent.setYMinimum( ex[2].toDouble() );
+      layerExtent.setXMaximum( ex[3].toDouble() );
+      layerExtent.setYMaximum( ex[4].toDouble() );
     }
     else
     {
-      QgsDebugMsg( QString( "no column statistics for %1.%2.%3" ).arg( mSchemaName ).arg( mTableName ).arg( geometryColumn ) );
+      QgsDebugMsg( "extents query failed" );
     }
+
+    QgsDebugMsg( "Set extents to: " + layerExtent.toString() );
   }
 
-  if ( ext.isEmpty() )
-  {
-    sql = QString( "select extent(%1) from %2" )
-          .arg( quotedIdentifier( geometryColumn ) )
-          .arg( mQuery );
-
-    if ( !sqlWhereClause.isEmpty() )
-      sql += QString( " where %1" ).arg( sqlWhereClause );
-
-    result = connectionRO->PQexec( sql );
-    if ( PQresultStatus( result ) != PGRES_TUPLES_OK )
-      connectionRO->PQexecNR( "ROLLBACK" );
-    else if ( PQntuples( result ) == 1 )
-      ext = PQgetvalue( result, 0, 0 );
-  }
-
-  QgsDebugMsg( "Got extents using: " + sql );
-
-  QRegExp rx( "\\((.+) (.+),(.+) (.+)\\)" );
-  if ( ext.contains( rx ) )
-  {
-    QStringList ex = rx.capturedTexts();
-
-    layerExtent.setXMinimum( ex[1].toDouble() );
-    layerExtent.setYMinimum( ex[2].toDouble() );
-    layerExtent.setXMaximum( ex[3].toDouble() );
-    layerExtent.setYMaximum( ex[4].toDouble() );
-  }
-  else
-  {
-    QgsDebugMsg( "extents query failed" );
-  }
-
-  QgsDebugMsg( "Set extents to: " + layerExtent.toString() );
-}
-
-/**
- * Event sink for events from threads
- */
-void QgsPostgresProvider::customEvent( QEvent * e )
-{
-  QgsDebugMsg( "received a custom event " + QString::number( e->type() ) );
-
-  switch (( int ) e->type() )
-  {
-    case QGis::ProviderExtentCalcEvent:
-
-      QgsDebugMsg( "extent has been calculated" );
-
-      // Collect the new extent from the event and set this layer's
-      // extent with it.
-
-      {
-        QgsRectangle* r = (( QgsProviderExtentCalcEvent* ) e )->layerExtent();
-        setExtent( *r );
-      }
-
-      QgsDebugMsg( "new extent has been saved" );
-
-      QgsDebugMsg( "Set extent to: " + layerExtent.toString() );
-
-      QgsDebugMsg( "emitting fullExtentCalculated()" );
-
-      emit fullExtentCalculated();
-
-      // TODO: Only uncomment this when the overview map canvas has been subclassed
-      // from the QgsMapCanvas
-
-      //        QgsDebugMsg("emitting repaintRequested()");
-      //        emit repaintRequested();
-
-      break;
-
-    case QGis::ProviderCountCalcEvent:
-
-      QgsDebugMsg( "count has been calculated" );
-
-      featuresCounted = (( QgsProviderCountCalcEvent* ) e )->featuresCounted();
-
-      QgsDebugMsg( "count is " + QString::number( featuresCounted ) );
-
-      break;
-
-    default:
-      // do nothing
-      break;
-  }
-
-  QgsDebugMsg( "Finished processing custom event " + QString::number( e->type() ) );
-
+  return layerExtent;
 }
 
 
