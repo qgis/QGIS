@@ -5,6 +5,7 @@ Karte hinzufügen.
 <a href="#connect">Verbindungen</a><br/>
 <a href="#add">Layer hinzufügen</a><br/>
 <a href="#filter">Layer filtern</a><br/>
+<a href="#search">Suchoptionen</a><br/>
 
 <a name="connect">
 <h4>Verbindungen</h4>
@@ -28,6 +29,15 @@ Um einen Layer hinzuzufügen:
 <a name="filter">
 <h4>Layer filtern</h4>
 </a>
-Um Layer vor dem Hinzufügen zu Filtern klicken Sie doppelt auf deren Namen. 
-Daraufhin öffnet sich der Abfrageneditor, in dem Sie SQL-Anweisungen zum 
-Filtern der Datensätze festlegen können.
+Um Layer vor dem Hinzufügen zu Filtern klicken Sie doppelt auf deren Namen oder
+benutzen den Knopf <label>Abfrage erstellen</label>.  Daraufhin öffnet sich der
+Abfrageneditor, in dem Sie SQL-Anweisungen zum Filtern der Datensätze festlegen
+können.
+
+<a name="#search">
+<h4>Suchoptionen</h4>
+</a>
+Durch Anhaken von <label>Suchoptionen</label> werden weitere Möglichkeiten zur
+Suche nach verschiedenen Spaltentype mit folgenden Modi zugeschaltet:
+<label>Platzhalter</label> oder <label>RegAusdr</label>.
+
