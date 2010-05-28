@@ -567,14 +567,6 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     int enabledCapabilities;
 
-    //! Calculate the extents of the layer
-    void calculateExtents();
-
-    /**
-     * Event sink for events from threads
-     */
-    void customEvent( QEvent *e );
-
     void appendGeomString( QgsGeometry *geom, QString &geomParam ) const;
     QString paramValue( QString fieldvalue, const QString &defaultValue ) const;
 
