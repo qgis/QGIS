@@ -66,12 +66,13 @@ class LayerSettings
     QColor bufferColor;
     bool labelPerPart; // whether to label every feature's part or only the biggest one
     bool mergeLines;
+    double minFeatureSize; // minimum feature size to be labelled (in mm)
 
     // called from register feature hook
     void calculateLabelSize( QString text, double& labelX, double& labelY );
 
     // implementation of register feature hook
-    void registerFeature( QgsFeature& f );
+    void registerFeature( QgsFeature& f, const QgsRenderContext& context );
 
     void readFromLayer( QgsVectorLayer* layer );
     void writeToLayer( QgsVectorLayer* layer );
@@ -85,6 +86,11 @@ class LayerSettings
     const QgsCoordinateTransform* ct;
     QgsPoint ptZero, ptOne;
     QList<MyLabel*> geometries;
+
+  private:
+    /**Checks if a feature is larger than a minimum size (in mm)
+    @return true if above size, false if below*/
+    bool checkMinimumSizeMM( const QgsRenderContext& ct, QgsGeometry* geom, double minSize ) const;
 };
 
 class LabelCandidate
@@ -128,7 +134,7 @@ class PalLabeling : public QgsLabelingEngineInterface
     //! hook called when drawing layer before issuing select()
     virtual int prepareLayer( QgsVectorLayer* layer, int& attrIndex, QgsRenderContext& ctx );
     //! hook called when drawing for every feature in a layer
-    virtual void registerFeature( QgsVectorLayer* layer, QgsFeature& feat );
+    virtual void registerFeature( QgsVectorLayer* layer, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() );
     //! called when the map is drawn and labels should be placed
     virtual void drawLabeling( QgsRenderContext& context );
     //! called when we're done with rendering
@@ -144,6 +150,7 @@ class PalLabeling : public QgsLabelingEngineInterface
   protected:
 
     void initPal();
+
 
   protected:
     // temporary hashtable of layer settings, being filled during labeling, cleared once labeling's done

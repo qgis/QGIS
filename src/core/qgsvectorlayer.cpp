@@ -741,7 +741,7 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
 
       // labeling - register feature
       if ( labeling && mRendererV2->symbolForFeature( fet ) != NULL )
-        rendererContext.labelingEngine()->registerFeature( this, fet );
+        rendererContext.labelingEngine()->registerFeature( this, fet, rendererContext );
 
       if ( mEditable )
       {
@@ -805,7 +805,7 @@ void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bo
     features[sym].append( fet );
 
     if ( labeling && mRendererV2->symbolForFeature( fet ) != NULL )
-      rendererContext.labelingEngine()->registerFeature( this, fet );
+      rendererContext.labelingEngine()->registerFeature( this, fet, rendererContext );
 
     if ( mEditable )
     {
@@ -1052,7 +1052,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
 
         if ( labeling && mRenderer->willRenderFeature( &fet ) )
         {
-          rendererContext.labelingEngine()->registerFeature( this, fet );
+          rendererContext.labelingEngine()->registerFeature( this, fet, rendererContext );
         }
 
         ++featureCount;

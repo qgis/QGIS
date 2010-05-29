@@ -105,6 +105,7 @@ LayerSettings::LayerSettings()
   bufferColor = Qt::white;
   labelPerPart = false;
   mergeLines = false;
+  minFeatureSize = 0.0;
 }
 
 LayerSettings::LayerSettings( const LayerSettings& s )
@@ -125,6 +126,7 @@ LayerSettings::LayerSettings( const LayerSettings& s )
   bufferColor = s.bufferColor;
   labelPerPart = s.labelPerPart;
   mergeLines = s.mergeLines;
+  minFeatureSize = s.minFeatureSize;
 
   fontMetrics = NULL;
   ct = NULL;
@@ -178,6 +180,7 @@ void LayerSettings::readFromLayer( QgsVectorLayer* layer )
   bufferColor = _readColor( layer, "labeling/bufferColor" );
   labelPerPart = layer->customProperty( "labeling/labelPerPart" ).toBool();
   mergeLines = layer->customProperty( "labeling/mergeLines" ).toBool();
+  minFeatureSize = layer->customProperty( "labeling/minFeatureSize" ).toDouble();
 }
 
 void LayerSettings::writeToLayer( QgsVectorLayer* layer )
@@ -205,6 +208,51 @@ void LayerSettings::writeToLayer( QgsVectorLayer* layer )
   _writeColor( layer, "labeling/bufferColor", bufferColor );
   layer->setCustomProperty( "labeling/labelPerPart", labelPerPart );
   layer->setCustomProperty( "labeling/mergeLines", mergeLines );
+  layer->setCustomProperty( "labeling/minFeatureSize", minFeatureSize );
+}
+
+bool LayerSettings::checkMinimumSizeMM( const QgsRenderContext& ct, QgsGeometry* geom, double minSize ) const
+{
+  if ( minSize <= 0 )
+  {
+    return true;
+  }
+
+  if ( !geom )
+  {
+    return false;
+  }
+
+  QGis::GeometryType featureType = geom->type();
+  if ( featureType == QGis::Point ) //minimum size does not apply to point features
+  {
+    return true;
+  }
+
+  GEOSGeometry* geosGeom = geom->asGeos();
+  if ( !geosGeom )
+  {
+    return true;
+  }
+
+  double mapUnitsPerMM = ct.mapToPixel().mapUnitsPerPixel() * ct.scaleFactor();
+  if ( featureType == QGis::Line )
+  {
+    double length;
+    if ( GEOSLength( geosGeom, &length ) )
+    {
+      return ( length >= ( minSize * mapUnitsPerMM ) );
+    }
+  }
+  else if ( featureType == QGis::Polygon )
+  {
+    double area;
+    if ( GEOSArea( geosGeom, &area ) )
+    {
+      return ( sqrt( area ) >= ( minSize * mapUnitsPerMM ) );
+    }
+  }
+  return true; //should never be reached. Return true in this case to label such geometries anyway.
 }
 
 void LayerSettings::calculateLabelSize( QString text, double& labelX, double& labelY )
@@ -219,7 +267,7 @@ void LayerSettings::calculateLabelSize( QString text, double& labelX, double& la
 }
 
 
-void LayerSettings::registerFeature( QgsFeature& f )
+void LayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext& context )
 {
   QString labelText = f.attributeMap()[fieldIndex].toString();
   double labelX, labelY; // will receive label size
@@ -228,6 +276,11 @@ void LayerSettings::registerFeature( QgsFeature& f )
   QgsGeometry* geom = f.geometry();
   if ( ct != NULL ) // reproject the geometry if necessary
     geom->transform( *ct );
+
+  if ( !checkMinimumSizeMM( context, geom, minFeatureSize ) )
+  {
+    return;
+  }
 
   MyLabel* lbl = new MyLabel( f.id(), labelText, GEOSGeom_clone( geom->asGeos() ) );
 
@@ -375,9 +428,10 @@ int PalLabeling::prepareLayer( QgsVectorLayer* layer, int& attrIndex, QgsRenderC
 }
 
 
-void PalLabeling::registerFeature( QgsVectorLayer* layer, QgsFeature& f )
+void PalLabeling::registerFeature( QgsVectorLayer* layer, QgsFeature& f, const QgsRenderContext& context )
 {
-  mActiveLayers[layer].registerFeature( f );
+  LayerSettings& lyr = mActiveLayers[layer];
+  lyr.registerFeature( f, context );
 }
 
 

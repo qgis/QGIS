@@ -53,7 +53,7 @@ class QgsLabelingEngineInterface
     //! called when starting rendering of a layer
     virtual int prepareLayer( QgsVectorLayer* layer, int& attrIndex, QgsRenderContext& ctx ) = 0;
     //! called for every feature
-    virtual void registerFeature( QgsVectorLayer* layer, QgsFeature& feat ) = 0;
+    virtual void registerFeature( QgsVectorLayer* layer, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() ) = 0;
     //! called when the map is drawn and labels should be placed
     virtual void drawLabeling( QgsRenderContext& context ) = 0;
     //! called when we're done with rendering

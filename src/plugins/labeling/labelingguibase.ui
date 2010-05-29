@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>480</width>
+    <width>448</width>
     <height>610</height>
    </rect>
   </property>
@@ -18,15 +18,15 @@
     <normaloff/>
    </iconset>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
+  <layout class="QGridLayout" name="gridLayout_5">
+   <item row="0" column="0">
     <widget class="QCheckBox" name="chkEnableLabeling">
      <property name="text">
       <string>Label this layer</string>
      </property>
     </widget>
    </item>
-   <item>
+   <item row="1" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_9">
      <item>
       <widget class="QLabel" name="label_6">
@@ -56,7 +56,7 @@
      </item>
     </layout>
    </item>
-   <item>
+   <item row="2" column="0">
     <widget class="QGroupBox" name="groupBox_4">
      <property name="title">
       <string>Placement</string>
@@ -326,7 +326,7 @@
      </layout>
     </widget>
    </item>
-   <item>
+   <item row="3" column="0">
     <layout class="QGridLayout" name="gridLayout_4">
      <item row="0" column="0" rowspan="2">
       <widget class="QGroupBox" name="groupBox">
@@ -648,21 +648,39 @@
      </item>
     </layout>
    </item>
-   <item>
+   <item row="4" column="0">
     <widget class="QCheckBox" name="chkLabelPerFeaturePart">
      <property name="text">
       <string>label every part of multi-part features</string>
      </property>
     </widget>
    </item>
-   <item>
+   <item row="5" column="0">
     <widget class="QCheckBox" name="chkMergeLines">
      <property name="text">
       <string>merge connected lines to avoid duplicate labels</string>
      </property>
     </widget>
    </item>
-   <item>
+   <item row="6" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_10">
+     <item>
+      <widget class="QLabel" name="label_19">
+       <property name="text">
+        <string>Suppress labeling of features smaller than</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDoubleSpinBox" name="mMinSizeSpinBox">
+       <property name="suffix">
+        <string> mm</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="7" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QCheckBox" name="chkNoObstacle">
@@ -699,7 +717,7 @@
      </item>
     </layout>
    </item>
-   <item>
+   <item row="8" column="0">
     <spacer name="verticalSpacer_2">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -712,7 +730,7 @@
      </property>
     </spacer>
    </item>
-   <item>
+   <item row="9" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
