@@ -5859,6 +5859,43 @@ QgsMultiPolygon QgsGeometry::asMultiPolygon()
   return polygons;
 }
 
+double QgsGeometry::area()
+{
+  if ( !mGeos )
+  {
+    exportWkbToGeos();
+  }
+
+  double area;
+
+  try
+  {
+    if ( GEOSArea( mGeos, &area ) == 0 )
+      return -1.0;
+  }
+  CATCH_GEOS( -1.0 )
+
+  return area;
+}
+
+double QgsGeometry::length()
+{
+  if ( !mGeos )
+  {
+    exportWkbToGeos();
+  }
+
+  double length;
+
+  try
+  {
+    if ( GEOSLength( mGeos, &length ) == 0 )
+      return -1.0;
+  }
+  CATCH_GEOS( -1.0 )
+
+  return length;
+}
 double QgsGeometry::distance( QgsGeometry& geom )
 {
   if ( !mGeos )

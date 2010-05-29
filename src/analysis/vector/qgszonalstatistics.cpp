@@ -23,13 +23,19 @@
 #include "cpl_string.h"
 #include <QProgressDialog>
 
-QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer* polygonLayer, const QString& rasterFile, const QString& attributePrefix, int rasterBand ) :
-    mRasterFilePath( rasterFile ), mRasterBand( rasterBand ), mPolygonLayer( polygonLayer ), mAttributePrefix( attributePrefix ), mInputNodataValue( -1 )
+QgsZonalStatistics::QgsZonalStatistics( QgsVectorLayer* polygonLayer, const QString& rasterFile, const QString& attributePrefix, int rasterBand )
+    : mRasterFilePath( rasterFile )
+    , mRasterBand( rasterBand )
+    , mPolygonLayer( polygonLayer )
+    , mAttributePrefix( attributePrefix )
+    , mInputNodataValue( -1 )
 {
 
 }
 
-QgsZonalStatistics::QgsZonalStatistics(): mRasterBand( 0 ), mPolygonLayer( 0 )
+QgsZonalStatistics::QgsZonalStatistics()
+    : mRasterBand( 0 )
+    , mPolygonLayer( 0 )
 {
 
 }
@@ -162,13 +168,13 @@ int QgsZonalStatistics::calculateStatistics( QProgressDialog* p )
       continue;
     }
 
-    statisticsFromMiddlePointTest_improved( rasterBand, featureGeometry, offsetX, offsetY, nCellsX, nCellsY, cellsizeX, cellsizeY, \
+    statisticsFromMiddlePointTest_improved( rasterBand, featureGeometry, offsetX, offsetY, nCellsX, nCellsY, cellsizeX, cellsizeY,
                                             rasterBBox, sum, count );
 
     if ( count <= 1 )
     {
       //the cell resolution is probably larger than the polygon area. We switch to precise pixel - polygon intersection in this case
-      statisticsFromPreciseIntersection( rasterBand, featureGeometry, offsetX, offsetY, nCellsX, nCellsY, cellsizeX, cellsizeY, \
+      statisticsFromPreciseIntersection( rasterBand, featureGeometry, offsetX, offsetY, nCellsX, nCellsY, cellsizeX, cellsizeY,
                                          rasterBBox, sum, count );
     }
 
@@ -227,7 +233,7 @@ int QgsZonalStatistics::cellInfoForBBox( const QgsRectangle& rasterBBox, const Q
   return 0;
 }
 
-void QgsZonalStatistics::statisticsFromMiddlePointTest( void* band, QgsGeometry* poly, int pixelOffsetX, \
+void QgsZonalStatistics::statisticsFromMiddlePointTest( void* band, QgsGeometry* poly, int pixelOffsetX,
     int pixelOffsetY, int nCellsX, int nCellsY, double cellSizeX, double cellSizeY, const QgsRectangle& rasterBBox, double& sum, double& count )
 {
   double cellCenterX, cellCenterY;
@@ -260,7 +266,7 @@ void QgsZonalStatistics::statisticsFromMiddlePointTest( void* band, QgsGeometry*
   CPLFree( scanLine );
 }
 
-void QgsZonalStatistics::statisticsFromPreciseIntersection( void* band, QgsGeometry* poly, int pixelOffsetX, \
+void QgsZonalStatistics::statisticsFromPreciseIntersection( void* band, QgsGeometry* poly, int pixelOffsetX,
     int pixelOffsetY, int nCellsX, int nCellsY, double cellSizeX, double cellSizeY, const QgsRectangle& rasterBBox, double& sum, double& count )
 {
   sum = 0;
@@ -268,12 +274,10 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( void* band, QgsGeome
   double currentY = rasterBBox.yMaximum() - pixelOffsetY * cellSizeY - cellSizeY / 2;
   float* pixelData = ( float * ) CPLMalloc( sizeof( float ) );
   QgsGeometry* pixelRectGeometry = 0;
-  QgsGeometry* intersectGeometry = 0;
 
   double hCellSizeX = cellSizeX / 2.0;
   double hCellSizeY = cellSizeY / 2.0;
   double pixelArea = cellSizeX * cellSizeY;
-  double intersectionArea = 0;
   double weight = 0;
 
   for ( int row = 0; row < nCellsY; ++row )
@@ -286,10 +290,11 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( void* band, QgsGeome
       if ( pixelRectGeometry )
       {
         //intersection
-        intersectGeometry = pixelRectGeometry->intersection( poly );
+        QgsGeometry *intersectGeometry = pixelRectGeometry->intersection( poly );
         if ( intersectGeometry )
         {
-          if ( GEOSArea( intersectGeometry->asGeos(), &intersectionArea ) )
+          double intersectionArea = intersectGeometry->area();
+          if ( intersectionArea >= 0.0 )
           {
             weight = intersectionArea / pixelArea;
             count += weight;
@@ -305,7 +310,7 @@ void QgsZonalStatistics::statisticsFromPreciseIntersection( void* band, QgsGeome
   CPLFree( pixelData );
 }
 
-void QgsZonalStatistics::statisticsFromMiddlePointTest_improved( void* band, QgsGeometry* poly, int pixelOffsetX, int pixelOffsetY, int nCellsX, int nCellsY, \
+void QgsZonalStatistics::statisticsFromMiddlePointTest_improved( void* band, QgsGeometry* poly, int pixelOffsetX, int pixelOffsetY, int nCellsX, int nCellsY,
     double cellSizeX, double cellSizeY, const QgsRectangle& rasterBBox, double& sum, double& count )
 {
   double cellCenterX, cellCenterY;
