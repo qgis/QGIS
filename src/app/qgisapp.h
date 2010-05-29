@@ -742,11 +742,7 @@ class QgisApp : public QMainWindow
      * It won't force a refresh.
      */
     bool addRasterLayer( QgsRasterLayer * theRasterLayer );
-    //@todo We should move these next two into vector layer class
-    /** This helper checks to see whether the file name appears to be a valid shape file name */
-    bool isValidShapeFileName( QString theFileNameQString );
-    /** Overloaded version of the above function provided for convenience that takes a qstring pointer */
-    bool isValidShapeFileName( QString * theFileNameQString );
+
     /** add this file to the recently opened/saved projects list
      *  pass settings by reference since creating more than one
      * instance simultaneously results in data loss.

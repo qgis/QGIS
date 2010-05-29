@@ -43,7 +43,7 @@
 
 QgsVectorFileWriter::QgsVectorFileWriter(
   const QString &theVectorFileName,
-  const QString& fileEncoding,
+  const QString &theFileEncoding,
   const QgsFieldMap& fields,
   QGis::WkbType geometryType,
   const QgsCoordinateReferenceSystem* srs,
@@ -54,6 +54,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
     , mError( NoError )
 {
   QString vectorFileName = theVectorFileName;
+  QString fileEncoding = theFileEncoding;
 
   // find driver in OGR
   OGRSFDriverH poDriver;
@@ -91,6 +92,27 @@ QgsVectorFileWriter::QgsVectorFileWriter(
       }
       fieldNames << name;
     }
+
+    deleteShapeFile( vectorFileName );
+  }
+  else if( driverName == "KML" )
+  {
+    if( !vectorFileName.endsWith( ".kml", Qt::CaseInsensitive ) )
+    {
+      vectorFileName += ".kml";
+    }
+
+    if( fileEncoding.compare( "UTF-8", Qt::CaseInsensitive )!=0 )
+    {
+      QgsDebugMsg( "forced UTF-8 encoding for KML" );
+      fileEncoding = "UTF-8";
+    }
+
+    QFile::remove( vectorFileName );
+  }
+  else
+  {
+    QFile::remove( vectorFileName );
   }
 
   // create the data source

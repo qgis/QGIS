@@ -2700,19 +2700,6 @@ void QgisApp::loadOGRSublayers( QString layertype, QString uri, QStringList list
   }
 }
 
-/** This helper checks to see whether the file name appears to be a valid vector file name */
-bool QgisApp::isValidShapeFileName( QString theFileNameQString )
-{
-  return theFileNameQString.endsWith( ".shp", Qt::CaseInsensitive );
-}
-
-/** Overloaded of the above function provided for convenience that takes a qstring pointer */
-bool QgisApp::isValidShapeFileName( QString * theFileNameQString )
-{
-  //dereference and delegate
-  return isValidShapeFileName( *theFileNameQString );
-}
-
 #ifndef HAVE_POSTGRESQL
 void QgisApp::addDatabaseLayer() {}
 #else
@@ -3030,31 +3017,7 @@ void QgisApp::newVectorLayer()
     openFileDialog->selectFilter( lastUsedFilter );
   }
 
-  int res;
-  while (( res = openFileDialog->exec() ) == QDialog::Accepted )
-  {
-    fileName = openFileDialog->selectedFiles().first();
-
-    if ( fileformat == "ESRI Shapefile" )
-    {
-      if ( !isValidShapeFileName( fileName ) )
-      {
-        fileName += ".shp";
-      }
-
-      if ( !isValidShapeFileName( fileName ) )
-      {
-        QMessageBox::information( this,
-                                  tr( "New Shapefile" ),
-                                  tr( "Shapefiles must end on .shp" ) );
-        continue;
-      }
-    }
-
-    break;
-  }
-
-  if ( res == QDialog::Rejected )
+  if( openFileDialog->exec() == QDialog::Rejected )
   {
     delete openFileDialog;
     return;
@@ -3862,29 +3825,6 @@ void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection )
     else
     {
       destCRS = QgsCoordinateReferenceSystem( dialog->crs(), QgsCoordinateReferenceSystem::InternalCrsId );
-    }
-
-    // overwrite the file - user will already have been prompted
-    // to verify they want to overwrite by the file dialog above
-    // might not even exists in the given case.
-    // add the extension if not present
-    if ( format == "ESRI Shapefile" )
-    {
-      if ( !vectorFilename.endsWith( ".shp", Qt::CaseInsensitive ) )
-      {
-        vectorFilename += ".shp";
-      }
-      QgsVectorFileWriter::deleteShapeFile( vectorFilename );
-    }
-
-    //GE does not open files without extensions. Therefore we append it automatically for kml files
-    if ( format == "KML" )
-    {
-      if ( !vectorFilename.endsWith( ".kml", Qt::CaseInsensitive ) )
-      {
-        vectorFilename += ".kml";
-      }
-      encoding = "UTF-8";
     }
 
     // ok if the file existed it should be deleted now so we can continue...
