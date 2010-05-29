@@ -500,10 +500,10 @@ class QgisApp : public QMainWindow
     void fileNew( bool thePromptToSaveFlag );
     //! Create a new empty vector layer
     void newVectorLayer();
-    #ifdef HAVE_SPATIALITE
+#ifdef HAVE_SPATIALITE
     //! Create a new empty spatialite layer
     void newSpatialiteLayer();
-    #endif
+#endif
     //! Print the current map view frame
     void newPrintComposer();
     void showComposerManager();
@@ -694,6 +694,11 @@ class QgisApp : public QMainWindow
 
     void writeAnnotationItemsToProject( QDomDocument& doc );
 
+    /**Creates the composer instances in a project file and adds them to the menu*/
+    bool loadComposersFromProject( const QDomDocument& doc );
+
+    bool loadAnnotationItemsFromProject( const QDomDocument& doc );
+
   signals:
     /** emitted when a key is pressed and we want non widget sublasses to be able
       to pick up on this (e.g. maplayer) */
@@ -762,8 +767,7 @@ class QgisApp : public QMainWindow
 
     /**Deletes all the composer objects and clears mPrintComposers*/
     void deletePrintComposers();
-    /**Creates the composer instances in a project file and adds them to the menu*/
-    bool loadComposersFromProject( const QString& projectFilePath );
+
 
     void saveAsVectorFileGeneral( bool saveOnlySelection );
 
@@ -771,8 +775,6 @@ class QgisApp : public QMainWindow
     QList<QgsAnnotationItem*> annotationItems();
     /**Removes annotation items in the canvas*/
     void removeAnnotationItems();
-
-    bool loadAnnotationItemsFromProject( const QString& projectFilePath );
 
     /// QgisApp aren't copyable
     QgisApp( QgisApp const & );

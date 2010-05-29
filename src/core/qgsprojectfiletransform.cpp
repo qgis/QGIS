@@ -43,6 +43,9 @@ QgsProjectFileTransform::transform QgsProjectFileTransform::transformers[] =
   {PFV( 1, 0, 0 ), PFV( 1, 1, 0 ), &QgsProjectFileTransform::transformNull},
   {PFV( 1, 0, 2 ), PFV( 1, 1, 0 ), &QgsProjectFileTransform::transformNull},
   {PFV( 1, 1, 0 ), PFV( 1, 2, 0 ), &QgsProjectFileTransform::transform1100to1200},
+  {PFV( 1, 2, 0 ), PFV( 1, 3, 0 ), &QgsProjectFileTransform::transformNull},
+  {PFV( 1, 3, 0 ), PFV( 1, 4, 0 ), &QgsProjectFileTransform::transformNull},
+  {PFV( 1, 4, 0 ), PFV( 1, 5, 0 ), &QgsProjectFileTransform::transform1400to1500},
 };
 
 bool QgsProjectFileTransform::updateRevision( QgsProjectVersion newVersion )
@@ -383,4 +386,65 @@ void QgsProjectFileTransform::transform1100to1200()
 
   QgsPropertyValue value( units );
   value.writeXML( "LayerSnappingToleranceUnitList", digitizing, mDom );
+}
+
+void QgsProjectFileTransform::transform1400to1500()
+{
+  //Adapt the XML description of the composer legend model to version 1.5
+  if ( mDom.isNull() )
+  {
+    return;
+  }
+  //Add layer id to <VectorClassificationItem>
+  QDomNodeList layerItemList = mDom.elementsByTagName( "LayerItem" );
+  QDomElement currentLayerItemElem;
+  QString currentLayerId;
+
+  for ( int i = 0; i < layerItemList.size(); ++i )
+  {
+    currentLayerItemElem = layerItemList.at( i ).toElement();
+    if ( currentLayerItemElem.isNull() )
+    {
+      continue;
+    }
+    currentLayerId = currentLayerItemElem.attribute( "layerId" );
+
+    QDomNodeList vectorClassificationList = currentLayerItemElem.elementsByTagName( "VectorClassificationItem" );
+    QDomElement currentClassificationElem;
+    for ( int j = 0; j < vectorClassificationList.size(); ++j )
+    {
+      currentClassificationElem = vectorClassificationList.at( j ).toElement();
+      if ( !currentClassificationElem.isNull() )
+      {
+        currentClassificationElem.setAttribute( "layerId", currentLayerId );
+      }
+    }
+
+    //replace the text items with VectorClassification or RasterClassification items
+    QDomNodeList textItemList = currentLayerItemElem.elementsByTagName( "TextItem" );
+    QDomElement currentTextItem;
+
+    for ( int j = 0; j < textItemList.size(); ++j )
+    {
+      currentTextItem = textItemList.at( j ).toElement();
+      if ( currentTextItem.isNull() )
+      {
+        continue;
+      }
+
+      QDomElement classificationElement;
+      if ( vectorClassificationList.size() > 0 ) //we guess it is a vector layer
+      {
+        classificationElement = mDom.createElement( "VectorClassificationItem" );
+      }
+      else
+      {
+        classificationElement = mDom.createElement( "RasterClassificationItem" );
+      }
+
+      classificationElement.setAttribute( "layerId", currentLayerId );
+      classificationElement.setAttribute( "text", currentTextItem.attribute( "text" ) );
+      currentLayerItemElem.replaceChild( classificationElement, currentTextItem );
+    }
+  }
 }
