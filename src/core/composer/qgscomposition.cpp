@@ -537,6 +537,11 @@ void QgsComposition::updateZValues()
 
 void QgsComposition::sortZList()
 {
+  if ( mItemZList.size() < 2 )
+  {
+    return;
+  }
+
 #ifdef QGISDEBUG
   //debug: list before sorting
   QgsDebugMsg( "before sorting" );
@@ -547,50 +552,23 @@ void QgsComposition::sortZList()
   }
 #endif
 
-  QMutableLinkedListIterator<QgsComposerItem*> it( mItemZList );
-  int previousZ, afterZ; //z values of items before and after
-  QgsComposerItem* previousItem;
-  QgsComposerItem* afterItem;
+  QLinkedList<QgsComposerItem*>::const_iterator lIt = mItemZList.constBegin();
+  QLinkedList<QgsComposerItem*> sortedList;
 
-  while ( it.hasNext() )
+  for ( ; lIt != mItemZList.constEnd(); ++lIt )
   {
-    previousItem = it.next();
-    if ( previousItem )
+    QLinkedList<QgsComposerItem*>::iterator insertIt = sortedList.begin();
+    for ( ; insertIt != sortedList.end(); ++insertIt )
     {
-      previousZ = previousItem->zValue();
-    }
-    else
-    {
-      previousZ = -1;
-    }
-
-    if ( !it.hasNext() )
-    {
-      break; //this is the end...
-    }
-    afterItem = it.peekNext();
-
-    if ( afterItem )
-    {
-      afterZ = afterItem->zValue();
-    }
-    else
-    {
-      afterZ = -1;
-    }
-
-    if ( previousZ > afterZ )
-    {
-      //swap items
-      if ( previousItem && afterItem )
+      if (( *lIt )->zValue() < ( *insertIt )->zValue() )
       {
-        it.remove();
-        it.next();
-        it.insert( previousItem );
-        it.previous();
+        break;
       }
     }
+    sortedList.insert( insertIt, ( *lIt ) );
   }
+
+  mItemZList = sortedList;
 
 #ifdef QGISDEBUG
   //debug: list after sorting

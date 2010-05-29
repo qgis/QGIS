@@ -302,7 +302,7 @@ bool QgsComposerArrow::writeXML( QDomElement& elem, QDomDocument & doc ) const
   composerArrowElem.appendChild( stopPointElem );
 
   elem.appendChild( composerArrowElem );
-  return true;
+  return _writeXML( composerArrowElem, doc );
 }
 
 bool QgsComposerArrow::readXML( const QDomElement& itemElem, const QDomDocument& doc )
@@ -325,6 +325,15 @@ bool QgsComposerArrow::readXML( const QDomElement& itemElem, const QDomDocument&
     mArrowColor = QColor( red, green, blue, alpha );
   }
 
+  //restore general composer item properties
+  //needs to be before start point / stop point because setSceneRect()
+  QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
+  if ( composerItemList.size() > 0 )
+  {
+    QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
+    _readXML( composerItemElem, doc );
+  }
+
   //start point
   QDomNodeList startPointList = itemElem.elementsByTagName( "StartPoint" );
   if ( startPointList.size() > 0 )
@@ -341,15 +350,6 @@ bool QgsComposerArrow::readXML( const QDomElement& itemElem, const QDomDocument&
     QDomElement stopPointElem = stopPointList.at( 0 ).toElement();
     mStopPoint.setX( stopPointElem.attribute( "x", "0.0" ).toDouble() );
     mStopPoint.setY( stopPointElem.attribute( "y", "0.0" ).toDouble() );
-  }
-
-
-  //restore general composer item properties
-  QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
-  if ( composerItemList.size() > 0 )
-  {
-    QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
-    _readXML( composerItemElem, doc );
   }
 
   adaptItemSceneRect();
