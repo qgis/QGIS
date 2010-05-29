@@ -311,8 +311,7 @@ static void customSrsValidation_( QgsCoordinateReferenceSystem* srs )
 {
   QString toProj4;
   QSettings mySettings;
-  QString myDefaultProjectionOption =
-    mySettings.value( "/Projections/defaultBehaviour" ).toString();
+  QString myDefaultProjectionOption = mySettings.value( "/Projections/defaultBehaviour" ).toString();
   if ( myDefaultProjectionOption == "prompt" )
   {
     //@note this class is not a descendent of QWidget so we cant pass
@@ -327,15 +326,16 @@ static void customSrsValidation_( QgsCoordinateReferenceSystem* srs )
       mySelector->setSelectedCrsId( defaultCRS.srsid() );
     }
 
+    QApplication::setOverrideCursor( Qt::ArrowCursor );
+
     if ( mySelector->exec() )
     {
       QgsDebugMsg( "Layer srs set from dialog: " + QString::number( mySelector->selectedCrsId() ) );
       srs->createFromProj4( mySelector->selectedProj4String() );
     }
-    else
-    {
-      QApplication::restoreOverrideCursor();
-    }
+
+    QApplication::restoreOverrideCursor();
+
     delete mySelector;
   }
   else if ( myDefaultProjectionOption == "useProject" )
@@ -3017,7 +3017,7 @@ void QgisApp::newVectorLayer()
     openFileDialog->selectFilter( lastUsedFilter );
   }
 
-  if( openFileDialog->exec() == QDialog::Rejected )
+  if ( openFileDialog->exec() == QDialog::Rejected )
   {
     delete openFileDialog;
     return;
