@@ -41,15 +41,19 @@
 #include <cpl_error.h>
 
 
-QgsVectorFileWriter::QgsVectorFileWriter( const QString& vectorFileName,
-    const QString& fileEncoding,
-    const QgsFieldMap& fields,
-    QGis::WkbType geometryType,
-    const QgsCoordinateReferenceSystem* srs,
-    const QString& driverName )
-    : mDS( NULL ), mLayer( NULL ), mGeom( NULL ), mError( NoError )
+QgsVectorFileWriter::QgsVectorFileWriter(
+  const QString &theVectorFileName,
+  const QString& fileEncoding,
+  const QgsFieldMap& fields,
+  QGis::WkbType geometryType,
+  const QgsCoordinateReferenceSystem* srs,
+  const QString& driverName )
+    : mDS( NULL )
+    , mLayer( NULL )
+    , mGeom( NULL )
+    , mError( NoError )
 {
-  // save the layer as a shapefile
+  QString vectorFileName = theVectorFileName;
 
   // find driver in OGR
   OGRSFDriverH poDriver;
@@ -67,6 +71,11 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString& vectorFileName,
 
   if ( driverName == "ESRI Shapefile" )
   {
+    if ( !vectorFileName.endsWith( ".shp", Qt::CaseInsensitive ) )
+    {
+      vectorFileName += ".shp";
+    }
+
     // check for unique fieldnames
     QSet<QString> fieldNames;
     QgsFieldMap::const_iterator fldIt;
@@ -129,6 +138,7 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString& vectorFileName,
   {
     if ( driverName == "ESRI Shapefile" )
     {
+      QString layerName = vectorFileName.left( vectorFileName.indexOf( ".shp", Qt::CaseInsensitive ) );
       QFile prjFile( layerName + ".qpj" );
       if ( prjFile.open( QIODevice::WriteOnly ) )
       {
