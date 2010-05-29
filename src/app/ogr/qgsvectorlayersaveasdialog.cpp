@@ -74,6 +74,16 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
 {
   browseFilename->setEnabled( true );
   leFilename->setEnabled( true );
+
+  if( format() == "KML" )
+  {
+    mEncodingComboBox->setCurrentIndex( mEncodingComboBox->findText( "UTF-8" ) );
+    mEncodingComboBox->setDisabled( true );
+  }
+  else
+  {
+    mEncodingComboBox->setEnabled( true );
+  }
 }
 
 void QgsVectorLayerSaveAsDialog::on_browseFilename_clicked()
