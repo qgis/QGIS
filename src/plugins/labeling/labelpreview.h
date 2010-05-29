@@ -10,7 +10,7 @@ class LabelPreview : public QLabel
 
     void setTextColor( QColor color );
 
-    void setBuffer( int size, QColor color );
+    void setBuffer( double size, QColor color );
 
     void paintEvent( QPaintEvent* e );
 

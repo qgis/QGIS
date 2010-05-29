@@ -41,7 +41,7 @@ LabelingGui::LabelingGui( PalLabeling* lbl, QgsVectorLayer* layer, QWidget* pare
   connect( btnChangeFont, SIGNAL( clicked() ), this, SLOT( changeTextFont() ) );
   connect( chkBuffer, SIGNAL( toggled( bool ) ), this, SLOT( updatePreview() ) );
   connect( btnBufferColor, SIGNAL( clicked() ), this, SLOT( changeBufferColor() ) );
-  connect( spinBufferSize, SIGNAL( valueChanged( int ) ), this, SLOT( updatePreview() ) );
+  connect( spinBufferSize, SIGNAL( valueChanged( double ) ), this, SLOT( updatePreview() ) );
   connect( btnEngineSettings, SIGNAL( clicked() ), this, SLOT( showEngineConfigDialog() ) );
 
   // set placement methods page based on geometry type

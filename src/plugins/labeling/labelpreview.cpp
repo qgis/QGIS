@@ -15,9 +15,9 @@ void LabelPreview::setTextColor( QColor color )
   update();
 }
 
-void LabelPreview::setBuffer( int size, QColor color )
+void LabelPreview::setBuffer( double size, QColor color )
 {
-  mBufferSize = size;
+  mBufferSize = size * 88 / 25.4; //assume standard dpi for preview
   mBufferColor = color;
   update();
 }
