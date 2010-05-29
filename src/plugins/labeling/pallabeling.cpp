@@ -229,25 +229,19 @@ bool LayerSettings::checkMinimumSizeMM( const QgsRenderContext& ct, QgsGeometry*
     return true;
   }
 
-  GEOSGeometry* geosGeom = geom->asGeos();
-  if ( !geosGeom )
-  {
-    return true;
-  }
-
   double mapUnitsPerMM = ct.mapToPixel().mapUnitsPerPixel() * ct.scaleFactor();
   if ( featureType == QGis::Line )
   {
-    double length;
-    if ( GEOSLength( geosGeom, &length ) )
+    double length = geom->length();
+    if ( length >= 0.0 )
     {
       return ( length >= ( minSize * mapUnitsPerMM ) );
     }
   }
   else if ( featureType == QGis::Polygon )
   {
-    double area;
-    if ( GEOSArea( geosGeom, &area ) )
+    double area = geom->area();
+    if ( area >= 0.0 )
     {
       return ( sqrt( area ) >= ( minSize * mapUnitsPerMM ) );
     }

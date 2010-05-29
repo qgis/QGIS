@@ -146,6 +146,16 @@ class CORE_EXPORT QgsGeometry
      */
     bool isGeosEmpty();
 
+    /** get area of geometry using GEOS
+      @note added in 1.5
+     */
+    double area();
+
+    /** get length of geometry using GEOS
+      @note added in 1.5
+     */
+    double length();
+
     double distance( QgsGeometry& geom );
 
     /**

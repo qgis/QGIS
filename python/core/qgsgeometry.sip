@@ -111,6 +111,16 @@ class QgsGeometry
     // TODO: unsupported class... would be possible to use PyGEOS?
     //void fromGeos(geos::Geometry* geos);
 
+    /** get area using GEOS
+      @note added in 1.5
+     */
+    double area();
+
+    /** get length using GEOS
+      @note added in 1.5
+     */
+    double length();
+
     double distance(QgsGeometry& geom);
 
     /**
