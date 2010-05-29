@@ -53,7 +53,7 @@ void QgsOraclePlugin::initGui()
 {
 
   // Create the action for tool
-  mQActionPointer = new QAction( QIcon( ":/oracleplugin/oracleplugin.png" ), tr( "Select GeoRaster" ), this );
+  mQActionPointer = new QAction( QIcon( ":/oracleplugin/oracleplugin.png" ), tr( "Select Oracle GeoRaster" ), this );
   // Set the what's this text
   mQActionPointer->setWhatsThis( tr( "Open a Oracle Spatial GeoRaster" ) );
   // Connect the action to the run
