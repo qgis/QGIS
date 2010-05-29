@@ -1239,7 +1239,7 @@ bool QgsCoordinateReferenceSystem::saveAsUserCRS()
             + "," + quotedValue( projectionAcronym() )
             + "," + quotedValue( ellipsoidAcronym() )
             + "," + quotedValue( toProj4() )
-            + "',0)"; // <-- is_geo shamelessly hard coded for now
+            + ",0)"; // <-- is_geo shamelessly hard coded for now
   }
   else
   {
