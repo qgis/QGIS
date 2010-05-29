@@ -28,6 +28,7 @@
 // QGIS Includes
 #include <qgisinterface.h>
 #include <qgsmapcanvas.h>
+#include "qgscontexthelp.h"
 
 class QgsOracleSelectGeoraster : public QDialog, private Ui::SelectGeoRasterBase
 {
@@ -42,54 +43,18 @@ class QgsOracleSelectGeoraster : public QDialog, private Ui::SelectGeoRasterBase
     QString mUri;
 
   private:
-    void addNewConnection();
-    void editConnection();
-    void deleteConnection();
     void populateConnectionList();
     void connectToServer();
-    void showHelp();
     void setConnectionListPosition();
     void showSelection( const QString & line );
 
   public slots:
-
-    void on_btnNew_clicked()
-    {
-      addNewConnection();
-    };
-
-    void on_btnEdit_clicked()
-    {
-      editConnection();
-    };
-
-    void on_btnDelete_clicked()
-    {
-      deleteConnection();
-    };
-
-    void on_btnConnect_clicked()
-    {
-      connectToServer();
-    };
-
-    void on_listWidget_clicked( QModelIndex Index )
-    {
-      if ( lineEdit->text() == listWidget->currentItem()->text() )
-      {
-        showSelection( lineEdit->text() );
-      }
-      else
-      {
-        lineEdit->setText( listWidget->currentItem()->text() );
-      }
-    }
-
-    void on_btnAdd_clicked()
-    {
-      showSelection( lineEdit->text() );
-    };
-
+    void on_btnConnect_clicked() { connectToServer(); }
+    void on_btnNew_clicked();
+    void on_btnEdit_clicked();
+    void on_btnDelete_clicked();
+    void on_listWidget_clicked( QModelIndex Index );
+    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 };
 
 #endif
