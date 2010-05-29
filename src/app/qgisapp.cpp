@@ -1989,6 +1989,9 @@ void QgisApp::setupConnections()
   connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument& ) ),
            this, SLOT( writeAnnotationItemsToProject( QDomDocument& ) ) );
 
+  connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ), this, SLOT( loadComposersFromProject( const QDomDocument& ) ) );
+  connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ), this, SLOT( loadAnnotationItemsFromProject( const QDomDocument& ) ) );
+
   //
   // Do we really need this ??? - its already connected to the esc key...TS
   //
@@ -3145,10 +3148,6 @@ void QgisApp::fileOpen()
     // project so that they can check any project
     // specific plug-in state
 
-    //load the composers in the project
-    loadComposersFromProject( fullPath );
-    loadAnnotationItemsFromProject( fullPath );
-
     // add this to the list of recently used project files
     saveRecentProjectPath( fullPath, settings );
 
@@ -3202,9 +3201,6 @@ bool QgisApp::addProject( QString projectFile )
   emit projectRead(); // let plug-ins know that we've read in a new
   // project so that they can check any project
   // specific plug-in state
-
-  loadComposersFromProject( projectFile );
-  loadAnnotationItemsFromProject( projectFile );
 
   // add this to the list of recently used project files
   QSettings settings;
@@ -4019,28 +4015,20 @@ void QgisApp::deleteComposer( QgsComposer* c )
   delete c;
 }
 
-bool QgisApp::loadComposersFromProject( const QString& projectFilePath )
+bool QgisApp::loadComposersFromProject( const QDomDocument& doc )
 {
-  //create dom document from file
-  QDomDocument projectDom;
-  QFile projectFile( projectFilePath );
-  if ( !projectFile.open( QIODevice::ReadOnly ) )
-  {
-    return false;
-  }
-
-  if ( !projectDom.setContent( &projectFile, false ) )
+  if ( doc.isNull() )
   {
     return false;
   }
 
   //restore each composer
-  QDomNodeList composerNodes = projectDom.elementsByTagName( "Composer" );
+  QDomNodeList composerNodes = doc.elementsByTagName( "Composer" );
   for ( int i = 0; i < composerNodes.size(); ++i )
   {
     ++mLastComposerId;
     QgsComposer* composer = new QgsComposer( this, tr( "Composer %1" ).arg( mLastComposerId ) );
-    composer->readXML( composerNodes.at( i ).toElement(), projectDom );
+    composer->readXML( composerNodes.at( i ).toElement(), doc );
     mPrintComposers.insert( composer );
     mPrintComposersMenu->addAction( composer->windowAction() );
 #ifndef Q_OS_MACX
@@ -4068,21 +4056,8 @@ void QgisApp::deletePrintComposers()
   mLastComposerId = 0;
 }
 
-bool QgisApp::loadAnnotationItemsFromProject( const QString& projectFilePath )
+bool QgisApp::loadAnnotationItemsFromProject( const QDomDocument& doc )
 {
-  //create dom document from file
-  QDomDocument doc;
-  QFile projectFile( projectFilePath );
-  if ( !projectFile.open( QIODevice::ReadOnly ) )
-  {
-    return false;
-  }
-
-  if ( !doc.setContent( &projectFile, false ) )
-  {
-    return false;
-  }
-
   if ( !mMapCanvas )
   {
     return false;
