@@ -26,6 +26,8 @@ email                : sherman at mrcc.com
 #include <cpl_error.h>
 #include <cpl_conv.h>
 
+#include <limits>
+
 #include <QtDebug>
 #include <QFile>
 #include <QDir>
@@ -176,8 +178,6 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
       ogrOrigLayer = OGR_DS_GetLayerByName( ogrDataSource, mLayerName.toLocal8Bit().data() );
     }
 
-    extent_ = calloc( sizeof( OGREnvelope ), 1 );
-
     ogrLayer = ogrOrigLayer;
     setSubsetString( mSubsetString );
   }
@@ -205,8 +205,13 @@ QgsOgrProvider::~QgsOgrProvider()
 
   OGR_DS_Destroy( ogrDataSource );
   ogrDataSource = 0;
-  free( extent_ );
-  extent_ = 0;
+
+  if ( extent_ )
+  {
+    free( extent_ );
+    extent_ = 0;
+  }
+
   if ( mSelectionRectangle )
   {
     OGR_G_DestroyGeometry( mSelectionRectangle );
@@ -273,18 +278,16 @@ bool QgsOgrProvider::setSubsetString( QString theSQL )
   // TODO: This can be expensive, do we really need it!
   recalculateFeatureCount();
 
-  // get the extent_ (envelope) of the layer
-  QgsDebugMsg( "Starting get extent" );
-
-  // TODO: This can be expensive, do we really need it!
-  OGR_L_GetExtent( ogrLayer, ( OGREnvelope * ) extent_, true );
-
-  QgsDebugMsg( "Finished get extent" );
-
   // check the validity of the layer
   QgsDebugMsg( "checking validity" );
   loadFields();
   QgsDebugMsg( "Done checking validity" );
+
+  if ( extent_ )
+  {
+    free( extent_ );
+    extent_ = 0;
+  }
 
   return true;
 }
@@ -607,7 +610,53 @@ unsigned char * QgsOgrProvider::getGeometryPointer( OGRFeatureH fet )
 
 QgsRectangle QgsOgrProvider::extent()
 {
-  OGREnvelope *ext = ( OGREnvelope * ) extent_;
+  if ( !extent_ )
+  {
+    extent_ = calloc( sizeof( OGREnvelope ), 1 );
+
+    // get the extent_ (envelope) of the layer
+    QgsDebugMsg( "Starting get extent" );
+
+    // TODO: This can be expensive, do we really need it!
+    if ( ogrLayer == ogrOrigLayer )
+    {
+      OGR_L_GetExtent( ogrLayer, ( OGREnvelope * ) extent_, true );
+    }
+    else
+    {
+      OGREnvelope *bb = static_cast<OGREnvelope*>( extent_ );
+
+      bb->MinX = std::numeric_limits<double>::max();
+      bb->MinY = std::numeric_limits<double>::max();
+      bb->MaxX = -std::numeric_limits<double>::max();
+      bb->MaxY = -std::numeric_limits<double>::max();
+
+      OGRFeatureH f;
+
+      OGR_L_ResetReading( ogrLayer );
+      while (( f = OGR_L_GetNextFeature( ogrLayer ) ) )
+      {
+        OGRGeometryH g = OGR_F_GetGeometryRef( f );
+        if ( g )
+        {
+          OGREnvelope env;
+          OGR_G_GetEnvelope( g, &env );
+
+          if ( env.MinX < bb->MinX ) bb->MinX = env.MinX;
+          if ( env.MinY < bb->MinY ) bb->MinY = env.MinY;
+          if ( env.MaxX > bb->MaxX ) bb->MaxX = env.MaxX;
+          if ( env.MaxY > bb->MaxY ) bb->MaxY = env.MaxY;
+        }
+
+        OGR_F_Destroy( f );
+      }
+      OGR_L_ResetReading( ogrLayer );
+    }
+
+    QgsDebugMsg( "Finished get extent" );
+  }
+
+  OGREnvelope *ext = static_cast<OGREnvelope *>( extent_ );
   mExtentRect.set( ext->MinX, ext->MinY, ext->MaxX, ext->MaxY );
   return mExtentRect;
 }
@@ -999,7 +1048,11 @@ bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds & id )
 
   recalculateFeatureCount();
 
-  OGR_L_GetExtent( ogrOrigLayer, ( OGREnvelope * ) extent_, true );
+  if ( extent_ )
+  {
+    free( extent_ );
+    extent_ = 0;
+  }
 
   return returnvalue;
 }
