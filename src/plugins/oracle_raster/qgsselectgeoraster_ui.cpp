@@ -92,7 +92,7 @@ void QgsOracleSelectGeoraster::populateConnectionList()
   }
 }
 
-void QgsOracleSelectGeoraster::addNewConnection()
+void QgsOracleSelectGeoraster::on_btnNew_clicked()
 {
   QgsOracleConnect *oc = new QgsOracleConnect( this, "New Connection" );
   if ( oc->exec() )
@@ -101,7 +101,7 @@ void QgsOracleSelectGeoraster::addNewConnection()
   }
 }
 
-void QgsOracleSelectGeoraster::editConnection()
+void QgsOracleSelectGeoraster::on_btnEdit_clicked()
 {
   QgsOracleConnect *oc = new QgsOracleConnect( this, cmbConnections->currentText() );
   if ( oc->exec() )
@@ -110,7 +110,7 @@ void QgsOracleSelectGeoraster::editConnection()
   }
 }
 
-void QgsOracleSelectGeoraster::deleteConnection()
+void QgsOracleSelectGeoraster::on_btnDelete_clicked()
 {
   QSettings settings;
   QString key = "/Oracle/connections/" + cmbConnections->currentText();
@@ -137,6 +137,9 @@ void QgsOracleSelectGeoraster::deleteConnection()
 
 void QgsOracleSelectGeoraster::connectToServer()
 {
+  if ( cmbConnections->currentText().isEmpty() )
+    return;
+
   QSettings settings;
   QString key = "/Oracle/connections/" + cmbConnections->currentText();
   QString username = settings.value( key + "/username" ).toString();
@@ -281,32 +284,30 @@ void QgsOracleSelectGeoraster::showSelection( const QString & line )
   GDALClose( hDS );
 }
 
-void QgsOracleSelectGeoraster::showHelp()
+void QgsOracleSelectGeoraster::on_listWidget_clicked( QModelIndex Index )
 {
-  // implement me
+  if ( lineEdit->text() == listWidget->currentItem()->text() )
+  {
+    showSelection( lineEdit->text() );
+  }
+  else
+  {
+    lineEdit->setText( listWidget->currentItem()->text() );
+  }
 }
 
 void QgsOracleSelectGeoraster::setConnectionListPosition()
 {
-  QSettings settings;
   // If possible, set the item currently displayed database
+  QSettings settings;
   QString toSelect = settings.value( "/Oracle/connections/selected" ).toString();
-  // Does toSelect exist in cmbConnections?
-  bool set = false;
-  for ( int i = 0; i < cmbConnections->count(); ++ i )
-  {
-    if ( cmbConnections->itemText( i ) == toSelect )
-    {
-      cmbConnections->setCurrentIndex( i );
-      set = true;
-      break;
-    }
-  }
+  cmbConnections->setCurrentIndex( cmbConnections->findText( toSelect ) );
+
   // If we couldn't find the stored item, but there are some,
   // default to the last item (this makes some sense when deleting
   // items as it allows the user to repeatidly click on delete to
   // remove a whole lot of items).
-  if ( ! set && cmbConnections->count() > 0 )
+  if ( cmbConnections->currentIndex() == -1 && cmbConnections->count() > 0 )
   {
     // If toSelect is null, then the selected connection wasn't found
     // by QSettings, which probably means that this is the first time
