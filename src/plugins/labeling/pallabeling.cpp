@@ -60,19 +60,19 @@ class MyLabel : public PalGeometry
     const char* strId() { return mStrId.data(); }
     QString text() { return mText; }
 
-    pal::LabelInfo* info( QFontMetrics* fm, const QgsMapToPixel* xform )
+    pal::LabelInfo* info( QFontMetrics* fm, const QgsMapToPixel* xform, double fontScale )
     {
       if ( mInfo ) return mInfo;
 
       // create label info!
       QgsPoint ptZero = xform->toMapCoordinates( 0, 0 );
-      QgsPoint ptSize = xform->toMapCoordinates( 0, -fm->height() );
+      QgsPoint ptSize = xform->toMapCoordinates( 0, ( int )( -fm->height() / fontScale ) );
 
       mInfo = new pal::LabelInfo( mText.count(), ptSize.y() - ptZero.y() );
       for ( int i = 0; i < mText.count(); i++ )
       {
         mInfo->char_info[i].chr = mText[i].unicode();
-        ptSize = xform->toMapCoordinates( fm->width( mText[i] ), 0 );
+        ptSize = xform->toMapCoordinates(( int )( fm->width( mText[i] ) / fontScale ) , 0 );
         mInfo->char_info[i].width = ptSize.x() - ptZero.x();
       }
       return mInfo;
@@ -106,6 +106,8 @@ LayerSettings::LayerSettings()
   labelPerPart = false;
   mergeLines = false;
   minFeatureSize = 0.0;
+  vectorScaleFactor = 1.0;
+  rasterCompressFactor = 1.0;
 }
 
 LayerSettings::LayerSettings( const LayerSettings& s )
@@ -127,6 +129,8 @@ LayerSettings::LayerSettings( const LayerSettings& s )
   labelPerPart = s.labelPerPart;
   mergeLines = s.mergeLines;
   minFeatureSize = s.minFeatureSize;
+  vectorScaleFactor = s.vectorScaleFactor;
+  rasterCompressFactor = s.rasterCompressFactor;
 
   fontMetrics = NULL;
   ct = NULL;
@@ -251,11 +255,12 @@ bool LayerSettings::checkMinimumSizeMM( const QgsRenderContext& ct, QgsGeometry*
 
 void LayerSettings::calculateLabelSize( QString text, double& labelX, double& labelY )
 {
-  //QFontMetrics fontMetrics(textFont);
-  QRect labelRect = /*QRect(0,0,20,20);*/ fontMetrics->boundingRect( text );
+  QRectF labelRect = fontMetrics->boundingRect( text );
+  double w = labelRect.width() / rasterCompressFactor;
+  double h = labelRect.height() / rasterCompressFactor;
 
-  // 2px border...
-  QgsPoint ptSize = xform->toMapCoordinates( labelRect.width() + 2, labelRect.height() + 2 );
+  QgsPoint ptSize = xform->toMapCoordinates( w, h );
+
   labelX = fabs( ptSize.x() - ptZero.x() );
   labelY = fabs( ptSize.y() - ptZero.y() );
 }
@@ -295,11 +300,11 @@ void LayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext& cont
 
   // TODO: only for placement which needs character info
   pal::Feature* feat = palLayer->getFeature( lbl->strId() );
-  feat->setLabelInfo( lbl->info( fontMetrics, xform ) );
+  feat->setLabelInfo( lbl->info( fontMetrics, xform, rasterCompressFactor ) );
 
   // TODO: allow layer-wide feature dist in PAL...?
   if ( dist != 0 )
-    feat->setDistLabel( fabs( ptOne.x() - ptZero.x() )* dist );
+    feat->setDistLabel( fabs( ptOne.x() - ptZero.x() )* dist * vectorScaleFactor );
 }
 
 
@@ -402,14 +407,19 @@ int PalLabeling::prepareLayer( QgsVectorLayer* layer, int& attrIndex, QgsRenderC
   l->setMergeConnectedLines( lyr.mergeLines );
 
   // set font size from points to output size
-  double size = 0.3527 * lyr.textFont.pointSizeF() * ctx.scaleFactor(); //* ctx.rasterScaleFactor();
-  lyr.textFont.setPixelSize(( int )size );
+  double size = 0.3527 * lyr.textFont.pointSizeF() * ctx.scaleFactor();
+  // request larger font and then scale down painter (to avoid Qt font scale bug)
+  lyr.textFont.setPixelSize(( int )( size*ctx.rasterScaleFactor() + 0.5 ) );
+
+  //raster and vector scale factors
+  lyr.vectorScaleFactor = ctx.scaleFactor();
+  lyr.rasterCompressFactor = ctx.rasterScaleFactor();
 
   // save the pal layer to our layer context (with some additional info)
   lyr.palLayer = l;
   lyr.fieldIndex = fldIndex;
   lyr.fontMetrics = new QFontMetrics( lyr.textFont );
-  lyr.fontBaseline = lyr.fontMetrics->boundingRect( "X" ).bottom(); // dummy text to find out how many pixels of the text are below the baseline
+
   lyr.xform = mMapRenderer->coordinateTransform();
   if ( mMapRenderer->hasCrsTransformEnabled() )
     lyr.ct = new QgsCoordinateTransform( layer->srs(), mMapRenderer->destinationSrs() );
@@ -623,16 +633,20 @@ void PalLabeling::drawLabel( pal::LabelPosition* label, QPainter* painter, const
 
   //QgsDebugMsg( "drawLabel " + QString::number( drawBuffer ) + " " + txt );
 
-  // shift by one as we have 2px border
   painter->save();
   painter->translate( QPointF( outPt.x(), outPt.y() ) );
   painter->rotate( -label->getAlpha() * 180 / M_PI );
-  painter->translate( QPointF( 1, -1 - lyr.fontBaseline ) );
+
+  // scale down painter: the font size has been multiplied by raster scale factor
+  // to workaround a Qt font scaling bug with small font sizes
+  painter->scale( 1.0 / lyr.rasterCompressFactor, 1.0 / lyr.rasterCompressFactor );
+
+  painter->translate( QPointF( 0, - lyr.fontMetrics->descent() ) );
 
   if ( drawBuffer )
   {
     // we're drawing buffer
-    drawLabelBuffer( painter, txt, lyr.textFont, lyr.bufferSize, lyr.bufferColor );
+    drawLabelBuffer( painter, txt, lyr.textFont, lyr.bufferSize * lyr.vectorScaleFactor * lyr.rasterCompressFactor , lyr.bufferColor );
   }
   else
   {
@@ -654,7 +668,7 @@ void PalLabeling::drawLabel( pal::LabelPosition* label, QPainter* painter, const
 }
 
 
-void PalLabeling::drawLabelBuffer( QPainter* p, QString text, const QFont& font, int size, QColor color )
+void PalLabeling::drawLabelBuffer( QPainter* p, QString text, const QFont& font, double size, QColor color )
 {
   /*
   p->setFont( font );
@@ -666,7 +680,9 @@ void PalLabeling::drawLabelBuffer( QPainter* p, QString text, const QFont& font,
 
   QPainterPath path;
   path.addText( 0, 0, font, text );
-  p->setPen( QPen( color, size ) );
+  QPen pen( color );
+  pen.setWidthF( size );
+  p->setPen( pen );
   p->setBrush( color );
   p->drawPath( path );
 }

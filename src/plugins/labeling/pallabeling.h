@@ -60,9 +60,11 @@ class LayerSettings
     bool enabled;
     int priority; // 0 = low, 10 = high
     bool obstacle; // whether it's an obstacle
-    double dist; // distance from the feature (in pixels)
+    double dist; // distance from the feature (in mm)
+    double vectorScaleFactor; //scale factor painter units->pixels
+    double rasterCompressFactor; //pixel resolution scale factor
     int scaleMin, scaleMax; // disabled if both are zero
-    int bufferSize;
+    double bufferSize; //buffer size (in mm)
     QColor bufferColor;
     bool labelPerPart; // whether to label every feature's part or only the biggest one
     bool mergeLines;
@@ -81,7 +83,6 @@ class LayerSettings
     pal::Layer* palLayer;
     int fieldIndex;
     QFontMetrics* fontMetrics;
-    int fontBaseline;
     const QgsMapToPixel* xform;
     const QgsCoordinateTransform* ct;
     QgsPoint ptZero, ptOne;
@@ -145,7 +146,7 @@ class PalLabeling : public QgsLabelingEngineInterface
 
     void drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform );
     void drawLabel( pal::LabelPosition* label, QPainter* painter, const QgsMapToPixel* xform, bool drawBuffer = false );
-    static void drawLabelBuffer( QPainter* p, QString text, const QFont& font, int size, QColor color );
+    static void drawLabelBuffer( QPainter* p, QString text, const QFont& font, double size, QColor color );
 
   protected:
 
