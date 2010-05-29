@@ -3884,6 +3884,7 @@ void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection )
       {
         vectorFilename += ".kml";
       }
+      encoding = "UTF-8";
     }
 
     // ok if the file existed it should be deleted now so we can continue...
