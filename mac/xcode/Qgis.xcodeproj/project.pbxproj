@@ -1688,7 +1688,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
-			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		721598151052B46D003D1610 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -1699,7 +1699,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
-			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		721828C110BA34E2008D715D /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -1732,7 +1732,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
-			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		7225EF1D10B2265A00D23EA2 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -1754,7 +1754,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
-			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		7262ED980F7A770300498385 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -1765,7 +1765,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
-			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		7268C052118294F2001BC9C4 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -1787,7 +1787,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
-			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		7268E80811021E6B00B96374 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -1849,7 +1849,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
-			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		729286ED0F71BCE6006D9489 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -1883,7 +1883,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
-			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		729287920F71D0E6006D9489 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -1894,7 +1894,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
-			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		729287B50F71DE07006D9489 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -1905,7 +1905,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
-			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		729287B60F71DE33006D9489 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -1916,7 +1916,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
-			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		729287B70F71DE53006D9489 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -1927,7 +1927,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
-			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		729287BB0F71DE84006D9489 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -1938,7 +1938,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
-			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		729287C00F71DF16006D9489 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -1949,7 +1949,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
-			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		729287C20F71DF60006D9489 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -1960,7 +1960,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
-			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		729287C40F71DF90006D9489 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -1971,7 +1971,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
-			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		729287C90F71DFE4006D9489 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -1982,7 +1982,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
-			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		729287D70F71E2C9006D9489 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -1993,7 +1993,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
-			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		729287D80F71E2E1006D9489 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -2015,7 +2015,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
-			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		729287DC0F71E3D8006D9489 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -2037,7 +2037,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
-			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		729287F30F71E8A2006D9489 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -2059,7 +2059,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
-			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		729287FA0F71EA9A006D9489 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -2081,7 +2081,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
-			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		729288030F71EBB6006D9489 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -2103,7 +2103,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
-			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		7292880E0F71ECEE006D9489 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -2125,7 +2125,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
-			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		729288150F71EDAD006D9489 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -2147,7 +2147,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
-			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		729288250F71F0E6006D9489 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -2169,7 +2169,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
-			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		7292882E0F71F26F006D9489 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -2191,7 +2191,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
-			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		7292883B0F71F3F2006D9489 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -2213,7 +2213,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
-			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		729288440F71F4F0006D9489 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -2235,7 +2235,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
-			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		729288570F71F618006D9489 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -2257,7 +2257,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
-			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		7292885E0F71F6A6006D9489 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -2279,7 +2279,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
-			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		729288660F71F736006D9489 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -2301,7 +2301,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
-			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		7292886D0F71F7B5006D9489 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -2323,7 +2323,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
-			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		729288790F71FC3F006D9489 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -2334,7 +2334,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
-			script = "$QTMOC -nw $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		72B236B211570743007B4803 /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -2356,7 +2356,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
-			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		72DB68DF1021D08400ED5F3A /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -2367,7 +2367,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
-			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		72F70B2C11849076001369AD /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -2378,7 +2378,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
-			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 		72FB0B500FFD680F0052360B /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
@@ -2400,7 +2400,7 @@
 			outputFiles = (
 				"$(DERIVED_FILES_DIR)/moc_$(INPUT_FILE_BASE).cpp",
 			);
-			script = "$QTMOC $QT_CXXFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
+			script = "$QTMOC -I$QGIS_HEADER_SEARCH_BASE $OTHER_CFLAGS -o \"$DERIVED_FILES_DIR/moc_$INPUT_FILE_BASE.cpp\" \"$INPUT_FILE_PATH\"";
 		};
 /* End PBXBuildRule section */
 
@@ -3653,7 +3653,7 @@
 		7209E5E90F39E57A003DC336 /* qgis.ico */ = {isa = PBXFileReference; lastKnownFileType = image.ico; name = qgis.ico; path = ../../src/app/qgis.ico; sourceTree = SOURCE_ROOT; };
 		7209E5EA0F39E57A003DC336 /* qgis_win32.rc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = qgis_win32.rc; path = ../../src/app/qgis_win32.rc; sourceTree = SOURCE_ROOT; };
 		7209E5EB0F39E57A003DC336 /* qgisapp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgisapp.cpp; path = ../../src/app/qgisapp.cpp; sourceTree = SOURCE_ROOT; };
-		7209E5EC0F39E57A003DC336 /* qgisapp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgisapp.h; path = ../../src/app/qgisapp.h; sourceTree = SOURCE_ROOT; };
+		7209E5EC0F39E57A003DC336 /* qgisapp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgisapp.h; path = ../../src/app/qgisapp.h; sourceTree = SOURCE_ROOT; wrapsLines = 1; };
 		7209E5ED0F39E57A003DC336 /* qgisappinterface.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgisappinterface.cpp; path = ../../src/app/qgisappinterface.cpp; sourceTree = SOURCE_ROOT; };
 		7209E5EE0F39E57A003DC336 /* qgisappinterface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = qgisappinterface.h; path = ../../src/app/qgisappinterface.h; sourceTree = SOURCE_ROOT; };
 		7209E5EF0F39E57A003DC336 /* qgsabout.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = qgsabout.cpp; path = ../../src/app/qgsabout.cpp; sourceTree = SOURCE_ROOT; };
@@ -19987,7 +19987,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 13566;
+				QGIS_VERSION_BUILD = 13595;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
