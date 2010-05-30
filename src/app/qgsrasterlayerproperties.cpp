@@ -264,6 +264,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QWidget *p
   pbnImportTransparentPixelValues->setIcon( QgisApp::getThemeIcon( "/mActionFileOpen.png" ) );
   pbnExportTransparentPixelValues->setIcon( QgisApp::getThemeIcon( "/mActionFileSave.png" ) );
   pbtnMakeBandCombinationDefault->setIcon( QgisApp::getThemeIcon( "/mActionFileSave.png" ) );
+  pbtnMakeStandardDeviationDefault->setIcon( QgisApp::getThemeIcon( "/mActionFileSave.png" ) );
   pbtnMakeContrastEnhancementAlgorithmDefault->setIcon( QgisApp::getThemeIcon( "/mActionFileSave.png" ) );
 
   pbtnLoadColorMapFromBand->setIcon( QgisApp::getThemeIcon( "/mActionNewAttribute.png" ) );
