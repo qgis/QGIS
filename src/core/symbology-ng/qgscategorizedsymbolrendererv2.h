@@ -24,8 +24,9 @@ class CORE_EXPORT QgsRendererCategoryV2
     QgsSymbolV2* symbol() const;
     QString label() const;
 
+    void setValue( const QVariant &value );
     void setSymbol( QgsSymbolV2* s );
-    void setLabel( QString label );
+    void setLabel( const QString &label );
 
     // debugging
     QString dump();
@@ -65,9 +66,11 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
     //! return index of category with specified value (-1 if not found)
     int categoryIndexForValue( QVariant val );
 
+    bool updateCategoryValue( int catIndex, const QVariant &value );
     bool updateCategorySymbol( int catIndex, QgsSymbolV2* symbol );
     bool updateCategoryLabel( int catIndex, QString label );
 
+    void addCategory( const QgsRendererCategoryV2 &category );
     bool deleteCategory( int catIndex );
     void deleteAllCategories();
 

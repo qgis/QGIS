@@ -181,6 +181,7 @@ public:
   QgsSymbolV2* symbol();
   QString label() const;
 
+  void setValue( const QVariant &value );
   void setSymbol(QgsSymbolV2* s /Transfer/);
   void setLabel(QString label);
 
@@ -220,9 +221,11 @@ public:
   //! return index of category with specified value (-1 if not found)
   int categoryIndexForValue(QVariant val);
 
+  bool updateCategoryValue( int catIndex, const QVariant &value );
   bool updateCategorySymbol(int catIndex, QgsSymbolV2* symbol /Transfer/);
   bool updateCategoryLabel(int catIndex, QString label);
 
+  void addCategory( const QgsRendererCategoryV2 &category );
   bool deleteCategory(int catIndex);
   void deleteAllCategories();
 

@@ -45,6 +45,11 @@ QString QgsRendererCategoryV2::label() const
   return mLabel;
 }
 
+void QgsRendererCategoryV2::setValue( const QVariant &value )
+{
+  mValue = value;
+}
+
 void QgsRendererCategoryV2::setSymbol( QgsSymbolV2* s )
 {
   if ( mSymbol == s )
@@ -53,7 +58,7 @@ void QgsRendererCategoryV2::setSymbol( QgsSymbolV2* s )
   mSymbol = s;
 }
 
-void QgsRendererCategoryV2::setLabel( QString label )
+void QgsRendererCategoryV2::setLabel( const QString &label )
 {
   mLabel = label;
 }
@@ -143,6 +148,14 @@ int QgsCategorizedSymbolRendererV2::categoryIndexForValue( QVariant val )
   return -1;
 }
 
+bool QgsCategorizedSymbolRendererV2::updateCategoryValue( int catIndex, const QVariant &value )
+{
+  if ( catIndex < 0 || catIndex >= mCategories.size() )
+    return false;
+  mCategories[catIndex].setValue( value );
+  return true;
+}
+
 bool QgsCategorizedSymbolRendererV2::updateCategorySymbol( int catIndex, QgsSymbolV2* symbol )
 {
   if ( catIndex < 0 || catIndex >= mCategories.size() )
@@ -157,6 +170,18 @@ bool QgsCategorizedSymbolRendererV2::updateCategoryLabel( int catIndex, QString 
     return false;
   mCategories[catIndex].setLabel( label );
   return true;
+}
+
+void QgsCategorizedSymbolRendererV2::addCategory( const QgsRendererCategoryV2 &cat )
+{
+  if ( cat.symbol() == NULL )
+  {
+    QgsDebugMsg( "invalid symbol in a category! ignoring..." );
+  }
+  else
+  {
+    mCategories.append( cat );
+  }
 }
 
 bool QgsCategorizedSymbolRendererV2::deleteCategory( int catIndex )
