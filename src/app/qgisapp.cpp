@@ -2990,33 +2990,24 @@ void QgisApp::newVectorLayer()
   std::list<std::pair<QString, QString> > attributes;
   geomDialog.attributes( attributes );
 
-  bool haveLastUsedFilter = false; // by default, there is no last
-  // used filter
   QString enc;
   QString fileName;
 
-  QSettings settings;         // where we keep last used filter in
-  // persistent state
-
-  haveLastUsedFilter = settings.contains( "/UI/lastVectorFileFilter" );
-  QString lastUsedFilter = settings.value( "/UI/lastVectorFileFilter",
-                           QVariant( QString::null ) ).toString();
-
-  QString lastUsedDir = settings.value( "/UI/lastVectorFileFilterDir",
-                                        "." ).toString();
+  QSettings settings;
+  QString lastUsedDir = settings.value( "/UI/lastVectorFileFilterDir", "." ).toString();
 
   QgsDebugMsg( "Saving vector file dialog without filters: " );
 
-  QgsEncodingFileDialog* openFileDialog = new QgsEncodingFileDialog( this,
-      tr( "Save As" ), lastUsedDir, "", QString( "" ) );
+  QgsEncodingFileDialog* openFileDialog =
+    new QgsEncodingFileDialog( this, tr( "Save As" ), lastUsedDir, "", QString( "" ) );
 
-  // allow for selection of more than one file
   openFileDialog->setFileMode( QFileDialog::AnyFile );
   openFileDialog->setAcceptMode( QFileDialog::AcceptSave );
   openFileDialog->setConfirmOverwrite( true );
 
-  if ( haveLastUsedFilter )     // set the filter to the last one used
+  if ( settings.contains( "/UI/lastVectorFileFilter" ) )
   {
+    QString lastUsedFilter = settings.value( "/UI/lastVectorFileFilter", QVariant( QString::null ) ).toString();
     openFileDialog->selectFilter( lastUsedFilter );
   }
 
@@ -3026,23 +3017,14 @@ void QgisApp::newVectorLayer()
     return;
   }
 
+  fileName = openFileDialog->selectedFiles().first(); 
+
+  if( fileformat == "ESRI Shapefile" && !fileName.endsWith( ".shp", Qt::CaseInsensitive ) )
+    fileName += ".shp";
+
   enc = openFileDialog->encoding();
 
-  // If the file exists, delete it otherwise we'll end up loading that
-  // file, which can cause problems (e.g., if the file contains
-  // linestrings, but we're wanting to create points, we'll end up
-  // with a linestring file).
-  if ( fileformat == "ESRI Shapefile" )
-  {
-    QgsVectorFileWriter::deleteShapeFile( fileName );
-  }
-  else
-  {
-    QFile::remove( fileName );
-  }
-
   settings.setValue( "/UI/lastVectorFileFilter", openFileDialog->selectedFilter() );
-
   settings.setValue( "/UI/lastVectorFileFilterDir", openFileDialog->directory().absolutePath() );
 
   delete openFileDialog;
