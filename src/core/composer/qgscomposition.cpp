@@ -52,6 +52,11 @@ QgsComposition::QgsComposition(): QGraphicsScene( 0 ), mMapRenderer( 0 ), mPlotS
 QgsComposition::~QgsComposition()
 {
   delete mPaperItem;
+
+  // make sure that all composer items are removed before
+  // this class is deconstructed - to avoid segfaults
+  // when composer items access in destructor composition that isn't valid anymore
+  clear();
 }
 
 void QgsComposition::setPaperSize( double width, double height )
