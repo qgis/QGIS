@@ -353,10 +353,6 @@ bool QgsAttributeDialog::eventFilter( QObject *obj, QEvent *e )
         break;
     }
   }
-  else if ( e->type() == QEvent::FocusIn && qobject_cast<QLineEdit *>( obj ) )
-  {
-    qobject_cast<QLineEdit *>( obj )->selectAll();
-  }
 
   return false;
 }
