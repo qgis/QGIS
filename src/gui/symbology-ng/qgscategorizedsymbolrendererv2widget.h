@@ -5,6 +5,7 @@
 #include <QStandardItem>
 
 class QgsCategorizedSymbolRendererV2;
+class QgsRendererCategoryV2;
 
 #include "ui_qgscategorizedsymbolrendererv2widget.h"
 
@@ -30,6 +31,9 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widg
     void deleteAllCategories();
     void changeCurrentValue( QStandardItem * item );
 
+  protected slots:
+    void addCategory();
+
   protected:
 
     void updateUiFromRenderer();
@@ -44,6 +48,8 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widg
 
     void populateColorRamps();
 
+    void addCategory( const QgsRendererCategoryV2& cat );
+
     //! return row index for the currently selected category (-1 if on no selection)
     int currentCategoryRow();
 
@@ -56,6 +62,9 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widg
     QgsCategorizedSymbolRendererV2* mRenderer;
 
     QgsSymbolV2* mCategorizedSymbol;
+
+  private:
+    QString mOldClassificationAttribute;
 };
 
 

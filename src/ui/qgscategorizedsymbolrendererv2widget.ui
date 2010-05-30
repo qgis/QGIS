@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>464</width>
-    <height>316</height>
+    <width>599</width>
+    <height>298</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -111,6 +111,13 @@
       <widget class="QPushButton" name="btnAddCategories">
        <property name="text">
         <string>Classify</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnAddCategory">
+       <property name="text">
+        <string>Add</string>
        </property>
       </widget>
      </item>
