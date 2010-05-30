@@ -43,6 +43,7 @@ email                : sherman at mrcc.com
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsvectorfilewriter.h"
 
 static const QString TEXT_PROVIDER_KEY = "ogr";
 static const QString TEXT_PROVIDER_DESCRIPTION =
@@ -1575,6 +1576,12 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
       }
       fieldNames << name;
     }
+
+    QgsVectorFileWriter::deleteShapeFile( uri );
+  }
+  else
+  {
+    QFile::remove( uri );
   }
 
   OGRDataSourceH dataSource;

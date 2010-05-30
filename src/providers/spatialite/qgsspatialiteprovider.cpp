@@ -23,9 +23,6 @@ email                : a.furieri@lqt.it
 #include <qgsrectangle.h>
 #include <qgscoordinatereferencesystem.h>
 
-#include "qgsprovidercountcalcevent.h"
-#include "qgsproviderextentcalcevent.h"
-
 #include "qgsspatialiteprovider.h"
 
 #include "qgslogger.h"
