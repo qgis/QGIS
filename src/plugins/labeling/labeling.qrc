@@ -1,5 +1,0 @@
-<RCC>
-    <qresource prefix="/labeling/" >
-        <file>labeling.png</file>
-    </qresource>
-</RCC>
