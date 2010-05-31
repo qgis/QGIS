@@ -19,6 +19,7 @@
 #include "qgis.h"
 #include "qgsgeorefdatapoint.h"
 #include "qgsgeoreftransform.h"
+#include <QSettings>
 
 #include <cmath>
 using namespace std;
@@ -90,29 +91,25 @@ void QgsGCPListModel::updateModel()
   double wldScaleX, wldScaleY, rotation;
   QgsPoint origin;
 
-  if ( mGeorefTransform )
-  {
-    vector<QgsPoint> mapCoords, pixelCoords;
-    mGCPList->createGCPVectors( mapCoords, pixelCoords );
+  vector<QgsPoint> mapCoords, pixelCoords;
+  mGCPList->createGCPVectors( mapCoords, pixelCoords );
 
-    // TODO: the parameters should probable be updated externally (by user interaction)
-    bTransformUpdated = mGeorefTransform->updateParametersFromGCPs( mapCoords, pixelCoords );
-    //transformation that involves only scaling and rotation (linear or helmert) ?
-    wldTransform = mGeorefTransform->getOriginScaleRotation( origin, wldScaleX, wldScaleY, rotation );
-    if ( wldTransform && !doubleNear( rotation, 0.0 ) )
-    {
-      wldScaleX *= cos( rotation );
-      wldScaleY *= cos( rotation );
-    }
-    if ( wldTransform )
-    {
-
-    }
-  }
+  // TODO: the parameters should probable be updated externally (by user interaction)
+  bTransformUpdated = mGeorefTransform->updateParametersFromGCPs( mapCoords, pixelCoords );
 
   //  // Setup table header
   QStringList itemLabels;
-  QString unitType = wldTransform ? tr( "map units" ) : tr ("pixels");
+  QString unitType;
+  QSettings s;
+  if ( s.value( "/Plugin-GeoReferencer/Config/ResidualUnits" ) == "mapUnits" )
+  {
+    unitType = tr( "map units" );
+  }
+  else
+  {
+    unitType = tr( "pixels" );
+  }
+
   itemLabels << "on/off" << "id" << "srcX" << "srcY" << "dstX" << "dstY" << QString( "dX[" ) + unitType + "]" << QString( "dY[" ) + unitType + "]" << "residual[" + unitType + "]";
 
   setHorizontalHeaderLabels( itemLabels );
@@ -140,29 +137,34 @@ void QgsGCPListModel::updateModel()
     setItem( i, j++, QGSSTANDARDITEM( p->mapCoords().y() ) /*create_item<double>( p->mapCoords().y() )*/ );
 
     double residual;
-    double dX, dY;
+    double dX = 0;
+    double dY = 0;
     // Calculate residual if transform is available and up-to-date
     if ( mGeorefTransform && bTransformUpdated && mGeorefTransform->parametersInitialized() )
     {
       QgsPoint dst;
-      // Transform from world to raster coordinate:
-      // This is the transform direction used by the warp operation.
-      // As transforms of order >=2 are not invertible, we are only
-      // interested in the residual in this direction
-      mGeorefTransform->transformWorldToRaster( p->mapCoords(), dst );
-      dX = ( dst.x() - p->pixelCoords().x() );
-      dY = -( dst.y() - p->pixelCoords().y() );
-      if ( wldTransform )
+      if ( unitType == tr( "pixels" ) )
       {
-        dX *= wldScaleX;
-        dY *= wldScaleY;
+        // Transform from world to raster coordinate:
+        // This is the transform direction used by the warp operation.
+        // As transforms of order >=2 are not invertible, we are only
+        // interested in the residual in this direction
+        if ( mGeorefTransform->transformWorldToRaster( p->mapCoords(), dst ) )
+        {
+          dX = ( dst.x() - p->pixelCoords().x() );
+          dY = -( dst.y() - p->pixelCoords().y() );
+        }
       }
-      residual = sqrt( dX * dX + dY * dY );
+      else if ( unitType == tr( "map units" ) )
+      {
+        if ( mGeorefTransform->transformRasterToWorld( p->pixelCoords(), dst ) )
+        {
+          dX = ( dst.x() - p->mapCoords().x() );
+          dY = ( dst.y() - p->mapCoords().y() );
+        }
+      }
     }
-    else
-    {
-      dX = dY = residual = 0;
-    }
+    residual = sqrt( dX * dX + dY * dY );
 
     if ( p )
     {

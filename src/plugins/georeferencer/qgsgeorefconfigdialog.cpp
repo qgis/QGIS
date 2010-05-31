@@ -79,6 +79,15 @@ void QgsGeorefConfigDialog::readSettings()
   {
     mShowDockedCheckBox->setChecked( false );
   }
+
+  if ( s.value( "/Plugin-GeoReferencer/Config/ResidualUnits" ).toString() == "mapUnits" )
+  {
+    mMapUnitsButton->setChecked( true );
+  }
+  else
+  {
+    mPixelsButton->setChecked( true );
+  }
 }
 
 void QgsGeorefConfigDialog::writeSettings()
@@ -87,4 +96,12 @@ void QgsGeorefConfigDialog::writeSettings()
   s.setValue( "/Plugin-GeoReferencer/Config/ShowId", mShowIDsCheckBox->isChecked() );
   s.setValue( "/Plugin-GeoReferencer/Config/ShowCoords", mShowCoordsCheckBox->isChecked() );
   s.setValue( "/Plugin-GeoReferencer/Config/ShowDocked", mShowDockedCheckBox->isChecked() );
+  if ( mPixelsButton->isChecked() )
+  {
+    s.setValue( "/Plugin-GeoReferencer/Config/ResidualUnits", "pixels" );
+  }
+  else
+  {
+    s.setValue( "/Plugin-GeoReferencer/Config/ResidualUnits", "mapUnits" );
+  }
 }
