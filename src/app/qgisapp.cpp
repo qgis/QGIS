@@ -112,6 +112,7 @@
 #include "qgsexception.h"
 #include "qgsfeature.h"
 #include "qgsformannotationitem.h"
+#include "qgslabelinggui.h"
 #include "qgsnewvectorlayerdialog.h"
 #include "qgshelpviewer.h"
 #include "qgsgenericprojectionselector.h"
@@ -525,6 +526,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mMapCanvas->freeze( false );
   mMapCanvas->clearExtentHistory(); // reset zoomnext/zoomlast
   mLastComposerId = 0;
+  mLBL = new QgsPalLabeling();;
 } // QgisApp ctor
 
 
@@ -569,6 +571,8 @@ QgisApp::~QgisApp()
 
   deletePrintComposers();
   removeAnnotationItems();
+
+  delete mLBL;
 
   // delete map layer registry and provider registry
   QgsApplication::exitQgis();
@@ -958,6 +962,9 @@ void QgisApp::createActions()
   mActionAnnotation = new QAction( getThemeIcon( "mActionAnnotation.png" ), tr( "Move Annotation" ), this );
   mActionAnnotation->setCheckable( true );
   connect( mActionAnnotation, SIGNAL( triggered() ), this, SLOT( modifyAnnotation() ) );
+
+  mActionLabeling = new QAction( getThemeIcon( "mActionLabeling.png" ), tr( "Labeling" ), this );
+  connect( mActionLabeling, SIGNAL( triggered() ), this, SLOT( labeling() ) );
 
   // Layer Menu Items
 
@@ -1483,6 +1490,7 @@ void QgisApp::createMenus()
 
   mLayerMenu->addAction( mActionHideAllLayers );
   mLayerMenu->addAction( mActionShowAllLayers );
+  mLayerMenu->addAction( mActionLabeling );
 
   // Settings Menu
 
@@ -1653,6 +1661,7 @@ void QgisApp::createToolBars()
   mAttributesToolBar->addAction( mActionMapTips );
   mAttributesToolBar->addAction( mActionShowBookmarks );
   mAttributesToolBar->addAction( mActionNewBookmark );
+  mAttributesToolBar->addAction( mActionLabeling );
   // Annotation tools
   QToolButton *annotationToolButton = new QToolButton();
   annotationToolButton->setPopupMode( QToolButton::InstantPopup );
@@ -3017,9 +3026,9 @@ void QgisApp::newVectorLayer()
     return;
   }
 
-  fileName = openFileDialog->selectedFiles().first(); 
+  fileName = openFileDialog->selectedFiles().first();
 
-  if( fileformat == "ESRI Shapefile" && !fileName.endsWith( ".shp", Qt::CaseInsensitive ) )
+  if ( fileformat == "ESRI Shapefile" && !fileName.endsWith( ".shp", Qt::CaseInsensitive ) )
     fileName += ".shp";
 
   enc = openFileDialog->encoding();
@@ -3736,6 +3745,31 @@ void QgisApp::addTextAnnotation()
 void QgisApp::modifyAnnotation()
 {
   mMapCanvas->setMapTool( mMapTools.mAnnotation );
+}
+
+void QgisApp::labeling()
+{
+  QgsMapLayer* layer = activeLayer();
+  if ( layer == NULL || layer->type() != QgsMapLayer::VectorLayer )
+  {
+    QMessageBox::warning( this, "Labeling", "Please select a vector layer first." );
+    return;
+  }
+  QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( layer );
+
+  QgsLabelingGui labelGui( mLBL, vlayer, this );
+
+  if ( labelGui.exec() )
+  {
+    // alter labeling - save the changes
+    labelGui.layerSettings().writeToLayer( vlayer );
+
+    // trigger refresh
+    if ( mMapCanvas )
+    {
+      mMapCanvas->refresh();
+    }
+  }
 }
 
 void QgisApp::attributeTable()

@@ -27,7 +27,7 @@
 
 #include "labeling.h"
 #include "labelinggui.h"
-#include "pallabeling.h"
+#include "qgspallabeling.h"
 
 //
 // Qt4 Related Includes
@@ -75,15 +75,15 @@ Labeling::~Labeling()
 class LabelingTool : public QgsMapTool
 {
   public:
-    LabelingTool( PalLabeling* lbl, QgsMapCanvas* canvas ) : QgsMapTool( canvas ), mLBL( lbl ) {}
+    LabelingTool( QgsPalLabeling* lbl, QgsMapCanvas* canvas ) : QgsMapTool( canvas ), mLBL( lbl ) {}
 
     virtual void canvasPressEvent( QMouseEvent * e )
     {
-      const QList<LabelCandidate>& cand = mLBL->candidates();
+      const QList<QgsLabelCandidate>& cand = mLBL->candidates();
       QPointF pt = e->posF();
       for ( int i = 0; i < cand.count(); i++ )
       {
-        const LabelCandidate& c = cand[i];
+        const QgsLabelCandidate& c = cand[i];
         if ( c.rect.contains( pt ) ) // TODO: handle rotated candidates
         {
           QToolTip::showText( mCanvas->mapToGlobal( e->pos() ), QString::number( c.cost ), mCanvas );
@@ -93,7 +93,7 @@ class LabelingTool : public QgsMapTool
     }
 
   protected:
-    PalLabeling* mLBL;
+    QgsPalLabeling* mLBL;
 };
 
 ///////////
@@ -105,7 +105,7 @@ class LabelingTool : public QgsMapTool
  */
 void Labeling::initGui()
 {
-  mLBL = new PalLabeling();
+  mLBL = new QgsPalLabeling();
 
   // Create the action for tool
   mQActionPointer = new QAction( QIcon( ":/labeling/labeling.png" ), tr( "Labeling" ), this );
@@ -145,7 +145,7 @@ void Labeling::run()
   }
   QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( layer );
 
-  LabelingGui myPluginGui( mLBL, vlayer, mQGisIface->mainWindow() );
+  QgsLabelingGui myPluginGui( mLBL, vlayer, mQGisIface->mainWindow() );
 
   if ( myPluginGui.exec() )
   {

@@ -1,28 +1,28 @@
-#include "labelpreview.h"
+#include "qgslabelpreview.h"
 
 #include <QPainter>
 
-#include "pallabeling.h"
+#include "qgspallabeling.h"
 
-LabelPreview::LabelPreview( QWidget* parent )
+QgsLabelPreview::QgsLabelPreview( QWidget* parent )
     : QLabel( parent )
 {
 }
 
-void LabelPreview::setTextColor( QColor color )
+void QgsLabelPreview::setTextColor( QColor color )
 {
   mTextColor = color;
   update();
 }
 
-void LabelPreview::setBuffer( double size, QColor color )
+void QgsLabelPreview::setBuffer( double size, QColor color )
 {
   mBufferSize = size * 88 / 25.4; //assume standard dpi for preview
   mBufferColor = color;
   update();
 }
 
-void LabelPreview::paintEvent( QPaintEvent* e )
+void QgsLabelPreview::paintEvent( QPaintEvent* e )
 {
   QPainter p( this );
 
@@ -31,7 +31,7 @@ void LabelPreview::paintEvent( QPaintEvent* e )
   p.translate( 10, 20 ); // uhm...
 
   if ( mBufferSize != 0 )
-    PalLabeling::drawLabelBuffer( &p, text(), font(), mBufferSize, mBufferColor );
+    QgsPalLabeling::drawLabelBuffer( &p, text(), font(), mBufferSize, mBufferColor );
 
   p.setPen( mTextColor );
   p.drawText( 0, 0, text() );

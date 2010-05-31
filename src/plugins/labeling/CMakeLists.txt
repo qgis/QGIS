@@ -5,7 +5,6 @@
 SET (labeling_SRCS
      labeling.cpp
      labelinggui.cpp
-     pallabeling.cpp
      engineconfigdialog.cpp
      labelpreview.cpp
 )

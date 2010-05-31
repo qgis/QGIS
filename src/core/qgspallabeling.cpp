@@ -1,4 +1,21 @@
-#include "pallabeling.h"
+/***************************************************************************
+  qgspallabeling.cpp
+  Smart labeling for vector layers
+  -------------------
+         begin                : June 2009
+         copyright            : (C) Martin Dobias
+         email                : wonder.sk at gmail.com
+
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#include "qgspallabeling.h"
 
 #include <iostream>
 #include <list>
@@ -32,15 +49,15 @@
 using namespace pal;
 
 
-class MyLabel : public PalGeometry
+class QgsPalGeometry : public PalGeometry
 {
   public:
-    MyLabel( int id, QString text, GEOSGeometry* g ): mG( g ), mText( text ), mId( id ), mInfo( NULL )
+    QgsPalGeometry( int id, QString text, GEOSGeometry* g ): mG( g ), mText( text ), mId( id ), mInfo( NULL )
     {
       mStrId = QByteArray::number( id );
     }
 
-    ~MyLabel()
+    ~QgsPalGeometry()
     {
       if ( mG ) GEOSGeom_destroy( mG );
       delete mInfo;
@@ -88,7 +105,7 @@ class MyLabel : public PalGeometry
 
 // -------------
 
-LayerSettings::LayerSettings()
+QgsPalLayerSettings::QgsPalLayerSettings()
     : palLayer( NULL ), fontMetrics( NULL ), ct( NULL )
 {
   placement = AroundPoint;
@@ -110,7 +127,7 @@ LayerSettings::LayerSettings()
   rasterCompressFactor = 1.0;
 }
 
-LayerSettings::LayerSettings( const LayerSettings& s )
+QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
 {
   // copy only permanent stuff
   fieldName = s.fieldName;
@@ -137,7 +154,7 @@ LayerSettings::LayerSettings( const LayerSettings& s )
 }
 
 
-LayerSettings::~LayerSettings()
+QgsPalLayerSettings::~QgsPalLayerSettings()
 {
   // pal layer is deleted internally in PAL
 
@@ -160,7 +177,7 @@ static void _writeColor( QgsVectorLayer* layer, QString property, QColor color )
   layer->setCustomProperty( property + "B", color.blue() );
 }
 
-void LayerSettings::readFromLayer( QgsVectorLayer* layer )
+void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
 {
   if ( layer->customProperty( "labeling" ).toString() != QString( "pal" ) )
     return; // there's no information available
@@ -187,7 +204,7 @@ void LayerSettings::readFromLayer( QgsVectorLayer* layer )
   minFeatureSize = layer->customProperty( "labeling/minFeatureSize" ).toDouble();
 }
 
-void LayerSettings::writeToLayer( QgsVectorLayer* layer )
+void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
 {
   // this is a mark that labeling information is present
   layer->setCustomProperty( "labeling", "pal" );
@@ -215,7 +232,7 @@ void LayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/minFeatureSize", minFeatureSize );
 }
 
-bool LayerSettings::checkMinimumSizeMM( const QgsRenderContext& ct, QgsGeometry* geom, double minSize ) const
+bool QgsPalLayerSettings::checkMinimumSizeMM( const QgsRenderContext& ct, QgsGeometry* geom, double minSize ) const
 {
   if ( minSize <= 0 )
   {
@@ -253,7 +270,7 @@ bool LayerSettings::checkMinimumSizeMM( const QgsRenderContext& ct, QgsGeometry*
   return true; //should never be reached. Return true in this case to label such geometries anyway.
 }
 
-void LayerSettings::calculateLabelSize( QString text, double& labelX, double& labelY )
+void QgsPalLayerSettings::calculateLabelSize( QString text, double& labelX, double& labelY )
 {
   QRectF labelRect = fontMetrics->boundingRect( text );
   double w = labelRect.width() / rasterCompressFactor;
@@ -266,7 +283,7 @@ void LayerSettings::calculateLabelSize( QString text, double& labelX, double& la
 }
 
 
-void LayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext& context )
+void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext& context )
 {
   QString labelText = f.attributeMap()[fieldIndex].toString();
   double labelX, labelY; // will receive label size
@@ -281,7 +298,7 @@ void LayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext& cont
     return;
   }
 
-  MyLabel* lbl = new MyLabel( f.id(), labelText, GEOSGeom_clone( geom->asGeos() ) );
+  QgsPalGeometry* lbl = new QgsPalGeometry( f.id(), labelText, GEOSGeom_clone( geom->asGeos() ) );
 
   // record the created geometry - it will be deleted at the end.
   geometries.append( lbl );
@@ -310,7 +327,7 @@ void LayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext& cont
 
 // -------------
 
-PalLabeling::PalLabeling()
+QgsPalLabeling::QgsPalLabeling()
     : mMapRenderer( NULL ), mPal( NULL )
 {
 
@@ -334,27 +351,27 @@ PalLabeling::PalLabeling()
 }
 
 
-PalLabeling::~PalLabeling()
+QgsPalLabeling::~QgsPalLabeling()
 {
   // make sure we've freed everything
   exit();
 }
 
 
-bool PalLabeling::willUseLayer( QgsVectorLayer* layer )
+bool QgsPalLabeling::willUseLayer( QgsVectorLayer* layer )
 {
-  LayerSettings lyrTmp;
+  QgsPalLayerSettings lyrTmp;
   lyrTmp.readFromLayer( layer );
   return lyrTmp.enabled;
 }
 
 
-int PalLabeling::prepareLayer( QgsVectorLayer* layer, int& attrIndex, QgsRenderContext& ctx )
+int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, int& attrIndex, QgsRenderContext& ctx )
 {
   Q_ASSERT( mMapRenderer != NULL );
 
   // start with a temporary settings class, find out labeling info
-  LayerSettings lyrTmp;
+  QgsPalLayerSettings lyrTmp;
   lyrTmp.readFromLayer( layer );
 
   if ( !lyrTmp.enabled )
@@ -366,21 +383,21 @@ int PalLabeling::prepareLayer( QgsVectorLayer* layer, int& attrIndex, QgsRenderC
     return 0;
   attrIndex = fldIndex;
 
-  // add layer settings to the pallabeling hashtable: <QgsVectorLayer*, LayerSettings>
+  // add layer settings to the pallabeling hashtable: <QgsVectorLayer*, QgsPalLayerSettings>
   mActiveLayers.insert( layer, lyrTmp );
   // start using the reference to the layer in hashtable instead of local instance
-  LayerSettings& lyr = mActiveLayers[layer];
+  QgsPalLayerSettings& lyr = mActiveLayers[layer];
 
   // how to place the labels
   Arrangement arrangement;
   switch ( lyr.placement )
   {
-    case LayerSettings::AroundPoint: arrangement = P_POINT; break;
-    case LayerSettings::OverPoint:   arrangement = P_POINT_OVER; break;
-    case LayerSettings::Line:        arrangement = P_LINE; break;
-    case LayerSettings::Curved:      arrangement = P_CURVED; break;
-    case LayerSettings::Horizontal:  arrangement = P_HORIZ; break;
-    case LayerSettings::Free:        arrangement = P_FREE; break;
+    case QgsPalLayerSettings::AroundPoint: arrangement = P_POINT; break;
+    case QgsPalLayerSettings::OverPoint:   arrangement = P_POINT_OVER; break;
+    case QgsPalLayerSettings::Line:        arrangement = P_LINE; break;
+    case QgsPalLayerSettings::Curved:      arrangement = P_CURVED; break;
+    case QgsPalLayerSettings::Horizontal:  arrangement = P_HORIZ; break;
+    case QgsPalLayerSettings::Free:        arrangement = P_FREE; break;
     default: Q_ASSERT( "unsupported placement" && 0 ); return 0; break;
   }
 
@@ -432,14 +449,14 @@ int PalLabeling::prepareLayer( QgsVectorLayer* layer, int& attrIndex, QgsRenderC
 }
 
 
-void PalLabeling::registerFeature( QgsVectorLayer* layer, QgsFeature& f, const QgsRenderContext& context )
+void QgsPalLabeling::registerFeature( QgsVectorLayer* layer, QgsFeature& f, const QgsRenderContext& context )
 {
-  LayerSettings& lyr = mActiveLayers[layer];
+  QgsPalLayerSettings& lyr = mActiveLayers[layer];
   lyr.registerFeature( f, context );
 }
 
 
-void PalLabeling::init( QgsMapRenderer* mr )
+void QgsPalLabeling::init( QgsMapRenderer* mr )
 {
   mMapRenderer = mr;
 
@@ -467,19 +484,19 @@ void PalLabeling::init( QgsMapRenderer* mr )
   mPal->setPolyP( mCandPolygon );
 }
 
-void PalLabeling::exit()
+void QgsPalLabeling::exit()
 {
   delete mPal;
   mPal = NULL;
   mMapRenderer = NULL;
 }
 
-LayerSettings& PalLabeling::layer( const char* layerName )
+QgsPalLayerSettings& QgsPalLabeling::layer( const char* layerName )
 {
-  QHash<QgsVectorLayer*, LayerSettings>::iterator lit;
+  QHash<QgsVectorLayer*, QgsPalLayerSettings>::iterator lit;
   for ( lit = mActiveLayers.begin(); lit != mActiveLayers.end(); ++lit )
   {
-    LayerSettings& lyr = lit.value();
+    QgsPalLayerSettings& lyr = lit.value();
     if ( lyr.palLayer->getName() == layerName )
       return lyr;
   }
@@ -487,7 +504,7 @@ LayerSettings& PalLabeling::layer( const char* layerName )
 }
 
 
-void PalLabeling::drawLabeling( QgsRenderContext& context )
+void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
 {
   Q_ASSERT( mMapRenderer != NULL );
   QPainter* painter = context.painter();
@@ -547,7 +564,7 @@ void PalLabeling::drawLabeling( QgsRenderContext& context )
   std::list<LabelPosition*>::iterator it = labels->begin();
   for ( ; it != labels->end(); ++it )
   {
-    const LayerSettings& lyr = layer(( *it )->getLayerName() );
+    const QgsPalLayerSettings& lyr = layer(( *it )->getLayerName() );
 
     if ( lyr.bufferSize != 0 )
       drawLabel( *it, painter, xform, true );
@@ -561,11 +578,11 @@ void PalLabeling::drawLabeling( QgsRenderContext& context )
   delete labels;
 
   // delete all allocated geometries for features
-  QHash<QgsVectorLayer*, LayerSettings>::iterator lit;
+  QHash<QgsVectorLayer*, QgsPalLayerSettings>::iterator lit;
   for ( lit = mActiveLayers.begin(); lit != mActiveLayers.end(); ++lit )
   {
-    LayerSettings& lyr = lit.value();
-    for ( QList<MyLabel*>::iterator git = lyr.geometries.begin(); git != lyr.geometries.end(); ++git )
+    QgsPalLayerSettings& lyr = lit.value();
+    for ( QList<QgsPalGeometry*>::iterator git = lyr.geometries.begin(); git != lyr.geometries.end(); ++git )
       delete *git;
     lyr.geometries.clear();
   }
@@ -574,31 +591,31 @@ void PalLabeling::drawLabeling( QgsRenderContext& context )
 
 }
 
-void PalLabeling::numCandidatePositions( int& candPoint, int& candLine, int& candPolygon )
+void QgsPalLabeling::numCandidatePositions( int& candPoint, int& candLine, int& candPolygon )
 {
   candPoint = mCandPoint;
   candLine = mCandLine;
   candPolygon = mCandPolygon;
 }
 
-void PalLabeling::setNumCandidatePositions( int candPoint, int candLine, int candPolygon )
+void QgsPalLabeling::setNumCandidatePositions( int candPoint, int candLine, int candPolygon )
 {
   mCandPoint = candPoint;
   mCandLine = candLine;
   mCandPolygon = candPolygon;
 }
 
-void PalLabeling::setSearchMethod( PalLabeling::Search s )
+void QgsPalLabeling::setSearchMethod( QgsPalLabeling::Search s )
 {
   mSearch = s;
 }
 
-PalLabeling::Search PalLabeling::searchMethod() const
+QgsPalLabeling::Search QgsPalLabeling::searchMethod() const
 {
   return mSearch;
 }
 
-void PalLabeling::drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform )
+void QgsPalLabeling::drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform )
 {
   QgsPoint outPt = xform->transform( lp->getX(), lp->getY() );
   QgsPoint outPt2 = xform->transform( lp->getX() + lp->getWidth(), lp->getY() + lp->getHeight() );
@@ -612,7 +629,7 @@ void PalLabeling::drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* pain
 
   // save the rect
   rect.moveTo( outPt.x(), outPt.y() );
-  mCandidates.append( LabelCandidate( rect, lp->getCost() * 1000 ) );
+  mCandidates.append( QgsLabelCandidate( rect, lp->getCost() * 1000 ) );
 
   // show all parts of the multipart label
   if ( lp->getNextPart() )
@@ -621,14 +638,14 @@ void PalLabeling::drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* pain
 
 #include "qgslogger.h"
 
-void PalLabeling::drawLabel( pal::LabelPosition* label, QPainter* painter, const QgsMapToPixel* xform, bool drawBuffer )
+void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QPainter* painter, const QgsMapToPixel* xform, bool drawBuffer )
 {
   QgsPoint outPt = xform->transform( label->getX(), label->getY() );
 
   // TODO: optimize access :)
-  const LayerSettings& lyr = layer( label->getLayerName() );
+  const QgsPalLayerSettings& lyr = layer( label->getLayerName() );
 
-  QString text = (( MyLabel* )label->getFeaturePart()->getUserGeometry() )->text();
+  QString text = (( QgsPalGeometry* )label->getFeaturePart()->getUserGeometry() )->text();
   QString txt = ( label->getPartId() == -1 ? text : QString( text[label->getPartId()] ) );
 
   //QgsDebugMsg( "drawLabel " + QString::number( drawBuffer ) + " " + txt );
@@ -668,7 +685,7 @@ void PalLabeling::drawLabel( pal::LabelPosition* label, QPainter* painter, const
 }
 
 
-void PalLabeling::drawLabelBuffer( QPainter* p, QString text, const QFont& font, double size, QColor color )
+void QgsPalLabeling::drawLabelBuffer( QPainter* p, QString text, const QFont& font, double size, QColor color )
 {
   /*
   p->setFont( font );
@@ -687,9 +704,9 @@ void PalLabeling::drawLabelBuffer( QPainter* p, QString text, const QFont& font,
   p->drawPath( path );
 }
 
-QgsLabelingEngineInterface* PalLabeling::clone()
+QgsLabelingEngineInterface* QgsPalLabeling::clone()
 {
-  PalLabeling* lbl = new PalLabeling();
+  QgsPalLabeling* lbl = new QgsPalLabeling();
   lbl->mShowingAllLabels = mShowingAllLabels;
   lbl->mShowingCandidates = mShowingCandidates;
   return lbl;

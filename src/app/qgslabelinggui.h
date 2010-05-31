@@ -1,5 +1,5 @@
 /***************************************************************************
-  labelinggui.h
+  qgslabelinggui.h
   Smart labeling for vector layers
   -------------------
          begin                : June 2009
@@ -15,25 +15,25 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef LabelingGUI_H
-#define LabelingGUI_H
+#ifndef QgsLabelingGUI_H
+#define QgsLabelingGUI_H
 
 #include <QDialog>
-#include <ui_labelingguibase.h>
+#include <ui_qgslabelingguibase.h>
 
 class QgsVectorLayer;
 
-#include "pallabeling.h"
+#include "qgspallabeling.h"
 
-class LabelingGui : public QDialog, private Ui::LabelingGuiBase
+class QgsLabelingGui : public QDialog, private Ui::QgsLabelingGuiBase
 {
     Q_OBJECT
 
   public:
-    LabelingGui( PalLabeling* lbl, QgsVectorLayer* layer, QWidget* parent );
-    ~LabelingGui();
+    QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QWidget* parent );
+    ~QgsLabelingGui();
 
-    LayerSettings layerSettings();
+    QgsPalLayerSettings layerSettings();
 
   public slots:
     void changeTextColor();
@@ -51,7 +51,7 @@ class LabelingGui : public QDialog, private Ui::LabelingGuiBase
     void updateFont( QFont font );
 
   private:
-    PalLabeling* mLBL;
+    QgsPalLabeling* mLBL;
     QgsVectorLayer* mLayer;
 };
 

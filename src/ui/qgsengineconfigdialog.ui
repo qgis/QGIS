@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>EngineConfigDialog</class>
- <widget class="QDialog" name="EngineConfigDialog">
+ <class>QgsEngineConfigDialog</class>
+ <widget class="QDialog" name="QgsEngineConfigDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -211,7 +211,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>EngineConfigDialog</receiver>
+   <receiver>QgsEngineConfigDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

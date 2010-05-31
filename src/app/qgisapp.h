@@ -52,6 +52,7 @@ class QgsMapCanvas;
 class QgsMapLayer;
 class QgsMapTip;
 class QgsMapTool;
+class QgsPalLabeling;
 class QgsPoint;
 class QgsProviderRegistry;
 class QgsPythonUtils;
@@ -650,6 +651,9 @@ class QgisApp : public QMainWindow
     void addTextAnnotation();
     void modifyAnnotation();
 
+    //! shows label settings dialog (for labeling-ng)
+    void labeling();
+
     //! show the attribute table for the currently selected layer
     void attributeTable();
 
@@ -876,6 +880,7 @@ class QgisApp : public QMainWindow
     QAction *mActionTextAnnotation;
     QAction *mActionFormAnnotation;
     QAction *mActionAnnotation;
+    QAction *mActionLabeling;
 
     QAction *mActionNewVectorLayer;
     QAction *mActionNewSpatialiteLayer;
@@ -1116,6 +1121,9 @@ class QgisApp : public QMainWindow
     //! Persistent GPS toolbox
     QgsGPSInformationWidget * mpGpsWidget;
 #endif
+
+    QgsPalLabeling* mLBL;
+
     //! project changed
     void projectChanged( const QDomDocument & );
 };

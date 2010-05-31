@@ -1,5 +1,5 @@
 /***************************************************************************
-  labelinggui.cpp
+  qgslabelinggui.cpp
   Smart labeling for vector layers
   -------------------
          begin                : June 2009
@@ -15,14 +15,14 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "labelinggui.h"
+#include "qgslabelinggui.h"
 
 #include <qgsvectorlayer.h>
 #include <qgsvectordataprovider.h>
 #include <qgsmaplayerregistry.h>
 
-#include "pallabeling.h"
-#include "engineconfigdialog.h"
+#include "qgspallabeling.h"
+#include "qgslabelengineconfigdialog.h"
 
 #include <QColorDialog>
 #include <QFontDialog>
@@ -32,7 +32,7 @@
 
 
 
-LabelingGui::LabelingGui( PalLabeling* lbl, QgsVectorLayer* layer, QWidget* parent )
+QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QWidget* parent )
     : QDialog( parent ), mLBL( lbl ), mLayer( layer )
 {
   setupUi( this );
@@ -65,47 +65,47 @@ LabelingGui::LabelingGui( PalLabeling* lbl, QgsVectorLayer* layer, QWidget* pare
   populateFieldNames();
 
   // load labeling settings from layer
-  LayerSettings lyr;
+  QgsPalLayerSettings lyr;
   lyr.readFromLayer( layer );
 
   // placement
   switch ( lyr.placement )
   {
-    case LayerSettings::AroundPoint:
+    case QgsPalLayerSettings::AroundPoint:
       radAroundPoint->setChecked( true );
       radAroundCentroid->setChecked( true );
       spinDistPoint->setValue( lyr.dist );
       //spinAngle->setValue(lyr.angle);
       break;
-    case LayerSettings::OverPoint:
+    case QgsPalLayerSettings::OverPoint:
       radOverPoint->setChecked( true );
       radOverCentroid->setChecked( true );
       break;
-    case LayerSettings::Line:
+    case QgsPalLayerSettings::Line:
       radLineParallel->setChecked( true );
       radPolygonPerimeter->setChecked( true );
       break;
-    case LayerSettings::Curved:
+    case QgsPalLayerSettings::Curved:
       radLineCurved->setChecked( true );
       break;
-    case LayerSettings::Horizontal:
+    case QgsPalLayerSettings::Horizontal:
       radPolygonHorizontal->setChecked( true );
       radLineHorizontal->setChecked( true );
       break;
-    case LayerSettings::Free:
+    case QgsPalLayerSettings::Free:
       radPolygonFree->setChecked( true );
       break;
     default:
       Q_ASSERT( 0 && "NOOO!" );
   }
 
-  if ( lyr.placement == LayerSettings::Line || lyr.placement == LayerSettings::Curved )
+  if ( lyr.placement == QgsPalLayerSettings::Line || lyr.placement == QgsPalLayerSettings::Curved )
   {
     spinDistLine->setValue( lyr.dist );
-    chkLineAbove->setChecked( lyr.placementFlags & LayerSettings::AboveLine );
-    chkLineBelow->setChecked( lyr.placementFlags & LayerSettings::BelowLine );
-    chkLineOn->setChecked( lyr.placementFlags & LayerSettings::OnLine );
-    if ( lyr.placementFlags & LayerSettings::MapOrientation )
+    chkLineAbove->setChecked( lyr.placementFlags & QgsPalLayerSettings::AboveLine );
+    chkLineBelow->setChecked( lyr.placementFlags & QgsPalLayerSettings::BelowLine );
+    chkLineOn->setChecked( lyr.placementFlags & QgsPalLayerSettings::OnLine );
+    if ( lyr.placementFlags & QgsPalLayerSettings::MapOrientation )
       radOrientationMap->setChecked( true );
     else
       radOrientationLine->setChecked( true );
@@ -153,13 +153,13 @@ LabelingGui::LabelingGui( PalLabeling* lbl, QgsVectorLayer* layer, QWidget* pare
     connect( placementRadios[i], SIGNAL( toggled( bool ) ), this, SLOT( updateOptions() ) );
 }
 
-LabelingGui::~LabelingGui()
+QgsLabelingGui::~QgsLabelingGui()
 {
 }
 
-LayerSettings LabelingGui::layerSettings()
+QgsPalLayerSettings QgsLabelingGui::layerSettings()
 {
-  LayerSettings lyr;
+  QgsPalLayerSettings lyr;
   lyr.fieldName = cboFieldName->currentText();
 
   lyr.dist = 0;
@@ -168,40 +168,40 @@ LayerSettings LabelingGui::layerSettings()
   if (( stackedPlacement->currentWidget() == pagePoint && radAroundPoint->isChecked() )
       || ( stackedPlacement->currentWidget() == pagePolygon && radAroundCentroid->isChecked() ) )
   {
-    lyr.placement = LayerSettings::AroundPoint;
+    lyr.placement = QgsPalLayerSettings::AroundPoint;
     lyr.dist = spinDistPoint->value();
     //lyr.angle = spinAngle->value();
   }
   else if (( stackedPlacement->currentWidget() == pagePoint && radOverPoint->isChecked() )
            || ( stackedPlacement->currentWidget() == pagePolygon && radOverCentroid->isChecked() ) )
   {
-    lyr.placement = LayerSettings::OverPoint;
+    lyr.placement = QgsPalLayerSettings::OverPoint;
   }
   else if (( stackedPlacement->currentWidget() == pageLine && radLineParallel->isChecked() )
            || ( stackedPlacement->currentWidget() == pagePolygon && radPolygonPerimeter->isChecked() )
            || ( stackedPlacement->currentWidget() == pageLine && radLineCurved->isChecked() ) )
   {
     bool curved = ( stackedPlacement->currentWidget() == pageLine && radLineCurved->isChecked() );
-    lyr.placement = ( curved ? LayerSettings::Curved : LayerSettings::Line );
+    lyr.placement = ( curved ? QgsPalLayerSettings::Curved : QgsPalLayerSettings::Line );
     lyr.dist = spinDistLine->value();
     if ( chkLineAbove->isChecked() )
-      lyr.placementFlags |= LayerSettings::AboveLine;
+      lyr.placementFlags |= QgsPalLayerSettings::AboveLine;
     if ( chkLineBelow->isChecked() )
-      lyr.placementFlags |= LayerSettings::BelowLine;
+      lyr.placementFlags |= QgsPalLayerSettings::BelowLine;
     if ( chkLineOn->isChecked() )
-      lyr.placementFlags |= LayerSettings::OnLine;
+      lyr.placementFlags |= QgsPalLayerSettings::OnLine;
 
     if ( radOrientationMap->isChecked() )
-      lyr.placementFlags |= LayerSettings::MapOrientation;
+      lyr.placementFlags |= QgsPalLayerSettings::MapOrientation;
   }
   else if (( stackedPlacement->currentWidget() == pageLine && radLineHorizontal->isChecked() )
            || ( stackedPlacement->currentWidget() == pagePolygon && radPolygonHorizontal->isChecked() ) )
   {
-    lyr.placement = LayerSettings::Horizontal;
+    lyr.placement = QgsPalLayerSettings::Horizontal;
   }
   else if ( radPolygonFree->isChecked() )
   {
-    lyr.placement = LayerSettings::Free;
+    lyr.placement = QgsPalLayerSettings::Free;
   }
   else
     Q_ASSERT( 0 && "NOOO!" );
@@ -237,7 +237,7 @@ LayerSettings LabelingGui::layerSettings()
 }
 
 
-void LabelingGui::populateFieldNames()
+void QgsLabelingGui::populateFieldNames()
 {
   QgsFieldMap fields = mLayer->dataProvider()->fields();
   for ( QgsFieldMap::iterator it = fields.begin(); it != fields.end(); it++ )
@@ -246,7 +246,7 @@ void LabelingGui::populateFieldNames()
   }
 }
 
-void LabelingGui::changeTextColor()
+void QgsLabelingGui::changeTextColor()
 {
   QColor color = QColorDialog::getColor( btnTextColor->color(), this );
   if ( !color.isValid() )
@@ -256,7 +256,7 @@ void LabelingGui::changeTextColor()
   updatePreview();
 }
 
-void LabelingGui::changeTextFont()
+void QgsLabelingGui::changeTextFont()
 {
   bool ok;
   QFont font = QFontDialog::getFont( &ok, lblFontPreview->font(), this );
@@ -264,7 +264,7 @@ void LabelingGui::changeTextFont()
     updateFont( font );
 }
 
-void LabelingGui::updateFont( QFont font )
+void QgsLabelingGui::updateFont( QFont font )
 {
   lblFontName->setText( QString( "%1, %2" ).arg( font.family() ).arg( font.pointSize() ) );
   lblFontPreview->setFont( font );
@@ -272,7 +272,7 @@ void LabelingGui::updateFont( QFont font )
   updatePreview();
 }
 
-void LabelingGui::updatePreview()
+void QgsLabelingGui::updatePreview()
 {
   lblFontPreview->setTextColor( btnTextColor->color() );
   if ( chkBuffer->isChecked() )
@@ -281,13 +281,13 @@ void LabelingGui::updatePreview()
     lblFontPreview->setBuffer( 0, Qt::white );
 }
 
-void LabelingGui::showEngineConfigDialog()
+void QgsLabelingGui::showEngineConfigDialog()
 {
-  EngineConfigDialog dlg( mLBL, this );
+  QgsLabelEngineConfigDialog dlg( mLBL, this );
   dlg.exec();
 }
 
-void LabelingGui::updateUi()
+void QgsLabelingGui::updateUi()
 {
   // enable/disable scale-based, buffer
   bool buf = chkBuffer->isChecked();
@@ -299,7 +299,7 @@ void LabelingGui::updateUi()
   spinScaleMax->setEnabled( scale );
 }
 
-void LabelingGui::changeBufferColor()
+void QgsLabelingGui::changeBufferColor()
 {
   QColor color = QColorDialog::getColor( btnBufferColor->color(), this );
   if ( !color.isValid() )
@@ -309,7 +309,7 @@ void LabelingGui::changeBufferColor()
   updatePreview();
 }
 
-void LabelingGui::updateOptions()
+void QgsLabelingGui::updateOptions()
 {
   if (( stackedPlacement->currentWidget() == pagePoint && radAroundPoint->isChecked() )
       || ( stackedPlacement->currentWidget() == pagePolygon && radAroundCentroid->isChecked() ) )
