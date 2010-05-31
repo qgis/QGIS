@@ -60,6 +60,7 @@ SET(QGIS_CORE_SRCS
   qgscredentials.cpp
   qgsoverlayobject.cpp
   qgspalgeometry.cpp
+  qgspallabeling.cpp
   qgspalobjectpositionmanager.cpp
   qgspluginlayer.cpp
   qgspluginlayerregistry.cpp

@@ -27,6 +27,9 @@ SET(QGIS_APP_SRCS
   qgshelpviewer.cpp
   qgsidentifyresults.cpp
   qgslabeldialog.cpp
+  qgslabelengineconfigdialog.cpp
+  qgslabelinggui.cpp
+  qgslabelpreview.cpp
   qgsmaptooladdfeature.cpp
   qgsmaptooladdvertex.cpp
   qgsmaptooladdisland.cpp
@@ -140,6 +143,8 @@ SET (QGIS_APP_MOC_HDRS
   qgsdelattrdialog.h
   qgsfieldcalculator.h
   qgsformannotationdialog.h
+  qgslabelinggui.h
+  qgslabelengineconfigdialog.h
   qgsmaptoolmeasureangle.h
   qgsnewvectorlayerdialog.h
   qgsgraduatedsymboldialog.h

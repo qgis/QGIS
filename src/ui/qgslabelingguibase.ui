@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>LabelingGuiBase</class>
- <widget class="QDialog" name="LabelingGuiBase">
+ <class>QgsLabelingGuiBase</class>
+ <widget class="QDialog" name="QgsLabelingGuiBase">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>448</width>
+    <width>482</width>
     <height>610</height>
    </rect>
   </property>
@@ -520,7 +520,7 @@
          </widget>
         </item>
         <item row="4" column="1">
-         <widget class="LabelPreview" name="lblFontPreview">
+         <widget class="QgsLabelPreview" name="lblFontPreview">
           <property name="minimumSize">
            <size>
             <width>30</width>
@@ -750,9 +750,9 @@
    <header>qgscolorbutton.h</header>
   </customwidget>
   <customwidget>
-   <class>LabelPreview</class>
+   <class>QgsLabelPreview</class>
    <extends>QLabel</extends>
-   <header>labelpreview.h</header>
+   <header>qgslabelpreview.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>
@@ -785,7 +785,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>LabelingGuiBase</receiver>
+   <receiver>QgsLabelingGuiBase</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -801,7 +801,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>LabelingGuiBase</receiver>
+   <receiver>QgsLabelingGuiBase</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

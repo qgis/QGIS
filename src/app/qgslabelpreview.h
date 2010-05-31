@@ -1,12 +1,12 @@
-#ifndef LABELPREVIEW_H
-#define LABELPREVIEW_H
+#ifndef QGSLABELPREVIEW_H
+#define QGSLABELPREVIEW_H
 
 #include <QLabel>
 
-class LabelPreview : public QLabel
+class QgsLabelPreview : public QLabel
 {
   public:
-    LabelPreview( QWidget* parent = NULL );
+    QgsLabelPreview( QWidget* parent = NULL );
 
     void setTextColor( QColor color );
 

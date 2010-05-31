@@ -1,5 +1,25 @@
-#ifndef PALLABELING_H
-#define PALLABELING_H
+/***************************************************************************
+  qgspallabeling.h
+  Smart labeling for vector layers
+  -------------------
+         begin                : June 2009
+         copyright            : (C) Martin Dobias
+         email                : wonder.sk at gmail.com
+
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+//Note: although this file is in the core library, it is not part of the stable API
+//and might change at any time!
+
+#ifndef QGSPALLABELING_H
+#define QGSPALLABELING_H
 
 class QPainter;
 class QgsMapRenderer;
@@ -25,14 +45,14 @@ class QgsFeature;
 
 #include "qgsvectorlayer.h" // definition of QgsLabelingEngineInterface
 
-class MyLabel;
+class QgsPalGeometry;
 
-class LayerSettings
+class CORE_EXPORT QgsPalLayerSettings
 {
   public:
-    LayerSettings();
-    LayerSettings( const LayerSettings& s );
-    ~LayerSettings();
+    QgsPalLayerSettings();
+    QgsPalLayerSettings( const QgsPalLayerSettings& s );
+    ~QgsPalLayerSettings();
 
     enum Placement
     {
@@ -86,7 +106,7 @@ class LayerSettings
     const QgsMapToPixel* xform;
     const QgsCoordinateTransform* ct;
     QgsPoint ptZero, ptOne;
-    QList<MyLabel*> geometries;
+    QList<QgsPalGeometry*> geometries;
 
   private:
     /**Checks if a feature is larger than a minimum size (in mm)
@@ -94,22 +114,22 @@ class LayerSettings
     bool checkMinimumSizeMM( const QgsRenderContext& ct, QgsGeometry* geom, double minSize ) const;
 };
 
-class LabelCandidate
+class CORE_EXPORT QgsLabelCandidate
 {
   public:
-    LabelCandidate( QRectF r, double c ): rect( r ), cost( c ) {}
+    QgsLabelCandidate( QRectF r, double c ): rect( r ), cost( c ) {}
 
     QRectF rect;
     double cost;
 };
 
-class PalLabeling : public QgsLabelingEngineInterface
+class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
 {
   public:
-    PalLabeling();
-    ~PalLabeling();
+    QgsPalLabeling();
+    ~QgsPalLabeling();
 
-    LayerSettings& layer( const char* layerName );
+    QgsPalLayerSettings& layer( const char* layerName );
 
     void numCandidatePositions( int& candPoint, int& candLine, int& candPolygon );
     void setNumCandidatePositions( int candPoint, int candLine, int candPolygon );
@@ -121,7 +141,7 @@ class PalLabeling : public QgsLabelingEngineInterface
 
     bool isShowingCandidates() const { return mShowingCandidates; }
     void setShowingCandidates( bool showing ) { mShowingCandidates = showing; }
-    const QList<LabelCandidate>& candidates() { return mCandidates; }
+    const QList<QgsLabelCandidate>& candidates() { return mCandidates; }
 
     bool isShowingAllLabels() const { return mShowingAllLabels; }
     void setShowingAllLabels( bool showing ) { mShowingAllLabels = showing; }
@@ -155,8 +175,8 @@ class PalLabeling : public QgsLabelingEngineInterface
 
   protected:
     // temporary hashtable of layer settings, being filled during labeling, cleared once labeling's done
-    QHash<QgsVectorLayer*, LayerSettings> mActiveLayers;
-    LayerSettings mInvalidLayerSettings;
+    QHash<QgsVectorLayer*, QgsPalLayerSettings> mActiveLayers;
+    QgsPalLayerSettings mInvalidLayerSettings;
 
     QgsMapRenderer* mMapRenderer;
     int mCandPoint, mCandLine, mCandPolygon;
@@ -165,10 +185,10 @@ class PalLabeling : public QgsLabelingEngineInterface
     pal::Pal* mPal;
 
     // list of candidates from last labeling
-    QList<LabelCandidate> mCandidates;
+    QList<QgsLabelCandidate> mCandidates;
     bool mShowingCandidates;
 
     bool mShowingAllLabels; // whether to avoid collisions or not
 };
 
-#endif // PALLABELING_H
+#endif // QGSPALLABELING_H

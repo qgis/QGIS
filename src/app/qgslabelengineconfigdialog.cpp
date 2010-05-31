@@ -1,8 +1,8 @@
-#include "engineconfigdialog.h"
+#include "qgslabelengineconfigdialog.h"
 
-#include "pallabeling.h"
+#include "qgspallabeling.h"
 
-EngineConfigDialog::EngineConfigDialog( PalLabeling* lbl, QWidget* parent )
+QgsLabelEngineConfigDialog::QgsLabelEngineConfigDialog( QgsPalLabeling* lbl, QWidget* parent )
     : QDialog( parent ), mLBL( lbl )
 {
   setupUi( this );
@@ -25,10 +25,10 @@ EngineConfigDialog::EngineConfigDialog( PalLabeling* lbl, QWidget* parent )
 }
 
 
-void EngineConfigDialog::onOK()
+void QgsLabelEngineConfigDialog::onOK()
 {
   // save
-  mLBL->setSearchMethod(( PalLabeling::Search ) cboSearchMethod->currentIndex() );
+  mLBL->setSearchMethod(( QgsPalLabeling::Search ) cboSearchMethod->currentIndex() );
 
   mLBL->setNumCandidatePositions( spinCandPoint->value(),
                                   spinCandLine->value(),

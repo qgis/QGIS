@@ -11,7 +11,6 @@ SUBDIRS (copyright_label
   ogr_converter
   diagram_overlay
   evis
-  labeling
   point_displacement_renderer
   spatialquery
   )

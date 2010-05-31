@@ -33,7 +33,7 @@ class QToolBar;
 
 class QgisInterface;
 
-class PalLabeling;
+class QgsPalLabeling;
 class LabelingTool;
 
 class Labeling: public QObject, public QgisPlugin
@@ -69,7 +69,7 @@ class Labeling: public QObject, public QgisPlugin
     QAction * mQActionPointer;
     QAction * mActionTool;
 
-    PalLabeling* mLBL;
+    QgsPalLabeling* mLBL;
 
     LabelingTool* mTool;
 };
