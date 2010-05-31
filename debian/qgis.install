@@ -25,7 +25,6 @@ usr/lib/qgis/libdiagramoverlay.so
 usr/lib/qgis/libevis.so 
 usr/lib/qgis/libosmprovider.so 
 usr/lib/qgis/librasterterrainplugin.so
-usr/lib/qgis/liblabelingplugin.so
 usr/lib/qgis/libspatialqueryplugin.so
 usr/share/pixmaps/qgis-icon.xpm
 usr/share/pixmaps/qgis-mime-icon.png
