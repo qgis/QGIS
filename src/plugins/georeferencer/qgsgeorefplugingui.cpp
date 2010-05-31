@@ -71,7 +71,7 @@ QgsGeorefDockWidget::QgsGeorefDockWidget( const QString & title, QWidget * paren
 
 void QgsGeorefDockWidget::closeEvent( QCloseEvent * ev )
 {
-  if (widget() && !widget()->close())
+  if ( widget() && !widget()->close() )
   {
     ev->ignore();
     return;
@@ -613,6 +613,13 @@ void QgsGeorefPluginGui::showGeorefConfigDialog()
     {
       dockThisWindow( false );
     }
+    //update gcp model
+    if ( mGCPListWidget )
+    {
+      mGCPListWidget->updateGCPList();
+    }
+    //and status bar
+    updateTransformParamLabel();
   }
 }
 
@@ -1256,7 +1263,7 @@ bool QgsGeorefPluginGui::calculateMeanError( double& error ) const
 
   // Calculate the root mean square error, adjusted for degrees of freedom of the transform
   // Caveat: The number of DoFs is assumed to be even (as each control point fixes two degrees of freedom).
-  error = sqrt(( sumVxSquare + sumVySquare ) / ( nPointsEnabled - mGeorefTransform.getMinimumGCPCount() ));
+  error = sqrt(( sumVxSquare + sumVySquare ) / ( nPointsEnabled - mGeorefTransform.getMinimumGCPCount() ) );
   return true;
 }
 
@@ -1335,6 +1342,17 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
   //transformation that involves only scaling and rotation (linear or helmert) ?
   bool wldTransform = transform.getOriginScaleRotation( origin, scaleX, scaleY, rotation );
 
+  QString residualUnits;
+  QSettings s;
+  if ( s.value( "/Plugin-GeoReferencer/Config/ResidualUnits" ) == "mapUnits" )
+  {
+    residualUnits = tr( "map units" );
+  }
+  else
+  {
+    residualUnits = tr( "pixels" );
+  }
+
   if ( wldTransform )
   {
     QString parameterTitle = tr( "Transformation parameters" ) + QString( " (" ) + convertTransformEnumToString( transform.transformParametrisation() ) + QString( ")" );
@@ -1354,7 +1372,7 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
     parameterTable->setHeaderFont( tableHeaderFont );
     parameterTable->setContentFont( tableContentFont );
     QStringList headers;
-    headers << tr( "Translation x" ) << tr( "Translation y" ) << tr( "Scale x" ) << tr( "Scale y" ) << tr( "Rotation [degrees]" ) << tr( "Mean error [map units]" );
+    headers << tr( "Translation x" ) << tr( "Translation y" ) << tr( "Scale x" ) << tr( "Scale y" ) << tr( "Rotation [degrees]" ) << tr( "Mean error [%1]" ).arg( residualUnits );
     parameterTable->setHeaderLabels( headers );
     QStringList row;
     row << QString::number( origin.x() ) << QString::number( origin.y() ) << QString::number( scaleX ) << QString::number( scaleY ) << QString::number( rotation * 180 / M_PI ) << QString::number( meanError );
@@ -1395,15 +1413,6 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
     }
   }
 
-  QString residualUnits;
-  if ( wldTransform )
-  {
-    residualUnits = tr( "map units" );
-  }
-  else
-  {
-    residualUnits = tr( "pixels" );
-  }
   QgsComposerTextTable* gcpTable = new QgsComposerTextTable( composition );
   gcpTable->setHeaderFont( tableHeaderFont );
   gcpTable->setContentFont( tableContentFont );
