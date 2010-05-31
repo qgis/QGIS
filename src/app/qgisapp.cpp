@@ -526,7 +526,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mMapCanvas->freeze( false );
   mMapCanvas->clearExtentHistory(); // reset zoomnext/zoomlast
   mLastComposerId = 0;
-  mLBL = new QgsPalLabeling();;
+  mLBL = new QgsPalLabeling();
+  mMapCanvas->mapRenderer()->setLabelingEngine( mLBL );
 } // QgisApp ctor
 
 
@@ -571,8 +572,6 @@ QgisApp::~QgisApp()
 
   deletePrintComposers();
   removeAnnotationItems();
-
-  delete mLBL;
 
   // delete map layer registry and provider registry
   QgsApplication::exitQgis();
