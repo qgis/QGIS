@@ -87,8 +87,6 @@ void QgsGCPListModel::updateModel()
     return;
 
   bool bTransformUpdated = false;
-  bool wldTransform = false;
-  double wldScaleX, wldScaleY, rotation;
   QgsPoint origin;
 
   vector<QgsPoint> mapCoords, pixelCoords;
