@@ -273,11 +273,11 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
       for ( QStringList::iterator it = parts.begin(); it != parts.end(); ++it, ++i )
       {
         // try to convert attribute values to integer and double
-        if ( couldBeInt[i] )
+        if ( couldBeInt[i] && !it->isEmpty() )
         {
           it->toInt( &couldBeInt[i] );
         }
-        if ( couldBeDouble[i] )
+        if ( couldBeDouble[i] && !it->isEmpty() )
         {
           it->toDouble( &couldBeDouble[i] );
         }
@@ -418,10 +418,16 @@ bool QgsDelimitedTextProvider::nextFeature( QgsFeature& feature )
       switch ( attributeFields[*i].type() )
       {
         case QVariant::Int:
-          val = QVariant( tokens[*i].toInt() );
+          if( !tokens[*i].isEmpty() )
+            val = QVariant( tokens[*i].toInt() );
+          else
+            val = QVariant( attributeFields[*i].type() );
           break;
         case QVariant::Double:
-          val = QVariant( tokens[*i].toDouble() );
+          if( !tokens[*i].isEmpty() )
+            val = QVariant( tokens[*i].toDouble() );
+          else
+            val = QVariant( attributeFields[*i].type() );
           break;
         default:
           val = QVariant( tokens[*i] );
