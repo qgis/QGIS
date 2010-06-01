@@ -9,8 +9,9 @@ qgis (1.5.0) UNRELEASED; urgency=low
   * add spatialquery plugin
   * include qgis.g.browser in grass plugin
   * drop symbol tracking as C++ ABIs change too frequently
+  * exclude python scripts from grass plugin on lenny
 
- -- Jürgen E. Fischer <jef@norbit.de>  Thu, 13 May 2010 10:54:06 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Tue, 01 Jun 2010 10:58:12 +0200
 
 qgis (1.4.0) UNRELEASED; urgency=low
 
