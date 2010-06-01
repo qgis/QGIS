@@ -61,6 +61,8 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QWid
   }
 
   chkMergeLines->setEnabled( layer->geometryType() == QGis::Line );
+  label_19->setEnabled( layer->geometryType() != QGis::Point );
+  mMinSizeSpinBox->setEnabled( layer->geometryType() != QGis::Point );
 
   populateFieldNames();
 
@@ -266,7 +268,7 @@ void QgsLabelingGui::changeTextFont()
 
 void QgsLabelingGui::updateFont( QFont font )
 {
-  lblFontName->setText( QString( "%1, %2" ).arg( font.family() ).arg( font.pointSize() ) );
+  lblFontName->setText( QString( "%1, %2 %3" ).arg( font.family() ).arg( font.pointSize() ).arg( tr( "pt" ) ) );
   lblFontPreview->setFont( font );
 
   updatePreview();
