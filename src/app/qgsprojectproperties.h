@@ -102,6 +102,11 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
 
     void on_cbxProjectionEnabled_stateChanged( int state );
 
+    /*!
+      * If user changes the CRS, set the corresponding map units
+      */
+    void setMapUnitsToCurrentProjection();
+
   signals:
     //! Signal used to inform listeners that the mouse display precision may have changed
     void displayPrecisionChanged();

@@ -49,6 +49,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
   connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
   connect( this, SIGNAL( accepted() ), this, SLOT( apply() ) );
+  connect( projectionSelector, SIGNAL( sridSelected( QString ) ), this, SLOT( setMapUnitsToCurrentProjection() ) );
 
   ///////////////////////////////////////////////////////////
   // Properties stored in map canvas's QgsMapRenderer
@@ -529,6 +530,34 @@ void QgsProjectProperties::on_mSnappingOptionsPushButton_clicked()
 void QgsProjectProperties::on_cbxProjectionEnabled_stateChanged( int state )
 {
   btnGrpMapUnits->setEnabled( state == Qt::Unchecked );
+}
+
+void QgsProjectProperties::setMapUnitsToCurrentProjection()
+{
+  long myCRSID = projectionSelector->selectedCrsId();
+  if ( myCRSID )
+  {
+    QgsCoordinateReferenceSystem srs( myCRSID, QgsCoordinateReferenceSystem::InternalCrsId );
+    //set radio button to crs map unit type
+    QGis::UnitType units = srs.mapUnits();
+    switch ( units )
+    {
+      case QGis::Meters:
+        radMeters->setChecked( true );
+        break;
+      case QGis::Feet:
+        radFeet->setChecked( true );
+        break;
+      case QGis::Degrees:
+        radDecimalDegrees->setChecked( true );
+        break;
+      case QGis::DegreesMinutesSeconds:
+        radDMS->setChecked( true );
+        break;
+      default:
+        break;
+    }
+  }
 }
 
 /*!
