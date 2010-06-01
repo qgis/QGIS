@@ -400,6 +400,7 @@ SET(QGIS_CORE_HDRS
   qgsmessageoutput.h
   qgscredentials.h
   qgsoverlayobjectpositionmanager.h
+  qgspallabeling.h
   qgspalobjectpositionmanager.h
   qgspluginlayer.h
   qgspluginlayerregistry.h
