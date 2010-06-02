@@ -92,14 +92,22 @@ void QgsGCPListModel::updateModel()
   vector<QgsPoint> mapCoords, pixelCoords;
   mGCPList->createGCPVectors( mapCoords, pixelCoords );
 
-  // TODO: the parameters should probable be updated externally (by user interaction)
-  bTransformUpdated = mGeorefTransform->updateParametersFromGCPs( mapCoords, pixelCoords );
+
 
   //  // Setup table header
   QStringList itemLabels;
   QString unitType;
   QSettings s;
-  if ( s.value( "/Plugin-GeoReferencer/Config/ResidualUnits" ) == "mapUnits" )
+  bool mapUnitsPossible = false;
+
+  if ( mGeorefTransform )
+  {
+    bTransformUpdated = mGeorefTransform->updateParametersFromGCPs( mapCoords, pixelCoords );
+    mapUnitsPossible = mGeorefTransform->providesAccurateInverseTransformation();
+  }
+
+
+  if ( s.value( "/Plugin-GeoReferencer/Config/ResidualUnits" ) == "mapUnits" && mapUnitsPossible )
   {
     unitType = tr( "map units" );
   }

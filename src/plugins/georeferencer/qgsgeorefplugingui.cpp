@@ -1344,7 +1344,7 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
 
   QString residualUnits;
   QSettings s;
-  if ( s.value( "/Plugin-GeoReferencer/Config/ResidualUnits" ) == "mapUnits" )
+  if ( s.value( "/Plugin-GeoReferencer/Config/ResidualUnits" ) == "mapUnits" && mGeorefTransform.providesAccurateInverseTransformation() )
   {
     residualUnits = tr( "map units" );
   }
