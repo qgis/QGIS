@@ -472,7 +472,15 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
   if ( result != QDialog::Accepted ) return;
 
   QString myOutputFileNameQString = myQFileDialog->selectedFiles().first();
-  if ( myOutputFileNameQString == "" ) return;
+  if ( myOutputFileNameQString == "" )
+  {
+    return;
+  }
+
+  if ( !myOutputFileNameQString.endsWith( ".pdf", Qt::CaseInsensitive ) )
+  {
+    myOutputFileNameQString.append( ".pdf" );
+  }
 
   myQSettings.setValue( "/UI/lastSaveAsPdfFile", myOutputFileNameQString );
 
@@ -736,7 +744,15 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
   if ( result != QDialog::Accepted ) return;
 
   QString myOutputFileNameQString = myQFileDialog->selectedFiles().first();
-  if ( myOutputFileNameQString == "" ) return;
+  if ( myOutputFileNameQString == "" )
+  {
+    return;
+  }
+
+  if ( !myOutputFileNameQString.endsWith( ".svg", Qt::CaseInsensitive ) )
+  {
+    myOutputFileNameQString.append( ".svg" );
+  }
 
   myQSettings.setValue( "/UI/lastSaveAsSvgFile", myOutputFileNameQString );
 
