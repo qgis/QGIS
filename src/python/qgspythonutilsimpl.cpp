@@ -62,12 +62,13 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
   // expect that bindings are installed locally, so add the path to modules
   // also add path to plugins
 #ifdef Q_OS_WIN
+  runString( "oldhome=None\n" );
   runString( "if os.environ.has_key('HOME'): oldhome=os.environ['HOME']\n" );
   runString( "os.environ['HOME']=os.environ['USERPROFILE']" );
 #endif
   runString( "sys.path = [\"" + pythonPath() + "\", os.path.expanduser(\"~/.qgis/python\"), os.path.expanduser(\"~/.qgis/python/plugins\"), \"" + pluginsPath() + "\" ] + sys.path" );
 #ifdef Q_OS_WIN
-  runString( "if os.environ.has_key('HOME'): os.environ['HOME']=oldhome\n" );
+  runString( "if oldhome: os.environ['HOME']=oldhome\n" );
 #endif
 
   // import SIP
