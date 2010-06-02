@@ -70,7 +70,7 @@
       <item row="1" column="0">
        <widget class="QRadioButton" name="mMapUnitsButton">
         <property name="text">
-         <string>Map units</string>
+         <string>Use map units if possible</string>
         </property>
        </widget>
       </item>

@@ -150,6 +150,13 @@ void QgsGeorefTransform::selectTransformParametrisation( TransformParametrisatio
   }
 }
 
+bool QgsGeorefTransform::providesAccurateInverseTransformation() const
+{
+  return ( mTransformParametrisation == Linear \
+           || mTransformParametrisation == Helmert \
+           || mTransformParametrisation == PolynomialOrder1 );
+}
+
 bool QgsGeorefTransform::parametersInitialized() const
 {
   return mParametersInitialized;
