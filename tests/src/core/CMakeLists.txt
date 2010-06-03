@@ -7,8 +7,11 @@ SET (util_SRCS qgsrenderchecker.cpp)
 # the UI file won't be wrapped!
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR} 
   ${CMAKE_CURRENT_BINARY_DIR}
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/raster
+  ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/raster
+  ${CMAKE_SOURCE_DIR}/src/core/renderer
+  ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
   ${QT_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
@@ -113,3 +116,6 @@ ADD_QGIS_TEST(geometrytest testqgsgeometry.cpp)
 ADD_QGIS_TEST(coordinatereferencesystemtest testqgscoordinatereferencesystem.cpp)
 ADD_QGIS_TEST(pointtest testqgspoint.cpp)
 ADD_QGIS_TEST(searchstringtest testqgssearchstring.cpp)
+
+ADD_QGIS_TEST(renderingbenchmark rendering_benchmark.cpp)
+
