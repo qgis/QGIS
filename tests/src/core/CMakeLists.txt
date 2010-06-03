@@ -117,5 +117,3 @@ ADD_QGIS_TEST(coordinatereferencesystemtest testqgscoordinatereferencesystem.cpp
 ADD_QGIS_TEST(pointtest testqgspoint.cpp)
 ADD_QGIS_TEST(searchstringtest testqgssearchstring.cpp)
 
-ADD_QGIS_TEST(renderingbenchmark rendering_benchmark.cpp)
-
