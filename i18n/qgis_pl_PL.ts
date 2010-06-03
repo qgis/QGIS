@@ -1268,7 +1268,7 @@ Na pewno chcesz kontynuować?</translation>
     </message>
     <message>
         <source>Please specify output count field</source>
-        <translation>Podaj nazwę pola inkrementacji</translation>
+        <translation>Podaj nazwę pola do zapisania sumy punktów</translation>
     </message>
     <message>
         <source>point count field</source>
@@ -3830,7 +3830,7 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
         <location filename="../src/core/qgsgeometry.cpp" line="6365"/>
         <location filename="../src/core/qgsgeometry.cpp" line="6453"/>
         <source>stopping validation after more than 100 errors</source>
-        <translation>przerwij walidację po 100 błędach</translation>
+        <translation>przerwano walidację po 100 błędach</translation>
     </message>
     <message>
         <location filename="../src/core/qgsgeometry.cpp" line="6383"/>
@@ -3887,7 +3887,7 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="78"/>
         <source>trimming attribute name &apos;%1&apos; to ten significant characters produces duplicate column name.</source>
-        <translation>ogranicznie nazwy atrybutu &apos;%1&apos; do dziesięciu znaków znaczących powoduje duplikację nazw.</translation>
+        <translation>przycięcie nazwy atrybutu &apos;%1&apos; do dziesięciu znaków powoduje duplikację nazw.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="92"/>
@@ -3937,7 +3937,7 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
     <message>
         <location filename="../src/app/qgsspatialitesourceselect.cpp" line="303"/>
         <source>SQLite DB (*.sqlite *.db);;All files (*)</source>
-        <translation>SQLite DB (*.sqlite *.db);;Wszystkie pliki (*)</translation>
+        <translation>Bazy SQLite (*.sqlite *.db);;Wszystkie pliki (*)</translation>
     </message>
     <message>
         <location filename="../src/gui/qgstextannotationitem.cpp" line="22"/>
@@ -3947,7 +3947,7 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgsdisplacementplugin.cpp" line="26"/>
         <source>Displacement plugin</source>
-        <translation>Wtyczka przesunięcia</translation>
+        <translation>Wtyczka rozsunięcia punktów</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgsdisplacementplugin.cpp" line="27"/>
@@ -3957,7 +3957,7 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgsdisplacementplugin.cpp" line="45"/>
         <source>point Displacement</source>
-        <translation>przesunięcie punktu</translation>
+        <translation>Rozsunięcie punktów</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="58"/>
@@ -4047,7 +4047,7 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
     <message>
         <location filename="../src/core/gps/qextserialport/qextserialport.cpp" line="227"/>
         <source>Caught a non-blocked signal (POSIX)</source>
-        <translation>Przechwycono nie blokujący sygnał (POSIX)</translation>
+        <translation>Przechwycono nieblokujący sygnał (POSIX)</translation>
     </message>
     <message>
         <location filename="../src/core/gps/qextserialport/qextserialport.cpp" line="228"/>
@@ -4067,12 +4067,12 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
     <message>
         <location filename="../src/core/gps/qextserialport/qextserialport.cpp" line="231"/>
         <source>The port detected a framing error (usually caused by incorrect baud rate settings)</source>
-        <translation>Port zwrócił błąd ramki (zwykle spowodowane błędnym ustawieniem baud rate)</translation>
+        <translation>Port zwrócił błąd ramki (zwykle spowodowane błędnym ustawieniem prędkości transmisji)</translation>
     </message>
     <message>
         <location filename="../src/core/gps/qextserialport/qextserialport.cpp" line="232"/>
         <source>There was an I/O error while communicating with the port</source>
-        <translation>Błąd I/O przy łączeniu z portem</translation>
+        <translation>Błąd wejścia/wyjścia przy łączeniu z portem</translation>
     </message>
     <message>
         <location filename="../src/core/gps/qextserialport/qextserialport.cpp" line="233"/>
@@ -4411,12 +4411,12 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
     <message>
         <location filename="../src/app/qgisapp.cpp" line="950"/>
         <source>Text Annotation</source>
-        <translation>Tekst opisu</translation>
+        <translation>Opis tekstowy</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="954"/>
         <source>Form annotation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Opis w formularzu</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="958"/>
@@ -9105,7 +9105,7 @@ Błąd brzmi:%2</translation>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="76"/>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="128"/>
         <source>XML file (*.xml);; All files (*)</source>
-        <translation>XML file (*.xml);; Wszystkie pliki (*)</translation>
+        <translation>Pliki XML (*.xml);; Wszystkie pliki (*)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="90"/>
@@ -9415,7 +9415,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgscredentialdialog.ui" line="14"/>
         <source>Enter Credentials</source>
-        <translation>Podaj zasługi</translation>
+        <translation>Podaj dane uwierzytelniające</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscredentialdialog.ui" line="23"/>
@@ -18540,7 +18540,7 @@ Rozszerzona informacja o błędzie:
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="248"/>
         <source>Use estimated table metadata</source>
-        <translation>Użyj tabeli szacunkowych metadanych</translation>
+        <translation>Użyj szacunkowych metadanych tabeli</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="106"/>
@@ -23097,7 +23097,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="229"/>
         <source>Results (click to highlight on map)</source>
-        <translation>Wyniki (kliknij aby wybrać na mapie)</translation>
+        <translation>Wyniki (kliknij, aby wybrać na mapie)</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="253"/>
@@ -23676,22 +23676,22 @@ Czy chcesz nadpisać relację [%2]?</translation>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="81"/>
         <source>Marker symbol (%1)</source>
-        <translation>Symbol znacznika (%1)</translation>
+        <translation>Symbole znaczników (%1)</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="82"/>
         <source>Line symbol (%1)</source>
-        <translation>Symbol linii (%1)</translation>
+        <translation>Symbole linii (%1)</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="83"/>
         <source>Fill symbol (%1)</source>
-        <translation>Wymbol wypełnienia (%1)</translation>
+        <translation>Symbole wypełnienia (%1)</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="85"/>
         <source>Color ramp (%1)</source>
-        <translation>Paleta kolorów (%1)</translation>
+        <translation>Palety kolorów (%1)</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="210"/>
@@ -24032,7 +24032,7 @@ Czy chcesz nadpisać relację [%2]?</translation>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="58"/>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="37"/>
         <source>Linear</source>
-        <translation>liniowa</translation>
+        <translation>Liniowa</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="38"/>
@@ -24298,7 +24298,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
         <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="163"/>
         <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="167"/>
         <source>Offset of the stop</source>
-        <translation>Odległość do końca</translation>
+        <translation type="unfinished">Położenie punktu pośredniego</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="131"/>
@@ -24306,7 +24306,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
         <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="164"/>
         <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="168"/>
         <source>Please enter offset in percents (%) of the new stop</source>
-        <translation>Podaj odległość w procentach (%) do nowego końca</translation>
+        <translation type="unfinished">Podaj położenie (w procentach) nowego punktu pośredniego</translation>
     </message>
 </context>
 <context>
@@ -24356,7 +24356,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="106"/>
         <source>Offset</source>
-        <translation>Odległość</translation>
+        <translation type="unfinished">Położenie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="117"/>
