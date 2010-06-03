@@ -1411,16 +1411,21 @@ void QgsComposerMap::drawCanvasItems( QPainter* painter, const QStyleOptionGraph
   }
 
   QList<QGraphicsItem*> itemList = mMapCanvas->items();
-
-  QList<QGraphicsItem*>::iterator itemIt = itemList.begin();
-  for ( ; itemIt != itemList.end(); ++itemIt )
+  if ( itemList.size() < 1 )
   {
+    return;
+  }
+
+  QGraphicsItem* currentItem = 0;
+  for ( int i = itemList.size() - 1; i >= 0; --i )
+  {
+    currentItem = itemList.at( i );
     //don't draw mapcanvasmap (has z value -10)
-    if ( !( *itemIt ) || ( *itemIt )->zValue() == -10 )
+    if ( !currentItem || currentItem->zValue() == -10 )
     {
       continue;
     }
-    drawCanvasItem( *itemIt, painter, itemStyle );
+    drawCanvasItem( currentItem, painter, itemStyle );
   }
 }
 
