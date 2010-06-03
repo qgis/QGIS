@@ -52,6 +52,14 @@ void QgsSimpleFillSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
 {
   mColor.setAlphaF( context.alpha() );
   mBrush = QBrush( mColor, mBrushStyle );
+
+  // scale brush content for printout
+  double rasterScaleFactor = context.renderContext().rasterScaleFactor();
+  if ( rasterScaleFactor != 1.0 )
+  {
+    mBrush.setMatrix( QMatrix().scale( 1.0 / rasterScaleFactor, 1.0 / rasterScaleFactor ) );
+  }
+
   QColor selColor = context.selectionColor();
   // selColor.setAlphaF( context.alpha() );
   mSelBrush = QBrush( selColor );
