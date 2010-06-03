@@ -1063,7 +1063,7 @@ void QgisApp::createActions()
 
   mActionLayerSubsetString = new QAction( tr( "Query..." ), this );
   shortcuts->registerAction( mActionLayerSubsetString );
-  mActionLayerProperties->setStatusTip( tr( "Set subset query of the current layer" ) );
+  mActionLayerSubsetString->setStatusTip( tr( "Set subset query of the current layer" ) );
   connect( mActionLayerSubsetString, SIGNAL( triggered() ), this, SLOT( layerSubsetString() ) );
   mActionLayerSubsetString->setEnabled( false );
 
