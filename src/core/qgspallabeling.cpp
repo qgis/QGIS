@@ -197,7 +197,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   dist = layer->customProperty( "labeling/dist" ).toDouble();
   scaleMin = layer->customProperty( "labeling/scaleMin" ).toInt();
   scaleMax = layer->customProperty( "labeling/scaleMax" ).toInt();
-  bufferSize = layer->customProperty( "labeling/bufferSize" ).toInt();
+  bufferSize = layer->customProperty( "labeling/bufferSize" ).toDouble();
   bufferColor = _readColor( layer, "labeling/bufferColor" );
   labelPerPart = layer->customProperty( "labeling/labelPerPart" ).toBool();
   mergeLines = layer->customProperty( "labeling/mergeLines" ).toBool();
