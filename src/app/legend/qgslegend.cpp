@@ -356,20 +356,23 @@ void QgsLegend::mouseReleaseEvent( QMouseEvent * e )
 
   mMousePressedFlag = false;
 
-  if ( !mItemBeingMoved )
+  // move only if we have a valid item and drop place
+  // otherwise reset the stored values
+  if ( !mItemBeingMoved || !mDropTarget )
   {
+    mItemBeingMoved = NULL;
+    mDropTarget = NULL;
     return;
   }
 
   hideLine();
 
-  QTreeWidgetItem *destItem = mDropTarget;
-
   QgsLegendItem* origin = dynamic_cast<QgsLegendItem *>( mItemBeingMoved );
   mItemBeingMoved = NULL;
   QModelIndex oldIndex = indexFromItem( origin );
 
-  QgsLegendItem* dest = dynamic_cast<QgsLegendItem *>( destItem );
+  QgsLegendItem* dest = dynamic_cast<QgsLegendItem *>( mDropTarget );
+  mDropTarget = NULL;
 
   // no change?
   if ( !dest || !origin || ( dest == origin ) )
