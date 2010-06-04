@@ -1,6 +1,6 @@
 // QGIS Xcode project common build settings
 
-CURRENT_PROJECT_VERSION = 2.5.1
+CURRENT_PROJECT_VERSION = 2.6.0
 
 // SDKSYS must be set to valid value
 SDKSYS = leo // tig (Tiger), leo (Leopard), snow (Snow Leopard)
@@ -15,7 +15,7 @@ ARCHS_P = $(ARCHS_P_$(SDKSYS))
 //////////////////////////////////////////////////////////////////////
 
 // major-minor-patch must be integers for Mac OS X
-QGIS_RELEASE_NAME = Trunk
+QGIS_RELEASE_NAME = Tethys
 QGIS_VERSION_MAJOR = 1
 QGIS_VERSION_MINOR = 5
 QGIS_VERSION_PATCH = 0
