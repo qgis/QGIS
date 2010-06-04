@@ -154,14 +154,19 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
         //
         // We don't know anything about a text based field other
         // than its name. All fields are assumed to be text
-        for ( QStringList::Iterator it = fieldList.begin(); it != fieldList.end(); ++it )
+        foreach( QString field, fieldList )
         {
-          // add item to both drop-downs (X field and Y field)
-          if (( *it ).length() > 0 )
-          {
-            cmbXField->addItem( *it );
-            cmbYField->addItem( *it );
-          }
+          if (( field.left( 1 ) == "'" || field.left( 1 ) == "\"" ) &&
+              field.left( 1 ) == field.right( 1 ) )
+            // eat quotes
+            field = field.mid( 1, field.length() - 2 );
+
+          if ( field.length() == 0 )
+            // skip empty field names
+            continue;
+
+          cmbXField->addItem( field );
+          cmbYField->addItem( field );
         }
         // Have a go at setting the selected items in the X and Y
         // combo boxes to something sensible.
