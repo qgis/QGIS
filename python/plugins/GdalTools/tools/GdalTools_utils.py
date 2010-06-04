@@ -617,14 +617,19 @@ class Version:
       vers = [0, 0, 0]
 
       nums = str(string).split(".")
+      
       if len(nums) > 0:
-        vers[0] = int(nums[0])
+        n = QString(nums[0]).remove( QRegExp( "[^0-9].*$" ) )
+        if not n.isEmpty():
+          vers[0] = int(n)
       if len(nums) > 1:
-        vers[1] = int(nums[1])
+        n = QString(nums[1]).remove( QRegExp( "[^0-9].*$" ) )
+        if not n.isEmpty():
+          vers[1] = int(n)
       if len(nums) > 2:
         n = QString(nums[2]).remove( QRegExp( "[^0-9].*$" ) )
-		if not n.isEmpty():
-			vers[2] = int(n)
+        if not n.isEmpty():
+          vers[2] = int(n)
 
       return (vers[0], vers[1], vers[2])
 
