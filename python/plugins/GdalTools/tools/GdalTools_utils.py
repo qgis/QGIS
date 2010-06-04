@@ -622,13 +622,9 @@ class Version:
       if len(nums) > 1:
         vers[1] = int(nums[1])
       if len(nums) > 2:
-        pos = nums[2].find( 'dev' )
-        if pos != -1:
-          n = nums[2][:pos]
-          vers[2] = int(n)
-        else:
-          vers[2] = int(nums[2])
-
+        n = QString(nums[2]).remove( QRegExp( "[^0-9].*$" ) )
+		if not n.isEmpty():
+			vers[2] = int(n)
 
       return (vers[0], vers[1], vers[2])
 
