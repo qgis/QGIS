@@ -377,6 +377,14 @@ void QgsLegend::mouseReleaseEvent( QMouseEvent * e )
     checkLayerOrderUpdate();
     return;
   }
+  
+  // make sure you are able to drag the item
+  QgsLegendItem::DRAG_ACTION action = dest->accept( origin );  
+  if ( action == QgsLegendItem::NO_ACTION )
+  {
+    QgsDebugMsg( "Drag NO_ACTION" );
+    return;
+  }
 
   {
     // Do the actual move here.
