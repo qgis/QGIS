@@ -1,0 +1,2 @@
+FILE(GLOB ICON_FILES *.png)
+INSTALL(FILES ${ICON_FILES} DESTINATION ${QGIS_DATA_DIR}/python/plugins/GdalTools/icons)

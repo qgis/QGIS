@@ -1,1 +1,1 @@
-SUBDIRS(plugin_installer mapserver_export fTools osm)
+SUBDIRS(plugin_installer mapserver_export fTools GdalTools osm)
