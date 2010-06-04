@@ -1384,17 +1384,17 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="20"/>
         <source>Symbol preview</source>
-        <translation type="unfinished"></translation>
+        <translation>シンボルプレビュー</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="31"/>
         <source>Symbol layer type</source>
-        <translation type="unfinished"></translation>
+        <translation>シンボルレイヤタイプ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="100"/>
         <source>Symbol layers</source>
-        <translation type="unfinished"></translation>
+        <translation>シンボルレイヤ群</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="125"/>
@@ -1475,6 +1475,1184 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     <message>
         <source>Show label candidates (for debugging)</source>
         <translation type="obsolete">候補ラベル表示（デバッグ用）</translation>
+    </message>
+</context>
+<context>
+    <name>GdalTools</name>
+    <message>
+        <source>Quantum GIS version detected: </source>
+        <translation type="unfinished">Quantum　GISのバージョンが検出されました: </translation>
+    </message>
+    <message>
+        <source>This version of Gdal Tools requires at least QGIS version 1.0.0
+Plugin will not be enabled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Build Virtual Raster (catalog)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Builds a VRT from a list of datasets</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Contour</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Builds vector contour lines from a DEM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rasterize</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Burns vector geometries into a raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polygonize</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Produces a polygon feature layer from a raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Merge</source>
+        <translation type="unfinished">結合</translation>
+    </message>
+    <message>
+        <source>Build a quick mosaic from a set of images</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sieve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Removes small raster polygons</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Proximity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Produces a raster proximity map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Near black</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convert nearly black/white borders to exact value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warp an image into a new coordinate system</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grid</source>
+        <translation type="unfinished">グリッド</translation>
+    </message>
+    <message>
+        <source>Create raster from the scattered data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Translate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Converts raster data between different formats</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lists information about raster dataset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Assign projection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add projection info to the raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Build overviews</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Builds or rebuilds overview images</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clipper</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>RGB to PCT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convert a 24bit RGB image to 8bit paletted</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PCT to RGB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convert an 8bit paletted image to 24bit RGB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GdalTools settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Various settings for Gdal Tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>About GdalTools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Displays information about Gdal Tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Input directory:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Output directory:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The process failed to start. Either the invoked program is missing, or you may have insufficient permissions to invoke the program.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The process crashed some time after starting successfully.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>An unknown error occurred.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The selected file is not a supported OGR format</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>GdalToolsAboutDialog</name>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/dialogAbout.ui" line="14"/>
+        <source>About Gdal Tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/dialogAbout.ui" line="27"/>
+        <source>GDAL Tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/dialogAbout.ui" line="40"/>
+        <source>Version x.x-xxxxxx</source>
+        <translation type="unfinished">バージョン x.x-xxxxxx</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/dialogAbout.ui" line="99"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/dialogAbout.ui" line="115"/>
+        <source>Web</source>
+        <translation type="unfinished">ウェッブ</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/dialogAbout.ui" line="122"/>
+        <source>Close</source>
+        <translation type="unfinished">閉じる</translation>
+    </message>
+    <message>
+        <source>GDAL Tools (AKA Raster Tools) is a 
+plugin for QuantumGIS aiming at making life simpler for users 
+of GDAL Utilities, providing a simplified graphical interface 
+for most commonly used programs.
+
+The plugin is being developed by Faunalia (http://faunalia.it) 
+with help from GIS-lab (http://gis-lab.info).
+Icons by Robert Szczepanek.
+Sponsorship by Silvio Grosso was much appreciated.
+
+Please help us by testing the tools, reporting eventual issues, 
+improving the code, or providing financial support.
+
+DEVELOPERS:
+  Faunalia
+    Paolo Cavallini
+    Giuseppe Sucameli
+    Lorenzo Masini
+  GIS-lab
+    Maxim Dubinin
+    Alexander Bruy
+icons by Robert Szepanek
+
+HOMEPAGE:
+http://trac.faunalia.it/GdalTools-plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>GdalToolsBaseBatchWidget</name>
+    <message>
+        <source>Finished</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Operation completed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation type="unfinished">警告</translation>
+    </message>
+    <message>
+        <source>The following files were not created: 
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>GdalToolsBaseDialog</name>
+    <message>
+        <source>Warning</source>
+        <translation type="unfinished">警告</translation>
+    </message>
+    <message>
+        <source>The command is still running. 
+Do you want terminate it anyway?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid parameters.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>GdalToolsBasePluginWidget</name>
+    <message>
+        <source>Warning</source>
+        <translation type="unfinished">警告</translation>
+    </message>
+    <message>
+        <source>No output file created.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Finished</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Elaboration completed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 not created.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>GdalToolsDialog</name>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/dialogBase.ui" line="14"/>
+        <source>Dialog</source>
+        <translation type="unfinished">ダイアログ</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/dialogBase.ui" line="27"/>
+        <source>&amp;Load into canvas when finished</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convert paletted image to RGB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Band to convert:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input file for convert</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the raster file to save the results to</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input directory with files to Warp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the output directory to save the results to</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input file for Translate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input direcory with files to Translate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input file for Near Black</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No active raster layers. You must add almost one raster layer to continue.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input direcory with files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input file for Warp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the files for VRT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select where to save the VRT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>VRT (*.vrt)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input file for Sieve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input file for Polygonize</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select where to save the Polygonize output</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the files to Merge</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select where to save the Merge output</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy all</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the file to analyse</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input file for Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input file for Contour</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select where to save the Countour output</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input file for Rasterize</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input file for Proximity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation type="unfinished">警告</translation>
+    </message>
+    <message>
+        <source>Warning: CRS information for all raster in subfolders will be rewritten. Are you sure?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input directory with files to Assign projection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Assign projection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This raster already found in map canvas</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>GdalToolsOptionsTable</name>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/optionsTable.ui" line="39"/>
+        <source>Name</source>
+        <translation type="unfinished">名称</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/optionsTable.ui" line="44"/>
+        <source>Value</source>
+        <translation type="unfinished">値</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/optionsTable.ui" line="54"/>
+        <source>Add</source>
+        <translation type="unfinished">追加</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/optionsTable.ui" line="61"/>
+        <source>Remove</source>
+        <translation type="unfinished">削除</translation>
+    </message>
+</context>
+<context>
+    <name>GdalToolsSettingsDialog</name>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="14"/>
+        <source>Gdal Tools settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="20"/>
+        <source>Path to the GDAL binaries</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="32"/>
+        <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="63"/>
+        <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="94"/>
+        <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="125"/>
+        <source>Browse</source>
+        <translation type="unfinished">ブラウズ</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="44"/>
+        <source>GDAL data path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="75"/>
+        <source>GDAL driver path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="106"/>
+        <source>GDAL pymod path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select directory with GDAL executables</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>GdalToolsWidget</name>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="20"/>
+        <source>Build Virtual Raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="34"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="31"/>
+        <source>&amp;Input files:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="56"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="87"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="53"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="59"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="90"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetConvert.ui" line="63"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetConvert.ui" line="87"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="56"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="97"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetInfo.ui" line="54"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="53"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="84"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="59"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="90"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="63"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="56"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="87"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="64"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="85"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="56"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="80"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="56"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="97"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="56"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="87"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="66"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="97"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="125"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="63"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="94"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="122"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="150"/>
+        <source>Select...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="65"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="31"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetConvert.ui" line="72"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="75"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="62"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="68"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="65"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="65"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="75"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="72"/>
+        <source>&amp;Output file:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="106"/>
+        <source>Highest</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="111"/>
+        <source>Average</source>
+        <translation type="unfinished">平均</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="116"/>
+        <source>Lowest</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="124"/>
+        <source>&amp;Resolution:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="131"/>
+        <source>&amp;Source No Data:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="20"/>
+        <source>Clipper</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="62"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="93"/>
+        <source>&amp;No data value:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="78"/>
+        <source>Re-Enable Clipping</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="87"/>
+        <source>Select the extent by drag &amp; drop on canvas</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="94"/>
+        <source>or change the extent coordinates:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="105"/>
+        <source>1:</source>
+        <translation type="unfinished">1:</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="116"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="181"/>
+        <source>x</source>
+        <translation type="unfinished">x</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="133"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="198"/>
+        <source>y</source>
+        <translation type="unfinished">y</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="170"/>
+        <source>2:</source>
+        <translation type="unfinished">2:</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="221"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="126"/>
+        <source>Grab pseudocolor table from the first image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="20"/>
+        <source>Contour</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="31"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="28"/>
+        <source>&amp;Input file (raster):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="68"/>
+        <source>&amp;Output directory for contour lines (shapefile):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="101"/>
+        <source>&amp;Attribute name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="131"/>
+        <source>If not provided, no elevation attribute is attached.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="142"/>
+        <source>ELEV</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="149"/>
+        <source>I&amp;nterval between contour lines:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetConvert.ui" line="20"/>
+        <source>Convert RGB image to paletted</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetConvert.ui" line="26"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="26"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="26"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="26"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="26"/>
+        <source>Batch mode (for processing whole directory)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetConvert.ui" line="35"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="28"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetInfo.ui" line="28"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="31"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="35"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="42"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="28"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="28"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="35"/>
+        <source>&amp;Input file:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetConvert.ui" line="96"/>
+        <source>Number of colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="20"/>
+        <source>Grid</source>
+        <translation type="unfinished">グリッド</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="65"/>
+        <source>&amp;Z Field:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="106"/>
+        <source>&amp;Algorithm:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="114"/>
+        <source>Inverse distance to a power</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="119"/>
+        <source>Moving average</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="124"/>
+        <source>Nearest neighbor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="129"/>
+        <source>Data metrics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="167"/>
+        <source>Power:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="181"/>
+        <source>Smoothing:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="198"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="298"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="384"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="482"/>
+        <source>Radius1:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="215"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="315"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="401"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="499"/>
+        <source>Radius2:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="232"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="332"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="418"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="516"/>
+        <source>Angle:</source>
+        <translation type="unfinished">角度</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="249"/>
+        <source>Max points:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="263"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="349"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="533"/>
+        <source>Min points:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="277"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="363"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="435"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="547"/>
+        <source>No data:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="456"/>
+        <source>Metrics:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="464"/>
+        <source>Minimum</source>
+        <translation type="unfinished">最小値</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="469"/>
+        <source>Maximum</source>
+        <translation type="unfinished">最大値</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="474"/>
+        <source>Range</source>
+        <translation type="unfinished">範囲</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetInfo.ui" line="20"/>
+        <source>Info</source>
+        <translation type="unfinished">情報</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetInfo.ui" line="63"/>
+        <source>Raster info</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetInfo.ui" line="83"/>
+        <source>Suppress GCP printing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetInfo.ui" line="90"/>
+        <source>Suppress metadata printing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="20"/>
+        <source>Merge</source>
+        <translation type="unfinished">結合</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="109"/>
+        <source>Layer stack</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="119"/>
+        <source>Use intersected extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="133"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="153"/>
+        <source>&amp;Creation Options:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="20"/>
+        <source>Near Black</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="106"/>
+        <source>How &amp;far from black (or white):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="115"/>
+        <source>Search for nearly &amp;white (255) pixels instead of black ones</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="20"/>
+        <source>Add overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="72"/>
+        <source>Resampling method</source>
+        <translation type="unfinished">リサンプリング方法</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="80"/>
+        <source>nearest</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="85"/>
+        <source>average</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="90"/>
+        <source>gauss</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="95"/>
+        <source>average_mp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="100"/>
+        <source>average_magphase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="105"/>
+        <source>mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="113"/>
+        <source>Levels (space delimited)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="125"/>
+        <source>Open in read-only mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="20"/>
+        <source>Polygonize</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="65"/>
+        <source>&amp;Output file for polygons (shapefile):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="96"/>
+        <source>DN</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="103"/>
+        <source>&amp;Field name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="20"/>
+        <source>Assign projection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="33"/>
+        <source>WARNING: current projection definition will be cleared</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="73"/>
+        <source>Desired SRS:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="94"/>
+        <source>Output will be:
+- new GeoTiff if input file is not GeoTiff
+- overwritten if input is GeoTiff</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="106"/>
+        <source>Recurse subdirectories</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="20"/>
+        <source>Proximity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="89"/>
+        <source>&amp;Values:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="121"/>
+        <source>&amp;Dist units:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="132"/>
+        <source>GEO</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="137"/>
+        <source>PIXEL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="145"/>
+        <source>&amp;Max dist:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="159"/>
+        <source>&amp;No data:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="173"/>
+        <source>&amp;Fixed buf val:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="20"/>
+        <source>Rasterize</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="28"/>
+        <source>&amp;Input file (shapefile):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="75"/>
+        <source>&amp;Output file for rasterized vectors (raster, must exists):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="106"/>
+        <source>&amp;Attribute field:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="20"/>
+        <source>Sieve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="104"/>
+        <source>4</source>
+        <translation type="unfinished">4</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="109"/>
+        <source>8</source>
+        <translation type="unfinished">8</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="117"/>
+        <source>&amp;Threshold:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="124"/>
+        <source>&amp;Pixel connections:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="20"/>
+        <source>Translate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="38"/>
+        <source>&amp;Input Layer:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="106"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="131"/>
+        <source>&amp;Target SRS:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="144"/>
+        <source>Output format</source>
+        <translation type="unfinished">出力形式</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="20"/>
+        <source>Warp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="103"/>
+        <source>&amp;Source SRS:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="159"/>
+        <source>&amp;Resampling method:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="167"/>
+        <source>Near</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="172"/>
+        <source>Bilinear</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="177"/>
+        <source>Cubic</source>
+        <translation type="unfinished">キュービック</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="182"/>
+        <source>Cubic spline</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="187"/>
+        <source>Lanczos</source>
+        <translation type="unfinished">ランチョシュ</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="195"/>
+        <source>&amp;Memory used for caching:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="202"/>
+        <source>MB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="215"/>
+        <source>Set no data value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="227"/>
+        <source>Resize</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="242"/>
+        <source>Image width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="256"/>
+        <source>Image height</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="276"/>
+        <source>Use m&amp;ultithreaded warping implementation</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3004,7 +4182,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <location filename="../src/app/qgspluginregistry.cpp" line="444"/>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="170"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="171"/>
         <source>Python error</source>
         <translation>Pythonのエラー</translation>
     </message>
@@ -3441,50 +4619,50 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>取り消し</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="75"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="76"/>
         <source>Couldn&apos;t load SIP module.</source>
         <translation>SIPモジュールをロードできませんでした</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="75"/>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="83"/>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="90"/>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="98"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="76"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="84"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="91"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="99"/>
         <source>Python support will be disabled.</source>
         <translation>Pythonのサポートが無効になります</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="83"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="84"/>
         <source>Couldn&apos;t load PyQt4.</source>
         <translation>PyQt4をロードできませんでした。</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="90"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="91"/>
         <source>Couldn&apos;t load PyQGIS.</source>
         <translation>PyQGISをロードできませんでした。</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="98"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="99"/>
         <source>Couldn&apos;t load QGIS utils.</source>
         <translation>QGISユーティリティをロードできませんでした。</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="164"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="165"/>
         <source>Python version:</source>
         <translation>Pythonバージョン:</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="165"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="166"/>
         <source>QGIS version:</source>
         <translation>QGISバージョン:</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="166"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="167"/>
         <source>Python path:</source>
         <translation>Python path:</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="153"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="154"/>
         <source>An error occured during execution of following code:</source>
         <translation>以下のコード実行中にエラーが発生しました</translation>
     </message>
@@ -5226,7 +6404,7 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="965"/>
         <source>Labeling</source>
-        <translation type="unfinished">ラベリング</translation>
+        <translation>ラベリング</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="982"/>
@@ -7185,13 +8363,13 @@ Error was:%2</source>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="53"/>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="141"/>
         <source>Value</source>
-        <translation type="unfinished">値</translation>
+        <translation>値</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="53"/>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="141"/>
         <source>Label</source>
-        <translation type="unfinished">ラベル</translation>
+        <translation>ラベル</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="273"/>
@@ -7212,13 +8390,14 @@ Error was:%2</source>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="288"/>
         <source>Confirm Delete</source>
-        <translation type="unfinished">削除を確認</translation>
+        <translation>削除を確認</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="289"/>
         <source>The classification field was changed from &apos;%1&apos; to &apos;%2&apos;.
 Should the existing classes be deleted before classification?</source>
-        <translation type="unfinished">分類フィールドが&apos;%1&apos;から&apos;%2&apos;に変更されました。以前の分類は分類作業の前に削除しますか？</translation>
+        <translation>分類フィールドが&apos;%1&apos;から&apos;%2&apos;に変更されました。
+以前の分類は分類作業の前に削除しますか?</translation>
     </message>
     <message>
         <source>Column:</source>
@@ -7240,19 +8419,19 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="19"/>
         <source>Column</source>
-        <translation type="unfinished">カラム</translation>
+        <translation>カラム</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="56"/>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="53"/>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="141"/>
         <source>Symbol</source>
-        <translation type="unfinished">シンボル</translation>
+        <translation>シンボル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="76"/>
         <source>Color ramp</source>
-        <translation type="unfinished"></translation>
+        <translation>色階調</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="113"/>
@@ -7262,7 +8441,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="120"/>
         <source>Add</source>
-        <translation type="unfinished">追加</translation>
+        <translation>追加</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="127"/>
@@ -7283,7 +8462,7 @@ Should the existing classes be deleted before classification?</source>
 <context>
     <name>QgsComposer</name>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="580"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="588"/>
         <source>Big image</source>
         <translation>巨大イメージ</translation>
     </message>
@@ -7293,18 +8472,18 @@ Should the existing classes be deleted before classification?</source>
         <translation>地図1</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="709"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="717"/>
         <source>SVG warning</source>
         <translation>SVG警告</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="710"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1443"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="718"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1459"/>
         <source>Don&apos;t show this message again</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="729"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="737"/>
         <source>SVG Format</source>
         <translation>SVG形式</translation>
     </message>
@@ -7334,89 +8513,89 @@ Should the existing classes be deleted before classification?</source>
         <translation>PDF形式</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="633"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="641"/>
         <source>Choose a file name to save the map image as</source>
         <translation>地図イメージとして保存するファイル名を選択してください</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="464"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="728"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="736"/>
         <source>Choose a file name to save the map as</source>
         <translation>地図を保存するファイル名を指定して下さい。</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1114"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1130"/>
         <source>Composer</source>
         <translation>コンポーザ</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1441"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1457"/>
         <source>Project contains WMS layers</source>
         <translation>プロジェクトにはWMSレイヤが含まれます。</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1442"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1458"/>
         <source>Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed</source>
         <translation>いくつかのWMSサーバー（たとえばUMN　mapserver)ではWIDTHとHEIGHTパラメータの制限があります。このようなサーバーのレイヤを印刷する場合この制限を超えることがあります。この場合、このWMSレイヤは印刷されません。</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="714"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="722"/>
         <source>&lt;p&gt;The SVG export function in Qgis has several problems due to bugs and deficiencies in the </source>
         <translation>&lt;p&gt;QgisのSVG出力機能はQt4のSVGコードのバグや欠陥に起因する多くの問題があります。</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="609"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="617"/>
         <source>%1 format (*.%2 *.%3)</source>
         <translation>%1形式 (*.%2 *.%3)</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="716"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="724"/>
         <source>Qt4 svg code. In particular, there are problems with layers not being clipped to the map bounding box.&lt;/p&gt;</source>
         <translation>Qt4のsvgコードでは特に地図のバウンディングボックスでレイヤがクリップされない問題があります&lt;/P&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="581"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="589"/>
         <source>To create image %1 x %2 requires circa %3 MB of memory</source>
         <translation>%1 x %2のイメージを作成するためにはおよそ%3MBのメモリが必要です</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="719"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="727"/>
         <source>If you require a vector-based output file from Qgis it is suggested that you try printing to PostScript if the SVG output is not satisfactory.&lt;/p&gt;</source>
         <translation>もしあなたがQgisでベクタ形式の出力ファイルが必要ならばPostScriptで出力することを推奨します。SVGで出力する場合は満足できるものができません&lt;/P&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="847"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="863"/>
         <source>save template</source>
         <translation>テンプレートの保存</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="873"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="889"/>
         <source>Save error</source>
         <translation>保存エラー</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="873"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="889"/>
         <source>Error, could not save file</source>
         <translation>エラー、ファイルの保存ができませんでした</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="881"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="897"/>
         <source>Load template</source>
         <translation>テンプレートのロード</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="894"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="901"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="910"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="917"/>
         <source>Read error</source>
         <translation>読み込みエラー</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="894"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="910"/>
         <source>Error, could not read file</source>
         <translation>エラー,ファイルを読めませんでした</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="901"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="917"/>
         <source>Content of template file is not valid</source>
         <translation>テンプレートファイルの内容が不正です</translation>
     </message>
@@ -9761,17 +10940,17 @@ p, li { white-space: pre-wrap; }
         <translation>レイヤを地図に追加する前にレイヤ名を入力してください</translation>
     </message>
     <message>
-        <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugingui.cpp" line="190"/>
+        <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugingui.cpp" line="195"/>
         <source>No delimiter</source>
         <translation>デリミタがありません</translation>
     </message>
     <message>
-        <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugingui.cpp" line="190"/>
+        <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugingui.cpp" line="195"/>
         <source>Please specify a delimiter prior to parsing the file</source>
         <translation>ファイルをパースする前にデリミタを指定してください</translation>
     </message>
     <message>
-        <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugingui.cpp" line="223"/>
+        <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugingui.cpp" line="228"/>
         <source>Choose a delimited text file to open</source>
         <translation>デリミティッドテキストファイルを開く</translation>
     </message>
@@ -10114,67 +11293,67 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished">ダイアログ</translation>
+        <translation>ダイアログ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="22"/>
         <source>Search method</source>
-        <translation type="unfinished">検索方法</translation>
+        <translation>検索方法</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="30"/>
         <source>Chain (fast)</source>
-        <translation type="unfinished">チェイン(高速)</translation>
+        <translation>チェイン(高速)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="35"/>
         <source>Popmusic Tabu</source>
-        <translation type="unfinished">ポップミュージックタブ</translation>
+        <translation>ポップミュージックタブ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="40"/>
         <source>Popmusic Chain</source>
-        <translation type="unfinished">ポップミュージックチェイン</translation>
+        <translation>ポップミュージックチェイン</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="45"/>
         <source>Popmusic Tabu Chain</source>
-        <translation type="unfinished">ポップミュージックタブチェイン</translation>
+        <translation>ポップミュージックタブチェイン</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="50"/>
         <source>FALP (fastest)</source>
-        <translation type="unfinished">FALP (最も速い)</translation>
+        <translation>FALP (最も速い)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="78"/>
         <source>Number of candidates</source>
-        <translation type="unfinished">候補の数</translation>
+        <translation>候補の数</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="84"/>
         <source>Point</source>
-        <translation type="unfinished">点</translation>
+        <translation>点</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="104"/>
         <source>Line</source>
-        <translation type="unfinished">ライン</translation>
+        <translation>ライン</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="124"/>
         <source>Polygon</source>
-        <translation type="unfinished">ポリゴン</translation>
+        <translation>ポリゴン</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="178"/>
         <source>Show all labels (i.e. including colliding labels)</source>
-        <translation type="unfinished">全ラベル表示（例えば一致しないラベルも含む）</translation>
+        <translation>全ラベル表示（例えば一致しないラベルも含む）</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="185"/>
         <source>Show label candidates (for debugging)</source>
-        <translation type="unfinished">候補ラベル表示（デバッグ用）</translation>
+        <translation>候補ラベル表示（デバッグ用）</translation>
     </message>
 </context>
 <context>
@@ -10407,14 +11586,14 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsGCPListModel</name>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgcplistmodel.cpp" line="104"/>
-        <location filename="../src/plugins/georeferencer/qgsgcplistmodel.cpp" line="156"/>
+        <location filename="../src/plugins/georeferencer/qgsgcplistmodel.cpp" line="112"/>
+        <location filename="../src/plugins/georeferencer/qgsgcplistmodel.cpp" line="164"/>
         <source>map units</source>
         <translation>地図上の単位</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgcplistmodel.cpp" line="108"/>
-        <location filename="../src/plugins/georeferencer/qgsgcplistmodel.cpp" line="144"/>
+        <location filename="../src/plugins/georeferencer/qgsgcplistmodel.cpp" line="116"/>
+        <location filename="../src/plugins/georeferencer/qgsgcplistmodel.cpp" line="152"/>
         <source>pixels</source>
         <translation>ピクセル</translation>
     </message>
@@ -11286,17 +12465,21 @@ Please reselect a valid file.</source>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="60"/>
         <source>Residual units</source>
-        <translation type="unfinished"></translation>
+        <translation>残りの単位</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="66"/>
         <source>Pixels</source>
-        <translation type="unfinished"></translation>
+        <translation>ピクセル</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="73"/>
+        <source>Use map units if possible</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Map units</source>
-        <translation type="unfinished">地図上の単位</translation>
+        <translation type="obsolete">地図上の単位</translation>
     </message>
 </context>
 <context>
@@ -11551,7 +12734,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1375"/>
         <source>Mean error [%1]</source>
-        <translation type="unfinished"></translation>
+        <translation>平均誤差[%1]</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1433"/>
@@ -11963,27 +13146,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="19"/>
         <source>Column</source>
-        <translation type="unfinished">カラム</translation>
+        <translation>カラム</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="32"/>
         <source>Symbol</source>
-        <translation type="unfinished">シンボル</translation>
+        <translation>シンボル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="55"/>
         <source>Classes</source>
-        <translation type="unfinished">分類数</translation>
+        <translation>分類数</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="81"/>
         <source>Color ramp</source>
-        <translation type="unfinished"></translation>
+        <translation>色階調</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="94"/>
         <source>Mode</source>
-        <translation type="unfinished">モード</translation>
+        <translation>モード</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="108"/>
@@ -15363,7 +16546,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="271"/>
         <source>pt</source>
-        <translation type="unfinished"></translation>
+        <translation>pt</translation>
     </message>
 </context>
 <context>
@@ -15371,237 +16554,237 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="14"/>
         <source>Layer labeling settings</source>
-        <translation type="unfinished">レイヤラベリング設定</translation>
+        <translation>レイヤラベリング設定</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="25"/>
         <source>Label this layer</source>
-        <translation type="unfinished">このレイヤのラベル表示</translation>
+        <translation>このレイヤのラベル表示</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="34"/>
         <source>Field with labels</source>
-        <translation type="unfinished">ラベルのフィールド</translation>
+        <translation>ラベルのフィールド</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="62"/>
         <source>Placement</source>
-        <translation type="unfinished">位置</translation>
+        <translation>位置</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="87"/>
         <source>around point</source>
-        <translation type="unfinished">点の周り</translation>
+        <translation>点の周り</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="97"/>
         <source>over point</source>
-        <translation type="unfinished">点上</translation>
+        <translation>点上</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="108"/>
         <source>parallel</source>
-        <translation type="unfinished">並行</translation>
+        <translation>並行</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="118"/>
         <source>curved</source>
-        <translation type="unfinished">曲がって</translation>
+        <translation>曲がって</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="125"/>
         <source>horizontal</source>
-        <translation type="unfinished">水平に</translation>
+        <translation>水平に</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="136"/>
         <source>over centroid</source>
-        <translation type="unfinished">中心点上</translation>
+        <translation>中心点上</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="146"/>
         <source>around centroid</source>
-        <translation type="unfinished">中心点の周り</translation>
+        <translation>中心点の周り</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="153"/>
         <source>horizontal (slow)</source>
-        <translation type="unfinished">水平（ゆっくり）</translation>
+        <translation>水平（ゆっくり）</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="160"/>
         <source>free (slow)</source>
-        <translation type="unfinished">フリー（ゆっくり）</translation>
+        <translation>フリー（ゆっくり）</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="167"/>
         <source>using perimeter</source>
-        <translation type="unfinished">周辺の利用</translation>
+        <translation>周辺の利用</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="192"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="298"/>
         <source>Label distance</source>
-        <translation type="unfinished">ラベルの距離</translation>
+        <translation>ラベルの距離</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="209"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="315"/>
         <source>mm</source>
-        <translation type="unfinished">mm</translation>
+        <translation>mm</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="216"/>
         <source>Rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>回転</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="233"/>
         <source>degrees</source>
-        <translation type="unfinished">度</translation>
+        <translation>度</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="244"/>
         <source>above line</source>
-        <translation type="unfinished">線の上部</translation>
+        <translation>線の上部</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="254"/>
         <source>on line</source>
-        <translation type="unfinished">ライン上</translation>
+        <translation>ライン上</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="261"/>
         <source>below line</source>
-        <translation type="unfinished">線の下部</translation>
+        <translation>線の下部</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="270"/>
         <source>Orientation</source>
-        <translation type="unfinished">方向</translation>
+        <translation>方向</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="277"/>
         <source>map</source>
-        <translation type="unfinished">地図</translation>
+        <translation>地図</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="287"/>
         <source>line</source>
-        <translation type="unfinished">線</translation>
+        <translation>線</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="334"/>
         <source>Text style</source>
-        <translation type="unfinished">テキストスタイル</translation>
+        <translation>テキストスタイル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="346"/>
         <source>Font</source>
-        <translation type="unfinished">フォント</translation>
+        <translation>フォント</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="364"/>
         <source>TextLabel</source>
-        <translation type="unfinished">テキストラベル</translation>
+        <translation>テキストラベル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="384"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="500"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="399"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="484"/>
         <source>Color</source>
-        <translation type="unfinished">色</translation>
+        <translation>色</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="442"/>
         <source>Buffer</source>
-        <translation type="unfinished">バッファ</translation>
+        <translation>バッファ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="467"/>
         <source>Size</source>
-        <translation type="unfinished">大きさ</translation>
+        <translation>大きさ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="477"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="677"/>
         <source> mm</source>
-        <translation type="unfinished"> mm</translation>
+        <translation> mm</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="515"/>
         <source>Sample</source>
-        <translation type="unfinished">サンプル</translation>
+        <translation>サンプル</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="531"/>
         <source>Lorem Ipsum</source>
-        <translation type="unfinished">QGISの新しいラベル機能</translation>
+        <translation>QGISの新しいラベル機能</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="551"/>
         <source>Priority</source>
-        <translation type="unfinished">優先度</translation>
+        <translation>優先度</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="557"/>
         <source>Low</source>
-        <translation type="unfinished">低</translation>
+        <translation>低</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="583"/>
         <source>High</source>
-        <translation type="unfinished">高</translation>
+        <translation>高</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="593"/>
         <source>Scale-based visibility</source>
-        <translation type="unfinished">スケール依存可視設定</translation>
+        <translation>スケール依存可視設定</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="599"/>
         <source>Enabled</source>
-        <translation type="unfinished">利用可にする</translation>
+        <translation>利用可にする</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="606"/>
         <source>Minimum</source>
-        <translation type="unfinished">最小値</translation>
+        <translation>最小値</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="626"/>
         <source>Maximum</source>
-        <translation type="unfinished">最大値</translation>
+        <translation>最大値</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="654"/>
         <source>label every part of multi-part features</source>
-        <translation type="unfinished">マルチパート地物の各要素にラベルを表示する</translation>
+        <translation>マルチパート地物の各要素にラベルを表示する</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="661"/>
         <source>merge connected lines to avoid duplicate labels</source>
-        <translation type="unfinished">重複ラベルを除去するために接続されている線をマージする</translation>
+        <translation>重複ラベルを除去するために接続されている線をマージする</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="670"/>
         <source>Suppress labeling of features smaller than</source>
-        <translation type="unfinished"></translation>
+        <translation>これより地物が小さい場合ラベリングを行わない</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="691"/>
         <source>features don&apos;t act as obstacles for labels</source>
-        <translation type="unfinished">地物はラベルの妨害にならないように動かない</translation>
+        <translation>地物はラベルの妨害にならないように動かない</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="714"/>
         <source>Engine settings</source>
-        <translation type="unfinished">エンジン設定</translation>
+        <translation>エンジン設定</translation>
     </message>
 </context>
 <context>
@@ -15612,32 +16795,32 @@ This may be a problem in your network connection or at the WMS server.</source>
         <translation>グループ</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="455"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="458"/>
         <source>&amp;Remove</source>
         <translation>削除(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="448"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="451"/>
         <source>&amp;Make to toplevel item</source>
         <translation>アイテムをトップレベルに移動(&amp;M)</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="460"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="463"/>
         <source>Re&amp;name</source>
         <translation>改名(&amp;n)</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="465"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="468"/>
         <source>&amp;Add group</source>
         <translation>グループ追加(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="466"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="469"/>
         <source>&amp;Expand all</source>
         <translation>すべてを展開する(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="467"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="470"/>
         <source>&amp;Collapse all</source>
         <translation>すべてを折りたたむ(&amp;C)</translation>
     </message>
@@ -17864,7 +19047,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="80"/>
         <source>Encoding</source>
-        <translation type="unfinished">エンコーディング</translation>
+        <translation>エンコーディング</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="112"/>
@@ -18165,7 +19348,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="144"/>
         <source>Digitizing</source>
-        <translation type="unfinished">デジタイズ</translation>
+        <translation>デジタイジング</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="225"/>
@@ -18305,12 +19488,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="876"/>
         <source>Placement algorithm</source>
-        <translation type="unfinished"></translation>
+        <translation>配置アルゴリズム</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1434"/>
         <source>Exclude URLs (starting with)</source>
-        <translation type="unfinished"></translation>
+        <translation>除外するURL(先頭の文字列)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1479"/>
@@ -18340,7 +19523,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1554"/>
         <source>Timeout for network requests (ms)</source>
-        <translation type="unfinished"></translation>
+        <translation>ネットワークリクエストのタイムアウト(ms)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="705"/>
@@ -18604,7 +19787,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="56"/>
         <source>Select Oracle GeoRaster</source>
-        <translation type="unfinished"></translation>
+        <translation>Oracle GeoRasterの選択</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="58"/>
@@ -19184,17 +20367,17 @@ PostGISのジオメトリが存在するテーブルにあなたがSELECT権限�
     <message>
         <location filename="../src/ui/qgspgsourceselectbase.ui" line="118"/>
         <source>Search</source>
-        <translation type="unfinished"></translation>
+        <translation>検索</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgsourceselectbase.ui" line="131"/>
         <source>Search mode</source>
-        <translation type="unfinished">検索モード</translation>
+        <translation>検索モード</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgsourceselectbase.ui" line="151"/>
         <source>Search in columns</source>
-        <translation type="unfinished">カラム内検索</translation>
+        <translation>カラム内検索</translation>
     </message>
     <message>
         <source>Search:</source>
@@ -21994,7 +23177,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="385"/>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="388"/>
         <source>Save current RGB composition as default. This setting will be persistent between QGIS sessions.</source>
-        <translation type="unfinished"></translation>
+        <translation>現在のRGB組み合わせを既定値とします.この設定はQGISのセッション中で有効です.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="411"/>
@@ -22036,7 +23219,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="693"/>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="696"/>
         <source>Save current standard deviation value as default. This setting will be persistent between QGIS sessions.</source>
-        <translation type="unfinished"></translation>
+        <translation>現在の標準偏差の値を既定値とします.この設定はQGISのセッション中で有効です.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="722"/>
@@ -22132,7 +23315,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="903"/>
         <source>Note</source>
-        <translation type="unfinished"></translation>
+        <translation>注記</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1090"/>
@@ -22355,17 +23538,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1605"/>
         <source>Columns</source>
-        <translation type="unfinished">カラム</translation>
+        <translation>カラム</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1618"/>
         <source>Rows</source>
-        <translation type="unfinished">行</translation>
+        <translation>行</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1631"/>
         <source>No Data</source>
-        <translation type="unfinished"></translation>
+        <translation>無データ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1681"/>
@@ -22397,7 +23580,14 @@ p, li { white-space: pre-wrap; }
 &lt;tr&gt;
 &lt;td style=&quot;border: none;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;table style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;
+&lt;tr&gt;
+&lt;td style=&quot;border: none;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1920"/>
@@ -22539,7 +23729,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="22"/>
         <source>Renderer</source>
-        <translation type="unfinished"></translation>
+        <translation>レンダラ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="48"/>
@@ -22906,22 +24096,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="53"/>
         <source>&amp;Save...</source>
-        <translation type="unfinished"></translation>
+        <translation>(&amp;S)保存...</translation>
     </message>
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="55"/>
         <source>Save query to an xml file</source>
-        <translation type="unfinished"></translation>
+        <translation>クエリをxmlファイルへ保存する</translation>
     </message>
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="58"/>
         <source>&amp;Load...</source>
-        <translation type="unfinished"></translation>
+        <translation>(&amp;L)ロード...</translation>
     </message>
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="60"/>
         <source>Load query from xml file</source>
-        <translation type="unfinished"></translation>
+        <translation>クエリをxmlファイルからロードする</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="190"/>
@@ -22934,7 +24124,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="352"/>
         <source>Save query to file</source>
-        <translation type="unfinished"></translation>
+        <translation>クエリをファイルに保存する</translation>
     </message>
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="361"/>
@@ -22942,57 +24132,57 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="398"/>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="405"/>
         <source>Error</source>
-        <translation type="unfinished">エラー</translation>
+        <translation>エラー</translation>
     </message>
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="361"/>
         <source>Could not open file for writing</source>
-        <translation type="unfinished"></translation>
+        <translation>書き込みモードでファイルを開けませんでした</translation>
     </message>
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="383"/>
         <source>Load query from file</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイルからクエリをロードする</translation>
     </message>
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="383"/>
         <source>Query files</source>
-        <translation type="unfinished"></translation>
+        <translation>クエリファイル</translation>
     </message>
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="383"/>
         <source>All files</source>
-        <translation type="unfinished"></translation>
+        <translation>全ファイル</translation>
     </message>
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="392"/>
         <source>Could not open file for reading</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイルを読むためにオープンできません</translation>
     </message>
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="398"/>
         <source>File is not a valid xml document</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイルは正しいxml文書ではありません</translation>
     </message>
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="405"/>
         <source>File is not a valid query document</source>
-        <translation type="unfinished"></translation>
+        <translation>ファイルは正しいクエリ文書ではありません</translation>
     </message>
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="422"/>
         <source>Error creating search tree</source>
-        <translation type="unfinished"></translation>
+        <translation>サーチツリー作成中にエラーが発生しました</translation>
     </message>
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="445"/>
         <source>Select attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>属性選択</translation>
     </message>
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="445"/>
         <source>There is no attribute &apos;%1&apos; in the current vector layer. Please select an existing attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>カレントベクタレイヤには属性がありません&apos;%1&apos; 存在する属性を選択して下さい</translation>
     </message>
 </context>
 <context>
@@ -24307,7 +25497,7 @@ Do you want to overwrite the [%2] relation?</source>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="20"/>
         <source>Style item type</source>
-        <translation type="unfinished"></translation>
+        <translation>スタイルアイテムタイプ</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="60"/>
@@ -24429,7 +25619,7 @@ Do you want to overwrite the [%2] relation?</source>
     <message>
         <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="252"/>
         <source>Symbols from style</source>
-        <translation type="unfinished"></translation>
+        <translation>スタイルからのシンボル</translation>
     </message>
     <message>
         <source>Symbols from style:</source>
@@ -24825,12 +26015,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorcolorbrewercolorrampv2dialogbase.ui" line="22"/>
         <source>Scheme name</source>
-        <translation type="unfinished"></translation>
+        <translation>スキーマ名</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorcolorbrewercolorrampv2dialogbase.ui" line="48"/>
         <source>Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>色</translation>
     </message>
     <message>
         <source>Scheme name:</source>
@@ -24889,12 +26079,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="22"/>
         <source>Color 1</source>
-        <translation type="unfinished">カラー2 {1?}</translation>
+        <translation>カラー 1</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="55"/>
         <source>Color 2</source>
-        <translation type="unfinished">カラー2 {2?}</translation>
+        <translation>カラー 2</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="74"/>
@@ -27069,7 +28259,7 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_linedecoration.ui" line="22"/>
         <source>Color</source>
-        <translation type="unfinished">色</translation>
+        <translation>色</translation>
     </message>
     <message>
         <source>Color:</source>
@@ -27091,17 +28281,17 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="22"/>
         <source>Marker</source>
-        <translation type="unfinished"></translation>
+        <translation>マーカー</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="52"/>
         <source>Marker interval</source>
-        <translation type="unfinished"></translation>
+        <translation>マーカー　間隔</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="66"/>
         <source>Line offset</source>
-        <translation type="unfinished"></translation>
+        <translation>ラインオフセット</translation>
     </message>
     <message>
         <source>Marker:</source>
@@ -27144,12 +28334,12 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="22"/>
         <source>Texture width</source>
-        <translation type="unfinished"></translation>
+        <translation>テクスチャ幅</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="40"/>
         <source>Outline</source>
-        <translation type="unfinished"></translation>
+        <translation>アウトライン</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="47"/>
@@ -27172,32 +28362,32 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="22"/>
         <source>Color</source>
-        <translation type="unfinished">色</translation>
+        <translation>色</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="52"/>
         <source>Fill style</source>
-        <translation type="unfinished"></translation>
+        <translation>塗りつぶしスタイル</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="62"/>
         <source>Border color</source>
-        <translation type="unfinished"></translation>
+        <translation>ボーダーカラー</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="76"/>
         <source>Border style</source>
-        <translation type="unfinished"></translation>
+        <translation>ボーダースタイル</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="86"/>
         <source>Border width</source>
-        <translation type="unfinished"></translation>
+        <translation>ボーダー太さ</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="103"/>
         <source>Offset X,Y</source>
-        <translation type="unfinished"></translation>
+        <translation>オフセットX Y</translation>
     </message>
     <message>
         <source>Color:</source>
@@ -27240,32 +28430,32 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="22"/>
         <source>Color</source>
-        <translation type="unfinished">色</translation>
+        <translation>色</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="58"/>
         <source>Pen width</source>
-        <translation type="unfinished"></translation>
+        <translation>ペンの太さ</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="87"/>
         <source>Offset</source>
-        <translation type="unfinished">オフセット</translation>
+        <translation>オフセット</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="110"/>
         <source>Pen style</source>
-        <translation type="unfinished"></translation>
+        <translation>ペンスタイル</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="151"/>
         <source>Join style</source>
-        <translation type="unfinished"></translation>
+        <translation>継ぎ目スタイル</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="177"/>
         <source>Cap style</source>
-        <translation type="unfinished"></translation>
+        <translation>頂点スタイル</translation>
     </message>
     <message>
         <source>Color:</source>
@@ -27313,27 +28503,27 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="22"/>
         <source>Border color</source>
-        <translation type="unfinished"></translation>
+        <translation>ボーダーカラー</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="52"/>
         <source>Fill color</source>
-        <translation type="unfinished"></translation>
+        <translation>塗りつぶしカラー</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="66"/>
         <source>Size</source>
-        <translation type="unfinished">大きさ</translation>
+        <translation>大きさ</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="73"/>
         <source>Angle</source>
-        <translation type="unfinished">角度</translation>
+        <translation>角度</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="93"/>
         <source>Offset X,Y</source>
-        <translation type="unfinished"></translation>
+        <translation>オフセットX Y</translation>
     </message>
     <message>
         <source>Border color:</source>
@@ -27372,22 +28562,22 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="28"/>
         <source>Size</source>
-        <translation type="unfinished">大きさ</translation>
+        <translation>大きさ</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="48"/>
         <source>Angle</source>
-        <translation type="unfinished">角度</translation>
+        <translation>角度</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="98"/>
         <source>Offset X,Y</source>
-        <translation type="unfinished"></translation>
+        <translation>オフセットX Y</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="126"/>
         <source>SVG Image</source>
-        <translation type="unfinished"></translation>
+        <translation>SVGイメージ</translation>
     </message>
     <message>
         <source>Size:</source>
