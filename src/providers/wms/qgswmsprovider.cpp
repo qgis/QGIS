@@ -556,8 +556,8 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     double ymax = std::min( viewExtent.yMaximum(), layerExtent.yMaximum() );
 
     // snap to tile coordinates
-    double x0 = floor(( xmin - layerExtent.xMinimum() ) / mTileWidth / tres ) * mTileWidth * tres + layerExtent.xMinimum();
-    double y0 = floor(( ymin - layerExtent.yMinimum() ) / mTileHeight / tres ) * mTileHeight * tres + layerExtent.yMinimum();
+    double x0 = floor(( xmin - layerExtent.xMinimum() ) / mTileWidth / tres ) * mTileWidth * tres + layerExtent.xMinimum() + mTileWidth * tres * 0.001;
+    double y0 = floor(( ymin - layerExtent.yMinimum() ) / mTileHeight / tres ) * mTileHeight * tres + layerExtent.yMinimum() + mTileHeight * tres * 0.001;
 
 #ifdef QGISDEBUG
     // calculate number of tiles
@@ -633,7 +633,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
         request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferCache );
         request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
         request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 0 ), mTileReqNo );
-        request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 1 ), j );
+        request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 1 ), i );
         request.setAttribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 2 ), QRectF( x, y, mTileWidth * tres, mTileHeight * tres ) );
 
         QgsDebugMsg( QString( "gettile: %1" ).arg( turl ) );
@@ -641,9 +641,9 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
         tileReplies << reply;
         connect( reply, SIGNAL( finished() ), this, SLOT( tileReplyFinished() ) );
 
-        x = x0 + k++*mTileWidth * tres;
+        x = x0 + ++k * mTileWidth * tres;
       }
-      y = y0 + j++*mTileHeight * tres;
+      y = y0 + ++j * mTileHeight * tres;
     }
 
     mWaiting = true;
@@ -750,8 +750,14 @@ void QgsWmsProvider::tileReplyFinished()
       QPainter p( cachedImage );
       p.drawImage( dst, myLocalImage );
 
-      // p.drawRect( dst ); // show tile bounds
-      // p.drawText( dst.center(), QString( "(%1)\n%2,%3\n%4x%5" ).arg( tileNo ).arg( r.left() ).arg( r.bottom() ).arg( r.width() ).arg( r.height() ) );
+#if 0
+      p.drawRect( dst ); // show tile bounds
+      p.drawText( dst, Qt::AlignCenter, QString( "(%1)\n%2,%3\n%4,%5\n%6x%7" )
+                  .arg( tileNo )
+                  .arg( r.left() ).arg( r.bottom() )
+                  .arg( r.right() ).arg( r.top() )
+                  .arg( r.width() ).arg( r.height() ) );
+#endif
     }
 
     tileReplies.removeOne( reply );
@@ -770,7 +776,7 @@ void QgsWmsProvider::tileReplyFinished()
     mErrors++;
   }
 
-#if QGISDEBUG
+#ifdef QGISDEBUG
   emit statusChanged( tr( "%n tile requests in background", "tile request count", tileReplies.count() )
                       + tr( ", %n cache hits", "tile cache hits", mCacheHits )
                       + tr( ", %n cache misses.", "tile cache missed", mCacheMisses )
