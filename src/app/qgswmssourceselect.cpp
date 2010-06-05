@@ -98,7 +98,7 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WFlags fl )
 
     mFormats << "png";    // used by french IGN geoportail
     mLabels << "PNG";
-  
+
     mFormats << "pngt";    // used by french IGN geoportail
     mLabels << "PNGT";
   }

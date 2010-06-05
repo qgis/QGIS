@@ -193,7 +193,7 @@ class QgsGrassModuleOptions
     virtual QStringList output( int type ) { return QStringList() ; }
 
     //! Has any output
-    virtual bool hasOutput ( int type ) { return true; }
+    virtual bool hasOutput( int type ) { return true; }
 
     //! Has raster input or output
     virtual bool usesRegion() { return false; }
@@ -240,7 +240,7 @@ class QgsGrassModuleOptions
  */
 class QgsGrassModuleStandardOptions: QWidget, public QgsGrassModuleOptions
 {
-  Q_OBJECT
+    Q_OBJECT
 
   public:
     //! Constructor
@@ -268,7 +268,7 @@ class QgsGrassModuleStandardOptions: QWidget, public QgsGrassModuleOptions
     void thawOutput();
     QStringList ready() ;
     QStringList output( int type );
-    bool hasOutput ( int type );
+    bool hasOutput( int type );
     QStringList checkRegion();
     bool usesRegion();
     bool requestsRegion();

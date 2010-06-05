@@ -407,7 +407,7 @@ void QgsPluginManager::unload()
       {
         if ( mPythonUtils && mPythonUtils->isEnabled() )
         {
-          if( mPythonUtils->canUninstallPlugin( baseName ) )
+          if ( mPythonUtils->canUninstallPlugin( baseName ) )
           {
             mPythonUtils->unloadPlugin( baseName );
             //disable it to the qsettings file

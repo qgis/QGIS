@@ -20,7 +20,7 @@
 
 class TestQgsSearchString : public QObject
 {
-  Q_OBJECT;
+    Q_OBJECT;
   private slots:
     //void initTestCase();// will be called before the first testfunction is executed.
     //void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -34,39 +34,39 @@ class TestQgsSearchString : public QObject
     QString mReport;
 };
 
-static bool evalString(QString str)
+static bool evalString( QString str )
 {
   QgsSearchString ss;
-  ss.setString(str);
-  return ss.tree()->checkAgainst(QgsFieldMap(), QgsAttributeMap());
+  ss.setString( str );
+  return ss.tree()->checkAgainst( QgsFieldMap(), QgsAttributeMap() );
 }
 
 void TestQgsSearchString::testLike()
 {
-  QVERIFY( evalString("'a' LIKE 'a'") );
-  QVERIFY( ! evalString("'aa' LIKE 'a'") );
-  QVERIFY( ! evalString("'a' LIKE 'b'") );
+  QVERIFY( evalString( "'a' LIKE 'a'" ) );
+  QVERIFY( ! evalString( "'aa' LIKE 'a'" ) );
+  QVERIFY( ! evalString( "'a' LIKE 'b'" ) );
 
-  QVERIFY( evalString("'abba' LIKE 'a%'") );
-  QVERIFY( ! evalString("'abba' LIKE 'b%'") );
-  QVERIFY( evalString("'abba' LIKE '%a'") );
-  QVERIFY( ! evalString("'abba' LIKE '%b'") );
+  QVERIFY( evalString( "'abba' LIKE 'a%'" ) );
+  QVERIFY( ! evalString( "'abba' LIKE 'b%'" ) );
+  QVERIFY( evalString( "'abba' LIKE '%a'" ) );
+  QVERIFY( ! evalString( "'abba' LIKE '%b'" ) );
 
-  QVERIFY( evalString("'abba' LIKE '%bb%'") );
-  QVERIFY( evalString("'abba' LIKE 'a%a'") );
-  QVERIFY( ! evalString("'abba' LIKE 'b%b'") );
+  QVERIFY( evalString( "'abba' LIKE '%bb%'" ) );
+  QVERIFY( evalString( "'abba' LIKE 'a%a'" ) );
+  QVERIFY( ! evalString( "'abba' LIKE 'b%b'" ) );
 }
 
 void TestQgsSearchString::testRegexp()
 {
-  QVERIFY( evalString("'a' ~ 'a'") );
-  QVERIFY( ! evalString("'b' ~ 'a'") );
+  QVERIFY( evalString( "'a' ~ 'a'" ) );
+  QVERIFY( ! evalString( "'b' ~ 'a'" ) );
 
-  QVERIFY( evalString("'abba' ~ 'a'") );
-  QVERIFY( ! evalString("'abba' ~ 'aba'") );
-  QVERIFY( evalString("'abba' ~ 'a.*a'") );
-  QVERIFY( evalString("'abba' ~ 'a[b]+a'") );
+  QVERIFY( evalString( "'abba' ~ 'a'" ) );
+  QVERIFY( ! evalString( "'abba' ~ 'aba'" ) );
+  QVERIFY( evalString( "'abba' ~ 'a.*a'" ) );
+  QVERIFY( evalString( "'abba' ~ 'a[b]+a'" ) );
 }
 
-QTEST_MAIN(TestQgsSearchString)
+QTEST_MAIN( TestQgsSearchString )
 #include "moc_testqgssearchstring.cxx"

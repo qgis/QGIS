@@ -55,7 +55,7 @@ void QgsOracleConnect::on_buttonBox_rejected()
 {
   // cancel button mapped to context help - changed this to close the
   // dialog instead. If context help is to be added, a Help button
-  // is required. - gsherman 
+  // is required. - gsherman
   // helpInfo();
   reject();
 }

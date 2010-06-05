@@ -38,23 +38,23 @@ typedef QgsSymbolLayerV2Widget*( *QgsSymbolLayerV2WidgetFunc )();
  */
 class CORE_EXPORT QgsSymbolLayerV2Metadata : public QgsSymbolLayerV2AbstractMetadata
 {
-public:
-  QgsSymbolLayerV2Metadata( QString name, QgsSymbolV2::SymbolType type,
-                            QgsSymbolLayerV2CreateFunc pfCreate,
-                            QgsSymbolLayerV2WidgetFunc pfWidget = NULL )
-      : QgsSymbolLayerV2AbstractMetadata( name, type ), mCreateFunc( pfCreate ), mWidgetFunc( pfWidget ) {}
+  public:
+    QgsSymbolLayerV2Metadata( QString name, QgsSymbolV2::SymbolType type,
+                              QgsSymbolLayerV2CreateFunc pfCreate,
+                              QgsSymbolLayerV2WidgetFunc pfWidget = NULL )
+        : QgsSymbolLayerV2AbstractMetadata( name, type ), mCreateFunc( pfCreate ), mWidgetFunc( pfWidget ) {}
 
-  QgsSymbolLayerV2CreateFunc createFunction() const { return mCreateFunc; }
-  QgsSymbolLayerV2WidgetFunc widgetFunction() const { return mWidgetFunc; }
+    QgsSymbolLayerV2CreateFunc createFunction() const { return mCreateFunc; }
+    QgsSymbolLayerV2WidgetFunc widgetFunction() const { return mWidgetFunc; }
 
-  void setWidgetFunction( QgsSymbolLayerV2WidgetFunc f ) { mWidgetFunc = f; }
+    void setWidgetFunction( QgsSymbolLayerV2WidgetFunc f ) { mWidgetFunc = f; }
 
-  virtual QgsSymbolLayerV2* createSymbolLayer( const QgsStringMap& map ) { return mCreateFunc ? mCreateFunc(map) : NULL; }
-  virtual QgsSymbolLayerV2Widget* createSymbolLayerWidget() { return mWidgetFunc ? mWidgetFunc() : NULL; }
+    virtual QgsSymbolLayerV2* createSymbolLayer( const QgsStringMap& map ) { return mCreateFunc ? mCreateFunc( map ) : NULL; }
+    virtual QgsSymbolLayerV2Widget* createSymbolLayerWidget() { return mWidgetFunc ? mWidgetFunc() : NULL; }
 
-protected:
-  QgsSymbolLayerV2CreateFunc mCreateFunc;
-  QgsSymbolLayerV2WidgetFunc mWidgetFunc;
+  protected:
+    QgsSymbolLayerV2CreateFunc mCreateFunc;
+    QgsSymbolLayerV2WidgetFunc mWidgetFunc;
 };
 
 

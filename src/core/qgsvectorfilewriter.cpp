@@ -95,14 +95,14 @@ QgsVectorFileWriter::QgsVectorFileWriter(
 
     deleteShapeFile( vectorFileName );
   }
-  else if( driverName == "KML" )
+  else if ( driverName == "KML" )
   {
-    if( !vectorFileName.endsWith( ".kml", Qt::CaseInsensitive ) )
+    if ( !vectorFileName.endsWith( ".kml", Qt::CaseInsensitive ) )
     {
       vectorFileName += ".kml";
     }
 
-    if( fileEncoding.compare( "UTF-8", Qt::CaseInsensitive )!=0 )
+    if ( fileEncoding.compare( "UTF-8", Qt::CaseInsensitive ) != 0 )
     {
       QgsDebugMsg( "forced UTF-8 encoding for KML" );
       fileEncoding = "UTF-8";

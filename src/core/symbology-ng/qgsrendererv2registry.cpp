@@ -12,19 +12,19 @@ QgsRendererV2Registry::QgsRendererV2Registry()
 {
   // add default renderers
   addRenderer( new QgsRendererV2Metadata( "singleSymbol",
-                                      QObject::tr( "Single Symbol" ),
-                                      QgsSingleSymbolRendererV2::create ) );
+                                          QObject::tr( "Single Symbol" ),
+                                          QgsSingleSymbolRendererV2::create ) );
   addRenderer( new QgsRendererV2Metadata( "categorizedSymbol",
-                                      QObject::tr( "Categorized" ),
-                                      QgsCategorizedSymbolRendererV2::create ) );
+                                          QObject::tr( "Categorized" ),
+                                          QgsCategorizedSymbolRendererV2::create ) );
   addRenderer( new QgsRendererV2Metadata( "graduatedSymbol",
-                                      QObject::tr( "Graduated" ),
-                                      QgsGraduatedSymbolRendererV2::create ) );
+                                          QObject::tr( "Graduated" ),
+                                          QgsGraduatedSymbolRendererV2::create ) );
 }
 
 QgsRendererV2Registry::~QgsRendererV2Registry()
 {
-  foreach (QString name, mRenderers.keys())
+  foreach( QString name, mRenderers.keys() )
   {
     delete mRenderers[name];
   }
@@ -42,7 +42,7 @@ QgsRendererV2Registry* QgsRendererV2Registry::instance()
 
 bool QgsRendererV2Registry::addRenderer( QgsRendererV2AbstractMetadata* metadata )
 {
-  if (metadata == NULL || mRenderers.contains(metadata->name()) )
+  if ( metadata == NULL || mRenderers.contains( metadata->name() ) )
     return false;
 
   mRenderers[metadata->name()] = metadata;

@@ -140,7 +140,7 @@ void QgsGrassTools::runModule( QString name )
   if ( name == "shell" )
   {
 #ifdef WIN32
-    QgsGrass::putEnv ( "GRASS_HTML_BROWSER", QgsApplication::pkgDataPath() + "/grass/bin/qgis.g.browser" );
+    QgsGrass::putEnv( "GRASS_HTML_BROWSER", QgsApplication::pkgDataPath() + "/grass/bin/qgis.g.browser" );
     if ( !QProcess::startDetached( getenv( "COMSPEC" ) ) )
     {
       QMessageBox::warning( 0, "Warning", tr( "Cannot start command shell (%1)" ).arg( getenv( "COMSPEC" ) ) );
@@ -168,8 +168,9 @@ void QgsGrassTools::runModule( QString name )
 
   // Icon size in QT4 does not seem to be variable
   // -> reset the width to max icon width
-  if ( mTabWidget->iconSize().width() < pixmap.width() ) {
-    mTabWidget->setIconSize( QSize( pixmap.width(), mTabWidget->iconSize().height() )  );
+  if ( mTabWidget->iconSize().width() < pixmap.width() )
+  {
+    mTabWidget->setIconSize( QSize( pixmap.width(), mTabWidget->iconSize().height() ) );
   }
 
   QIcon is;

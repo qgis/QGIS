@@ -418,13 +418,13 @@ bool QgsDelimitedTextProvider::nextFeature( QgsFeature& feature )
       switch ( attributeFields[*i].type() )
       {
         case QVariant::Int:
-          if( !tokens[*i].isEmpty() )
+          if ( !tokens[*i].isEmpty() )
             val = QVariant( tokens[*i].toInt() );
           else
             val = QVariant( attributeFields[*i].type() );
           break;
         case QVariant::Double:
-          if( !tokens[*i].isEmpty() )
+          if ( !tokens[*i].isEmpty() )
             val = QVariant( tokens[*i].toDouble() );
           else
             val = QVariant( attributeFields[*i].type() );

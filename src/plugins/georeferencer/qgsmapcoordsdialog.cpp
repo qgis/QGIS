@@ -43,7 +43,7 @@ QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas* qgisCanvas, QgsPoint pixel
   mToolEmitPoint->setButton( mPointFromCanvasPushButton );
 
   QSettings s;
-  mSnapToBackgroundLayerBox->setChecked( s.value( "/Plugin-GeoReferencer/snapToBackgroundLayers", QVariant(false) ).toBool() );
+  mSnapToBackgroundLayerBox->setChecked( s.value( "/Plugin-GeoReferencer/snapToBackgroundLayers", QVariant( false ) ).toBool() );
 
   connect( mPointFromCanvasPushButton, SIGNAL( clicked( bool ) ), this, SLOT( setToolEmitPoint( bool ) ) );
 

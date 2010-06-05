@@ -162,9 +162,9 @@ bool QgsPythonUtilsImpl::runString( const QString& command, QString msgOnError )
   evalString( "sys.version", version );
 
   QString str = "<font color=\"red\">" + msgOnError + "</font><br><br>" + traceback + "<br>"
-              + QObject::tr( "Python version:" ) + "<br>" + version + "<br><br>"
-              + QObject::tr( "QGIS version:" ) + "<br>" + QString( "%1 '%2', %3" ).arg( QGis::QGIS_VERSION ).arg( QGis::QGIS_RELEASE_NAME ).arg( QGis::QGIS_SVN_VERSION ) + "<br><br>"
-              + QObject::tr( "Python path:" ) + "<br>" + path;
+                + QObject::tr( "Python version:" ) + "<br>" + version + "<br><br>"
+                + QObject::tr( "QGIS version:" ) + "<br>" + QString( "%1 '%2', %3" ).arg( QGis::QGIS_VERSION ).arg( QGis::QGIS_RELEASE_NAME ).arg( QGis::QGIS_SVN_VERSION ) + "<br><br>"
+                + QObject::tr( "Python path:" ) + "<br>" + path;
   str.replace( "\n", "<br>" ).replace( "  ", "&nbsp; " );
 
   QgsMessageOutput* msg = QgsMessageOutput::createMessageOutput();

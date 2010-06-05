@@ -53,8 +53,8 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QWidget* parent, Qt::WFl
   }
 
   mEncodingComboBox->setCurrentIndex( idx );
-  
-  leCRS->setText( tr("Original CRS") );
+
+  leCRS->setText( tr( "Original CRS" ) );
 }
 
 QgsVectorLayerSaveAsDialog::~QgsVectorLayerSaveAsDialog()
@@ -75,7 +75,7 @@ void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx
   browseFilename->setEnabled( true );
   leFilename->setEnabled( true );
 
-  if( format() == "KML" )
+  if ( format() == "KML" )
   {
     mEncodingComboBox->setCurrentIndex( mEncodingComboBox->findText( "UTF-8" ) );
     mEncodingComboBox->setDisabled( true );
@@ -101,7 +101,7 @@ void QgsVectorLayerSaveAsDialog::on_browseFilename_clicked()
 void QgsVectorLayerSaveAsDialog::on_browseCRS_clicked()
 {
   QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector();
-  if( mCRS >= 0 )
+  if ( mCRS >= 0 )
     mySelector->setSelectedCrsId( mCRS );
   mySelector->setMessage( tr( "Select the coordinate reference system for the vector file. "
                               "The data points will be transformed from the layer coordinate reference system." ) );

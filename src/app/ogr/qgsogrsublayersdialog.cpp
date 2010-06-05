@@ -23,7 +23,7 @@ QgsOGRSublayersDialog::QgsOGRSublayersDialog( QWidget* parent, Qt::WFlags fl )
     : QDialog( parent, fl )
 {
   setupUi( this );
-  QStringList labels = QStringList() << tr("Layer ID") << tr("Layer name") << tr("Nb of features") << tr("Geometry type");
+  QStringList labels = QStringList() << tr( "Layer ID" ) << tr( "Layer name" ) << tr( "Nb of features" ) << tr( "Geometry type" );
   layersTable->setHeaderLabels( labels );
 }
 

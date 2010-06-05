@@ -38,7 +38,7 @@ class QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSav
     QString encoding() const;
     QString filename() const;
     long crs() const;
-   
+
   private slots:
     void on_mFormatComboBox_currentIndexChanged( int idx );
     void on_browseFilename_clicked();
