@@ -109,7 +109,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
       self.inputLayerCombo.setEditText( inputFile )
 
   def fillInputDir( self ):
-      inputDir = Utils.FileDialog.getExistingDirectory( self, self.tr( "Select the input direcory with files to Translate" ))
+      inputDir = Utils.FileDialog.getExistingDirectory( self, self.tr( "Select the input directory with files to Translate" ))
       if inputDir.isEmpty():
         return
 
