@@ -3,13 +3,13 @@
 ;Quantum GIS Installer for Windows
 ;Written by Marco Pasetti
 ;Mail to: marco.pasetti@alice.it 
+;
+;Extended for creatensis.pl by Jürgen E. Fischer <jef@norbit.de>
 
 ;----------------------------------------------------------------------------------------------------------------------------
 
 ;Select if you are building a "Development Version" or a "Release Version" of the Quantum GIS Installer
 ;Change the INSTALLER_TYPE variable to Release or Development
-
-!define INSTALLER_TYPE "Release-NoGrass"
 
 ;----------------------------------------------------------------------------------------------------------------------------
 
@@ -43,13 +43,10 @@ RequestExecutionLevel admin
 
 ;----------------------------------------------------------------------------------------------------------------------------
 
-;define the QGIS Base Name
-!define RELEASE_QGIS_BASE "Quantum GIS Enceladus"
-!define DEV_QGIS_BASE "Quantum GIS Unstable Dev"
-
 ;Set the installer variables, depending on the selected version to build
 
 !if ${INSTALLER_TYPE} == "Release"
+	!define RELEASE_QGIS_BASE "Quantum GIS Enceladus"
 	!define VERSION_NUMBER "${RELEASE_VERSION_NUMBER}"
 	!define VERSION_NAME "${RELEASE_VERSION_NAME}"
 	!define COMPLETE_NAME "${RELEASE_QGIS_BASE} ${RELEASE_VERSION_NUMBER} ${RELEASE_VERSION_NAME}"
@@ -74,6 +71,7 @@ RequestExecutionLevel admin
 	!define INSTALLER_DISPLAYED_NAME "${COMPLETE_NAME}"
 	!define PACKAGE_FOLDER ".\QGIS-Release-Package-No-Grass"
 !else if ${INSTALLER_TYPE} == "Development"
+	!define DEV_QGIS_BASE "Quantum GIS Unstable Dev"
 	!define VERSION_NUMBER "${DEV_VERSION_NUMBER}"
 	!define VERSION_NAME "${DEV_VERSION_NAME}"
 	!define COMPLETE_NAME "${DEV_QGIS_BASE} ${DEV_VERSION_NUMBER} ${DEV_VERSION_NAME}"
@@ -85,6 +83,12 @@ RequestExecutionLevel admin
 	!define CHECK_INSTALL_NAME "${DEV_QGIS_BASE}"
 	!define INSTALLER_DISPLAYED_NAME "${DISPLAYED_NAME}"
 	!define PACKAGE_FOLDER ".\QGIS-Dev-Package"
+!else if ${INSTALLER_TYPE} == "OSGeo4W"
+	!define COMPLETE_NAME "${QGIS_BASE} ${VERSION_NUMBER} ${VERSION_NAME}"
+	!define CHECK_INSTALL_NAME "${QGIS_BASE}"
+	!define INSTALLER_DISPLAYED_NAME "${DISPLAYED_NAME}"
+
+	!addplugindir osgeo4w/untgz
 !endif
 
 ;----------------------------------------------------------------------------------------------------------------------------
@@ -352,6 +356,10 @@ Section "Quantum GIS" SecQGIS
 	File .\Installer-Files\QGIS_Web.ico
 	SetOutPath "$INSTALL_DIR"
 	File .\Installer-Files\QGIS-WebSite.url
+!if ${INSTALLER_TYPE} == "OSGeo4W"
+	File .\Installer-Files\postinstall.bat
+	File .\Installer-Files\preremove.bat
+!endif
 	
 	;add Quantum GIS files
 	SetOutPath "$INSTALL_DIR"
@@ -394,23 +402,39 @@ Section "Quantum GIS" SecQGIS
 	;Create the Desktop Shortcut
 	SetShellVarContext current
 	
+!if ${INSTALLER_TYPE} == "OSGeo4W"
+	CreateShortCut "$DESKTOP\${QGIS_BASE}.lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\qgis-dev.bat"' \
+	"$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
+!else
 	CreateShortCut "$DESKTOP\${QGIS_BASE}.lnk" "$INSTALL_DIR\bin\qgis.exe" ""\
 	"$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
+!endif
  
 	;Create the Windows Start Menu Shortcuts
 	SetShellVarContext all
 	
 	CreateDirectory "$SMPROGRAMS\${QGIS_BASE}"
 	
+!if ${INSTALLER_TYPE} == "OSGeo4W"
+	CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\${QGIS_BASE}.lnk" "$INSTALL_DIR\bin\nircmd.exe" 'exec hide "$INSTALL_DIR\bin\qgis-dev.bat"' \
+	"$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
+!else
 	CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\${QGIS_BASE}.lnk" "$INSTALL_DIR\bin\qgis.exe" ""\
 	"$INSTALL_DIR\icons\QGIS.ico" "" SW_SHOWNORMAL "" "Launch ${COMPLETE_NAME}"
+!endif
 	
 	CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\Quantum GIS Web Site.lnk" "$INSTALL_DIR\QGIS-WebSite.url" ""\
 	"$INSTALL_DIR\icons\QGIS_Web.ico" "" SW_SHOWNORMAL "" "Visit the Quantum GIS Web Site"
 	
 	CreateShortCut "$SMPROGRAMS\${QGIS_BASE}\Uninstall ${QGIS_BASE}.lnk" "$INSTALL_DIR\Uninstall-QGIS.exe" ""\
 	"$INSTALL_DIR\Uninstall-QGIS.exe" "" SW_SHOWNORMAL "" "Uninstall ${COMPLETE_NAME}"
-                 
+
+	GetFullPathName /SHORT $0 $INSTALL_DIR
+	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_ROOT", "$0").r0'
+	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_STARTMENU", "$SMPROGRAMS\${QGIS_BASE}").r0'
+
+	ReadEnvStr $0 COMSPEC
+	nsExec::ExecToLog '"$0" /c "$INSTALL_DIR\postinstall.bat"'
 SectionEnd
 
 Function DownloadDataSet
@@ -524,6 +548,31 @@ SectionEnd
 
 Section "Uninstall"
 
+!if ${INSTALLER_TYPE} == "OSGeo4W"
+	GetFullPathName /SHORT $0 $INSTDIR
+	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_ROOT", "$0").r0'
+	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_STARTMENU", "$SMPROGRAMS\${QGIS_BASE}").r0'
+
+	ReadEnvStr $0 COMSPEC
+	nsExec::ExecToLog '"$0" /c "$INSTALL_DIR\preremove.bat"'
+
+	Delete "$INSTDIR\Uninstall-QGIS.exe"
+	Delete "$INSTDIR\postinstall.bat.done"
+	Delete "$INSTDIR\postinstall.bat"
+	Delete "$INSTDIR\postinstall.log"
+
+	Delete "$INSTDIR\preremove.bat.done"
+	Delete "$INSTDIR\preremove.bat"
+	Delete "$INSTDIR\preremove.log"
+
+	RMDir /r "$INSTDIR\bin"
+	RMDir /r "$INSTDIR\apps"
+	RMDir /r "$INSTDIR\etc"
+	RMDir /r "$INSTDIR\include"
+	RMDir /r "$INSTDIR\lib"
+	RMDir /r "$INSTDIR\share"
+	RMDir /r "$INSTDIR\icons"
+!else
 	;remove files
 	Delete "$INSTDIR\Uninstall-QGIS.exe"
 	
@@ -563,6 +612,7 @@ Section "Uninstall"
 	RMDir /r "$INSTDIR\themes"
 	RMDir /r "$INSTDIR\proj"
 	RMDir /r "$INSTDIR\epsg_csv"
+!endif
 	
 	;if empty, remove the install folder
 	RMDir "$INSTDIR"
@@ -578,7 +628,6 @@ Section "Uninstall"
 	;remove the Registry Entries
 	DeleteRegKey HKLM "Software\${QGIS_BASE}"
 	DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${QGIS_BASE}"
-
 SectionEnd
 
 ;----------------------------------------------------------------------------------------------------------------------------
