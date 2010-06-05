@@ -319,12 +319,12 @@ QString QgsGrassModelItem::info()
           str += "</table>";
         }
         Vect_close( &Map );
-      } 
+      }
       catch ( QgsGrass::Exception &e )
       {
         QgsDebugMsg( QString( "Cannot open GRASS vector: %1" ).arg( e.what() ) );
         str += "</table>";
-        str += QString( "%1 <br>").arg( e.what() );
+        str += QString( "%1 <br>" ).arg( e.what() );
       }
 
       return str;
@@ -380,7 +380,7 @@ QString QgsGrassModelItem::info()
       {
         QgsDebugMsg( QString( "Cannot open GRASS vector: %1" ).arg( e.what() ) );
         str += "</table>";
-        str += QString( "%1 <br>").arg( e.what() );
+        str += QString( "%1 <br>" ).arg( e.what() );
       }
       return str;
     }

@@ -893,7 +893,7 @@ void QgsGrassEditAttributes::mouseClick( QgsPoint & point, Qt::MouseButton butto
     e->mAttributes->setLine( 0 );
     e->mAttributes->clear();
     e->mAttributes->raise();
-    // Just to disable new button 
+    // Just to disable new button
     e->mAttributes->setCategoryMode( QgsGrassEdit::CAT_MODE_NOCAT, QString() );
   }
 

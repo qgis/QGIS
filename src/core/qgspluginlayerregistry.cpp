@@ -22,8 +22,8 @@
 #include "qgspluginlayer.h"
 #include "qgsmaplayerregistry.h"
 
-QgsPluginLayerType::QgsPluginLayerType(QString name)
-  : mName(name)
+QgsPluginLayerType::QgsPluginLayerType( QString name )
+    : mName( name )
 {
 }
 
@@ -41,7 +41,7 @@ QgsPluginLayer* QgsPluginLayerType::createLayer()
   return NULL;
 }
 
-bool QgsPluginLayerType::showLayerProperties(QgsPluginLayer* layer)
+bool QgsPluginLayerType::showLayerProperties( QgsPluginLayer* layer )
 {
   return false;
 }
@@ -68,17 +68,17 @@ QgsPluginLayerRegistry::~QgsPluginLayerRegistry()
 {
   if ( !mPluginLayerTypes.isEmpty() )
   {
-    QgsDebugMsg("QgsPluginLayerRegistry::~QgsPluginLayerRegistry(): creator list not empty");
-    foreach (QString typeName, mPluginLayerTypes.keys())
-      removePluginLayerType(typeName);
+    QgsDebugMsg( "QgsPluginLayerRegistry::~QgsPluginLayerRegistry(): creator list not empty" );
+    foreach( QString typeName, mPluginLayerTypes.keys() )
+    removePluginLayerType( typeName );
   }
 }
 
-bool QgsPluginLayerRegistry::addPluginLayerType(QgsPluginLayerType* type)
+bool QgsPluginLayerRegistry::addPluginLayerType( QgsPluginLayerType* type )
 {
-  if (type == NULL)
+  if ( type == NULL )
     return false;
-  if (mPluginLayerTypes.contains(type->name()))
+  if ( mPluginLayerTypes.contains( type->name() ) )
     return false;
 
   mPluginLayerTypes[type->name()] = type;
@@ -86,41 +86,41 @@ bool QgsPluginLayerRegistry::addPluginLayerType(QgsPluginLayerType* type)
 }
 
 
-bool QgsPluginLayerRegistry::removePluginLayerType(QString typeName)
+bool QgsPluginLayerRegistry::removePluginLayerType( QString typeName )
 {
-  if (!mPluginLayerTypes.contains(typeName))
+  if ( !mPluginLayerTypes.contains( typeName ) )
     return false;
 
   // remove all remaining layers of this type - to avoid invalid behaviour
   QList<QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers().values();
-  foreach (QgsMapLayer* layer, layers)
+  foreach( QgsMapLayer* layer, layers )
   {
-    if (layer->type() == QgsMapLayer::PluginLayer)
+    if ( layer->type() == QgsMapLayer::PluginLayer )
     {
-      QgsPluginLayer* pl = qobject_cast<QgsPluginLayer*>(layer);
-      if (pl->pluginLayerType() == typeName)
+      QgsPluginLayer* pl = qobject_cast<QgsPluginLayer*>( layer );
+      if ( pl->pluginLayerType() == typeName )
       {
-        QgsMapLayerRegistry::instance()->removeMapLayer(layer->getLayerID());
+        QgsMapLayerRegistry::instance()->removeMapLayer( layer->getLayerID() );
       }
     }
   }
 
-  delete mPluginLayerTypes.take(typeName);
+  delete mPluginLayerTypes.take( typeName );
   return true;
 }
 
-QgsPluginLayerType* QgsPluginLayerRegistry::pluginLayerType(QString typeName)
+QgsPluginLayerType* QgsPluginLayerRegistry::pluginLayerType( QString typeName )
 {
-  return mPluginLayerTypes.value(typeName, NULL);
+  return mPluginLayerTypes.value( typeName, NULL );
 }
 
 
-QgsPluginLayer* QgsPluginLayerRegistry::createLayer(QString typeName)
+QgsPluginLayer* QgsPluginLayerRegistry::createLayer( QString typeName )
 {
-  QgsPluginLayerType* type = pluginLayerType(typeName);
-  if (!type)
+  QgsPluginLayerType* type = pluginLayerType( typeName );
+  if ( !type )
   {
-    QgsDebugMsg("Unknown plugin layer type: "+typeName);
+    QgsDebugMsg( "Unknown plugin layer type: " + typeName );
     return NULL;
   }
 

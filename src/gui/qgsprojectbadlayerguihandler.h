@@ -12,7 +12,7 @@
  */
 class GUI_EXPORT QgsProjectBadLayerGuiHandler : public QObject, public QgsProjectBadLayerHandler
 {
-  Q_OBJECT
+    Q_OBJECT
 
   public:
     QgsProjectBadLayerGuiHandler();

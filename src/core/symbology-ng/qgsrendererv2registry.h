@@ -27,14 +27,14 @@ class CORE_EXPORT QgsRendererV2AbstractMetadata
     QString visibleName() const { return mVisibleName; }
 
     QIcon icon() const { return mIcon; }
-    void setIcon(const QIcon& icon) { mIcon = icon; }
+    void setIcon( const QIcon& icon ) { mIcon = icon; }
 
     /** Return new instance of the renderer given the DOM element. Returns NULL on error.
      * Pure virtual function: must be implemented in derived classes.  */
     virtual QgsFeatureRendererV2* createRenderer( QDomElement& elem ) = 0;
     /** Return new instance of settings widget for the renderer. Returns NULL on error. */
     virtual QgsRendererV2Widget* createRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
-      { return NULL; }
+    { return NULL; }
 
   protected:
     //! name used within QGIS for identification (the same what renderer's type() returns)
@@ -64,9 +64,9 @@ class CORE_EXPORT QgsRendererV2Metadata : public QgsRendererV2AbstractMetadata
                            QgsRendererV2WidgetFunc pfWidget = NULL )
         : QgsRendererV2AbstractMetadata( name, visibleName, icon ), mCreateFunc( pfCreate ), mWidgetFunc( pfWidget ) {}
 
-    virtual QgsFeatureRendererV2* createRenderer( QDomElement& elem ) { return mCreateFunc ? mCreateFunc(elem):NULL; }
+    virtual QgsFeatureRendererV2* createRenderer( QDomElement& elem ) { return mCreateFunc ? mCreateFunc( elem ) : NULL; }
     virtual QgsRendererV2Widget* createRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
-      { return mWidgetFunc ? mWidgetFunc(layer, style, renderer) : NULL; }
+    { return mWidgetFunc ? mWidgetFunc( layer, style, renderer ) : NULL; }
 
     QgsRendererV2CreateFunc createFunction() const { return mCreateFunc; }
     QgsRendererV2WidgetFunc widgetFunction() const { return mWidgetFunc; }

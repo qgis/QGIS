@@ -59,7 +59,7 @@ int main( int argc, char **argv )
   if ( mapset == NULL )
     G_fatal_error(( "Raster map <%s> not found" ), name );
 
-  /* It can happen that GRASS data set is 'corrupted' and zone differs in WIND and 
+  /* It can happen that GRASS data set is 'corrupted' and zone differs in WIND and
    * cellhd, and G_open_cell_old fails, so it is better to read window from map */
   /* G_get_window( &window ); */
   G_get_cellhd( name, mapset, &window );
@@ -140,11 +140,11 @@ static int cell_draw( char *name,
   /* some buggy C libraries require BOTH setmode() and fdopen(bin) */
 #ifdef WIN32
   if ( _setmode( _fileno( stdout ), _O_BINARY ) == -1 )
-      G_fatal_error( "Cannot set stdout mode" );
+    G_fatal_error( "Cannot set stdout mode" );
 #endif
   // Unfortunately this is not sufficient on Windows to switch stdout to binary mode
-  fo = fdopen (fileno(stdout), "wb");
-    
+  fo = fdopen( fileno( stdout ), "wb" );
+
   /* loop for array rows */
   for ( row = 0; row < nrows; row++ )
   {
