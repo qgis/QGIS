@@ -428,6 +428,9 @@ SET(QGIS_CORE_HDRS
   qgsvectoroverlay.h
   qgstolerance.h
 
+  composer/qgslegendmodel.h
+  composer/qgscomposerlegenditem.h
+
   raster/qgscliptominmaxenhancement.h
   raster/qgscolorrampshader.h
   raster/qgscolorrampshader.h
