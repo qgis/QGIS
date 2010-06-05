@@ -265,6 +265,8 @@ GDAL_INC = $(GDAL_INC_$(GDAL_FORM))
 GDAL_LIB_fw = -framework GDAL
 GDAL_LIB_shared = -L$(GDAL_PREFIX_shared)/lib -lgdal
 GDAL_LIB = $(GDAL_LIB_$(GDAL_FORM))
+// list as of GDAL 1.7.2, used for bundling
+GDAL_PROGS = epsg_tr.py esri2wkt.py gcps2vec.py gcps2wld.py gdal_contour gdal_fillnodata.py gdal_grid gdal_merge.py gdal_polygonize.py gdal_proximity.py gdal_rasterize gdal_retile.py gdal_sieve.py gdal_translate gdal-config gdal2tiles.py gdal2xyz.py gdaladdo gdalbuildvrt gdalchksum.py gdaldem gdalenhance gdalident.py gdalimport.py gdalinfo gdalmanage gdaltindex gdaltransform gdalwarp mkgraticule.py nearblack ogr2ogr ogrinfo ogrtindex pct2rgb.py rgb2pct.py testepsg
 
 PROJ_PREFIX_fw = /Library/Frameworks/PROJ.framework
 PROJ_INC_fw = $(PROJ_PREFIX_fw)/Headers
