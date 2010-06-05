@@ -1415,8 +1415,9 @@ void QgsComposerMap::drawCanvasItems( QPainter* painter, const QStyleOptionGraph
   {
     return;
   }
-
   QGraphicsItem* currentItem = 0;
+
+#if QT_VERSION >= 0x40600 //Qt 4.6 provides the items in visibility order
   for ( int i = itemList.size() - 1; i >= 0; --i )
   {
     currentItem = itemList.at( i );
@@ -1427,6 +1428,42 @@ void QgsComposerMap::drawCanvasItems( QPainter* painter, const QStyleOptionGraph
     }
     drawCanvasItem( currentItem, painter, itemStyle );
   }
+#else //Qt <4.6 provides the items in random order
+  QMultiMap<int, QGraphicsItem*> topLevelItems;
+  QMultiMap<QGraphicsItem*, QGraphicsItem*> childItems; //QMultiMap<parentItem, childItem>
+
+  for ( int i = 0; i < itemList.size(); ++i )
+  {
+    currentItem = itemList.at( i );
+    //don't draw mapcanvasmap (has z value -10)
+    if ( !currentItem || currentItem->zValue() == -10 )
+    {
+      continue;
+    }
+    if ( currentItem->parentItem() )
+    {
+      childItems.insert( currentItem->parentItem(), currentItem );
+    }
+    else
+    {
+      topLevelItems.insert( currentItem->zValue(), currentItem );
+    }
+  }
+
+  QMultiMap<int, QGraphicsItem*>::iterator topLevelIt = topLevelItems.begin();
+  for ( ; topLevelIt != topLevelItems.end(); ++topLevelIt )
+  {
+    drawCanvasItem( topLevelIt.value(), painter, itemStyle );
+    //Draw children. They probably should be sorted according to z-order, but we don't do it because this code is only
+    //there for backward compatibility. And currently, having several embedded children is not used in QGIS
+    QMap<QGraphicsItem*, QGraphicsItem*>::iterator childIt = childItems.find( topLevelIt.value() );
+    while ( childIt != childItems.end() && childIt.key() == topLevelIt.value() )
+    {
+      drawCanvasItem( childIt.value(), painter, itemStyle );
+      ++childIt;
+    }
+  }
+#endif
 }
 
 void QgsComposerMap::drawCanvasItem( QGraphicsItem* item, QPainter* painter, const QStyleOptionGraphicsItem* itemStyle )
