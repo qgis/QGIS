@@ -11268,7 +11268,7 @@ Veuillez sélectionner un fichier valide.</translation>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="73"/>
         <source>Use map units if possible</source>
-        <translation type="unfinished"></translation>
+        <translation>Utiliser les unités de la carte si possible</translation>
     </message>
     <message>
         <source>Map units</source>
@@ -15330,7 +15330,7 @@ Ceci est peut-être dûà votre connexion ou celle du serveru WMS.
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="271"/>
         <source>pt</source>
-        <translation type="unfinished"></translation>
+        <translation>pt</translation>
     </message>
 </context>
 <context>
@@ -21963,7 +21963,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="385"/>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="388"/>
         <source>Save current RGB composition as default. This setting will be persistent between QGIS sessions.</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer la composition RVB par défaut. Ce choix sera appliqué aux prochaines sessions de travail QGIS.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="411"/>
@@ -22005,7 +22005,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="693"/>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="696"/>
         <source>Save current standard deviation value as default. This setting will be persistent between QGIS sessions.</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer la valeur de déviation standard par défaut. Ce choix sera appliqué aux prochaines sessions de travail QGIS.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="722"/>
@@ -22192,7 +22192,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="903"/>
         <source>Note</source>
-        <translation type="unfinished"></translation>
+        <translation>Note</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1573"/>
@@ -22202,17 +22202,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1605"/>
         <source>Columns</source>
-        <translation type="unfinished">Colonnes</translation>
+        <translation>Colonnes</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1618"/>
         <source>Rows</source>
-        <translation type="unfinished">Lignes</translation>
+        <translation>Lignes</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1631"/>
         <source>No Data</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas de donnée</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1690"/>
@@ -22240,7 +22240,14 @@ p, li { white-space: pre-wrap; }
 &lt;tr&gt;
 &lt;td style=&quot;border: none;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;table style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;
+&lt;tr&gt;
+&lt;td style=&quot;border: none;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1927"/>
@@ -22491,7 +22498,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="22"/>
         <source>Renderer</source>
-        <translation type="unfinished"></translation>
+        <translation>Rendu :</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="48"/>
@@ -22858,36 +22865,36 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="53"/>
         <source>&amp;Save...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sauvegarder...</translation>
     </message>
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="55"/>
         <source>Save query to an xml file</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer la requête dans un fichier xml</translation>
     </message>
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="58"/>
         <source>&amp;Load...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Charger...</translation>
     </message>
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="60"/>
         <source>Load query from xml file</source>
-        <translation type="unfinished"></translation>
+        <translation>Charger une requête depuis un fichier xml</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="190"/>
         <source>Found %n matching feature(s).</source>
         <comment>test result</comment>
         <translation>
-            <numerusform>%n entité trouvée</numerusform>
-            <numerusform>%n entités trouvées</numerusform>
+            <numerusform>%n entité trouvée.</numerusform>
+            <numerusform>%n entités trouvées.</numerusform>
         </translation>
     </message>
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="352"/>
         <source>Save query to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Enregistrer la requête dans un fichier</translation>
     </message>
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="361"/>
@@ -22895,57 +22902,57 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="398"/>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="405"/>
         <source>Error</source>
-        <translation type="unfinished">Erreur</translation>
+        <translation>Erreur</translation>
     </message>
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="361"/>
         <source>Could not open file for writing</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;ouvrir le fichier en écriture</translation>
     </message>
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="383"/>
         <source>Load query from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Charger une requête depuis un fichier</translation>
     </message>
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="383"/>
         <source>Query files</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichier de requête</translation>
     </message>
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="383"/>
         <source>All files</source>
-        <translation type="unfinished"></translation>
+        <translation>Tous les fichiers</translation>
     </message>
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="392"/>
         <source>Could not open file for reading</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;ouvrir le fichier en lecture</translation>
     </message>
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="398"/>
         <source>File is not a valid xml document</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier n&apos;est pas un document xml valide</translation>
     </message>
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="405"/>
         <source>File is not a valid query document</source>
-        <translation type="unfinished"></translation>
+        <translation>Le fichier n&apos;est pas un document valide de requête</translation>
     </message>
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="422"/>
         <source>Error creating search tree</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur lors de la création de l&apos;arbre de recherche</translation>
     </message>
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="445"/>
         <source>Select attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner l&apos;attribut</translation>
     </message>
     <message>
         <location filename="../src/app/qgssearchquerybuilder.cpp" line="445"/>
         <source>There is no attribute &apos;%1&apos; in the current vector layer. Please select an existing attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Il n&apos;y pas d&apos;attribut &apos;%1&apos; dans la couche vectorielle actuelle. Veuillez sélectionner un attribut existant.</translation>
     </message>
 </context>
 <context>
@@ -27241,12 +27248,12 @@ URL Éprouvé : %1</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="151"/>
         <source>Join style</source>
-        <translation type="unfinished"></translation>
+        <translation>Style de jointure</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="177"/>
         <source>Cap style</source>
-        <translation type="unfinished"></translation>
+        <translation>Style de cap</translation>
     </message>
     <message>
         <source>Color:</source>
