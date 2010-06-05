@@ -10,7 +10,7 @@ DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
 DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 
 DISTRIBUTION := $(shell dpkg-parsechangelog --format rfc822 | sed -ne "s/^Distribution: //p")
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"lenny hardy intrepid jaunty karmic lucid"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"lenny squeeze hardy intrepid jaunty karmic lucid"))
 DISTRIBUTION := sid
 endif
 
@@ -30,7 +30,7 @@ CMAKE_OPTS := \
 	-D PEDANTIC=TRUE \
 	-D WITH_SPATIALITE=TRUE
 
-ifeq (,$(findstring $(DISTRIBUTION),"sid"))
+ifeq (,$(findstring $(DISTRIBUTION),"squeeze lucid sid"))
 	CMAKE_OPTS += -D WITH_INTERNAL_SPATIALITE=TRUE
 else
 	CMAKE_OPTS += -D WITH_INTERNAL_SPATIALITE=FALSE
