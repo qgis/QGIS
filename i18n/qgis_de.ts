@@ -12229,10 +12229,6 @@ Bitte wählen Sie eine gültige Datei.</translation>
         <source>Use map units if possible</source>
         <translation>möglichst Karteneinheiten</translation>
     </message>
-    <message>
-        <source>Map units</source>
-        <translation type="obsolete">Karteneinheiten</translation>
-    </message>
 </context>
 <context>
     <name>QgsGeorefDescriptionDialogBase</name>
@@ -28191,12 +28187,11 @@ URL %1 versucht</translation>
 <context>
     <name>dxf2shpConverterGui</name>
     <message>
-        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="121"/>
         <source>Fields description:
 * Input DXF file: path to the DXF file to be converted
 * Output Shp file: desired name of the shape file to be created
 * Shp output file type: specifies the type of the output shape file
-* Export text labels checkbox: if checked, an additional shp points layer will be created,   and the associated dbf table will contain informations about the &quot;TEXT&quot; fields found in the dxf file, and the text strings themselves
+* Export text labels checkbox: if checked, an additional shp points layer will be created,   and the associated dbf table will contain information about the &quot;TEXT&quot; fields found in the dxf file, and the text strings themselves
 
 ---
 Developed by Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
