@@ -362,7 +362,7 @@ on qgis.nsi and choose the option 'Compile NSIS Script'.
 In this approach I will try to avoid as much as possible building dependencies
 from source and rather use frameworks wherever possible.
 
-The base system here is Mac OS X 10.4 (__Tiger__) and below. Included are a few notes
+The base system here is Mac OS X 10.4 (__Tiger__). Included are a few notes
 for building on Mac OS X 10.5 (__Leopard__) and 10.6 (__Snow Leopard__). 
 
 __Snow Leopard note:__ A cmake/qt/sip bug currently exists where a 32-bit
@@ -427,7 +427,7 @@ PROJ, GEOS, GDAL, SQLite3, and image libraries, as frameworks.  There is also
 a GSL framework.
 
 ``` 
-http://www.kyngchaos.com/wiki/software:frameworks
+http://www.kyngchaos.com/wiki/software/frameworks
 ```
 
 Once downloaded, open and install the frameworks.
@@ -438,13 +438,13 @@ Postgres + PostGIS server, all you need is the client-only package.
 It's available here:
 
 ``` 
-http://www.kyngchaos.com/wiki/software:postgres 
+http://www.kyngchaos.com/wiki/software/postgres 
 ```
 
 Also available is a GRASS application:
 
 ```
-http://www.kyngchaos.com/wiki/software:grass
+http://www.kyngchaos.com/wiki/software/grass
 ```
 
 === Additional Dependencies : General compatibility note ===
@@ -456,6 +456,9 @@ provide the appropriate build commands to produce 64-bit support in dependencies
 Likewise, for 32-bit support on Snow Leopard, you will need to override the
 default system architecture, which is 64-bit, according to instructions for
 individual dependency packages.
+
+Stable release versions are preferred.  Beta and other development versions may
+have problems and you are on your own with those.
 
 === Additional Dependencies : Expat ===
 
@@ -474,12 +477,6 @@ Double-click the source tarball to unpack, then, in Terminal.app, cd to the sour
 ./configure
 make 
 sudo make install 
-```
-
-__Leopard note:__ To compile for 64bit, substitute the standard configure line with:
-
-```
-./configure CFLAGS="-Os -arch x86_64"
 ```
 
 
@@ -522,8 +519,8 @@ system path -- this is not a good idea.  Use this configure command instead of t
 basic configure above:
 
 ```
-python configure.py -d /Library/Python/2.5/site-packages -b /usr/local/bin \
--e /usr/local/include -v /usr/local/share/sip
+python configure.py -n -d /Library/Python/2.5/site-packages -b /usr/local/bin \
+-e /usr/local/include -v /usr/local/share/sip -s MacOSX10.5.sdk
 ```
 
 __Snow Leopard notes__
@@ -534,15 +531,15 @@ and make sure to run the versioned python binary (this one responds to the
 'arch' command, 'python' does not). If you are using 32-bit Qt (Qt Carbon):
 
 ```
-python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin \
--e /usr/local/include -v /usr/local/share/sip --arch=i386
+python2.6 configure.py -n -d /Library/Python/2.6/site-packages -b /usr/local/bin \
+-e /usr/local/include -v /usr/local/share/sip --arch=i386 -s MacOSX10.6.sdk
 ```
 
 For 64-bit Qt (Qt Cocoa), use this configure line:
 
 ```
-python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin \
--e /usr/local/include -v /usr/local/share/sip --arch=x86_64
+python2.6 configure.py -n -d /Library/Python/2.6/site-packages -b /usr/local/bin \
+-e /usr/local/include -v /usr/local/share/sip --arch=x86_64 -s MacOSX10.6.sdk
 ```
 
 
@@ -558,7 +555,6 @@ Double-click the source tarball to unpack it, then, in Terminal.app, cd to the s
 and (this installs by default into the Python framework, and is appropriate only for python.org Python installs):
 
 ``` 
-export QTDIR=/Developer/Applications/Qt
 python configure.py 
 yes 
 ```
@@ -623,8 +619,19 @@ Double-click the tarball to unpack it.  The following assumes PyQwt v5.2.0 (come
 Now, first edit qwtconfig.pri in the qwt-5.2 subdir and change some settings so
 you don't get a bloated debug static library (too bad they are not configurable from
 qmake).  Scroll down to the 'release/debug mode' block.  Edit the last 'CONFIG +='
-line, within an 'else' block, and change 'debug' to 'release'.  Also uncomment
-(remove # prefix) the line 'CONFIG += QwtDll'.
+line, within an 'else' block, and change 'debug' to 'release'.  Like so:
+
+```
+    else {
+        CONFIG           += release     # release/debug
+    }
+```
+
+Also uncomment (remove # prefix) the line 'CONFIG += QwtDll'.  Like so:
+
+```
+CONFIG           += QwtDll
+```
 
 Save and close.
 
@@ -673,7 +680,7 @@ python configure.py --extra-cflags="-arch i386" --extra-cxxflags="-arch i386" \
 
 __Leopard and Snow Leopard note:__ Leopard and Snow Leopard include Bison 2.3, so this step can be skipped on Leopard and Snow Leopard.
 
-The version of bison available by default on Mac OS X 10.4 and older is too old so you need to
+The version of bison available by default on Mac OS X 10.4 is too old so you need to
 get a more recent one on your system. Download at least version 2.3 from:
 
 ``` 
@@ -690,6 +697,8 @@ sudo make install
 ```
 
 == Install CMake for OSX ==
+
+(Only needed for a cmake build.)
 
 Get the latest source release from here:
 
