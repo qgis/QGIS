@@ -112,9 +112,6 @@ OutFile "${INSTALLER_NAME}"
 ;Define installation folder
 InstallDir "$PROGRAMFILES\${QGIS_BASE}"
 
-;Request application privileges for Windows Vista
-RequestExecutionLevel user
-
 ;Tell the installer to show Install and Uninstall details as default
 ShowInstDetails show
 ShowUnInstDetails show
