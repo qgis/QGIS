@@ -90,7 +90,7 @@ inline void Bezier3D::add( ParametricLine* pl )
 
 inline void Bezier3D::remove( int i )
 {
-  QgsDebugMsg( "Error!!!!! A Bezier-curve has no Childs to remove." );
+  QgsDebugMsg( "Error!!!!! A Bezier-curve has no children to remove." );
 }
 
 //-----------------------------------------------setters and getters---------------------------------------------------------------
