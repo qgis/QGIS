@@ -12,8 +12,9 @@ qgis (1.5.0) UNRELEASED; urgency=low
   * exclude python scripts from grass plugin on lenny
   * add missing dependency to python-sip(4) to python-qgis
   * follow sip4 => sip transition
+  * add gdal-bin and python-gdal dependency for GdalTools
 
- -- Jürgen E. Fischer <jef@norbit.de>  Wed, 02 Jun 2010 12:46:06 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Sat, 05 Jun 2010 04:26:22 +0200
 
 qgis (1.4.0) UNRELEASED; urgency=low
 
