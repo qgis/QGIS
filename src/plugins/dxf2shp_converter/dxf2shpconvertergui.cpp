@@ -123,7 +123,7 @@ void dxf2shpConverterGui::on_buttonBox_helpRequested()
                   "* Output Shp file: desired name of the shape file to be created\n"
                   "* Shp output file type: specifies the type of the output shape file\n"
                   "* Export text labels checkbox: if checked, an additional shp points layer will be created, "
-                  "  and the associated dbf table will contain informations about the \"TEXT\" fields found"
+                  "  and the associated dbf table will contain information about the \"TEXT\" fields found"
                   " in the dxf file, and the text strings themselves\n\n"
                   "---\n"
                   "Developed by Paolo L. Scala, Barbara Rita Barricelli, Marco Padula\n"
