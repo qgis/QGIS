@@ -1555,11 +1555,11 @@ void QgsWmsProvider::parseLayer( QDomElement const & e, QgsWmsLayerProperty& lay
       {
         parseKeywordList( e1, layerProperty.keywordList );
       }
-      else if ( e1.tagName() == "CRS" )
+      else if ( e1.tagName() == "SRS" )
       {
         layerProperty.crs.push_back( e1.text() );
       }
-      else if ( e1.tagName() == "SRS" )      // legacy from earlier versions of WMS
+      else if ( e1.tagName() == "CRS" )      // legacy from earlier versions of WMS
       {
         // CRS can contain several definitions separated by whitespace
         // though this was deprecated in WMS 1.1.1
