@@ -51,7 +51,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.inputLayerCombo.setEditText(inputFile)
 
   def fillOutputDirEdit(self):
-      outputDir, encoding = Utils.FileDialog.getExistingDirectory(self, self.tr( "Select where to save the Countour output" ), True)
+      outputDir, encoding = Utils.FileDialog.getExistingDirectory(self, self.tr( "Select where to save the Contour output" ), True)
       if outputDir.isEmpty():
         return
 
