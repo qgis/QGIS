@@ -27,6 +27,7 @@
 #include "qgssymbol.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include <QApplication>
 #include <QDomDocument>
 #include <QDomElement>
 #include <QMimeData>
@@ -40,6 +41,9 @@ QgsLegendModel::QgsLegendModel(): QStandardItemModel()
     connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( addLayer( QgsMapLayer* ) ) );
   }
   setItemPrototype( new QgsComposerSymbolItem() );
+
+  QWidgetList topLevelWidgets = QApplication::topLevelWidgets();
+  mHasTopLevelWindow = ( topLevelWidgets.size() > 0 );
 }
 
 QgsLegendModel::~QgsLegendModel()
@@ -147,7 +151,10 @@ int QgsLegendModel::addVectorLayerItemsV2( QStandardItem* layerItem, QgsVectorLa
     currentSymbolItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
     if ( symbolIt->second )
     {
-      currentSymbolItem->setIcon( QgsSymbolLayerV2Utils::symbolPreviewIcon( symbolIt->second, QSize( 30, 30 ) ) );
+      if ( mHasTopLevelWindow ) //only use QIcon / QPixmap if we have a running x-server
+      {
+        currentSymbolItem->setIcon( QgsSymbolLayerV2Utils::symbolPreviewIcon( symbolIt->second, QSize( 30, 30 ) ) );
+      }
       currentSymbolItem->setSymbolV2( symbolIt->second->clone() );
     }
     layerItem->setChild( layerItem->rowCount(), 0, currentSymbolItem );
@@ -228,8 +235,12 @@ int QgsLegendModel::addRasterLayerItem( QStandardItem* layerItem, QgsMapLayer* r
     return 2;
   }
 
+  QgsComposerRasterSymbolItem* currentSymbolItem = new QgsComposerRasterSymbolItem();
   //use a vector symbol item without symbol
-  QgsComposerRasterSymbolItem* currentSymbolItem = new QgsComposerRasterSymbolItem( QIcon( rasterLayer->legendAsPixmap( true ) ), "" );
+  if ( mHasTopLevelWindow ) //only use QIcon / QPixmap if we have a running x-server
+  {
+    currentSymbolItem->setIcon( QIcon( rasterLayer->legendAsPixmap( true ) ) );
+  }
   currentSymbolItem->setLayerID( rasterLayer->getLayerID() );
   int currentRowCount = layerItem->rowCount();
   layerItem->setChild( currentRowCount, 0, currentSymbolItem );
@@ -421,7 +432,11 @@ QStandardItem* QgsLegendModel::itemFromSymbol( QgsSymbol* s, int opacity, const 
     }
   }
 
-  currentSymbolItem = new QgsComposerSymbolItem( QIcon( QPixmap::fromImage( symbolImage ) ), itemText );
+  currentSymbolItem = new QgsComposerSymbolItem( itemText );
+  if ( mHasTopLevelWindow )//only use QIcon / QPixmap if we have a running x-server
+  {
+    currentSymbolItem->setIcon( QIcon( QPixmap::fromImage( symbolImage ) ) );
+  }
 
   if ( !currentSymbolItem )
   {

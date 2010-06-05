@@ -109,6 +109,9 @@ class CORE_EXPORT QgsLegendModel: public QStandardItemModel
 
   protected:
     QStringList mLayerIds;
+    /**True if this application has toplevel windows (normally true). If this is false, this means that the application
+       might not have a running x-server on unix systems and so QPixmap and QIcon cannot be used*/
+    bool mHasTopLevelWindow;
 };
 
 #endif
