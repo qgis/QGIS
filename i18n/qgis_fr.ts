@@ -1444,129 +1444,129 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     <name>GdalTools</name>
     <message>
         <source>Quantum GIS version detected: </source>
-        <translation type="unfinished">Version détectée de Quantum GIS :</translation>
+        <translation>Version détectée de Quantum GIS :</translation>
     </message>
     <message>
         <source>This version of Gdal Tools requires at least QGIS version 1.0.0
 Plugin will not be enabled.</source>
-        <translation type="unfinished">Cette version de GdalTools requiert au moins la version 1.0.0 de QGIS
+        <translation>Cette version de GdalTools requiert au moins la version 1.0.0 de QGIS
 Cette extension ne sera pas activée.</translation>
     </message>
     <message>
         <source>&amp;Raster</source>
-        <translation type="unfinished">&amp;Raster</translation>
+        <translation>&amp;Raster</translation>
     </message>
     <message>
         <source>Build Virtual Raster (catalog)</source>
-        <translation type="unfinished">Construit un Raster Virtuel (VRT)</translation>
+        <translation>Construit un Raster Virtuel (VRT)</translation>
     </message>
     <message>
         <source>Builds a VRT from a list of datasets</source>
-        <translation type="unfinished">Construit un VRT depuis une liste de jeu de données</translation>
+        <translation>Construit un VRT depuis une liste de jeu de données</translation>
     </message>
     <message>
         <source>Contour</source>
-        <translation type="unfinished">Outil de contours</translation>
+        <translation>Outil de contours</translation>
     </message>
     <message>
         <source>Builds vector contour lines from a DEM</source>
-        <translation type="unfinished">Construire des lignes de contours vectorielles depuis un DEM/MNE</translation>
+        <translation>Construire des lignes de contours vectorielles depuis un DEM/MNE</translation>
     </message>
     <message>
         <source>Rasterize</source>
-        <translation type="unfinished">Rastériser</translation>
+        <translation>Rastériser</translation>
     </message>
     <message>
         <source>Burns vector geometries into a raster</source>
-        <translation type="unfinished">Inscrit les géométries vecteurs dans un raster</translation>
+        <translation>Inscrit les géométries vectorielles dans un raster</translation>
     </message>
     <message>
         <source>Polygonize</source>
-        <translation type="unfinished">Polygoniser</translation>
+        <translation>Polygoniser</translation>
     </message>
     <message>
         <source>Produces a polygon feature layer from a raster</source>
-        <translation type="unfinished">Produit une couche de polygones depuis un raster</translation>
+        <translation>Produit une couche de polygones depuis un raster</translation>
     </message>
     <message>
         <source>Merge</source>
-        <translation type="unfinished">Fusion</translation>
+        <translation>Fusion</translation>
     </message>
     <message>
         <source>Build a quick mosaic from a set of images</source>
-        <translation type="unfinished">Construit une mosaïque depuis un ensemble d&apos;images</translation>
+        <translation>Construit une mosaïque depuis un ensemble d&apos;images</translation>
     </message>
     <message>
         <source>Sieve</source>
-        <translation type="unfinished">Tamiser</translation>
+        <translation>Tamiser</translation>
     </message>
     <message>
         <source>Removes small raster polygons</source>
-        <translation type="unfinished">Supprime les petits polygones</translation>
+        <translation>Supprime les petits polygones</translation>
     </message>
     <message>
         <source>Proximity</source>
-        <translation type="unfinished">Proximité</translation>
+        <translation>Proximité</translation>
     </message>
     <message>
         <source>Produces a raster proximity map</source>
-        <translation type="unfinished">Produit une carte raster de proximité</translation>
+        <translation>Produit une carte raster de proximité</translation>
     </message>
     <message>
         <source>Near black</source>
-        <translation type="unfinished">Presque Noir</translation>
+        <translation>Presque Noir</translation>
     </message>
     <message>
         <source>Convert nearly black/white borders to exact value</source>
-        <translation type="unfinished">Convertit les nuances presque noires ou blanches en valeurs exactes</translation>
+        <translation>Convertit les nuances presque noires ou blanches en valeurs exactes</translation>
     </message>
     <message>
         <source>Warp</source>
-        <translation type="unfinished">Projection</translation>
+        <translation>Projection</translation>
     </message>
     <message>
         <source>Warp an image into a new coordinate system</source>
-        <translation type="unfinished">Projette une image dans un nouveau système de coordonnée</translation>
+        <translation>Projette une image dans un nouveau système de coordonnée</translation>
     </message>
     <message>
         <source>Grid</source>
-        <translation type="unfinished">Grille</translation>
+        <translation>Grille</translation>
     </message>
     <message>
         <source>Create raster from the scattered data</source>
-        <translation type="unfinished">Créé un raster à partir de données éparses</translation>
+        <translation>Créé un raster à partir de données éparses</translation>
     </message>
     <message>
         <source>Translate</source>
-        <translation type="unfinished">Convertir</translation>
+        <translation>Convertir</translation>
     </message>
     <message>
         <source>Converts raster data between different formats</source>
-        <translation type="unfinished">Convertit des données raster entre différents formats</translation>
+        <translation>Convertit des données raster entre différents formats</translation>
     </message>
     <message>
         <source>Information</source>
-        <translation type="unfinished">Information</translation>
+        <translation>Information</translation>
     </message>
     <message>
         <source>Lists information about raster dataset</source>
-        <translation type="unfinished">Liste des informations relative à des rasters</translation>
+        <translation>Liste des informations relative à des rasters</translation>
     </message>
     <message>
         <source>Assign projection</source>
-        <translation type="unfinished">Assigner une projection</translation>
+        <translation>Assigner une projection</translation>
     </message>
     <message>
         <source>Add projection info to the raster</source>
-        <translation type="unfinished">Renseigne une projection pour un raster</translation>
+        <translation>Renseigne une projection pour un raster</translation>
     </message>
     <message>
         <source>Build overviews</source>
-        <translation type="unfinished">Construire des aperçus</translation>
+        <translation>Construire des aperçus</translation>
     </message>
     <message>
         <source>Builds or rebuilds overview images</source>
-        <translation type="unfinished">Construit ou reconstruit les aperçus</translation>
+        <translation>Construit ou reconstruit les aperçus</translation>
     </message>
     <message>
         <source>Clipper</source>
@@ -1574,55 +1574,55 @@ Cette extension ne sera pas activée.</translation>
     </message>
     <message>
         <source>RGB to PCT</source>
-        <translation type="unfinished">RVB vers PCT</translation>
+        <translation>RVB vers PCT</translation>
     </message>
     <message>
         <source>Convert a 24bit RGB image to 8bit paletted</source>
-        <translation type="unfinished">Convertit une image RVB de 24bits vers une palette sur 8bits</translation>
+        <translation>Convertit une image RVB de 24bits vers une palette sur 8bits</translation>
     </message>
     <message>
         <source>PCT to RGB</source>
-        <translation type="unfinished">PCT vers RVB</translation>
+        <translation>PCT vers RVB</translation>
     </message>
     <message>
         <source>Convert an 8bit paletted image to 24bit RGB</source>
-        <translation type="unfinished">Convertit une image 8bits vers une palette RVB de 24bits</translation>
+        <translation>Convertit une image 8bits vers une palette RVB de 24bits</translation>
     </message>
     <message>
         <source>GdalTools settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Paramètres de GdalTools</translation>
     </message>
     <message>
         <source>Various settings for Gdal Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Paramètres divers de GdalTools</translation>
     </message>
     <message>
         <source>About GdalTools</source>
-        <translation type="unfinished">A propos de GdalTools</translation>
+        <translation>À propos de GdalTools</translation>
     </message>
     <message>
         <source>Displays information about Gdal Tools</source>
-        <translation type="unfinished">Afficher les informations sur Gdal Tools</translation>
+        <translation>Afficher les informations sur Gdal Tools</translation>
     </message>
     <message>
         <source>&amp;Input directory:</source>
-        <translation type="unfinished">&amp;Répertoire source :</translation>
+        <translation>&amp;Répertoire source :</translation>
     </message>
     <message>
         <source>&amp;Output directory:</source>
-        <translation type="unfinished">&amp;Répertoire de destination :</translation>
+        <translation>&amp;Répertoire de destination :</translation>
     </message>
     <message>
         <source>The process failed to start. Either the invoked program is missing, or you may have insufficient permissions to invoke the program.</source>
-        <translation type="unfinished">Le processus n&apos;a pu être lancé. Soit le programme requis est manquant, soit vous n&apos;avez pas les droits nécessaires pour l&apos;utiliser.</translation>
+        <translation>Le processus n&apos;a pu être lancé. Soit le programme requis est manquant, soit vous n&apos;avez pas les droits nécessaires pour l&apos;utiliser.</translation>
     </message>
     <message>
         <source>The process crashed some time after starting successfully.</source>
-        <translation type="unfinished">Le processus a planté quelques temps après avoir été lancé.</translation>
+        <translation>Le processus a planté quelques temps après avoir été lancé.</translation>
     </message>
     <message>
         <source>An unknown error occurred.</source>
-        <translation type="unfinished">Une erreur inconnue s&apos;est produite.</translation>
+        <translation>Une erreur inconnue s&apos;est produite.</translation>
     </message>
     <message>
         <source>The selected file is not a supported OGR format</source>
@@ -1642,17 +1642,17 @@ Cette extension ne sera pas activée.</translation>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogAbout.ui" line="14"/>
         <source>About Gdal Tools</source>
-        <translation type="unfinished">A propos de Gdal Tools</translation>
+        <translation>A propos de Gdal Tools</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogAbout.ui" line="27"/>
         <source>GDAL Tools</source>
-        <translation type="unfinished">GDAL Tools</translation>
+        <translation>GDAL Tools</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogAbout.ui" line="40"/>
         <source>Version x.x-xxxxxx</source>
-        <translation type="unfinished">Version x.x-xxxxxx</translation>
+        <translation>Version x.x-xxxxxx</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogAbout.ui" line="99"/>
@@ -1666,12 +1666,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogAbout.ui" line="115"/>
         <source>Web</source>
-        <translation type="unfinished">SIte internet</translation>
+        <translation>SIte internet</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogAbout.ui" line="122"/>
         <source>Close</source>
-        <translation type="unfinished">Fermer</translation>
+        <translation>Fermer</translation>
     </message>
     <message>
         <source>
@@ -1756,59 +1756,61 @@ http://trac.faunalia.it/GdalTools-plugin</source>
     <name>GdalToolsBaseBatchWidget</name>
     <message>
         <source>Finished</source>
-        <translation type="unfinished">Завершено</translation>
+        <translation>Завершено</translation>
     </message>
     <message>
         <source>Operation completed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Opération terminée</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished">Attention</translation>
+        <translation>Attention</translation>
     </message>
     <message>
         <source>The following files were not created: 
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Les fichiers suivants n&apos;ont pu être créés :
+%1</translation>
     </message>
 </context>
 <context>
     <name>GdalToolsBaseDialog</name>
     <message>
         <source>Warning</source>
-        <translation type="unfinished">Attention</translation>
+        <translation>Attention</translation>
     </message>
     <message>
         <source>The command is still running. 
 Do you want terminate it anyway?</source>
-        <translation type="unfinished"></translation>
+        <translation>La commande est toujours en cours d&apos;exécution.
+Voulez-vous quand même la stopper ?</translation>
     </message>
     <message>
         <source>Invalid parameters.</source>
-        <translation type="unfinished">Paramètres invalides.</translation>
+        <translation>Paramètres invalides.</translation>
     </message>
 </context>
 <context>
     <name>GdalToolsBasePluginWidget</name>
     <message>
         <source>Warning</source>
-        <translation type="unfinished">Attention</translation>
+        <translation>Attention</translation>
     </message>
     <message>
         <source>No output file created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas de fichier créé.</translation>
     </message>
     <message>
         <source>Finished</source>
-        <translation type="unfinished">Завершено</translation>
+        <translation>Terminé</translation>
     </message>
     <message>
         <source>Elaboration completed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Élaboration terminée.</translation>
     </message>
     <message>
         <source>%1 not created.</source>
-        <translation type="unfinished">%1 non créé.</translation>
+        <translation>%1 non créé.</translation>
     </message>
 </context>
 <context>
@@ -1816,132 +1818,132 @@ Do you want terminate it anyway?</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogBase.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished">Dialogue</translation>
+        <translation>Dialogue</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogBase.ui" line="27"/>
         <source>&amp;Load into canvas when finished</source>
-        <translation type="unfinished">&amp;Charger dans la carte une fois terminé</translation>
+        <translation>&amp;Charger dans la carte une fois terminé</translation>
     </message>
     <message>
         <source>Convert paletted image to RGB</source>
-        <translation type="unfinished"></translation>
+        <translation>Convertir une image avec une palette de couleurs en RVB</translation>
     </message>
     <message>
         <source>Band to convert:</source>
-        <translation type="unfinished"></translation>
+        <translation>Bande à convertir :</translation>
     </message>
     <message>
         <source>Select the input file for convert</source>
-        <translation type="unfinished">Sélectionner le fichier en entrée pour le convertir</translation>
+        <translation>Sélectionner le fichier en entrée pour le convertir</translation>
     </message>
     <message>
         <source>Select the raster file to save the results to</source>
-        <translation type="unfinished">Sélectionner le fichier raster où seront enregistrés les résultats</translation>
+        <translation>Sélectionner le fichier raster où seront enregistrés les résultats</translation>
     </message>
     <message>
         <source>Select the input directory with files to Warp</source>
-        <translation type="unfinished">Sélectionner le répertoire contenant les fichiers à reprojeter</translation>
+        <translation>Sélectionner le répertoire contenant les fichiers à reprojeter</translation>
     </message>
     <message>
         <source>Select the output directory to save the results to</source>
-        <translation type="unfinished">Sélectionner le répertoire de destination  où seront enregistrés les résultats</translation>
+        <translation>Sélectionner le répertoire de destination  où seront enregistrés les résultats</translation>
     </message>
     <message>
         <source>Select the input file for Translate</source>
-        <translation type="unfinished">Sélectionner le fichier en entrée à convertir</translation>
+        <translation>Sélectionner le fichier en entrée à convertir</translation>
     </message>
     <message>
         <source>Select the input directory with files to Translate</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner le répertoire contenant les fichiers à convertir</translation>
     </message>
     <message>
         <source>Select the input file for Near Black</source>
-        <translation type="unfinished">Sélectionner le fichier en entrée pour la fonction Presque Noir</translation>
+        <translation>Sélectionner le fichier en entrée pour la fonction Presque Noir</translation>
     </message>
     <message>
         <source>No active raster layers. You must add almost one raster layer to continue.</source>
-        <translation type="unfinished">Pas de couches raster actives. Vous devez ajouter au moins une couche pour pouvoir continuer.</translation>
+        <translation>Pas de couches rasters actives. Vous devez ajouter au moins une couche pour pouvoir continuer.</translation>
     </message>
     <message>
         <source>Select the input file</source>
-        <translation type="unfinished">Sélectionner le fichier en entrée</translation>
+        <translation>Sélectionner le fichier en entrée</translation>
     </message>
     <message>
         <source>Select the input directory with files</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner le répertoire contenant les fichiers</translation>
     </message>
     <message>
         <source>Select the input file for Warp</source>
-        <translation type="unfinished">Sélectionner le fichier en entrée pour la reprojection</translation>
+        <translation>Sélectionner le fichier en entrée pour la reprojection</translation>
     </message>
     <message>
         <source>Select the files for VRT</source>
-        <translation type="unfinished">Sélectionner les fichiers pour le VRT</translation>
+        <translation>Sélectionner les fichiers pour le VRT</translation>
     </message>
     <message>
         <source>Select where to save the VRT</source>
-        <translation type="unfinished">Sélectionner où enregistrer le VRT</translation>
+        <translation>Sélectionner où enregistrer le VRT</translation>
     </message>
     <message>
         <source>VRT (*.vrt)</source>
-        <translation type="unfinished">VRT (*.vrt)</translation>
+        <translation>VRT (*.vrt)</translation>
     </message>
     <message>
         <source>Select the input file for Sieve</source>
-        <translation type="unfinished">Sélectionner le fichier en entrée à tamiser</translation>
+        <translation>Sélectionner le fichier en entrée à tamiser</translation>
     </message>
     <message>
         <source>Select the input file for Polygonize</source>
-        <translation type="unfinished">Sélectionner le fichier en entrée à polygoniser</translation>
+        <translation>Sélectionner le fichier en entrée à polygoniser</translation>
     </message>
     <message>
         <source>Select where to save the Polygonize output</source>
-        <translation type="unfinished">Sélectionner où enregistrer le résultat polygonisé</translation>
+        <translation>Sélectionner où enregistrer le résultat polygonisé</translation>
     </message>
     <message>
         <source>Select the files to Merge</source>
-        <translation type="unfinished">Sélectionner les fichiers à fusionner</translation>
+        <translation>Sélectionner les fichiers à fusionner</translation>
     </message>
     <message>
         <source>Select where to save the Merge output</source>
-        <translation type="unfinished">Sélectionner où enregistrer le résultat de la fusion</translation>
+        <translation>Sélectionner où enregistrer le résultat de la fusion</translation>
     </message>
     <message>
         <source>Copy</source>
-        <translation type="unfinished">Copier</translation>
+        <translation>Copier</translation>
     </message>
     <message>
         <source>Copy all</source>
-        <translation type="unfinished">Copier tout</translation>
+        <translation>Copier tout</translation>
     </message>
     <message>
         <source>Select the file to analyse</source>
-        <translation type="unfinished">Sélectionner le fichier à analyser</translation>
+        <translation>Sélectionner le fichier à analyser</translation>
     </message>
     <message>
         <source>Select the input file for Grid</source>
-        <translation type="unfinished">Sélectionner le fichier en entrée pour la grille</translation>
+        <translation>Sélectionner le fichier en entrée pour la grille</translation>
     </message>
     <message>
         <source>Select the input file for Contour</source>
-        <translation type="unfinished">Sélectionner le fichier en entrée pour le contour</translation>
+        <translation>Sélectionner le fichier en entrée pour le contour</translation>
     </message>
     <message>
         <source>Select where to save the Contour output</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner où enregistrer le produit de la fonction Contour</translation>
     </message>
     <message>
         <source>Select the input file for Rasterize</source>
-        <translation type="unfinished">Sélectionner le fichier en entrée à rastériser</translation>
+        <translation>Sélectionner le fichier en entrée à rastériser</translation>
     </message>
     <message>
         <source>Select the input file for Proximity</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner le fichier en entrée pour la fonction Proximité</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished">Attention</translation>
+        <translation>Attention</translation>
     </message>
     <message>
         <source>Warning: CRS information for all raster in subfolders will be rewritten. Are you sure?</source>
@@ -1949,15 +1951,15 @@ Do you want terminate it anyway?</source>
     </message>
     <message>
         <source>Select the input directory with files to Assign projection</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner le répertoire contenant les fichiers pour assigner une projection</translation>
     </message>
     <message>
         <source>Assign projection</source>
-        <translation type="unfinished">Assigner une projection</translation>
+        <translation>Assigner une projection</translation>
     </message>
     <message>
         <source>This raster already found in map canvas</source>
-        <translation type="unfinished">Ce raster dse trouve déjà dans le caneva de la carte</translation>
+        <translation>Ce raster dse trouve déjà dans le caneva de la carte</translation>
     </message>
     <message>
         <source>&amp;Help</source>
@@ -2073,22 +2075,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/GdalTools/tools/optionsTable.ui" line="39"/>
         <source>Name</source>
-        <translation type="unfinished">Nom</translation>
+        <translation>Nom</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/optionsTable.ui" line="44"/>
         <source>Value</source>
-        <translation type="unfinished">Valeur</translation>
+        <translation>Valeur</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/optionsTable.ui" line="54"/>
         <source>Add</source>
-        <translation type="unfinished">Ajouter</translation>
+        <translation>Ajouter</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/optionsTable.ui" line="61"/>
         <source>Remove</source>
-        <translation type="unfinished">Supprimer</translation>
+        <translation>Supprimer</translation>
     </message>
 </context>
 <context>
@@ -2096,12 +2098,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="14"/>
         <source>Gdal Tools settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Paramètres de GdalTools</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="20"/>
         <source>Path to the GDAL binaries</source>
-        <translation type="unfinished"></translation>
+        <translation>Chemin vers les exécutables binaires de GDAL</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="32"/>
@@ -2109,26 +2111,26 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="94"/>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="125"/>
         <source>Browse</source>
-        <translation type="unfinished">Parcourir</translation>
+        <translation>Parcourir</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="44"/>
         <source>GDAL data path</source>
-        <translation type="unfinished"></translation>
+        <translation>Chemin vers les données de GDAL</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="75"/>
         <source>GDAL driver path</source>
-        <translation type="unfinished"></translation>
+        <translation>Chemin vers les pilotes de GDAL</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="106"/>
         <source>GDAL pymod path</source>
-        <translation type="unfinished"></translation>
+        <translation>Chemin vers le mode python de GDAL</translation>
     </message>
     <message>
         <source>Select directory with GDAL executables</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner le répertoire contenant les fichiers exécutables de GDAL</translation>
     </message>
 </context>
 <context>
@@ -2136,13 +2138,13 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="20"/>
         <source>Build Virtual Raster</source>
-        <translation type="unfinished">Construire un Raster Virtuel</translation>
+        <translation>Construire un Raster Virtuel</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="34"/>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="31"/>
         <source>&amp;Input files:</source>
-        <translation type="unfinished">&amp;Fichiers sources :</translation>
+        <translation>&amp;Fichiers sources :</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="56"/>
@@ -2178,7 +2180,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="122"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="150"/>
         <source>Select...</source>
-        <translation type="unfinished">Sélection...</translation>
+        <translation>Sélection...</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="65"/>
@@ -2192,32 +2194,32 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="75"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="72"/>
         <source>&amp;Output file:</source>
-        <translation type="unfinished">В&amp;ихідний файл:</translation>
+        <translation>В&amp;ихідний файл:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="106"/>
         <source>Highest</source>
-        <translation type="unfinished">Plus Haut</translation>
+        <translation>Plus Haut</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="111"/>
         <source>Average</source>
-        <translation type="unfinished">Moyenne</translation>
+        <translation>Moyenne</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="116"/>
         <source>Lowest</source>
-        <translation type="unfinished">Plus Bas</translation>
+        <translation>Plus Bas</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="124"/>
         <source>&amp;Resolution:</source>
-        <translation type="unfinished">&amp;Résolution</translation>
+        <translation>&amp;Résolution :</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="131"/>
         <source>&amp;Source No Data:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Source de valeurs nulles :</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="20"/>
@@ -2228,7 +2230,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="62"/>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="93"/>
         <source>&amp;No data value:</source>
-        <translation type="unfinished">&amp;Valeur sans donnée :</translation>
+        <translation>&amp;Valeur sans donnée :</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="78"/>
@@ -2238,81 +2240,81 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="87"/>
         <source>Select the extent by drag &amp; drop on canvas</source>
-        <translation type="unfinished">Sélectionner l&apos;étendue avec un gliiser/déposer sur la carte</translation>
+        <translation>Sélectionner l&apos;étendue avec un gliiser/déposer sur la carte</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="94"/>
         <source>or change the extent coordinates:</source>
-        <translation type="unfinished">ou en changeant les coordonnées de l&apos;étendue :</translation>
+        <translation>ou en changeant les coordonnées de l&apos;étendue :</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="105"/>
         <source>1:</source>
-        <translation type="unfinished">1:</translation>
+        <translation>1:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="116"/>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="181"/>
         <source>x</source>
-        <translation type="unfinished">x</translation>
+        <translation>x</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="133"/>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="198"/>
         <source>y</source>
-        <translation type="unfinished">y</translation>
+        <translation>y</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="170"/>
         <source>2:</source>
-        <translation type="unfinished">2:</translation>
+        <translation>2:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="221"/>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="126"/>
         <source>Grab pseudocolor table from the first image</source>
-        <translation type="unfinished">Saisir une palette de pseudo-couleurs depuis la première image</translation>
+        <translation>Saisir une palette de pseudo-couleurs depuis la première image</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="20"/>
         <source>Contour</source>
-        <translation type="unfinished">Outil de contours</translation>
+        <translation>Outil de contours</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="31"/>
         <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="28"/>
         <source>&amp;Input file (raster):</source>
-        <translation type="unfinished">&amp;Fichier source (raster) :</translation>
+        <translation>&amp;Fichier source (raster) :</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="68"/>
         <source>&amp;Output directory for contour lines (shapefile):</source>
-        <translation type="unfinished">&amp;Répertoire de sortie pour les lignes de contours (shapefile) :</translation>
+        <translation>&amp;Répertoire de sortie pour les contours (.shp) :</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="101"/>
         <source>&amp;Attribute name:</source>
-        <translation type="unfinished">Nom d&apos;&amp;attribut :</translation>
+        <translation>Nom d&apos;&amp;attribut :</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="131"/>
         <source>If not provided, no elevation attribute is attached.</source>
-        <translation type="unfinished">Si non renseigné, aucun attribut d&apos;élévation ne sera attaché.</translation>
+        <translation>Si non renseigné, aucun attribut d&apos;élévation ne sera attaché.</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="142"/>
         <source>ELEV</source>
-        <translation type="unfinished"></translation>
+        <translation>ELEVATION</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="149"/>
         <source>I&amp;nterval between contour lines:</source>
-        <translation type="unfinished">I&amp;ntervalle entre les lignes de contours :</translation>
+        <translation>I&amp;ntervalle entre les lignes :</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetConvert.ui" line="20"/>
         <source>Convert RGB image to paletted</source>
-        <translation type="unfinished"></translation>
+        <translation>Convertir une image en RVB en une palette de couleurs</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetConvert.ui" line="26"/>
@@ -2321,7 +2323,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="26"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="26"/>
         <source>Batch mode (for processing whole directory)</source>
-        <translation type="unfinished">Mode par lot (pour opérer sur l&apos;ensemble d&apos;un répertoire)</translation>
+        <translation>Mode par lot (pour opérer sur l&apos;ensemble d&apos;un répertoire)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetConvert.ui" line="35"/>
@@ -2334,27 +2336,27 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="28"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="35"/>
         <source>&amp;Input file:</source>
-        <translation type="unfinished">&amp;Вхідний файл:</translation>
+        <translation>&amp;Fichier source :</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetConvert.ui" line="96"/>
         <source>Number of colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de couleurs</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="20"/>
         <source>Grid</source>
-        <translation type="unfinished">Grille</translation>
+        <translation>Grille</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="65"/>
         <source>&amp;Z Field:</source>
-        <translation type="unfinished">&amp;Champ Z :</translation>
+        <translation>&amp;Champ Z :</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="106"/>
         <source>&amp;Algorithm:</source>
-        <translation type="unfinished">&amp;Аlgorithme :</translation>
+        <translation>&amp;Аlgorithme :</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="114"/>
@@ -2364,22 +2366,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="119"/>
         <source>Moving average</source>
-        <translation type="unfinished">Moyenne de déplacement</translation>
+        <translation>Moyenne de déplacement</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="124"/>
         <source>Nearest neighbor</source>
-        <translation type="unfinished">Plus proche voisin</translation>
+        <translation>Plus proche voisin</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="129"/>
         <source>Data metrics</source>
-        <translation type="unfinished">Métrique des données</translation>
+        <translation>Métrique des données</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="167"/>
         <source>Power:</source>
-        <translation type="unfinished">Puissance :</translation>
+        <translation>Puissance :</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="181"/>
@@ -2392,7 +2394,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="384"/>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="482"/>
         <source>Radius1:</source>
-        <translation type="unfinished">Rayon1 :</translation>
+        <translation>Rayon1 :</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="215"/>
@@ -2400,7 +2402,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="401"/>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="499"/>
         <source>Radius2:</source>
-        <translation type="unfinished">Rayon2 :</translation>
+        <translation>Rayon2 :</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="232"/>
@@ -2408,19 +2410,19 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="418"/>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="516"/>
         <source>Angle:</source>
-        <translation type="unfinished">Angle :</translation>
+        <translation>Angle :</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="249"/>
         <source>Max points:</source>
-        <translation type="unfinished">Max points:</translation>
+        <translation>Max points:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="263"/>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="349"/>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="533"/>
         <source>Min points:</source>
-        <translation type="unfinished">Min points:</translation>
+        <translation>Min points:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="277"/>
@@ -2428,52 +2430,52 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="435"/>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="547"/>
         <source>No data:</source>
-        <translation type="unfinished">Sans donnée :</translation>
+        <translation>Sans donnée :</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="456"/>
         <source>Metrics:</source>
-        <translation type="unfinished">Métriques :</translation>
+        <translation>Métriques :</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="464"/>
         <source>Minimum</source>
-        <translation type="unfinished">Minimum</translation>
+        <translation>Minimum</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="469"/>
         <source>Maximum</source>
-        <translation type="unfinished">Maximum</translation>
+        <translation>Maximum</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="474"/>
         <source>Range</source>
-        <translation type="unfinished">Plage</translation>
+        <translation>Plage</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetInfo.ui" line="20"/>
         <source>Info</source>
-        <translation type="unfinished">Info</translation>
+        <translation>Info</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetInfo.ui" line="63"/>
         <source>Raster info</source>
-        <translation type="unfinished">Info Raster</translation>
+        <translation>Info Raster</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetInfo.ui" line="83"/>
         <source>Suppress GCP printing</source>
-        <translation type="unfinished">Supprimer l&apos;impression des points de contrôle</translation>
+        <translation>Supprimer l&apos;impression des points de contrôle</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetInfo.ui" line="90"/>
         <source>Suppress metadata printing</source>
-        <translation type="unfinished">Supprimer l&apos;impression des métadonnées</translation>
+        <translation>Supprimer l&apos;impression des métadonnées</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="20"/>
         <source>Merge</source>
-        <translation type="unfinished">Fusion</translation>
+        <translation>Fusion</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="109"/>
@@ -2489,12 +2491,12 @@ p, li { white-space: pre-wrap; }
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="133"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="153"/>
         <source>&amp;Creation Options:</source>
-        <translation type="unfinished">Options de &amp;création :</translation>
+        <translation>Options de &amp;création :</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="20"/>
         <source>Near Black</source>
-        <translation type="unfinished">Presque Noir</translation>
+        <translation>Presque Noir</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="106"/>
@@ -2509,22 +2511,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="20"/>
         <source>Add overview</source>
-        <translation type="unfinished">Ajouter un aperçu</translation>
+        <translation>Ajouter un aperçu</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="72"/>
         <source>Resampling method</source>
-        <translation type="unfinished">Méthode de reéchantillonage</translation>
+        <translation>Méthode de reéchantillonage</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="80"/>
         <source>nearest</source>
-        <translation type="unfinished">le plus proche</translation>
+        <translation>le plus proche</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="85"/>
         <source>average</source>
-        <translation type="unfinished">moyen</translation>
+        <translation>moyen</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="90"/>
@@ -2544,7 +2546,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="105"/>
         <source>mode</source>
-        <translation type="unfinished">mode</translation>
+        <translation>mode</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="113"/>
@@ -2554,42 +2556,42 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="125"/>
         <source>Open in read-only mode</source>
-        <translation type="unfinished">Ouvrir en lecture seule</translation>
+        <translation>Ouvrir en lecture seule</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="20"/>
         <source>Polygonize</source>
-        <translation type="unfinished">Polygoniser</translation>
+        <translation>Polygoniser</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="65"/>
         <source>&amp;Output file for polygons (shapefile):</source>
-        <translation type="unfinished">&amp;Répertoire de sortie pour les polygones (shapefile) :</translation>
+        <translation>&amp;Répertoire de sortie pour les polygones (shapefile) :</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="96"/>
         <source>DN</source>
-        <translation type="unfinished">DN</translation>
+        <translation>DN</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="103"/>
         <source>&amp;Field name:</source>
-        <translation type="unfinished">&amp;Nom du champ :</translation>
+        <translation>&amp;Nom du champ :</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="20"/>
         <source>Assign projection</source>
-        <translation type="unfinished">Assigner une projection</translation>
+        <translation>Assigner une projection</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="33"/>
         <source>WARNING: current projection definition will be cleared</source>
-        <translation type="unfinished">Attnetion : la projection actuelle sera effacér</translation>
+        <translation>Attnetion : la projection actuelle sera effacér</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="73"/>
         <source>Desired SRS:</source>
-        <translation type="unfinished">SCR désirée ;</translation>
+        <translation>SCR désirée :</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="94"/>
@@ -2606,138 +2608,138 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="20"/>
         <source>Proximity</source>
-        <translation type="unfinished">Proximité</translation>
+        <translation>Proximité</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="89"/>
         <source>&amp;Values:</source>
-        <translation type="unfinished">&amp;Valeur</translation>
+        <translation>&amp;Valeurs :</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="121"/>
         <source>&amp;Dist units:</source>
-        <translation type="unfinished">Unités de &amp;distance :</translation>
+        <translation>Unités de &amp;distance :</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="132"/>
         <source>GEO</source>
-        <translation type="unfinished">GEO</translation>
+        <translation>GEO</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="137"/>
         <source>PIXEL</source>
-        <translation type="unfinished">PIXEL</translation>
+        <translation>PIXEL</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="145"/>
         <source>&amp;Max dist:</source>
-        <translation type="unfinished">Distance &amp;max. :</translation>
+        <translation>Distance &amp;max. :</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="159"/>
         <source>&amp;No data:</source>
-        <translation type="unfinished">Sa&amp;ns donnée :</translation>
+        <translation>Sa&amp;ns donnée :</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="173"/>
         <source>&amp;Fixed buf val:</source>
-        <translation type="unfinished">Valeur tampon &amp;fixe :</translation>
+        <translation>Valeur tampon &amp;fixe :</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="20"/>
         <source>Rasterize</source>
-        <translation type="unfinished">Rastériser</translation>
+        <translation>Rastériser</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="28"/>
         <source>&amp;Input file (shapefile):</source>
-        <translation type="unfinished">&amp;Fichier source (shapefile) :</translation>
+        <translation>&amp;Fichier source (shapefile) :</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="75"/>
         <source>&amp;Output file for rasterized vectors (raster, must exists):</source>
-        <translation type="unfinished">&amp;Répertoire de sortie pour les vecteurs rastérisés (raster, doit déjà exister) :</translation>
+        <translation>&amp;Répertoire de sortie pour les vecteurs rastérisés (raster, doit déjà exister) :</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="106"/>
         <source>&amp;Attribute field:</source>
-        <translation type="unfinished">Champ d&apos;&amp;attribut :</translation>
+        <translation>Champ d&apos;&amp;attribut :</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="20"/>
         <source>Sieve</source>
-        <translation type="unfinished">Tamiser</translation>
+        <translation>Tamiser</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="104"/>
         <source>4</source>
-        <translation type="unfinished">4</translation>
+        <translation>4</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="109"/>
         <source>8</source>
-        <translation type="unfinished">8</translation>
+        <translation>8</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="117"/>
         <source>&amp;Threshold:</source>
-        <translation type="unfinished">&amp;Seuil :</translation>
+        <translation>&amp;Seuil :</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="124"/>
         <source>&amp;Pixel connections:</source>
-        <translation type="unfinished">Connexions de &amp;pixel :</translation>
+        <translation>Connexions de &amp;pixel :</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="20"/>
         <source>Translate</source>
-        <translation type="unfinished">Convertir</translation>
+        <translation>Convertir</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="38"/>
         <source>&amp;Input Layer:</source>
-        <translation type="unfinished">&amp;Couche source :</translation>
+        <translation>&amp;Couche source :</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="106"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="131"/>
         <source>&amp;Target SRS:</source>
-        <translation type="unfinished">&amp;SCR cible :</translation>
+        <translation>&amp;SCR cible :</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="144"/>
         <source>Output format</source>
-        <translation type="unfinished">Format en sortie</translation>
+        <translation>Format en sortie</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="20"/>
         <source>Warp</source>
-        <translation type="unfinished">Projection</translation>
+        <translation>Projection</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="103"/>
         <source>&amp;Source SRS:</source>
-        <translation type="unfinished">&amp;SCR source :</translation>
+        <translation>&amp;SCR source :</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="159"/>
         <source>&amp;Resampling method:</source>
-        <translation type="unfinished">Méthode de &amp;ré-échantillonnage :</translation>
+        <translation>Méthode de &amp;ré-échantillonnage :</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="167"/>
         <source>Near</source>
-        <translation type="unfinished">Au plus proche</translation>
+        <translation>Au plus proche</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="172"/>
         <source>Bilinear</source>
-        <translation type="unfinished">Bilinéaire</translation>
+        <translation>Bilinéaire</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="177"/>
         <source>Cubic</source>
-        <translation type="unfinished">Cubique</translation>
+        <translation>Cubique</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="182"/>
@@ -2747,17 +2749,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="187"/>
         <source>Lanczos</source>
-        <translation type="unfinished">Lanczos</translation>
+        <translation>Lanczos</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="195"/>
         <source>&amp;Memory used for caching:</source>
-        <translation type="unfinished">&amp;Mémoire utilisée par le cache :</translation>
+        <translation>&amp;Mémoire utilisée par le cache :</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="202"/>
         <source>MB</source>
-        <translation type="unfinished">MB</translation>
+        <translation>MB</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="215"/>
@@ -2767,22 +2769,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="227"/>
         <source>Resize</source>
-        <translation type="unfinished">Changer la taille</translation>
+        <translation>Changer la taille</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="242"/>
         <source>Image width</source>
-        <translation type="unfinished">Largeur de l&apos;image</translation>
+        <translation>Largeur de l&apos;image</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="256"/>
         <source>Image height</source>
-        <translation type="unfinished">Hauteur de l&apos;image</translation>
+        <translation>Hauteur de l&apos;image</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="276"/>
         <source>Use m&amp;ultithreaded warping implementation</source>
-        <translation type="unfinished">Utiliser la version multithread de la projection</translation>
+        <translation>Utiliser la version m&amp;ultithread de la projection</translation>
     </message>
 </context>
 <context>
@@ -20715,8 +20717,8 @@ Veuillez vérifier si vous avez le droit d&apos;effectuer une commande SELECT su
     <message>
         <source>The plugin seems to have been installed but I don&apos;t know where. Probably the plugin package contained a wrong named directory.
 Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll find the plugin there, but I just can&apos;t determine which of them it is. It also means that I won&apos;t be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue.</source>
-        <translation>L&apos;extension semble havoir été installé mais je ne sais pas où. Il est probable que l&apos;extension devait contenir un répertoire mal nommé.
-Veulliez chercher dans la liste des extensions installées. Vous ne pourrez bénéficier des notifications de mise à jours. Raportez ce problème à l&apos;auteur de l&apos;extension.</translation>
+        <translation type="unfinished">L&apos;extension semble avoir été installée, mais je ne sais pas où. Il est probable que l&apos;extension devait contenir un répertoire mal nommé.
+Veuillez chercher dans la liste des extensions installées. Vous ne pourrez bénéficier des notifications de mises à jour. Rapportez ce problème à l&apos;auteur de l&apos;extension.</translation>
     </message>
     <message>
         <source>Plugin installed successfully</source>
@@ -28272,19 +28274,16 @@ URL Éprouvé : %1</translation>
 <context>
     <name>UndoWidget</name>
     <message>
-        <location filename="../src/app/qgsgeomerrorswidget.cpp" line="161"/>
         <location filename="../src/app/qgsundowidget.cpp" line="161"/>
         <source>Undo/Redo</source>
         <translation>Annuler/Refaire</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsgeomerrorswidget.cpp" line="162"/>
         <location filename="../src/app/qgsundowidget.cpp" line="162"/>
         <source>Undo</source>
         <translation>Annuler</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsgeomerrorswidget.cpp" line="163"/>
         <location filename="../src/app/qgsundowidget.cpp" line="163"/>
         <source>Redo</source>
         <translation>Refaire</translation>
