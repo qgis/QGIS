@@ -67,6 +67,9 @@ $(2): $(1)
 		-e "s/{QGIS_ABI}/$(QGIS_ABI)/g" \
 		-e "s/{GRASS}/$(GRASS)/g" \
 		-e "s/{GRASS_ABI}/$(GRASS_ABI)/g" $$^ >$$@
+
+templateclean::
+	rm -f $(2)
 endef
 
 TEMPLATES := $(foreach t,$(wildcard debian/*.in debian/*.$(DISTRIBUTION)),$(basename $(t)))
@@ -92,7 +95,7 @@ build-stamp: debian/build/CMakeCache.txt
 
 	touch $@
 
-clean: $(TEMPLATES)
+clean: templateclean debian/control
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp 
