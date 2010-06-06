@@ -373,12 +373,12 @@ p, li { white-space: pre-wrap; }\n
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="174"/>
         <source>Keep all records (including non-matching target records)</source>
-        <translation type="unfinished"></translation>
+        <translation>Διατήρησε όλες τις εγγραφές (ακόμα και τις αταίριαστες)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="193"/>
         <source>Keep all records (includeing non-matching target records)</source>
-        <translation>Διατήρησε  όλες τις εγγραφές (ακόμα και αταίριαστες)</translation>
+        <translation>Διατήρησε όλες τις εγγραφές (ακόμα και τις αταίριαστες)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="16"/>
@@ -719,7 +719,9 @@ Would you like to add the new layer to the TOC?</source>
         <source>No output will be created.
 Following field names are longer than 10 characters:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Δεν θα παραχθεί κανένα αποτέλεσμα.
+Τα ακόλουθα ονόματα των πεδίων είναι μακρύτερα από 10 χαρακτήρες:
+%1</translation>
     </message>
     <message>
         <source>Define current projection</source>
@@ -1435,17 +1437,17 @@ Following field names are longer then 10 characters:
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="20"/>
         <source>Symbol preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Προεπισκόπηση Συμβόλου</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="31"/>
         <source>Symbol layer type</source>
-        <translation type="unfinished"></translation>
+        <translation>Τύπος Συμβόλου</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="100"/>
         <source>Symbol layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Επίπεδα Συμβόλων</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="125"/>
@@ -1532,80 +1534,81 @@ Following field names are longer then 10 characters:
     <name>GdalTools</name>
     <message>
         <source>&amp;Input directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Φάκελος αρχείων γ&amp;ια εισαγωγή:</translation>
     </message>
     <message>
         <source>&amp;Output directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Φάκελος αρχείων για εξαγωγή: (&amp;Output):</translation>
     </message>
     <message>
         <source>The process failed to start. Either the invoked program is missing, or you may have insufficient permissions to invoke the program.</source>
-        <translation type="unfinished"></translation>
+        <translation>Η διαδικασία απέτυχε να εκκινήσει. Είτε απουσιάζει το καλούμενο πρόγραμμα, ή μπορει να μην έχετε αρκετά δικαιώματα για να καλέσετε το πρόγραμμα αυτό.</translation>
     </message>
     <message>
         <source>The process crashed some time after starting successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>Η διαδικασία αντιμετώπισε πρόβλημα μετά την επιτυχή εκκίνησή της.</translation>
     </message>
     <message>
         <source>An unknown error occurred.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ένα άγνωστο σφάλμα συνέβη.</translation>
     </message>
     <message>
         <source>The selected file is not a supported OGR format</source>
-        <translation type="unfinished"></translation>
+        <translation>Το επιλεγμένο αρχειο δεν είναι ένα υποστηριζομενο OGR format</translation>
     </message>
     <message>
         <source>Quantum GIS version detected: </source>
-        <translation type="unfinished">Ανιχνεύτηκε η έκδοση του Quantum GIS:</translation>
+        <translation>Ανιχνεύτηκε η έκδοση του Quantum GIS: </translation>
     </message>
     <message>
         <source>This version of Gdal Tools requires at least QGIS version 1.0.0
 Plugin will not be enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Αυτή η έκδοση του Gdal Tools απαιτεί τουλάχιστον την έκδοση του QGIS 1.0.0
+Το πρόσθετο (Plugin) δεν θα ενεργοποιηθεί.</translation>
     </message>
     <message>
         <source>&amp;Raster</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Build Virtual Raster (catalog)</source>
-        <translation type="unfinished"></translation>
+        <translation>Κατασκευή εικονικού πλέγματος (κατάλογος)</translation>
     </message>
     <message>
         <source>Builds a VRT from a list of datasets</source>
-        <translation type="unfinished"></translation>
+        <translation>Κατασκευή ενός VRT από μια λίστα datasets</translation>
     </message>
     <message>
         <source>Contour</source>
-        <translation type="unfinished"></translation>
+        <translation>Περίγραμμα</translation>
     </message>
     <message>
         <source>Builds vector contour lines from a DEM</source>
-        <translation type="unfinished"></translation>
+        <translation>Κατασκευάζει διανυσματικές γραμμές του περιγράμματος από ένα DEM</translation>
     </message>
     <message>
         <source>Rasterize</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Burns vector geometries into a raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Εισάγει διανυσματικές γεωμετρίες σε ένα κάναβο</translation>
     </message>
     <message>
         <source>Polygonize</source>
-        <translation type="unfinished"></translation>
+        <translation>Πολυγωνοποίηση</translation>
     </message>
     <message>
         <source>Produces a polygon feature layer from a raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Παράγει ένα επίπεδο στοιχείων πολυγώνων από ένα κάναβο</translation>
     </message>
     <message>
         <source>Merge</source>
-        <translation type="unfinished"></translation>
+        <translation>Συγχώνευση</translation>
     </message>
     <message>
         <source>Build a quick mosaic from a set of images</source>
-        <translation type="unfinished"></translation>
+        <translation>Κατασκευή ενός μωσαϊκού από ένα σετ εικόνων</translation>
     </message>
     <message>
         <source>Sieve</source>
@@ -1613,23 +1616,23 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Removes small raster polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Διαγραφη μικρών raster Πολυγώνων</translation>
     </message>
     <message>
         <source>Proximity</source>
-        <translation type="unfinished"></translation>
+        <translation>Εγγύτητα</translation>
     </message>
     <message>
         <source>Produces a raster proximity map</source>
-        <translation type="unfinished"></translation>
+        <translation>Παράγει ένα χάρτη εγγύτητας σε μορφη καννάβου</translation>
     </message>
     <message>
         <source>Near black</source>
-        <translation type="unfinished"></translation>
+        <translation>Σχεδόν μαύρο</translation>
     </message>
     <message>
         <source>Convert nearly black/white borders to exact value</source>
-        <translation type="unfinished"></translation>
+        <translation>Μετατροπή σχεδόν μαύρων/λευκών ορίων σε ακριβή τιμή</translation>
     </message>
     <message>
         <source>Warp</source>
@@ -1637,83 +1640,83 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Warp an image into a new coordinate system</source>
-        <translation type="unfinished"></translation>
+        <translation>Μετατροπή μιας εικόμας σε ένα νέο σύστημα συντεταγμένων</translation>
     </message>
     <message>
         <source>Grid</source>
-        <translation type="unfinished">Πλέγμα</translation>
+        <translation>Πλέγμα</translation>
     </message>
     <message>
         <source>Create raster from the scattered data</source>
-        <translation type="unfinished"></translation>
+        <translation>Παραγωγή raster από διάσπαρτα δεδομένα</translation>
     </message>
     <message>
         <source>Translate</source>
-        <translation type="unfinished"></translation>
+        <translation>Μετάφραση</translation>
     </message>
     <message>
         <source>Converts raster data between different formats</source>
-        <translation type="unfinished"></translation>
+        <translation>Μετατροπή raster δεδομένων μεταξύ διαφορετικων format</translation>
     </message>
     <message>
         <source>Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Πληροφορία</translation>
     </message>
     <message>
         <source>Lists information about raster dataset</source>
-        <translation type="unfinished"></translation>
+        <translation>Λίστα πληροφοριών αναφορικά με το raster dataset</translation>
     </message>
     <message>
         <source>Assign projection</source>
-        <translation type="unfinished"></translation>
+        <translation>Ανάθεση προβολής</translation>
     </message>
     <message>
         <source>Add projection info to the raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Προσθήκη Πληροφορίας προβολής στο raster</translation>
     </message>
     <message>
         <source>Build overviews</source>
-        <translation type="unfinished"></translation>
+        <translation>Δημιουργία προεπισκοπήσεων</translation>
     </message>
     <message>
         <source>Builds or rebuilds overview images</source>
-        <translation type="unfinished"></translation>
+        <translation>Δημιουργία ή επαναδημιουργία εικόνων προεπισκόπησης</translation>
     </message>
     <message>
         <source>Clipper</source>
-        <translation type="unfinished"></translation>
+        <translation>Συνδετήρας</translation>
     </message>
     <message>
         <source>RGB to PCT</source>
-        <translation type="unfinished"></translation>
+        <translation>RGB σε PCT</translation>
     </message>
     <message>
         <source>Convert a 24bit RGB image to 8bit paletted</source>
-        <translation type="unfinished"></translation>
+        <translation>Μετατροπή μιας24bit RGB εικόνας σε 8bit paletted</translation>
     </message>
     <message>
         <source>PCT to RGB</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Convert an 8bit paletted image to 24bit RGB</source>
-        <translation type="unfinished"></translation>
+        <translation>Μετατροπή μιας 8bit paletted εικόνας σε 24bit RGB</translation>
     </message>
     <message>
         <source>GdalTools settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Ρυθμίσεις του GdalTools</translation>
     </message>
     <message>
         <source>Various settings for Gdal Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Διάφορες Ρυθμίσεις τουGdalTools</translation>
     </message>
     <message>
         <source>About GdalTools</source>
-        <translation type="unfinished"></translation>
+        <translation>Σχετικά με τα GdalTools</translation>
     </message>
     <message>
         <source>Displays information about Gdal Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Εμφανίζει πληροφορίες σχετικές με τα GdalTools</translation>
     </message>
 </context>
 <context>
@@ -1721,17 +1724,17 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogAbout.ui" line="14"/>
         <source>About Gdal Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Σχετικά με τα Gdal Tools</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogAbout.ui" line="27"/>
         <source>GDAL Tools</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogAbout.ui" line="40"/>
         <source>Version x.x-xxxxxx</source>
-        <translation type="unfinished">Έκδοση x.x-xxxxxx</translation>
+        <translation>Έκδοση x.x-xxxxxx</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogAbout.ui" line="99"/>
@@ -1740,17 +1743,17 @@ Plugin will not be enabled.</source>
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogAbout.ui" line="115"/>
         <source>Web</source>
-        <translation type="unfinished">Web</translation>
+        <translation>Web</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogAbout.ui" line="122"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Κλείσε</translation>
     </message>
     <message>
         <source>GDAL Tools (AKA Raster Tools) is a plugin for QuantumGIS aiming at making life simpler for users of GDAL Utilities, providing a simplified graphical interface for most commonly used programs.
@@ -1773,66 +1776,68 @@ icons by Robert Szepanek
 
 HOMEPAGE:
 http://trac.faunalia.it/GdalTools-plugin</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
     <name>GdalToolsBaseBatchWidget</name>
     <message>
         <source>Finished</source>
-        <translation type="unfinished"></translation>
+        <translation>Τελείωσε</translation>
     </message>
     <message>
         <source>Operation completed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Διεργασία ολοκληρώθηκε.</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished">Προειδοποίηση</translation>
+        <translation>Προειδοποίηση</translation>
     </message>
     <message>
         <source>The following files were not created: 
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Τα ακόλουθα αρχεία δεν δημιουργήθηκαν:
+%1</translation>
     </message>
 </context>
 <context>
     <name>GdalToolsBaseDialog</name>
     <message>
         <source>Warning</source>
-        <translation type="unfinished">Προειδοποίηση</translation>
+        <translation>Προειδοποίηση</translation>
     </message>
     <message>
         <source>The command is still running. 
 Do you want terminate it anyway?</source>
-        <translation type="unfinished"></translation>
+        <translation>Η εντολή ακόμα εκτελείται. 
+Είστε σιγουρος ότι θέλετε να την τερματίσετε;</translation>
     </message>
     <message>
         <source>Invalid parameters.</source>
-        <translation type="unfinished"></translation>
+        <translation>Άκυροι παράμετροι.</translation>
     </message>
 </context>
 <context>
     <name>GdalToolsBasePluginWidget</name>
     <message>
         <source>Warning</source>
-        <translation type="unfinished">Προειδοποίηση</translation>
+        <translation>Προειδοποίηση</translation>
     </message>
     <message>
         <source>No output file created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Αποτυχία δημιουργίας αρχείου.</translation>
     </message>
     <message>
         <source>Finished</source>
-        <translation type="unfinished"></translation>
+        <translation>Τελείωσε</translation>
     </message>
     <message>
         <source>Elaboration completed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Διεργασία ολοκληρώθηκε.</translation>
     </message>
     <message>
         <source>%1 not created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Το %1 δεν δημιουργήθηκε.</translation>
     </message>
 </context>
 <context>
@@ -1840,32 +1845,32 @@ Do you want terminate it anyway?</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogBase.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished">Διάλογος</translation>
+        <translation>Διάλογος</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogBase.ui" line="27"/>
         <source>&amp;Load into canvas when finished</source>
-        <translation type="unfinished"></translation>
+        <translation>Φόρτωση στον καμβά όταν τε&amp;λειώσει</translation>
     </message>
     <message>
         <source>Select the input file for Proximity</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλογή του αρχείου εισαγωγής για την εγγύτητα</translation>
     </message>
     <message>
         <source>Select the raster file to save the results to</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλέξατε το αρχείο raster για την αποθήκευση των αποτελεσμάτων</translation>
     </message>
     <message>
         <source>Select the input file for Near Black</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλέξτε το αρχείο εισόδου για το σχεδόν Μαύρο (near black)</translation>
     </message>
     <message>
         <source>Select the input file for Grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλογή του αρχείου εισαγωγής για τον κάνναβο</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished">Προειδοποίηση</translation>
+        <translation>Προειδοποίηση</translation>
     </message>
     <message>
         <source>Warning: CRS information for all raster in subfolders will be rewritten. Are you sure?</source>
@@ -1873,7 +1878,7 @@ Do you want terminate it anyway?</source>
     </message>
     <message>
         <source>Select the file to analyse</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλέξατε το  αρχείο που θα αναλυθεί</translation>
     </message>
     <message>
         <source>Select the input directory with files to Assign projection</source>
@@ -1881,23 +1886,23 @@ Do you want terminate it anyway?</source>
     </message>
     <message>
         <source>Assign projection</source>
-        <translation type="unfinished"></translation>
+        <translation>Ανάθεση προβολής</translation>
     </message>
     <message>
         <source>This raster already found in map canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Αυτό το raster ήδη υπάρχει στον καμβά του χάρτη</translation>
     </message>
     <message>
         <source>Select the files for VRT</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλέξατε τα αρχεία για VRT</translation>
     </message>
     <message>
         <source>Select where to save the VRT</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιλέξατε τα αρχεία για να σώσετε το VRT</translation>
     </message>
     <message>
         <source>VRT (*.vrt)</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Select the input file for Warp</source>
@@ -2138,7 +2143,7 @@ Do you want terminate it anyway?</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="20"/>
         <source>Clipper</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Συνδετήρας</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="62"/>
@@ -2192,7 +2197,7 @@ Do you want terminate it anyway?</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="20"/>
         <source>Contour</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Περίγραμμα</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="31"/>
@@ -2389,7 +2394,7 @@ Do you want terminate it anyway?</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="20"/>
         <source>Merge</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Συγχώνευση</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="109"/>
@@ -2475,7 +2480,7 @@ Do you want terminate it anyway?</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="20"/>
         <source>Polygonize</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Πολυγωνοποίηση</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="65"/>
@@ -2495,7 +2500,7 @@ Do you want terminate it anyway?</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="20"/>
         <source>Assign projection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ανάθεση προβολής</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="33"/>
@@ -2522,7 +2527,7 @@ Do you want terminate it anyway?</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="20"/>
         <source>Proximity</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Εγγύτητα</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="89"/>
@@ -2607,7 +2612,7 @@ Do you want terminate it anyway?</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="20"/>
         <source>Translate</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Μετάφραση</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="38"/>
@@ -2816,7 +2821,8 @@ Please choose larger tolerance...</source>
     <message>
         <source>At least two features must have same attribute value!
 Please choose another field...</source>
-        <translation type="unfinished"></translation>
+        <translation>Τουλάχιστον δυο στοιχεία πρέπει να έχουν την ίδια τιμή χαρακτηριστικού!
+Παρακαλώ διλέχτε ένα άλλο πεδίο...</translation>
     </message>
     <message>
         <source>Created output shapefile:
@@ -8566,12 +8572,12 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="53"/>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="141"/>
         <source>Symbol</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Σύμβολο</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="76"/>
         <source>Color ramp</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Κλίμακα χρώματος</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="113"/>
@@ -12079,7 +12085,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="207"/>
         <source>Horizontal Accuracy</source>
-        <translation type="unfinished"></translation>
+        <translation>Οριζόντια ακρίβεια</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="220"/>
@@ -13306,27 +13312,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="19"/>
         <source>Column</source>
-        <translation type="unfinished">Στήλη</translation>
+        <translation>Στήλη</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="32"/>
         <source>Symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>Σύμβολο</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="55"/>
         <source>Classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Κλάσσεις</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="81"/>
         <source>Color ramp</source>
-        <translation type="unfinished"></translation>
+        <translation>Κλίμακα χρώματος</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="94"/>
         <source>Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Τύπος</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="108"/>
@@ -13829,7 +13835,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="213"/>
         <source>Symbology</source>
-        <translation type="unfinished"></translation>
+        <translation>Σύμβολα</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="227"/>
@@ -18242,7 +18248,7 @@ http://my.host.com/cgi-bin/mapserv.exe</source>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="108"/>
         <source>Merge</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Συγχώνευση</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="125"/>
@@ -20510,17 +20516,17 @@ geometry.</source>
     <message>
         <location filename="../src/ui/qgspgsourceselectbase.ui" line="118"/>
         <source>Search</source>
-        <translation type="unfinished"></translation>
+        <translation>Αναζήτηση</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgsourceselectbase.ui" line="131"/>
         <source>Search mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Τρόπος αναζήτησης</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgsourceselectbase.ui" line="151"/>
         <source>Search in columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Αναζήτηση στης στήλες</translation>
     </message>
     <message>
         <source>Search:</source>
@@ -20907,7 +20913,7 @@ You need to restart Quantum GIS in order to reload it.</source>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="180"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="183"/>
         <source>Display only plugins with matching status</source>
-        <translation type="unfinished"></translation>
+        <translation>Εμφάνιση μόνο των προσθέτων με την ίδια κατάσταση</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="208"/>
@@ -20981,24 +20987,24 @@ You need to restart Quantum GIS in order to reload it.</source>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="437"/>
         <source>Check for updates on startup</source>
-        <translation type="unfinished"></translation>
+        <translation>Έλεγχος ενημερώσεων κατά την εκκίνηση</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="353"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="356"/>
         <source>Add third party plugin repositories to the list</source>
-        <translation type="unfinished"></translation>
+        <translation>Προσθήκη στη λίστα βιβλιοθηκών προσθέτων απο τρίτους κατασκευαστές</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="359"/>
         <source>Add 3rd party repositories</source>
-        <translation type="unfinished"></translation>
+        <translation>Προσθήκη προσθέτων απο τρίτους κατασκευαστές</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="379"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="382"/>
         <source>Add a new plugin repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Προσθήκη νέας βιβλιοθήκης προσθέτων</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="385"/>
@@ -21009,18 +21015,18 @@ You need to restart Quantum GIS in order to reload it.</source>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="392"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="395"/>
         <source>Edit the selected repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Επεξεργασία νέας βιβλιοθήκης προσθέτων</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="398"/>
         <source>Edit...</source>
-        <translation type="unfinished"></translation>
+        <translation>Επεξεργασία...</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="405"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="408"/>
         <source>Remove the selected repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Αφαιρέστε την επιλεγμένη βιβλιοθήκη</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="411"/>
@@ -21036,7 +21042,7 @@ You need to restart Quantum GIS in order to reload it.</source>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="82"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="85"/>
         <source>Close the Installer window</source>
-        <translation type="unfinished"></translation>
+        <translation>Κλείσιμο του παραθύρου εγκατάστασης</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="88"/>
@@ -21051,7 +21057,7 @@ You need to restart Quantum GIS in order to reload it.</source>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="422"/>
         <source>Configuration of the plugin installer</source>
-        <translation type="unfinished"></translation>
+        <translation>Παραμετροποίηση του εγκαταστάτη προσθέτων</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="450"/>
@@ -21090,27 +21096,27 @@ You need to restart Quantum GIS in order to reload it.</source>
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt; If this function is enabled, Quantum GIS will inform you whenever a new plugin or plugin update is available. Otherwise, fetching repositories will be performed during opening of the Plugin Installer window.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="528"/>
         <source>Allowed plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Επιτρεπόμενα πρόσθετα</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="537"/>
         <source>Only show plugins from the official repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Εμφάνιση προσθέτων μόνο από την επίσημη βιβλιοθήκη</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="550"/>
         <source>Show all plugins except those marked as experimental</source>
-        <translation type="unfinished"></translation>
+        <translation>Εμφάνιση όλων των προσθέτων εκτός από εκείνων που έχουν χαρακτηριστει πειραματικά</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="563"/>
         <source>Show all plugins, even those marked as experimental</source>
-        <translation type="unfinished"></translation>
+        <translation>Εμφάνιση όλων των προσθέτων ακόμα και εκείνων που έχουν χαρακτηριστει πειραματικά</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="582"/>
@@ -21119,7 +21125,7 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;DejaVu Sans&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Note:&lt;/span&gt; Experimental plugins are generally unsuitable for production use. These plugins are in early stages of development, and should be considered &apos;incomplete&apos; or &apos;proof of concept&apos; tools. QGIS does not recommend installing these plugins unless you intend to use them for testing purposes.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -21162,17 +21168,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerfetchingbase.ui" line="14"/>
         <source>Fetching repositories</source>
-        <translation type="unfinished"></translation>
+        <translation>Βιβλιοθήκες λήψης</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerfetchingbase.ui" line="39"/>
         <source>Overall progress:</source>
-        <translation type="unfinished"></translation>
+        <translation>Συνολικη πρόοδος:</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerfetchingbase.ui" line="111"/>
         <source>Abort fetching</source>
-        <translation type="unfinished">Ακύροση </translation>
+        <translation>Ακύρωση λήψης</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerfetchingbase.ui" line="167"/>
@@ -21189,43 +21195,43 @@ p, li { white-space: pre-wrap; }
     <name>QgsPluginInstallerInstallingDialog</name>
     <message>
         <source>Installing...</source>
-        <translation type="unfinished"></translation>
+        <translation>Εγκαθίσταται...</translation>
     </message>
     <message>
         <source>Resolving host name...</source>
-        <translation type="unfinished">Μετάφραση του ονομάτος του διακομηστή...</translation>
+        <translation>Μετάφραση του ονομάτος του διακομηστή...</translation>
     </message>
     <message>
         <source>Connecting...</source>
-        <translation type="unfinished">Συνδέεται...</translation>
+        <translation>Συνδέεται...</translation>
     </message>
     <message>
         <source>Host connected. Sending request...</source>
-        <translation type="unfinished">Η σύνδεση επιτυχάνθηκε.Αποστολή απαίτησης...</translation>
+        <translation>Η σύνδεση επιτυχάνθηκε.Αποστολή απαίτησης...</translation>
     </message>
     <message>
         <source>Downloading data...</source>
-        <translation type="unfinished">Κατέβασμα αρχείων...</translation>
+        <translation>Κατέβασμα αρχείων...</translation>
     </message>
     <message>
         <source>Idle</source>
-        <translation type="unfinished">Αναμονή</translation>
+        <translation>Αναμονή</translation>
     </message>
     <message>
         <source>Closing connection...</source>
-        <translation type="unfinished">Κλείσιμο σύνδεσης...</translation>
+        <translation>Κλείσιμο σύνδεσης...</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Σφάλμα</translation>
+        <translation>Σφάλμα</translation>
     </message>
     <message>
         <source>Failed to unzip the plugin package. Probably it&apos;s broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:</source>
-        <translation type="unfinished"></translation>
+        <translation>Αποτυχια αποσυμπίεσης του πακέτου προσθέτων. Πιθανώς είναι κατεστραμμένο ή απουσιάζει εντελώς από τη βιβλιοθήκη. Ίσως πρέπει να ελέγξετε ότι έχετε δικαιώματα εγγραφής στο φάκελο με τα προσθετα:</translation>
     </message>
     <message>
         <source>Aborted by user</source>
-        <translation type="unfinished"></translation>
+        <translation>Ακυρώθηκε από το χρήστη</translation>
     </message>
 </context>
 <context>
@@ -21233,17 +21239,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerinstallingbase.ui" line="14"/>
         <source>QGIS Python Plugin Installer</source>
-        <translation type="unfinished">πρόγραμμα εγκτάστασης προσθέτων του QGIS</translation>
+        <translation>πρόγραμμα εγκτάστασης προσθέτων του QGIS</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerinstallingbase.ui" line="41"/>
         <source>Installing plugin:</source>
-        <translation type="unfinished"></translation>
+        <translation>Εγκατάσταση του πρόσθετου:</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerinstallingbase.ui" line="63"/>
         <source>Connecting...</source>
-        <translation type="unfinished">Συνδέεται...</translation>
+        <translation>Συνδέεται...</translation>
     </message>
 </context>
 <context>
@@ -21258,7 +21264,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerpluginerrorbase.ui" line="20"/>
         <source>Error loading plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Σφάλμα φόρτωσης πρόσθετου</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerpluginerrorbase.ui" line="35"/>
@@ -22097,7 +22103,7 @@ Because of this the projection selector will not work...</source>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="105"/>
         <source>Search</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Αναζήτηση</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="113"/>
@@ -23102,7 +23108,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="86"/>
         <source>Symbology</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Σύμβολα</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="212"/>
@@ -23765,7 +23771,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2propertiesdialog.cpp" line="207"/>
         <source>Symbology</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Σύμβολα</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2propertiesdialog.cpp" line="208"/>
@@ -24335,7 +24341,7 @@ The error was:
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="382"/>
         <source>Symbol</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Σύμβολο</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssinglesymboldialogbase.ui" line="155"/>
@@ -24616,17 +24622,17 @@ The error was:
     <message>
         <location filename="../src/ui/qgsspatialitesourceselectbase.ui" line="108"/>
         <source>Search</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Αναζήτηση</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsspatialitesourceselectbase.ui" line="118"/>
         <source>Search mode</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Τρόπος αναζήτησης</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsspatialitesourceselectbase.ui" line="131"/>
         <source>Search in columns</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Αναζήτηση στης στήλες</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsspatialitesourceselectbase.ui" line="150"/>
@@ -24958,7 +24964,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsspatialitesridsdialogbase.ui" line="50"/>
         <source>Search</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Αναζήτηση</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsspatialitesridsdialogbase.ui" line="60"/>
@@ -26488,7 +26494,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1117"/>
         <source>Symbology</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Σύμβολα</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1118"/>
@@ -26762,7 +26768,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="82"/>
         <source>Symbology</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Σύμβολα</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="202"/>
@@ -26927,7 +26933,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="140"/>
         <source>Classes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Κλάσσεις</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="194"/>
@@ -27411,7 +27417,7 @@ This might be an server configuration error. Should the URL be used?</source>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="345"/>
         <source>Search</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Αναζήτηση</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="381"/>
@@ -28154,19 +28160,16 @@ Tried URL: %1</source>
 <context>
     <name>UndoWidget</name>
     <message>
-        <location filename="../src/app/qgsgeomerrorswidget.cpp" line="161"/>
         <location filename="../src/app/qgsundowidget.cpp" line="161"/>
         <source>Undo/Redo</source>
         <translation>Αναίρεση/Επαναφορά</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsgeomerrorswidget.cpp" line="162"/>
         <location filename="../src/app/qgsundowidget.cpp" line="162"/>
         <source>Undo</source>
         <translation>Αναίρεση</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsgeomerrorswidget.cpp" line="163"/>
         <location filename="../src/app/qgsundowidget.cpp" line="163"/>
         <source>Redo</source>
         <translation>Επαναφορά</translation>
@@ -28668,7 +28671,16 @@ Developed by Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
 CNR, Milan Unit (Information Technology), Construction Technologies Institute.
 For support send a mail to scala@itc.cnr.it
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Περιγραφή πεδίων:
+* DXF αρχείο προέλευσης: path για το DXF αρχείο που θα μετατραπεί
+* Shp αρχείο προορισμού: επιθυμητό όνομα του shape file που θα δημιουργηθεί
+* Τύπος αρχείου Shp προορισμού: προσδιορίζει τον τύπο του αρχείου shape file που θα δημιουργηθεί
+* checkbox εξαγωγής ετικετών κειμένου: εάν επιλεχθή, ένα πρόσθετο SHP σημείων θα δημιουργηθεί. Ο σχετικός πίνακας dbf θα περιέχει πληροφορίες σχετικά με τα &quot;πεδία κειμένου&quot; του dfx, αλλά και τις ίδιες συμβολοσειρές κειμένου.
+
+---
+Developed by Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
+CNR, Milan Unit (Information Technology), Construction Technologies Institute.
+For support send a mail to scala@itc.cnr.it</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="153"/>
@@ -29458,7 +29470,7 @@ Plugin will not be enabled.</source>
     <message>
         <source>Mean coordinate(s)</source>
         <translatorcomment>???</translatorcomment>
-        <translation type="unfinished">Συντεταγμένες Κέντρου</translation>
+        <translation>Μέσες συντεταγμένες (mean coordinates)</translation>
     </message>
     <message>
         <source>Line intersections</source>
@@ -29599,7 +29611,7 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Merge shapefiles to one</source>
-        <translation type="unfinished"></translation>
+        <translation>Συγχώνευση shapefiles σε ένα</translation>
     </message>
     <message>
         <source>fTools Information</source>
