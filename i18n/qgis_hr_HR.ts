@@ -290,7 +290,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/fTools/tools/frmJoinAttributes.ui" line="174"/>
         <source>Keep all records (including non-matching target records)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zadrži sve zapise (uključujući neodgovarajuće ciljane zapise)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="193"/>
@@ -618,22 +618,25 @@ Ovo može imati neočekivane rezultate.</translation>
     </message>
     <message>
         <source>Incorrect field names</source>
-        <translation type="unfinished"></translation>
+        <translation>Netočni nazivi polja</translation>
     </message>
     <message>
         <source>No output will be created.
 Following field names are longer than 10 characters:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Neće biti kreirani izlazni podaci.
+Slijedeći nazivi polja duži su od 10 znakova:
+%1</translation>
     </message>
     <message>
         <source>Error deleting shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Greška pri brisanju Shape datoteke</translation>
     </message>
     <message>
         <source>Can&apos;t delete existing shapefile
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne mogu brisati postojeću Shape datoteku
+%1</translation>
     </message>
     <message>
         <source>Count Points in Polygon</source>
@@ -784,7 +787,44 @@ QGis developer and user communities
 Folks on #qgis at freenode.net
 All those who have reported bugs/fixes/suggestions/comments/etc.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>
+The goal of fTools is to provide a one-stop resource for many common vector-based GIS tasks, without the need for additional software, libraries, or complex workarounds.
+
+fTools is designed to extend the functionality of Quantum GIS using only core QGIS and python libraries. It provides a growing suite of spatial data management and analysis functions that are both quick and functional. In addition, the geoprocessing functions of  Dr. Horst Duester and Stefan Ziegler have been incorporated to further facilitate and streamline GIS based research and analysis.
+
+If you would like to report a bug, make suggestions for improving fTools, or have a question about the tools, please email me: carson.farmer@gmail.com
+
+LICENSING INFORMATION:
+fTools is copyright (C) 2009  Carson J.Q. Farmer
+Geoprocessing functions adapted from &apos;Geoprocessing Plugin&apos;,
+(C) 2008 by Dr. Horst Duester, Stefan Ziegler
+
+licensed under the terms of GNU GPL 2
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+fTools DEVELOPERS:
+Carson J. Q. Farmer
+Alexander Bruy
+**If you have contributed code to fTools and I haven&apos;t mentioned your name here, please contact me and I will add your name.
+
+ACKNOWLEDGEMENTS:
+The following individuals (whether they know it or not) have contributed ideas, help, testing, code, and guidence towards this project, and I thank them.
+Hawthorn Beyer
+Borys Jurgiel
+Tim Sutton
+Barry Rowlingson
+Horst Duester and Stefan Ziegler
+Paolo Cavallini
+Aaron Racicot
+Colin Robertson
+Agustin Lobo
+Jurgen E. Fischer
+QGis developer and user communities
+Folks on #qgis at freenode.net
+All those who have reported bugs/fixes/suggestions/comments/etc.
+</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="16"/>
@@ -1161,7 +1201,7 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     <message>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="158"/>
         <source>Press Ctrl+C to copy results to the clipboard</source>
-        <translation type="unfinished"></translation>
+        <translation>Pritisni Ctrl+C za kopiranje rezultata u međuspremnik</translation>
     </message>
     <message>
         <location filename="../src/plugins/ogr_converter/dialog.cpp" line="115"/>
@@ -1265,51 +1305,53 @@ All those who have reported bugs/fixes/suggestions/comments/etc.
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="14"/>
         <source>Merge shapefiles</source>
-        <translation type="unfinished"></translation>
+        <translation>Spoji shape datoteke</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="20"/>
         <source>Input directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Ulazna mapa datoteka</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="62"/>
         <source>Add result to map canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj rezultate na prikaz mape</translation>
     </message>
     <message>
         <source>Select directory with shapefiles to merge</source>
-        <translation type="unfinished"></translation>
+        <translation>Odaberi mapu datoteka sa shape datotekam za spajanje</translation>
     </message>
     <message>
         <source>No shapefiles found</source>
-        <translation type="unfinished"></translation>
+        <translation>Nisu pronađene Shape datoteke</translation>
     </message>
     <message>
         <source>There are no shapefiles in this directory. Please select another one.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne postoje shape datoteke u ovoj mapi. Molim odaberite drugu.</translation>
     </message>
     <message>
         <source>Delete error</source>
-        <translation type="unfinished"></translation>
+        <translation>Greška brisanja</translation>
     </message>
     <message>
         <source>Can&apos;t delete file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne mogu brisati datoteku %1</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Prekid</translation>
+        <translation>Prekid</translation>
     </message>
     <message>
         <source>Merging</source>
-        <translation type="unfinished"></translation>
+        <translation>Spajanje</translation>
     </message>
     <message>
         <source>Identical output spatial reference system chosen
 
 Are you sure you want to proceed?</source>
-        <translation type="unfinished"></translation>
+        <translation>Odabran identični izlazni koordinatni referentni sustav
+
+Sigurno želite nastaviti?</translation>
     </message>
 </context>
 <context>
@@ -1320,14 +1362,12 @@ Are you sure you want to proceed?</source>
         <translation>Osobine simbola</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="20"/>
         <source>Symbol preview:</source>
-        <translation>Prepregled simbola:</translation>
+        <translation type="obsolete">Prepregled simbola:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="31"/>
         <source>Symbol layer type:</source>
-        <translation>Tip sloja simbola:</translation>
+        <translation type="obsolete">Tip sloja simbola:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="49"/>
@@ -1340,9 +1380,23 @@ Are you sure you want to proceed?</source>
         <translation>Ovaj sloj simbola nema GUI za postavke.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="100"/>
         <source>Symbol layers:</source>
-        <translation>Slojevi simbola:</translation>
+        <translation type="obsolete">Slojevi simbola:</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="20"/>
+        <source>Symbol preview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="31"/>
+        <source>Symbol layer type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="100"/>
+        <source>Symbol layers</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="125"/>
@@ -1373,69 +1427,1222 @@ Are you sure you want to proceed?</source>
 <context>
     <name>EngineConfigDialog</name>
     <message>
-        <location filename="../src/plugins/labeling/engineconfigdialog.ui" line="14"/>
         <source>Dialog</source>
-        <translation>Dijalog</translation>
+        <translation type="obsolete">Dijalog</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/engineconfigdialog.ui" line="22"/>
         <source>Search method</source>
-        <translation>Metoda pretrage</translation>
+        <translation type="obsolete">Metoda pretrage</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/engineconfigdialog.ui" line="30"/>
         <source>Chain (fast)</source>
-        <translation>Lanac (brzo)</translation>
+        <translation type="obsolete">Lanac (brzo)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/engineconfigdialog.ui" line="35"/>
-        <source>Popmusic Tabu</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/labeling/engineconfigdialog.ui" line="40"/>
-        <source>Popmusic Chain</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/labeling/engineconfigdialog.ui" line="45"/>
-        <source>Popmusic Tabu Chain</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/labeling/engineconfigdialog.ui" line="50"/>
         <source>FALP (fastest)</source>
-        <translation>FALP (najbrže)</translation>
+        <translation type="obsolete">FALP (najbrže)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/engineconfigdialog.ui" line="78"/>
         <source>Number of candidates</source>
-        <translation>Broj kandidata</translation>
+        <translation type="obsolete">Broj kandidata</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/engineconfigdialog.ui" line="84"/>
         <source>Point</source>
-        <translation>Točka</translation>
+        <translation type="obsolete">Točka</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/engineconfigdialog.ui" line="104"/>
         <source>Line</source>
-        <translation>Linija</translation>
+        <translation type="obsolete">Linija</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/engineconfigdialog.ui" line="124"/>
         <source>Polygon</source>
-        <translation>Poligon</translation>
+        <translation type="obsolete">Poligon</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/engineconfigdialog.ui" line="178"/>
         <source>Show all labels (i.e. including colliding labels)</source>
-        <translation>Prikaži sve oznake (npr. uključivo i one koje smetaju)</translation>
+        <translation type="obsolete">Prikaži sve oznake (npr. uključivo i one koje smetaju)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/engineconfigdialog.ui" line="185"/>
         <source>Show label candidates (for debugging)</source>
-        <translation>Pokaži kandidate za oznake (za debugiranje)</translation>
+        <translation type="obsolete">Pokaži kandidate za oznake (za debugiranje)</translation>
+    </message>
+</context>
+<context>
+    <name>GdalTools</name>
+    <message>
+        <source>Quantum GIS version detected: </source>
+        <translation type="unfinished">Detektirana verzija Quantum GIS-a:</translation>
+    </message>
+    <message>
+        <source>This version of Gdal Tools requires at least QGIS version 1.0.0
+Plugin will not be enabled.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Build Virtual Raster (catalog)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Builds a VRT from a list of datasets</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Contour</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Builds vector contour lines from a DEM</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rasterize</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Burns vector geometries into a raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polygonize</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Produces a polygon feature layer from a raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Merge</source>
+        <translation type="unfinished">Spoji</translation>
+    </message>
+    <message>
+        <source>Build a quick mosaic from a set of images</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sieve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Removes small raster polygons</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Proximity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Produces a raster proximity map</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Near black</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convert nearly black/white borders to exact value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warp an image into a new coordinate system</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grid</source>
+        <translation type="unfinished">Mreža</translation>
+    </message>
+    <message>
+        <source>Create raster from the scattered data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Translate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Converts raster data between different formats</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Information</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Lists information about raster dataset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Assign projection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add projection info to the raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Build overviews</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Builds or rebuilds overview images</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clipper</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>RGB to PCT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convert a 24bit RGB image to 8bit paletted</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PCT to RGB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convert an 8bit paletted image to 24bit RGB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GdalTools settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Various settings for Gdal Tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>About GdalTools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Displays information about Gdal Tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Input directory:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Output directory:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The process failed to start. Either the invoked program is missing, or you may have insufficient permissions to invoke the program.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The process crashed some time after starting successfully.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>An unknown error occurred.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The selected file is not a supported OGR format</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>GdalToolsAboutDialog</name>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/dialogAbout.ui" line="14"/>
+        <source>About Gdal Tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/dialogAbout.ui" line="27"/>
+        <source>GDAL Tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/dialogAbout.ui" line="40"/>
+        <source>Version x.x-xxxxxx</source>
+        <translation type="unfinished">Verzija x.x-xxxxxx</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/dialogAbout.ui" line="99"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/dialogAbout.ui" line="115"/>
+        <source>Web</source>
+        <translation type="unfinished">Web</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/dialogAbout.ui" line="122"/>
+        <source>Close</source>
+        <translation type="unfinished">Zatvori</translation>
+    </message>
+    <message>
+        <source>GDAL Tools (AKA Raster Tools) is a 
+plugin for QuantumGIS aiming at making life simpler for users 
+of GDAL Utilities, providing a simplified graphical interface 
+for most commonly used programs.
+
+The plugin is being developed by Faunalia (http://faunalia.it) 
+with help from GIS-lab (http://gis-lab.info).
+Icons by Robert Szczepanek.
+Sponsorship by Silvio Grosso was much appreciated.
+
+Please help us by testing the tools, reporting eventual issues, 
+improving the code, or providing financial support.
+
+DEVELOPERS:
+  Faunalia
+    Paolo Cavallini
+    Giuseppe Sucameli
+    Lorenzo Masini
+  GIS-lab
+    Maxim Dubinin
+    Alexander Bruy
+icons by Robert Szepanek
+
+HOMEPAGE:
+http://trac.faunalia.it/GdalTools-plugin</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>GdalToolsBaseBatchWidget</name>
+    <message>
+        <source>Finished</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Operation completed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation type="unfinished">Upozorenje</translation>
+    </message>
+    <message>
+        <source>The following files were not created: 
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>GdalToolsBaseDialog</name>
+    <message>
+        <source>Warning</source>
+        <translation type="unfinished">Upozorenje</translation>
+    </message>
+    <message>
+        <source>The command is still running. 
+Do you want terminate it anyway?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid parameters.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>GdalToolsBasePluginWidget</name>
+    <message>
+        <source>Warning</source>
+        <translation type="unfinished">Upozorenje</translation>
+    </message>
+    <message>
+        <source>No output file created.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Finished</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Elaboration completed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 not created.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>GdalToolsDialog</name>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/dialogBase.ui" line="14"/>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/dialogBase.ui" line="27"/>
+        <source>&amp;Load into canvas when finished</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Convert paletted image to RGB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Band to convert:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input file for convert</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the raster file to save the results to</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input directory with files to Warp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the output directory to save the results to</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input file for Translate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input directory with files to Translate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input file for Near Black</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No active raster layers. You must add almost one raster layer to continue.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input directory with files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input file for Warp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the files for VRT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select where to save the VRT</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>VRT (*.vrt)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input file for Sieve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input file for Polygonize</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select where to save the Polygonize output</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the files to Merge</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select where to save the Merge output</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Copy all</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the file to analyse</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input file for Grid</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input file for Contour</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select where to save the Contour output</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input file for Rasterize</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input file for Proximity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation type="unfinished">Upozorenje</translation>
+    </message>
+    <message>
+        <source>Warning: CRS information for all raster in subfolders will be rewritten. Are you sure?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input directory with files to Assign projection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Assign projection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This raster already found in map canvas</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>GdalToolsOptionsTable</name>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/optionsTable.ui" line="39"/>
+        <source>Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/optionsTable.ui" line="44"/>
+        <source>Value</source>
+        <translation type="unfinished">Vrijednost</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/optionsTable.ui" line="54"/>
+        <source>Add</source>
+        <translation type="unfinished">Dodaj</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/optionsTable.ui" line="61"/>
+        <source>Remove</source>
+        <translation type="unfinished">Ukloni</translation>
+    </message>
+</context>
+<context>
+    <name>GdalToolsSettingsDialog</name>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="14"/>
+        <source>Gdal Tools settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="20"/>
+        <source>Path to the GDAL binaries</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="32"/>
+        <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="63"/>
+        <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="94"/>
+        <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="125"/>
+        <source>Browse</source>
+        <translation type="unfinished">Traži</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="44"/>
+        <source>GDAL data path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="75"/>
+        <source>GDAL driver path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="106"/>
+        <source>GDAL pymod path</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select directory with GDAL executables</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>GdalToolsWidget</name>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="20"/>
+        <source>Build Virtual Raster</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="34"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="31"/>
+        <source>&amp;Input files:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="56"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="87"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="53"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="59"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="90"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetConvert.ui" line="63"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetConvert.ui" line="87"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="56"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="97"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetInfo.ui" line="54"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="53"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="84"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="59"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="90"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="63"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="56"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="87"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="64"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="85"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="56"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="80"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="56"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="97"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="56"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="87"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="66"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="97"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="125"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="63"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="94"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="122"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="150"/>
+        <source>Select...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="65"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="31"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetConvert.ui" line="72"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="75"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="62"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="68"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="65"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="65"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="75"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="72"/>
+        <source>&amp;Output file:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="106"/>
+        <source>Highest</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="111"/>
+        <source>Average</source>
+        <translation type="unfinished">Prosječno</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="116"/>
+        <source>Lowest</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="124"/>
+        <source>&amp;Resolution:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="131"/>
+        <source>&amp;Source No Data:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="20"/>
+        <source>Clipper</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="62"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="93"/>
+        <source>&amp;No data value:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="78"/>
+        <source>Re-Enable Clipping</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="87"/>
+        <source>Select the extent by drag &amp; drop on canvas</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="94"/>
+        <source>or change the extent coordinates:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="105"/>
+        <source>1:</source>
+        <translation type="unfinished">1:</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="116"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="181"/>
+        <source>x</source>
+        <translation type="unfinished">x</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="133"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="198"/>
+        <source>y</source>
+        <translation type="unfinished">y</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="170"/>
+        <source>2:</source>
+        <translation type="unfinished">2:</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="221"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="126"/>
+        <source>Grab pseudocolor table from the first image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="20"/>
+        <source>Contour</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="31"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="28"/>
+        <source>&amp;Input file (raster):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="68"/>
+        <source>&amp;Output directory for contour lines (shapefile):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="101"/>
+        <source>&amp;Attribute name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="131"/>
+        <source>If not provided, no elevation attribute is attached.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="142"/>
+        <source>ELEV</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="149"/>
+        <source>I&amp;nterval between contour lines:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetConvert.ui" line="20"/>
+        <source>Convert RGB image to paletted</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetConvert.ui" line="26"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="26"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="26"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="26"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="26"/>
+        <source>Batch mode (for processing whole directory)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetConvert.ui" line="35"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="28"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetInfo.ui" line="28"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="31"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="35"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="42"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="28"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="28"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="35"/>
+        <source>&amp;Input file:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetConvert.ui" line="96"/>
+        <source>Number of colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="20"/>
+        <source>Grid</source>
+        <translation type="unfinished">Mreža</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="65"/>
+        <source>&amp;Z Field:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="106"/>
+        <source>&amp;Algorithm:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="114"/>
+        <source>Inverse distance to a power</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="119"/>
+        <source>Moving average</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="124"/>
+        <source>Nearest neighbor</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="129"/>
+        <source>Data metrics</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="167"/>
+        <source>Power:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="181"/>
+        <source>Smoothing:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="198"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="298"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="384"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="482"/>
+        <source>Radius1:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="215"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="315"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="401"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="499"/>
+        <source>Radius2:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="232"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="332"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="418"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="516"/>
+        <source>Angle:</source>
+        <translation type="unfinished">Kut:</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="249"/>
+        <source>Max points:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="263"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="349"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="533"/>
+        <source>Min points:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="277"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="363"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="435"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="547"/>
+        <source>No data:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="456"/>
+        <source>Metrics:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="464"/>
+        <source>Minimum</source>
+        <translation type="unfinished">Minimum</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="469"/>
+        <source>Maximum</source>
+        <translation type="unfinished">Maksimum</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="474"/>
+        <source>Range</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetInfo.ui" line="20"/>
+        <source>Info</source>
+        <translation type="unfinished">Info</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetInfo.ui" line="63"/>
+        <source>Raster info</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetInfo.ui" line="83"/>
+        <source>Suppress GCP printing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetInfo.ui" line="90"/>
+        <source>Suppress metadata printing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="20"/>
+        <source>Merge</source>
+        <translation type="unfinished">Spoji</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="109"/>
+        <source>Layer stack</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="119"/>
+        <source>Use intersected extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="133"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="153"/>
+        <source>&amp;Creation Options:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="20"/>
+        <source>Near Black</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="106"/>
+        <source>How &amp;far from black (or white):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="115"/>
+        <source>Search for nearly &amp;white (255) pixels instead of black ones</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="20"/>
+        <source>Add overview</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="72"/>
+        <source>Resampling method</source>
+        <translation type="unfinished">Metoda Resampling</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="80"/>
+        <source>nearest</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="85"/>
+        <source>average</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="90"/>
+        <source>gauss</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="95"/>
+        <source>average_mp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="100"/>
+        <source>average_magphase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="105"/>
+        <source>mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="113"/>
+        <source>Levels (space delimited)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="125"/>
+        <source>Open in read-only mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="20"/>
+        <source>Polygonize</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="65"/>
+        <source>&amp;Output file for polygons (shapefile):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="96"/>
+        <source>DN</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="103"/>
+        <source>&amp;Field name:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="20"/>
+        <source>Assign projection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="33"/>
+        <source>WARNING: current projection definition will be cleared</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="73"/>
+        <source>Desired SRS:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="94"/>
+        <source>Output will be:
+- new GeoTiff if input file is not GeoTiff
+- overwritten if input is GeoTiff</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="106"/>
+        <source>Recurse subdirectories</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="20"/>
+        <source>Proximity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="89"/>
+        <source>&amp;Values:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="121"/>
+        <source>&amp;Dist units:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="132"/>
+        <source>GEO</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="137"/>
+        <source>PIXEL</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="145"/>
+        <source>&amp;Max dist:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="159"/>
+        <source>&amp;No data:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="173"/>
+        <source>&amp;Fixed buf val:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="20"/>
+        <source>Rasterize</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="28"/>
+        <source>&amp;Input file (shapefile):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="75"/>
+        <source>&amp;Output file for rasterized vectors (raster, must exists):</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="106"/>
+        <source>&amp;Attribute field:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="20"/>
+        <source>Sieve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="104"/>
+        <source>4</source>
+        <translation type="unfinished">4</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="109"/>
+        <source>8</source>
+        <translation type="unfinished">8</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="117"/>
+        <source>&amp;Threshold:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="124"/>
+        <source>&amp;Pixel connections:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="20"/>
+        <source>Translate</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="38"/>
+        <source>&amp;Input Layer:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="106"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="131"/>
+        <source>&amp;Target SRS:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="144"/>
+        <source>Output format</source>
+        <translation type="unfinished">Izlazni oblik</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="20"/>
+        <source>Warp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="103"/>
+        <source>&amp;Source SRS:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="159"/>
+        <source>&amp;Resampling method:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="167"/>
+        <source>Near</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="172"/>
+        <source>Bilinear</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="177"/>
+        <source>Cubic</source>
+        <translation type="unfinished">Kubično</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="182"/>
+        <source>Cubic spline</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="187"/>
+        <source>Lanczos</source>
+        <translation type="unfinished">Lanczos</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="195"/>
+        <source>&amp;Memory used for caching:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="202"/>
+        <source>MB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="215"/>
+        <source>Set no data value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="227"/>
+        <source>Resize</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="242"/>
+        <source>Image width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="256"/>
+        <source>Image height</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="276"/>
+        <source>Use m&amp;ultithreaded warping implementation</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1563,7 +2770,8 @@ Would you like to add the new layer to the TOC?</source>
     <message>
         <source>At least two features must have same attribute value!
 Please choose another field...</source>
-        <translation type="unfinished"></translation>
+        <translation>Najmanje dva elementa moraju imati istu atributnu vrijednost!
+Molim odaberite drugo polje...</translation>
     </message>
     <message>
         <source>Error writing output shapefile.</source>
@@ -1681,7 +2889,8 @@ Please choose another field...</source>
     <message>
         <source>No output created. File creation error:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nisu stvoreni izlatni podaci. Greška u kreiranju datoteke:
+%1</translation>
     </message>
     <message>
         <source>
@@ -1716,7 +2925,8 @@ Pogreška ulaznog CRS: Detektiran je različit ulazni koord. ref. sustav, rezult
     <message>
         <source>
 Input CRS error: One or more input layers missing coordinate reference information, results may not be as expected.</source>
-        <translation type="unfinished"></translation>
+        <translation>
+Greška ulaznog CRS-a: Jedan ili više ulaznih slojeva nema informacije o CRS-u, rezultati možda neće biti prema očekivanjima.</translation>
     </message>
     <message>
         <source>
@@ -1748,246 +2958,195 @@ Pogreška GEOS geoprocesiranja: Jedan ili više ulaznih elemenata nemaju valjanu
 <context>
     <name>Labeling</name>
     <message>
-        <location filename="../src/plugins/labeling/labeling.cpp" line="111"/>
         <source>Labeling</source>
-        <translation>Označavanje</translation>
+        <translation type="obsolete">Označavanje</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labeling.cpp" line="113"/>
         <source>Replace this with a short description of what the plugin does</source>
-        <translation>Zamijenite ovo sa specifičnim opisom dodatka</translation>
+        <translation type="obsolete">Zamijenite ovo sa specifičnim opisom dodatka</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labeling.cpp" line="118"/>
         <source>&amp;Labeling</source>
-        <translation>&amp;Označavanje</translation>
+        <translation type="obsolete">&amp;Označavanje</translation>
     </message>
 </context>
 <context>
     <name>LabelingGuiBase</name>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="14"/>
         <source>Layer labeling settings</source>
-        <translation>Postavke označavanja sloja</translation>
+        <translation type="obsolete">Postavke označavanja sloja</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="25"/>
         <source>Label this layer</source>
-        <translation>Označi ovaj sloj</translation>
+        <translation type="obsolete">Označi ovaj sloj</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="34"/>
         <source>Field with labels</source>
-        <translation>Polje s oznakama</translation>
+        <translation type="obsolete">Polje s oznakama</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="62"/>
         <source>Placement</source>
-        <translation>Postavljanje</translation>
+        <translation type="obsolete">Postavljanje</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="87"/>
         <source>around point</source>
-        <translation>oko točke</translation>
+        <translation type="obsolete">oko točke</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="97"/>
         <source>over point</source>
-        <translation>iznad točke</translation>
+        <translation type="obsolete">iznad točke</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="108"/>
         <source>parallel</source>
-        <translation>paralelno</translation>
+        <translation type="obsolete">paralelno</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="118"/>
         <source>curved</source>
-        <translation>zakrivljeno</translation>
+        <translation type="obsolete">zakrivljeno</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="125"/>
         <source>horizontal</source>
-        <translation>horizontalno</translation>
+        <translation type="obsolete">horizontalno</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="136"/>
         <source>over centroid</source>
-        <translation>preko centroide</translation>
+        <translation type="obsolete">preko centroide</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="146"/>
         <source>around centroid</source>
-        <translation>oko centroide</translation>
+        <translation type="obsolete">oko centroide</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="153"/>
         <source>horizontal (slow)</source>
-        <translation>horizontalno (sporo)</translation>
+        <translation type="obsolete">horizontalno (sporo)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="160"/>
         <source>free (slow)</source>
-        <translation>slobodno (sporo)</translation>
+        <translation type="obsolete">slobodno (sporo)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="167"/>
         <source>using perimeter</source>
-        <translation>koristi opseg</translation>
+        <translation type="obsolete">koristi opseg</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="192"/>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="298"/>
         <source>Label distance</source>
-        <translation>Udaljenost oznake</translation>
+        <translation type="obsolete">Udaljenost oznake</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="209"/>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="315"/>
         <source>pixels</source>
-        <translation>pikseli</translation>
+        <translation type="obsolete">pikseli</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="216"/>
         <source>Rotation</source>
-        <translation>Rotacija</translation>
+        <translation type="obsolete">Rotacija</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="233"/>
         <source>degrees</source>
-        <translation>stupnjevi</translation>
+        <translation type="obsolete">stupnjevi</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="244"/>
         <source>above line</source>
-        <translation>iznad linije</translation>
+        <translation type="obsolete">iznad linije</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="254"/>
         <source>on line</source>
-        <translation>na liniju</translation>
+        <translation type="obsolete">na liniju</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="261"/>
         <source>below line</source>
-        <translation>ispod linije</translation>
+        <translation type="obsolete">ispod linije</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="270"/>
         <source>Orientation</source>
-        <translation>Orijentacija</translation>
+        <translation type="obsolete">Orijentacija</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="277"/>
         <source>map</source>
-        <translation>mapa</translation>
+        <translation type="obsolete">mapa</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="287"/>
         <source>line</source>
-        <translation>linija</translation>
+        <translation type="obsolete">linija</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="334"/>
         <source>Text style</source>
-        <translation>Stil teksta</translation>
+        <translation type="obsolete">Stil teksta</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="346"/>
         <source>Font</source>
-        <translation>Font</translation>
+        <translation type="obsolete">Font</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="364"/>
         <source>TextLabel</source>
-        <translation>TekstOznaka</translation>
+        <translation type="obsolete">TekstOznaka</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="384"/>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="500"/>
         <source>...</source>
-        <translation>...</translation>
+        <translation type="obsolete">...</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="399"/>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="484"/>
         <source>Color</source>
-        <translation>Boja</translation>
+        <translation type="obsolete">Boja</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="442"/>
         <source>Buffer</source>
-        <translation>Zaštita (Buff)</translation>
+        <translation type="obsolete">Zaštita (Buff)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="467"/>
         <source>Size</source>
-        <translation>Veličina</translation>
+        <translation type="obsolete">Veličina</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="515"/>
         <source>Sample</source>
-        <translation>Probni</translation>
+        <translation type="obsolete">Probni</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="531"/>
         <source>Lorem Ipsum</source>
-        <translation>Probni tekst</translation>
+        <translation type="obsolete">Probni tekst</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="551"/>
         <source>Priority</source>
-        <translation>Prioritet</translation>
+        <translation type="obsolete">Prioritet</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="557"/>
         <source>Low</source>
-        <translation>Nisko</translation>
+        <translation type="obsolete">Nisko</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="583"/>
         <source>High</source>
-        <translation>Visoko</translation>
+        <translation type="obsolete">Visoko</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="593"/>
         <source>Scale-based visibility</source>
-        <translation>Vidljivost zasnovana na mjerilu</translation>
+        <translation type="obsolete">Vidljivost zasnovana na mjerilu</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="599"/>
         <source>Enabled</source>
-        <translation>Omogućeno</translation>
+        <translation type="obsolete">Omogućeno</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="606"/>
         <source>Minimum</source>
-        <translation>Minimum</translation>
+        <translation type="obsolete">Minimum</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="626"/>
         <source>Maximum</source>
-        <translation>Maksimum</translation>
+        <translation type="obsolete">Maksimum</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="654"/>
         <source>label every part of multi-part features</source>
-        <translation>označi svaki dio višedjelnih elemenata</translation>
+        <translation type="obsolete">označi svaki dio višedjelnih elemenata</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="661"/>
         <source>merge connected lines to avoid duplicate labels</source>
-        <translation>spoji povezane linije za izbjegavanje dvostrukih oznaka</translation>
+        <translation type="obsolete">spoji povezane linije za izbjegavanje dvostrukih oznaka</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="673"/>
         <source>features don&apos;t act as obstacles for labels</source>
-        <translation>elementi se ne ponašaju kao prepreke za oznake</translation>
+        <translation type="obsolete">elementi se ne ponašaju kao prepreke za oznake</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labelingguibase.ui" line="696"/>
         <source>Engine settings</source>
-        <translation>Postavke motora</translation>
+        <translation type="obsolete">Postavke motora</translation>
     </message>
 </context>
 <context>
@@ -2807,12 +3966,12 @@ Pogreška GEOS geoprocesiranja: Jedan ili više ulaznih elemenata nemaju valjanu
 <context>
     <name>QFileDialog</name>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3135"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3145"/>
         <source>Load layer properties from style file (.qml)</source>
         <translation>Učitaj osobine sloja iz datoteke stila (*.qml)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3200"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3210"/>
         <source>Save layer properties as style file (.qml)</source>
         <translation>Spremi osobine sloja kao datoteku stila (*.qml)</translation>
     </message>
@@ -2869,7 +4028,7 @@ Pogreška GEOS geoprocesiranja: Jedan ili više ulaznih elemenata nemaju valjanu
     </message>
     <message>
         <location filename="../src/app/qgspluginregistry.cpp" line="444"/>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="170"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="171"/>
         <source>Python error</source>
         <translation>Python pogreška</translation>
     </message>
@@ -3027,17 +4186,17 @@ Pogreška GEOS geoprocesiranja: Jedan ili više ulaznih elemenata nemaju valjanu
         <translation>Nisu dostupni pružatelji podataka dodatka. Ne mogu se učitati vektorski slojevi</translation>
     </message>
     <message>
-        <location filename="../src/core/qgssearchtreenode.cpp" line="362"/>
+        <location filename="../src/core/qgssearchtreenode.cpp" line="373"/>
         <source>Regular expressions on numeric values don&apos;t make sense. Use comparison instead.</source>
         <translation>Regularni izrazi nemaju smisla nad numeričkim vrijednostima. Koristite uspoređivanje umjesto toga.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgssearchtreenode.cpp" line="398"/>
+        <location filename="../src/core/qgssearchtreenode.cpp" line="409"/>
         <source>Referenced column wasn&apos;t found: %1</source>
         <translation>Nije pronađena referencirana kolona: %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgssearchtreenode.cpp" line="401"/>
+        <location filename="../src/core/qgssearchtreenode.cpp" line="412"/>
         <source>Division by zero.</source>
         <translation>Dijeljenje s nulom.</translation>
     </message>
@@ -3078,7 +4237,6 @@ Pogreška GEOS geoprocesiranja: Jedan ili više ulaznih elemenata nemaju valjanu
         <location filename="../src/plugins/geoprocessing/qgspggeoprocessing.cpp" line="47"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="55"/>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="52"/>
-        <location filename="../src/plugins/labeling/labeling.cpp" line="45"/>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="61"/>
         <location filename="../src/plugins/ogr_converter/plugin.cpp" line="37"/>
         <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="23"/>
@@ -3538,14 +4696,12 @@ Pogreška GEOS geoprocesiranja: Jedan ili više ulaznih elemenata nemaju valjanu
         <translation>Verzija 0.001</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labeling.cpp" line="43"/>
         <source>Labeling</source>
-        <translation>Označavanje</translation>
+        <translation type="obsolete">Označavanje</translation>
     </message>
     <message>
-        <location filename="../src/plugins/labeling/labeling.cpp" line="44"/>
         <source>Smart labeling for vector layers</source>
-        <translation>Pametno označavanje vektorskih slojeva</translation>
+        <translation type="obsolete">Pametno označavanje vektorskih slojeva</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="59"/>
@@ -3747,50 +4903,50 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>Ne mogu vršiti upite na rasteru </translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="75"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="76"/>
         <source>Couldn&apos;t load SIP module.</source>
         <translation>Ne mogu učitati SIP modul.</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="75"/>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="83"/>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="90"/>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="98"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="76"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="84"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="91"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="99"/>
         <source>Python support will be disabled.</source>
         <translation>Podrška za Python bit će onemogućena.</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="83"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="84"/>
         <source>Couldn&apos;t load PyQt4.</source>
         <translation>Ne mogu učitati PyQT4.</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="90"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="91"/>
         <source>Couldn&apos;t load PyQGIS.</source>
         <translation>Ne mogu učitati PyQGIS.</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="98"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="99"/>
         <source>Couldn&apos;t load QGIS utils.</source>
         <translation>Ne mogu učitati QGIS pomoćne programe.</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="153"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="154"/>
         <source>An error occured during execution of following code:</source>
         <translation>Došlo je do pogreške pri izvršavanju slijedećeg koda:</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="164"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="165"/>
         <source>Python version:</source>
         <translation>Python verzija:</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="165"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="166"/>
         <source>QGIS version:</source>
         <translation>GQIS inačica:</translation>
     </message>
     <message>
-        <location filename="../src/python/qgspythonutilsimpl.cpp" line="166"/>
+        <location filename="../src/python/qgspythonutilsimpl.cpp" line="167"/>
         <source>Python path:</source>
         <translation>Python putanja:</translation>
     </message>
@@ -3806,38 +4962,38 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6279"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6316"/>
         <source>invalid line</source>
         <translation>nevaljana linija</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6357"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6394"/>
         <source>segment %1 of ring %2 of polygon %3 intersects segment %4 of ring %5 of polygon %6 at %7</source>
         <translation>segment %1 prstena %2 poligona %3 presjeca segment %4 prstena %5 poligona %6 u %7</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6365"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="6453"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6402"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6490"/>
         <source>stopping validation after more than 100 errors</source>
         <translation>zaustavljanje validacije nakon više od 100 pogrešaka</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6399"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6436"/>
         <source>line %1 with less than two points</source>
         <translation>linija %1 s manje od dvije točke</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6383"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6420"/>
         <source>ring %1 with less than three points</source>
         <translation>prsten %1 s manje od tri točke</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6391"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6428"/>
         <source>ring %1 not closed</source>
         <translation>prsten %1 nije zatvoren</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsgeometry.cpp" line="6417"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6454"/>
         <source>line %1 contains %n duplicate node(s) at %2</source>
         <comment>number of duplicate nodes</comment>
         <translation>
@@ -3847,59 +5003,59 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6448"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6485"/>
         <source>segments %1 and %2 of line %3 intersect at %4</source>
         <translation>segmenti %1 i %2 linije %3 presjecaju se u %4</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6469"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6506"/>
         <source>ring %1 of polygon %2 not in exterior ring</source>
         <translation>prsten %1 poligona %2 nije u vanjskom prstenu</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6539"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="6543"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6576"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6580"/>
         <source>polygon %1 inside polygon %2</source>
         <translation>poligon %1 unutar poligona %2</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6555"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="6556"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6592"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6593"/>
         <source>Unknown geometry type</source>
         <translation>Nepoznat geometrijski tip</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="61"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="66"/>
         <source>OGR driver for &apos;%1&apos; not found (OGR error: %2)</source>
         <translation>OGR upravljački program za &apos;%1&apos; nije pronađen (OGR greška: %2)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="78"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="88"/>
         <source>trimming attribute name &apos;%1&apos; to ten significant characters produces duplicate column name.</source>
         <translation>skraćivanje naziva atributa &apos;%1&apos; na deset značajnih znakova proizvodi duplikate naziva kolona.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="92"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="123"/>
         <source>creation of data source failed (OGR error:%1)</source>
         <translation>neuspješno stvaranje izvora podataka (OGR greška: %1)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="150"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="182"/>
         <source>creation of layer failed (OGR error:%1)</source>
         <translation>neuspješno stvaranje sloja (OGR greška: %1)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="199"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="231"/>
         <source>unsupported type for field %1</source>
         <translation>nepodržan tip za polje %1</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="225"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="257"/>
         <source>creation of field %1 failed (OGR error: %2)</source>
         <translation>neuspješno stvaranje polja %1 (OGR greška: %2)</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsvectorfilewriter.cpp" line="465"/>
+        <location filename="../src/core/qgsvectorfilewriter.cpp" line="497"/>
         <source>Failed to transform a point while drawing a feature of type &apos;%1&apos;. Writing stopped. (Exception: %2)</source>
         <translation>Neuspješna transformacija točke pri iscrtavanju elementa tipa &apos;%1&apos;. Zapisivanje zaustavljeno. (Iznimka: %2)</translation>
     </message>
@@ -3916,102 +5072,102 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/gui/qgstextannotationitem.cpp" line="22"/>
         <source>QGIS rocks!</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS je zakon!</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgsdisplacementplugin.cpp" line="26"/>
         <source>Displacement plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodatak za izmještanje</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgsdisplacementplugin.cpp" line="27"/>
         <source>Adds a new renderer that automatically handles point displacement in case they have the same position</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaje novi renderer koji automatski rukuje izmještanjem točaka, u slučaju da su na istoj poziciji</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgsdisplacementplugin.cpp" line="45"/>
         <source>point Displacement</source>
-        <translation type="unfinished"></translation>
+        <translation>Izmještanje točaka</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="346"/>
+        <location filename="../src/app/qgisapp.cpp" line="347"/>
         <source>CRS undefined - defaulting to project CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>CRS nije definiran - podrazumijeva se CRS projekta</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="352"/>
+        <location filename="../src/app/qgisapp.cpp" line="353"/>
         <source>CRS undefined - defaulting to default CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>CRS nije definiran - podrazumijeva se zadani CRS</translation>
     </message>
     <message>
         <location filename="../src/app/qgsspatialitesourceselect.cpp" line="303"/>
         <source>SQLite DB (*.sqlite *.db);;All files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>SQLite DB (*.sqlite *.db);;Sve datoteke (*)</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="58"/>
         <source>Processing 1/2 - %p%</source>
-        <translation type="unfinished"></translation>
+        <translation>Procesiranje 1/2 - %p%</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="66"/>
         <source>Processing 2/2 - %p%</source>
-        <translation type="unfinished"></translation>
+        <translation>Procesiranje 2/2 - %p%</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="101"/>
         <source>Intersects</source>
-        <translation type="unfinished"></translation>
+        <translation>Presjeca</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="102"/>
         <source>Disjoint</source>
-        <translation type="unfinished"></translation>
+        <translation>Razdvojeno</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="110"/>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="127"/>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="131"/>
         <source>Touches</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodiruje</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="111"/>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="128"/>
         <source>Crosses</source>
-        <translation type="unfinished">Križići</translation>
+        <translation>Prelazi</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="112"/>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="132"/>
         <source>Within</source>
-        <translation type="unfinished"></translation>
+        <translation>Unutar</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="116"/>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="133"/>
         <source>Contains</source>
-        <translation type="unfinished"></translation>
+        <translation>Sadržava</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="120"/>
         <source>Equals</source>
-        <translation type="unfinished"></translation>
+        <translation>Jednako</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="121"/>
         <source>Overlaps</source>
-        <translation type="unfinished"></translation>
+        <translation>Preklapa</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialqueryplugin.cpp" line="49"/>
         <source>Spatial Query Plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodatak za prostorni upit</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialqueryplugin.cpp" line="50"/>
         <source>A plugin that makes spatial queries on vector layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodatak za izradu prostornih upita na vektorskim slojevima</translation>
     </message>
 </context>
 <context>
@@ -4100,17 +5256,17 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
 <context>
     <name>QgisApp</name>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="263"/>
+        <location filename="../src/app/qgisapp.cpp" line="264"/>
         <source>Quantum GIS </source>
         <translation>Quantum GIS </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="373"/>
+        <location filename="../src/app/qgisapp.cpp" line="374"/>
         <source>Multiple Instances of QgisApp</source>
         <translation>Višestruke instance QgisApp</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="374"/>
+        <location filename="../src/app/qgisapp.cpp" line="375"/>
         <source>Multiple instances of Quantum GIS application object detected.
 Please contact the developers.
 </source>
@@ -4118,1276 +5274,1283 @@ Please contact the developers.
 Molimo kontaktirajte razvijatelje.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="385"/>
+        <location filename="../src/app/qgisapp.cpp" line="386"/>
         <source>Checking database</source>
         <translation>Provejravam bazu podatka</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="390"/>
+        <location filename="../src/app/qgisapp.cpp" line="391"/>
         <source>Reading settings</source>
         <translation>Čitam postavke</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="393"/>
+        <location filename="../src/app/qgisapp.cpp" line="394"/>
         <source>Setting up the GUI</source>
         <translation>Postavljanje GUI</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="440"/>
+        <location filename="../src/app/qgisapp.cpp" line="441"/>
         <source>Quantum GIS - %1 (&apos;%2&apos;)</source>
         <translation>Quantum GIS - %1 (&apos;%2&apos;)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="456"/>
+        <location filename="../src/app/qgisapp.cpp" line="457"/>
         <source>Checking provider plugins</source>
         <translation>Provjeravam pružatelje dodataka</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="460"/>
+        <location filename="../src/app/qgisapp.cpp" line="461"/>
         <source>Starting Python</source>
         <translation>Pokrećem Python</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="467"/>
+        <location filename="../src/app/qgisapp.cpp" line="468"/>
         <source>Restoring loaded plugins</source>
         <translation>Vraćanje učitanih dodataka</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="477"/>
+        <location filename="../src/app/qgisapp.cpp" line="478"/>
         <source>Initializing file filters</source>
         <translation>Inicijaliziranje filtera datoteka</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="505"/>
+        <location filename="../src/app/qgisapp.cpp" line="506"/>
         <source>Restoring window state</source>
         <translation>Vraćanje stanja prozora</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="509"/>
+        <location filename="../src/app/qgisapp.cpp" line="510"/>
         <source>QGIS Ready!</source>
         <translation>QGIS spreman!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="650"/>
+        <location filename="../src/app/qgisapp.cpp" line="653"/>
         <source>&amp;New Project</source>
         <translation>&amp;Novi projekt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="651"/>
+        <location filename="../src/app/qgisapp.cpp" line="654"/>
         <source>Ctrl+N</source>
         <comment>New Project</comment>
         <translation>Ctrl+N</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="652"/>
+        <location filename="../src/app/qgisapp.cpp" line="655"/>
         <source>New Project</source>
         <translation>Novi projekt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="655"/>
+        <location filename="../src/app/qgisapp.cpp" line="658"/>
         <source>&amp;Open Project...</source>
         <translation>&amp;Otvori projekt...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="656"/>
+        <location filename="../src/app/qgisapp.cpp" line="659"/>
         <source>Ctrl+O</source>
         <comment>Open a Project</comment>
         <translation>Ctrl+O</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="657"/>
+        <location filename="../src/app/qgisapp.cpp" line="660"/>
         <source>Open a Project</source>
         <translation>Otvori projekt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="660"/>
+        <location filename="../src/app/qgisapp.cpp" line="663"/>
         <source>&amp;Save Project</source>
         <translation>&amp;Spremi projekt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="661"/>
+        <location filename="../src/app/qgisapp.cpp" line="664"/>
         <source>Ctrl+S</source>
         <comment>Save Project</comment>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="662"/>
+        <location filename="../src/app/qgisapp.cpp" line="665"/>
         <source>Save Project</source>
         <translation>Spremi projekt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="665"/>
+        <location filename="../src/app/qgisapp.cpp" line="668"/>
         <source>Save Project &amp;As...</source>
         <translation>Spremi projekt k&amp;ao...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="666"/>
+        <location filename="../src/app/qgisapp.cpp" line="669"/>
         <source>Shift+Ctrl+S</source>
         <comment>Save Project under a new name</comment>
         <translation>Shift+Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="667"/>
+        <location filename="../src/app/qgisapp.cpp" line="670"/>
         <source>Save Project under a new name</source>
         <translation>Spremi projekt pod novim nazivom</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="670"/>
+        <location filename="../src/app/qgisapp.cpp" line="673"/>
         <source>Save as Image...</source>
         <translation>Spremi kao sliku...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="672"/>
+        <location filename="../src/app/qgisapp.cpp" line="675"/>
         <source>Save map as image</source>
         <translation>Spremi mapu kao sliku</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="675"/>
+        <location filename="../src/app/qgisapp.cpp" line="678"/>
         <source>&amp;New Print Composer</source>
         <translation>&amp;Novi print kompozitor</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="676"/>
+        <location filename="../src/app/qgisapp.cpp" line="679"/>
         <source>Ctrl+P</source>
         <comment>New Print Composer</comment>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="677"/>
+        <location filename="../src/app/qgisapp.cpp" line="680"/>
         <source>New Print Composer</source>
         <translation>Novi print kompozitor</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="680"/>
+        <location filename="../src/app/qgisapp.cpp" line="683"/>
         <source>Composer manager...</source>
         <translation>Upravitelj kompozitora...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="681"/>
+        <location filename="../src/app/qgisapp.cpp" line="684"/>
         <source>Composer manager</source>
         <translation>Upravitelj kompozitora</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="684"/>
+        <location filename="../src/app/qgisapp.cpp" line="687"/>
         <source>Exit</source>
         <translation>Izlaz</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="685"/>
+        <location filename="../src/app/qgisapp.cpp" line="688"/>
         <source>Ctrl+Q</source>
         <comment>Exit QGIS</comment>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="686"/>
+        <location filename="../src/app/qgisapp.cpp" line="689"/>
         <source>Exit QGIS</source>
         <translation>Izađi iz QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="693"/>
+        <location filename="../src/app/qgisapp.cpp" line="696"/>
         <source>Cu&amp;t</source>
         <translation>&amp;Izreži</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="694"/>
-        <location filename="../src/app/qgisapp.cpp" line="722"/>
+        <location filename="../src/app/qgisapp.cpp" line="697"/>
+        <location filename="../src/app/qgisapp.cpp" line="725"/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="695"/>
+        <location filename="../src/app/qgisapp.cpp" line="698"/>
         <source>Cut the current selection&apos;s contents to the clipboard</source>
         <translation>Izreži trenutačno odabrano u međuspremnik</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="698"/>
+        <location filename="../src/app/qgisapp.cpp" line="701"/>
         <source>&amp;Copy</source>
         <translation>&amp;Kopiraj</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="699"/>
-        <location filename="../src/app/qgisapp.cpp" line="728"/>
+        <location filename="../src/app/qgisapp.cpp" line="702"/>
+        <location filename="../src/app/qgisapp.cpp" line="731"/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="700"/>
+        <location filename="../src/app/qgisapp.cpp" line="703"/>
         <source>Copy the current selection&apos;s contents to the clipboard</source>
         <translation>Kopiraj trenutačno odabrano u međuspremnik</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="703"/>
+        <location filename="../src/app/qgisapp.cpp" line="706"/>
         <source>&amp;Paste</source>
         <translation>&amp;Zalijepi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="704"/>
-        <location filename="../src/app/qgisapp.cpp" line="734"/>
+        <location filename="../src/app/qgisapp.cpp" line="707"/>
+        <location filename="../src/app/qgisapp.cpp" line="737"/>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="705"/>
+        <location filename="../src/app/qgisapp.cpp" line="708"/>
         <source>Paste the clipboard&apos;s contents into the current selection</source>
         <translation>Zalijepi sadržaj međuspremnika u trenutačno odabrano</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="709"/>
+        <location filename="../src/app/qgisapp.cpp" line="712"/>
         <source>&amp;Undo</source>
         <translation>&amp;Vrati</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="710"/>
+        <location filename="../src/app/qgisapp.cpp" line="713"/>
         <source>Ctrl+Z</source>
         <translation>Ctrl+Z</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="711"/>
+        <location filename="../src/app/qgisapp.cpp" line="714"/>
         <source>Undo the last operation</source>
         <translation>Vrati posljednju operaciju</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="715"/>
+        <location filename="../src/app/qgisapp.cpp" line="718"/>
         <source>&amp;Redo</source>
         <translation>&amp;Ponovi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="716"/>
+        <location filename="../src/app/qgisapp.cpp" line="719"/>
         <source>Ctrl+Shift+Z</source>
         <translation>Ctrl+Shift+Z</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="717"/>
+        <location filename="../src/app/qgisapp.cpp" line="720"/>
         <source>Redo the last operation</source>
         <translation>Ponovi posljednju operaciju</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="721"/>
+        <location filename="../src/app/qgisapp.cpp" line="724"/>
         <source>Cut Features</source>
         <translation>Izreži elemente</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="723"/>
+        <location filename="../src/app/qgisapp.cpp" line="726"/>
         <source>Cut selected features</source>
         <translation>Izreži odabrane elemente</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="727"/>
+        <location filename="../src/app/qgisapp.cpp" line="730"/>
         <source>Copy Features</source>
         <translation>Kopiraj elemente</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="729"/>
+        <location filename="../src/app/qgisapp.cpp" line="732"/>
         <source>Copy selected features</source>
         <translation>Kopiraj odabrane elemente</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="733"/>
+        <location filename="../src/app/qgisapp.cpp" line="736"/>
         <source>Paste Features</source>
         <translation>Zalijepi elemente</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="735"/>
+        <location filename="../src/app/qgisapp.cpp" line="738"/>
         <source>Paste selected features</source>
         <translation>Zalijepi odabrane elemente</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="739"/>
+        <location filename="../src/app/qgisapp.cpp" line="742"/>
         <source>Capture Point</source>
         <translation>Uhvati točku</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="740"/>
+        <location filename="../src/app/qgisapp.cpp" line="743"/>
         <source>Ctrl+.</source>
         <comment>Capture Points</comment>
         <translation>Ctrl+.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="741"/>
+        <location filename="../src/app/qgisapp.cpp" line="744"/>
         <source>Capture Points</source>
         <translation>Uhvati točke</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="745"/>
+        <location filename="../src/app/qgisapp.cpp" line="748"/>
         <source>Capture Line</source>
         <translation>Uhvati liniju</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="746"/>
+        <location filename="../src/app/qgisapp.cpp" line="749"/>
         <source>Ctrl+/</source>
         <comment>Capture Lines</comment>
         <translation>Ctrl+/</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="747"/>
+        <location filename="../src/app/qgisapp.cpp" line="750"/>
         <source>Capture Lines</source>
         <translation>Uhvati linije</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="751"/>
+        <location filename="../src/app/qgisapp.cpp" line="754"/>
         <source>Capture Polygon</source>
         <translation>Uhvati poligon</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="752"/>
+        <location filename="../src/app/qgisapp.cpp" line="755"/>
         <source>Ctrl+Shift+/</source>
         <comment>Capture Polygons</comment>
         <translation>Ctrl+Shift+/</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="753"/>
+        <location filename="../src/app/qgisapp.cpp" line="756"/>
         <source>Capture Polygons</source>
         <translation>Uhvati poligone</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="763"/>
-        <location filename="../src/app/qgisapp.cpp" line="765"/>
+        <location filename="../src/app/qgisapp.cpp" line="766"/>
+        <location filename="../src/app/qgisapp.cpp" line="768"/>
         <source>Reshape Features</source>
         <translation>Preoblikuj elemente</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="769"/>
-        <location filename="../src/app/qgisapp.cpp" line="771"/>
+        <location filename="../src/app/qgisapp.cpp" line="772"/>
+        <location filename="../src/app/qgisapp.cpp" line="774"/>
         <source>Split Features</source>
         <translation>Razdvoji elemente</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="775"/>
-        <location filename="../src/app/qgisapp.cpp" line="777"/>
+        <location filename="../src/app/qgisapp.cpp" line="778"/>
+        <location filename="../src/app/qgisapp.cpp" line="780"/>
         <source>Delete Selected</source>
         <translation>Obriši odabrano</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="782"/>
-        <location filename="../src/app/qgisapp.cpp" line="784"/>
+        <location filename="../src/app/qgisapp.cpp" line="785"/>
+        <location filename="../src/app/qgisapp.cpp" line="787"/>
         <source>Add Vertex</source>
         <translation>Dodaj verteks</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="788"/>
-        <location filename="../src/app/qgisapp.cpp" line="790"/>
+        <location filename="../src/app/qgisapp.cpp" line="791"/>
+        <location filename="../src/app/qgisapp.cpp" line="793"/>
         <source>Move Vertex</source>
         <translation>Pomakni verteks</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="794"/>
-        <location filename="../src/app/qgisapp.cpp" line="796"/>
+        <location filename="../src/app/qgisapp.cpp" line="797"/>
+        <location filename="../src/app/qgisapp.cpp" line="799"/>
         <source>Delete Vertex</source>
         <translation>Briši verteks</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="801"/>
-        <location filename="../src/app/qgisapp.cpp" line="803"/>
+        <location filename="../src/app/qgisapp.cpp" line="804"/>
+        <location filename="../src/app/qgisapp.cpp" line="806"/>
         <source>Add Ring</source>
         <translation>Dodaj prsten</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="807"/>
+        <location filename="../src/app/qgisapp.cpp" line="810"/>
         <source>Add Part</source>
         <translation>Dodaj dio</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="809"/>
+        <location filename="../src/app/qgisapp.cpp" line="812"/>
         <source>Add part to multipolygon</source>
         <translation>Dodaj dio multipoligonu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="813"/>
-        <location filename="../src/app/qgisapp.cpp" line="815"/>
+        <location filename="../src/app/qgisapp.cpp" line="816"/>
+        <location filename="../src/app/qgisapp.cpp" line="818"/>
         <source>Simplify Feature</source>
         <translation>Pojednostavni element</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="819"/>
+        <location filename="../src/app/qgisapp.cpp" line="822"/>
         <source>Delete Ring</source>
         <translation>Izbriši prsten</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="821"/>
+        <location filename="../src/app/qgisapp.cpp" line="824"/>
         <source>Click a vertex of the ring to delete</source>
         <translation>Klikni na verteks prstena za brisanje</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="825"/>
+        <location filename="../src/app/qgisapp.cpp" line="828"/>
         <source>Delete Part</source>
         <translation>Izbriši dio</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="827"/>
+        <location filename="../src/app/qgisapp.cpp" line="830"/>
         <source>Click a vertex of the part to delete</source>
         <translation>Klikni na verteks dijela za brisanje</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="831"/>
-        <location filename="../src/app/qgisapp.cpp" line="833"/>
+        <location filename="../src/app/qgisapp.cpp" line="834"/>
+        <location filename="../src/app/qgisapp.cpp" line="836"/>
         <source>Merge selected features</source>
         <translation>Spoji odabrane elemente</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="837"/>
-        <location filename="../src/app/qgisapp.cpp" line="839"/>
+        <location filename="../src/app/qgisapp.cpp" line="840"/>
+        <location filename="../src/app/qgisapp.cpp" line="842"/>
         <source>Node Tool</source>
         <translation>Alat za čvorove (node)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="843"/>
-        <location filename="../src/app/qgisapp.cpp" line="845"/>
+        <location filename="../src/app/qgisapp.cpp" line="846"/>
+        <location filename="../src/app/qgisapp.cpp" line="848"/>
         <source>Rotate Point Symbols</source>
         <translation>Rotacija simbola točaka</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="851"/>
+        <location filename="../src/app/qgisapp.cpp" line="854"/>
         <source>Pan Map</source>
         <translation>Pomakni mapu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="853"/>
+        <location filename="../src/app/qgisapp.cpp" line="856"/>
         <source>Pan the map</source>
         <translation>Pomakni mapu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="856"/>
-        <location filename="../src/app/qgisapp.cpp" line="858"/>
+        <location filename="../src/app/qgisapp.cpp" line="859"/>
+        <location filename="../src/app/qgisapp.cpp" line="861"/>
         <source>Zoom In</source>
         <translation>Približi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="857"/>
+        <location filename="../src/app/qgisapp.cpp" line="860"/>
         <source>Ctrl++</source>
         <comment>Zoom In</comment>
         <translation>Ctrl++</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="861"/>
-        <location filename="../src/app/qgisapp.cpp" line="863"/>
+        <location filename="../src/app/qgisapp.cpp" line="864"/>
+        <location filename="../src/app/qgisapp.cpp" line="866"/>
         <source>Zoom Out</source>
         <translation>Udalji</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="862"/>
+        <location filename="../src/app/qgisapp.cpp" line="865"/>
         <source>Ctrl+-</source>
         <comment>Zoom Out</comment>
         <translation>Ctrl+-</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="866"/>
-        <location filename="../src/app/qgisapp.cpp" line="868"/>
+        <location filename="../src/app/qgisapp.cpp" line="869"/>
+        <location filename="../src/app/qgisapp.cpp" line="871"/>
         <source>Select Features</source>
         <translation>Odaberi elemente</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="872"/>
-        <location filename="../src/app/qgisapp.cpp" line="874"/>
+        <location filename="../src/app/qgisapp.cpp" line="875"/>
+        <location filename="../src/app/qgisapp.cpp" line="877"/>
         <source>Deselect features from all layers</source>
         <translation>Poništi odabir elemenata iz svih slojeva</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="878"/>
+        <location filename="../src/app/qgisapp.cpp" line="881"/>
         <source>Identify Features</source>
         <translation>Identificiraj elemente</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="879"/>
+        <location filename="../src/app/qgisapp.cpp" line="882"/>
         <source>Ctrl+Shift+I</source>
         <comment>Click on features to identify them</comment>
         <translation>Ctrl+Shift+I</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="880"/>
+        <location filename="../src/app/qgisapp.cpp" line="883"/>
         <source>Click on features to identify them</source>
         <translation>Kliknite na elemente za identifikaciju</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="884"/>
+        <location filename="../src/app/qgisapp.cpp" line="887"/>
         <source>Measure Line </source>
         <translation>Izmjeri liniju</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="885"/>
+        <location filename="../src/app/qgisapp.cpp" line="888"/>
         <source>Ctrl+Shift+M</source>
         <comment>Measure a Line</comment>
         <translation>Ctrl+Shift+M</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="886"/>
+        <location filename="../src/app/qgisapp.cpp" line="889"/>
         <source>Measure a Line</source>
         <translation>Izmjeri liniju</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="889"/>
+        <location filename="../src/app/qgisapp.cpp" line="892"/>
         <source>Measure Area</source>
         <translation>Izmjeri površinu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="890"/>
+        <location filename="../src/app/qgisapp.cpp" line="893"/>
         <source>Ctrl+Shift+J</source>
         <comment>Measure an Area</comment>
         <translation>Ctrl+Shift+J</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="891"/>
+        <location filename="../src/app/qgisapp.cpp" line="894"/>
         <source>Measure an Area</source>
         <translation>Izmjeri površinu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="894"/>
-        <location filename="../src/app/qgisapp.cpp" line="895"/>
+        <location filename="../src/app/qgisapp.cpp" line="897"/>
+        <location filename="../src/app/qgisapp.cpp" line="898"/>
         <source>Measure Angle</source>
         <translation>Mjeri kut</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="898"/>
+        <location filename="../src/app/qgisapp.cpp" line="901"/>
         <source>Zoom Full</source>
         <translation>Prikaži sve</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="899"/>
+        <location filename="../src/app/qgisapp.cpp" line="902"/>
         <source>Ctrl+Shift+F</source>
         <comment>Zoom to Full Extents</comment>
         <translation>Ctrl+Shift+F</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="900"/>
+        <location filename="../src/app/qgisapp.cpp" line="903"/>
         <source>Zoom to Full Extents</source>
         <translation>Prikaži sve elemente</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="903"/>
-        <location filename="../src/app/qgisapp.cpp" line="905"/>
+        <location filename="../src/app/qgisapp.cpp" line="906"/>
+        <location filename="../src/app/qgisapp.cpp" line="908"/>
         <source>Zoom to Layer</source>
         <translation>Prikaži sloj</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="908"/>
-        <location filename="../src/app/qgisapp.cpp" line="910"/>
+        <location filename="../src/app/qgisapp.cpp" line="911"/>
+        <location filename="../src/app/qgisapp.cpp" line="913"/>
         <source>Zoom to Selection</source>
         <translation>Prikaži odabrano</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="909"/>
+        <location filename="../src/app/qgisapp.cpp" line="912"/>
         <source>Ctrl+J</source>
         <comment>Zoom to Selection</comment>
         <translation>Ctrl+J</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="913"/>
+        <location filename="../src/app/qgisapp.cpp" line="916"/>
         <source>Zoom Last</source>
         <translation>Prikaži posljednje</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="915"/>
+        <location filename="../src/app/qgisapp.cpp" line="918"/>
         <source>Zoom to Last Extent</source>
         <translation>Prikaži posljednji opseg</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="918"/>
+        <location filename="../src/app/qgisapp.cpp" line="921"/>
         <source>Zoom Next</source>
         <translation>Prikaži slijedeće</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="920"/>
+        <location filename="../src/app/qgisapp.cpp" line="923"/>
         <source>Zoom to Forward Extent</source>
         <translation>Prikaži slijedeći opseg</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="923"/>
+        <location filename="../src/app/qgisapp.cpp" line="926"/>
         <source>Zoom Actual Size</source>
         <translation>Prikaži stvarnu veličinu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="925"/>
+        <location filename="../src/app/qgisapp.cpp" line="928"/>
         <source>Zoom to Actual Size</source>
         <translation>Prikaži stvarnu veličinu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="929"/>
+        <location filename="../src/app/qgisapp.cpp" line="932"/>
         <source>Map Tips</source>
         <translation>Natuknice mape</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="931"/>
+        <location filename="../src/app/qgisapp.cpp" line="934"/>
         <source>Show information about a feature when the mouse is hovered over it</source>
         <translation>Prikaži informacije o elementu kada je miš iznad njega</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="935"/>
+        <location filename="../src/app/qgisapp.cpp" line="938"/>
         <source>New Bookmark...</source>
         <translation>Nova zabilješka...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="936"/>
+        <location filename="../src/app/qgisapp.cpp" line="939"/>
         <source>Ctrl+B</source>
         <comment>New Bookmark</comment>
         <translation>Ctrl+B</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="937"/>
-        <location filename="../src/app/qgisapp.cpp" line="6475"/>
+        <location filename="../src/app/qgisapp.cpp" line="940"/>
+        <location filename="../src/app/qgisapp.cpp" line="6406"/>
         <source>New Bookmark</source>
         <translation>Nova zabilješka</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="940"/>
-        <location filename="../src/app/qgisapp.cpp" line="942"/>
+        <location filename="../src/app/qgisapp.cpp" line="943"/>
+        <location filename="../src/app/qgisapp.cpp" line="945"/>
         <source>Show Bookmarks</source>
         <translation>Prikaži zabilješke</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="941"/>
+        <location filename="../src/app/qgisapp.cpp" line="944"/>
         <source>Ctrl+Shift+B</source>
         <comment>Show Bookmarks</comment>
         <translation>Ctrl+Shift+B</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="945"/>
+        <location filename="../src/app/qgisapp.cpp" line="948"/>
         <source>Refresh</source>
         <translation>Osvježi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="946"/>
+        <location filename="../src/app/qgisapp.cpp" line="949"/>
         <source>Ctrl+R</source>
         <comment>Refresh Map</comment>
         <translation>Ctrl+R</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="947"/>
+        <location filename="../src/app/qgisapp.cpp" line="950"/>
         <source>Refresh Map</source>
         <translation>Osvježi mapu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="964"/>
-        <source>New Shapefile Layer...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/app/qgisapp.cpp" line="965"/>
-        <source>Ctrl+Shift+N</source>
-        <comment>Create a New Shapefile layer</comment>
-        <translation type="unfinished">Ctrl+Shift+N</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="966"/>
-        <source>Create a New Shapefile layer</source>
-        <translation type="unfinished"></translation>
+        <source>Labeling</source>
+        <translation type="unfinished">Označavanje</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="970"/>
-        <source>New SpatiaLite Layer ...</source>
-        <translation type="unfinished"></translation>
+        <source>New Shapefile Layer...</source>
+        <translation>Novi sloj Shape datoteke...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="971"/>
-        <source>Ctrl+Shift+A</source>
-        <comment>Create a New SpatiaLite Layer </comment>
-        <translation type="unfinished"></translation>
+        <source>Ctrl+Shift+N</source>
+        <comment>Create a New Shapefile layer</comment>
+        <translation>Ctrl+Shift+N</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="972"/>
-        <source>Create a New SpatiaLite Layer </source>
-        <translation type="unfinished"></translation>
+        <source>Create a New Shapefile layer</source>
+        <translation>Stvara novi sloj Shape datoteke</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="976"/>
+        <source>New SpatiaLite Layer ...</source>
+        <translation>Novi SpatiaLite sloj ...</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="977"/>
+        <source>Ctrl+Shift+A</source>
+        <comment>Create a New SpatiaLite Layer </comment>
+        <translation>Ctrl+Shift+A</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="978"/>
+        <source>Create a New SpatiaLite Layer </source>
+        <translation>Stvara novi SpatiaLite sloj </translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="982"/>
         <source>Add Vector Layer...</source>
         <translation>Dodaj vektorski sloj...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="977"/>
+        <location filename="../src/app/qgisapp.cpp" line="983"/>
         <source>Ctrl+Shift+V</source>
         <comment>Add a Vector Layer</comment>
         <translation>Ctrl+Shift+V</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="978"/>
+        <location filename="../src/app/qgisapp.cpp" line="984"/>
         <source>Add a Vector Layer</source>
         <translation>Dodaj vektorski sloj</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="981"/>
+        <location filename="../src/app/qgisapp.cpp" line="987"/>
         <source>Add Raster Layer...</source>
         <translation>Dodaj rasterski sloj...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="982"/>
+        <location filename="../src/app/qgisapp.cpp" line="988"/>
         <source>Ctrl+Shift+R</source>
         <comment>Add a Raster Layer</comment>
         <translation>Ctrl+Shift+R</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="983"/>
+        <location filename="../src/app/qgisapp.cpp" line="989"/>
         <source>Add a Raster Layer</source>
         <translation>Dodaj rasterski sloj</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="986"/>
+        <location filename="../src/app/qgisapp.cpp" line="992"/>
         <source>Add PostGIS Layer...</source>
         <translation>Dodaj PostGIS sloj...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="987"/>
+        <location filename="../src/app/qgisapp.cpp" line="993"/>
         <source>Ctrl+Shift+D</source>
         <comment>Add a PostGIS Layer</comment>
         <translation>Ctrl+Shift+D</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="988"/>
+        <location filename="../src/app/qgisapp.cpp" line="994"/>
         <source>Add a PostGIS Layer</source>
         <translation>Dodaj PostGIS sloj</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="991"/>
+        <location filename="../src/app/qgisapp.cpp" line="997"/>
         <source>Add SpatiaLite Layer...</source>
         <translation>Dodaj SpatiaLite sloj...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="992"/>
+        <location filename="../src/app/qgisapp.cpp" line="998"/>
         <source>Ctrl+Shift+L</source>
         <comment>Add a SpatiaLite Layer</comment>
         <translation>Ctrl+Shift+L</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="993"/>
+        <location filename="../src/app/qgisapp.cpp" line="999"/>
         <source>Add a SpatiaLite Layer</source>
         <translation>Dodaj SpatiaLite sloj</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="996"/>
+        <location filename="../src/app/qgisapp.cpp" line="1002"/>
         <source>Add WMS Layer...</source>
         <translation>Dodaj WMS sloj...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="997"/>
+        <location filename="../src/app/qgisapp.cpp" line="1003"/>
         <source>Ctrl+Shift+W</source>
         <comment>Add a Web Mapping Server Layer</comment>
         <translation>Ctrl+Shift+W</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="998"/>
+        <location filename="../src/app/qgisapp.cpp" line="1004"/>
         <source>Add a Web Mapping Server Layer</source>
         <translation>Dodaj sloj Web Mapping Server</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1001"/>
-        <location filename="../src/app/qgisapp.cpp" line="1003"/>
+        <location filename="../src/app/qgisapp.cpp" line="1007"/>
+        <location filename="../src/app/qgisapp.cpp" line="1009"/>
         <source>Open Attribute Table</source>
         <translation>Otvori atributnu tablicu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1007"/>
+        <location filename="../src/app/qgisapp.cpp" line="1013"/>
         <source>Toggle editing</source>
         <translation>Uklj/isklj uređivanje</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1009"/>
+        <location filename="../src/app/qgisapp.cpp" line="1015"/>
         <source>Toggles the editing state of the current layer</source>
         <translation>Uklj/isklj uređivanje trenutačnog sloja</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1014"/>
+        <location filename="../src/app/qgisapp.cpp" line="1020"/>
         <source>Save edits</source>
-        <translation type="unfinished"></translation>
+        <translation>Spremi uređivanja</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1016"/>
+        <location filename="../src/app/qgisapp.cpp" line="1022"/>
         <source>Save edits to current layer , but continue editing</source>
-        <translation type="unfinished"></translation>
+        <translation>Spremi uređivanja trenutnog sloj, no nastavi s uređivanjem</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1032"/>
+        <location filename="../src/app/qgisapp.cpp" line="1038"/>
         <source>Remove Layer</source>
         <translation>Ukloni sloj</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1033"/>
+        <location filename="../src/app/qgisapp.cpp" line="1039"/>
         <source>Ctrl+D</source>
         <comment>Remove a Layer</comment>
         <translation>Ctrl+D</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1034"/>
+        <location filename="../src/app/qgisapp.cpp" line="1040"/>
         <source>Remove a Layer</source>
         <translation>Ukloni sloj</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1038"/>
+        <location filename="../src/app/qgisapp.cpp" line="1044"/>
         <source>Tile scale slider</source>
-        <translation type="unfinished"></translation>
+        <translation>Mjerilo pločica</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1040"/>
+        <location filename="../src/app/qgisapp.cpp" line="1046"/>
         <source>Show tile scale slider</source>
-        <translation type="unfinished"></translation>
+        <translation>Prikaži klizač mjerila pločica</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1045"/>
+        <location filename="../src/app/qgisapp.cpp" line="1051"/>
         <source>Live GPS tracking</source>
         <translation>Praćenje GPS uživo</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1047"/>
+        <location filename="../src/app/qgisapp.cpp" line="1053"/>
         <source>Show GPS tool</source>
         <translation>Prikaži GPS alat</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1052"/>
+        <location filename="../src/app/qgisapp.cpp" line="1058"/>
         <source>Properties...</source>
         <translation>Osobine...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1054"/>
+        <location filename="../src/app/qgisapp.cpp" line="1060"/>
         <source>Set properties of the current layer</source>
         <translation>Postavljanje osobina trenutačno sloja</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1058"/>
-        <source>Query...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="1060"/>
-        <source>Set subset query of the current layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <location filename="../src/app/qgisapp.cpp" line="1064"/>
+        <source>Query...</source>
+        <translation>Upit...</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1066"/>
+        <source>Set subset query of the current layer</source>
+        <translation>Postavi upit podskupa trenutnog sloja</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1070"/>
         <source>Add to Overview</source>
         <translation>Dodaj u Pregled</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1065"/>
+        <location filename="../src/app/qgisapp.cpp" line="1071"/>
         <source>Ctrl+Shift+O</source>
         <comment>Add current layer to overview map</comment>
         <translation>Ctrl+Shift+O</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1066"/>
+        <location filename="../src/app/qgisapp.cpp" line="1072"/>
         <source>Add current layer to overview map</source>
         <translation>Dodaj trenutačni sloj u preglednu mapu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1070"/>
+        <location filename="../src/app/qgisapp.cpp" line="1076"/>
         <source>Add All to Overview</source>
         <translation>Dodaj sve u Pregled</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1072"/>
+        <location filename="../src/app/qgisapp.cpp" line="1078"/>
         <source>Show all layers in the overview map</source>
         <translation>Prikaži sve slojeve u preglednoj mapi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1075"/>
+        <location filename="../src/app/qgisapp.cpp" line="1081"/>
         <source>Remove All From Overview</source>
         <translation>Ukloni sve iz Pregleda</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1077"/>
+        <location filename="../src/app/qgisapp.cpp" line="1083"/>
         <source>Remove all layers from overview map</source>
         <translation>Ukloni sve slojeve iz pregledne mape</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1080"/>
+        <location filename="../src/app/qgisapp.cpp" line="1086"/>
         <source>Show All Layers</source>
         <translation>Prikaži sve slojeve</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1081"/>
+        <location filename="../src/app/qgisapp.cpp" line="1087"/>
         <source>Ctrl+Shift+U</source>
         <comment>Show all layers</comment>
         <translation>Ctrl+Shift+U</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1082"/>
+        <location filename="../src/app/qgisapp.cpp" line="1088"/>
         <source>Show all layers</source>
         <translation>Prikaži sve slojeve</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1085"/>
+        <location filename="../src/app/qgisapp.cpp" line="1091"/>
         <source>Hide All Layers</source>
         <translation>Sakrij sve slojeve</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1086"/>
+        <location filename="../src/app/qgisapp.cpp" line="1092"/>
         <source>Ctrl+Shift+H</source>
         <comment>Hide all layers</comment>
         <translation>Ctrl+Shift+H</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1087"/>
+        <location filename="../src/app/qgisapp.cpp" line="1093"/>
         <source>Hide all layers</source>
         <translation>Sakrij sve slojeve</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1092"/>
+        <location filename="../src/app/qgisapp.cpp" line="1098"/>
         <source>Manage Plugins...</source>
         <translation>Upravljanje dodacima...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1094"/>
+        <location filename="../src/app/qgisapp.cpp" line="1100"/>
         <source>Open the plugin manager</source>
         <translation>Otvori upravljanje dodacima</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1099"/>
+        <location filename="../src/app/qgisapp.cpp" line="1105"/>
         <source>Toggle Full Screen Mode</source>
         <translation>Uklj/isklj prikaz preko cijelog ekrana</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1100"/>
+        <location filename="../src/app/qgisapp.cpp" line="1106"/>
         <source>Ctrl-F</source>
         <comment>Toggle fullscreen mode</comment>
         <translation>Ctrl-F</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1101"/>
+        <location filename="../src/app/qgisapp.cpp" line="1107"/>
         <source>Toggle fullscreen mode</source>
         <translation>Uklj/isklj prikaz preko cijelog ekrana</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1104"/>
+        <location filename="../src/app/qgisapp.cpp" line="1110"/>
         <source>Project Properties...</source>
         <translation>Osobine projekta...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1105"/>
+        <location filename="../src/app/qgisapp.cpp" line="1111"/>
         <source>Ctrl+Shift+P</source>
         <comment>Set project properties</comment>
         <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1106"/>
+        <location filename="../src/app/qgisapp.cpp" line="1112"/>
         <source>Set project properties</source>
         <translation>Postavi osobine projekta</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1109"/>
+        <location filename="../src/app/qgisapp.cpp" line="1115"/>
         <source>Options...</source>
         <translation>Opcije...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1111"/>
+        <location filename="../src/app/qgisapp.cpp" line="1117"/>
         <source>Change various QGIS options</source>
         <translation>Izmijeni razne QGIS opcije</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1115"/>
+        <location filename="../src/app/qgisapp.cpp" line="1121"/>
         <source>Custom CRS...</source>
         <translation>Prilagođeni CRS...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1117"/>
+        <location filename="../src/app/qgisapp.cpp" line="1123"/>
         <source>Manage custom coordinate reference systems</source>
         <translation>Upravljanje prilagođenim kood. referentnim sustavima</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1121"/>
+        <location filename="../src/app/qgisapp.cpp" line="1127"/>
         <source>Configure shortcuts...</source>
         <translation>Konfiguracija prečica...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1123"/>
+        <location filename="../src/app/qgisapp.cpp" line="1129"/>
         <source>Configure shortcuts</source>
         <translation>Konfiguracija prečica</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1129"/>
+        <location filename="../src/app/qgisapp.cpp" line="1135"/>
         <source>Minimize</source>
         <translation>Smanji</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1130"/>
+        <location filename="../src/app/qgisapp.cpp" line="1136"/>
         <source>Ctrl+M</source>
         <comment>Minimize Window</comment>
         <translation>Ctrl+M</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1131"/>
+        <location filename="../src/app/qgisapp.cpp" line="1137"/>
         <source>Minimizes the active window to the dock</source>
         <translation>Smanjuje aktivni prozor na traku</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1134"/>
+        <location filename="../src/app/qgisapp.cpp" line="1140"/>
         <source>Zoom</source>
         <translation>Približi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1136"/>
+        <location filename="../src/app/qgisapp.cpp" line="1142"/>
         <source>Toggles between a predefined size and the window size set by the user</source>
         <translation>Prelazak između preddefinirane veličine prozora i korisnički postavljene</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1139"/>
+        <location filename="../src/app/qgisapp.cpp" line="1145"/>
         <source>Bring All to Front</source>
         <translation>Dovedi sve u prvi plan</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1141"/>
+        <location filename="../src/app/qgisapp.cpp" line="1147"/>
         <source>Bring forward all open windows</source>
         <translation>Dovedi naprijed sve otvorene prozore</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1150"/>
+        <location filename="../src/app/qgisapp.cpp" line="1156"/>
         <source>Help Contents</source>
         <translation>Sadržaj Pomoći</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1152"/>
+        <location filename="../src/app/qgisapp.cpp" line="1158"/>
         <source>Ctrl+?</source>
         <comment>Help Documentation (Mac)</comment>
         <translation>Ctrl+?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1154"/>
+        <location filename="../src/app/qgisapp.cpp" line="1160"/>
         <source>F1</source>
         <comment>Help Documentation</comment>
         <translation>F1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1156"/>
+        <location filename="../src/app/qgisapp.cpp" line="1162"/>
         <source>Help Documentation</source>
         <translation>Dokumentacija Pomoći</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1159"/>
         <location filename="../src/app/qgisapp.cpp" line="1165"/>
+        <location filename="../src/app/qgisapp.cpp" line="1171"/>
         <source>QGIS Home Page</source>
         <translation>QGIS početna stranica</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1161"/>
+        <location filename="../src/app/qgisapp.cpp" line="1167"/>
         <source>Ctrl+H</source>
         <comment>QGIS Home Page</comment>
         <translation>Ctrl+H</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1168"/>
+        <location filename="../src/app/qgisapp.cpp" line="1174"/>
         <source>Check Qgis Version</source>
         <translation>Provjeri QGIS verziju</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1170"/>
+        <location filename="../src/app/qgisapp.cpp" line="1176"/>
         <source>Check if your QGIS version is up to date (requires internet access)</source>
         <translation>Provjeri da li je QGIS najnovije verzije (zahtjeva vezu na internet)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1173"/>
+        <location filename="../src/app/qgisapp.cpp" line="1179"/>
         <source>About</source>
         <translation>O programu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1175"/>
+        <location filename="../src/app/qgisapp.cpp" line="1181"/>
         <source>About QGIS</source>
         <translation>O QGIS-u</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1179"/>
+        <location filename="../src/app/qgisapp.cpp" line="1185"/>
         <source>Style manager...</source>
         <translation>Upravljač stilova...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1181"/>
+        <location filename="../src/app/qgisapp.cpp" line="1187"/>
         <source>Show style manager V2</source>
         <translation>Prikaži upravljač stilova V2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1221"/>
+        <location filename="../src/app/qgisapp.cpp" line="1227"/>
         <source>Failed to open Python console:</source>
         <translation>Neuspješno otvaranje Python konzole:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1320"/>
+        <location filename="../src/app/qgisapp.cpp" line="1326"/>
         <source>&amp;File</source>
         <translation>&amp;Datoteka</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1324"/>
+        <location filename="../src/app/qgisapp.cpp" line="1330"/>
         <source>&amp;Open Recent Projects</source>
         <translation>&amp;Otvori nedavne projekte</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1343"/>
+        <location filename="../src/app/qgisapp.cpp" line="1349"/>
         <source>Print Composers</source>
         <translation>Print Kompozeri</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1350"/>
+        <location filename="../src/app/qgisapp.cpp" line="1356"/>
         <source>&amp;Edit</source>
         <translation>&amp;Uredi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1401"/>
+        <location filename="../src/app/qgisapp.cpp" line="1407"/>
         <source>Panels</source>
         <translation>Paneli</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1402"/>
+        <location filename="../src/app/qgisapp.cpp" line="1408"/>
         <source>Toolbars</source>
         <translation>Trake s alatima</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1406"/>
+        <location filename="../src/app/qgisapp.cpp" line="1412"/>
         <source>&amp;View</source>
         <translation>&amp;Prikaz</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1448"/>
+        <location filename="../src/app/qgisapp.cpp" line="1454"/>
         <source>&amp;Layer</source>
         <translation>S&amp;loj</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6746"/>
+        <location filename="../src/app/qgisapp.cpp" line="6677"/>
         <source>SSL errors occured accessing URL %1:</source>
-        <translation type="unfinished"></translation>
+        <translation>Dogodile su se SSL greške pri pristupanju URL-u %1:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6757"/>
+        <location filename="../src/app/qgisapp.cpp" line="6688"/>
         <source>
 
 Ignore errors?</source>
-        <translation type="unfinished"></translation>
+        <translation>
+
+Ignoriraj pogreške?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6761"/>
+        <location filename="../src/app/qgisapp.cpp" line="6692"/>
         <source>SSL errors occured</source>
-        <translation type="unfinished"></translation>
+        <translation>Dogodile su se SSL greške</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1492"/>
+        <location filename="../src/app/qgisapp.cpp" line="1499"/>
         <source>&amp;Settings</source>
         <translation>Po&amp;stavke</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1511"/>
+        <location filename="../src/app/qgisapp.cpp" line="1518"/>
         <source>&amp;Plugins</source>
         <translation>&amp;Dodaci</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1520"/>
+        <location filename="../src/app/qgisapp.cpp" line="1527"/>
         <source>&amp;Window</source>
         <translation>&amp;Prozor</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1533"/>
+        <location filename="../src/app/qgisapp.cpp" line="1540"/>
         <source>&amp;Help</source>
         <translation>&amp;Pomoć</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1555"/>
+        <location filename="../src/app/qgisapp.cpp" line="1562"/>
         <source>File</source>
         <translation>Datoteka</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1567"/>
+        <location filename="../src/app/qgisapp.cpp" line="1574"/>
         <source>Manage Layers</source>
         <translation>Upravljanje slojevima</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1588"/>
+        <location filename="../src/app/qgisapp.cpp" line="1595"/>
         <source>Digitizing</source>
         <translation>Digitaliziranje</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1609"/>
+        <location filename="../src/app/qgisapp.cpp" line="1616"/>
         <source>Advanced Digitizing</source>
         <translation>Napredno digitaliziranje</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1628"/>
+        <location filename="../src/app/qgisapp.cpp" line="1635"/>
         <source>Map Navigation</source>
         <translation>Navigacija po mapi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1643"/>
+        <location filename="../src/app/qgisapp.cpp" line="1650"/>
         <source>Attributes</source>
         <translation>Atributi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1672"/>
+        <location filename="../src/app/qgisapp.cpp" line="1680"/>
         <source>Plugins</source>
         <translation>Dodaci</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1678"/>
+        <location filename="../src/app/qgisapp.cpp" line="1686"/>
         <source>Help</source>
         <translation>Pomoć</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1695"/>
+        <location filename="../src/app/qgisapp.cpp" line="1703"/>
         <source>Progress bar that displays the status of rendering layers and other time-intensive operations</source>
         <translation>Traka napredka koja prikazuje status prikazivanja slojeva i ostalih vremenski osjetljivih operacija</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1709"/>
+        <location filename="../src/app/qgisapp.cpp" line="1717"/>
         <source>Toggle extents and mouse position display</source>
         <translation>Uklj/isklj opseg (extents) i prikaz pozicije miša</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1722"/>
-        <location filename="../src/app/qgisapp.cpp" line="5560"/>
+        <location filename="../src/app/qgisapp.cpp" line="1730"/>
+        <location filename="../src/app/qgisapp.cpp" line="5491"/>
         <source>Coordinate:</source>
         <translation>Koordinate:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1723"/>
+        <location filename="../src/app/qgisapp.cpp" line="1731"/>
         <source>Current map coordinate</source>
         <translation>Trenutačne koordinate na mapi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1737"/>
+        <location filename="../src/app/qgisapp.cpp" line="1745"/>
         <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved. It also allows editing to set the canvas center to a given position.</source>
         <translation>Prikazuje koordinate na mapi na trentoj poziciji. Prikaz se kontinuirano osvježava kako se pomiče miš. Također dopušta postavljanje centra prikaza na bilo koju poziciju.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1741"/>
+        <location filename="../src/app/qgisapp.cpp" line="1749"/>
         <source>Current map coordinate (formatted as x,y)</source>
         <translation>Trenutačne koordinate na mapi (formatirane kao x,y)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1753"/>
+        <location filename="../src/app/qgisapp.cpp" line="1761"/>
         <source>Scale </source>
         <translation>Mjerilo</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1754"/>
+        <location filename="../src/app/qgisapp.cpp" line="1762"/>
         <source>Current map scale</source>
         <translation>Trenutačno mjerilo mape</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1767"/>
+        <location filename="../src/app/qgisapp.cpp" line="1775"/>
         <source>Displays the current map scale</source>
         <translation>Prikazuje trenutačno mjerilo mape</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1768"/>
+        <location filename="../src/app/qgisapp.cpp" line="1776"/>
         <source>Current map scale (formatted as x:y)</source>
         <translation>Trenutačno mjerilo mape (formatirano kao x:y)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1777"/>
+        <location filename="../src/app/qgisapp.cpp" line="1785"/>
         <source>Stop map rendering</source>
         <translation>Zaustavi prikazivanje mape</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1780"/>
+        <location filename="../src/app/qgisapp.cpp" line="1788"/>
         <source>Render</source>
         <translation>Prikaži</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1783"/>
+        <location filename="../src/app/qgisapp.cpp" line="1791"/>
         <source>When checked, the map layers are rendered in response to map navigation commands and other events. When not checked, no rendering is done. This allows you to add a large number of layers and symbolize them before rendering.</source>
         <translation>Kada je uključeno slojevi mape se prikazuju prema navigacijskim naredbama i ostalim događajima. Ako nije uključeno, ništa se ne prikazuje. Na taj način možete dodati velik broj slojeva i simbola prije prikazivanja.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1787"/>
+        <location filename="../src/app/qgisapp.cpp" line="1795"/>
         <source>Toggle map rendering</source>
         <translation>Uklj/isklj prikazivanje mape</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1800"/>
+        <location filename="../src/app/qgisapp.cpp" line="1808"/>
         <source>Resource Location Error</source>
         <translation>Pogreška u lociranju resursa</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1801"/>
+        <location filename="../src/app/qgisapp.cpp" line="1809"/>
         <source>Error reading icon resources from: 
  %1
  Quitting...</source>
@@ -5396,392 +6559,393 @@ Ignore errors?</source>
  Prekidam...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1806"/>
+        <location filename="../src/app/qgisapp.cpp" line="1814"/>
         <source>This icon shows whether on the fly coordinate reference system transformation is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour.</source>
         <translation>Ova ikona prikazuje je li omogućena transformacija koordinata &quot;u letu&quot;. Kliknite na ikonu kako biste otvorili dijalog za promjenu osobina projekta i izmjenili postavke.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1810"/>
+        <location filename="../src/app/qgisapp.cpp" line="1818"/>
         <source>CRS status - Click to open coordinate reference system dialog</source>
         <translation>CRS status - kliknite za otvaranje dijaloga koord. referentnog sustava</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1815"/>
+        <location filename="../src/app/qgisapp.cpp" line="1823"/>
         <source>Ready</source>
         <translation>Spreman</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="398"/>
+        <location filename="../src/app/qgisapp.cpp" line="399"/>
         <source>Map canvas. This is where raster and vector layers are displayed when added to the map</source>
         <translation>Prikaz mape (canvas). Ovdje se prikazuju rasterski i vektorski slojevi kad se dodaju mapi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="757"/>
-        <location filename="../src/app/qgisapp.cpp" line="759"/>
+        <location filename="../src/app/qgisapp.cpp" line="760"/>
+        <location filename="../src/app/qgisapp.cpp" line="762"/>
         <source>Move Feature(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pomakni element(e)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2071"/>
+        <location filename="../src/app/qgisapp.cpp" line="2082"/>
         <source>Map overview canvas. This canvas can be used to display a locator map that shows the current extent of the map canvas. The current extent is shown as a red rectangle. Any layer on the map can be added to the overview canvas.</source>
         <translation>Prikaz pregledne mape. Na ovom se prikazuje lokatorska mapa koja prikazuje opseg trenutačne mape. Trenutačni opseg se prikazuje kao crveni pravokutnik. svaki sloj na mapi može se dodati i pregledni prikaz.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2080"/>
+        <location filename="../src/app/qgisapp.cpp" line="2091"/>
         <source>Overview</source>
         <translation>Pregled</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2140"/>
+        <location filename="../src/app/qgisapp.cpp" line="2151"/>
         <source>Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties.</source>
         <translation>Legenda mape koja prikazuje sve slojeve koji se prikazuju. Kliknite na kvadratić za označavanje za uklj. ili isklj. Dvostruki klik na sloj unutar legende za postavljanje izgleda i ostalih osobina.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2141"/>
+        <location filename="../src/app/qgisapp.cpp" line="2152"/>
         <source>Layers</source>
         <translation>Slojevi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2181"/>
-        <location filename="../src/app/qgisapp.cpp" line="2223"/>
+        <location filename="../src/app/qgisapp.cpp" line="2192"/>
+        <location filename="../src/app/qgisapp.cpp" line="2234"/>
         <source>Private qgis.db</source>
-        <translation type="unfinished"></translation>
+        <translation>Provatna qgis.db</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2181"/>
+        <location filename="../src/app/qgisapp.cpp" line="2192"/>
         <source>Could not open qgis.db</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne mogu otvoriti qgis.db</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2223"/>
+        <location filename="../src/app/qgisapp.cpp" line="2234"/>
         <source>Migration of private qgis.db failed.
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Migracija privatne qgis.db nije uspjela.
+%1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2376"/>
+        <location filename="../src/app/qgisapp.cpp" line="2387"/>
         <source>You are using QGIS version %1 built against code revision %2.</source>
         <translation>Koristite GQIS verziju %1 sagrađenu iz koda revizije %2.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4899"/>
+        <location filename="../src/app/qgisapp.cpp" line="4830"/>
         <source>Tile scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Mjerilo pločice</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6688"/>
+        <location filename="../src/app/qgisapp.cpp" line="6619"/>
         <source>Warning</source>
         <translation>Upozorenje</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6688"/>
+        <location filename="../src/app/qgisapp.cpp" line="6619"/>
         <source>This layer doesn&apos;t have a properties dialog.</source>
         <translation>Ovaj sloj nema dijalog s osobinama.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6719"/>
+        <location filename="../src/app/qgisapp.cpp" line="6650"/>
         <source>Authentication required</source>
         <translation>Zahtjeva se autentikacija</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6735"/>
+        <location filename="../src/app/qgisapp.cpp" line="6666"/>
         <source>Proxy authentication required</source>
         <translation>Potrebna proxy autentikacija</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="950"/>
+        <location filename="../src/app/qgisapp.cpp" line="953"/>
         <source>Text Annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Tekstualna oznaka</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="954"/>
+        <location filename="../src/app/qgisapp.cpp" line="957"/>
         <source>Form annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Oznaka forme</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="958"/>
+        <location filename="../src/app/qgisapp.cpp" line="961"/>
         <source>Move Annotation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="1020"/>
-        <source>Save as...</source>
-        <translation type="unfinished">Spremi kao...</translation>
-    </message>
-    <message>
-        <location filename="../src/app/qgisapp.cpp" line="1022"/>
-        <source>Save the current layer as a vector file</source>
-        <translation type="unfinished"></translation>
+        <translation>Pomakni oznaku</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1026"/>
-        <source>Save Selection as vector file...</source>
-        <translation type="unfinished"></translation>
+        <source>Save as...</source>
+        <translation>Spremi kao...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1028"/>
+        <source>Save the current layer as a vector file</source>
+        <translation>Spremi trenutni sloj kao vektorsku datoteku</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1032"/>
+        <source>Save Selection as vector file...</source>
+        <translation>Spremi odabrano kao vektorsku datoteku...</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgisapp.cpp" line="1034"/>
         <source>Save the selection as a vector file</source>
-        <translation type="unfinished"></translation>
+        <translation>Spremi odabrano kao vektorsku datoteku</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1451"/>
+        <location filename="../src/app/qgisapp.cpp" line="1457"/>
         <source>New</source>
-        <translation type="unfinished"></translation>
+        <translation>Novo</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2380"/>
+        <location filename="../src/app/qgisapp.cpp" line="2391"/>
         <source>
 This copy of QGIS has been built with PostgreSQL support (%1).</source>
-        <translation type="unfinished"></translation>
+        <translation>
+Ova kopija QGIS-a izgrađena je s podrškom za PostgreSQL (%1).</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2388"/>
+        <location filename="../src/app/qgisapp.cpp" line="2399"/>
         <source>
 This copy of QGIS has been built without SpatiaLite support.</source>
         <translation>Ova kopija QGIS-a izgrađena je s podrškom za SpatiaLite.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2392"/>
+        <location filename="../src/app/qgisapp.cpp" line="2403"/>
         <source>
 This copy of QGIS has been built with QWT support (%1).</source>
         <translation>Ova je kopija QGIS izgrađena s QWT podrškom (%1).</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2394"/>
+        <location filename="../src/app/qgisapp.cpp" line="2405"/>
         <source>
 This copy of QGIS has been built without QWT support.</source>
         <translation>
 Ova je kopija QGIS-a izgrađena bez QWT podrške.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2398"/>
+        <location filename="../src/app/qgisapp.cpp" line="2409"/>
         <source>
 This copy of QGIS writes debugging output.</source>
         <translation>
 Ova kopija QGIS-a zapisuje izlaz debuggiranja.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2401"/>
+        <location filename="../src/app/qgisapp.cpp" line="2412"/>
         <source>
 This binary was compiled against Qt %1,and is currently running against Qt %2</source>
         <translation>Ova binarna verzija kompajlirana je uz Qt %1, a trenutačno se izvršava uz Qt %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2408"/>
+        <location filename="../src/app/qgisapp.cpp" line="2419"/>
         <source>Version</source>
         <translation>Verzija</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2409"/>
+        <location filename="../src/app/qgisapp.cpp" line="2420"/>
         <source>Whats new in Version 1.4.0?</source>
         <translation>Što je novo u verziji 1.4.0?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2420"/>
+        <location filename="../src/app/qgisapp.cpp" line="2431"/>
         <source>This release includes around 200 bug fixes, nearly 30 new features and has had a lot of love and attention poured in to it to take our favourite desktop GIS application another step on the road to GIS nirvana! So much has happened in the 3 months since our last release that it is impossible to document everything here. Instead we will just highlight a couple of important new features for you.</source>
         <translation>Ova verzija uključuje oko 200 popravaka bugova, gotovo 30 novih osobina i mnogo ljubavi i pažnje posvećene našem omiljenom desktop GIS paketu, kako bi napravi okorak naprijed prema GIS nirvani! Toliko se otga dogodilo u proteklih 3 mjeseca od posljednje verzije da je nemoguće sve ovdje dokumenitrati. Umjesto toga smo naznačili samo neke važne nove osobine.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2428"/>
+        <location filename="../src/app/qgisapp.cpp" line="2439"/>
         <source>Probably the biggest new feature is the addition of the new vector symbology infrastructure. This is provided alongside the old implementation - you can switch using a button in the vector layer properties dialog. It does&apos;t replace the old symbology implementation completely yet because there are various issues that need to be resolved and a large amount of testing before it is considered ready.</source>
         <translation>Vjerojatno nakvažnija od novih osobina je dodatak nove infrastrukture za simbole vektora. Ovo je dodano uz staru implementaciju - možete se prebaciti uz pomoć gumba u dijalogu za osobine vektorskog sloja. Još uvijek ne zamjenjuje u potpunosti staru implementaciju budući novu treba još dosta testirati, a potrebno je i razriješiti još dosta problema da bi bila u potpunosti spremna.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2436"/>
+        <location filename="../src/app/qgisapp.cpp" line="2447"/>
         <source>QGIS now has a field calculator, accessible via a button in the attribute section of the vector properties, and from the attribute table user interface. You can use feature length, feature area, string concatenation and type conversions in the field calculator, as well as field values.</source>
         <translation>QGIS sada ima kalkulator polja, dostupan preko gumba u odjeljku atributa u osobinama vektora, i iz korisničkog sučelja atributne tablice. Možete postaviti dužinu, površinu, spajanje stringova i konverzije tipova u kalkulator, kao i vrijednosti polja.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2443"/>
+        <location filename="../src/app/qgisapp.cpp" line="2454"/>
         <source>The map composer has had a lot of attention. A grid can now be added to composer maps. Composer maps can now be rotated in the layout. The limitation of a single map layout per project has been removed. A new composer manager dialog has been added to manage the existing composer instances. The composer widget property sheets have been completely overhauled to use less screen space </source>
         <translation>Mnogo je pažnje posvećeno kompozitoru mape. Sada se može dodati mreža (Grid). Složene mape se mogu rotirati u pregledu. Nema više ograničenja od jednog pregleda (layput) po projektu. Novi dijalog kompozitora dodan je za upravljanje postojećim instancama. Stranice s osobinama widgeta u potpunosti su izmjenjene kako bi zauzimale manje mjesta na ekranu </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2451"/>
+        <location filename="../src/app/qgisapp.cpp" line="2462"/>
         <source>Various parts of the user interface have been overhauled with the goal of improving consistency and to improve support for netbooks and other smaller screen devices. Loading and saving of shortcuts. Position can now be displayed as Degrees, Minutes, Seconds in the status bar. The add, move and delete vertex buttons are now removed and the node tool is moved from the advanced editing toolbar to the standard editing toolbar. The identification tool has also undergone numerous improvements.</source>
         <translation>Razni dijelovi korisničkog sučelja izmjenjeni su kako bi se poboljšala konzistentnost i podrška za netbooke i uređaje s manjim ekranima. Učitavanje i spremanje prečica. Pozicija se sada može prikazivati kao Stupnjevi, minute i sekunde u statusnoj traci. Gumbi za dodavanje, pomicanje i brisanje verteksa uklonjeni su, a alat za čvorove (node) premješten je iz napredne trake u standardnu traku za uređivanje. Alat za identifikacju je također prošao brojna poboljšanja.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2461"/>
+        <location filename="../src/app/qgisapp.cpp" line="2472"/>
         <source>A render caching capability has been added to QGIS. This speeds up common operations such as layer re-ordering, changing symbology, WMS / WFS client, hiding / showing layers and opens the door for future enhancements such as threaded rendering and pre-compositing layer cache manipulation. Note that it is disabled by default, and can be enabled in the options dialog.</source>
         <translation>U QGIS je dodana mogućnost keširanja prikaza. Ovo ubrzava uobičajene operacije poput promjene redoslijeda slojeva, simbologije, WMS/WFS klijenta, skrivanja/prikazivanja slojeva i otvara mogućnost budućim poboljšanjima, kao što su višenitno renderiranje. Primjetite da je isključeno u zadanim potavkama i može se uključiti u dijalogu Opcije.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2469"/>
+        <location filename="../src/app/qgisapp.cpp" line="2480"/>
         <source>User defined SVG search paths are now added to the options dialog.</source>
         <translation>U dijalog Opcije dodani su korisnički definirani putevi za pretragu SVG-a.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2472"/>
+        <location filename="../src/app/qgisapp.cpp" line="2483"/>
         <source>When creating a new shapefile, you can now specify its CRS. Also the avoid intersections option for polygons is now also possible with background layers.</source>
         <translation>Pri kreiranju nove Shape datoteke sada možete odrediti CRS. Opcija za izbjegavanje presjeka za poligone dostupna je i s pozadinskim slojevima.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2476"/>
+        <location filename="../src/app/qgisapp.cpp" line="2487"/>
         <source>For power users, you can now create customizable attribute forms using Qt Designer dialog UIs.</source>
         <translation>Napredni korisnici sada mogu kreirati prilagođene obrasce za unos atributa korištenjem Qt Designer korisničkog sučelja za dijaloge.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2611"/>
+        <location filename="../src/app/qgisapp.cpp" line="2622"/>
         <source>%1 is not a valid or recognized data source</source>
         <translation>%1 ije valjani ili prepoznati izvor podataka</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2612"/>
-        <location filename="../src/app/qgisapp.cpp" line="6211"/>
+        <location filename="../src/app/qgisapp.cpp" line="2623"/>
+        <location filename="../src/app/qgisapp.cpp" line="6142"/>
         <source>Invalid Data Source</source>
         <translation>Nevaljani izvor podataka</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2765"/>
-        <location filename="../src/app/qgisapp.cpp" line="2844"/>
+        <location filename="../src/app/qgisapp.cpp" line="2763"/>
+        <location filename="../src/app/qgisapp.cpp" line="2842"/>
         <source>Invalid Layer</source>
         <translation>Nevaljani sloj</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2765"/>
-        <location filename="../src/app/qgisapp.cpp" line="2844"/>
+        <location filename="../src/app/qgisapp.cpp" line="2763"/>
+        <location filename="../src/app/qgisapp.cpp" line="2842"/>
         <source>%1 is an invalid layer and cannot be loaded.</source>
         <translation>%1 je nevaljani sloj i ne može se učitati.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3021"/>
+        <location filename="../src/app/qgisapp.cpp" line="3010"/>
         <source>Save As</source>
         <translation>Spremi kao</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3048"/>
         <source>New Shapefile</source>
-        <translation>Nova Shape datoteka</translation>
+        <translation type="obsolete">Nova Shape datoteka</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3049"/>
         <source>Shapefiles must end on .shp</source>
-        <translation>Shape datoteka mora imati nastavak .shp</translation>
+        <translation type="obsolete">Shape datoteka mora imati nastavak .shp</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3148"/>
+        <location filename="../src/app/qgisapp.cpp" line="3104"/>
         <source>Choose a QGIS project file to open</source>
         <translation>Odaberite QGIS projekt za otvaranje</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3148"/>
-        <location filename="../src/app/qgisapp.cpp" line="3285"/>
-        <location filename="../src/app/qgisapp.cpp" line="3347"/>
+        <location filename="../src/app/qgisapp.cpp" line="3104"/>
+        <location filename="../src/app/qgisapp.cpp" line="3234"/>
+        <location filename="../src/app/qgisapp.cpp" line="3296"/>
         <source>QGis files (*.qgs)</source>
         <translation>QGIS datoteke (*.qgs)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3173"/>
+        <location filename="../src/app/qgisapp.cpp" line="3129"/>
         <source>QGIS Project Read Error</source>
         <translation>Pogreška pri čitanju QGIS projekta</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3218"/>
+        <location filename="../src/app/qgisapp.cpp" line="3170"/>
         <source>Unable to open project</source>
         <translation>Ne mogu otvoriti projekt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3284"/>
+        <location filename="../src/app/qgisapp.cpp" line="3233"/>
         <source>Choose a QGIS project file</source>
         <translation>Odaberite datoteku QGIS projekta</translation>
     </message>
     <message>
+        <location filename="../src/app/qgisapp.cpp" line="3265"/>
         <location filename="../src/app/qgisapp.cpp" line="3316"/>
-        <location filename="../src/app/qgisapp.cpp" line="3367"/>
         <source>Saved project to: %1</source>
         <translation>Projekt spremljen u: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3328"/>
-        <location filename="../src/app/qgisapp.cpp" line="3374"/>
+        <location filename="../src/app/qgisapp.cpp" line="3277"/>
+        <location filename="../src/app/qgisapp.cpp" line="3323"/>
         <source>Unable to save project %1</source>
         <translation>Ne mogu spremiti projekt %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3347"/>
+        <location filename="../src/app/qgisapp.cpp" line="3296"/>
         <source>Choose a file name to save the QGIS project file as</source>
         <translation>Odaberite naziv datoteke za spremanje QGIS projekta</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3510"/>
+        <location filename="../src/app/qgisapp.cpp" line="3459"/>
         <source>Choose a file name to save the map image as</source>
         <translation>Odaberite naziv datoteke za spremanje slike mape</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3552"/>
+        <location filename="../src/app/qgisapp.cpp" line="3501"/>
         <source>Saved map image to %1</source>
         <translation>Slika mape spremljena u %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3900"/>
+        <location filename="../src/app/qgisapp.cpp" line="3852"/>
         <source>Saving done</source>
-        <translation type="unfinished">Spremanje završeno</translation>
+        <translation>Spremanje završeno</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3900"/>
+        <location filename="../src/app/qgisapp.cpp" line="3852"/>
         <source>Export to vector file has been completed</source>
-        <translation type="unfinished"></translation>
+        <translation>Završen je izvoz u vektorsku datoteku</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3904"/>
+        <location filename="../src/app/qgisapp.cpp" line="3856"/>
         <source>Save error</source>
-        <translation type="unfinished">Pogreška spremanja</translation>
+        <translation>Pogreška spremanja</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3904"/>
+        <location filename="../src/app/qgisapp.cpp" line="3856"/>
         <source>Export to vector file failed.
 Error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Neuspješan izvoz u vektorsku datoteku.
+Pogreška: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3930"/>
+        <location filename="../src/app/qgisapp.cpp" line="3882"/>
         <source>No Layer Selected</source>
         <translation>Nema odabranih slojeva</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3931"/>
+        <location filename="../src/app/qgisapp.cpp" line="3883"/>
         <source>To delete features, you must select a vector layer in the legend</source>
         <translation>Kako bi ste obrisali element morate odabrati vektorski sloj u legendi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3939"/>
+        <location filename="../src/app/qgisapp.cpp" line="3891"/>
         <source>No Vector Layer Selected</source>
         <translation>Nije odabran vektorski sloj</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3940"/>
+        <location filename="../src/app/qgisapp.cpp" line="3892"/>
         <source>Deleting features only works on vector layers</source>
         <translation>Brisanje elemenata radi samo s vektorskim slojevima</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3946"/>
+        <location filename="../src/app/qgisapp.cpp" line="3898"/>
         <source>Provider does not support deletion</source>
         <translation>Pružatelj ne podržava brisanje</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3947"/>
+        <location filename="../src/app/qgisapp.cpp" line="3899"/>
         <source>Data provider does not support deleting features</source>
         <translation>Pružatelj podataka ne podržava brisanje elemenata</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3953"/>
-        <location filename="../src/app/qgisapp.cpp" line="4238"/>
+        <location filename="../src/app/qgisapp.cpp" line="3905"/>
+        <location filename="../src/app/qgisapp.cpp" line="4169"/>
         <source>Layer not editable</source>
         <translation>Sloj se ne može uređivati</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3954"/>
+        <location filename="../src/app/qgisapp.cpp" line="3906"/>
         <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
         <translation>Trenutni sloj se ne može uređivati. Odaberite &apos;Započni uređivanje&apos; u traci digitaliziranja.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3960"/>
+        <location filename="../src/app/qgisapp.cpp" line="3912"/>
         <source>Delete features</source>
         <translation>Brisanje elemenata</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="3960"/>
+        <location filename="../src/app/qgisapp.cpp" line="3912"/>
         <source>Delete %n feature(s)?</source>
         <comment>number of features to delete</comment>
         <translation>
@@ -5791,150 +6955,151 @@ Error: %1</source>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3965"/>
+        <location filename="../src/app/qgisapp.cpp" line="3917"/>
         <source>Features deleted</source>
         <translation>Elementi izbrisani</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3968"/>
+        <location filename="../src/app/qgisapp.cpp" line="3920"/>
         <source>Problem deleting features</source>
         <translation>Problem pri brisanju elemenata</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="3969"/>
+        <location filename="../src/app/qgisapp.cpp" line="3921"/>
         <source>A problem occured during deletion of features</source>
         <translation>Dogodio se problem pri brisanju elemenata</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4010"/>
+        <location filename="../src/app/qgisapp.cpp" line="3962"/>
         <source>Merging features...</source>
         <translation>Spajanje elemenata...</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4010"/>
+        <location filename="../src/app/qgisapp.cpp" line="3962"/>
         <source>Abort</source>
         <translation>Prekid</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4063"/>
-        <location filename="../src/app/qgisapp.cpp" line="4101"/>
+        <location filename="../src/app/qgisapp.cpp" line="4015"/>
+        <location filename="../src/app/qgisapp.cpp" line="4045"/>
         <source>Composer %1</source>
         <translation>Kompozitor %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4227"/>
+        <location filename="../src/app/qgisapp.cpp" line="4158"/>
         <source>No active layer</source>
         <translation>Nema aktivnog sloja</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4227"/>
+        <location filename="../src/app/qgisapp.cpp" line="4158"/>
         <source>No active layer found. Please select a layer in the layer list</source>
         <translation>Nije pronađen aktivni sloj. Odaberite sloj s popisa slojeva</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4233"/>
+        <location filename="../src/app/qgisapp.cpp" line="4164"/>
         <source>Active layer is not vector</source>
         <translation>Aktivni sloj nije vektorski</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4233"/>
+        <location filename="../src/app/qgisapp.cpp" line="4164"/>
         <source>The merge features tool only works on vector layers. Please select a vector layer from the layer list</source>
         <translation>Alat za spajanje elemenata radi samo na vektorskim slojevima. Odaberite vektorski sloj s popisa slojeva</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4238"/>
+        <location filename="../src/app/qgisapp.cpp" line="4169"/>
         <source>Merging features can only be done for layers in editing mode. To use the merge tool, go to  Layer-&gt;Toggle editing</source>
         <translation>Spajanje elemenata može se izvršiti samo za slojeve u modu uređivanja. Za korištenje odite na Sloj -&gt; Uklj/isklj uređivanje</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4253"/>
-        <location filename="../src/app/qgisapp.cpp" line="4292"/>
+        <location filename="../src/app/qgisapp.cpp" line="4184"/>
+        <location filename="../src/app/qgisapp.cpp" line="4223"/>
         <source>The merge tool requires at least two selected features</source>
         <translation>Alat za spajanje zahtjeva barem dva odabrana elementa</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4265"/>
-        <location filename="../src/app/qgisapp.cpp" line="4307"/>
+        <location filename="../src/app/qgisapp.cpp" line="4196"/>
+        <location filename="../src/app/qgisapp.cpp" line="4238"/>
         <source>Merge failed</source>
         <translation>Spajanje nije uspjelo</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4265"/>
-        <location filename="../src/app/qgisapp.cpp" line="4307"/>
+        <location filename="../src/app/qgisapp.cpp" line="4196"/>
+        <location filename="../src/app/qgisapp.cpp" line="4238"/>
         <source>An error occured during the merge operation</source>
         <translation>Došlo je do pogreške pri operaciji spajanja</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4275"/>
-        <location filename="../src/app/qgisapp.cpp" line="4316"/>
+        <location filename="../src/app/qgisapp.cpp" line="4206"/>
+        <location filename="../src/app/qgisapp.cpp" line="4247"/>
         <source>The union operation would result in a geometry type that is not compatible with the current layer and therefore is canceled</source>
         <translation>Operacija ujedinjavanja (union) rezultirala bi tipom geometrije koji nije kompatibilan s trenunim slojem, te je prekinuta</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4322"/>
+        <location filename="../src/app/qgisapp.cpp" line="4253"/>
         <source>Merged features</source>
         <translation>Spojeni elementi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4492"/>
+        <location filename="../src/app/qgisapp.cpp" line="4423"/>
         <source>Features cut</source>
         <translation>Izrezani elementi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4540"/>
+        <location filename="../src/app/qgisapp.cpp" line="4471"/>
         <source>Features pasted</source>
         <translation>Zalijepljeni elementi</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4665"/>
+        <location filename="../src/app/qgisapp.cpp" line="4596"/>
         <source>Start editing failed</source>
         <translation>Neuspješno započeto uređivanje</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4665"/>
+        <location filename="../src/app/qgisapp.cpp" line="4596"/>
         <source>Provider cannot be opened for editing</source>
         <translation>Pružatelj se ne može otvoriti za uređivanje</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4676"/>
+        <location filename="../src/app/qgisapp.cpp" line="4607"/>
         <source>Stop editing</source>
         <translation>Zaustavi uređivanje</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4677"/>
+        <location filename="../src/app/qgisapp.cpp" line="4608"/>
         <source>Do you want to save the changes to layer %1?</source>
         <translation>Želite li spremiti izmjene sloja %1?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1221"/>
-        <location filename="../src/app/qgisapp.cpp" line="4613"/>
-        <location filename="../src/app/qgisapp.cpp" line="4688"/>
-        <location filename="../src/app/qgisapp.cpp" line="4702"/>
-        <location filename="../src/app/qgisapp.cpp" line="6493"/>
+        <location filename="../src/app/qgisapp.cpp" line="1227"/>
+        <location filename="../src/app/qgisapp.cpp" line="4544"/>
+        <location filename="../src/app/qgisapp.cpp" line="4619"/>
+        <location filename="../src/app/qgisapp.cpp" line="4633"/>
+        <location filename="../src/app/qgisapp.cpp" line="6424"/>
         <source>Error</source>
         <translation>Pogreška</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2382"/>
+        <location filename="../src/app/qgisapp.cpp" line="2393"/>
         <source>
 This copy of QGIS has been built without PostgreSQL support.</source>
         <translation>
 Ova kopija QGIS-a izgrađena je bez podrške za PostgreSQL.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2386"/>
+        <location filename="../src/app/qgisapp.cpp" line="2397"/>
         <source>
 This copy of QGIS has been built with SpatiaLite support (%1).</source>
-        <translation type="unfinished"></translation>
+        <translation>
+Ova kopija QGIS-a izgrađena je s podrškom za SpatiaLite (%1).</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="2412"/>
+        <location filename="../src/app/qgisapp.cpp" line="2423"/>
         <source>Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.3.0. If an unchanging user interface, programmatic API and long term support is more important to you than cool new and untested features, we recommend that you use a copy of QGIS from our Long Term Support (LTS)1.0.x release series. In all other cases we recommend that you use this version.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4614"/>
-        <location filename="../src/app/qgisapp.cpp" line="4689"/>
+        <location filename="../src/app/qgisapp.cpp" line="4545"/>
+        <location filename="../src/app/qgisapp.cpp" line="4620"/>
         <source>Could not commit changes to layer %1
 
 Errors: %2
@@ -5944,196 +7109,196 @@ Pogreške: %2
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4702"/>
+        <location filename="../src/app/qgisapp.cpp" line="4633"/>
         <source>Problems during roll back</source>
         <translation>Problemi tokom vraćanja (roll back)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4775"/>
+        <location filename="../src/app/qgisapp.cpp" line="4706"/>
         <source>Invalid scale</source>
         <translation>Nevaljano mjerilo</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4876"/>
+        <location filename="../src/app/qgisapp.cpp" line="4807"/>
         <source>GPS Information</source>
         <translation>GPS informacije</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="4995"/>
+        <location filename="../src/app/qgisapp.cpp" line="4926"/>
         <source>Python Console</source>
         <translation>Python konzola</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5052"/>
+        <location filename="../src/app/qgisapp.cpp" line="4983"/>
         <source>There is a new version of QGIS available</source>
         <translation>Dostupna je nova verzija QGIS-a</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5058"/>
+        <location filename="../src/app/qgisapp.cpp" line="4989"/>
         <source>You are running a development version of QGIS</source>
         <translation>Vi koristite razvojnu verziju QGIS-a</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5062"/>
+        <location filename="../src/app/qgisapp.cpp" line="4993"/>
         <source>You are running the current version of QGIS</source>
         <translation>Vi koristite najnoviju verziju QGIS-a</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5067"/>
+        <location filename="../src/app/qgisapp.cpp" line="4998"/>
         <source>Would you like more information?</source>
         <translation>Želite li više informacija?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5070"/>
-        <location filename="../src/app/qgisapp.cpp" line="5083"/>
-        <location filename="../src/app/qgisapp.cpp" line="5088"/>
-        <location filename="../src/app/qgisapp.cpp" line="5116"/>
+        <location filename="../src/app/qgisapp.cpp" line="5001"/>
+        <location filename="../src/app/qgisapp.cpp" line="5014"/>
+        <location filename="../src/app/qgisapp.cpp" line="5019"/>
+        <location filename="../src/app/qgisapp.cpp" line="5047"/>
         <source>QGIS Version Information</source>
         <translation>Informacije o verziji QGIS-a</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5076"/>
+        <location filename="../src/app/qgisapp.cpp" line="5007"/>
         <source>QGIS - Changes in SVN since last release</source>
         <translation>QGIS - promjene u SVN od prošlog izdanja</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5088"/>
+        <location filename="../src/app/qgisapp.cpp" line="5019"/>
         <source>Unable to get current version information from server</source>
         <translation>Ne mogu dohvatiti najnoviju verziju sa servera</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5102"/>
+        <location filename="../src/app/qgisapp.cpp" line="5033"/>
         <source>Connection refused - server may be down</source>
         <translation>Veza odbijena - server je možda pao</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5105"/>
+        <location filename="../src/app/qgisapp.cpp" line="5036"/>
         <source>QGIS server was not found</source>
         <translation>QGIS server nije pronađen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5108"/>
+        <location filename="../src/app/qgisapp.cpp" line="5039"/>
         <source>Network error while communicating with server</source>
         <translation>Mrežna pogreška pri komunikaciji sa serverom</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5111"/>
+        <location filename="../src/app/qgisapp.cpp" line="5042"/>
         <source>Unknown network socket error</source>
         <translation>Pogreška nepoznatog mrežnog socketa</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5116"/>
+        <location filename="../src/app/qgisapp.cpp" line="5047"/>
         <source>Unable to communicate with QGIS Version server
 %1</source>
         <translation>Nije moguće komunicirati s QGIS Version serverom
 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5257"/>
-        <location filename="../src/app/qgisapp.cpp" line="5299"/>
-        <location filename="../src/app/qgisapp.cpp" line="6292"/>
+        <location filename="../src/app/qgisapp.cpp" line="5188"/>
+        <location filename="../src/app/qgisapp.cpp" line="5230"/>
+        <location filename="../src/app/qgisapp.cpp" line="6223"/>
         <source>Layer is not valid</source>
         <translation>Sloj nije valjan</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5258"/>
+        <location filename="../src/app/qgisapp.cpp" line="5189"/>
         <source>The layer %1 is not a valid layer and can not be added to the map</source>
-        <translation type="unfinished"></translation>
+        <translation>Sloj %1 nije valjan i ne može se dodati na mapu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5300"/>
-        <location filename="../src/app/qgisapp.cpp" line="6293"/>
+        <location filename="../src/app/qgisapp.cpp" line="5231"/>
+        <location filename="../src/app/qgisapp.cpp" line="6224"/>
         <source>The layer is not a valid layer and can not be added to the map</source>
         <translation>Sloj nije valjan i ne može se dodati na mapu</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5345"/>
+        <location filename="../src/app/qgisapp.cpp" line="5276"/>
         <source>Save?</source>
         <translation>Spremiti?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5346"/>
+        <location filename="../src/app/qgisapp.cpp" line="5277"/>
         <source>Do you want to save the current project?</source>
         <translation>Želite li spremiti trenutačni projekt?</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5550"/>
+        <location filename="../src/app/qgisapp.cpp" line="5481"/>
         <source>Map coordinates for the current view extents</source>
         <translation>Koordinate mape za trenutačni opseg prikaza</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5558"/>
+        <location filename="../src/app/qgisapp.cpp" line="5489"/>
         <source>Map coordinates at mouse cursor position</source>
         <translation>Koordinate mape na poziciji kursora</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5598"/>
+        <location filename="../src/app/qgisapp.cpp" line="5529"/>
         <source>Extents:</source>
         <translation>Opseg (extents):</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="5671"/>
+        <location filename="../src/app/qgisapp.cpp" line="5602"/>
         <source>Maptips require an active layer</source>
         <translation>Natuknice (maptips) zahtjevaju aktivni sloj</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgisapp.cpp" line="5755"/>
+        <location filename="../src/app/qgisapp.cpp" line="5686"/>
         <source>%n feature(s) selected on layer %1.</source>
         <comment>number of selected features</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n element odabran u sloju %1.</numerusform>
+            <numerusform>%n elementa odabrana u sloju %1.</numerusform>
+            <numerusform>%n elemenata odabrana u sloju %1.</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6123"/>
+        <location filename="../src/app/qgisapp.cpp" line="6054"/>
         <source>Open a GDAL Supported Raster Data Source</source>
         <translation>Otvorite GDAL podržani rasterski izvor podataka</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6210"/>
+        <location filename="../src/app/qgisapp.cpp" line="6141"/>
         <source>%1 is not a valid or recognized raster data source</source>
         <translation>%1 nije valjani ili prepoznati rasterski izvor podataka</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6374"/>
+        <location filename="../src/app/qgisapp.cpp" line="6305"/>
         <source>%1 is not a supported raster data source</source>
         <translation>%1 nije podržani rasterski izvor podataka</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6379"/>
+        <location filename="../src/app/qgisapp.cpp" line="6310"/>
         <source>Unsupported Data Source</source>
         <translation>Nepodržani izvor podataka</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6476"/>
+        <location filename="../src/app/qgisapp.cpp" line="6407"/>
         <source>Enter a name for the new bookmark:</source>
         <translation>Upišite naziv za novu zabilješku:</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6493"/>
+        <location filename="../src/app/qgisapp.cpp" line="6424"/>
         <source>Unable to create the bookmark. Your user database may be missing or corrupted</source>
         <translation>Nemoguće kreirati zabilješku. Vaša korisnička baza podataka možda ne postoji ili je pokvarena</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6507"/>
+        <location filename="../src/app/qgisapp.cpp" line="6438"/>
         <source>Project file is older</source>
         <translation>Datoteka projekta je starija</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6508"/>
+        <location filename="../src/app/qgisapp.cpp" line="6439"/>
         <source>&lt;p&gt;This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.&lt;p&gt;Even though QGIS developers try to maintain backwards compatibility, some of the information from the old project file might be lost. To improve the quality of QGIS, we appreciate if you file a bug report at %3. Be sure to include the old project file, and state the version of QGIS you used to discover the error.&lt;p&gt;To remove this warning when opening an older project file, uncheck the box &apos;%5&apos; in the %4 menu.&lt;p&gt;Version of the project file: %1&lt;br&gt;Current version of QGIS: %2</source>
         <translation>&lt;p&gt;Ova datoteka projekta snimljena je starijom verzijom QGIS-a. Pri snimanju QGIS će ju osvježiti na najnoviju verziju, i moguće je da neće biti čitljiva za starije verzije.&lt;p&gt;Iako razvojni inženjeri pokušavaju održati kompatibilnost neke informacije iz starije datoteke mogu se izgubiti. Kako bismo unaprijedili kvalitetu QGIS-a molimo da ispuniti izvješće o bugu na %3. Priložite staru projektnu datoteku i navedite verziju QGIS-a s kojom ste otkrili pogrešku.&lt;p&gt;Kako biste uklonili ovo upozorenje prilikom otvaranja starije datoteke uklonite oznaku iz kvadratića &apos;%5&apos; u izborniku %4.&lt;p&gt;Verzija projektne datoteke: %1&lt;br&gt;Trenutna verzija QGIS-a: %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6524"/>
+        <location filename="../src/app/qgisapp.cpp" line="6455"/>
         <source>&lt;tt&gt;Settings:Options:General&lt;/tt&gt;</source>
         <comment>Menu path to setting options</comment>
         <translation>&lt;tt&gt;Postavke:Opcije:Općenito&lt;/tt&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="6525"/>
+        <location filename="../src/app/qgisapp.cpp" line="6456"/>
         <source>Warn me when opening a project file saved with an older version of QGIS</source>
         <translation>Upozori me pri otvaranju projektne datoteke spremljene starijom verzijom QGIS-a</translation>
     </message>
@@ -6332,7 +7497,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsannotationwidget.cpp" line="111"/>
         <source>Select frame color</source>
-        <translation type="unfinished"></translation>
+        <translation>Odaberi boju okvira</translation>
     </message>
 </context>
 <context>
@@ -6340,27 +7505,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsannotationwidgetbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Obrazac</translation>
+        <translation>Obrazac</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsannotationwidgetbase.ui" line="20"/>
         <source>Map position fixed</source>
-        <translation type="unfinished"></translation>
+        <translation>Fiksna pozicija mape</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsannotationwidgetbase.ui" line="29"/>
         <source>Map marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Marker mape</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsannotationwidgetbase.ui" line="50"/>
         <source>Frame width</source>
-        <translation type="unfinished"></translation>
+        <translation>Širina obrasca</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsannotationwidgetbase.ui" line="67"/>
         <source>Frame color</source>
-        <translation type="unfinished"></translation>
+        <translation>Boja okvira</translation>
     </message>
 </context>
 <context>
@@ -6618,7 +7783,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsattributeeditor.cpp" line="76"/>
         <source>Select a date</source>
-        <translation type="unfinished"></translation>
+        <translation>Odaberi datum</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsattributeeditor.cpp" line="405"/>
@@ -6922,7 +8087,7 @@ Pogreška je:%2</translation>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="305"/>
         <source>Dial</source>
-        <translation type="unfinished"></translation>
+        <translation>Brojčanik</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="319"/>
@@ -7004,7 +8169,7 @@ Pogreška je:%2</translation>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="76"/>
         <source>Calendar</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalendar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="97"/>
@@ -7039,7 +8204,7 @@ Pogreška je:%2</translation>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="575"/>
         <source>A calendar widget to enter a date.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalendarski widget za unos datuma.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsattributetypedialog.cpp" line="305"/>
@@ -7204,30 +8369,52 @@ Pogreška je:%2</translation>
 <context>
     <name>QgsCategorizedSymbolRendererV2Widget</name>
     <message>
-        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="264"/>
-        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="266"/>
+        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="53"/>
+        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="141"/>
+        <source>Value</source>
+        <translation type="unfinished">Vrijednost</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="53"/>
+        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="141"/>
+        <source>Label</source>
+        <translation type="unfinished">Oznaka</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="273"/>
+        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="275"/>
         <source>Error</source>
         <translation>Pogreška</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="264"/>
+        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="273"/>
         <source>There are no available color ramps. You can add them in Style Manager.</source>
         <translation>Nema dostupnih rampi boja. Možete ih dodati pod Upravljanjem stilovima.</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="266"/>
+        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="275"/>
         <source>The selected color ramp is not available.</source>
         <translation>Odabrana rampa boja nije dostupna.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="19"/>
-        <source>Column:</source>
-        <translation>Kolona:</translation>
+        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="288"/>
+        <source>Confirm Delete</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="56"/>
+        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="289"/>
+        <source>The classification field was changed from &apos;%1&apos; to &apos;%2&apos;.
+Should the existing classes be deleted before classification?</source>
+        <translation type="unfinished">Klasifikacijsko polje je izmijenjeno s  &apos;%1&apos; na &apos;%2&apos;.
+Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
+    </message>
+    <message>
+        <source>Column:</source>
+        <translation type="obsolete">Kolona:</translation>
+    </message>
+    <message>
         <source>Symbol:</source>
-        <translation>Simbol:</translation>
+        <translation type="obsolete">Simbol:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="69"/>
@@ -7235,9 +8422,25 @@ Pogreška je:%2</translation>
         <translation>promjena</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="76"/>
         <source>Color ramp:</source>
-        <translation>Rampa boja:</translation>
+        <translation type="obsolete">Rampa boja:</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="19"/>
+        <source>Column</source>
+        <translation type="unfinished">Kolona</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="56"/>
+        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="53"/>
+        <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="141"/>
+        <source>Symbol</source>
+        <translation type="unfinished">Simbol</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="76"/>
+        <source>Color ramp</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="113"/>
@@ -7246,16 +8449,21 @@ Pogreška je:%2</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="120"/>
+        <source>Add</source>
+        <translation type="unfinished">Dodaj</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="127"/>
         <source>Delete</source>
         <translation>Briši</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="127"/>
+        <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="134"/>
         <source>Delete all</source>
         <translation>Briši sve</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="150"/>
+        <location filename="../src/ui/qgscategorizedsymbolrendererv2widget.ui" line="157"/>
         <source>Join</source>
         <translation>Spoji</translation>
     </message>
@@ -7289,7 +8497,7 @@ Pogreška je:%2</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="464"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="728"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="736"/>
         <source>Choose a file name to save the map as</source>
         <translation>Odaberi naziv datoteke pod kojim će se spremiti mapa</translation>
     </message>
@@ -7299,104 +8507,104 @@ Pogreška je:%2</translation>
         <translation>PDF oblik</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="580"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="588"/>
         <source>Big image</source>
         <translation>Velika slika</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="581"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="589"/>
         <source>To create image %1 x %2 requires circa %3 MB of memory</source>
         <translation>Za kreiranje slike %1 x %2 treba približno %3 MB memorije</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="609"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="617"/>
         <source>%1 format (*.%2 *.%3)</source>
         <translation>%1 oblik (*.%2 *.%3)</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="633"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="641"/>
         <source>Choose a file name to save the map image as</source>
         <translation>Odaberite naziv datoteke za spremanje slike mape</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="709"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="717"/>
         <source>SVG warning</source>
         <translation>SVG upozorenje</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="710"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1443"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="718"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1459"/>
         <source>Don&apos;t show this message again</source>
         <translation>Ne prikazuj više ovu poruku</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="714"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="722"/>
         <source>&lt;p&gt;The SVG export function in Qgis has several problems due to bugs and deficiencies in the </source>
         <translation>&lt;p&gt;Funkcija za izvoz u SVG ima nekoliko problema zbog bugova i nedostataka u </translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="716"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="724"/>
         <source>Qt4 svg code. In particular, there are problems with layers not being clipped to the map bounding box.&lt;/p&gt;</source>
         <translation>Qt4 SVG kodu. Specifično, postoje problemi sa slojevima koji se ne obrezuju po okviru mape (bounding box).&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="719"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="727"/>
         <source>If you require a vector-based output file from Qgis it is suggested that you try printing to PostScript if the SVG output is not satisfactory.&lt;/p&gt;</source>
         <translation>Ako vam je potrebna vektorska izlazna datoteka iz QGIS-a preporučuje se da probate s ispisom u PostScript ako vas SVG izlaz ne zadovoljava.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="729"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="737"/>
         <source>SVG Format</source>
         <translation>SVG oblik</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="847"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="863"/>
         <source>save template</source>
         <translation>spremi predložak</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="873"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="889"/>
         <source>Save error</source>
         <translation>Pogreška spremanja</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="873"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="889"/>
         <source>Error, could not save file</source>
         <translation>Pogreška, nije moguće spremiti datoteku</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="881"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="897"/>
         <source>Load template</source>
         <translation>Učitaj predložak</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="894"/>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="901"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="910"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="917"/>
         <source>Read error</source>
         <translation>Pogreška čitanja</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="894"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="910"/>
         <source>Error, could not read file</source>
         <translation>Pogreška, nije moguće pročitati datoteku</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="901"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="917"/>
         <source>Content of template file is not valid</source>
         <translation>Sadržaj datoteke predloška nije valjan</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1114"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1130"/>
         <source>Composer</source>
         <translation>Kompozer</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1441"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1457"/>
         <source>Project contains WMS layers</source>
         <translation>Projekt sadrži WMS slojeve</translation>
     </message>
     <message>
-        <location filename="../src/app/composer/qgscomposer.cpp" line="1442"/>
+        <location filename="../src/app/composer/qgscomposer.cpp" line="1458"/>
         <source>Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed</source>
         <translation>Neki WMS poslužitelji (npr. UMN mapserver) imaju limit za parametre ŠIRINA i VISINA. Ispisom slojeva s tih poslužitelja može se preći taj limit. Ako je tome slučaj, WMS slojevi neće biti ispisani</translation>
     </message>
@@ -7784,7 +8992,7 @@ Pogreška je:%2</translation>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="479"/>
         <source>Page Setup</source>
-        <translation type="unfinished"></translation>
+        <translation>Postava stranice</translation>
     </message>
 </context>
 <context>
@@ -7915,7 +9123,7 @@ Pogreška je:%2</translation>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="88"/>
         <source>Group Font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Font grupe...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="95"/>
@@ -8005,7 +9213,7 @@ Pogreška je:%2</translation>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="252"/>
         <source>Add group</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj grupu</translation>
     </message>
 </context>
 <context>
@@ -8013,22 +9221,22 @@ Pogreška je:%2</translation>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="34"/>
         <source>&amp;Show</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Prikaži</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="38"/>
         <source>&amp;Remove</source>
-        <translation type="unfinished">&amp;Ukloni</translation>
+        <translation>&amp;Ukloni</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="42"/>
         <source>Re&amp;name</source>
-        <translation type="unfinished">Preime&amp;nuj</translation>
+        <translation>Preime&amp;nuj</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="65"/>
         <source>Empty composer</source>
-        <translation type="unfinished"></translation>
+        <translation>Isprazni kompozer</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="135"/>
@@ -8680,52 +9888,52 @@ Pogreška je:%2</translation>
         <translation>Sloj</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="52"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="55"/>
         <source>Attributes...</source>
         <translation>Atributi...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="72"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="75"/>
         <source>Show only visible features</source>
         <translation>Prikaži samo vidljive elemente</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="81"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="84"/>
         <source>Composer map</source>
         <translation>Mapa kompozitora</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="95"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="101"/>
         <source>Maximum columns</source>
         <translation>Maksimum kolona</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="109"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="118"/>
         <source>Margin</source>
         <translation>Margina</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="121"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="133"/>
         <source>Show grid</source>
         <translation>Prikaži mrežu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="130"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="142"/>
         <source>Grid stroke width</source>
         <translation>Širina linije mreže</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="142"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="157"/>
         <source>Grid color</source>
         <translation>Boja mreže</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="162"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="180"/>
         <source>Header Font...</source>
         <translation>Font zaglavlja...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="169"/>
+        <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="187"/>
         <source>Content Font...</source>
         <translation>Font sadržaja...</translation>
     </message>
@@ -8733,47 +9941,47 @@ Pogreška je:%2</translation>
 <context>
     <name>QgsComposerVectorLegendBase</name>
     <message>
-        <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="21"/>
+        <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="20"/>
         <source>Vector Legend Options</source>
         <translation>Opcije kazala vektora</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="53"/>
+        <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="48"/>
         <source>Preview</source>
         <translation>Pretpregled</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="92"/>
+        <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="83"/>
         <source>Map</source>
         <translation>Mapa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="113"/>
+        <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="102"/>
         <source>Title</source>
         <translation>Naslov</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="149"/>
+        <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="138"/>
         <source>Layers</source>
         <translation>Slojevi</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="154"/>
+        <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="143"/>
         <source>Group</source>
         <translation>Grupiraj</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="159"/>
+        <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="148"/>
         <source>ID</source>
         <translation>ID</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="167"/>
+        <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="156"/>
         <source>Box</source>
         <translation>Kućica</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="182"/>
+        <location filename="../src/ui/qgscomposervectorlegendbase.ui" line="169"/>
         <source>Font</source>
         <translation>Font</translation>
     </message>
@@ -9092,7 +10300,7 @@ Pogreška je:%2</translation>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="76"/>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="128"/>
         <source>XML file (*.xml);; All files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>XML datoteka (*.xml);; Sve datoteke (*)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="90"/>
@@ -9746,17 +10954,17 @@ p, li { white-space: pre-wrap; }
         <translation>Upišite naziv sloja prije no što dodate sloj na mapu</translation>
     </message>
     <message>
-        <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugingui.cpp" line="190"/>
+        <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugingui.cpp" line="195"/>
         <source>No delimiter</source>
         <translation>Nema znaka razgraničenja</translation>
     </message>
     <message>
-        <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugingui.cpp" line="190"/>
+        <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugingui.cpp" line="195"/>
         <source>Please specify a delimiter prior to parsing the file</source>
         <translation>Odaberite znak razgraničenje prije čitanja datoteke</translation>
     </message>
     <message>
-        <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugingui.cpp" line="223"/>
+        <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugingui.cpp" line="228"/>
         <source>Choose a delimited text file to open</source>
         <translation>Odaberite datoteku s tekstom za otvaranje</translation>
     </message>
@@ -9904,12 +11112,12 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsDelimitedTextProvider</name>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="445"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="451"/>
         <source>Error</source>
         <translation>Pogreška</translation>
     </message>
     <message>
-        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="446"/>
+        <location filename="../src/providers/delimitedtext/qgsdelimitedtextprovider.cpp" line="452"/>
         <source>Note: the following lines were not loaded because Qgis was unable to determine values for the x and y coordinates:
 </source>
         <translation>Napomena: slijedeće linije nisu učitane jer QGIS nije mogao odrediti vrijednosti X i Y koordinata:
@@ -10088,6 +11296,74 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/gui/qgsencodingfiledialog.cpp" line="36"/>
         <source>Encoding:</source>
         <translation>Encoding:</translation>
+    </message>
+</context>
+<context>
+    <name>QgsEngineConfigDialog</name>
+    <message>
+        <location filename="../src/ui/qgsengineconfigdialog.ui" line="14"/>
+        <source>Dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsengineconfigdialog.ui" line="22"/>
+        <source>Search method</source>
+        <translation type="unfinished">Metoda pretrage</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsengineconfigdialog.ui" line="30"/>
+        <source>Chain (fast)</source>
+        <translation type="unfinished">Lanac (brzo)</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsengineconfigdialog.ui" line="35"/>
+        <source>Popmusic Tabu</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsengineconfigdialog.ui" line="40"/>
+        <source>Popmusic Chain</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsengineconfigdialog.ui" line="45"/>
+        <source>Popmusic Tabu Chain</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsengineconfigdialog.ui" line="50"/>
+        <source>FALP (fastest)</source>
+        <translation type="unfinished">FALP (najbrže)</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsengineconfigdialog.ui" line="78"/>
+        <source>Number of candidates</source>
+        <translation type="unfinished">Broj kandidata</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsengineconfigdialog.ui" line="84"/>
+        <source>Point</source>
+        <translation type="unfinished">Točka</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsengineconfigdialog.ui" line="104"/>
+        <source>Line</source>
+        <translation type="unfinished">Linija</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsengineconfigdialog.ui" line="124"/>
+        <source>Polygon</source>
+        <translation type="unfinished">Poligon</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsengineconfigdialog.ui" line="178"/>
+        <source>Show all labels (i.e. including colliding labels)</source>
+        <translation type="unfinished">Prikaži sve oznake (npr. uključivo i one koje smetaju)</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsengineconfigdialog.ui" line="185"/>
+        <source>Show label candidates (for debugging)</source>
+        <translation type="unfinished">Pokaži kandidate za oznake (za debugiranje)</translation>
     </message>
 </context>
 <context>
@@ -10296,12 +11572,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsformannotationdialog.cpp" line="23"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Brisanje</translation>
     </message>
     <message>
         <location filename="../src/app/qgsformannotationdialog.cpp" line="62"/>
         <source>Qt designer file</source>
-        <translation type="unfinished"></translation>
+        <translation>Qt designer datoteka</translation>
     </message>
 </context>
 <context>
@@ -10309,25 +11585,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsformannotationdialogbase.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Dijalog</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsformannotationdialogbase.ui" line="25"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
 </context>
 <context>
     <name>QgsGCPListModel</name>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgcplistmodel.cpp" line="115"/>
+        <location filename="../src/plugins/georeferencer/qgsgcplistmodel.cpp" line="112"/>
+        <location filename="../src/plugins/georeferencer/qgsgcplistmodel.cpp" line="164"/>
         <source>map units</source>
-        <translation type="unfinished">jedinice mape</translation>
+        <translation>jedinice mape</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgcplistmodel.cpp" line="115"/>
+        <location filename="../src/plugins/georeferencer/qgsgcplistmodel.cpp" line="116"/>
+        <location filename="../src/plugins/georeferencer/qgsgcplistmodel.cpp" line="152"/>
         <source>pixels</source>
-        <translation type="unfinished">pikseli</translation>
+        <translation>pikseli</translation>
     </message>
 </context>
 <context>
@@ -10661,7 +11939,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="207"/>
         <source>Horizontal Accuracy</source>
-        <translation type="unfinished"></translation>
+        <translation>Horizontalna točnost</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="220"/>
@@ -10803,7 +12081,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="174"/>
         <source>Unable to create a GPX file with the given name. Try again with an other name or in an other directory.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne mogu kreirati GPX datoteku s tim imenom. Pokušaj ponovno s drugim imenom ili u drugoj mapi datoteka.</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="217"/>
@@ -11193,11 +12471,26 @@ Molim odaberite valjanu datoteku.</translation>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="33"/>
         <source>Show coords</source>
-        <translation>Prikaži koord.</translation>
+        <translation>Prikaži koordinate</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="43"/>
         <source>Show Georeferencer window docked</source>
+        <translation>Prikaži prozor Georeferencera usidrenim</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="60"/>
+        <source>Residual units</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="66"/>
+        <source>Pixels</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="73"/>
+        <source>Use map units if possible</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -11273,8 +12566,8 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="319"/>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="952"/>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1466"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="959"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1475"/>
         <source>Transform: </source>
         <translation>Transformiraj:</translation>
     </message>
@@ -11282,14 +12575,14 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="373"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="567"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="594"/>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1073"/>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1121"/>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1163"/>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1597"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1080"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1128"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1170"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1606"/>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1616"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1615"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1625"/>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1639"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1634"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1648"/>
         <source>Info</source>
         <translation>Info</translation>
     </message>
@@ -11315,234 +12608,238 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="594"/>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1597"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1606"/>
         <source>Please load raster to be georeferenced</source>
         <translation>Molim učitajte raster za georeferenciranje</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="809"/>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="919"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="816"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="926"/>
         <source>Help</source>
         <translation>Pomoć</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="896"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="903"/>
         <source>Panels</source>
         <translation>Paneli</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="900"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="907"/>
         <source>Toolbars</source>
         <translation>Trake s alatima</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="964"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="971"/>
         <source>Coordinate: </source>
         <translation>Koordinate: </translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="965"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="972"/>
         <source>Current map coordinate</source>
         <translation>Trenutačne koordinate na mapi</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="953"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="960"/>
         <source>Current transform parametrisation</source>
         <translation>Trenutačna parametrizacija transformacije</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1073"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1080"/>
         <source>Unable to open GCP points file %1</source>
         <translation>Ne mogu otvoriti datoteku GCP točaka %1</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1192"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1199"/>
         <source>Could not write to %1</source>
         <translation>Ne mogu zapisati u %1</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1087"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1094"/>
         <source>Save GCPs</source>
         <translation>Spremi GCP</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="133"/>
         <source>Georeferencer</source>
-        <translation type="unfinished">Georeferencer</translation>
+        <translation>Georeferencer</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1088"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1095"/>
         <source>Save GCP points?</source>
         <translation>Spremiti GCP točke?</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1122"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1129"/>
         <source>Failed to get linear transform parameters</source>
         <translation>Neuspješno dohvaćanje parametara linearne transformacije</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1132"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1139"/>
         <source>World file exists</source>
         <translation>World datoteka postoji</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1133"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1140"/>
         <source>&lt;p&gt;The selected file already seems to have a world file! Do you want to replace it with the new world file?&lt;/p&gt;</source>
         <translation>&lt;p&gt;Izgleda da odabrana datoteka već ima world datoteku! Želite li ju zamijeniti s novom?&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1163"/>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1639"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1170"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1648"/>
         <source>Failed to compute GCP transform: Transform is not solvable</source>
         <translation>Neuspješan izračun GCP transformacije: transformacija je neriješiva</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1191"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1198"/>
         <source>Error</source>
         <translation>Pogreška</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1340"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1358"/>
         <source>Transformation parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Transfomracijski parametri</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1357"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1375"/>
         <source>Translation x</source>
-        <translation type="unfinished"></translation>
+        <translation>Translacija x</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1357"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1375"/>
         <source>Translation y</source>
-        <translation type="unfinished"></translation>
+        <translation>Translacija y</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1357"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1375"/>
         <source>Scale x</source>
-        <translation type="unfinished"></translation>
+        <translation>Mjerilo x</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1357"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1375"/>
         <source>Scale y</source>
-        <translation type="unfinished"></translation>
+        <translation>Mjerilo y</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1357"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1375"/>
         <source>Rotation [degrees]</source>
-        <translation type="unfinished"></translation>
+        <translation>Rotacija [stupnjevi]</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1357"/>
         <source>Mean error [map units]</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Srednja pogreška [jedinice mape]</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1376"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1394"/>
         <source>Residuals</source>
-        <translation type="unfinished"></translation>
+        <translation>Reziduali</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1401"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1349"/>
         <source>map units</source>
-        <translation type="unfinished">jedinice mape</translation>
+        <translation>jedinice mape</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1405"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1353"/>
         <source>pixels</source>
-        <translation type="unfinished">pikseli</translation>
+        <translation>pikseli</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1424"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1375"/>
+        <source>Mean error [%1]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1433"/>
         <source>yes</source>
-        <translation type="unfinished">da</translation>
+        <translation>da</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1428"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1437"/>
         <source>no</source>
-        <translation type="unfinished">ne</translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1473"/>
-        <source>Translation (%1, %2)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1474"/>
-        <source>Scale (%1, %2)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1475"/>
-        <source>Rotation: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>ne</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1482"/>
-        <source>Mean error: %1</source>
-        <translation type="unfinished"></translation>
+        <source>Translation (%1, %2)</source>
+        <translation>Translacija (%1, %2)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1503"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1483"/>
+        <source>Scale (%1, %2)</source>
+        <translation>Mjerilo (%1, %2)</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1484"/>
+        <source>Rotation: %1</source>
+        <translation>Rotacija: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1491"/>
+        <source>Mean error: %1</source>
+        <translation>Srednja pogreška: %1</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1512"/>
         <source>Copy in clipboard</source>
         <translation>Kopiranje u međuspremnik</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1509"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1518"/>
         <source>%1</source>
         <translation>%1</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1516"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1525"/>
         <source>GDAL script</source>
         <translation>GDAL skripte</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1606"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1615"/>
         <source>Please set transformation type</source>
         <translation>Postavite tip transformacije</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1616"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1625"/>
         <source>Please set output raster name</source>
         <translation>Postavite naziv izlaznog rastera</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1625"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1634"/>
         <source>%1 requires at least %2 GCPs. Please define more</source>
         <translation>%1 zahtijeva najmanje %2 GCP-a. Molim definirajte više</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1710"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1719"/>
         <source>Linear</source>
         <translation>Linearno</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1712"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1721"/>
         <source>Helmert</source>
         <translation>Helmert</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1714"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1723"/>
         <source>Polynomial 1</source>
         <translation>Polinomni 1</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1716"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1725"/>
         <source>Polynomial 2</source>
         <translation>Polinomna 2</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1718"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1727"/>
         <source>Polynomial 3</source>
         <translation>Polinomna 3</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1720"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1729"/>
         <source>Thin plate spline (TPS)</source>
         <translation>Thin plate spline (TPS)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1722"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1731"/>
         <source>Not set</source>
         <translation>Nije postavljeno</translation>
     </message>
@@ -11795,22 +13092,22 @@ p, li { white-space: pre-wrap; }
         <translation>Klasifikacijsko polje</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsgraduatedsymboldialogbase.ui" line="86"/>
+        <location filename="../src/ui/qgsgraduatedsymboldialogbase.ui" line="89"/>
         <source>Mode</source>
         <translation>Mod</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsgraduatedsymboldialogbase.ui" line="124"/>
+        <location filename="../src/ui/qgsgraduatedsymboldialogbase.ui" line="130"/>
         <source>Number of classes</source>
         <translation>Broj klasa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsgraduatedsymboldialogbase.ui" line="156"/>
+        <location filename="../src/ui/qgsgraduatedsymboldialogbase.ui" line="165"/>
         <source>Classify</source>
         <translation>Klasificiraj</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsgraduatedsymboldialogbase.ui" line="163"/>
+        <location filename="../src/ui/qgsgraduatedsymboldialogbase.ui" line="172"/>
         <source>Delete class</source>
         <translation>Briši klasu</translation>
     </message>
@@ -11834,57 +13131,77 @@ p, li { white-space: pre-wrap; }
         <translation>Odabrana rampa boja nije dostupna.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="19"/>
         <source>Column:</source>
-        <translation>Kolona:</translation>
+        <translation type="obsolete">Kolona:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="29"/>
         <source>Symbol:</source>
-        <translation>Simbol:</translation>
+        <translation type="obsolete">Simbol:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="42"/>
+        <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="48"/>
         <source>change</source>
         <translation>promjena</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="49"/>
         <source>Classes:</source>
-        <translation>Klase:</translation>
+        <translation type="obsolete">Klase:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="72"/>
         <source>Color ramp:</source>
-        <translation>Rampa boja:</translation>
+        <translation type="obsolete">Rampa boja:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="82"/>
         <source>Mode:</source>
-        <translation>Mod:</translation>
+        <translation type="obsolete">Mod:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="93"/>
+        <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="19"/>
+        <source>Column</source>
+        <translation type="unfinished">Kolona</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="32"/>
+        <source>Symbol</source>
+        <translation type="unfinished">Simbol</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="55"/>
+        <source>Classes</source>
+        <translation type="unfinished">Klase</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="81"/>
+        <source>Color ramp</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="94"/>
+        <source>Mode</source>
+        <translation type="unfinished">Mod</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="108"/>
         <source>Equal Interval</source>
         <translation>Jednaki interval</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="98"/>
+        <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="113"/>
         <source>Quantile</source>
         <translation>Quantile</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="130"/>
+        <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="145"/>
         <source>Classify</source>
         <translation>Klasificiraj</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="137"/>
+        <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="152"/>
         <source>Add class</source>
         <translation>Dodaj klasu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="144"/>
+        <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="159"/>
         <source>Delete class</source>
         <translation>Briši klasu</translation>
     </message>
@@ -14332,7 +15649,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="107"/>
-        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="333"/>
+        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="334"/>
         <source>GRASS Tools: %1/%2</source>
         <translation>GRASS alati: %1/%2</translation>
     </message>
@@ -14348,9 +15665,9 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="155"/>
-        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="203"/>
-        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="208"/>
-        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="220"/>
+        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="204"/>
+        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="209"/>
+        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="221"/>
         <source>Warning</source>
         <translation>Upozorenje</translation>
     </message>
@@ -14360,22 +15677,22 @@ p, li { white-space: pre-wrap; }
         <translation>GRASS Ljuska nije kompilirana.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="203"/>
+        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="204"/>
         <source>The config file (%1) not found.</source>
         <translation>Nije pronađena konfiguracijska datoteka (%1).</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="208"/>
+        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="209"/>
         <source>Cannot open config file (%1).</source>
         <translation>Ne mogu otvoriti konfiguracijsku datoteku (%1).</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="217"/>
+        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="218"/>
         <source>Cannot read config file (%1):</source>
         <translation>Ne mogu učitati konfiguracijsku datoteku (%1):</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="218"/>
+        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="219"/>
         <source>
 %1
 at line %2 column %3</source>
@@ -14570,10 +15887,12 @@ na liniji %2 kolona %3</translation>
 This may be a problem in your network connection or at the WMS server.</source>
         <comment>inactivity timeout</comment>
         <translation>
+            <numerusform>Mreža nije odgovorila nakon %n sekunde neaktivnosti.
+Ovo može biti problem u vašoj mrežnoj vezi ili na WMS serveru.</numerusform>
+            <numerusform>Mreža nije odgovorila nakon %n sekunde neaktivnosti.
+Ovo može biti problem u vašoj mrežnoj vezi ili na WMS serveru.</numerusform>
             <numerusform>Mreža nije odgovorila nakon %n sekundi neaktivnosti.
 Ovo može biti problem u vašoj mrežnoj vezi ili na WMS serveru.</numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
 </context>
@@ -15150,7 +16469,7 @@ Ovo može biti problem u vašoj mrežnoj vezi ili na WMS serveru.</numerusform>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="462"/>
         <source>Label only selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>Označi samo odabrane elemente</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="501"/>
@@ -15244,6 +16563,252 @@ Ovo može biti problem u vašoj mrežnoj vezi ili na WMS serveru.</numerusform>
     </message>
 </context>
 <context>
+    <name>QgsLabelingGui</name>
+    <message>
+        <location filename="../src/app/qgslabelinggui.cpp" line="271"/>
+        <source>pt</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>QgsLabelingGuiBase</name>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="14"/>
+        <source>Layer labeling settings</source>
+        <translation type="unfinished">Postavke označavanja sloja</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="25"/>
+        <source>Label this layer</source>
+        <translation type="unfinished">Označi ovaj sloj</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="34"/>
+        <source>Field with labels</source>
+        <translation type="unfinished">Polje s oznakama</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="62"/>
+        <source>Placement</source>
+        <translation type="unfinished">Postavljanje</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="87"/>
+        <source>around point</source>
+        <translation type="unfinished">oko točke</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="97"/>
+        <source>over point</source>
+        <translation type="unfinished">iznad točke</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="108"/>
+        <source>parallel</source>
+        <translation type="unfinished">paralelno</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="118"/>
+        <source>curved</source>
+        <translation type="unfinished">zakrivljeno</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="125"/>
+        <source>horizontal</source>
+        <translation type="unfinished">horizontalno</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="136"/>
+        <source>over centroid</source>
+        <translation type="unfinished">preko centroide</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="146"/>
+        <source>around centroid</source>
+        <translation type="unfinished">oko centroide</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="153"/>
+        <source>horizontal (slow)</source>
+        <translation type="unfinished">horizontalno (sporo)</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="160"/>
+        <source>free (slow)</source>
+        <translation type="unfinished">slobodno (sporo)</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="167"/>
+        <source>using perimeter</source>
+        <translation type="unfinished">koristi opseg</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="192"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="298"/>
+        <source>Label distance</source>
+        <translation type="unfinished">Udaljenost oznake</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="209"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="315"/>
+        <source>mm</source>
+        <translation type="unfinished">mm</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="216"/>
+        <source>Rotation</source>
+        <translation type="unfinished">Rotacija</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="233"/>
+        <source>degrees</source>
+        <translation type="unfinished">stupnjevi</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="244"/>
+        <source>above line</source>
+        <translation type="unfinished">iznad linije</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="254"/>
+        <source>on line</source>
+        <translation type="unfinished">na liniju</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="261"/>
+        <source>below line</source>
+        <translation type="unfinished">ispod linije</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="270"/>
+        <source>Orientation</source>
+        <translation type="unfinished">Orijentacija</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="277"/>
+        <source>map</source>
+        <translation type="unfinished">mapa</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="287"/>
+        <source>line</source>
+        <translation type="unfinished">linija</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="334"/>
+        <source>Text style</source>
+        <translation type="unfinished">Stil teksta</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="346"/>
+        <source>Font</source>
+        <translation type="unfinished">Font</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="364"/>
+        <source>TextLabel</source>
+        <translation type="unfinished">TekstOznaka</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="384"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="500"/>
+        <source>...</source>
+        <translation type="unfinished">...</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="399"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="484"/>
+        <source>Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="442"/>
+        <source>Buffer</source>
+        <translation type="unfinished">Zaštita (Buff)</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="467"/>
+        <source>Size</source>
+        <translation type="unfinished">Veličina</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="477"/>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="677"/>
+        <source> mm</source>
+        <translation type="unfinished"> mm</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="515"/>
+        <source>Sample</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="531"/>
+        <source>Lorem Ipsum</source>
+        <translation type="unfinished">Probni tekst</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="551"/>
+        <source>Priority</source>
+        <translation type="unfinished">Prioritet</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="557"/>
+        <source>Low</source>
+        <translation type="unfinished">Nisko</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="583"/>
+        <source>High</source>
+        <translation type="unfinished">Visoko</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="593"/>
+        <source>Scale-based visibility</source>
+        <translation type="unfinished">Vidljivost zasnovana na mjerilu</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="599"/>
+        <source>Enabled</source>
+        <translation type="unfinished">Omogućeno</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="606"/>
+        <source>Minimum</source>
+        <translation type="unfinished">Minimum</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="626"/>
+        <source>Maximum</source>
+        <translation type="unfinished">Maksimum</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="654"/>
+        <source>label every part of multi-part features</source>
+        <translation type="unfinished">označi svaki dio višedjelnih elemenata</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="661"/>
+        <source>merge connected lines to avoid duplicate labels</source>
+        <translation type="unfinished">spoji povezane linije za izbjegavanje dvostrukih oznaka</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="670"/>
+        <source>Suppress labeling of features smaller than</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="691"/>
+        <source>features don&apos;t act as obstacles for labels</source>
+        <translation type="unfinished">elementi se ne ponašaju kao prepreke za oznake</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgslabelingguibase.ui" line="714"/>
+        <source>Engine settings</source>
+        <translation type="unfinished">Postavke motora</translation>
+    </message>
+</context>
+<context>
     <name>QgsLegend</name>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="129"/>
@@ -15251,32 +16816,32 @@ Ovo može biti problem u vašoj mrežnoj vezi ili na WMS serveru.</numerusform>
         <translation>grupa</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="448"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="451"/>
         <source>&amp;Make to toplevel item</source>
         <translation>&amp;Makni na stavku gornje razine</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="455"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="458"/>
         <source>&amp;Remove</source>
         <translation>&amp;Ukloni</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="460"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="463"/>
         <source>Re&amp;name</source>
         <translation>Preime&amp;nuj</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="465"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="468"/>
         <source>&amp;Add group</source>
         <translation>Dod&amp;aj grupu</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="466"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="469"/>
         <source>&amp;Expand all</source>
         <translation>Raširi sv&amp;e</translation>
     </message>
     <message>
-        <location filename="../src/app/legend/qgslegend.cpp" line="467"/>
+        <location filename="../src/app/legend/qgslegend.cpp" line="470"/>
         <source>&amp;Collapse all</source>
         <translation>&amp;Sažmi sve</translation>
     </message>
@@ -15321,7 +16886,7 @@ Ovo može biti problem u vašoj mrežnoj vezi ili na WMS serveru.</numerusform>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="433"/>
         <source>&amp;Query...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Upit...</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="440"/>
@@ -15334,7 +16899,7 @@ Ovo može biti problem u vašoj mrežnoj vezi ili na WMS serveru.</numerusform>
     <message>
         <location filename="../src/core/composer/qgslegendmodel.h" line="60"/>
         <source>Group</source>
-        <translation type="unfinished">Grupiraj</translation>
+        <translation>Grupiraj</translation>
     </message>
 </context>
 <context>
@@ -15548,7 +17113,7 @@ Ovo može biti problem u vašoj mrežnoj vezi ili na WMS serveru.</numerusform>
     <message>
         <location filename="../src/plugins/georeferencer/qgsmapcoordsdialogbase.ui" line="61"/>
         <source>Snap to background layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Snepiraj na pozadinske slojeve</translation>
     </message>
 </context>
 <context>
@@ -16522,17 +18087,17 @@ http://moj.posluzitelj.hr/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../src/providers/memory/qgsmemoryprovider.cpp" line="52"/>
         <source>Whole number (integer)</source>
-        <translation type="unfinished">Cijeli broj (integer)</translation>
+        <translation>Cijeli broj (integer)</translation>
     </message>
     <message>
         <location filename="../src/providers/memory/qgsmemoryprovider.cpp" line="53"/>
         <source>Decimal number (real)</source>
-        <translation type="unfinished">Decimalni broj (realni)</translation>
+        <translation>Decimalni broj (realni)</translation>
     </message>
     <message>
         <location filename="../src/providers/memory/qgsmemoryprovider.cpp" line="54"/>
         <source>Text (string)</source>
-        <translation type="unfinished">Tekst (string)</translation>
+        <translation>Tekst (string)</translation>
     </message>
 </context>
 <context>
@@ -16748,37 +18313,37 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Type&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="101"/>
+        <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="104"/>
         <source>Name</source>
         <translation>Naziv</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="111"/>
+        <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="114"/>
         <source>Host</source>
         <translation>Domaćin</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="121"/>
+        <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="124"/>
         <source>Database</source>
         <translation>Baza podataka</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="131"/>
+        <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="134"/>
         <source>Port</source>
         <translation>Port</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="141"/>
+        <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="144"/>
         <source>Username</source>
         <translation>Korisničko ime</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="151"/>
+        <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="154"/>
         <source>Password</source>
         <translation>Lozinka</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="174"/>
+        <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="177"/>
         <source>Name of the new connection</source>
         <translation>Naziv nove poveznice</translation>
     </message>
@@ -16788,92 +18353,95 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="46"/>
         <source>Text data</source>
-        <translation type="unfinished">Tekstualni podaci</translation>
+        <translation>Tekstualni podaci</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="47"/>
         <source>Whole number</source>
-        <translation type="unfinished">Cijeli broj</translation>
+        <translation>Cijeli broj</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="48"/>
         <source>Decimal number</source>
-        <translation type="unfinished">Decimalni broj</translation>
+        <translation>Decimalni broj</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="97"/>
         <source>New SpatiaLite Database File</source>
-        <translation type="unfinished"></translation>
+        <translation>Nova datoteka SpatiaLite baze</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="99"/>
         <source>SpatiaLite (*.sqlite *.db )</source>
-        <translation type="unfinished"></translation>
+        <translation>SpatiaLite (*.sqlite *.db )</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="218"/>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="238"/>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="304"/>
         <source>SpatiaLite Database</source>
-        <translation type="unfinished"></translation>
+        <translation>SpatiaLite baza podataka</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="218"/>
         <source>Could not copy the template database to new location</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne mogu kopirati predložak baze na novu lokaciju</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="238"/>
         <source>Registered new database!</source>
-        <translation type="unfinished"></translation>
+        <translation>Registrirana nova baza!</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="305"/>
         <source>Unable to open the database: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nemoguće otvoriti bazu: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="314"/>
         <source>Error Creating SpatiaLite Table</source>
-        <translation type="unfinished"></translation>
+        <translation>Pogreška pri stvaranju SpatiaLite tablice</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="315"/>
         <source>Failed to create the SpatiaLite table %1. The database returned:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Neuspješno kreiranje SpatiaLite tablice %1. Baza je vratila poruku:
+%2</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="325"/>
         <source>Error Creating Geometry Column</source>
-        <translation type="unfinished"></translation>
+        <translation>Pogreška pri kreiranju geometrijske kolone</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="326"/>
         <source>Failed to create the geometry column. The database returned:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Neuspješno kreiranje geometrijske kolone. Baza je vratila poruku:
+%1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="336"/>
         <source>Error Creating Spatial Index</source>
-        <translation type="unfinished"></translation>
+        <translation>Pogreška pri kreiranju prostornog indeksa</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="337"/>
         <source>Failed to create the spatial index. The database returned:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Neuspješno kreiranje prostornog indeksa. Baza je vratila poruku:
+%1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="354"/>
         <source>Invalid Layer</source>
-        <translation type="unfinished">Nevaljani sloj</translation>
+        <translation>Nevaljani sloj</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="354"/>
         <source>%1 is an invalid layer and cannot be loaded.</source>
-        <translation type="unfinished">%1 je nevaljani sloj i ne može se učitati.</translation>
+        <translation>%1 je nevaljani sloj i ne može se učitati.</translation>
     </message>
 </context>
 <context>
@@ -16881,152 +18449,152 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="32"/>
         <source>New Spatialite Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Novi SpatiaLite sloj</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="46"/>
         <source>Database</source>
-        <translation type="unfinished">Baza podataka</translation>
+        <translation>Baza podataka</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="69"/>
         <source>Create a new Spatialite database</source>
-        <translation type="unfinished"></translation>
+        <translation>Stvori novu SpatiaLite bazu podataka</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="72"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="83"/>
         <source>Layer name</source>
-        <translation type="unfinished">Naziv sloja</translation>
+        <translation>Naziv sloja</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="96"/>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="120"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="99"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="126"/>
         <source>Name for the new layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Naziv novog sloja</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="107"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="110"/>
         <source>Geometry column</source>
-        <translation type="unfinished">Geometrijska kolona</translation>
+        <translation>Geometrijska kolona</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="123"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="129"/>
         <source>geometry</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="138"/>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="277"/>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="366"/>
-        <source>Type</source>
-        <translation type="unfinished">Tip</translation>
+        <translation>geometrija</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="144"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="283"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="372"/>
+        <source>Type</source>
+        <translation>Tip</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="150"/>
         <source>Point</source>
-        <translation type="unfinished">Točka</translation>
+        <translation>Točka</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="151"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="157"/>
         <source>Line</source>
-        <translation type="unfinished">Linija</translation>
+        <translation>Linija</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="158"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="164"/>
         <source>Polygon</source>
-        <translation type="unfinished">Poligon</translation>
+        <translation>Poligon</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="165"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="171"/>
         <source>MultiPoint</source>
-        <translation type="unfinished"></translation>
+        <translation>Višestruka točka</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="172"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="178"/>
         <source>Multiline</source>
-        <translation type="unfinished">Višestruke linije</translation>
+        <translation>Višestruke linije</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="179"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="185"/>
         <source>Multipolygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Višestruki poligon</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="191"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="197"/>
         <source>EPSG SRID</source>
-        <translation type="unfinished"></translation>
+        <translation>EPSG SRID</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="201"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="207"/>
         <source>Spatial Reference Id</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="217"/>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="220"/>
-        <source>Specify the coordinate reference system of the layer&apos;s geometry.</source>
-        <translation type="unfinished">Odredi koord. referentni sustav geometrije sloja.</translation>
+        <translation>Id prostorne reference</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="223"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="226"/>
+        <source>Specify the coordinate reference system of the layer&apos;s geometry.</source>
+        <translation>Odredi koord. referentni sustav geometrije sloja.</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="229"/>
         <source>Find SRID</source>
-        <translation type="unfinished"></translation>
+        <translation>Pronađi SRID</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="232"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="238"/>
         <source>Add an integer id field as the primary key for the new layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaje integer polje kao primarni ključ za novi sloj</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="235"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="241"/>
         <source>Create an autoincrementing primary key</source>
-        <translation type="unfinished"></translation>
+        <translation>Stvara autoinkrementirajući primarni ključ</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="242"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="248"/>
         <source>New attribute</source>
-        <translation type="unfinished">Novi atribut</translation>
+        <translation>Novi atribut</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="254"/>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="361"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="260"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="367"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Naziv</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="264"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="270"/>
         <source>An attribute name</source>
-        <translation type="unfinished"></translation>
+        <translation>Naziv atributa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="300"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="306"/>
         <source>Attributes list</source>
-        <translation type="unfinished">Lista atributa</translation>
-    </message>
-    <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="325"/>
-        <source>Add attribute to list</source>
-        <translation type="unfinished">Dodaj atribut na popis</translation>
+        <translation>Lista atributa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="331"/>
+        <source>Add attribute to list</source>
+        <translation>Dodaj atribut na popis</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="337"/>
         <source>Add to attributes list</source>
-        <translation type="unfinished">Dodaje na popis atributa</translation>
+        <translation>Dodaje na popis atributa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="393"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="399"/>
         <source>Delete selected attribute</source>
-        <translation type="unfinished">Izbriši odabrani atribut</translation>
+        <translation>Izbriši odabrani atribut</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="396"/>
+        <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="402"/>
         <source>Remove selected attribute</source>
-        <translation type="unfinished">Ukloni odabrani atribut</translation>
+        <translation>Ukloni odabrani atribut</translation>
     </message>
 </context>
 <context>
@@ -17332,17 +18900,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsOgrProvider</name>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="193"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="194"/>
         <source>Whole number (integer)</source>
         <translation>Cijeli broj (integer)</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="194"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="195"/>
         <source>Decimal number (real)</source>
         <translation>Decimalni broj (realni)</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="195"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="196"/>
         <source>Text (string)</source>
         <translation>Tekst (string)</translation>
     </message>
@@ -17495,9 +19063,13 @@ p, li { white-space: pre-wrap; }
         <translation>Protokol</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="80"/>
         <source>Encoding :</source>
-        <translation>Enkodiranje:</translation>
+        <translation type="obsolete">Enkodiranje:</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="80"/>
+        <source>Encoding</source>
+        <translation type="unfinished">Enkodiranje</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="112"/>
@@ -17567,17 +19139,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="147"/>
         <source>Show all features</source>
-        <translation type="unfinished"></translation>
+        <translation>Prikaži sve elemente</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="148"/>
         <source>Show selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>Prikaži odabrane elemente</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="149"/>
         <source>Show features in current canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Prikaži elemente u trenutačnom prikazu</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="269"/>
@@ -17672,6 +19244,11 @@ p, li { white-space: pre-wrap; }
         <translation>Opcije</translation>
     </message>
     <message>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="144"/>
+        <source>Digitizing</source>
+        <translation type="unfinished">Digitaliziranje</translation>
+    </message>
+    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="225"/>
         <source>Project files</source>
         <translation>Datoteke projekta</translation>
@@ -17749,7 +19326,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="428"/>
         <source>Attribute table behaviour</source>
-        <translation type="unfinished"></translation>
+        <translation>Ponašanje atributne tablice</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="482"/>
@@ -17824,6 +19401,11 @@ p, li { white-space: pre-wrap; }
         <translation>Ukloni</translation>
     </message>
     <message>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1554"/>
+        <source>Timeout for network requests (ms)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="561"/>
         <source>Compatibility</source>
         <translation>Kompatibilnost</translation>
@@ -17889,9 +19471,19 @@ p, li { white-space: pre-wrap; }
         <translation>Akcija kotačića miša</translation>
     </message>
     <message>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="876"/>
+        <source>Placement algorithm</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="942"/>
         <source>Line color</source>
         <translation>Boja linije</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsoptionsbase.ui" line="1434"/>
+        <source>Exclude URLs (starting with)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1479"/>
@@ -17989,9 +19581,8 @@ p, li { white-space: pre-wrap; }
         <translation>Pozicija</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="876"/>
         <source>Placement algorithm:</source>
-        <translation>Algoritam postavljanja:</translation>
+        <translation type="obsolete">Algoritam postavljanja:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="919"/>
@@ -18126,9 +19717,8 @@ p, li { white-space: pre-wrap; }
         <translation>Detektiraj aktivne lokalne postavke na vašem sustavu:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1554"/>
         <source>Timeout for network requests (ms):</source>
-        <translation>Vremensko ograničenje za mrežne zahtjeve (ms):</translation>
+        <translation type="obsolete">Vremensko ograničenje za mrežne zahtjeve (ms):</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1348"/>
@@ -18167,9 +19757,8 @@ p, li { white-space: pre-wrap; }
         <translation>Tip Proxy-a</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="1434"/>
         <source>Exclude URLs (starting with):</source>
-        <translation>Isključi URL-ove (počevši s):</translation>
+        <translation type="obsolete">Isključi URL-ove (počevši s):</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="84"/>
@@ -18192,9 +19781,8 @@ p, li { white-space: pre-wrap; }
         <translation>Preklop</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsoptionsbase.ui" line="144"/>
         <source>Digitising</source>
-        <translation>Digitaliziranje</translation>
+        <translation type="obsolete">Digitaliziranje</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="159"/>
@@ -18215,9 +19803,13 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsOraclePlugin</name>
     <message>
-        <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="56"/>
         <source>Select GeoRaster</source>
-        <translation>Odaberi GeoRaster</translation>
+        <translation type="obsolete">Odaberi GeoRaster</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="56"/>
+        <source>Select Oracle GeoRaster</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="58"/>
@@ -18243,22 +19835,22 @@ p, li { white-space: pre-wrap; }
         <translation>Potvrda brisanja</translation>
     </message>
     <message>
-        <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="152"/>
+        <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="155"/>
         <source>Password for %1/&lt;password&gt;@%2</source>
         <translation>Lozinka za %1/&lt;password&gt;@%2</translation>
     </message>
     <message>
-        <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="153"/>
+        <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="156"/>
         <source>Please enter your password:</source>
         <translation>Molim unesite lozinku:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="193"/>
+        <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="196"/>
         <source>Open failed</source>
         <translation>Otvaranje nije uspjelo</translation>
     </message>
     <message>
-        <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="194"/>
+        <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="197"/>
         <source>The connection to %1 failed. Please verify your connection parameters. Make sure you have the GDAL GeoRaster plugin installed.</source>
         <translation>Neuspješno povezivanje na %1. Provjerite parametre veze. Provjerite da imate instaliran GDAL GeoRaster dodatak.</translation>
     </message>
@@ -18796,24 +20388,36 @@ geometriju.</translation>
         <translation>Opcije pretraživanja</translation>
     </message>
     <message>
+        <location filename="../src/ui/qgspgsourceselectbase.ui" line="118"/>
+        <source>Search</source>
+        <translation type="unfinished">Traži</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgspgsourceselectbase.ui" line="131"/>
+        <source>Search mode</source>
+        <translation type="unfinished">Mod traženja</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgspgsourceselectbase.ui" line="151"/>
+        <source>Search in columns</source>
+        <translation type="unfinished">Traži u kolonama</translation>
+    </message>
+    <message>
         <location filename="../src/ui/qgspgsourceselectbase.ui" line="87"/>
         <source>Build query</source>
         <translation>Izgradi Upit</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspgsourceselectbase.ui" line="118"/>
         <source>Search:</source>
-        <translation>Traži:</translation>
+        <translation type="obsolete">Traži:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspgsourceselectbase.ui" line="131"/>
         <source>Search mode:</source>
-        <translation>Mod traženja:</translation>
+        <translation type="obsolete">Mod traženja:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgspgsourceselectbase.ui" line="151"/>
         <source>Search in columns:</source>
-        <translation>Traži u kolonama:</translation>
+        <translation type="obsolete">Traži u kolonama:</translation>
     </message>
 </context>
 <context>
@@ -19674,28 +21278,29 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidget.cpp" line="81"/>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidget.cpp" line="157"/>
         <source>None</source>
-        <translation type="unfinished">Nijedan</translation>
+        <translation>Nijedan</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidget.cpp" line="206"/>
         <source>Label Font</source>
-        <translation type="unfinished"></translation>
+        <translation>Font oznake</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidget.cpp" line="229"/>
         <source>Circle color</source>
-        <translation type="unfinished"></translation>
+        <translation>Boja kružića</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidget.cpp" line="248"/>
         <source>Label color</source>
-        <translation type="unfinished"></translation>
+        <translation>Boja oznake</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidget.cpp" line="351"/>
         <source>The point displacement renderer only applies to (single) point layers. 
 &apos;%1&apos; is not a point layer and cannot be displayed by the point displacement renderer</source>
-        <translation type="unfinished"></translation>
+        <translation>Prikaz izmicanja točke primjenjuje se samo na slojeve s (pojedinačnim) točkama. 
+&apos;%1&apos; nije sloj s točkama i ne može se prikazati s prikazom izmicanja točaka</translation>
     </message>
 </context>
 <context>
@@ -19703,89 +21308,89 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Obrazac</translation>
+        <translation>Obrazac</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="22"/>
         <source>Center symbol:</source>
-        <translation type="unfinished"></translation>
+        <translation>Simbol centra:</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="40"/>
         <source>Renderer:</source>
-        <translation type="unfinished">Renderer:</translation>
+        <translation>Renderer:</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="52"/>
         <source>Renderer settings...</source>
-        <translation type="unfinished"></translation>
+        <translation>Postavke renderera...</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="59"/>
         <source>Displacement circles</source>
-        <translation type="unfinished"></translation>
+        <translation>Krugovi izmicanja</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="67"/>
         <source>Circle pen width:</source>
-        <translation type="unfinished"></translation>
+        <translation>Širina linije kruga:</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="81"/>
         <source>Circle color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Boja kruga:</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="105"/>
         <source>Circle radius modification:</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifikacija radijusa kruga:</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="123"/>
         <source>Point distance tolerance:</source>
-        <translation type="unfinished"></translation>
+        <translation>tolerancija udaljenosti točaka:</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="145"/>
         <source>Labels</source>
-        <translation type="unfinished">Oznake</translation>
+        <translation>Oznake</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="153"/>
         <source>Label attribute:</source>
-        <translation type="unfinished"></translation>
+        <translation>Atribut oznake:</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="167"/>
         <source>Label font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Font oznake...</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="191"/>
         <source>Label color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Boja oznake:</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="213"/>
         <source>Use scale dependent labelling</source>
-        <translation type="unfinished"></translation>
+        <translation>Koristi prikazivanje oznaka ovisno o mjerilu</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgspointdisplacementrendererwidgetbase.ui" line="222"/>
         <source>max scale denominator:</source>
-        <translation type="unfinished"></translation>
+        <translation>maksimalni nazivnik  mjerila:</translation>
     </message>
 </context>
 <context>
     <name>QgsPostgresProvider</name>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="957"/>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="989"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="951"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="983"/>
         <source>Unable to access relation</source>
         <translation>Ne mogu pristupiti relaciji</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="958"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="952"/>
         <source>Unable to access the %1 relation.
 The error message from the database was:
 %2.
@@ -19796,7 +21401,7 @@ Poruka o pogrešci baze je:
 SQL: %3</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="990"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="984"/>
         <source>Unable to determine table access privileges for the %1 relation.
 The error message from the database was:
 %2.
@@ -19859,59 +21464,63 @@ SQL: %3</translation>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="278"/>
         <source>No PostGIS Support!</source>
-        <translation type="unfinished">Nema PostGIS podrške!</translation>
+        <translation>Nema PostGIS podrške!</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="279"/>
         <source>Your database has no working PostGIS support.
 </source>
-        <translation type="unfinished">Vaša baza podataka nema podršku za PostGIS.</translation>
+        <translation>Vaša baza podataka nema podršku za PostGIS.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="293"/>
         <source>No GEOS Support!</source>
-        <translation type="unfinished">Nema GEOS podrške!</translation>
+        <translation>Nema GEOS podrške!</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="294"/>
         <source>Your PostGIS installation has no GEOS support.
 Feature selection and identification will not work properly.
 Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
-        <translation type="unfinished">Vaša PostGIS instalacija nema podršku za GEOS.
+        <translation>Vaša PostGIS instalacija nema podršku za GEOS.
 Odabir i identifikacija elemenata neće ispravno funkcionirati.
 Instalirajte PostGIS s podrškom za GEOS (http://geos.refractions.net)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="931"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="925"/>
         <source>Ambiguous field!</source>
-        <translation type="unfinished"></translation>
+        <translation>Dvoznačno polje!</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="932"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="926"/>
         <source>Duplicate field %1 found
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Pronađeno dvostruko polje %1
+</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1080"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1074"/>
         <source>Unable execute the query</source>
-        <translation type="unfinished"></translation>
+        <translation>Nemoguće izvršiti upit</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1081"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1075"/>
         <source>Unable to execute the query.
 The error message from the database was:
 %1.
 SQL: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Nemoguće izvršiti upit.
+Poruka pogreške iz baze je:
+%1.
+SQL: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1184"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1178"/>
         <source>No suitable key column in table</source>
         <translation>Nema adekvatne ključne kolone u tablici</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1185"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1179"/>
         <source>The table has no column suitable for use as a key.
 
 Quantum GIS requires that the table either has a column of type
@@ -19919,134 +21528,145 @@ int4 with a unique constraint on it (which includes the
 primary key), has a PostgreSQL oid column or has a ctid
 column with a 16bit block number.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Tablica nema kolonu koja se može koristiti kao ključ.
+
+Quantum GIS zahtjeva da tablica ima kolonu tipa
+int4 s jedinstvenim ograničenjem na njoj (koje uključuje 
+primarni ključ), da ima PostgreSQL oid kolonu ili da ima ctid
+kolonu s 16 bitnim blok brojem.
+</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1260"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1254"/>
         <source>The unique index on column &apos;%1&apos; is unsuitable because Quantum GIS does not currently support non-int4 type columns as a key into the table.
 </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1291"/>
-        <source>The unique index based on columns %1 is unsuitable because Quantum GIS does not currently support multiple columns as a key into the table.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1579"/>
-        <source>The view &apos;%1.%2&apos; has no column suitable for use as a unique key.
-Quantum GIS requires that the view has a column that can be used as a unique key. Such a column should be derived from a table column of type int4 and be a primary key, have a unique constraint on it, or be a PostgreSQL oid column. To improve performance the column should also be indexed.
-The view you selected has the following columns, none of which satisfy the above conditions:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3149"/>
-        <source>Column %1 in %2 has a geometry type of %3, which Quantum GIS does not currently support.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3156"/>
-        <source>Quantum GIS was unable to determine the type and srid of column %1 in %2. The database communication log was:
-%3</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3280"/>
-        <source>Query failed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3281"/>
-        <source>%1 cursor states lost.
-SQL: %2
-Result: %3 (%4)</source>
-        <translation type="unfinished"></translation>
+        <translation>Jedinstveni indeks na koloni &apos;%1&apos; nije prihvatljiv jer Quantum GIS trenutno ne podržava kolone tablice koje nisu int4 tipa za ključ.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1285"/>
+        <source>The unique index based on columns %1 is unsuitable because Quantum GIS does not currently support multiple columns as a key into the table.
+</source>
+        <translation>Jedinstveni indeks na koloni &apos;%1&apos; nije prihvatljiv jer Quantum GIS trenutno ne podržava višestruke kolone tablice za ključ.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1573"/>
+        <source>The view &apos;%1.%2&apos; has no column suitable for use as a unique key.
+Quantum GIS requires that the view has a column that can be used as a unique key. Such a column should be derived from a table column of type int4 and be a primary key, have a unique constraint on it, or be a PostgreSQL oid column. To improve performance the column should also be indexed.
+The view you selected has the following columns, none of which satisfy the above conditions:</source>
+        <translation>Pogled (view) &apos;%1.%2&apos; nema pogodnu kolonu za jedinstveni ključ.
+Quantum GIS zahtjeva da pogled ima kolonu koja se može koristiti kao jedinstveni ključ. takva kolona može se izraditi i kolone tablice tipa int4 i biti primarni ključ, može imati na sebi jedinstveno ograničenje, ili može biti PostgreSQL oid kolona. Kako bi se poboljšale performanse kolona bi također trebala biti indeksirana.
+Pogled koji ste odabrali ima slijedeće kolone, niti jedna od njih ne zadovoljava prethodne uvjete:</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3088"/>
+        <source>Column %1 in %2 has a geometry type of %3, which Quantum GIS does not currently support.</source>
+        <translation>Kolona %1 u %2 ima tip geometrije %3, koju Quantum GIS trenutno ne podržava.</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3095"/>
+        <source>Quantum GIS was unable to determine the type and srid of column %1 in %2. The database communication log was:
+%3</source>
+        <translation>Quantum GIS ne može odrediti tip i SRID kolone %1 u %2. Zapis komunikacije baze je:
+%3</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3219"/>
+        <source>Query failed</source>
+        <translation>Neuspješan upit</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3220"/>
+        <source>%1 cursor states lost.
+SQL: %2
+Result: %3 (%4)</source>
+        <translation>%1 izgubljena stanja kursora.
+SQL: %2
+Rezultat: %3 (%4)</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1279"/>
         <source>and </source>
         <translation>i </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1334"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1328"/>
         <source>Unable to find a key column</source>
         <translation>Ne mogu pronaći ključnu kolonu</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1472"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1466"/>
         <source>&apos;%1&apos; derives from &apos;%2.%3.%4&apos; </source>
         <translation>&apos;%1&apos; proizlazi iz &apos;%2.%3.%4&apos; </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1476"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1470"/>
         <source>and is suitable.</source>
         <translation>i prikladno je.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1480"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1474"/>
         <source>and is not suitable (type is %1)</source>
         <translation>i nije prikladno (tip je %1)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1482"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1476"/>
         <source> and has a suitable constraint)</source>
         <translation> i ima prikladno ograničenje)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1484"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1478"/>
         <source> and does not have a suitable constraint)</source>
         <translation> i nema prikladno ograničenje)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1568"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1562"/>
         <source>Note: &apos;%1&apos; initially appeared suitable but does not contain unique data, so is not suitable.
 </source>
         <translation>Napomena: &apos;%1&apos; je inicijalno izgledalo prikladno, no ne sadržava jedinstvene vrijednosti, pa je neprikladno.
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1587"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1581"/>
         <source>No suitable key column in view</source>
         <translation>Nema prikladne ključne kolone u pogledu</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2382"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2376"/>
         <source>Error while adding features</source>
         <translation>Pogreška pri dodavanju elemenata</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2425"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2419"/>
         <source>Error while deleting features</source>
         <translation>Pogreška pri brisanju elemenata</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2488"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2482"/>
         <source>Error while adding attributes</source>
         <translation>Pogreška pri dodavanju atributa</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2536"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2530"/>
         <source>Error while deleting attributes</source>
         <translation>Pogreška pri brisanju atributa</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2607"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2601"/>
         <source>Error while changing attributes</source>
         <translation>Pogreška pri izmjeni atributa</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2696"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="2690"/>
         <source>Error while changing geometry values</source>
         <translation>Pogreška pri izmjeni vrijednosti geometrije</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3148"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3087"/>
         <source>Unknown geometry type</source>
         <translation>Nepoznat geometrijski tip</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3160"/>
+        <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3099"/>
         <source>Unable to get feature type and srid</source>
         <translation>Ne mogu dohvatiti tip i SRID elementa</translation>
     </message>
@@ -20107,32 +21727,32 @@ Try to find missing layers?</source>
 <context>
     <name>QgsProjectProperties</name>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="220"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="221"/>
         <source>Layer</source>
         <translation>Sloj</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="221"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="222"/>
         <source>Type</source>
         <translation>Tip</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="222"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="223"/>
         <source>Identifiable</source>
         <translation>Može se identificirati</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="242"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="243"/>
         <source>Vector</source>
         <translation>Vektor</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="250"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="251"/>
         <source>WMS</source>
         <translation>WMS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsprojectproperties.cpp" line="254"/>
+        <location filename="../src/app/qgsprojectproperties.cpp" line="255"/>
         <source>Raster</source>
         <translation>Raster</translation>
     </message>
@@ -20317,7 +21937,7 @@ Try to find missing layers?</source>
     <message>
         <location filename="../src/gui/qgsprojectionselector.cpp" line="60"/>
         <source>All</source>
-        <translation type="unfinished">Sve</translation>
+        <translation>Sve</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsprojectionselector.cpp" line="627"/>
@@ -20337,12 +21957,12 @@ Try to find missing layers?</source>
     <message>
         <location filename="../src/gui/qgsprojectionselector.cpp" line="1005"/>
         <source>Find projection</source>
-        <translation type="unfinished"></translation>
+        <translation>Pronađi projekciju</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsprojectionselector.cpp" line="1005"/>
         <source>No matching projection found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nema odgovarajućih projekcija.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsprojectionselector.cpp" line="1144"/>
@@ -20398,17 +22018,17 @@ Zbog ovoga neće raditi odabir projekcije...</translation>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="192"/>
         <source>Recently used coordinate references systems</source>
-        <translation type="unfinished"></translation>
+        <translation>Nedavno korišteni referentni koordinatni sustavi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="113"/>
         <source>Authority</source>
-        <translation type="unfinished"></translation>
+        <translation>Autoritet</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="123"/>
         <source>Search for</source>
-        <translation type="unfinished"></translation>
+        <translation>Pretraži za</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="177"/>
@@ -20418,7 +22038,7 @@ Zbog ovoga neće raditi odabir projekcije...</translation>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="157"/>
         <source>Hide deprecated CRSs</source>
-        <translation type="unfinished"></translation>
+        <translation>Sakrij zastarjele CRS-ove</translation>
     </message>
 </context>
 <context>
@@ -20733,7 +22353,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="308"/>
         <source>[GDAL] All files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>[GDAL] Sve datoteke (*)</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="713"/>
@@ -20961,338 +22581,338 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="107"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="638"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="982"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1000"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1029"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="639"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="985"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1003"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1032"/>
         <source>Grayscale</source>
         <translation>Sivi tonovi</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="108"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="621"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1088"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1716"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2380"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="622"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1091"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1721"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2385"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2390"/>
         <source>Pseudocolor</source>
         <translation>Pseudoboja</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="109"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="625"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1092"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1716"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2385"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="626"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1095"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1721"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2390"/>
         <source>Freak Out</source>
         <translation>Poludi</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="110"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="629"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1008"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1096"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1393"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1726"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="630"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1011"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1099"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1398"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1731"/>
         <source>Colormap</source>
         <translation>Colormap</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="113"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="746"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="759"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="775"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2471"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2949"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="747"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="760"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="776"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2476"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2954"/>
         <source>No Stretch</source>
         <translation>Nema razvlačenja</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="114"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="730"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="763"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1105"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2954"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="731"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="764"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1108"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2959"/>
         <source>Stretch To MinMax</source>
         <translation>Razvuci na MinMax</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="115"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="734"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="767"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1109"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2959"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="735"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="768"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1112"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2964"/>
         <source>Stretch And Clip To MinMax</source>
         <translation>Razvuci i obreži na MinMax</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="116"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="738"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="771"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1113"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2964"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="739"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="772"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1116"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2969"/>
         <source>Clip To MinMax</source>
         <translation>Obreži na MinMax</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="141"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="904"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1429"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2712"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2807"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="907"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1434"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2717"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2812"/>
         <source>Discrete</source>
         <translation>Diskretno</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="142"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="900"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1425"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2708"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2759"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2803"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="903"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1430"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2713"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2764"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2808"/>
         <source>Linear</source>
         <translation>Linearno</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="143"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="908"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2811"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="911"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2816"/>
         <source>Exact</source>
         <translation>Točno</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="144"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2595"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2600"/>
         <source>Equal interval</source>
         <translation>Jednaki interval</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="310"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="311"/>
         <source>Description</source>
         <translation>Opis</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="311"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="312"/>
         <source>Large resolution raster layers can slow navigation in QGIS.</source>
         <translation>Rasteri velike rezolucije mogu usporiti navigaciju unutar QGIS-a.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="312"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="313"/>
         <source>By creating lower resolution copies of the data (pyramids) performance can be considerably improved as QGIS selects the most suitable resolution to use depending on the level of zoom.</source>
         <translation>Kreiranjem kopija podataka niže rezolucije (piramide) možete znatno poboljšati performanse jer QGIS prikazuje prikladnu rezoluciju ovisno o blizini prikazivanja.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="313"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="314"/>
         <source>You must have write access in the directory where the original data is stored to build pyramids.</source>
         <translation>Morate imati pristup za pisanje mapi gdje su oriignalni podaci kako biste izgradili piramide.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="314"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="315"/>
         <source>Please note that building internal pyramids may alter the original data file and once created they cannot be removed!</source>
         <translation>Obratite pažnju da izgradnjom internih piramida mijenjate originalnu datoteku, jednom kreirane ne mogu se ukloniti!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="315"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="316"/>
         <source>Please note that building internal pyramids could corrupt your image - always make a backup of your data first!</source>
         <translation>Obratite pažnju da izfradnja internih piramida može pokvariti vašu sliku - uvijek prvo napravite sigurnosnu kopiju!</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="328"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="329"/>
         <source>Layer Properties - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Osobien sloja - %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="374"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1776"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1835"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="375"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1781"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1840"/>
         <source>Red</source>
         <translation>Crveno</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="375"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1777"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1835"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="376"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1782"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1840"/>
         <source>Green</source>
         <translation>Zeleno</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="376"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1778"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1835"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="377"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1783"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1840"/>
         <source>Blue</source>
         <translation>Plavo</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="377"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="416"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1779"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1804"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1835"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1848"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1852"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="378"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="417"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1784"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1809"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1840"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1853"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1857"/>
         <source>Percent Transparent</source>
         <translation>Postotak prozirnosti</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="410"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1798"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1848"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="411"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1803"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1853"/>
         <source>Gray</source>
         <translation>Sivo</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="414"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1802"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1852"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="415"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1807"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1857"/>
         <source>Indexed Value</source>
         <translation>Indeksirana vrijednost</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="450"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="451"/>
         <source>Note: Minimum Maximum values are estimates, user defined, or calculated from the current extent</source>
         <translation>Napomena: Minimalna i maksimalna vrijednost su procjenjene, korisnički definirane ili izračunate iz trenutačnog opsega</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="454"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="455"/>
         <source>Note: Minimum Maximum values are actual values computed from the band(s)</source>
         <translation>Napomena: Minimalna i maksimalna vrijednosti su stvarne vrijednosti izračunate iz kanala</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="591"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="592"/>
         <source>&lt;h3&gt;Multiband Image Notes&lt;/h3&gt;&lt;p&gt;This is a multiband image. You can choose to render it as grayscale or color (RGB). For color images, you can associate bands to colors arbitarily. For example, if you have a seven band landsat image, you may choose to render it as:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Visible Blue (0.45 to 0.52 microns) - not mapped&lt;/li&gt;&lt;li&gt;Visible Green (0.52 to 0.60 microns) - not mapped&lt;/li&gt;&lt;/li&gt;Visible Red (0.63 to 0.69 microns) - mapped to red in image&lt;/li&gt;&lt;li&gt;Near Infrared (0.76 to 0.90 microns) - mapped to green in image&lt;/li&gt;&lt;li&gt;Mid Infrared (1.55 to 1.75 microns) - not mapped&lt;/li&gt;&lt;li&gt;Thermal Infrared (10.4 to 12.5 microns) - not mapped&lt;/li&gt;&lt;li&gt;Mid Infrared (2.08 to 2.35 microns) - mapped to blue in image&lt;/li&gt;&lt;/ul&gt;</source>
         <comment>COMMENTED OUT</comment>
         <translation>&lt;h3&gt;Multiband Image Notes&lt;/h3&gt;&lt;p&gt;This is a multiband image. You can choose to render it as grayscale or color (RGB). For color images, you can associate bands to colors arbitarily. For example, if you have a seven band landsat image, you may choose to render it as:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Visible Blue (0.45 to 0.52 microns) - not mapped&lt;/li&gt;&lt;li&gt;Visible Green (0.52 to 0.60 microns) - not mapped&lt;/li&gt;&lt;/li&gt;Visible Red (0.63 to 0.69 microns) - mapped to red in image&lt;/li&gt;&lt;li&gt;Near Infrared (0.76 to 0.90 microns) - mapped to green in image&lt;/li&gt;&lt;li&gt;Mid Infrared (1.55 to 1.75 microns) - not mapped&lt;/li&gt;&lt;li&gt;Thermal Infrared (10.4 to 12.5 microns) - not mapped&lt;/li&gt;&lt;li&gt;Mid Infrared (2.08 to 2.35 microns) - mapped to blue in image&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="598"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="599"/>
         <source>&lt;h3&gt;Paletted Image Notes&lt;/h3&gt; &lt;p&gt;This image uses a fixed color palette. You can remap these colors in different combinations e.g.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Red - blue in image&lt;/li&gt;&lt;li&gt;Green - blue in image&lt;/li&gt;&lt;li&gt;Blue - green in image&lt;/li&gt;&lt;/ul&gt;</source>
         <comment>COMMENTED OUT</comment>
         <translation>&lt;h3&gt;Paletted Image Notes&lt;/h3&gt; &lt;p&gt;This image uses a fixed color palette. You can remap these colors in different combinations e.g.&lt;/p&gt;&lt;ul&gt;&lt;li&gt;Red - blue in image&lt;/li&gt;&lt;li&gt;Green - blue in image&lt;/li&gt;&lt;li&gt;Blue - green in image&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="605"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="606"/>
         <source>&lt;h3&gt;Grayscale Image Notes&lt;/h3&gt; &lt;p&gt;You can remap these grayscale colors to a pseudocolor image using an automatically generated color ramp.&lt;/p&gt;</source>
         <comment>COMMENTED OUT</comment>
         <translation>&lt;h3&gt;Grayscale Image Notes&lt;/h3&gt; &lt;p&gt;You can remap these grayscale colors to a pseudocolor image using an automatically generated color ramp.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="633"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="742"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1530"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1532"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="634"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="743"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1535"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1537"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1736"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2947"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1540"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1542"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1741"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2952"/>
         <source>User Defined</source>
         <translation>Korisnički definirano</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="754"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2942"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="755"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2947"/>
         <source>Default R:%1 G:%2 B:%3</source>
         <translation>Zadano R:%1 G%2 B%3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="824"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="827"/>
         <source>Columns: %1</source>
         <translation>Kolone: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="825"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="828"/>
         <source>Rows: %1</source>
         <translation>Reci: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="828"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="831"/>
         <source>No-Data Value: %1</source>
         <translation>No-Data vrijednost: %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="832"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="835"/>
         <source>No-Data Value: Not Set</source>
         <translation>No-Data vrijednost: nije postavljeno</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="838"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="841"/>
         <source>Columns: </source>
         <translation>Kolone: </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="838"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="839"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="840"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="841"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="842"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="843"/>
         <source>n/a</source>
         <translation>n/a</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="839"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="842"/>
         <source>Rows: </source>
         <translation>Reci: </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="840"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="843"/>
         <source>No-Data Value: </source>
         <translation>No-Data vrijednost: </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1583"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1863"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2748"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1588"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1868"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2753"/>
         <source>Write access denied</source>
         <translation>Njie dopušteno pisanje</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1584"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1589"/>
         <source>Write access denied. Adjust the file permissions and try again.</source>
         <translation>Njie dopušteno pisanje. Podesite dozvole datoteke i pokušajte ponovno.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1588"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1594"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1593"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1599"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1604"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1609"/>
         <source>Building pyramids failed.</source>
         <translation>Izgradnja piramida nije uspjela.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1589"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1594"/>
         <source>The file was not writeable. Some formats do not support pyramid overviews. Consult the GDAL documentation if in doubt.</source>
         <translation>U datoteku se ne može zapisivati. Neki formati ne podržavaju piramidalne preglede. Ako sumnjate konsultirajte se s GDAL dokumentacijom.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1595"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1605"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1600"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1610"/>
         <source>Building pyramid overviews is not supported on this type of raster.</source>
         <translation>Izgradnja piramidalnih pregleda nije podržaan za ovaj tip rastera.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1600"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1605"/>
         <source>Building internal pyramid overviews is not supported on raster layers with JPEG compression and your current libtiff library.</source>
         <translation>Izgradnja piramidalnih pregleda nije podržana za slojeve s JPEG kompresijom i vašom trenutačnom libtiff bibliotekom.</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1820"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2694"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1825"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2699"/>
         <source>Save file</source>
         <translation>Spremi datoteku</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1820"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2281"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2694"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2776"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1825"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2286"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2699"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2781"/>
         <source>Textfile (*.txt)</source>
         <translation>Tekstualna datoteka (*.txt)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1832"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1837"/>
         <source>QGIS Generated Transparent Pixel Value Export File</source>
         <translation>QGIS generirana datoteka za izvoz vrijednosti transparentnog piksela</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1863"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2748"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1868"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2753"/>
         <source>Write access denied. Adjust the file permissions and try again.
 
 </source>
@@ -21300,19 +22920,19 @@ p, li { white-space: pre-wrap; }
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2281"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2776"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2286"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2781"/>
         <source>Open file</source>
         <translation>Otvori datoteku</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2354"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2844"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2359"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2849"/>
         <source>Import Error</source>
         <translation>Pogreška uvoza</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2354"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2359"/>
         <source>The following lines contained errors
 
 %1</source>
@@ -21321,14 +22941,14 @@ p, li { white-space: pre-wrap; }
 %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2359"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2849"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2364"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2854"/>
         <source>Read access denied</source>
         <translation>Nije dopušteno čitanje</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2359"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2849"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2364"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2854"/>
         <source>Read access denied. Adjust the file permissions and try again.
 
 </source>
@@ -21337,37 +22957,37 @@ p, li { white-space: pre-wrap; }
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2385"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2390"/>
         <source>Color Ramp</source>
         <translation>Rampa boja</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2618"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2623"/>
         <source>Quantiles</source>
         <translation>Quantiles</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2687"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2692"/>
         <source>Custom color map entry</source>
         <translation>Prilagođeni unos mape boja</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2706"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2711"/>
         <source>QGIS Generated Color Map Export File</source>
         <translation>QGIS generirana datoteka za izvoz mape boja</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2764"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2769"/>
         <source>Load Color Map</source>
         <translation>Učitaj mapu boja</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2764"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2769"/>
         <source>The color map for band %1 failed to load</source>
         <translation>Mapa boja za kanal %1 nije učitana</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2844"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2849"/>
         <source>The following lines contained errors
 
 </source>
@@ -21376,34 +22996,34 @@ p, li { white-space: pre-wrap; }
 </translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3101"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3118"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3111"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3128"/>
         <source>Default Style</source>
         <translation>Zadani stil</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3137"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3156"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3202"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3221"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3147"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3166"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3212"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3231"/>
         <source>QGIS Layer Style File (*.qml)</source>
         <translation>Datoteka QGIS stila sloja (*.qml)</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3174"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3240"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3184"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3250"/>
         <source>Saved Style</source>
         <translation>Spremljeni stil</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3181"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3247"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3191"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3257"/>
         <source>QGIS</source>
         <translation>QGIS</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3181"/>
-        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3247"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3191"/>
+        <location filename="../src/app/qgsrasterlayerproperties.cpp" line="3257"/>
         <source>Unknown style format: %1</source>
         <translation>Nepoznati oblik stila: %1</translation>
     </message>
@@ -21492,468 +23112,508 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="385"/>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1229"/>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1246"/>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1260"/>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1274"/>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1301"/>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1315"/>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1453"/>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1483"/>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1497"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="388"/>
+        <source>Save current RGB composition as default. This setting will be persistent between QGIS sessions.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="391"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="699"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1262"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1279"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1293"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1307"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1334"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1348"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1486"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1516"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1530"/>
         <source>...</source>
         <translation>...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="396"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="402"/>
         <source>Default R:1 G:2 B:3</source>
         <translation>Zadano R:1 G:2 B:3</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="405"/>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="747"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="411"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="780"/>
         <source>Custom min / max values</source>
         <translation>Prilagođene min / max vrijednosti</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="418"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="424"/>
         <source>Red min</source>
         <translation>Crveni min</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="469"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="475"/>
         <source>Red max</source>
         <translation>Crveni max</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="507"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="513"/>
         <source>Green min</source>
         <translation>Zeleni min</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="545"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="551"/>
         <source>Green max</source>
         <translation>Zeleni max</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="583"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="589"/>
         <source>Blue min</source>
         <translation>Plavi min</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="621"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="627"/>
         <source>Blue max</source>
         <translation>Plavi max</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="653"/>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="830"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="659"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="863"/>
         <source>Use standard deviation</source>
         <translation>Koristi standardnu devijaciju</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="689"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="693"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="696"/>
+        <source>Save current standard deviation value as default. This setting will be persistent between QGIS sessions.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="722"/>
         <source>Single band properties</source>
         <translation>Jednokanalne osobine</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="701"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="734"/>
         <source>Gray band</source>
         <translation>Sivi kanal</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="724"/>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1384"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="757"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1417"/>
         <source>Color map</source>
         <translation>Mapa boja</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="760"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="793"/>
         <source>Min</source>
         <translation>Min</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="798"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="831"/>
         <source>Max</source>
         <translation>Max</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="870"/>
         <source>Note:</source>
-        <translation>Napomena:</translation>
+        <translation type="obsolete">Napomena:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="884"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="903"/>
+        <source>Note</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="917"/>
         <source>Load min / max values from band</source>
         <translation>Učitaj min / max vrijednosti iz kanala</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="902"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="935"/>
         <source>Estimate (faster)</source>
         <translation>Procjena (brže)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="922"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="955"/>
         <source>Actual (slower)</source>
         <translation>Stvarno (sporije)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="942"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="975"/>
         <source>Current extent</source>
         <translation>Trenutni opseg</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="949"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="982"/>
         <source>Load</source>
         <translation>Učitaj</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="972"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1005"/>
         <source>Contrast enhancement</source>
         <translation>Poboljšanje kontrasta</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="993"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1026"/>
         <source>Current</source>
         <translation>Trenutno</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1016"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1049"/>
         <source>Save current contrast enhancement algorithm as default. This setting will be persistent between QGIS sessions.</source>
         <translation>Spremi trenutni algoritam  poboljšanja kontrasta kao zadani. Ova postavka je stalna između QGIS sesija.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1019"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1052"/>
         <source>Saves current contrast enhancement algorithm as a default. This setting will be persistent between QGIS sessions.</source>
         <translation>Sprema trenutni algoritam  poboljšanja kontrasta kao zadani. Ova postavka je stalna između QGIS sesija.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1033"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1066"/>
         <source>Default</source>
         <translation>Zadano</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1040"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1073"/>
         <source>TextLabel</source>
         <translation>TekstOznaka</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1057"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1090"/>
         <source>Global transparency</source>
         <translation>Globalna transparentnost</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1082"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1115"/>
         <source>None</source>
         <translation>Nijedan</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1108"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1141"/>
         <source> 00%</source>
         <translation> 00%</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1128"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1161"/>
         <source>&lt;p align=&quot;right&quot;&gt;Full&lt;/p&gt;</source>
         <translation>&lt;p align=&quot;right&quot;&gt;Puni&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1138"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1171"/>
         <source>No data value</source>
         <translation>No data value</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1147"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1180"/>
         <source>Reset no data value</source>
         <translation>Resetiraj vrijednost &apos;nema podatka&apos;</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1157"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1190"/>
         <source>Custom transparency options</source>
         <translation>Prilagođene opcije transparentnosti</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1163"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1196"/>
         <source>Transparency band</source>
         <translation>Kanal transparencije</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1189"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1222"/>
         <source>Transparent pixel list</source>
         <translation>Popis transparentnih piksela</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1226"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1259"/>
         <source>Add values manually</source>
         <translation>Ručno dodaj vrijednosti</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1243"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1276"/>
         <source>Add Values from display</source>
         <translation>Dodaj vrijednosti iz prikaza</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1257"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1290"/>
         <source>Remove selected row</source>
         <translation>Ukloni odabrani redak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1271"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1304"/>
         <source>Default values</source>
         <translation>Zadane vrijednosti</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1298"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1331"/>
         <source>Import from file</source>
         <translation>Uvezi iz datoteke</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1312"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1345"/>
         <source>Export to file</source>
         <translation>Izvoz u datoteku</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1338"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1371"/>
         <source>Generate new color map</source>
         <translation>Kreiraj novu mapu boja</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1344"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1377"/>
         <source>Number of entries</source>
         <translation>Broj unosa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1364"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1397"/>
         <source>Classification mode</source>
         <translation>Način klasifikacije</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1374"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1407"/>
         <source>Classify</source>
         <translation>Klasificiraj</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1390"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1423"/>
         <source>Color interpolation</source>
         <translation>Interpolacija boja</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1413"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1446"/>
         <source>Add entry</source>
         <translation>Dodaj unos</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1420"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1453"/>
         <source>Delete entry</source>
         <translation>Izbriši unos</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1427"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1460"/>
         <source>Sort</source>
         <translation>Sortiraj</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1450"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1483"/>
         <source>Load color map from band</source>
         <translation>Učitaj mapu boja iz kanala</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1480"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1513"/>
         <source>Load color map from file</source>
         <translation>Učitaj mapu boja iz datoteke</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1494"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1527"/>
         <source>Export color map to file</source>
         <translation>Izvezi mapu boja u datoteku</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1512"/>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1517"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1545"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1550"/>
         <source>1</source>
         <translation>1</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1522"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1555"/>
         <source>2</source>
         <translation>2</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1540"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1573"/>
         <source>Display name</source>
         <translation>Prikaži naziv</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1550"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1583"/>
         <source>Layer source</source>
         <translation>Izvor sloja</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1572"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1605"/>
+        <source>Columns</source>
+        <translation type="unfinished">Kolone</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1618"/>
+        <source>Rows</source>
+        <translation type="unfinished">Reci</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1631"/>
+        <source>No Data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Columns:</source>
-        <translation>Kolone: </translation>
+        <translation type="obsolete">Kolone: </translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1585"/>
         <source>Rows:</source>
-        <translation>Reci:</translation>
+        <translation type="obsolete">Reci:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1598"/>
         <source>No Data:</source>
-        <translation>No Data:</translation>
+        <translation type="obsolete">No Data:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1607"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1640"/>
         <source>Scale dependent visibility</source>
         <translation>Vidljivost ovisna o mjerilu</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1854"/>
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1622"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1655"/>
         <source>Maximum</source>
         <translation>Maksimum</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1632"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1665"/>
         <source>Minimum</source>
         <translation>Minimum</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1648"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1681"/>
         <source>Coordinate reference system</source>
         <translation>Koordinatni referentni sustav</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1657"/>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1660"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1690"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1693"/>
         <source>Specify the coordinate reference system of the layer&apos;s geometry.</source>
         <translation>Odredi koord. referentni sustav geometrije sloja.</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1663"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1696"/>
         <source>Specify...</source>
         <translation>Odredi...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1699"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1732"/>
         <source>Thumbnail</source>
         <translation>Sličica</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1736"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1769"/>
         <source>Legend</source>
         <translation>Kazalo</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1773"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1806"/>
         <source>Palette</source>
         <translation>Paleta</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1834"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1867"/>
         <source>Notes</source>
         <translation>Napomene</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1841"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1874"/>
         <source>Pyramid resolutions</source>
         <translation>Rezolucije piramide</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1884"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1887"/>
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;table style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;
+&lt;tr&gt;
+&lt;td style=&quot;border: none;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1920"/>
         <source>Build pyramids internally if possible</source>
         <translation>Izfradi piramide interno ako je moguće</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1891"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1927"/>
         <source>Resampling method</source>
         <translation>Metoda Resampling</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1899"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1935"/>
         <source>Average</source>
         <translation>Prosječno</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1904"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1940"/>
         <source>Nearest Neighbour</source>
         <translation>Najbliži susjed</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1919"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1955"/>
         <source>Build pyramids</source>
         <translation>Izgradi piramide</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1970"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2006"/>
         <source>Chart Type</source>
         <translation>Tip grafikona</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1979"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2015"/>
         <source>Line graph</source>
         <translation>Linijski graf</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1989"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2025"/>
         <source>Bar chart</source>
         <translation>Grafikon s trakama</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1999"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2035"/>
         <source>Options</source>
         <translation>Opcije</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2005"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2041"/>
         <source>Column count</source>
         <translation>Broj kolona</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2028"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2064"/>
         <source>Out of range OK?</source>
         <translation>Izvan dosega OK?</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2035"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2071"/>
         <source>Allow approximation</source>
         <translation>Dozvoli aproksimaciju</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2081"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2117"/>
         <source>Refresh</source>
         <translation>Osvježi</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2092"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2128"/>
         <source>Restore Default Style</source>
         <translation>Vrati zadani stil</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2099"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2135"/>
         <source>Save As Default</source>
         <translation>Spremi kao zadano</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2106"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2142"/>
         <source>Load Style ...</source>
         <translation>Učitaj stil...</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2113"/>
+        <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="2149"/>
         <source>Save Style ...</source>
         <translation>Spremi stil ...</translation>
     </message>
@@ -22085,22 +23745,26 @@ p, li { white-space: pre-wrap; }
         <translation>Postavke prikazivanja (renderera)</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="22"/>
         <source>Renderer:</source>
-        <translation>Renderer:</translation>
+        <translation type="obsolete">Renderer:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="45"/>
+        <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="22"/>
+        <source>Renderer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="48"/>
         <source>Symbol levels</source>
         <translation>Razine simbola</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="52"/>
+        <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="55"/>
         <source>Old symbology</source>
         <translation>Stara simbologija</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="77"/>
+        <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="80"/>
         <source>This renderer doesn&apos;t implement a graphical interface.</source>
         <translation>Ovaj renderer ne implementira grafičko sučelje.</translation>
     </message>
@@ -22416,27 +24080,47 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsSearchQueryBuilder</name>
     <message>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="36"/>
+        <location filename="../src/app/qgssearchquerybuilder.cpp" line="43"/>
         <source>Search query builder</source>
         <translation>Izgradnja upita pretraživanja</translation>
     </message>
     <message>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="38"/>
+        <location filename="../src/app/qgssearchquerybuilder.cpp" line="45"/>
         <source>&amp;Test</source>
         <translation>&amp;Test</translation>
     </message>
     <message>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="42"/>
+        <location filename="../src/app/qgssearchquerybuilder.cpp" line="49"/>
         <source>&amp;Clear</source>
         <translation>&amp;Očisti</translation>
     </message>
     <message>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="173"/>
+        <location filename="../src/app/qgssearchquerybuilder.cpp" line="53"/>
+        <source>&amp;Save...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgssearchquerybuilder.cpp" line="55"/>
+        <source>Save query to an xml file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgssearchquerybuilder.cpp" line="58"/>
+        <source>&amp;Load...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgssearchquerybuilder.cpp" line="60"/>
+        <source>Load query from xml file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgssearchquerybuilder.cpp" line="190"/>
         <source>Search results</source>
         <translation>Rezultati pretraživanja</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="173"/>
+        <location filename="../src/app/qgssearchquerybuilder.cpp" line="190"/>
         <source>Found %n matching feature(s).</source>
         <comment>test result</comment>
         <translation>
@@ -22446,19 +24130,83 @@ p, li { white-space: pre-wrap; }
         </translation>
     </message>
     <message>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="182"/>
+        <location filename="../src/app/qgssearchquerybuilder.cpp" line="199"/>
+        <location filename="../src/app/qgssearchquerybuilder.cpp" line="415"/>
         <source>Search string parsing error</source>
         <translation>Pogreška pri parsanju stringa pretraživanja</translation>
     </message>
     <message>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="240"/>
+        <location filename="../src/app/qgssearchquerybuilder.cpp" line="257"/>
         <source>No Records</source>
         <translation>Nema zapisa</translation>
     </message>
     <message>
-        <location filename="../src/app/qgssearchquerybuilder.cpp" line="240"/>
+        <location filename="../src/app/qgssearchquerybuilder.cpp" line="257"/>
         <source>The query you specified results in zero records being returned.</source>
         <translation>Upit koji ste specificirali rezultirao je vraćanjem nula zapisa.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgssearchquerybuilder.cpp" line="352"/>
+        <source>Save query to file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgssearchquerybuilder.cpp" line="361"/>
+        <location filename="../src/app/qgssearchquerybuilder.cpp" line="392"/>
+        <location filename="../src/app/qgssearchquerybuilder.cpp" line="398"/>
+        <location filename="../src/app/qgssearchquerybuilder.cpp" line="405"/>
+        <source>Error</source>
+        <translation type="unfinished">Pogreška</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgssearchquerybuilder.cpp" line="361"/>
+        <source>Could not open file for writing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgssearchquerybuilder.cpp" line="383"/>
+        <source>Load query from file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgssearchquerybuilder.cpp" line="383"/>
+        <source>Query files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgssearchquerybuilder.cpp" line="383"/>
+        <source>All files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgssearchquerybuilder.cpp" line="392"/>
+        <source>Could not open file for reading</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgssearchquerybuilder.cpp" line="398"/>
+        <source>File is not a valid xml document</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgssearchquerybuilder.cpp" line="405"/>
+        <source>File is not a valid query document</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgssearchquerybuilder.cpp" line="422"/>
+        <source>Error creating search tree</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgssearchquerybuilder.cpp" line="445"/>
+        <source>Select attribute</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgssearchquerybuilder.cpp" line="445"/>
+        <source>There is no attribute &apos;%1&apos; in the current vector layer. Please select an existing attribute</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -22596,19 +24344,19 @@ Pogreška je:
     <message>
         <location filename="../src/gui/symbology-ng/qgssinglesymbolrendererv2widget.cpp" line="52"/>
         <source>Rotation field</source>
-        <translation type="unfinished"></translation>
+        <translation>Rotacijsko polje</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssinglesymbolrendererv2widget.cpp" line="53"/>
         <source>Size scale field</source>
-        <translation type="unfinished"></translation>
+        <translation>Polje veličine mjerila</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgssinglesymbolrendererv2widget.cpp" line="64"/>
         <location filename="../src/gui/symbology-ng/qgssinglesymbolrendererv2widget.cpp" line="124"/>
         <location filename="../src/gui/symbology-ng/qgssinglesymbolrendererv2widget.cpp" line="144"/>
         <source>- no field -</source>
-        <translation type="unfinished"></translation>
+        <translation>- bez polja -</translation>
     </message>
 </context>
 <context>
@@ -22678,22 +24426,22 @@ Pogreška je:
 <context>
     <name>QgsSpatiaLiteProvider</name>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="121"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="118"/>
         <source>Binary object (BLOB)</source>
         <translation>Binarni objekt (BLOB)</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="122"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="119"/>
         <source>Text</source>
         <translation>Tekst</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="123"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="120"/>
         <source>Decimal number (double)</source>
         <translation>Decimalni broj (double)</translation>
     </message>
     <message>
-        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="124"/>
+        <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="121"/>
         <source>Whole number (integer)</source>
         <translation>Cijeli broj (integer)</translation>
     </message>
@@ -22920,97 +24668,97 @@ Pogreška je:
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="49"/>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="64"/>
         <source>The spatial query requires at least two layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Prostorni upit zahtjeva barem dva sloja</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="65"/>
         <source>Insufficient number of layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Nedovoljan broj slojeva</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="155"/>
         <source>%n selected geometries</source>
         <comment>selected geometries</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n odabrana geometrija</numerusform>
+            <numerusform>%n odabrane geometrije</numerusform>
+            <numerusform>%n odabranih geometrija</numerusform>
         </translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="156"/>
         <source>Selected geometries</source>
-        <translation type="unfinished"></translation>
+        <translation>Odabrane geometrije</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="228"/>
         <source>Total: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukupno: %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="230"/>
         <source>&lt;&lt;-- Begin at [%L1] --</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;&lt;-- Begin at [%L1] --</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="232"/>
         <source>Query:</source>
-        <translation type="unfinished"></translation>
+        <translation>Upit:</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="236"/>
         <source>&lt; %1 &gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt; %1 &gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="240"/>
         <source>Result: %1 features</source>
-        <translation type="unfinished"></translation>
+        <translation>Rezultat: %1 elemenata</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="243"/>
         <source>-- Finish at [%L1] (processing time %L2 minutes) --&gt;&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>-- Završetak na [%L1] (vrijeme procesiranja %L2 minuta) --&gt;&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="278"/>
         <source>%1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 od %2</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="279"/>
         <source>all = %1</source>
-        <translation type="unfinished"></translation>
+        <translation>sve = %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="427"/>
         <source>Total</source>
-        <translation type="unfinished">Ukupno</translation>
+        <translation>Ukupno</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="571"/>
         <source>Missing reference layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Nedostaje referentni sloj</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="571"/>
         <source>Select reference layer!</source>
-        <translation type="unfinished"></translation>
+        <translation>Odaberi referentni sloj!</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="576"/>
         <source>Missing target layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Nedostaje ciljni sloj</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="576"/>
         <source>Select target layer!</source>
-        <translation type="unfinished"></translation>
+        <translation>Odaberi ciljani sloj!</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="731"/>
         <source>DEBUG</source>
-        <translation type="unfinished"></translation>
+        <translation>DEBUG</translation>
     </message>
 </context>
 <context>
@@ -23018,22 +24766,22 @@ Pogreška je:
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="32"/>
         <source>Spatial Query</source>
-        <translation type="unfinished"></translation>
+        <translation>Prostorni upit</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="41"/>
         <source>Layer on which the topological operation will select geometries</source>
-        <translation type="unfinished"></translation>
+        <translation>Sloj u kojem će topološka operacija odabrati geometrije</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="44"/>
         <source>Target layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Ciljni sloj</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="68"/>
         <source>Select the target layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Odaberi ciljni sloj</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="75"/>
@@ -23042,28 +24790,32 @@ Pogreška je:
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;When checked the operation will only consider selected geometries of the target layer&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Kada je odabrano operacija će uzimati u obzir samo odabrane geometrije ciljnog sloja&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="82"/>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="141"/>
         <source>Selected feature(s) only</source>
-        <translation type="unfinished"></translation>
+        <translation>Samo odabrani elementi</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="94"/>
         <source>Layer whose geometries will be used as reference by the topological operation</source>
-        <translation type="unfinished"></translation>
+        <translation>Sloj čije će se geoemtrije kotistiti kao reference od strane topoloških operacija</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="97"/>
         <source>Reference layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Referentni sloj</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="121"/>
         <source>Select the reference layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Odaberi referentni sloj</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="134"/>
@@ -23072,57 +24824,61 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;When checked the operation will be only consider selected geometries of the reference layer&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Kada je odabrano operacija će uzimati u obzir samo odabrane geometrije referentnog sloja&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="160"/>
         <source>Run query or close the window</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokreni upit ili zatvori prozor</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="170"/>
         <source>Topological operations between layers of target and reference</source>
-        <translation type="unfinished"></translation>
+        <translation>Topološke operacije između ciljnog i referentnog sloja</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="173"/>
         <source>Topological operation</source>
-        <translation type="unfinished"></translation>
+        <translation>Topološka operacija</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="197"/>
         <source>Select the topological operation</source>
-        <translation type="unfinished"></translation>
+        <translation>Odabeir topološku operaciju</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="229"/>
         <source>Results (click to highlight on map)</source>
-        <translation type="unfinished"></translation>
+        <translation>Rezultati (klikni za označavanje na mapi)</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="253"/>
         <source>Select item to identify geometry of feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Odaberi stavku za identifikaciju geometrije elementa</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="260"/>
         <source>Check to show log processing of query</source>
-        <translation type="unfinished"></translation>
+        <translation>Označi za prikaz zapisa procesiranja upita</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="263"/>
         <source>Show log messages</source>
-        <translation type="unfinished"></translation>
+        <translation>Prikaži poruke zapisa</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="292"/>
         <source>Total of features from query</source>
-        <translation type="unfinished"></translation>
+        <translation>Totalni broj elemenata iz upita</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="295"/>
         <source> Total</source>
-        <translation type="unfinished"></translation>
+        <translation> Ukupno</translation>
     </message>
 </context>
 <context>
@@ -23132,12 +24888,12 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/spatialquery/qgsspatialqueryplugin.cpp" line="90"/>
         <location filename="../src/plugins/spatialquery/qgsspatialqueryplugin.cpp" line="99"/>
         <source>&amp;Spatial Query</source>
-        <translation type="unfinished"></translation>
+        <translation>Pro&amp;storni upit</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialqueryplugin.cpp" line="158"/>
         <source>DEBUG</source>
-        <translation type="unfinished"></translation>
+        <translation>DEBUG</translation>
     </message>
 </context>
 <context>
@@ -23145,24 +24901,24 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsspatialitesridsdialog.cpp" line="50"/>
         <source>Unable to open the database</source>
-        <translation type="unfinished"></translation>
+        <translation>Nemoguće otvoriti bazu podataka</translation>
     </message>
     <message>
         <location filename="../src/app/qgsspatialitesridsdialog.cpp" line="50"/>
         <source>SpatiaLite Database</source>
-        <translation type="unfinished"></translation>
+        <translation>SpatiaLite baza podataka</translation>
     </message>
     <message>
         <location filename="../src/app/qgsspatialitesridsdialog.cpp" line="82"/>
         <location filename="../src/app/qgsspatialitesridsdialog.cpp" line="135"/>
         <source>Error</source>
-        <translation type="unfinished">Pogreška</translation>
+        <translation>Pogreška</translation>
     </message>
     <message>
         <location filename="../src/app/qgsspatialitesridsdialog.cpp" line="82"/>
         <location filename="../src/app/qgsspatialitesridsdialog.cpp" line="135"/>
         <source>Failed to load SRIDS: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Neuspješno učitavanje SRID-ova: %1</translation>
     </message>
 </context>
 <context>
@@ -23170,38 +24926,38 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsspatialitesridsdialogbase.ui" line="14"/>
         <source>Select a Spatialite Spatial Reference System</source>
-        <translation type="unfinished"></translation>
+        <translation>Odaberi  SpatiaLite prostorni referentni sustav</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsspatialitesridsdialogbase.ui" line="30"/>
         <location filename="../src/ui/qgsspatialitesridsdialogbase.ui" line="81"/>
         <source>SRID</source>
-        <translation type="unfinished">SRID</translation>
+        <translation>SRID</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsspatialitesridsdialogbase.ui" line="35"/>
         <source>Authority</source>
-        <translation type="unfinished"></translation>
+        <translation>Autoritet</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsspatialitesridsdialogbase.ui" line="40"/>
         <source>Reference Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Naziv reference</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsspatialitesridsdialogbase.ui" line="50"/>
         <source>Search</source>
-        <translation type="unfinished">Traži</translation>
+        <translation>Traži</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsspatialitesridsdialogbase.ui" line="60"/>
         <source>Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Filter</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsspatialitesridsdialogbase.ui" line="91"/>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Naziv</translation>
     </message>
 </context>
 <context>
@@ -23249,7 +25005,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="164"/>
         <source>Shapefiles (*.shp);;All files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Shape datoteke (*.shp);;Sve datoteke (*)</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspit.cpp" line="258"/>
@@ -23677,80 +25433,80 @@ za ovu Shape datoteku u popisu datoteka u glavnom dijalogu.
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="81"/>
         <source>Marker symbol (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Simbol markera (%1)</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="82"/>
         <source>Line symbol (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Simbol linije (%1)</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="83"/>
         <source>Fill symbol (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Simbol ispune (%1)</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="85"/>
         <source>Color ramp (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Rampa boja (%1)</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="210"/>
         <source>Symbol name</source>
-        <translation type="unfinished"></translation>
+        <translation>Naziv simbola</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="211"/>
         <source>Please enter name for new symbol:</source>
-        <translation type="unfinished"></translation>
+        <translation>Unesite naziv za novi simbol:</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="211"/>
         <source>new symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>novi simbol</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="228"/>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="236"/>
         <source>Gradient</source>
-        <translation type="unfinished"></translation>
+        <translation>Gradijent</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="228"/>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="247"/>
         <source>Random</source>
-        <translation type="unfinished"></translation>
+        <translation>Nasumično</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="228"/>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="258"/>
         <source>ColorBrewer</source>
-        <translation type="unfinished"></translation>
+        <translation>ColorBrewer</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="230"/>
         <source>Color ramp type</source>
-        <translation type="unfinished"></translation>
+        <translation>Tip rampe boja</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="231"/>
         <source>Please select color ramp type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Molim odaberite tip rampe boja:</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="275"/>
         <source>Color ramp name</source>
-        <translation type="unfinished"></translation>
+        <translation>Naziv rampe boja</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="276"/>
         <source>Please enter name for new color ramp:</source>
-        <translation type="unfinished"></translation>
+        <translation>Unesite naziv za novu rampu boja:</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="276"/>
         <source>new color ramp</source>
-        <translation type="unfinished"></translation>
+        <translation>nova rampa boja</translation>
     </message>
 </context>
 <context>
@@ -23761,22 +25517,26 @@ za ovu Shape datoteku u popisu datoteka u glavnom dijalogu.
         <translation>Upravljač stilova</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="20"/>
         <source>Style item type:</source>
-        <translation>Tip stavke stila:</translation>
+        <translation type="obsolete">Tip stavke stila:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="57"/>
+        <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="20"/>
+        <source>Style item type</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="60"/>
         <source>Add item</source>
         <translation>Dodaj stavku</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="64"/>
+        <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="67"/>
         <source>Edit item</source>
         <translation>Uredi stavku</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="71"/>
+        <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="74"/>
         <source>Remove item</source>
         <translation>Ukloni stavku</translation>
     </message>
@@ -23786,7 +25546,7 @@ za ovu Shape datoteku u popisu datoteka u glavnom dijalogu.
     <message>
         <location filename="../src/gui/symbology-ng/qgssymbollevelsv2dialog.cpp" line="38"/>
         <source>Layer %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Sloj %1</translation>
     </message>
 </context>
 <context>
@@ -23823,69 +25583,73 @@ za ovu Shape datoteku u popisu datoteka u glavnom dijalogu.
         <translation>Jedinica</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="60"/>
+        <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="63"/>
         <source>Millimeter</source>
         <translation>Milimetar</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="65"/>
+        <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="68"/>
         <source>Map unit</source>
         <translation>Jedinice mape</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="73"/>
+        <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="76"/>
         <source>Opacity</source>
         <translation>Stupanj prozirnosti</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="96"/>
+        <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="102"/>
         <source>Color</source>
         <translation>Boja</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="103"/>
+        <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="112"/>
         <source>Change</source>
         <translation>Izmjena</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="122"/>
+        <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="131"/>
         <source>Size</source>
         <translation>Veličina</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="142"/>
+        <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="151"/>
         <source>Rotation</source>
         <translation>Rotacija</translation>
     </message>
     <message utf8="true">
-        <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="149"/>
+        <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="158"/>
         <source>°</source>
         <translation>°</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="172"/>
+        <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="181"/>
         <source>Width</source>
         <translation>Širina</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="207"/>
+        <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="216"/>
         <source>Properties</source>
         <translation>Osobine</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="227"/>
+        <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="236"/>
         <source>Advanced</source>
-        <translation type="unfinished">Napredno</translation>
+        <translation>Napredno</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="234"/>
+        <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="243"/>
         <source>Add to style</source>
         <translation>Dodaj u stil</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="243"/>
+        <location filename="../src/ui/qgssymbolv2selectordialogbase.ui" line="252"/>
+        <source>Symbols from style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Symbols from style:</source>
-        <translation>Simboli iz stila:</translation>
+        <translation type="obsolete">Simboli iz stila:</translation>
     </message>
 </context>
 <context>
@@ -23940,17 +25704,17 @@ za ovu Shape datoteku u popisu datoteka u glavnom dijalogu.
     <message>
         <location filename="../src/app/qgstextannotationdialog.cpp" line="47"/>
         <source>Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>Briši</translation>
     </message>
     <message>
         <location filename="../src/app/qgstextannotationdialog.cpp" line="107"/>
         <source>Select font color</source>
-        <translation type="unfinished"></translation>
+        <translation>Odabeir boju fonta</translation>
     </message>
     <message>
         <location filename="../src/app/qgstextannotationdialog.cpp" line="160"/>
         <source>Select background color</source>
-        <translation type="unfinished"></translation>
+        <translation>Odaberi boju pozadine</translation>
     </message>
 </context>
 <context>
@@ -23958,22 +25722,22 @@ za ovu Shape datoteku u popisu datoteka u glavnom dijalogu.
     <message>
         <location filename="../src/ui/qgstextannotationdialogbase.ui" line="14"/>
         <source>Annotation text</source>
-        <translation type="unfinished"></translation>
+        <translation>Tekst anotaciej</translation>
     </message>
     <message>
         <location filename="../src/ui/qgstextannotationdialogbase.ui" line="41"/>
         <source>B</source>
-        <translation type="unfinished"></translation>
+        <translation>B</translation>
     </message>
     <message>
         <location filename="../src/ui/qgstextannotationdialogbase.ui" line="51"/>
         <source>I</source>
-        <translation type="unfinished"></translation>
+        <translation>I</translation>
     </message>
     <message>
         <location filename="../src/ui/qgstextannotationdialogbase.ui" line="81"/>
         <source>Background color</source>
-        <translation type="unfinished">Boja pozadine</translation>
+        <translation>Boja pozadine</translation>
     </message>
 </context>
 <context>
@@ -23981,7 +25745,7 @@ za ovu Shape datoteku u popisu datoteka u glavnom dijalogu.
     <message>
         <location filename="../src/ui/qgstilescalewidgetbase.ui" line="20"/>
         <source>Form</source>
-        <translation type="unfinished">Obrazac</translation>
+        <translation>Obrazac</translation>
     </message>
 </context>
 <context>
@@ -24058,7 +25822,7 @@ za ovu Shape datoteku u popisu datoteka u glavnom dijalogu.
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="42"/>
         <source>Thin Plate Spline</source>
-        <translation type="unfinished"></translation>
+        <translation>Thin Plate Spline</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="139"/>
@@ -24084,12 +25848,12 @@ za ovu Shape datoteku u popisu datoteka u glavnom dijalogu.
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="218"/>
         <source>Select save PDF file</source>
-        <translation type="unfinished"></translation>
+        <translation>Odaberi spremanje PDF datoteke</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="218"/>
         <source>PDF Format</source>
-        <translation type="unfinished">PDF oblik</translation>
+        <translation>PDF oblik</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="259"/>
@@ -24177,7 +25941,7 @@ za ovu Shape datoteku u popisu datoteka u glavnom dijalogu.
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="163"/>
         <source>Generate pdf report:</source>
-        <translation type="unfinished"></translation>
+        <translation>Stvara PDF izvješće:</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="184"/>
@@ -24263,7 +26027,7 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
         <translation>Resetira boje</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsuniquevaluedialogbase.ui" line="153"/>
+        <location filename="../src/ui/qgsuniquevaluedialogbase.ui" line="156"/>
         <source>Restrict changes to common properties</source>
         <translation>Ograniči izmjene zajedničkih osobina</translation>
     </message>
@@ -24277,16 +26041,24 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorcolorbrewercolorrampv2dialogbase.ui" line="22"/>
+        <source>Scheme name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorcolorbrewercolorrampv2dialogbase.ui" line="48"/>
+        <source>Colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Scheme name:</source>
-        <translation>Naziv sheme:</translation>
+        <translation type="obsolete">Naziv sheme:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorcolorbrewercolorrampv2dialogbase.ui" line="45"/>
         <source>Colors:</source>
-        <translation>Boje:</translation>
+        <translation type="obsolete">Boje:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorcolorbrewercolorrampv2dialogbase.ui" line="76"/>
+        <location filename="../src/ui/qgsvectorcolorbrewercolorrampv2dialogbase.ui" line="82"/>
         <source>Preview</source>
         <translation>Pretpregled</translation>
     </message>
@@ -24299,7 +26071,7 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
         <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="163"/>
         <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="167"/>
         <source>Offset of the stop</source>
-        <translation type="unfinished"></translation>
+        <translation>Odmak od stopa</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="131"/>
@@ -24307,7 +26079,7 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
         <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="164"/>
         <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="168"/>
         <source>Please enter offset in percents (%) of the new stop</source>
-        <translation type="unfinished"></translation>
+        <translation>Unesite odmak u postocima (%) novog stopa</translation>
     </message>
 </context>
 <context>
@@ -24318,48 +26090,56 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
         <translation>Gradijentna rampa boja</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="22"/>
         <source>Color 1:</source>
-        <translation>Boja 1:</translation>
+        <translation type="obsolete">Boja 1:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="29"/>
-        <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="59"/>
+        <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="32"/>
+        <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="65"/>
         <source>Change</source>
         <translation>Izmjena</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="52"/>
         <source>Color 2:</source>
-        <translation>Boja 2:</translation>
+        <translation type="obsolete">Boja 2:</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="68"/>
+        <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="22"/>
+        <source>Color 1</source>
+        <translation type="unfinished">Boja 2: {1?}</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="55"/>
+        <source>Color 2</source>
+        <translation type="unfinished">Boja 2: {2?}</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="74"/>
         <source>Multiple stops</source>
-        <translation type="unfinished"></translation>
+        <translation>višestruki stopovi</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="80"/>
+        <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="86"/>
         <source>Add stop</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj stop</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="87"/>
+        <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="93"/>
         <source>Remove stop</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukloni stop</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="101"/>
+        <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="107"/>
         <source>Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Boja</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="106"/>
+        <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="112"/>
         <source>Offset</source>
-        <translation type="unfinished">Pomak</translation>
+        <translation>Odmak</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="117"/>
+        <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="123"/>
         <source>Preview</source>
         <translation>Pretpregled</translation>
     </message>
@@ -24527,7 +26307,7 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="157"/>
         <source>Layer Properties - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Osobine sloja - %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="168"/>
@@ -24666,7 +26446,7 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="533"/>
         <source>Dial range</source>
-        <translation type="unfinished"></translation>
+        <translation>Domet brojača</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="534"/>
@@ -24701,7 +26481,7 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="540"/>
         <source>Calendar</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalendar</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="710"/>
@@ -25075,17 +26855,17 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
     <message>
         <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="57"/>
         <source>Original CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>Originalni CRS</translation>
     </message>
     <message>
-        <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="84"/>
+        <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="94"/>
         <source>Save layer as...</source>
-        <translation type="unfinished">Spremi sloj kao...</translation>
+        <translation>Spremi sloj kao...</translation>
     </message>
     <message>
-        <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="96"/>
+        <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="106"/>
         <source>Select the coordinate reference system for the vector file. The data points will be transformed from the layer coordinate reference system.</source>
-        <translation type="unfinished"></translation>
+        <translation>Odaberi koordinatni referentni sloj za vektorsku datoteku. Podatkovne točke bit će transformirane iz koordinatnog referentnog sustava.</translation>
     </message>
 </context>
 <context>
@@ -25093,33 +26873,33 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
     <message>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="14"/>
         <source>Save vector layer as...</source>
-        <translation type="unfinished"></translation>
+        <translation>Spremi vektorski sloj kao...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="27"/>
         <source>CRS</source>
-        <translation type="unfinished">CRS</translation>
+        <translation>CRS</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="51"/>
+        <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="54"/>
         <source>Save as</source>
-        <translation type="unfinished">Spremi kao</translation>
+        <translation>Spremi kao</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="61"/>
-        <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="68"/>
+        <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="67"/>
+        <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="74"/>
         <source>Browse</source>
-        <translation type="unfinished">Traži</translation>
+        <translation>Traži</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="78"/>
+        <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="84"/>
         <source>Encoding</source>
-        <translation type="unfinished"></translation>
+        <translation>Enkodiranje</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="85"/>
+        <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="94"/>
         <source>Format</source>
-        <translation type="unfinished">Oblik</translation>
+        <translation>Oblik</translation>
     </message>
 </context>
 <context>
@@ -25340,7 +27120,7 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="60"/>
         <source>Add selected layers to map</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj odabrane slojeve na mapu</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="64"/>
@@ -25350,7 +27130,7 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="65"/>
         <source>Save WMS server connections to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Spremi WMS poslužiteljske poveznice u datoteku</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="69"/>
@@ -25360,7 +27140,7 @@ Trebaju li postojeće klase biti izbrisane prije klasifikacije?</translation>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="70"/>
         <source>Load WMS server connections from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Učitaj WMS poslužiteljske poveznice iz datoteke</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="234"/>
@@ -25405,7 +27185,15 @@ is different from GetCapabilities URL
   %1
 
 This might be an server configuration error. Should the URL be used?</source>
-        <translation type="unfinished"></translation>
+        <translation>Oglašeni GetMap URL
+
+  %2
+
+različit je od GetCapabilities URL
+
+  %1
+
+Ovo može biti pogreškakonfiguracije polsužitelja. Dali da koristim URL?</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="444"/>
@@ -25418,7 +27206,15 @@ is different from GetCapabilities URL
   %1
 
 This might be an server configuration error. Should the URL be used?</source>
-        <translation type="unfinished"></translation>
+        <translation>Oglašeni GetFeatureInfo URL
+
+  %2
+
+različit je od GetCapabilities URL
+
+  %1
+
+Ovo može biti pogreškakonfiguracije polsužitelja. Dali da koristim URL?</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="527"/>
@@ -25576,7 +27372,7 @@ This might be an server configuration error. Should the URL be used?</source>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="132"/>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="365"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="371"/>
         <source>Title</source>
         <translation>Naslov</translation>
     </message>
@@ -25589,17 +27385,17 @@ This might be an server configuration error. Should the URL be used?</source>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="205"/>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="215"/>
         <source>Use base url instead of advertised GetFeatureInfo URL</source>
-        <translation type="unfinished"></translation>
+        <translation>Koristi temeljni URL umjesto oglašenog GetFeatureInfo URL</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="208"/>
         <source>Ignore GetMap URL</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignoriraj GetMap URL</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="218"/>
         <source>Ignore GetFeatureInfo URL</source>
-        <translation type="unfinished"></translation>
+        <translation>Ignoriraj GetFeatureInfo URL</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="231"/>
@@ -25617,27 +27413,27 @@ This might be an server configuration error. Should the URL be used?</source>
         <translation>Stil</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="333"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="336"/>
         <source>Server Search</source>
         <translation>Traženje poslužitelja</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="342"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="345"/>
         <source>Search</source>
         <translation>Traži</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="375"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="381"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="370"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="376"/>
         <source>Description</source>
         <translation>OpisOpis</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="383"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="389"/>
         <source>Add selected row to WMS list</source>
         <translation>Dodaj odabrani red na WMS popis</translation>
     </message>
@@ -25648,7 +27444,7 @@ This might be an server configuration error. Should the URL be used?</source>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="37"/>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="304"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="307"/>
         <source>Layers</source>
         <translation>Slojevi</translation>
     </message>
@@ -25678,27 +27474,27 @@ This might be an server configuration error. Should the URL be used?</source>
         <translation>Tilesets</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="309"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="312"/>
         <source>Styles</source>
         <translation>Stilovi</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="314"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="317"/>
         <source>Size</source>
         <translation>Veličina</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="319"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="322"/>
         <source>Format</source>
         <translation>Oblik</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="324"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="327"/>
         <source>CRS</source>
         <translation>CRS</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="407"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="413"/>
         <source>Ready</source>
         <translation>Spreman</translation>
     </message>
@@ -25707,7 +27503,7 @@ This might be an server configuration error. Should the URL be used?</source>
     <name>QgsWmsProvider</name>
     <message numerus="yes">
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="664"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="774"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="780"/>
         <source>%n tile requests in background</source>
         <comment>tile request count</comment>
         <translation>
@@ -25718,7 +27514,7 @@ This might be an server configuration error. Should the URL be used?</source>
     </message>
     <message numerus="yes">
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="665"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="775"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="781"/>
         <source>, %n cache hits</source>
         <comment>tile cache hits</comment>
         <translation>
@@ -25729,7 +27525,7 @@ This might be an server configuration error. Should the URL be used?</source>
     </message>
     <message numerus="yes">
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="666"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="776"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="782"/>
         <source>, %n cache misses.</source>
         <comment>tile cache missed</comment>
         <translation>
@@ -25740,7 +27536,7 @@ This might be an server configuration error. Should the URL be used?</source>
     </message>
     <message numerus="yes">
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="667"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="777"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="783"/>
         <source>, %n errors.</source>
         <comment>errors</comment>
         <translation>
@@ -25755,437 +27551,437 @@ This might be an server configuration error. Should the URL be used?</source>
         <translation>pogreška zahtjeva za tile %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="801"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2732"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="807"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2738"/>
         <source>map request error %1: %2</source>
         <translation>pogreška zahtjeva za mapu %1: %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="872"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="878"/>
         <source>
 Tried URL: %1</source>
         <translation>
 Pokušani URL: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="893"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="899"/>
         <source>Capabilities request redirected.</source>
         <translation>Preusmjeren zahtjev za mogućnostima.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="912"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="918"/>
         <source>empty of capabilities: %1</source>
         <translation>nema mogućnosti: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="917"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="923"/>
         <source>Download of capabilities failed: %1</source>
         <translation>Neuspješno skidanje mogućnosti: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="929"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="935"/>
         <source>%1 of %2 bytes of capabilities downloaded.</source>
         <translation>%1 od %2 bajta mogućnosti skinuto.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="934"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="940"/>
         <source>%1 of %2 bytes of map downloaded.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 od %2 bajta mape skinuto.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="958"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="978"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1811"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="964"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="984"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1817"/>
         <source>Dom Exception</source>
         <translation>Dom Iznimka</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="959"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="965"/>
         <source>Could not get WMS capabilities: %1 at line %2 column %3
 </source>
         <translation>Ne mogu se koristiti WMS mogućnosti: %1 na liniji %2 kolona %3
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="961"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="982"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="967"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="988"/>
         <source>This is probably due to an incorrect WMS Server URL.</source>
         <translation>Ovo je vjerojatno zbog krivog URL-a WMS Servera.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="979"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="985"/>
         <source>Could not get WMS capabilities in the expected format (DTD): no %1 or %2 found
 </source>
         <translation>Ne može se pristupiti WMS mogućnostima u očekivanom obliku (DTD): nije pronađeno %1 ili %2
 </translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1812"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1818"/>
         <source>Could not get WMS Service Exception at %1: %2 at line %3 column %4</source>
         <translation>Ne mogu do iznimke WMS servisa na %1: %2 na liniji %3 kolona %4</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1865"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1871"/>
         <source>Request contains a Format not offered by the server.</source>
         <translation>Zahtjev sadržava Oblik kojega server ne nudi.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1869"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1875"/>
         <source>Request contains a CRS not offered by the server for one or more of the Layers in the request.</source>
         <translation>Zahtjev sadržava CRS kojega server ne pruža za jedan ili više slojeva u zahtjevu.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1873"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1879"/>
         <source>Request contains a SRS not offered by the server for one or more of the Layers in the request.</source>
         <translation>Zahtjev sadržava SRS kojega server ne pruža za jedan ili više slojeva u zahtjevu.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1877"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1883"/>
         <source>GetMap request is for a Layer not offered by the server, or GetFeatureInfo request is for a Layer not shown on the map.</source>
         <translation>GetMap zahtjev je za sloj kojega server nema, ili je GetFeatureInfo zahtjev za sloj koji nije prikazan na mapi.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1882"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1888"/>
         <source>Request is for a Layer in a Style not offered by the server.</source>
         <translation>Zahtjev za sloj ili stil kojega server ne pruža.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1886"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1892"/>
         <source>GetFeatureInfo request is applied to a Layer which is not declared queryable.</source>
         <translation>GetFeatureInfo zahtjev primjenjen je na Sloj koji nije deklariran kao sloj s omogućenim upitima.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1890"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1896"/>
         <source>GetFeatureInfo request contains invalid X or Y value.</source>
         <translation>GetFeatureInfo zahtjev sadržava nevaljanu X ili Y vrijednost.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1894"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1900"/>
         <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is equal to current value of service metadata update sequence number.</source>
         <translation>Vrijednost (opcionanog) UpdateSequence parametra u zahtjevu GetCapabilities jednaka je trenutnoj vrijednosti &apos;service metadata update sequence&apos; broja.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1899"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1905"/>
         <source>Value of (optional) UpdateSequence parameter in GetCapabilities request is greater than current value of service metadata update sequence number.</source>
         <translation>Vrijednost (opcionanog) UpdateSequence parametra u zahtjevu GetCapabilities veća je od trenutne vrijednosti &apos;service metadata update sequence&apos; broja.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1904"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1910"/>
         <source>Request does not include a sample dimension value, and the server did not declare a default value for that dimension.</source>
         <translation>Zahtjev ne sadržava probnu vrijednost dimenzije i server nije deklarirao zadanu vrijednost za tu dimenziju.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1909"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1915"/>
         <source>Request contains an invalid sample dimension value.</source>
         <translation>Zahtjev sadržava nevaljanu probnu vrijednost dimenzije.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1913"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1919"/>
         <source>Request is for an optional operation that is not supported by the server.</source>
         <translation>Zahtjev je za opcionalnom operacijom koju server ne podržava.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1917"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1923"/>
         <source>(No error code was reported)</source>
         <translation>(Nije prijavljen kod pogreške)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1921"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1927"/>
         <source>(Unknown error code)</source>
         <translation>(Nepoznat kod pogreške)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1924"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1930"/>
         <source>The WMS vendor also reported: </source>
         <translation>WMS proizvđač također izvještava: </translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2239"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2245"/>
         <source>(and %n more)</source>
         <comment>crs</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>(i %n više)</numerusform>
+            <numerusform>(i %n više)</numerusform>
+            <numerusform>(i %n više)</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2297"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2323"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2303"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2329"/>
         <source>Server Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Osobine poslužitelja</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2309"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2497"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2315"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2503"/>
         <source>Tileset Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Osobine Tileseta</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2314"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2320"/>
         <source>Cache Stats</source>
-        <translation type="unfinished"></translation>
+        <translation>Statistika Cachea</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2136"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2332"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2512"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2575"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2142"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2338"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2518"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2581"/>
         <source>Property</source>
         <translation>Osobina</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2139"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2335"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2515"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2578"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2145"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2341"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2521"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2584"/>
         <source>Value</source>
         <translation>Vrijednost</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2340"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2346"/>
         <source>WMS Version</source>
         <translation>WMS verzija</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2152"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2264"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2348"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2158"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2270"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2354"/>
         <source>Title</source>
         <translation>Naslov</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2160"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2272"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2356"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2166"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2278"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2362"/>
         <source>Abstract</source>
         <translation>Sažetak</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2301"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2307"/>
         <source>Selected Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Odabrani slojevi</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2303"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2309"/>
         <source>Other Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Ostali slojevi</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2364"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2370"/>
         <source>Keywords</source>
         <translation>Ključne riječi</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2372"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2378"/>
         <source>Online Resource</source>
         <translation>Online resurs</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2380"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2386"/>
         <source>Contact Person</source>
         <translation>Osoba za kontakt</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2392"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2398"/>
         <source>Fees</source>
         <translation>Naknade</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2400"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2406"/>
         <source>Access Constraints</source>
         <translation>Ograničenja pristupa</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2408"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2414"/>
         <source>Image Formats</source>
         <translation>Oblici slike</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2416"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2422"/>
         <source>Identify Formats</source>
         <translation>Identificiraj oblike</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2424"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2430"/>
         <source>Layer Count</source>
         <translation>Broj slojeva</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2434"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2440"/>
         <source>Tileset Count</source>
         <translation>Broj tileseta</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2443"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2449"/>
         <source>GetCapabilitiesUrl</source>
-        <translation type="unfinished"></translation>
+        <translation>GetCapabilitiesUrl</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2450"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2456"/>
         <source>GetMapUrl</source>
-        <translation type="unfinished"></translation>
+        <translation>GetMapUrl</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2453"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2460"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2459"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2466"/>
         <source>&amp;nbsp;&lt;font color=&quot;red&quot;&gt;(advertised but ignored)&lt;/font&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;nbsp;&lt;font color=&quot;red&quot;&gt;(oglašeno ali ignorirano)&lt;/font&gt;</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2457"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2463"/>
         <source>GetFeatureInfoUrl</source>
         <translation>GetFeatureInfoUrl</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2519"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2525"/>
         <source>Selected</source>
         <translation>Odabrano</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2171"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2179"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2187"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2522"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2177"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2185"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2193"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2528"/>
         <source>Yes</source>
         <translation>Da</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2171"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2179"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2187"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2522"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2177"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2185"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2193"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2528"/>
         <source>No</source>
         <translation>Ne</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2144"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2150"/>
         <source>Visibility</source>
         <translation>Vidljivost</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2147"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2153"/>
         <source>Visible</source>
         <translation>Vidljivo</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2147"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2153"/>
         <source>Hidden</source>
         <translation>Skriveno</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2168"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2174"/>
         <source>Can Identify</source>
         <translation>Mogu identificirati</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2176"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2182"/>
         <source>Can be Transparent</source>
         <translation>Može biti prozirno</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2184"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2190"/>
         <source>Can Zoom In</source>
         <translation>Može se približiti (zumirati)</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2192"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2198"/>
         <source>Cascade Count</source>
         <translation>Broj kaskada</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2200"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2206"/>
         <source>Fixed Width</source>
         <translation>Fiksna širina</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2208"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2214"/>
         <source>Fixed Height</source>
         <translation>Fiksna visina</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2216"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2222"/>
         <source>WGS 84 Bounding Box</source>
         <translation>WGS 84 Bounding Box</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2226"/>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2236"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2232"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2242"/>
         <source>Available in CRS</source>
         <translation>Dostupno u CRS-u</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2247"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2253"/>
         <source>Available in style</source>
         <translation>Dostupno u stilu</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2256"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2262"/>
         <source>Name</source>
         <translation>Ime</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2567"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2573"/>
         <source>Cache stats</source>
-        <translation type="unfinished"></translation>
+        <translation>Statistika Cachea</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2528"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2534"/>
         <source>Styles</source>
         <translation>Stilovi</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2469"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2475"/>
         <source>Selected Layers:</source>
-        <translation type="unfinished"></translation>
+        <translation>Odabrani slojevi:</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2482"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2488"/>
         <source>Other layers:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ostali slojevi:</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2536"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2542"/>
         <source>CRS</source>
         <translation>CRS</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2543"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2549"/>
         <source>Bounding Box</source>
         <translation>Granični kvadrat</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2550"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2556"/>
         <source>Available in Resolutions</source>
         <translation>Dostupno u rezolucijama</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2582"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2588"/>
         <source>Hits</source>
         <translation>Pogoci</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2588"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2594"/>
         <source>Misses</source>
         <translation>Promašaji</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2594"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2600"/>
         <source>Errors</source>
         <translation>Pogreške</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2667"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2673"/>
         <source>Layer cannot be queried in plain text.</source>
-        <translation type="unfinished"></translation>
+        <translation>Sloj se ne može ispitivati čistim tekstom.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2673"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2679"/>
         <source>Layer cannot be queried.</source>
         <translation>Sloj se ne može ispitivati.</translation>
     </message>
     <message>
-        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2717"/>
+        <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2723"/>
         <source>identify request redirected.</source>
         <translation>preusmjeren zahtjev za identifikacijom.</translation>
     </message>
@@ -26530,8 +28326,12 @@ Pokušani URL: %1</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_linedecoration.ui" line="22"/>
+        <source>Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Color:</source>
-        <translation>Boja:</translation>
+        <translation type="obsolete">Boja:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_linedecoration.ui" line="35"/>
@@ -26548,8 +28348,22 @@ Pokušani URL: %1</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="22"/>
+        <source>Marker</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="52"/>
+        <source>Marker interval</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="66"/>
+        <source>Line offset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Marker:</source>
-        <translation>Marker:</translation>
+        <translation type="obsolete">Marker:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="29"/>
@@ -26557,9 +28371,8 @@ Pokušani URL: %1</translation>
         <translation>Izmjena</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="52"/>
         <source>Marker interval:</source>
-        <translation>Interval markera:</translation>
+        <translation type="obsolete">Interval markera:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="59"/>
@@ -26567,9 +28380,8 @@ Pokušani URL: %1</translation>
         <translation>Rotiraj marker</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_markerline.ui" line="66"/>
         <source>Line offset:</source>
-        <translation>Pomak linije:</translation>
+        <translation type="obsolete">Pomak linije:</translation>
     </message>
 </context>
 <context>
@@ -26580,14 +28392,22 @@ Pokušani URL: %1</translation>
         <translation>Obrazac</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="22"/>
         <source>Texture width:</source>
-        <translation>Širina teksture:</translation>
+        <translation type="obsolete">Širina teksture:</translation>
+    </message>
+    <message>
+        <source>Outline:</source>
+        <translation type="obsolete">Obrub:</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="22"/>
+        <source>Texture width</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="40"/>
-        <source>Outline:</source>
-        <translation>Obrub:</translation>
+        <source>Outline</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgfill.ui" line="47"/>
@@ -26609,8 +28429,37 @@ Pokušani URL: %1</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="22"/>
+        <source>Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="52"/>
+        <source>Fill style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="62"/>
+        <source>Border color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="76"/>
+        <source>Border style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="86"/>
+        <source>Border width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="103"/>
+        <source>Offset X,Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Color:</source>
-        <translation>Boja:</translation>
+        <translation type="obsolete">Boja:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="29"/>
@@ -26619,29 +28468,24 @@ Pokušani URL: %1</translation>
         <translation>Izmjena</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="62"/>
         <source>Border color:</source>
-        <translation>Boja granice:</translation>
+        <translation type="obsolete">Boja granice:</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="103"/>
         <source>Offset X,Y:</source>
-        <translation type="unfinished">Pomak X,Y:</translation>
+        <translation type="obsolete">Pomak X,Y:</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="52"/>
         <source>Fill style:</source>
-        <translation>Boja ispune:</translation>
+        <translation type="obsolete">Boja ispune:</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="76"/>
         <source>Border style:</source>
-        <translation>Stil granice:</translation>
+        <translation type="obsolete">Stil granice:</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_simplefill.ui" line="86"/>
         <source>Border width:</source>
-        <translation>Širina granice:</translation>
+        <translation type="obsolete">Širina granice:</translation>
     </message>
 </context>
 <context>
@@ -26653,8 +28497,37 @@ Pokušani URL: %1</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="22"/>
+        <source>Color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="58"/>
+        <source>Pen width</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="87"/>
+        <source>Offset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="110"/>
+        <source>Pen style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="151"/>
+        <source>Join style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="177"/>
+        <source>Cap style</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Color:</source>
-        <translation>Boja:</translation>
+        <translation type="obsolete">Boja:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="35"/>
@@ -26663,19 +28536,16 @@ Pokušani URL: %1</translation>
         <translation>Izmjena</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="58"/>
         <source>Pen width:</source>
-        <translation>Širina pera :</translation>
+        <translation type="obsolete">Širina pera :</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="110"/>
         <source>Pen style:</source>
-        <translation>Stil pera:</translation>
+        <translation type="obsolete">Stil pera:</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="87"/>
         <source>Offset:</source>
-        <translation>Pomak:</translation>
+        <translation type="obsolete">Pomak:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="120"/>
@@ -26683,14 +28553,12 @@ Pokušani URL: %1</translation>
         <translation>Koristi prilagođeni uzorak crtica</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="151"/>
         <source>Join style:</source>
-        <translation>Spoji stil:</translation>
+        <translation type="obsolete">Spoji stil:</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_simpleline.ui" line="177"/>
         <source>Cap style:</source>
-        <translation>Cap stil:</translation>
+        <translation type="obsolete">Cap stil:</translation>
     </message>
 </context>
 <context>
@@ -26702,8 +28570,32 @@ Pokušani URL: %1</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="22"/>
+        <source>Border color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="52"/>
+        <source>Fill color</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="66"/>
+        <source>Size</source>
+        <translation type="unfinished">Veličina</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="73"/>
+        <source>Angle</source>
+        <translation type="unfinished">Kut</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="93"/>
+        <source>Offset X,Y</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Border color:</source>
-        <translation>Boja granice:</translation>
+        <translation type="obsolete">Boja granice:</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="29"/>
@@ -26712,24 +28604,20 @@ Pokušani URL: %1</translation>
         <translation>Izmjena</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="52"/>
         <source>Fill color:</source>
-        <translation>Boja ispune:</translation>
+        <translation type="obsolete">Boja ispune:</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="66"/>
         <source>Size:</source>
-        <translation>Veličina:</translation>
+        <translation type="obsolete">Veličina:</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="73"/>
         <source>Angle:</source>
-        <translation>Kut:</translation>
+        <translation type="obsolete">Kut:</translation>
     </message>
     <message>
-        <location filename="../src/ui/symbollayer/widget_simplemarker.ui" line="93"/>
         <source>Offset X,Y:</source>
-        <translation>Pomak X,Y:</translation>
+        <translation type="obsolete">Pomak X,Y:</translation>
     </message>
 </context>
 <context>
@@ -26741,23 +28629,39 @@ Pokušani URL: %1</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="28"/>
-        <source>Size:</source>
-        <translation>Veličina:</translation>
+        <source>Size</source>
+        <translation type="unfinished">Veličina</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="48"/>
-        <source>Angle:</source>
-        <translation>Kut:</translation>
+        <source>Angle</source>
+        <translation type="unfinished">Kut</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="98"/>
-        <source>Offset X,Y:</source>
-        <translation>Pomak X,Y:</translation>
+        <source>Offset X,Y</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_svgmarker.ui" line="126"/>
+        <source>SVG Image</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Size:</source>
+        <translation type="obsolete">Veličina:</translation>
+    </message>
+    <message>
+        <source>Angle:</source>
+        <translation type="obsolete">Kut:</translation>
+    </message>
+    <message>
+        <source>Offset X,Y:</source>
+        <translation type="obsolete">Pomak X,Y:</translation>
+    </message>
+    <message>
         <source>SVG Image:</source>
-        <translation>SVG slika:</translation>
+        <translation type="obsolete">SVG slika:</translation>
     </message>
 </context>
 <context>
@@ -26790,7 +28694,6 @@ Pokušani URL: %1</translation>
 <context>
     <name>dxf2shpConverterGui</name>
     <message>
-        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="121"/>
         <source>Fields description:
 * Input DXF file: path to the DXF file to be converted
 * Output Shp file: desired name of the shape file to be created
@@ -26802,7 +28705,7 @@ Developed by Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
 CNR, Milan Unit (Information Technology), Construction Technologies Institute.
 For support send a mail to scala@itc.cnr.it
 </source>
-        <translation>Fields description:
+        <translation type="obsolete">Fields description:
 * Input DXF file: path to the DXF file to be converted
 * Output Shp file: desired name of the shape file to be created
 * Shp output file type: specifies the type of the output shape file
@@ -26813,6 +28716,21 @@ Developed by Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
 CNR, Milan Unit (Information Technology), Construction Technologies Institute.
 For support send a mail to scala@itc.cnr.it
 </translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="121"/>
+        <source>Fields description:
+* Input DXF file: path to the DXF file to be converted
+* Output Shp file: desired name of the shape file to be created
+* Shp output file type: specifies the type of the output shape file
+* Export text labels checkbox: if checked, an additional shp points layer will be created,   and the associated dbf table will contain information about the &quot;TEXT&quot; fields found in the dxf file, and the text strings themselves
+
+---
+Developed by Paolo L. Scala, Barbara Rita Barricelli, Marco Padula
+CNR, Milan Unit (Information Technology), Construction Technologies Institute.
+For support send a mail to scala@itc.cnr.it
+</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="153"/>
@@ -27224,7 +29142,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="245"/>
-        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="274"/>
+        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="276"/>
         <source>Error</source>
         <translation>Pogreška</translation>
     </message>
@@ -27234,33 +29152,33 @@ p, li { white-space: pre-wrap; }
         <translation>Ne mogu se spojiti niti s prikazom mape, niti sa sučeljem aplikacije</translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="274"/>
+        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="276"/>
         <source>An invalid feature was received during initialization</source>
         <translation>Tijekom inicijalizacije primljen je nevaljani element</translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="309"/>
+        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="311"/>
         <source>Event Browser - Displaying records 01 of %1</source>
         <translation>Preglednik događaja - Prikazujem zapise 01 od %1</translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="793"/>
+        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="795"/>
         <source>Attribute Contents</source>
         <translation>Sadržaj atributa</translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="996"/>
-        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1018"/>
+        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="998"/>
+        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1020"/>
         <source>Event Browser - Displaying records %1 of %2</source>
         <translation>Preglednik događaja - Prikazujem zapise %1 od %2</translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1091"/>
+        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1093"/>
         <source>Select Application</source>
         <translation>Odaberi aplikaciju</translation>
     </message>
     <message>
-        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1091"/>
+        <location filename="../src/plugins/evis/eventbrowser/evisgenericeventbrowsergui.cpp" line="1093"/>
         <source>All ( * )</source>
         <translation>Sve ( * )</translation>
     </message>
@@ -27793,7 +29711,7 @@ Dodatak neće biti omogućen.</translation>
     </message>
     <message>
         <source>Merge shapefiles to one</source>
-        <translation type="unfinished"></translation>
+        <translation>Spoji shape datoteke u jednu</translation>
     </message>
     <message>
         <source>fTools Information</source>
@@ -27804,7 +29722,7 @@ Dodatak neće biti omogućen.</translation>
     <name>geometryThread</name>
     <message>
         <source>Merge all</source>
-        <translation type="unfinished">Spoji sve</translation>
+        <translation>Spoji sve</translation>
     </message>
     <message>
         <source>Polygon area</source>
