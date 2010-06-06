@@ -1692,18 +1692,13 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished">Zatvori</translation>
     </message>
     <message>
-        <source>GDAL Tools (AKA Raster Tools) is a 
-plugin for QuantumGIS aiming at making life simpler for users 
-of GDAL Utilities, providing a simplified graphical interface 
-for most commonly used programs.
+        <source>GDAL Tools (AKA Raster Tools) is a plugin for QuantumGIS aiming at making life simpler for users of GDAL Utilities, providing a simplified graphical interface for most commonly used programs.
 
-The plugin is being developed by Faunalia (http://faunalia.it) 
-with help from GIS-lab (http://gis-lab.info).
+The plugin is being developed by Faunalia (http://faunalia.it) with help from GIS-lab (http://gis-lab.info).
 Icons by Robert Szczepanek.
 Sponsorship by Silvio Grosso was much appreciated.
 
-Please help us by testing the tools, reporting eventual issues, 
-improving the code, or providing financial support.
+Please help us by testing the tools, reporting eventual issues, improving the code, or providing financial support.
 
 DEVELOPERS:
   Faunalia
@@ -28197,16 +28192,19 @@ Pokušani URL: %1</translation>
 <context>
     <name>UndoWidget</name>
     <message>
+        <location filename="../src/app/qgsgeomerrorswidget.cpp" line="161"/>
         <location filename="../src/app/qgsundowidget.cpp" line="161"/>
         <source>Undo/Redo</source>
         <translation>Poništi/Ponovi</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsgeomerrorswidget.cpp" line="162"/>
         <location filename="../src/app/qgsundowidget.cpp" line="162"/>
         <source>Undo</source>
         <translation>Poništi</translation>
     </message>
     <message>
+        <location filename="../src/app/qgsgeomerrorswidget.cpp" line="163"/>
         <location filename="../src/app/qgsundowidget.cpp" line="163"/>
         <source>Redo</source>
         <translation>Ponovi</translation>
