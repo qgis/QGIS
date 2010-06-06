@@ -1379,189 +1379,198 @@ Are you sure you want to proceed?</source>
 <context>
     <name>GdalTools</name>
     <message>
-        <source>&amp;Input directory:</source>
-        <translation type="unfinished"></translation>
+        <source>Quantum GIS version detected: </source>
+        <translation>Знайдено Quantum GIS версії: </translation>
     </message>
     <message>
-        <source>&amp;Output directory:</source>
-        <translation type="unfinished"></translation>
+        <source>This version of Gdal Tools requires at least QGIS version 1.0.0
+Plugin will not be enabled.</source>
+        <translation>Для роботи цієї версії GdalTools необхідний QGIS починаючи з версії 1.0.0
+Розширення не буде завантажене.</translation>
     </message>
     <message>
-        <source>The process failed to start. Either the invoked program is missing, or you may have insufficient permissions to invoke the program.</source>
-        <translation type="unfinished"></translation>
+        <source>&amp;Raster</source>
+        <translation>&amp;Растр</translation>
     </message>
     <message>
-        <source>The process crashed some time after starting successfully.</source>
-        <translation type="unfinished"></translation>
+        <source>Build Virtual Raster (catalog)</source>
+        <translation>Створити віртуальний растр (каталог)</translation>
     </message>
     <message>
-        <source>An unknown error occurred.</source>
-        <translation type="unfinished"></translation>
+        <source>Builds a VRT from a list of datasets</source>
+        <translation>Створює VRT з набору растрових файлів</translation>
+    </message>
+    <message>
+        <source>Contour</source>
+        <translation>Ізолінії</translation>
+    </message>
+    <message>
+        <source>Builds vector contour lines from a DEM</source>
+        <translation>Будує векторні ізолінії з DEM</translation>
+    </message>
+    <message>
+        <source>Rasterize</source>
+        <translation>Растерізація</translation>
+    </message>
+    <message>
+        <source>Burns vector geometries into a raster</source>
+        <translation>Вбудовує векторні об&apos;єкти у растр</translation>
+    </message>
+    <message>
+        <source>Polygonize</source>
+        <translation>Векторизація</translation>
+    </message>
+    <message>
+        <source>Produces a polygon feature layer from a raster</source>
+        <translation>Створює полігональні об&apos;єкти на основі растру</translation>
+    </message>
+    <message>
+        <source>Merge</source>
+        <translation>Мозаїка</translation>
+    </message>
+    <message>
+        <source>Build a quick mosaic from a set of images</source>
+        <translation>Будує мозаїку з набору зображень</translation>
+    </message>
+    <message>
+        <source>Sieve</source>
+        <translation>Відсіювання</translation>
+    </message>
+    <message>
+        <source>Removes small raster polygons</source>
+        <translation>Відфільтровує малі растрові кластери</translation>
+    </message>
+    <message>
+        <source>Proximity</source>
+        <translation>Близкість</translation>
+    </message>
+    <message>
+        <source>Produces a raster proximity map</source>
+        <translation>Формує мапу близкості растра</translation>
+    </message>
+    <message>
+        <source>Near black</source>
+        <translation>Скинути у чорний</translation>
+    </message>
+    <message>
+        <source>Convert nearly black/white borders to exact value</source>
+        <translation>Заміняє близькі до білого/чорного межі на точне значення</translation>
+    </message>
+    <message>
+        <source>Warp</source>
+        <translation>Перепроектування</translation>
+    </message>
+    <message>
+        <source>Warp an image into a new coordinate system</source>
+        <translation>Трансформація зображення в нову систему координат</translation>
+    </message>
+    <message>
+        <source>Grid</source>
+        <translation>Інтерполяція</translation>
+    </message>
+    <message>
+        <source>Create raster from the scattered data</source>
+        <translation>Створює растр із розкиданих значень</translation>
+    </message>
+    <message>
+        <source>Translate</source>
+        <translation>Конвертація</translation>
+    </message>
+    <message>
+        <source>Converts raster data between different formats</source>
+        <translation>Перетворення растрових даних між різними форматами</translation>
+    </message>
+    <message>
+        <source>Information</source>
+        <translation>Інформація</translation>
+    </message>
+    <message>
+        <source>Lists information about raster dataset</source>
+        <translation>Відображає різноманітні відомості про растр</translation>
+    </message>
+    <message>
+        <source>Assign projection</source>
+        <translation>Додати проекцію</translation>
+    </message>
+    <message>
+        <source>Add projection info to the raster</source>
+        <translation>Додати інформацію про проекцію удо растру</translation>
+    </message>
+    <message>
+        <source>Build overviews</source>
+        <translation>Побудувати піраміди</translation>
+    </message>
+    <message>
+        <source>Builds or rebuilds overview images</source>
+        <translation>Будує або оновлює піраміди</translation>
+    </message>
+    <message>
+        <source>Clipper</source>
+        <translation>Обрізка</translation>
+    </message>
+    <message>
+        <source>RGB to PCT</source>
+        <translation>RGB у PCT</translation>
+    </message>
+    <message>
+        <source>Convert a 24bit RGB image to 8bit paletted</source>
+        <translation>Конвертувати 24-бітне зображення в індексоване 8-бітне</translation>
+    </message>
+    <message>
+        <source>PCT to RGB</source>
+        <translation>PCT в RGB</translation>
+    </message>
+    <message>
+        <source>Convert an 8bit paletted image to 24bit RGB</source>
+        <translation>Конвертувати індексоване 8-бітне зображення у 24-бітне RGB</translation>
+    </message>
+    <message>
+        <source>About GdalTools</source>
+        <translation>Про Gdal Tools</translation>
+    </message>
+    <message>
+        <source>Displays information about Gdal Tools</source>
+        <translation>Відображає інформацію про Gdal Tools</translation>
+    </message>
+    <message>
+        <source>GdalTools settings</source>
+        <translation>Налаштування GdalTools</translation>
     </message>
     <message>
         <source>The selected file is not a supported OGR format</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Quantum GIS version detected: </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This version of Gdal Tools requires at least QGIS version 1.0.0
-Plugin will not be enabled.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Raster</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Build Virtual Raster (catalog)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Builds a VRT from a list of datasets</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Contour</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Builds vector contour lines from a DEM</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Rasterize</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Burns vector geometries into a raster</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Polygonize</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Produces a polygon feature layer from a raster</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Merge</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Build a quick mosaic from a set of images</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Sieve</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Removes small raster polygons</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Proximity</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Produces a raster proximity map</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Near black</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Convert nearly black/white borders to exact value</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Warp</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Warp an image into a new coordinate system</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Create raster from the scattered data</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Translate</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Converts raster data between different formats</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Information</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Lists information about raster dataset</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Assign projection</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Add projection info to the raster</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Build overviews</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Builds or rebuilds overview images</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Clipper</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>RGB to PCT</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Convert a 24bit RGB image to 8bit paletted</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>PCT to RGB</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Convert an 8bit paletted image to 24bit RGB</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>GdalTools settings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Various settings for Gdal Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Різноманітні налаштування Gdal Tools</translation>
     </message>
     <message>
-        <source>About GdalTools</source>
-        <translation type="unfinished"></translation>
+        <source>The process failed to start. Either the invoked program is missing, or you may have insufficient permissions to invoke the program.</source>
+        <translation>Не вдається запустити процес. Можливо відсутня необхідна програма або у вас не достатньо прав для її запуска.</translation>
     </message>
     <message>
-        <source>Displays information about Gdal Tools</source>
-        <translation type="unfinished"></translation>
+        <source>The process crashed some time after starting successfully.</source>
+        <translation>Процес аварійно завершився після успішного запуску.</translation>
+    </message>
+    <message>
+        <source>An unknown error occurred.</source>
+        <translation>Виникла невідома помилка.</translation>
+    </message>
+    <message>
+        <source>&amp;Input directory:</source>
+        <translation type="unfinished">&amp;Вхідний каталог:</translation>
+    </message>
+    <message>
+        <source>&amp;Output directory:</source>
+        <translation type="unfinished">В&amp;ихідний каталог:</translation>
+    </message>
+    <message>
+        <source>Finished</source>
+        <translation type="obsolete">Завершено</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation type="obsolete">Попередження</translation>
     </message>
 </context>
 <context>
@@ -1569,7 +1578,7 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogAbout.ui" line="14"/>
         <source>About Gdal Tools</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Про Gdal Tools</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogAbout.ui" line="27"/>
@@ -1628,11 +1637,7 @@ http://trac.faunalia.it/GdalTools-plugin</source>
     <name>GdalToolsBaseBatchWidget</name>
     <message>
         <source>Finished</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Operation completed.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Завершено</translation>
     </message>
     <message>
         <source>Warning</source>
@@ -1641,23 +1646,29 @@ http://trac.faunalia.it/GdalTools-plugin</source>
     <message>
         <source>The following files were not created: 
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Наступні файли не були створені: 
+%1</translation>
+    </message>
+    <message>
+        <source>Operation completed.</source>
+        <translation type="unfinished">Операцію завершено.</translation>
     </message>
 </context>
 <context>
     <name>GdalToolsBaseDialog</name>
     <message>
+        <source>Invalid parameters.</source>
+        <translation>Не правильні параметри.</translation>
+    </message>
+    <message>
         <source>Warning</source>
-        <translation type="unfinished">Попередження</translation>
+        <translation>Попередження</translation>
     </message>
     <message>
         <source>The command is still running. 
 Do you want terminate it anyway?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Invalid parameters.</source>
-        <translation type="unfinished"></translation>
+        <translation>Команда все ще виконується. 
+Ви хочете завершити її роботу?</translation>
     </message>
 </context>
 <context>
@@ -1671,16 +1682,16 @@ Do you want terminate it anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Finished</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Elaboration completed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Finished</source>
+        <translation type="unfinished">Завершено</translation>
+    </message>
+    <message>
         <source>%1 not created.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">%1 не створено.</translation>
     </message>
 </context>
 <context>
@@ -1693,110 +1704,50 @@ Do you want terminate it anyway?</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogBase.ui" line="27"/>
         <source>&amp;Load into canvas when finished</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Додати до мапи після закінчення</translation>
     </message>
     <message>
-        <source>Select the input file for Proximity</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select the raster file to save the results to</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select the input file for Near Black</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select the input file for Grid</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Warning</source>
-        <translation type="unfinished">Попередження</translation>
-    </message>
-    <message>
-        <source>Warning: CRS information for all raster in subfolders will be rewritten. Are you sure?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select the file to analyse</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select the input directory with files to Assign projection</source>
-        <translation type="unfinished"></translation>
+        <source>&amp;Help</source>
+        <translation type="obsolete">&amp;Допомога</translation>
     </message>
     <message>
         <source>Assign projection</source>
-        <translation type="unfinished"></translation>
+        <translation>Додати проекцію</translation>
     </message>
     <message>
-        <source>This raster already found in map canvas</source>
-        <translation type="unfinished"></translation>
+        <source>This raster found in map canvas</source>
+        <translation type="obsolete">Цей растр вже завантажено</translation>
     </message>
     <message>
         <source>Select the files for VRT</source>
-        <translation type="unfinished"></translation>
+        <translation>Виберіть файли для VRT</translation>
     </message>
     <message>
         <source>Select where to save the VRT</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>VRT (*.vrt)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select the input file for Warp</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select the input directory with files to Warp</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select the output directory to save the results to</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select the input file for Sieve</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select the files to Merge</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select where to save the Merge output</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select the input file for convert</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select the input file for Polygonize</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select where to save the Polygonize output</source>
-        <translation type="unfinished"></translation>
+        <translation>Вкажіть куди зберігати VRT</translation>
     </message>
     <message>
         <source>Select the input file for Contour</source>
-        <translation type="unfinished"></translation>
+        <translation>Вкажіть вхідний файл для Contour</translation>
+    </message>
+    <message>
+        <source>Select where to save the Countour output</source>
+        <translation type="obsolete">Вкажіть куди зберігати результат роботи Contour</translation>
+    </message>
+    <message>
+        <source>Select the input file for Grid</source>
+        <translation>Виберіть файл для інтерполяції</translation>
+    </message>
+    <message>
+        <source>Shape Files (*.shp)</source>
+        <translation type="obsolete">Шейп файли (*.shp)</translation>
+    </message>
+    <message>
+        <source>Select the raster file to save the results to</source>
+        <translation>Вкажіть файл для збереження результатів</translation>
     </message>
     <message>
         <source>Select where to save the Contour output</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No active raster layers. You must add almost one raster layer to continue.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select the input file for Translate</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1804,31 +1755,203 @@ Do you want terminate it anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Convert paletted image to RGB</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Band to convert:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select the input file for Rasterize</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>Копіювати</translation>
     </message>
     <message>
         <source>Copy all</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select the input file</source>
-        <translation type="unfinished"></translation>
+        <translation>Копіювати все</translation>
     </message>
     <message>
         <source>Select the input directory with files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the file to analyse</source>
+        <translation>Виберіть файл для аналіза</translation>
+    </message>
+    <message>
+        <source>Select the input file for Proximity</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the files to Merge</source>
+        <translation>Виберіть файли для мозаїки</translation>
+    </message>
+    <message>
+        <source>Select where to save the Merge output</source>
+        <translation>Вкажіть куди зберегти мозаїку</translation>
+    </message>
+    <message>
+        <source>Select the input file for Near Black</source>
+        <translation>Виберіть вхідний файл для Near Black</translation>
+    </message>
+    <message>
+        <source>Select the input file for Polygonize</source>
+        <translation>Виберіть файл для полігонізації</translation>
+    </message>
+    <message>
+        <source>Select where to save the Polygonize output</source>
+        <translation>Вкажіть каталог для результатів полігонізяції</translation>
+    </message>
+    <message>
+        <source>Shape files (*.shp)</source>
+        <translation type="obsolete">Шейпфайли (*.shp)</translation>
+    </message>
+    <message>
+        <source>GeoTIFF (*.tif *.tiff *.TIF *.TIFF)</source>
+        <translation type="obsolete">GeoTIFF (*.tif *.tiff *.TIF *.TIFF)</translation>
+    </message>
+    <message>
+        <source>Select desired SRS</source>
+        <translation type="obsolete">Виберіть бажану СК</translation>
+    </message>
+    <message>
+        <source>This raster already found in map canvas</source>
+        <translation>Цей растр вже завантажено у проект</translation>
+    </message>
+    <message>
+        <source>Select the input file for Rasterize</source>
+        <translation>Виберіть файл для векторизації</translation>
+    </message>
+    <message>
+        <source>Select the input file for Sieve</source>
+        <translation>Виберіть файл для відсіювання</translation>
+    </message>
+    <message>
+        <source>Select the input file for Warp</source>
+        <translation>Видеріть файл для перепроектування</translation>
+    </message>
+    <message>
+        <source>Select the source SRS</source>
+        <translation type="obsolete">Виберіть вхідну СК</translation>
+    </message>
+    <message>
+        <source>Select the target SRS</source>
+        <translation type="obsolete">Виберіть вихідну СК</translation>
+    </message>
+    <message>
+        <source>&amp;Input directory:</source>
+        <translation type="obsolete">&amp;Вхідний каталог:</translation>
+    </message>
+    <message>
+        <source>&amp;Output directory:</source>
+        <translation type="obsolete">В&amp;ихідний каталог:</translation>
+    </message>
+    <message>
+        <source>&amp;Input file:</source>
+        <translation type="obsolete">&amp;Вхідний файл:</translation>
+    </message>
+    <message>
+        <source>&amp;Output file:</source>
+        <translation type="obsolete">В&amp;ихідний файл:</translation>
+    </message>
+    <message>
+        <source>Select the input directory with files to Warp</source>
+        <translation>Вкажіть каталог з файлами для перепроектування</translation>
+    </message>
+    <message>
+        <source>Select the output directory to save the results to</source>
+        <translation>Виберіть каталог для запису результатів</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation>Попередження</translation>
+    </message>
+    <message>
+        <source>Select the input file for Translate</source>
+        <translation>Виберіть файл для перепроектування</translation>
+    </message>
+    <message>
+        <source>Select the input direcory with files to Translate</source>
+        <translation type="obsolete">Вкажіть каталог з файлами для конвертації</translation>
+    </message>
+    <message>
+        <source>VRT (*.vrt)</source>
+        <translation>VRT (*.vrt)</translation>
+    </message>
+    <message>
+        <source>Shape Files (*.shp *.SHP)</source>
+        <translation type="obsolete">Шейпфайли (*.shp *.SHP)</translation>
+    </message>
+    <message>
+        <source>Processed: %1 from %2</source>
+        <translation type="obsolete">Обробляється: %1 з %2</translation>
+    </message>
+    <message>
+        <source>Finished</source>
+        <translation type="obsolete">Завершено</translation>
+    </message>
+    <message>
+        <source>The selected file is not in a supported OGR format</source>
+        <translation type="obsolete">Формат цього файла не підтримується OGR</translation>
+    </message>
+    <message>
+        <source>Select the input file</source>
+        <translation>Виберіть вхідний файл</translation>
+    </message>
+    <message>
+        <source>Select the input direcory with files</source>
+        <translation type="obsolete">Виберіть вхідний каталог</translation>
+    </message>
+    <message>
+        <source>No active raster layers. You must add almost one raster layer to continue.</source>
+        <translation>Відсутні растрові шари. Для використання інструмента необхідно завантажити хоча б один растровий шар.</translation>
+    </message>
+    <message>
+        <source>About Gdal Tools</source>
+        <translation type="obsolete">Про Gdal Tools</translation>
+    </message>
+    <message>
+        <source>Close</source>
+        <translation type="obsolete">Закрити</translation>
+    </message>
+    <message>
+        <source>Convert paletted image to RGB</source>
+        <translation>Індексований растр у RGB</translation>
+    </message>
+    <message>
+        <source>Band to convert:</source>
+        <translation>Конвертувати канал:</translation>
+    </message>
+    <message>
+        <source>Select the input file for convert</source>
+        <translation>Вкажіть вхідний файл для конвертації</translation>
+    </message>
+    <message>
+        <source>Select the input direcory with files to Assign projection</source>
+        <translation type="obsolete">Вкажіть каталог з растрами</translation>
+    </message>
+    <message>
+        <source>Path to the GDAL binaries</source>
+        <translation type="obsolete">Каталог з програмами GDAL</translation>
+    </message>
+    <message>
+        <source>Browse</source>
+        <translation type="obsolete">Огляд</translation>
+    </message>
+    <message>
+        <source>GDAL data path</source>
+        <translation type="obsolete">Каталог даних GDAL</translation>
+    </message>
+    <message>
+        <source>GDAL driver path</source>
+        <translation type="obsolete">Каталог драйверів GDAL</translation>
+    </message>
+    <message>
+        <source>GDAL pymod path</source>
+        <translation type="obsolete">Каталог pymod GDAL</translation>
+    </message>
+    <message>
+        <source>Warning: CRS information for all raster in subfolders will be rewritten. Are you sure?</source>
+        <translation>Попередження: відомості про проекцію всіх растрів у всіх підкаталогах буде переписано. Ви згодні?</translation>
+    </message>
+    <message>
+        <source>Gdal Tools settings</source>
+        <translation type="obsolete">Налаштування Gdal Tools</translation>
+    </message>
+    <message>
+        <source>Select the input directory with files to Assign projection</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1858,14 +1981,22 @@ Do you want terminate it anyway?</source>
 <context>
     <name>GdalToolsSettingsDialog</name>
     <message>
+        <source>Select direcory with GDAL executables</source>
+        <translation type="obsolete">Вкажіть каталог з програмами GDAL</translation>
+    </message>
+    <message>
+        <source>Select directory with GDAL executables</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="14"/>
         <source>Gdal Tools settings</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Налаштування Gdal Tools</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="20"/>
         <source>Path to the GDAL binaries</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Каталог з програмами GDAL</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="32"/>
@@ -1878,21 +2009,17 @@ Do you want terminate it anyway?</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="44"/>
         <source>GDAL data path</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Каталог даних GDAL</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="75"/>
         <source>GDAL driver path</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Каталог драйверів GDAL</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="106"/>
         <source>GDAL pymod path</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select directory with GDAL executables</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Каталог pymod GDAL</translation>
     </message>
 </context>
 <context>
@@ -1900,13 +2027,13 @@ Do you want terminate it anyway?</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="20"/>
         <source>Build Virtual Raster</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Створити віртуальний растр</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="34"/>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="31"/>
         <source>&amp;Input files:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Вхідні файли:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="56"/>
@@ -1942,7 +2069,7 @@ Do you want terminate it anyway?</source>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="122"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="150"/>
         <source>Select...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Вибрати...</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="65"/>
@@ -1956,58 +2083,58 @@ Do you want terminate it anyway?</source>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="75"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="72"/>
         <source>&amp;Output file:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">В&amp;ихідний файл:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="106"/>
         <source>Highest</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Найкраще</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="111"/>
         <source>Average</source>
-        <translation type="unfinished">Середнє значення</translation>
+        <translation type="unfinished">Середнє</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="116"/>
         <source>Lowest</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Найгірше</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="124"/>
         <source>&amp;Resolution:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Роздільна здатність:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="131"/>
         <source>&amp;Source No Data:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Значення «нема даних»:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="20"/>
         <source>Clipper</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Обрізка</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="62"/>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="93"/>
         <source>&amp;No data value:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Значення «&amp;нема даних»:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="78"/>
         <source>Re-Enable Clipping</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ввімкнути обрізання заново</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="87"/>
         <source>Select the extent by drag &amp; drop on canvas</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Виберіть область за допомогою миші</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="94"/>
         <source>or change the extent coordinates:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">або введіть її координати</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="105"/>
@@ -2018,13 +2145,13 @@ Do you want terminate it anyway?</source>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="116"/>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="181"/>
         <source>x</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">x</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="133"/>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="198"/>
         <source>y</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">y</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="170"/>
@@ -2035,48 +2162,48 @@ Do you want terminate it anyway?</source>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="221"/>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="126"/>
         <source>Grab pseudocolor table from the first image</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Використовувати таблицю кольорів з першого зображення</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="20"/>
         <source>Contour</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ізолінії</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="31"/>
         <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="28"/>
         <source>&amp;Input file (raster):</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Вхідний файл (растр):</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="68"/>
         <source>&amp;Output directory for contour lines (shapefile):</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Каталог для шейп-файлів ізоліній:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="101"/>
         <source>&amp;Attribute name:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Атрибут:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="131"/>
         <source>If not provided, no elevation attribute is attached.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Якщо не задане, значення висоти не призначається.</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="142"/>
         <source>ELEV</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">ELEV</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="149"/>
         <source>I&amp;nterval between contour lines:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ві&amp;дстань між ізолініями:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetConvert.ui" line="20"/>
         <source>Convert RGB image to paletted</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Конвертація RGB растра в індексований</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetConvert.ui" line="26"/>
@@ -2085,7 +2212,7 @@ Do you want terminate it anyway?</source>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="26"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="26"/>
         <source>Batch mode (for processing whole directory)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Групова обробка (для обробки каталогів)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetConvert.ui" line="35"/>
@@ -2098,57 +2225,57 @@ Do you want terminate it anyway?</source>
         <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="28"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="35"/>
         <source>&amp;Input file:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Вхідний файл:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetConvert.ui" line="96"/>
         <source>Number of colors</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Кількість кольорів</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="20"/>
         <source>Grid</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Інтерполяція</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="65"/>
         <source>&amp;Z Field:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Z поле:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="106"/>
         <source>&amp;Algorithm:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Алгоритм:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="114"/>
         <source>Inverse distance to a power</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Зворотня степенева відстань</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="119"/>
         <source>Moving average</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Плаваюче середнє</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="124"/>
         <source>Nearest neighbor</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Найближчого сусіда</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="129"/>
         <source>Data metrics</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Метрики даних</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="167"/>
         <source>Power:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ступінь:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="181"/>
         <source>Smoothing:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Згладжування:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="198"/>
@@ -2156,7 +2283,7 @@ Do you want terminate it anyway?</source>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="384"/>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="482"/>
         <source>Radius1:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Радіус1:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="215"/>
@@ -2164,7 +2291,7 @@ Do you want terminate it anyway?</source>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="401"/>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="499"/>
         <source>Radius2:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Радіус2:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="232"/>
@@ -2172,19 +2299,19 @@ Do you want terminate it anyway?</source>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="418"/>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="516"/>
         <source>Angle:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Кут:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="249"/>
         <source>Max points:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Макс. кіл-ть точок:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="263"/>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="349"/>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="533"/>
         <source>Min points:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Мін. кіл-ть точок:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="277"/>
@@ -2192,12 +2319,12 @@ Do you want terminate it anyway?</source>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="435"/>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="547"/>
         <source>No data:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Немає даних:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="456"/>
         <source>Metrics:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Метрики:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="464"/>
@@ -2212,7 +2339,7 @@ Do you want terminate it anyway?</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="474"/>
         <source>Range</source>
-        <translation type="unfinished">Діапазон</translation>
+        <translation type="unfinished">Інтервал</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetInfo.ui" line="20"/>
@@ -2222,58 +2349,58 @@ Do you want terminate it anyway?</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetInfo.ui" line="63"/>
         <source>Raster info</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Інформація про растр</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetInfo.ui" line="83"/>
         <source>Suppress GCP printing</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Не показувати інформацію про точки прив&apos;язки</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetInfo.ui" line="90"/>
         <source>Suppress metadata printing</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Не показувати метадані</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="20"/>
         <source>Merge</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Мозаїка</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="109"/>
         <source>Layer stack</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Зклеювати поканально</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="119"/>
         <source>Use intersected extent</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Використовувати перетин обхватів</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="133"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="153"/>
         <source>&amp;Creation Options:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Параметри створення:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="20"/>
         <source>Near Black</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Скинути у чорний</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="106"/>
         <source>How &amp;far from black (or white):</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Наскільки &amp;далеко від чорного (білого):</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="115"/>
         <source>Search for nearly &amp;white (255) pixels instead of black ones</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Пошук пікселів близьких до &amp;білого (255) а не чорного</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="20"/>
         <source>Add overview</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Побудувати піраміди</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="72"/>
@@ -2283,17 +2410,17 @@ Do you want terminate it anyway?</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="80"/>
         <source>nearest</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Найближчий</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="85"/>
         <source>average</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Середнє</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="90"/>
         <source>gauss</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Гауса</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="95"/>
@@ -2308,129 +2435,131 @@ Do you want terminate it anyway?</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="105"/>
         <source>mode</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Мода</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="113"/>
         <source>Levels (space delimited)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Рівні (розділяти пробілом)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="125"/>
         <source>Open in read-only mode</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Відкривати у режимі тільки читання</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="20"/>
         <source>Polygonize</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Векторизація</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="65"/>
         <source>&amp;Output file for polygons (shapefile):</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Зберегти результат у shape-файл:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="96"/>
         <source>DN</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">DN</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="103"/>
         <source>&amp;Field name:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Поле:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="20"/>
         <source>Assign projection</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Додати проекцію</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="33"/>
         <source>WARNING: current projection definition will be cleared</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">УВАГА: поточну проекцію растра буде видалено</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="73"/>
         <source>Desired SRS:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Бажана СК:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="94"/>
         <source>Output will be:
 - new GeoTiff if input file is not GeoTiff
 - overwritten if input is GeoTiff</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">У результаті:
+- буде створено новий GeoTiff, якщо вхідний файл не GeoTiff
+- буде перезаписано вхідний файл, якщо він є GeoTiff</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="106"/>
         <source>Recurse subdirectories</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Рекурсивний обхід каталогів</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="20"/>
         <source>Proximity</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Близкість</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="89"/>
         <source>&amp;Values:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Значення:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="121"/>
         <source>&amp;Dist units:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Одиниці &amp;довжини:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="132"/>
         <source>GEO</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">GEO</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="137"/>
         <source>PIXEL</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">PIXEL</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="145"/>
         <source>&amp;Max dist:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">М&amp;акс. відстань:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="159"/>
         <source>&amp;No data:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Нема даних:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="173"/>
         <source>&amp;Fixed buf val:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Розмір буфера:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="20"/>
         <source>Rasterize</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Растерізація</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="28"/>
         <source>&amp;Input file (shapefile):</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Вхідний shape-файл:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="75"/>
         <source>&amp;Output file for rasterized vectors (raster, must exists):</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Результат растеризації (існуючий растр):</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="106"/>
         <source>&amp;Attribute field:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Поле:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="20"/>
         <source>Sieve</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Відсіювання</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="104"/>
@@ -2445,83 +2574,83 @@ Do you want terminate it anyway?</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="117"/>
         <source>&amp;Threshold:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Допуск:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="124"/>
         <source>&amp;Pixel connections:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Тип сусідства:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="20"/>
         <source>Translate</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Конвертація</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="38"/>
         <source>&amp;Input Layer:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Вхідний шар:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="106"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="131"/>
         <source>&amp;Target SRS:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Цільова СК:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="144"/>
         <source>Output format</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Вихідний формат</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="20"/>
         <source>Warp</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Перепроектування</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="103"/>
         <source>&amp;Source SRS:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Початкова СК:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="159"/>
         <source>&amp;Resampling method:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Метод інтерполяції:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="167"/>
         <source>Near</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Найближчий</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="172"/>
         <source>Bilinear</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Білінійний</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="177"/>
         <source>Cubic</source>
-        <translation type="unfinished">Кубічна</translation>
+        <translation type="unfinished">Кубічний</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="182"/>
         <source>Cubic spline</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Кубічний сплайн</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="187"/>
         <source>Lanczos</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ланцоша</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="195"/>
         <source>&amp;Memory used for caching:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Використовувати для &amp;кешування:</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="202"/>
         <source>MB</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Мб</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="215"/>
@@ -2531,22 +2660,22 @@ Do you want terminate it anyway?</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="227"/>
         <source>Resize</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Змінити розмір</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="242"/>
         <source>Image width</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ширина зображення</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="256"/>
         <source>Image height</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Висота зображення</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="276"/>
         <source>Use m&amp;ultithreaded warping implementation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Використовувати &amp;багатопоточну реалізацію</translation>
     </message>
 </context>
 <context>
@@ -9117,7 +9246,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="326"/>
         <source>Grid</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Інтерполяція</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="332"/>
@@ -15866,12 +15995,12 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgsitempositiondialogbase.ui" line="100"/>
         <source>x</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">x</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsitempositiondialogbase.ui" line="114"/>
         <source>y</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">y</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsitempositiondialogbase.ui" line="144"/>
@@ -17733,7 +17862,7 @@ http://my.host.com/cgi-bin/mapserv.exe</source>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="108"/>
         <source>Merge</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Мозаїка</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="125"/>
@@ -23181,7 +23310,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="85"/>
         <source>Output format</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Вихідний формат</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialogbase.ui" line="78"/>
@@ -25366,7 +25495,7 @@ Do you want to overwrite the [%2] relation?</source>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="73"/>
         <source>Lanczos</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ланцоша</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="81"/>
@@ -28847,7 +28976,7 @@ Base Path (i.e. keep only filename from attribute)</source>
     <name>fTools</name>
     <message>
         <source>Quantum GIS version detected: </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Знайдено Quantum GIS версії: </translation>
     </message>
     <message>
         <source>This version of fTools requires at least QGIS version 1.0.0
