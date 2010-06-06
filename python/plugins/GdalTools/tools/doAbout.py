@@ -26,18 +26,13 @@ class GdalToolsAboutDialog(QDialog, Ui_Dialog):
       self.textEdit.setText(self.getText())
 
   def getText(self):
-    return self.tr("""GDAL Tools (AKA Raster Tools) is a \
-plugin for QuantumGIS aiming at making life simpler for users \
-of GDAL Utilities, providing a simplified graphical interface \
-for most commonly used programs.
+    return self.tr("""GDAL Tools (AKA Raster Tools) is a plugin for QuantumGIS aiming at making life simpler for users of GDAL Utilities, providing a simplified graphical interface for most commonly used programs.
 
-The plugin is being developed by Faunalia (http://faunalia.it) \
-with help from GIS-lab (http://gis-lab.info).
+The plugin is being developed by Faunalia (http://faunalia.it) with help from GIS-lab (http://gis-lab.info).
 Icons by Robert Szczepanek.
 Sponsorship by Silvio Grosso was much appreciated.
 
-Please help us by testing the tools, reporting eventual issues, \
-improving the code, or providing financial support.
+Please help us by testing the tools, reporting eventual issues, improving the code, or providing financial support.
 
 DEVELOPERS:
   Faunalia

@@ -1643,18 +1643,13 @@ p, li { white-space: pre-wrap; }
         <translation>Schließen</translation>
     </message>
     <message>
-        <source>GDAL Tools (AKA Raster Tools) is a 
-plugin for QuantumGIS aiming at making life simpler for users 
-of GDAL Utilities, providing a simplified graphical interface 
-for most commonly used programs.
+        <source>GDAL Tools (AKA Raster Tools) is a plugin for QuantumGIS aiming at making life simpler for users of GDAL Utilities, providing a simplified graphical interface for most commonly used programs.
 
-The plugin is being developed by Faunalia (http://faunalia.it) 
-with help from GIS-lab (http://gis-lab.info).
+The plugin is being developed by Faunalia (http://faunalia.it) with help from GIS-lab (http://gis-lab.info).
 Icons by Robert Szczepanek.
 Sponsorship by Silvio Grosso was much appreciated.
 
-Please help us by testing the tools, reporting eventual issues, 
-improving the code, or providing financial support.
+Please help us by testing the tools, reporting eventual issues, improving the code, or providing financial support.
 
 DEVELOPERS:
   Faunalia
@@ -1668,19 +1663,13 @@ icons by Robert Szepanek
 
 HOMEPAGE:
 http://trac.faunalia.it/GdalTools-plugin</source>
-        <translation>Die GDAL-Werkzeuge (auch als Raster-Werkzeuge bekannt) ist
-eine Erweiterung für Quantum GIS, dass den Benutzern der
-GDAL-Werkzeuge das Leben erleichtern soll, indem es ihnen
-eine vereinfachte grafische Benutzeroberfläche für die
-meist verwendeten Programme bietet.
+        <translation>Die GDAL-Werkzeuge (auch als Raster-Werkzeuge bekannt) ist eine Erweiterung für Quantum GIS, die den Benutzern der GDAL-Werkzeuge das Leben erleichtern soll, indem es ihnen eine vereinfachte grafische Benutzeroberfläche für die meist verwendeten Programme bietet.
 
-Die Erweiterung wird von Faunalia (http://faunalia.it) mit
-mit Unterstützung von GIS-lab (http://gis-lab.info) entwickelt.
+Die Erweiterung wird von Faunalia (http://faunalia.it) mit mit Unterstützung von GIS-lab (http://gis-lab.info) entwickelt.
 Icons von Robert Szczepanek.
 Die Förderung von Silvio Grosso war sehr willkommen.
 
-Bitte helfen Sie uns durch Testen der Werkzeuge, ggf. Problemberichte,
-Programmverbesserungen oder finanzielle Unterstützung.
+Bitte helfen Sie uns durch Testen der Werkzeuge, ggf. Problemberichte, Programmverbesserungen oder finanzielle Unterstützung.
 
 Entwickler:
   Faunalia
@@ -15365,9 +15354,9 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="155"/>
-        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="203"/>
-        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="208"/>
-        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="220"/>
+        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="204"/>
+        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="209"/>
+        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="221"/>
         <source>Warning</source>
         <translation>Warnung</translation>
     </message>
@@ -15378,27 +15367,27 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="107"/>
-        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="333"/>
+        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="334"/>
         <source>GRASS Tools: %1/%2</source>
         <translation>GRASS-Werkzeuge: %1/%2</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="203"/>
+        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="204"/>
         <source>The config file (%1) not found.</source>
         <translation>Konfigurationdatei (%1) nicht gefunden.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="208"/>
+        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="209"/>
         <source>Cannot open config file (%1).</source>
         <translation>Kann Konfigurationsdatei (%1) nicht öffnen.</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="217"/>
+        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="218"/>
         <source>Cannot read config file (%1):</source>
         <translation>Kann Konfigurationsdatei (%1) nicht lesen:</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="218"/>
+        <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="219"/>
         <source>
 %1
 at line %2 column %3</source>
@@ -28187,6 +28176,7 @@ URL %1 versucht</translation>
 <context>
     <name>dxf2shpConverterGui</name>
     <message>
+        <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="121"/>
         <source>Fields description:
 * Input DXF file: path to the DXF file to be converted
 * Output Shp file: desired name of the shape file to be created
