@@ -2269,11 +2269,11 @@ void QgsGrassModuleInput::updateQgisLayers()
 
   QString current = mLayerComboBox->currentText();
   mLayerComboBox->clear();
-  mMaps.resize( 0 );
-  mGeometryTypes.resize( 0 );
-  mVectorLayerNames.resize( 0 );
-  mMapLayers.resize( 0 );
-  mVectorFields.resize( 0 );
+  mMaps.clear();
+  mGeometryTypes.clear();
+  mVectorLayerNames.clear();
+  mMapLayers.clear();
+  mVectorFields.clear();
 
   // If not required, add an empty item to combobox and a padding item into
   // layer containers.
@@ -2458,11 +2458,9 @@ QStringList QgsGrassModuleInput::options()
   QStringList list;
   QString opt;
 
-  int c = mLayerComboBox->currentIndex();
-  if ( c < 0 ) // not found
+  int current = mLayerComboBox->currentIndex();
+  if ( current < 0 ) // not found
     return list;
-
-  unsigned current = c;
 
   // TODO: this is hack for network nodes, do it somehow better
   if ( mMapId.isEmpty() )
@@ -2537,15 +2535,15 @@ QString QgsGrassModuleInput::currentMap()
 {
   QgsDebugMsg( "called." );
 
-  unsigned int limit = 0;
+  int limit = 0;
   if ( !mRequired )
     limit = 1;
 
-  unsigned int current = mLayerComboBox->currentIndex();
+  int current = mLayerComboBox->currentIndex();
   if ( current < limit )
     return QString();
 
-  if ( current >= limit && current <  mMaps.size() )
+  if ( current >= limit && current < mMaps.size() )
   {
     return mMaps[current];
   }
@@ -2762,8 +2760,8 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
 
   QString current = mLayerComboBox->currentText();
   mLayerComboBox->clear();
-  mUri.resize( 0 );
-  mOgrLayers.resize( 0 );
+  mUri.clear();
+  mOgrLayers.clear();
 
   // If not required, add an empty item to combobox and a padding item into
   // layer containers.
@@ -2857,7 +2855,6 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
       if ( layer->name() == current ) mLayerComboBox->setItemText( mLayerComboBox->currentIndex(), current );
 
       mUri.push_back( uri );
-
       mOgrLayers.push_back( ogrLayer );
       mOgrWheres.push_back( ogrWhere );
     }
@@ -2867,6 +2864,8 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
       mLayerComboBox->addItem( layer->name() );
       if ( layer->name() == current ) mLayerComboBox->setItemText( mLayerComboBox->currentIndex(), current );
       mUri.push_back( uri );
+      mOgrLayers.push_back( "" );
+      mOgrWheres.push_back( "" );
     }
   }
 }
@@ -2875,21 +2874,19 @@ QStringList QgsGrassModuleGdalInput::options()
 {
   QStringList list;
 
-  int c = mLayerComboBox->currentIndex();
-  if ( c < 0 )
+  int current = mLayerComboBox->currentIndex();
+  if ( current < 0 )
     return list;
-
-  unsigned int current = c;
 
   QString opt( mKey + "=" );
 
-  if ( current >= 0 && current <  mUri.size() )
+  if ( current >= 0 && current < mUri.size() )
   {
     opt.append( mUri[current] );
   }
   list.push_back( opt );
 
-  if ( !mOgrLayerOption.isNull() && mOgrLayers[current].length() > 0 )
+  if ( !mOgrLayerOption.isEmpty() && mOgrLayers[current].size() > 0 )
   {
     opt = mOgrLayerOption + "=";
     // GDAL 1.4.0 supports schemas (r9998)
@@ -2918,7 +2915,7 @@ QStringList QgsGrassModuleGdalInput::options()
     list.push_back( opt );
   }
 
-  if ( !mOgrWhereOption.isNull() && mOgrWheres[current].length() > 0 )
+  if ( !mOgrWhereOption.isEmpty() && mOgrWheres[current].length() > 0 )
   {
     list.push_back( mOgrWhereOption + "=" + mOgrWheres[current] );
   }

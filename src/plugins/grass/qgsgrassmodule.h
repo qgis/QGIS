@@ -640,13 +640,13 @@ class QgsGrassModuleInput: public QgsGrassModuleGroupBoxItem
     QString mMapId;
 
     //! Vector of map@mapset in the combobox
-    std::vector<QString> mMaps;
+    QStringList mMaps;
 
     //! Type of vector in the combobox
-    std::vector<QString> mGeometryTypes;
+    QStringList mGeometryTypes;
 
     //! Layer names in the combobox
-    std::vector<QString> mVectorLayerNames;
+    QStringList mVectorLayerNames;
 
     //! Pointers to vector layers in combobox
     std::vector<QgsMapLayer*> mMapLayers;
@@ -709,13 +709,13 @@ class QgsGrassModuleGdalInput: public QgsGrassModuleGroupBoxItem
     QComboBox *mLayerComboBox;
 
     //! Vector of URI in the combobox
-    std::vector<QString> mUri;
+    QStringList mUri;
 
     //! Ogr layer options
-    std::vector<QString> mOgrLayers;
+    QStringList mOgrLayers;
 
     //! Ogr where clauses
-    std::vector<QString> mOgrWheres;
+    QStringList mOgrWheres;
 
     //! Required field
     bool mRequired;

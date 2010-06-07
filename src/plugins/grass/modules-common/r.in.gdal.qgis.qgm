@@ -4,6 +4,6 @@
 <qgisgrassmodule label="Import loaded raster" module="r.in.gdal">
 	<flag key="o" answer="on" hidden="yes" />
 	<flag key="e" answer="off" hidden="yes" />
-    <gdal key="input" label="GDAL raster layer" />
+	<gdal key="input" label="GDAL raster layer" />
 	<option key="output" />
 </qgisgrassmodule>
