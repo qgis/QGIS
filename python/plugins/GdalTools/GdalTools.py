@@ -25,25 +25,31 @@ from qgis.core import *
 # Initialize Qt resources from file resources_rc.py
 import resources_rc
 
-# Import required modules and if missing show the right name of them
+# Import required modules and if missing show the right module's name
 req_mods = { "osgeo": "osgeo [python-gdal]" }
-for k, v in req_mods.iteritems():
-  try:
-    exec( "import %s" % k )
-  except ImportError, e:
-    errorStr = str(e)
-    if len(v) > 0:
-      errorStr = errorStr.replace( k, v ) 
-    raise ImportError( errorStr )
 
-# Set up current path, so that we know where to look for modules
-import os.path, sys
-currentPath = os.path.dirname( __file__ )
-sys.path.append( os.path.abspath(os.path.dirname( __file__ ) + '/tools' ) )
-import doBuildVRT, doContour, doRasterize, doPolygonize, doMerge, doSieve, doProximity, doNearBlack, doWarp, doGrid, doTranslate, doClipper
-import doInfo, doProjection, doOverview, doRgbPct, doPctRgb, doSettings, doAbout
+try:
+  # Set up current path, so that we know where to look for modules
+  import os.path, sys
+  currentPath = os.path.dirname( __file__ )
+  modulesPath = os.path.abspath( currentPath + '/tools' )
+  sys.path.append( modulesPath )
 
-import GdalTools_utils as Utils
+  import GdalTools_utils as Utils
+
+  import doBuildVRT, doContour, doRasterize, doPolygonize, doMerge, doSieve, doProximity, doNearBlack
+  import doWarp, doGrid, doTranslate, doClipper, doInfo, doProjection, doOverview, doRgbPct, doPctRgb
+  import doSettings, doAbout
+
+  sys.path.remove( modulesPath )
+
+except ImportError, e:
+  error_str = str(e)
+  error_mod = error_str.replace( "No module named ", "" )
+  if req_mods.has_key( error_mod ):
+    error_str = error_str.replace( error_mod, req_mods[error_mod] )
+  raise ImportError( error_str )
+
 
 class GdalTools:
 
