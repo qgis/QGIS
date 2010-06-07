@@ -95,7 +95,11 @@ build-stamp: debian/build/CMakeCache.txt
 
 	touch $@
 
-clean: templateclean debian/control
+cleantemplates:
+	$(MAKE) -f debian/rules templateclean
+	$(MAKE) -f debian/rules debian/control
+
+clean: cleantemplates
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp 
@@ -105,7 +109,7 @@ clean: templateclean debian/control
 	# Add here commands to clean up after the build process.
 	rm -rf debian/build
 
-	dh_clean 
+	dh_clean
 
 install: build
 	dh_testdir
