@@ -6,12 +6,18 @@ from qgis.core import *
 from qgis.gui import *
 
 from ui_dialogAbout import Ui_GdalToolsAboutDialog as Ui_Dialog
+
+# Set up current path, so that we know where to look for version
 import os.path, sys
-# Set up current path, so that we know where to look for init file
 currentPath = os.path.dirname( __file__ )
-sys.path.append( os.path.abspath(os.path.dirname( __file__ )[:-6] ) )
-# prepended the dir, to avoid conflicts with other __init__ modules in search path
+pluginPath = os.path.abspath( currentPath + "/.." )
+sys.path.append( pluginPath )
+
+# prepended the module name, to avoid conflicts with other __init__ modules in search path
 from GdalTools.__init__ import version
+
+sys.path.remove( pluginPath )
+
 
 class GdalToolsAboutDialog(QDialog, Ui_Dialog):
 
