@@ -226,6 +226,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		7202656211BDADAE000A356A /* __init__.py in Copy - tools */ = {isa = PBXBuildFile; fileRef = 7202656111BDAD9E000A356A /* __init__.py */; };
 		720382E00F8B86070083B883 /* qgstolerance.h in Headers */ = {isa = PBXBuildFile; fileRef = 72F8D9420F8924F100D10CE5 /* qgstolerance.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7203830A0F8B8C8F0083B883 /* qgscentralpointpositionmanager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 720383000F8B8C2D0083B883 /* qgscentralpointpositionmanager.cpp */; };
 		7203830B0F8B8C8F0083B883 /* qgsoverlayobject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 720383080F8B8C2D0083B883 /* qgsoverlayobject.cpp */; };
@@ -3534,6 +3535,7 @@
 			dstPath = "$(QGIS_BUILD_PATH)/MacOS/$(QGIS_DATA_SUBDIR)/python/plugins/fTools/tools";
 			dstSubfolderSpec = 0;
 			files = (
+				7202656211BDADAE000A356A /* __init__.py in Copy - tools */,
 				72DEE21B11B95988004ED376 /* dialogBase.py in Copy - tools */,
 				72DEE21C11B95988004ED376 /* dialogSRS.py in Copy - tools */,
 				72DEE21D11B95988004ED376 /* doAbout.py in Copy - tools */,
@@ -3729,6 +3731,7 @@
 
 /* Begin PBXFileReference section */
 		508344B209E5C41E0093A071 /* Qgis.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Qgis.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7202656111BDAD9E000A356A /* __init__.py */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.python; name = __init__.py; path = ../../python/plugins/GdalTools/tools/__init__.py; sourceTree = SOURCE_ROOT; };
 		720382E20F8B8B540083B883 /* feature.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = feature.cpp; path = ../../src/core/pal/feature.cpp; sourceTree = SOURCE_ROOT; };
 		720382E30F8B8B540083B883 /* feature.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = feature.h; path = ../../src/core/pal/feature.h; sourceTree = SOURCE_ROOT; };
 		720382E40F8B8B540083B883 /* geomfunction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = geomfunction.cpp; path = ../../src/core/pal/geomfunction.cpp; sourceTree = SOURCE_ROOT; };
@@ -13305,6 +13308,7 @@
 		72DEE01F11B953D7004ED376 /* tools */ = {
 			isa = PBXGroup;
 			children = (
+				7202656111BDAD9E000A356A /* __init__.py */,
 				72DEE02011B953D8004ED376 /* CMakeLists.txt */,
 				72DEE02111B953D8004ED376 /* dialogAbout.ui */,
 				72DEE02211B953D8004ED376 /* dialogBase.py */,
@@ -20353,7 +20357,7 @@
 				COPY_PHASE_STRIP = NO;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				QGIS_VERSION_BUILD = 13660;
+				QGIS_VERSION_BUILD = 13685;
 				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Debug;
@@ -20364,7 +20368,7 @@
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				QGIS_VERSION_BUILD = 13660;
+				QGIS_VERSION_BUILD = 13685;
 				STRIP_INSTALLED_PRODUCT = YES;
 			};
 			name = Release;
