@@ -29,20 +29,11 @@ import resources_rc
 req_mods = { "osgeo": "osgeo [python-gdal]" }
 
 try:
-  # Set up current path, so that we know where to look for modules
-  import os.path, sys
-  currentPath = os.path.dirname( __file__ )
-  modulesPath = os.path.abspath( currentPath + '/tools' )
-  sys.path.append( modulesPath )
+  from tools import GdalTools_utils as Utils
 
-  import GdalTools_utils as Utils
-
-  import doBuildVRT, doContour, doRasterize, doPolygonize, doMerge, doSieve, doProximity, doNearBlack
-  import doWarp, doGrid, doTranslate, doClipper, doInfo, doProjection, doOverview, doRgbPct, doPctRgb
-  import doSettings, doAbout
-
-  sys.path.remove( modulesPath )
-
+  from tools import ( doBuildVRT, doContour, doRasterize, doPolygonize, doMerge, doSieve, doProximity, doNearBlack )
+  from tools import ( doWarp, doGrid, doTranslate, doClipper, doInfo, doProjection, doOverview, doRgbPct, doPctRgb )
+  from tools import ( doSettings, doAbout )
 except ImportError, e:
   error_str = str(e)
   error_mod = error_str.replace( "No module named ", "" )
