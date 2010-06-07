@@ -120,6 +120,7 @@ void QgsApplication::setPluginPath( const QString thePluginPath )
 void QgsApplication::setPkgDataPath( const QString thePkgDataPath )
 {
   mPkgDataPath = thePkgDataPath;
+  mDefaultSvgPaths << mPkgDataPath + QString( "/svg/" );
 }
 
 void QgsApplication::setDefaultSvgPaths( const QStringList& pathList )
