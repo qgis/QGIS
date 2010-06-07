@@ -457,6 +457,23 @@ SET(QGIS_CORE_HDRS
   symbology/qgssymbol.h
   symbology/qgssymbologyutils.h
 
+  symbology-ng/qgscategorizedsymbolrendererv2.h
+  symbology-ng/qgscolorbrewerpalette.h
+  symbology-ng/qgsfillsymbollayerv2.h
+  symbology-ng/qgsgraduatedsymbolrendererv2.h
+  symbology-ng/qgslinesymbollayerv2.h
+  symbology-ng/qgsmarkersymbollayerv2.h
+  symbology-ng/qgsrendererv2.h
+  symbology-ng/qgsrendererv2registry.h
+  symbology-ng/qgssinglesymbolrendererv2.h
+  symbology-ng/qgsstylev2.h
+  symbology-ng/qgssymbollayerv2.h
+  symbology-ng/qgssymbollayerv2registry.h
+  symbology-ng/qgssymbollayerv2utils.h
+  symbology-ng/qgssymbologyv2conversion.h
+  symbology-ng/qgssymbolv2.h
+  symbology-ng/qgsvectorcolorrampv2.h
+
   spatialindex/qgsspatialindex.h
 )
 
