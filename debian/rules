@@ -78,7 +78,7 @@ TEMPLATES += $(foreach t,$(wildcard debian/*{QGIS_ABI}*),$(subst {QGIS_ABI},$(QG
 $(foreach t,$(wildcard debian/*.in debian/*.$(DISTRIBUTION)),$(eval $(call gentemplate,$(t),$(basename $(t)))))
 $(foreach t,$(wildcard debian/*{QGIS_ABI}*),$(eval $(call gentemplate,$(t),$(subst {QGIS_ABI},$(QGIS_ABI),$(t)))))
 
-debian/build/CMakeCache.txt: CMakeLists.txt
+debian/build/CMakeCache.txt: $(TEMPLATES) CMakeLists.txt
 	dh_testdir
 	# Add here commands to configure the package.
 	[ -d debian/build ] || mkdir debian/build
@@ -97,7 +97,7 @@ build-stamp: debian/build/CMakeCache.txt
 
 cleantemplates:
 	$(MAKE) -f debian/rules templateclean
-	$(MAKE) -f debian/rules debian/control
+	$(MAKE) -f debian/rules debian/control debian/compat
 
 clean: cleantemplates
 	dh_testdir
@@ -171,4 +171,4 @@ endif
 	dh_builddeb
 
 binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary install debian/control
+.PHONY: build clean binary-indep binary-arch binary install debian/control cleantemplates templateclean
