@@ -145,14 +145,7 @@ void QgsUniqueValueRenderer::renderFeature( QgsRenderContext &renderContext, Qgs
 
     if ( symbol->pointSizeUnits() )
     {
-      /* Calc scale (still not nice) */
-      QgsPoint point;
-      point = renderContext.mapToPixel().transform( 0, 0 );
-      double x1 = point.x();
-      point = renderContext.mapToPixel().transform( 1000, 0 );
-      double x2 = point.x();
-
-      scale *= ( x2 - x1 ) * 0.001;
+      scale = 1.0 / renderContext.mapToPixel().mapUnitsPerPixel();
     }
 
     *img = symbol->getPointSymbolAsImage( scale, selected, mSelectionColor,
