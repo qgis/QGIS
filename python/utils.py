@@ -298,7 +298,13 @@ def _import(name, globals={}, locals={}, fromlist=[], level=-1):
       if package_name not in _plugin_modules:
         _plugin_modules[package_name] = set()
       _plugin_modules[package_name].add(module_name)
-    
+      # check the fromlist for additional modules (from X import Y,Z)
+      if fromlist:
+        for fromitem in fromlist:
+          frmod = module_name + "." + fromitem
+          if frmod in sys.modules:
+            _plugin_modules[package_name].add(frmod)
+
   return mod
 
 __builtin__.__import__ = _import
