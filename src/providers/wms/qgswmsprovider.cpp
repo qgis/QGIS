@@ -518,6 +518,8 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     connect( cacheReply, SIGNAL( finished() ), this, SLOT( cacheReplyFinished() ) );
     connect( cacheReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( cacheReplyProgress( qint64, qint64 ) ) );
 
+    emit statusChanged( tr( "Getting map via WMS." ) );
+
     mWaiting = true;
 
     QTime t;
@@ -645,6 +647,8 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
       }
       y = y0 + ++j * mTileHeight * tres;
     }
+
+    emit statusChanged( tr( "Getting tiles via WMS." ) );
 
     mWaiting = true;
 
