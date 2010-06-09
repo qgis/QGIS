@@ -1481,7 +1481,7 @@ void QgsGeorefPluginGui::updateTransformParamLabel()
     labelString += " ";
     labelString += tr( "Translation (%1, %2)" ).arg( origin.x() ).arg( origin.y() ); labelString += " ";
     labelString += tr( "Scale (%1, %2)" ).arg( scaleX ).arg( scaleY ); labelString += " ";
-    labelString += tr( "Rotation: %1" ).arg( rotation );
+    labelString += tr( "Rotation: %1" ).arg( rotation * 180 / M_PI );
   }
 
   double meanError = 0;
