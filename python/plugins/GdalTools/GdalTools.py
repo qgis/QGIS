@@ -29,11 +29,8 @@ import resources_rc
 req_mods = { "osgeo": "osgeo [python-gdal]" }
 
 try:
-  from tools import GdalTools_utils as Utils
-
-  from tools import ( doBuildVRT, doContour, doRasterize, doPolygonize, doMerge, doSieve, doProximity, doNearBlack )
-  from tools import ( doWarp, doGrid, doTranslate, doClipper, doInfo, doProjection, doOverview, doRgbPct, doPctRgb )
-  from tools import ( doSettings, doAbout )
+  from osgeo import gdal
+  from osgeo import ogr
 except ImportError, e:
   error_str = str(e)
   error_mod = error_str.replace( "No module named ", "" )
@@ -52,26 +49,27 @@ class GdalTools:
     except:
       self.QgisVersion = unicode( QGis.qgisVersion )[ 0 ]
 
-    # For i18n support
-    userPluginPath = QFileInfo( QgsApplication.qgisUserDbFilePath() ).path() + "/python/plugins/GdalTools"
-    systemPluginPath = QgsApplication.prefixPath() + "/python/plugins/GdalTools"
+    if QGis.QGIS_VERSION[0:3] < "1.5":
+      # For i18n support
+      userPluginPath = QFileInfo( QgsApplication.qgisUserDbFilePath() ).path() + "/python/plugins/GdalTools"
+      systemPluginPath = QgsApplication.prefixPath() + "/python/plugins/GdalTools"
 
-    overrideLocale = QSettings().value( "locale/overrideFlag", QVariant( False ) ).toBool()
-    if not overrideLocale:
-      localeFullName = QLocale.system().name()
-    else:
-      localeFullName = QSettings().value( "locale/userLocale", QVariant( "" ) ).toString()
+      overrideLocale = QSettings().value( "locale/overrideFlag", QVariant( False ) ).toBool()
+      if not overrideLocale:
+        localeFullName = QLocale.system().name()
+      else:
+        localeFullName = QSettings().value( "locale/userLocale", QVariant( "" ) ).toString()
 
-    if QFileInfo( userPluginPath ).exists():
-      translationPath = userPluginPath + "/i18n/GdalTools_" + localeFullName + ".qm"
-    else:
-      translationPath = systemPluginPath + "/i18n/GdalTools_" + localeFullName + ".qm"
+      if QFileInfo( userPluginPath ).exists():
+        translationPath = userPluginPath + "/i18n/GdalTools_" + localeFullName + ".qm"
+      else:
+        translationPath = systemPluginPath + "/i18n/GdalTools_" + localeFullName + ".qm"
 
-    self.localePath = translationPath
-    if QFileInfo( self.localePath ).exists():
-      self.translator = QTranslator()
-      self.translator.load( self.localePath )
-      QCoreApplication.installTranslator( self.translator )
+      self.localePath = translationPath
+      if QFileInfo( self.localePath ).exists():
+        self.translator = QTranslator()
+        self.translator.load( self.localePath )
+        QCoreApplication.installTranslator( self.translator )
 
   def initGui( self ):
     if int( self.QgisVersion ) < 1:
@@ -80,7 +78,8 @@ class GdalTools:
       + QCoreApplication.translate( "GdalTools", "This version of Gdal Tools requires at least QGIS version 1.0.0\nPlugin will not be enabled." ) )
       return None
 
-    self.GdalVersion = Utils.Version( Utils.GdalConfig.version() )
+    from tools.GdalTools_utils import Version, GdalConfig
+    self.GdalVersion = Version( GdalConfig.version() )
 
     self.menu = QMenu()
     self.menu.setTitle( QCoreApplication.translate( "GdalTools", "&Raster" ) )
@@ -198,77 +197,96 @@ class GdalTools:
     pass
 
   def doBuildVRT( self ):
-    d = doBuildVRT.GdalToolsDialog( self.iface )
+    from tools.doBuildVRT import GdalToolsDialog as BuildVRT
+    d = BuildVRT( self.iface )
     d.show_()
 
   def doContour( self ):
-    d = doContour.GdalToolsDialog( self.iface )
+    from tools.doContour import GdalToolsDialog as Contour
+    d = Contour( self.iface )
     d.show_()
 
   def doRasterize( self ):
-    d = doRasterize.GdalToolsDialog( self.iface )
+    from tools.doRasterize import GdalToolsDialog as Rasterize
+    d = Rasterize( self.iface )
     d.show_()
 
   def doPolygonize( self ):
-    d = doPolygonize.GdalToolsDialog( self.iface )
+    from tools.doPolygonize import GdalToolsDialog as Polygonize
+    d = Polygonize( self.iface )
     d.show_()
 
   def doMerge( self ):
-    d = doMerge.GdalToolsDialog( self.iface )
+    from tools.doMerge import GdalToolsDialog as Merge
+    d = Merge( self.iface )
     d.show_()
 
   def doSieve( self ):
-    d = doSieve.GdalToolsDialog( self.iface )
+    from tools.doSieve import GdalToolsDialog as Sieve
+    d = Sieve( self.iface )
     d.show_()
 
   def doProximity( self ):
-    d = doProximity.GdalToolsDialog( self.iface )
+    from tools.doProximity import GdalToolsDialog as Proximity
+    d = Proximity( self.iface )
     d.show_()
 
   def doNearBlack( self ):
-    d = doNearBlack.GdalToolsDialog( self.iface )
+    from tools.doNearBlack import GdalToolsDialog as NearBlack
+    d = NearBlack( self.iface )
     d.show_()
 
   def doWarp( self ):
-    d = doWarp.GdalToolsDialog( self.iface )
+    from tools.doWarp import GdalToolsDialog as Warp
+    d = Warp( self.iface )
     d.show_()
 
   def doGrid( self ):
-    d = doGrid.GdalToolsDialog( self.iface )
+    from tools.doGrid import GdalToolsDialog as Grid
+    d = Grid( self.iface )
     d.show_()
 
   def doTranslate( self ):
-    d = doTranslate.GdalToolsDialog( self.iface )
+    from tools.doTranslate import GdalToolsDialog as Translate
+    d = Translate( self.iface )
     d.show_()
 
   def doInfo( self ):
-    d = doInfo.GdalToolsDialog( self.iface )
+    from tools.doInfo import GdalToolsDialog as Info
+    d = Info( self.iface )
     d.show_()
 
   def doProjection( self ):
-    d = doProjection.GdalToolsDialog( self.iface )
+    from tools.doProjection import GdalToolsDialog as Projection
+    d = Projection( self.iface )
     d.show_()
 
   def doOverview( self ):
-    d = doOverview.GdalToolsDialog( self.iface )
+    from tools.doOverview import GdalToolsDialog as Overview
+    d = Overview( self.iface )
     d.show_()
 
   def doClipper( self ):
-    d = doClipper.GdalToolsDialog( self.iface )
+    from tools.doClipper import GdalToolsDialog as Clipper
+    d = Clipper( self.iface )
     d.show_()
 
   def doPaletted( self ):
-    d = doRgbPct.GdalToolsDialog( self.iface )
+    from tools.doRgbPct import GdalToolsDialog as RgbPct
+    d = RgbPct( self.iface )
     d.show_()
 
   def doRGB( self ):
-    d = doPctRgb.GdalToolsDialog( self.iface )
+    from tools.doPctRgb import GdalToolsDialog as PctRgb
+    d = PctRgb( self.iface )
     d.show_()
 
   def doSettings( self ):
-    d = doSettings.GdalToolsSettingsDialog( self.iface )
+    from tools.doSettings import GdalToolsSettingsDialog as Settings
+    d = Settings( self.iface )
     d.exec_()
 
   def doAbout( self ):
-    d = doAbout.GdalToolsAboutDialog( self.iface )
+    from tools.doAbout import GdalToolsAboutDialog as About
+    d = About( self.iface )
     d.exec_()
