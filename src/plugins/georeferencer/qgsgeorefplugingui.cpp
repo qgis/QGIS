@@ -1375,7 +1375,7 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
     headers << tr( "Translation x" ) << tr( "Translation y" ) << tr( "Scale x" ) << tr( "Scale y" ) << tr( "Rotation [degrees]" ) << tr( "Mean error [%1]" ).arg( residualUnits );
     parameterTable->setHeaderLabels( headers );
     QStringList row;
-    row << QString::number( origin.x() ) << QString::number( origin.y() ) << QString::number( scaleX ) << QString::number( scaleY ) << QString::number( rotation * 180 / M_PI ) << QString::number( meanError );
+    row << QString::number( origin.x(), 'f', 3 ) << QString::number( origin.y(), 'f', 3 ) << QString::number( scaleX ) << QString::number( scaleY ) << QString::number( rotation * 180 / M_PI ) << QString::number( meanError );
     parameterTable->addRow( row );
     composition->addItem( parameterTable );
     parameterTable->setSceneRect( QRectF( 2, parameterLabel->rect().bottom() + parameterLabel->transform().dy() + 5, 50, 20 ) );
