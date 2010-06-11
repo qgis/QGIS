@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>285</width>
-    <height>179</height>
+    <height>170</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,6 +18,9 @@
     <layout class="QVBoxLayout" name="pluginLayout">
      <property name="sizeConstraint">
       <enum>QLayout::SetNoConstraint</enum>
+     </property>
+     <property name="margin">
+      <number>0</number>
      </property>
     </layout>
    </item>
@@ -30,12 +33,6 @@
    </item>
    <item>
     <widget class="QTextEdit" name="textEditCommand">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
      <property name="minimumSize">
       <size>
        <width>0</width>

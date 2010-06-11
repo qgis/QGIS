@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+   <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -21,10 +21,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QFormLayout" name="formLayout">
-     <property name="fieldGrowthPolicy">
-      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-     </property>
+    <layout class="QGridLayout" name="gridLayout">
      <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
@@ -93,17 +90,17 @@
        </item>
       </layout>
      </item>
-     <item row="2" column="1">
-      <widget class="QSpinBox" name="nearSpin">
-       <property name="maximum">
-        <number>255</number>
-       </property>
-      </widget>
-     </item>
      <item row="2" column="0">
       <widget class="QCheckBox" name="nearCheck">
        <property name="text">
         <string>How &amp;far from black (or white):</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QSpinBox" name="nearSpin">
+       <property name="maximum">
+        <number>255</number>
        </property>
       </widget>
      </item>

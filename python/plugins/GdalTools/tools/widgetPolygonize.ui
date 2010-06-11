@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+   <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -21,7 +21,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QFormLayout" name="formLayout">
+    <layout class="QGridLayout" name="gridLayout">
      <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
@@ -90,17 +90,17 @@
        </item>
       </layout>
      </item>
-     <item row="2" column="1">
-      <widget class="QLineEdit" name="fieldEdit">
-       <property name="text">
-        <string>DN</string>
-       </property>
-      </widget>
-     </item>
      <item row="2" column="0">
       <widget class="QCheckBox" name="fieldCheck">
        <property name="text">
         <string>&amp;Field name:</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLineEdit" name="fieldEdit">
+       <property name="text">
+        <string>DN</string>
        </property>
       </widget>
      </item>

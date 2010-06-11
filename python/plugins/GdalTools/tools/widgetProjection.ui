@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+   <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -35,7 +35,7 @@
     </widget>
    </item>
    <item>
-    <layout class="QFormLayout" name="formLayout">
+    <layout class="QGridLayout" name="gridLayout">
      <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
@@ -67,6 +67,13 @@
        </item>
       </layout>
      </item>
+     <item row="1" column="1">
+      <widget class="QCheckBox" name="recurseCheck">
+       <property name="text">
+        <string>Recurse subdirectories</string>
+       </property>
+      </widget>
+     </item>
      <item row="2" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
@@ -97,13 +104,6 @@
        </property>
        <property name="textFormat">
         <enum>Qt::AutoText</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QCheckBox" name="recurseCheck">
-       <property name="text">
-        <string>Recurse subdirectories</string>
        </property>
       </widget>
      </item>
