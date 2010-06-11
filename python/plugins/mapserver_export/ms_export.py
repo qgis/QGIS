@@ -589,18 +589,24 @@ class Qgis2Map:
           layer_def += "    MINSCALE " + minscale + "\n"
         if maxscale > '':
           layer_def += "    MAXSCALE " + maxscale + "\n"
-
-      
       # Check for label field (ie LABELITEM) and label status
       try:
-        labelOn    = lyr.getElementsByTagName(     "label")[0].childNodes[0].nodeValue.encode('utf-8')
-        labelField = lyr.getElementsByTagName("labelfield")[0].childNodes[0].nodeValue.encode('utf-8')
-        if labelField != '' and labelField is not None and labelOn == "1":
+        labelElements = lyr.getElementsByTagName("label")
+        labelOn = '0'
+        labelField = None
+        # there are actually 3 different label-element in a layer element:
+        for element in labelElements:
+            labelParent = element.parentNode.localName
+            if labelParent == 'maplayer':
+                labelOn = element.childNodes[0].nodeValue.encode('utf-8')
+            if labelParent == 'labelattributes':
+                labelField = element.getAttribute('fieldname').encode('utf-8')
+        if labelField != '' and labelField is not None and labelOn == "1" and labelOn is not None:
           layer_def += "    LABELITEM '" + labelField + "'\n"
       except:
         # no labels
         pass
-      
+    
       # write the CLASS section for rendering
       # First see if there is a single symbol renderer
       if lyr.getElementsByTagName("singlesymbol").length > 0:
