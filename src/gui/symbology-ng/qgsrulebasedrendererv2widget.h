@@ -43,6 +43,8 @@ class QgsRendererRulesTreeWidget : public QTreeWidget
     void populateRulesGroupByScale();
     void populateRulesGroupByFilter();
 
+    QString formatScaleRange( int minDenom, int maxDenom );
+
     QgsRuleBasedRendererV2* mR;
     Grouping mGrouping;
 };

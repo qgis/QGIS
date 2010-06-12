@@ -387,6 +387,15 @@ void QgsRendererRulesTreeWidget::setGrouping( Grouping g )
   populateRules();
 }
 
+QString QgsRendererRulesTreeWidget::formatScaleRange( int minDenom, int maxDenom )
+{
+  if ( maxDenom != 0 )
+    return QString( "<1:%1, 1:%2>" ).arg( minDenom ).arg( maxDenom );
+  else
+    return QString( "<1:%1, 1:inf>" ).arg( minDenom );
+}
+
+
 void QgsRendererRulesTreeWidget::populateRules()
 {
   if ( !mR ) return;
@@ -412,7 +421,7 @@ void QgsRendererRulesTreeWidget::populateRulesNoGrouping()
     if ( txt.isEmpty() ) txt = tr( "(no filter)" );
     if ( rule.dependsOnScale() )
     {
-      txt += QString( ", scale <1:%1, 1:%2>" ).arg( rule.scaleMinDenom() ).arg( rule.scaleMaxDenom() );
+      txt += QString( ", scale " ) + formatScaleRange( rule.scaleMinDenom(), rule.scaleMaxDenom() );
     }
 
     item->setText( 0, txt );
@@ -438,7 +447,7 @@ void QgsRendererRulesTreeWidget::populateRulesGroupByScale()
     {
       QString txt;
       if ( rule.dependsOnScale() )
-        txt = QString( "scale <1:%1, 1:%2>" ).arg( rule.scaleMinDenom() ).arg( rule.scaleMaxDenom() );
+        txt = QString( "scale " ) + formatScaleRange( rule.scaleMinDenom(), rule.scaleMaxDenom() );
       else
         txt = "any scale";
 
