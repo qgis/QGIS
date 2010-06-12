@@ -290,6 +290,7 @@
     <file>themes/gis/mActionAlignRight.png</file>
     <file>themes/gis/mActionAlignTop.png</file>
     <file>themes/gis/mActionAlignVCenter.png</file>
+    <file>themes/gis/mActionCalculateField.png</file>
     <file>themes/gis/mActionCaptureLine.png</file>
     <file>themes/gis/mActionCapturePoint.png</file>
     <file>themes/gis/mActionCapturePolygon.png</file>
