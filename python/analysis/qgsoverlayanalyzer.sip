@@ -1,5 +1,3 @@
-/** polyline is just a list of points */
-typedef QMap<int, QgsField> QgsFieldMap;
 
 /** \ingroup analysis
  * The QGis class provides vector geometry analysis functions

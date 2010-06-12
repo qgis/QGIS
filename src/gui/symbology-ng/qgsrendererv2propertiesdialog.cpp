@@ -8,6 +8,7 @@
 #include "qgssinglesymbolrendererv2widget.h"
 #include "qgscategorizedsymbolrendererv2widget.h"
 #include "qgsgraduatedsymbolrendererv2widget.h"
+#include "qgsrulebasedrendererv2widget.h"
 
 #include "qgssymbollevelsv2dialog.h"
 
@@ -18,7 +19,7 @@
 #include <QKeyEvent>
 #include <QMessageBox>
 
-static bool _initRenderer( QString name, QgsRendererV2WidgetFunc f, QString iconName )
+static bool _initRenderer( QString name, QgsRendererV2WidgetFunc f, QString iconName = QString() )
 {
   QgsRendererV2Registry* reg = QgsRendererV2Registry::instance();
   QgsRendererV2AbstractMetadata* am = reg->rendererMetadata( name );
@@ -30,10 +31,13 @@ static bool _initRenderer( QString name, QgsRendererV2WidgetFunc f, QString icon
 
   m->setWidgetFunction( f );
 
-  QString iconPath = QgsApplication::defaultThemePath() + iconName;
-  QPixmap pix;
-  if ( pix.load( iconPath, "png" ) )
-    m->setIcon( pix );
+  if ( !iconName.isEmpty() )
+  {
+    QString iconPath = QgsApplication::defaultThemePath() + iconName;
+    QPixmap pix;
+    if ( pix.load( iconPath, "png" ) )
+      m->setIcon( pix );
+  }
 
   QgsDebugMsg( "Set for " + name );
   return true;
@@ -48,6 +52,7 @@ static void _initRendererWidgetFunctions()
   _initRenderer( "singleSymbol", QgsSingleSymbolRendererV2Widget::create, "rendererSingleSymbol.png" );
   _initRenderer( "categorizedSymbol", QgsCategorizedSymbolRendererV2Widget::create, "rendererCategorizedSymbol.png" );
   _initRenderer( "graduatedSymbol", QgsGraduatedSymbolRendererV2Widget::create, "rendererGraduatedSymbol.png" );
+  _initRenderer( "RuleRenderer", QgsRuleBasedRendererV2Widget::create );
   initialized = true;
 }
 

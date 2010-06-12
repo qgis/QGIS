@@ -32,6 +32,7 @@ SET(QGIS_CORE_SRCS
   symbology-ng/qgssinglesymbolrendererv2.cpp
   symbology-ng/qgscategorizedsymbolrendererv2.cpp
   symbology-ng/qgsgraduatedsymbolrendererv2.cpp
+  symbology-ng/qgsrulebasedrendererv2.cpp
   symbology-ng/qgsvectorcolorrampv2.cpp
   symbology-ng/qgsstylev2.cpp
   symbology-ng/qgssymbologyv2conversion.cpp
