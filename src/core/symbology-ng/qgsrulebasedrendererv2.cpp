@@ -355,14 +355,20 @@ QList<QgsRuleBasedRendererV2::Rule> QgsRuleBasedRendererV2::refineRuleRanges( Qg
 
 QList<QgsRuleBasedRendererV2::Rule> QgsRuleBasedRendererV2::refineRuleScales( QgsRuleBasedRendererV2::Rule& initialRule, QList<int> scales )
 {
+  qSort(scales); // make sure the scales are in ascending order
   QList<Rule> rules;
-  int oldScale = 0;
+  int oldScale = initialRule.scaleMinDenom();
+  int maxDenom = initialRule.scaleMaxDenom();
   foreach( int scale, scales )
   {
+    if ( initialRule.scaleMinDenom() >= scale )
+      continue; // jump over the first scales out of the interval
+    if ( maxDenom != 0 && maxDenom  <= scale )
+      break; // ignore the latter scales out of the interval
     rules.append( Rule( initialRule.symbol()->clone(), oldScale, scale, initialRule.filterExpression() ) );
     oldScale = scale;
   }
   // last rule
-  rules.append( Rule( initialRule.symbol()->clone(), oldScale, 0, initialRule.filterExpression() ) );
+  rules.append( Rule( initialRule.symbol()->clone(), oldScale, maxDenom, initialRule.filterExpression() ) );
   return rules;
 }
