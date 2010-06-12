@@ -351,7 +351,7 @@ void QgsRendererRulePropsDialog::testFilter()
 
   QApplication::restoreOverrideCursor();
 
-  QMessageBox::information( this, tr( "Filter" ), tr( "Filter returned %1 features" ).arg( count ) );
+  QMessageBox::information( this, tr( "Filter" ), tr( "Filter returned %n feature(s)", "number of filtered features", count ) );
 }
 
 void QgsRendererRulePropsDialog::updateRuleFromGui()

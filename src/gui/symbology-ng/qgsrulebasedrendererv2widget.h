@@ -27,6 +27,8 @@ class QMenu;
 
 class QgsRendererRulesTreeWidget : public QTreeWidget
 {
+    Q_OBJECT
+
   public:
     QgsRendererRulesTreeWidget( QWidget* parent = 0 );
 
