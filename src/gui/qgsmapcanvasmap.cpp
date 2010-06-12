@@ -47,6 +47,7 @@ void QgsMapCanvasMap::resize( QSize size )
   prepareGeometryChange(); // to keep QGraphicsScene indexes up to date on size change
 
   mPixmap = QPixmap( size );
+  mPixmap.fill( mBgColor.rgb() );
   mImage = QImage( size, QImage::Format_RGB32 ); // temporary image - build it here so it is available when switching from QPixmap to QImage rendering
   mCanvas->mapRenderer()->setOutputSize( size, mPixmap.logicalDpiX() );
 }
