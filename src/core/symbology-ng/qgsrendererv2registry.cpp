@@ -4,7 +4,7 @@
 #include "qgssinglesymbolrendererv2.h"
 #include "qgscategorizedsymbolrendererv2.h"
 #include "qgsgraduatedsymbolrendererv2.h"
-
+#include "qgsrulebasedrendererv2.h"
 
 QgsRendererV2Registry* QgsRendererV2Registry::mInstance = NULL;
 
@@ -20,6 +20,10 @@ QgsRendererV2Registry::QgsRendererV2Registry()
   addRenderer( new QgsRendererV2Metadata( "graduatedSymbol",
                                           QObject::tr( "Graduated" ),
                                           QgsGraduatedSymbolRendererV2::create ) );
+
+  addRenderer( new QgsRendererV2Metadata( "RuleRenderer",
+                                          QObject::tr( "Rule-based" ),
+                                          QgsRuleBasedRendererV2::create ) );
 }
 
 QgsRendererV2Registry::~QgsRendererV2Registry()
