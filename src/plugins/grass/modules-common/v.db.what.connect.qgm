@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
-<qgisgrassmodule label="Set/Show database connection for vector" module="v.db.connect">
-	<option key="map" layeroption="layer"/>
+<qgisgrassmodule label="Show database connection for vector" module="v.db.connect">
+	<option key="map"/>
 	<flag key="p" answer="on" hidden="yes"/>
 </qgisgrassmodule>
