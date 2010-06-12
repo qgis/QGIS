@@ -42,7 +42,7 @@ void QgsDisplacementPlugin::initGui()
   //Add new renderer to the registry
 
   QgsRendererV2Registry::instance()->addRenderer( new QgsRendererV2Metadata( "pointDisplacement",
-      QObject::tr( "point Displacement" ),
+      QObject::tr( "Point Displacement" ),
       QgsPointDisplacementRenderer::create, QIcon(),
       QgsPointDisplacementRendererWidget::create ) );
 }
