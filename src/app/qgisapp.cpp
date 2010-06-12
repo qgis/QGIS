@@ -1924,6 +1924,9 @@ void QgisApp::setTheme( QString theThemeName )
   mActionCustomProjection->setIcon( getThemeIcon( "/mActionCustomProjection.png" ) );
   mActionAddWmsLayer->setIcon( getThemeIcon( "/mActionAddWmsLayer.png" ) );
   mActionAddToOverview->setIcon( getThemeIcon( "/mActionInOverview.png" ) );
+  mActionAnnotation->setIcon( getThemeIcon( "/mActionAnnotation.png" ) );
+  mActionFormAnnotation->setIcon( getThemeIcon( "/mActionFormAnnotation.png" ) );
+  mActionTextAnnotation->setIcon( getThemeIcon( "/mActionTextAnnotation.png" ) );  
 
   //change themes of all composers
   QSet<QgsComposer*>::iterator composerIt = mPrintComposers.begin();
