@@ -24,7 +24,7 @@
 #include <math.h>
 #endif
 
-QgsResidualPlotItem::QgsResidualPlotItem( QgsComposition* c ): QgsComposerItem( c ), mConvertScaleToMapUnits( false ), mPixelToMapUnits( 1.0 )
+QgsResidualPlotItem::QgsResidualPlotItem( QgsComposition* c ): QgsComposerItem( c ), mConvertScaleToMapUnits( false )
 {
 
 }
@@ -109,32 +109,21 @@ void QgsResidualPlotItem::paint( QPainter* painter, const QStyleOptionGraphicsIt
 
   //draw scale bar
   double initialScaleBarWidth = rect().width() / 5;
-  int nUnits;
-  double scaleBarWidth;
-  if ( mConvertScaleToMapUnits ) //map units
-  {
-    nUnits = initialScaleBarWidth / minMMPixelRatio * mPixelToMapUnits;
-    scaleBarWidth = nUnits * minMMPixelRatio / mPixelToMapUnits;
-  }
-  else //pixels
-  {
-    nUnits = initialScaleBarWidth / minMMPixelRatio;
-    scaleBarWidth = nUnits * minMMPixelRatio;
-  }
+  double scaleBarWidthUnits = rect().width() / 5 / minMMPixelRatio;
 
   painter->setPen( QColor( 0, 0, 0 ) );
-  painter->drawLine( QPointF( 5, rect().height() - 5 ), QPointF( 5 + scaleBarWidth, rect().height() - 5 ) );
+  painter->drawLine( QPointF( 5, rect().height() - 5 ), QPointF( 5 + initialScaleBarWidth, rect().height() - 5 ) );
   painter->drawLine( QPointF( 5, rect().height() - 5 ), QPointF( 5, rect().height() - 7 ) );
-  painter->drawLine( QPointF( 5 + scaleBarWidth, rect().height() - 5 ), QPointF( 5 + scaleBarWidth, rect().height() - 7 ) );
+  painter->drawLine( QPointF( 5 + initialScaleBarWidth, rect().height() - 5 ), QPointF( 5 + initialScaleBarWidth, rect().height() - 7 ) );
   QFont scaleBarFont;
   scaleBarFont.setPointSize( 9 );
   if ( mConvertScaleToMapUnits )
   {
-    drawText( painter, 5, rect().height() - 4 + fontAscentMillimeters( scaleBarFont ), QString( "%1 map units" ).arg( nUnits ), QFont() );
+    drawText( painter, 5, rect().height() - 4 + fontAscentMillimeters( scaleBarFont ), QString( "%1 map units" ).arg( scaleBarWidthUnits ), QFont() );
   }
   else
   {
-    drawText( painter, 5, rect().height() - 4 + fontAscentMillimeters( scaleBarFont ), QString( "%1 pixels" ).arg( nUnits ), QFont() );
+    drawText( painter, 5, rect().height() - 4 + fontAscentMillimeters( scaleBarFont ), QString( "%1 pixels" ).arg( scaleBarWidthUnits ), QFont() );
   }
 
   drawFrame( painter );

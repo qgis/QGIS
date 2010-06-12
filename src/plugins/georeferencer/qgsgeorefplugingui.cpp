@@ -1403,15 +1403,8 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
   resPlotItem->setExtent( composerMap->extent() );
   resPlotItem->setGCPList( mPoints );
 
-  //convert residual scale bar plot to map units if scaling is equal in x- and y-direction (e.g. helmert)
-  if ( wldTransform )
-  {
-    if ( doubleNear( scaleX, scaleX ) )
-    {
-      resPlotItem->setPixelToMapUnits( scaleX );
-      resPlotItem->setConvertScaleToMapUnits( true );
-    }
-  }
+  //necessary for the correct scale bar unit label
+  resPlotItem->setConvertScaleToMapUnits( residualUnits == tr( "map units" ) );
 
   QgsComposerTextTable* gcpTable = new QgsComposerTextTable( composition );
   gcpTable->setHeaderFont( tableHeaderFont );
