@@ -1103,7 +1103,7 @@ void QgisApp::createActions()
   // Settings Menu Items
 
   mActionToggleFullScreen = new QAction( getThemeIcon( "mActionToggleFullScreen.png" ), tr( "Toggle Full Screen Mode" ), this );
-  shortcuts->registerAction( mActionToggleFullScreen, tr( "Ctrl-F", "Toggle fullscreen mode" ) );
+  shortcuts->registerAction( mActionToggleFullScreen, tr( "Ctrl+F", "Toggle fullscreen mode" ) );
   mActionToggleFullScreen->setStatusTip( tr( "Toggle fullscreen mode" ) );
   connect( mActionToggleFullScreen, SIGNAL( triggered() ), this, SLOT( toggleFullScreen() ) );
 
