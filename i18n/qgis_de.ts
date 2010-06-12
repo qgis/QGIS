@@ -1754,7 +1754,7 @@ Wollen Sie ihn trotzdem abbrechen?</translation>
         <translation>Dialog</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/dialogBase.ui" line="27"/>
+        <location filename="../python/plugins/GdalTools/tools/dialogBase.ui" line="30"/>
         <source>&amp;Load into canvas when finished</source>
         <translation>Nach Abschluß zur &amp;Karte hinzufügen</translation>
     </message>
@@ -1898,22 +1898,22 @@ Wollen Sie ihn trotzdem abbrechen?</translation>
 <context>
     <name>GdalToolsOptionsTable</name>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/optionsTable.ui" line="39"/>
+        <location filename="../python/plugins/GdalTools/tools/optionsTable.ui" line="45"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/optionsTable.ui" line="44"/>
+        <location filename="../python/plugins/GdalTools/tools/optionsTable.ui" line="50"/>
         <source>Value</source>
         <translation>Wert</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/optionsTable.ui" line="54"/>
+        <location filename="../python/plugins/GdalTools/tools/optionsTable.ui" line="60"/>
         <source>Add</source>
         <translation>Hinzufügen</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/optionsTable.ui" line="61"/>
+        <location filename="../python/plugins/GdalTools/tools/optionsTable.ui" line="67"/>
         <source>Remove</source>
         <translation>Entfernen</translation>
     </message>
@@ -1966,40 +1966,40 @@ Wollen Sie ihn trotzdem abbrechen?</translation>
         <translation>Virtuelles Raster erzeugen</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="34"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="31"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="31"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="28"/>
         <source>&amp;Input files:</source>
         <translation>&amp;Eingabedateien:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="56"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="87"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="53"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="59"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="90"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="53"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="84"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="50"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="56"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="87"/>
         <location filename="../python/plugins/GdalTools/tools/widgetConvert.ui" line="63"/>
         <location filename="../python/plugins/GdalTools/tools/widgetConvert.ui" line="87"/>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="56"/>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="97"/>
         <location filename="../python/plugins/GdalTools/tools/widgetInfo.ui" line="54"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="53"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="84"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="59"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="90"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="50"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="81"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="56"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="87"/>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="63"/>
         <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="56"/>
         <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="87"/>
         <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="64"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="85"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="92"/>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="56"/>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="80"/>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="56"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="97"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="107"/>
         <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="56"/>
         <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="87"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="66"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="97"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="125"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="63"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="94"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="139"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="63"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="94"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="122"/>
@@ -2008,41 +2008,41 @@ Wollen Sie ihn trotzdem abbrechen?</translation>
         <translation>Wählen...</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="65"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="31"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="62"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="28"/>
         <location filename="../python/plugins/GdalTools/tools/widgetConvert.ui" line="72"/>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="75"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="62"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="68"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="59"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="65"/>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="65"/>
         <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="65"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="75"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="72"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="72"/>
         <source>&amp;Output file:</source>
         <translation>&amp;Ausgabedatei:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="106"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="110"/>
         <source>Highest</source>
         <translation>Höchste</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="111"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="115"/>
         <source>Average</source>
         <translation>Mittlere</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="116"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="120"/>
         <source>Lowest</source>
         <translation>Niedrigste</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="124"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="93"/>
         <source>&amp;Resolution:</source>
         <translation>A&amp;uflösung:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="131"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="128"/>
         <source>&amp;Source No Data:</source>
         <translation>&amp;Kein Wert der Quelle:</translation>
     </message>
@@ -2052,51 +2052,51 @@ Wollen Sie ihn trotzdem abbrechen?</translation>
         <translation>Clipper</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="62"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="93"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="59"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="90"/>
         <source>&amp;No data value:</source>
         <translation>&amp;Kein Wert-Wert:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="78"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="75"/>
         <source>Re-Enable Clipping</source>
         <translation>Clipping reaktivieren</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="87"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="84"/>
         <source>Select the extent by drag &amp; drop on canvas</source>
         <translation>Grenzen durch Drag &amp; Drop in der Karte wählen</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="94"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="91"/>
         <source>or change the extent coordinates:</source>
         <translation>oder die Grenzkoordinaten ändern:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="105"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="102"/>
         <source>1:</source>
         <translation>1:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="116"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="181"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="113"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="178"/>
         <source>x</source>
         <translation>x</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="133"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="198"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="130"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="195"/>
         <source>y</source>
         <translation>y</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="170"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="167"/>
         <source>2:</source>
         <translation>2:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="221"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="126"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="218"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="123"/>
         <source>Grab pseudocolor table from the first image</source>
         <translation>Pseudofarbtabelle aus erstem Bild entnehmen</translation>
     </message>
@@ -2106,33 +2106,33 @@ Wollen Sie ihn trotzdem abbrechen?</translation>
         <translation>Kontur</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="31"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="28"/>
         <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="28"/>
         <source>&amp;Input file (raster):</source>
         <translation>&amp;Eingabedatei (Raster):</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="68"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="65"/>
         <source>&amp;Output directory for contour lines (shapefile):</source>
         <translation>&amp;Ausgabeverzeichnis für Konturliniene (Shapedatei):</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="101"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="124"/>
         <source>&amp;Attribute name:</source>
         <translation>&amp;Attributname:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="131"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="142"/>
         <source>If not provided, no elevation attribute is attached.</source>
         <translation>Wenn nicht angegeben, wird kein Höhenattribut zugefügt.</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="142"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="156"/>
         <source>ELEV</source>
         <translation>HOEHE</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="149"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="96"/>
         <source>I&amp;nterval between contour lines:</source>
         <translation>I&amp;ntervall zwischen Konturlinien:</translation>
     </message>
@@ -2154,7 +2154,7 @@ Wollen Sie ihn trotzdem abbrechen?</translation>
         <location filename="../python/plugins/GdalTools/tools/widgetConvert.ui" line="35"/>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="28"/>
         <location filename="../python/plugins/GdalTools/tools/widgetInfo.ui" line="28"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="31"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="28"/>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="35"/>
         <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="42"/>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="28"/>
@@ -2204,76 +2204,76 @@ Wollen Sie ihn trotzdem abbrechen?</translation>
         <translation>Datenkriterien</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="167"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="157"/>
         <source>Power:</source>
         <translation>Potenz:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="181"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="171"/>
         <source>Smoothing:</source>
         <translation>Glättung:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="198"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="298"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="384"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="482"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="188"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="288"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="387"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="498"/>
         <source>Radius1:</source>
         <translation>Radius1:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="215"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="315"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="401"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="499"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="205"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="305"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="404"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="515"/>
         <source>Radius2:</source>
         <translation>Radius2:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="232"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="332"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="418"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="516"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="222"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="322"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="421"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="532"/>
         <source>Angle:</source>
         <translation>Winkel:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="249"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="239"/>
         <source>Max points:</source>
         <translation>Max. Punkte:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="263"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="349"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="533"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="253"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="339"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="549"/>
         <source>Min points:</source>
         <translation>Min. Punkte:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="277"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="363"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="435"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="547"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="267"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="353"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="438"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="563"/>
         <source>No data:</source>
         <translation>Kein Wert:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="456"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="472"/>
         <source>Metrics:</source>
         <translation>Kriterien:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="464"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="480"/>
         <source>Minimum</source>
         <translation>Minimum</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="469"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="485"/>
         <source>Maximum</source>
         <translation>Maximum</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="474"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="490"/>
         <source>Range</source>
         <translation>Bereich</translation>
     </message>
@@ -2303,18 +2303,18 @@ Wollen Sie ihn trotzdem abbrechen?</translation>
         <translation>Verschmelzen</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="109"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="106"/>
         <source>Layer stack</source>
         <translation>Layerstapel</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="119"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="116"/>
         <source>Use intersected extent</source>
         <translation>Geschnittene Grenzen verwenden</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="133"/>
-        <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="153"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="130"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="150"/>
         <source>&amp;Creation Options:</source>
         <translation>&amp;Erzeugungsoptionen:</translation>
     </message>
@@ -2324,12 +2324,12 @@ Wollen Sie ihn trotzdem abbrechen?</translation>
         <translation>Fast-Schwarz</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="106"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="96"/>
         <source>How &amp;far from black (or white):</source>
         <translation>Ent&amp;fernung von Schwarz (oder Weiß):</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="115"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="112"/>
         <source>Search for nearly &amp;white (255) pixels instead of black ones</source>
         <translation>Suche fast &amp;weiße (255) statt schwarze Pixel </translation>
     </message>
@@ -2394,12 +2394,12 @@ Wollen Sie ihn trotzdem abbrechen?</translation>
         <translation>&amp;Ausgabedatei für Polygone (Shapedatei):</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="96"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="103"/>
         <source>DN</source>
         <translation>DN</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="103"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="96"/>
         <source>&amp;Field name:</source>
         <translation>&amp;Feldname:</translation>
     </message>
@@ -2414,12 +2414,12 @@ Wollen Sie ihn trotzdem abbrechen?</translation>
         <translation>WARNUNG: aktuelle Projektionsdefinition wird gelöscht</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="73"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="80"/>
         <source>Desired SRS:</source>
         <translation>Gewählte KBS:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="94"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="101"/>
         <source>Output will be:
 - new GeoTiff if input file is not GeoTiff
 - overwritten if input is GeoTiff</source>
@@ -2428,7 +2428,7 @@ Wollen Sie ihn trotzdem abbrechen?</translation>
 - überschrieben, anderenfalls</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="106"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="73"/>
         <source>Recurse subdirectories</source>
         <translation>Unterverzeichnisse durchsuchen</translation>
     </message>
@@ -2483,12 +2483,12 @@ Wollen Sie ihn trotzdem abbrechen?</translation>
         <translation>&amp;Eingabedatei (Shapedatei):</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="75"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="85"/>
         <source>&amp;Output file for rasterized vectors (raster, must exists):</source>
         <translation>&amp;Ausgabedatei für gerasterte Vektoren (Raster muß vorhanden sein):</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="106"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="65"/>
         <source>&amp;Attribute field:</source>
         <translation>&amp;Attributfeld:</translation>
     </message>
@@ -2498,22 +2498,22 @@ Wollen Sie ihn trotzdem abbrechen?</translation>
         <translation>Sieben</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="104"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="118"/>
         <source>4</source>
         <translation>4</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="109"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="123"/>
         <source>8</source>
         <translation>8</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="117"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="96"/>
         <source>&amp;Threshold:</source>
         <translation>&amp;Schwellenwert:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="124"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="110"/>
         <source>&amp;Pixel connections:</source>
         <translation>&amp;Pixelverbindungen:</translation>
     </message>
@@ -2523,18 +2523,18 @@ Wollen Sie ihn trotzdem abbrechen?</translation>
         <translation>Konvertieren</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="38"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="35"/>
         <source>&amp;Input Layer:</source>
         <translation>&amp;Eingabelayer:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="106"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="120"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="131"/>
         <source>&amp;Target SRS:</source>
         <translation>&amp;Ziel-KBS:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="144"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="103"/>
         <source>Output format</source>
         <translation>Ausgabeformat</translation>
     </message>
@@ -2579,17 +2579,17 @@ Wollen Sie ihn trotzdem abbrechen?</translation>
         <translation>Lanczos</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="195"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="205"/>
         <source>&amp;Memory used for caching:</source>
         <translation>&amp;Speicher für Caching:</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="202"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="212"/>
         <source>MB</source>
         <translation>MB</translation>
     </message>
     <message>
-        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="215"/>
+        <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="195"/>
         <source>Set no data value</source>
         <translation>Kein Wert-Wert setzen</translation>
     </message>
@@ -4713,6 +4713,11 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <source>Graduated</source>
         <translation>Abgestuft</translation>
     </message>
+    <message>
+        <location filename="../src/core/symbology-ng/qgsrendererv2registry.cpp" line="25"/>
+        <source>Rule-based</source>
+        <translation>Regelbasierend</translation>
+    </message>
     <message numerus="yes">
         <location filename="../src/app/qgsmaptoolcapture.cpp" line="233"/>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="977"/>
@@ -5225,7 +5230,7 @@ Diese Meldung erscheint höchstwahrscheinlich, weil die Umgebungsvariable DISPLA
         <location filename="../src/app/qgisapp.cpp" line="654"/>
         <source>Ctrl+N</source>
         <comment>New Project</comment>
-        <translation>Ctrl+N</translation>
+        <translation>Strg+N</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="655"/>
@@ -5241,7 +5246,7 @@ Diese Meldung erscheint höchstwahrscheinlich, weil die Umgebungsvariable DISPLA
         <location filename="../src/app/qgisapp.cpp" line="659"/>
         <source>Ctrl+O</source>
         <comment>Open a Project</comment>
-        <translation>Ctrl+O</translation>
+        <translation>Strg+O</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="660"/>
@@ -5257,7 +5262,7 @@ Diese Meldung erscheint höchstwahrscheinlich, weil die Umgebungsvariable DISPLA
         <location filename="../src/app/qgisapp.cpp" line="664"/>
         <source>Ctrl+S</source>
         <comment>Save Project</comment>
-        <translation>Ctrl+S</translation>
+        <translation>Strg+S</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="665"/>
@@ -5293,7 +5298,7 @@ Diese Meldung erscheint höchstwahrscheinlich, weil die Umgebungsvariable DISPLA
         <location filename="../src/app/qgisapp.cpp" line="688"/>
         <source>Ctrl+Q</source>
         <comment>Exit QGIS</comment>
-        <translation>Ctrl+Q</translation>
+        <translation>Strg+Q</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="689"/>
@@ -5330,7 +5335,7 @@ Diese Meldung erscheint höchstwahrscheinlich, weil die Umgebungsvariable DISPLA
         <location filename="../src/app/qgisapp.cpp" line="1039"/>
         <source>Ctrl+D</source>
         <comment>Remove a Layer</comment>
-        <translation>Ctrl+D</translation>
+        <translation>Strg+D</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1040"/>
@@ -5373,6 +5378,12 @@ Diese Meldung erscheint höchstwahrscheinlich, weil die Umgebungsvariable DISPLA
         <translation>Alle Layer ausblenden</translation>
     </message>
     <message>
+        <location filename="../src/app/qgisapp.cpp" line="1106"/>
+        <source>Ctrl+F</source>
+        <comment>Toggle fullscreen mode</comment>
+        <translation>Strg+F</translation>
+    </message>
+    <message>
         <location filename="../src/app/qgisapp.cpp" line="1110"/>
         <source>Project Properties...</source>
         <translation>Projekteinstellungen...</translation>
@@ -5412,7 +5423,7 @@ Diese Meldung erscheint höchstwahrscheinlich, weil die Umgebungsvariable DISPLA
         <location filename="../src/app/qgisapp.cpp" line="1167"/>
         <source>Ctrl+H</source>
         <comment>QGIS Home Page</comment>
-        <translation>Ctrl+H</translation>
+        <translation>Strg+H</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1165"/>
@@ -5449,7 +5460,7 @@ Diese Meldung erscheint höchstwahrscheinlich, weil die Umgebungsvariable DISPLA
         <location filename="../src/app/qgisapp.cpp" line="949"/>
         <source>Ctrl+R</source>
         <comment>Refresh Map</comment>
-        <translation>Ctrl+R</translation>
+        <translation>Strg+R</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="950"/>
@@ -5466,7 +5477,7 @@ Diese Meldung erscheint höchstwahrscheinlich, weil die Umgebungsvariable DISPLA
         <location filename="../src/app/qgisapp.cpp" line="860"/>
         <source>Ctrl++</source>
         <comment>Zoom In</comment>
-        <translation>Ctrl++</translation>
+        <translation>Strg++</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="864"/>
@@ -5478,7 +5489,7 @@ Diese Meldung erscheint höchstwahrscheinlich, weil die Umgebungsvariable DISPLA
         <location filename="../src/app/qgisapp.cpp" line="865"/>
         <source>Ctrl+-</source>
         <comment>Zoom Out</comment>
-        <translation>Ctrl+-</translation>
+        <translation>Strg+-</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="901"/>
@@ -5567,7 +5578,7 @@ Diese Meldung erscheint höchstwahrscheinlich, weil die Umgebungsvariable DISPLA
         <location filename="../src/app/qgisapp.cpp" line="939"/>
         <source>Ctrl+B</source>
         <comment>New Bookmark</comment>
-        <translation>Ctrl+B</translation>
+        <translation>Strg+B</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="940"/>
@@ -5800,7 +5811,7 @@ Diese Meldung erscheint höchstwahrscheinlich, weil die Umgebungsvariable DISPLA
         <location filename="../src/app/qgisapp.cpp" line="1158"/>
         <source>Ctrl+?</source>
         <comment>Help Documentation (Mac)</comment>
-        <translation>Ctrl+?</translation>
+        <translation>Strg+?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5039"/>
@@ -6028,7 +6039,7 @@ Bitte nehmen Sie Kontakt zu den Entwicklern auf.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="713"/>
         <source>Ctrl+Z</source>
-        <translation>Ctrl+Z</translation>
+        <translation>Strg+Z</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="714"/>
@@ -6054,7 +6065,7 @@ Bitte nehmen Sie Kontakt zu den Entwicklern auf.</translation>
         <location filename="../src/app/qgisapp.cpp" line="679"/>
         <source>Ctrl+P</source>
         <comment>New Print Composer</comment>
-        <translation>Ctrl+P</translation>
+        <translation>Strg+P</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="680"/>
@@ -6075,7 +6086,7 @@ Bitte nehmen Sie Kontakt zu den Entwicklern auf.</translation>
         <location filename="../src/app/qgisapp.cpp" line="697"/>
         <location filename="../src/app/qgisapp.cpp" line="725"/>
         <source>Ctrl+X</source>
-        <translation>Ctrl+X</translation>
+        <translation>Strg+X</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="698"/>
@@ -6091,7 +6102,7 @@ Bitte nehmen Sie Kontakt zu den Entwicklern auf.</translation>
         <location filename="../src/app/qgisapp.cpp" line="702"/>
         <location filename="../src/app/qgisapp.cpp" line="731"/>
         <source>Ctrl+C</source>
-        <translation>Ctrl+C</translation>
+        <translation>Strg+C</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="703"/>
@@ -6107,7 +6118,7 @@ Bitte nehmen Sie Kontakt zu den Entwicklern auf.</translation>
         <location filename="../src/app/qgisapp.cpp" line="707"/>
         <location filename="../src/app/qgisapp.cpp" line="737"/>
         <source>Ctrl+V</source>
-        <translation>Ctrl+V</translation>
+        <translation>Strg+V</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="708"/>
@@ -6219,7 +6230,7 @@ Bitte nehmen Sie Kontakt zu den Entwicklern auf.</translation>
         <location filename="../src/app/qgisapp.cpp" line="912"/>
         <source>Ctrl+J</source>
         <comment>Zoom to Selection</comment>
-        <translation>Ctrl+J</translation>
+        <translation>Strg+J</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="926"/>
@@ -6382,10 +6393,9 @@ Bitte nehmen Sie Kontakt zu den Entwicklern auf.</translation>
         <translation>Auf Vollbildmodus schalten</translation>
     </message>
     <message>
-        <location filename="../src/app/qgisapp.cpp" line="1106"/>
         <source>Ctrl-F</source>
         <comment>Toggle fullscreen mode</comment>
-        <translation>Vollbildmodus umschalten</translation>
+        <translation type="obsolete">Vollbildmodus umschalten</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1111"/>
@@ -6402,7 +6412,7 @@ Bitte nehmen Sie Kontakt zu den Entwicklern auf.</translation>
         <location filename="../src/app/qgisapp.cpp" line="1136"/>
         <source>Ctrl+M</source>
         <comment>Minimize Window</comment>
-        <translation>Ctrl+M</translation>
+        <translation>Strg+M</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1137"/>
@@ -7714,7 +7724,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="145"/>
         <source>Ctrl+S</source>
-        <translation>Ctrl+S</translation>
+        <translation>Strg+S</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="152"/>
@@ -7729,7 +7739,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="171"/>
         <source>Ctrl+C</source>
-        <translation>Ctrl+C</translation>
+        <translation>Strg+C</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="178"/>
@@ -7739,7 +7749,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="197"/>
         <source>Ctrl+J</source>
-        <translation>Ctrl+J</translation>
+        <translation>Strg+J</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="204"/>
@@ -8708,7 +8718,7 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="447"/>
         <source>Ctrl+Q</source>
-        <translation>Ctrl+Q</translation>
+        <translation>Strg+Q</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="455"/>
@@ -12618,7 +12628,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="175"/>
         <source>Ctrl+O</source>
-        <translation>Ctrl+O</translation>
+        <translation>Strg+O</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="180"/>
@@ -12629,7 +12639,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="186"/>
         <source>Ctrl++</source>
-        <translation>Ctrl++</translation>
+        <translation>Strg++</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="191"/>
@@ -12640,7 +12650,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="197"/>
         <source>Ctrl+-</source>
-        <translation>Ctrl+-</translation>
+        <translation>Strg+-</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="202"/>
@@ -12685,7 +12695,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="246"/>
         <source>Ctrl+D</source>
-        <translation>Ctrl+D</translation>
+        <translation>Strg+D</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="251"/>
@@ -12713,7 +12723,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="276"/>
         <source>Ctrl+C</source>
-        <translation>Ctrl+C</translation>
+        <translation>Strg+C</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="284"/>
@@ -12736,7 +12746,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="309"/>
         <source>Ctrl+S</source>
-        <translation>Ctrl+S</translation>
+        <translation>Strg+S</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="314"/>
@@ -23371,14 +23381,96 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsRendererRulePropsDialog</name>
+    <message>
+        <location filename="../src/ui/qgsrendererrulepropsdialogbase.ui" line="14"/>
+        <source>Rule properties</source>
+        <translation>Regeleigenschaften</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsrendererrulepropsdialogbase.ui" line="22"/>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="354"/>
+        <source>Filter</source>
+        <translation>Filter</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsrendererrulepropsdialogbase.ui" line="32"/>
+        <source>Test</source>
+        <translation>Testen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsrendererrulepropsdialogbase.ui" line="41"/>
+        <source>Scale range</source>
+        <translation>Maßstabsbereich</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsrendererrulepropsdialogbase.ui" line="53"/>
+        <source>Min. scale</source>
+        <translation>Min. Maßstab</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsrendererrulepropsdialogbase.ui" line="63"/>
+        <location filename="../src/ui/qgsrendererrulepropsdialogbase.ui" line="92"/>
+        <source>1 : </source>
+        <translation>1 : </translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsrendererrulepropsdialogbase.ui" line="82"/>
+        <source>Max. scale</source>
+        <translation>Max. Maßstab</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsrendererrulepropsdialogbase.ui" line="120"/>
+        <source>Symbol</source>
+        <translation>Symbol</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="326"/>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="333"/>
+        <source>Error</source>
+        <translation>Fehler</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="326"/>
+        <source>Filter expression parsing error:
+</source>
+        <translation>Filterausdrucksfehler:
+</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="333"/>
+        <source>Filter is empty</source>
+        <translation>Filter ist leer</translation>
+    </message>
+    <message numerus="yes">
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="354"/>
+        <source>Filter returned %n feature(s)</source>
+        <comment>number of filtered features</comment>
+        <translation>
+            <numerusform>Filter ergab ein Objekt</numerusform>
+            <numerusform>Filter ergab %n Objekte</numerusform>
+        </translation>
+    </message>
+</context>
+<context>
+    <name>QgsRendererRulesTreeWidget</name>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="421"/>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="464"/>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="483"/>
+        <source>(no filter)</source>
+        <translation>(kein Filter)</translation>
+    </message>
+</context>
+<context>
     <name>QgsRendererV2PropertiesDialog</name>
     <message>
-        <location filename="../src/gui/symbology-ng/qgsrendererv2propertiesdialog.cpp" line="207"/>
+        <location filename="../src/gui/symbology-ng/qgsrendererv2propertiesdialog.cpp" line="212"/>
         <source>Symbology</source>
         <translation>Darstellung</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgsrendererv2propertiesdialog.cpp" line="208"/>
+        <location filename="../src/gui/symbology-ng/qgsrendererv2propertiesdialog.cpp" line="213"/>
         <source>Do you wish to use the original symbology implementation for this layer?</source>
         <translation>Wollen Sie die vorherige Darstellungsimplementierung für diesen Layer nutzen?</translation>
     </message>
@@ -23409,6 +23501,119 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsrendererv2propsdialogbase.ui" line="80"/>
         <source>This renderer doesn&apos;t implement a graphical interface.</source>
         <translation>Diese Darstellung hat keine grafische Benutzeroberfläche.</translation>
+    </message>
+</context>
+<context>
+    <name>QgsRuleBasedRendererV2Widget</name>
+    <message>
+        <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="14"/>
+        <source>Form</source>
+        <translation>Formular</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="20"/>
+        <source>Rules</source>
+        <translation>Regeln</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="34"/>
+        <source>Rule</source>
+        <translation>Regel</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="44"/>
+        <source>Add</source>
+        <translation>Hinzufügen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="51"/>
+        <source>Refine</source>
+        <translation>Präzisieren</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="58"/>
+        <source>Edit</source>
+        <translation>Bearbeiten</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="65"/>
+        <source>Remove</source>
+        <translation>Entfernen</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="74"/>
+        <source>Rule grouping</source>
+        <translation>Regelgruppierung</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="80"/>
+        <source>No grouping</source>
+        <translation>Keine</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="90"/>
+        <source>Group by filter</source>
+        <translation>nach Filter</translation>
+    </message>
+    <message>
+        <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="97"/>
+        <source>Group by scale</source>
+        <translation>nach Maßstab</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="62"/>
+        <source>Add scales</source>
+        <translation>Maßstab hinzufügen</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="63"/>
+        <source>Add categories</source>
+        <translation>Kategorie hinzufügen</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="64"/>
+        <source>Add ranges</source>
+        <translation>Bereiche hinzufügen</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="129"/>
+        <source>Edit rule</source>
+        <translation>Regel bearbeiten</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="129"/>
+        <source>Groups of rules cannot be edited.</source>
+        <translation>Regelgruppen können nicht bearbeitet werden.</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="234"/>
+        <source>Refine a rule to categories</source>
+        <translation>Eine Regel für Kategorien präzisieren</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="256"/>
+        <source>Refine a rule to ranges</source>
+        <translation>Eine Regel für Maßstäbe präzisieren</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="277"/>
+        <source>Scale refinement</source>
+        <translation>Eine Regel für Maßstäbe präzisieren</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="278"/>
+        <source>Please enter scale denominators at which will split the rule, separate them by commas (e.g. 1000,5000):</source>
+        <translation>Bitte geben Sie einen Maßstabsnenner an bie dem die Regel aufgeteilt wreden soll. Trennen Sie sie durch Kommata (z.B. 1000,5000):</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="290"/>
+        <source>Error</source>
+        <translation>Fehler</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="290"/>
+        <source>&quot;%1&quot; is not valid scale denominator, ignoring it.</source>
+        <translation>&quot;%1&quot; wird als ungültiger Nenner ignoriert.</translation>
     </message>
 </context>
 <context>
@@ -26426,7 +26631,7 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="353"/>
         <source>Ctrl+N</source>
-        <translation>Ctrl+N</translation>
+        <translation>Strg+N</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="360"/>
@@ -26436,7 +26641,7 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="370"/>
         <source>Ctrl+X</source>
-        <translation>Ctrl+X</translation>
+        <translation>Strg+X</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="377"/>
@@ -31031,14 +31236,18 @@ Erweiterung wird nicht aktiviert.</translation>
         <translation>Setze Benutzer/Passwort für Treiber/Datenbank</translation>
     </message>
     <message>
-        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="368"/>
         <source>Set/Show database connection for vector</source>
-        <translation>Setze/Zeige Datenbankverbindung für Vektor</translation>
+        <translation type="obsolete">Setze/Zeige Datenbankverbindung für Vektor</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="368"/>
+        <source>Sets the boundary definitions for a raster map</source>
+        <translation>Setzt die Grenzdefinitionen für eine Rasterkarte</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="369"/>
-        <source>Sets the boundary definitions for a raster map</source>
-        <translation>Setzt die Grenzdefinitionen für eine Rasterkarte</translation>
+        <source>Show database connection for vector</source>
+        <translation>Datenbankverbindung für Vektor anzeigen</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="370"/>
