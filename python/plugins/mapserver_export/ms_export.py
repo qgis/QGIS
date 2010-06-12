@@ -284,7 +284,7 @@ class Qgis2Map:
     stringToAddTo = ""
 
     xmin = self.qgs.getElementsByTagName("xmin")
-    stringToAddTo += "    EXTENT "
+    stringToAddTo += "  EXTENT "
     stringToAddTo += xmin[0].childNodes[0].nodeValue.encode('utf-8')
     stringToAddTo += " "
 
@@ -383,7 +383,7 @@ class Qgis2Map:
 
     destsrs = self.qgs.getElementsByTagName("destinationsrs")[0]
     try:
-      epsg = destsrs.getElementsByTagName("epsg")[0].childNodes[0].nodeValue.encode("utf-8")
+      epsg = destsrs.getElementsByTagName("srid")[0].childNodes[0].nodeValue.encode("utf-8")
     except:
       # default to epsg
       epsg="4326"
@@ -634,7 +634,7 @@ class Qgis2Map:
   def getEpsg(self, lyr):
     try:
       srs = lyr.getElementsByTagName('srs')[0].getElementsByTagName('spatialrefsys')[0]
-      return srs.getElementsByTagName('epsg')[0].childNodes[0].nodeValue.encode('utf-8')
+      return srs.getElementsByTagName('srid')[0].childNodes[0].nodeValue.encode('utf-8')
     except:  
       #Use 4326 as a sensible default if the above fails
       return "4326"
