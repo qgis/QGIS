@@ -24,7 +24,7 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
     self.cancel_close = self.buttonBox_2.button( QDialogButtonBox.Close )
     self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
     self.progressBar.setValue (0 )
-  
+
   def checkA( self ):
     inputLayer = unicode( self.inShapeA.currentText() )
     if inputLayer != "":
@@ -33,7 +33,7 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
         self.useSelectedA.setCheckState( Qt.Checked )
       else:
         self.useSelectedA.setCheckState( Qt.Unchecked )
-  
+
   def checkB( self ):
     inputLayer = unicode( self.inShapeB.currentText() )
     if inputLayer != "":
@@ -42,7 +42,7 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
         self.useSelectedB.setCheckState( Qt.Checked )
       else:
         self.useSelectedB.setCheckState( Qt.Unchecked )
-  
+
   def update( self ):
     self.attrib.clear()
     inputLayer = unicode( self.inShapeA.currentText() )
@@ -53,7 +53,7 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
         self.attrib.addItem( unicode( changedField[i].name() ) )
       if self.myFunction == 4:
         self.attrib.addItem( "--- " + self.tr( "Dissolve all" ) + " ---" )
-  
+
   def accept( self ):
     if self.inShapeA.currentText() == "":
       QMessageBox.warning( self, self.tr("Geoprocessing"), self.tr( "Please specify an input layer" ) )
@@ -77,24 +77,24 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
       else:
         self.outShape.clear()
         if self.attrib.isEnabled():
-          self.geoprocessing( self.inShapeA.currentText(), self.inShapeB.currentText(), 
+          self.geoprocessing( self.inShapeA.currentText(), self.inShapeB.currentText(),
           unicode( self.attrib.currentText() ), self.mergeOutput.checkState(), self.useSelectedA.checkState(),
-          self.useSelectedB.checkState() )
+          self.useSelectedB.checkState(), self.spnSegments.value() )
         else:
           if self.param.isEnabled() and self.param.isVisible():
             parameter = float( self.param.text() )
           else:
             parameter = None
-          self.geoprocessing( self.inShapeA.currentText(), self.inShapeB.currentText(), 
-          parameter, self.mergeOutput.checkState(), self.useSelectedA.checkState(), self.useSelectedB.checkState() )
-  
+          self.geoprocessing( self.inShapeA.currentText(), self.inShapeB.currentText(),
+          parameter, self.mergeOutput.checkState(), self.useSelectedA.checkState(), self.useSelectedB.checkState(), self.spnSegments.value() )
+
   def outFile( self ):
     self.outShape.clear()
     ( self.shapefileName, self.encoding ) = ftools_utils.saveDialog( self )
     if self.shapefileName is None or self.encoding is None:
       return
     self.outShape.setText( QString( self.shapefileName ) )
-  
+
   def manageGui( self ):
     if self.myFunction == 1:  # Buffer
       self.label_2.hide()
@@ -110,6 +110,8 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
       self.rdoField.setText( self.tr( "Create convex hulls based on input field" ) )
       self.label_4.hide()
       self.param.hide()
+      self.lblSegments.hide()
+      self.spnSegments.hide()
       self.setWindowTitle( self.tr( "Convex hull(s)" ) )
       self.mergeOutput.hide()
     elif self.myFunction == 4: # Dissolve
@@ -121,6 +123,8 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
       self.param.hide()
       self.rdoField.hide()
       self.mergeOutput.hide()
+      self.lblSegments.hide()
+      self.spnSegments.hide()
       self.setWindowTitle( self.tr( "Dissolve" ) )
     else:
       self.rdoBuffer.hide()
@@ -129,6 +133,8 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
       self.rdoField.hide()
       self.attrib.hide()
       self.mergeOutput.hide()
+      self.lblSegments.hide()
+      self.spnSegments.hide()
       if self.myFunction == 3: # Difference
         self.label_2.setText( self.tr( "Difference layer" ) )
         self.setWindowTitle( self.tr( "Difference" ) )
@@ -149,7 +155,7 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
     myListB = []
     self.inShapeA.clear()
     self.inShapeB.clear()
-    
+
     if self.myFunction == 5 or self.myFunction == 8 or self.myFunction == 3:
       myListA = ftools_utils.getLayerNames( [ QGis.Point, QGis.Line, QGis.Polygon ] )
       myListB = ftools_utils.getLayerNames( [ QGis.Polygon ] )
@@ -175,15 +181,15 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
 #7: Symetrical Difference
 #8: Clip
 
-  def geoprocessing( self,  myLayerA,  myLayerB,  myParam,  myMerge, mySelectionA, mySelectionB ):
+  def geoprocessing( self,  myLayerA,  myLayerB,  myParam,  myMerge, mySelectionA, mySelectionB, mySegments ):
     check = QFile( self.shapefileName )
     if check.exists():
       if not QgsVectorFileWriter.deleteShapeFile( self.shapefileName ):
         QMessageBox.warning( self, self.tr("Geoprocessing"), self.tr( "Unable to delete existing shapefile." ) )
         return
     self.buttonOk.setEnabled( False )
-    self.testThread = geoprocessingThread( self.iface.mainWindow(), self, self.myFunction, myLayerA, 
-    myLayerB, myParam, myMerge, mySelectionA, mySelectionB, self.shapefileName, self.encoding )
+    self.testThread = geoprocessingThread( self.iface.mainWindow(), self, self.myFunction, myLayerA,
+    myLayerB, myParam, myMerge, mySelectionA, mySelectionB, mySegments, self.shapefileName, self.encoding )
     QObject.connect( self.testThread, SIGNAL( "runFinished(PyQt_PyObject)" ), self.runFinishedFromThread )
     QObject.connect( self.testThread, SIGNAL( "runStatus(PyQt_PyObject)" ), self.runStatusFromThread )
     QObject.connect( self.testThread, SIGNAL( "runRange(PyQt_PyObject)" ), self.runRangeFromThread )
@@ -191,11 +197,11 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
     QObject.connect( self.cancel_close, SIGNAL( "clicked()" ), self.cancelThread )
     self.testThread.start()
     return True
-  
+
   def cancelThread( self ):
     self.testThread.stop()
     self.buttonOk.setEnabled( True )
-  
+
   def runFinishedFromThread( self, results ):
     self.testThread.stop()
     self.buttonOk.setEnabled( True )
@@ -226,16 +232,16 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
     if addToTOC == QMessageBox.Yes:
       if not ftools_utils.addShapeToCanvas( unicode( self.shapefileName ) ):
           QMessageBox.warning( self, self.tr("Geoprocessing"), self.tr( "Error loading output shapefile:\n%1" ).arg( unicode( self.shapefileName ) ))
-    
+
   def runStatusFromThread( self, status ):
     self.progressBar.setValue( status )
-  
+
   def runRangeFromThread( self, range_vals ):
     self.progressBar.setRange( range_vals[ 0 ], range_vals[ 1 ] )
-  
+
 class geoprocessingThread( QThread ):
-  def __init__( self, parentThread, parentObject, function, myLayerA, myLayerB, 
-  myParam, myMerge, mySelectionA, mySelectionB, myName, myEncoding ):
+  def __init__( self, parentThread, parentObject, function, myLayerA, myLayerB,
+  myParam, myMerge, mySelectionA, mySelectionB, mySegments, myName, myEncoding ):
     QThread.__init__( self, parentThread )
     self.parent = parentObject
     self.running = False
@@ -246,9 +252,10 @@ class geoprocessingThread( QThread ):
     self.myMerge = myMerge
     self.mySelectionA = mySelectionA
     self.mySelectionB = mySelectionB
+    self.mySegments = int( mySegments )
     self.myName = myName
     self.myEncoding = myEncoding
-  
+
   def run( self ):
     self.running = True
     self.vlayerA = ftools_utils.getVectorLayerByName( self.myLayerA )
@@ -276,10 +283,10 @@ class geoprocessingThread( QThread ):
         geos, feature, match = self.clip()
     self.emit( SIGNAL( "runFinished(PyQt_PyObject)" ), (geos, feature, match, error) )
     self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
-  
+
   def stop(self):
     self.running = False
-  
+
   def buffering( self, useField ):
     GEOS_EXCEPT = True
     FEATURE_EXCEPT = True
@@ -287,7 +294,7 @@ class geoprocessingThread( QThread ):
     allAttrs = vproviderA.attributeIndexes()
     vproviderA.select( allAttrs )
     fields = vproviderA.fields()
-    writer = QgsVectorFileWriter( self.myName, self.myEncoding, 
+    writer = QgsVectorFileWriter( self.myName, self.myEncoding,
     fields, QGis.WKBPolygon, vproviderA.crs() )
     outFeat = QgsFeature()
     inFeat = QgsFeature()
@@ -311,7 +318,7 @@ class geoprocessingThread( QThread ):
             value = self.myParam
           inGeom = QgsGeometry( inFeat.geometry() )
           try:
-            outGeom = inGeom.buffer( float( value ), 5 )
+            outGeom = inGeom.buffer( float( value ), self.mySegments )
             if first:
               tempGeom = QgsGeometry( outGeom )
               first = False
@@ -341,7 +348,7 @@ class geoprocessingThread( QThread ):
             value = self.myParam
           inGeom = QgsGeometry( inFeat.geometry() )
           try:
-            outGeom = inGeom.buffer( float( value ), 5 )
+            outGeom = inGeom.buffer( float( value ), self.mySegments )
             try:
               outFeat.setGeometry( outGeom )
               outFeat.setAttributeMap( atMap )
@@ -370,7 +377,7 @@ class geoprocessingThread( QThread ):
             value = self.myParam
           inGeom = QgsGeometry( inFeat.geometry() )
           try:
-            outGeom = inGeom.buffer( float( value ), 5 )
+            outGeom = inGeom.buffer( float( value ), self.mySegments )
             if first:
               tempGeom = QgsGeometry( outGeom )
               first = False
@@ -401,7 +408,7 @@ class geoprocessingThread( QThread ):
             value = self.myParam
           inGeom = QgsGeometry( inFeat.geometry() )
           try:
-            outGeom = inGeom.buffer( float( value ), 5 )
+            outGeom = inGeom.buffer( float( value ), self.mySegments )
             try:
               outFeat.setGeometry( outGeom )
               outFeat.setAttributeMap( atMap )
@@ -416,7 +423,7 @@ class geoprocessingThread( QThread ):
           self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
     del writer
     return GEOS_EXCEPT, FEATURE_EXCEPT, True
-  
+
   def convex_hull(self, useField ):
     GEOS_EXCEPT = True
     FEATURE_EXCEPT = True
@@ -424,14 +431,14 @@ class geoprocessingThread( QThread ):
     allAttrsA = vproviderA.attributeIndexes()
     vproviderA.select(allAttrsA)
     fields = vproviderA.fields()
-    writer = QgsVectorFileWriter( self.myName, self.myEncoding, 
+    writer = QgsVectorFileWriter( self.myName, self.myEncoding,
     fields, QGis.WKBPolygon, vproviderA.crs() )
     inFeat = QgsFeature()
     outFeat = QgsFeature()
     inGeom = QgsGeometry()
     outGeom = QgsGeometry()
     nElement = 0
-    
+
     # there is selection in input layer
     if self.mySelectionA:
       nFeat = self.vlayerA.selectedFeatureCount()
@@ -501,7 +508,7 @@ class geoprocessingThread( QThread ):
           first = True
           outID = 0
           vproviderA.select( allAttrsA )#, rect )
-          vproviderA.rewind()
+          #vproviderA.rewind()
           while vproviderA.nextFeature( inFeat ):
             atMap = inFeat.attributeMap()
             idVar = atMap[ self.myParam ]
@@ -531,7 +538,7 @@ class geoprocessingThread( QThread ):
         self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
         self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
         hull = []
-        vproviderA.rewind()
+        #vproviderA.rewind()
         vproviderA.select(allAttrsA)
         while vproviderA.nextFeature( inFeat ):
           inGeom = QgsGeometry( inFeat.geometry() )
@@ -548,14 +555,14 @@ class geoprocessingThread( QThread ):
           GEOS_EXCEPT = False
     del writer
     return GEOS_EXCEPT, FEATURE_EXCEPT, True
-  
+
   def dissolve( self, useField ):
     GEOS_EXCEPT = True
     FEATURE_EXCEPT = True
     vproviderA = self.vlayerA.dataProvider()
     allAttrsA = vproviderA.attributeIndexes()
     fields = vproviderA.fields()
-    writer = QgsVectorFileWriter( self.myName, self.myEncoding, 
+    writer = QgsVectorFileWriter( self.myName, self.myEncoding,
     fields, vproviderA.geometryType(), vproviderA.crs() )
     inFeat = QgsFeature()
     outFeat = QgsFeature()
@@ -685,7 +692,7 @@ class geoprocessingThread( QThread ):
             writer.addFeature( outFeat )
     del writer
     return GEOS_EXCEPT, FEATURE_EXCEPT, True
-  
+
   def difference( self ):
     GEOS_EXCEPT = True
     FEATURE_EXCEPT = True
@@ -703,7 +710,7 @@ class geoprocessingThread( QThread ):
         crs_match = None
     else:
         crs_match = crsA == crsB
-    writer = QgsVectorFileWriter( self.myName, self.myEncoding, 
+    writer = QgsVectorFileWriter( self.myName, self.myEncoding,
     fields, vproviderA.geometryType(), vproviderA.crs() )
     inFeatA = QgsFeature()
     inFeatB = QgsFeature()
@@ -842,7 +849,7 @@ class geoprocessingThread( QThread ):
               continue
     del writer
     return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match
-  
+
   def intersect( self ):
     GEOS_EXCEPT = True
     FEATURE_EXCEPT = True
@@ -864,7 +871,7 @@ class geoprocessingThread( QThread ):
     if not longNames.isEmpty():
       message = QString( 'Following field names are longer than 10 characters:\n%1' ).arg( longNames.join( '\n' ) )
       return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match, message
-    writer = QgsVectorFileWriter( self.myName, self.myEncoding, 
+    writer = QgsVectorFileWriter( self.myName, self.myEncoding,
     fields, vproviderA.geometryType(), vproviderA.crs() )
     if writer.hasError():
       return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match, writer.errorMessage()
@@ -984,7 +991,7 @@ class geoprocessingThread( QThread ):
           geom = QgsGeometry( inFeatA.geometry() )
           atMapA = inFeatA.attributeMap()
           intersects = index.intersects( geom.boundingBox() )
-          for id in intersects: 
+          for id in intersects:
             vproviderB.featureAtId( int( id ), inFeatB , True, allAttrsB )
             tmpGeom = QgsGeometry( inFeatB.geometry() )
             try:
@@ -1010,7 +1017,7 @@ class geoprocessingThread( QThread ):
     del writer
     print crs_match
     return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match, None
-  
+
   def union( self ):
     GEOS_EXCEPT = True
     FEATURE_EXCEPT = True
@@ -1032,7 +1039,7 @@ class geoprocessingThread( QThread ):
     if not longNames.isEmpty():
       message = QString( 'Following field names are longer than 10 characters:\n%1' ).arg( longNames.join( '\n' ) )
       return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match, message
-    writer = QgsVectorFileWriter( self.myName, self.myEncoding, 
+    writer = QgsVectorFileWriter( self.myName, self.myEncoding,
     fields, vproviderA.geometryType(), vproviderA.crs() )
     if writer.hasError():
       return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match, writer.errorMessage()
@@ -1144,7 +1151,7 @@ class geoprocessingThread( QThread ):
       nElement += 1
     del writer
     return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match, None
-  
+
   def symetrical_difference( self ):
     GEOS_EXCEPT = True
     FEATURE_EXCEPT = True
@@ -1166,7 +1173,7 @@ class geoprocessingThread( QThread ):
     if not longNames.isEmpty():
       message = QString( 'Following field names are longer than 10 characters:\n%1' ).arg( longNames.join( '\n' ) )
       return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match, message
-    writer = QgsVectorFileWriter( self.myName, self.myEncoding, 
+    writer = QgsVectorFileWriter( self.myName, self.myEncoding,
     fields, vproviderA.geometryType(), vproviderA.crs() )
     if writer.hasError():
       return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match, writer.errorMessage()
@@ -1237,7 +1244,7 @@ class geoprocessingThread( QThread ):
           continue
     del writer
     return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match, None
-  
+
   def clip( self ):
     GEOS_EXCEPT = True
     FEATURE_EXCEPT = True
@@ -1255,7 +1262,7 @@ class geoprocessingThread( QThread ):
     else:
         crs_match = crsA == crsB
     fields = vproviderA.fields()
-    writer = QgsVectorFileWriter( self.myName, self.myEncoding, 
+    writer = QgsVectorFileWriter( self.myName, self.myEncoding,
     fields, vproviderA.geometryType(), vproviderA.crs() )
     inFeatA = QgsFeature()
     inFeatB = QgsFeature()
@@ -1410,7 +1417,7 @@ class geoprocessingThread( QThread ):
                 continue
             except:
               GEOS_EXCEPT = False
-              continue          
+              continue
       # we have no selection in overlay layer
       else:
         while vproviderA.nextFeature( inFeatA ):
@@ -1455,7 +1462,7 @@ class geoprocessingThread( QThread ):
                   continue
               except:
                 GEOS_EXCEPT = False
-                continue              
+                continue
     del writer
     return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match
 
