@@ -1,0 +1,15 @@
+<h3>Définir un système de références de coordonnées personnalisé</h3>
+Si QGIS ne fournit pas le système de référence de coordonnées dont vous avez besoin, vous pouvez définir un SRC personnalisé.<p>
+Pour définir un SRC, sélectionnez <label>Projection personnalisée</label> du menu <label>Édition</label> (Gnome, OSX) ou <label>Préférences</label> (KDE, Windows). Les SRC personnalisés sont enregistrés dans votre base de donnée utilisateur QGIS. En plus de vos SRC personnalisés, cette base de donnée contient également vos signets géospatiaux et d'autres données personnalisées.
+
+<h4>Définir</h4>
+Pour créer une nouveau SRC, cliquez sur le bouton <label>Nouveau</label> et saisissez&nbsp;:
+<ul>
+<li>un nom descritpif
+<li>les paramètres du SRC
+</ul>
+Puis vous pouvez sauver votre SRC en cliquant sur le bouton  <label>Sauver</label>.
+<p>
+Notez que les paramètres doivent commencer par +proj=-bloc, pour représenter le nouveau système de référence de coordonnées.
+<p>
+La définition de SRC personnalisés dans QGIS requiert une bonne compréhension de la biblitothèque de projection Proj.4. Pour débuter, se référer à  <a href="ftp://ftp.remotesensing.org/proj/OF90-284.pdf">Cartographic Projection Procedures for the UNIX Environment</a> - A User's Manual de Gerald I. Evenden, U.S. Geological Survey Open-File Report 90-284, 1990. Ce manuel décrit l'utilisation de <i>proj.4</i> et des lignes de commande y relatives. Les paramètres cartographiques utilisés par <i>proj.4</i> sont décrits dans le manuel d'utilisateur et sont les mêmes que ceux utilisés par QGIS.

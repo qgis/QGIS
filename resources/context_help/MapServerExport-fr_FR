@@ -1,0 +1,32 @@
+<h3>Exporter un projet QGIS vers un fichier MapServer</h3>
+<p>
+Cet outil vous permet d'exporter un projet de QGIS vers MapServer. Seuls les fichier <b>map</b> et <b>qjs</b> sont nécessaires.
+</p>
+Cochez la case <label>Utiliser le projet courant</label> checkbox ou saisissez le chemin complet, vous pouvez utiliser le bouton Parcourir qui se situe en haut à droite.
+
+<h4>Le fichier Map</h4>
+
+<label>Map file</label> Entrez le nom du fichier qui sera créé. Vous pouvez utiliser le bouton sur la droite pour choisir l'emplacement de création.
+
+<h4>Map</h4>
+Des valeurs sont inscrites dans le fichier map pour indiquer des paramètres tels que la taille et le type de l'image.
+<dl>
+  <dt><label>Nom</label></dt>
+  <dd>Le nom que portera la carte, ce nom sera le préfixe de toutes les images générées par MapServer.</dd>
+  <dt><label>Largeur</label></dt>
+  <dd>Spécifie la largeur de l'image en pixels.</dd>
+  <dt><label>Hauteur</label></dt>
+  <dd>Spécifie la hauteur de l'image en pixels.</dd>
+  <dt><label>Unités</label></dt>
+  <dd>Unités de mesure utilisées.</dd>
+  <dt><label>Type d'image</label></dt>
+  <dd>Indique le format de l'image</dd>
+</dl>
+<h4>Chemins</h4>
+<dl>
+  <dt><label>Modèle</label></dt>
+  <dd>Chemin complet vers le fichier modèle qui sera utilisé par le fichier map.</dd>
+  <dt><label>En-tête</label></dt>
+  <dd>Chemin complet vers le fichier d'en-tête qui sera utilisé par le fichier map.</dd>
+  <dt><label>Pied de page</label></dt>
+  <dd>Chemin complet vers le fichier de pied de page qui sera utilisé par le fichier map.</dd>
