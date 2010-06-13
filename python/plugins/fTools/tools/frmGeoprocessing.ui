@@ -1,37 +1,38 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>Dialog</class>
- <widget class="QDialog" name="Dialog" >
-  <property name="geometry" >
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>422</width>
-    <height>405</height>
+    <height>448</height>
    </rect>
   </property>
-  <property name="sizePolicy" >
-   <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Geoprocessing</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout" >
-   <item row="0" column="0" colspan="2" >
-    <layout class="QVBoxLayout" >
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0" colspan="2">
+    <layout class="QVBoxLayout">
      <item>
-      <widget class="QLabel" name="label_1" >
-       <property name="text" >
+      <widget class="QLabel" name="label_1">
+       <property name="text">
         <string>Input vector layer</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="inShapeA" >
-       <property name="sizePolicy" >
-        <sizepolicy vsizetype="Fixed" hsizetype="Minimum" >
+      <widget class="QComboBox" name="inShapeA">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -40,19 +41,30 @@
      </item>
     </layout>
    </item>
-   <item row="3" column="0" colspan="2" >
-    <layout class="QVBoxLayout" >
+   <item row="2" column="0">
+    <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QLabel" name="label_2" >
-       <property name="text" >
+      <widget class="QCheckBox" name="useSelectedA">
+       <property name="text">
+        <string>Use only selected features</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="3" column="0" colspan="2">
+    <layout class="QVBoxLayout">
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
         <string>Intersect layer</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="inShapeB" >
-       <property name="sizePolicy" >
-        <sizepolicy vsizetype="Fixed" hsizetype="Minimum" >
+      <widget class="QComboBox" name="inShapeB">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -61,16 +73,27 @@
      </item>
     </layout>
    </item>
-   <item row="5" column="0" colspan="2" >
-    <layout class="QHBoxLayout" >
+   <item row="4" column="0">
+    <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
-      <layout class="QHBoxLayout" >
+      <widget class="QCheckBox" name="useSelectedB">
+       <property name="text">
+        <string>Use only selected features</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="7" column="0" colspan="2">
+    <layout class="QHBoxLayout">
+     <item>
+      <layout class="QHBoxLayout">
        <item>
-        <widget class="QRadioButton" name="rdoBuffer" >
-         <property name="text" >
+        <widget class="QRadioButton" name="rdoBuffer">
+         <property name="text">
           <string>Buffer distance</string>
          </property>
-         <property name="checked" >
+         <property name="checked">
           <bool>true</bool>
          </property>
         </widget>
@@ -78,53 +101,53 @@
       </layout>
      </item>
      <item>
-      <widget class="QLineEdit" name="param" >
-       <property name="enabled" >
+      <widget class="QLineEdit" name="param">
+       <property name="enabled">
         <bool>true</bool>
        </property>
-       <property name="sizePolicy" >
-        <sizepolicy vsizetype="Fixed" hsizetype="Minimum" >
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="layoutDirection" >
+       <property name="layoutDirection">
         <enum>Qt::LeftToRight</enum>
        </property>
-       <property name="text" >
+       <property name="text">
         <string/>
        </property>
-       <property name="cursorPosition" >
+       <property name="cursorPosition">
         <number>0</number>
        </property>
       </widget>
      </item>
     </layout>
    </item>
-   <item row="6" column="0" colspan="2" >
-    <layout class="QVBoxLayout" >
+   <item row="9" column="0" colspan="2">
+    <layout class="QVBoxLayout">
      <item>
-      <layout class="QHBoxLayout" >
+      <layout class="QHBoxLayout">
        <item>
-        <widget class="QRadioButton" name="rdoField" >
-         <property name="text" >
+        <widget class="QRadioButton" name="rdoField">
+         <property name="text">
           <string>Buffer distance field</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="label_4" >
-         <property name="text" >
+        <widget class="QLabel" name="label_4">
+         <property name="text">
           <string>Dissolve field</string>
          </property>
         </widget>
        </item>
        <item>
         <spacer>
-         <property name="orientation" >
+         <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
-         <property name="sizeHint" stdset="0" >
+         <property name="sizeHint" stdset="0">
           <size>
            <width>40</width>
            <height>20</height>
@@ -135,12 +158,12 @@
       </layout>
      </item>
      <item>
-      <widget class="QComboBox" name="attrib" >
-       <property name="enabled" >
+      <widget class="QComboBox" name="attrib">
+       <property name="enabled">
         <bool>false</bool>
        </property>
-       <property name="sizePolicy" >
-        <sizepolicy vsizetype="Fixed" hsizetype="Minimum" >
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
@@ -149,32 +172,32 @@
      </item>
     </layout>
    </item>
-   <item row="7" column="0" >
-    <layout class="QHBoxLayout" >
-     <property name="spacing" >
+   <item row="10" column="0">
+    <layout class="QHBoxLayout">
+     <property name="spacing">
       <number>6</number>
      </property>
-     <property name="margin" >
+     <property name="margin">
       <number>0</number>
      </property>
      <item>
-      <widget class="QCheckBox" name="mergeOutput" >
-       <property name="enabled" >
+      <widget class="QCheckBox" name="mergeOutput">
+       <property name="enabled">
         <bool>true</bool>
        </property>
-       <property name="text" >
+       <property name="text">
         <string>Dissolve buffer results</string>
        </property>
       </widget>
      </item>
     </layout>
    </item>
-   <item row="8" column="0" >
+   <item row="11" column="0">
     <spacer>
-     <property name="orientation" >
+     <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
-     <property name="sizeHint" stdset="0" >
+     <property name="sizeHint" stdset="0">
       <size>
        <width>20</width>
        <height>40</height>
@@ -182,27 +205,27 @@
      </property>
     </spacer>
    </item>
-   <item row="9" column="0" colspan="2" >
-    <layout class="QVBoxLayout" >
+   <item row="12" column="0" colspan="2">
+    <layout class="QVBoxLayout">
      <item>
-      <widget class="QLabel" name="label_5" >
-       <property name="text" >
+      <widget class="QLabel" name="label_5">
+       <property name="text">
         <string>Output shapefile</string>
        </property>
       </widget>
      </item>
      <item>
-      <layout class="QHBoxLayout" >
+      <layout class="QHBoxLayout">
        <item>
-        <widget class="QLineEdit" name="outShape" >
-         <property name="readOnly" >
+        <widget class="QLineEdit" name="outShape">
+         <property name="readOnly">
           <bool>true</bool>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="btnBrowse" >
-         <property name="text" >
+        <widget class="QPushButton" name="btnBrowse">
+         <property name="text">
           <string>Browse</string>
          </property>
         </widget>
@@ -211,43 +234,42 @@
      </item>
     </layout>
    </item>
-   <item row="10" column="0" >
-    <widget class="QProgressBar" name="progressBar" >
-     <property name="value" >
+   <item row="13" column="0">
+    <widget class="QProgressBar" name="progressBar">
+     <property name="value">
       <number>0</number>
      </property>
-     <property name="alignment" >
+     <property name="alignment">
       <set>Qt::AlignCenter</set>
      </property>
-     <property name="orientation" >
+     <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>
-   <item row="10" column="1" >
-    <widget class="QDialogButtonBox" name="buttonBox_2" >
-     <property name="standardButtons" >
+   <item row="13" column="1">
+    <widget class="QDialogButtonBox" name="buttonBox_2">
+     <property name="standardButtons">
       <set>QDialogButtonBox::Close|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
-   <item row="2" column="0" >
-    <layout class="QVBoxLayout" name="verticalLayout" >
+   <item row="6" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QCheckBox" name="useSelectedA" >
-       <property name="text" >
-        <string>Use only selected features</string>
+      <widget class="QLabel" name="lblSegments">
+       <property name="text">
+        <string>Segments to approximate</string>
        </property>
       </widget>
      </item>
-    </layout>
-   </item>
-   <item row="4" column="0" >
-    <layout class="QVBoxLayout" name="verticalLayout_2" >
      <item>
-      <widget class="QCheckBox" name="useSelectedB" >
-       <property name="text" >
-        <string>Use only selected features</string>
+      <widget class="QSpinBox" name="spnSegments">
+       <property name="minimum">
+        <number>5</number>
+       </property>
+       <property name="value">
+        <number>5</number>
        </property>
       </widget>
      </item>
@@ -263,11 +285,11 @@
    <receiver>attrib</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>96</x>
      <y>167</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>104</x>
      <y>222</y>
     </hint>
@@ -279,11 +301,11 @@
    <receiver>param</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>61</x>
      <y>133</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>380</x>
      <y>155</y>
     </hint>
@@ -295,11 +317,11 @@
    <receiver>Dialog</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>272</x>
      <y>383</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>246</x>
      <y>279</y>
     </hint>
@@ -311,11 +333,11 @@
    <receiver>Dialog</receiver>
    <slot>accept()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>341</x>
      <y>382</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>335</x>
      <y>270</y>
     </hint>
