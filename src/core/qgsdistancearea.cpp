@@ -178,6 +178,9 @@ double QgsDistanceArea::measure( QgsGeometry* geometry )
     return 0.0;
 
   unsigned char* wkb = geometry->asWkb();
+  if ( !wkb )
+    return 0.0;
+
   unsigned char* ptr;
   unsigned int wkbType;
   double res, resTotal = 0;
