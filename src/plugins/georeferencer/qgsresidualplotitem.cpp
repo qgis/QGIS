@@ -111,6 +111,26 @@ void QgsResidualPlotItem::paint( QPainter* painter, const QStyleOptionGraphicsIt
   double initialScaleBarWidth = rect().width() / 5;
   double scaleBarWidthUnits = rect().width() / 5 / minMMPixelRatio;
 
+  //a simple method to round to next nice number
+  int nDecPlaces;
+  if ( scaleBarWidthUnits < 1 )
+  {
+    nDecPlaces = -floor( log10( scaleBarWidthUnits ) );
+    scaleBarWidthUnits *= pow( 10, nDecPlaces );
+    scaleBarWidthUnits = ( int )( scaleBarWidthUnits + 0.5 );
+    scaleBarWidthUnits /= pow( 10, nDecPlaces );
+  }
+  else
+  {
+    nDecPlaces = ( int )log10( scaleBarWidthUnits );
+    scaleBarWidthUnits /= pow( 10, nDecPlaces );
+    scaleBarWidthUnits = ( int )( scaleBarWidthUnits + 0.5 );
+    scaleBarWidthUnits *= pow( 10, nDecPlaces );
+  }
+  initialScaleBarWidth = scaleBarWidthUnits * minMMPixelRatio;
+
+
+
   painter->setPen( QColor( 0, 0, 0 ) );
   painter->drawLine( QPointF( 5, rect().height() - 5 ), QPointF( 5 + initialScaleBarWidth, rect().height() - 5 ) );
   painter->drawLine( QPointF( 5, rect().height() - 5 ), QPointF( 5, rect().height() - 7 ) );
