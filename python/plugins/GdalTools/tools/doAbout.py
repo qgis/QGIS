@@ -7,6 +7,7 @@ from qgis.gui import *
 
 from ui_dialogAbout import Ui_GdalToolsAboutDialog as Ui_Dialog
 from GdalTools import version
+from GdalTools_utils import GdalConfig
 
 class GdalToolsAboutDialog(QDialog, Ui_Dialog):
 
@@ -17,7 +18,7 @@ class GdalToolsAboutDialog(QDialog, Ui_Dialog):
 
       QObject.connect(self.btnWeb, SIGNAL("clicked()"), self.openWebsite)
 
-      self.lblVersion.setText( version() )
+      self.lblVersion.setText( version() + self.tr( "\n(using GDAL v. %1)" ).arg( str( GdalConfig.version() ) ) )
       self.textEdit.setText(self.getText())
 
   def getText(self):

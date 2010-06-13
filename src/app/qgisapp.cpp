@@ -2390,6 +2390,9 @@ void QgisApp::about()
     QString versionString = tr( "You are using QGIS version %1 built against code revision %2." )
                             .arg( QGis::QGIS_VERSION )
                             .arg( QGis::QGIS_SVN_VERSION );
+
+    versionString += tr( "\nThis copy of QGIS has been built with GDAL/OGR %1." ).arg( GDAL_RELEASE_NAME );
+
 #ifdef HAVE_POSTGRESQL
     versionString += tr( "\nThis copy of QGIS has been built with PostgreSQL support (%1)." ).arg( PG_VERSION );
 #else

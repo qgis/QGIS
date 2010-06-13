@@ -603,33 +603,27 @@ class GdalConfig:
 # class which allows to create version objects and compare them
 class Version:
   def __init__(self, ver):
-      self.vers = (0, 0, 0)
+      self.vers = ('0', '0', '0')
 
       if isinstance(ver, Version):
         self.vers = ver.vers
       elif isinstance(ver, tuple) or isinstance(ver, list):
-        self.vers = tuple(ver)
+        self.vers = map(str, ver)
       elif isinstance(ver, str) or isinstance(ver, QString):
         self.vers = self.string2vers(ver)
 
   @staticmethod
   def string2vers(string):
-      vers = [0, 0, 0]
+      vers = ['0', '0', '0']
 
       nums = str(string).split(".")
       
       if len(nums) > 0:
-        n = QString(nums[0]).remove( QRegExp( "[^0-9].*$" ) )
-        if not n.isEmpty():
-          vers[0] = int(n)
+        vers[0] = nums[0]
       if len(nums) > 1:
-        n = QString(nums[1]).remove( QRegExp( "[^0-9].*$" ) )
-        if not n.isEmpty():
-          vers[1] = int(n)
+        vers[1] = nums[1]
       if len(nums) > 2:
-        n = QString(nums[2]).remove( QRegExp( "[^0-9].*$" ) )
-        if not n.isEmpty():
-          vers[2] = int(n)
+        vers[2] = nums[2]
 
       return (vers[0], vers[1], vers[2])
 
