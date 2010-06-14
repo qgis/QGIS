@@ -40,7 +40,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
       If one of the min/max scale denominators is zero, there is no lower/upper bound for scales.
       A rule matches if both filter and scale range match.
      */
-    class Rule
+    class CORE_EXPORT Rule
     {
       public:
         //! Constructor takes ownership of the symbol
