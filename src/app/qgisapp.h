@@ -438,8 +438,10 @@ class QgisApp : public QMainWindow
     //! reimplements widget keyPress event so we can check if cancel was pressed
     virtual void keyPressEvent( QKeyEvent * event );
 
+#ifdef Q_OS_WIN
     //! reimplements context menu event
     virtual void contextMenuEvent( QContextMenuEvent *event );
+#endif
 
   private slots:
     //! About QGis
