@@ -359,7 +359,7 @@ class QgisApp : public QMainWindow
     //! returns pointer to map legend
     QgsLegend *legend();
 
-#if Q_OS_WIN
+#ifdef Q_OS_WIN
     //! ugly hack
     void skipNextContextMenuEvent();
 #endif
