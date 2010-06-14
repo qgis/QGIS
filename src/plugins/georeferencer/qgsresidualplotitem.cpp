@@ -116,9 +116,9 @@ void QgsResidualPlotItem::paint( QPainter* painter, const QStyleOptionGraphicsIt
   if ( scaleBarWidthUnits < 1 )
   {
     nDecPlaces = -floor( log10( scaleBarWidthUnits ) );
-	scaleBarWidthUnits *= pow( 10.0, nDecPlaces );
+    scaleBarWidthUnits *= pow( 10.0, nDecPlaces );
     scaleBarWidthUnits = ( int )( scaleBarWidthUnits + 0.5 );
-	scaleBarWidthUnits /= pow( 10.0, nDecPlaces );
+    scaleBarWidthUnits /= pow( 10.0, nDecPlaces );
   }
   else
   {

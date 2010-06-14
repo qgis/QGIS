@@ -25,7 +25,7 @@ class QMenu;
 
 #include <QTreeWidget>
 
-class QgsRendererRulesTreeWidget : public QTreeWidget
+class GUI_EXPORT QgsRendererRulesTreeWidget : public QTreeWidget
 {
     Q_OBJECT
 
