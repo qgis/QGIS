@@ -366,6 +366,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 #ifdef HAVE_QWT
     , mpGpsWidget( NULL )
 #endif
+#ifdef Q_OS_WIN
+    , mSkipNextContextMenuEvent( 0 )
+#endif
 {
   if ( smInstance )
   {
@@ -1926,7 +1929,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionAddToOverview->setIcon( getThemeIcon( "/mActionInOverview.png" ) );
   mActionAnnotation->setIcon( getThemeIcon( "/mActionAnnotation.png" ) );
   mActionFormAnnotation->setIcon( getThemeIcon( "/mActionFormAnnotation.png" ) );
-  mActionTextAnnotation->setIcon( getThemeIcon( "/mActionTextAnnotation.png" ) );  
+  mActionTextAnnotation->setIcon( getThemeIcon( "/mActionTextAnnotation.png" ) );
 
   //change themes of all composers
   QSet<QgsComposer*>::iterator composerIt = mPrintComposers.begin();
@@ -6364,6 +6367,26 @@ void QgisApp::keyPressEvent( QKeyEvent * e )
     e->ignore();
   }
 }
+
+#ifdef Q_OS_WIN
+// hope your wearing your peril sensitive sunglasses.
+void QgisApp::contextMenuEvent( QContextMenuEvent *e )
+{
+  if ( mSkipNextContextMenuEvent )
+  {
+    mSkipNextContextMenuEvent--;
+    e->ignore();
+    return;
+  }
+
+  QMainWindow::contextMenuEvent( e );
+}
+
+void QgisApp::skipNextContextMenuEvent()
+{
+  mSkipNextContextMenuEvent++;
+}
+#endif
 
 // Debug hook - used to output diagnostic messages when evoked (usually from the menu)
 /* Temporarily disabled...

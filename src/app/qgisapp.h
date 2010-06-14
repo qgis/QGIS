@@ -359,6 +359,11 @@ class QgisApp : public QMainWindow
     //! returns pointer to map legend
     QgsLegend *legend();
 
+#if Q_OS_WIN
+    //! ugly hack
+    void skipNextContextMenuEvent();
+#endif
+
   public slots:
     //! Zoom to full extent
     void zoomFull();
@@ -432,6 +437,9 @@ class QgisApp : public QMainWindow
 
     //! reimplements widget keyPress event so we can check if cancel was pressed
     virtual void keyPressEvent( QKeyEvent * event );
+
+    //! reimplements context menu event
+    virtual void contextMenuEvent( QContextMenuEvent *event );
 
   private slots:
     //! About QGis
@@ -1116,6 +1124,10 @@ class QgisApp : public QMainWindow
     QgsTileScaleWidget * mpTileScaleWidget;
 
     int mLastComposerId;
+
+#ifdef Q_OS_WIN
+    int mSkipNextContextMenuEvent; // ugly hack
+#endif
 
 #ifdef HAVE_QWT
     //! Persistent GPS toolbox
