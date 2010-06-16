@@ -1173,6 +1173,12 @@ First you need to install the debian packaging tools once:
 apt-get install build-essential
 ```
 
+First you need to create an changelog entry for your distribution. For example for Ubuntu Lucid:
+
+```
+dch -l ~lucid  --force-distribution --distribution lucid "lucid build"
+```
+
 The QGIS packages will be created with:
 
 ```
@@ -1186,7 +1192,7 @@ you can install them using ``apt-get`` and re-run the command.
 using ``dpkg -r libqgis1-dev``.  Otherwise ``dpkg-buildpackage`` will complain about a
 build conflict.
 
-The the packages are created in the parent directory (ie. one level up).
+The packages are created in the parent directory (ie. one level up).
 Install them using dpkg.  E.g.:
 
 ```
