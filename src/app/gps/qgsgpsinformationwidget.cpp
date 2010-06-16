@@ -418,7 +418,18 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation& in
   mpPlot->replot();
   if ( mpMapMarker )
     delete mpMapMarker;
-  QgsPoint myNewCenter = QgsPoint( info.longitude, info.latitude );
+
+  //after loosing connection, the first gps info sometimes has uninitialized coords
+  QgsPoint myNewCenter;
+  if( doubleNear( info.longitude, 0.0 ) && doubleNear( info.latitude, 0.0) )
+  {
+    myNewCenter = mLastGpsPosition;
+  }
+  else
+  {
+    myNewCenter = QgsPoint( info.longitude, info.latitude );
+  }
+
   if ( mGroupShowMarker->isChecked() )
   {
     mpMapMarker = new QgsGpsMarker( mpCanvas );
