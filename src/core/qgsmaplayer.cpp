@@ -582,7 +582,7 @@ QString QgsMapLayer::loadNamedStyle( const QString theURI, bool &theResultFlag )
   QDomElement myRoot = myDocument.firstChildElement( "qgis" );
   if ( myRoot.isNull() )
   {
-    myErrorMessage = "Error: qgis element could not be found in " + theURI;
+    myErrorMessage = tr( "Error: qgis element could not be found in %1" ).arg( theURI );
     theResultFlag = false;
     return myErrorMessage;
   }

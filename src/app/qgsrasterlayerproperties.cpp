@@ -145,9 +145,9 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QWidget *p
   //cboxClassificationMode->addItem( tr( "Quantiles" ) );
 
   QStringList headerLabels;
-  headerLabels << "Value";
-  headerLabels << "Color";
-  headerLabels << "Label";
+  headerLabels << tr( "Value" );
+  headerLabels << tr( "Color" );
+  headerLabels << tr( "Label" );
   mColormapTreeWidget->setHeaderLabels( headerLabels );
 
   //disable colormap tab completely until 'Colormap' is selected (and only for type GrayOrUndefined)

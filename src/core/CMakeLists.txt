@@ -238,6 +238,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsvectorlayer.h
   qgsrasterdataprovider.h
   qgsnetworkaccessmanager.h
+  qgsvectordataprovider.h
 
   composer/qgscomposerlegend.h
   composer/qgscomposermap.h

@@ -774,9 +774,10 @@ class QgsSymbolLayerV2AbstractMetadata
 
   public:
     /** construct metadata */
-    QgsSymbolLayerV2AbstractMetadata( QString name, QgsSymbolV2::SymbolType type );
+    QgsSymbolLayerV2AbstractMetadata( QString name, QString visibleName, QgsSymbolV2::SymbolType type );
 
     QString name() const;
+    QString visibleName() const;
     QgsSymbolV2::SymbolType type() const;
 
     /** create a symbol layer of this type given the map of properties. */

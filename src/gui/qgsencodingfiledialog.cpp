@@ -90,7 +90,7 @@ void QgsEncodingFileDialog::addCancelAll()
 {
   if ( ! mCancelAllButton )
   {
-    mCancelAllButton = new QPushButton( "Cancel &All", NULL );
+    mCancelAllButton = new QPushButton( tr( "Cancel &All" ), NULL );
     layout()->addWidget( mCancelAllButton ); // Ownership transfered, no need to delete later on
     connect( mCancelAllButton, SIGNAL( clicked() ), this, SLOT( pbnCancelAll_clicked() ) );
   }

@@ -13,12 +13,12 @@ QgsPenStyleComboBox::QgsPenStyleComboBox( QWidget* parent )
     : QComboBox( parent )
 {
   QList < QPair<Qt::PenStyle, QString> > styles;
-  styles << qMakePair( Qt::SolidLine, QString( "Solid Line" ) )
-  << qMakePair( Qt::DashLine, QString( "Dash Line" ) )
-  << qMakePair( Qt::DotLine, QString( "Dot Line" ) )
-  << qMakePair( Qt::DashDotLine, QString( "Dash Dot Line" ) )
-  << qMakePair( Qt::DashDotDotLine, QString( "Dash Dot Dot Line" ) )
-  << qMakePair( Qt::NoPen, QString( "No Pen" ) );
+  styles << qMakePair( Qt::SolidLine, tr( "Solid Line" ) )
+  << qMakePair( Qt::DashLine, tr( "Dash Line" ) )
+  << qMakePair( Qt::DotLine, tr( "Dot Line" ) )
+  << qMakePair( Qt::DashDotLine, tr( "Dash Dot Line" ) )
+  << qMakePair( Qt::DashDotDotLine, tr( "Dash Dot Dot Line" ) )
+  << qMakePair( Qt::NoPen, tr( "No Pen" ) );
 
   setIconSize( QSize( 32, 12 ) );
 

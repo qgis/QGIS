@@ -43,7 +43,7 @@ class SymbolLayerItem : public QStandardItem
     QVariant data( int role ) const
     {
       if ( role == Qt::DisplayRole )
-        return QVariant( mLayer->layerType() );
+        return QgsSymbolLayerV2Registry::instance()->symbolLayerMetadata( mLayer->layerType() )->visibleName();
       if ( role == Qt::SizeHintRole )
         return QVariant( QSize( 32, 32 ) );
       if ( role == Qt::CheckStateRole )
@@ -162,7 +162,7 @@ void QgsSymbolV2PropertiesDialog::populateLayerTypes()
 
   cboLayerType->clear();
   for ( int i = 0; i < types.count(); i++ )
-    cboLayerType->addItem( types[i] );
+    cboLayerType->addItem( QgsSymbolLayerV2Registry::instance()->symbolLayerMetadata( types[i] )->visibleName(), types[i] );
 }
 
 
@@ -285,7 +285,7 @@ void QgsSymbolV2PropertiesDialog::layerChanged()
     return;
 
   // update layer type combo box
-  int idx = cboLayerType->findText( layer->layerType() );
+  int idx = cboLayerType->findData( layer->layerType() );
   cboLayerType->setCurrentIndex( idx );
 
   updateSymbolLayerWidget( layer );
@@ -308,7 +308,7 @@ void QgsSymbolV2PropertiesDialog::layerTypeChanged()
   QgsSymbolLayerV2* layer = currentLayer();
   if ( layer == NULL ) return;
 
-  QString newLayerType = cboLayerType->currentText();
+  QString newLayerType = cboLayerType->itemData( cboLayerType->currentIndex() ).toString();
   if ( layer->layerType() == newLayerType )
     return;
 

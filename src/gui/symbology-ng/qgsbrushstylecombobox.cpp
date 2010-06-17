@@ -12,21 +12,21 @@ QgsBrushStyleComboBox::QgsBrushStyleComboBox( QWidget* parent )
     : QComboBox( parent )
 {
   QList < QPair<Qt::BrushStyle, QString> > styles;
-  styles << qMakePair( Qt::SolidPattern, QString( "Solid" ) )
-  << qMakePair( Qt::HorPattern, QString( "Horizontal" ) )
-  << qMakePair( Qt::VerPattern, QString( "Vertical" ) )
-  << qMakePair( Qt::CrossPattern, QString( "Cross" ) )
-  << qMakePair( Qt::BDiagPattern, QString( "BDiagonal" ) )
-  << qMakePair( Qt::FDiagPattern, QString( "FDiagonal" ) )
-  << qMakePair( Qt::DiagCrossPattern, QString( "Diagonal X" ) )
-  << qMakePair( Qt::Dense1Pattern, QString( "Dense 1" ) )
-  << qMakePair( Qt::Dense2Pattern, QString( "Dense 2" ) )
-  << qMakePair( Qt::Dense3Pattern, QString( "Dense 3" ) )
-  << qMakePair( Qt::Dense4Pattern, QString( "Dense 4" ) )
-  << qMakePair( Qt::Dense5Pattern, QString( "Dense 5" ) )
-  << qMakePair( Qt::Dense6Pattern, QString( "Dense 6" ) )
-  << qMakePair( Qt::Dense7Pattern, QString( "Dense 7" ) )
-  << qMakePair( Qt::NoBrush, QString( "No Brush" ) );
+  styles << qMakePair( Qt::SolidPattern, tr( "Solid" ) )
+  << qMakePair( Qt::HorPattern, tr( "Horizontal" ) )
+  << qMakePair( Qt::VerPattern, tr( "Vertical" ) )
+  << qMakePair( Qt::CrossPattern, tr( "Cross" ) )
+  << qMakePair( Qt::BDiagPattern, tr( "BDiagonal" ) )
+  << qMakePair( Qt::FDiagPattern, tr( "FDiagonal" ) )
+  << qMakePair( Qt::DiagCrossPattern, tr( "Diagonal X" ) )
+  << qMakePair( Qt::Dense1Pattern, tr( "Dense 1" ) )
+  << qMakePair( Qt::Dense2Pattern, tr( "Dense 2" ) )
+  << qMakePair( Qt::Dense3Pattern, tr( "Dense 3" ) )
+  << qMakePair( Qt::Dense4Pattern, tr( "Dense 4" ) )
+  << qMakePair( Qt::Dense5Pattern, tr( "Dense 5" ) )
+  << qMakePair( Qt::Dense6Pattern, tr( "Dense 6" ) )
+  << qMakePair( Qt::Dense7Pattern, tr( "Dense 7" ) )
+  << qMakePair( Qt::NoBrush, tr( "No Brush" ) );
 
   setIconSize( QSize( 32, 16 ) );
 

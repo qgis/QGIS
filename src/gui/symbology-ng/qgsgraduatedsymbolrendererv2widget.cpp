@@ -48,7 +48,7 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
   populateColorRamps();
   QStandardItemModel* mg = new QStandardItemModel( this );
   QStringList labels;
-  labels << "Range" << "Label";
+  labels << tr( "Range" ) << tr( "Label" );
   mg->setHorizontalHeaderLabels( labels );
   viewGraduated->setModel( mg );
 
@@ -218,7 +218,7 @@ void QgsGraduatedSymbolRendererV2Widget::populateRanges()
   mRowSelected = -1;
 
   QStringList labels;
-  labels << "Symbol" << "Range" << "Label";
+  labels << tr( "Symbol" ) << tr( "Range" ) << tr( "Label" );
   m->setHorizontalHeaderLabels( labels );
 
   QSize iconSize( 16, 16 );

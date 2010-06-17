@@ -91,7 +91,7 @@ bool QgsApplication::notify( QObject * receiver, QEvent * event )
   }
   catch ( ... )
   {
-    QMessageBox::critical( activeWindow(), tr( "Exception" ), "unknown exception" );
+    QMessageBox::critical( activeWindow(), tr( "Exception" ), tr( "unknown exception" ) );
   }
   return done;
 }

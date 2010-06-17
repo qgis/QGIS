@@ -6,6 +6,8 @@
 
 class GUI_EXPORT QgsBrushStyleComboBox : public QComboBox
 {
+    Q_OBJECT
+
   public:
     QgsBrushStyleComboBox( QWidget* parent = NULL );
 

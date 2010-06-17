@@ -344,7 +344,7 @@ void QgsCustomProjectionDialog::on_pbnFirst_clicked()
       //cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
       leParameters->setText( QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 4 ) ) );
       mCurrentRecordLong = 1;
-      lblRecordNo->setText( QString::number( mCurrentRecordLong ) + " of " + QString::number( mRecordCountLong ) );
+      lblRecordNo->setText( tr( "%1 of %2" ).arg( mCurrentRecordLong ).arg( mRecordCountLong ) );
     }
   }
   else
@@ -416,7 +416,7 @@ void QgsCustomProjectionDialog::on_pbnPrevious_clicked()
       //cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
       leParameters->setText( QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 4 ) ) ),
       --mCurrentRecordLong;
-      lblRecordNo->setText( QString::number( mCurrentRecordLong ) + " of " + QString::number( mRecordCountLong ) );
+      lblRecordNo->setText( tr( "%1 of %2" ).arg( mCurrentRecordLong ).arg( mRecordCountLong ) );
     }
   }
   else
@@ -489,7 +489,7 @@ void QgsCustomProjectionDialog::on_pbnNext_clicked()
       //cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
       leParameters->setText( QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 4 ) ) );
       ++mCurrentRecordLong;
-      lblRecordNo->setText( QString::number( mCurrentRecordLong ) + " of " + QString::number( mRecordCountLong ) );
+      lblRecordNo->setText( tr( "%1 of %2" ).arg( mCurrentRecordLong ).arg( mRecordCountLong ) );
     }
   }
   else
@@ -558,7 +558,7 @@ void QgsCustomProjectionDialog::on_pbnLast_clicked()
       //cboEllipsoid->setCurrentText(getEllipsoidName(myEllipsoidId));
       leParameters->setText( QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 4 ) ) );
       mCurrentRecordLong = mRecordCountLong;
-      lblRecordNo->setText( QString::number( mCurrentRecordLong ) + " of " + QString::number( mRecordCountLong ) );
+      lblRecordNo->setText( tr( "%1 of %2" ).arg( mCurrentRecordLong ).arg( mRecordCountLong ) );
     }
   }
   else
@@ -620,7 +620,7 @@ void QgsCustomProjectionDialog::on_pbnNew_clicked()
     leParameters->setText( "" );
     //cboProjectionFamily->setCurrentItem(0);
     //cboEllipsoid->setCurrentItem(0);
-    lblRecordNo->setText( "* of " + QString::number( mRecordCountLong ) );
+    lblRecordNo->setText( tr( "* of %1" ).arg( mRecordCountLong ) );
     //remember the rec we are on in case the user aborts
     mLastRecordLong = mCurrentRecordLong;
     mCurrentRecordId = "";
@@ -898,8 +898,8 @@ void QgsCustomProjectionDialog::on_pbnCalculate_clicked()
   int projResult = pj_transform( wgs84Proj, myProj, 1, 0, &easthing, &northing, &z );
   if ( projResult != 0 )
   {
-    projectedX->setText( "Error" );
-    projectedY->setText( "Error" );
+    projectedX->setText( tr( "Error" ) );
+    projectedY->setText( tr( "Error" ) );
     QgsDebugMsg( pj_strerrno( projResult ) );
   }
   else

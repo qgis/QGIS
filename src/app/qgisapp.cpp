@@ -3760,7 +3760,7 @@ void QgisApp::labeling()
   QgsMapLayer* layer = activeLayer();
   if ( layer == NULL || layer->type() != QgsMapLayer::VectorLayer )
   {
-    QMessageBox::warning( this, "Labeling", "Please select a vector layer first." );
+    QMessageBox::warning( this, tr( "Labeling" ), tr( "Please select a vector layer first." ) );
     return;
   }
   QgsVectorLayer* vlayer = dynamic_cast<QgsVectorLayer*>( layer );
@@ -4190,7 +4190,7 @@ void QgisApp::mergeSelectedFeatures()
   const QgsFeatureIds& featureIdSet = vl->selectedFeaturesIds();
   if ( featureIdSet.size() < 2 )
   {
-    QMessageBox::information( 0, "Not enough features selected", tr( "The merge tool requires at least two selected features" ) );
+    QMessageBox::information( 0, tr( "Not enough features selected" ), tr( "The merge tool requires at least two selected features" ) );
     return;
   }
 
@@ -4212,7 +4212,7 @@ void QgisApp::mergeSelectedFeatures()
   QGis::WkbType newType = unionGeom->wkbType();
   if ( providerChecksTypeStrictly && unionGeom->wkbType() != vl->wkbType() )
   {
-    QMessageBox::critical( 0, "Union operation canceled", tr( "The union operation would result in a geometry type that is not compatible with the current layer and therefore is canceled" ) );
+    QMessageBox::critical( 0, tr( "Union operation canceled" ), tr( "The union operation would result in a geometry type that is not compatible with the current layer and therefore is canceled" ) );
     delete unionGeom;
     return;
   }
@@ -4229,7 +4229,7 @@ void QgisApp::mergeSelectedFeatures()
 
   if ( featureListAfter.size() < 2 )
   {
-    QMessageBox::information( 0, "Not enough features selected", tr( "The merge tool requires at least two selected features" ) );
+    QMessageBox::information( 0, tr( "Not enough features selected" ), tr( "The merge tool requires at least two selected features" ) );
     delete unionGeom;
     return;
   }
