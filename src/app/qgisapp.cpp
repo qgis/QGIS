@@ -36,7 +36,7 @@
 #include <QEvent>
 #include <QFile>
 #include <QFileInfo>
-#include <QImageReader>
+#include <QImageWriter>
 #include <QInputDialog>
 #include <QKeyEvent>
 #include <QLabel>
@@ -3439,7 +3439,7 @@ void QgisApp::saveMapAsImage()
   // get a list of supported output image types
   int myCounterInt = 0;
   QString myFilters;
-  QList<QByteArray> formats = QImageReader::supportedImageFormats();
+  QList<QByteArray> formats = QImageWriter::supportedImageFormats();
 
   for ( ; myCounterInt < formats.count(); myCounterInt++ )
   {
