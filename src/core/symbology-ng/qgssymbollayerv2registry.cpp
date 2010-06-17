@@ -10,23 +10,23 @@ QgsSymbolLayerV2Registry* QgsSymbolLayerV2Registry::mInstance = NULL;
 QgsSymbolLayerV2Registry::QgsSymbolLayerV2Registry()
 {
   // init registry with known symbol layers
-  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "SimpleLine", QgsSymbolV2::Line,
+  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "SimpleLine", QObject::tr( "Simple line" ), QgsSymbolV2::Line,
                       QgsSimpleLineSymbolLayerV2::create ) );
-  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "MarkerLine", QgsSymbolV2::Line,
+  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "MarkerLine", QObject::tr( "Marker line" ), QgsSymbolV2::Line,
                       QgsMarkerLineSymbolLayerV2::create ) );
-  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "LineDecoration", QgsSymbolV2::Line,
+  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "LineDecoration", QObject::tr( "Line decoration" ), QgsSymbolV2::Line,
                       QgsLineDecorationSymbolLayerV2::create ) );
 
-  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "SimpleMarker", QgsSymbolV2::Marker,
+  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "SimpleMarker", QObject::tr( "Simple marker" ), QgsSymbolV2::Marker,
                       QgsSimpleMarkerSymbolLayerV2::create ) );
-  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "SvgMarker", QgsSymbolV2::Marker,
+  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "SvgMarker", QObject::tr( "SVG marker" ), QgsSymbolV2::Marker,
                       QgsSvgMarkerSymbolLayerV2::create ) );
-  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "FontMarker", QgsSymbolV2::Marker,
+  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "FontMarker", QObject::tr( "Font marker" ), QgsSymbolV2::Marker,
                       QgsFontMarkerSymbolLayerV2::create ) );
 
-  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "SimpleFill", QgsSymbolV2::Fill,
+  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "SimpleFill", QObject::tr( "Simple fill" ), QgsSymbolV2::Fill,
                       QgsSimpleFillSymbolLayerV2::create ) );
-  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "SVGFill", QgsSymbolV2::Fill, QgsSVGFillSymbolLayer::create ) );
+  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "SVGFill", QObject::tr( "SVG fill" ), QgsSymbolV2::Fill, QgsSVGFillSymbolLayer::create ) );
 }
 
 QgsSymbolLayerV2Registry::~QgsSymbolLayerV2Registry()

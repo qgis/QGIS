@@ -210,8 +210,8 @@ void QgsSymbolV2SelectorDialog::setLineWidth( double width )
 void QgsSymbolV2SelectorDialog::addSymbolToStyle()
 {
   bool ok;
-  QString name = QInputDialog::getText( this, "Symbol name",
-                                        "Please enter name for the symbol:", QLineEdit::Normal, "New symbol", &ok );
+  QString name = QInputDialog::getText( this, tr( "Symbol name" ),
+                                        tr( "Please enter name for the symbol:" ) , QLineEdit::Normal, tr( "New symbol" ), &ok );
   if ( !ok || name.isEmpty() )
     return;
 

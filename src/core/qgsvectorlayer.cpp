@@ -2844,14 +2844,14 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
     {
       if ( !myRenderer->writeXML( node, doc, *this ) )
       {
-        errorMessage = "renderer failed to save";
+        errorMessage = tr( "renderer failed to save" );
         return false;
       }
     }
     else
     {
       QgsDebugMsg( "no renderer" );
-      errorMessage = "no renderer";
+      errorMessage = tr( "no renderer" );
       return false;
     }
   }

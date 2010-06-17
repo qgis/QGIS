@@ -38,6 +38,8 @@ class QTextCodec;
  */
 class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider
 {
+    Q_OBJECT
+
   public:
 
     // If you add to this, please also add to capabilitiesString()

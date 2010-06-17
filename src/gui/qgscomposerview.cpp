@@ -127,7 +127,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
     case AddLabel:
     {
       QgsComposerLabel* newLabelItem = new QgsComposerLabel( composition() );
-      newLabelItem->setText( "Quantum GIS" );
+      newLabelItem->setText( tr( "Quantum GIS" ) );
       newLabelItem->adjustSizeToText();
       newLabelItem->setSceneRect( QRectF( snappedScenePoint.x(), snappedScenePoint.y(), newLabelItem->rect().width(), newLabelItem->rect().height() ) );
       addComposerLabel( newLabelItem );

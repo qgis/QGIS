@@ -163,50 +163,50 @@ QString QgsVectorDataProvider::capabilitiesString() const
 
   if ( abilities & QgsVectorDataProvider::AddFeatures )
   {
-    abilitiesList += "Add Features";
+    abilitiesList += tr( "Add Features" );
     QgsDebugMsg( "Capability: Add Features" );
   }
 
   if ( abilities & QgsVectorDataProvider::DeleteFeatures )
   {
-    abilitiesList += "Delete Features";
+    abilitiesList += tr( "Delete Features" );
     QgsDebugMsg( "Capability: Delete Features" );
   }
 
   if ( abilities & QgsVectorDataProvider::ChangeAttributeValues )
   {
-    abilitiesList += "Change Attribute Values";
+    abilitiesList += tr( "Change Attribute Values" );
     QgsDebugMsg( "Capability: Change Attribute Values" );
   }
 
   if ( abilities & QgsVectorDataProvider::AddAttributes )
   {
-    abilitiesList += "Add Attributes";
+    abilitiesList += tr( "Add Attributes" );
     QgsDebugMsg( "Capability: Add Attributes" );
   }
 
   if ( abilities & QgsVectorDataProvider::DeleteAttributes )
   {
-    abilitiesList += "Delete Attributes";
+    abilitiesList += tr( "Delete Attributes" );
     QgsDebugMsg( "Capability: Delete Attributes" );
   }
 
   if ( abilities & QgsVectorDataProvider::CreateSpatialIndex )
   {
     // TODO: Tighten up this test.  See QgsOgrProvider for details.
-    abilitiesList += "Create Spatial Index";
+    abilitiesList += tr( "Create Spatial Index" );
     QgsDebugMsg( "Capability: Create Spatial Index" );
   }
 
   if ( abilities & QgsVectorDataProvider::SelectAtId )
   {
-    abilitiesList += "Fast Access to Features at ID";
+    abilitiesList += tr( "Fast Access to Features at ID" );
     QgsDebugMsg( "Capability: Select at ID" );
   }
 
   if ( abilities & QgsVectorDataProvider::ChangeGeometries )
   {
-    abilitiesList += "Change Geometries";
+    abilitiesList += tr( "Change Geometries" );
     QgsDebugMsg( "Capability: Change Geometries" );
   }
 

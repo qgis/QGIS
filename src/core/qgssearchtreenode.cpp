@@ -289,7 +289,7 @@ bool QgsSearchTreeNode::checkAgainst( const QgsFieldMap& fields, const QgsAttrib
   // this error should be caught when checking syntax, but for sure...
   if ( mType != tOperator )
   {
-    mError = "Expected operator, got scalar value!";
+    mError = QObject::tr( "Expected operator, got scalar value!" );
     return false;
   }
 
@@ -352,7 +352,7 @@ bool QgsSearchTreeNode::checkAgainst( const QgsFieldMap& fields, const QgsAttrib
         case opGE: return ( res >= 0 );
         case opLE: return ( res <= 0 );
         default:
-          mError = "Unexpected state when evaluating operator!";
+          mError = QObject::tr( "Unexpected state when evaluating operator!" );
           return false;
       }
 
@@ -392,8 +392,7 @@ bool QgsSearchTreeNode::checkAgainst( const QgsFieldMap& fields, const QgsAttrib
     }
 
     default:
-      mError = "Unknown operator: ";
-      mError += QString::number( mOp );
+      mError = QObject::tr( "Unknown operator: %1" ).arg( mOp );
       return false;
   }
 }
@@ -414,15 +413,13 @@ bool QgsSearchTreeNode::getValue( QgsSearchTreeValue& value, QgsSearchTreeNode* 
 
         // these should never happen (no need to translate)
       case 3:
-        mError = "Unknown operator: ";
-        mError += value.string();
+        mError = QObject::tr( "Unknown operator: %1" ).arg( value.string() );
         break;
       case 4:
-        mError = "Unknown token: ";
-        mError += value.string();
+        mError = QObject::tr( "Unknown token: %1" ).arg( value.string() );
         break;
       default:
-        mError = "Unknown error!";
+        mError = QObject::tr( "Unknown error!" );
         break;
     }
     return false;

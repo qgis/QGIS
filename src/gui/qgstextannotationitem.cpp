@@ -61,8 +61,8 @@ void QgsTextAnnotationItem::paint( QPainter * painter )
   mDocument->setTextWidth( mFrameSize.width() );
 
   painter->save();
-  painter->translate( mOffsetFromReferencePoint.x() + frameWidth / 2.0, mOffsetFromReferencePoint.y() + \
-                      frameWidth / 2.0 );
+  painter->translate( mOffsetFromReferencePoint.x() + frameWidth / 2.0,
+                      mOffsetFromReferencePoint.y() + frameWidth / 2.0 );
 
   //draw text document
   mDocument->drawContents( painter, QRectF( 0, 0, mFrameSize.width() - frameWidth / 2.0, mFrameSize.height() - frameWidth / 2.0 ) );
@@ -93,7 +93,7 @@ void QgsTextAnnotationItem::readXML( const QDomDocument& doc, const QDomElement&
 {
   delete mDocument;
   mDocument = new QTextDocument;
-  mDocument->setHtml( itemElem.attribute( "document", "<html>QGIS rocks!</html>" ) );
+  mDocument->setHtml( itemElem.attribute( "document", QObject::tr( "<html>QGIS rocks!</html>" ) ) );
   QDomElement annotationElem = itemElem.firstChildElement( "AnnotationItem" );
   if ( !annotationElem.isNull() )
   {

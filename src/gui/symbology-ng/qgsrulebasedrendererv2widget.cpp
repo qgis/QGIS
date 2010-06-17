@@ -421,7 +421,7 @@ void QgsRendererRulesTreeWidget::populateRulesNoGrouping()
     if ( txt.isEmpty() ) txt = tr( "(no filter)" );
     if ( rule.dependsOnScale() )
     {
-      txt += QString( ", scale " ) + formatScaleRange( rule.scaleMinDenom(), rule.scaleMaxDenom() );
+      txt += tr( ", scale " ) + formatScaleRange( rule.scaleMinDenom(), rule.scaleMaxDenom() );
     }
 
     item->setText( 0, txt );
@@ -447,9 +447,9 @@ void QgsRendererRulesTreeWidget::populateRulesGroupByScale()
     {
       QString txt;
       if ( rule.dependsOnScale() )
-        txt = QString( "scale " ) + formatScaleRange( rule.scaleMinDenom(), rule.scaleMaxDenom() );
+        txt = tr( "scale " ) + formatScaleRange( rule.scaleMinDenom(), rule.scaleMaxDenom() );
       else
-        txt = "any scale";
+        txt = tr( "any scale" );
 
       QTreeWidgetItem* scale_item = new QTreeWidgetItem;
       scale_item->setText( 0, txt );

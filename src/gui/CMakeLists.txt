@@ -74,6 +74,7 @@ symbology-ng/qgsvectorrandomcolorrampv2dialog.h
 symbology-ng/qgsvectorcolorbrewercolorrampv2dialog.h
 symbology-ng/characterwidget.h
 symbology-ng/qgspenstylecombobox.h
+symbology-ng/qgsbrushstylecombobox.h
 
 qgsattributeeditor.h
 qgscomposerview.h

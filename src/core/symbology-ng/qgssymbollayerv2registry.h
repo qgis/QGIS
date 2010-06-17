@@ -14,10 +14,11 @@
 class CORE_EXPORT QgsSymbolLayerV2AbstractMetadata
 {
   public:
-    QgsSymbolLayerV2AbstractMetadata( QString name, QgsSymbolV2::SymbolType type )
-        : mName( name ), mType( type ) {}
+    QgsSymbolLayerV2AbstractMetadata( QString name, QString visibleName, QgsSymbolV2::SymbolType type )
+        : mName( name ), mVisibleName( visibleName ), mType( type ) {}
 
     QString name() const { return mName; }
+    QString visibleName() const { return mVisibleName; }
     QgsSymbolV2::SymbolType type() const { return mType; }
 
     /** create a symbol layer of this type given the map of properties. */
@@ -27,6 +28,7 @@ class CORE_EXPORT QgsSymbolLayerV2AbstractMetadata
 
   protected:
     QString mName;
+    QString mVisibleName;
     QgsSymbolV2::SymbolType mType;
 };
 
@@ -39,10 +41,11 @@ typedef QgsSymbolLayerV2Widget*( *QgsSymbolLayerV2WidgetFunc )();
 class CORE_EXPORT QgsSymbolLayerV2Metadata : public QgsSymbolLayerV2AbstractMetadata
 {
   public:
-    QgsSymbolLayerV2Metadata( QString name, QgsSymbolV2::SymbolType type,
+    QgsSymbolLayerV2Metadata( QString name, QString visibleName,
+                              QgsSymbolV2::SymbolType type,
                               QgsSymbolLayerV2CreateFunc pfCreate,
                               QgsSymbolLayerV2WidgetFunc pfWidget = NULL )
-        : QgsSymbolLayerV2AbstractMetadata( name, type ), mCreateFunc( pfCreate ), mWidgetFunc( pfWidget ) {}
+        : QgsSymbolLayerV2AbstractMetadata( name, visibleName, type ), mCreateFunc( pfCreate ), mWidgetFunc( pfWidget ) {}
 
     QgsSymbolLayerV2CreateFunc createFunction() const { return mCreateFunc; }
     QgsSymbolLayerV2WidgetFunc widgetFunction() const { return mWidgetFunc; }

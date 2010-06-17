@@ -108,10 +108,10 @@ void CharacterWidget::mouseMoveEvent( QMouseEvent *event )
   QPoint widgetPosition = mapFromGlobal( event->globalPos() );
   uint key = ( widgetPosition.y() / squareSize ) * columns + widgetPosition.x() / squareSize;
 
-  QString text = QString::fromLatin1( "<p>Character: <span style=\"font-size: 24pt; font-family: %1\">" ).arg( displayFont.family() )
-                 + QChar( key )
-                 + QString::fromLatin1( "</span><p>Value: 0x" )
-                 + QString::number( key, 16 );
+  QString text = tr( "<p>Character: <span style=\"font-size: 24pt; font-family: %1%2</span><p>Value: 0x%3\">" )
+                 .arg( displayFont.family() )
+                 .arg( QChar( key ) )
+                 .arg( key, 16 );
   QToolTip::showText( event->globalPos(), text, this );
 }
 //! [4]
