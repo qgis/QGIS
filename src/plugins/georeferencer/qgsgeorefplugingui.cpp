@@ -275,6 +275,7 @@ void QgsGeorefPluginGui::openRaster()
   mActionLinkQGisToGeoref->setEnabled( false );
 
   mCanvas->clearExtentHistory(); // reset zoomnext/zoomlast
+  mWorldFileName = guessWorldFileName( mRasterFileName );
 }
 
 void QgsGeorefPluginGui::doGeoreference()
