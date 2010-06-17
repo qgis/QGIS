@@ -119,6 +119,9 @@ class InstallerPlugin():
   # ----------------------------------------- #
   def unload(self):
     """ remove the menu item and notify label """
+    # kill pending http requests
+    for key in repositories.all():
+      repositories.killConnection(key)
     if QGIS_MAJOR_VER: # new plugin API
       self.iface.pluginMenu().removeAction(self.action)
     else: # old plugin API
