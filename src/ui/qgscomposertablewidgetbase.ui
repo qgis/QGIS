@@ -24,8 +24,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>251</width>
-        <height>301</height>
+        <width>260</width>
+        <height>298</height>
        </rect>
       </property>
       <attribute name="label">
@@ -98,7 +98,7 @@
          <item>
           <widget class="QLabel" name="mMaxNumFeaturesLabel">
            <property name="text">
-            <string>Maximum columns</string>
+            <string>Maximum rows</string>
            </property>
            <property name="buddy">
             <cstring>mMaximumColumnsSpinBox</cstring>
