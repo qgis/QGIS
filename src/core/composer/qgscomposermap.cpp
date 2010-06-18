@@ -601,10 +601,10 @@ bool QgsComposerMap::writeXML( QDomElement& elem, QDomDocument & doc ) const
 
   //extent
   QDomElement extentElem = doc.createElement( "Extent" );
-  extentElem.setAttribute( "xmin", QString::number( mExtent.xMinimum() ) );
-  extentElem.setAttribute( "xmax", QString::number( mExtent.xMaximum() ) );
-  extentElem.setAttribute( "ymin", QString::number( mExtent.yMinimum() ) );
-  extentElem.setAttribute( "ymax", QString::number( mExtent.yMaximum() ) );
+  extentElem.setAttribute( "xmin", mExtent.xMinimum() );
+  extentElem.setAttribute( "xmax", mExtent.xMaximum() );
+  extentElem.setAttribute( "ymin", mExtent.yMinimum() );
+  extentElem.setAttribute( "ymax", mExtent.yMaximum() );
   composerMapElem.appendChild( extentElem );
 
   //layer set
