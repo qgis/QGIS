@@ -4507,7 +4507,9 @@ void QgsRasterLayer::drawPalettedSingleBandColor( QPainter * theQPainter, QgsRas
   {
     for ( int i = 0; i < theRasterViewPort->drawableAreaXDim; ++i )
     {
-      myRedValue = 0; myGreenValue = 0; myBlueValue = 0;
+      myRedValue = 0;
+      myGreenValue = 0;
+      myBlueValue = 0;
       myPixelValue = readValue( rasterScanLine, ( GDALDataType )myDataType, i );
 
       if ( mValidNoDataValue && ( fabs( myPixelValue - mNoDataValue ) <= TINY_VALUE || myPixelValue != myPixelValue ) )
@@ -5404,7 +5406,8 @@ bool QgsRasterLayer::readFile( QString const &theFilename )
  */
 double QgsRasterLayer::readValue( void *data, GDALDataType type, int index )
 {
-  double val;
+  if ( !data )
+    return mValidNoDataValue ? mNoDataValue : 0.0;
 
   switch ( type )
   {
@@ -5427,13 +5430,13 @@ double QgsRasterLayer::readValue( void *data, GDALDataType type, int index )
       return ( double )(( float * )data )[index];
       break;
     case GDT_Float64:
-      val = (( double * )data )[index];
       return ( double )(( double * )data )[index];
       break;
     default:
       QgsLogger::warning( "GDAL data type is not supported" );
   }
-  return 0.0;
+
+  return mValidNoDataValue ? mNoDataValue : 0.0;
 }
 
 bool QgsRasterLayer::update()
@@ -5599,7 +5602,7 @@ bool QgsRasterImageBuffer::nextScanLine( QRgb** imageScanLine, void** rasterScan
 
   ++mCurrentPartImageRow;
   ++mCurrentRow;
-  return true;
+  return !mWritingEnabled || *imageScanLine;
 }
 
 bool QgsRasterImageBuffer::createNextPartImage()

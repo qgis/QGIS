@@ -6,7 +6,7 @@
  email                : tim@linfiniti.com
 ***************************************************************************/
 /*
- * Peter J. Ersts - contirbuted to the refactoring and maintenance of this class
+ * Peter J. Ersts - contributed to the refactoring and maintenance of this class
  * B. Morley - added functions to convert this class to a data provider interface
  * Frank Warmerdam - contributed bug fixes and migrated class to use all GDAL_C_API calls
  */
