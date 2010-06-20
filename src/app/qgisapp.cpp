@@ -6546,7 +6546,7 @@ void QgisApp::runPythonString( const QString &expr )
 {
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
-    mPythonUtils->runStringUnsafe( expr );
+    mPythonUtils->runString( expr );
   }
 }
 

@@ -331,7 +331,8 @@ void QgsAttributeDialog::dialogDestroyed()
   mLayer->setProperty( "featureForm.dialog", QVariant() );
   mLayer->setProperty( "featureForm.id", QVariant() );
 #endif
-  QgisApp::instance()->runPythonString( QString( "del _qgis_featureform_%1" ).arg( mLayer->getLayerID() ) );
+  QString expr = QString( "if locals().has_key('_qgis_featureform_%1'): del _qgis_featureform_%1\n" ).arg( mLayer->getLayerID() );
+  QgisApp::instance()->runPythonString( expr );
 
   mDialog = NULL;
   deleteLater();
