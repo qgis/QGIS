@@ -2426,8 +2426,7 @@ void QgisApp::about()
     abt->setVersion( versionString );
     QString whatsNew = "<html><body>" ;
     whatsNew += "<h2>" + tr( "Version" ) + " " + QString( QGis::QGIS_VERSION ) +  "</h2>";
-    whatsNew += "<h3>" + tr( "Whats new in Version 1.4.0?" ) + "</h3>";
-    whatsNew += "<h2>" + tr( "Whats new in Version 1.5.0 'Tethys'?" ) + "</h2>";
+    whatsNew += "<h3>" + tr( "Whats new in Version 1.5.0 'Tethys'?" ) + "</h3>";
 
     whatsNew += "<p>";
     whatsNew += tr( "Please note that this is a release in our 'cutting edge' release series. As "
@@ -2482,7 +2481,7 @@ void QgisApp::about()
     whatsNew += "  <li>" + tr( "Allow postgres layers without saved username &amp; password by asking for credentials" ) + "</li>";
     whatsNew += "  <li>" + tr( "Support NULL values in search strings" ) + "</li>";
     whatsNew += "  <li>" + tr( "Optionally add new layers to the selected group" ) + "</li>";
-    whatsNew += "  <li>" + tr( "Map composer can add attribute Tables in layouts. It is possibile to show only visible features in composer table or all features" ) + "</li>";
+    whatsNew += "  <li>" + tr( "Map composer can add attribute tables in layouts. It is possibile to show only visible features in composer table or all features" ) + "</li>";
     whatsNew += "  <li>" + tr( "Identify tool attribute form now non-modal in view mode (since r12796)" ) + "</li>";
     whatsNew += "  <li>" + tr( "Identified features' highlight disappear when window is deactivate or closed and reappears when reactivated." ) + "</li>";
     whatsNew += "</ul>";
@@ -2491,9 +2490,9 @@ void QgisApp::about()
     whatsNew += "<ul>";
     whatsNew += "  <li>" + tr( "WMS-C support, new spatial authorities, wms selection improvements" ) + "</li>";
     whatsNew += "  <li>" + tr( "Resolved EPSG dependency in spatial reference systems and included french IGNF definitions in srs.db" ) + "</li>";
-    whatsNew += "  <li>" + tr( "WWM provider makes requests asynchronously through QNetworkAccessManager now" ) + "</li>";
+    whatsNew += "  <li>" + tr( "WMS provider makes requests asynchronously through QNetworkAccessManager now" ) + "</li>";
     whatsNew += "  <li>" + tr( "WMS selection allows inserting of all layers of a branch" ) + "</li>";
-    whatsNew += "  <li>" + tr( "WMS has support for more mime types" ) + "</li>";
+    whatsNew += "  <li>" + tr( "WMS has support for more MIME types" ) + "</li>";
     whatsNew += "  <li>" + tr( "Added load/save to WMS dialog" ) + "</li>";
     whatsNew += "  <li>" + tr( "WMS-C scale slider gui added and more selection improvements" ) + "</li>";
     whatsNew += "</ul>";
@@ -2504,7 +2503,7 @@ void QgisApp::about()
     whatsNew += "  <li>" + tr( "Allow opening layer properties from plugins" ) + "</li>";
     whatsNew += "  <li>" + tr( "Support for custom plugin layers." ) + "</li>";
     whatsNew += "  <li>" + tr( "Allow refreshing of plugins programmatically" ) + "</li>";
-    whatsNew += "  <li>" + tr( "Support for custom plugin directories using QGIS_PLUGINPATH environment variables. More paths can be passed, separated by semicolon." ) + "</li>";
+    whatsNew += "  <li>" + tr( "Support for custom plugin directories using the QGIS_PLUGINPATH environment variable. More paths can be passed, separated by semicolon." ) + "</li>";
     whatsNew += "  <li>" + tr( "Legend interface added to retrieve layers in legend order" ) + "</li>";
     whatsNew += "  <li>" + tr( "Support more GEOS operators" ) + "</li>";
     whatsNew += "</ul>";
