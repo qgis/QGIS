@@ -50,6 +50,10 @@ class PYTHON_EXPORT QgsPythonUtils
 
     /* console */
 
+    //! run a statement, show an error message on error
+    //! @return true if no error occured
+    virtual bool runString( const QString& command, QString msgOnError = QString() ) = 0;
+
     //! run a statement, error reporting is not done
     //! @return true if no error occured
     virtual bool runStringUnsafe( const QString& command, bool single = true ) = 0;
