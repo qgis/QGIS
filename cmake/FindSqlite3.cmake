@@ -1,4 +1,9 @@
-
+# Find Sqlite3
+# ~~~~~~~~~~~~
+# Copyright (c) 2007, Martin Dobias <wonder.sk at gmail.com>
+# Redistribution and use is allowed according to the terms of the BSD license.
+# For details see the accompanying COPYING-CMAKE-SCRIPTS file.
+#
 # CMake module to search for Sqlite3 library
 #
 # If it's found it sets SQLITE3_FOUND to TRUE

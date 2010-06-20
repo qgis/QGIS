@@ -1,3 +1,10 @@
+# Find GEOS
+# ~~~~~~~~~
+# Copyright (c) 2008, Mateusz Loskot <mateusz@loskot.net>
+# (based on FindGDAL.cmake by Magnus Homann)
+# Redistribution and use is allowed according to the terms of the BSD license.
+# For details see the accompanying COPYING-CMAKE-SCRIPTS file.
+#
 # CMake module to search for GEOS library
 #
 # If it's found it sets GEOS_FOUND to TRUE
@@ -5,8 +12,7 @@
 #    GEOS_INCLUDE_DIR
 #    GEOS_LIBRARY
 #
-# Mateusz Loskot <mateusz@loskot.net>
-# (based in FindGDAL.cmake by Magnus Homann)
+ 
 
 IF(WIN32)
 

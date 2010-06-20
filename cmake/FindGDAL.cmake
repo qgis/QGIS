@@ -1,12 +1,18 @@
-## Once run this will define: 
-## 
-## GDAL_FOUND       = system has GDAL lib
-##
-## GDAL_LIBRARY     = full path to the library
-##
-## GDAL_INCLUDE_DIR      = where to find headers 
-##
-## Magnus Homann
+# Find GDAL
+# ~~~~~~~~~
+# Copyright (c) 2007, Magnus Homann <magnus at homann dot se>
+# Redistribution and use is allowed according to the terms of the BSD license.
+# For details see the accompanying COPYING-CMAKE-SCRIPTS file.
+#
+#
+# Once run this will define: 
+# 
+# GDAL_FOUND       = system has GDAL lib
+#
+# GDAL_LIBRARY     = full path to the library
+#
+# GDAL_INCLUDE_DIR      = where to find headers 
+
 
 
 IF(WIN32)

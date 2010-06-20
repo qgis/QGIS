@@ -1,12 +1,17 @@
-## Once run this will define: 
-## 
-## QWT_FOUND       = system has QWT lib
-##
-## QWT_LIBRARY     = full path to the QWT library
-##
-## QWT_INCLUDE_DIR      = where to find headers 
-##
-## Tim Sutton
+# Find Qwt
+# ~~~~~~~~
+# Copyright (c) 2010, Tim Sutton <tim at linfiniti.com>
+# Redistribution and use is allowed according to the terms of the BSD license.
+# For details see the accompanying COPYING-CMAKE-SCRIPTS file.
+#
+# Once run this will define: 
+# 
+# QWT_FOUND       = system has QWT lib
+#
+# QWT_LIBRARY     = full path to the QWT library
+#
+# QWT_INCLUDE_DIR      = where to find headers 
+#
 
 
 #MESSAGE("Searching for QWT")

@@ -1,4 +1,9 @@
-
+# Find PostgreSQL
+# ~~~~~~~~~~~~~~~
+# Copyright (c) 2007, Martin Dobias <wonder.sk at gmail.com>
+# Redistribution and use is allowed according to the terms of the BSD license.
+# For details see the accompanying COPYING-CMAKE-SCRIPTS file.
+#
 # CMake module to search for PostgreSQL library
 #
 # pg_config is searched for in POSTGRES_CONFIG dir,

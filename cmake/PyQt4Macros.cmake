@@ -1,3 +1,8 @@
+# Macros for PyQt4
+# ~~~~~~~~~~~~~~~~
+# Copyright (c) 2009, Juergen E. Fischer <jef at norbit dot de>
+# Redistribution and use is allowed according to the terms of the BSD license.
+# For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 
 
 IF(NOT PYUIC4_PROGRAM)

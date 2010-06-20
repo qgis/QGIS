@@ -1,4 +1,9 @@
-
+# Find Proj
+# ~~~~~~~~~
+# Copyright (c) 2007, Martin Dobias <wonder.sk at gmail.com>
+# Redistribution and use is allowed according to the terms of the BSD license.
+# For details see the accompanying COPYING-CMAKE-SCRIPTS file.
+#
 # CMake module to search for Proj library
 #
 # If it's found it sets PROJ_FOUND to TRUE
