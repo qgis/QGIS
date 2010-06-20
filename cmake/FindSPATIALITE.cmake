@@ -1,4 +1,9 @@
-
+# Find SpatiaLite
+# ~~~~~~~~~~~~~~~
+# Copyright (c) 2009, Sandro Furieri <a.furieri at lqt.it>
+# Redistribution and use is allowed according to the terms of the BSD license.
+# For details see the accompanying COPYING-CMAKE-SCRIPTS file.
+#
 # CMake module to search for SpatiaLite library
 #
 # If it's found it sets SPATIALITE_FOUND to TRUE

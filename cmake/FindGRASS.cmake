@@ -1,3 +1,8 @@
+# Find GRASS
+# ~~~~~~~~~~
+# Copyright (c) 2007, Martin Dobias <wonder.sk at gmail.com>
+# Redistribution and use is allowed according to the terms of the BSD license.
+# For details see the accompanying COPYING-CMAKE-SCRIPTS file.
 
 # macro that checks for grass installation in specified directory
 
