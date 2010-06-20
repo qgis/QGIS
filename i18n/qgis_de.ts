@@ -6412,7 +6412,7 @@ Bitte nehmen Sie Kontakt zu den Entwicklern auf.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1025"/>
-        <source>Save edits to current layer , but continue editing</source>
+        <source>Save edits to current layer, but continue editing</source>
         <translation>Speichert Änderungen und bleibt im Bearbeitungsmodus</translation>
     </message>
     <message>

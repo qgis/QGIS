@@ -1022,7 +1022,7 @@ void QgisApp::createActions()
 
   mActionSaveEdits = new QAction( getThemeIcon( "mActionSaveEdits.png" ), tr( "Save edits" ), this );
   shortcuts->registerAction( mActionSaveEdits );
-  mActionSaveEdits->setStatusTip( tr( "Save edits to current layer , but continue editing" ) );
+  mActionSaveEdits->setStatusTip( tr( "Save edits to current layer, but continue editing" ) );
   connect( mActionSaveEdits, SIGNAL( triggered() ), this, SLOT( saveEdits() ) );
   mActionSaveEdits->setEnabled( false );
 
