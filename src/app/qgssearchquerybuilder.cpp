@@ -80,11 +80,14 @@ QgsSearchQueryBuilder::~QgsSearchQueryBuilder()
 void QgsSearchQueryBuilder::populateFields()
 {
   QgsDebugMsg( "entering." );
+  QRegExp reQuote( "[A-Za-z_][A-Za-z0-9_]*" );
   const QgsFieldMap& fields = mLayer->pendingFields();
   for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); ++it )
   {
     QString fieldName = it->name();
     mFieldMap[fieldName] = it.key();
+    if ( !reQuote.exactMatch( fieldName ) ) // quote if necessary
+      fieldName = QgsSearchTreeNode::quotedColumnRef( fieldName );
     QStandardItem *myItem = new QStandardItem( fieldName );
     myItem->setEditable( false );
     mModelFields->insertRow( mModelFields->rowCount(), myItem );

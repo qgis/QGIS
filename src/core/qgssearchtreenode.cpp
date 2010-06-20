@@ -70,6 +70,11 @@ QgsSearchTreeNode::QgsSearchTreeNode( QString text, bool isColumnRef )
   {
     mType = tColumnRef;
     mText = text;
+    if ( text.at( 0 ) == '\"' )
+    {
+      // column reference is quoted
+      stripColRef();
+    }
   }
   else
   {
@@ -161,6 +166,21 @@ void QgsSearchTreeNode::stripText()
   }
 
 }
+
+void QgsSearchTreeNode::stripColRef()
+{
+  // strip double quotes on start,end
+  mText = mText.mid( 1, mText.length() - 2 );
+
+  // make single "double quotes" from double "double quotes"
+  mText.replace( QRegExp( "\"\"" ), "\"" );
+}
+
+QString QgsSearchTreeNode::quotedColumnRef( QString name )
+{
+  return QString( "\"%1\"" ).arg( name.replace( "\"", "\"\"" ) );
+}
+
 
 QString QgsSearchTreeNode::makeSearchString()
 {

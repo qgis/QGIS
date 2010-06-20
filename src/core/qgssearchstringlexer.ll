@@ -49,6 +49,9 @@ col_first    [A-Za-z_]|{non_ascii}
 col_next     [A-Za-z0-9_]|{non_ascii}
 column_ref  {col_first}{col_next}*
 
+col_str_char  "\"\""|[^\"]
+column_ref_quoted  "\""{col_str_char}*"\""
+
 dig     [0-9]
 num1    {dig}+\.?([eE][-+]?{dig}+)?
 num2    {dig}*\.{dig}+([eE][-+]?{dig}+)?
@@ -101,6 +104,7 @@ string      "'"{str_char}*"'"
 "$length" { return LENGTH; }
 
 {column_ref}   { return COLUMN_REF; }
+{column_ref_quoted}  { return COLUMN_REF; }
 
 {white}    /* skip blanks and tabs */
 
