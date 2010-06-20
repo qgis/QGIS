@@ -2426,77 +2426,89 @@ void QgisApp::about()
     abt->setVersion( versionString );
     QString whatsNew = "<html><body>" ;
     whatsNew += "<h2>" + tr( "Version" ) + " " + QString( QGis::QGIS_VERSION ) +  "</h2>";
-    whatsNew += "<h3>" + tr( "Whats new in Version 1.4.0?" ) + "</h3>"
-                +
-                "<p>"
-                + tr( "Please note that this is a release in our 'cutting edge' release series. As "
-                      "such it contains new features and extends the programmatic interface over "
-                      "QGIS 1.0.x and QGIS 1.3.0. If an unchanging user interface, programmatic API "
-                      "and long term support is more important to you than cool new and untested "
-                      "features, we recommend that you use a copy of QGIS from our Long Term Support "
-                      "(LTS)1.0.x release series. In all other cases we recommend that you use this "
-                      "version." )
-                + "</p><p>" +
-                tr( "This release includes around 200 bug fixes, nearly 30 new "
-                    "features and has had a lot of love and attention poured in "
-                    "to it to take our favourite desktop GIS application another "
-                    "step on the road to GIS nirvana! So much has happened in "
-                    "the 3 months since our last release that it is impossible "
-                    "to document everything here. Instead we will just highlight "
-                    "a couple of important new features for you." )
-                + "</p><p>" +
-                tr( "Probably the biggest new feature is the addition of the new "
-                    "vector symbology infrastructure. This is provided alongside the "
-                    "old implementation - you can switch using a button in the "
-                    "vector layer properties dialog. It does't replace the old "
-                    "symbology implementation completely yet because there are "
-                    "various issues that need to be resolved and a large amount "
-                    "of testing before it is considered ready." )
-                + "</p><p>" +
-                tr( "QGIS now has a field calculator, accessible via a button in "
-                    "the attribute section of the vector properties, and from "
-                    "the attribute table user interface. You can use feature "
-                    "length, feature area, string concatenation and type "
-                    "conversions in the field calculator, as well as field "
-                    "values." )
-                + "</p><p>" +
-                tr( "The map composer has had a lot of attention. A grid can now "
-                    "be added to composer maps. Composer maps can now be rotated "
-                    "in the layout. The limitation of a single map layout "
-                    "per project has been removed. A new composer manager dialog "
-                    "has been added to manage the existing composer instances. "
-                    "The composer widget property sheets have been completely "
-                    "overhauled to use less screen space " )
-                + "</p><p>" +
-                tr( "Various parts of the user interface have been overhauled "
-                    "with the goal of improving consistency and to improve "
-                    "support for netbooks and other smaller screen devices. "
-                    "Loading and saving of shortcuts. Position can now be "
-                    "displayed as Degrees, Minutes, Seconds in the status bar. "
-                    "The add, move and delete vertex buttons are now removed and "
-                    "the node tool is moved from the advanced editing toolbar to "
-                    "the standard editing toolbar. The identification tool has also "
-                    "undergone numerous improvements." )
-                + "</p><p>" +
-                tr( "A render caching capability has been added to QGIS. This "
-                    "speeds up common operations such as layer re-ordering, "
-                    "changing symbology, WMS / WFS client, hiding / showing "
-                    "layers and opens the door for future enhancements such as "
-                    "threaded rendering and pre-compositing layer cache "
-                    "manipulation. Note that it is disabled by default, and "
-                    "can be enabled in the options dialog." )
-                + "</p><p>" +
-                tr( "User defined SVG search paths are now added to the options "
-                    "dialog." )
-                + "</p><p>" +
-                tr( "When creating a new shapefile, you can now specify its CRS. "
-                    "Also the avoid intersections option for polygons is now "
-                    "also possible with background layers." )
-                + "</p><p>" +
-                tr( "For power users, you can now create customizable attribute "
-                    "forms using Qt Designer dialog UIs." )
-                + "</p>" +
-                + "</body></html>";
+    whatsNew += "<h3>" + tr( "Whats new in Version 1.4.0?" ) + "</h3>";
+    whatsNew += "<h2>" + tr( "Whats new in Version 1.5.0 'Tethys'?" ) + "</h2>";
+
+    whatsNew += "<p>";
+    whatsNew += tr( "Please note that this is a release in our 'cutting edge' release series. As " );
+    whatsNew += tr( "such it contains new features and extends the programmatic interface over QGIS " );
+    whatsNew += tr( "1.0.x and QGIS 1.4.0. If an unchanging user interface, programmatic API and " );
+    whatsNew += tr( "long term support is more important to you then cool new and untested features, " );
+    whatsNew += tr( "we recommend that you use a copy of QGIS from our Long Term Support (LTS)1.0.x " );
+    whatsNew += tr( "release series. In all other cases we recommend that you use this version." );
+    whatsNew += "</p>";
+    whatsNew += "<p>";
+    whatsNew += tr( "This release includes over 350 bug fixes, over 40 new features. " );
+    whatsNew += tr( "Once again it is impossible to document everything here that has changed so we will " );
+    whatsNew += tr( "just provide a bullet list of key new features here." );
+    whatsNew += "</p>";
+
+    whatsNew += "<h3>" + tr( "Main GUI" ) + "</h3>";
+
+    whatsNew += "<ul>";
+    whatsNew += "  <li>" + tr( "There is a new angle measuring tool that allows you to interactively measure angles against the map backdrop." ) + "</li>";
+    whatsNew += "  <li>" + tr( "Live GPS Tracking tool" ) + "</li>";
+    whatsNew += "  <li>" + tr( "User configurable WMS search server" ) + "</li>";
+    whatsNew += "  <li>" + tr( "Allow editing of invalid geometry in node tool" ) + "</li>";
+    whatsNew += "  <li>" + tr( "Choice between mm and map units for new symbology. Scaling to use new symbology in print composer as well" ) + "</li>";
+    whatsNew += "  <li>" + tr( "SVG fill symbol layer for polygon textures" ) + "</li>";
+    whatsNew += "  <li>" + tr( "Font marker symbol layer" ) + "</li>";
+    whatsNew += "  <li>" + tr( "Added --noplugins command line options to avoid restoring the plugins. Useful when a plugin misbehaves and causes QGIS      to crash during startup" ) + "</li>";
+    whatsNew += "  <li>" + tr( "Allow hiding of deprecated CRSes" ) + "</li>";
+    whatsNew += "  <li>" + tr( "Add point displacement renderer plugin - allows points to be shifted to avoid colliding with other points" ) + "</li>";
+    whatsNew += "  <li>" + tr( "Allow saving vector layers as ogr vector files" ) + "</li>";
+    whatsNew += "  <li>" + tr( "Raster provider: reduce debugging noise" ) + "</li>";
+    whatsNew += "  <li>" + tr( "Allow adding parts to multi points and lines" ) + "</li>";
+    whatsNew += "  <li>" + tr( "Text and form annotation tools are now in gui and app" ) + "</li>";
+    whatsNew += "  <li>" + tr( "Added possibility to place a set of default composer templates in pkgDataPath/composer_templates" ) + "</li>";
+    whatsNew += "  <li>" + tr( "Gradient color ramps now support multiple stops - for adding intermediate colors" ) + "</li>";
+    whatsNew += "  <li>" + tr( "Center map if user clicks into the map" ) + "</li>";
+    whatsNew += "  <li>" + tr( "New plugin for carrying out spatial selections" ) + "</li>";
+    whatsNew += "  <li>" + tr( "Data-defined size and rotation for single symbol renderer in symbology-ng" ) + "</li>";
+    whatsNew += "  <li>" + tr( "IdentifyAsHtml to raster layer and use it in identify" ) + "</li>";
+    whatsNew += "  <li>" + tr( "Export legend groups and layers with legendinterface and use this information to display groups in the composer legend." ) + "</li>";
+    whatsNew += "  <li>" + tr( "Show selected feature count in status bar " ) + "</li>";
+    whatsNew += "  <li>" + tr( "Query option added to layer menu to subset vector layers" ) + "</li>";
+    whatsNew += "  <li>" + tr( "Option to label only selected features (on the 'old' labelling tool)" ) + "</li>";
+    whatsNew += "  <li>" + tr( "Load/save queries created in the query builder." ) + "</li>";
+    whatsNew += "  <li>" + tr( "Manual adding of categories in symbology-ng." ) + "</li>";
+    whatsNew += "  <li>" + tr( "Georeferencer: possibility to configure if residuals should be showed in pixels or map units" ) + "</li>";
+    whatsNew += "  <li>" + tr( "Delimited text provider: allow empty values in numeric columns" ) + "</li>";
+    whatsNew += "  <li>" + tr( "Added rule-based renderer for symbology-ng" ) + "</li>";
+    whatsNew += "  <li>" + tr( "Ability to create spatial lite databases from within QGIS" ) + "</li>";
+    whatsNew += "  <li>" + tr( "Inclusion of GDAL Raster tools plugin into QGIS core" ) + "</li>";
+    whatsNew += "  <li>" + tr( "New python console (with history)" ) + "</li>";
+    whatsNew += "  <li>" + tr( "Add validation to capture tool" ) + "</li>";
+    whatsNew += "  <li>" + tr( "Allow postgres layers without saved username &amp; password by asking for credentials" ) + "</li>";
+    whatsNew += "  <li>" + tr( "Support NULL values in search strings" ) + "</li>";
+    whatsNew += "  <li>" + tr( "Optionally add new layers to the selected group" ) + "</li>";
+    whatsNew += "  <li>" + tr( "Map composer can add attribute Tables in layouts. It is possibile to show only visible features in composer table or all features" ) + "</li>";
+    whatsNew += "  <li>" + tr( "Identify tool attribute form now non-modal in view mode (since r12796)" ) + "</li>";
+    whatsNew += "  <li>" + tr( "Identified features' highlight disappear when window is deactivate or closed and reappears when reactivated." ) + "</li>";
+    whatsNew += "</ul>";
+
+    whatsNew += "<h3>" + tr( "WMS and WMS-C Support" ) + "</h3>";
+    whatsNew += "<ul>";
+    whatsNew += "  <li>" + tr( "WMS-C support, new spatial authorities, wms selection improvements" ) + "</li>";
+    whatsNew += "  <li>" + tr( "Resolved EPSG dependency in spatial reference systems and included french IGNF definitions in srs.db" ) + "</li>";
+    whatsNew += "  <li>" + tr( "WWM provider makes requests asynchronously through QNetworkAccessManager now" ) + "</li>";
+    whatsNew += "  <li>" + tr( "WMS selection allows inserting of all layers of a branch" ) + "</li>";
+    whatsNew += "  <li>" + tr( "WMS has support for more mime types" ) + "</li>";
+    whatsNew += "  <li>" + tr( "Added load/save to WMS dialog" ) + "</li>";
+    whatsNew += "  <li>" + tr( "WMS-C scale slider gui added and more selection improvements" ) + "</li>";
+    whatsNew += "</ul>";
+    whatsNew += "<h3>" + tr( "API Updates" ) + "</h3>";
+    whatsNew += "<ul>";
+    whatsNew += "  <li>" + tr( "QgsDataProvider &amp; QgsMapLayer: add dataChanged() signal, so that a provider can signal that the datasource changed" ) + "</li>";
+    whatsNew += "  <li>" + tr( "Use QNetworkAccessManager instead of QgsHttpTransaction (including caching and dynamic authentification to website and proxies)" ) + "</li>";
+    whatsNew += "  <li>" + tr( "Allow opening layer properties from plugins" ) + "</li>";
+    whatsNew += "  <li>" + tr( "Support for custom plugin layers." ) + "</li>";
+    whatsNew += "  <li>" + tr( "Allow refreshing of plugins programmatically" ) + "</li>";
+    whatsNew += "  <li>" + tr( "Support for custom plugin directories using QGIS_PLUGINPATH environment variables. More paths can be passed, separated by semicolon." ) + "</li>";
+    whatsNew += "  <li>" + tr( "Legend interface added to retrieve layers in legend order" ) + "</li>";
+    whatsNew += "  <li>" + tr( "Support more GEOS operators" ) + "</li>";
+    whatsNew += "</ul>";
+    whatsNew += "</body></html>";
 
     abt->setWhatsNew( whatsNew );
 
