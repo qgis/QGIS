@@ -153,6 +153,10 @@ class CORE_EXPORT QgsSearchTreeNode
     //! @note added in 1.5
     bool needsGeometry();
 
+    //! return quoted column reference (in double quotes)
+    //! @note added in 1.5
+    static QString quotedColumnRef( QString name );
+
   protected:
 
 
@@ -161,6 +165,9 @@ class CORE_EXPORT QgsSearchTreeNode
 
     //! strips mText when node is of string type
     void stripText();
+
+    //! strip mText when column reference is quoted
+    void stripColRef();
 
     //! initialize node's internals
     void init();

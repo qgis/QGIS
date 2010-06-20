@@ -115,6 +115,10 @@ class QgsSearchTreeNode
     //! @note added in 1.5
     bool needsGeometry();
 
+    //! return quoted column reference (in double quotes)
+    //! @note added in 1.5
+    static QString quotedColumnRef( QString name );
+
   protected:
 
 

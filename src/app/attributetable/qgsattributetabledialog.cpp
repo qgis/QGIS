@@ -615,20 +615,16 @@ void QgsAttributeTableDialog::doSearch( QString searchString )
 void QgsAttributeTableDialog::search()
 {
 
-  QString str = mColumnBox->currentText();
-
+  QString fieldName = mColumnBox->currentText();
   const QgsFieldMap& flds = mLayer->pendingFields();
-  int fldIndex = mLayer->fieldNameIndex( str );
+  int fldIndex = mLayer->fieldNameIndex( fieldName );
   QVariant::Type fldType = flds[fldIndex].type();
   bool numeric = ( fldType == QVariant::Int || fldType == QVariant::Double );
 
-  if ( numeric )
-    str += " = '";
-  else
-    str += " ~ '";
-
-  str += mQuery->displayText().replace( "'", "''" ); // escape quotes
-  str += "'";
+  QString str = QString( "%1 %2 '%3'" )
+                .arg( QgsSearchTreeNode::quotedColumnRef( fieldName ) )
+                .arg( numeric ? "=" : "~" )
+                .arg( mQuery->displayText().replace( "'", "''" ) ); // escape quotes
 
   doSearch( str );
 }
