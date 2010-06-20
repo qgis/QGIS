@@ -2430,17 +2430,17 @@ void QgisApp::about()
     whatsNew += "<h2>" + tr( "Whats new in Version 1.5.0 'Tethys'?" ) + "</h2>";
 
     whatsNew += "<p>";
-    whatsNew += tr( "Please note that this is a release in our 'cutting edge' release series. As " );
-    whatsNew += tr( "such it contains new features and extends the programmatic interface over QGIS " );
-    whatsNew += tr( "1.0.x and QGIS 1.4.0. If an unchanging user interface, programmatic API and " );
-    whatsNew += tr( "long term support is more important to you then cool new and untested features, " );
-    whatsNew += tr( "we recommend that you use a copy of QGIS from our Long Term Support (LTS)1.0.x " );
-    whatsNew += tr( "release series. In all other cases we recommend that you use this version." );
+    whatsNew += tr( "Please note that this is a release in our 'cutting edge' release series. As "
+                    "such it contains new features and extends the programmatic interface over QGIS "
+                    "1.0.x and QGIS 1.4.0. If an unchanging user interface, programmatic API and "
+                    "long term support is more important to you then cool new and untested features, "
+                    "we recommend that you use a copy of QGIS from our Long Term Support (LTS)1.0.x "
+                    "release series. In all other cases we recommend that you use this version." );
     whatsNew += "</p>";
     whatsNew += "<p>";
-    whatsNew += tr( "This release includes over 350 bug fixes, over 40 new features. " );
-    whatsNew += tr( "Once again it is impossible to document everything here that has changed so we will " );
-    whatsNew += tr( "just provide a bullet list of key new features here." );
+    whatsNew += tr( "This release includes over 350 bug fixes, over 40 new features. " 
+                    "Once again it is impossible to document everything here that has changed so we will "
+                    "just provide a bullet list of key new features here." );
     whatsNew += "</p>";
 
     whatsNew += "<h3>" + tr( "Main GUI" ) + "</h3>";
@@ -2453,7 +2453,7 @@ void QgisApp::about()
     whatsNew += "  <li>" + tr( "Choice between mm and map units for new symbology. Scaling to use new symbology in print composer as well" ) + "</li>";
     whatsNew += "  <li>" + tr( "SVG fill symbol layer for polygon textures" ) + "</li>";
     whatsNew += "  <li>" + tr( "Font marker symbol layer" ) + "</li>";
-    whatsNew += "  <li>" + tr( "Added --noplugins command line options to avoid restoring the plugins. Useful when a plugin misbehaves and causes QGIS      to crash during startup" ) + "</li>";
+    whatsNew += "  <li>" + tr( "Added --noplugins command line options to avoid restoring the plugins. Useful when a plugin misbehaves and causes QGIS to crash during startup" ) + "</li>";
     whatsNew += "  <li>" + tr( "Allow hiding of deprecated CRSes" ) + "</li>";
     whatsNew += "  <li>" + tr( "Add point displacement renderer plugin - allows points to be shifted to avoid colliding with other points" ) + "</li>";
     whatsNew += "  <li>" + tr( "Allow saving vector layers as ogr vector files" ) + "</li>";
