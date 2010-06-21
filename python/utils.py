@@ -216,11 +216,11 @@ def _unloadPluginModules(packageName):
     # if it looks like a Qt resource file, try to do a cleanup
     # otherwise we might experience a segfault next time the plugin is loaded
     # because Qt will try to access invalid plugin resource data
-    if "resources" in mod:
-      try:
-	sys.modules[mod].qCleanupResources()
-      except:
-	pass
+    try:
+      if hasattr(sys.modules[mod], 'qCleanupResources'):
+        sys.modules[mod].qCleanupResources()
+    except:
+      pass
     # try to remove the module from python
     try:
       del sys.modules[mod]
