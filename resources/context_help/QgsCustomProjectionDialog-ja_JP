@@ -1,0 +1,15 @@
+<h3>カスタム座標参照システムの定義</h3>
+あなたが利用したい座標参照システムがQGISで提供されていない場合はカスタムCRS(座標参照システム)を定義することができます. <p>
+CRSを定義するためには <label>編集</label> (Gnome, OSX)または <label>設定</label> (KDE, Windows) メニューの<label>カスタムCRS</label>を選択して下さい .カスタムCRSはあなたのQGISユーザーデータベースに格納されます. さらにカスタムCRSに加えてこのデータベースには空間ブックマークと他のカスタムデータが格納されます.
+
+<h4>定義</h4>
+あたらしいCRSを作成するためには<label>新規</label>ボタンをクリックした後以下の情報を入力して下さい:
+<ul>
+<li>名称
+<li>CRSパラメータ
+</ul>
+その後<label>保存</label>ボタンをクリックするとあなたのCRSを保存できます.
+<p>
+注　新しく作成する座標参照システムは +proj=-block という形式で記述が開始されてなければいけません.
+<p>
+QGISでカスタムCRSを定義する場合Proj.4投影ライブラリを理解することが必要です. 最初に以下の文書を参照して下さい <a href="ftp://ftp.remotesensing.org/proj/OF90-284.pdf">Cartographic Projection Procedures for the UNIX Environment</a> - A User's Manual by Gerald I. Evenden, U.S. Geological Survey Open-File Report 90-284, 1990. このマニュアルでは <i>proj.4</i> と関連するコマンドユーティリティの利用方法が記述されています. <i>proj.4</i>の空間情報パラメータはユーザーマニュアルに解説があります.それらの利用方法はQGISでも同様に使えます.
