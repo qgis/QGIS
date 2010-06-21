@@ -2437,7 +2437,7 @@ void QgisApp::about()
                     "release series. In all other cases we recommend that you use this version." );
     whatsNew += "</p>";
     whatsNew += "<p>";
-    whatsNew += tr( "This release includes over 350 bug fixes, over 40 new features. " 
+    whatsNew += tr( "This release includes over 350 bug fixes, over 40 new features. "
                     "Once again it is impossible to document everything here that has changed so we will "
                     "just provide a bullet list of key new features here." );
     whatsNew += "</p>";
