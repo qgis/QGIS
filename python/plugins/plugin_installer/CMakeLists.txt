@@ -18,6 +18,7 @@ PYQT4_WRAP_UI(PYUI_FILES
 	qgsplugininstallerinstallingbase.ui
 	qgsplugininstallerpluginerrorbase.ui
 	qgsplugininstallerrepositorybase.ui
+	qgsplugininstalleroldreposbase.ui
 )
 
 PYQT4_ADD_RESOURCES(PYRC_FILES resources.qrc)

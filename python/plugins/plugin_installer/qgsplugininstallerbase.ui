@@ -303,7 +303,7 @@
        <string>List of plugin repositories</string>
       </attribute>
       <layout class="QGridLayout">
-       <item row="0" column="0" colspan="7">
+       <item row="0" column="0" colspan="9">
         <widget class="QTreeWidget" name="treeRepositories">
          <property name="rootIsDecorated">
           <bool>false</bool>
@@ -360,7 +360,7 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="3">
+       <item row="1" column="5">
         <spacer>
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -373,7 +373,7 @@
          </property>
         </spacer>
        </item>
-       <item row="1" column="4">
+       <item row="1" column="6">
         <widget class="QPushButton" name="buttonAddRep">
          <property name="toolTip">
           <string>Add a new plugin repository</string>
@@ -386,7 +386,7 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="5">
+       <item row="1" column="7">
         <widget class="QPushButton" name="buttonEditRep">
          <property name="toolTip">
           <string>Edit the selected repository</string>
@@ -399,7 +399,7 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="6">
+       <item row="1" column="8">
         <widget class="QPushButton" name="buttonDeleteRep">
          <property name="toolTip">
           <string>Remove the selected repository</string>
@@ -409,6 +409,62 @@
          </property>
          <property name="text">
           <string>Delete</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3">
+        <widget class="QPushButton" name="buttonAddContributedRepository">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>0</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Add the contributed repository to the list</string>
+         </property>
+         <property name="whatsThis">
+          <string>Add the contributed repository to the list</string>
+         </property>
+         <property name="text">
+          <string>Add the contributed repository</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="4">
+        <widget class="QPushButton" name="buttonDeleteDepreciatedRepos">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>0</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string>Remove depreciated repositories from the list</string>
+         </property>
+         <property name="whatsThis">
+          <string>Remove depreciated repositories from the list</string>
+         </property>
+         <property name="text">
+          <string>Delete depreciated repositories</string>
          </property>
         </widget>
        </item>
@@ -617,6 +673,8 @@ p, li { white-space: pre-wrap; }
   <tabstop>buttonHelp</tabstop>
   <tabstop>treeRepositories</tabstop>
   <tabstop>buttonFetchRepositories</tabstop>
+  <tabstop>buttonAddContributedRepository</tabstop>
+  <tabstop>buttonDeleteDepreciatedRepos</tabstop>
   <tabstop>buttonAddRep</tabstop>
   <tabstop>buttonEditRep</tabstop>
   <tabstop>buttonDeleteRep</tabstop>
