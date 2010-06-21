@@ -1300,26 +1300,31 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
   QFont tableContentFont;
   tableContentFont.setPointSize( 9 );
 
+  QSettings s;
+  double leftMargin = s.value( "/Plugin-GeoReferencer/Config/LeftMarginPDF", "2.0" ).toDouble();
+  double rightMargin = s.value( "/Plugin-GeoReferencer/Config/RightMarginPDF", "2.0" ).toDouble();
+  double contentWidth = 210 - ( leftMargin + rightMargin );
+
   //title
   QFileInfo rasterFi( mRasterFileName );
   QgsComposerLabel* titleLabel = new QgsComposerLabel( composition );
   titleLabel->setFont( titleFont );
   titleLabel->setText( rasterFi.fileName() );
   composition->addItem( titleLabel );
-  titleLabel->setSceneRect( QRectF( 2, 5, composition->paperWidth(), 8 ) );
+  titleLabel->setSceneRect( QRectF( leftMargin, 5, contentWidth, 8 ) );
   titleLabel->setFrame( false );
 
   //composer map
   QgsRectangle canvasExtent = mCanvas->extent();
   //calculate width and height considering extent aspect ratio and max Width 206, maxHeight 70
-  double widthExtentRatio = 206 / canvasExtent.width();
+  double widthExtentRatio = contentWidth / canvasExtent.width();
   double heightExtentRatio = 70 / canvasExtent.height();
   double mapWidthMM = 0;
   double mapHeightMM = 0;
   if ( widthExtentRatio < heightExtentRatio )
   {
-    mapWidthMM = 206;
-    mapHeightMM = 206 / canvasExtent.width() * canvasExtent.height();
+    mapWidthMM = contentWidth;
+    mapHeightMM = contentWidth / canvasExtent.width() * canvasExtent.height();
   }
   else
   {
@@ -1327,7 +1332,7 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
     mapWidthMM = 70 / canvasExtent.height() * canvasExtent.width();
   }
 
-  QgsComposerMap* composerMap = new QgsComposerMap( composition, 2, titleLabel->rect().bottom() + titleLabel->transform().dy(), mapWidthMM, mapHeightMM );
+  QgsComposerMap* composerMap = new QgsComposerMap( composition, leftMargin, titleLabel->rect().bottom() + titleLabel->transform().dy(), mapWidthMM, mapHeightMM );
   composerMap->setLayerSet( canvasRenderer->layerSet() );
   composerMap->setNewExtent( mCanvas->extent() );
   composerMap->setMapCanvas( mCanvas );
@@ -1344,7 +1349,6 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
   bool wldTransform = transform.getOriginScaleRotation( origin, scaleX, scaleY, rotation );
 
   QString residualUnits;
-  QSettings s;
   if ( s.value( "/Plugin-GeoReferencer/Config/ResidualUnits" ) == "mapUnits" && mGeorefTransform.providesAccurateInverseTransformation() )
   {
     residualUnits = tr( "map units" );
@@ -1362,7 +1366,7 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
     parameterLabel->setText( parameterTitle );
     parameterLabel->adjustSizeToText();
     composition->addItem( parameterLabel );
-    parameterLabel->setSceneRect( QRectF( 2, composerMap->rect().bottom() + composerMap->transform().dy() + 5, composition->paperWidth(), 8 ) );
+    parameterLabel->setSceneRect( QRectF( leftMargin, composerMap->rect().bottom() + composerMap->transform().dy() + 5, contentWidth, 8 ) );
     parameterLabel->setFrame( false );
 
     //calculate mean error
@@ -1379,7 +1383,7 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
     row << QString::number( origin.x(), 'f', 3 ) << QString::number( origin.y(), 'f', 3 ) << QString::number( scaleX ) << QString::number( scaleY ) << QString::number( rotation * 180 / M_PI ) << QString::number( meanError );
     parameterTable->addRow( row );
     composition->addItem( parameterTable );
-    parameterTable->setSceneRect( QRectF( 2, parameterLabel->rect().bottom() + parameterLabel->transform().dy() + 5, 50, 20 ) );
+    parameterTable->setSceneRect( QRectF( leftMargin, parameterLabel->rect().bottom() + parameterLabel->transform().dy() + 5, contentWidth, 20 ) );
     parameterTable->setGridStrokeWidth( 0.1 );
     parameterTable->adjustFrameToSize();
   }
@@ -1394,13 +1398,13 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
   residualLabel->setFont( titleFont );
   residualLabel->setText( tr( "Residuals" ) );
   composition->addItem( residualLabel );
-  residualLabel->setSceneRect( QRectF( 2, previousItem->rect().bottom() + previousItem->transform().dy() + 5, composition->paperWidth(), 6 ) );
+  residualLabel->setSceneRect( QRectF( leftMargin, previousItem->rect().bottom() + previousItem->transform().dy() + 5, contentWidth, 6 ) );
   residualLabel->setFrame( false );
 
   //residual plot
   QgsResidualPlotItem* resPlotItem = new QgsResidualPlotItem( composition );
   composition->addItem( resPlotItem );
-  resPlotItem->setSceneRect( QRectF( 2, residualLabel->rect().bottom() + residualLabel->transform().dy() + 5, composerMap->rect().width(), composerMap->rect().height() ) );
+  resPlotItem->setSceneRect( QRectF( leftMargin, residualLabel->rect().bottom() + residualLabel->transform().dy() + 5, contentWidth, composerMap->rect().height() ) );
   resPlotItem->setExtent( composerMap->extent() );
   resPlotItem->setGCPList( mPoints );
 
@@ -1437,7 +1441,7 @@ bool QgsGeorefPluginGui::writePDFReportFile( const QString& fileName, const QgsG
 
   composition->addItem( gcpTable );
 
-  gcpTable->setSceneRect( QRectF( 2,  resPlotItem->rect().bottom() + resPlotItem->transform().dy() + 5, 170, 100 ) );
+  gcpTable->setSceneRect( QRectF( leftMargin,  resPlotItem->rect().bottom() + resPlotItem->transform().dy() + 5, contentWidth, 100 ) );
   gcpTable->setGridStrokeWidth( 0.1 );
 
   printer.setResolution( composition->printResolution() );
