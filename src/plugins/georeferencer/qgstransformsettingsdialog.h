@@ -45,6 +45,8 @@ class QgsTransformSettingsDialog : public QDialog, private Ui::QgsTransformSetti
     void on_tbnTargetSRS_clicked();
     void on_tbnReportFile_clicked();
     void on_leTargetSRS_textChanged( const QString &text );
+    void on_cmbTransformType_currentIndexChanged( const QString& text );
+    void on_mWorldFileCheckBox_stateChanged( int state );
     QIcon getThemeIcon( const QString &theName );
 
   private:

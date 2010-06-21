@@ -87,7 +87,14 @@ void QgsTransformSettingsDialog::getTransformSettings( QgsGeorefTransform::Trans
 
   rm = ( QgsImageWarper::ResamplingMethod )cmbResampling->currentIndex();
   comprMethod = cmbCompressionComboBox->currentText();
-  raster = leOutputRaster->text();
+  if ( mWorldFileCheckBox->isChecked() )
+  {
+    raster = "";
+  }
+  else
+  {
+    raster = leOutputRaster->text();
+  }
   proj = leTargetSRS->text();
   pdfReportFile = mReportFileLineEdit->text();
   zt = cbxZeroAsTrans->isChecked();
@@ -134,12 +141,11 @@ void QgsTransformSettingsDialog::accept()
   int minGCPpoints;
   if ( checkGCPpoints( cmbTransformType->currentIndex(), minGCPpoints ) )
   {
-    if ( leOutputRaster->text().isEmpty() && cmbTransformType->currentIndex() > 1 )
+    if ( leOutputRaster->text().isEmpty() )
     {
       QMessageBox::information( this, tr( "Info" ), tr( "Please set output name" ) );
       return;
     }
-    QDialog::accept();
   }
   else
   {
@@ -149,6 +155,18 @@ void QgsTransformSettingsDialog::accept()
     cmbTransformType->setCurrentIndex( s.value( "/Plugin-GeoReferencer/lasttransformation", -1 ).toInt() );
     return;
   }
+
+  //if the file path is relative, make it relative to the raster file directory
+  QString outputRasterName = leOutputRaster->text();
+  QFileInfo rasterFileInfo( mModifiedRaster );
+  QFileInfo outputFileInfo( rasterFileInfo.absoluteDir(), outputRasterName );
+
+  if ( outputFileInfo.fileName().isEmpty() || !outputFileInfo.dir().exists() )
+  {
+    QMessageBox::information( this, tr( "Info" ), tr( "Invalid output file name" ) );
+    return;
+  }
+  leOutputRaster->setText( outputFileInfo.absoluteFilePath() );
 
   QSettings s;
   s.setValue( "/Plugin-GeoReferencer/lasttransformation", cmbTransformType->currentIndex() );
@@ -166,6 +184,7 @@ void QgsTransformSettingsDialog::accept()
     QFileInfo fi( pdfReportFileName );
     s.setValue( "/Plugin-GeoReferencer/lastPDFReportDir", fi.absolutePath() );
   }
+  QDialog::accept();
 }
 
 void QgsTransformSettingsDialog::on_tbnOutputRaster_clicked()
@@ -238,6 +257,30 @@ void QgsTransformSettingsDialog::on_leTargetSRS_textChanged( const QString &text
   {
     tbnTargetSRS->setIcon( getThemeIcon( "/mPushButtonTargetSRSEnabled.png" ) );
   }
+}
+
+void QgsTransformSettingsDialog::on_cmbTransformType_currentIndexChanged( const QString& text )
+{
+  if ( text == tr( "Linear" ) )
+  {
+    mWorldFileCheckBox->setEnabled( true );
+  }
+  else
+  {
+    mWorldFileCheckBox->setEnabled( false );
+  }
+}
+
+void QgsTransformSettingsDialog::on_mWorldFileCheckBox_stateChanged( int state )
+{
+  bool enableOutputRaster = true;
+  if ( state == Qt::Checked )
+  {
+    enableOutputRaster = false;
+  }
+  label_2->setEnabled( enableOutputRaster );
+  leOutputRaster->setEnabled( enableOutputRaster );
+  tbnOutputRaster->setEnabled( enableOutputRaster );
 }
 
 bool QgsTransformSettingsDialog::checkGCPpoints( int count, int &minGCPpoints )
