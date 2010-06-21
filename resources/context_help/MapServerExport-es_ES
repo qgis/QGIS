@@ -1,0 +1,38 @@
+<h3>Exportar un proyecto de QGIS a archivo de mapa de MapServer</h3>
+<p>
+Esta herramienta le permite exportar un proyecto guardado de QGIS a map de MapServer 
+Sólo se necesitan el <b>Archivo de mapa</b> y el <b>archivo de proyecto de QGIS</b>.
+</p>
+Marque la casilla <label>Usar proyecto actual</label> o introduzca la ruta completa a 
+el archivo del proyecto de QGIS (.qgs) que quiera exportar. Puede usar el botón de la 
+derecha para buscar el archivo de proyecto de QGIS.
+
+<h4>Archivo de mapa</h4>
+
+<label>Archivo de mapa</label> Introduzca el nombre del archivo de mapa a crear. Puede 
+usar el botón de la derecha para navegar hasta el directorio en que que quiera crear 
+el archivo de mapa.
+
+<h4>Mapa</h4>
+Estos valores se escriben en el archivo de mapa en los lugares adecuados para establecer cosas 
+tales como el tamaño de la imagen de salida, las unidades o el tipo de imagen.
+<dl>
+  <dt><label>Nombre</label></dt>
+  <dd>Un nombre para el mapa. Este nombre se antepone a todas las imágenes generadas por MapServer.</dd>
+  <dt><label>Anchura</label></dt>
+  <dd>Anchura de la imagen de salida en píxeles.</dd>
+  <dt><label>Altura</label></dt>
+  <dd>Altura de la imagen de salida en píxeles.</dd>
+  <dt><label>Unidades</label></dt>
+  <dd>Unidades de medida usadas para la salida.</dd>
+  <dt><label>Imagen type</label></dt>
+  <dd>Formato para la imagen de salida generada por MapServer</dd>
+</dl>
+<h4>Rutas</h4>
+<dl>
+  <dt><label>Plantilla</label></dt>
+  <dd>Ruta completa al archivo de plantilla de MapServer a usar con el archivo de mapa.</dd>
+  <dt><label>Encabezado</label></dt>
+  <dd>Ruta completa al archivo de encabezado de MapServer a usar con el archivo de mapa.</dd>
+  <dt><label>Pie de página</label></dt>
+  <dd>Ruta completa al archivo de pie de página de MapServer a usar con el archivo de mapa.</dd>
