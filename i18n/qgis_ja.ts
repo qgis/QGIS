@@ -13029,22 +13029,43 @@ Please reselect a valid file.</source>
         <translation>コードの表示</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="43"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="66"/>
+        <source>PDF report</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="74"/>
+        <source>Left margin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="84"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="102"/>
+        <source> mm</source>
+        <translation type="unfinished"> mm</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="95"/>
+        <source>Right margin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="114"/>
         <source>Show Georeferencer window docked</source>
         <translation>ジオレファレンサウィンドウを結合して表示する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="60"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="43"/>
         <source>Residual units</source>
         <translation>残りの単位</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="66"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="49"/>
         <source>Pixels</source>
         <translation>ピクセル</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="73"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefconfigdialogbase.ui" line="56"/>
         <source>Use map units if possible</source>
         <translation>可能な場合地図上の単位を利用</translation>
     </message>
@@ -13126,7 +13147,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="320"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="960"/>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1469"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1473"/>
         <source>Transform: </source>
         <translation>変換:</translation>
     </message>
@@ -13137,11 +13158,11 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1081"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1129"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1171"/>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1600"/>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1609"/>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1619"/>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1628"/>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1642"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1604"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1613"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1623"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1632"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1646"/>
         <source>Info</source>
         <translation>情報</translation>
     </message>
@@ -13167,7 +13188,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="595"/>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1600"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1604"/>
         <source>Please load raster to be georeferenced</source>
         <translation>ジオレファレンスを行うラスタをロードして下さい</translation>
     </message>
@@ -13244,7 +13265,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1171"/>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1642"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1646"/>
         <source>Failed to compute GCP transform: Transform is not solvable</source>
         <translation>GCP変換の計算に失敗しました 変換は行われませんでした</translation>
     </message>
@@ -13254,32 +13275,32 @@ p, li { white-space: pre-wrap; }
         <translation>エラー</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1359"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1363"/>
         <source>Transformation parameters</source>
         <translation>変換パラメータ</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1376"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1380"/>
         <source>Translation x</source>
         <translation>移動　x</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1376"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1380"/>
         <source>Translation y</source>
         <translation>移動　y</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1376"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1380"/>
         <source>Scale x</source>
         <translation>縮尺 x</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1376"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1380"/>
         <source>Scale y</source>
         <translation>縮尺 y</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1376"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1380"/>
         <source>Rotation [degrees]</source>
         <translation>回転[角度]</translation>
     </message>
@@ -13288,118 +13309,118 @@ p, li { white-space: pre-wrap; }
         <translation type="obsolete">平均誤差[地図上単位]</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1395"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1399"/>
         <source>Residuals</source>
         <translation>残余</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1350"/>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1408"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1354"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1412"/>
         <source>map units</source>
         <translation>地図上の単位</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1354"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1358"/>
         <source>pixels</source>
         <translation>ピクセル</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1376"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1380"/>
         <source>Mean error [%1]</source>
         <translation>平均誤差[%1]</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1427"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1431"/>
         <source>yes</source>
         <translation>はい</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1431"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1435"/>
         <source>no</source>
         <translation>いいえ</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1476"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1480"/>
         <source>Translation (%1, %2)</source>
         <translation>移動（%1 %2)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1477"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1481"/>
         <source>Scale (%1, %2)</source>
         <translation>縮尺(%1 %2)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1478"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1482"/>
         <source>Rotation: %1</source>
         <translation>回転 %1</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1485"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1489"/>
         <source>Mean error: %1</source>
         <translation>平均誤差:%1</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1506"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1510"/>
         <source>Copy in clipboard</source>
         <translation>クリップボードへのコピー</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1512"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1516"/>
         <source>%1</source>
         <translation>%1</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1519"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1523"/>
         <source>GDAL script</source>
         <translation>GDALスクリプト</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1609"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1613"/>
         <source>Please set transformation type</source>
         <translation>変換タイプを設定してください</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1619"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1623"/>
         <source>Please set output raster name</source>
         <translation>出力ラスタ名を設定して下さい</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1628"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1632"/>
         <source>%1 requires at least %2 GCPs. Please define more</source>
         <translation>%1は少なくとも%2のGCPが必要です.さらにGCPを定義して下さい</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1713"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1717"/>
         <source>Linear</source>
         <translation>線形</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1715"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1719"/>
         <source>Helmert</source>
         <translation>ヘルマート</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1717"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1721"/>
         <source>Polynomial 1</source>
         <translation>多項式1</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1719"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1723"/>
         <source>Polynomial 2</source>
         <translation>多項式2</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1721"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1725"/>
         <source>Polynomial 3</source>
         <translation>多項式3</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1723"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1727"/>
         <source>Thin plate spline (TPS)</source>
         <translation>シンプレートスプライン(TPS)</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1725"/>
+        <location filename="../src/plugins/georeferencer/qgsgeorefplugingui.cpp" line="1729"/>
         <source>Not set</source>
         <translation>設定しない</translation>
     </message>
@@ -26641,6 +26662,7 @@ Do you want to overwrite the [%2] relation?</source>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="58"/>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="37"/>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="264"/>
         <source>Linear</source>
         <translation>線形</translation>
     </message>
@@ -26670,38 +26692,44 @@ Do you want to overwrite the [%2] relation?</source>
         <translation>シンプレートスプライン</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="139"/>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="146"/>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="152"/>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="166"/>
         <source>Info</source>
         <translation>情報</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="139"/>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="146"/>
         <source>Please set output name</source>
         <translation>出力名称を指定して下さい</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="146"/>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="152"/>
         <source>%1 requires at least %2 GCPs. Please define more</source>
         <translation>%1は少なくとも%2のGCPが必要です.さらにGCPを定義して下さい</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="174"/>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="166"/>
+        <source>Invalid output file name</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="193"/>
         <source>Save raster</source>
         <translation>ラスタの保存</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="218"/>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="237"/>
         <source>Select save PDF file</source>
         <translation>保存するPDFファイルを選択する</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="218"/>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="237"/>
         <source>PDF Format</source>
         <translation>PDF形式</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="259"/>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="302"/>
         <source>_modified</source>
         <comment>Georeferencer:QgsOpenRasterDialog.cpp - used to modify a user given file name</comment>
         <translation>変更されたもの</translation>
@@ -26804,12 +26832,17 @@ Do you want to overwrite the [%2] relation?</source>
         <translation>垂直</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="242"/>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="240"/>
+        <source>Create world file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="249"/>
         <source>Use 0 for transparency when needed</source>
         <translation>必要に応じて透明に 0 を使用</translation>
     </message>
     <message>
-        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="252"/>
+        <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="259"/>
         <source>Load in QGIS when done</source>
         <translation>実行された時にQGISにロードします</translation>
     </message>
