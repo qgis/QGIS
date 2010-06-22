@@ -1142,7 +1142,7 @@ QString QgsPostgresProvider::getPrimaryKey()
           // oid isn't indexed (and that they may want to add a
           // primary key to the table)
           primaryKey = "oid";
-          primaryKeyType = "int4";
+          primaryKeyType = "oid";
           mIsDbPrimaryKey = true;
         }
         else
@@ -1308,7 +1308,7 @@ QString QgsPostgresProvider::getPrimaryKey()
         if ( PQntuples( oidCheck ) != 0 )
         {
           primaryKey = "oid";
-          primaryKeyType = "int4";
+          primaryKeyType = "oid";
         }
         else
         {
@@ -2240,7 +2240,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
                               .arg( srid );
 
     int offset;
-    if ( primaryKeyType != "tid" )
+    if ( primaryKeyType != "tid" && primaryKeyType != "oid" )
     {
       insert += "," + quotedIdentifier( primaryKey );
       values += ",$2";
@@ -2346,7 +2346,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
       QStringList params;
       params << geomParam;
 
-      if ( primaryKeyType != "tid" )
+      if ( primaryKeyType != "tid" && primaryKeyType != "oid" )
       {
         int id = paramValue( primaryKeyDefault(), primaryKeyDefault() ).toInt();
         params << QString::number( id );
